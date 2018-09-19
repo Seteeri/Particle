@@ -1,9 +1,12 @@
 (in-package :protoform.model)
 
-(defun init-mapping-base (inst-max mapping-base)
-  ;; align these sizes
-  (dolist (boa (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
-		     (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))))
+(defun init-mapping-base (inst-max
+			  mapping-base
+			  paths)
+
+  ;; Initialize shm for texture-buffer
+  ;; Note, element-array and draw-indirect buffers exist
+  (dolist (boa paths)
     (let* ((name (first boa))
 	   (path (second boa))
 	   (size (third boa))

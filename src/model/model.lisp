@@ -7,6 +7,7 @@
 (defun align-size (size &optional (boundary 4))
   (+ size (- boundary (mod size boundary))))
 
+;; rename to graph or root?
 (defclass model ()
   ((width :accessor width :initarg :width :initform nil)
    (height :accessor height :initarg :height :initform nil)
@@ -46,7 +47,6 @@
 							:width width
 							:height height
 							:projection-type 'orthographic)
-			       ;; :projection-type 'perspective
 			       :inst-max inst-max
 			       :conn-model (init-conn-server path-server-model)
 			       :metrics (init-metrics))))
@@ -55,14 +55,19 @@
     (setf (scale-glyph model) (* (scale (gethash 32 (metrics model)))
 				 (dpi-glyph model)))
 
+    ;; Pango will render text
+    ;; Apply msdf (do later)
+    ;; Write to texture buffer
+    
     ;; Init shm, request view to mmap
-    ;; Some of the OpenGL buffer init code, move here
-    ;; Particularly, calculating the size
-    ;;
-    ;; Move to mapping-base; return mapping base
+    ;; TODO:
+    ;; Read cfg file (s-exp) to set parameters for mmaps
+    ;; View also needs a cfg file since it corresponds for mmaps - or gen automatically?
     (format t "[main-model] Initializing mmaps...~%")
     (init-mapping-base inst-max
-		       (mapping-base model))
+		       (mapping-base model)
+		       (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
+			     (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))))
 
     ;; Init position and projview shm mmap
     (with-slots (ptr size)
@@ -101,30 +106,31 @@
     
     ;; Mmap file read-only into structure
     ;; Layout chars
-    (let* ((path-src (merge-pathnames #P"src/" (asdf:system-source-directory :protoform)))
-	   (path-protoform (merge-pathnames (make-pathname :name "test" :type "txt")
-					    path-src)))
-      (multiple-value-bind (sl-chrs cursor)
-	  (load-file inst-max
-		     path-protoform
-		     (metrics model)
-		     (dpi-glyph model)
-		     (scale-glyph model))
-	(setf (sl-chrs model) sl-chrs)
-	(setf (cursor model) cursor)))
+    (when nil
+      (let* ((path-src (merge-pathnames #P"src/" (asdf:system-source-directory :protoform)))
+	     (path-protoform (merge-pathnames (make-pathname :name "test" :type "txt")
+					      path-src)))
+	(multiple-value-bind (sl-chrs cursor)
+	    (load-file inst-max
+		       path-protoform
+		       (metrics model)
+		       (dpi-glyph model)
+		       (scale-glyph model))
+	  (setf (sl-chrs model) sl-chrs)
+	  (setf (cursor model) cursor)))
 
-    ;; Could use thread but this will be faster...
-    (serialize-chrs (mapping-base model)
-		    (sl-chrs model)
-		    (metrics model)
-		    (dpi-glyph model)
-		    (scale-glyph model))
-    
-    (when t
-      (bt:make-thread (lambda ()
-			(run-thread-chrs model)))
-      (bt:make-thread (lambda ()
-			(run-thread-pv model))))
+      ;; Could use thread but this will be faster...
+      (serialize-chrs (mapping-base model)
+		      (sl-chrs model)
+		      (metrics model)
+		      (dpi-glyph model)
+		      (scale-glyph model))
+      
+      (when t
+	(bt:make-thread (lambda ()
+			  (run-thread-chrs model)))
+	(bt:make-thread (lambda ()
+			  (run-thread-pv model)))))
     
     (loop (wait-epoll model))))
 
