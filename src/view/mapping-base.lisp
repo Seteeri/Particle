@@ -54,6 +54,8 @@
 			    size
 			    count
 			    binding-layout)
+
+  ;; Move this buffer-object into rotational buffers for consistency?
   
   (let* ((buffer (init-buffer-object program-compute
 					     target

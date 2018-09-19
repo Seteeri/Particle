@@ -48,7 +48,8 @@
     (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
     
     ;; Parse glyph images into texture
-    (parse-glyphs-ppm bo-texture)
+    (when nil
+      (parse-glyphs-ppm bo-texture))
 
     
     (setf boav-main (init-boav-main))
