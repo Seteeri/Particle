@@ -167,7 +167,7 @@
          :for pixels := (read-line stream nil)
 	 :while pixels
 	 :do (loop :for c :in (str:split-omit-nulls " " pixels)
-		:with i = 0
+		:with i := 0
 		:do (progn
 		      (vector-push (parse-integer c) bitmap)
 		      (incf i)
