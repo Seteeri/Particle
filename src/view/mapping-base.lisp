@@ -7,7 +7,10 @@
 
 (defun init-mapping-base (msdf)
 
-  ;; These correspond with init-buffers-compute name and bind-layout
+  ;; These correspond with:
+  ;; model: init-mapping-base
+  ;; view:  init-buffers-compute name and bind-layout
+  ;; view:  update-compute-bindings
   
   (with-slots (program-compute
 	       mapping-base

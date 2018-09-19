@@ -48,7 +48,7 @@
     t))
 
 
-(defun update-compute-bindings-arrays (msdf)
+(defun update-compute-buffers (msdf)
 
   ;; This function binds the raster buffers to the *_out bindings in the shader
   ;; Should group them like mapping base is?
@@ -92,7 +92,7 @@
     
     (gl:use-program program-compute)
     
-    (update-compute-bindings-arrays msdf)
+    (update-compute-buffers msdf)
     
     ;; Reset counter before every dispatch
     (setf (mem-aref (aref (ptrs-buffer bo-counter) 0) :uint 0) 0)

@@ -201,10 +201,6 @@
 
     (format t "[init-msdf] Initializing raster buffers...~%")
     (init-buffers-raster msdf)
-
-    ;; Notes:
-    ;; - Integrate below with compute?
-    ;; - Extract buffer creation since they are shared
     
     (format t "[init-msdf] Initializing base buffers...~%")
     (init-mapping-base msdf)

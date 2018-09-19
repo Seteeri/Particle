@@ -70,6 +70,8 @@
   ;; 2**15 = 32768   
   ;; 2**13 = 8192
   ;; 2**5  = 32
+
+  ;; How to share shm init data between model and view?
   
   (let ((width (/ 2560 2))
         (height 1600)
@@ -87,7 +89,7 @@
 						 inst-max
 						 path-server-model))))
     
-    (when t
+    (when nil
       (fork (lambda () (protoform.controller:main-controller path-server-model))))
     
     (sb-ext:exit)))

@@ -59,11 +59,12 @@
     ;; Apply msdf (do later)
     ;; Write to texture buffer
 
-    ;; SHM PROCESS
+    ;; SHM INIT PROCESS
     ;; 1. Model: init shm
     ;; 2. Model: init data
     ;; 3. View:  init OpenGL buffer objects; set binding points
     ;; 4. View:  init shm
+    ;; 5. View:  render loop, bind/memcpy buffers
     
     ;; Init shms, request view to mmap
     ;; TODO:
