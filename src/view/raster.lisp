@@ -43,7 +43,7 @@
     					  (* 96 96 255)
     					  0
     					  t
-    					  :buffering 'single)) ;triple if editing? rotate also...
+    					  :buffering 'triple)) ;triple if editing? rotate also...
     (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
     ;; Parse glyph images into texture
     (parse-glyphs-ppm bo-texture)

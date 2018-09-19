@@ -31,7 +31,17 @@
 			 :float
 			 (/ 208 4)
 			 inst-max
-			 1)))
+			 1)
+
+    ;; compute shader doesn't modify this
+    (init-mapping-buffer mapping-base
+			 program-compute
+			 :texture-buffer
+			 "texture"
+			 :unsigned-byte
+			 4
+			 (* 96 255 255)
+			 0))) ;  not used but use previous...
 
 (defun init-mapping-buffer (mapping-base
 			    program-compute

@@ -23,7 +23,8 @@
     (gl:use-program program-compute)
 
     ;; Uniform is only bound once also
-    
+    ;; Texture also exists but not bound since compute shader does not use it
+    ;; Texture need only do a shm-ptr copy
     (dolist (name '("projview"
 		    "instance"))
       (progn
@@ -55,6 +56,7 @@
   (with-slots (mapping-base
 	       bo-projview
 	       bo-instance
+	       bo-texture
 	       ix-fence)
       msdf
     
@@ -65,10 +67,17 @@
 			    (aref (buffers boa) ix-fence)))
     
     ;; Tentative placement:
-    ;; Manually memcpy from base to skip ptrs since compute shader doesn't copy this
+    
+    ;; Memcpy from base to skip ptrs since compute shader doesn't copy this
     (c-memcpy (aref (ptrs-buffer bo-projview) ix-fence)
     	      (aref (ptrs-buffer (boa (gethash "projview" mapping-base))) 0)
-    	      (size-buffer bo-projview))))
+    	      (size-buffer bo-projview))
+
+    ;; Memcpy texture also - shm ptr to gl ptr
+    ;; Binding only required for shader usage
+    (c-memcpy (aref (ptrs-buffer bo-texture) ix-fence)
+    	      (aref (ptrs-buffer (boa (gethash "texture" mapping-base))) 0)
+    	      (size-buffer bo-texture))))
   
 
 (defun run-compute (msdf)

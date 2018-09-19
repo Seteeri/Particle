@@ -58,8 +58,14 @@
     ;; Pango will render text
     ;; Apply msdf (do later)
     ;; Write to texture buffer
+
+    ;; SHM PROCESS
+    ;; 1. Model: init shm
+    ;; 2. Model: init data
+    ;; 3. View:  init OpenGL buffer objects; set binding points
+    ;; 4. View:  init shm
     
-    ;; Init shm, request view to mmap
+    ;; Init shms, request view to mmap
     ;; TODO:
     ;; Read cfg file (s-exp) to set parameters for mmaps
     ;; View also needs a cfg file since it corresponds for mmaps - or gen automatically?
@@ -72,7 +78,7 @@
 			     (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))
 			     (list "texture" "/protoform-texture.shm" (align-size (* 96 96 255))))) ; from texture init
     
-    ;; Init position and projview shm mmap
+    ;; Init data for shms
     (with-slots (ptr size)
 	(gethash "projview" (mapping-base model))
       (update-projection-matrix (projview model))

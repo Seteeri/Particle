@@ -27,10 +27,9 @@
 	 (texture (aref (buffers buffer) 0)))
 
     ;; https://www.opengl.org/discussion_boards/showthread.php/173917-samplerBuffer-example-needed
-    
-    ;; Should be bound already from init-buffer-object
-    (gl:bind-texture :texture-buffer texture)
-    
+    ;; (gl:bind-texture :texture-buffer texture)
+
+    ;; Set format type
     (%gl:tex-buffer :texture-buffer :rgba8 texture)
 
     buffer))
