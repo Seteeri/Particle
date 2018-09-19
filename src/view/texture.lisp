@@ -23,13 +23,12 @@
 				     mapped-persistent
 				     :buffering buffering
 				     :usage usage
-				     :data data))	
-	 (texture (aref (buffers buffer) 0)))
+				     :data data)))
 
     ;; https://www.opengl.org/discussion_boards/showthread.php/173917-samplerBuffer-example-needed
-    ;; (gl:bind-texture :texture-buffer texture)
 
     ;; Set format type
-    (%gl:tex-buffer :texture-buffer :rgba8 texture)
+    (dotimes (i (count-buffers buffer))
+      (%gl:tex-buffer :texture-buffer :rgba8 (aref (buffers buffer) i)))
 
     buffer))

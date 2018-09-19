@@ -34,17 +34,19 @@
     (gl:use-program program-raster)
     
     ;; Init buffer object
-    (gl:active-texture :texture0)
+    ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+    (gl:active-texture :texture0) ; move to init?
     (setf bo-texture (init-buffer-texture program-raster
     					  :texture-buffer
     					  "texture-buffer"
     					  :unsigned-byte
     					  4
     					  (* 96 96 255)
-    					  0
+    					  0 ; bind layout
     					  t
     					  :buffering 'triple)) ;triple if editing? rotate also...
     (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
+    
     ;; Parse glyph images into texture
     (parse-glyphs-ppm bo-texture)
 

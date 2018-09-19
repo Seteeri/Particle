@@ -129,7 +129,7 @@
 
     ;; Need not use program
     
-    (update-compute-bindings-arrays msdf)
+    (update-compute-buffers msdf)
     
     ;; base -> raster
     (copy-buffer (aref (buffers (boa (gethash "instance" mapping-base))) 0)

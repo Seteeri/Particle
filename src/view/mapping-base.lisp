@@ -44,7 +44,7 @@
 			 :unsigned-byte
 			 4
 			 (* 96 255 255)
-			 0))) ;  not used but use previous...
+			 0))) ;  not used - same as init-buffers-raster
 
 (defun init-mapping-buffer (mapping-base
 			    program-compute
