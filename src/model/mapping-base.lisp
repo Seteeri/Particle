@@ -3,9 +3,6 @@
 (defun init-mapping-base (inst-max
 			  mapping-base
 			  paths)
-
-  ;; Initialize shm for texture-buffer
-  ;; Note, element-array and draw-indirect buffers exist
   (dolist (boa paths)
     (let* ((name (first boa))
 	   (path (second boa))

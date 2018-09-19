@@ -33,7 +33,7 @@
 
     (gl:use-program program-raster)
     
-    ;; Upload msdf glyphs
+    ;; Init buffer texture will upload msdf glyphs also
     (gl:active-texture :texture0)
     (setf bo-texture (init-buffer-texture program-raster
     					  :texture-buffer
@@ -43,10 +43,8 @@
     					  (* 96 96 255)
     					  0
     					  t
-    					  :buffering 'single)) ;triple if editing and also must rotate
+    					  :buffering 'single)) ;triple if editing? rotate also...
     (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
-
-    
 
     
     (setf boav-main (init-boav-main))
@@ -65,7 +63,6 @@
 					:data (make-array 6
 							  :element-type '(unsigned-byte 32)
 							  :initial-contents (list 0 2 1 0 3 2))))
-    ;; :initial-contents (list 2 0 3 2 1 0))))
     
     ;; bind-layout uses the output buffers so they should not be the same
     ;; as those in init-mapping-base/init-buffers-compute, excluding uniforms
@@ -92,7 +89,8 @@
 						  2 ; output binding
 						  t
 						  :buffering 'triple))
-    
+
+    ;; Need not mmap - doesn't make sense right now...
     (setf bo-indirect (init-buffer-draw-indirect program-raster
 						 :draw-indirect-buffer
 						 "draw-indirect-buffer"
