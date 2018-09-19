@@ -126,7 +126,7 @@
    ;; Unmapped single
    (boa-element :accessor boa-element :initarg :boa-element :initform nil)
    
-   ;; Raster (multi)
+   ;; Raster (dynamic)
    (bo-projview :accessor bo-projview :initarg :bo-projview :initform nil)      
    (bo-instance :accessor bo-instance :initarg :bo-instance :initform nil)
    (bo-texture :accessor bo-texture :initarg :bo-texture :initform nil)
