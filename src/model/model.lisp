@@ -55,14 +55,15 @@
     (setf (scale-glyph model) (* (scale (gethash 32 (metrics model)))
 				 (dpi-glyph model)))
 
-    ;; Pango will render text
-    ;; Apply msdf (do later)
-    ;; Write to texture buffer
+    ;; TEXT DRAW PROCESS
+    ;; 1. Pango will render text
+    ;; 2. Apply msdf (do later)
+    ;; 3. Write to texture buffer
 
     ;; SHM INIT PROCESS
     ;; 1. Model: init shm
     ;; 2. Model: init data
-    ;; 3. View:  init OpenGL buffer objects; set binding points
+    ;; 3. View:  init OpenGL buffer objects for compute and raster; set binding points
     ;; 4. View:  init shm
     ;; 5. View:  render loop, bind/memcpy buffers
     

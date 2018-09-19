@@ -30,9 +30,7 @@
       (progn
 	(format t "[init-buffers-compute] Binding ~a: ~a~%" name (gethash name mapping-base))
 	(let ((boa (boa (gethash name mapping-base))))
-	  (%gl:bind-buffer-base (target boa)
-				(binding-layout boa)
-				(aref (buffers boa) 0)))))
+	  (update-binding-buffer boa 0))))
 
     ;; Note: this is initially bound once
     (setf bo-counter (init-buffer-object program-compute
@@ -59,16 +57,15 @@
 	       bo-texture
 	       ix-fence)
       msdf
-    
+
+    ;; Need not bind texture since it is not used by compute shader
     (dolist (boa (list bo-projview
 		       bo-instance))
-      (%gl:bind-buffer-base (target boa)
-			    (binding-layout boa)
-			    (aref (buffers boa) ix-fence)))
+      (update-binding-buffer boa ix-fence))
     
     ;; Tentative placement:
     
-    ;; Memcpy from base to skip ptrs since compute shader doesn't copy this
+    ;; Memcpy from compute ptrs to raster ptrs since compute shader doesn't compute anything for it
     (c-memcpy (aref (ptrs-buffer bo-projview) ix-fence)
     	      (aref (ptrs-buffer (boa (gethash "projview" mapping-base))) 0)
     	      (size-buffer bo-projview))
