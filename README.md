@@ -89,29 +89,19 @@ been extended to do almost everything.
 * Undo/revision control/non-destructive editing
 * Wayland - provides conventional desktop
 
-## The Features
+## The Architecture
 
 * Atomic modesetting/nuclear pageflipping
 * Muti-channel signed distance glyphs
-  * Generated offline however can be generated on-the-fly
-  * Anti-aliasing applied through shader
 * OpenGL ES 3.2+
-  * Compute shaders:
-    * Computes drawable instances
-    * TODO: Frustum culling using oriented bounding boxes, i.e. the transformed planes
-    * TODO: Occlusion culling (low-priority)
-  * Single/double/triple buffered buffer objects
-    * Persistent mapping
-    * Synchronization optional with triple buffering
-  * Instanced - combines multiple draw calls into a single draw call for the same object
-  * Indirect - allows parameters for drawing, including instancing, to be provided from a buffer object
-    * TODO: Multi-indirect - combines multiple indirect draw calls into a single draw call (not yet implemented in OpenGL ES API)
+  * Compute shaders
+  * AZDO Techniques
+    * Persistent mapping of buffer objects
+    * Instanced drawing
+    * Indirect drawing
+      * Multi-indirect - not yet implemented in OpenGL ES API
   * Programmable vertex pulling - texture/uniform/shader-storage buffers; retrieve data through gl_VertexID+gl_InstanceID
   * Separate shader stages and programmable pipelines
-
-## The Architecture
-
-TODO
 
 ## The Requirements
 
