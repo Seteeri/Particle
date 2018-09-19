@@ -125,11 +125,11 @@
    ;; Raster (static)
    ;; Unmapped single
    (boa-element :accessor boa-element :initarg :boa-element :initform nil)
-   (bo-texture :accessor bo-texture :initarg :bo-texture :initform nil)
    
    ;; Raster (multi)
    (bo-projview :accessor bo-projview :initarg :bo-projview :initform nil)      
    (bo-instance :accessor bo-instance :initarg :bo-instance :initform nil)
+   (bo-texture :accessor bo-texture :initarg :bo-texture :initform nil)
    (bo-indirect :accessor bo-indirect :initarg :bo-indirect :initform nil)
 
    ;; Sync
