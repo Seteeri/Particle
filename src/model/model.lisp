@@ -64,15 +64,14 @@
     ;; Read cfg file (s-exp) to set parameters for mmaps
     ;; View also needs a cfg file since it corresponds for mmaps - or gen automatically?
     ;;
-    ;; Initialize shm for texture-buffer
     ;; Note, element-array and draw-indirect buffers exist
     (format t "[main-model] Initializing mmaps...~%")
     (init-mapping-base inst-max
 		       (mapping-base model)
 		       (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
 			     (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))
-			     (list "texture" "/protoform-texture.shm" (align-size (* (+ 16 16 16) 4 1))))) ; set appropriate size
-
+			     (list "texture" "/protoform-texture.shm" (align-size (* 96 96 255))))) ; from texture init
+    
     ;; Init position and projview shm mmap
     (with-slots (ptr size)
 	(gethash "projview" (mapping-base model))
