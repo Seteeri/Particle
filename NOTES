@@ -1,0 +1,139 @@
+buffer for glyphs - number, size etc
+
+buffer for text - arbitrary size like max RAM
+- Planes use UV->texel
+- Not all text is necessarily visible in the viewport at once
+- Pango would render directly into this buffer
+
+Separate update thread:
+- Run pango to generate text pixels
+- Apply msdf to pixels
+- Write to mapped bufffer pointer
+
+As user types or when text is loaded, it is automatically segmented into
+tiles/buckets/bins etc
+
+This results in planes of different dimensions so need to add scale per
+instance
+
+TOO MUCH MEM! - Dependent upon number of unique segments which does not
+necessarily equal words
+
+Optimizations for specific cases (by most commonly used words):
+* Programming - keywords, symbols, variables etc - easy
+* Prose - difficult
+
+--------
+
+For images, load entire image as a texture and then break into tiles
+as user works on it, 2,4,8,16,32,64 etc
+
+Make this a smart process - release tile if user moves to another tile
+after a certain amount of time or learn users behavior to calculate the
+threshold
+
+]-----------------------------------------------------------------------
+
+text   -> raster (texture) 
+raster -> text (OCR)
+
+text     -> waveform (text-to-speech)
+waveform -> text (voice recognition)
+
+raster   -> waveform (texture)
+waveform -> raster (texture)
+
+waveform/spectrogram/bitmap
+
+Transform model different from transform view!
+Both can be done at the same time!
+at the same time!
+
+At the top it's all pixels, and at the bottom it's all ones and zeros.
+Only the middle needs distinguishing.
+
+Transform abstract model like numbers to strings or vice versa
+C data types or LISP data types
+
+People think in terms of domain-specific concepts.
+People can understand mathematical functions.
+
+UNREAL BLUEPRINTS
+- Cannot create new nodes with nodes - but we can!
+
+https://news.ycombinator.com/item?id=14482988
+
+------------------------------------------------------------------------
+
+EMACS Model:
+
+Bytes -> Txt -> Pango/Cairo -> DE (Wayland/OpenGL)
+
+* Cairo 2D vector graphics
+* Cairo does not use OpenGL for drawing; rather software rasterizing
+* However, it can output to an OpenGL-based surface
+* Cairo is a 2D drawing API and OpenGL is a 3D drawing API
+* OpenGL backend exists (cairo-gl) for drawing but limited functionality
+
+
+Protoform Model:
+
+Bytes -> Txt  -> Pango/Cairo -> Protoform/OpenGL
+
+Bytes -> Txt* -> Pango/Cairo -> OpenGL Buffer Object (RGBA) | *(char encoding, e.g. UTF-8)
+Bytes -> SVG  -> Pango/Cairo -> OpenGL Buffer Object (RGBA)
+Bytes -> RGBA ->     ...     -> OpenGL Buffer Object (RGBA)
+
+DE -> RGBA...
+
+Critique:
+
+* Pango/Cairo can be viewed as a data transformer: bytes -> Pixels (RGBA)
+* For raster, pixels are straight-forward, however SVG needs conversion
+* Txt -> SVG is ostensibly an image transformer, but bytes underneath
+* Transformer is moving between two domains: model -> view
+* Transformer needs both INTERop and INTRAop functionality
+* Technically, same function jand input, but different output
+
+Bytes -> Txt  -> Pango/Cairo -> Protoform/OpenGL
+          |
+Bytes -> RGBA  -> Pango/Cairo -> Protoform/OpenGL
+
+Txt -> Pango/Cairo -> RGBA
+RGBA -> Tesseract (OCR) -> Txt
+
+* EMACS limits domain to text being viewed solely through GTK textarea
+* The frame/window concept is tied to textarea
+* What we want to do, is use that same consistency and extensability
+across multiple domains and to provide those features through allowing
+data transformers.
+* The way Protoform draws, creates two "buffers": the model or data 
+structure, and the view buffer or OpenGL buffer which ultimately is 
+RGBA.
+* OpenGL has multiple types of buffers which are initially formatted to
+a specific type:
+* glMapBuffer:
+  * GL_ARRAY_BUFFER, GL_ATOMIC_COUNTER_BUFFER, GL_COPY_READ_BUFFER, 
+  GL_COPY_WRITE_BUFFER, GL_DRAW_INDIRECT_BUFFER, 
+  GL_DISPATCH_INDIRECT_BUFFER, GL_ELEMENT_ARRAY_BUFFER, 
+  GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_QUERY_BUFFER, 
+  GL_SHADER_STORAGE_BUFFER, GL_TEXTURE_BUFFER, 
+  GL_TRANSFORM_FEEDBACK_BUFFER, or GL_UNIFORM_BUFFER.
+* Framebuffers are different: they are used for rendering output rather
+than inputs and use specialized methods for operations.
+* In Emacs, these OpenGL/output buffers cannot be accessed since they
+exist within the memory of the DE process, so Protoform provides this
+functionality to enable displaying more than just text.
+* Emacs functionality is based around manipulation of the buffer model
+but not the view (GTK widget), which can be considered a limitation or 
+advantage.
+* Does the view require data transformers?? In other words, they need to
+be dynamic objects that can be modified from the view. So nodes need to
+be able to edit themselves using nodes.
+* For example, there exists a node. Another node with code can be 
+attached to it and eval'd. Say, attach a delete transformer, which
+deletes the node from memory.
+* The default startup should have no nodes except for two nodes:
+the OpenGL context, and attached to that node, the default framebuffer.
+* A process can have multiple contexts, which represents a viewable
+surface. Current context is thread-local so possibly  one context/thread
