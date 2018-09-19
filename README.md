@@ -86,14 +86,15 @@ been extended to do almost everything.
 
 * 3D orthographic non-windowing environment
 * Multi-paradigm nodal environment
-* Undo/revision control/non-destructive editing
 * Wayland - provides conventional desktop
+* Undo/revision control/non-destructive editing
 
 ## The Architecture
 
 * Atomic modesetting/nuclear pageflipping
-* Muti-channel signed distance glyphs
+* Muti-channel signed distance textures
 * OpenGL ES 3.2+
+* Tiled forward shading engine (Forward+)
   * Compute shaders
   * AZDO Techniques
     * Persistent mapping of buffer objects
@@ -102,6 +103,7 @@ been extended to do almost everything.
       * Multi-indirect - not yet implemented in OpenGL ES API
   * Programmable vertex pulling - texture/uniform/shader-storage buffers; retrieve data through gl_VertexID+gl_InstanceID
   * Separate shader stages and programmable pipelines
+  * Future: Implement clustered then volumetric forward shading
 
 ## The Requirements
 
@@ -139,7 +141,7 @@ been extended to do almost everything.
 
 TODO
 
-### The Testing Configuration
+## The Hardware
 
 Lenovo Miix 720:
 

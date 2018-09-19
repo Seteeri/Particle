@@ -114,6 +114,25 @@
 			    height
 			    inst-max
 			    path-server-model)))
+
+    ;; Create 3D objects now!
+
+    ;; TODO
+    ;; * Context -> Default FB
+    ;; * Default FN -> Pipeline -> Buffers
+    ;; * Render into node?
+    ;;
+    ;; * Text layout slowing us down so offload to Pango/Cairo
+    ;;
+    ;; * Build forward then forward+
+
+    ;; TEST:
+    ;; Init chr
+    ;; Set transforms, color
+    ;; Serialize to shm once
+    ;; Send message to view to render
+    ;;
+    ;; Implement Pango/Cairo
     
     ;; Mmap file read-only into structure
     ;; Layout chars
