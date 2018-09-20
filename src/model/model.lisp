@@ -176,22 +176,62 @@
 	   (setf (mem-aref ptr :int (+ offset-ptr 1)) flags)
 	   (incf offset-ptr 4))))
 
+    ;; Pangocairo
+    (let* ((width-pango (foreign-alloc :unsigned-int))
+	   (height-pango (foreign-alloc :unsigned-int))
+	   (surface-temp (cairo:create-image-surface :argb32 0 0))
+	   (context-layout (cairo:create-context surface-temp))
+	   (layout (pango:pango_cairo_create_layout (slot-value context-layout 'cairo:pointer))))
 
-    ;; cairo_t*
-    ;; create_cairo_context (int width,
-    ;;                       int height,
-    ;;                       int channels,
-    ;;                       cairo_surface_t** surf,
-    ;;                       unsigned char** buffer)
-    ;; {
-    ;;     *buffer = calloc (channels * width * height, sizeof (unsigned char));
-    ;;     *surf = cairo_image_surface_create_for_data (*buffer,
-    ;;                                                  CAIRO_FORMAT_ARGB32,
-    ;;                                                  width,
-    ;;                                                  height,
-    ;;                                                  channels * width);
-    ;;     return cairo_create (*surf);
-    ;; }
+      (cairo:destroy surface-temp)
+      
+      ;; Create a PangoLayout, set the font and text
+      (pango:pango_layout_set_text layout "ABCDEFGHIJKLMNOPQRSTUVWXYZ" -1)
+	
+      ;; Load the font
+      (let* ((desc (pango:pango_font_description_from_string "Sans Bold 72")))
+	(pango:pango_layout_set_font_description layout desc)
+	(pango:pango_font_description_free desc))
+
+      ;; Get text dimensions
+      (pango:pango_layout_get_size layout
+				   width-pango
+				   height-pango)
+      ;; Divide by pango scale to get dimensions in pixels
+      (setf (mem-ref width-pango :unsigned-int) (/ (mem-ref width-pango :unsigned-int) pango:PANGO_SCALE))
+      (setf (mem-ref height-pango :unsigned-int) (/ (mem-ref height-pango :unsigned-int) pango:PANGO_SCALE))
+      
+      ;; Create cairo image surface to render to
+      (let* ((data-surface (foreign-alloc :unsigned-char :count (*(mem-ref width-pango :unsigned-int)
+								  (mem-ref height-pango :unsigned-int)
+								  4)))
+	     (surface (cairo:create-image-surface-for-data data-surface
+							   :argb32
+							   (mem-ref width-pango :unsigned-int)
+							   (mem-ref height-pango :unsigned-int)
+							   (* 4 (mem-ref width-pango :unsigned-int))))
+	     (context-render (cairo:create-context surface)))
+	
+	;; Set surface color - similar to glClear
+	(cairo:set-source-rgba 1 1 1 1 context-render)
+
+	;; Render
+	(pango:pango_cairo_show_layout (slot-value context-render 'cairo:pointer) layout)
+
+	;; Copy buffer to gl ptr - or can we render directly to it?
+	(cairo:surface-write-to-png surface "/home/user/pango-test.png")
+	(sb-ext:exit)
+	
+	t)
+
+      ;; /* Clean up */
+      ;; free (surface_data);
+      ;; g_object_unref (layout);
+      ;; cairo_destroy (layout_context);
+      ;; cairo_destroy (render_context);
+      ;; cairo_surface_destroy (surface);
+      
+      t)
     
     (loop (wait-epoll model))))
 
