@@ -177,68 +177,23 @@
 	   (incf offset-ptr 4))))
 
 
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; Mmap file read-only into structure
-    ;; Layout chars
-    (when nil
-      (let* ((path-src (merge-pathnames #P"src/" (asdf:system-source-directory :protoform)))
-	     (path-protoform (merge-pathnames (make-pathname :name "test" :type "txt")
-					      path-src)))
-	(multiple-value-bind (sl-chrs cursor)
-	    (load-file inst-max
-		       path-protoform
-		       (metrics model)
-		       (dpi-glyph model)
-		       (scale-glyph model))
-	  (setf (sl-chrs model) sl-chrs)
-	  (setf (cursor model) cursor)))
-
-      ;; Could use thread but this will be faster...
-      (serialize-chrs (mapping-base model)
-		      (sl-chrs model)
-		      (metrics model)
-		      (dpi-glyph model)
-		      (scale-glyph model))
-      
-      (when t
-	(bt:make-thread (lambda ()
-			  (run-thread-chrs model)))
-	(bt:make-thread (lambda ()
-			  (run-thread-pv model)))))
+    ;; cairo_t*
+    ;; create_cairo_context (int width,
+    ;;                       int height,
+    ;;                       int channels,
+    ;;                       cairo_surface_t** surf,
+    ;;                       unsigned char** buffer)
+    ;; {
+    ;;     *buffer = calloc (channels * width * height, sizeof (unsigned char));
+    ;;     *surf = cairo_image_surface_create_for_data (*buffer,
+    ;;                                                  CAIRO_FORMAT_ARGB32,
+    ;;                                                  width,
+    ;;                                                  height,
+    ;;                                                  channels * width);
+    ;;     return cairo_create (*surf);
+    ;; }
     
     (loop (wait-epoll model))))
-
-(defun load-file (inst-max
-		  path-protoform
-		  metrics
-		  dpi-glyph
-		  scale-glyph)
-  
-  (multiple-value-bind (ptr size) (mmap-file path-protoform)
-
-    (when (> size inst-max)
-      (warn "[main-model] Text truncated due to buffer size, > ~a ~a" size inst-max))
-
-    (let* ((sl-chrs (skip-list:init-skip-list size t)))
-      
-      (loop
-	 :with cursor = (vec3 0.0 0.0 0.0) ; spatial
-	 :for i :from 0 :below size
-	 :for ch = (code-char (mem-aref (inc-pointer ptr i) :char))
-	 :do (progn
-	       (skip-list:set-nth-data sl-chrs
-				       (1+ i)
-				       (layout-char metrics
-						    cursor
-						    ch
-						    dpi-glyph
-						    scale-glyph))))
-      
-      (format t "[load-file] sl-chars length: ~a~%" (skip-list:sl-length sl-chrs))
-      
-      ;; Could use xy for cursor
-      (values sl-chrs
-	      (vec2 1 0)))))
 
 (defun handle-escape (msdf
 		      keysym)
@@ -327,6 +282,7 @@
 				    msdf)
 		      
 		      t)))))))
+
 
 ;; REFACTOR SKIP-LIST: Iterate from passed node
 ;; Could cache loop node here to skip O log(N) operation
@@ -480,13 +436,3 @@
 	       (incf offset-ptr 4))))))
 
   offset-ptr)
-
-(defun clear-queue (queue)
-  (when (not (queue-empty-p queue-chrs))
-    ;; lock required?
-    (loop :until (queue-empty-p queue-chrs) :do (pop-queue queue-chrs))))
-
-(defun run-thread-pv (msdf)
-  (loop
-     :for task := (pop-queue (queue-pv msdf))
-     :do (format t "[run-thread-pv] Task: ~a~%" task)))
