@@ -26,9 +26,11 @@
   (format t "[init-gles] GL Renderer: ~a~%" (gl:get* :renderer))
   (format t "[init-gles] GL Version: ~a~%" (gl:get* :version))
   (format t "[init-gles] GLSL Version: ~a~%" (gl:get* :shading-language-version))
-  
-  (gl:enable :blend)
-  (gl:blend-func :src-alpha :one-minus-src-alpha)
+
+  ;; TEMP: Disable for now
+  (when nil
+    (gl:enable :blend)
+    (gl:blend-func :src-alpha :one-minus-src-alpha))
   
   ;; Get screen dimensions from drm
   (gl:viewport 0 0 width height)

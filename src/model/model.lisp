@@ -63,9 +63,10 @@
     ;; SHM INIT PROCESS
     ;; 1. Model: init shm
     ;; 2. Model: init data
-    ;; 3. View:  init OpenGL buffer objects for compute and raster; set binding points
-    ;; 4. View:  init shm
-    ;; 5. View:  render loop, bind/memcpy buffers
+    ;; 3. Model: init memcpy on client connect
+    ;; 4. View:  init OpenGL buffer objects for compute and raster; set binding points
+    ;; 5. View:  init shm
+    ;; 6. View:  render loop, bind/memcpy buffers
     
     ;; Init shms, request view to mmap
     ;; TODO:
@@ -126,14 +127,57 @@
     ;;
     ;; * Build forward then forward+
 
-    ;; TEST:
-    ;; Init chr
-    ;; Set transforms, color
-    ;; Serialize to shm once
-    ;; Send message to view to render
-    ;;
     ;; Implement Pango/Cairo
-    
+
+    ;; The current buffer setup is for rendering nodes/planes
+    ;; Users would need to create a new buffer object and structs for own format
+
+    (let* ((cursor (vec3 0.0 0.0 0.0))
+	   (inst-chr (init-chr cursor
+			       (gethash 88 (metrics model))
+			       (scale-glyph model)
+			       (dpi-glyph model)
+			       #\X))
+	   (offset-ptr 0)
+	   (metrics (metrics model)))
+      
+      (with-slots (ptr size)
+	  (gethash "instance" (mapping-base model))
+	 (with-slots (chr
+		      model-matrix
+		      rgba
+		      flags)
+	     inst-chr
+	   
+	   (loop
+	      :for c :across (marr (matrix model-matrix))
+	      :for c-i :upfrom 0
+	      :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
+			c))
+	   (incf offset-ptr 16)
+	   
+	   (loop
+	      :for c :across rgba
+	      :for c-i :upfrom 0
+	      :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
+			c))
+	   (incf offset-ptr 16)
+	   
+	   ;; (u v s t) * 4
+	   (loop
+	      :for c :across (uv (gethash (char-code chr) metrics))
+	      :for c-i :upfrom 0
+	      :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
+			c))
+	   (incf offset-ptr 16)
+	   
+	   ;; Glyph, Flags, pad, pad
+	   (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code chr) 32))
+	   (setf (mem-aref ptr :int (+ offset-ptr 1)) flags)
+	   (incf offset-ptr 4))))
+
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Mmap file read-only into structure
     ;; Layout chars
     (when nil
@@ -259,7 +303,6 @@
 
 			;; Initialize data for VIEW client only
 			(when (eq (id conn-client) :view)
-			  ;; Position and projview
 			  (with-slots (ptr size)
 			      (gethash "projview" (mapping-base msdf))
 			    (request-memcpy conn-client "projview" "projview" size nil))
