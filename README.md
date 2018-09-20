@@ -139,7 +139,11 @@ been extended to do almost everything.
 
 ## The Roadmap
 
-TODO
+1. Pango text generation (as a texture)
+2. Drawing nodes, bezier curves
+3. Default nodes and REPL
+4. Tiled forward rendering (Forward+) including lights
+5. Wayland
 
 ## The Hardware
 

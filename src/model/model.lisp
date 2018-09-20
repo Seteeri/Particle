@@ -55,11 +55,6 @@
     (setf (scale-glyph model) (* (scale (gethash 32 (metrics model)))
 				 (dpi-glyph model)))
 
-    ;; TEXT DRAW PROCESS
-    ;; 1. Pango will render text
-    ;; 2. Apply msdf (do later)
-    ;; 3. Write to texture buffer
-
     ;; SHM INIT PROCESS
     ;; 1. Model: init shm
     ;; 2. Model: init data
@@ -129,6 +124,11 @@
 
     ;; Implement Pango/Cairo
 
+    ;; TEXT DRAW PROCESS
+    ;; 1. Pango will render text
+    ;; 2. Apply msdf (do later)
+    ;; 3. Write to texture buffer
+    
     ;; The current buffer setup is for rendering nodes/planes
     ;; Users would need to create a new buffer object and structs for own format
 
