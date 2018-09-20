@@ -303,12 +303,14 @@
 
 			;; Initialize data for VIEW client only
 			(when (eq (id conn-client) :view)
-			  (with-slots (ptr size)
-			      (gethash "projview" (mapping-base msdf))
-			    (request-memcpy conn-client "projview" "projview" size nil))
-			  (with-slots (ptr size)
-			      (gethash "instance" (mapping-base msdf))
-			    (request-memcpy conn-client "instance" "instance" size t))))
+			  (dolist (name (list "projview"
+					      "instance"
+					      "texture"))
+			    (with-slots (ptr size)
+				(gethash name (mapping-base msdf))
+			      (request-memcpy conn-client name name size nil)))
+			  ;; sync
+			  (request-sync conn-client)))
 		      
 		      t)
 		   
