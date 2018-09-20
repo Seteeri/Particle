@@ -113,29 +113,31 @@ been extended to do almost everything.
 
 ```lisp
     :depends-on (#:osicat
-                 #:cl-drm
-                 #:cl-gbm
-                 #:cl-egl
-                 #:cl-opengl
-                 #:cl-wayland
-                 #:cl-libinput
-                 #:cl-epoll
-                 #:cl-xkb
-                 #:cl-freetype2
-                 #:cl-glfw3
-                 #:3d-vectors
-                 #:3d-matrices
-                 #:dlist
-                 #:bordeaux-threads
-                 #:lparallel
-                 #:trivial-timers
-                 #:babel
-                 #:swank
-                 #:str
-                 #:easing
-                 #:skip-list)
+		 #:cl-drm
+		 #:cl-gbm
+		 #:cl-egl
+		 #:cl-opengl
+		 #:cl-wayland
+		 #:cl-libinput
+		 #:cl-xkb
+		 #:cl-pango
+		 #:cl-cairo2
+		 #:cl-glfw3
+		 #:3d-vectors
+		 #:3d-matrices
+		 #:pango-markup
+		 #:bordeaux-threads
+		 #:trivial-timers
+		 #:babel
+		 #:str
+		 #:easing
+		 #:skip-list
+		 #:lparallel)
 ```
 
+## The Installation
+
+...
 
 ## The Roadmap
 

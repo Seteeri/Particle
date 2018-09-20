@@ -12,21 +12,22 @@
 		 #:cl-wayland
 		 #:cl-libinput
 		 #:cl-xkb
-		 ;; #:cl-freetype2
+		 #:cl-pango
+		 #:cl-cairo2
 		 #:cl-glfw3
 		 #:3d-vectors
 		 #:3d-matrices
-		 #:dlist
+		 #:pango-markup
 		 #:bordeaux-threads
-		 #:lparallel
 		 #:trivial-timers
 		 #:babel
-		 #:swank
 		 #:str
 		 #:easing
-		 #:cl-pango
-		 #:cl-cairo2
-		 #:skip-list)
+		 #:skip-list
+		 #:lparallel)
+    		 ;; #:swank
+		 ;; #:dlist
+
     :serial t
     :components ((:file "src/package")
 		 (:module libc

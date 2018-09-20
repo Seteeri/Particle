@@ -189,7 +189,7 @@
       (pango:pango_layout_set_text layout "ABCDEFGHIJKLMNOPQRSTUVWXYZ" -1)
 	
       ;; Load the font
-      (let* ((desc (pango:pango_font_description_from_string "Sans Bold 72")))
+      (let* ((desc (pango:pango_font_description_from_string "Inconsolata-g 72"))) ;"Sans Bold 72")))
 	(pango:pango_layout_set_font_description layout desc)
 	(pango:pango_font_description_free desc))
 
@@ -211,6 +211,8 @@
 							   (mem-ref height-pango :unsigned-int)
 							   (* 4 (mem-ref width-pango :unsigned-int))))
 	     (context-render (cairo:create-context surface)))
+
+	;; 0.002803 seconds = 2.2 to 9.3 ms
 	
 	;; Set surface color - similar to glClear
 	(cairo:set-source-rgba 1 1 1 1 context-render)
