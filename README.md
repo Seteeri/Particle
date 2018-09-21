@@ -88,6 +88,16 @@ been extended to do almost everything.
 * Multi-paradigm nodal environment
 * Wayland - provides conventional desktop
 * Undo/revision control/non-destructive editing
+* Controls (tentative)
+    * Spacebar - create node/edge
+    * Delete - delete node/edge
+    * Tab (hold) - show possible valid nodes (or menu?)
+    * Alt (hold) - display links for nodes; create text node for link,
+    attach move node, eval to visit, delete nodes after
+    * Shift - create selection node, visit nodes and attach node (how?), eval
+    to create edges to selection node, delete nodes after
+        * Types of select: branch, root
+        * Change (option) by attaching node
 
 ## The Architecture
 

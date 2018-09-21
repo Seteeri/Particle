@@ -81,18 +81,10 @@
 				       (:file "matrix-model")
 				       (:file "mapping-base")				       
 				       (:file "projview")
-				       (:module layout-text
-						:pathname "font"
-						:components ((:file "metrics")
-							     (:file "chr")
-							     (:file "layout")))
+				       (:file "node")
 				       (:module structures
 						:pathname "structures"
 						:components ((:file "dag")))))
-		 ;; (:module lexer
-		 ;; 	  :pathname "lexer"
-		 ;; 	  :components ((:file "sharpsign")
-		 ;; 		       (:file "lexer")))))
 		 (:file "src/protoform")))
 
 #+sbcl

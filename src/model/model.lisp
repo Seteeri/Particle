@@ -48,12 +48,10 @@
 							:height height
 							:projection-type 'orthographic)
 			       :inst-max inst-max
-			       :conn-model (init-conn-server path-server-model)
-			       :metrics (init-metrics))))
+			       :conn-model (init-conn-server path-server-model))))
     
     (setf (dpi-glyph model) (/ 1 90))
-    (setf (scale-glyph model) (* (scale (gethash 32 (metrics model)))
-				 (dpi-glyph model)))
+    (setf (scale-glyph model) 10.0)
 
     ;; SHM INIT PROCESS
     ;; 1. Model: init shm
@@ -74,7 +72,7 @@
 		       (mapping-base model)
 		       (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
 			     (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))
-			     (list "texture" "/protoform-texture.shm" (align-size (* 96 96 255))))) ; from texture init
+			     (list "texture" "/protoform-texture.shm" (align-size (* 4 96 96 255))))) ; from texture init
     
     ;; Init data for shms
     (with-slots (ptr size)
@@ -113,18 +111,13 @@
 
     ;; Create 3D objects now!
 
-    ;; TODO
+    ;; NODES
     ;; * Context -> Default FB
-    ;; * Default FN -> Pipeline -> Buffers
-    ;; * Render into node?
-    ;;
+    ;; * Default FN -> Pipeline -> Buffers [SHOW ENTIRE ENGINE LAYOUT IN REALTIME]
+    ;; * Render into a node...or select a framebuffer
+    
     ;; * Text layout slowing us down so offload to Pango/Cairo
-    ;;
-    ;; * Build forward then forward+
-
-    ;; Implement Pango/Cairo
-
-    ;; TEXT DRAW PROCESS
+    ;; TEXT/PANGO RENDERING PROCESS
     ;; 1. Pango will render text
     ;; 2. Apply msdf (do later)
     ;; 3. Write to texture buffer
@@ -133,11 +126,9 @@
     ;; Users would need to create a new buffer object and structs for own format
 
     (let* ((cursor (vec3 0.0 0.0 0.0))
-	   (inst-chr (init-chr cursor
-			       (gethash 88 (metrics model))
-			       (scale-glyph model)
-			       (dpi-glyph model)
-			       #\X))
+	   (inst-chr (init-node cursor
+				(scale-glyph model)
+				#\X))
 	   (offset-ptr 0)
 	   (metrics (metrics model)))
       
@@ -146,6 +137,7 @@
 	 (with-slots (chr
 		      model-matrix
 		      rgba
+		      uv
 		      flags)
 	     inst-chr
 	   
@@ -162,14 +154,17 @@
 	      :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
 			c))
 	   (incf offset-ptr 16)
-	   
+
+	   ;; TODO:
+	   ;; Adjust UVs based on texture rather than from metrics
+	   ;; Wouldn't this always be 0 to 1 like a square?
 	   ;; (u v s t) * 4
 	   (loop
-	      :for c :across (uv (gethash (char-code chr) metrics))
+	      :for c :across uv
 	      :for c-i :upfrom 0
 	      :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
 			c))
-	   (incf offset-ptr 16)
+	   (incf offset-ptr 8)
 	   
 	   ;; Glyph, Flags, pad, pad
 	   (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code chr) 32))
@@ -186,7 +181,7 @@
       (cairo:destroy surface-temp)
       
       ;; Create a PangoLayout, set the font and text
-      (pango:pango_layout_set_text layout "ABCDEFGHIJKLMNOPQRSTUVWXYZ" -1)
+      (pango:pango_layout_set_text layout "X" -1)
 	
       ;; Load the font
       (let* ((desc (pango:pango_font_description_from_string "Inconsolata-g 72"))) ;"Sans Bold 72")))
@@ -202,9 +197,10 @@
       (setf (mem-ref height-pango :unsigned-int) (/ (mem-ref height-pango :unsigned-int) pango:PANGO_SCALE))
       
       ;; Create cairo image surface to render to
-      (let* ((data-surface (foreign-alloc :unsigned-char :count (*(mem-ref width-pango :unsigned-int)
-								  (mem-ref height-pango :unsigned-int)
-								  4)))
+      (let* ((size-data (* (mem-ref width-pango :unsigned-int)
+			   (mem-ref height-pango :unsigned-int)
+			   4))
+	     (data-surface (foreign-alloc :unsigned-char :count size-data))
 	     (surface (cairo:create-image-surface-for-data data-surface
 							   :argb32
 							   (mem-ref width-pango :unsigned-int)
@@ -220,10 +216,17 @@
 	;; Render
 	(pango:pango_cairo_show_layout (slot-value context-render 'cairo:pointer) layout)
 
-	;; Copy buffer to gl ptr - or can we render directly to it?
-	(cairo:surface-write-to-png surface "/home/user/pango-test.png")
-	(sb-ext:exit)
+	;; Copy surface ptr to shm ptr - or possible to render directly to ptr?
 	
+	;; (cairo:surface-write-to-png surface "/home/user/pango-test.png")
+	;; (sb-ext:exit)
+
+	(with-slots (ptr size)
+	    (gethash "texture" (mapping-base model))
+	  (assert (<= size-data size))
+	  (c-memcpy ptr
+		    data-surface
+		    size-data))
 	t)
 
       ;; /* Clean up */
@@ -298,7 +301,8 @@
 			    (setf (view conn-model) conn-client)
 			    (setf (controller conn-model) conn-client))
 
-			;; Initialize data for VIEW client only
+			;; Request view client only to copy shm to base buffers
+			;; View should create OpenGL buffers after connecting?
 			(when (eq (id conn-client) :view)
 			  (dolist (name (list "projview"
 					      "instance"

@@ -183,7 +183,7 @@
 		  height
 		  inst-max)
 
-  (when t
+  (when nil
     (format t "[init-msdf] Instances: ~:D~%" inst-max)
     (format t "[init-msdf] Triangles: ~:D~%" (* inst-max 2))
     (format t "[init-msdf] Vertices: ~:D~%" (* inst-max 6))

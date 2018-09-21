@@ -72,6 +72,7 @@
 
     ;; Memcpy texture also - shm ptr to gl ptr
     ;; Binding only required for shader usage
+    ;; Need only do on-demand - not every frame
     (c-memcpy (aref (ptrs-buffer bo-texture) ix-fence)
     	      (aref (ptrs-buffer (boa (gethash "texture" mapping-base))) 0)
     	      (size-buffer bo-texture))))

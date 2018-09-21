@@ -28,7 +28,7 @@
   (format t "[init-gles] GLSL Version: ~a~%" (gl:get* :shading-language-version))
 
   ;; TEMP: Disable for now
-  (when nil
+  (when t
     (gl:enable :blend)
     (gl:blend-func :src-alpha :one-minus-src-alpha))
   
