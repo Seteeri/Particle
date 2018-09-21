@@ -236,14 +236,14 @@
 	  (c-memcpy ptr
 		    data-surface
 		    size-data))
-	t)
 
-      ;; /* Clean up */
-      ;; free (surface_data);
-      ;; g_object_unref (layout);
-      ;; cairo_destroy (layout_context);
-      ;; cairo_destroy (render_context);
-      ;; cairo_surface_destroy (surface);
+	;; Clean up
+	(foreign-free data-surface)
+	(pango:g_object_unref layout)
+	(cairo:destroy context-layout)
+	(cairo:destroy context-render)
+	(cairo:destroy surface)
+	t)
       
       t)
     
