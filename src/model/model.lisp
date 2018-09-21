@@ -125,6 +125,10 @@
     ;; The current buffer setup is for rendering nodes/planes
     ;; Users would need to create a new buffer object and structs for own format
 
+    ;; NEXT STEPS:
+    ;; 1. Use parameters from Pango to set texture size
+    ;; 2. Test live texture updates
+
     (let* ((cursor (vec3 0.0 0.0 0.0))
 	   (inst-chr (init-node cursor
 				(scale-glyph model)
@@ -221,6 +225,11 @@
 	;; (cairo:surface-write-to-png surface "/home/user/pango-test.png")
 	;; (sb-ext:exit)
 
+	;; Watchout for memory layout: RGBA or BGRA
+	;; "CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with alpha in the
+	;;  upper 8 bits, then red, then green, then blue."
+	;; Upper 8th bit is 4th byte
+	
 	(with-slots (ptr size)
 	    (gethash "texture" (mapping-base model))
 	  (assert (<= size-data size))

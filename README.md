@@ -40,13 +40,25 @@ with the MS Office suite.
 
 ## The Inspiration
 
-It was designed to address limitations I've personally encountered in
-the quest for a more efficient desktop; the main limitation being, 
-confinement to the desktop/window metaphor and the staticness of widgets
+* Primary Inspirations:
+    * Blender - 3D, multi-domain dataset, flexible UI
+    * Emacs - consistency, extensibility, text and keyboard driven
+    
+* Secondary Inspirations:
+    * Compiz - 3D desktop effects
+    * Uzbl/Conkeror - numbered links for navigation
+    * Unreal Blueprints - nodal system
+    * Minecraft - expressiveness
+    * EagleMode - example of a ZUI
+    * OpenDoc - early proprietary Apple attempt to create compound documents
+    
+* Personal Influences:
+    * Gypsy by Larry Tesler
+    * The Humane Interface by Jeff Raskin - commands/transformers    
 
-Rather, I imagine developing a system the same way a Lisp program can be
-developed incrementally and molded to the abstraction of the user, or 
-even similar to building environments in the sandbox game, Minecraft.
+It was designed to address limitations I've personally encountered in
+the quest for a more efficient workflow; the main limitation being, 
+confinement to the desktop/window metaphor and the staticness of widgets.
 
 With the growth of open-source, the new direction of Wayland, 
 fragmentation of the desktop, and increasing computing resources, I 
@@ -54,33 +66,25 @@ believe this presents an opportunity to redefine the computing
 environment. Protoform is not an entirely new idea, but a different 
 attempt to build upon the success and failures of those before.
 
-A major inspiration was to [build](https://www.reddit.com/r/emacs/comments/3v19uj/is_there_anything_emacs_cant_do/)
-on Emacs - take it to another level:
-* Adopt Common Lisp
-* Adopt modern rendering techniques shifting towards GPU computing
-* Adopt a more gradual learning curve  - enhance discoverability of features
+The initial inspiration came from Blender's multi-domain toolset and 
+later from Emacs's text buffer oriented system. The idea was to fuse the
+ideas of Blender, Emacs, and other programs to abstract a consistent,
+extensible, and ultimately efficient UI that could incorporate 
+tried-and-true concepts like the command-line interface but also 
+visualize the different types of data today.
 
-The goal is not to create virtual realities for HMDs etc., although that
-naturally remains an orthogonal possibility. Protoform was designed to 
-be more fundamental and to provide basic primitives and building blocks, 
-to allow it to be adapated for those scenarios, the same way Emacs has 
-been extended to do almost everything.
+It is a fusion between expressive creative coding through frameworks 
+like Cinder, openFrameworks or Processing, and more convergent tools such
+as Blender and Emacs, and sandbox type games such as Minecraft.
 
-* Primary Inspirations:
-    * Blender - 3D, flexible UI
-    * Emacs - consistency, extensibility, keyboard-driven
-    
-* Secondary Inspirations:
-    * Unreal Blueprints - nodal system
-    * Uzbl/Conkeror - numbered links for navigation
-    * OpenDoc - early proprietary Apple attempt to create compound documents
-    * Compiz - 3D desktop effects
-    * EagleMode - example of a ZUI
-    * Minecraft - expressiveness
-    
-* Personal Influences:
-    * Gypsy by Larry Tesler
-    * The Humane Interface by Jeff Raskin - commands/transformers    
+One major anti-pattern frequently encountered is the limitations created
+by programs extending functionality by providing a scripting language 
+through embedding an interpreter such as Lua or Python, which eventually 
+leads to interoperability issues where data and code must be managed in 
+two different domains leading to a "desert of complexity and duplication".
+
+The goal is not to create virtual realities for HMDs, although that
+naturally remains an orthogonal possibility.
 
 ## The Interface
 

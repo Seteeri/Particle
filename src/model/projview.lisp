@@ -5,11 +5,11 @@
    (height :accessor height :initarg :height :initform nil)
    (projection-matrix :accessor projection-matrix :initarg :projection-matrix :initform nil)
    (projection-type :accessor projection-type :initarg :projection-type :initform nil)
-   (ortho-scale :accessor ortho-scale :initarg :ortho-scale :initform 48.0) ; bigger number = smaller view
+   (ortho-scale :accessor ortho-scale :initarg :ortho-scale :initform 8.0) ; bigger number = smaller view
    (ortho-near :accessor ortho-near :initarg :ortho-near :initform 1)
    (ortho-far :accessor ortho-far :initarg :ortho-far :initform 512)
    (view-matrix :accessor view-matrix :initarg :view-matrix :initform nil)
-   (camera-position :accessor camera-position :initarg :camera-position :initform (vec3 20 -24 256))
+   (camera-position :accessor camera-position :initarg :camera-position :initform (vec3 0 0 256))
    (camera-rotation :accessor camera-rotation :initarg :camera-rotation :initform (vec3 0 0 0))
    (camera-displacement :accessor camera-displacement :initarg :camera-displacement :initform (vec3 1.0 1.0 0.6))))
 
