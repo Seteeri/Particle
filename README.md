@@ -71,7 +71,9 @@ later from Emacs's text buffer oriented system. The idea was to fuse the
 ideas of Blender, Emacs, and other programs to abstract a consistent,
 extensible, and ultimately efficient UI that could incorporate 
 tried-and-true concepts like the command-line interface but also 
-visualize the different types of data today.
+visualize the different types of data today. 
+
+> Successful programming is all about managing complexity.
 
 It is a fusion between expressive creative coding through frameworks 
 like Cinder, openFrameworks or Processing, and more convergent tools such
