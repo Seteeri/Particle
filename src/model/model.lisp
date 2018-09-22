@@ -48,7 +48,10 @@
 							:height height
 							:projection-type 'orthographic)
 			       :inst-max inst-max
-			       :conn-model (init-conn-server path-server-model))))
+			       :conn-model (init-conn-server path-server-model)))
+	 (params-shms (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
+			   (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))
+			   (list "texture" "/protoform-texture.shm" (align-size (* 4 96 96 255))))))
     
     (setf (dpi-glyph model) (/ 1 90))
     (setf (scale-glyph model) 10.0)
@@ -68,11 +71,8 @@
     ;;
     ;; Note, element-array and draw-indirect buffers exist
     (format t "[main-model] Initializing mmaps...~%")
-    (init-mapping-base inst-max
-		       (mapping-base model)
-		       (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
-			     (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))
-			     (list "texture" "/protoform-texture.shm" (align-size (* 4 96 96 255))))) ; from texture init
+    (init-mapping-base (mapping-base model)
+		       params-shms)
     
     ;; Init data for shms
     (with-slots (ptr size)
@@ -166,8 +166,8 @@
     ;; - create layout:        pango_layout_new(ctx)
 
     ;; Every node will have its own layout (so effectively each text node is a pango layout?)
-    ;; but will share context, unless context becomes its own node also
-    ;; Ultimately user can refine this process
+    ;; but will share context/fontmap, unless context becomes its own node also
+    ;; Ultimately user can refine this process by attaching a context/fontmap node to layout
     
     ;; Destroy the surface as it is not actually needed
     (cairo:destroy surface-temp)
