@@ -93,5 +93,7 @@ void main()
     //ivec2 coord = ivec2(texcoord);
     //color = texelFetch(msdf, coord.x + (coord.y * 58));
     
-    color = filter_bilinear();
+    // Switch B and R due to Pango layout
+    vec4 color_filtered = filter_bilinear();
+    color = vec4(color_filtered.b, color_filtered.g, color_filtered.r, color_filtered.a);
 }

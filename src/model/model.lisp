@@ -195,7 +195,7 @@
                    <tt>hello</tt>
                    <span font_family=\"sans\" font_stretch=\"ultracondensed\" letter_spacing=\"500\" font_weight=\"light\">SANS</span>
                    <span foreground=\"#FFCC00\">colored</span>")
-      	    (text-2 "<span foreground=\"#FFCC00\">R</span>")) ; 100, 80, 0
+      	    (text-2 "<span foreground=\"#FFCC00\" strikethrough=\"true\">R</span>")) ; 100, 80, 0
       	;; b = 100, g = 80, r = 0
       	(pango:pango_layout_set_markup layout text-2 -1))
       
