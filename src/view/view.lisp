@@ -235,7 +235,7 @@
 			    height
 			    inst-max)))
 
-      ;; Connect to server before running
+      ;; Connect to model server before running
       (setf (sock conn-model) (init-socket-client path-server t))
       ;; Send client type
       (send-message (sock conn-model)

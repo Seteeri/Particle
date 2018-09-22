@@ -50,19 +50,11 @@
 			       :inst-max inst-max
 			       :conn-model (init-conn-server path-server-model)))
 	 (params-shms (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
-			   (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))
-			   (list "texture" "/protoform-texture.shm" (align-size (* 4 96 96 255))))))
+			    (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))
+			    (list "texture" "/protoform-texture.shm" (align-size (* 4 96 96 255))))))
     
     (setf (dpi-glyph model) (/ 1 90))
     (setf (scale-glyph model) 10.0)
-
-    ;; SHM INIT PROCESS
-    ;; 1. Model: init shm
-    ;; 2. Model: init data
-    ;; 3. Model: init memcpy on client connect
-    ;; 4. View:  init OpenGL buffer objects for compute and raster; set binding points
-    ;; 5. View:  init shm
-    ;; 6. View:  render loop, bind/memcpy buffers
     
     ;; Init shms, request view to mmap
     ;; TODO:

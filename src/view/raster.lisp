@@ -32,6 +32,11 @@
       msdf
 
     (gl:use-program program-raster)
+
+    ;; All buffer objects should be auto-created by directive from model/client
+    ;; Methods:
+    ;; 1. Send code, eval through swank
+    ;; 2. Send parameters for specific functions
     
     ;; Init buffer object
     ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
