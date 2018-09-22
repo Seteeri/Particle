@@ -100,7 +100,7 @@
         
     model))
 
-(defun init-chr (model)
+(defun init-text (model)
 
   (let* ((cursor (vec3 0.0 0.0 0.0))
 	 (inst-node (init-node cursor
@@ -146,7 +146,7 @@
 	(setf (mem-aref ptr :int (+ offset-ptr 1)) flags)
 	(incf offset-ptr 4)))))  
 
-(defun init-pango (model)
+(defun init-layout (model)
 
   ;; Create a cairo context for pango layout
   (let* ((width-pango (foreign-alloc :unsigned-int))
@@ -260,9 +260,9 @@
     ;; 1. Use parameters from Pango to set texture size
     ;; 2. Test live texture updates
 
-    (init-chr model)
+    (init-text model)
 
-    (init-pango model)
+    (init-layout model)
     
     (loop (wait-epoll model))))
 
