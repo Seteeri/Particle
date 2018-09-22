@@ -79,6 +79,7 @@
 	(gethash "projview" (mapping-base model))
       (update-projection-matrix (projview model))
       (update-view-matrix (projview model))
+      ;; (write-matrix (view-matrix (projview model)) t)
       (set-projection-matrix ptr (projection-matrix (projview model)))
       (set-view-matrix ptr (view-matrix (projview model)))
       (let ((b (+ 16 16))
@@ -161,7 +162,6 @@
 
 	   ;; TODO:
 	   ;; Adjust UVs based on texture rather than from metrics
-	   ;; Wouldn't this always be 0 to 1 like a square?
 	   ;; (u v s t) * 4
 	   (loop
 	      :for c :across uv
@@ -185,13 +185,25 @@
       (cairo:destroy surface-temp)
       
       ;; Create a PangoLayout, set the font and text
-      (pango:pango_layout_set_text layout "X" -1)
-	
+      ;; (pango:pango_layout_set_text layout "R" -1)
+
+      (let ((text "<span foreground=\"blue\" font_family=\"Inconsolata-g\">
+                      <b>bold</b>
+                      <u>is</u>
+                      <i>nice</i>
+                   </span>
+                   <tt>hello</tt>
+                   <span font_family=\"sans\" font_stretch=\"ultracondensed\" letter_spacing=\"500\" font_weight=\"light\">SANS</span>
+                   <span foreground=\"#FFCC00\">colored</span>")
+      	    (text-2 "<span foreground=\"#FFCC00\">R</span>")) ; 100, 80, 0
+      	;; b = 100, g = 80, r = 0
+      	(pango:pango_layout_set_markup layout text-2 -1))
+      
       ;; Load the font
       (let* ((desc (pango:pango_font_description_from_string "Inconsolata-g 72"))) ;"Sans Bold 72")))
 	(pango:pango_layout_set_font_description layout desc)
 	(pango:pango_font_description_free desc))
-
+      
       ;; Get text dimensions
       (pango:pango_layout_get_size layout
 				   width-pango
@@ -205,6 +217,7 @@
 			   (mem-ref height-pango :unsigned-int)
 			   4))
 	     (data-surface (foreign-alloc :unsigned-char :count size-data))
+	     ;; Call to get stride: cairo_format_stride_for_width() 
 	     (surface (cairo:create-image-surface-for-data data-surface
 							   :argb32
 							   (mem-ref width-pango :unsigned-int)
@@ -220,15 +233,24 @@
 	;; Render
 	(pango:pango_cairo_show_layout (slot-value context-render 'cairo:pointer) layout)
 
-	;; Copy surface ptr to shm ptr - or possible to render directly to ptr?
+	;; Ensure surface ops are flushed before accessing memory
+	(cairo:surface-flush surface)
 	
+	;; Copy surface ptr to shm ptr - or possible to render directly to ptr?
 	;; (cairo:surface-write-to-png surface "/home/user/pango-test.png")
 	;; (sb-ext:exit)
 
-	;; Watchout for memory layout: RGBA or BGRA
-	;; "CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with alpha in the
-	;;  upper 8 bits, then red, then green, then blue."
-	;; Upper 8th bit is 4th byte
+	;; Watchout for memory layout:
+	;; OpenGL: RGBA
+	;; CAIRO_FORMAT_ARGB32: BGRA
+
+	;; (with-slots (ptr size)
+	;;     (gethash "texture" (mapping-base model))
+	;;   (assert (<= size-data size))
+	;;   (c-memcpy ptr
+	;; 	    (cairo:image-surface-get-data (cairo:image-surface-create-from-png "/home/user/pango-test2.png")
+	;; 					  :pointer-only t)
+	;; 	    size-data))
 	
 	(with-slots (ptr size)
 	    (gethash "texture" (mapping-base model))

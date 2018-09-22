@@ -21,6 +21,10 @@ void main()
     gl_Position = proj * view * instances_out[gl_InstanceID].model * positionVertex[gl_VertexID];
     
     vertexRGBA = instances_out[gl_InstanceID].rgbas[gl_VertexID];
-    vertexUV = instances_out[gl_InstanceID].uvs[gl_VertexID];
+    
+    // Flip y since OpenGL stores bottom first
+    vertexUV.u = instances_out[gl_InstanceID].uvs[gl_VertexID].u;
+    vertexUV.v = 1.0 - instances_out[gl_InstanceID].uvs[gl_VertexID].v;
+    
     vertexW_UV = instances_out[gl_InstanceID].w_flags[0];
 }

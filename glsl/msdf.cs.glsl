@@ -65,6 +65,8 @@ void main()
         // so must set the primCount after all compute shader done
         // in CPU side
 
+        // Flip UVs here?
+
         instances_out[count] = instances_in[gl_GlobalInvocationID.x];
     }
 }

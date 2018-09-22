@@ -19,19 +19,7 @@ float median(float r, float g, float b)
     return max(min(r, g), min(max(r, g), b));
 }
 
-vec4 cubic(float v)
-{
-    vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
-    vec4 s = n * n * n;
-    float x = s.x;
-    float y = s.y - 4.0 * s.x;
-    float z = s.z - 4.0 * s.y + 6.0 * s.x;
-    float w = 6.0 - x - y - z;
-    return vec4(x, y, z, w);
-}
-
 // Implement filter_bicubic
-
 
 vec4 filter_bilinear()
 {
@@ -39,7 +27,6 @@ vec4 filter_bilinear()
     
     //vec2 size = vec2(textureSize(msdf, 0) - 1);
     vec2 size = vec2(57.0,112.0);
-    
     vec2 texcoord = vec2(vertexUV.u, vertexUV.v) * size;
     ivec2 coord = ivec2(texcoord);
         
@@ -80,19 +67,6 @@ vec4 filter_bilinear_2d_array()
     vec4 texel1 = mix(texel10, texel11, sampleCoord.y);            
     return mix(texel0, texel1, sampleCoord.x);
 }    
-
-//uniform sampler2DArray msdf;
-vec3 filter_builtin()
-{
-    vec3 texCoords = vec3(vertexUV.u, 
-                          vertexUV.v,
-                          float(vertexW_UV));
-    vec2 pos = texCoords.xy;
-    
-    return texture(msdf, texCoords).rgb;
-    
-    //return texelFetch(msdf, ivec3(int(texCoords.x*96.0),int(texCoords.y*96.0),texCoords.z), 0);
-}
 */
 void main_msdf()
 {
@@ -110,15 +84,14 @@ void main_msdf()
 
 void main()
 {
+    // Note UV's v coord flipped in vertex shader
+    
     // base + ux + (vy * width)
     
     //vec2 size = vec2(57.0,112.0);
-    //vec2 texcoord = vec2(vertexUV.u, vertexUV.v) * size;
-    //ivec2 coord = ivec2(texcoord);    
-    
+    ////vec2 texcoord = vec2(vertexUV.u, vertexUV.v) * size;
+    //ivec2 coord = ivec2(texcoord);
     //color = texelFetch(msdf, coord.x + (coord.y * 58));
-
-    //color = vec4(1.0*vertexUV.u, 1.0, 1.0*vertexUV.v, 1.0);
     
     color = filter_bilinear();
 }

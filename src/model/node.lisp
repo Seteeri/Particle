@@ -27,6 +27,13 @@
 							     			      (coerce (/ 155 255) 'single-float)
 							     			      (coerce (/ 255 255) 'single-float))))
    ;; top right, bottom right, bottom left, top left
+   ;; 1.0 1.0    1.0 0.0       0.0 0.0      0.0 1.0
+
+   ;; (nv/ right-bottom (/ 96 5.8239365))
+   ;; (nv/ right-top    (/ 96 5.8239365))
+   ;; (nv/ left-top     (/ 96 5.8239365))
+   ;; (nv/ left-bottom  (/ 96 5.8239365))
+   
    (uv
     :accessor uv
     :initform (make-array 16
