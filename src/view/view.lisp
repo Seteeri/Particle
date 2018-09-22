@@ -85,8 +85,7 @@
 
     (format t "-------------------~%")))
 
-;; Rename to view?
-(defclass msdf ()
+(defclass view ()
   ;; Create a base for these 3 slots?
   ((width :accessor width :initarg :width :initform nil)
    (height :accessor height :initarg :height :initform nil)
@@ -137,14 +136,14 @@
    (fences :accessor fences :initarg :fences :initform nil)
    (ix-fence :accessor ix-fence :initarg :ix-fence :initform 0)))
 
-(defun clean-up-msdf (msdf)
+(defun clean-up-view (view)
   (with-slots (program-raster
 	       program-compute
 	       boav-main
 	       boa-uniform-projview
 	       fences)
-      msdf
-    (describe msdf)
+      view
+    (describe view)
 
     ;; do fence/wait first if running
     (%gl:memory-barrier :all-barrier-bits)
@@ -153,8 +152,8 @@
       (%gl:delete-sync sync))
     
     ;; below fn includes mmaps
-    (clean-up-mapping-base msdf)
-    (clean-up-buffer-objects msdf)
+    (clean-up-mapping-base view)
+    (clean-up-buffer-objects view)
     
     (gl:delete-vertex-arrays (list boav-main))
     (format t "[clean-up-msdf] Deleted vertex array ~a~%" boav-main)
@@ -172,14 +171,14 @@
 	     (%gl:delete-sync fence)
 	     (format t "[clean-up-msdf] Deleted fence ~a~%" fence)))))
 
-(defun clean-up-buffer-objects (msdf)
-  (dolist (boa (list (bo-projview msdf)
-		     (bo-instance msdf)
-		     (boa-element msdf)
-		     (bo-texture msdf)))
+(defun clean-up-buffer-objects (view)
+  (dolist (boa (list (bo-projview view)
+		     (bo-instance view)
+		     (boa-element view)
+		     (bo-texture view)))
     do(clean-up-buffer-object boa)))
 
-(defun init-msdf (width
+(defun init-view (width
 		  height
 		  inst-max)
 
@@ -189,7 +188,7 @@
     (format t "[init-msdf] Vertices: ~:D~%" (* inst-max 6))
     (calc-opengl-usage))
   
-  (let ((msdf (make-instance 'msdf
+  (let ((view (make-instance 'view
 			     :width width
 			     :height height
 			     :fences (make-array 3
@@ -199,18 +198,18 @@
 			     :program-compute (init-program-compute)
 			     :inst-max inst-max)))
 
+    ;; Connect to server to get setup instructions/configuration on connect
+
     (format t "[init-msdf] Initializing raster buffers...~%")
-    (init-buffers-raster msdf)
+    (init-buffers-raster view)
     
     (format t "[init-msdf] Initializing base buffers...~%")
-    (init-mapping-base msdf)
+    (init-mapping-base view)
     
     (format t "[init-msdf] Initializing compute buffers...~%")
-    (init-buffers-compute msdf)
+    (init-buffers-compute view)
     
-    msdf))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    view))
 
 (defun main-view (width
 		  height
@@ -231,7 +230,7 @@
     ;; Init view
     (let* ((conn-model (init-conn-client path-server))
 	   (gles (init-gles width height))
-	   (msdf (init-msdf width
+	   (view (init-view width
 			    height
 			    inst-max)))
 
@@ -247,18 +246,18 @@
 	 :do (progn
 
 	       (request-server conn-model
-			       msdf)
-	       (run-view msdf
+			       view)
+	       (run-view view
 			 conn-model)
 
 	       ;;(glfw:poll-events)
 	       (glfw:swap-buffers))))))
 
-(defun run-view (msdf
+(defun run-view (view
 		 conn-client)
 
   (with-slots (sync fences ix-fence)
-      msdf
+      view
     
     ;; Create with-* macro for this
     ;; if sync:
@@ -273,9 +272,9 @@
     	(setf (aref fences ix-fence) (null-pointer))))
 
     ;; Dispatch compute shader; process instances from base buffer to render buffers
-    (run-compute-copy msdf)
+    (run-compute-copy view)
     
-    (run-raster msdf)
+    (run-raster view)
     
     (when sync
       ;; Create fence, which previous portion will check for
