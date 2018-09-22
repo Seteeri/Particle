@@ -29,6 +29,18 @@
 			     (buffering 'triple)     ; 'single 'double 'triple, make this required
 			     (usage :static-draw) ; dynamic-draw :stream-draw
 			     (data nil))
+
+  ;; https://stackoverflow.com/questions/47563995/double-buffering-vs-triple-buffering-for-vertex-buffers
+  ;; As long as you protect buffer memory areas from overwrites with fences,
+  ;; you can even use a single buffered vertex buffer.
+  ;; This will however give much slower performance
+  ;; because you will lose the benefits of asynchronous memory transfers.
+  ;; The write operation will wait for the previous rendering operation
+  ;; to complete which serializes the update and draw stages.
+  ;;
+  ;; Again, all this double and triple buffering is only relevant
+  ;; for streamed vertex data that changes each frame.
+
   
   (let ((buffer (make-instance 'buffer-object
 			       :target target
