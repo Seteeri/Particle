@@ -100,6 +100,136 @@
         
     model))
 
+(defun init-chr (model)
+
+  (let* ((cursor (vec3 0.0 0.0 0.0))
+	 (inst-node (init-node cursor
+			       (scale-glyph model)
+			       #\X))
+	 (offset-ptr 0))
+    
+    (with-slots (ptr size)
+	(gethash "instance" (mapping-base model))
+      (with-slots (chr
+		   model-matrix
+		   rgba
+		   uv
+		   flags)
+	  inst-node
+	
+	(loop
+	   :for c :across (marr (matrix model-matrix))
+	   :for c-i :upfrom 0
+	   :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
+		     c))
+	(incf offset-ptr 16)
+	
+	(loop
+	   :for c :across rgba
+	   :for c-i :upfrom 0
+	   :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
+		     c))
+	(incf offset-ptr 16)
+
+	;; TODO:
+	;; Adjust UVs based on texture rather than from metrics
+	;; (u v s t) * 4
+	(loop
+	   :for c :across uv
+	   :for c-i :upfrom 0
+	   :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
+		     c))
+	(incf offset-ptr 8)
+	
+	;; Glyph, Flags, pad, pad
+	(setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code chr) 32))
+	(setf (mem-aref ptr :int (+ offset-ptr 1)) flags)
+	(incf offset-ptr 4)))))  
+
+(defun init-pango (model)
+
+  ;; Create a cairo context for pango layout
+  (let* ((width-pango (foreign-alloc :unsigned-int))
+	 (height-pango (foreign-alloc :unsigned-int))
+	 (surface-temp (cairo:create-image-surface :argb32 0 0))
+	 (context-layout (cairo:create-context surface-temp))
+	 (layout (pango:pango_cairo_create_layout (slot-value context-layout 'cairo:pointer))))
+
+    ;; Destroy the surface as it is not actually needed
+    (cairo:destroy surface-temp)
+    
+    ;; Set the font/text
+    
+    ;; (pango:pango_layout_set_text layout "R" -1)
+    ;; (let* ((desc (pango:pango_font_description_from_string "Inconsolata-g 72"))) ;"Sans Bold 72")))
+    ;;   (pango:pango_layout_set_font_description layout desc)
+    ;;   (pango:pango_font_description_free desc))
+    
+    (let ((text-2 "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 72\" strikethrough=\"true\">R</span>")) ; 100, 80, 0
+      ;; b = 100, g = 80, r = 0
+      (pango:pango_layout_set_markup layout text-2 -1))
+    
+    ;; Once text is laidout, get dimensions
+    (pango:pango_layout_get_size layout
+				 width-pango
+				 height-pango)
+    ;; Divide by pango scale to get dimensions in pixels
+    (setf (mem-ref width-pango :unsigned-int) (/ (mem-ref width-pango :unsigned-int) pango:PANGO_SCALE))
+    (setf (mem-ref height-pango :unsigned-int) (/ (mem-ref height-pango :unsigned-int) pango:PANGO_SCALE))
+    
+    ;; Create cairo context/surface to render to
+    (let* ((size-data (* (mem-ref width-pango :unsigned-int)
+			 (mem-ref height-pango :unsigned-int)
+			 4))
+	   (data-surface-render (foreign-alloc :unsigned-char :count size-data))
+	   ;; Call to get stride: cairo_format_stride_for_width() 
+	   (surface-render (cairo:create-image-surface-for-data data-surface-render
+								:argb32
+								(mem-ref width-pango :unsigned-int)
+								(mem-ref height-pango :unsigned-int)
+								(* 4 (mem-ref width-pango :unsigned-int))))
+	   (context-render (cairo:create-context surface-render)))
+
+      ;; 0.002803 seconds = 2.2 to 9.3 ms
+      
+      ;; Set surface color - similar to glClear
+      (cairo:set-source-rgba 1 1 1 1 context-render)
+
+      ;; Render
+      (pango:pango_cairo_show_layout (slot-value context-render 'cairo:pointer) layout)
+
+      ;; Ensure surface ops are flushed before accessing memory
+      (cairo:surface-flush surface-render)
+      
+      ;; Copy surface ptr to shm ptr - or possible to render directly to ptr?
+      ;; (cairo:surface-write-to-png surface "/home/user/pango-test.png")
+      ;; (sb-ext:exit)
+
+      ;; Watchout for memory layout:
+      ;; OpenGL: RGBA
+      ;; CAIRO_FORMAT_ARGB32: BGRA
+
+      ;; (with-slots (ptr size)
+      ;;     (gethash "texture" (mapping-base model))
+      ;;   (assert (<= size-data size))
+      ;;   (c-memcpy ptr
+      ;; 	    (cairo:image-surface-get-data (cairo:image-surface-create-from-png "/home/user/pango-test2.png")
+      ;; 					  :pointer-only t)
+      ;; 	    size-data))
+      
+      (with-slots (ptr size)
+	  (gethash "texture" (mapping-base model))
+	(assert (<= size-data size))
+	(c-memcpy ptr
+		  data-surface-render
+		  size-data))
+
+      ;; Clean up
+      (foreign-free data-surface-render)
+      (pango:g_object_unref layout)
+      (cairo:destroy context-layout)
+      (cairo:destroy context-render)
+      (cairo:destroy surface-render))))
 
 (defun main-model (width height
 		   inst-max
@@ -130,144 +260,9 @@
     ;; 1. Use parameters from Pango to set texture size
     ;; 2. Test live texture updates
 
-    (let* ((cursor (vec3 0.0 0.0 0.0))
-	   (inst-chr (init-node cursor
-				(scale-glyph model)
-				#\X))
-	   (offset-ptr 0)
-	   (metrics (metrics model)))
-      
-      (with-slots (ptr size)
-	  (gethash "instance" (mapping-base model))
-	 (with-slots (chr
-		      model-matrix
-		      rgba
-		      uv
-		      flags)
-	     inst-chr
-	   
-	   (loop
-	      :for c :across (marr (matrix model-matrix))
-	      :for c-i :upfrom 0
-	      :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-			c))
-	   (incf offset-ptr 16)
-	   
-	   (loop
-	      :for c :across rgba
-	      :for c-i :upfrom 0
-	      :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-			c))
-	   (incf offset-ptr 16)
+    (init-chr model)
 
-	   ;; TODO:
-	   ;; Adjust UVs based on texture rather than from metrics
-	   ;; (u v s t) * 4
-	   (loop
-	      :for c :across uv
-	      :for c-i :upfrom 0
-	      :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-			c))
-	   (incf offset-ptr 8)
-	   
-	   ;; Glyph, Flags, pad, pad
-	   (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code chr) 32))
-	   (setf (mem-aref ptr :int (+ offset-ptr 1)) flags)
-	   (incf offset-ptr 4))))
-
-    ;; Pangocairo
-    (let* ((width-pango (foreign-alloc :unsigned-int))
-	   (height-pango (foreign-alloc :unsigned-int))
-	   (surface-temp (cairo:create-image-surface :argb32 0 0))
-	   (context-layout (cairo:create-context surface-temp))
-	   (layout (pango:pango_cairo_create_layout (slot-value context-layout 'cairo:pointer))))
-
-      (cairo:destroy surface-temp)
-      
-      ;; Create a PangoLayout, set the font and text
-      ;; (pango:pango_layout_set_text layout "R" -1)
-
-      (let ((text "<span foreground=\"blue\" font_family=\"Inconsolata-g\">
-                      <b>bold</b>
-                      <u>is</u>
-                      <i>nice</i>
-                   </span>
-                   <tt>hello</tt>
-                   <span font_family=\"sans\" font_stretch=\"ultracondensed\" letter_spacing=\"500\" font_weight=\"light\">SANS</span>
-                   <span foreground=\"#FFCC00\">colored</span>")
-      	    (text-2 "<span foreground=\"#FFCC00\" strikethrough=\"true\">R</span>")) ; 100, 80, 0
-      	;; b = 100, g = 80, r = 0
-      	(pango:pango_layout_set_markup layout text-2 -1))
-      
-      ;; Load the font
-      (let* ((desc (pango:pango_font_description_from_string "Inconsolata-g 72"))) ;"Sans Bold 72")))
-	(pango:pango_layout_set_font_description layout desc)
-	(pango:pango_font_description_free desc))
-      
-      ;; Get text dimensions
-      (pango:pango_layout_get_size layout
-				   width-pango
-				   height-pango)
-      ;; Divide by pango scale to get dimensions in pixels
-      (setf (mem-ref width-pango :unsigned-int) (/ (mem-ref width-pango :unsigned-int) pango:PANGO_SCALE))
-      (setf (mem-ref height-pango :unsigned-int) (/ (mem-ref height-pango :unsigned-int) pango:PANGO_SCALE))
-      
-      ;; Create cairo image surface to render to
-      (let* ((size-data (* (mem-ref width-pango :unsigned-int)
-			   (mem-ref height-pango :unsigned-int)
-			   4))
-	     (data-surface (foreign-alloc :unsigned-char :count size-data))
-	     ;; Call to get stride: cairo_format_stride_for_width() 
-	     (surface (cairo:create-image-surface-for-data data-surface
-							   :argb32
-							   (mem-ref width-pango :unsigned-int)
-							   (mem-ref height-pango :unsigned-int)
-							   (* 4 (mem-ref width-pango :unsigned-int))))
-	     (context-render (cairo:create-context surface)))
-
-	;; 0.002803 seconds = 2.2 to 9.3 ms
-	
-	;; Set surface color - similar to glClear
-	(cairo:set-source-rgba 1 1 1 1 context-render)
-
-	;; Render
-	(pango:pango_cairo_show_layout (slot-value context-render 'cairo:pointer) layout)
-
-	;; Ensure surface ops are flushed before accessing memory
-	(cairo:surface-flush surface)
-	
-	;; Copy surface ptr to shm ptr - or possible to render directly to ptr?
-	;; (cairo:surface-write-to-png surface "/home/user/pango-test.png")
-	;; (sb-ext:exit)
-
-	;; Watchout for memory layout:
-	;; OpenGL: RGBA
-	;; CAIRO_FORMAT_ARGB32: BGRA
-
-	;; (with-slots (ptr size)
-	;;     (gethash "texture" (mapping-base model))
-	;;   (assert (<= size-data size))
-	;;   (c-memcpy ptr
-	;; 	    (cairo:image-surface-get-data (cairo:image-surface-create-from-png "/home/user/pango-test2.png")
-	;; 					  :pointer-only t)
-	;; 	    size-data))
-	
-	(with-slots (ptr size)
-	    (gethash "texture" (mapping-base model))
-	  (assert (<= size-data size))
-	  (c-memcpy ptr
-		    data-surface
-		    size-data))
-
-	;; Clean up
-	(foreign-free data-surface)
-	(pango:g_object_unref layout)
-	(cairo:destroy context-layout)
-	(cairo:destroy context-render)
-	(cairo:destroy surface)
-	t)
-      
-      t)
+    (init-pango model)
     
     (loop (wait-epoll model))))
 
