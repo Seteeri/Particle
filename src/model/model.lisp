@@ -79,16 +79,19 @@
 	(dotimes (i (length data))
 	  (setf (mem-aref ptr :float (+ b i))
 		(aref data i)))))
+
+    ;; Init swank client to viewd
     
-    ;; Epoll fds among server and clients
-    ;; Clients must indicate if they are view or controller type
-    (let ((epoll-fd (c-epoll-create 1)))
-      (ctl-epoll epoll-fd
-		 (sock (conn-model model))
-		 #x0001
-		 :add)
-      (setf (epoll-fd model) epoll-fd))
-    (setf (epoll-events model) (foreign-alloc '(:struct event) :count 3))
+    (when nil
+      ;; Epoll fds among server and clients
+      ;; Clients must indicate if they are view or controller type
+      (let ((epoll-fd (c-epoll-create 1)))
+	(ctl-epoll epoll-fd
+		   (sock (conn-model model))
+		   #x0001
+		   :add)
+	(setf (epoll-fd model) epoll-fd))
+      (setf (epoll-events model) (foreign-alloc '(:struct event) :count 3)))
         
     model))
 
@@ -253,37 +256,29 @@
 (defun main-model (width height
 		   inst-max
 		   path-server-model)
-  
+
   (let* ((model (init-model width
 			    height
 			    inst-max
 			    path-server-model)))
 
-    ;; Create 3D objects now!
-
     ;; NODES
     ;; * Context -> Default FB
     ;; * Default FN -> Pipeline -> Buffers [SHOW ENTIRE ENGINE LAYOUT IN REALTIME]
     ;; * Render into a node...or select a framebuffer
-    
-    ;; * Text layout slowing us down so offload to Pango/Cairo
-    ;; TEXT/PANGO RENDERING PROCESS
-    ;; 1. Pango will render text
-    ;; 2. Apply msdf (do later)
-    ;; 3. Write to texture buffer
-    
-    ;; The current buffer setup is for rendering nodes/planes
-    ;; Users would need to create a new buffer object and structs for own format
 
-    ;; NEXT STEPS:
-    ;; 1. Use parameters from Pango to set texture size
+    ;; TODO:
+    ;; 1. Rewrite/refactor IPC - model will send setup to view
     ;; 2. Test live texture updates
-
+    ;; 3. Use parameters from Pango to set texture size
+    
     (init-text model)
 
     (init-layout model)
+
+    (loop (sleep 1))))
     
-    (loop (wait-epoll model))))
+    ;; (loop (wait-epoll model))))
 
 (defun handle-escape (msdf
 		      keysym)
@@ -346,17 +341,19 @@
 			    (setf (view conn-model) conn-client)
 			    (setf (controller conn-model) conn-client))
 
-			;; Request view client only to copy shm to base buffers
-			;; View should create OpenGL buffers after connecting?
-			(when (eq (id conn-client) :view)
-			  (dolist (name (list "projview"
-					      "instance"
-					      "texture"))
-			    (with-slots (ptr size)
-				(gethash name (mapping-base msdf))
-			      (request-memcpy conn-client name name size nil)))
-			  ;; sync
-			  (request-sync conn-client)))
+			;; LET VIEW REQUEST THIS
+			;; Send data/code to view to initialize
+			;; (when (eq (id conn-client) :view)
+			;;   (dolist (name (list "projview"
+			;; 		      "instance"
+			;; 		      "texture"))
+			;;     (with-slots (ptr size)
+			;; 	(gethash name (mapping-base msdf))
+			;;       (request-memcpy conn-client name name size nil)))
+			;;   ;; sync
+			;;   (request-sync conn-client))
+
+			t)
 		      
 		      t)
 		   

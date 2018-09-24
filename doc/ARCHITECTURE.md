@@ -5,11 +5,8 @@ The basic architecture of Protoform is based on two components similar
 to the MVC/PAC pattern for UIs.
 
 In conrete terms, each component is a separate process. They all 
-communicate with each other through Unix domain sockets in a P2P fashion.
-They pass data through mapped shared memory.
-
-They are capable of using Swank to eval LISP code directly and they also
-contain protocols for minimal latency.
+communicate with each other through the Swank server/protocol in a P2P 
+fashion. Data is shared through mapped shared memory.
 
 It is based on the principle of data and transforming data, similar to
 flow based programming.

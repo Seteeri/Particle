@@ -101,7 +101,7 @@
 		(mem-aref buffer-recv-ptr :unsigned-char i))
 	  (incf start)))
 
-      ;; return data instead of code
+      ;; Return data instead of code
       ;;
       ;; if no valid string, return nil on error
       ;; how to handle octets-to-string failure? -> warn and return nil

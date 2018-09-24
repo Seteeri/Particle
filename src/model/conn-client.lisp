@@ -12,6 +12,7 @@
 		       "(:sync)"
 		       t))
 
+;; This should be unecessary if only one model...
 (defun request-query-buffer-objects (conn-client)
   (communicate-request conn-client
 		       "(:query-buffer-objects)"

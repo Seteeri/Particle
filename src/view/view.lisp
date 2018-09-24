@@ -181,12 +181,6 @@
 (defun init-view (width
 		  height
 		  inst-max)
-
-  (when nil
-    (format t "[init-msdf] Instances: ~:D~%" inst-max)
-    (format t "[init-msdf] Triangles: ~:D~%" (* inst-max 2))
-    (format t "[init-msdf] Vertices: ~:D~%" (* inst-max 6))
-    (calc-opengl-usage))
   
   (let ((view (make-instance 'view
 			     :width width
@@ -197,16 +191,14 @@
 			     :program-raster (init-program-raster)
 			     :program-compute (init-program-compute)
 			     :inst-max inst-max)))
-
-    ;; Connect to server to get setup instructions/configuration on connect
-
-    (format t "[init-msdf] Initializing raster buffers...~%")
+    
+    ;; (format t "[init-msdf] Initializing raster buffers...~%")
     (init-buffers-raster view)
     
-    (format t "[init-msdf] Initializing base buffers...~%")
+    ;; (format t "[init-msdf] Initializing base buffers...~%")
     (init-mapping-base view)
     
-    (format t "[init-msdf] Initializing compute buffers...~%")
+    ;; (format t "[init-msdf] Initializing compute buffers...~%")
     (init-buffers-compute view)
     
     view))
@@ -215,7 +207,6 @@
 		  height
 		  inst-max
 		  path-server)
-
   (glfw:with-init-window (:title "Protoform"
 				 :width width ;1440
 				 :height height ;900
@@ -234,19 +225,36 @@
 			    height
 			    inst-max)))
 
-      ;; Connect to model server before running
-      (setf (sock conn-model) (init-socket-client path-server t))
-      ;; Send client type
-      (send-message (sock conn-model)
-		    (buffer-ptr-send conn-model)
-		    ":view")
+      ;; Print OpenGL parameters
+      (when nil
+	(format t "[init-msdf] Instances: ~:D~%" inst-max)
+	(format t "[init-msdf] Triangles: ~:D~%" (* inst-max 2))
+	(format t "[init-msdf] Vertices: ~:D~%" (* inst-max 6))
+	(calc-opengl-usage))
+      
+      ;; Connect to model server
+      ;; Block for message...maybe can use recv flag instead
+      ;; (setf (sock conn-model) (init-socket-client path-server nil))
+      
+      ;; ;; Send client type
+      ;; (send-message (sock conn-model)
+      ;; 		    (buffer-ptr-send conn-model)
+      ;; 		    "(:view)")
 
+      ;; (format t "~a~%" (eval (read-from-string "*package*")))
+      ;; (force-output)
+
+      ;; Model will connect and execute code in this process
+      
       (loop 
 	 ;; :until (glfw:window-should-close-p)
 	 :do (progn
 
+	       ;; Check for requests from server
 	       (request-server conn-model
 			       view)
+
+	       ;; Draw loop
 	       (run-view view
 			 conn-model)
 

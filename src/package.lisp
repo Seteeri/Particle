@@ -95,7 +95,14 @@
 
 	   #:init-socket-server
 	   #:init-socket-client
-	   #:accept4))
+	   #:accept4
+
+	   #:start-swank-server-for-emacs
+	   #:start-swank-server-for-swank-client
+	   #:swank-thread
+	   #:wait-for-swank-thread
+	   #:start-swank-server
+	   ))
 
 (defpackage #:protoform.drm
   (:use #:cl
@@ -150,5 +157,6 @@
 
 (defpackage #:protoform
   (:use #:cl
-        #:cffi)
+        #:cffi
+	#:protoform.conn)
   (:export #:main))

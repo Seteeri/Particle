@@ -43,6 +43,8 @@
 		 (progn
 		   (incf requests-served)
 		   ;; (format t "[serve-client] ~a~%" ret-recv)
+
+		   ;; for below use function -> funcall
 		   (cond ((eq (first ret-recv) :insert)
 			  (serve-insert msdf
 					conn-client
@@ -60,7 +62,10 @@
 					     (third ret-recv)
 					     (fourth ret-recv)))
 			 ((eq (first ret-recv) :view)
+			  ;; do nothing
 			  t)
+			 ((eq (first ret-recv) :init-view)
+			  (serve-init-view conn-client))
 			 ((eq (first ret-recv) :sync)
 			  (serve-sync conn-client)
 			  (return requests-served)
@@ -85,6 +90,11 @@
 		       (t ; -1=no-data,>0=invalid-data
 			  (return requests-served)
 			t)))))))
+
+(defun serve-init-view (conn-client)
+  (send-message (sock conn-client)
+		(buffer-ptr-send conn-client)
+		"(init-buffers-raster view)"))
 
 (defun serve-sync (conn-client)
   (send-message (sock conn-client)

@@ -17,15 +17,18 @@
 		 #:cl-glfw3
 		 #:3d-vectors
 		 #:3d-matrices
+		 #:usocket
 		 #:pango-markup
 		 #:bordeaux-threads
+		 #:swank
+		 #:swank-protocol
+		 ;; #:swank-client
 		 #:trivial-timers
 		 #:babel
 		 #:str
 		 #:easing
 		 #:skip-list
 		 #:lparallel)
-    		 ;; #:swank
 		 ;; #:dlist
 
     :serial t
@@ -44,7 +47,8 @@
 		 (:module conn
 		 	  :pathname "src/conn"
 		 	  :components ((:file "client")
-				       (:file "protocol")))
+				       (:file "protocol")
+				       (:file "swank")))
 		 (:module drm
 			  :pathname "src/drm"
 			  :components ((:file "gbm")

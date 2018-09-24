@@ -60,36 +60,65 @@
   ;; *posix-argv*
   ;;("sbcl" "my-command-line-arg")
 
-  ;; Slowdown occurs @ 400-500 sprites (instances) in C
-  ;; 2**21 = 2097152 (poor)
-  ;; 2**20 = 1048576 (poor)
-  ;; 2**19 = 524288  (mediocre)
-  ;; 2**18 = 262144  (good)
-  ;; 2**17 = 131072  (excellent)
-  ;; 2**16 = 65536   (60)
-  ;; 2**15 = 32768   
-  ;; 2**13 = 8192
-  ;; 2**5  = 32
-
-  ;; How to share shm init data between model and view?
-  
-  (let ((width (/ 2560 2))
-        (height 1600)
+  (let ((width (/ 2560 2)) ; 1280
+        (height 1600) ; 1600
         (inst-max (expt 2 17))
-        (path-server-view "/tmp/protoform-render.socket")
+        (path-server-view "/tmp/protoform-view.socket")
         (path-server-model "/tmp/protoform-model.socket"))
 
-    (when t
-      (fork (lambda () (protoform.model:main-model width height
-						   inst-max
-						   path-server-model))))
+    ;; (fork (lambda () (protoform.model:main-model width height
+    ;; 						 inst-max
+    ;; 						 path-server-model)))
+    ;; (fork (lambda () (protoform.view:main-view width height
+    ;; 					       inst-max
+    ;; 					       path-server-model)))    
+    ;; (sb-ext:exit)
 
-    (when t
-      (fork (lambda () (protoform.view:main-view width height
-						 inst-max
-						 path-server-model))))
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Init/bootstrapper system ;)
+
+    ;; Init: load
     
-    (when nil
-      (fork (lambda () (protoform.controller:main-controller path-server-model))))
+    ;; Model: swank server/client
+    ;; View: swank server/client
+
+    ;; Launch swank servers
+    (when t (fork (lambda () (start-swank-server 10000))))
+    (when t (fork (lambda () (start-swank-server 10001))))
+    ;; (when nil (fork (lambda () (protoform.controller:main-controller path-server-model))))
+
+    (sleep 1)
+
+    ;; Make function
+    (defparameter connection (swank-protocol:make-connection "skynet" 10000))
+    (swank-protocol:connect connection)
+    (swank-protocol:request-connection-info connection)
+    (format t "~a~%" (swank-protocol:read-message connection))
+    ;; (swank-protocol:request-listener-eval connection "(+ 2 2)")
+    ;; (format t "~a~%" (swank-protocol:read-message connection)) ; blocks
+    ;; (format t "~a~%" (swank-protocol:read-all-messages connection))
     
+    ;; Init model
+    (swank-protocol:request-listener-eval connection
+    					  "(protoform.model:main-model
+                               		   1280 1600
+                             		   131072
+                             		   \"/tmp/protoform-model.socket\")")
+
+    ;; Init view
+    ;; (swank-protocol:request-listener-eval connection
+    ;; 					  "(protoform.model:main-view
+    ;;                            		   1280 1600
+    ;;                          		   131072
+    ;;                          		   \"/tmp/protoform-view.socket\")")
+    
+    ;; https://www.emacswiki.org/emacs/StumpWM
+    
+    ;; Execute main functions and create swank clients to connect to each other
+    ;; Model will launch swank client to connect to view
+    ;; View will launch swnnak client to connect to model
+
+    ;; (format t "~v@{~A~:*~}~%" 64 "-")
+    
+    ;; Explicitly exit after loading code
     (sb-ext:exit)))
