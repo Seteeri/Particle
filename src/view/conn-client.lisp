@@ -73,6 +73,20 @@
   (clean-up-msdf msdf)
   (sb-ext:exit))
 
+(defun serve-memcpy2 (name-dest
+		      name-src
+		      size)
+  (let* ((offset-dest 0)
+	 (offset-src 0)
+	 (ptr-dest (aref (ptrs-buffer (boa (gethash name-dest (mapping-base *view*)))) 0)) ; dest - base buffer, no rot
+	 (ptr-src (ptr (mmap (gethash name-src (mapping-base *view*)))))                   ; src  - mmap shm
+	 (ptr-dest-off (inc-pointer ptr-dest offset-dest))
+	 (ptr-src-off (inc-pointer ptr-src offset-src)))
+    (c-memcpy ptr-dest-off
+	      ptr-src-off
+	      size))
+  (format t "[view] c-memcpy: ~a ~a ~a" name-dest name-src size))
+
 (defun serve-memcpy (sock
 		     buffer-ptr
 		     ptr-dest

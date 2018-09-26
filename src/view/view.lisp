@@ -171,6 +171,7 @@
 
 	     ;; Recv evals from model
 	     ;; http://3bb.cc/tutorials/cl-opengl/getting-started.html
+	     ;; (format t "[view] Serve-all-events~%")
 	     (sb-sys:serve-all-events 0)
 	     
 	     (if *view*

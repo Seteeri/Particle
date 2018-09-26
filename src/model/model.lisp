@@ -287,12 +287,22 @@
       (format t "[model] Send eval~%")
       ;; (swank-protocol:request-listener-eval conn
       ;; 					    "t")
-      (swank-protocol:request-listener-eval conn
-      					    "(init-view 1280 1600 131072)")
+      (swank-protocol:request-listener-eval
+       conn
+       "(init-view 1280 1600 131072)")
       (format t "[model] Wait for eval~%")
-      (format t "~a~%" (swank-protocol:read-message conn)))
+      (format t "~a~%" (swank-protocol:read-message conn))
 
-    ;; Need view memcpy to display
+      (dolist (name (list "projview"
+    			  "instance"
+    			  "texture"))
+        (with-slots (ptr size)
+    	    (gethash name (mapping-base model))
+	  (format t "(serve-memcpy2 \"~a\" \"~a\" ~a)" name name size)
+	  (swank-protocol:request-listener-eval
+	   conn
+	   (format nil "(serve-memcpy2 \"~a\" \"~a\" ~a)" name name size))
+	  (format t "~a~%" (swank-protocol:read-message conn)))))
     
     (loop (sleep 0.0167))))
     
