@@ -22,7 +22,6 @@
 		 #:bordeaux-threads
 		 #:swank
 		 #:swank-protocol
-		 ;; #:swank-client
 		 #:trivial-timers
 		 #:babel
 		 #:str

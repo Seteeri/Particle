@@ -102,6 +102,7 @@
 	   #:swank-thread
 	   #:wait-for-swank-thread
 	   #:start-swank-server
+	   #:init-swank-conn
 	   ))
 
 (defpackage #:protoform.drm

@@ -13,15 +13,15 @@
     (format t "[init-program-compute] Program info log: ~a~%" (gl:get-program-info-log program))
     program))
 
-(defun init-buffers-compute (msdf)
+(defun init-buffers-compute ()
 
   (with-slots (program-compute
 	       mapping-base
 	       bo-counter)
-      msdf
+      *view*
 
     (gl:use-program program-compute)
-
+    
     ;; Uniform is only bound once also
     ;; Texture also exists but not bound since compute shader does not use it
     ;; Texture need only do a shm-ptr copy
@@ -46,7 +46,7 @@
     t))
 
 
-(defun update-compute-buffers (msdf)
+(defun update-compute-buffers ()
 
   ;; This function binds the raster buffers to the *_out bindings in the shader
   ;; Should group them like mapping base is?
@@ -56,7 +56,7 @@
 	       bo-instance
 	       bo-texture
 	       ix-fence)
-      msdf
+      *view*
 
     ;; Need not bind texture since it is not used by compute shader
     (dolist (boa (list bo-projview
@@ -78,7 +78,7 @@
     	      (size-buffer bo-texture))))
   
 
-(defun run-compute (msdf)
+(defun run-compute ()
 
   (with-slots (program-compute
 	       mapping-base
@@ -86,11 +86,11 @@
 	       bo-indirect
 	       inst-max
 	       ix-fence)
-      msdf
+      *view*
     
     (gl:use-program program-compute)
     
-    (update-compute-buffers msdf)
+    (update-compute-buffers)
     
     ;; Reset counter before every dispatch
     (setf (mem-aref (aref (ptrs-buffer bo-counter) 0) :uint 0) 0)
@@ -112,7 +112,7 @@
 	  inst-max)))
     	  ;; (mem-aref (aref (ptrs-buffer bo-counter) 0) :uint 0))))
 
-(defun run-compute-copy (msdf)
+(defun run-compute-copy ()
 
   (with-slots (program-compute
 	       mapping-base
@@ -123,11 +123,11 @@
 	       bo-indirect
 	       inst-max
 	       ix-fence)
-      msdf
+      *view*
 
     ;; Need not use program
     
-    (update-compute-buffers msdf)
+    (update-compute-buffers)
     
     ;; base -> raster
     (copy-buffer (aref (buffers (boa (gethash "instance" mapping-base))) 0)

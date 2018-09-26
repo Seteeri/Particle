@@ -66,14 +66,6 @@
         (path-server-view "/tmp/protoform-view.socket")
         (path-server-model "/tmp/protoform-model.socket"))
 
-    ;; (fork (lambda () (protoform.model:main-model width height
-    ;; 						 inst-max
-    ;; 						 path-server-model)))
-    ;; (fork (lambda () (protoform.view:main-view width height
-    ;; 					       inst-max
-    ;; 					       path-server-model)))    
-    ;; (sb-ext:exit)
-
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Init/bootstrapper system ;)
 
@@ -83,40 +75,23 @@
     ;; View: swank server/client
 
     ;; Launch swank servers
-    (when t (fork (lambda () (start-swank-server 10000))))
-    (when t (fork (lambda () (start-swank-server 10001))))
+    (fork (lambda () (protoform.view:main-view width height
+    					       inst-max
+    					       path-server-model)))
+    (sleep 1)
+    (fork (lambda () (protoform.model:main-model width height
+    						 inst-max
+    						 path-server-model)))
     ;; (when nil (fork (lambda () (protoform.controller:main-controller path-server-model))))
 
-    (sleep 1)
-
-    ;; Make function
-    (defparameter connection (swank-protocol:make-connection "skynet" 10000))
-    (swank-protocol:connect connection)
-    (swank-protocol:request-connection-info connection)
-    (format t "~a~%" (swank-protocol:read-message connection))
     ;; (swank-protocol:request-listener-eval connection "(+ 2 2)")
     ;; (format t "~a~%" (swank-protocol:read-message connection)) ; blocks
     ;; (format t "~a~%" (swank-protocol:read-all-messages connection))
-    
-    ;; Init model
-    (swank-protocol:request-listener-eval connection
-    					  "(protoform.model:main-model
-                               		   1280 1600
-                             		   131072
-                             		   \"/tmp/protoform-model.socket\")")
-
-    ;; Init view
-    ;; (swank-protocol:request-listener-eval connection
-    ;; 					  "(protoform.model:main-view
-    ;;                            		   1280 1600
-    ;;                          		   131072
-    ;;                          		   \"/tmp/protoform-view.socket\")")
+    ;; (let ((conn (init-swank-conn "skynet" 10001)))
+    ;;   (swank-protocol:request-listener-eval conn
+    ;; 					  "t"))
     
     ;; https://www.emacswiki.org/emacs/StumpWM
-    
-    ;; Execute main functions and create swank clients to connect to each other
-    ;; Model will launch swank client to connect to view
-    ;; View will launch swnnak client to connect to model
 
     ;; (format t "~v@{~A~:*~}~%" 64 "-")
     

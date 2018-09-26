@@ -48,7 +48,7 @@
 							:height height
 							:projection-type 'orthographic)
 			       :inst-max inst-max
-			       :conn-model (init-conn-server path-server-model)))
+			       :conn-model nil)) ;(init-conn-server path-server-model)))
 	 (params-shms (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
 			    (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))
 			    (list "texture" "/protoform-texture.shm" (align-size (* 4 96 96 255))))))
@@ -257,6 +257,8 @@
 		   inst-max
 		   path-server-model)
 
+  (start-swank-server 10000)
+  
   (let* ((model (init-model width
 			    height
 			    inst-max
@@ -271,6 +273,22 @@
     ;; 1. Rewrite/refactor IPC - model will send setup to view
     ;; 2. Test live texture updates
     ;; 3. Use parameters from Pango to set texture size
+
+    (format t "[model] Init swank conn...~%")
+    
+    ;; Init view buffers and start loop
+    (let ((conn (init-swank-conn "skynet" 10001)))
+      
+      (setf (swank-protocol::connection-package conn) "protoform.view")
+
+      (format t "[model] Send eval~%")
+      
+      ;; (swank-protocol:request-listener-eval conn
+      ;; 					    "t")
+      (swank-protocol:request-listener-eval conn
+      					    "(init-view 1280 1600 131072)")
+      (format t "[model] Wait for eval~%")
+      (format t "~a~%" (swank-protocol:read-message conn)))
     
     (init-text model)
 

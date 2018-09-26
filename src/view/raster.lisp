@@ -18,7 +18,7 @@
     (format t "[init-program-raster] Program info log: ~a~%" (gl:get-program-info-log program))
     program))
 
-(defun init-buffers-raster (msdf)
+(defun init-buffers-raster ()
 
   (with-slots (width height
 		     program-raster
@@ -29,10 +29,10 @@
 		     bo-indirect
 		     bo-texture
 		     inst-max)
-      msdf
-
+      *view*
+    
     (gl:use-program program-raster)
-
+    
     ;; All buffer objects should be auto-created by directive from model/client
     ;; Methods:
     ;; 1. Send code, eval through swank
@@ -113,12 +113,12 @@
     (set-bo-indirect bo-indirect
 		     6 inst-max 0 0 0)))
 
-(defun update-raster-buffer-bindings (msdf)
+(defun update-raster-buffer-bindings ()
   (with-slots (bo-projview
 	       bo-instance
 	       bo-indirect
 	       ix-fence)
-      msdf
+      *view*
     
     (when (> (count-buffers bo-projview) 1)
       (update-binding-buffer bo-projview ix-fence))
@@ -129,11 +129,11 @@
     (when (> (count-buffers bo-indirect) 1)
       (update-binding-buffer bo-indirect ix-fence))))
 
-(defun run-raster (msdf)
+(defun run-raster ()
 
-  (gl:use-program (program-raster msdf))
+  (gl:use-program (program-raster *view*))
 
-  (update-raster-buffer-bindings msdf)
+  (update-raster-buffer-bindings)
 
   (gl:clear :color-buffer-bit :depth-buffer-bit)
   

@@ -28,5 +28,19 @@ interface, to handle Swank Client connection requests."
   (setf swank:*log-events* nil)
   (setf swank:*global-debugger* nil)
   (setf swank:*configure-emacs-indentation* nil)
-  (start-swank-server-for-swank-client port)
-  (wait-for-swank-thread))
+  (setf swank:*use-dedicated-output-stream* nil)
+  (setf swank:*communication-style* :fd-handler)
+  (start-swank-server-for-swank-client port))
+  ;; (wait-for-swank-thread)
+
+(defun init-swank-conn (host port)
+  (let ((conn (swank-protocol:make-connection host port)))
+    (swank-protocol:connect conn)
+    (swank-protocol:request-connection-info conn)
+    (let ((msg-init (swank-protocol:read-message conn)))
+      (when t
+	(format t "~a~%" msg-init)))
+    conn))
+
+  
+  

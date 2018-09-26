@@ -5,7 +5,7 @@
    (boa :accessor boa :initarg :boa :initform nil)
    (mmap :accessor mmap :initarg :mmap :initform nil)))
 
-(defun init-mapping-base (msdf)
+(defun init-mapping-base ()
 
   ;; These correspond with:
   ;; model: init-mapping-base
@@ -15,7 +15,7 @@
   (with-slots (program-compute
 	       mapping-base
 	       inst-max)
-      msdf   
+      *view*
     
     (init-mapping-buffer mapping-base
 			 program-compute

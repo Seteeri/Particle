@@ -182,90 +182,67 @@
 		  height
 		  inst-max)
   
-  (let ((view (make-instance 'view
-			     :width width
-			     :height height
-			     :fences (make-array 3
-						 :adjustable nil
-						 :initial-element (null-pointer))
-			     :program-raster (init-program-raster)
-			     :program-compute (init-program-compute)
-			     :inst-max inst-max)))
-    
-    ;; (format t "[init-msdf] Initializing raster buffers...~%")
-    (init-buffers-raster view)
-    
-    ;; (format t "[init-msdf] Initializing base buffers...~%")
-    (init-mapping-base view)
-    
-    ;; (format t "[init-msdf] Initializing compute buffers...~%")
-    (init-buffers-compute view)
-    
-    view))
+  (setf *view* (make-instance 'view
+			      :width width
+			      :height height
+			      :fences (make-array 3
+						  :adjustable nil
+						  :initial-element (null-pointer))
+			      :program-raster (init-program-raster)
+			      :program-compute (init-program-compute)
+			      :inst-max inst-max))
+
+  ;; Break into two functions?
+  
+  (format t "[init-msdf] Initializing raster buffers...~%")
+  (init-buffers-raster)
+  
+  (format t "[init-msdf] Initializing base buffers...~%")
+  (init-mapping-base)
+  
+  (format t "[init-msdf] Initializing compute buffers...~%")
+  (init-buffers-compute))
 
 (defun main-view (width
 		  height
 		  inst-max
 		  path-server)
+
+  (start-swank-server 10001)
+    
   (glfw:with-init-window (:title "Protoform"
-				 :width width ;1440
-				 :height height ;900
+				 :width width
+				 :height height
 				 :client-api :opengl-es-api
 				 :context-version-major 3
 				 :depth-bits 16)
-    ;; :monitor (glfw:get-primary-monitor))
-    ;; (setf %gl:*gl-get-proc-address* #'get-proc-address)
-    ;; (glfw:set-key-callback 'quit-on-escape)
     (glfw:set-window-size-callback 'update-viewport)
+    
+    (defparameter *gles* (init-gles width height))
+    (defparameter *view* nil)
+    
+    ;; Model will connect and execute code in this process      
+    ;; Cannot actually draw until context initialized
 
-    ;; Init view
-    (let* ((conn-model (init-conn-client path-server))
-	   (gles (init-gles width height))
-	   (view (init-view width
-			    height
-			    inst-max)))
+    (format t "[view] Begin loop...~%")
+    
+    (loop 
+       ;; :until (glfw:window-should-close-p)
+       :do (progn
 
-      ;; Print OpenGL parameters
-      (when nil
-	(format t "[init-msdf] Instances: ~:D~%" inst-max)
-	(format t "[init-msdf] Triangles: ~:D~%" (* inst-max 2))
-	(format t "[init-msdf] Vertices: ~:D~%" (* inst-max 6))
-	(calc-opengl-usage))
-      
-      ;; Connect to model server
-      ;; Block for message...maybe can use recv flag instead
-      ;; (setf (sock conn-model) (init-socket-client path-server nil))
-      
-      ;; ;; Send client type
-      ;; (send-message (sock conn-model)
-      ;; 		    (buffer-ptr-send conn-model)
-      ;; 		    "(:view)")
+	     ;; (format t "[view] Running...~%")
+	     (sb-sys:serve-all-events 0)
+	     
+	     (if *view*
+		 (progn
+		   (run-view)
+		   ;;(glfw:poll-events)
+		   (glfw:swap-buffers))
+		 (sleep 0.0167))))))
 
-      ;; (format t "~a~%" (eval (read-from-string "*package*")))
-      ;; (force-output)
-
-      ;; Model will connect and execute code in this process
-      
-      (loop 
-	 ;; :until (glfw:window-should-close-p)
-	 :do (progn
-
-	       ;; Check for requests from server
-	       (request-server conn-model
-			       view)
-
-	       ;; Draw loop
-	       (run-view view
-			 conn-model)
-
-	       ;;(glfw:poll-events)
-	       (glfw:swap-buffers))))))
-
-(defun run-view (view
-		 conn-client)
-
+(defun run-view ()
   (with-slots (sync fences ix-fence)
-      view
+      *view*
     
     ;; Create with-* macro for this
     ;; if sync:
@@ -280,9 +257,9 @@
     	(setf (aref fences ix-fence) (null-pointer))))
 
     ;; Dispatch compute shader; process instances from base buffer to render buffers
-    (run-compute-copy view)
+    (run-compute-copy)
     
-    (run-raster view)
+    (run-raster)
     
     (when sync
       ;; Create fence, which previous portion will check for
