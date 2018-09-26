@@ -60,7 +60,8 @@
 	   #:make-orthographic-vector
 	   #:make-perspective-vector
 	   #:clean-up-buffer-object
-
+	   #:print-gl-max
+	   
 	   #:target
 	   #:binding-layout
 	   #:fn-bind

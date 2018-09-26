@@ -1,5 +1,7 @@
 (in-package :protoform.opengl)
 
+(defparameter *map-buffer-range-access* (logior #x0002 #x0040 #x0080))
+
 (declaim (inline rad-to-deg))
 (defun rad-to-deg (rad)
   (/ (* rad 180.0) pi))
@@ -15,35 +17,51 @@
       (read-sequence data stream)
       data)))
 
-(defclass gles ()
-  ((programs :accessor programs :initarg :programs :initform nil)))
+(defun sync-gl ()
+  ;; Compute shader performs "incoherent memory accesses":
+  ;; - Writes (atomic or otherwise) via Image Load Store
+  ;; - Writes (atomic or otherwise) via Shader Storage Buffer Objects
+  ;; - Writes to variables declared as shared in Compute Shaders (but not output variables in Tessellation Control Shaders)    
+  ;; Issuing a barrier ensure writes are completed
+  ;; Issue memory-barrier + fence, then wait for fence
+  ;; (%gl:memory-barrier :vertex-attrib-array-barrier-bit)
+  ;; (%gl:memory-barrier :atomic-counter-barrier-bit)
+  ;; (%gl:memory-barrier :shader-storage-barrier-bit)
+  (%gl:memory-barrier :all-barrier-bits)
+  (let ((sync (%gl:fence-sync :sync-gpu-commands-complete 0)))
+    (wait-buffer sync)
+    (%gl:delete-sync sync)))
 
-(defun init-gles (width height)
+;; REFACTOR BELOW
+;; Rename to wait-fence
+(defun wait-buffer (sync)
+  (unless (null-pointer-p sync)
+    ;; check first then wait
+    (let* ((wait-flags 0)
+	   (wait-duration 0)
+	   (wait-return nil))
+      (loop
+	 :do(progn
+	      
+	      (setf wait-return (%gl:client-wait-sync sync wait-flags wait-duration))
 
-  (defparameter *map-buffer-range-access* (logior #x0002 #x0040 #x0080))
-  
-  (format t "[init-gles] GL Vendor: ~a~%" (gl:get* :vendor))
-  (format t "[init-gles] GL Renderer: ~a~%" (gl:get* :renderer))
-  (format t "[init-gles] GL Version: ~a~%" (gl:get* :version))
-  (format t "[init-gles] GLSL Version: ~a~%" (gl:get* :shading-language-version))
+	      (when (or (eq wait-return :already-signaled-apple) (eq wait-return :condition-satisfied-apple))
+		(return))
+	      (when (eq wait-return :wait-failed-appled)
+		(error "wait-buffer: client-wait-sync returned :wait-failed")
+		(return))
+	      
+	      ;; After the first time, need to start flushing, and wait for a looong time.
+	      (setf wait-flags :sync-flush-commands-bit-apple)
+	      (setf wait-duration #xFFFFFFFFFFFFFFFF))))))
 
-  ;; TEMP: Disable for now
-  (when t
-    (gl:enable :blend)
-    (gl:blend-func :src-alpha :one-minus-src-alpha))
-  
-  ;; Get screen dimensions from drm
-  (gl:viewport 0 0 width height)
-  (gl:enable :cull-face)
-  (gl:enable :depth-test)
-
-  (%gl:clear-color 0.0
-		   (coerce (/ 43 255) 'single-float)
-		   (coerce (/ 54 255) 'single-float)
-		   0.0)
-  (gl:clear :color-buffer-bit :depth-buffer-bit)
-  
-  (print-gl-max))
+(defun wait-buffer-2 (sync)
+  (unless (null-pointer-p sync)
+    (loop :while t
+       :for wait-return := (%gl:client-wait-sync sync :sync-flush-commands-bit 1)
+       :do (when (or (eq wait-return :already-signaled-apple)
+		     (eq wait-return :condition-satisfied-apple))
+		(return)))))
 
 (defun print-gl-max ()
 

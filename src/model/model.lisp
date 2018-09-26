@@ -274,27 +274,27 @@
     ;; 2. Test live texture updates
     ;; 3. Use parameters from Pango to set texture size
 
-    (format t "[model] Init swank conn...~%")
+    (format t "[model] Init data~%")
+    (init-text model)
+    (init-layout model)
+    
+    (format t "[model] Init swank conn to view~%")
     
     ;; Init view buffers and start loop
-    (let ((conn (init-swank-conn "skynet" 10001)))
-      
+    (let ((conn (init-swank-conn "skynet" 10001)))      
       (setf (swank-protocol::connection-package conn) "protoform.view")
 
       (format t "[model] Send eval~%")
-      
       ;; (swank-protocol:request-listener-eval conn
       ;; 					    "t")
       (swank-protocol:request-listener-eval conn
       					    "(init-view 1280 1600 131072)")
       (format t "[model] Wait for eval~%")
       (format t "~a~%" (swank-protocol:read-message conn)))
+
+    ;; Need view memcpy to display
     
-    (init-text model)
-
-    (init-layout model)
-
-    (loop (sleep 1))))
+    (loop (sleep 0.0167))))
     
     ;; (loop (wait-epoll model))))
 
