@@ -35,6 +35,15 @@
    (scale-glyph :accessor scale-glyph :initarg :scale-glyph :initform nil)
    (cursor :accessor cursor :initarg :cursor :initform nil)))
 
+;; For now, determine these through view - maybe model can request from view?
+;; GL_MAX_SHADER_STORAGE_BLOCK_SIZE = 134217728 = 134.217728 MBs
+;; GL_MAX_TEXTURE_BUFFER_SIZE       = 134217728 = 134.217728 MBs
+;;
+;; Or pass 0/-1 to determine max?
+(defparameter *params-shm* (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
+				 (list "instance" "/protoform-instance.shm" 134217728)
+				 (list "texture" "/protoform-texture.shm" 134217728)))
+
 (defun init-model (width
 		   height
 		   inst-max
@@ -48,10 +57,7 @@
 							:height height
 							:projection-type 'orthographic)
 			       :inst-max inst-max
-			       :conn-model nil)) ;(init-conn-server path-server-model)))
-	 (params-shms (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
-			    (list "instance" "/protoform-instance.shm" (align-size (* (/ 208 4) 4 inst-max)))
-			    (list "texture" "/protoform-texture.shm" (align-size (* 4 96 96 255))))))
+			       :conn-model nil))) ;(init-conn-server path-server-model)))
     
     (setf (dpi-glyph model) (/ 1 90))
     (setf (scale-glyph model) 10.0)
@@ -64,7 +70,7 @@
     ;; Note, element-array and draw-indirect buffers exist
     (format t "[main-model] Initializing mmaps...~%")
     (init-mapping-base (mapping-base model)
-		       params-shms)
+		       *params-shm*)
     
     ;; Init data for shms
     (with-slots (ptr size)
@@ -78,20 +84,7 @@
 	    (data (init-vector-position 1)))
 	(dotimes (i (length data))
 	  (setf (mem-aref ptr :float (+ b i))
-		(aref data i)))))
-
-    ;; Init swank client to viewd
-    
-    (when nil
-      ;; Epoll fds among server and clients
-      ;; Clients must indicate if they are view or controller type
-      (let ((epoll-fd (c-epoll-create 1)))
-	(ctl-epoll epoll-fd
-		   (sock (conn-model model))
-		   #x0001
-		   :add)
-	(setf (epoll-fd model) epoll-fd))
-      (setf (epoll-events model) (foreign-alloc '(:struct event) :count 3)))
+		(aref data i)))))    
         
     model))
 
@@ -174,7 +167,7 @@
     ;;   (pango:pango_layout_set_font_description layout desc)
     ;;   (pango:pango_font_description_free desc))
     
-    (let ((text-2 "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 72\" strikethrough=\"true\">R</span>")) ; 100, 80, 0
+    (let ((text-2 "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 72\" strikethrough=\"true\">X</span>")) ; 100, 80, 0
       ;; b = 100, g = 80, r = 0
       (pango:pango_layout_set_markup layout text-2 -1))
     
@@ -278,35 +271,48 @@
     (init-text model)
     (init-layout model)
     
-    (format t "[model] Init swank conn to view~%")
+    (format t "[model] Init conn to view swank server~%")
     
     ;; Init view buffers and start loop
     (let ((conn (init-swank-conn "skynet" 10001)))      
       (setf (swank-protocol::connection-package conn) "protoform.view")
 
       (format t "[model] Send eval~%")
-      ;; (swank-protocol:request-listener-eval conn
-      ;; 					    "t")
-      (swank-protocol:request-listener-eval
-       conn
-       "(init-view 1280 1600 131072)")
-      (format t "[model] Wait for eval~%")
+      
+      ;; view should not concern itself with inst-max...
+      (swank-protocol:request-listener-eval conn
+      					    (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max))
+      ;; (format t "[model] Wait for eval~%")
       (format t "~a~%" (swank-protocol:read-message conn))
-
+      
+      ;; Init buffers
+      ;; Need to standardize view buffer creation params
+      (swank-protocol:request-listener-eval conn
+					    (format nil "(init-view-buffers `(`~S `~S `~S))"
+						    (first *params-shm*)
+						    (second *params-shm*)
+						    (third *params-shm*)))
+      ;; (format t "[model] Wait for eval~%")
+      (format t "~a~%" (swank-protocol:read-message conn))
+      
+      ;; Do progn to chain them?
       (dolist (name (list "projview"
     			  "instance"
     			  "texture"))
         (with-slots (ptr size)
     	    (gethash name (mapping-base model))
-	  (format t "(serve-memcpy2 \"~a\" \"~a\" ~a)" name name size)
-	  (swank-protocol:request-listener-eval
-	   conn
-	   (format nil "(serve-memcpy2 \"~a\" \"~a\" ~a)" name name size))
-	  (format t "~a~%" (swank-protocol:read-message conn)))))
+	  (format t "(serve-memcpy2 \"~a\" \"~a\" ~a)~%" name name size)
+	  (swank-protocol:request-listener-eval conn
+						(format nil "(serve-memcpy2 \"~a\" \"~a\" ~a)" name name size))
+	  (format t "~a~%" (swank-protocol:read-message conn))))
+
+      ;; Enable draw flag for view loop
+      (swank-protocol:request-listener-eval conn
+					    (format nil "(setf *draw* t)"))
+      ;; (format t "[model] Wait for eval~%")
+      (format t "~a~%" (swank-protocol:read-message conn)))      
     
     (loop (sleep 0.0167))))
-    
-    ;; (loop (wait-epoll model))))
 
 (defun handle-escape (msdf
 		      keysym)

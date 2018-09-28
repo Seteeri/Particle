@@ -13,7 +13,7 @@
     (format t "[init-program-compute] Program info log: ~a~%" (gl:get-program-info-log program))
     program))
 
-(defun init-buffers-compute ()
+(defun init-buffers-compute (params-shm)
 
   (with-slots (program-compute
 	       mapping-base
@@ -129,7 +129,7 @@
     
     (update-compute-buffers)
     
-    ;; base -> raster
+    ;; Do only if dirty
     (copy-buffer (aref (buffers (boa (gethash "instance" mapping-base))) 0)
 		 (aref (buffers bo-instance) ix-fence)
 		 (size-buffer bo-instance))

@@ -18,7 +18,7 @@
     (format t "[init-program-raster] Program info log: ~a~%" (gl:get-program-info-log program))
     program))
 
-(defun init-buffers-raster ()
+(defun init-buffers-raster (params-shm)
 
   (with-slots (width height
 		     program-raster
@@ -37,16 +37,18 @@
     ;; Methods:
     ;; 1. Send code, eval through swank
     ;; 2. Send parameters for specific functions
+
+    ;; (setf size-buffer (align-size (* count size type-size)))
     
     ;; Init buffer object
     ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
     (gl:active-texture :texture0) ; move to init?
     (setf bo-texture (init-buffer-texture program-raster
     					  :texture-buffer
-    					  "texture-buffer"
+    					  "texture"
     					  :unsigned-byte
     					  4
-    					  (* 96 96 255)
+    					  (/ 134217728 4) ; get size from model
     					  0 ; bind layout
     					  t
     					  :buffering 'triple)) ;triple if editing? rotate also...
@@ -55,7 +57,6 @@
     ;; Parse glyph images into texture
     (when nil
       (parse-glyphs-ppm bo-texture))
-
     
     (setf boav-main (init-boav-main))
 
@@ -93,9 +94,9 @@
     (setf bo-instance (init-buffer-object program-raster
 						  :shader-storage-buffer
 						  "instance"
-						  :float
-						  (/ 208 4)
-						  inst-max
+						  :float   ; 4
+						  1        ; ignore for now since going for max size, (/ 208 4)
+						  (/ 134217728 4) ; inst-max
 						  2 ; output binding
 						  t
 						  :buffering 'triple))

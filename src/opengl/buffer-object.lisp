@@ -75,10 +75,10 @@
 
       (when t
 	(format t "[init-buffer-object] Buffer Object: ~a~%" name)
-	(format t "[init-buffer-object]   buffers: ~a~%" buffers)
-	(format t "[init-buffer-object]   type: ~a, ~a, ~a ~%" type gl-type type-size)
-	(format t "[init-buffer-object]   size: ~a~%" size)
-	(format t "[init-buffer-object]   count: ~a~%" count)
+	;; (format t "[init-buffer-object]   buffers: ~a~%" buffers)
+	;; (format t "[init-buffer-object]   type: ~a, ~a, ~a ~%" type gl-type type-size)
+	;; (format t "[init-buffer-object]   size: ~a~%" size)
+	;; (format t "[init-buffer-object]   count: ~a~%" count)
 	(format t "[init-buffer-object]   size-buffer: ~a~%" size-buffer)
 	(when data
 	  (format t "[init-buffer-object]   data (array) length: ~a~%" (length data))))

@@ -62,7 +62,7 @@
 
   (let ((width (/ 2560 2)) ; 1280
         (height 1600) ; 1600
-        (inst-max (expt 2 17))
+        (inst-max (expt 2 16))
         (path-server-view "/tmp/protoform-view.socket")
         (path-server-model "/tmp/protoform-model.socket"))
 
@@ -96,4 +96,5 @@
     ;; (format t "~v@{~A~:*~}~%" 64 "-")
     
     ;; Explicitly exit after loading code
+    (format t "[main] exiting")
     (sb-ext:exit)))

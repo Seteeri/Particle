@@ -1,6 +1,7 @@
 (in-package :protoform.view)
 
 (defparameter *view* nil)
+(defparameter *draw* nil)
 
 (defclass view ()
   ;; Create a base for these 3 slots?
@@ -118,30 +119,31 @@
   
   (print-gl-max))
 
-(defun init-view (width
-		  height
-		  inst-max)
-  
-  (setf *view* (make-instance 'view
-			      :width width
-			      :height height
-			      :fences (make-array 3
-						  :adjustable nil
-						  :initial-element (null-pointer))
-			      :program-raster (init-program-raster)
-			      :program-compute (init-program-compute)
-			      :inst-max inst-max))
+(defun init-view-programs (width
+			   height
+			   inst-max)
+  (make-instance 'view
+		 :width width
+		 :height height
+		 :fences (make-array 3
+				     :adjustable nil
+				     :initial-element (null-pointer))
+		 :program-raster (init-program-raster)
+		 :program-compute (init-program-compute)
+		 :inst-max inst-max))
 
-  ;; Break into two functions?
+(defun init-view-buffers (params)
+
+  ;; (format t "[init-view] params: ~S~%" params)
+
+  (format t "[init-view] Initializing base buffers...~%")
+  (init-mapping-base params)
   
   (format t "[init-view] Initializing raster buffers...~%")
-  (init-buffers-raster)
-  
-  (format t "[init-view] Initializing base buffers...~%")
-  (init-mapping-base)
-  
+  (init-buffers-raster params)
+    
   (format t "[init-view] Initializing compute buffers...~%")
-  (init-buffers-compute))
+  (init-buffers-compute params))
 
 (defun main-view (width
 		  height
@@ -174,7 +176,7 @@
 	     ;; (format t "[view] Serve-all-events~%")
 	     (sb-sys:serve-all-events 0)
 	     
-	     (if *view*
+	     (if *draw*
 		 (progn
 		   (run-view)
 		   ;;(glfw:poll-events)
