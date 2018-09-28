@@ -44,6 +44,8 @@
 
   ;; Move this buffer-object into rotational buffers for consistency?
 
+  ;; TODO: Split this
+  
   (with-slots (program-compute
 	       mapping-base)
       *view*

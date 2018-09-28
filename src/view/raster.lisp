@@ -32,11 +32,11 @@
       *view*
     
     (gl:use-program program-raster)
+
+    (setf boav-main (init-boav-main))
     
-    ;; All buffer objects should be auto-created by directive from model/client
-    ;; Methods:
-    ;; 1. Send code, eval through swank
-    ;; 2. Send parameters for specific functions
+    ;; Split into those directly corresponding to model and view-only
+    ;; OR model will specify all of the buffers except for indirect?
 
     ;; (setf size-buffer (align-size (* count size type-size)))
     
@@ -55,10 +55,7 @@
     (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
     
     ;; Parse glyph images into texture
-    (when nil
-      (parse-glyphs-ppm bo-texture))
-    
-    (setf boav-main (init-boav-main))
+    (when nil (parse-glyphs-ppm bo-texture))
 
     ;; static
     (setf boa-element (init-boa-element program-raster
@@ -101,7 +98,7 @@
 						  t
 						  :buffering 'triple))
 
-    ;; Need not mmap - doesn't make sense right now...
+    ;; Need not mmap since compute will modify this...
     (setf bo-indirect (init-buffer-draw-indirect program-raster
 						 :draw-indirect-buffer
 						 "draw-indirect-buffer"

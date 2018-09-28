@@ -23,8 +23,9 @@
     (gl:use-program program-compute)
     
     ;; Uniform is only bound once also
-    ;; Texture also exists but not bound since compute shader does not use it
-    ;; Texture need only do a shm-ptr copy
+
+    ;; Texture exists but not bound since compute shader does not use it
+    ;; Texture need only do a shm-ptr copy per frame as needed
     (dolist (name '("projview"
 		    "instance"))
       (progn
@@ -32,7 +33,8 @@
 	(let ((boa (boa (gethash name mapping-base))))
 	  (update-binding-buffer boa 0))))
 
-    ;; Note: this is initially bound once
+    ;; Bound on init only
+    ;; TODO: Move creation to raster
     (setf bo-counter (init-buffer-object program-compute
 					     :atomic-counter-buffer
 					     "atomic-counter-buffer"
