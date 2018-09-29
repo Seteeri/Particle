@@ -48,9 +48,6 @@
 
 
 (defun update-compute-buffers ()
-
-  ;; This function binds the raster buffers to the *_out bindings in the shader
-  ;; Should group them like mapping base is?
   
   (with-slots (mapping-base
 	       bo-step
@@ -62,7 +59,7 @@
 		    "instance"))
       (update-binding-buffer (gethash name bo-step) ix-fence))
     
-    ;; Tentative placement:
+    ;; Refactor to be on-demand by model
 
     ;; Currently, assume changing every frame for now...
     ;; Memcpy from compute ptrs to raster ptrs since compute shader doesn't compute anything for it
@@ -75,15 +72,11 @@
     ;; Memcpy texture also - shm ptr to gl ptr
     ;; Binding only required for shader usage
     ;; Need only do on-demand - not every frame
-
-    ;; Don't need yet
-    (when nil
-      (c-memcpy (aref (ptrs-buffer bo-texture) ix-fence)
-    		(aref (ptrs-buffer (boa (gethash "texture" mapping-base))) 0)
-    		(size-buffer bo-texture))))
-
-  t)
-  
+    (let ((step-tex (gethash "texture" bo-step))
+	  (base-tex (boa (gethash "texture" mapping-base))))
+      (c-memcpy (aref (ptrs-buffer step-tex) ix-fence)
+    		(aref (ptrs-buffer base-tex) 0)
+    		(size-buffer step-tex)))))  
 
 (defun run-compute ()
 
