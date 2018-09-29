@@ -82,20 +82,16 @@
 			    6 inst-max 0 0 0))))
 
 (defun update-raster-buffer-bindings ()
-  (with-slots (bo-projview
-	       bo-instance
-	       bo-indirect
+  (with-slots (bo-step
 	       ix-fence)
       *view*
-    
-    (when (> (count-buffers bo-projview) 1)
-      (update-binding-buffer bo-projview ix-fence))
-    
-    (when (> (count-buffers bo-instance) 1)
-      (update-binding-buffer bo-instance ix-fence))
-    
-    (when (> (count-buffers bo-indirect) 1)
-      (update-binding-buffer bo-indirect ix-fence))))
+    ;; indirect needs to be rotated also
+    (dolist (name '("projview"
+		    "instance"
+		    "draw-indirect"))
+      (let ((bo (gethash name bo-step)))
+	(when (> (count-buffers bo) 1)
+	  (update-binding-buffer bo ix-fence))))))
 
 (defun run-raster ()
 
