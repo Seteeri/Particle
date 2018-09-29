@@ -13,33 +13,6 @@
 ;; baseinstance
 ;;     Specifies the base instance for use in fetching instanced vertex attributes.
 
-;; maybe remove size and just do count * type?
-(defun init-buffer-draw-indirect (program
-				  target
-				  name ; 
-				  type ; :int
-				  size ; 5
-				  count ; 1
-				  binding-layout
-				  mapped-persistent
-				  &key
-				    (buffering 'triple)     ; 'single 'double 'triple, make this required
-				    (usage :static-draw) ; dynamic-draw :stream-draw
-				    (data nil))
-  
-  (let ((buffer (init-buffer-object program
-				    target
-				    name
-				    type
-				    size
-				    count
-				    binding-layout
-				    mapped-persistent
-				    :buffering buffering
-				    :usage usage
-				    :data data)))
-    buffer))
-
 (defun set-bo-indirect (bo-indirect
 			count
 			prim-count

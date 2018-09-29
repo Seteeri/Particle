@@ -98,15 +98,15 @@
 							   :initial-contents (list 0 2 1 0 3 2))))
     
     ;; Need not mmap since compute will modify this...
-    (setf bo-indirect (init-buffer-draw-indirect program-raster
-						 :draw-indirect-buffer
-						 "draw-indirect"
-						 :int
-						 6
-						 1
-						 -1 ; no binding
-						 t
-						 :buffering 'triple))
+    (setf bo-indirect (init-buffer-object program-raster
+					  :draw-indirect-buffer
+					  "draw-indirect"
+					  :int
+					  6
+					  1
+					  -1 ; no binding
+					  t
+					  :buffering 'triple))
     (set-bo-indirect bo-indirect
 		     6 inst-max 0 0 0)))
 
