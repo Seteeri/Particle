@@ -323,14 +323,8 @@
 						    (fifth *params-shm*)))
       ;; (format t "[model] Wait for eval~%")
       (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
-
-      ;; (fmt-model t "init-model" "DONE~%")
-      ;; (sb-ext:exit)
       
       ;; Do progn to chain them?
-      ;; (dolist (name (list "projview"
-      ;; 			  "instance"
-      ;; 			  "texture"))
       (dolist (params *params-shm*)
 	(destructuring-bind (target name path size bind-cs bind-vs) params      
           (with-slots (ptr size)
@@ -344,7 +338,7 @@
       (swank-protocol:request-listener-eval conn
 					    (format nil "(setf *draw* t)"))
       ;; (format t "[model] Wait for eval~%")
-      (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn)))      
+      (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn)))
     
     (loop (sleep 0.0167))))
 

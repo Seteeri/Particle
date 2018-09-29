@@ -1,5 +1,37 @@
 (in-package :protoform.view)
 
+;; (cond ((eq (first ret-recv) :mmap-shm)
+;;        t)
+;;       ((eq (first ret-recv) :unmmap-shm)
+;;        t)
+;;       ((eq (first ret-recv) :query-buffer-objects)
+;;        (serve-query-buffer-objects msdf
+;; 				   sock
+;; 				   buffer-ptr-recv))
+;;       ((eq (first ret-recv) :memcpy)
+;;        ;; Refactor for readability
+;;        ;; (format t "[serve-client] ~a, fence: ~a~%" ret-recv (ix-fence msdf))
+;;        (serve-memcpy sock
+;; 		     buffer-ptr-recv
+;; 		     (aref (ptrs-buffer (boa (gethash (second ret-recv) (mapping-base msdf)))) 0) ; dest - base buffer, no rot
+;; 		     (ptr (mmap (gethash (third ret-recv) (mapping-base msdf))))                  ; src  - mmap shm
+;; 		     (fourth ret-recv)
+;; 		     (fifth ret-recv)
+;; 		     (sixth ret-recv)
+;; 		     (seventh ret-recv)
+;; 		     requests-served)
+;;        t)
+;;       ((eq (first ret-recv) :exit)
+;;        (serve-exit msdf conn-client))
+;;       ((eq (first ret-recv) :sync)
+;;        (serve-sync sock
+;; 		   buffer-ptr-recv)
+;;        ;; (verify-instance msdf)
+;;        (return requests-served)
+;;        t)
+;;       (t
+;;        t)))
+
 (defun serve-memcpy (name-dest
 		     name-src
 		     size)
@@ -12,68 +44,7 @@
     (c-memcpy ptr-dest-off
 	      ptr-src-off
 	      size))
-  (format t "[view] c-memcpy: ~a ~a ~a" name-dest name-src size))
-
-;; Rename since technically view is not a server socket
-;; but can be implemented on any socket
-(defun request-server (conn-client msdf)
-  (with-slots (sock
-	       buffer-ptr-recv
-	       buffer-arr-recv)
-      conn-client
-    
-    (loop
-
-       :with requests-served = 0
-       :do (multiple-value-bind (ret-recv len-recv) (recv-message sock
-								  buffer-ptr-recv
-								  buffer-arr-recv)
-	     (if ret-recv
-
-		 (progn
-		   (incf requests-served)
-		   ;; (format t "[serve-client] ~a~%" ret-recv)
-		   (cond ((eq (first ret-recv) :mmap-shm)
-			  t)
-			 ((eq (first ret-recv) :unmmap-shm)
-			  t)
-			 ((eq (first ret-recv) :query-buffer-objects)
-			  (serve-query-buffer-objects msdf
-						      sock
-						      buffer-ptr-recv))
-			 ((eq (first ret-recv) :memcpy)
-			  ;; Refactor for readability
-			  ;; (format t "[serve-client] ~a, fence: ~a~%" ret-recv (ix-fence msdf))
-			  (serve-memcpy sock
-					buffer-ptr-recv
-					(aref (ptrs-buffer (boa (gethash (second ret-recv) (mapping-base msdf)))) 0) ; dest - base buffer, no rot
-					(ptr (mmap (gethash (third ret-recv) (mapping-base msdf))))                  ; src  - mmap shm
-					(fourth ret-recv)
-					(fifth ret-recv)
-					(sixth ret-recv)
-					(seventh ret-recv)
-					requests-served)
-			  t)
-			 ((eq (first ret-recv) :exit)
-			  (serve-exit msdf conn-client))
-			 ((eq (first ret-recv) :sync)
-			  (serve-sync sock
-				      buffer-ptr-recv)
-			  ;; (verify-instance msdf)
-			  (return requests-served)
-			  t)
-			 (t
-			  t)))
-
-		 ;; Check for errors
-		 (cond ((= len-recv 0)
-			;; 11=EAGAIN
-			(format t "[request-server] Server disconnected: ~a, ~a~%" sock (sb-alien:get-errno))
-			(serve-exit msdf conn-client))
-		       
-		       (t ; -1=no-data,>0=invalid-data
-			  (return requests-served)
-			t)))))))
+  (fmt-view t "serve-memcpy" "c-memcpy: ~a ~a ~a~%" name-dest name-src size))
 
 (defun serve-sync (sock buffer-ptr)
   (send-message sock
