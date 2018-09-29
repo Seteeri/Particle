@@ -12,11 +12,9 @@
   ;; view:  init-buffers-compute name and bind-layout
   ;; view:  update-compute-bindings
 
-  ;; (list "projview"       "/protoform-projview"      (align-size (* (+ 16 16 16) 4 1)))
-  ;; (list "instance"       "/protoform-instance"      134217728)
-  ;; (list "texture"        "/protoform-texture"       134217728)
-  ;; (list "element"        "/protoform-element"       (* 4 6)) ; 4 bytes/int * 6 ints or indices
-  ;; (list "draw-indirect"  "/protoform-draw-indirect" (* 4 6)) ; 6 ints
+  ;; "projview":0
+  ;; "instance":1
+  ;; "texture":-1
   
   (dolist (params params-shm)
     (fmt-view t "init-mapping-base" "~a~%" params)
@@ -26,10 +24,6 @@
   			   path
   			   size
 			   bind))))
-  
-  ;; 		       "projview":0
-  ;; 		       "instance":1
-  ;; 		       "texture":-1
 
 (defun init-mapping-buffer (target
 			    name
