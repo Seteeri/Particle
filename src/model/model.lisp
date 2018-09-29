@@ -54,27 +54,27 @@
 				       "bo-projview"
 				       "/protoform-projview"
 				       (align-size (* (+ 16 16 16) 4 1))
-				       0)
+				       0 0) ; cs-in, vs-in
 				 (list :shader-storage-buffer
 				       "bo-instance"
 				       "/protoform-instance"
 				       134217728				       
-				       1)
-				 (list :texture-buffer
+				       1 2)
+				 (list :texture-buffer ; requires fmt type
 				       "bo-texture"
 				       "/protoform-texture"
 				       134217728
-				       -1)
+				       -1 -1)
 				 (list :element-array-buffer
 				       "bo-element"
 				       "/protoform-element"
 				       (* 4 6)  ; 4 bytes/int * 6 ints or indices
-				       -1)
+				       -1 -1)
 				 (list :draw-indirect-buffer
 				       "bo-draw-indirect"
 				       "/protoform-draw-indirect"
 				       (* 4 6)  ; 6 ints/params
-				       -1))) 
+				       -1 -1))) 
 ;; Do atomic counter also?
 
 

@@ -18,12 +18,12 @@
   
   (dolist (params params-shm)
     ;; (fmt-view t "init-mapping-base" "~a~%" params)
-    (destructuring-bind (target name path size bind) params
+    (destructuring-bind (target name path size bind-cs bind-vs) params
       (init-mapping-buffer target
   			   name
   			   path
   			   size
-			   bind))))
+			   bind-cs))))
 
 (defun init-mapping-buffer (target
 			    name

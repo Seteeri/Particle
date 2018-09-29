@@ -37,11 +37,21 @@
 
     (setf boav-main (init-boav-main))
 
+    ;; Notes:
+    ;; * Texture requires setting fmt after
+    ;; * Some of the other buffers have a different bind layout for output
+    
     ;; (dolist (params params-shm)
     ;;   (fmt-view t "init-buffers-raster" "~a~%" params)
-    ;;   (destructuring-bind (target name path size bind) params
-
-    ;; Names will match slot names or use hash-table like mapping base
+    ;;   (destructuring-bind (target name path size bind-cs bind-vs) params
+    ;; 	(let ((bo (init-buffer-object program-raster
+    ;; 				      target
+    ;; 				      name
+    ;; 				      size
+    ;; 				      bind ; same for compute/raster
+    ;; 				      t
+    ;; 				      :buffering 'triple)))
+	
     
     ;; Init buffer object
     ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS

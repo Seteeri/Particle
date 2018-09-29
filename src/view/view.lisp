@@ -46,13 +46,14 @@
    ;; VAO
    ;; Note, VAOs not shared between contexts
    (boav-main :accessor boav-main :initarg :boav-main :initform nil)
-   
+
    ;; Persistently mapped
-   (bo-element :accessor bo-element :initarg :bo-element :initform nil)
-   (bo-projview :accessor bo-projview :initarg :bo-projview :initform nil)      
-   (bo-instance :accessor bo-instance :initarg :bo-instance :initform nil)
-   (bo-texture :accessor bo-texture :initarg :bo-texture :initform nil)
-   (bo-indirect :accessor bo-indirect :initarg :bo-indirect :initform nil)
+   (bo-step :accessor bo-step :initarg :bo-step :initform (make-hash-table :size 6 :test 'equal))
+   ;; (bo-element :accessor bo-element :initarg :bo-element :initform nil)
+   ;; (bo-projview :accessor bo-projview :initarg :bo-projview :initform nil)      
+   ;; (bo-instance :accessor bo-instance :initarg :bo-instance :initform nil)
+   ;; (bo-texture :accessor bo-texture :initarg :bo-texture :initform nil)
+   ;; (bo-indirect :accessor bo-indirect :initarg :bo-indirect :initform nil)
 
    ;; Sync
    (sync :accessor sync :initarg :sync :initform nil)
