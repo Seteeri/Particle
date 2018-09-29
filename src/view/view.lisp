@@ -5,7 +5,11 @@
 
 (defun fmt-view (dst ctx-str ctl-str &rest rest)
   ;; Add space opt
-  (format dst (str:concat "[model:" ctx-str "] " ctl-str) rest))
+  (apply #'format
+	 dst
+	 (str:concat (format nil "[PID:~a,view][~a] " (sb-posix:getpid) ctx-str)
+		     ctl-str)
+	 rest))
 
 (defclass view ()
   ;; Create a base for these 3 slots?
@@ -137,13 +141,16 @@
 
   ;; (format t "[init-view] params: ~S~%" params)
 
-  (format t "[init-view] Initializing base buffers...~%")
+  (format t "[init-view] Initializing base buffers~%")
   (init-mapping-base params)
   
-  (format t "[init-view] Initializing raster buffers...~%")
+  (format t "[init-view] Initializing raster buffers.~%")
   (init-buffers-raster params)
-    
-  (format t "[init-view] Initializing compute buffers...~%")
+
+  (fmt-view t "init-view" "FINISHED RASTER~%")
+  (sb-ext:exit)
+  
+  (format t "[init-view] Initializing compute buffers~%")
   (init-buffers-compute params))
 
 (defun main-view (width

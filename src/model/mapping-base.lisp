@@ -1,9 +1,9 @@
 (in-package :protoform.model)
 
 (defun init-mapping-base (mapping-base
-			  params)
-  (dolist (boa params)
-    (destructuring-bind (target name path size) boa
+			  params-shm)
+  (dolist (params params-shm)
+    (destructuring-bind (target name path size bind) params
       ;; Is data needed persistently?
       (let ((mmap (init-mmap path
 			     size
@@ -12,7 +12,7 @@
 					       :element-type '(unsigned-byte 8)
 					       :initial-element (coerce 0 '(unsigned-byte 8))))))
 	(setf (gethash name mapping-base) mmap)
-	(format t "[init-mapping-base] shm-mmap: ~a, ~a bytes~%" path size)))))
+	(fmt-model t "init-mapping-base" "shm-mmap: ~a, ~a bytes~%" path size)))))
   
 ;; TODO: Move to external file gltf JSON
 (defun init-vector-position (n)

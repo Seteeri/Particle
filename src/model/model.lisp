@@ -9,7 +9,11 @@
 
 (defun fmt-model (dst ctx-str ctl-str &rest rest)
   ;; Add space opt
-  (format dst (str:concat "[model:" ctx-str "] " ctl-str) rest))
+  (apply #'format
+	 dst
+	 (str:concat (format nil "[PID:~a,model][~a] " (sb-posix:getpid) ctx-str)
+		     ctl-str)
+	 rest))
 
 ;; rename to graph or root?
 (defclass model ()
@@ -49,23 +53,28 @@
 (defparameter *params-shm* (list (list :uniform-buffer
 				       "projview"
 				       "/protoform-projview"
-				       (align-size (* (+ 16 16 16) 4 1)))
+				       (align-size (* (+ 16 16 16) 4 1))
+				       0)
 				 (list :shader-storage-buffer
 				       "instance"
 				       "/protoform-instance"
-				       134217728)
+				       134217728				       
+				       1)
 				 (list :texture-buffer
 				       "texture"
 				       "/protoform-texture"
-				       134217728)
+				       134217728
+				       -1)
 				 (list :element-array-buffer
 				       "element"
 				       "/protoform-element"
-				       (* 4 6))  ; 4 bytes/int * 6 ints or indices
+				       (* 4 6)  ; 4 bytes/int * 6 ints or indices
+				       -1)
 				 (list :draw-indirect-buffer
 				       "draw-indirect"
 				       "/protoform-draw-indirect"
-				       (* 4 6))))  ; 6 ints
+				       (* 4 6)  ; 6 ints/params
+				       -1))) 
 ;; Do atomic counter also?
 
 
@@ -302,7 +311,7 @@
     (let ((conn (init-swank-conn "skynet" 10001)))      
       (setf (swank-protocol::connection-package conn) "protoform.view")
 
-      (format t "[model] Send eval~%")
+      ;; (format t "[model] Send eval~%")
       
       ;; view should not concern itself with inst-max...
       (swank-protocol:request-listener-eval conn
@@ -313,7 +322,7 @@
       ;; Init buffers
       ;; Need to standardize view buffer creation params
       (swank-protocol:request-listener-eval conn
-					    (format nil "(init-view-buffers `(`~S `~S `~S))"
+					    (format nil "(init-view-buffers `(~S ~S ~S))"
 						    (first *params-shm*)
 						    (second *params-shm*)
 						    (third *params-shm*)))

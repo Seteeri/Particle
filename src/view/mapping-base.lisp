@@ -18,46 +18,28 @@
   ;; (list "element"        "/protoform-element"       (* 4 6)) ; 4 bytes/int * 6 ints or indices
   ;; (list "draw-indirect"  "/protoform-draw-indirect" (* 4 6)) ; 6 ints
   
-  ;; (dolist (params params-shm)
-  ;;   (destructuring-bind (target name path size) params
-  ;;     (init-mapping-buffer target
-  ;; 			   name
-  ;; 			   path
-  ;; 			   size)))
+  (dolist (params params-shm)
+    (fmt-view t "init-mapping-base" "~a~%" params)
+    (destructuring-bind (target name path size bind) params
+      (init-mapping-buffer target
+  			   name
+  			   path
+  			   size
+			   bind))))
   
-  (init-mapping-buffer :uniform-buffer
-		       "projview"
-		       :float
-		       (+ 16 16 16)
-		       1
-		       0) ; same for compute/raster
-
-  ;; use compute shader input binding
-  (init-mapping-buffer :shader-storage-buffer
-		       "instance"
-		       :float   ; 4
-		       1        ; ignore for now since going for max size, (/ 208 4)
-		       (/ 134217728 4) ; inst-max
-		       1)
-
-  ;; compute shader doesn't modify this
-  (init-mapping-buffer :texture-buffer
-		       "texture"
-    		       :unsigned-byte
-    		       4
-    		       (/ 134217728 4) ; get size from model			 
-		       0)) ;  not used - same as init-buffers-raster
+  ;; 		       "projview":0
+  ;; 		       "instance":1
+  ;; 		       "texture":-1
 
 (defun init-mapping-buffer (target
 			    name
-			    type
+			    path
 			    size
-			    count
 			    binding-layout)
 
-  ;; Move this buffer-object into rotational buffers for consistency?
-
-  ;; TODO: Split this
+  ;; TODO:
+  ;; * Move this buffer-object into rotational buffers for consistency?
+  ;; * Split mmap and gl creation
   
   (with-slots (program-compute
 	       mapping-base)
@@ -65,14 +47,12 @@
     (let* ((buffer (init-buffer-object program-compute
 				       target
 				       name
-				       type
 				       size
-				       count
 				       binding-layout
 				       t
 				       :buffering 'single))
 	   (size (size-buffer buffer))
-	   (mmap (init-mmap (format nil "/protoform-~a.shm" name)
+	   (mmap (init-mmap path
 			    size
 			    nil
 			    :data (make-array size

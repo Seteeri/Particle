@@ -20,9 +20,9 @@
 (defun init-buffer-object (program
 			   target
 			   name ; name for all components
-			   type ; type of each component
+			   ;; type ; type of each component
 			   size ; how many components per attribute
-			   count ; how many attributes total
+			   ;; count ; how many attributes total
 			   binding-layout
 			   mapped-persistent
 			   &key
@@ -46,9 +46,9 @@
 			       :target target
 			       :binding-layout binding-layout
 			       :fn-bind (get-fn-bind target binding-layout)
-			       :mapped-persistent mapped-persistent))
-	(gl-type (foreign-enum-value '%gl:enum type)) ; this as an enum/int, pass to %gl functions
-	(type-size (foreign-type-size (type-cffi-to-gl type)))) ; convert attrib-type to glenum type to get size
+			       :mapped-persistent mapped-persistent)))
+	;; (gl-type (foreign-enum-value '%gl:enum type)) ; this as an enum/int, pass to %gl functions
+	;; (type-size (foreign-type-size (type-cffi-to-gl type)))) ; convert attrib-type to glenum type to get size
     
     (with-slots (fn-bind
 		 buffers
@@ -57,28 +57,20 @@
 		 ptrs-buffer)
 	buffer
       
-      (cond ((eq buffering 'single)
-	     (setf count-buffers 1))
-	    ((eq buffering 'double)
-	     (setf count-buffers 2))
-	    ((eq buffering 'triple)
-	     (setf count-buffers 3))
-	    ((eq buffering 'quad)
-	     (setf count-buffers 4))
-	    (t ;; or set to specified
+      (cond ((eq buffering 'single) (setf count-buffers 1))
+	    ((eq buffering 'double) (setf count-buffers 2))
+	    ((eq buffering 'triple) (setf count-buffers 3))
+	    ((eq buffering 'quad)   (setf count-buffers 4))
+	    (t ;; default to single?
 	     (error (format nil "[init-buffer-object] Unknown argument: ~a" buffering))))
       
-      (setf size-buffer (align-size (* count size type-size)))
-      (setf buffers (make-array count-buffers
-				:initial-contents (gl:gen-buffers count-buffers)))
+      (setf size-buffer size)
+      (setf buffers (make-array count-buffers :initial-contents (gl:gen-buffers count-buffers)))
       (setf ptrs-buffer (make-array count-buffers :initial-element (null-pointer)))
 
       (when t
 	(format t "[init-buffer-object] Buffer Object: ~a~%" name)
 	;; (format t "[init-buffer-object]   buffers: ~a~%" buffers)
-	;; (format t "[init-buffer-object]   type: ~a, ~a, ~a ~%" type gl-type type-size)
-	;; (format t "[init-buffer-object]   size: ~a~%" size)
-	;; (format t "[init-buffer-object]   count: ~a~%" count)
 	(format t "[init-buffer-object]   size-buffer: ~a~%" size-buffer)
 	(when data
 	  (format t "[init-buffer-object]   data (array) length: ~a~%" (length data))))
@@ -91,8 +83,8 @@
 
 (defun get-fn-bind (target binding-layout)
   (cond ((or (eq target :draw-indirect-buffer)
-	      (eq target :element-array-buffer)
-	      (eq target :texture-buffer))
+	     (eq target :element-array-buffer)
+	     (eq target :texture-buffer))
 	  (lambda (buffer)
 	    (%gl:bind-buffer target
 			     buffer)))
@@ -150,8 +142,7 @@
 			 size
 			 &key
 			   (data nil)
-			   (offset 0))
-  
+			   (offset 0))  
   (if data
       (cffi-sys:with-pointer-to-vector-data (ptr data)
 	(%gl:buffer-storage target
@@ -162,7 +153,6 @@
 			  size
 			  (null-pointer)
 			  *map-buffer-range-access*))
-  
   (%gl:map-buffer-range target
 			offset
 			size
