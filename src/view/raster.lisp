@@ -1,6 +1,7 @@
 (in-package :protoform.view)
 
 (defun init-program-raster ()
+  ;; Create defparameters for the paths - or model can pass it
   (let* ((program (gl:create-program)))
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
 	   (path-struct (merge-pathnames #P"glsl/structs.glsl" dir-sys-src))
@@ -15,7 +16,7 @@
 		     (list path-struct
 			   path-frag)))
     (gl:link-program program)
-    (format t "[init-program-raster] Program info log: ~a~%" (gl:get-program-info-log program))
+    (fmt-view t "init-program-raster" "Program info log: ~a~%" (gl:get-program-info-log program))
     program))
 
 (defun init-buffers-raster (params-shm)
