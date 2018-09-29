@@ -53,24 +53,8 @@
     					  t
     					  :buffering 'triple)) ;triple if editing? rotate also...
     (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
-    
     ;; Parse glyph images into texture
     (when nil (parse-glyphs-ppm bo-texture))
-
-    ;; static
-    (setf boa-element (init-boa-element program-raster
-					:element-array-buffer
-					"element-array-buffer"
-					:int
-					1
-					6
-					-1
-					nil
-					:buffering 'single
-					:usage :static-draw
-					:data (make-array 6
-							  :element-type '(unsigned-byte 32)
-							  :initial-contents (list 0 2 1 0 3 2))))
     
     ;; bind-layout uses the output buffers so they should not be the same
     ;; as those in init-mapping-base/init-buffers-compute, excluding uniforms
@@ -89,19 +73,34 @@
 
     ;; shared between compute output and raster input
     (setf bo-instance (init-buffer-object program-raster
-						  :shader-storage-buffer
-						  "instance"
-						  :float   ; 4
-						  1        ; ignore for now since going for max size, (/ 208 4)
-						  (/ 134217728 4) ; inst-max
-						  2 ; output binding
-						  t
-						  :buffering 'triple))
+					  :shader-storage-buffer
+					  "instance"
+					  :float   ; 4
+					  1        ; ignore for now since going for max size, (/ 208 4)
+					  (/ 134217728 4) ; inst-max
+					  2 ; output binding
+					  t
+					  :buffering 'triple))
 
+    ;; static
+    (setf bo-element (init-buffer-object program-raster
+					 :element-array-buffer
+					 "element"
+					 :int
+					 1
+					 6
+					 -1 ; no binding
+					 t
+					 :buffering 'triple
+					 ;; :usage :static-draw
+					 :data (make-array 6
+							   :element-type '(unsigned-byte 32)
+							   :initial-contents (list 0 2 1 0 3 2))))
+    
     ;; Need not mmap since compute will modify this...
     (setf bo-indirect (init-buffer-draw-indirect program-raster
 						 :draw-indirect-buffer
-						 "draw-indirect-buffer"
+						 "draw-indirect"
 						 :int
 						 6
 						 1

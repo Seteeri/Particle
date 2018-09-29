@@ -3,6 +3,10 @@
 (defparameter *view* nil)
 (defparameter *draw* nil)
 
+(defun fmt-view (dst ctx-str ctl-str &rest rest)
+  ;; Add space opt
+  (format dst (str:concat "[model:" ctx-str "] " ctl-str) rest))
+
 (defclass view ()
   ;; Create a base for these 3 slots?
   ((width :accessor width :initarg :width :initform nil)
@@ -38,12 +42,9 @@
    ;; VAO
    ;; Note, VAOs not shared between contexts
    (boav-main :accessor boav-main :initarg :boav-main :initform nil)
-
-   ;; Raster (static)
-   ;; Unmapped single
-   (boa-element :accessor boa-element :initarg :boa-element :initform nil)
    
-   ;; Raster (dynamic)
+   ;; Persistently mapped
+   (bo-element :accessor bo-element :initarg :bo-element :initform nil)
    (bo-projview :accessor bo-projview :initarg :bo-projview :initform nil)      
    (bo-instance :accessor bo-instance :initarg :bo-instance :initform nil)
    (bo-texture :accessor bo-texture :initarg :bo-texture :initform nil)
@@ -92,7 +93,7 @@
 (defun clean-up-buffer-objects (view)
   (dolist (boa (list (bo-projview view)
 		     (bo-instance view)
-		     (boa-element view)
+		     (bo-element view)
 		     (bo-texture view)))
     do(clean-up-buffer-object boa)))
 
@@ -161,6 +162,8 @@
     (glfw:set-window-size-callback 'update-viewport)
     
     (init-gl-env width height)
+
+    (calc-opengl-usage)
     
     ;; Model will connect and execute code in this process      
     ;; Cannot actually draw until buffers
@@ -195,7 +198,7 @@
     (when sync
       (let ((fence (aref fences ix-fence)))
 	;; check for null...
-    	(wait-buffer fence)
+    	(protoform.opengl::wait-buffer fence)
     	(%gl:delete-sync fence)
     	(setf (aref fences ix-fence) (null-pointer))))
 
@@ -215,86 +218,35 @@
     t))
 
 (defun calc-opengl-usage ()
-  ;; 243,148 / 51200 = 4.75 files
 
-  ;; If text is placed in a gridlike structure then transforms can be reused
-  ;; For example, if using coordinates for the text:
-  ;; First line = (x,0)
-  ;; Second line = (x,1)
-  ;; Third line = (x,2)
-
-  ;; "uniform"
-  ;; - vertex position = 4 XYZW
-  ;; Max data per char
-  ;; - Model Matrix (16*4)(1 per inst)
-  ;;   - translation
-  ;;   - scaling
-  ;;   - rotation - doesn't change
-  ;; - RGBA (16)(4 bytes per vert)
-  ;;   - remove alpha? padding might make it 4 anyhow
-  ;; - UV (32)(8 bytes per vert)
-  ;; - W-UV (4)(1 per inst)
-  ;;   - byte unless using more than 256 glyphs
-  ;;   - if > 256 then short = 2 bytes
-  ;;
   ;; Avg src code file = 512 lines @ 100 graphical chars = 51200
-  (let ((size-per-char (+ (* 16 4)
-			  (* 4 4)
-			  (* 8 4)
-			  (* 4 1)
-			  (* 4 1)))
-	(buffer-size-lower (* 16 1024 1024))
-	(buffer-size-upper (* 256 1024 1024))
-	(buffer-size-max (* 256 1024 1024))
-	(buffer-size-memcpy (* 192 1024 1024)))
-
-    ;; model matrix limiting factor since its biggest per instance data
-    (let* ((inst-mm (floor (/ buffer-size-memcpy
-			      (+ 64 16 32 4 4)))) ; size per inst
-
-	   (size-mm (/ (* 16 4 inst-mm) 1024 1024))
-	   (size-align-mm (+ size-mm (- 4 (mod size-mm 4))))
-
-	   (size-rgba (/ (* 4 4 inst-mm) 1024 1024))
-	   (size-align-rgba (+ size-rgba (- 4 (mod size-rgba 4))))
-
-	   (size-uv (/ (* 8 4 inst-mm) 1024 1024))
-	   (size-align-uv (+ size-uv (- 4 (mod size-uv 4))))
-
-	   (size-w-uv (/ (* 4 1 inst-mm) 1024 1024))
-	   (size-align-w-uv (+ size-w-uv (- 4 (mod size-w-uv 4))))
-
-	   (size-flags (/ (* 4 1 inst-mm) 1024 1024))
-	   (size-align-flags (+ size-flags (- 4 (mod size-flags 4)))))
-
-      ;; ~53 source code files open
-
-      (format t "Maximums @192 MB:~%")
-      (format t "Quads: ~:d (instances/chars)~%" inst-mm)
-      (format t "Triangles: ~:d~%" (* inst-mm 2))
-      (format t "Vertices: ~:d~%" (* inst-mm 6))
-      (format t "Buffer Object Requirements @192 MB:~%")
-      (format t "Model Matrix (16 floats): ~:d MB~%" size-align-mm)
-      (format t "RGBA (16 floats): ~:d MB~%" size-align-rgba)
-      (format t "UV (8 floats): ~:d MB~%" size-align-uv)
-      (format t "W-UV (1 int): ~:d MB~%" size-align-w-uv)
-      (format t "Flags (1 int): ~:d MB~%" size-align-flags)
+  (let* ((size-per-char 208)
+	 (buffer-size 134217728)
+	 (inst-mm (floor (/ buffer-size
+			    size-per-char))))
       
-      ;; State: Base (Compute + Driver + GPU)
+      ;; State: SHM -> Base -> Rotate Buffers (DRV/CPU/GPU)
       ;; Process:
       ;; 1. Memcpy base buffers (add/rem instances) - not used in drawing
-      ;;    - 192MB for all buffers combined
-      ;;    - 192 = MM + RGBA + GI
-      ;;    - (* 192 1024 1024) = (* 64 MM) + (* 4b MM) + (* 1b MM) | Total = 64MM + 2MM + 4MM = 70MM
       ;; 2. Compute buffers' (draw flag or cull) - copy from base buffers to draw buffers
       ;; 3. Queue buffers'' in driver (call draw commands)
       ;; 4. Runs program using buffers''' in GPU
-      (let ((total-quad (* (+ 3 1) (+ size-align-mm
-				      size-align-rgba
-				      size-align-uv
-				      size-align-w-uv
-				      size-align-flags))))
-	(format t "Total VRAM required with complete triple buffering: ~A MB~%" total-quad)))
+      (let ((total-quad (* buffer-size 2 5))) ; n types * n buffers
+	(format t "Total RAM (3x buffer): ~A MB~%" (/ total-quad 1024 1024)))
+      (format t "Max planes @ 134217728 bytes or 134ish megabytes: ~:d~%" inst-mm)
+      (format t "Triangles: ~:d~%" (* inst-mm 2))
+      (format t "Vertices: ~:d~%" (* inst-mm 6))      
+      (format t "~%")
+      (format t "Max glyphs @ 134217728 bytes or 134ish megabytes, (20x56px): ~A ~%" (/ buffer-size 4480))) ; 29,959
 
+  ;; Using overall 1.5 GB with all buffers + SBCL etc.
+  
+  ;; Limits is either instances or textures (unique glyphs) - whichever is smaller
+  ;; 1 char = 20x56 px * = 1120 px^2 * 4 bytes = 4480 bytes
+  ;; 536,870,912 / 4480 = 119,837 chars = 27x this todo
+  ;; Words could be reused:
+  ;; - english - common words
+  ;; - code - keywords, symbols, variable names
+  
 
-    (format t "-------------------~%")))
+  (format t "-------------------~%"))

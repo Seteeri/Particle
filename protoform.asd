@@ -41,7 +41,7 @@
 			  :pathname "src/opengl"
 			  :components ((:file "opengl")
 				       (:file "buffer-object")
-				       (:file "array-element")
+				       ;; (:file "array-element")
 				       (:file "array-indirect")))
 		 (:module conn
 		 	  :pathname "src/conn"

@@ -111,6 +111,8 @@ naturally remains an orthogonal possibility.
 * Muti-channel signed distance textures
 * OpenGL ES 3.2+
 * Tiled forward shading engine (Forward+)
+  * Designed for streaming/dynamic data
+  * UBO/SSBO/Texture buffers
   * Compute shaders
   * AZDO Techniques
     * Persistent mapping of buffer objects

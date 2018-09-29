@@ -4,6 +4,7 @@
 			  params)
   (dolist (boa params)
     (destructuring-bind (name path size) boa
+      ;; Is data needed persistently?
       (let ((mmap (init-mmap path
 			     size
 			     t ; create - replace these types with symbols

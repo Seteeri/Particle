@@ -7,6 +7,10 @@
 (defun align-size (size &optional (boundary 4))
   (+ size (- boundary (mod size boundary))))
 
+(defun fmt-model (dst ctx-str ctl-str &rest rest)
+  ;; Add space opt
+  (format dst (str:concat "[model:" ctx-str "] " ctl-str) rest))
+
 ;; rename to graph or root?
 (defclass model ()
   ((width :accessor width :initarg :width :initform nil)
@@ -40,9 +44,14 @@
 ;; GL_MAX_TEXTURE_BUFFER_SIZE       = 134217728 = 134.217728 MBs
 ;;
 ;; Or pass 0/-1 to determine max?
-(defparameter *params-shm* (list (list "projview" "/protoform-projview.shm" (align-size (* (+ 16 16 16) 4 1)))
-				 (list "instance" "/protoform-instance.shm" 134217728)
-				 (list "texture" "/protoform-texture.shm" 134217728)))
+;;
+;; Make class slots?
+(defparameter *params-shm* (list (list "projview"       "/protoform-projview"      (align-size (* (+ 16 16 16) 4 1)))
+				 (list "instance"       "/protoform-instance"      134217728)
+				 (list "texture"        "/protoform-texture"       134217728)
+				 (list "element"        "/protoform-element"       (* 4 6)) ; 4 bytes/int * 6 ints or indices
+				 (list "draw-indirect"  "/protoform-draw-indirect" (* 4 6)))) ; 6 ints
+
 
 (defun init-model (width
 		   height
@@ -68,7 +77,7 @@
     ;; View also needs a cfg file since it corresponds for mmaps - or gen automatically?
     ;;
     ;; Note, element-array and draw-indirect buffers exist
-    (format t "[main-model] Initializing mmaps...~%")
+    (fmt-model t "main-model" " Initializing mmaps...~%")
     (init-mapping-base (mapping-base model)
 		       *params-shm*)
     
