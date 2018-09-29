@@ -1,5 +1,19 @@
 (in-package :protoform.view)
 
+(defun serve-memcpy (name-dest
+		     name-src
+		     size)
+  (let* ((offset-dest 0)
+	 (offset-src 0)
+	 (ptr-dest (aref (ptrs-buffer (gethash name-dest (bo-cache *view*))) 0)) ; dest - base buffer, no rot
+	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*)))))                   ; src  - mmap shm
+	 (ptr-dest-off (inc-pointer ptr-dest offset-dest))
+	 (ptr-src-off (inc-pointer ptr-src offset-src)))
+    (c-memcpy ptr-dest-off
+	      ptr-src-off
+	      size))
+  (format t "[view] c-memcpy: ~a ~a ~a" name-dest name-src size))
+
 ;; Rename since technically view is not a server socket
 ;; but can be implemented on any socket
 (defun request-server (conn-client msdf)
@@ -72,43 +86,6 @@
     (c-close sock))
   (clean-up-msdf msdf)
   (sb-ext:exit))
-
-(defun serve-memcpy2 (name-dest
-		      name-src
-		      size)
-  (let* ((offset-dest 0)
-	 (offset-src 0)
-	 (ptr-dest (aref (ptrs-buffer (gethash name-dest (bo-cache *view*))) 0)) ; dest - base buffer, no rot
-	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*)))))                   ; src  - mmap shm
-	 (ptr-dest-off (inc-pointer ptr-dest offset-dest))
-	 (ptr-src-off (inc-pointer ptr-src offset-src)))
-    (c-memcpy ptr-dest-off
-	      ptr-src-off
-	      size))
-  (format t "[view] c-memcpy: ~a ~a ~a" name-dest name-src size))
-
-(defun serve-memcpy (sock
-		     buffer-ptr
-		     ptr-dest
-		     ptr-src
-		     offset-dest
-		     offset-src
-		     size
-		     ret
-		     nr)
-
-  ;; Remember, dest is GPU buffer
-
-  (let ((ptr-dest-off (inc-pointer ptr-dest offset-dest))
-	(ptr-src-off (inc-pointer ptr-src offset-src)))
-    (c-memcpy ptr-dest-off
-	      ptr-src-off
-	      size))
-
-  (when ret
-    (send-message sock
-		  buffer-ptr
-		  "t")))
       
 (defun serve-query-buffer-objects (msdf
 				   sock

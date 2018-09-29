@@ -36,7 +36,7 @@
    ;; Make class
    (queue-chrs :accessor queue-chrs :initarg :queue-chrs :initform (make-queue))
    (queue-pv :accessor queue-pv :initarg :queue-pv :initform (make-queue))
-      
+   
    ;; Make class - layout (inc cohesion)
    (metrics :accessor metrics :initarg :metrics :initform nil)
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform nil)
@@ -119,7 +119,7 @@
 	(dotimes (i (length data))
 	  (setf (mem-aref ptr :float (+ b i))
 		(aref data i)))))    
-        
+    
     model))
 
 (defun init-text (model)
@@ -301,11 +301,11 @@
     ;; 2. Test live texture updates
     ;; 3. Use parameters from Pango to set texture size
 
-    (format t "[model] Init data~%")
+    (fmt-model t "main-model" "Init data~%")
     (init-text model)
     (init-layout model)
     
-    (format t "[model] Init conn to view swank server~%")
+    (fmt-model t "main-model" "Init conn to view swank server~%")
     
     ;; Init view buffers and start loop
     (let ((conn (init-swank-conn "skynet" 10001)))      
@@ -317,7 +317,7 @@
       (swank-protocol:request-listener-eval conn
       					    (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max))
       ;; (format t "[model] Wait for eval~%")
-      (format t "~a~%" (swank-protocol:read-message conn))
+      (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
       
       ;; Init buffers
       ;; Need to standardize view buffer creation params
@@ -329,7 +329,7 @@
 						    (fourth *params-shm*)
 						    (fifth *params-shm*)))
       ;; (format t "[model] Wait for eval~%")
-      (format t "~a~%" (swank-protocol:read-message conn))
+      (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
 
       ;; (fmt-model t "init-model" "DONE~%")
       ;; (sb-ext:exit)
@@ -340,16 +340,16 @@
     			  "texture"))
         (with-slots (ptr size)
     	    (gethash name (mapping-base model))
-	  (format t "(serve-memcpy2 \"~a\" \"~a\" ~a)~%" name name size)
+	  (fmt-model t "main-model" "(serve-memcpy ~S ~S ~S)~%" name name size)
 	  (swank-protocol:request-listener-eval conn
-						(format nil "(serve-memcpy2 \"~a\" \"~a\" ~a)" name name size))
-	  (format t "~a~%" (swank-protocol:read-message conn))))
+						(format nil "(serve-memcpy ~S ~S ~S)" name name size))
+	  (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))))
 
       ;; Enable draw flag for view loop
       (swank-protocol:request-listener-eval conn
 					    (format nil "(setf *draw* t)"))
       ;; (format t "[model] Wait for eval~%")
-      (format t "~a~%" (swank-protocol:read-message conn)))      
+      (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn)))      
     
     (loop (sleep 0.0167))))
 
@@ -408,7 +408,7 @@
 			;; Store in hash-table
 			(setf (gethash sock-client (clients conn-model))
 			      conn-client)
-			    			
+			
 			;; TEMP
 			(if (eq (id conn-client) :view)
 			    (setf (view conn-model) conn-client)
@@ -429,7 +429,7 @@
 			t)
 		      
 		      t)
-		   
+		     
 
 		     ;; Handle client
 		     ;; Primarily watch for requests from controller
@@ -513,11 +513,11 @@
 		 ;; Update incomplete batch
 		 (when (> counter-batch 0)
 		   (request-memcpy (view conn-model)
-		 		  "instance" "instance"
-		 		  (* counter-batch 208)
-		 		  t
-		 		  :offset-dest offset-batch
-		 		  :offset-src  offset-batch)
+		 		   "instance" "instance"
+		 		   (* counter-batch 208)
+		 		   t
+		 		   :offset-dest offset-batch
+		 		   :offset-src  offset-batch)
 		   (incf offset-batch (* counter-batch 208))
 		   (setf counter-batch 0))
 		 
@@ -538,7 +538,7 @@
 
     (with-slots (ptr size)
 	(gethash "instance" mapping-base)
-    
+      
       (with-slots (chr
 		   model-matrix
 		   rgba
