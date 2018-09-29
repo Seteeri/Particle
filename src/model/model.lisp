@@ -21,27 +21,26 @@
    (height :accessor height :initarg :height :initform nil)
    (inst-max :accessor inst-max :initarg :inst-max :initform nil)
 
+   (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
+
+   (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform nil)
+   (scale-glyph :accessor scale-glyph :initarg :scale-glyph :initform nil)
+   (cursor :accessor cursor :initarg :cursor :initform nil)
+   
    ;; Integrate these into corresponding slot - data-model
    (sl-chrs :accessor sl-chrs :initarg :sl-chrs :initform nil)
    (lock-sl-chrs :accessor lock-sl-chrs :initarg :lock-sl-chrs :initform (bt:make-lock))
-   (projview :accessor projview :initarg :projview :initform nil)
-   ;; Rename mapping-base -> data-shm
-   (mapping-base :accessor mapping-base :initarg :mapping-base :initform (make-hash-table :size 6 :test 'equal))
-   
-   (conn-model :accessor conn-model :initarg :conn-model :initform nil)
-   ;; Make class - integrate with conn? (inc cohesion)
-   (epoll-events :accessor epoll-events :initarg :epoll-events :initform nil)
-   (epoll-fd :accessor epoll-fd :initarg :epoll-fd :initform nil)
+   (projview :accessor projview :initarg :projview :initform nil)))
 
-   ;; Make class
-   (queue-chrs :accessor queue-chrs :initarg :queue-chrs :initform (make-queue))
-   (queue-pv :accessor queue-pv :initarg :queue-pv :initform (make-queue))
-   
-   ;; Make class - layout (inc cohesion)
-   (metrics :accessor metrics :initarg :metrics :initform nil)
-   (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform nil)
-   (scale-glyph :accessor scale-glyph :initarg :scale-glyph :initform nil)
-   (cursor :accessor cursor :initarg :cursor :initform nil)))
+   ;; Make class - integrate with conn? (inc cohesion)
+   ;; (epoll-events :accessor epoll-events :initarg :epoll-events :initform nil)
+   ;; (epoll-fd :accessor epoll-fd :initarg :epoll-fd :initform nil)
+   ;; (queue-chrs :accessor queue-chrs :initarg :queue-chrs :initform (make-queue))
+   ;; (queue-pv :accessor queue-pv :initarg :queue-pv :initform (make-queue))   
+   ;; (metrics :accessor metrics :initarg :metrics :initform nil)
+   ;; (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform nil)
+   ;; (scale-glyph :accessor scale-glyph :initarg :scale-glyph :initform nil)
+   ;; (cursor :accessor cursor :initarg :cursor :initform nil))
 
 ;; For now, determine these through view - maybe model can request from view?
 ;; GL_MAX_SHADER_STORAGE_BLOCK_SIZE = 134217728 = 134.217728 MBs
@@ -90,35 +89,29 @@
 							:width width
 							:height height
 							:projection-type 'orthographic)
-			       :inst-max inst-max
-			       :conn-model nil))) ;(init-conn-server path-server-model)))
-    
-    (setf (dpi-glyph model) (/ 1 90))
-    (setf (scale-glyph model) 10.0)
+			       :dpi-glyph (/ 1 90)
+			       :scale-glyph 10.0			       
+			       :inst-max inst-max))
+	 (handles-shm (handles-shm model))
+	 (projview (projview model)))
     
     ;; Init shms, request view to mmap
-    ;; TODO:
-    ;; Read cfg file (s-exp) to set parameters for mmaps
-    ;; View also needs a cfg file since it corresponds for mmaps - or gen automatically?
-    ;;
-    ;; Note, element-array and draw-indirect buffers exist
     (fmt-model t "main-model" " Initializing mmaps...~%")
-    (init-mapping-base (mapping-base model)
-		       *params-shm*)
+    (init-handle-shm handles-shm *params-shm*)
     
     ;; Init data for shms
     (with-slots (ptr size)
-	(gethash "projview" (mapping-base model))
-      (update-projection-matrix (projview model))
-      (update-view-matrix (projview model))
+	(gethash "projview" handles-shm)
+      (update-projection-matrix projview)
+      (update-view-matrix projview)
       ;; (write-matrix (view-matrix (projview model)) t)
-      (set-projection-matrix ptr (projection-matrix (projview model)))
-      (set-view-matrix ptr (view-matrix (projview model)))
+      (set-projection-matrix ptr (projection-matrix projview))
+      (set-view-matrix ptr (view-matrix projview))
       (let ((b (+ 16 16))
 	    (data (init-vector-position 1)))
 	(dotimes (i (length data))
 	  (setf (mem-aref ptr :float (+ b i))
-		(aref data i)))))    
+		(aref data i)))))
     
     model))
 
@@ -131,7 +124,7 @@
 	 (offset-ptr 0))
     
     (with-slots (ptr size)
-	(gethash "instance" (mapping-base model))
+	(gethash "instance" (handles-shm model))
       (with-slots (chr
 		   model-matrix
 		   rgba
@@ -229,7 +222,7 @@
 	   ;; (data-surface-render (foreign-alloc :unsigned-char :count size-data))
 	   ;; (stride (* 4 (mem-ref width-pango :unsigned-int)))
 	   (stride (cairo::cairo_format_stride_for_width 0 (mem-ref width-pango :unsigned-int))) ; send patch upstream
-	   (surface-render (cairo:create-image-surface-for-data (ptr (gethash "texture" (mapping-base model))) ;data-surface-render
+	   (surface-render (cairo:create-image-surface-for-data (ptr (gethash "texture" (handles-shm model))) ;data-surface-render
 								:argb32
 								(mem-ref width-pango :unsigned-int)
 								(mem-ref height-pango :unsigned-int)
@@ -266,7 +259,7 @@
 
       (when nil
 	(with-slots (ptr size)
-	    (gethash "texture" (mapping-base model))
+	    (gethash "texture" (handles-shm model))
 	  (assert (<= size-data size))
 	  (c-memcpy ptr
 		    data-surface-render
@@ -335,15 +328,17 @@
       ;; (sb-ext:exit)
       
       ;; Do progn to chain them?
-      (dolist (name (list "projview"
-    			  "instance"
-    			  "texture"))
-        (with-slots (ptr size)
-    	    (gethash name (mapping-base model))
-	  (fmt-model t "main-model" "(serve-memcpy ~S ~S ~S)~%" name name size)
-	  (swank-protocol:request-listener-eval conn
-						(format nil "(serve-memcpy ~S ~S ~S)" name name size))
-	  (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))))
+      ;; (dolist (name (list "projview"
+      ;; 			  "instance"
+      ;; 			  "texture"))
+      (dolist (params *params-shm*)
+	(destructuring-bind (target name path size bind-cs bind-vs) params      
+          (with-slots (ptr size)
+    	      (gethash name (handles-shm model))
+	    (fmt-model t "main-model" "(serve-memcpy ~S ~S ~S)~%" name name size)
+	    (swank-protocol:request-listener-eval conn
+						  (format nil "(serve-memcpy ~S ~S ~S)" name name size))
+	    (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn)))))
 
       ;; Enable draw flag for view loop
       (swank-protocol:request-listener-eval conn
@@ -353,247 +348,21 @@
     
     (loop (sleep 0.0167))))
 
-(defun handle-escape (msdf
+(defun handle-escape (model
 		      keysym)
   
   (clean-up-model msdf)
   (glfw:set-window-should-close))
 
-(defun clean-up-model (msdf)
+(defun clean-up-model (model)
   (loop 
-     :for key :being :the :hash-keys :of (mapping-base msdf)
+     :for key :being :the :hash-keys :of (handles-shm model)
      :using (hash-value mmap)
      :do (cleanup-mmap mmap))
 
-  (request-exit (conn-model msdf))
+  (request-exit (conn-model model))
   
   (format t "[handle-escape] Model/Controller exiting!~%")
 
   ;; Only for DRM?
   (sb-ext:exit))
-
-(defun wait-epoll (msdf)
-  (with-slots (conn-model
-	       epoll-fd
-	       epoll-events)
-      msdf
-    ;; -1 = timeout = block/infinite
-    ;; 0 = return if nothing
-
-    ;; number of events should equal number of connections or max connections
-
-    ;; store callback in data or get func from hash table
-    
-    (let ((fds-n (c-epoll-wait epoll-fd epoll-events 3 -1)))
-      (when (> fds-n 0)
-	(loop
-	   :for i :from 0 :below fds-n
-	   :for fd := (foreign-slot-value (foreign-slot-value (mem-aptr epoll-events '(:struct event) 0) '(:struct event) 'data)
-					  '(:union data)
-					  'fd)
-	   :do (cond ((= fd (sock conn-model))
-		      ;; Handle server
-		      
-		      (let* ((conn-client (accept-client conn-model msdf))
-			     (sock-client (sock conn-client)))
-
-			(format t "[wait-epoll] Client ~a connected~%" sock-client)
-
-			;; Add to epoll
-			(ctl-epoll epoll-fd
-				   sock-client
-				   (logior #x0001 #x008 #x010) ; EPOLLIN, EPOLLERR, EPOLLHUP
-				   :add)
-			
-			;; Store in hash-table
-			(setf (gethash sock-client (clients conn-model))
-			      conn-client)
-			
-			;; TEMP
-			(if (eq (id conn-client) :view)
-			    (setf (view conn-model) conn-client)
-			    (setf (controller conn-model) conn-client))
-
-			;; LET VIEW REQUEST THIS
-			;; Send data/code to view to initialize
-			;; (when (eq (id conn-client) :view)
-			;;   (dolist (name (list "projview"
-			;; 		      "instance"
-			;; 		      "texture"))
-			;;     (with-slots (ptr size)
-			;; 	(gethash name (mapping-base msdf))
-			;;       (request-memcpy conn-client name name size nil)))
-			;;   ;; sync
-			;;   (request-sync conn-client))
-
-			t)
-		      
-		      t)
-		     
-
-		     ;; Handle client
-		     ;; Primarily watch for requests from controller
-		     ;; View connection is used to send requests
-		     ;; View has no reason to modify model - that is done through controller
-		     (t
-		      
-		      ;; (format t "[wait-epoll] Client ~a sent data, ~a~%" fd (gethash fd (clients conn-model)))
-
-		      (serve-client (gethash fd (clients conn-model))
-				    msdf)
-		      
-		      t)))))))
-
-
-;; REFACTOR SKIP-LIST: Iterate from passed node
-;; Could cache loop node here to skip O log(N) operation
-;; -> high probability nodes are sequential
-
-(defun run-thread-chrs (msdf)
-  ;; Needs client
-  (with-slots (conn-model
-	       mapping-base
-	       sl-chrs
-	       metrics
-	       dpi-glyph
-	       scale-glyph
-	       cursor
-	       queue-chrs
-	       lock-sl-chrs)
-      msdf
-    (loop
-       :for task := (pop-queue queue-chrs)
-       :do (when (>= task 0)
-
-	     (bt:with-lock-held (lock-sl-chrs)
-
-	       (format t "[run-thread-chrs] Starting task @ ~a~%" task)
-	       
-	       (let* ((offset-ptr 0)
-		      (counter-batch 0)
-		      (size-batch 19) ; 208 bytes
-		      (offset-batch 0)
-		      (cursor (vec3 0.0 0.0 0.0)))
-
-		 ;; lock skiplist?
-		 
-		 (skip-list:doskiplist
-		  (sl-chr sl-chrs)
-
-		  ;; Check queue for cancel
-		  (when (not (queue-empty-p queue-chrs))
-		    ;; (format t "[run-thread-chrs] Cancelling current task~%")
-		    (return))
-		  
-		  ;; Otherwise process char
-		  (multiple-value-bind (new-offset)
-		      (update-shm-from-chr sl-chr
-					   mapping-base
-					   metrics
-					   dpi-glyph
-					   scale-glyph
-					   cursor
-					   offset-ptr)
-		    (setf offset-ptr new-offset))
-
-		  ;; Update batch
-		  (incf counter-batch)
-		  (when (>= counter-batch size-batch)
-		    (request-memcpy (view conn-model)
-				    "instance" "instance"
-				    (* counter-batch 208)
-				    nil
-				    :offset-dest offset-batch
-				    :offset-src  offset-batch)
-		    (incf offset-batch (* counter-batch 208))
-		    (setf counter-batch 0))		 
-		  ;; skip list end
-		  t)
-		 
-		 ;; Update incomplete batch
-		 (when (> counter-batch 0)
-		   (request-memcpy (view conn-model)
-		 		   "instance" "instance"
-		 		   (* counter-batch 208)
-		 		   t
-		 		   :offset-dest offset-batch
-		 		   :offset-src  offset-batch)
-		   (incf offset-batch (* counter-batch 208))
-		   (setf counter-batch 0))
-		 
-		 (format t "[run-thread-chrs] Finished updating~%")
-
-		 t))))))
-
-(defun update-shm-from-chr (sl-chr
-			    mapping-base
-			    metrics
-			    dpi-glyph
-			    scale-glyph
-			    cursor
-			    offset-ptr)
-
-  (let* ((metrics-space (gethash 32 metrics))
-	 (uv-space (uv metrics-space)))
-
-    (with-slots (ptr size)
-	(gethash "instance" mapping-base)
-      
-      (with-slots (chr
-		   model-matrix
-		   rgba
-		   flags)
-	  sl-chr
-	
-	(cond ((char-equal chr #\Tab)
-	       t)
-
-	      ;; ascii
-	      (t
-
-	       ;; (format t "[update-chrs] ~a~%" chr)
-
-	       (update-transform-chr cursor
-				     (if (char-equal chr #\Newline)
-					 metrics-space
-					 (gethash (char-code chr) metrics))
-				     scale-glyph
-				     dpi-glyph
-				     sl-chr)
-	       
-	       (when (and (char-equal chr #\Newline) t)
-		 ;; After new chr, move down, reset x for next char
-		 ;; Treat it like a space...
-		 (setf (vx3 cursor) 0)
-		 (decf (vy3 cursor) (* 9.375 2.0 scale-glyph)))
-	       
-	       (loop
-		  :for c :across (marr4 (matrix model-matrix))
-		  :for i :upfrom 0
-		  :do (setf (mem-aref ptr :float (+ offset-ptr i))
-			    c))
-	       (incf offset-ptr 16)
-	       
-	       (loop
-		  :for c :across rgba
-		  :for i :upfrom 0
-		  :do (setf (mem-aref ptr :float (+ offset-ptr i))
-			    c))
-	       (incf offset-ptr 16)
-	       
-	       ;; (u v s t) * 4
-	       (loop
-		  :for c :across (if (char-equal chr #\Newline)
-				     uv-space
-				     (uv (gethash (char-code chr) metrics)))
-		  :for i :upfrom 0
-		  :do (setf (mem-aref ptr :float (+ offset-ptr i))
-			    c))
-	       (incf offset-ptr 16)
-	       
-	       ;; Glyph, Flags, pad, pad
-	       (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code chr) 32))
-	       (setf (mem-aref ptr :int (+ offset-ptr 1)) flags)
-	       (incf offset-ptr 4))))))
-
-  offset-ptr)

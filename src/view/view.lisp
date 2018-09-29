@@ -31,11 +31,10 @@
    ;; Persistently mapped: projview, instance, texture, element, indirect
    (bo-step :accessor bo-step :initarg :bo-step :initform (make-hash-table :size 6 :test 'equal))
 
-   ;; Counter is not a base since it is not modified by mmap; however it is used by compute shader
-   ;; Counter does not step since it is in sync with compute shader
-   ;; Mapped single
-   ;; Only bound to ssbo
-   ;; Maybe merge into mapping-base and add flag to decide whether to update binding
+   ;; Counter - used during compute to store number of drawable instances
+   ;; Counter - not cache -> not modified by mmap; however it is used by compute shader
+   ;; Counter - not step -> sync with compute shader
+   ;; Integrate with bo-cache?
    (bo-counter :accessor bo-counter :initarg :bo-counter :initform nil)
    
    ;; Sync

@@ -81,7 +81,7 @@
 				       (:file "conn-client")
 				       (:file "conn-server")
 				       (:file "matrix-model")
-				       (:file "mapping-base")				       
+				       (:file "handle-shm")				       
 				       (:file "projview")
 				       (:file "node")
 				       (:module structures

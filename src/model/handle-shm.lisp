@@ -1,7 +1,7 @@
 (in-package :protoform.model)
 
-(defun init-mapping-base (mapping-base
-			  params-shm)
+(defun init-handle-shm (handles-shm
+			params-shm)
   (dolist (params params-shm)
     (destructuring-bind (target name path size bind-cs bind-vs) params
       ;; Is data needed persistently?
@@ -11,7 +11,7 @@
 			     :data (make-array size
 					       :element-type '(unsigned-byte 8)
 					       :initial-element (coerce 0 '(unsigned-byte 8))))))
-	(setf (gethash name mapping-base) mmap)
+	(setf (gethash name handles-shm) mmap)
 	(fmt-model t "init-mapping-base" "shm-mmap: ~a, ~a bytes~%" path size)))))
   
 ;; TODO: Move to external file gltf JSON
