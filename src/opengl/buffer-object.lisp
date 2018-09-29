@@ -40,7 +40,6 @@
   ;;
   ;; Again, all this double and triple buffering is only relevant
   ;; for streamed vertex data that changes each frame.
-
   
   (let ((buffer (make-instance 'buffer-object
 			       :target target
@@ -71,7 +70,7 @@
       (when t
 	(format t "[init-buffer-object] Buffer Object: ~a~%" name)
 	;; (format t "[init-buffer-object]   buffers: ~a~%" buffers)
-	(format t "[init-buffer-object]   size-buffer: ~a~%" size-buffer)
+	(format t "[init-buffer-object]   size-buffer: ~a bytes~%" size-buffer)
 	(when data
 	  (format t "[init-buffer-object]   data (array) length: ~a~%" (length data))))
 
@@ -159,9 +158,7 @@
 			*map-buffer-range-access*))
 
 (defun update-binding-buffer (buffer index)
-  (with-slots (fn-bind
-	       buffers)
-      buffer
+  (with-slots (fn-bind buffers) buffer
     (funcall fn-bind (aref buffers index))))
 
 (defun clean-up-buffer-object (buffer)

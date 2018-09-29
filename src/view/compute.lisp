@@ -26,26 +26,24 @@
 
     ;; Texture exists but not bound since compute shader does not use it
     ;; Texture need only do a shm-ptr copy per frame as needed
-    (dolist (name '("projview"
-		    "instance"))
-      (progn
-	(format t "[init-buffers-compute] Binding ~a: ~a~%" name (gethash name mapping-base))
+
+    ;; Not needed since start of frame will do this?
+    (when nil
+      (dolist (name '("projview"
+		      "instance"))
+	(fmt-view t "init-buffers-compute" "Binding ~a: ~a~%" name (gethash name mapping-base))
 	(let ((boa (boa (gethash name mapping-base))))
 	  (update-binding-buffer boa 0))))
 
     ;; Bound on init only
-    ;; TODO: Move creation to raster
+    ;; TODO: Move creation to raster or integrate elsewhere
     (setf bo-counter (init-buffer-object program-compute
-					     :atomic-counter-buffer
-					     "atomic-counter-buffer"
-					     :int
-					     6 ; 6 ints
-					     1 ; 1 counter
-					     3 ; 3=binding
-					     t ; yes map
-					     :buffering 'single))
-
-    t))
+					 :atomic-counter-buffer
+					 "atomic-counter-buffer"
+					 6 ; why 6 counters needed?
+					 3 ; bind
+					 t ; pmap
+					 :buffering 'single))))
 
 
 (defun update-compute-buffers ()

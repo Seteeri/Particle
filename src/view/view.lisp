@@ -142,17 +142,23 @@
 
   ;; (format t "[init-view] params: ~S~%" params)
 
+  ;; Restructure:
+  ;; init-shm
+  ;; init-buffers
+
   (format t "[init-view] Initializing base buffers~%")
   (init-mapping-base params)
   
   (format t "[init-view] Initializing raster buffers.~%")
   (init-buffers-raster params)
-
-  (fmt-view t "init-view" "FINISHED RASTER~%")
-  (sb-ext:exit)
   
   (format t "[init-view] Initializing compute buffers~%")
-  (init-buffers-compute params))
+  (init-buffers-compute params)
+
+  ;; (fmt-view t "init-view" "FINISHED COMPUTE~%")
+  ;; (sb-ext:exit)
+  
+  t)
 
 (defun main-view (width
 		  height
