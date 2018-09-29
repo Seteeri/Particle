@@ -31,15 +31,17 @@
 		     bo-texture
 		     inst-max)
       *view*
-    
+
+    ;; Move this to init-program-raster...but necessary to ensure it is bound...
     (gl:use-program program-raster)
 
     (setf boav-main (init-boav-main))
-    
-    ;; Split into those directly corresponding to model and view-only
-    ;; OR model will specify all of the buffers except for indirect?
 
-    ;; (setf size-buffer (align-size (* count size type-size)))
+    ;; (dolist (params params-shm)
+    ;;   (fmt-view t "init-buffers-raster" "~a~%" params)
+    ;;   (destructuring-bind (target name path size bind) params
+
+    ;; Names will match slot names or use hash-table like mapping base
     
     ;; Init buffer object
     ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS

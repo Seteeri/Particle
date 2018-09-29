@@ -17,7 +17,7 @@
   ;; "texture":-1
   
   (dolist (params params-shm)
-    (fmt-view t "init-mapping-base" "~a~%" params)
+    ;; (fmt-view t "init-mapping-base" "~a~%" params)
     (destructuring-bind (target name path size bind) params
       (init-mapping-buffer target
   			   name
