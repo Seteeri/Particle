@@ -37,8 +37,7 @@
       (update-binding-buffer (gethash name bo-cache) 0))
 
     ;; Bound on init only
-    (setf bo-counter (init-buffer-object program-compute
-					 :atomic-counter-buffer
+    (setf bo-counter (init-buffer-object :atomic-counter-buffer
 					 "atomic-counter-buffer"
 					 6 ; why 6 counters needed?
 					 3 ; bind

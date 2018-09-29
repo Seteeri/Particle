@@ -17,8 +17,7 @@
    (ptrs-buffer :accessor ptrs-buffer :initarg :ptrs-buffer :initform nil)))
 
 ;; maybe remove size and just do count * type?
-(defun init-buffer-object (program ; wyh???
-			   target
+(defun init-buffer-object (target
 			   name ; name for all components
 			   ;; type ; type of each component
 			   size ; how many components per attribute

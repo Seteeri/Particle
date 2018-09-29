@@ -42,8 +42,7 @@
       ;; (fmt-view t "init-buffers-raster" "~a~%" params)
       (destructuring-bind (target name path size bind-cs bind-vs) params
 	(setf (gethash name bo-step)
-	      (init-buffer-object program-raster
-    				  target
+	      (init-buffer-object target
     				  name
     				  size
     				  bind-vs

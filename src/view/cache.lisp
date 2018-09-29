@@ -17,8 +17,7 @@
 		      bind-cs)
   (with-slots (program-compute bo-cache) *view*
     (setf (gethash name bo-cache)
-	  (init-buffer-object program-compute
-			      target
+	  (init-buffer-object target
 			      name
 			      size
 			      bind-cs
