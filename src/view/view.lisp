@@ -20,22 +20,17 @@
    ;; Programs
    (program-raster :accessor program-raster :initarg :program-raster :initform nil)
    (program-compute :accessor program-compute :initarg :program-compute :initform nil)
-
-   ;; memcpy has 2 options
-   ;; 1. mmap to compute (base)
-   ;; 2. mmap to raster
    
-   ;; Base buffers - modified by mmap and input for compute shader
-   ;;
-   ;; POSS: Initialize table with default values - make explicit so easier to understand
-   ;; POSS: Integrate with step values
-   ;;
-   ;; Only bound to ssbo
-   (mapping-base :accessor mapping-base :initarg :mapping-base :initform (make-hash-table :size 1 :test 'equal))
-
-   ;; flags - compute only...
-   ;; counter - compute only...
+   ;; Cache buffer objects - modified by mmap and input for compute shader
+   ;; Integrate with step? -> Say quad buffer but use 0 as base -> Keep it separated
+   (bo-cache :accessor bo-cache :initarg :bo-cache :initform (make-hash-table :size 6 :test 'equal))
+   (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
    
+   ;; VAO
+   (boav-main :accessor boav-main :initarg :boav-main :initform nil)
+   ;; Persistently mapped: projview, instance, texture, element, indirect
+   (bo-step :accessor bo-step :initarg :bo-step :initform (make-hash-table :size 6 :test 'equal))
+
    ;; Counter is not a base since it is not modified by mmap; however it is used by compute shader
    ;; Counter does not step since it is in sync with compute shader
    ;; Mapped single
@@ -43,18 +38,6 @@
    ;; Maybe merge into mapping-base and add flag to decide whether to update binding
    (bo-counter :accessor bo-counter :initarg :bo-counter :initform nil)
    
-   ;; VAO
-   ;; Note, VAOs not shared between contexts
-   (boav-main :accessor boav-main :initarg :boav-main :initform nil)
-
-   ;; Persistently mapped
-   (bo-step :accessor bo-step :initarg :bo-step :initform (make-hash-table :size 6 :test 'equal))
-   ;; (bo-element :accessor bo-element :initarg :bo-element :initform nil)
-   ;; (bo-projview :accessor bo-projview :initarg :bo-projview :initform nil)      
-   ;; (bo-instance :accessor bo-instance :initarg :bo-instance :initform nil)
-   ;; (bo-texture :accessor bo-texture :initarg :bo-texture :initform nil)
-   ;; (bo-indirect :accessor bo-indirect :initarg :bo-indirect :initform nil)
-
    ;; Sync
    (sync :accessor sync :initarg :sync :initform nil)
    (fences :accessor fences :initarg :fences :initform nil)
@@ -76,7 +59,7 @@
       (%gl:delete-sync sync))
     
     ;; below fn includes mmaps
-    (clean-up-mapping-base view)
+    (clean-up-handles-shm view)
     (clean-up-buffer-objects view)
     
     (gl:delete-vertex-arrays (list boav-main))
@@ -138,24 +121,17 @@
 		 :program-compute (init-program-compute)
 		 :inst-max inst-max))
 
-(defun init-view-buffers (params)
+(defun init-view-buffers (params-model)
 
-  ;; (format t "[init-view] params: ~S~%" params)
+  (fmt-view t "init-view" "Initializing shm handles~%")
+  (init-handles-shm params-model)
 
-  ;; Restructure:
-  ;; init-shm
-  ;; init-buffers
+  (fmt-view t "init-view" "Initializing buffer object caches~%")
+  (init-bo-caches params-model)
 
-  (format t "[init-view] Initializing base buffers~%")
-  (init-mapping-base params)
-  
-  (format t "[init-view] Initializing raster buffers.~%")
-  (init-buffers-raster params)
-  
-  (format t "[init-view] Initializing compute buffers~%")
-  (init-buffers-compute params)
-  
-  t)
+  (fmt-view t "init-view" "Initializing buffer objects raster and compute~%")
+  (init-buffers-raster params-model)
+  (init-buffers-compute params-model))
 
 (defun main-view (width
 		  height
@@ -193,12 +169,12 @@
 	     (if *draw*
 		 (progn
 		   ;; (fmt-view t "main-view" "Running...~%")
-		   (run-frame)
+		   (render-frame)
 		   ;;(glfw:poll-events)
 		   (glfw:swap-buffers))
 		 (sleep 0.0167))))))
 
-(defun run-frame ()
+(defun render-frame ()
   (with-slots (sync fences ix-fence)
       *view*
     

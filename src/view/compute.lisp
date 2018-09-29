@@ -16,7 +16,8 @@
 (defun init-buffers-compute (params-shm)
 
   (with-slots (program-compute
-	       mapping-base
+	       handles-shm
+	       bo-cache
 	       bo-counter)
       *view*
 
@@ -29,15 +30,13 @@
 
     ;; Not needed since start of frame will do this?
     ;; Specifically for compute program
-    (when t
-      (dolist (name '("projview"
-		      "instance"))
-	(fmt-view t "init-buffers-compute" "Binding ~a: ~a~%" name (gethash name mapping-base))
-	(let ((boa (boa (gethash name mapping-base))))
-	  (update-binding-buffer boa 0))))
+    (dolist (name '("projview"
+		    "instance"))
+      (fmt-view t "init-buffers-compute" "Binding ~a~%" name)
+      ;; These are single so always 0
+      (update-binding-buffer (gethash name bo-cache) 0))
 
     ;; Bound on init only
-    ;; TODO: Move creation to raster or integrate elsewhere
     (setf bo-counter (init-buffer-object program-compute
 					 :atomic-counter-buffer
 					 "atomic-counter-buffer"
@@ -46,10 +45,10 @@
 					 t ; pmap
 					 :buffering 'single))))
 
-
 (defun update-compute-buffers ()
   
-  (with-slots (mapping-base
+  (with-slots (handles-shm
+	       bo-cache
 	       bo-step
 	       ix-fence)
       *view*
@@ -64,7 +63,7 @@
     ;; Currently, assume changing every frame for now...
     ;; Memcpy from compute ptrs to raster ptrs since compute shader doesn't compute anything for it
     (let ((step-projview (gethash "projview" bo-step))
-	  (base-projview (boa (gethash "projview" mapping-base))))
+	  (base-projview (gethash "projview" bo-cache)))
       (c-memcpy (aref (ptrs-buffer step-projview) ix-fence)
     		(aref (ptrs-buffer base-projview) 0)
     		(size-buffer step-projview))) ; use dest
@@ -73,15 +72,14 @@
     ;; Binding only required for shader usage
     ;; Need only do on-demand - not every frame
     (let ((step-tex (gethash "texture" bo-step))
-	  (base-tex (boa (gethash "texture" mapping-base))))
+	  (base-tex (gethash "texture" bo-cache)))
       (c-memcpy (aref (ptrs-buffer step-tex) ix-fence)
     		(aref (ptrs-buffer base-tex) 0)
-    		(size-buffer step-tex)))))  
+    		(size-buffer step-tex)))))
 
 (defun run-compute ()
 
   (with-slots (program-compute
-	       mapping-base
 	       bo-counter
 	       bo-step
 	       inst-max
@@ -114,8 +112,8 @@
 
 (defun run-compute-copy ()
 
-  (with-slots (program-compute
-	       mapping-base
+  (with-slots (handles-shm
+	       bo-cache
 	       bo-step
 	       bo-counter
 	       inst-max
@@ -128,7 +126,7 @@
     
     ;; Do only if dirty
     (let ((step-instance (gethash "instance" bo-step))
-	  (base-instance (boa (gethash "instance" mapping-base))))
+	  (base-instance (gethash "instance" bo-cache)))
       (copy-buffer (aref (buffers base-instance) 0)
 		   (aref (buffers step-instance) ix-fence)
 		   (size-buffer step-instance)))
@@ -136,18 +134,3 @@
     ;; Set to render all instances
     (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
 	  inst-max)))
-
-(defun copy-buffer (buffer-read
-		    buffer-write
-		    size
-		    &key
-		      (offset-read 0)
-		      (offset-write 0))
-  
-  (%gl:bind-buffer :copy-read-buffer buffer-read)
-  (%gl:bind-buffer :copy-write-buffer buffer-write)
-  (%gl:copy-buffer-sub-data :copy-read-buffer
-			    :copy-write-buffer
-			    offset-read ; r off
-			    offset-write ; w off
-			    size))

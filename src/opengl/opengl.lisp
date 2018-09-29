@@ -17,6 +17,21 @@
       (read-sequence data stream)
       data)))
 
+(defun copy-buffer (buffer-read
+		    buffer-write
+		    size
+		    &key
+		      (offset-read 0)
+		      (offset-write 0))
+  
+  (%gl:bind-buffer :copy-read-buffer buffer-read)
+  (%gl:bind-buffer :copy-write-buffer buffer-write)
+  (%gl:copy-buffer-sub-data :copy-read-buffer
+			    :copy-write-buffer
+			    offset-read ; r off
+			    offset-write ; w off
+			    size))
+
 (defun sync-gl ()
   ;; Compute shader performs "incoherent memory accesses":
   ;; - Writes (atomic or otherwise) via Image Load Store

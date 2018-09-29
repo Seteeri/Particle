@@ -63,6 +63,7 @@
 	   #:print-gl-max
 	   #:set-bo-element
 	   #:set-bo-draw-indirect
+	   #:copy-buffer
 	   
 	   #:target
 	   #:binding-layout

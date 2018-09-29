@@ -59,10 +59,11 @@
 		 	  :pathname "src/view"
 		 	  :components ((:file "texture")
 				       (:file "view")
+				       (:file "cache")
+				       (:file "handle-shm")
 				       (:file "compute")
 				       (:file "raster")
 				       (:file "conn-client")
-				       (:file "mapping-base")
 				       (:file "glfw")))
 		 (:module controller
 			  :pathname "src/controller"
