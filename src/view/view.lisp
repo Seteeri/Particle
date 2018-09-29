@@ -154,9 +154,6 @@
   
   (format t "[init-view] Initializing compute buffers~%")
   (init-buffers-compute params)
-
-  ;; (fmt-view t "init-view" "FINISHED COMPUTE~%")
-  ;; (sb-ext:exit)
   
   t)
 
@@ -195,12 +192,13 @@
 	     
 	     (if *draw*
 		 (progn
-		   (run-view)
+		   ;; (fmt-view t "main-view" "Running...~%")
+		   (run-frame)
 		   ;;(glfw:poll-events)
 		   (glfw:swap-buffers))
 		 (sleep 0.0167))))))
 
-(defun run-view ()
+(defun run-frame ()
   (with-slots (sync fences ix-fence)
       *view*
     

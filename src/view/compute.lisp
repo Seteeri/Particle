@@ -28,7 +28,8 @@
     ;; Texture need only do a shm-ptr copy per frame as needed
 
     ;; Not needed since start of frame will do this?
-    (when nil
+    ;; Specifically for compute program
+    (when t
       (dolist (name '("projview"
 		      "instance"))
 	(fmt-view t "init-buffers-compute" "Binding ~a: ~a~%" name (gethash name mapping-base))
@@ -52,30 +53,36 @@
   ;; Should group them like mapping base is?
   
   (with-slots (mapping-base
-	       bo-projview
-	       bo-instance
-	       bo-texture
+	       bo-step
 	       ix-fence)
       *view*
 
     ;; Need not bind texture since it is not used by compute shader
-    (dolist (boa (list bo-projview
-		       bo-instance))
-      (update-binding-buffer boa ix-fence))
+    (dolist (name '("projview"
+		    "instance"))
+      (update-binding-buffer (gethash name bo-step) ix-fence))
     
     ;; Tentative placement:
-    
+
+    ;; Currently, assume changing every frame for now...
     ;; Memcpy from compute ptrs to raster ptrs since compute shader doesn't compute anything for it
-    (c-memcpy (aref (ptrs-buffer bo-projview) ix-fence)
-    	      (aref (ptrs-buffer (boa (gethash "projview" mapping-base))) 0)
-    	      (size-buffer bo-projview))
+    (let ((step-projview (gethash "projview" bo-step))
+	  (base-projview (boa (gethash "projview" mapping-base))))
+      (c-memcpy (aref (ptrs-buffer step-projview) ix-fence)
+    		(aref (ptrs-buffer base-projview) 0)
+    		(size-buffer step-projview))) ; use dest
 
     ;; Memcpy texture also - shm ptr to gl ptr
     ;; Binding only required for shader usage
     ;; Need only do on-demand - not every frame
-    (c-memcpy (aref (ptrs-buffer bo-texture) ix-fence)
-    	      (aref (ptrs-buffer (boa (gethash "texture" mapping-base))) 0)
-    	      (size-buffer bo-texture))))
+
+    ;; Don't need yet
+    (when nil
+      (c-memcpy (aref (ptrs-buffer bo-texture) ix-fence)
+    		(aref (ptrs-buffer (boa (gethash "texture" mapping-base))) 0)
+    		(size-buffer bo-texture))))
+
+  t)
   
 
 (defun run-compute ()
@@ -83,7 +90,7 @@
   (with-slots (program-compute
 	       mapping-base
 	       bo-counter
-	       bo-indirect
+	       bo-step
 	       inst-max
 	       ix-fence)
       *view*
@@ -108,7 +115,7 @@
     (sync-gl)
     
     ;; Update indirect primCount with counter
-    (setf (mem-aref (aref (ptrs-buffer bo-indirect) ix-fence) :uint 1)
+    (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
 	  inst-max)))
     	  ;; (mem-aref (aref (ptrs-buffer bo-counter) 0) :uint 0))))
 
@@ -116,26 +123,25 @@
 
   (with-slots (program-compute
 	       mapping-base
-
-	       bo-instance
-	       
+	       bo-step
 	       bo-counter
-	       bo-indirect
 	       inst-max
 	       ix-fence)
       *view*
 
-    ;; Need not use program
+    ;; Need not use program since this just copies memory
     
     (update-compute-buffers)
     
     ;; Do only if dirty
-    (copy-buffer (aref (buffers (boa (gethash "instance" mapping-base))) 0)
-		 (aref (buffers bo-instance) ix-fence)
-		 (size-buffer bo-instance))
-
+    (let ((step-instance (gethash "instance" bo-step))
+	  (base-instance (boa (gethash "instance" mapping-base))))
+      (copy-buffer (aref (buffers base-instance) 0)
+		   (aref (buffers step-instance) ix-fence)
+		   (size-buffer step-instance)))
+      
     ;; Set to render all instances
-    (setf (mem-aref (aref (ptrs-buffer bo-indirect) ix-fence) :uint 1)
+    (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
 	  inst-max)))
 
 (defun copy-buffer (buffer-read

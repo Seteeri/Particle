@@ -69,7 +69,7 @@
 			(aref (buffers (gethash "texture" bo-step)) i)))
 
       ;; Pass initial data for these in separate RPC call from model
-      ;; Well, it'll do shm copy before running...
+      ;; Well, it'll do shm copy before draw flag
       ;; Update element
       (let ((data-element (make-array 6
       				      :element-type '(unsigned-byte 32)
