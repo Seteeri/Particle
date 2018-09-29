@@ -61,6 +61,8 @@
 	   #:make-perspective-vector
 	   #:clean-up-buffer-object
 	   #:print-gl-max
+	   #:set-bo-element
+	   #:set-bo-draw-indirect
 	   
 	   #:target
 	   #:binding-layout

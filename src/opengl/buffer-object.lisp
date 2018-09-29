@@ -176,3 +176,38 @@
 	   (funcall (fn-bind buffer) 0)))
   (gl:delete-buffers (buffers buffer))
   (format t "[clean-up-buffer-object] Cleaned-up ~a~%" buffer))
+
+
+;; count: the number of elements to be rendered.
+;; type: the type of the values in indices. Must be one of GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, or GL_UNSIGNED_INT.
+;; indices: a byte offset (cast to a pointer type) into the buffer bound to GL_ELEMENT_ARRAY_BUFFER to start reading indices from.
+;; primcount: the number of instances of the indexed geometry that should be drawn.
+;; basevertex: a constant that should be added to each element of indices​ when chosing elements from the enabled vertex arrays.
+;; baseinstance: the base instance for use in fetching instanced vertex attributes.
+(defun set-bo-draw-indirect (bo-indirect
+			     count
+			     prim-count
+			     first-index
+			     base-vertex
+			     base-instance)
+  
+  (with-slots (count-buffers ptrs-buffer) bo-indirect
+    (loop
+       :for i :from 0 :below count-buffers
+       :for ptr := (aref ptrs-buffer i)
+       :do (progn
+	     (setf (mem-aref ptr :uint 0) count)             ; count (# of elements to render, i.e. number of indices to render from ebo)
+	     (setf (mem-aref ptr :uint 1) prim-count)        ; prim-count (# of instances)
+	     (setf (mem-aref ptr :uint 2) first-index)       ; first-index  (# offset into indices vbo)
+	     (setf (mem-aref ptr :int  3) base-vertex)       ; base-vertex (added to element indices, i.e. stride)
+	     (setf (mem-aref ptr :uint 4) base-instance))))) ; base-instance
+
+
+(defun set-bo-element (bo-element data)
+  ;; Better way to do this...
+  (with-slots (count-buffers ptrs-buffer) bo-element
+    (loop
+       :for i :from 0 :below count-buffers
+       :for ptr := (aref ptrs-buffer i)
+       :do (dotimes (k 6)
+	     (setf (mem-aref ptr :uint k) (aref data k))))))

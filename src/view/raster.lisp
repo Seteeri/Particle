@@ -24,11 +24,7 @@
   (with-slots (width height
 		     program-raster
 		     boav-main
-		     bo-projview
-		     bo-instance
-		     boa-element
-		     bo-indirect
-		     bo-texture
+		     bo-step
 		     inst-max)
       *view*
 
@@ -38,90 +34,52 @@
     (setf boav-main (init-boav-main))
 
     ;; Notes:
-    ;; * Texture requires setting fmt after
     ;; * Some of the other buffers have a different bind layout for output
+    ;; * Texture requires setting fmt after and other ops
+    ;; * Set initial data for buffers element and draw-indirect
     
-    ;; (dolist (params params-shm)
-    ;;   (fmt-view t "init-buffers-raster" "~a~%" params)
-    ;;   (destructuring-bind (target name path size bind-cs bind-vs) params
-    ;; 	(let ((bo (init-buffer-object program-raster
-    ;; 				      target
-    ;; 				      name
-    ;; 				      size
-    ;; 				      bind ; same for compute/raster
-    ;; 				      t
-    ;; 				      :buffering 'triple)))
-	
-    
-    ;; Init buffer object
-    ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
-    (gl:active-texture :texture0) ; move to init?
-    (setf bo-texture (init-buffer-texture program-raster
-    					  :texture-buffer
-    					  "texture"
-    					  :unsigned-byte
-    					  4
-    					  (/ 134217728 4) ; get size from model
-    					  0 ; bind layout
-    					  t
-    					  :buffering 'triple)) ;triple if editing? rotate also...
-    (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
-    ;; Parse glyph images into texture
-    (when nil (parse-glyphs-ppm bo-texture))
-    
-    ;; bind-layout uses the output buffers so they should not be the same
-    ;; as those in init-mapping-base/init-buffers-compute, excluding uniforms
-    
-    (setf bo-projview (init-buffer-object program-raster
-						  :uniform-buffer
-						  "projview"
-						  :float
-						  (+ 16 16 16)
-						  1
-						  0 ; same for compute/raster
-						  t
-						  :buffering 'triple))
-    ;; (with-foreign-string (foo "model")
-    ;;   (format t "ssb: ~a~%" (%gl:get-program-resource-location-index program-raster :program-output foo)))
+    (dolist (params params-shm)
+      ;; (fmt-view t "init-buffers-raster" "~a~%" params)
+      (destructuring-bind (target name path size bind-cs bind-vs) params
+	(setf (gethash name bo-step)
+	      (init-buffer-object program-raster
+    				  target
+    				  name
+    				  size
+    				  bind-vs
+    				  t ; pmap
+    				  :buffering 'triple))))
 
-    ;; shared between compute output and raster input
-    (setf bo-instance (init-buffer-object program-raster
-					  :shader-storage-buffer
-					  "instance"
-					  :float   ; 4
-					  1        ; ignore for now since going for max size, (/ 208 4)
-					  (/ 134217728 4) ; inst-max
-					  2 ; output binding
-					  t
-					  :buffering 'triple))
+    (when t
 
-    ;; static
-    (setf bo-element (init-buffer-object program-raster
-					 :element-array-buffer
-					 "element"
-					 :int
-					 1
-					 6
-					 -1 ; no binding
-					 t
-					 :buffering 'triple
-					 ;; :usage :static-draw
-					 :data (make-array 6
-							   :element-type '(unsigned-byte 32)
-							   :initial-contents (list 0 2 1 0 3 2))))
+      ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+      ;; already active...
+      ;; (gl:active-texture :texture0) ; move to init?
+      ;; Parse glyph images into texture
+      ;; (when nil (parse-glyphs-ppm bo-texture))
+      
+      ;; uniform samplerBuffer msdf;
+      ;; rename to something more relevant...
+      (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
+      
+      ;; Set format type
+      (dotimes (i (count-buffers (gethash "texture" bo-step)))
+	(%gl:tex-buffer :texture-buffer
+			:rgba8
+			(aref (buffers (gethash "texture" bo-step)) i)))
 
-    ;; compute shader modifies per frame
-    (setf bo-indirect (init-buffer-object program-raster
-					  :draw-indirect-buffer
-					  "draw-indirect"
-					  :int
-					  6
-					  1
-					  -1 ; no binding
-					  t
-					  :buffering 'triple))
-    (set-bo-indirect bo-indirect
-		     6 inst-max 0 0 0)))
+      ;; Pass initial data for these in separate RPC call from model
+      ;; Well, it'll do shm copy before running...
+      ;; Update element
+      (let ((data-element (make-array 6
+      				      :element-type '(unsigned-byte 32)
+      				      :initial-contents (list 0 2 1 0 3 2))))
+	(set-bo-element (gethash "element" bo-step)
+			data-element))
+      
+      ;; Update draw-indirect
+      (set-bo-draw-indirect (gethash "draw-indirect" bo-step)
+			    6 inst-max 0 0 0))))
 
 (defun update-raster-buffer-bindings ()
   (with-slots (bo-projview

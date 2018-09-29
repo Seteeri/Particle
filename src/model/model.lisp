@@ -51,27 +51,27 @@
 ;;
 ;; Make class slots?
 (defparameter *params-shm* (list (list :uniform-buffer
-				       "bo-projview"
+				       "projview"
 				       "/protoform-projview"
 				       (align-size (* (+ 16 16 16) 4 1))
 				       0 0) ; cs-in, vs-in
 				 (list :shader-storage-buffer
-				       "bo-instance"
+				       "instance"
 				       "/protoform-instance"
 				       134217728				       
 				       1 2)
 				 (list :texture-buffer ; requires fmt type
-				       "bo-texture"
+				       "texture"
 				       "/protoform-texture"
 				       134217728
 				       -1 -1)
 				 (list :element-array-buffer
-				       "bo-element"
+				       "element"
 				       "/protoform-element"
 				       (* 4 6)  ; 4 bytes/int * 6 ints or indices
 				       -1 -1)
 				 (list :draw-indirect-buffer
-				       "bo-draw-indirect"
+				       "draw-indirect"
 				       "/protoform-draw-indirect"
 				       (* 4 6)  ; 6 ints/params
 				       -1 -1))) 
@@ -322,12 +322,17 @@
       ;; Init buffers
       ;; Need to standardize view buffer creation params
       (swank-protocol:request-listener-eval conn
-					    (format nil "(init-view-buffers `(~S ~S ~S))"
+					    (format nil "(init-view-buffers `(~S ~S ~S ~S ~S))"
 						    (first *params-shm*)
 						    (second *params-shm*)
-						    (third *params-shm*)))
+						    (third *params-shm*)
+						    (fourth *params-shm*)
+						    (fifth *params-shm*)))
       ;; (format t "[model] Wait for eval~%")
       (format t "~a~%" (swank-protocol:read-message conn))
+
+      ;; (fmt-model t "init-model" "DONE~%")
+      ;; (sb-ext:exit)
       
       ;; Do progn to chain them?
       (dolist (name (list "projview"
