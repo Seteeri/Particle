@@ -12,6 +12,19 @@
   ;; view:  init-buffers-compute name and bind-layout
   ;; view:  update-compute-bindings
 
+  ;; (list "projview"       "/protoform-projview"      (align-size (* (+ 16 16 16) 4 1)))
+  ;; (list "instance"       "/protoform-instance"      134217728)
+  ;; (list "texture"        "/protoform-texture"       134217728)
+  ;; (list "element"        "/protoform-element"       (* 4 6)) ; 4 bytes/int * 6 ints or indices
+  ;; (list "draw-indirect"  "/protoform-draw-indirect" (* 4 6)) ; 6 ints
+  
+  ;; (dolist (params params-shm)
+  ;;   (destructuring-bind (target name path size) params
+  ;;     (init-mapping-buffer target
+  ;; 			   name
+  ;; 			   path
+  ;; 			   size)))
+  
   (init-mapping-buffer :uniform-buffer
 		       "projview"
 		       :float

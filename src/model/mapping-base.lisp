@@ -3,7 +3,7 @@
 (defun init-mapping-base (mapping-base
 			  params)
   (dolist (boa params)
-    (destructuring-bind (name path size) boa
+    (destructuring-bind (target name path size) boa
       ;; Is data needed persistently?
       (let ((mmap (init-mmap path
 			     size

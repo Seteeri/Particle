@@ -96,8 +96,8 @@
 					 :data (make-array 6
 							   :element-type '(unsigned-byte 32)
 							   :initial-contents (list 0 2 1 0 3 2))))
-    
-    ;; Need not mmap since compute will modify this...
+
+    ;; compute shader modifies per frame
     (setf bo-indirect (init-buffer-object program-raster
 					  :draw-indirect-buffer
 					  "draw-indirect"

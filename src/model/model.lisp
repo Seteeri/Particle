@@ -46,11 +46,27 @@
 ;; Or pass 0/-1 to determine max?
 ;;
 ;; Make class slots?
-(defparameter *params-shm* (list (list "projview"       "/protoform-projview"      (align-size (* (+ 16 16 16) 4 1)))
-				 (list "instance"       "/protoform-instance"      134217728)
-				 (list "texture"        "/protoform-texture"       134217728)
-				 (list "element"        "/protoform-element"       (* 4 6)) ; 4 bytes/int * 6 ints or indices
-				 (list "draw-indirect"  "/protoform-draw-indirect" (* 4 6)))) ; 6 ints
+(defparameter *params-shm* (list (list :uniform-buffer
+				       "projview"
+				       "/protoform-projview"
+				       (align-size (* (+ 16 16 16) 4 1)))
+				 (list :shader-storage-buffer
+				       "instance"
+				       "/protoform-instance"
+				       134217728)
+				 (list :texture-buffer
+				       "texture"
+				       "/protoform-texture"
+				       134217728)
+				 (list :element-array-buffer
+				       "element"
+				       "/protoform-element"
+				       (* 4 6))  ; 4 bytes/int * 6 ints or indices
+				 (list :draw-indirect-buffer
+				       "draw-indirect"
+				       "/protoform-draw-indirect"
+				       (* 4 6))))  ; 6 ints
+;; Do atomic counter also?
 
 
 (defun init-model (width
