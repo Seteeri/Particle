@@ -63,7 +63,7 @@
 				       (:file "handle-shm")
 				       (:file "compute")
 				       (:file "raster")
-				       (:file "conn-client")
+				       (:file "memcpy")
 				       (:file "glfw")))
 		 (:module controller
 			  :pathname "src/controller"
