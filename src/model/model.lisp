@@ -291,7 +291,8 @@
 (defun setup-view (model)
   
   ;; Init view buffers and start loop
-  (let ((conn (init-swank-conn "skynet" 10001)))      
+  (let ((conn (init-swank-conn "skynet" 10001)))
+    
     (setf (swank-protocol::connection-package conn) "protoform.view")
 
     ;; (format t "[model] Send eval~%")
@@ -342,15 +343,9 @@
 			    inst-max
 			    path-server-model)))
 
-    ;; NODES
-    ;; * Context -> Default FB
-    ;; * Default FN -> Pipeline -> Buffers [SHOW ENTIRE ENGINE LAYOUT IN REALTIME]
-    ;; * Render into a node...or select a framebuffer
-
     ;; TODO:
-    ;; 1. Rewrite/refactor IPC - model will send setup to view
-    ;; 2. Test live texture updates
-    ;; 3. Use parameters from Pango to set texture size
+    ;; 1. Test live texture updates
+    ;; 2. Use parameters from Pango to set texture size
 
     (fmt-model t "main-model" "Init data~%")
     (init-text model)

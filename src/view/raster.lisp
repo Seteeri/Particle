@@ -28,57 +28,55 @@
 		     inst-max)
       *view*
 
-    ;; Move this to init-program-raster...but necessary to ensure it is bound...
     (gl:use-program program-raster)
 
     (setf boav-main (init-boav-main))
 
     ;; Notes:
-    ;; * Some of the other buffers have a different bind layout for output
+    ;; * Some buffers have a different bind layout per shader stage
     ;; * Texture requires setting fmt after and other ops
     ;; * Set initial data for buffers element and draw-indirect
     
     (dolist (params params-shm)
-      ;; (fmt-view t "init-buffers-raster" "~a~%" params)
       (destructuring-bind (target name path size bind-cs bind-vs) params
-	(setf (gethash name bo-step)
-	      (init-buffer-object target
-    				  name
-    				  size
-    				  bind-vs
-    				  t ; pmap
-    				  :buffering 'triple))))
+	(let ((bo (init-buffer-object target
+    				      name
+    				      size
+    				      bind-vs
+    				      t ; pmap
+    				      :buffering 'triple)))
+	  (setf (gethash name bo-step)
+		bo)
 
-    (when t
+	  (when (eq target :texture-buffer)
 
-      ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
-      ;; already active...
-      ;; (gl:active-texture :texture0) ; move to init?
-      ;; Parse glyph images into texture
-      ;; (when nil (parse-glyphs-ppm bo-texture))
-      
-      ;; uniform samplerBuffer msdf;
-      ;; rename to something more relevant...
-      (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
-      
-      ;; Set format type
-      (dotimes (i (count-buffers (gethash "texture" bo-step)))
-	(%gl:tex-buffer :texture-buffer
-			:rgba8
-			(aref (buffers (gethash "texture" bo-step)) i)))
+	    ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+	    ;; Already active...
+	    ;; (gl:active-texture :texture0)
+	    ;; Parse glyph images into texture: (parse-glyphs-ppm bo-texture)
+	    
+	    ;; Pass additional params for texture - format type
+	    (dotimes (i (count-buffers (gethash "texture" bo-step)))
+	      (%gl:tex-buffer :texture-buffer
+			      :rgba8
+			      (aref (buffers (gethash "texture" bo-step)) i)))
 
-      ;; Pass initial data for these in separate RPC call from model
-      ;; Well, it'll do shm copy before draw flag
-      ;; Update element
-      (let ((data-element (make-array 6
-      				      :element-type '(unsigned-byte 32)
-      				      :initial-contents (list 0 2 1 0 3 2))))
-	(set-bo-element (gethash "element" bo-step)
-			data-element))
-      
-      ;; Update draw-indirect
-      (set-bo-draw-indirect (gethash "draw-indirect" bo-step)
-			    6 inst-max 0 0 0))))
+	    ;; uniform samplerBuffer msdf;
+	    ;; rename to something more relevant...
+	    ;; (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
+	    
+	    t))))
+
+    ;; Set data in model and do memcpy
+    (let ((data-element (make-array 6
+      				    :element-type '(unsigned-byte 32)
+      				    :initial-contents (list 0 2 1 0 3 2))))
+      (set-bo-element (gethash "element" bo-step)
+		      data-element))
+    
+    ;; Update draw-indirect
+    (set-bo-draw-indirect (gethash "draw-indirect" bo-step)
+			  6 inst-max 0 0 0)))
 
 (defun update-raster-buffer-bindings ()
   (with-slots (bo-step
