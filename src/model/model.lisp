@@ -308,12 +308,11 @@
     ;; Init buffers
     ;; Need to standardize view buffer creation params
     (swank-protocol:request-listener-eval conn
-					  (format nil "(init-view-buffers `(~S ~S ~S ~S ~S))"
-						  (first *params-shm*)
-						  (second *params-shm*)
-						  (third *params-shm*)
-						  (fourth *params-shm*)
-						  (fifth *params-shm*)))
+					  (with-output-to-string (stream)
+					    (format stream "(init-view-buffers `(")
+					    (dolist (param *params-shm*)
+					      (format stream "~S " param))
+					    (format stream "))")))
     ;; (format t "[model] Wait for eval~%")
     (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
     
