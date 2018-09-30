@@ -10,7 +10,7 @@
 		     (list path-struct
 			   path-cull-frustum)))
     (gl:link-program program)
-    (format t "[init-program-compute] Program info log: ~a~%" (gl:get-program-info-log program))
+    (fmt-view t "init-program-compute" "Program info log: ~a~%" (gl:get-program-info-log program))
     program))
 
 (defun init-buffers-compute (params-shm)
@@ -52,31 +52,39 @@
 	       ix-fence)
       *view*
 
-    ;; bind compute also
-    
-    ;; Need not bind texture since it is not used by compute shader
+    ;; Only bind that is needed for compute shader
+    ;; Others will be rotated by raster
     (dolist (name '("projview"
 		    "instance"))
       (update-binding-buffer (gethash name bo-step) ix-fence))
     
-    ;; Refactor to be on-demand by model
+    ;; TODO: Refactor to use dirty flag
+    ;; Below assumes change every frame
 
-    ;; Currently, assume changing every frame for now...
-    ;; Memcpy from compute ptrs to raster ptrs since compute shader doesn't compute anything for it
-    (let ((step-projview (gethash "projview" bo-step))
-	  (base-projview (gethash "projview" bo-cache)))
-      (c-memcpy (aref (ptrs-buffer step-projview) ix-fence)
-    		(aref (ptrs-buffer base-projview) 0)
-    		(size-buffer step-projview))) ; use dest
+    ;; Can use gl function to copy cache->step
+    (memcpy-cache-to-step "instance" ix-fence ; dest
+			  "instance")       ; src
+    ;; Memcpy cache->step since compute shader doesn't utilize it
+    (memcpy-cache-to-step "projview" ix-fence ; dest
+			  "projview")))       ; src
 
-    ;; Memcpy texture also - shm ptr to gl ptr
-    ;; Binding only required for shader usage
-    ;; Need only do on-demand - not every frame
-    (let ((step-tex (gethash "texture" bo-step))
-	  (base-tex (gethash "texture" bo-cache)))
-      (c-memcpy (aref (ptrs-buffer step-tex) ix-fence)
-    		(aref (ptrs-buffer base-tex) 0)
-    		(size-buffer step-tex)))))
+(defun run-compute-copy ()
+
+  (with-slots (handles-shm
+	       bo-cache
+	       bo-step
+	       bo-counter
+	       inst-max
+	       ix-fence)
+      *view*
+
+    ;; Need not use program since this just copies memory
+    
+    (update-compute-buffers)
+      
+    ;; Set to render all instances
+    (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
+	  inst-max)))
 
 (defun run-compute ()
 
@@ -110,28 +118,3 @@
     (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
 	  inst-max)))
     	  ;; (mem-aref (aref (ptrs-buffer bo-counter) 0) :uint 0))))
-
-(defun run-compute-copy ()
-
-  (with-slots (handles-shm
-	       bo-cache
-	       bo-step
-	       bo-counter
-	       inst-max
-	       ix-fence)
-      *view*
-
-    ;; Need not use program since this just copies memory
-    
-    (update-compute-buffers)
-    
-    ;; Do only if dirty
-    (let ((step-instance (gethash "instance" bo-step))
-	  (base-instance (gethash "instance" bo-cache)))
-      (copy-buffer (aref (buffers base-instance) 0)
-		   (aref (buffers step-instance) ix-fence)
-		   (size-buffer step-instance)))
-      
-    ;; Set to render all instances
-    (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
-	  inst-max)))

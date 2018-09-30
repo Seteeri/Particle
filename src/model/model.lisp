@@ -114,20 +114,8 @@
 	(dotimes (i (length data))
 	  (setf (mem-aref ptr :float (+ b i))
 		(aref data i)))))
-
-    ;; Init other data
-    ;; ;; Pass initial data for these in separate RPC call from model
-    ;; ;; Well, it'll do shm copy before draw flag
-    ;; ;; Update element
-    ;; (let ((data-element (make-array 6
-    ;; 				      :element-type '(unsigned-byte 32)
-    ;; 				      :initial-contents (list 0 2 1 0 3 2))))
-    ;; 	(set-bo-element (gethash "element" bo-step)
-    ;; 			data-element))
     
-    ;; ;; Update draw-indirect
-    ;; (set-bo-draw-indirect (gethash "draw-indirect" bo-step)
-    ;; 			    6 inst-max 0 0 0))))
+    ;; Set other buffer data
     
     model))
 
@@ -303,10 +291,9 @@
 	(swank-protocol:request-listener-eval conn
       					      (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
     ;; (format t "[model] Wait for eval~%")
-    (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
+    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))
     
     ;; Init buffers
-    ;; Need to standardize view buffer creation params
     (swank-protocol:request-listener-eval conn
 					  (with-output-to-string (stream)
 					    (format stream "(init-view-buffers `(")
@@ -314,23 +301,23 @@
 					      (format stream "~S " param))
 					    (format stream "))")))
     ;; (format t "[model] Wait for eval~%")
-    (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
+    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))
     
     ;; Do progn to chain them?
     (dolist (params *params-shm*)
       (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params      
         (with-slots (ptr size)
     	    (gethash name (handles-shm model))
-	  (fmt-model t "main-model" "(serve-memcpy ~S ~S ~S)~%" name name size)
+	  (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
 	  (swank-protocol:request-listener-eval conn
-						(format nil "(serve-memcpy ~S ~S ~S)" name name size))
-	  (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn)))))
+						(format nil "(memcpy-shm-to-cache ~S ~S ~S)" name name size))
+	  (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn)))))
 
     ;; Enable draw flag for view loop
     (swank-protocol:request-listener-eval conn
 					  (format nil "(setf *draw* t)"))
     ;; (format t "[model] Wait for eval~%")
-    (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))))
+    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))))
 
 (defun main-model (width height
 		   inst-max

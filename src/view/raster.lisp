@@ -25,6 +25,7 @@
 		     program-raster
 		     boav-main
 		     bo-step
+		     bo-cache
 		     inst-max)
       *view*
 
@@ -65,18 +66,7 @@
 	    ;; rename to something more relevant...
 	    ;; (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
 	    
-	    t))))
-
-    ;; Set data in model and do memcpy
-    (let ((data-element (make-array 6
-      				    :element-type '(unsigned-byte 32)
-      				    :initial-contents (list 0 2 1 0 3 2))))
-      (set-bo-element (gethash "element" bo-step)
-		      data-element))
-    
-    ;; Update draw-indirect
-    (set-bo-draw-indirect (gethash "draw-indirect" bo-step)
-			  6 inst-max 0 0 0)))
+	    t))))))
 
 (defun update-raster-buffer-bindings ()
   (with-slots (bo-step
@@ -86,9 +76,7 @@
     (dolist (name '("projview"
 		    "instance"
 		    "draw-indirect"))
-      (let ((bo (gethash name bo-step)))
-	(when (> (count-buffers bo) 1)
-	  (update-binding-buffer bo ix-fence))))))
+      (update-binding-buffer (gethash name bo-step) ix-fence))))
 
 (defun run-raster ()
 

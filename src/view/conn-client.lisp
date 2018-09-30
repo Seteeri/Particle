@@ -1,55 +1,60 @@
 (in-package :protoform.view)
 
-;; (cond ((eq (first ret-recv) :mmap-shm)
-;;        t)
-;;       ((eq (first ret-recv) :unmmap-shm)
-;;        t)
-;;       ((eq (first ret-recv) :query-buffer-objects)
-;;        (serve-query-buffer-objects msdf
-;; 				   sock
-;; 				   buffer-ptr-recv))
-;;       ((eq (first ret-recv) :memcpy)
-;;        ;; Refactor for readability
-;;        ;; (format t "[serve-client] ~a, fence: ~a~%" ret-recv (ix-fence msdf))
-;;        (serve-memcpy sock
-;; 		     buffer-ptr-recv
-;; 		     (aref (ptrs-buffer (boa (gethash (second ret-recv) (mapping-base msdf)))) 0) ; dest - base buffer, no rot
-;; 		     (ptr (mmap (gethash (third ret-recv) (mapping-base msdf))))                  ; src  - mmap shm
-;; 		     (fourth ret-recv)
-;; 		     (fifth ret-recv)
-;; 		     (sixth ret-recv)
-;; 		     (seventh ret-recv)
-;; 		     requests-served)
-;;        t)
-;;       ((eq (first ret-recv) :exit)
-;;        (serve-exit msdf conn-client))
-;;       ((eq (first ret-recv) :sync)
-;;        (serve-sync sock
-;; 		   buffer-ptr-recv)
-;;        ;; (verify-instance msdf)
-;;        (return requests-served)
-;;        t)
-;;       (t
-;;        t)))
+;; Create variant that use same name
 
-(defun serve-memcpy (name-dest
-		     name-src
-		     size)
+(defun memcpy-shm-to-cache (name-dest
+			    name-src
+			    &optional (size nil))
+  (let* ((bo-dest (gethash name-dest (bo-cache *view*)))
+	 (ptr-dest (aref (ptrs-buffer bo-dest) 0)) ; always 0
+	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*))))))
+    (memcpy-ptr ptr-dest
+		ptr-src
+		(if size
+		    size
+		    (size-buffer bo-dest)))))
+  ;; (fmt-view t "memcpy-shm-to-cache" "~a ~a ~a~%" name-dest name-src size))
+
+;; Can either use this function to cpy between buffers or use GL func
+(defun memcpy-cache-to-step (name-dest
+			     ix-dest
+			     name-src
+			     &optional (size nil))
+  (let* ((bo-dest (gethash name-dest (bo-step *view*)))
+	 (ptr-dest (aref (ptrs-buffer bo-dest) ix-dest))
+	 (ptr-src (aref (ptrs-buffer (gethash name-dest (bo-cache *view*))) 0)))
+    (memcpy-ptr ptr-dest
+		ptr-src
+		(if size
+		    size
+		    (size-buffer bo-dest)))))
+  ;; (fmt-view t "memcpy-cache-to-step" "~a ~a ~a~%" name-dest name-src size))
+
+;; Copy from cache to all step buffers
+(defun memcpy-cache-to-step-all (name-dest
+				 name-src
+				 &optional (size nil))
+  (let* ((bo-dest (gethash name-dest (bo-step *view*)))
+	 (ptr-src (aref (ptrs-buffer (gethash name-dest (bo-cache *view*))) 0))
+	 (size (if size
+		   size
+		   (size-buffer bo-dest))))
+    (dotimes (i (count-buffers bo-dest))
+      (memcpy-ptr (aref (ptrs-buffer bo-dest) i)
+		  ptr-src
+		  size))))
+
+(defun memcpy-ptr (ptr-dest
+		   ptr-src
+		   size)
   (let* ((offset-dest 0)
 	 (offset-src 0)
-	 (ptr-dest (aref (ptrs-buffer (gethash name-dest (bo-cache *view*))) 0)) ; dest - base buffer, no rot
-	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*))))) ; src  - mmap shm
 	 (ptr-dest-off (inc-pointer ptr-dest offset-dest))
 	 (ptr-src-off (inc-pointer ptr-src offset-src)))
     (c-memcpy ptr-dest-off
 	      ptr-src-off
-	      size))
-  (fmt-view t "serve-memcpy" "c-memcpy: ~a ~a ~a~%" name-dest name-src size))
+	      size)))
 
-(defun serve-sync (sock buffer-ptr)
-  (send-message sock
-		buffer-ptr
-		"t"))
 
 (defun serve-exit (view conn-client)
   (with-slots (sock) conn-client

@@ -128,9 +128,34 @@
   (fmt-view t "init-view" "Initializing buffer object caches~%")
   (init-bo-caches params-model)
 
-  (fmt-view t "init-view" "Initializing buffer objects raster and compute~%")
+  (fmt-view t "init-view" "Initializing buffer objects stages~%")
   (init-buffers-raster params-model)
-  (init-buffers-compute params-model))
+  (init-buffers-compute params-model)
+
+  ;; Set initial data
+  ;; Ensure to copy to all ptrs
+
+  (with-slots (handles-shm
+	       bo-cache
+	       bo-step
+	       ix-fence
+	       inst-max)
+      *view*
+    
+    (let ((data-element (make-array 6
+      				    :element-type '(unsigned-byte 32)
+      				    :initial-contents (list 0 2 1 0 3 2))))
+      (set-bo-element (gethash "element" bo-step)
+		      data-element))
+    
+    (set-bo-draw-indirect (gethash "draw-indirect" bo-step)
+			  6 inst-max 0 0 0)
+
+    ;; shm -> cache -> step
+    ;; model triggers shm->cache
+    ;; compute performs cache->step
+    (memcpy-shm-to-cache "texture" "texture")
+    (memcpy-cache-to-step-all "texture" "texture")))
 
 (defun main-view (width
 		  height

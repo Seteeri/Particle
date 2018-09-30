@@ -16,12 +16,9 @@
    (mapped-persistent :accessor mapped-persistent :initarg :mapped-persistent :initform nil)
    (ptrs-buffer :accessor ptrs-buffer :initarg :ptrs-buffer :initform nil)))
 
-;; maybe remove size and just do count * type?
 (defun init-buffer-object (target
-			   name ; name for all components
-			   ;; type ; type of each component
-			   size ; how many components per attribute
-			   ;; count ; how many attributes total
+			   name
+			   size
 			   binding-layout
 			   mapped-persistent
 			   &key
