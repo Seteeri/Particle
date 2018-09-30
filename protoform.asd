@@ -57,8 +57,7 @@
 				       (:file "connector")))
 		 (:module view
 		 	  :pathname "src/view"
-		 	  :components ((:file "texture")
-				       (:file "view")
+		 	  :components ((:file "view")
 				       (:file "cache")
 				       (:file "handle-shm")
 				       (:file "compute")

@@ -135,6 +135,8 @@
   ;; Set initial data
   ;; Ensure to copy to all ptrs
 
+  ;; https://www.opengl.org/discussion_boards/showthread.php/173917-samplerBuffer-example-needed
+  
   (with-slots (handles-shm
 	       bo-cache
 	       bo-step
