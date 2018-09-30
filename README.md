@@ -115,7 +115,7 @@ naturally remains an orthogonal possibility.
   * UBO/SSBO/Texture buffers
   * Compute shaders
   * AZDO Techniques
-    * Persistent mapping of buffer objects
+    * Persistent mapping
     * Instanced drawing
     * Indirect drawing
       * Multi-indirect - not yet implemented in OpenGL ES API

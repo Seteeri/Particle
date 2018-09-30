@@ -49,6 +49,7 @@
 ;; Or pass 0/-1 to determine max?
 ;;
 ;; Make class slots?
+;; Add buffering: single double triple
 (defparameter *params-shm* (list (list :uniform-buffer
 				       "projview"
 				       "/protoform-projview"
@@ -112,6 +113,20 @@
 	(dotimes (i (length data))
 	  (setf (mem-aref ptr :float (+ b i))
 		(aref data i)))))
+
+    ;; Init other data
+    ;; ;; Pass initial data for these in separate RPC call from model
+    ;; ;; Well, it'll do shm copy before draw flag
+    ;; ;; Update element
+    ;; (let ((data-element (make-array 6
+    ;; 				      :element-type '(unsigned-byte 32)
+    ;; 				      :initial-contents (list 0 2 1 0 3 2))))
+    ;; 	(set-bo-element (gethash "element" bo-step)
+    ;; 			data-element))
+    
+    ;; ;; Update draw-indirect
+    ;; (set-bo-draw-indirect (gethash "draw-indirect" bo-step)
+    ;; 			    6 inst-max 0 0 0))))
     
     model))
 
@@ -273,6 +288,49 @@
       (cairo:destroy context-render)
       (cairo:destroy surface-render))))
 
+(defun setup-view (model)
+  
+  ;; Init view buffers and start loop
+  (let ((conn (init-swank-conn "skynet" 10001)))      
+    (setf (swank-protocol::connection-package conn) "protoform.view")
+
+    ;; (format t "[model] Send eval~%")
+    
+    ;; view should not concern itself with inst-max...
+    (with-slots (width height inst-max) model
+	(swank-protocol:request-listener-eval conn
+      					      (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
+    ;; (format t "[model] Wait for eval~%")
+    (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
+    
+    ;; Init buffers
+    ;; Need to standardize view buffer creation params
+    (swank-protocol:request-listener-eval conn
+					  (format nil "(init-view-buffers `(~S ~S ~S ~S ~S))"
+						  (first *params-shm*)
+						  (second *params-shm*)
+						  (third *params-shm*)
+						  (fourth *params-shm*)
+						  (fifth *params-shm*)))
+    ;; (format t "[model] Wait for eval~%")
+    (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
+    
+    ;; Do progn to chain them?
+    (dolist (params *params-shm*)
+      (destructuring-bind (target name path size bind-cs bind-vs) params      
+        (with-slots (ptr size)
+    	    (gethash name (handles-shm model))
+	  (fmt-model t "main-model" "(serve-memcpy ~S ~S ~S)~%" name name size)
+	  (swank-protocol:request-listener-eval conn
+						(format nil "(serve-memcpy ~S ~S ~S)" name name size))
+	  (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn)))))
+
+    ;; Enable draw flag for view loop
+    (swank-protocol:request-listener-eval conn
+					  (format nil "(setf *draw* t)"))
+    ;; (format t "[model] Wait for eval~%")
+    (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))))
+
 (defun main-model (width height
 		   inst-max
 		   path-server-model)
@@ -299,53 +357,14 @@
     (init-layout model)
     
     (fmt-model t "main-model" "Init conn to view swank server~%")
-    
-    ;; Init view buffers and start loop
-    (let ((conn (init-swank-conn "skynet" 10001)))      
-      (setf (swank-protocol::connection-package conn) "protoform.view")
-
-      ;; (format t "[model] Send eval~%")
-      
-      ;; view should not concern itself with inst-max...
-      (swank-protocol:request-listener-eval conn
-      					    (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max))
-      ;; (format t "[model] Wait for eval~%")
-      (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
-      
-      ;; Init buffers
-      ;; Need to standardize view buffer creation params
-      (swank-protocol:request-listener-eval conn
-					    (format nil "(init-view-buffers `(~S ~S ~S ~S ~S))"
-						    (first *params-shm*)
-						    (second *params-shm*)
-						    (third *params-shm*)
-						    (fourth *params-shm*)
-						    (fifth *params-shm*)))
-      ;; (format t "[model] Wait for eval~%")
-      (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn))
-      
-      ;; Do progn to chain them?
-      (dolist (params *params-shm*)
-	(destructuring-bind (target name path size bind-cs bind-vs) params      
-          (with-slots (ptr size)
-    	      (gethash name (handles-shm model))
-	    (fmt-model t "main-model" "(serve-memcpy ~S ~S ~S)~%" name name size)
-	    (swank-protocol:request-listener-eval conn
-						  (format nil "(serve-memcpy ~S ~S ~S)" name name size))
-	    (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn)))))
-
-      ;; Enable draw flag for view loop
-      (swank-protocol:request-listener-eval conn
-					    (format nil "(setf *draw* t)"))
-      ;; (format t "[model] Wait for eval~%")
-      (fmt-model t "main-model" "~a~%" (swank-protocol:read-message conn)))
+    (setup-view model)
     
     (loop (sleep 0.0167))))
 
 (defun handle-escape (model
 		      keysym)
   
-  (clean-up-model msdf)
+  (clean-up-model model)
   (glfw:set-window-should-close))
 
 (defun clean-up-model (model)

@@ -62,20 +62,20 @@
     (clean-up-buffer-objects view)
     
     (gl:delete-vertex-arrays (list boav-main))
-    (format t "[clean-up-msdf] Deleted vertex array ~a~%" boav-main)
+    (format t "[clean-up-view] Deleted vertex array ~a~%" boav-main)
 
     (%gl:use-program 0)
     
     (%gl:delete-program program-raster)
-    (format t "[clean-up-msdf] Deleted program ~a~%" program-raster)
+    (format t "[clean-up-view] Deleted program ~a~%" program-raster)
     (%gl:delete-program program-compute)
-    (format t "[clean-up-msdf] Deleted program ~a~%" program-compute)
+    (format t "[clean-up-view] Deleted program ~a~%" program-compute)
 
     (loop 
        :for fence :across fences
        :do (unless (null-pointer-p fence)
 	     (%gl:delete-sync fence)
-	     (format t "[clean-up-msdf] Deleted fence ~a~%" fence)))))
+	     (format t "[clean-up-view] Deleted fence ~a~%" fence)))))
 
 (defun clean-up-buffer-objects (view)
   (dolist (boa (list (bo-projview view)

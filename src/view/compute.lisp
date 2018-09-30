@@ -52,6 +52,8 @@
 	       ix-fence)
       *view*
 
+    ;; bind compute also
+    
     ;; Need not bind texture since it is not used by compute shader
     (dolist (name '("projview"
 		    "instance"))

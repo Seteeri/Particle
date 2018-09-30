@@ -38,7 +38,7 @@
   (let* ((offset-dest 0)
 	 (offset-src 0)
 	 (ptr-dest (aref (ptrs-buffer (gethash name-dest (bo-cache *view*))) 0)) ; dest - base buffer, no rot
-	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*)))))                   ; src  - mmap shm
+	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*))))) ; src  - mmap shm
 	 (ptr-dest-off (inc-pointer ptr-dest offset-dest))
 	 (ptr-src-off (inc-pointer ptr-src offset-src)))
     (c-memcpy ptr-dest-off
@@ -51,14 +51,14 @@
 		buffer-ptr
 		"t"))
 
-(defun serve-exit (msdf conn-client)
+(defun serve-exit (view conn-client)
   (with-slots (sock) conn-client
     (c-shutdown sock +shut-rdwr+)
     (c-close sock))
   (clean-up-msdf msdf)
   (sb-ext:exit))
       
-(defun serve-query-buffer-objects (msdf
+(defun serve-query-buffer-objects (view
 				   sock
 				   buffer-ptr)
 
@@ -68,7 +68,7 @@
 	     (format s "(list")
 
 	     (loop 
-	        :for key :being :the :hash-keys :of (mapping-base msdf)
+	        :for key :being :the :hash-keys :of (handles-shm msdf)
 		:using (hash-value value)
 		:do (let ((mmap (mmap value)))
 		      (format s " (list \"~a\" \"~a\" ~a)"
