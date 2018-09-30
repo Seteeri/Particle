@@ -64,7 +64,8 @@
 				       "texture"
 				       "/protoform-texture"
 				       134217728
-				       -1 -1)
+				       -1 -1
+				       :rgba8)
 				 (list :element-array-buffer
 				       "element"
 				       "/protoform-element"
@@ -318,7 +319,7 @@
     
     ;; Do progn to chain them?
     (dolist (params *params-shm*)
-      (destructuring-bind (target name path size bind-cs bind-vs) params      
+      (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params      
         (with-slots (ptr size)
     	    (gethash name (handles-shm model))
 	  (fmt-model t "main-model" "(serve-memcpy ~S ~S ~S)~%" name name size)

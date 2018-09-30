@@ -38,7 +38,7 @@
     ;; * Set initial data for buffers element and draw-indirect
     
     (dolist (params params-shm)
-      (destructuring-bind (target name path size bind-cs bind-vs) params
+      (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params
 	(let ((bo (init-buffer-object target
     				      name
     				      size

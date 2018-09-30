@@ -5,7 +5,7 @@
   ;; "instance":1
   ;; "texture":-1
   (dolist (params params-model)
-    (destructuring-bind (target name path size bind-cs bind-vs) params
+    (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params
       (init-bo-cache target
 		     name
   		     size
