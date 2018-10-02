@@ -7,9 +7,9 @@ precision highp usamplerBuffer;
 
 uniform samplerBuffer msdf;
 
-in uv_t vertexUV;
-flat in int vertexW_UV;
 in rgba_t vertexRGBA;
+flat in int vertexW_UV;
+in uv_t vertexUV;
 
 out vec4 color;
 
@@ -25,18 +25,19 @@ vec4 filter_bilinear()
 {
     // https://github.com/WebGLSamples/WebGL2Samples/blob/master/samples/texture_fetch.html
     
-    //vec2 size = vec2(textureSize(msdf, 0) - 1);
-    vec2 size = vec2(57.0,112.0);
+    // 10x20; -1
+    vec2 size = vec2(9.0,19.0);
     vec2 texcoord = vec2(vertexUV.u, vertexUV.v) * size;
     ivec2 coord = ivec2(texcoord);
         
     // xy -> offset
-    int offset_base_glyph = vertexW_UV * 58 * 113;
+    //int offset_base_glyph = vertexW_UV * 10 * 20;
+    int offset_base_glyph = 0 * 10 * 20;
         
-    int offset_texel00 = offset_base_glyph + (coord.x + (coord.y * 58));
-    int offset_texel10 = offset_base_glyph + ((coord.x + 1) + (coord.y * 58));
-    int offset_texel11 = offset_base_glyph + ((coord.x + 1) + ((coord.y + 1) * 58));
-    int offset_texel01 = offset_base_glyph + (coord.x + ((coord.y + 1) * 58));
+    int offset_texel00 = offset_base_glyph + (coord.x + (coord.y * 10));
+    int offset_texel10 = offset_base_glyph + ((coord.x + 1) + (coord.y * 10));
+    int offset_texel11 = offset_base_glyph + ((coord.x + 1) + ((coord.y + 1) * 10));
+    int offset_texel01 = offset_base_glyph + (coord.x + ((coord.y + 1) * 10));
     
     vec4 texel00 = texelFetch(msdf, offset_texel00);
     vec4 texel10 = texelFetch(msdf, offset_texel10);

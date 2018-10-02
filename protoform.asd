@@ -17,8 +17,9 @@
 		 #:cl-glfw3
 		 #:3d-vectors
 		 #:3d-matrices
+		 #:cl-digraph
 		 #:usocket
-		 #:pango-markup
+		 ;; #:pango-markup
 		 #:bordeaux-threads
 		 #:swank
 		 #:swank-protocol

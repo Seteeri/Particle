@@ -1,46 +1,24 @@
 (in-package :protoform.model)
 
-;; /proc/sys/net/core/rmem_default for recv and /proc/sys/net/core/wmem_default
-;; 212992
-;; They contain three numbers, which are minimum, default and maximum memory size values (in byte), respectively.
-
 (defun align-size (size &optional (boundary 4))
   (+ size (- boundary (mod size boundary))))
 
-(defun fmt-model (dst ctx-str ctl-str &rest rest)
-  ;; Add space opt
-  (apply #'format
-	 dst
-	 (str:concat (format nil "[PID:~a,model][~a] " (sb-posix:getpid) ctx-str)
-		     ctl-str)
-	 rest))
-
-;; rename to graph or root?
 (defclass model ()
   ((width :accessor width :initarg :width :initform nil)
    (height :accessor height :initarg :height :initform nil)
+   ;; still relevant?
    (inst-max :accessor inst-max :initarg :inst-max :initform nil)
-
+   (projview :accessor projview :initarg :projview :initform nil)
+   
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
 
-   (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform nil)
-   (scale-glyph :accessor scale-glyph :initarg :scale-glyph :initform nil)
-   (cursor :accessor cursor :initarg :cursor :initform nil)
+   (cursor :accessor cursor :initarg :cursor :initform (vec3 0 0 0))
    
-   ;; Integrate these into corresponding slot - data-model
-   (sl-chrs :accessor sl-chrs :initarg :sl-chrs :initform nil)
-   (lock-sl-chrs :accessor lock-sl-chrs :initarg :lock-sl-chrs :initform (bt:make-lock))
-   (projview :accessor projview :initarg :projview :initform nil)))
-
-   ;; Make class - integrate with conn? (inc cohesion)
-   ;; (epoll-events :accessor epoll-events :initarg :epoll-events :initform nil)
-   ;; (epoll-fd :accessor epoll-fd :initarg :epoll-fd :initform nil)
-   ;; (queue-chrs :accessor queue-chrs :initarg :queue-chrs :initform (make-queue))
-   ;; (queue-pv :accessor queue-pv :initarg :queue-pv :initform (make-queue))   
-   ;; (metrics :accessor metrics :initarg :metrics :initform nil)
-   ;; (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform nil)
-   ;; (scale-glyph :accessor scale-glyph :initarg :scale-glyph :initform nil)
-   ;; (cursor :accessor cursor :initarg :cursor :initform nil))
+   ;; move to node? used in conjunction with scale-node
+   (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
+   
+   ;; rename to scale-default-node
+   (scale-node :accessor scale-node :initarg :scale-node :initform 1.0)))
 
 ;; For now, determine these through view - maybe model can request from view?
 ;; GL_MAX_SHADER_STORAGE_BLOCK_SIZE = 134217728 = 134.217728 MBs
@@ -48,8 +26,8 @@
 ;;
 ;; Or pass 0/-1 to determine max?
 ;;
-;; Make class slots?
-;; Add buffering: single double triple
+;; Make class slots? -> Harder to be dynamic
+;; Add buffering: single double triple - default to triple
 (defparameter *params-shm* (list (list :uniform-buffer
 				       "projview"
 				       "/protoform-projview"
@@ -75,10 +53,9 @@
 				       "draw-indirect"
 				       "/protoform-draw-indirect"
 				       (* 4 6)  ; 6 ints/params
-				       -1 -1))) 
+				       -1 -1)))
+
 ;; Do atomic counter also?
-
-
 (defun init-model (width
 		   height
 		   inst-max
@@ -91,14 +68,12 @@
 							:width width
 							:height height
 							:projection-type 'orthographic)
-			       :dpi-glyph (/ 1 90)
-			       :scale-glyph 10.0			       
 			       :inst-max inst-max))
 	 (handles-shm (handles-shm model))
 	 (projview (projview model)))
     
     ;; Init shms, request view to mmap
-    (fmt-model t "main-model" " Initializing mmaps...~%")
+    (fmt-model t "main-model" " Initializing shm...~%")
     (init-handle-shm handles-shm *params-shm*)
     
     ;; Init data for shms
@@ -119,51 +94,13 @@
     
     model))
 
-(defun init-text (model)
+(defun init-nodes (model)
 
-  (let* ((cursor (vec3 0.0 0.0 0.0))
-	 (inst-node (init-node cursor
-			       (scale-glyph model)
-			       #\X))
-	 (offset-ptr 0))
+  (let* ((inst-node (init-node (cursor model)
+			       (scale-node model)
+			       #\X)))
     
-    (with-slots (ptr size)
-	(gethash "instance" (handles-shm model))
-      (with-slots (chr
-		   model-matrix
-		   rgba
-		   uv
-		   flags)
-	  inst-node
-	
-	(loop
-	   :for c :across (marr (matrix model-matrix))
-	   :for c-i :upfrom 0
-	   :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-		     c))
-	(incf offset-ptr 16)
-	
-	(loop
-	   :for c :across rgba
-	   :for c-i :upfrom 0
-	   :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-		     c))
-	(incf offset-ptr 16)
-
-	;; TODO:
-	;; Adjust UVs based on texture rather than from metrics
-	;; (u v s t) * 4
-	(loop
-	   :for c :across uv
-	   :for c-i :upfrom 0
-	   :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-		     c))
-	(incf offset-ptr 8)
-	
-	;; Glyph, Flags, pad, pad
-	(setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code chr) 32))
-	(setf (mem-aref ptr :int (+ offset-ptr 1)) flags)
-	(incf offset-ptr 4)))))  
+    (copy-node-to-shm inst-node)))
 
 (defun init-layout (model)
 
@@ -198,7 +135,7 @@
     ;;   (pango:pango_layout_set_font_description layout desc)
     ;;   (pango:pango_font_description_free desc))
     
-    (let ((text-2 "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 72\" strikethrough=\"true\">X</span>")) ; 100, 80, 0
+    (let ((text-2 "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 12\" strikethrough=\"true\">X</span>")) ; 100, 80, 0
       ;; b = 100, g = 80, r = 0
       (pango:pango_layout_set_markup layout text-2 -1))
     
@@ -209,6 +146,7 @@
     ;; Divide by pango scale to get dimensions in pixels
     (setf (mem-ref width-pango :unsigned-int) (/ (mem-ref width-pango :unsigned-int) pango:PANGO_SCALE))
     (setf (mem-ref height-pango :unsigned-int) (/ (mem-ref height-pango :unsigned-int) pango:PANGO_SCALE))
+    (fmt-model t "init-layout" "pango layout size: ~a, ~a~%" (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))
 
     ;; typedef enum _cairo_format {
     ;;     CAIRO_FORMAT_INVALID   = -1,
@@ -288,9 +226,8 @@
     
     ;; view should not concern itself with inst-max...
     (with-slots (width height inst-max) model
-	(swank-protocol:request-listener-eval conn
-      					      (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
-    ;; (format t "[model] Wait for eval~%")
+	(swank-protocol:request-listener-eval conn (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
+
     (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))
     
     ;; Init buffers
@@ -309,13 +246,11 @@
         (with-slots (ptr size)
     	    (gethash name (handles-shm model))
 	  (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
-	  (swank-protocol:request-listener-eval conn
-						(format nil "(memcpy-shm-to-cache ~S ~S ~S)" name name size))
+	  (swank-protocol:request-listener-eval conn (format nil "(memcpy-shm-to-cache ~S ~S ~S)" name name size))
 	  (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn)))))
 
     ;; Enable draw flag for view loop
-    (swank-protocol:request-listener-eval conn
-					  (format nil "(setf *draw* t)"))
+    (swank-protocol:request-listener-eval conn (format nil "(setf *draw* t)"))
     ;; (format t "[model] Wait for eval~%")
     (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))))
 
@@ -330,12 +265,10 @@
 			    inst-max
 			    path-server-model)))
 
-    ;; TODO:
-    ;; 1. Test live texture updates
-    ;; 2. Use parameters from Pango to set texture size
-
+    (defparameter *model* model)
+    
     (fmt-model t "main-model" "Init data~%")
-    (init-text model)
+    (init-nodes model)
     (init-layout model)
     
     (fmt-model t "main-model" "Init conn to view swank server~%")
@@ -361,3 +294,16 @@
 
   ;; Only for DRM?
   (sb-ext:exit))
+
+;; /proc/sys/net/core/rmem_default for recv and /proc/sys/net/core/wmem_default
+;; 212992
+;; They contain three numbers, which are minimum, default and maximum memory size values (in byte), respectively.
+
+;; move elsewhere to misc.lisp or util.lisp
+(defun fmt-model (dst ctx-str ctl-str &rest rest)
+  ;; Add space opt
+  (apply #'format
+	 dst
+	 (str:concat (format nil "[PID:~a,model][~a] " (sb-posix:getpid) ctx-str)
+		     ctl-str)
+	 rest))
