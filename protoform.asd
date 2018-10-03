@@ -84,6 +84,7 @@
 				       (:file "handle-shm")				       
 				       (:file "projview")
 				       (:file "node")
+				       (:file "text")
 				       (:module structures
 						:pathname "structures"
 						:components ((:file "dag")))))
