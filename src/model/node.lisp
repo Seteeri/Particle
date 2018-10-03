@@ -87,48 +87,46 @@
 				 (mrotation +vx+ (vx3 rotation))
 				 (mscaling scale))))))
 
-(defun copy-node-to-shm (node)
-  
-  (let* ((offset-ptr 0)) ; index
+(defun copy-node-to-shm (node &optional (offset-ptr 0))
     
-    (with-slots (ptr size)
-	(gethash "instance" (handles-shm *model*))
+  (with-slots (ptr size)
+      (gethash "instance" (handles-shm *model*))
+    
+    (with-slots (data
+		 model-matrix
+		 rgba
+		 uv
+		 flags)
+	node
       
-      (with-slots (data
-		   model-matrix
-		   rgba
-		   uv
-		   flags)
-	  node
-	
-	(loop
-	   :for c :across (marr (matrix model-matrix))
-	   :for c-i :upfrom 0
-	   :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-		     c))
-	(incf offset-ptr 16)
-	
-	(loop
-	   :for c :across rgba
-	   :for c-i :upfrom 0
-	   :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-		     c))
-	(incf offset-ptr 16)
+      (loop
+	 :for c :across (marr (matrix model-matrix))
+	 :for c-i :upfrom 0
+	 :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
+		   c))
+      (incf offset-ptr 16)
+      
+      (loop
+	 :for c :across rgba
+	 :for c-i :upfrom 0
+	 :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
+		   c))
+      (incf offset-ptr 16)
 
-	(loop
-	   :for c :across uv
-	   :for c-i :upfrom 0
-	   :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-		     c))
-	;; (incf offset-ptr 8) ; double check this
-	(incf offset-ptr 16)
-	
-	;; Glyph, Flags, pad, pad
-	;; (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code data) 32))
-	(setf (mem-aref ptr :int (+ offset-ptr 0)) 0) ; tex offset
-	(setf (mem-aref ptr :int (+ offset-ptr 1)) 10) ; tex dim x
-	(setf (mem-aref ptr :int (+ offset-ptr 2)) 20) ; tex dim y
-	(setf (mem-aref ptr :int (+ offset-ptr 3)) flags) ; draw
-	(incf offset-ptr 4)
+      (loop
+	 :for c :across uv
+	 :for c-i :upfrom 0
+	 :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
+		   c))
+      ;; (incf offset-ptr 8) ; double check this
+      (incf offset-ptr 16)
+      
+      ;; Glyph, Flags, pad, pad
+      ;; (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code data) 32))
+      (setf (mem-aref ptr :int (+ offset-ptr 0)) 0) ; tex offset
+      (setf (mem-aref ptr :int (+ offset-ptr 1)) 10) ; tex dim x
+      (setf (mem-aref ptr :int (+ offset-ptr 2)) 20) ; tex dim y
+      (setf (mem-aref ptr :int (+ offset-ptr 3)) flags) ; draw
+      (incf offset-ptr 4)
 
-	t))))
+      t)))
