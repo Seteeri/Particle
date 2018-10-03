@@ -1,7 +1,6 @@
 (in-package :protoform.model)
 
-(defun generate-text-texture (model
-			      text-pm)
+(defun generate-text-texture (text-pm)
 
   ;; Return index, width, height
   
@@ -63,11 +62,11 @@
     ;; Create cairo context/surface to render to
     (let* ((size-data (* (mem-ref width-pango :unsigned-int)
 			 (mem-ref height-pango :unsigned-int)
-			 4))
+			 4)) ; 4 bytes per pixel
 	   ;; (data-surface-render (foreign-alloc :unsigned-char :count size-data))
 	   ;; (stride (* 4 (mem-ref width-pango :unsigned-int)))
 	   (stride (cairo::cairo_format_stride_for_width 0 (mem-ref width-pango :unsigned-int))) ; send patch upstream
-	   (ptr (ptr (gethash "texture" (handles-shm model))))
+	   (ptr (ptr (gethash "texture" (handles-shm *model*))))
 	   (surface-render (cairo:create-image-surface-for-data (inc-pointer ptr
 									     (offset-textures *model*)) ;data-surface-render
 								:argb32
@@ -122,7 +121,9 @@
       (cairo:destroy context-layout)
       (cairo:destroy context-render)
       (cairo:destroy surface-render)
-    
+
+      ;; free pango dim ptrs
+      
       (values
        (- (offset-textures *model*) size-data) ; want start
        (vec2 (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))))))

@@ -47,45 +47,11 @@
 (defun init-node (cursor
 		  scale
 		  data)
-  (let* ((node (make-instance 'node
-			      :data data))
-	 (model-matrix (model-matrix node)))
-
-    ;; make scale a vector
-    (setf (vx3 (scale model-matrix)) scale)
-    (setf (vy3 (scale model-matrix)) scale)
-    (setf (vz3 (scale model-matrix)) scale)
-    
-    (update-transform cursor
-		      model-matrix)
-    
-    node))
-
-;; move to model matrix file?
-(defun update-transform (cursor
-			 model-matrix)
-  ;; Setup model matrix
-  (with-slots (matrix
-	       translation
-	       rotation
-	       scale)
-      model-matrix
-    
-    (setf (vx3 translation) (vx3 cursor))
-    (setf (vy3 translation) (vy3 cursor))
-    (setf (vz3 translation) (vz3 cursor))
-    
-    (setf (vx3 scale) (* 1.0 (/ 10 20))) ; ratio
-    (setf (vy3 scale) 1.0)
-    (setf (vz3 scale) 1.0)
-
-    ;; (setf rotation (vec3 0.0 0.0 0.0))
-    
-    (setf matrix (mtranspose (m* (mtranslation translation)
-				 (mrotation +vz+ (vz3 rotation))
-				 (mrotation +vy+ (vy3 rotation))
-				 (mrotation +vx+ (vx3 rotation))
-				 (mscaling scale))))))
+  (make-instance 'node
+		 :data data
+		 :model-matrix (make-instance 'model-matrix
+					      :scale scale
+					      :translation cursor)))
 
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
     
@@ -130,6 +96,6 @@
       (setf (mem-aref ptr :int (+ offset-ptr 1)) (truncate (vx2 dims-texture))) ; tex dim x
       (setf (mem-aref ptr :int (+ offset-ptr 2)) (truncate (vy2 dims-texture))) ; tex dim y
       (setf (mem-aref ptr :int (+ offset-ptr 3)) flags) ; draw
-      (incf offset-ptr 4)
+      (incf offset-ptr 4)))
 
-      t)))
+  (fmt-model t "copy-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4)))

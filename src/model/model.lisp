@@ -22,7 +22,7 @@
    ;; move to node? used in conjunction with scale-node
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
    ;; rename to scale-default-node
-   (scale-node :accessor scale-node :initarg :scale-node :initform 1.0)))
+   (scale-node :accessor scale-node :initarg :scale-node :initform (vec3 1.0 1.0 1.0))))
 
 ;; For now, determine these through view - maybe model can request from view?
 ;; GL_MAX_SHADER_STORAGE_BLOCK_SIZE = 134217728 = 134.217728 MBs
@@ -149,20 +149,54 @@
 			    path-server-model)))
 
     (defparameter *model* model)
-    
+
+    ;; Node 1
     (fmt-model t "main-model" "Init data~%")
     (let ((node (init-node (cursor model)
 			   (scale-node model)
-			   #\X)))
-      
+			   #\A)))
       (multiple-value-bind (offset-texture dims-texture)
-	  (generate-text-texture model
-				 "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 12\" strikethrough=\"true\">X</span>")
-	(setf (offset-texture node) offset-texture)
-	(setf (dims-texture node) dims-texture))
+	  (generate-text-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">A</span>")
+	(setf (offset-texture node) offset-texture) ; convert to bytes for shader
+	(setf (dims-texture node) dims-texture)
+	(fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texture dims-texture))
 
+      ;; Update scale to match texture
+      (setf (vx3 (scale (model-matrix node))) (* 1.0
+						 (/ (vx2 (dims-texture node))
+						    (vy2 (dims-texture node))))) ; ratio
+      ;; Update transform
+      (update-transform (model-matrix node))
+      
       ;; Copy to shm before sending signal to view
-      (copy-node-to-shm node))
+      (copy-node-to-shm node
+			0))
+    
+    ;; Node 2
+    (when t
+      (let ((node (init-node (cursor model)
+			     (scale-node model)
+			     #\Z)))
+	(multiple-value-bind (offset-texture dims-texture)
+	    (generate-text-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">Z</span>")
+	  (setf (offset-texture node) 1) ; rename to index
+	  (setf (dims-texture node) dims-texture)
+	  (fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texture dims-texture))
+	
+	;; Update scale to match texture
+	(setf (vx3 (scale (model-matrix node))) (* 1.0
+						   (/ (vx2 (dims-texture node))
+						      (vy2 (dims-texture node))))) ; ratio
+	;; Offset translation x
+	(setf (vx3 (translation (model-matrix node))) 1.0)
+	;; Update transform
+	(update-transform (model-matrix node))
+	
+	;; Copy to shm before sending signal to view
+	(copy-node-to-shm node
+			  (/ 208 4))
+
+	t))
     
     (fmt-model t "main-model" "Init conn to view swank server~%")
     (setup-view model)
