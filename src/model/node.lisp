@@ -125,9 +125,9 @@
 	;; Glyph, Flags, pad, pad
 	;; (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code data) 32))
 	(setf (mem-aref ptr :int (+ offset-ptr 0)) 0) ; tex offset
-	(setf (mem-aref ptr :int (+ offset-ptr 1)) flags) ; move
-	(setf (mem-aref ptr :int (+ offset-ptr 2)) 0) ; tex dim
-	(setf (mem-aref ptr :int (+ offset-ptr 3)) 0) ; tex dim
+	(setf (mem-aref ptr :int (+ offset-ptr 1)) 10) ; tex dim x
+	(setf (mem-aref ptr :int (+ offset-ptr 2)) 20) ; tex dim y
+	(setf (mem-aref ptr :int (+ offset-ptr 3)) flags) ; draw
 	(incf offset-ptr 4)
 
 	t))))

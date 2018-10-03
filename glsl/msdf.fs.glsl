@@ -8,7 +8,8 @@ precision highp usamplerBuffer;
 uniform samplerBuffer msdf;
 
 in rgba_t vertexRGBA;
-flat in int vertexW_UV;
+flat in int vertexOffsetTex;
+flat in ivec2 vertexDimsTex;
 in uv_t vertexUV;
 
 out vec4 color;
@@ -26,25 +27,24 @@ vec4 filter_bilinear()
     // https://github.com/WebGLSamples/WebGL2Samples/blob/master/samples/texture_fetch.html
     
     // 10x20; -1
-    vec2 size = vec2(9.0,19.0);
-    vec2 texcoord = vec2(vertexUV.u, vertexUV.v) * size;
-    ivec2 coord = ivec2(texcoord);
+    vec2 f_dims = vec2(float(vertexDimsTex.x-1), float(vertexDimsTex.y-1));
+    vec2 f_coordTexel = vec2(vertexUV.u, vertexUV.v) * f_dims;
+    ivec2 coordTexel = ivec2(f_coordTexel);
         
-    // xy -> offset
-    //int offset_base_glyph = vertexW_UV * 10 * 20;
-    int offset_base_glyph = 0 * 10 * 20;
+    int offsetTex = vertexOffsetTex * vertexDimsTex.x * vertexDimsTex.y;
+    //int offset_base_glyph = 0 * 10 * 20;
         
-    int offset_texel00 = offset_base_glyph + (coord.x + (coord.y * 10));
-    int offset_texel10 = offset_base_glyph + ((coord.x + 1) + (coord.y * 10));
-    int offset_texel11 = offset_base_glyph + ((coord.x + 1) + ((coord.y + 1) * 10));
-    int offset_texel01 = offset_base_glyph + (coord.x + ((coord.y + 1) * 10));
+    int offsetTexel00 = offsetTex + (coordTexel.x + (coordTexel.y * vertexDimsTex.x));
+    int offsetTexel10 = offsetTex + ((coordTexel.x + 1) + (coordTexel.y * vertexDimsTex.x));
+    int offsetTexel11 = offsetTex + ((coordTexel.x + 1) + ((coordTexel.y + 1) * vertexDimsTex.x));
+    int offsetTexel01 = offsetTex + (coordTexel.x + ((coordTexel.y + 1) * vertexDimsTex.x));
     
-    vec4 texel00 = texelFetch(msdf, offset_texel00);
-    vec4 texel10 = texelFetch(msdf, offset_texel10);
-    vec4 texel11 = texelFetch(msdf, offset_texel11);
-    vec4 texel01 = texelFetch(msdf, offset_texel01);
+    vec4 texel00 = texelFetch(msdf, offsetTexel00);
+    vec4 texel10 = texelFetch(msdf, offsetTexel10);
+    vec4 texel11 = texelFetch(msdf, offsetTexel11);
+    vec4 texel01 = texelFetch(msdf, offsetTexel01);
 
-    vec2 sampleCoord = fract(texcoord.xy);
+    vec2 sampleCoord = fract(f_coordTexel.xy);
     vec4 texel0 = mix(texel00, texel01, sampleCoord.y);
     vec4 texel1 = mix(texel10, texel11, sampleCoord.y);            
     

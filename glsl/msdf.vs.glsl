@@ -13,7 +13,8 @@ layout(std430, binding = 2) readonly buffer data_instances_out
 };
 
 out rgba_t vertexRGBA;
-flat out int vertexW_UV;
+flat out int vertexOffsetTex;
+flat out ivec2 vertexDimsTex;
 out uv_t vertexUV;
 
 void main()
@@ -26,5 +27,7 @@ void main()
     vertexUV.u = instances_out[gl_InstanceID].uvs[gl_VertexID].u;
     vertexUV.v = 1.0 - instances_out[gl_InstanceID].uvs[gl_VertexID].v;
     
-    vertexW_UV = instances_out[gl_InstanceID].w_flags[0];
+    vertexOffsetTex = instances_out[gl_InstanceID].w_flags[0];
+    vertexDimsTex = ivec2(instances_out[gl_InstanceID].w_flags[1],
+                          instances_out[gl_InstanceID].w_flags[2]);
 }
