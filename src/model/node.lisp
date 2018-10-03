@@ -27,7 +27,8 @@
 
 (defclass node ()
   ((data :accessor data :initarg :data :initform nil) ; formerly chr
-   (model-matrix :accessor model-matrix :initarg :model-matrix :initform (make-instance 'model-matrix)) ; rename transforms?
+   (origin :accessor origin :initarg :origin :initform (vec3 0 0 0))
+   (model-matrix :accessor model-matrix :initarg :model-matrix :initform (make-instance 'model-matrix))
    (rgba :accessor rgba :initarg :rgba :initform (make-array (* 4 4) ; or use vec4
 							     :adjustable nil
 							     :fill-pointer nil
