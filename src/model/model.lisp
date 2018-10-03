@@ -12,11 +12,15 @@
    
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
 
-   (cursor :accessor cursor :initarg :cursor :initform (vec3 0 0 0))
+   ;; Textures - list of Texture instances wich store tex parameters
+   ;; Use skip list? -> For now use vector
+   ;; Hmm, when texture is removed need to recopy all (to "defragment")
+   (offset-textures :accessor offset-textures :initarg :offset-textures :initform 0)
+   (textures :accessor textures :initarg :textures :initform (make-array 64 :adjustable t))
    
+   (cursor :accessor cursor :initarg :cursor :initform (vec3 0 0 0))
    ;; move to node? used in conjunction with scale-node
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
-   
    ;; rename to scale-default-node
    (scale-node :accessor scale-node :initarg :scale-node :initform 1.0)))
 
@@ -94,16 +98,11 @@
     
     model))
 
-(defun init-nodes (model)
+(defun generate-text-texture (model
+			 text-pm)
 
-  (let* ((inst-node (init-node (cursor model)
-			       (scale-node model)
-			       #\X)))
-    
-    (copy-node-to-shm inst-node)))
-
-(defun init-layout (model)
-
+  ;; Return index, width, height
+  
   ;; Create a cairo context for pango layout
   (let* ((width-pango (foreign-alloc :unsigned-int))
 	 (height-pango (foreign-alloc :unsigned-int))
@@ -135,9 +134,11 @@
     ;;   (pango:pango_layout_set_font_description layout desc)
     ;;   (pango:pango_font_description_free desc))
     
-    (let ((text-2 "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 12\" strikethrough=\"true\">X</span>")) ; 100, 80, 0
-      ;; b = 100, g = 80, r = 0
-      (pango:pango_layout_set_markup layout text-2 -1))
+    ;; (let ((text-2 "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 12\" strikethrough=\"true\">X</span>")) ; 100, 80, 0
+    ;;   ;; b = 100, g = 80, r = 0
+    ;;   (pango:pango_layout_set_markup layout text-2 -1))
+
+    (pango:pango_layout_set_markup layout text-pm -1)
     
     ;; Once text is laidout, get dimensions
     (pango:pango_layout_get_size layout
@@ -146,7 +147,7 @@
     ;; Divide by pango scale to get dimensions in pixels
     (setf (mem-ref width-pango :unsigned-int) (/ (mem-ref width-pango :unsigned-int) pango:PANGO_SCALE))
     (setf (mem-ref height-pango :unsigned-int) (/ (mem-ref height-pango :unsigned-int) pango:PANGO_SCALE))
-    (fmt-model t "init-layout" "pango layout size: ~a, ~a~%" (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))
+    ;; (fmt-model t "init-layout" "pango layout size: ~a, ~a~%" (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))
 
     ;; typedef enum _cairo_format {
     ;;     CAIRO_FORMAT_INVALID   = -1,
@@ -164,12 +165,17 @@
 	   ;; (data-surface-render (foreign-alloc :unsigned-char :count size-data))
 	   ;; (stride (* 4 (mem-ref width-pango :unsigned-int)))
 	   (stride (cairo::cairo_format_stride_for_width 0 (mem-ref width-pango :unsigned-int))) ; send patch upstream
-	   (surface-render (cairo:create-image-surface-for-data (ptr (gethash "texture" (handles-shm model))) ;data-surface-render
+	   (ptr (ptr (gethash "texture" (handles-shm model))))
+	   (surface-render (cairo:create-image-surface-for-data (inc-pointer ptr
+									     (offset-textures *model*)) ;data-surface-render
 								:argb32
 								(mem-ref width-pango :unsigned-int)
 								(mem-ref height-pango :unsigned-int)
 								stride))
 	   (context-render (cairo:create-context surface-render)))
+
+      ;; Update offset by size of texture
+      (incf (offset-textures *model*) size-data)
       
       ;; 0.002803 seconds = 2.2 to 9.3 ms
       
@@ -213,7 +219,11 @@
       (pango:g_object_unref layout)
       (cairo:destroy context-layout)
       (cairo:destroy context-render)
-      (cairo:destroy surface-render))))
+      (cairo:destroy surface-render)
+    
+      (values
+       (- (offset-textures *model*) size-data) ; want start
+       (vec2 (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))))))
 
 (defun setup-view (model)
   
@@ -268,8 +278,18 @@
     (defparameter *model* model)
     
     (fmt-model t "main-model" "Init data~%")
-    (init-nodes model)
-    (init-layout model)
+    (let ((node (init-node (cursor model)
+			   (scale-node model)
+			   #\X)))
+      
+      (multiple-value-bind (offset-texture dims-texture)
+	  (generate-text-texture model
+				 "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 12\" strikethrough=\"true\">X</span>")
+	(setf (offset-texture node) offset-texture)
+	(setf (dims-texture node) dims-texture))
+
+      ;; Copy to shm before sending signal to view
+      (copy-node-to-shm node))
     
     (fmt-model t "main-model" "Init conn to view swank server~%")
     (setup-view model)
