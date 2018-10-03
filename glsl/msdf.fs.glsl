@@ -14,25 +14,17 @@ in uv_t vertexUV;
 
 out vec4 color;
 
-
-float median(float r, float g, float b) 
-{
-    return max(min(r, g), min(max(r, g), b));
-}
-
 // Implement filter_bicubic
 
 vec4 filter_bilinear()
 {
     // https://github.com/WebGLSamples/WebGL2Samples/blob/master/samples/texture_fetch.html
     
-    // 10x20; -1
     vec2 f_dims = vec2(float(vertexDimsTex.x-1), float(vertexDimsTex.y-1));
     vec2 f_coordTexel = vec2(vertexUV.u, vertexUV.v) * f_dims;
     ivec2 coordTexel = ivec2(f_coordTexel);
         
     int offsetTex = vertexOffsetTex * vertexDimsTex.x * vertexDimsTex.y;
-    //int offset_base_glyph = 0 * 10 * 20;
         
     int offsetTexel00 = offsetTex + (coordTexel.x + (coordTexel.y * vertexDimsTex.x));
     int offsetTexel10 = offsetTex + ((coordTexel.x + 1) + (coordTexel.y * vertexDimsTex.x));
@@ -69,19 +61,6 @@ vec4 filter_bilinear_2d_array()
     return mix(texel0, texel1, sampleCoord.x);
 }    
 */
-void main_msdf()
-{
-    vec4 samp = filter_bilinear();
-    
-    float sigDist = median(samp.r, samp.g, samp.b);
-    float w = fwidth(sigDist);
-    float opacity = smoothstep(0.5 - w, 0.5 + w, sigDist);
-
-    color = vec4(vec3(vertexRGBA.r,
-                      vertexRGBA.g,
-                      vertexRGBA.b),
-                 opacity*vertexRGBA.a);
-}
 
 void main()
 {
