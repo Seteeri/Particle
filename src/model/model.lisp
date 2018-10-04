@@ -12,6 +12,8 @@
    
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
 
+   (digraph :accessor digraph :initarg :digraph :initform nil)
+   
    ;; Textures - list of Texture instances wich store tex parameters
    ;; Use skip list? -> For now use vector
    ;; Hmm, when texture is removed need to recopy all (to "defragment")
@@ -151,19 +153,42 @@
 
     (defparameter *model* model)
 
-    ;; Node 1
     (fmt-model t "main-model" "Init data~%")
-    (let ((node (init-node (vec3 0 0 0)
-			   (scale-node model)
-			   "QWERTY")))
-      ;; Copy to shm before sending signal to view
-      (copy-node-to-shm node 0))
 
-    (let ((node (init-node (vec3 0 1 0)
-			   (scale-node model)
-			   "ASDF")))
+    ;; Create DAG
+    (let ((digraph (digraph:make-digraph)))
+      (setf (digraph *model*) digraph)
+    
+      ;; Node 1
+      (let ((n-0 (init-node (vec3 0 0 0)
+			    (scale-node model)
+			    0
+			    "QWERTY"))
+	    (n-1 (init-node (vec3 0 1 0)
+			    (scale-node model)
+			    1
+			    "ASDF"))
+	    (n-2 (init-node (vec3 0 2 0)
+			    (scale-node model)
+			    2
+			    "ZXCV")))
+
+	(digraph:insert-vertex digraph n-0)
+	(digraph:insert-vertex digraph n-1)
+	(digraph:insert-vertex digraph n-2)
+      
+	(digraph:insert-edge digraph n-0 n-1)
+	(digraph:insert-edge digraph n-1 n-2))
+    
       ;; Copy to shm before sending signal to view
-      (copy-node-to-shm node (/ 208 4)))
+      (digraph:mapc-vertices (lambda (node)
+			       (copy-node-to-shm node
+						 (* (index node)
+						    (/ 208 4))))
+			     digraph))
+      
+    ;; (copy-node-to-shm node 0)
+    ;; (copy-node-to-shm node (/ 208 4))
     
     (fmt-model t "main-model" "Init conn to view swank server~%")
     (setup-view model)

@@ -27,6 +27,7 @@
 
 (defclass node ()
   ((data :accessor data :initarg :data :initform nil) ; formerly chr
+   (index :accessor index :initarg :index :initform nil)
    (origin :accessor origin :initarg :origin :initform (vec3 0 0 0))
    (model-matrix :accessor model-matrix :initarg :model-matrix :initform (make-instance 'model-matrix))
    (rgba :accessor rgba :initarg :rgba :initform (make-array (* 4 4) ; or use vec4
@@ -46,18 +47,20 @@
 
 (defun init-node (cursor
 		  scale
+		  ix
 		  data)
   (let ((node (make-instance 'node
 			     :data data
+			     :index ix
 			     :model-matrix (make-instance 'model-matrix
 							  :scale scale
 							  :translation cursor))))
     (multiple-value-bind (offset-texel-texture dims-texture)
 	(convert-pm-to-texture
-	 (format nil "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">~A</span>" data))
+	 (format nil "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"false\">~A</span>" data))
       (setf (offset-texel-texture node) offset-texel-texture) ; convert to bytes for shader
       (setf (dims-texture node) dims-texture)
-      (fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
+      (fmt-model t "main-init" "~%Texture: ~S, ~S bytes, ~S~%" data offset-texel-texture dims-texture))
 
     ;; Update scale to match texture
     (setf (vx3 (scale (model-matrix node))) (* (/ 1 96) (vx2 (dims-texture node))))
