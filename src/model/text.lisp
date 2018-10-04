@@ -1,6 +1,6 @@
 (in-package :protoform.model)
 
-(defun generate-text-texture (text-pm)
+(defun convert-pm-to-texture (text-pm)
 
   ;; Return index, width, height
   

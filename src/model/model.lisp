@@ -157,7 +157,7 @@
 			   (scale-node model)
 			   #\A)))
       (multiple-value-bind (offset-texel-texture dims-texture)
-	  (generate-text-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">ABC</span>")
+	  (convert-pm-to-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">ABC</span>")
 	(setf (offset-texel-texture node) offset-texel-texture) ; convert to bytes for shader
 	(setf (dims-texture node) dims-texture)
 	(fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
@@ -179,7 +179,7 @@
 			     (scale-node model)
 			     #\Z)))
 	(multiple-value-bind (offset-texel-texture dims-texture)
-	    (generate-text-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">XYZ</span>")
+	    (convert-pm-to-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">XYZ</span>")
 	  (setf (offset-texel-texture node) offset-texel-texture) ;(* 141 94)) ; rename to index
 	  (setf (dims-texture node) dims-texture)
 	  (fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
