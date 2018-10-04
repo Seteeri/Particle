@@ -163,9 +163,9 @@
 	(fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
 
       ;; Update scale to match texture
-      (setf (vx3 (scale (model-matrix node))) (* 1.0
-						 (/ (vx2 (dims-texture node))
-						    (vy2 (dims-texture node))))) ; ratio
+      (setf (vx3 (scale (model-matrix node))) (* (/ 1 90) (vx2 (dims-texture node))))
+      (setf (vy3 (scale (model-matrix node))) (* (/ 1 90) (vy2 (dims-texture node))))
+	
       ;; Update transform
       (update-transform (model-matrix node))
       
@@ -179,15 +179,15 @@
 			     (scale-node model)
 			     #\Z)))
 	(multiple-value-bind (offset-texel-texture dims-texture)
-	    (convert-pm-to-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">XYZ</span>")
+	    (convert-pm-to-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 120\" strikethrough=\"true\">XYZ</span>")
 	  (setf (offset-texel-texture node) offset-texel-texture) ;(* 141 94)) ; rename to index
 	  (setf (dims-texture node) dims-texture)
 	  (fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
 	
-	;; Update scale to match texture
-	(setf (vx3 (scale (model-matrix node))) (* 1.0
-						   (/ (vx2 (dims-texture node))
-						      (vy2 (dims-texture node))))) ; ratio
+	;; Update scale to match texture; 1/90 = dpi
+	(setf (vx3 (scale (model-matrix node))) (* (/ 1 90) (vx2 (dims-texture node))))
+	(setf (vy3 (scale (model-matrix node))) (* (/ 1 90) (vy2 (dims-texture node))))
+
 	;; Offset translation x
 	(setf (vx3 (translation (model-matrix node))) 2.0)
 	;; Update transform
