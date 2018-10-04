@@ -153,51 +153,17 @@
 
     ;; Node 1
     (fmt-model t "main-model" "Init data~%")
-    (let ((node (init-node (cursor model)
+    (let ((node (init-node (vec3 0 0 0)
 			   (scale-node model)
-			   #\A)))
-      (multiple-value-bind (offset-texel-texture dims-texture)
-	  (convert-pm-to-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">ABC</span>")
-	(setf (offset-texel-texture node) offset-texel-texture) ; convert to bytes for shader
-	(setf (dims-texture node) dims-texture)
-	(fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
-
-      ;; Update scale to match texture
-      (setf (vx3 (scale (model-matrix node))) (* (/ 1 90) (vx2 (dims-texture node))))
-      (setf (vy3 (scale (model-matrix node))) (* (/ 1 90) (vy2 (dims-texture node))))
-	
-      ;; Update transform
-      (update-transform (model-matrix node))
-      
+			   "QWERTY")))
       ;; Copy to shm before sending signal to view
-      (copy-node-to-shm node
-			0))
-    
-    ;; Node 2
-    (when t
-      (let ((node (init-node (cursor model)
-			     (scale-node model)
-			     #\Z)))
-	(multiple-value-bind (offset-texel-texture dims-texture)
-	    (convert-pm-to-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 120\" strikethrough=\"true\">XYZ</span>")
-	  (setf (offset-texel-texture node) offset-texel-texture) ;(* 141 94)) ; rename to index
-	  (setf (dims-texture node) dims-texture)
-	  (fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
-	
-	;; Update scale to match texture; 1/90 = dpi
-	(setf (vx3 (scale (model-matrix node))) (* (/ 1 90) (vx2 (dims-texture node))))
-	(setf (vy3 (scale (model-matrix node))) (* (/ 1 90) (vy2 (dims-texture node))))
+      (copy-node-to-shm node 0))
 
-	;; Offset translation x
-	(setf (vx3 (translation (model-matrix node))) 2.0)
-	;; Update transform
-	(update-transform (model-matrix node))
-	
-	;; Copy to shm before sending signal to view
-	(copy-node-to-shm node
-			  (/ 208 4))
-
-	t))
+    (let ((node (init-node (vec3 0 1 0)
+			   (scale-node model)
+			   "ASDF")))
+      ;; Copy to shm before sending signal to view
+      (copy-node-to-shm node (/ 208 4)))
     
     (fmt-model t "main-model" "Init conn to view swank server~%")
     (setup-view model)

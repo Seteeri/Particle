@@ -47,11 +47,26 @@
 (defun init-node (cursor
 		  scale
 		  data)
-  (make-instance 'node
-		 :data data
-		 :model-matrix (make-instance 'model-matrix
-					      :scale scale
-					      :translation cursor)))
+  (let ((node (make-instance 'node
+			     :data data
+			     :model-matrix (make-instance 'model-matrix
+							  :scale scale
+							  :translation cursor))))
+    (multiple-value-bind (offset-texel-texture dims-texture)
+	(convert-pm-to-texture
+	 (format nil "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">~A</span>" data))
+      (setf (offset-texel-texture node) offset-texel-texture) ; convert to bytes for shader
+      (setf (dims-texture node) dims-texture)
+      (fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
+
+    ;; Update scale to match texture
+    (setf (vx3 (scale (model-matrix node))) (* (/ 1 96) (vx2 (dims-texture node))))
+    (setf (vy3 (scale (model-matrix node))) (* (/ 1 96) (vy2 (dims-texture node))))
+    
+    ;; Update transform
+    (update-transform (model-matrix node))
+    
+    node))
 
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
     
