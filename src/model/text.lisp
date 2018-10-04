@@ -68,15 +68,17 @@
 	   (stride (cairo::cairo_format_stride_for_width 0 (mem-ref width-pango :unsigned-int))) ; send patch upstream
 	   (ptr (ptr (gethash "texture" (handles-shm *model*))))
 	   (surface-render (cairo:create-image-surface-for-data (inc-pointer ptr
-									     (offset-textures *model*)) ;data-surface-render
+									     (offset-bytes-textures *model*)) ;data-surface-render
 								:argb32
 								(mem-ref width-pango :unsigned-int)
 								(mem-ref height-pango :unsigned-int)
 								stride))
 	   (context-render (cairo:create-context surface-render)))
 
-      ;; Update offset by size of texture
-      (incf (offset-textures *model*) size-data)
+      ;; Update offsets by size of texture
+      (incf (offset-texel-textures *model*) (* (mem-ref width-pango :unsigned-int)
+					       (mem-ref height-pango :unsigned-int)))
+      (incf (offset-bytes-textures *model*) size-data)
       
       ;; 0.002803 seconds = 2.2 to 9.3 ms
       
@@ -125,5 +127,6 @@
       ;; free pango dim ptrs
       
       (values
-       (- (offset-textures *model*) size-data) ; want start
+       (- (offset-texel-textures *model*) (* (mem-ref width-pango :unsigned-int)
+					     (mem-ref height-pango :unsigned-int)))
        (vec2 (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))))))

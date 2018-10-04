@@ -35,7 +35,7 @@
 							     :element-type 'single-float
 							     :initial-contents *color-default-node*))
    
-   (offset-texture :accessor offset-texture :initarg :offset-texture :initform 0)
+   (offset-texel-texture :accessor offset-texel-texture :initarg :offset-texel-texture :initform 0)
    (dims-texture :accessor dims-texture :initarg :dims-texture :initform (vec2 0 0))
    (uv :accessor uv :initform (make-array 16
 					  :adjustable nil
@@ -61,7 +61,7 @@
     (with-slots (data
 		 model-matrix
 		 rgba
-		 offset-texture
+		 offset-texel-texture
 		 dims-texture
 		 uv
 		 flags)
@@ -92,7 +92,7 @@
       ;; Glyph, Flags, pad, pad
       ;; (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code data) 32))
       ;; http://www.lispworks.com/documentation/lcl50/aug/aug-90.html#HEADING90-0
-      (setf (mem-aref ptr :int (+ offset-ptr 0)) offset-texture) ; tex offset
+      (setf (mem-aref ptr :int (+ offset-ptr 0)) offset-texel-texture) ; tex offset
       (setf (mem-aref ptr :int (+ offset-ptr 1)) (truncate (vx2 dims-texture))) ; tex dim x
       (setf (mem-aref ptr :int (+ offset-ptr 2)) (truncate (vy2 dims-texture))) ; tex dim y
       (setf (mem-aref ptr :int (+ offset-ptr 3)) flags) ; draw

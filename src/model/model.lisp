@@ -15,7 +15,8 @@
    ;; Textures - list of Texture instances wich store tex parameters
    ;; Use skip list? -> For now use vector
    ;; Hmm, when texture is removed need to recopy all (to "defragment")
-   (offset-textures :accessor offset-textures :initarg :offset-textures :initform 0)
+   (offset-texel-textures :accessor offset-texel-textures :initarg :offset-texel-textures :initform 0) ; sum of wxh
+   (offset-bytes-textures :accessor offset-bytes-textures :initarg :offset-bytes-textures :initform 0) ; sum of bytes
    (textures :accessor textures :initarg :textures :initform (make-array 64 :adjustable t))
    
    (cursor :accessor cursor :initarg :cursor :initform (vec3 0 0 0))
@@ -155,11 +156,11 @@
     (let ((node (init-node (cursor model)
 			   (scale-node model)
 			   #\A)))
-      (multiple-value-bind (offset-texture dims-texture)
-	  (generate-text-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">A</span>")
-	(setf (offset-texture node) offset-texture) ; convert to bytes for shader
+      (multiple-value-bind (offset-texel-texture dims-texture)
+	  (generate-text-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">ABC</span>")
+	(setf (offset-texel-texture node) offset-texel-texture) ; convert to bytes for shader
 	(setf (dims-texture node) dims-texture)
-	(fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texture dims-texture))
+	(fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
 
       ;; Update scale to match texture
       (setf (vx3 (scale (model-matrix node))) (* 1.0
@@ -177,18 +178,18 @@
       (let ((node (init-node (cursor model)
 			     (scale-node model)
 			     #\Z)))
-	(multiple-value-bind (offset-texture dims-texture)
-	    (generate-text-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">Z</span>")
-	  (setf (offset-texture node) 1) ; rename to index
+	(multiple-value-bind (offset-texel-texture dims-texture)
+	    (generate-text-texture "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"true\">XYZ</span>")
+	  (setf (offset-texel-texture node) offset-texel-texture) ;(* 141 94)) ; rename to index
 	  (setf (dims-texture node) dims-texture)
-	  (fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texture dims-texture))
+	  (fmt-model t "main-init" "Texture: ~S bytes, ~S~%" offset-texel-texture dims-texture))
 	
 	;; Update scale to match texture
 	(setf (vx3 (scale (model-matrix node))) (* 1.0
 						   (/ (vx2 (dims-texture node))
 						      (vy2 (dims-texture node))))) ; ratio
 	;; Offset translation x
-	(setf (vx3 (translation (model-matrix node))) 1.0)
+	(setf (vx3 (translation (model-matrix node))) 2.0)
 	;; Update transform
 	(update-transform (model-matrix node))
 	

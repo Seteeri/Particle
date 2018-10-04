@@ -24,7 +24,9 @@ vec4 filter_bilinear()
     vec2 f_coordTexel = vec2(vertexUV.u, vertexUV.v) * f_dims;
     ivec2 coordTexel = ivec2(f_coordTexel);
         
-    int offsetTex = vertexOffsetTex * vertexDimsTex.x * vertexDimsTex.y;
+    // offset is based on previous
+    //int offsetTex = vertexOffsetTex * vertexDimsTex.x * vertexDimsTex.y;
+    int offsetTex = vertexOffsetTex;
         
     int offsetTexel00 = offsetTex + (coordTexel.x + (coordTexel.y * vertexDimsTex.x));
     int offsetTexel10 = offsetTex + ((coordTexel.x + 1) + (coordTexel.y * vertexDimsTex.x));
