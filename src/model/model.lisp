@@ -9,7 +9,8 @@
    ;; still relevant?
    (inst-max :accessor inst-max :initarg :inst-max :initform nil)
    (projview :accessor projview :initarg :projview :initform nil)
-   
+
+   (conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
 
    (digraph :accessor digraph :initarg :digraph :initform nil)
@@ -101,17 +102,19 @@
     
     model))
 
-(defun setup-view (model)
+(defun setup-view ()
   
   ;; Init view buffers and start loop
   (let ((conn (init-swank-conn "skynet" 10001)))
+
+    (setf (conn-swank *model*) conn)
     
     (setf (swank-protocol::connection-package conn) "protoform.view")
 
     ;; (format t "[model] Send eval~%")
     
     ;; view should not concern itself with inst-max...
-    (with-slots (width height inst-max) model
+    (with-slots (width height inst-max) *model*
 	(swank-protocol:request-listener-eval conn (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
 
     (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))
@@ -130,7 +133,7 @@
     (dolist (params *params-shm*)
       (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params      
         (with-slots (ptr size)
-    	    (gethash name (handles-shm model))
+    	    (gethash name (handles-shm *model*))
 	  (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
 	  (swank-protocol:request-listener-eval conn (format nil "(memcpy-shm-to-cache ~S ~S ~S)" name name size))
 	  (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn)))))
@@ -163,7 +166,7 @@
       (let ((n-0 (init-node (vec3 0 0 0)
 			    (scale-node model)
 			    0
-			    "QWERTY"))
+			    "QWERT"))
 	    (n-1 (init-node (vec3 0 1 0)
 			    (scale-node model)
 			    1
@@ -171,27 +174,58 @@
 	    (n-2 (init-node (vec3 0 2 0)
 			    (scale-node model)
 			    2
-			    "ZXCV")))
+			    "WHAT")))
 
 	(digraph:insert-vertex digraph n-0)
 	(digraph:insert-vertex digraph n-1)
 	(digraph:insert-vertex digraph n-2)
       
 	(digraph:insert-edge digraph n-0 n-1)
-	(digraph:insert-edge digraph n-1 n-2))
+	(digraph:insert-edge digraph n-1 n-2)
     
-      ;; Copy to shm before sending signal to view
-      (digraph:mapc-vertices (lambda (node)
-			       (copy-node-to-shm node
-						 (* (index node)
-						    (/ 208 4))))
-			     digraph))
-      
-    ;; (copy-node-to-shm node 0)
-    ;; (copy-node-to-shm node (/ 208 4))
-    
-    (fmt-model t "main-model" "Init conn to view swank server~%")
-    (setup-view model)
+	;; Copy to shm before sending signal to view
+	(digraph:mapc-vertices (lambda (node)
+				 (copy-node-to-shm node
+						   (* (index node)
+						      (/ 208 4))))
+			       digraph)
+        
+	(fmt-model t "main-model" "Init conn to view swank server~%")
+	(setup-view)
+
+	;; TEST LIVE TEXTURE
+	;; Change texture after 5 seconds
+	
+	(sleep 6)
+
+	(fmt-model t "main-model" "Updating texture~%")
+
+	;; Generate texture directly to shm
+	;; Update node
+	;; Tell view to copy to cache
+	(update-node-texture n-0 "WHAT")
+	(update-transform (model-matrix n-0))
+
+	(with-slots (conn-swank) *model*
+          (with-slots (ptr size) (gethash "texture" (handles-shm *model*))
+	    (swank-protocol:request-listener-eval
+	     conn-swank
+	     (format nil "(memcpy-shm-to-cache ~S ~S ~S)" "texture" "texture" (offset-bytes-textures *model*)))
+	    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn-swank))))
+
+	;; Copy node to shm
+	(copy-node-to-shm n-0
+			  (* (index n-0)
+			     (/ 208 4)))
+
+	(with-slots (conn-swank) *model*
+          (with-slots (ptr size) (gethash "instance" (handles-shm *model*))
+	    (swank-protocol:request-listener-eval
+	     conn-swank
+	     (format nil "(memcpy-shm-to-cache ~S ~S ~S)" "instance" "instance" size))
+	    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn-swank))))
+	
+	t))
     
     (loop (sleep 0.0167))))
 

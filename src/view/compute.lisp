@@ -60,10 +60,17 @@
     
     ;; TODO: Refactor to use dirty flag
     ;; Below assumes change every frame
-
     ;; Can use gl function to copy cache->step
+    
+    (memcpy-cache-to-step "texture" ix-fence ; dest
+    			  "texture")
+    			  ;; 318096)       ; src
+    ;; (memcpy-shm-to-cache "texture" "texture")
+    ;; (memcpy-cache-to-step-all "texture" "texture")
+    
     (memcpy-cache-to-step "instance" ix-fence ; dest
 			  "instance")       ; src
+
     ;; Memcpy cache->step since compute shader doesn't utilize it
     (memcpy-cache-to-step "projview" ix-fence ; dest
 			  "projview")))       ; src

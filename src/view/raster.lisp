@@ -75,6 +75,7 @@
     ;; indirect needs to be rotated also
     (dolist (name '("projview"
 		    "instance"
+		    "texture"
 		    "draw-indirect"))
       (update-binding-buffer (gethash name bo-step) ix-fence))))
 
