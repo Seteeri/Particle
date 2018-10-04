@@ -132,16 +132,22 @@
     ;; Do progn to chain them?
     (dolist (params *params-shm*)
       (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params      
-        (with-slots (ptr size)
-    	    (gethash name (handles-shm *model*))
-	  (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
-	  (swank-protocol:request-listener-eval conn (format nil "(memcpy-shm-to-cache ~S ~S ~S)" name name size))
-	  (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn)))))
+	(memcpy-shm-to-cache name)))
 
     ;; Enable draw flag for view loop
     (swank-protocol:request-listener-eval conn (format nil "(setf *draw* t)"))
     ;; (format t "[model] Wait for eval~%")
     (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))))
+
+;; Where to put this? rpc.lisp...
+(defun memcpy-shm-to-cache (name &optional size)
+  (with-slots (conn-swank) *model*
+    (with-slots (ptr size) (gethash name (handles-shm *model*))
+      ;; (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
+      (swank-protocol:request-listener-eval
+       conn-swank
+       (format nil "(memcpy-shm-to-cache ~S ~S ~S)" name name size))
+      (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn-swank)))))
 
 (defun main-model (width height
 		   inst-max
@@ -205,25 +211,15 @@
 	;; Tell view to copy to cache
 	(update-node-texture n-0 "WHAT")
 	(update-transform (model-matrix n-0))
-
-	(with-slots (conn-swank) *model*
-          (with-slots (ptr size) (gethash "texture" (handles-shm *model*))
-	    (swank-protocol:request-listener-eval
-	     conn-swank
-	     (format nil "(memcpy-shm-to-cache ~S ~S ~S)" "texture" "texture" (offset-bytes-textures *model*)))
-	    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn-swank))))
+	
+	(memcpy-shm-to-cache "texture" (offset-bytes-textures *model*))
+	;; TODO: Track size also
+	(memcpy-shm-to-cache "instance")
 
 	;; Copy node to shm
 	(copy-node-to-shm n-0
 			  (* (index n-0)
 			     (/ 208 4)))
-
-	(with-slots (conn-swank) *model*
-          (with-slots (ptr size) (gethash "instance" (handles-shm *model*))
-	    (swank-protocol:request-listener-eval
-	     conn-swank
-	     (format nil "(memcpy-shm-to-cache ~S ~S ~S)" "instance" "instance" size))
-	    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn-swank))))
 	
 	t))
     
