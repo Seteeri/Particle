@@ -1,3 +1,12 @@
+(defpackage #:protoform.util
+  (:use #:cl
+        #:cffi)
+  (:export #:align-size
+	   #:normalize
+	   #:rad-to-deg
+	   #:deg-to-rad
+	   #:read-file-string))
+
 (defpackage #:protoform.libc
   (:use #:cl
         #:cffi)
@@ -47,7 +56,8 @@
   (:use #:cl
         #:cffi
 	#:3d-vectors
-	#:3d-matrices)
+	#:3d-matrices
+	#:protoform.util)	
   (:export #:init-gles
 	   #:attach-shader
 	   #:init-buffer-object

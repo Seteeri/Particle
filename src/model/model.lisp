@@ -1,8 +1,5 @@
 (in-package :protoform.model)
 
-(defun align-size (size &optional (boundary 4))
-  (+ size (- boundary (mod size boundary))))
-
 (defclass model ()
   ((width :accessor width :initarg :width :initform nil)
    (height :accessor height :initarg :height :initform nil)

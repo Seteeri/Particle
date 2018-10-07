@@ -33,6 +33,7 @@
 
     :serial t
     :components ((:file "src/package")
+		 (:file "src/util")
 		 (:module libc
 		 	  :pathname "src/libc"
 		 	  :components ((:file "epoll")

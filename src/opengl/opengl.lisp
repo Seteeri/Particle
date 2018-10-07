@@ -2,21 +2,6 @@
 
 (defparameter *map-buffer-range-access* (logior #x0002 #x0040 #x0080))
 
-(declaim (inline rad-to-deg))
-(defun rad-to-deg (rad)
-  (/ (* rad 180.0) pi))
-
-(declaim (inline deg-to-rad))
-(defun deg-to-rad (deg)
-  (/ (* deg pi) 180.0))
-
-(declaim (inline read-file-string))
-(defun read-file-string (path)
-  (with-open-file (stream path)
-    (let ((data (make-string (file-length stream))))
-      (read-sequence data stream)
-      data)))
-
 (defun copy-buffer (buffer-read
 		    buffer-write
 		    size
@@ -137,6 +122,8 @@
     
     (when delete
       (gl:delete-shader shader))
+
+    ;; Return the log
     
     shader))
 
@@ -280,7 +267,3 @@
 			   (+ (- (mcref4 mvp 0 1)) (mcref4 mvp 3 1))
 			   (+ (- (mcref4 mvp 0 2)) (mcref4 mvp 3 2))
 			   (+ (- (mcref4 mvp 0 3)) (mcref4 mvp 3 3)))))
-
-(declaim (inline normalize))
-(defun normalize (a b c d)
-  (v/ (vec4 a b c d) (vlength (vec3 a b c))))

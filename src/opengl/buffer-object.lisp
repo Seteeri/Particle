@@ -1,8 +1,5 @@
 (in-package :protoform.opengl)
 
-(defun align-size (size &optional (boundary 4))
-  (+ size (- boundary (mod size boundary))))
-
 (defclass buffer-object ()
   ((target :accessor target :initarg :target :initform nil)
    (binding-layout :accessor binding-layout :initarg :binding-layout :initform nil)
