@@ -137,32 +137,18 @@
 
   ;; https://www.opengl.org/discussion_boards/showthread.php/173917-samplerBuffer-example-needed
   
-  (with-slots (handles-shm
-	       bo-cache
-	       bo-step
-	       ix-fence
-	       inst-max)
+  (with-slots (bo-cache)
       *view*
-    
-    (let ((data-element (make-array 6
-      				    :element-type '(unsigned-byte 32)
-      				    :initial-contents (list 0 2 1 0 3 2))))
-      (set-bo-element (gethash "element" bo-step)
-		      data-element))
-    
-    (set-bo-draw-indirect (gethash "draw-indirect" bo-step)
-			  6 inst-max 0 0 0)
 
-    ;; Integrate above with below
-    
     ;; shm -> cache -> step
     ;; model triggers shm->cache
     ;; compute performs cache->step
-    (dolist (name '("projview"
-		    "instance"
-		    "texture"))
-      (memcpy-shm-to-cache name name)
-      (memcpy-cache-to-step-all name name))))
+    (loop 
+       :for name :being :the :hash-keys :of bo-cache
+       :using (hash-value cache)
+       :do (progn
+	     (memcpy-shm-to-cache name name)
+	     (memcpy-cache-to-step-all name name)))))
 
 (defun main-view (width
 		  height
