@@ -57,10 +57,11 @@
       (update-binding-buffer (gethash name bo-step) ix-fence))))
 
 (defun update-compute-buffers ()
-  (with-slots (ix-fence)
+  (with-slots (bo-cache
+	       ix-fence)
       *view*
     (loop 
-       :for name :being :the :hash-keys :of (bo-cache *view*)
+       :for name :being :the :hash-keys :of bo-cache
        :using (hash-value cache)
        :do (with-slots (buffer dirty)
 	       cache

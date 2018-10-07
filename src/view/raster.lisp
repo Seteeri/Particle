@@ -72,12 +72,10 @@
   (with-slots (bo-step
 	       ix-fence)
       *view*
-    ;; indirect needs to be rotated also
-    (dolist (name '("projview"
-		    "instance"
-		    "texture"
-		    "draw-indirect"))
-      (update-binding-buffer (gethash name bo-step) ix-fence))))
+    (loop 
+       :for name :being :the :hash-keys :of bo-step
+       :using (hash-value buffer)
+       :do (update-binding-buffer buffer ix-fence))))
 
 (defun run-raster ()
 
