@@ -66,6 +66,8 @@
 
 (defun update-node-texture (node
 			    data)
+
+  ;; Separate this function maybe
   (multiple-value-bind (offset-texel-texture dims-texture)
       (convert-pm-to-texture
        (format nil "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"false\">~A</span>" data))

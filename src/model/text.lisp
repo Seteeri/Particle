@@ -97,25 +97,6 @@
       ;; OpenGL: RGBA
       ;; CAIRO_FORMAT_ARGB32: BGRA
 
-      ;; Copy surface ptr to shm ptr
-      ;; Can also render directly to ptr
-      
-      ;; (with-slots (ptr size)
-      ;;     (gethash "texture" (mapping-base model))
-      ;;   (assert (<= size-data size))
-      ;;   (c-memcpy ptr
-      ;; 	    (cairo:image-surface-get-data (cairo:image-surface-create-from-png "/home/user/pango-test2.png")
-      ;; 					  :pointer-only t)
-      ;; 	    size-data))
-
-      (when nil
-	(with-slots (ptr size)
-	    (gethash "texture" (handles-shm model))
-	  (assert (<= size-data size))
-	  (c-memcpy ptr
-		    data-surface-render
-		    size-data)))
-
       ;; Clean up
       ;; (foreign-free data-surface-render)
       
