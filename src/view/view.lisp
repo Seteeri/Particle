@@ -216,7 +216,6 @@
     	(%gl:delete-sync fence)
     	(setf (aref fences ix-fence) (null-pointer))))
 
-    ;; Dispatch compute shader; process instances from base buffer to render buffers
     (run-compute-copy)
     
     (run-raster)

@@ -44,20 +44,23 @@
 					 t ; pmap
 					 :buffering 'single))))
 
-(defun update-compute-buffers ()
+(defun update-compute-bindings ()
   
-  (with-slots (handles-shm
-	       bo-cache
-	       bo-step
+  (with-slots (bo-step
 	       ix-fence)
       *view*
 
-    ;; Only bind that is needed for compute shader
-    ;; Others will be rotated by raster
+    ;; These are the output buffers for the compute shader
+    ;; Input buffers, aka cache buffers, are single so need not rebind
     (dolist (name '("projview"
 		    "instance"))
-      (update-binding-buffer (gethash name bo-step) ix-fence))
-    
+      (update-binding-buffer (gethash name bo-step) ix-fence))))
+
+(defun update-compute-buffers ()
+
+  (with-slots (ix-fence)
+      *view*
+  
     ;; TODO: Refactor to use dirty flag
     ;; Below assumes change every frame
     ;; Can use gl function to copy cache->step
@@ -77,18 +80,17 @@
 
 (defun run-compute-copy ()
 
-  (with-slots (handles-shm
-	       bo-cache
+  (with-slots (program-compute
 	       bo-step
-	       bo-counter
 	       inst-max
 	       ix-fence)
       *view*
 
-    ;; Need not use program since this just copies memory
+    (gl:use-program program-compute)
     
+    (update-compute-bindings)
     (update-compute-buffers)
-      
+    
     ;; Set to render all instances
     (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
 	  inst-max)))
@@ -104,6 +106,7 @@
     
     (gl:use-program program-compute)
     
+    (update-compute-bindings)
     (update-compute-buffers)
     
     ;; Reset counter before every dispatch
