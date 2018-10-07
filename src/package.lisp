@@ -120,6 +120,7 @@
 	   #:wait-for-swank-thread
 	   #:start-swank-server
 	   #:init-swank-conn
+	   #:eval-sync
 	   ))
 
 (defpackage #:protoform.drm

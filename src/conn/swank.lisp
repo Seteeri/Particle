@@ -42,5 +42,11 @@ interface, to handle Swank Client connection requests."
 	(format t "~a~%" msg-init)))
     conn))
 
+(defun eval-sync (conn str)
+  (swank-protocol:request-listener-eval conn str)
+  (let ((msg (swank-protocol:read-message conn)))
+    (when (eq (first msg) :debug)
+      (format t "~a~%" msg))
+    msg))
   
   

@@ -121,39 +121,31 @@
 
 (defun setup-view ()
   
-  ;; Init view buffers and start loop
   (let ((conn (init-swank-conn "skynet" 10001)))
 
     (setf (conn-swank *model*) conn)
-    
     (setf (swank-protocol::connection-package conn) "protoform.view")
-
-    ;; (format t "[model] Send eval~%")
     
     ;; view should not concern itself with inst-max...
-    (with-slots (width height inst-max) *model*
-	(swank-protocol:request-listener-eval conn (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
-
-    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))
+    (with-slots (width height inst-max)
+	*model*
+      (eval-sync conn
+		 (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
     
     ;; Init buffers
-    (swank-protocol:request-listener-eval conn
-					  (with-output-to-string (stream)
-					    (format stream "(init-view-buffers `(")
-					    (dolist (param *params-shm*)
-					      (format stream "~S " param))
-					    (format stream "))")))
-    ;; (format t "[model] Wait for eval~%")
-    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))
+    (eval-sync conn
+	       (with-output-to-string (stream)
+		 (format stream "(init-view-buffers `(")
+		 (dolist (param *params-shm*)
+		   (format stream "~S " param))
+		 (format stream "))")))
 
     ;; Use progn to do all at once
     (memcpy-shm-to-cache* (loop :for params :in *params-shm*
 			     :collect (second params)))
     
     ;; Enable draw flag for view loop
-    (swank-protocol:request-listener-eval conn (format nil "(setf *draw* t)"))
-    ;; (format t "[model] Wait for eval~%")
-    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))))
+    (eval-sync conn (format nil "(setf *draw* t)"))))
 
 (defun init-shm-data ()
   (with-slots (inst-max
@@ -240,6 +232,8 @@
 
       (fmt-model t "main-model" "Updating texture~%")
 
+      ;; All of below needs to be atomic, otherwise will result in "tearing"
+      
       ;; Generate texture directly to shm
       ;; Update node
       ;; Tell view to copy to cache
