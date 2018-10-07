@@ -79,13 +79,12 @@
 		 (:module model
 			  :pathname "src/model"
 			  :components ((:file "model")
-				       (:file "conn-client")
-				       (:file "conn-server")
 				       (:file "matrix-model")
 				       (:file "handle-shm")				       
 				       (:file "projview")
 				       (:file "node")
 				       (:file "text")
+				       (:file "rpc")
 				       (:module structures
 						:pathname "structures"
 						:components ((:file "dag")))))
