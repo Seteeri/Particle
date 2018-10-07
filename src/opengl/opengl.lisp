@@ -96,36 +96,34 @@
 	   (let* ((k2 (string-downcase (str:replace-all "_" "-" (subseq name 2)))))
 	     (format t "[init-gles] ~a: ~a~%" k2 (gl:get* (read-from-string k2)))))))
 
-(defun attach-shader (type
-		      program
-		      paths
-		      &optional
-			(attach t)
-			(delete t))
+(defun cad-shader (type
+		   program
+		   paths)
+  (multiple-value-bind (shader log-shader)
+      (compile-shader type
+		      paths)
+    (attach-shader program shader)
+    (delete-shader shader)
+    log-shader))
   
+(defun compile-shader (type
+		       paths)
   (let* ((shader (gl:create-shader type)))
-    
     ;; read paths into strings into list
     (gl:shader-source shader
 		      (loop 
 		         :for path :in paths
 			 :collect (read-file-string path)))
-    
     (gl:compile-shader shader)
-    
-    (format t "[attach-shader] Shader Info Log:~%")
-    ;; (format t "[attach-shader]    ~a~%" paths)
-    (format t "[attach-shader]    \"~a\"~%" (gl:get-shader-info-log shader))
-    
-    (when attach
-      (gl:attach-shader program shader))
-    
-    (when delete
-      (gl:delete-shader shader))
+    ;; Return log also
+    (values shader
+	    (gl:get-shader-info-log shader))))
 
-    ;; Return the log
-    
-    shader))
+(defun attach-shader (program shader)
+  (gl:attach-shader program shader))
+
+(defun delete-shader (shader)
+  (gl:delete-shader shader))
 
 ;; Move to msdf?
 (defun make-perspective-vector (width height)

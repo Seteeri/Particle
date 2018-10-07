@@ -6,17 +6,29 @@
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
 	   (path-struct (merge-pathnames #P"glsl/structs.glsl" dir-sys-src))
 	   (path-vert (merge-pathnames #P"glsl/msdf.vs.glsl" dir-sys-src))
-	   (path-frag (merge-pathnames #P"glsl/msdf.fs.glsl" dir-sys-src)))
-      (attach-shader :vertex-shader
-		     program
-		     (list path-struct
-			   path-vert))
-      (attach-shader :fragment-shader
-		     program
-		     (list path-struct
-			   path-frag)))
+	   (path-frag (merge-pathnames #P"glsl/msdf.fs.glsl" dir-sys-src))
+	   (log-vert (cad-shader :vertex-shader
+				 program
+				 (list path-struct
+				       path-vert)))
+	   (log-frag (cad-shader :fragment-shader
+				 program
+				 (list path-struct
+				       path-frag))))
+      (if (> (length log-vert) 0)
+	  (fmt-view t "init-program-raster" "Shader log: ~%~a~%" log-vert)
+	  (fmt-view t "init-program-raster" "Compiled and attached vertex shader sucessfully~%"))
+      (if (> (length log-frag) 0)
+	  (fmt-view t "init-program-raster" "Shader log: ~%~a~%" log-frag)
+	  (fmt-view t "init-program-raster" "Compiled and attached fragment shader sucessfully~%")))
+    
     (gl:link-program program)
-    (fmt-view t "init-program-raster" "Program info log: ~a~%" (gl:get-program-info-log program))
+    
+    (let ((log-prog (gl:get-program-info-log program)))
+      (if (> (length log-prog) 0)
+	  (fmt-view t "init-program-raster" "Program log: ~%~a~%" log-prog)
+      	  (fmt-view t "init-program-raster" "Compiled program sucessfully~%")))
+    
     program))
 
 (defun init-buffers-raster (params-shm)

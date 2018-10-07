@@ -4,13 +4,22 @@
   (let* ((program (gl:create-program)))
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
 	   (path-struct (merge-pathnames #P"glsl/structs.glsl" dir-sys-src))
-	   (path-cull-frustum (merge-pathnames #P"glsl/msdf.cs.glsl" dir-sys-src)))
-      (attach-shader :compute-shader
-		     program
-		     (list path-struct
-			   path-cull-frustum)))
+	   (path-main (merge-pathnames #P"glsl/msdf.cs.glsl" dir-sys-src))
+	   (log-main (cad-shader :compute-shader
+				 program
+				 (list path-struct
+				       path-main))))
+      (if (> (length log-main) 0)
+	  (fmt-view t "init-program-compute" "Shader log: ~%~a~%" log-main)
+	  (fmt-view t "init-program-compute" "Compiled and attached compute shader sucessfully~%")))
+    
     (gl:link-program program)
-    (fmt-view t "init-program-compute" "Program info log: ~a~%" (gl:get-program-info-log program))
+    
+    (let ((log-prog (gl:get-program-info-log program)))
+      (if (> (length log-prog) 0)
+	  (fmt-view t "init-program-compute" "Program log: ~%~a~%" log-prog)
+	  (fmt-view t "init-program-compute" "Compiled program successfully~%")))
+    
     program))
 
 (defun init-buffers-compute (params-shm)

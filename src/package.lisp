@@ -59,7 +59,10 @@
 	#:3d-matrices
 	#:protoform.util)	
   (:export #:init-gles
+	   #:cad-shader
+	   #:compile-shader
 	   #:attach-shader
+	   #:delete-shader
 	   #:init-buffer-object
            #:init-boav-main
            #:init-boa-element
