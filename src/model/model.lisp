@@ -178,13 +178,7 @@
       (update-view-matrix projview)
       ;; (write-matrix (view-matrix (projview model)) t)
       (set-projection-matrix ptr (projection-matrix projview))
-      (set-view-matrix ptr (view-matrix projview))
-      ;; 2 matrix structs previous
-      (let ((b (+ 16 16))
-	    (data (init-vector-position)))
-	(dotimes (i (length data))
-	  (setf (mem-aref ptr :float (+ b i))
-		(aref data i)))))
+      (set-view-matrix ptr (view-matrix projview)))
 
     (with-slots (ptr size)
 	(gethash "vertices" handles-shm)
