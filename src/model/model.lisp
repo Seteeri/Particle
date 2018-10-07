@@ -44,44 +44,44 @@
 				       "/protoform-projview"
 				       (* (+ 16 16) 4)
 				       0 0  ; cs-in (cache), vs-in (raster)
-				       'triple)
+				       :triple)
 				 (list :uniform-buffer
 				       "vertices"
 				       "/protoform-vertices"
 				       (* 16 4)
 				       1 1
-				       'triple)
+				       :triple)
 				 (list :shader-storage-buffer
 				       "instance"
 				       "/protoform-instance"
 				       134217728
 				       2 3
-				       'triple)
+				       :triple)
 				 (list :texture-buffer
 				       "texture"
 				       "/protoform-texture"
 				       134217728
 				       -1 -1
-				       'triple		       
+				       :triple		       
 				       :rgba8) ; requires fmt type
 				 (list :element-array-buffer
 				       "element"
 				       "/protoform-element"
 				       (* 4 6)  ; 4 bytes/int * 6 ints or indices
 				       -1 -1
-				       'triple)
+				       :triple)
 				 (list :draw-indirect-buffer
 				       "draw-indirect"
 				       "/protoform-draw-indirect"
 				       (* 4 6)  ; 6 ints/params
 				       -1 -1
-				       'triple)
+				       :triple)
 				 (list :atomic-counter-buffer
 				       "atomic-counter"
 				       "/protoform-atomic-counter"
 				       (* 4 6)  ; 6 ints/params
 				       4 -1
-				       'triple)))
+				       :triple)))
 
 ;; TODO: Move elsewhere
 (defun init-vector-position ()

@@ -22,7 +22,7 @@
 			   binding-layout
 			   mapped-persistent
 			   &key
-			     (buffering 'triple)     ; 'single 'double 'triple, make this required
+			     (buffering :triple)     ; 'single 'double 'triple, make this required
 			     (usage :static-draw) ; dynamic-draw :stream-draw
 			     (data nil))
 
@@ -52,10 +52,10 @@
 		 ptrs-buffer)
 	buffer
       
-      (cond ((eq buffering 'single) (setf count-buffers 1))
-	    ((eq buffering 'double) (setf count-buffers 2))
-	    ((eq buffering 'triple) (setf count-buffers 3))
-	    ((eq buffering 'quad)   (setf count-buffers 4))
+      (cond ((eq buffering :single) (setf count-buffers 1))
+	    ((eq buffering :double) (setf count-buffers 2))
+	    ((eq buffering :triple) (setf count-buffers 3))
+	    ((eq buffering :quad)   (setf count-buffers 4))
 	    (t ;; default to single?
 	     (error (format nil "[init-buffer-object] Unknown argument: ~a" buffering))))
       

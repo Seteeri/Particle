@@ -42,7 +42,7 @@
 						     size
 						     bind-cs
 						     t
-						     :buffering 'single)))))
+						     :buffering :single)))))
 
 (defun get-cache (name)
   (gethash name (bo-cache *view*)))
