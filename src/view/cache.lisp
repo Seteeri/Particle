@@ -1,5 +1,9 @@
 (in-package :protoform.view)
 
+(defclass cache ()
+  ((buffer :accessor buffer :initarg :buffer :initform nil)
+   (dirty :accessor dirty :initarg :dirty :initform nil)))
+
 (defun init-bo-caches (params-model)
   ;; "projview":0
   ;; "instance":1
@@ -17,9 +21,13 @@
 		      bind-cs)
   (with-slots (program-compute bo-cache) *view*
     (setf (gethash name bo-cache)
-	  (init-buffer-object target
-			      name
-			      size
-			      bind-cs
-			      t
-			      :buffering 'single))))
+	  (make-instance 'cache
+			 :buffer (init-buffer-object target
+						     name
+						     size
+						     bind-cs
+						     t
+						     :buffering 'single)))))
+
+(defun get-cache-buffer (name)
+  (buffer (gethash name (bo-cache *view*))))

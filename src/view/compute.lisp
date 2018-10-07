@@ -34,7 +34,7 @@
 		    "instance"))
       (fmt-view t "init-buffers-compute" "Binding ~a~%" name)
       ;; These are single so always 0
-      (update-binding-buffer (gethash name bo-cache) 0))
+      (update-binding-buffer (get-cache-buffer name) 0))
 
     ;; Bound on init only
     (setf bo-counter (init-buffer-object :atomic-counter-buffer
@@ -62,14 +62,11 @@
       *view*
   
     ;; TODO: Refactor to use dirty flag
-    ;; Below assumes change every frame
     ;; Can use gl function to copy cache->step
     
     (memcpy-cache-to-step "texture" ix-fence ; dest
     			  "texture")
     			  ;; 318096)       ; src
-    ;; (memcpy-shm-to-cache "texture" "texture")
-    ;; (memcpy-cache-to-step-all "texture" "texture")
     
     (memcpy-cache-to-step "instance" ix-fence ; dest
 			  "instance")       ; src

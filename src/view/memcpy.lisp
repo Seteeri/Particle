@@ -5,7 +5,7 @@
 (defun memcpy-shm-to-cache (name-dest
 			    name-src
 			    &optional (size nil))
-  (let* ((bo-dest (gethash name-dest (bo-cache *view*)))
+  (let* ((bo-dest (get-cache-buffer name-dest))
 	 (ptr-dest (aref (ptrs-buffer bo-dest) 0)) ; always 0
 	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*))))))
     (memcpy-ptr ptr-dest
@@ -22,7 +22,7 @@
 			     &optional (size nil))
   (let* ((bo-dest (gethash name-dest (bo-step *view*)))
 	 (ptr-dest (aref (ptrs-buffer bo-dest) ix-dest))
-	 (ptr-src (aref (ptrs-buffer (gethash name-dest (bo-cache *view*))) 0)))
+	 (ptr-src (aref (ptrs-buffer (get-cache-buffer name-dest)) 0)))
     (memcpy-ptr ptr-dest
 		ptr-src
 		(if size
@@ -35,7 +35,7 @@
 				 name-src
 				 &optional (size nil))
   (let* ((bo-dest (gethash name-dest (bo-step *view*)))
-	 (ptr-src (aref (ptrs-buffer (gethash name-dest (bo-cache *view*))) 0))
+	 (ptr-src (aref (ptrs-buffer (get-cache-buffer name-dest)) 0))
 	 (size (if size
 		   size
 		   (size-buffer bo-dest))))
