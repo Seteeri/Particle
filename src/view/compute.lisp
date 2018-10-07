@@ -49,6 +49,8 @@
 	       ix-fence)
       *view*
     ;; These are the output buffers for the compute shader
+    ;; Need only be done for those specified in the compute shader
+    ;; These bindings only apply to compute program
     ;; Input buffers, aka cache buffers, are single so need not rebind
     (dolist (name '("projview"
 		    "instance"))
@@ -57,17 +59,17 @@
 (defun update-compute-buffers ()
   (with-slots (ix-fence)
       *view*
-    (dolist (name '("projview" ; copy always for now
-		    "instance"
-		    "texture"))
-      (with-slots (buffer dirty)
-	  (get-cache name)
-	(when (> dirty 0)
-	  ;; Can also use gl function to copy between buffers
-	  ;; (fmt-view t "update-compute-buffers" "COPYING CACHE->STEP!~%")
-	  (memcpy-cache-to-step name ix-fence
-    				name)
-	  (decf dirty))))))
+    (loop 
+       :for name :being :the :hash-keys :of (bo-cache *view*)
+       :using (hash-value cache)
+       :do (with-slots (buffer dirty)
+	       cache
+	     (when (> dirty 0)
+	       ;; Can also use gl function to copy between buffers
+	       ;; (fmt-view t "update-compute-buffers" "COPYING CACHE->STEP!~%")
+	       (memcpy-cache-to-step name ix-fence
+    				     name)
+	       (decf dirty))))))
 
 (defun run-compute-copy ()
 

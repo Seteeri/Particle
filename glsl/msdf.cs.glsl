@@ -24,7 +24,11 @@ layout (std140, binding = 0) uniform data_projview
     mat4 view;
     vec4 position[4];
 };
-layout (std430, binding = 1) readonly buffer data_instances_in
+//layout (std140, binding = 1) uniform data_element
+//{
+//    vec4 position[4];
+//};
+layout (std430, binding = 2) readonly buffer data_instances_in
 {
     // Create compute-only buffer for these
     // Compute shader outputs to model
@@ -36,7 +40,7 @@ layout (std430, binding = 1) readonly buffer data_instances_in
 
 //////////////////
 // Output Buffers
-// msdf.vs bindings should match these
+// Should match vertex shader
 
 layout(std430, binding = 2) writeonly buffer data_instances_out
 {
@@ -46,12 +50,12 @@ layout(std430, binding = 2) writeonly buffer data_instances_out
 layout(binding=3, offset=0) uniform atomic_uint counter;
 
 /*
-uvec3 gl_NumWorkGroups	global work group size we gave to glDispatchCompute()
-uvec3 gl_WorkGroupSize	local work group size we defined with layout
-uvec3 gl_WorkGroupID	position of current invocation in global work group
-uvec3 gl_LocalInvocationID	position of current invocation in local work group
-uvec3 gl_GlobalInvocationID	unique index of current invocation in global work group
-uint gl_LocalInvocationIndex	1d index representation of gl_LocalInvocationID
+uvec3 gl_NumWorkGroups	      global work group size we gave to glDispatchCompute()
+uvec3 gl_WorkGroupSize	      local work group size we defined with layout
+uvec3 gl_WorkGroupID	      position of current invocation in global work group
+uvec3 gl_LocalInvocationID	  position of current invocation in local work group
+uvec3 gl_GlobalInvocationID	  unique index of current invocation in global work group
+uint  gl_LocalInvocationIndex 1d index representation of gl_LocalInvocationID
 */
 
 void main()
