@@ -110,4 +110,5 @@
       (values
        (- (offset-texel-textures *model*) (* (mem-ref width-pango :unsigned-int)
 					     (mem-ref height-pango :unsigned-int)))
-       (vec2 (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))))))
+       (vec2 (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))
+       size-data))))

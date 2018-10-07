@@ -68,13 +68,21 @@
 			    data)
 
   ;; Separate this function maybe
-  (multiple-value-bind (offset-texel-texture dims-texture)
+  (multiple-value-bind (offset-texel-texture dims-texture data-size)
       (convert-pm-to-texture
        (format nil "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"false\">~A</span>" data))
     
-    (setf (offset-texel-texture node) offset-texel-texture) ; convert to bytes for shader
+    (setf (offset-texel-texture node) offset-texel-texture)
     (setf (dims-texture node) dims-texture)
-    (fmt-model t "main-init" "~%Texture: ~S, ~S texels, ~S, ~S bytes~%" data offset-texel-texture dims-texture (offset-bytes-textures *model*)))
+
+    (fmt-model t "update-node-texture"
+	       (with-output-to-string (stream)
+		 (write-char #\Newline stream)
+		 (format stream "  Name: ~S~%" data)
+		 (format stream "  Dims: ~S~%" dims-texture)
+		 (format stream "  Start Texels Offset: ~S~%" offset-texel-texture)
+		 (format stream "  Data Size: ~S~%" data-size)
+		 (format stream "  Current Offset: ~S~%" (offset-bytes-textures *model*)))))
 
   ;; Update scale to match texture
   (setf (vx3 (scale (model-matrix node))) (* (/ 1 96) (vx2 (dims-texture node))))
