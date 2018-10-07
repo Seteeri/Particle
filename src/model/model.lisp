@@ -145,20 +145,11 @@
 					    (format stream "))")))
     ;; (format t "[model] Wait for eval~%")
     (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn))
-    
-    ;; Do progn to chain them?
-    (dolist (params *params-shm*)
-      (destructuring-bind (target
-			   name
-			   path
-			   size
-			   bind-cs
-			   bind-vs
-			   count-buffer
-			   &rest rest)
-	  params
-	(memcpy-shm-to-cache name)))
 
+    ;; Use progn to do all at once
+    (memcpy-shm-to-cache* (loop :for params :in *params-shm*
+			     :collect (second params)))
+    
     ;; Enable draw flag for view loop
     (swank-protocol:request-listener-eval conn (format nil "(setf *draw* t)"))
     ;; (format t "[model] Wait for eval~%")
