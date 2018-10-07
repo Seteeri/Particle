@@ -129,6 +129,7 @@
   (init-bo-caches params-model)
 
   (fmt-view t "init-view" "Initializing buffer objects stages~%")
+  ;; Initiate bo-step
   (init-buffers-raster params-model)
   (init-buffers-compute params-model)
 

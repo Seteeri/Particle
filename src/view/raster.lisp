@@ -25,7 +25,6 @@
 		     program-raster
 		     boav-main
 		     bo-step
-		     bo-cache
 		     inst-max)
       *view*
 

@@ -23,21 +23,18 @@
 
     (gl:use-program program-compute)
     
-    ;; Uniform is only bound once also
-
-    ;; Texture exists but not bound since compute shader does not use it
-    ;; Texture need only do a shm-ptr copy per frame as needed
-
-    ;; Not needed since start of frame will do this?
-    ;; Specifically for compute program
-    ;; Go through all and check flag
-    (dolist (name '("projview"
-		    "vertices"
-		    "instance"))
-      (fmt-view t "init-buffers-compute" "Binding ~a~%" name)
-      ;; These are single so always 0
-      (update-binding-buffer (get-cache-buffer name) 0))
-
+    ;; Cache need only bound once on init since all single buffered
+    (loop 
+       :for name :being :the :hash-keys :of bo-cache
+       :using (hash-value cache)
+       :do (let* ((buffer (buffer cache))
+		  (bl (binding-layout buffer)))
+	     ;; Bind if allowed
+	     ;; Single buffered so always index 0
+	     (when (> bl -1)
+	       ;; (fmt-view t "init-buffers-compute" "Binding ~a~%" name)
+	       (update-binding-buffer buffer 0))))
+    
     ;; Bound on init only
     (setf bo-counter (init-buffer-object :atomic-counter-buffer
 					 "atomic-counter-buffer"
@@ -50,14 +47,20 @@
   (with-slots (bo-step
 	       ix-fence)
       *view*
+    
     ;; These are the output buffers for the compute shader
     ;; Need only be done for those specified in the compute shader
     ;; These bindings only apply to compute program
     ;; Input buffers, aka cache buffers, are single so need not rebind
-    (dolist (name '("projview"
-		    "vertices"
-		    "instance"))
-      (update-binding-buffer (gethash name bo-step) ix-fence))))
+    (loop 
+       :for name :being :the :hash-keys :of bo-step
+       :using (hash-value buffer)
+       :do (progn
+	     (let ((bl (binding-layout buffer)))
+	       ;; Bind if allowed
+	       ;; Single buffered so always index 0
+	       (when (> bl -1)
+		 (update-binding-buffer buffer ix-fence)))))))
 
 (defun update-compute-buffers ()
   (with-slots (bo-cache
