@@ -30,7 +30,9 @@
 
     ;; Not needed since start of frame will do this?
     ;; Specifically for compute program
+    ;; Go through all and check flag
     (dolist (name '("projview"
+		    "vertices"
 		    "instance"))
       (fmt-view t "init-buffers-compute" "Binding ~a~%" name)
       ;; These are single so always 0
@@ -40,7 +42,7 @@
     (setf bo-counter (init-buffer-object :atomic-counter-buffer
 					 "atomic-counter-buffer"
 					 6 ; why 6 counters needed?
-					 3 ; bind
+					 4 ; bind
 					 t ; pmap
 					 :buffering 'single))))
 
@@ -53,6 +55,7 @@
     ;; These bindings only apply to compute program
     ;; Input buffers, aka cache buffers, are single so need not rebind
     (dolist (name '("projview"
+		    "vertices"
 		    "instance"))
       (update-binding-buffer (gethash name bo-step) ix-fence))))
 

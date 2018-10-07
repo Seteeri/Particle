@@ -36,16 +36,24 @@
 ;;
 ;; Make class slots? -> Harder to be dynamic
 ;; Add buffering: single double triple - default to triple
+;;
+;; Cache/compute will use cs-in
+;; Step/raster will use vs-in
 (defparameter *params-shm* (list (list :uniform-buffer
 				       "projview"
 				       "/protoform-projview"
-				       (align-size (* (+ 16 16 16) 4 1))
+				       (* (+ 16 16) 4)
 				       0 0) ; cs-in, vs-in
+				 (list :uniform-buffer
+				       "vertices"
+				       "/protoform-vertices"
+				       (* 16 4)
+				       1 1) ; cs-in, vs-in
 				 (list :shader-storage-buffer
 				       "instance"
 				       "/protoform-instance"
 				       134217728				       
-				       1 2)
+				       2 3) ;1 2)
 				 (list :texture-buffer ; requires fmt type
 				       "texture"
 				       "/protoform-texture"
@@ -56,7 +64,7 @@
 				       "element"
 				       "/protoform-element"
 				       (* 4 6)  ; 4 bytes/int * 6 ints or indices
-				       -1 -1)
+				       -1 -1)				 
 				 (list :draw-indirect-buffer
 				       "draw-indirect"
 				       "/protoform-draw-indirect"
@@ -179,6 +187,13 @@
 		(aref data i)))))
 
     (with-slots (ptr size)
+	(gethash "vertices" handles-shm)
+      (let ((data (init-vector-position)))
+	(dotimes (i (length data))
+	  (setf (mem-aref ptr :float i)
+		(aref data i)))))
+    
+    (with-slots (ptr size)
 	(gethash "element" handles-shm)
       (let ((data (make-array 6
       			      :element-type '(unsigned-byte 32)
@@ -194,15 +209,7 @@
       			      :initial-contents (list 6 inst-max 0 0 0))))
 	(dotimes (i (length data))
 	  (setf (mem-aref ptr ::uint i)
-		(aref data i)))))
-    
-    (when nil
-      (with-slots (ptr size)
-	  (gethash "vertices" handles-shm)
-	(let ((data (init-vector-position)))
-	  (dotimes (i (length data))
-	    (setf (mem-aref ptr :float i)
-		  (aref data i))))))))
+		(aref data i)))))))
 
 (defun init-graph ()
   ;; Create DAG

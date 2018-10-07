@@ -4,10 +4,12 @@ layout (std140, binding = 0) uniform projview
 {
     mat4 proj;
     mat4 view;
+};
+layout (std140, binding = 1) uniform vertices
+{
     vec4 positionVertex[4];
 };
-//
-layout(std430, binding = 2) readonly buffer data_instances_out
+layout(std430, binding = 3) readonly buffer data_instances_out
 {
     instance_t instances_out[];
 };

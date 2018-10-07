@@ -22,12 +22,11 @@ layout (std140, binding = 0) uniform data_projview
 {
     mat4 proj;
     mat4 view;
+};
+layout (std140, binding = 1) uniform data_vertices
+{
     vec4 position[4];
 };
-//layout (std140, binding = 1) uniform data_element
-//{
-//    vec4 position[4];
-//};
 layout (std430, binding = 2) readonly buffer data_instances_in
 {
     // Create compute-only buffer for these
@@ -42,12 +41,12 @@ layout (std430, binding = 2) readonly buffer data_instances_in
 // Output Buffers
 // Should match vertex shader
 
-layout(std430, binding = 2) writeonly buffer data_instances_out
+layout(std430, binding = 3) writeonly buffer data_instances_out
 {
     instance_t instances_out[];
 };
 
-layout(binding=3, offset=0) uniform atomic_uint counter;
+layout(binding=4, offset=0) uniform atomic_uint counter;
 
 /*
 uvec3 gl_NumWorkGroups	      global work group size we gave to glDispatchCompute()
