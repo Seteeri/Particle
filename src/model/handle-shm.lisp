@@ -3,7 +3,15 @@
 (defun init-handle-shm (handles-shm
 			params-shm)
   (dolist (params params-shm)
-    (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params
+    (destructuring-bind (target
+			 name
+			 path
+			 size
+			 bind-cs
+			 bind-vs
+			 count-buffer
+			 &rest rest)
+	params
       ;; Is data needed persistently?
       (let ((mmap (init-mmap path
 			     size

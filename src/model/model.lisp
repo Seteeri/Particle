@@ -43,38 +43,45 @@
 				       "projview"
 				       "/protoform-projview"
 				       (* (+ 16 16) 4)
-				       0 0) ; cs-in (cache), vs-in (raster)
+				       0 0  ; cs-in (cache), vs-in (raster)
+				       'triple)
 				 (list :uniform-buffer
 				       "vertices"
 				       "/protoform-vertices"
 				       (* 16 4)
-				       1 1)
+				       1 1
+				       'triple)
 				 (list :shader-storage-buffer
 				       "instance"
 				       "/protoform-instance"
 				       134217728
-				       2 3)
+				       2 3
+				       'triple)
 				 (list :texture-buffer
 				       "texture"
 				       "/protoform-texture"
 				       134217728
 				       -1 -1
+				       'triple		       
 				       :rgba8) ; requires fmt type
 				 (list :element-array-buffer
 				       "element"
 				       "/protoform-element"
 				       (* 4 6)  ; 4 bytes/int * 6 ints or indices
-				       -1 -1)				 
+				       -1 -1
+				       'triple)
 				 (list :draw-indirect-buffer
 				       "draw-indirect"
 				       "/protoform-draw-indirect"
 				       (* 4 6)  ; 6 ints/params
-				       -1 -1)
+				       -1 -1
+				       'triple)
 				 (list :atomic-counter-buffer
 				       "atomic-counter"
 				       "/protoform-atomic-counter"
 				       (* 4 6)  ; 6 ints/params
-				       4 -1)))
+				       4 -1
+				       'triple)))
 
 ;; TODO: Move elsewhere
 (defun init-vector-position ()
@@ -144,7 +151,15 @@
     
     ;; Do progn to chain them?
     (dolist (params *params-shm*)
-      (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params      
+      (destructuring-bind (target
+			   name
+			   path
+			   size
+			   bind-cs
+			   bind-vs
+			   count-buffer
+			   &rest rest)
+	  params
 	(memcpy-shm-to-cache name)))
 
     ;; Enable draw flag for view loop

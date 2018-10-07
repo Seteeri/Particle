@@ -6,7 +6,15 @@
 
 (defun init-handles-shm (params-model)
   (dolist (params params-model)
-    (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params
+      (destructuring-bind (target
+			   name
+			   path
+			   size
+			   bind-cs
+			   bind-vs
+			   count-buffer
+			   &rest rest)
+	  params
       (init-handle-shm name
   		       path
   		       size))))

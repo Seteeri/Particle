@@ -139,14 +139,22 @@
     ;;  * Doesn't matter here...
     
     (dolist (params params-shm)
-      (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params
+      (destructuring-bind (target
+			   name
+			   path
+			   size
+			   bind-cs
+			   bind-vs
+			   count-buffer
+			   &rest rest)
+	  params
 	
 	(let ((bo (init-buffer-object target
     				      name
     				      size
     				      (if (> bind-vs -1) bind-vs bind-cs)
     				      t ; pmap
-    				      :buffering 'triple)))
+    				      :buffering count-buffer)))
 	  (setf (gethash name bo-step)
 		bo)
 
