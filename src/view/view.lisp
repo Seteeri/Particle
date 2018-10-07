@@ -193,14 +193,13 @@
   (init-buffers-raster params-model)  
   (init-buffers-compute params-model)
 
-  ;; Set initial data
-  ;; Ensure to copy to all ptrs
+  ;; At this point, shm already has data loaded by model
+  ;; so copy to OpenGL buffers
+  (memcpy-shm-to-step))
 
-  ;; https://www.opengl.org/discussion_boards/showthread.php/173917-samplerBuffer-example-needed
-  
+(defun memcpy-shm-to-step ()
   (with-slots (bo-cache)
       *view*
-
     ;; shm -> cache -> step
     ;; model triggers shm->cache
     ;; compute performs cache->step
