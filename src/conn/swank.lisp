@@ -38,7 +38,7 @@ interface, to handle Swank Client connection requests."
     (swank-protocol:connect conn)
     (swank-protocol:request-connection-info conn)
     (let ((msg-init (swank-protocol:read-message conn)))
-      (when t
+      (when nil
 	(format t "~a~%" msg-init)))
     conn))
 

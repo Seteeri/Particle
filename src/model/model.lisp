@@ -63,6 +63,21 @@
 				       (* 4 6)  ; 6 ints/params
 				       -1 -1)))
 
+;; TODO: Move elsewhere
+(defun init-vector-position ()
+  (make-array (* 4 4) :element-type 'single-float
+	      ;; top right, bottom right, bottom left, top left
+	      ;;
+	      ;; 3---0
+	      ;; | / |
+	      ;; 2---1
+	      ;;
+	      ;; ccw: 0 2 1 0 3 2
+	      :initial-contents (list 1.0  1.0  0.0  1.0
+				      1.0  0.0  0.0  1.0
+				      0.0  0.0  0.0  1.0
+				      0.0  1.0  0.0  1.0)))
+
 ;; Do atomic counter also?
 (defun init-model (width
 		   height
@@ -76,31 +91,9 @@
 							:width width
 							:height height
 							:projection-type 'orthographic)
-			       :inst-max inst-max))
-	 (handles-shm (handles-shm model))
-	 (projview (projview model)))
-    
-    ;; Init shms, request view to mmap
-    (fmt-model t "main-model" " Initializing shm...~%")
-    (init-handle-shm handles-shm *params-shm*)
-    
-    ;; Init data for shms
-    (with-slots (ptr size)
-	(gethash "projview" handles-shm)
-      (update-projection-matrix projview)
-      (update-view-matrix projview)
-      ;; (write-matrix (view-matrix (projview model)) t)
-      (set-projection-matrix ptr (projection-matrix projview))
-      (set-view-matrix ptr (view-matrix projview))
-      
-      (let ((b (+ 16 16))
-	    (data (init-vector-position 1)))
-	(dotimes (i (length data))
-	  (setf (mem-aref ptr :float (+ b i))
-		(aref data i)))))
-    
-    ;; Set other buffer data
-    
+			       :inst-max inst-max)))
+    (init-handle-shm (handles-shm model)
+		     *params-shm*)
     model))
 
 (defun setup-view ()
@@ -157,90 +150,118 @@
      (format nil "(set-cache-dirty ~S ~S)" name value))
     (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn-swank))))
 
+(defun init-shm-data ()
+  (with-slots (projview handles-shm)
+      *model*
+    (with-slots (ptr size)
+	(gethash "projview" handles-shm)
+      (update-projection-matrix projview)
+      (update-view-matrix projview)
+      ;; (write-matrix (view-matrix (projview model)) t)
+      (set-projection-matrix ptr (projection-matrix projview))
+      (set-view-matrix ptr (view-matrix projview))
+      ;; 2 matrix structs previous
+      (let ((b (+ 16 16))
+	    (data (init-vector-position)))
+	(dotimes (i (length data))
+	  (setf (mem-aref ptr :float (+ b i))
+		(aref data i)))))
+
+    (with-slots (ptr size)
+	(gethash "element" handles-shm)
+      (let ((data (init-vector-position)))
+	(dotimes (i (length data))
+	  (setf (mem-aref ptr :float i)
+		(aref data i)))))))
+
+(defun init-graph ()
+  ;; Create DAG
+  (let ((digraph (digraph:make-digraph)))
+
+    (setf (digraph *model*) digraph)
+    
+    ;; Node 1
+    (let ((n-0 (init-node (vec3 0 0 0)
+			  (scale-node *model*)
+			  0
+			  "LISP"))
+	  (n-1 (init-node (vec3 0 1 0)
+			  (scale-node *model*)
+			  1
+			  "C"))
+	  (n-2 (init-node (vec3 0 2 0)
+			  (scale-node *model*)
+			  2
+			  "GLSL")))
+
+      (digraph:insert-vertex digraph n-0)
+      (digraph:insert-vertex digraph n-1)
+      (digraph:insert-vertex digraph n-2)
+      
+      (digraph:insert-edge digraph n-0 n-1)
+      (digraph:insert-edge digraph n-1 n-2)
+      
+      ;; Copy to shm before sending signal to view
+      (digraph:mapc-vertices (lambda (node)
+			       (copy-node-to-shm node
+						 (* (index node)
+						    (/ 208 4))))
+			     digraph)
+      
+      (fmt-model t "main-model" "Init conn to view swank server~%")
+      (setup-view)
+
+      ;; TEST LIVE TEXTURE
+      ;; Change texture after 5 seconds
+      
+      (sleep 6)
+
+      (fmt-model t "main-model" "Updating texture~%")
+
+      ;; Generate texture directly to shm
+      ;; Update node
+      ;; Tell view to copy to cache
+      (update-node-texture n-0 "1234")
+      (update-transform (model-matrix n-0))
+
+      (memcpy-shm-to-cache "texture" (offset-bytes-textures *model*))
+
+      ;; Copy node to shm
+      (copy-node-to-shm n-0
+			(* (index n-0)
+			   (/ 208 4)))
+      ;; Tracks size in model to be passed as arg to view
+      (memcpy-shm-to-cache "instance")
+
+      ;; Set flags so cache->step
+      ;; Important to make sure all steps are updated
+      ;; otherwise flickering will occur
+      ;; Simplest method is to set a counter and
+      ;; copy every frame until counter is 0
+      ;; Make this function more congruent with memcpy
+      (set-cache-dirty "texture" 3)
+      (set-cache-dirty "instance" 3))))
+
 (defun main-model (width height
 		   inst-max
 		   path-server-model)
 
   (start-swank-server 10000)
+
+  (defparameter *model* (init-model width
+				    height
+				    inst-max
+				    path-server-model))
   
-  (let* ((model (init-model width
-			    height
-			    inst-max
-			    path-server-model)))
+  (fmt-model t "main-model" "Init shm data~%")
 
-    (defparameter *model* model)
+  (init-shm-data)
 
-    (fmt-model t "main-model" "Init data~%")
+  (fmt-model t "main-model" "Init graph~%")
 
-    ;; Create DAG
-    (let ((digraph (digraph:make-digraph)))
-      (setf (digraph *model*) digraph)
-    
-      ;; Node 1
-      (let ((n-0 (init-node (vec3 0 0 0)
-			    (scale-node model)
-			    0
-			    "LISP"))
-	    (n-1 (init-node (vec3 0 1 0)
-			    (scale-node model)
-			    1
-			    "C"))
-	    (n-2 (init-node (vec3 0 2 0)
-			    (scale-node model)
-			    2
-			    "GLSL")))
-
-	(digraph:insert-vertex digraph n-0)
-	(digraph:insert-vertex digraph n-1)
-	(digraph:insert-vertex digraph n-2)
-      
-	(digraph:insert-edge digraph n-0 n-1)
-	(digraph:insert-edge digraph n-1 n-2)
-    
-	;; Copy to shm before sending signal to view
-	(digraph:mapc-vertices (lambda (node)
-				 (copy-node-to-shm node
-						   (* (index node)
-						      (/ 208 4))))
-			       digraph)
-        
-	(fmt-model t "main-model" "Init conn to view swank server~%")
-	(setup-view)
-
-	;; TEST LIVE TEXTURE
-	;; Change texture after 5 seconds
-	
-	(sleep 6)
-
-	(fmt-model t "main-model" "Updating texture~%")
-
-	;; Generate texture directly to shm
-	;; Update node
-	;; Tell view to copy to cache
-	(update-node-texture n-0 "1234")
-	(update-transform (model-matrix n-0))
-
-	(memcpy-shm-to-cache "texture" (offset-bytes-textures *model*))
-
-	;; Copy node to shm
-	(copy-node-to-shm n-0
-			  (* (index n-0)
-			     (/ 208 4)))
-	;; Tracks size in model to be passed as arg to view
-	(memcpy-shm-to-cache "instance")
-
-	;; Set flags so cache->step
-	;; Important to make sure all steps are updated
-	;; otherwise flickering will occur
-	;; Simplest method is to set a counter and
-	;; copy every frame until counter is 0
-	;; Make this function more congruent with memcpy
-	(set-cache-dirty "texture" 3)
-	(set-cache-dirty "instance" 3)
-	
-	t))
-    
-    (loop (sleep 0.0167))))
+  (init-graph)
+  
+  (loop (sleep 0.0167)))
 
 (defun handle-escape (model
 		      keysym)

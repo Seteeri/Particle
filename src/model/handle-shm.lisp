@@ -13,22 +13,6 @@
 					       :initial-element (coerce 0 '(unsigned-byte 8))))))
 	(setf (gethash name handles-shm) mmap)
 	(fmt-model t "init-mapping-base" "shm-mmap: ~a, ~a bytes~%" path size)))))
-  
-;; TODO: Move to external file gltf JSON
-(defun init-vector-position (n)
-  (make-array (* 4 4 n) :element-type 'single-float
-	      ;; top right, bottom right, bottom left, top left
-	      ;;
-	      ;; 3---0
-	      ;; | / |
-	      ;; 2---1
-	      ;;
-	      ;; ccw: 0 2 1 0 3 2
-	      :initial-contents (list 1.0  1.0  0.0  1.0
-				      1.0  0.0  0.0  1.0
-				      0.0  0.0  0.0  1.0
-				      0.0  1.0  0.0  1.0)))
-
 
 (defun set-matrix (ptr-dest matrix-src offset)
   (let ((matrix-arr (marr (mtranspose matrix-src))))
