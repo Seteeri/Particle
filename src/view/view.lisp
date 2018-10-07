@@ -165,15 +165,10 @@
 	    ;; (gl:active-texture :texture0)
 	    ;; Parse glyph images into texture: (parse-glyphs-ppm bo-texture)
 	    
-	    ;; Pass additional params for texture - format type
 	    (dotimes (i (count-buffers (gethash "texture" bo-step)))
 	      (%gl:tex-buffer :texture-buffer
-			      :rgba8
+			      (first rest) ; rgba8
 			      (aref (buffers (gethash "texture" bo-step)) i)))
-
-	    ;; uniform samplerBuffer msdf;
-	    ;; rename to something more relevant...
-	    ;; (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
 	    
 	    t))))))
 
