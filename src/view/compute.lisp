@@ -33,15 +33,7 @@
 	     ;; Single buffered so always index 0
 	     (when (> bl -1)
 	       ;; (fmt-view t "init-buffers-compute" "Binding ~a~%" name)
-	       (update-binding-buffer buffer 0))))
-    
-    ;; Bound on init only
-    (setf bo-counter (init-buffer-object :atomic-counter-buffer
-					 "atomic-counter-buffer"
-					 6 ; why 6 counters needed?
-					 4 ; bind
-					 t ; pmap
-					 :buffering 'single))))
+	       (update-binding-buffer buffer 0))))))
 
 (defun update-compute-bindings ()
   (with-slots (bo-step
@@ -105,7 +97,8 @@
       *view*
     
     (gl:use-program program-compute)
-    
+
+    ;; Double check output binding is being set - update-compute-buffers
     (update-compute-bindings)
     (update-compute-buffers)
     

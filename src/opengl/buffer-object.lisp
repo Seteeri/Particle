@@ -170,19 +170,19 @@
   (gl:delete-buffers (buffers buffer))
   (format t "[clean-up-buffer-object] Cleaned-up ~a~%" buffer))
 
-
-;; count: the number of elements to be rendered.
-;; type: the type of the values in indices. Must be one of GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, or GL_UNSIGNED_INT.
-;; indices: a byte offset (cast to a pointer type) into the buffer bound to GL_ELEMENT_ARRAY_BUFFER to start reading indices from.
-;; primcount: the number of instances of the indexed geometry that should be drawn.
-;; basevertex: a constant that should be added to each element of indices​ when chosing elements from the enabled vertex arrays.
-;; baseinstance: the base instance for use in fetching instanced vertex attributes.
 (defun set-bo-draw-indirect (bo-indirect
 			     count
 			     prim-count
 			     first-index
 			     base-vertex
 			     base-instance)
+
+  ;; count: the number of elements to be rendered.
+  ;; type: the type of the values in indices. Must be one of GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, or GL_UNSIGNED_INT.
+  ;; indices: a byte offset (cast to a pointer type) into the buffer bound to GL_ELEMENT_ARRAY_BUFFER to start reading indices from.
+  ;; primcount: the number of instances of the indexed geometry that should be drawn.
+  ;; basevertex: a constant that should be added to each element of indices​ when chosing elements from the enabled vertex arrays.
+  ;; baseinstance: the base instance for use in fetching instanced vertex attributes.
   
   (with-slots (count-buffers ptrs-buffer) bo-indirect
     (loop

@@ -20,52 +20,9 @@
     program))
 
 (defun init-buffers-raster (params-shm)
-
-  (with-slots (width height
-		     program-raster
-		     boav-main
-		     bo-step
-		     inst-max)
+  (with-slots (boav-main)
       *view*
-
-    (gl:use-program program-raster)
-
-    (setf boav-main (init-boav-main))
-
-    ;; Notes:
-    ;; * Some buffers have a different bind layout per shader stage
-    ;; * Texture requires setting fmt after and other ops
-    ;; * Set initial data for buffers element and draw-indirect
-    
-    (dolist (params params-shm)
-      (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params
-	(let ((bo (init-buffer-object target
-    				      name
-    				      size
-    				      bind-vs
-    				      t ; pmap
-    				      :buffering 'triple)))
-	  (setf (gethash name bo-step)
-		bo)
-
-	  (when (eq target :texture-buffer)
-
-	    ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
-	    ;; Already active...
-	    ;; (gl:active-texture :texture0)
-	    ;; Parse glyph images into texture: (parse-glyphs-ppm bo-texture)
-	    
-	    ;; Pass additional params for texture - format type
-	    (dotimes (i (count-buffers (gethash "texture" bo-step)))
-	      (%gl:tex-buffer :texture-buffer
-			      :rgba8
-			      (aref (buffers (gethash "texture" bo-step)) i)))
-
-	    ;; uniform samplerBuffer msdf;
-	    ;; rename to something more relevant...
-	    ;; (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
-	    
-	    t))))))
+    (setf boav-main (init-boav-main))))
 
 (defun update-raster-buffer-bindings ()
   (with-slots (bo-step

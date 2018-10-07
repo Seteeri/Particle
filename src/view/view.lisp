@@ -120,6 +120,55 @@
 		 :program-compute (init-program-compute)
 		 :inst-max inst-max))
 
+(defun init-bo-step (params-shm)
+
+  (with-slots (width height
+		     boav-main
+		     bo-step
+		     inst-max)
+      *view*
+
+    ;; Notes:
+    ;; * Some buffers have a different bind layout per shader stage
+    ;; * Texture requires setting fmt after and other ops
+    ;; * Set initial data for buffers element and draw-indirect
+    ;; * glMapNamedBuffer is unavailable so
+    ;;   * to persistently map the buffer, it needs to be bound...
+    ;;   * to bind a buffer, requires an appropriate program
+    ;; * What is the behavior when binding a buffer with no program bound?
+    ;;  * Doesn't matter here...
+    
+    (dolist (params params-shm)
+      (destructuring-bind (target name path size bind-cs bind-vs &rest rest) params
+	
+	(let ((bo (init-buffer-object target
+    				      name
+    				      size
+    				      (if (> bind-vs -1) bind-vs bind-cs)
+    				      t ; pmap
+    				      :buffering 'triple)))
+	  (setf (gethash name bo-step)
+		bo)
+
+	  (when (eq target :texture-buffer)
+
+	    ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+	    ;; Already active...
+	    ;; (gl:active-texture :texture0)
+	    ;; Parse glyph images into texture: (parse-glyphs-ppm bo-texture)
+	    
+	    ;; Pass additional params for texture - format type
+	    (dotimes (i (count-buffers (gethash "texture" bo-step)))
+	      (%gl:tex-buffer :texture-buffer
+			      :rgba8
+			      (aref (buffers (gethash "texture" bo-step)) i)))
+
+	    ;; uniform samplerBuffer msdf;
+	    ;; rename to something more relevant...
+	    ;; (%gl:uniform-1i (gl:get-uniform-location program-raster "msdf") 0)
+	    
+	    t))))))
+
 (defun init-view-buffers (params-model)
 
   (fmt-view t "init-view" "Initializing shm handles~%")
@@ -128,9 +177,12 @@
   (fmt-view t "init-view" "Initializing buffer object caches~%")
   (init-bo-caches params-model)
 
-  (fmt-view t "init-view" "Initializing buffer objects stages~%")
-  ;; Initiate bo-step
-  (init-buffers-raster params-model)
+  (fmt-view t "init-view" "Initializing buffer object steps~%")
+  (init-bo-step params-model)
+
+  (fmt-view t "init-view" "Initializing stages~%")
+  ;; Shader specific initialization
+  (init-buffers-raster params-model)  
   (init-buffers-compute params-model)
 
   ;; Set initial data
