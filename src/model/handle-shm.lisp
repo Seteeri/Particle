@@ -12,4 +12,4 @@
 					       :element-type '(unsigned-byte 8)
 					       :initial-element (coerce 0 '(unsigned-byte 8))))))
 	(setf (gethash name handles-shm) mmap)
-	(fmt-model t "init-mapping-base" "shm-mmap: ~a, ~a bytes~%" path size)))))
+	(fmt-model t "init-handle-shm" "~S, ~S bytes~%" path size)))))
