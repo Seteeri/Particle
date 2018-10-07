@@ -45,11 +45,9 @@
 					 :buffering 'single))))
 
 (defun update-compute-bindings ()
-  
   (with-slots (bo-step
 	       ix-fence)
       *view*
-
     ;; These are the output buffers for the compute shader
     ;; Input buffers, aka cache buffers, are single so need not rebind
     (dolist (name '("projview"
@@ -57,23 +55,19 @@
       (update-binding-buffer (gethash name bo-step) ix-fence))))
 
 (defun update-compute-buffers ()
-
   (with-slots (ix-fence)
       *view*
-  
-    ;; TODO: Refactor to use dirty flag
-    ;; Can use gl function to copy cache->step
-    
-    (memcpy-cache-to-step "texture" ix-fence ; dest
-    			  "texture")
-    			  ;; 318096)       ; src
-    
-    (memcpy-cache-to-step "instance" ix-fence ; dest
-			  "instance")       ; src
-
-    ;; Memcpy cache->step since compute shader doesn't utilize it
-    (memcpy-cache-to-step "projview" ix-fence ; dest
-			  "projview")))       ; src
+    (dolist (name '("projview" ; copy always for now
+		    "instance"
+		    "texture"))
+      (with-slots (buffer dirty)
+	  (get-cache name)
+	(when (> dirty 0)
+	  ;; Can also use gl function to copy between buffers
+	  ;; (fmt-view t "update-compute-buffers" "COPYING CACHE->STEP!~%")
+	  (memcpy-cache-to-step name ix-fence
+    				name)
+	  (decf dirty))))))
 
 (defun run-compute-copy ()
 

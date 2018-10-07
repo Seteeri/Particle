@@ -92,6 +92,7 @@
       ;; (write-matrix (view-matrix (projview model)) t)
       (set-projection-matrix ptr (projection-matrix projview))
       (set-view-matrix ptr (view-matrix projview))
+      
       (let ((b (+ 16 16))
 	    (data (init-vector-position 1)))
 	(dotimes (i (length data))
@@ -149,6 +150,13 @@
        (format nil "(memcpy-shm-to-cache ~S ~S ~S)" name name size))
       (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn-swank)))))
 
+(defun set-cache-dirty (name value)
+  (with-slots (conn-swank) *model*
+    (swank-protocol:request-listener-eval
+     conn-swank
+     (format nil "(set-cache-dirty ~S ~S)" name value))
+    (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn-swank))))
+
 (defun main-model (width height
 		   inst-max
 		   path-server-model)
@@ -172,15 +180,15 @@
       (let ((n-0 (init-node (vec3 0 0 0)
 			    (scale-node model)
 			    0
-			    "QWERT"))
+			    "LISP"))
 	    (n-1 (init-node (vec3 0 1 0)
 			    (scale-node model)
 			    1
-			    "ASDF"))
+			    "C"))
 	    (n-2 (init-node (vec3 0 2 0)
 			    (scale-node model)
 			    2
-			    "WHAT")))
+			    "GLSL")))
 
 	(digraph:insert-vertex digraph n-0)
 	(digraph:insert-vertex digraph n-1)
@@ -209,17 +217,26 @@
 	;; Generate texture directly to shm
 	;; Update node
 	;; Tell view to copy to cache
-	(update-node-texture n-0 "WHAT")
+	(update-node-texture n-0 "1234")
 	(update-transform (model-matrix n-0))
-	
+
 	(memcpy-shm-to-cache "texture" (offset-bytes-textures *model*))
-	;; TODO: Track size also
-	(memcpy-shm-to-cache "instance")
 
 	;; Copy node to shm
 	(copy-node-to-shm n-0
 			  (* (index n-0)
 			     (/ 208 4)))
+	;; Tracks size in model to be passed as arg to view
+	(memcpy-shm-to-cache "instance")
+
+	;; Set flags so cache->step
+	;; Important to make sure all steps are updated
+	;; otherwise flickering will occur
+	;; Simplest method is to set a counter and
+	;; copy every frame until counter is 0
+	;; Make this function more congruent with memcpy
+	(set-cache-dirty "texture" 3)
+	(set-cache-dirty "instance" 3)
 	
 	t))
     

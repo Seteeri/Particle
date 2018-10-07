@@ -153,11 +153,16 @@
     (set-bo-draw-indirect (gethash "draw-indirect" bo-step)
 			  6 inst-max 0 0 0)
 
+    ;; Integrate above with below
+    
     ;; shm -> cache -> step
     ;; model triggers shm->cache
     ;; compute performs cache->step
-    (memcpy-shm-to-cache "texture" "texture")
-    (memcpy-cache-to-step-all "texture" "texture")))
+    (dolist (name '("projview"
+		    "instance"
+		    "texture"))
+      (memcpy-shm-to-cache name name)
+      (memcpy-cache-to-step-all name name))))
 
 (defun main-view (width
 		  height
