@@ -13,9 +13,3 @@
 					       :initial-element (coerce 0 '(unsigned-byte 8))))))
 	(setf (gethash name handles-shm) mmap)
 	(fmt-model t "init-mapping-base" "shm-mmap: ~a, ~a bytes~%" path size)))))
-
-(defun set-matrix (ptr-dest matrix-src offset)
-  (let ((matrix-arr (marr (mtranspose matrix-src))))
-    (dotimes (i 16)
-      (setf (mem-aref ptr-dest :float (+ offset i))
-	    (aref matrix-arr i)))))

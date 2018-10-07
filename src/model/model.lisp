@@ -78,6 +78,12 @@
 				      0.0  0.0  0.0  1.0
 				      0.0  1.0  0.0  1.0)))
 
+(defun set-matrix (ptr-dest matrix-src offset)
+  (let ((matrix-arr (marr (mtranspose matrix-src))))
+    (dotimes (i 16)
+      (setf (mem-aref ptr-dest :float (+ offset i))
+	    (aref matrix-arr i)))))
+
 ;; Do atomic counter also?
 (defun init-model (width
 		   height
@@ -151,8 +157,13 @@
     (fmt-model t "main-model" "~%~a~%" (swank-protocol:read-message conn-swank))))
 
 (defun init-shm-data ()
-  (with-slots (projview handles-shm)
+  (with-slots (inst-max
+	       projview
+	       handles-shm)
       *model*
+
+    ;; instance and texture is done later
+    
     (with-slots (ptr size)
 	(gethash "projview" handles-shm)
       (update-projection-matrix projview)
@@ -169,10 +180,29 @@
 
     (with-slots (ptr size)
 	(gethash "element" handles-shm)
-      (let ((data (init-vector-position)))
+      (let ((data (make-array 6
+      			      :element-type '(unsigned-byte 32)
+      			      :initial-contents (list 0 2 1 0 3 2))))
 	(dotimes (i (length data))
-	  (setf (mem-aref ptr :float i)
-		(aref data i)))))))
+	  (setf (mem-aref ptr ::uint i)
+		(aref data i)))))
+
+    (with-slots (ptr size)
+	(gethash "draw-indirect" handles-shm)
+      (let ((data (make-array 5
+      			      :element-type '(unsigned-byte 32)
+      			      :initial-contents (list 6 inst-max 0 0 0))))
+	(dotimes (i (length data))
+	  (setf (mem-aref ptr ::uint i)
+		(aref data i)))))
+    
+    (when nil
+      (with-slots (ptr size)
+	  (gethash "vertices" handles-shm)
+	(let ((data (init-vector-position)))
+	  (dotimes (i (length data))
+	    (setf (mem-aref ptr :float i)
+		  (aref data i))))))))
 
 (defun init-graph ()
   ;; Create DAG
