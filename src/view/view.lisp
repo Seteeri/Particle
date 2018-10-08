@@ -27,7 +27,7 @@
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
    
    ;; VAO
-   (boav-main :accessor boav-main :initarg :boav-main :initform nil)
+   (vaos :accessor vaos :initarg :vaos :initform (make-array 3 :adjustable nil :fill-pointer 0))
    ;; Persistently mapped: projview, instance, texture, element, indirect
    (bo-step :accessor bo-step :initarg :bo-step :initform (make-hash-table :size 6 :test 'equal))
 

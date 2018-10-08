@@ -32,19 +32,25 @@
     program))
 
 (defun init-buffers-raster (params-shm)
-  (with-slots (boav-main)
+  (with-slots (bo-step
+	       vaos)
       *view*
-    (setf boav-main (init-vao))))
+    ;; Setup vaos/bindings for each step
+    ;; 1 bind vao > many bind buffer calls
+    (dotimes (i 3)
+      (let ((vao (init-vao)))
+	(vector-push vao vaos)
+	(loop 
+	   :for name :being :the :hash-keys :of bo-step
+	   :using (hash-value buffer)
+	   :do (update-binding-buffer buffer i))))))
 
 (defun update-raster-buffer-bindings ()
-  (with-slots (bo-step
+  (with-slots (vaos
 	       ix-fence)
       *view*
-    ;; Maybe use different VAOs here?
-    (loop 
-       :for name :being :the :hash-keys :of bo-step
-       :using (hash-value buffer)
-       :do (update-binding-buffer buffer ix-fence))))
+    ;; Use different pre-setup VAOs instead of individual bindings
+    (gl:bind-vertex-array (aref vaos ix-fence))))
 
 (defun run-raster ()
 
