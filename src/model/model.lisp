@@ -17,7 +17,6 @@
 ;; Step/raster will use vs-in
 ;;
 ;; Create separate defparameters for each
-;; Specify program for bind points
 (defparameter *params-shm* (list (list :uniform-buffer
 				       "projview"
 				       "/protoform-projview"
@@ -36,12 +35,6 @@
 				       (/ 134217728 2)
 				       2 3
 				       :triple)
-				 ;; (list :shader-storage-buffer
-				 ;;       "edges"
-				 ;;       "/protoform-instance"
-				 ;;       (/ 134217728 2)
-				 ;;       2 3
-				 ;;       :triple)
 				 (list :texture-buffer
 				       "texture"
 				       "/protoform-texture"
@@ -209,6 +202,9 @@
   (let ((digraph (digraph:make-digraph)))
 
     (setf (digraph *model*) digraph)
+
+    ;; Create vertices/edge then generate nodes
+    ;; Normally user will create these through input (controller)
     
     ;; Node 1
     (let ((n-0 (init-node (vec3 0 0 0)
@@ -218,7 +214,7 @@
 	  (n-1 (init-node (vec3 0 1 0)
 			  (scale-node *model*)
 			  1
-			  "C"))
+			  "||"))
 	  (n-2 (init-node (vec3 0 2 0)
 			  (scale-node *model*)
 			  2

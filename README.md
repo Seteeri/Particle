@@ -160,10 +160,11 @@ naturally remains an orthogonal possibility.
 ## The Roadmap
 
 1. Pango text generation (as a texture)
-2. Drawing nodes, bezier curves
-3. Default nodes and REPL
-4. Tiled forward rendering (Forward+) including lights
-5. Wayland
+2. Drawing nodes, lines
+3. Controls
+4. Default nodes and REPL
+5. Wayland, multimedia support
+6. Tiled forward rendering (Forward+) including lights
 
 ## The Hardware
 

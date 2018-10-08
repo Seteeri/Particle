@@ -13,6 +13,17 @@
    (mapped-persistent :accessor mapped-persistent :initarg :mapped-persistent :initform nil)
    (ptrs-buffer :accessor ptrs-buffer :initarg :ptrs-buffer :initform nil)))
 
+(defun format-buffer-object (buffer)
+  (with-slots (target
+	       binding-layout
+	       size-buffer)
+      buffer
+    (with-output-to-string (stream)
+      (format stream "Buffer Object: ~a~%" buffer)
+      (format stream "  target: ~a~%" target)
+      (format stream "  size: ~a bytes~%" buffer)
+      (format stream "  bind: ~a~%" binding-layout))))
+
 (defun init-buffer-object (target
 			   name
 			   size
@@ -59,13 +70,6 @@
       (setf size-buffer size)
       (setf buffers (make-array count-buffers :initial-contents (gl:gen-buffers count-buffers)))
       (setf ptrs-buffer (make-array count-buffers :initial-element (null-pointer)))
-
-      (when t
-	(format t "[init-buffer-object] Buffer Object: ~a~%" name)
-	;; (format t "[init-buffer-object]   buffers: ~a~%" buffers)
-	(format t "[init-buffer-object]   size-buffer: ~a bytes~%" size-buffer)
-	(when data
-	  (format t "[init-buffer-object]   data (array) length: ~a~%" (length data))))
 
       (map-persistent buffer data usage)
 
