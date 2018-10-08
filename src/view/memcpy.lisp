@@ -1,6 +1,17 @@
 (in-package :protoform.view)
 
-;; Create variant that use same name
+(defun memcpy-shm-to-all ()
+  (with-slots (bo-cache)
+      *view*
+    ;; shm -> cache -> step
+    ;; model triggers shm->cache
+    ;; compute performs cache->step
+    (loop 
+       :for name :being :the :hash-keys :of bo-cache
+       :using (hash-value cache)
+       :do (progn
+	     (memcpy-shm-to-cache name name 0 nil)
+	     (memcpy-cache-to-step-all name name)))))
 
 (defun memcpy-shm-to-cache (name-dest
 			    name-src
