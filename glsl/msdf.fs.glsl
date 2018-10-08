@@ -12,7 +12,8 @@ flat in int vertexOffsetTex;
 flat in ivec2 vertexDimsTex;
 in uv_t vertexUV;
 
-out vec4 color;
+//out vec4 color;
+layout(location = 0) out vec4 color;
 
 // Implement filter_bicubic
 
