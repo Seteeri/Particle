@@ -93,7 +93,7 @@
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
     
   (with-slots (ptr size)
-      (gethash "instance" (handles-shm *model*))
+      (gethash "nodes" (handles-shm *model*))
     
     (with-slots (data
 		 model-matrix

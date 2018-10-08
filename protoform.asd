@@ -21,6 +21,7 @@
 		 #:usocket
 		 #:pango-markup
 		 #:bordeaux-threads
+		 #:inferior-shell
 		 #:swank
 		 #:swank-protocol
 		 #:trivial-timers

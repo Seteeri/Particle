@@ -16,7 +16,8 @@
 ;; Cache/compute will use cs-in
 ;; Step/raster will use vs-in
 ;;
-;; Create separate defparameters for each 
+;; Create separate defparameters for each
+;; Specify program for bind points
 (defparameter *params-shm* (list (list :uniform-buffer
 				       "projview"
 				       "/protoform-projview"
@@ -30,15 +31,21 @@
 				       1 1
 				       :triple)
 				 (list :shader-storage-buffer
-				       "instance"
-				       "/protoform-instance"
-				       134217728
+				       "nodes"
+				       "/protoform-nodes"
+				       (/ 134217728 2)
 				       2 3
 				       :triple)
+				 ;; (list :shader-storage-buffer
+				 ;;       "edges"
+				 ;;       "/protoform-instance"
+				 ;;       (/ 134217728 2)
+				 ;;       2 3
+				 ;;       :triple)
 				 (list :texture-buffer
 				       "texture"
 				       "/protoform-texture"
-				       134217728
+				       (/ 134217728 2)
 				       -1 -1
 				       :triple		       
 				       :rgba8) ; requires fmt type
@@ -260,7 +267,7 @@
       (memcpy-shm-to-cache-dirty* (list (list "texture"
 					      0
       					      (offset-bytes-textures *model*))
-      					(list "instance"
+      					(list "nodes"
 					      0
       					      (* +size-struct-instance+ (digraph:count-vertices digraph))))))))
 

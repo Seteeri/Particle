@@ -12,9 +12,6 @@
 ;; (size-dirty :accessor dirty :initarg :dirty :initform nil)))
 
 (defun init-bo-caches (params-model)
-  ;; "projview":0
-  ;; "instance":1
-  ;; "texture":-1
   (dolist (params params-model)
       (destructuring-bind (target
 			   name

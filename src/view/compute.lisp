@@ -125,7 +125,7 @@
     (loop 
        :for name :being :the :hash-keys :of bo-cache
        :using (hash-value cache)
-       :do (when (not (string= name "instance"))
+       :do (when (not (string= name "nodes"))
 	     (with-slots (buffer dirty)
 		 cache
 	       (when (> dirty 0)
