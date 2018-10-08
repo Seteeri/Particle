@@ -107,6 +107,7 @@
 (defun run-compute ()
 
   (with-slots (program-compute
+	       bo-cache
 	       bo-step
 	       inst-max
 	       ix-fence)
@@ -116,11 +117,23 @@
 
     ;; Double check output binding is being set - update-compute-buffers
     (update-compute-bindings)
-    (update-compute-buffers)
 
     ;; https://stackoverflow.com/questions/28704818/how-can-i-write-to-a-texture-buffer-object
-    ;; Texture only needs to be memcpied once
-    ;; Or have shader copy?
+    ;; Shader can't copy instance textures due to different image sizes
+    ;; Indices remain the same
+    ;; Exception below is instance
+    (loop 
+       :for name :being :the :hash-keys :of bo-cache
+       :using (hash-value cache)
+       :do (when (not (string= name "instance"))
+	     (with-slots (buffer dirty)
+		 cache
+	       (when (> dirty 0)
+		 (memcpy-cache-to-step name ix-fence
+    				       name
+				       nil
+				       nil) ; no print
+		 (decf dirty)))))
     
     ;; TENTATIVE: Memcpy projview every frame
     ;; Have model set this every frame or set a flag...ONCE|ALWAYS
