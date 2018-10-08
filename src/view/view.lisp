@@ -160,10 +160,10 @@
 	    ;; (gl:active-texture :texture0)
 	    ;; Parse glyph images into texture: (parse-glyphs-ppm bo-texture)
 	    
-	    (dotimes (i (count-buffers (gethash "texture" bo-step)))
+	    (dotimes (i (count-buffers bo))
 	      (%gl:tex-buffer :texture-buffer
 			      (first rest) ; rgba8
-			      (aref (buffers (gethash "texture" bo-step)) i)))
+			      (aref (buffers bo) i)))
 	    
 	    t))))))
 
