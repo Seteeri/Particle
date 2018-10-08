@@ -10,6 +10,7 @@
    (conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
 
+   ;; Instances...
    (digraph :accessor digraph :initarg :digraph :initform nil)
    
    ;; Textures - list of Texture instances wich store tex parameters
@@ -216,13 +217,7 @@
       (digraph:insert-edge digraph n-0 n-1)
       (digraph:insert-edge digraph n-1 n-2)
       
-      ;; Copy instances to shm 
-      (digraph:mapc-vertices (lambda (node)
-			       (copy-node-to-shm node
-						 (* (index node)
-						    (/ 208 4))))
-			     digraph)
-      ;; Copy textures to shm
+      (copy-nodes-to-shm)
       (copy-textures-to-shm)
       
       (fmt-model t "main-model" "Init conn to view swank server~%")
@@ -244,7 +239,6 @@
       (update-transform (model-matrix n-0))
 
       (copy-textures-to-shm)
-      ;; Copy node to shm
       (copy-node-to-shm n-0
 			(* (index n-0)
 			   (/ 208 4)))

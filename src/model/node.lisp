@@ -136,3 +136,10 @@
       (incf offset-ptr 4)))
 
   (fmt-model t "copy-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4)))
+
+(defun copy-nodes-to-shm ()
+  (digraph:mapc-vertices (lambda (node)
+			   (copy-node-to-shm node
+					     (* (index node)
+						(/ 208 4))))
+			 (digraph *model*)))
