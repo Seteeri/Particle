@@ -244,7 +244,9 @@
     	(%gl:delete-sync fence)
     	(setf (aref fences ix-fence) (null-pointer))))
 
-    (run-compute-copy)
+    (if nil
+	(run-compute-copy)
+	(run-compute))
     
     (run-raster)
     

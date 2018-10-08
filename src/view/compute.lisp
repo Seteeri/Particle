@@ -31,7 +31,8 @@
       *view*
 
     (gl:use-program program-compute)
-    
+
+    ;; These are input bindings/buffers
     ;; Cache need only bound once on init since all single buffered
     (loop 
        :for name :being :the :hash-keys :of bo-cache
@@ -41,7 +42,7 @@
 	     ;; Bind if allowed
 	     ;; Single buffered so always index 0
 	     (when (> bl -1)
-	       ;; (fmt-view t "init-buffers-compute" "Binding ~a~%" name)
+	       (fmt-view t "init-buffers-compute" "Binding ~a to ~a~%" name bl)
 	       (update-binding-buffer buffer 0))))))
 
 (defun update-compute-bindings ()
@@ -49,10 +50,12 @@
 	       ix-fence)
       *view*
     
-    ;; These are the output buffers for the compute shader
+    ;; These output bindings/buffers
     ;; Need only be done for those specified in the compute shader
     ;; These bindings only apply to compute program
     ;; Input buffers, aka cache buffers, are single so need not rebind
+    ;;
+    ;; Note, atomic counter is re-bound here also...
     (loop 
        :for name :being :the :hash-keys :of bo-step
        :using (hash-value buffer)
@@ -61,9 +64,10 @@
 	       ;; Bind if allowed
 	       ;; Single buffered so always index 0
 	       (when (> bl -1)
+		 ;; (format t "~a, ~a~%" name bl)
 		 (update-binding-buffer buffer ix-fence)))))))
 
-(defun update-compute-buffers ()
+(defun update-compute-buffers (&optional (force nil))
   (with-slots (bo-cache
 	       ix-fence)
       *view*
@@ -72,11 +76,13 @@
        :using (hash-value cache)
        :do (with-slots (buffer dirty)
 	       cache
-	     (when (> dirty 0)
+	     (when (or (> dirty 0) force)
 	       ;; Can also use gl function to copy between buffers
-	       (fmt-view t "update-compute-buffers" "Cache dirt: ~a, ~a~%" name dirty)
+	       (when (not force) (fmt-view t "update-compute-buffers" "Cache dirt: ~a, ~a~%" name dirty))
 	       (memcpy-cache-to-step name ix-fence
-    				     name)
+    				     name
+				     nil
+				     nil) ; no print
 	       (decf dirty))))))
 
 (defun run-compute-copy ()
@@ -94,12 +100,13 @@
     
     ;; Set to render all instances
     (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
-	  inst-max)))
+    	  inst-max)
+
+    t))
 
 (defun run-compute ()
 
   (with-slots (program-compute
-	       bo-counter
 	       bo-step
 	       inst-max
 	       ix-fence)
@@ -110,23 +117,42 @@
     ;; Double check output binding is being set - update-compute-buffers
     (update-compute-bindings)
     (update-compute-buffers)
+
+    ;; https://stackoverflow.com/questions/28704818/how-can-i-write-to-a-texture-buffer-object
+    ;; Texture only needs to be memcpied once
+    ;; Or have shader copy?
+    
+    ;; TENTATIVE: Memcpy projview every frame
+    ;; Have model set this every frame or set a flag...ONCE|ALWAYS
+    (memcpy-cache-to-step "projview" ix-fence
+    			  "projview"
+			  nil  ; copy entire buffer
+			  nil) ; no print
     
     ;; Reset counter before every dispatch
-    (setf (mem-aref (aref (ptrs-buffer bo-counter) 0) :uint 0) 0)
+    (setf (mem-aref (aref (ptrs-buffer (gethash "atomic-counter" bo-step)) ix-fence)
+		    :uint 0)
+	  0)
     
     ;; <= 65535 (GL_MAX_COMPUTE_WORK_GROUP_COUNT)
     ;; 1792 max local threads/invocations per work group
     ;; 65535*1792 = 117,438,720 - n instances; greater than this value means multiple dispatches (and switching buffers)
     ;;
     ;; TODO: Instead of inst-max use count from view
+    ;;
+    ;; Indirect version exists...
     (%gl:dispatch-compute (ceiling (/ inst-max 1792))
 			  1
-			  1) ;indirect version exists...
+			  1)
 
     ;; Ensure compute shader finishes before grabbing values
-    (sync-gl)
+    (protoform.opengl::sync-gl)
+
+    (when nil
+      (fmt-view t "run-compute" "Counter: ~a~%"
+    		(mem-aref (aref (ptrs-buffer (gethash "atomic-counter" bo-step)) ix-fence)
+    			  :uint 0)))
     
     ;; Update indirect primCount with counter
     (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
-	  inst-max)))
-    	  ;; (mem-aref (aref (ptrs-buffer bo-counter) 0) :uint 0))))
+	  (mem-aref (aref (ptrs-buffer (gethash "atomic-counter" bo-step)) ix-fence) :uint 0))))

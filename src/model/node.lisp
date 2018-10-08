@@ -123,7 +123,6 @@
 	 :for c-i :upfrom 0
 	 :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
 		   c))
-      ;; (incf offset-ptr 8) ; double check this
       (incf offset-ptr 16)
       
       ;; Glyph, Flags, pad, pad
@@ -132,7 +131,7 @@
       (setf (mem-aref ptr :int (+ offset-ptr 0)) offset-texel-texture) ; tex offset
       (setf (mem-aref ptr :int (+ offset-ptr 1)) (truncate (vx2 dims-texture))) ; tex dim x
       (setf (mem-aref ptr :int (+ offset-ptr 2)) (truncate (vy2 dims-texture))) ; tex dim y
-      (setf (mem-aref ptr :int (+ offset-ptr 3)) flags) ; draw
+      (setf (mem-aref ptr :int (+ offset-ptr 3)) 1) ; draw
       (incf offset-ptr 4)))
 
   (fmt-model t "copy-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4)))

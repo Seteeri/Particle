@@ -7,7 +7,7 @@ layout (std140, binding = 0) uniform projview
 };
 layout (std140, binding = 1) uniform vertices
 {
-    vec4 positionVertex[4];
+    vec4 vertex[4];
 };
 layout(std430, binding = 3) readonly buffer data_instances_out
 {
@@ -21,7 +21,7 @@ out uv_t vertexUV;
 
 void main()
 {
-    gl_Position = proj * view * instances_out[gl_InstanceID].model * positionVertex[gl_VertexID];
+    gl_Position = proj * view * instances_out[gl_InstanceID].model * vertex[gl_VertexID];
     
     vertexRGBA = instances_out[gl_InstanceID].rgbas[gl_VertexID];
     

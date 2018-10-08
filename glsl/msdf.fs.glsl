@@ -1,9 +1,9 @@
 //#version 320 es
 
-precision highp float;
-precision highp sampler2DArray;
-precision highp samplerBuffer;
-precision highp usamplerBuffer;
+precision mediump float;
+precision mediump sampler2DArray;
+precision mediump samplerBuffer;
+precision mediump usamplerBuffer;
 
 uniform samplerBuffer msdf;
 

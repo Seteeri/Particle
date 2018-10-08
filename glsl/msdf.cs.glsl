@@ -58,8 +58,8 @@ uint  gl_LocalInvocationIndex 1d index representation of gl_LocalInvocationID
 */
 
 void main()
-{        
-    if (instances_in[gl_GlobalInvocationID.x].w_flags[0] == 1)
+{             
+    if (instances_in[gl_GlobalInvocationID.x].w_flags[3] == 1)
     {
         uint count = atomicCounterIncrement(counter);
        
