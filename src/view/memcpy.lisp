@@ -21,7 +21,9 @@
 	 (ptr-dest (aref (ptrs-buffer bo-dest) 0)) ; always 0
 	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*))))))
     (memcpy-ptr ptr-dest
+		offset
 		ptr-src
+		offset
 		(if size
 		    size
 		    (size-buffer bo-dest))))
@@ -36,7 +38,9 @@
 	 (ptr-dest (aref (ptrs-buffer bo-dest) ix-dest))
 	 (ptr-src (aref (ptrs-buffer (get-cache-buffer name-dest)) 0)))
     (memcpy-ptr ptr-dest
+		0
 		ptr-src
+		0
 		(if size
 		    size
 		    (size-buffer bo-dest))))
@@ -53,16 +57,16 @@
 		   (size-buffer bo-dest))))
     (dotimes (i (count-buffers bo-dest))
       (memcpy-ptr (aref (ptrs-buffer bo-dest) i)
+		  0
 		  ptr-src
+		  0
 		  size))))
 
-(defun memcpy-ptr (ptr-dest
-		   ptr-src
+(defun memcpy-ptr (ptr-dest off-dest
+		   ptr-src off-src
 		   size)
-  (let* ((offset-dest 0)
-	 (offset-src 0)
-	 (ptr-dest-off (inc-pointer ptr-dest offset-dest))
-	 (ptr-src-off (inc-pointer ptr-src offset-src)))
+  (let* ((ptr-dest-off (inc-pointer ptr-dest off-dest))
+	 (ptr-src-off (inc-pointer ptr-src off-src)))
     (c-memcpy ptr-dest-off
 	      ptr-src-off
 	      size)))
