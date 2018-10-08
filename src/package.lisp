@@ -64,7 +64,7 @@
 	   #:attach-shader
 	   #:delete-shader
 	   #:init-buffer-object
-           #:init-boav-main
+           #:init-vao
            #:init-boa-element
 	   #:init-buffer-object
 	   #:init-buffer-draw-indirect

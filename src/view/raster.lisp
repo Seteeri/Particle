@@ -34,7 +34,7 @@
 (defun init-buffers-raster (params-shm)
   (with-slots (boav-main)
       *view*
-    (setf boav-main (init-boav-main))))
+    (setf boav-main (init-vao))))
 
 (defun update-raster-buffer-bindings ()
   (with-slots (bo-step

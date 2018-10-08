@@ -143,31 +143,12 @@
 	    near
 	    far)))
 
-(defun init-boav-main ()
+(defun init-vao ()
   ;; VAOs store all of the links between the attributes and VBOs
   ;; including raw vertex data, etc.
-  ;; VAO attributes can be linked to different VBOs, essentially
-  ;; storing pointers to bound VBOs when glEnableVertexAttrib called
-  (let ((boav-main (first (gl:gen-vertex-arrays 1))))
-    (gl:bind-vertex-array boav-main)
-    boav-main))
-
-(defun vertex-attrib-pointer (index size type norm stride offset vbo)
-  (%gl:enable-vertex-attrib-array index)
-  ;; Bind vbo first
-  (%gl:vertex-attrib-format index
-			    size
-			    type
-			    norm
-			    0)
-  (%gl:vertex-attrib-binding index index)
-  ;; 0 will unbind vbo
-  ;; Need not bind vbo for this func
-  (%gl:bind-vertex-buffer index vbo offset stride))
-
-(defun vertex-attrib-divisor (index divisor)
-  (%gl:vertex-attrib-binding index index)
-  (%gl:vertex-binding-divisor index divisor))
+  (let ((vao (first (gl:gen-vertex-arrays 1))))
+    (gl:bind-vertex-array vao)
+    vao))
 
 (defun type-cffi-to-gl (type)
   (ecase type
