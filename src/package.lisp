@@ -73,7 +73,7 @@
 	   #:make-orthographic-vector
 	   #:make-perspective-vector
 	   #:clean-up-buffer-object
-	   #:print-gl-max
+	   #:get-gl-maxes
 	   #:set-bo-element
 	   #:set-bo-draw-indirect
 	   #:copy-buffer

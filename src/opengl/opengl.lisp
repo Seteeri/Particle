@@ -63,8 +63,7 @@
 		     (eq wait-return :condition-satisfied-apple))
 		(return)))))
 
-(defun print-gl-max ()
-
+(defun get-gl-maxes ()
   (loop 
      :for name :in (list "GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS"
 			 "GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS"
@@ -91,10 +90,10 @@
 			 "GL_MAX_GEOMETRY_UNIFORM_BLOCKS"
 			 "GL_MAX_FRAGMENT_UNIFORM_BLOCKS"
 			 "GL_MAX_UNIFORM_BLOCK_SIZE")
-     :do (progn
-	   (setf (char name 2) #\:)
-	   (let* ((k2 (string-downcase (str:replace-all "_" "-" (subseq name 2)))))
-	     (format t "[init-gles] ~a: ~a~%" k2 (gl:get* (read-from-string k2)))))))
+     :collect (progn
+		(setf (char name 2) #\:)
+		(let* ((k2 (string-downcase (str:replace-all "_" "-" (subseq name 2)))))
+		  (list k2 (gl:get* (read-from-string k2)))))))
 
 (defun cad-shader (type
 		   program

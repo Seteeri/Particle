@@ -79,10 +79,10 @@
 
 (defun init-gl-env (width height)
   
-  (fmt-view t "init-gl" "GL Vendor: ~a~%" (gl:get* :vendor))
-  (fmt-view t "init-gl" "GL Renderer: ~a~%" (gl:get* :renderer))
-  (fmt-view t "init-gl" "GL Version: ~a~%" (gl:get* :version))
-  (fmt-view t "init-gl" "GLSL Version: ~a~%" (gl:get* :shading-language-version))
+  (fmt-view t "init-gl-env" "GL Vendor: ~a~%" (gl:get* :vendor))
+  (fmt-view t "init-gl-env" "GL Renderer: ~a~%" (gl:get* :renderer))
+  (fmt-view t "init-gl-env" "GL Version: ~a~%" (gl:get* :version))
+  (fmt-view t "init-gl-env" "GLSL Version: ~a~%" (gl:get* :shading-language-version))
   
   ;; Get screen dimensions from drm
   (gl:viewport 0 0 width height)
@@ -98,7 +98,9 @@
 		   0.0)
   (gl:clear :color-buffer-bit :depth-buffer-bit)
   
-  (print-gl-max))
+  (loop
+     :for pair :in (get-gl-maxes)
+     :do (fmt-view t "init-gl-env" "~a = ~a~%" (first pair) (second pair))))
 
 (defun init-view-programs (width
 			   height
