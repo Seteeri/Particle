@@ -79,10 +79,10 @@
 
 (defun init-gl-env (width height)
   
-  (format t "[init-gl] GL Vendor: ~a~%" (gl:get* :vendor))
-  (format t "[init-gl] GL Renderer: ~a~%" (gl:get* :renderer))
-  (format t "[init-gl] GL Version: ~a~%" (gl:get* :version))
-  (format t "[init-gl] GLSL Version: ~a~%" (gl:get* :shading-language-version))
+  (fmt-view t "init-gl" "GL Vendor: ~a~%" (gl:get* :vendor))
+  (fmt-view t "init-gl" "GL Renderer: ~a~%" (gl:get* :renderer))
+  (fmt-view t "init-gl" "GL Version: ~a~%" (gl:get* :version))
+  (fmt-view t "init-gl" "GLSL Version: ~a~%" (gl:get* :shading-language-version))
   
   ;; Get screen dimensions from drm
   (gl:viewport 0 0 width height)
