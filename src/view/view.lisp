@@ -183,9 +183,9 @@
   (fmt-view t "init-view" "Initializing buffer object steps~%")
   (init-bo-step params-model)
 
-  (fmt-view t "init-view" "Initializing stages~%")
+  (fmt-view t "init-view" "Initializing shader bindings~%")
   ;; Shader specific initialization
-  (init-buffers-raster params-model)  
+  (init-buffers-raster params-model)
   (init-buffers-compute params-model)
 
   ;; At this point, shm already has data loaded by model

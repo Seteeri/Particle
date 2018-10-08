@@ -40,6 +40,7 @@
   (with-slots (bo-step
 	       ix-fence)
       *view*
+    ;; Maybe use different VAOs here?
     (loop 
        :for name :being :the :hash-keys :of bo-step
        :using (hash-value buffer)
