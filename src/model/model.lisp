@@ -1,16 +1,22 @@
 (in-package :protoform.model)
 
+;; move elsewhere to misc.lisp or util.lisp
+(defun fmt-model (dst ctx-str ctl-str &rest rest)
+  ;; Add space opt
+  (apply #'format
+	 dst
+	 (str:concat (format nil "[MODEL:~a][~a] " (sb-posix:getpid) ctx-str)
+		     ctl-str)
+	 rest))
+
 ;; For now, determine these through view - maybe model can request from view?
 ;; GL_MAX_SHADER_STORAGE_BLOCK_SIZE = 134217728 = 134.217728 MBs
 ;; GL_MAX_TEXTURE_BUFFER_SIZE       = 134217728 = 134.217728 MBs
 ;;
-;; Or pass 0/-1 to determine max?
-;;
-;; Make class slots? -> Harder to be dynamic
-;; Add buffering: single double triple - default to triple
-;;
 ;; Cache/compute will use cs-in
 ;; Step/raster will use vs-in
+;;
+;; Create separate defparameters for each 
 (defparameter *params-shm* (list (list :uniform-buffer
 				       "projview"
 				       "/protoform-projview"
@@ -236,29 +242,27 @@
       ;; Tell view to copy to cache
       (update-node-texture n-0 "1234")
       (update-transform (model-matrix n-0))
-
-      ;;;;;;;;;;;;;;;
-      ;; Make atomic
-      ;; otherwise will result in possible delay or "tearing"
       
       (copy-textures-to-shm)
       (copy-node-to-shm n-0
 			(* (index n-0)
 			   (/ +size-struct-instance+ 4)))
 
-      (memcpy-shm-to-cache "texture"
-			   (offset-bytes-textures *model*))
-      (memcpy-shm-to-cache "instance"
-			   (* +size-struct-instance+ (digraph:count-vertices digraph)))
+      ;;;;;;;;;;;;;;;
+      ;; Make atomic
+      ;; otherwise will result in possible delay or "tearing"
 
       ;; Set flags so cache->step
-      ;; Important to make sure all steps are updated
-      ;; otherwise flickering will occur
-      ;; Simplest method is to set a counter and
-      ;; copy every frame until counter is 0
-      ;; Make this function more congruent with memcpy
-      (set-cache-dirty "texture" 3)
-      (set-cache-dirty "instance" 3))))
+      ;; - Important to make sure all steps are updated otherwise flickering will occur
+      ;; - Simplest method is to set a counter and copy every frame until counter is 0
+      ;; - Specify size?
+      
+      (memcpy-shm-to-cache-dirty* (list (list "texture"
+					      0
+      					      (offset-bytes-textures *model*))
+      					(list "instance"
+					      0
+      					      (* +size-struct-instance+ (digraph:count-vertices digraph))))))))
 
 (defun main-model (width height
 		   inst-max
@@ -303,12 +307,3 @@
 ;; /proc/sys/net/core/rmem_default for recv and /proc/sys/net/core/wmem_default
 ;; 212992
 ;; They contain three numbers, which are minimum, default and maximum memory size values (in byte), respectively.
-
-;; move elsewhere to misc.lisp or util.lisp
-(defun fmt-model (dst ctx-str ctl-str &rest rest)
-  ;; Add space opt
-  (apply #'format
-	 dst
-	 (str:concat (format nil "[PID:~a,model][~a] " (sb-posix:getpid) ctx-str)
-		     ctl-str)
-	 rest))

@@ -55,3 +55,4 @@
 
 (defun set-cache-dirty (name value)
   (setf (dirty (gethash name (bo-cache *view*))) value))
+  ;; (fmt-view t "set-cache-dirty" "~a: ~a~%" name value))

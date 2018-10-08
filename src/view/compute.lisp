@@ -74,7 +74,7 @@
 	       cache
 	     (when (> dirty 0)
 	       ;; Can also use gl function to copy between buffers
-	       ;; (fmt-view t "update-compute-buffers" "COPYING CACHE->STEP!~%")
+	       (fmt-view t "update-compute-buffers" "Cache dirt: ~a, ~a~%" name dirty)
 	       (memcpy-cache-to-step name ix-fence
     				     name)
 	       (decf dirty))))))

@@ -1,15 +1,15 @@
 (in-package :protoform.view)
 
-(defparameter *view* nil)
-(defparameter *draw* nil)
-
 (defun fmt-view (dst ctx-str ctl-str &rest rest)
   ;; Add space opt
   (apply #'format
 	 dst
-	 (str:concat (format nil "[PID:~a,view][~a] " (sb-posix:getpid) ctx-str)
+	 (str:concat (format nil "[VIEW:~a][~a] " (sb-posix:getpid) ctx-str)
 		     ctl-str)
 	 rest))
+
+(defparameter *view* nil)
+(defparameter *draw* nil)
 
 (defclass view ()
   ;; Create a base for these 3 slots?
@@ -190,9 +190,9 @@
 
   ;; At this point, shm already has data loaded by model
   ;; so copy to OpenGL buffers
-  (memcpy-shm-to-step))
+  (memcpy-shm-to-all))
 
-(defun memcpy-shm-to-step ()
+(defun memcpy-shm-to-all ()
   (with-slots (bo-cache)
       *view*
     ;; shm -> cache -> step
@@ -202,7 +202,7 @@
        :for name :being :the :hash-keys :of bo-cache
        :using (hash-value cache)
        :do (progn
-	     (memcpy-shm-to-cache name name)
+	     (memcpy-shm-to-cache name name 0 nil)
 	     (memcpy-cache-to-step-all name name)))))
 
 (defun main-view (width

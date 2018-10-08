@@ -141,5 +141,5 @@
   (digraph:mapc-vertices (lambda (node)
 			   (copy-node-to-shm node
 					     (* (index node)
-						(/ 208 4))))
+						(/ +size-struct-instance+ 4))))
 			 (digraph *model*)))

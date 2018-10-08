@@ -4,7 +4,8 @@
 
 (defun memcpy-shm-to-cache (name-dest
 			    name-src
-			    &optional (size nil))
+			    offset
+			    size)
   (let* ((bo-dest (get-cache-buffer name-dest))
 	 (ptr-dest (aref (ptrs-buffer bo-dest) 0)) ; always 0
 	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*))))))
@@ -12,8 +13,8 @@
 		ptr-src
 		(if size
 		    size
-		    (size-buffer bo-dest)))))
-  ;; (fmt-view t "memcpy-shm-to-cache" "~a ~a ~a~%" name-dest name-src size))
+		    (size-buffer bo-dest))))
+  (fmt-view t "memcpy-shm-to-cache" "~a, ~a bytes~%" name-src size))
 
 ;; Can either use this function to cpy between buffers or use GL func
 (defun memcpy-cache-to-step (name-dest
@@ -27,8 +28,8 @@
 		ptr-src
 		(if size
 		    size
-		    (size-buffer bo-dest)))))
-  ;; (fmt-view t "memcpy-cache-to-step" "~a ~a ~a~%" name-dest name-src size))
+		    (size-buffer bo-dest))))
+  (fmt-view t "memcpy-cache-to-step" "~a, ~a bytes~%" name-src size))
 
 ;; Copy from cache to all step buffers
 (defun memcpy-cache-to-step-all (name-dest
