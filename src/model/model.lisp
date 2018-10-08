@@ -1,31 +1,5 @@
 (in-package :protoform.model)
 
-(defclass model ()
-  ((width :accessor width :initarg :width :initform nil)
-   (height :accessor height :initarg :height :initform nil)
-   ;; still relevant?
-   (inst-max :accessor inst-max :initarg :inst-max :initform nil)
-   (projview :accessor projview :initarg :projview :initform nil)
-
-   (conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
-   (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
-
-   ;; Instances...
-   (digraph :accessor digraph :initarg :digraph :initform nil)
-   
-   ;; Textures - list of Texture instances wich store tex parameters
-   ;; Use skip list? -> For now use vector
-   ;; Hmm, when texture is removed need to recopy all (to "defragment")
-   (offset-texel-textures :accessor offset-texel-textures :initarg :offset-texel-textures :initform 0) ; sum of wxh
-   (offset-bytes-textures :accessor offset-bytes-textures :initarg :offset-bytes-textures :initform 0) ; sum of bytes
-   (textures :accessor textures :initarg :textures :initform (make-array 64 :adjustable t :fill-pointer 0))
-   
-   (cursor :accessor cursor :initarg :cursor :initform (vec3 0 0 0))
-   ;; move to node? used in conjunction with scale-node
-   (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
-   ;; rename to scale-default-node
-   (scale-node :accessor scale-node :initarg :scale-node :initform (vec3 1.0 1.0 1.0))))
-
 ;; For now, determine these through view - maybe model can request from view?
 ;; GL_MAX_SHADER_STORAGE_BLOCK_SIZE = 134217728 = 134.217728 MBs
 ;; GL_MAX_TEXTURE_BUFFER_SIZE       = 134217728 = 134.217728 MBs
@@ -80,6 +54,33 @@
 				       (* 4 6)  ; 6 ints/params
 				       4 -1
 				       :triple)))
+
+(defconstant +size-struct-instance+ 208)
+
+(defclass model ()
+  ((width :accessor width :initarg :width :initform nil)
+   (height :accessor height :initarg :height :initform nil)
+   (conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
+   (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
+
+   (projview :accessor projview :initarg :projview :initform nil)
+   
+   ;; Instances...
+   (inst-max :accessor inst-max :initarg :inst-max :initform nil)
+   (digraph :accessor digraph :initarg :digraph :initform nil)
+   
+   ;; Textures - list of Texture instances wich store tex parameters
+   ;; Use skip list? -> For now use vector
+   ;; Hmm, when texture is removed need to recopy all (to "defragment")
+   (offset-texel-textures :accessor offset-texel-textures :initarg :offset-texel-textures :initform 0) ; sum of wxh
+   (offset-bytes-textures :accessor offset-bytes-textures :initarg :offset-bytes-textures :initform 0) ; sum of bytes
+   (textures :accessor textures :initarg :textures :initform (make-array 64 :adjustable t :fill-pointer 0))
+   
+   (cursor :accessor cursor :initarg :cursor :initform (vec3 0 0 0))
+   ;; move to node? used in conjunction with scale-node
+   (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
+   ;; rename to scale-default-node
+   (scale-node :accessor scale-node :initarg :scale-node :initform (vec3 1.0 1.0 1.0))))
 
 ;; TODO: Move elsewhere
 (defun init-vector-position ()
@@ -229,8 +230,6 @@
       (sleep 6)
 
       (fmt-model t "main-model" "Updating texture~%")
-
-      ;; All of below needs to be atomic, otherwise will result in "tearing"
       
       ;; Generate texture directly to shm
       ;; Update node
@@ -238,14 +237,19 @@
       (update-node-texture n-0 "1234")
       (update-transform (model-matrix n-0))
 
+      ;;;;;;;;;;;;;;;
+      ;; Make atomic
+      ;; otherwise will result in possible delay or "tearing"
+      
       (copy-textures-to-shm)
       (copy-node-to-shm n-0
 			(* (index n-0)
-			   (/ 208 4)))
+			   (/ +size-struct-instance+ 4)))
 
-      (memcpy-shm-to-cache "texture" (offset-bytes-textures *model*))
-      ;; Tracks size in model to be passed as arg to view
-      (memcpy-shm-to-cache "instance")
+      (memcpy-shm-to-cache "texture"
+			   (offset-bytes-textures *model*))
+      (memcpy-shm-to-cache "instance"
+			   (* +size-struct-instance+ (digraph:count-vertices digraph)))
 
       ;; Set flags so cache->step
       ;; Important to make sure all steps are updated
