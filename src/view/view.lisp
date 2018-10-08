@@ -21,21 +21,14 @@
    (program-raster :accessor program-raster :initarg :program-raster :initform nil)
    (program-compute :accessor program-compute :initarg :program-compute :initform nil)
    
-   ;; Cache buffer objects - modified by mmap and input for compute shader
-   ;; Integrate with step? -> Say quad buffer but use 0 as base -> Keep it separated
-   (bo-cache :accessor bo-cache :initarg :bo-cache :initform (make-hash-table :size 6 :test 'equal))
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
    
    ;; VAO
    (vaos :accessor vaos :initarg :vaos :initform (make-array 3 :adjustable nil :fill-pointer 0))
    ;; Persistently mapped: projview, instance, texture, element, indirect
    (bo-step :accessor bo-step :initarg :bo-step :initform (make-hash-table :size 6 :test 'equal))
-
-   ;; Counter - used during compute to store number of drawable instances
-   ;; Counter - not cache -> not modified by mmap; however it is used by compute shader
-   ;; Counter - not step -> sync with compute shader
-   ;; Integrate with bo-cache?
-   (bo-counter :accessor bo-counter :initarg :bo-counter :initform nil)
+   ;; Cache buffer objects - modified by mmap and input for compute shader
+   (bo-cache :accessor bo-cache :initarg :bo-cache :initform (make-hash-table :size 6 :test 'equal))
    
    ;; Sync
    (sync :accessor sync :initarg :sync :initform nil)
