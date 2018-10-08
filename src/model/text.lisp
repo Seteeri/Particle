@@ -1,8 +1,24 @@
 (in-package :protoform.model)
 
-(defun convert-pm-to-texture (text-pm)
+(defclass texture ()
+  ((data :accessor data :initarg :data :initform nil)
+   (size :accessor size :initarg :size :initform nil)
+   (dim :accessor dim :initarg :dim :initform nil)))
 
-  ;; Return index, width, height
+(defun copy-textures-to-shm ()
+  (let ((offset 0))
+    (with-slots (ptr size)
+	(gethash "texture" (handles-shm *model*))
+      (loop
+	 :for texture :across (textures *model*)
+	 :do (progn
+	       ;; assert
+	       (c-memcpy (inc-pointer ptr offset)
+			 (data texture)
+			 (size texture))
+	       (incf offset (size texture)))))))
+
+(defun convert-pm-to-texture (text-pm)
   
   ;; Create a cairo context for pango layout
   (let* ((width-pango (foreign-alloc :unsigned-int))
@@ -48,7 +64,6 @@
     ;; Divide by pango scale to get dimensions in pixels
     (setf (mem-ref width-pango :unsigned-int) (/ (mem-ref width-pango :unsigned-int) pango:PANGO_SCALE))
     (setf (mem-ref height-pango :unsigned-int) (/ (mem-ref height-pango :unsigned-int) pango:PANGO_SCALE))
-    ;; (fmt-model t "init-layout" "pango layout size: ~a, ~a~%" (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))
 
     ;; typedef enum _cairo_format {
     ;;     CAIRO_FORMAT_INVALID   = -1,
@@ -60,55 +75,60 @@
     ;; } cairo_format_t;
     
     ;; Create cairo context/surface to render to
-    (let* ((size-data (* (mem-ref width-pango :unsigned-int)
+    (let* ((dim (vec2 (mem-ref width-pango :unsigned-int)
+		      (mem-ref height-pango :unsigned-int)))
+	   (size-data (* (mem-ref width-pango :unsigned-int)
 			 (mem-ref height-pango :unsigned-int)
 			 4)) ; 4 bytes per pixel
-	   ;; (data-surface-render (foreign-alloc :unsigned-char :count size-data))
-	   ;; (stride (* 4 (mem-ref width-pango :unsigned-int)))
+	   (data (foreign-alloc :unsigned-char :count size-data))
 	   (stride (cairo::cairo_format_stride_for_width 0 (mem-ref width-pango :unsigned-int))) ; send patch upstream
-	   (ptr (ptr (gethash "texture" (handles-shm *model*))))
-	   (surface-render (cairo:create-image-surface-for-data (inc-pointer ptr
-									     (offset-bytes-textures *model*)) ;data-surface-render
+	   ;; (ptr (ptr (gethash "texture" (handles-shm *model*))))
+	   ;; (surface-render (cairo:create-image-surface-for-data (inc-pointer ptr
+	   ;; 								     (offset-bytes-textures *model*))
+	   (surface-render (cairo:create-image-surface-for-data data
 								:argb32
 								(mem-ref width-pango :unsigned-int)
 								(mem-ref height-pango :unsigned-int)
 								stride))
 	   (context-render (cairo:create-context surface-render)))
+      
+      ;; Set surface color - similar to glClear
+      (cairo:set-source-rgba 1 1 1 1 context-render)
+      ;; Draw
+      (pango:pango_cairo_show_layout (slot-value context-render 'cairo:pointer) layout)
+      ;; Ensure surface ops are flushed before accessing memory
+      (cairo:surface-flush surface-render)
 
       ;; Update offsets by size of texture
       (incf (offset-texel-textures *model*) (* (mem-ref width-pango :unsigned-int)
 					       (mem-ref height-pango :unsigned-int)))
       (incf (offset-bytes-textures *model*) size-data)
+      ;; Store data - free later
+      (vector-push (make-instance 'texture
+				  :data data
+				  :size size-data
+				  :dim dim)
+		   (textures *model*))
       
-      ;; 0.002803 seconds = 2.2 to 9.3 ms
-      
-      ;; Set surface color - similar to glClear
-      (cairo:set-source-rgba 1 1 1 1 context-render)
-
-      ;; Draw
-      (pango:pango_cairo_show_layout (slot-value context-render 'cairo:pointer) layout)
-
-      ;; Ensure surface ops are flushed before accessing memory
-      ;; (cairo:surface-flush surface-render)
       ;; (cairo:surface-write-to-png surface "/home/user/pango-test.png")
       ;; (sb-ext:exit)
 
-      ;; Watchout for memory layout:
-      ;; OpenGL: RGBA
-      ;; CAIRO_FORMAT_ARGB32: BGRA
-
       ;; Clean up
       ;; (foreign-free data-surface-render)
-      
+      (foreign-free width-pango)
+      (foreign-free height-pango)
       (pango:g_object_unref layout)
       (cairo:destroy context-layout)
       (cairo:destroy context-render)
       (cairo:destroy surface-render)
 
-      ;; free pango dim ptrs
+      ;; Free pango dim ptrs
+
+      ;; Watchout for memory layout:
+      ;; OpenGL: RGBA
+      ;; CAIRO_FORMAT_ARGB32: BGRA
       
       (values
-       (- (offset-texel-textures *model*) (* (mem-ref width-pango :unsigned-int)
-					     (mem-ref height-pango :unsigned-int)))
-       (vec2 (mem-ref width-pango :unsigned-int) (mem-ref height-pango :unsigned-int))
+       (- (offset-texel-textures *model*) (truncate (* (vx2 dim) (vy2 dim))))
+       dim
        size-data))))

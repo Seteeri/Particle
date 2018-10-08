@@ -68,7 +68,9 @@
 			    data)
 
   ;; Separate this function maybe
-  (multiple-value-bind (offset-texel-texture dims-texture data-size)
+  (multiple-value-bind (offset-texel-texture
+			dims-texture
+			data-size)
       (convert-pm-to-texture
        (format nil "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"false\">~A</span>" data))
     

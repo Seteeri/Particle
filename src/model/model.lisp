@@ -17,7 +17,7 @@
    ;; Hmm, when texture is removed need to recopy all (to "defragment")
    (offset-texel-textures :accessor offset-texel-textures :initarg :offset-texel-textures :initform 0) ; sum of wxh
    (offset-bytes-textures :accessor offset-bytes-textures :initarg :offset-bytes-textures :initform 0) ; sum of bytes
-   (textures :accessor textures :initarg :textures :initform (make-array 64 :adjustable t))
+   (textures :accessor textures :initarg :textures :initform (make-array 64 :adjustable t :fill-pointer 0))
    
    (cursor :accessor cursor :initarg :cursor :initform (vec3 0 0 0))
    ;; move to node? used in conjunction with scale-node
@@ -119,34 +119,6 @@
 		     *params-shm*)
     model))
 
-(defun setup-view ()
-  
-  (let ((conn (init-swank-conn "skynet" 10001)))
-
-    (setf (conn-swank *model*) conn)
-    (setf (swank-protocol::connection-package conn) "protoform.view")
-    
-    ;; view should not concern itself with inst-max...
-    (with-slots (width height inst-max)
-	*model*
-      (eval-sync conn
-		 (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
-    
-    ;; Init buffers
-    (eval-sync conn
-	       (with-output-to-string (stream)
-		 (format stream "(init-view-buffers `(")
-		 (dolist (param *params-shm*)
-		   (format stream "~S " param))
-		 (format stream "))")))
-
-    ;; Use progn to do all at once
-    (memcpy-shm-to-cache* (loop :for params :in *params-shm*
-			     :collect (second params)))
-    
-    ;; Enable draw flag for view loop
-    (eval-sync conn (format nil "(setf *draw* t)"))))
-
 (defun init-shm-data ()
   (with-slots (inst-max
 	       projview
@@ -154,7 +126,8 @@
       *model*
 
     ;; instance and texture is done later
-    
+
+    ;; Move some of this out
     (with-slots (ptr size)
 	(gethash "projview" handles-shm)
       (update-projection-matrix projview)
@@ -188,6 +161,34 @@
 	  (setf (mem-aref ptr ::uint i)
 		(aref data i)))))))
 
+(defun setup-view ()
+  
+  (let ((conn (init-swank-conn "skynet" 10001)))
+
+    (setf (conn-swank *model*) conn)
+    (setf (swank-protocol::connection-package conn) "protoform.view")
+    
+    ;; view should not concern itself with inst-max...
+    (with-slots (width height inst-max)
+	*model*
+      (eval-sync conn
+		 (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
+    
+    ;; Init buffers
+    (eval-sync conn
+	       (with-output-to-string (stream)
+		 (format stream "(init-view-buffers `(")
+		 (dolist (param *params-shm*)
+		   (format stream "~S " param))
+		 (format stream "))")))
+
+    ;; Use progn to do all at once
+    (memcpy-shm-to-cache* (loop :for params :in *params-shm*
+			     :collect (second params)))
+    
+    ;; Enable draw flag for view loop
+    (eval-sync conn (format nil "(setf *draw* t)"))))
+
 (defun init-graph ()
   ;; Create DAG
   (let ((digraph (digraph:make-digraph)))
@@ -215,12 +216,14 @@
       (digraph:insert-edge digraph n-0 n-1)
       (digraph:insert-edge digraph n-1 n-2)
       
-      ;; Copy to shm before sending signal to view
+      ;; Copy instances to shm 
       (digraph:mapc-vertices (lambda (node)
 			       (copy-node-to-shm node
 						 (* (index node)
 						    (/ 208 4))))
 			     digraph)
+      ;; Copy textures to shm
+      (copy-textures-to-shm)
       
       (fmt-model t "main-model" "Init conn to view swank server~%")
       (setup-view)
@@ -240,12 +243,13 @@
       (update-node-texture n-0 "1234")
       (update-transform (model-matrix n-0))
 
-      (memcpy-shm-to-cache "texture" (offset-bytes-textures *model*))
-
+      (copy-textures-to-shm)
       ;; Copy node to shm
       (copy-node-to-shm n-0
 			(* (index n-0)
 			   (/ 208 4)))
+
+      (memcpy-shm-to-cache "texture" (offset-bytes-textures *model*))
       ;; Tracks size in model to be passed as arg to view
       (memcpy-shm-to-cache "instance")
 
