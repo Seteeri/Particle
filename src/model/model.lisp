@@ -17,49 +17,63 @@
 ;; Step/raster will use vs-in
 ;;
 ;; Create separate defparameters for each
-(defparameter *params-shm* (list (list :uniform-buffer
-				       "projview"
-				       "/protoform-projview"
-				       (* (+ 16 16) 4)
-				       0 0  ; cs-in (cache), vs-in (raster)
-				       :triple)
-				 (list :uniform-buffer
-				       "vertices"
-				       "/protoform-vertices"
-				       (* 16 4)
-				       1 1
-				       :triple)
-				 (list :shader-storage-buffer
-				       "nodes"
-				       "/protoform-nodes"
-				       (/ 134217728 2)
-				       2 3
-				       :triple)
-				 (list :texture-buffer
-				       "texture"
-				       "/protoform-texture"
-				       (/ 134217728 2)
-				       -1 -1
-				       :triple		       
-				       :rgba8) ; requires fmt type
-				 (list :element-array-buffer
-				       "element"
-				       "/protoform-element"
-				       (* 4 6)  ; 4 bytes/int * 6 ints or indices
-				       -1 -1
-				       :triple)
-				 (list :draw-indirect-buffer
-				       "draw-indirect"
-				       "/protoform-draw-indirect"
-				       (* 4 6)  ; 6 ints/params
-				       -1 -1
-				       :triple)
-				 (list :atomic-counter-buffer
-				       "atomic-counter"
-				       "/protoform-atomic-counter"
-				       (* 4 6)  ; 6 ints/params
-				       4 -1
-				       :triple)))
+(defparameter *projview-shm* (list :uniform-buffer
+				   "projview"
+				   "/protoform-projview"
+				   (* (+ 16 16) 4)
+				   0 0  ; cs-in (cache), vs-in (raster)
+				   :triple))
+
+(defparameter *vertices-shm* (list :uniform-buffer
+				   "vertices"
+				   "/protoform-vertices"
+				   (* 16 4)
+				   1 1
+				   :triple))
+
+(defparameter *nodes-shm* (list :shader-storage-buffer
+				"nodes"
+				"/protoform-nodes"
+				(/ 134217728 2)
+				2 3
+				:triple))
+
+(defparameter *texture-shm* (list :texture-buffer
+				  "texture"
+				  "/protoform-texture"
+				  (/ 134217728 2)
+				  -1 -1
+				  :triple		       
+				  :rgba8)) ; requires fmt type
+
+(defparameter *element-shm* (list :element-array-buffer
+				  "element"
+				  "/protoform-element"
+				  (* 4 6)  ; 4 bytes/int * 6 ints or indices
+				  -1 -1
+				  :triple))
+
+(defparameter *draw-indirect-shm* (list :draw-indirect-buffer
+					"draw-indirect"
+					"/protoform-draw-indirect"
+					(* 4 6)  ; 6 ints/params
+					-1 -1
+					:triple))
+
+(defparameter *atomic-counter-shm* (list :atomic-counter-buffer
+					 "atomic-counter"
+					 "/protoform-atomic-counter"
+					 (* 4 6)  ; 6 ints/params
+					 4 -1
+					 :triple))
+
+(defparameter *params-shm* (list *projview-shm*
+				 *vertices-shm*
+				 *nodes-shm*
+				 *texture-shm*
+				 *element-shm*
+				 *draw-indirect-shm*
+				 *atomic-counter-shm*))
 
 (defconstant +size-struct-instance+ 208)
 
@@ -214,12 +228,16 @@
 	  (n-1 (init-node (vec3 0 1 0)
 			  (scale-node *model*)
 			  1
-			  "||"))
+			  "↑")) ; "‖↑↓"
 	  (n-2 (init-node (vec3 0 2 0)
 			  (scale-node *model*)
 			  2
 			  "GLSL")))
 
+      ;; (setf (scale (model-matrix n-1))
+      ;; 	    (vec3 10.0 10.0 1.0))
+      ;; (update-transform (model-matrix n-1))
+      
       (digraph:insert-vertex digraph n-0)
       (digraph:insert-vertex digraph n-1)
       (digraph:insert-vertex digraph n-2)
