@@ -141,6 +141,7 @@
 			   bind-cs
 			   bind-vs
 			   count-buffer
+			   flag-copy
 			   &rest rest)
 	  params
 	

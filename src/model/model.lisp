@@ -1,6 +1,5 @@
 (in-package :protoform.model)
 
-;; move elsewhere to misc.lisp or util.lisp
 (defun fmt-model (dst ctx-str ctl-str &rest rest)
   ;; Add space opt
   (apply #'format
@@ -15,35 +14,37 @@
 ;;
 ;; Cache/compute will use cs-in
 ;; Step/raster will use vs-in
-;;
-;; Create separate defparameters for each
 (defparameter *projview-shm* (list :uniform-buffer
 				   "projview"
 				   "/protoform-projview"
 				   (* (+ 16 16) 4)
 				   0 0  ; cs-in (cache), vs-in (raster)
-				   :triple))
+				   :triple
+				   -1)) ; copy every frame
 
 (defparameter *vertices-shm* (list :uniform-buffer
 				   "vertices"
 				   "/protoform-vertices"
 				   (* 16 4)
 				   1 1
-				   :triple))
+				   :triple
+				   0))
 
 (defparameter *nodes-shm* (list :shader-storage-buffer
 				"nodes"
 				"/protoform-nodes"
 				(/ 134217728 2)
 				2 3
-				:triple))
+				:triple
+				0))
 
 (defparameter *texture-shm* (list :texture-buffer
 				  "texture"
 				  "/protoform-texture"
 				  (/ 134217728 2)
 				  -1 -1
-				  :triple		       
+				  :triple
+				  0
 				  :rgba8)) ; requires fmt type
 
 (defparameter *element-shm* (list :element-array-buffer
@@ -51,21 +52,24 @@
 				  "/protoform-element"
 				  (* 4 6)  ; 4 bytes/int * 6 ints or indices
 				  -1 -1
-				  :triple))
+				  :triple
+				  0))
 
 (defparameter *draw-indirect-shm* (list :draw-indirect-buffer
 					"draw-indirect"
 					"/protoform-draw-indirect"
 					(* 4 6)  ; 6 ints/params
 					-1 -1
-					:triple))
+					:triple
+					0))
 
 (defparameter *atomic-counter-shm* (list :atomic-counter-buffer
 					 "atomic-counter"
 					 "/protoform-atomic-counter"
 					 (* 4 6)  ; 6 ints/params
 					 4 -1
-					 :triple))
+					 :triple
+					 0))
 
 (defparameter *params-shm* (list *projview-shm*
 				 *vertices-shm*
@@ -278,12 +282,12 @@
       ;; - Simplest method is to set a counter and copy every frame until counter is 0
       ;; - Specify size?
       
-      (memcpy-shm-to-cache-dirty* (list (list "texture"
-					      0
-      					      (offset-bytes-textures *model*))
-      					(list "nodes"
-					      0
-      					      (* +size-struct-instance+ (digraph:count-vertices digraph))))))))
+      (memcpy-shm-to-cache-flag* (list (list "texture"
+					     0
+      					     (offset-bytes-textures *model*))
+      				       (list "nodes"
+					     0
+      					     (* +size-struct-instance+ (digraph:count-vertices digraph))))))))
 
 (defun main-model (width height
 		   inst-max

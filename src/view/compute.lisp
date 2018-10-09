@@ -74,16 +74,19 @@
     (loop 
        :for name :being :the :hash-keys :of bo-cache
        :using (hash-value cache)
-       :do (with-slots (buffer dirty)
+       :do (with-slots (buffer flag-copy)
 	       cache
-	     (when (or (> dirty 0) force)
+	     (when (or (/= flag-copy 0)
+		       force)
 	       ;; Can also use gl function to copy between buffers
-	       (when (not force) (fmt-view t "update-compute-buffers" "Cache dirt: ~a, ~a~%" name dirty))
+	       (when (not force)
+		 (fmt-view t "update-compute-buffers" "Cache dirt: ~a, ~a~%" name dirty))
 	       (memcpy-cache-to-step name ix-fence
     				     name
 				     nil
 				     nil) ; no print
-	       (decf dirty))))))
+	       (when (> flag-copy 0)
+		 (decf flag-copy)))))))
 
 (defun run-compute-copy ()
 
@@ -126,21 +129,15 @@
        :for name :being :the :hash-keys :of bo-cache
        :using (hash-value cache)
        :do (when (not (string= name "nodes"))
-	     (with-slots (buffer dirty)
+	     (with-slots (buffer flag-copy)
 		 cache
-	       (when (> dirty 0)
+	       (when (/= flag-copy 0)
 		 (memcpy-cache-to-step name ix-fence
     				       name
 				       nil
 				       nil) ; no print
-		 (decf dirty)))))
-    
-    ;; TENTATIVE: Memcpy projview every frame
-    ;; Have model set this every frame or set a flag...ONCE|ALWAYS
-    (memcpy-cache-to-step "projview" ix-fence
-    			  "projview"
-			  nil  ; copy entire buffer
-			  nil) ; no print
+		 (when (> flag-copy 0)
+		   (decf flag-copy))))))
     
     ;; Reset counter before every dispatch
     (setf (mem-aref (aref (ptrs-buffer (gethash "atomic-counter" bo-step)) ix-fence)

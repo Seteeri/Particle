@@ -2,7 +2,7 @@
 
 (defclass cache ()
   ((buffer :accessor buffer :initarg :buffer :initform nil)
-   (dirty :accessor dirty :initarg :dirty :initform 0)))
+   (flag-copy :accessor flag-copy :initarg :flag-copy :initform 0)))
 
 ;; Maybe dirty can have a way to memcpy a segment
 ;; Or on memcpy update slot value here like dirty range
@@ -20,17 +20,20 @@
 			   bind-cs
 			   bind-vs
 			   count-buffer
+			   flag-copy
 			   &rest rest)
 	  params
       (init-bo-cache target
 		     name
   		     size
-		     bind-cs))))
+		     bind-cs
+		     flag-copy))))
 
 (defun init-bo-cache (target
 		      name
 		      size
-		      bind-cs)
+		      bind-cs
+		      flag-copy)
   (with-slots (program-compute bo-cache) *view*
     (setf (gethash name bo-cache)
 	  (make-instance 'cache
@@ -39,7 +42,8 @@
 						     size
 						     bind-cs
 						     t
-						     :buffering :single)))))
+						     :buffering :single)
+			 :flag-copy flag-copy))))
 
 (defun get-cache (name)
   (gethash name (bo-cache *view*)))
@@ -47,9 +51,8 @@
 (defun get-cache-buffer (name)
   (buffer (gethash name (bo-cache *view*))))
 
-(defun get-cache-dirty (name)
-  (dirty (gethash name (bo-cache *view*))))
+(defun get-cache-flag-copy (name)
+  (flag-copy (gethash name (bo-cache *view*))))
 
-(defun set-cache-dirty (name value)
-  (setf (dirty (gethash name (bo-cache *view*))) value))
-  ;; (fmt-view t "set-cache-dirty" "~a: ~a~%" name value))
+(defun set-cache-flag-copy (name value)
+  (setf (flag-copy (gethash name (bo-cache *view*))) value))

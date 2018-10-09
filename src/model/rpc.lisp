@@ -34,9 +34,9 @@
       *model*
     (eval-sync
      conn-swank
-     (format nil "(set-cache-dirty ~S ~S)" name value))))
+     (format nil "(set-cache-flag-copy ~S ~S)" name value))))
 
-(defun memcpy-shm-to-cache-dirty* (caches)
+(defun memcpy-shm-to-cache-flag* (caches)
   (with-slots (conn-swank
 	       handles-shm)
       *model*    
@@ -45,11 +45,13 @@
      (with-output-to-string (stream)
        (format stream "(progn ")
        (dolist (cache caches)
-	 (destructuring-bind (name-cache offset-cache size-cache)
+	 (destructuring-bind (name-cache
+			      offset-cache
+			      size-cache)
 	     cache
 	   (with-slots (ptr size)
 	       (gethash name-cache handles-shm)
 	     ;; Pass offsets
 	     (format stream "(memcpy-shm-to-cache ~S ~S ~S ~S) " name-cache name-cache offset-cache size-cache)
-	     (format stream "(set-cache-dirty ~S 3) " name-cache))))
+	     (format stream "(set-cache-flag-copy ~S 3) " name-cache))))
        (format stream ")")))))
