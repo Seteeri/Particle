@@ -1,4 +1,4 @@
-(in-package :protoform.controller)
+(in-package :protoform.model)
 
 (defclass controller () 
   ((context :accessor context :initarg :context :initform nil)
@@ -210,55 +210,55 @@
     ;; Create closures for variables needed
     ;; Controller function should simply call it without arguments except k
     
-    (push-callback key-callbacks protoform.controller::+xk-escape+ 'press (lambda (controller k)
+    (push-callback key-callbacks +xk-escape+ 'press (lambda (controller k)
 									    (handle-escape controller k)))
 
     ;; camera pan
     
-    ;; (push-callback key-callbacks protoform.controller::+xk-left+ 'press #'update-mm-left)
-    ;; (push-callback key-callbacks protoform.controller::+xk-left+ 'repeat #'update-mm-left)
+    ;; (push-callback key-callbacks +xk-left+ 'press #'update-mm-left)
+    ;; (push-callback key-callbacks +xk-left+ 'repeat #'update-mm-left)
 
-    ;; (push-callback key-callbacks protoform.controller::+xk-right+ 'press #'update-mm-right)
-    ;; (push-callback key-callbacks protoform.controller::+xk-right+ 'repeat #'update-mm-right)
+    ;; (push-callback key-callbacks +xk-right+ 'press #'update-mm-right)
+    ;; (push-callback key-callbacks +xk-right+ 'repeat #'update-mm-right)
     
-    ;; (push-callback key-callbacks protoform.controller::+xk-up+ 'press #'update-mm-up)
-    ;; (push-callback key-callbacks protoform.controller::+xk-up+ 'repeat #'update-mm-up)
+    ;; (push-callback key-callbacks +xk-up+ 'press #'update-mm-up)
+    ;; (push-callback key-callbacks +xk-up+ 'repeat #'update-mm-up)
     
-    ;; (push-callback key-callbacks protoform.controller::+xk-down+ 'press #'update-mm-dn)
-    ;; (push-callback key-callbacks protoform.controller::+xk-down+ 'repeat #'update-mm-dn)
+    ;; (push-callback key-callbacks +xk-down+ 'press #'update-mm-dn)
+    ;; (push-callback key-callbacks +xk-down+ 'repeat #'update-mm-dn)
 
     ;; camera zoom
     
-    (push-callback key-callbacks protoform.controller::+xk-minus+ 'press #'update-zoom-out)
-    (push-callback key-callbacks protoform.controller::+xk-minus+ 'repeat #'update-zoom-out)
+    (push-callback key-callbacks +xk-minus+ 'press #'update-zoom-out)
+    (push-callback key-callbacks +xk-minus+ 'repeat #'update-zoom-out)
 
-    (push-callback key-callbacks protoform.controller::+xk-equal+ 'press #'update-zoom-in)
-    (push-callback key-callbacks protoform.controller::+xk-equal+ 'repeat #'update-zoom-in)
+    (push-callback key-callbacks +xk-equal+ 'press #'update-zoom-in)
+    (push-callback key-callbacks +xk-equal+ 'repeat #'update-zoom-in)
 
     ;; cursor
 
-    (push-callback key-callbacks protoform.controller::+xk-up+ 'press #'handle-up)
-    (push-callback key-callbacks protoform.controller::+xk-up+ 'repeat #'handle-up)
+    (push-callback key-callbacks +xk-up+ 'press #'handle-up)
+    (push-callback key-callbacks +xk-up+ 'repeat #'handle-up)
     
-    (push-callback key-callbacks protoform.controller::+xk-down+ 'press #'handle-down)
-    (push-callback key-callbacks protoform.controller::+xk-down+ 'repeat #'handle-down)
+    (push-callback key-callbacks +xk-down+ 'press #'handle-down)
+    (push-callback key-callbacks +xk-down+ 'repeat #'handle-down)
 
-    (push-callback key-callbacks protoform.controller::+xk-left+ 'press #'handle-left)
-    (push-callback key-callbacks protoform.controller::+xk-left+ 'repeat #'handle-left)
+    (push-callback key-callbacks +xk-left+ 'press #'handle-left)
+    (push-callback key-callbacks +xk-left+ 'repeat #'handle-left)
 
-    (push-callback key-callbacks protoform.controller::+xk-right+ 'press #'handle-right)
-    (push-callback key-callbacks protoform.controller::+xk-right+ 'repeat #'handle-right)
+    (push-callback key-callbacks +xk-right+ 'press #'handle-right)
+    (push-callback key-callbacks +xk-right+ 'repeat #'handle-right)
     
     ;; ascii/ctrl
     
-    (push-callback key-callbacks protoform.controller::+xk-backspace+ 'press #'handle-backspace)
-    (push-callback key-callbacks protoform.controller::+xk-backspace+ 'repeat #'handle-backspace)
+    (push-callback key-callbacks +xk-backspace+ 'press #'handle-backspace)
+    (push-callback key-callbacks +xk-backspace+ 'repeat #'handle-backspace)
 
-    (push-callback key-callbacks protoform.controller::+xk-delete+ 'press #'handle-delete)
-    (push-callback key-callbacks protoform.controller::+xk-delete+ 'repeat #'handle-delete)
+    (push-callback key-callbacks +xk-delete+ 'press #'handle-delete)
+    (push-callback key-callbacks +xk-delete+ 'repeat #'handle-delete)
 
-    (push-callback key-callbacks protoform.controller::+xk-return+ 'press #'handle-enter)
-    (push-callback key-callbacks protoform.controller::+xk-return+ 'repeat #'handle-enter)
+    (push-callback key-callbacks +xk-return+ 'press #'handle-enter)
+    (push-callback key-callbacks +xk-return+ 'repeat #'handle-enter)
     
     (loop
        :for keysym :from 32 :to 255

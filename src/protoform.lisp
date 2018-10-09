@@ -82,7 +82,6 @@
     (fork (lambda () (protoform.model:main-model width height
     						 inst-max
     						 path-server-model)))
-    ;; (when nil (fork (lambda () (protoform.controller:main-controller path-server-model))))
 
     ;; (swank-protocol:request-listener-eval connection "(+ 2 2)")
     ;; (format t "~a~%" (swank-protocol:read-message connection)) ; blocks

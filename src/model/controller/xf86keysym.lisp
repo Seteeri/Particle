@@ -20,7 +20,7 @@
 ;;;;  * functionality.
 ;;;;  */
 
-(in-package :protoform.controller)
+(in-package :protoform.model)
 
 (defconstant +xf86xk-modelock+ #x1008FF01) ;  Mode Switch Lock 
 

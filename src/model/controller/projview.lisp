@@ -1,4 +1,4 @@
-(in-package :protoform.controller)
+(in-package :protoform.model)
 
 ;; Flag dirty also
 

@@ -67,16 +67,6 @@
 				       (:file "raster")
 				       (:file "memcpy")
 				       (:file "glfw")))
-		 (:module controller
-			  :pathname "src/controller"
-			  :components ((:file "controller")
-				       (:file "conn-client")
-				       (:file "xkb")
-				       (:file "callback")
-				       (:file "state")
-				       (:file "keysymdef")
-				       (:file "cursor")
-				       (:file "projview")))
 		 (:module model
 			  :pathname "src/model"
 			  :components ((:file "model")
@@ -86,6 +76,14 @@
 				       (:file "node")
 				       (:file "text")
 				       (:file "rpc")
+				       (:module controller
+				       		:pathname "controller"
+				       		:components ((:file "controller")
+				       			     (:file "xkb")
+				       			     (:file "callback")
+				       			     (:file "state")
+				       			     (:file "keysymdef")
+				       			     (:file "projview")))
 				       (:module structures
 						:pathname "structures"
 						:components ((:file "dag")))))

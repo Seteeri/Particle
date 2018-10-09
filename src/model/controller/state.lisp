@@ -1,4 +1,4 @@
-(in-package :protoform.controller)
+(in-package :protoform.model)
 
 (defun handle-keyboard-timer (key-states keysym)
 

@@ -142,31 +142,12 @@
 	#:trivial-timers)
   (:export #:main-view))
 
-(defpackage #:protoform.controller
-  (:use #:cl
-        #:cffi
-	#:protoform.libc
-	#:protoform.conn
-	#:3d-vectors
-	#:3d-matrices
-	#:trivial-timers)
-  (:export #:init-controller
-	   #:main-controller
-	   #:key-callbacks
-	   #:push-callback
-	   #:press
-	   #:repeat
-	   #:release
-	   #:up
-	   #:controller))
-
 (defpackage #:protoform.model
   (:use #:cl
         #:cffi
 	#:protoform.libc
 	#:protoform.opengl
 	#:protoform.conn
-	#:protoform.controller
 	#:3d-vectors
 	#:3d-matrices
 	#:trivial-timers

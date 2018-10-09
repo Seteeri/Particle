@@ -112,7 +112,7 @@
 ;;;;  *
 ;;;;  */
 
-(in-package :protoform.controller)
+(in-package :protoform.model)
 
 (defconstant +xk-voidsymbol+ #xffffff) ;  Void symbol 
 
