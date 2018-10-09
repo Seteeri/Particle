@@ -18,8 +18,7 @@
   
   t)
 
-(defun update-keyboard (controller
-			key-states
+(defun update-keyboard (key-states
 			key-callbacks
 			xkb
 			event)
@@ -52,15 +51,18 @@
 	(setf mods-group (xkb:xkb-state-serialize-mods state 8))
 	;; (format t "~a, ~a, ~a~%" mods-depressed mods-latched mods-locked)
 
-	;; (when (= ev-state 1)
-	;;   (format t "code: ~a, sym: ~a, state: ~a, rep: ~a~%"
-	;; 	  (+ ev-keycode 8) (code-char keysym) ev-state repeats))
+	(when (= ev-state 1)
+	  (fmt-view t "update-keybaord"
+		    "code: ~a, sym: ~a, state: ~a, rep: ~a~%"
+		    (+ ev-keycode 8) (code-char keysym) ev-state repeats))
 
 	(when repeats
 	  (let ((state (gethash keysym key-states))
 		(callbacks (gethash keysym key-callbacks)))
-	    (when (and (eq state 'press) (= ev-state 0)) ; prev=press, new=release
-	      (loop :for cb :across (press callbacks) :do (funcall cb controller keysym)))))
+	    (when (and (eq state 'press)
+		       (= ev-state 0)
+		       callbacks) ; prev=press, new=release
+	      (loop :for cb :across (press callbacks) :do (funcall cb keysym)))))
 	
 	;; Repeat is handled in the thread	
 	(setf (gethash keysym key-states) (if (= ev-state 1) 'press 'release))

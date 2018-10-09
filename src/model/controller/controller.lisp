@@ -6,26 +6,15 @@
    (epoll-events :accessor epoll-events :initarg :epoll-events :initform nil)
    (epoll-fd :accessor epoll-fd :initarg :epoll-fd :initform nil)
    (key-states :accessor key-states :initarg :key-states :initform (make-hash-table :size 256))
-   (key-callbacks :accessor key-callbacks :initarg :key-callbacks :initform (make-hash-table :size 256))
+   (key-callbacks :accessor key-callbacks :initarg :key-callbacks :initform (make-hash-table :size 256))))
 
-   (conn-model :accessor conn-model :initarg :conn-model :initform nil)))
-
-(defun init-controller (path-server-model &rest devices)
-  (let ((controller (make-instance 'controller
-				   :conn-model (init-conn-client path-server-model))))
+(defun init-controller (&rest devices)
+  (let ((controller (make-instance 'controller)))
     (with-slots (context
 		 key-states
 		 key-callbacks
-		 epoll-fd
-		 conn-model)
+		 epoll-fd)
 	controller
-
-      ;; Connect to server before running
-      (setf (sock conn-model) (init-socket-client path-server-model nil))
-      ;; Send client type
-      (send-message (sock conn-model)
-		    (buffer-ptr-send conn-model)
-		    ":controller")
 
       ;; Initialize libinput
       (setf context (libinput:path-create-context (libinput:make-libinput-interface)
@@ -46,9 +35,8 @@
 			   (libinput:path-remove-device device)))))))
       
       (init-epoll controller)
-      
+      ;; (register-callbacks controller)
       t)
-    
     controller))
     
 (defun init-epoll (controller)
@@ -63,26 +51,26 @@
     (setf (epoll-fd controller) epoll-fd)
     (setf (epoll-events controller) (foreign-alloc '(:struct event)))))
 
-(defun main-controller (path-server-model)
+;; (defun main-controller (path-server-model)
   
-  (let ((controller (init-controller path-server-model)))
+;;   (let ((controller (init-controller path-server-model)))
 
-    ;; Refactor functions so only necessary args passed like camera, mapping-base etc
-    (register-callbacks controller)
+;;     ;; Refactor functions so only necessary args passed like camera, mapping-base etc
+;;     (register-callbacks controller)
 
-    ;; (call-callbacks controller) 
-    ;; (reset-keys (key-states controller))
+;;     ;; (call-callbacks controller) 
+;;     ;; (reset-keys (key-states controller))
     
-    (loop (wait-epoll controller))))
+;;     (loop (wait-epoll controller))))
        
-(defun wait-epoll (controller)
+(defun wait-epoll ()
   (with-slots (context
 	       xkb
 	       epoll-fd
 	       epoll-events
 	       key-states
 	       key-callbacks)
-      controller
+      *controller*
     ;; -1 = timeout = block/infinite
     ;; 0 = return if nothing
     (let ((epoll-fds (c-epoll-wait epoll-fd epoll-events 1 -1)))
@@ -96,8 +84,7 @@
 		   ;; (format t "type: ~a~%" type)
 		   (cond
 		     ((= type libinput:keyboard-key)
-		      (update-keyboard controller
-				       key-states
+		      (update-keyboard key-states
 				       key-callbacks
 				       xkb
 				       event))
@@ -205,60 +192,60 @@
 
   (let ((key-callbacks (key-callbacks controller)))
     
-    ;; Refactor rest like this?
-
-    ;; Create closures for variables needed
-    ;; Controller function should simply call it without arguments except k
+    (when nil
     
-    (push-callback key-callbacks +xk-escape+ 'press (lambda (controller k)
-									    (handle-escape controller k)))
+      ;; Create closures for variables needed
+      ;; Controller function should simply call it without arguments except k
+      
+      (push-callback key-callbacks +xk-escape+ 'press (lambda (controller k)
+							(handle-escape controller k)))
 
-    ;; camera pan
-    
-    ;; (push-callback key-callbacks +xk-left+ 'press #'update-mm-left)
-    ;; (push-callback key-callbacks +xk-left+ 'repeat #'update-mm-left)
+      ;; camera pan
+      
+      ;; (push-callback key-callbacks +xk-left+ 'press #'update-mm-left)
+      ;; (push-callback key-callbacks +xk-left+ 'repeat #'update-mm-left)
 
-    ;; (push-callback key-callbacks +xk-right+ 'press #'update-mm-right)
-    ;; (push-callback key-callbacks +xk-right+ 'repeat #'update-mm-right)
-    
-    ;; (push-callback key-callbacks +xk-up+ 'press #'update-mm-up)
-    ;; (push-callback key-callbacks +xk-up+ 'repeat #'update-mm-up)
-    
-    ;; (push-callback key-callbacks +xk-down+ 'press #'update-mm-dn)
-    ;; (push-callback key-callbacks +xk-down+ 'repeat #'update-mm-dn)
+      ;; (push-callback key-callbacks +xk-right+ 'press #'update-mm-right)
+      ;; (push-callback key-callbacks +xk-right+ 'repeat #'update-mm-right)
+      
+      ;; (push-callback key-callbacks +xk-up+ 'press #'update-mm-up)
+      ;; (push-callback key-callbacks +xk-up+ 'repeat #'update-mm-up)
+      
+      ;; (push-callback key-callbacks +xk-down+ 'press #'update-mm-dn)
+      ;; (push-callback key-callbacks +xk-down+ 'repeat #'update-mm-dn)
 
-    ;; camera zoom
-    
-    (push-callback key-callbacks +xk-minus+ 'press #'update-zoom-out)
-    (push-callback key-callbacks +xk-minus+ 'repeat #'update-zoom-out)
+      ;; camera zoom
+      
+      (push-callback key-callbacks +xk-minus+ 'press #'update-zoom-out)
+      (push-callback key-callbacks +xk-minus+ 'repeat #'update-zoom-out)
 
-    (push-callback key-callbacks +xk-equal+ 'press #'update-zoom-in)
-    (push-callback key-callbacks +xk-equal+ 'repeat #'update-zoom-in)
+      (push-callback key-callbacks +xk-equal+ 'press #'update-zoom-in)
+      (push-callback key-callbacks +xk-equal+ 'repeat #'update-zoom-in)
 
-    ;; cursor
+      ;; cursor
 
-    (push-callback key-callbacks +xk-up+ 'press #'handle-up)
-    (push-callback key-callbacks +xk-up+ 'repeat #'handle-up)
-    
-    (push-callback key-callbacks +xk-down+ 'press #'handle-down)
-    (push-callback key-callbacks +xk-down+ 'repeat #'handle-down)
+      (push-callback key-callbacks +xk-up+ 'press #'handle-up)
+      (push-callback key-callbacks +xk-up+ 'repeat #'handle-up)
+      
+      (push-callback key-callbacks +xk-down+ 'press #'handle-down)
+      (push-callback key-callbacks +xk-down+ 'repeat #'handle-down)
 
-    (push-callback key-callbacks +xk-left+ 'press #'handle-left)
-    (push-callback key-callbacks +xk-left+ 'repeat #'handle-left)
+      (push-callback key-callbacks +xk-left+ 'press #'handle-left)
+      (push-callback key-callbacks +xk-left+ 'repeat #'handle-left)
 
-    (push-callback key-callbacks +xk-right+ 'press #'handle-right)
-    (push-callback key-callbacks +xk-right+ 'repeat #'handle-right)
-    
-    ;; ascii/ctrl
-    
-    (push-callback key-callbacks +xk-backspace+ 'press #'handle-backspace)
-    (push-callback key-callbacks +xk-backspace+ 'repeat #'handle-backspace)
+      (push-callback key-callbacks +xk-right+ 'press #'handle-right)
+      (push-callback key-callbacks +xk-right+ 'repeat #'handle-right)
+      
+      ;; ascii/ctrl
+      
+      (push-callback key-callbacks +xk-backspace+ 'press #'handle-backspace)
+      (push-callback key-callbacks +xk-backspace+ 'repeat #'handle-backspace)
 
-    (push-callback key-callbacks +xk-delete+ 'press #'handle-delete)
-    (push-callback key-callbacks +xk-delete+ 'repeat #'handle-delete)
+      (push-callback key-callbacks +xk-delete+ 'press #'handle-delete)
+      (push-callback key-callbacks +xk-delete+ 'repeat #'handle-delete)
 
-    (push-callback key-callbacks +xk-return+ 'press #'handle-enter)
-    (push-callback key-callbacks +xk-return+ 'repeat #'handle-enter)
+      (push-callback key-callbacks +xk-return+ 'press #'handle-enter)
+      (push-callback key-callbacks +xk-return+ 'repeat #'handle-enter))
     
     (loop
        :for keysym :from 32 :to 255

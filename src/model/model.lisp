@@ -305,44 +305,45 @@
 
       ;; TEST LIVE TEXTURE
       ;; Change texture after 5 seconds
-      
-      (sleep 6)
 
-      (fmt-model t "main-model" "Updating texture~%")
-      
-      ;; Generate texture directly to shm
-      ;; Update node
-      ;; Tell view to copy to cache
-      (update-node-texture n-0 "1234")
-      (update-transform (model-matrix n-0))
-      
-      (copy-textures-to-shm)
-      (copy-node-to-shm n-0
-			(* (index n-0)
-			   (/ +size-struct-instance+ 4)))
+      (when nil
+	(sleep 6)
+
+	(fmt-model t "main-model" "Updating texture~%")
+	
+	;; Generate texture directly to shm
+	;; Update node
+	;; Tell view to copy to cache
+	(update-node-texture n-0 "1234")
+	(update-transform (model-matrix n-0))
+	
+	(copy-textures-to-shm)
+	(copy-node-to-shm n-0
+			  (* (index n-0)
+			     (/ +size-struct-instance+ 4)))
 
       ;;;;;;;;;;;;;;;
-      ;; Make atomic
-      ;; otherwise will result in possible delay or "tearing"
+	;; Make atomic
+	;; otherwise will result in possible delay or "tearing"
 
-      ;; Set flags so cache->step
-      ;; - Important to make sure all steps are updated otherwise flickering will occur
-      ;; - Simplest method is to set a counter and copy every frame until counter is 0
-      ;; - Specify size?
-      
-      (memcpy-shm-to-cache-flag* (list (list "texture"
-					     0
-      					     (offset-bytes-textures *model*))
-      				       (list "nodes"
-					     0
-      					     (* +size-struct-instance+ (digraph:count-vertices digraph))))))))
+	;; Set flags so cache->step
+	;; - Important to make sure all steps are updated otherwise flickering will occur
+	;; - Simplest method is to set a counter and copy every frame until counter is 0
+	;; - Specify size?
+	
+	(memcpy-shm-to-cache-flag* (list (list "texture"
+					       0
+      					       (offset-bytes-textures *model*))
+      					 (list "nodes"
+					       0
+      					       (* +size-struct-instance+ (digraph:count-vertices digraph)))))))))
 
 (defun main-model (width height
 		   inst-max
 		   path-server-model)
 
   (start-swank-server 10000)
-
+  
   (defparameter *model* (init-model width
 				    height
 				    inst-max
@@ -355,8 +356,10 @@
   (fmt-model t "main-model" "Init graph~%")
 
   (init-graph)
+
+  (defparameter *controller* (init-controller))
   
-  (loop (sleep 0.0167)))
+  (loop (wait-epoll)))
 
 (defun handle-escape (model
 		      keysym)
