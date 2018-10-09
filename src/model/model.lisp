@@ -225,22 +225,70 @@
     ;; Normally user will create these through input (controller)
     
     ;; Node 1
-    (let ((n-0 (init-node (vec3 0 0 0)
+    (let ((n-0 (init-node (vec3 -8 8 1)
 			  (scale-node *model*)
 			  0
-			  "LISP"))
-	  (n-1 (init-node (vec3 0 1 0)
+			  "PROTOFORM"))
+	  (n-1 (init-node (vec3 0 0 0)
 			  (scale-node *model*)
 			  1
-			  "↑")) ; "‖↑↓"
-	  (n-2 (init-node (vec3 0 2 0)
+			  " ")) ; "‖↑↓"
+	  (n-2 (init-node (vec3 0 -1 1)
 			  (scale-node *model*)
 			  2
-			  "GLSL")))
+			  "MASTERMIND")))
 
       ;; (setf (scale (model-matrix n-1))
       ;; 	    (vec3 10.0 10.0 1.0))
       ;; (update-transform (model-matrix n-1))
+
+      ;; * Adjust transforms
+      ;; * Position - center
+      ;; * Rotation - Z
+      ;; * Scale - Y=dist,X=thickness
+      (let* ((mm-0 (model-matrix n-0))
+	     (sca-0 (scale mm-0))
+	     (pos-0 (translation mm-0))
+	     (mm-2 (model-matrix n-2))
+	     (sca-2 (scale mm-2))
+	     (pos-2 (translation mm-2))
+	     (dist (vdistance pos-0 pos-2))
+	     (direction (v- pos-0 pos-2))
+	     (bottom-center (- (vy3 pos-0) (* 0.5 (vy3 sca-0))))
+	     (top-center (+ (vy3 pos-2) (* 0.5 (vy3 sca-2))))
+	     (ang-direct (atan (vy3 direction) (vx3 direction))))
+
+	(with-slots (translation
+		     rotation
+		     scale)
+	    (model-matrix n-1)
+
+	  #|
+	    _[]
+	   |
+	   |_[]
+	  |#
+	  
+	  ;; Set halfway - nodes can have different scales
+
+	  ;; Origin is bottom left
+
+	  (format t "vangle: ~a~%" ang-direct)
+
+	  ;; rads
+	  (setf rotation (vec3 0.0
+			       0.0
+			       (- ang-direct (/ pi 2))))
+	  
+	  (setf translation (vec3 0.0
+				  top-center
+				  0.0))
+	  (setf scale (vec3 0.2
+	  		    dist
+	  		    1.0))
+	  t))
+      
+      (update-transform (model-matrix n-1))
       
       (digraph:insert-vertex digraph n-0)
       (digraph:insert-vertex digraph n-1)

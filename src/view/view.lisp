@@ -89,7 +89,7 @@
   
   (gl:enable :cull-face)
   (gl:enable :depth-test)
-  (gl:enable :blend)
+  ;; (gl:enable :blend)
   (gl:blend-func :src-alpha :one-minus-src-alpha)
   
   (%gl:clear-color 0.0

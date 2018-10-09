@@ -17,7 +17,7 @@
 	       scale)
       model-matrix
     (setf matrix (mtranspose (m* (mtranslation translation)
-				 (mrotation +vz+ (vz3 rotation))
-				 (mrotation +vy+ (vy3 rotation))
-				 (mrotation +vx+ (vx3 rotation))
-				 (mscaling scale))))))
+    				 (mrotation +vz+ (vz3 rotation))
+    				 (mrotation +vy+ (vy3 rotation))
+    				 (mrotation +vx+ (vx3 rotation))
+    				 (mscaling scale))))))
