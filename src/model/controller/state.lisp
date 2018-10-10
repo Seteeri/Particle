@@ -123,14 +123,14 @@
 				 keysym
 				 keysym-char)))))))
 
-(defun reset-keys (key-states)
-  ;; Any keys that were set to 'release in previous frame -> set to 'up
-  ;; (format t "[reset-keys] ~a~%" (gethash 65362 key-states))
+(defun reset-release-keys (key-states)
+  ;; Any keys previously set to 'release -> 'up
+  ;; Keys continously pressed will maintain 'press
+  ;; If press exceeds repeat delay, timer will handle it and switch to 'repeat
   (loop 
      :for k :being :the :hash-keys :of key-states
      :using (hash-value state)
      :do (when (and state
-		    (or ;(eq state 'press)
-		     (eq state 'release)))
-	   (setf (gethash k key-states) 'up))))
+		    (eq state 'release)))
+	   (setf (gethash k key-states) 'up)))
 
