@@ -3,7 +3,7 @@
 (defconstant +state-event-press+ 1)
 (defconstant +state-event-release+ 0)
 
-(defun handle-keyboard-timer (keysym)
+(defun handle-repeat-timer (keysym)
 
   ;; Set key state:
   ;; PRESS
@@ -69,21 +69,21 @@
 			   callbacks) ; prev=press, new=release
 		  (loop :for cb :across (press callbacks) :do (funcall cb keysym)))))
 	    
-	    ;; Repeat is handled in the thread	
+	    ;; If key is repeated, state will be set to 'repeat at a later time
 	    (setf (gethash keysym key-states)
 		  (if (= ev-state +state-event-press+)
 		      'press
 		      'release))
 
-	    ;; Update timer
-	    (cond ((= ev-state +state-event-press+) ; press
-		   
-		   ;; If repeatable, start timer...
-		   ;; When timer expires, it will check if key is still pressed
-		   ;; If pressed, continue timer - set REPEAT state
-		   ;; If released, remove timer - set RELEASE state
-		   ;; If new key is held, it replaces old one
-		   (when repeats
+	    ;; Check timer for repeatable keys
+	    (when repeats
+	      (cond ((= ev-state +state-event-press+) ; press
+		     
+		     ;; If repeatable, start timer...
+		     ;; When timer expires, it will check if key is still pressed
+		     ;; If pressed, continue timer - set REPEAT state
+		     ;; If released, remove timer - set RELEASE state
+		     ;; If new key is held, it replaces old one
 
 		     ;; Only one timer - remove current
 		     (when repeat-timer
@@ -95,28 +95,25 @@
 		     ;; Schedule new timer
 		     ;; Closure!
 		     (setf repeat-timer (make-timer (lambda ()
-						      (handle-keyboard-timer keysym))))
+						      (handle-repeat-timer keysym))))
 		     (schedule-timer repeat-timer
 				     (/ repeat-delay 1000)
 				     :repeat-interval (/ repeat-interval 1000)))
-		   t)
-		  
-		  ((= ev-state +state-event-release+) ; release
 
-		   ;; Remove timer only when repeat key is released
-		   (when (and repeats (eq keysym repeat-key))
+		    
+		    ((= ev-state +state-event-release+) ; release
 
-		     ;; (format t "Removed timer ~a" repeat-key)
-		     
-		     (when repeat-timer
-		       (unschedule-timer repeat-timer))
+		     ;; Remove timer only when repeat key is released
+		     (when (eq keysym repeat-key)
 
-		     ;; Or maintain previous state
-		     (setf repeat-key nil)
-		     (setf repeat-char nil)
-		     t)
-		   
-		   )))))))
+		       ;; (format t "Removed timer ~a" repeat-key)
+		       
+		       (when repeat-timer
+			 (unschedule-timer repeat-timer))
+		       
+		       ;; Or maintain previous state
+		       (setf repeat-key nil)
+		       (setf repeat-char nil))))))))))
 
 (defun reset-keys (key-states)
   ;; Any keys that were set to 'release in previous frame -> set to 'up
