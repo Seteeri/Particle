@@ -43,14 +43,14 @@ with the MS Office suite.
 * Primary Inspirations:
     * Blender - 3D, multi-domain dataset, flexible UI
     * Emacs - consistency, extensibility, text and keyboard driven
+    * Compiz - 3D desktop effects
     
 * Secondary Inspirations:
-    * Compiz - 3D desktop effects
     * Uzbl/Conkeror - numbered links for navigation
     * Unreal Blueprints - nodal system
     * Minecraft - expressiveness
     * EagleMode - example of a ZUI
-    * OpenDoc - early proprietary Apple attempt to create compound documents
+    * OpenDoc - early proprietary attempt by Apple to create compound documents
     
 * Personal Influences:
     * Gypsy by Larry Tesler
@@ -123,6 +123,31 @@ naturally remains an orthogonal possibility.
   * Separate shader stages and programmable pipelines
   * Future: Implement clustered then volumetric forward shading
 
+## The Roadmap
+
+Core Functionality
+1. OpenGL infrastructure - DONE
+   1. Framebuffers, render to texture, etc. - WIP
+2. Pango text generation - DONE
+3. Drawing nodes, lines - DONE
+4. Default environment/interface - WIP
+   1. Nodes
+   2. Controls/REPL
+   3. Undo system
+
+Core Extensions
+1. Numbered links for navigations
+2. Wayland compositing
+3. MSDF drawing (more efficient for monospaced fonts)
+4. FFMPEG for media - images, video, audio
+5. Per-object vector motion blur (personal favorite)
+
+Future Extensions
+1. Tiled forward rendering (Forward+) including lights
+
+Tentative Extensions
+1. Native web browser engine
+
 ## The Requirements
 
 * Atomic modesetting/nuclear pagefliping
@@ -143,8 +168,13 @@ naturally remains an orthogonal possibility.
 		 #:cl-glfw3
 		 #:3d-vectors
 		 #:3d-matrices
+		 #:cl-digraph
+		 #:usocket
 		 #:pango-markup
 		 #:bordeaux-threads
+		 #:inferior-shell
+		 #:swank
+		 #:swank-protocol
 		 #:trivial-timers
 		 #:babel
 		 #:str
@@ -156,15 +186,6 @@ naturally remains an orthogonal possibility.
 ## The Installation
 
 ...
-
-## The Roadmap
-
-1. Pango text generation (as a texture)
-2. Drawing nodes, lines
-3. Controls
-4. Default nodes and REPL
-5. Wayland, multimedia support
-6. Tiled forward rendering (Forward+) including lights
 
 ## The Hardware
 
