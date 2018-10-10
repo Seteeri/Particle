@@ -264,9 +264,9 @@
 	    (model-matrix n-1)
 
 	  #|
-	    _[]
-	   |
-	   |_[]
+	  _[]
+	  |
+	  |_[]
 	  |#
 	  
 	  ;; Set halfway - nodes can have different scales
@@ -359,18 +359,19 @@
 
   (defparameter *controller* (init-controller))
 
-  ;; (register-callbacks controller)
-  ;; (call-callbacks controller) 
-  ;; (reset-keys (key-states controller))
-
-  ;; Poll for input events
-  ;; Dispatch event handlers to update status
-  ;; Dispatch callbacks in response to status
-  ;; Reset keyboard keys
-
-  ;; Question: dispatch event after all events or per event?
+  (register-keyboard-callbacks)
   
-  (loop (wait-epoll)))
+  (loop (progn
+
+	  ;; Poll for input events
+	  ;; Dispatch event handlers to update status
+	  (wait-epoll)
+
+	  ;; Dispatch callbacks in response to status
+	  ;; Reset keyboard keys
+	  ;; Question: Perform dispatch after updating all events or per event?
+	  (dispatch-callbacks)
+	  (reset-release-keys))))
 
 (defun handle-escape (model
 		      keysym)
@@ -394,3 +395,72 @@
 ;; /proc/sys/net/core/rmem_default for recv and /proc/sys/net/core/wmem_default
 ;; 212992
 ;; They contain three numbers, which are minimum, default and maximum memory size values (in byte), respectively.
+
+(defun register-keyboard-callbacks ()
+
+  (with-slots (key-callbacks)
+      *controller*
+    
+    ;; Create closures for variables needed
+    ;; Controller function should simply call it without arguments except keysym
+    
+    (push-callback key-callbacks +xk-return+ :press
+		   (lambda (keysym)
+      		     (fmt-model t "callback" "Response to ~a~%" keysym)))
+    (push-callback key-callbacks +xk-return+ :repeat
+		   (lambda (keysym)
+      		     (fmt-model t "callback" "Response to ~a~%" keysym)))
+
+    ;; (push-callback key-callbacks +xk-escape+ :press (lambda (keysym)
+    ;; 							(handle-escape controller keysym)))
+
+    ;; (push-callback key-callbacks +xk-backspace+ :press #'handle-backspace)
+    ;; (push-callback key-callbacks +xk-backspace+ :repeat #'handle-backspace)
+
+    ;; (push-callback key-callbacks +xk-delete+ :press #'handle-delete)
+    ;; (push-callback key-callbacks +xk-delete+ :repeat #'handle-delete)
+    
+    ;; camera pan
+    
+    ;; (push-callback key-callbacks +xk-left+ :press #'update-mm-left)
+    ;; (push-callback key-callbacks +xk-left+ :repeat #'update-mm-left)
+
+    ;; (push-callback key-callbacks +xk-right+ :press #'update-mm-right)
+    ;; (push-callback key-callbacks +xk-right+ :repeat #'update-mm-right)
+    
+    ;; (push-callback key-callbacks +xk-up+ :press #'update-mm-up)
+    ;; (push-callback key-callbacks +xk-up+ :repeat #'update-mm-up)
+    
+    ;; (push-callback key-callbacks +xk-down+ :press #'update-mm-dn)
+    ;; (push-callback key-callbacks +xk-down+ :repeat #'update-mm-dn)
+
+    ;; camera zoom
+    
+    ;; (push-callback key-callbacks +xk-minus+ :press #'update-zoom-out)
+    ;; (push-callback key-callbacks +xk-minus+ :repeat #'update-zoom-out)
+
+    ;; (push-callback key-callbacks +xk-equal+ :press #'update-zoom-in)
+    ;; (push-callback key-callbacks +xk-equal+ :repeat #'update-zoom-in)
+
+    ;; cursor
+
+    ;; (push-callback key-callbacks +xk-up+ :press #'handle-up)
+    ;; (push-callback key-callbacks +xk-up+ :repeat #'handle-up)
+    
+    ;; (push-callback key-callbacks +xk-down+ :press #'handle-down)
+    ;; (push-callback key-callbacks +xk-down+ :repeat #'handle-down)
+
+    ;; (push-callback key-callbacks +xk-left+ :press #'handle-left)
+    ;; (push-callback key-callbacks +xk-left+ :repeat #'handle-left)
+
+    ;; (push-callback key-callbacks +xk-right+ :press #'handle-right)
+    ;; (push-callback key-callbacks +xk-right+ :repeat #'handle-right)
+    
+    ;; ascii/ctrl
+    
+    (when nil
+      (loop
+	 :for keysym :from 32 :to 255
+	 :do (progn
+	       (push-callback key-callbacks keysym :press #'handle-ascii)
+	       (push-callback key-callbacks keysym :repeat #'handle-ascii))))))

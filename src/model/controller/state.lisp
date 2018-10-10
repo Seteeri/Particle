@@ -117,7 +117,8 @@
 		    :release))
 
 	  ;; Perform callback for key
-	  (dispatch-callback keysym)
+	  ;; (dispatch-callback keysym)
+	  ;; Then reset key or do after
 	  
 	  ;; Check timer for repeatable keys
 	  (when repeats
@@ -126,14 +127,17 @@
 				 keysym
 				 keysym-char)))))))
 
-(defun reset-release-keys (key-states)
+(defun reset-release-keys ()
   ;; Any keys previously set to 'release -> 'up
   ;; Keys continously pressed will maintain 'press
   ;; If press exceeds repeat delay, timer will handle it and switch to 'repeat
-  (loop 
-     :for k :being :the :hash-keys :of key-states
-     :using (hash-value state)
-     :do (when (and state
-		    (eq state :release)))
-	   (setf (gethash k key-states) :up)))
+
+  (with-slots (key-states)
+      *controller*  
+    (loop 
+       :for keysym :being :the :hash-keys :of key-states
+       :using (hash-value state)
+       :do (when (and state
+		      (eq state :release)))
+	 (setf (gethash keysym key-states) :up))))
 
