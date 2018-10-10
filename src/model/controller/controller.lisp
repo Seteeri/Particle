@@ -65,11 +65,8 @@
        
 (defun wait-epoll ()
   (with-slots (context
-	       xkb
 	       epoll-fd
-	       epoll-events
-	       key-states
-	       key-callbacks)
+	       epoll-events)
       *controller*
     ;; -1 = timeout = block/infinite
     ;; 0 = return if nothing
@@ -84,10 +81,7 @@
 		   ;; (format t "type: ~a~%" type)
 		   (cond
 		     ((= type libinput:keyboard-key)
-		      (update-keyboard key-states
-				       key-callbacks
-				       xkb
-				       event))
+		      (update-keyboard event))
 		     ((= type libinput:pointer-motion)
 		      ;; (format t "type: ~a~%" type)
 		      t)
