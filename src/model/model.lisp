@@ -359,7 +359,14 @@
 
   (defparameter *controller* (init-controller))
 
-  ;; register events
+  ;; (register-callbacks controller)
+  ;; (call-callbacks controller) 
+  ;; (reset-keys (key-states controller))
+
+  ;; Poll for input events
+  ;; Dispatch event handlers to update status
+  ;; Dispatch callbacks in response to status
+  ;; Reset keyboard keys
   
   (loop (wait-epoll)))
 

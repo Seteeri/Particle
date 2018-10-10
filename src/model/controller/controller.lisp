@@ -50,18 +50,6 @@
     
     (setf (epoll-fd controller) epoll-fd)
     (setf (epoll-events controller) (foreign-alloc '(:struct event)))))
-
-;; (defun main-controller (path-server-model)
-  
-;;   (let ((controller (init-controller path-server-model)))
-
-;;     ;; Refactor functions so only necessary args passed like camera, mapping-base etc
-;;     (register-callbacks controller)
-
-;;     ;; (call-callbacks controller) 
-;;     ;; (reset-keys (key-states controller))
-    
-;;     (loop (wait-epoll controller))))
        
 (defun wait-epoll ()
   (with-slots (context
@@ -80,7 +68,6 @@
 		 (dispatch-event-handler event)
 		 (libinput:event-destroy event)
 		 (libinput:dispatch context)))))))
-
 
 (defun dispatch-event-handler (event)
 
