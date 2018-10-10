@@ -301,42 +301,7 @@
       (copy-textures-to-shm)
       
       (fmt-model t "main-model" "Init conn to view swank server~%")
-      (setup-view)
-
-      ;; TEST LIVE TEXTURE
-      ;; Change texture after 5 seconds
-
-      (when nil
-	(sleep 6)
-
-	(fmt-model t "main-model" "Updating texture~%")
-	
-	;; Generate texture directly to shm
-	;; Update node
-	;; Tell view to copy to cache
-	(update-node-texture n-0 "1234")
-	(update-transform (model-matrix n-0))
-	
-	(copy-textures-to-shm)
-	(copy-node-to-shm n-0
-			  (* (index n-0)
-			     (/ +size-struct-instance+ 4)))
-
-      ;;;;;;;;;;;;;;;
-	;; Make atomic
-	;; otherwise will result in possible delay or "tearing"
-
-	;; Set flags so cache->step
-	;; - Important to make sure all steps are updated otherwise flickering will occur
-	;; - Simplest method is to set a counter and copy every frame until counter is 0
-	;; - Specify size?
-	
-	(memcpy-shm-to-cache-flag* (list (list "texture"
-					       0
-      					       (offset-bytes-textures *model*))
-      					 (list "nodes"
-					       0
-      					       (* +size-struct-instance+ (digraph:count-vertices digraph)))))))))
+      (setup-view))))
 
 (defun main-model (width height
 		   inst-max
@@ -404,13 +369,15 @@
     ;; Create closures for variables needed
     ;; Controller function should simply call it without arguments except keysym
     
-    (push-callback key-callbacks +xk-return+ :press
-		   (lambda (keysym)
-      		     (fmt-model t "callback" "Response to ~a~%" keysym)))
-    (push-callback key-callbacks +xk-return+ :repeat
-		   (lambda (keysym)
-      		     (fmt-model t "callback" "Response to ~a~%" keysym)))
+    ;; (push-callback key-callbacks +xk-return+ :press
+    ;; 		   #'update-node-text)
 
+    (loop
+       :for keysym :from 32 :to 255
+       :do (progn
+	     (push-callback key-callbacks keysym :press
+			    #'update-node-text)))
+    
     ;; (push-callback key-callbacks +xk-escape+ :press (lambda (keysym)
     ;; 							(handle-escape controller keysym)))
 
@@ -458,9 +425,40 @@
     
     ;; ascii/ctrl
     
-    (when nil
-      (loop
-	 :for keysym :from 32 :to 255
-	 :do (progn
-	       (push-callback key-callbacks keysym :press #'handle-ascii)
-	       (push-callback key-callbacks keysym :repeat #'handle-ascii))))))
+    t))
+
+(defun update-node-text (keysym)
+
+  (with-slots (digraph)
+      *model*
+  
+    (fmt-model t "main-model" "Updating root node~%")
+
+    (let ((node-root (first (digraph:roots digraph))))
+    
+      ;; Generate texture directly to shm
+      ;; Update node
+      ;; Tell view to copy to cache
+      (update-node-texture node-root (format nil "~v@{~A~:*~}" 9 (code-char keysym)))
+      (update-transform (model-matrix node-root))
+      
+      (copy-textures-to-shm)
+      (copy-node-to-shm node-root
+			(* (index node-root)
+			   (/ +size-struct-instance+ 4)))
+
+      ;;;;;;;;;;;;;;;
+      ;; Make atomic
+      ;; otherwise will result in possible delay or "tearing"
+
+      ;; Set flags so cache->step
+      ;; - Important to make sure all steps are updated otherwise flickering will occur
+      ;; - Simplest method is to set a counter and copy every frame until counter is 0
+      ;; - Specify size?
+      
+      (memcpy-shm-to-cache-flag* (list (list "texture"
+					     0
+      					     (offset-bytes-textures *model*))
+      				       (list "nodes"
+					     0
+      					     (* +size-struct-instance+ (digraph:count-vertices digraph))))))))
