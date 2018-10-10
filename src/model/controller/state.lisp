@@ -64,7 +64,7 @@
 	     (setf repeat-key nil)
 	     (setf repeat-char nil))))))
 
-(defun update-keyboard (event)
+(defun handle-event-keyboard (event)
 
   (with-slots (context
 	       xkb

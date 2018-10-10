@@ -367,6 +367,8 @@
   ;; Dispatch event handlers to update status
   ;; Dispatch callbacks in response to status
   ;; Reset keyboard keys
+
+  ;; Question: dispatch event after all events or per event?
   
   (loop (wait-epoll)))
 

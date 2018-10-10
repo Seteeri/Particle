@@ -103,7 +103,7 @@
     ;; (format t "type: ~a~%" type)
     (cond
       ((= type libinput:keyboard-key)
-       (update-keyboard event))
+       (handle-event-keyboard event))
       ((= type libinput:pointer-motion)
        ;; (format t "type: ~a~%" type)
        t)
