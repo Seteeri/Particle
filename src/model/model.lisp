@@ -358,6 +358,8 @@
   (init-graph)
 
   (defparameter *controller* (init-controller))
+
+  ;; register events
   
   (loop (wait-epoll)))
 

@@ -77,111 +77,54 @@
 	   :for event := (libinput:get-event context)
 	   :until (null-pointer-p event)
 	   :do (progn
-		 (let ((type (libinput:event-get-type event)))
-		   ;; (format t "type: ~a~%" type)
-		   (cond
-		     ((= type libinput:keyboard-key)
-		      (update-keyboard event))
-		     ((= type libinput:pointer-motion)
-		      ;; (format t "type: ~a~%" type)
-		      t)
-		     ((= type libinput:pointer-button)
-		      t)
-		     (t
-		      t)))
+		 (dispatch-event-handler event)
 		 (libinput:event-destroy event)
 		 (libinput:dispatch context)))))))
 
-;; (defun epoll (controller)
-;;   (with-slots (context
-;; 	       xkb
-;; 	       epoll-fd
-;; 	       epoll-events
-;; 	       key-states)
-;;       controller
-;;     (when (> (c-poll (epoll-fd controller) 1 -1) -1)
-      
-;;       (libinput:dispatch context)
-      
-;;       (loop
-;; 	 :for event := (libinput:get-event context)
-;; 	 :until (null-pointer-p event)
-;; 	 :do (progn
-;; 	       ;; (format t "~a~%" event)
-;; 	       (let ((type (libinput:event-get-type event)))
-;; 		 (cond
-;; 		   ((= type libinput:keyboard-key)
-;; 		    (update-keyboard key-states xkb event))
-;; 		   (t
-;; 		    t)))
-;; 	       (libinput:event-destroy event)
-;; 	       (libinput:dispatch context))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;       ((= type libinput:none)
-;;        t)
-;;       ((= type libinput:device-added)
-;;        t)
-;;       ((= type libinput:device-removed)
-;;        t)
+(defun dispatch-event-handler (event)
 
-;;       ((= type libinput:keyboard-key)
-;;        (handle-keyboard event)
-;;        t)
+  ;; libinput:none
+  ;; libinput:device-added
+  ;; libinput:device-removed
+  ;; libinput:keyboard-key
+  ;; libinput:pointer-motion
+  ;; libinput:pointer-motion-absolute
+  ;; libinput:pointer-button
+  ;; libinput:pointer-axis
+  ;; libinput:touch-down
+  ;; libinput:touch-motion
+  ;; libinput:touch-up
+  ;; libinput:touch-cancel
+  ;; libinput:touch-frame
+  ;; libinput:gesture-swipe-begin
+  ;; libinput:gesture-swipe-update
+  ;; libinput:gesture-swipe-end
+  ;; libinput:gesture-pinch-begin
+  ;; libinput:gesture-pinch-update
+  ;; libinput:gesture-pinch-end
+  ;; libinput:tablet-tool-axis
+  ;; libinput:tablet-tool-proximity
+  ;; libinput:tablet-tool-tip
+  ;; libinput:tablet-tool-button
+  ;; libinput:tablet-pad-button
+  ;; libinput:tablet-pad-ring
+  ;; libinput:tablet-pad-strip
+  ;; libinput:switch-toggle
 
-;;       ((= type libinput:pointer-motion)
-;;        ;; (handle-pointer-motion event)
-;;        t)
-
-;;       ((= type libinput:pointer-motion-absolute)
-;;        t)
-
-;;       ((= type libinput:pointer-button)
-;;        ;; (handle-pointer-button event)
-;;        t)
-
-;;       ((= type libinput:pointer-axis)
-;;        t)
-;;       ((= type libinput:touch-down)
-;;        t)
-;;       ((= type libinput:touch-motion)
-;;        t)
-;;       ((= type libinput:touch-up)
-;;        t)
-;;       ((= type libinput:touch-cancel)
-;;        t)
-;;       ((= type libinput:touch-frame)
-;;        t)
-;;       ((= type libinput:gesture-swipe-begin)
-;;        t)
-;;       ((= type libinput:gesture-swipe-update)
-;;        t)
-;;       ((= type libinput:gesture-swipe-end)
-;;        t)
-;;       ((= type libinput:gesture-pinch-begin)
-;;        t)
-;;       ((= type libinput:gesture-pinch-update)
-;;        t)
-;;       ((= type libinput:gesture-pinch-end)
-;;        t)
-;;       ((= type libinput:tablet-tool-axis)
-;;        t)
-;;       ((= type libinput:tablet-tool-proximity)
-;;        t)
-;;       ((= type libinput:tablet-tool-tip)
-;;        t)
-;;       ((= type libinput:tablet-tool-button)
-;;        t)
-;;       ((= type libinput:tablet-pad-button)
-;;        t)
-;;       ((= type libinput:tablet-pad-ring)
-;;        t)
-;;       ((= type libinput:tablet-pad-strip)
-;;        t)
-;;       ((= type libinput:switch-toggle)
-;;        t))))
-
+  (let ((type (libinput:event-get-type event)))
+    ;; (format t "type: ~a~%" type)
+    (cond
+      ((= type libinput:keyboard-key)
+       (update-keyboard event))
+      ((= type libinput:pointer-motion)
+       ;; (format t "type: ~a~%" type)
+       t)
+      ((= type libinput:pointer-button)
+       t)
+      (t
+       t))))
+  
 (defun register-callbacks (controller)
 
   (let ((key-callbacks (key-callbacks controller)))
