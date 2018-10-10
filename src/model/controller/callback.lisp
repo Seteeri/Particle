@@ -8,15 +8,26 @@
    (repeat :accessor repeat :initarg :repeat :initform (make-array 8 :fill-pointer 0 :adjustable t))
    (release :accessor release :initarg :release :initform (make-array 8 :fill-pointer 0 :adjustable t))))
 
-(defun call-callbacks (controller)
+(defun dispatch-callback (keysym)
   (with-slots (key-states key-callbacks)
-      controller    
+      *controller*
+    (let ((state (gethash keysym key-states)))
+      (when state
+	(let ((ck (gethash keysym key-callbacks)))
+	  (when ck
+	    (loop :for cb :across (slot-value ck (find-symbol (symbol-name state)))
+	       :do (funcall cb keysym))))))))
+
+(defun dispatch-callbacks ()
+  (with-slots (key-states key-callbacks)
+      *controller*
     (loop 
-       :for key :being :the :hash-keys :of key-callbacks
+       :for keysym :being :the :hash-keys :of key-callbacks
        :using (hash-value ck)
-       :for state := (gethash key key-states)
+       :for state := (gethash keysym key-states)
        :do (when state
-	     (loop :for cb :across (slot-value ck state) :do (funcall cb controller key))))))
+	     (loop :for cb :across (slot-value ck (find-symbol (symbol-name state)))
+		:do (funcall cb keysym))))))
      
 (defun push-callback (key-callbacks keysym state callback)
   ;; Ignore if already registered?

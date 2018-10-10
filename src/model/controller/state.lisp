@@ -113,9 +113,12 @@
 	  ;; If key is repeated, state will be set to 'repeat at a later time
 	  (setf (gethash keysym key-states)
 		(if (= ev-state +state-event-press+)
-		    'press
-		    'release))
+		    :press
+		    :release))
 
+	  ;; Perform callback for key
+	  (dispatch-callback keysym)
+	  
 	  ;; Check timer for repeatable keys
 	  (when repeats
 	    (update-repeat-timer xkb
@@ -131,6 +134,6 @@
      :for k :being :the :hash-keys :of key-states
      :using (hash-value state)
      :do (when (and state
-		    (eq state 'release)))
-	   (setf (gethash k key-states) 'up)))
+		    (eq state :release)))
+	   (setf (gethash k key-states) :up)))
 

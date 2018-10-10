@@ -35,7 +35,7 @@
 			   (libinput:path-remove-device device)))))))
       
       (init-epoll controller)
-      ;; (register-callbacks controller)
+      ;; Initialize states to none?
       t)
     controller))
     
