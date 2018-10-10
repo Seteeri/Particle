@@ -1,5 +1,8 @@
 (in-package :protoform.model)
 
+(defconstant +state-event-press+ 1)
+(defconstant +state-event-release+ 0)
+
 (defun handle-keyboard-timer (keysym)
 
   ;; Set key state:
@@ -43,7 +46,9 @@
 	    
 	    (xkb:xkb-state-update-key state
 				      (+ ev-keycode 8)
-				      (if (= ev-state 1) 1 0))
+				      (if (= ev-state +state-event-press+)
+					  +state-event-press+
+					  +state-event-release+))
 
 	    (setf mods-depressed (xkb:xkb-state-serialize-mods state 1))
 	    (setf mods-latched (xkb:xkb-state-serialize-mods state 2))
@@ -51,7 +56,7 @@
 	    (setf mods-group (xkb:xkb-state-serialize-mods state 8))
 	    ;; (format t "~a, ~a, ~a~%" mods-depressed mods-latched mods-locked)
 
-	    (when (= ev-state 1)
+	    (when (= ev-state +state-event-press+)
 	      (fmt-model t "update-keybaord"
 			 "code: ~a, sym: ~a, state: ~a, rep: ~a~%"
 			 (+ ev-keycode 8) (code-char keysym) ev-state repeats))
@@ -60,15 +65,18 @@
 	      (let ((state (gethash keysym key-states))
 		    (callbacks (gethash keysym key-callbacks)))
 		(when (and (eq state 'press)
-			   (= ev-state 0)
+			   (= ev-state +state-event-release+)
 			   callbacks) ; prev=press, new=release
 		  (loop :for cb :across (press callbacks) :do (funcall cb keysym)))))
 	    
 	    ;; Repeat is handled in the thread	
-	    (setf (gethash keysym key-states) (if (= ev-state 1) 'press 'release))
+	    (setf (gethash keysym key-states)
+		  (if (= ev-state +state-event-press+)
+		      'press
+		      'release))
 
 	    ;; Update timer
-	    (cond ((= ev-state 1) ; press
+	    (cond ((= ev-state +state-event-press+) ; press
 		   
 		   ;; If repeatable, start timer...
 		   ;; When timer expires, it will check if key is still pressed
@@ -93,7 +101,7 @@
 				     :repeat-interval (/ repeat-interval 1000)))
 		   t)
 		  
-		  ((= ev-state 0) ; release
+		  ((= ev-state +state-event-release+) ; release
 
 		   ;; Remove timer only when repeat key is released
 		   (when (and repeats (eq keysym repeat-key))
