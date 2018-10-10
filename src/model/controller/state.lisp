@@ -1,22 +1,17 @@
 (in-package :protoform.model)
 
-(defun handle-keyboard-timer (key-states keysym)
+(defun handle-keyboard-timer (keysym)
 
   ;; Set key state:
   ;; PRESS
   ;; REPEAT
   ;; RELEASE
   ;; UP
-
-  (setf (gethash keysym key-states) 'repeat)
-
+  
   ;; (format t "[handle-keyboard-timer][~a] Repeating ~a~%" (get-internal-real-time) keysym)
   ;; (force-output)
-
-  ;; Callback will then call repeat callbacks
-  ;; Will return to normal upon release of key or another key is pressed
   
-  t)
+  (setf (gethash keysym (key-states *controller*)) 'repeat))
 
 (defun update-keyboard (event)
 
@@ -92,7 +87,7 @@
 		     ;; Schedule new timer
 		     ;; Closure!
 		     (setf repeat-timer (make-timer (lambda ()
-						      (handle-keyboard-timer key-states keysym))))
+						      (handle-keyboard-timer keysym))))
 		     (schedule-timer repeat-timer
 				     (/ repeat-delay 1000)
 				     :repeat-interval (/ repeat-interval 1000)))
