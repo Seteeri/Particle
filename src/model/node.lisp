@@ -67,6 +67,8 @@
 (defun update-node-texture (node
 			    data)
 
+  (setf (data node) data)
+  
   ;; Separate this function maybe
   (multiple-value-bind (offset-texel-texture
 			dims-texture

@@ -216,6 +216,8 @@
        ;; :until (glfw:window-should-close-p)
        :do (progn
 
+	     ;; Need to increment index so memcpy will copy to correct buffers
+	     
 	     ;; Recv evals from model
 	     ;; http://3bb.cc/tutorials/cl-opengl/getting-started.html
 	     ;; (format t "[view] Serve-all-events~%")
@@ -245,6 +247,8 @@
     	(%gl:delete-sync fence)
     	(setf (aref fences ix-fence) (null-pointer))))
 
+    (update-cache-to-step)
+    
     (if nil
 	(run-compute-copy)
 	(run-compute))
@@ -256,10 +260,35 @@
       (setf (aref fences ix-fence)
     	    (%gl:fence-sync :sync-gpu-commands-complete 0)))
 
-    (setf ix-fence (mod (+ ix-fence 1) 3)) ; 3 defconstant +fences-max+
-    
-    ;; Caller swaps...
-    t))
+    ; 3 defconstant +fences-max+
+    (setf ix-fence (mod (+ ix-fence 1) 3))))
+
+(defun update-cache-to-step ()
+
+  (with-slots (program-compute
+	       bo-cache
+	       bo-step
+	       inst-max
+	       ix-fence)
+      *view*
+
+    ;; https://stackoverflow.com/questions/28704818/how-can-i-write-to-a-texture-buffer-object
+    ;; Shader can't copy instance textures due to different image sizes
+    ;; Indices remain the same
+    ;; Exception below is instance
+    (loop 
+       :for name :being :the :hash-keys :of bo-cache
+       :using (hash-value cache)
+       :do (when (not (string= name "nodes"))
+	     (with-slots (buffer flag-copy)
+		 cache
+	       (when (/= flag-copy 0)
+		 (memcpy-cache-to-step name ix-fence
+    				       name
+				       nil
+				       nil) ; no print
+		 (when (> flag-copy 0)
+		   (decf flag-copy))))))))
 
 (defun calc-opengl-usage ()
 

@@ -228,7 +228,7 @@
     (let ((n-0 (init-node (vec3 -8 8 1)
 			  (scale-node *model*)
 			  0
-			  "PROTOFORM"))
+			  "*"))
 	  (n-1 (init-node (vec3 0 0 0)
 			  (scale-node *model*)
 			  1
@@ -439,7 +439,9 @@
       ;; Generate texture directly to shm
       ;; Update node
       ;; Tell view to copy to cache
-      (update-node-texture node-root (format nil "~v@{~A~:*~}" 9 (code-char keysym)))
+
+      ;; (format nil "~v@{~A~:*~}" 9 (code-char keysym))
+      (update-node-texture node-root (format nil "~a~a" (data node-root) (code-char keysym)))
       (update-transform (model-matrix node-root))
       
       (copy-textures-to-shm)
