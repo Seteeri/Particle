@@ -84,9 +84,9 @@
 		 (write-char #\Newline stream)
 		 (format stream "  Name: ~S~%" data)
 		 (format stream "  Dims: ~S~%" dims-texture)
-		 (format stream "  Start Texels Offset: ~S~%" offset-texel-texture)
-		 (format stream "  Data Size: ~S~%" data-size)
-		 (format stream "  Current Offset: ~S~%" (offset-bytes-textures *model*)))))
+		 (format stream "  Start Texels Offset: ~S texels~%" offset-texel-texture)
+		 (format stream "  Data Size: ~S bytes~%" data-size)
+		 (format stream "  Current Offset: ~S bytes~%" (offset-bytes-textures *model*)))))
 
   ;; Update scale to match texture
   (setf (vx3 (scale (model-matrix node))) (* (/ 1 96) (vx2 (dims-texture node))))

@@ -228,7 +228,7 @@
     (let ((n-0 (init-node (vec3 -8 8 1)
 			  (scale-node *model*)
 			  0
-			  "*"))
+			  "hello world!"))
 	  (n-1 (init-node (vec3 0 0 0)
 			  (scale-node *model*)
 			  1
@@ -440,6 +440,9 @@
       ;; Update node
       ;; Tell view to copy to cache
 
+      ;; Must replace old texture...by deleting old texture
+      ;; Then this causes recopy subsequent
+
       ;; (format nil "~v@{~A~:*~}" 9 (code-char keysym))
       (update-node-texture node-root (format nil "~a~a" (data node-root) (code-char keysym)))
       (update-transform (model-matrix node-root))
@@ -457,10 +460,18 @@
       ;; - Important to make sure all steps are updated otherwise flickering will occur
       ;; - Simplest method is to set a counter and copy every frame until counter is 0
       ;; - Specify size?
+
+      ;; (return-from update-node-text)
+
+      ;; Commenting out nodes = no flicker/update
+      ;; so memcpy texture is not the problem
+
+      ;; Removing bytes will stay permablack
       
       (memcpy-shm-to-cache-flag* (list (list "texture"
 					     0
       					     (offset-bytes-textures *model*))
       				       (list "nodes"
-					     0
-      					     (* +size-struct-instance+ (digraph:count-vertices digraph))))))))
+				       	     0
+      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
+				       					  (digraph:count-edges digraph)))))))))

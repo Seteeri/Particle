@@ -150,7 +150,7 @@
       ;; 		 3) ;MADV_WILLNEED
       
       ;; (when mlock
-      ;; 	(c-mlock ptr-shm-base size))
+      (c-mlock ptr-shm-base size)
       
       ;; (format t "[init-mmap-shm] ptr-shm-base ~a~%" ptr-shm-base)
       

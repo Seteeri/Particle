@@ -158,10 +158,11 @@
 
 	    ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
 	    ;; Already active...
-	    ;; (gl:active-texture :texture0)
-	    ;; Parse glyph images into texture: (parse-glyphs-ppm bo-texture)
+	    (gl:active-texture :texture0)
+	    ;; Parse glyph images into texture: (parse-glyphs-ppm bo-texture)	    
 	    
 	    (dotimes (i (count-buffers bo))
+	      (update-binding-buffer bo i)
 	      (%gl:tex-buffer :texture-buffer
 			      (first rest) ; rgba8
 			      (aref (buffers bo) i)))
@@ -215,7 +216,7 @@
     (loop 
        ;; :until (glfw:window-should-close-p)
        :do (progn
-
+	     
 	     ;; Need to increment index so memcpy will copy to correct buffers
 	     
 	     ;; Recv evals from model
@@ -225,7 +226,6 @@
 	     
 	     (if *draw*
 		 (progn
-		   ;; (fmt-view t "main-view" "Running...~%")
 		   (render-frame)
 		   ;;(glfw:poll-events)
 		   (glfw:swap-buffers))
@@ -234,6 +234,8 @@
 (defun render-frame ()
   (with-slots (sync fences ix-fence)
       *view*
+
+    ;; (format t "Render index: ~a~%" ix-fence)
     
     ;; Create with-* macro for this
     ;; if sync:
@@ -283,6 +285,7 @@
 	     (with-slots (buffer flag-copy)
 		 cache
 	       (when (/= flag-copy 0)
+		 ;; (fmt-view t "update-cache-to-step" "Cache status: ~a, ~a~%" name flag-copy)
 		 (memcpy-cache-to-step name ix-fence
     				       name
 				       nil

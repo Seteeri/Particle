@@ -32,25 +32,47 @@
     program))
 
 (defun init-buffers-raster (params-shm)
-  (with-slots (bo-step
-	       vaos)
+  (with-slots (vaos)
       *view*
     ;; Setup vaos/bindings for each step
     ;; 1 bind vao > many bind buffer calls
-    (dotimes (i 3)
-      (let ((vao (init-vao)))
-	(vector-push vao vaos)
-	(loop 
-	   :for name :being :the :hash-keys :of bo-step
-	   :using (hash-value buffer)
-	   :do (update-binding-buffer buffer i))))))
+    (let ((vao (init-vao)))
+      (vector-push vao vaos))))
 
 (defun update-raster-buffer-bindings ()
-  (with-slots (vaos
+  (with-slots (bo-step
+	       vaos
 	       ix-fence)
       *view*
-    ;; Use different pre-setup VAOs instead of individual bindings
-    (gl:bind-vertex-array (aref vaos ix-fence))))
+    ;; Setup vaos/bindings for each step
+    ;; 1 bind vao > many bind buffer calls
+    (loop 
+       :for name :being :the :hash-keys :of bo-step
+       :using (hash-value buffer)
+       :do (update-binding-buffer buffer ix-fence))))
+
+;; (defun init-buffers-raster (params-shm)
+;;   (with-slots (bo-step
+;; 	       vaos)
+;;       *view*
+;;     ;; Setup vaos/bindings for each step
+;;     ;; 1 bind vao > many bind buffer calls
+;;     (dotimes (i 3)
+;;       (let ((vao (init-vao)))
+;; 	(vector-push vao vaos)
+;; 	(loop 
+;; 	   :for name :being :the :hash-keys :of bo-step
+;; 	   :using (hash-value buffer)
+;; 	   :do (update-binding-buffer buffer i))))))
+
+;; Causes flickering probably because bindings aren't being updated
+;; Binding points created via VAO and glBindBufferBase completely seperate things
+;; (defun update-raster-buffer-bindings-2 ()
+;;   (with-slots (vaos
+;; 	       ix-fence)
+;;       *view*
+;;     ;; Use different pre-setup VAOs instead of individual bindings
+;;     (gl:bind-vertex-array (aref vaos ix-fence))))
 
 (defun run-raster ()
 

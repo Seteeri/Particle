@@ -79,8 +79,8 @@
 	     (when (or (/= flag-copy 0)
 		       force)
 	       ;; Can also use gl function to copy between buffers
-	       (when (not force)
-		 (fmt-view t "update-compute-buffers" "Cache dirt: ~a, ~a~%" name dirty))
+	       (when (and (not force) (/= flag-copy -1))
+		 (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
 	       (memcpy-cache-to-step name ix-fence
     				     name
 				     nil
@@ -95,7 +95,7 @@
 	       inst-max
 	       ix-fence)
       *view*
-
+    
     (gl:use-program program-compute)
     
     (update-compute-bindings)

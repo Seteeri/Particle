@@ -79,12 +79,18 @@
 
 (defun get-fn-bind (target binding-layout)
   (cond ((or (eq target :draw-indirect-buffer)
-	     (eq target :element-array-buffer)
-	     (eq target :texture-buffer))
+	     (eq target :element-array-buffer))
 	  (lambda (buffer)
 	    (%gl:bind-buffer target
 			     buffer)))
-	 (t
+	((eq target :texture-buffer)
+	 (lambda (buffer)
+	   ;; Are both needed?
+	   (%gl:bind-texture target
+			     buffer)
+	   (%gl:bind-buffer target
+			    buffer)))
+	(t
 	  (lambda (buffer)
 	    (%gl:bind-buffer-base target
 				  binding-layout
@@ -114,8 +120,8 @@
 	(dotimes (i count-buffers)
 	  (funcall fn-bind (aref buffers i))
 	  (setf (aref ptrs-buffer i) (map-buffer-range target
-						    size-buffer
-						    :data data)))
+						       size-buffer
+						       :data data)))
 
 
 	(progn
