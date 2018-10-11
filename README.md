@@ -3,6 +3,8 @@ Protoform
 
 [![Alt text](https://img.youtube.com/vi/BemmZaOyzbk/0.jpg)](https://www.youtube.com/watch?v=BemmZaOyzbk)
 
+**Video will be updated soon...**
+
 Protoform is a Common Lisp 3D nodal/graph IDE based on DRM-KMS and 
 Open GL ES designed around working in a freeform/prototyping 
 envirornment with file data from various domains, analagous to a desktop
@@ -91,19 +93,10 @@ naturally remains an orthogonal possibility.
 ## The Interface
 
 * 3D orthographic non-windowing environment
-* Multi-paradigm nodal environment
+* Consistent nodal environment - "turtles all the way down"
+* Primarily keyboard driven interface
 * Wayland - provides conventional desktop
 * Undo/revision control/non-destructive editing
-* Controls (tentative)
-    * Spacebar - create node/edge
-    * Delete - delete node/edge
-    * Tab (hold) - show possible valid nodes (or menu?)
-    * Alt (hold) - display links for nodes; create text node for link,
-    attach move node, eval to visit, delete nodes after
-    * Shift - create selection node, visit nodes and attach node (how?), eval
-    to create edges to selection node, delete nodes after
-        * Types of select: branch, root
-        * Change (option) by attaching node
 
 ## The Architecture
 
@@ -111,15 +104,14 @@ naturally remains an orthogonal possibility.
 * Muti-channel signed distance textures
 * OpenGL ES 3.2+
 * Tiled forward shading engine (Forward+)
-  * Designed for streaming/dynamic data
-  * UBO/SSBO/Texture buffers
   * Compute shaders
   * AZDO Techniques
     * Persistent mapping
     * Instanced drawing
     * Indirect drawing
       * Multi-indirect - not yet implemented in OpenGL ES API
-  * Programmable vertex pulling - texture/uniform/shader-storage buffers; retrieve data through gl_VertexID+gl_InstanceID
+  * Fully programmable vertex pulling
+    * Texture buffers/UBOs/SSBOs -> gl_VertexID+gl_InstanceID
   * Separate shader stages and programmable pipelines
   * Future: Implement clustered then volumetric forward shading
 
@@ -130,17 +122,18 @@ Core Functionality
    1. Framebuffers, render to texture, etc. - WIP
 2. Pango text generation - DONE
 3. Drawing nodes, lines - DONE
-4. Default environment/interface - WIP
-   1. Nodes
-   2. Controls/REPL
-   3. Undo system
+4. Interface - WIP
+   1. Controls
+   2. Undo system
 
 Core Extensions
 1. Numbered links for navigations
 2. Wayland compositing
 3. MSDF drawing (more efficient for monospaced fonts)
 4. FFMPEG for media - images, video, audio
+   1. GEGL another option
 5. Per-object vector motion blur (personal favorite)
+6. Portals
 
 Future Extensions
 1. Tiled forward rendering (Forward+) including lights

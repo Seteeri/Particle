@@ -51,6 +51,10 @@
        :using (hash-value buffer)
        :do (update-binding-buffer buffer ix-fence))))
 
+;; https://stackoverflow.com/questions/50807645/how-does-opengl-differentiate-binding-points-in-vao-from-ones-defined-with-glbin
+;; Particle Systems with Compute & Geometry Shader. Institute of Computer Graphics and Algorithms Vienna University of Technology
+;; http://web.engr.oregonstate.edu/~mjb/cs519/Handouts/compute.shader.1pp.pdf
+;; https://github.com/OpenGLInsights/OpenGLInsightsCode
 ;; (defun init-buffers-raster (params-shm)
 ;;   (with-slots (bo-step
 ;; 	       vaos)
