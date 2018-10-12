@@ -4,17 +4,6 @@
 
 ;; (sb-ext:save-lisp-and-die "pf" :toplevel #'protoform:main :executable t)
 
-(defmacro set-signal-handler (signo &body body)
-  (let ((handler (gensym "HANDLER")))
-    `(progn
-       (defcallback ,handler :void ((signo :int))
-                         (declare (ignore signo))
-                         ,@body)
-       (foreign-funcall "signal" :int ,signo :pointer (callback ,handler)))))
-
-;; (defun random-from-range (start end)
-;;   (+ start (random (+ 1 (- end start)))))
-
 (defun fork (fn-child)
 
   ;; https://stackoverflow.com/questions/26405391/linux-difference-between-forking-twice-and-daemonise
@@ -62,17 +51,10 @@
 
   (let ((width (/ 2560 2)) ; 1280
         (height 1600) ; 1600
-        (inst-max (expt 2 16))
-        (path-server-view "/tmp/protoform-view.socket")
-        (path-server-model "/tmp/protoform-model.socket"))
+        (inst-max (expt 2 16)))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Init/bootstrapper system ;)
-
-    ;; Init: load
-    
-    ;; Model: swank server/client
-    ;; View: swank server/client
 
     ;; Launch swank servers
     (fork (lambda () (protoform.view:main-view width height
