@@ -138,6 +138,7 @@
 
   (fmt-model t "copy-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4)))
 
+;; TODO: Refactor to pass offsets, range, etc.
 (defun copy-nodes-to-shm ()
   (digraph:mapc-vertices (lambda (node)
 			   (copy-node-to-shm node
@@ -167,8 +168,8 @@
     ;; set UVs
     (with-slots (scale-uv)
 	metrics-glyph
-      (setf (vx3 (scale (model-matrix node))) (* (vx2 scale-uv) 10.0))
-      (setf (vy3 (scale (model-matrix node))) (* (vy2 scale-uv) 10.0)))
+      (setf (vx3 (scale (model-matrix node))) (* (vx2 scale-uv) 2.5))
+      (setf (vy3 (scale (model-matrix node))) (* (vy2 scale-uv) 2.5)))
     
     ;; Update transform
     (update-transform (model-matrix node))

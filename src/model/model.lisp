@@ -38,14 +38,14 @@
 				:triple
 				0))
 
-(defparameter *glyphs-msdf-shm* (list :texture-buffer
-				      "glyphs-msdf"
-				      "/protoform-glyphs-msdf"
-				      16465920 ; size of all ppm glyphs
-				      -1 -1
-				      :triple
-				      0
-				      :rgba8))
+;; (defparameter *glyphs-msdf-shm* (list :texture-buffer
+;; 				      "glyphs-msdf"
+;; 				      "/protoform-glyphs-msdf"
+;; 				      16465920 ; size of all ppm glyphs
+;; 				      -1 -1
+;; 				      :triple
+;; 				      0
+;; 				      :rgba8))
 
 (defparameter *texture-shm* (list :texture-buffer
 				  "texture"
@@ -83,7 +83,7 @@
 (defparameter *params-shm* (list *projview-shm*
 				 *vertices-shm*
 				 *nodes-shm*
-				 *glyphs-msdf-shm*
+				 ;; *glyphs-msdf-shm*
 				 *texture-shm*
 				 *element-shm*
 				 *draw-indirect-shm*
@@ -102,8 +102,6 @@
    ;; Instances...
    (inst-max :accessor inst-max :initarg :inst-max :initform nil)
    (digraph :accessor digraph :initarg :digraph :initform nil)
-
-   (metrics :accessor metrics :initarg :metrics :initform nil)   
    
    ;; Textures - list of Texture instances wich store tex parameters
    ;; Use skip list? -> For now use vector
@@ -111,11 +109,11 @@
    (offset-texel-textures :accessor offset-texel-textures :initarg :offset-texel-textures :initform 0) ; sum of wxh
    (offset-bytes-textures :accessor offset-bytes-textures :initarg :offset-bytes-textures :initform 0) ; sum of bytes
    (textures :accessor textures :initarg :textures :initform (make-array 64 :adjustable t :fill-pointer 0))
-   
-   (cursor :accessor cursor :initarg :cursor :initform (vec3 0 0 0))
-   ;; move to node? used in conjunction with scale-node
+
+   (metrics :accessor metrics :initarg :metrics :initform nil)
+   (node-pointer :accessor node-pointer :initarg :node-pointer :initform nil)
+   (cursor :accessor cursor :initarg :cursor :initform (vec3 -10 0 0))
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
-   ;; rename to scale-default-node
    (scale-node :accessor scale-node :initarg :scale-node :initform (vec3 1.0 1.0 1.0))))
 
 ;; TODO: Move elsewhere
@@ -325,10 +323,10 @@
     ;; Normally user will create these through input (controller)
     
     ;; Node 1
-    (let ((n-0 (init-node-msdf (vec3 0 0 0)
+    (let ((n-0 (init-node-msdf (cursor *model*)
 			       (scale-node *model*)
 			       0
-			       #\A)))
+			       #\*)))
       
       (update-transform (model-matrix n-0))
       
@@ -336,6 +334,8 @@
       
       (copy-nodes-to-shm)
       ;; (copy-textures-to-shm)
+
+      (setf (node-pointer *model*) n-0)
       
       (fmt-model t "main-model" "Init conn to view swank server~%")
       (setup-view))))
@@ -416,7 +416,7 @@
        :for keysym :from 32 :to 255
        :do (progn
 	     (push-callback key-callbacks keysym :press
-			    #'update-node-text)))
+			    #'add-node-msdf)))
     
     ;; (push-callback key-callbacks +xk-escape+ :press (lambda (keysym)
     ;; 							(handle-escape controller keysym)))
@@ -512,6 +512,40 @@
 					     0
       					     (offset-bytes-textures *model*))
       				       (list "nodes"
+				       	     0
+      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
+				       					  (digraph:count-edges digraph)))))))))
+
+(defun add-node-msdf (keysym)
+  (with-slots (digraph
+	       node-pointer
+	       scale-node
+	       cursor)
+      *model*
+    (let* ((cursor-new (vec3 (+ (vx3 cursor) 1.0)
+			     (vy3 cursor)
+			     (vz3 cursor)))
+	   (node (init-node-msdf cursor-new
+				 scale-node
+				 (digraph:count-vertices digraph)
+				 (code-char keysym))))
+      
+      ;; node-pointer or use digraph:root
+      
+      (update-transform (model-matrix node))
+      
+      (digraph:insert-vertex digraph node)
+
+      (digraph:insert-edge digraph node-pointer node)
+
+      (setf node-pointer node)
+      (setf cursor cursor-new)
+      
+      (copy-node-to-shm node
+			(* (index node)
+			   (/ +size-struct-instance+ 4)))
+
+      (memcpy-shm-to-cache-flag* (list (list "nodes"
 				       	     0
       				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
 				       					  (digraph:count-edges digraph)))))))))
