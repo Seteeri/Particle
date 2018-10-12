@@ -256,8 +256,10 @@
     (if nil
 	(run-compute-copy)
 	(run-compute))
-    
-    (run-raster)
+
+    ;; Have run-raster run all programs in a specified order
+    ;; (run-raster-default)
+    (run-raster-msdf)
     
     (when sync
       ;; Create fence, which previous portion will check for

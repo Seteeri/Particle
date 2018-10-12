@@ -109,7 +109,7 @@
 ;;     ;; Use different pre-setup VAOs instead of individual bindings
 ;;     (gl:bind-vertex-array (aref vaos ix-fence))))
 
-(defun run-raster ()
+(defun run-raster-default ()
 
   (gl:use-program (program-default *view*))
 
@@ -121,6 +121,18 @@
   ;; (%gl:draw-elements-instanced :triangles 6 :unsigned-int (null-pointer) 64)
   (%gl:draw-elements-indirect :triangles
 			      :unsigned-int
-			      0) ;; nullptr or offset into buffer
+			      0)) ;; nullptr or offset into buffer
+
+(defun run-raster-msdf ()
+
+  (gl:use-program (program-msdf *view*))
+
+  (update-raster-buffer-bindings)
+
+  (gl:clear :color-buffer-bit :depth-buffer-bit)
   
-  t)
+  ;; (%gl:draw-elements :triangles 6 :unsigned-int (null-pointer))
+  ;; (%gl:draw-elements-instanced :triangles 6 :unsigned-int (null-pointer) 64)
+  (%gl:draw-elements-indirect :triangles
+			      :unsigned-int
+			      0)) ;; nullptr or offset into buffer
