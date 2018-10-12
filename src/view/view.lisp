@@ -18,6 +18,7 @@
    (inst-max :accessor inst-max :initarg :inst-max :initform nil)
    
    ;; Programs
+   ;; program-* -> array/list
    (program-default :accessor program-default :initarg :program-default :initform nil)
    (program-msdf :accessor program-msdf :initarg :program-msdf :initform nil)
    (program-compute :accessor program-compute :initarg :program-compute :initform nil)
@@ -113,6 +114,7 @@
 				     :adjustable nil
 				     :initial-element (null-pointer))
 		 :program-default (init-program-default)
+		 :program-msdf (init-program-msdf)
 		 :program-compute (init-program-compute)
 		 :inst-max inst-max))
 

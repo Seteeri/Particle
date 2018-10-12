@@ -1,5 +1,35 @@
 (in-package :protoform.view)
 
+(defun init-program-msdf ()
+  (let* ((program (gl:create-program)))
+    (let* ((dir-sys-src (asdf:system-source-directory :protoform))
+	   (shaders-vert (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
+			       (merge-pathnames #P"glsl/msdf.vs.glsl" dir-sys-src)))
+	   (shaders-frag (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
+			       (merge-pathnames #P"glsl/filter-bilinear.fs.glsl" dir-sys-src)
+			       (merge-pathnames #P"glsl/msdf.fs.glsl" dir-sys-src)))
+	   (log-vert (cad-shader :vertex-shader
+				 program
+				 shaders-vert))
+	   (log-frag (cad-shader :fragment-shader
+				 program
+				 shaders-frag)))
+      (if (> (length log-vert) 0)
+	  (fmt-view t "init-program-default" "Shader log: ~%~a~%" log-vert)
+	  (fmt-view t "init-program-default" "Compiled and attached vertex shader sucessfully~%"))
+      (if (> (length log-frag) 0)
+	  (fmt-view t "init-program-default" "Shader log: ~%~a~%" log-frag)
+	  (fmt-view t "init-program-default" "Compiled and attached fragment shader sucessfully~%")))
+    
+    (gl:link-program program)
+    
+    (let ((log-prog (gl:get-program-info-log program)))
+      (if (> (length log-prog) 0)
+	  (fmt-view t "init-program-default" "Program log: ~%~a~%" log-prog)
+      	  (fmt-view t "init-program-default" "Compiled program sucessfully~%")))
+    
+    program))
+
 (defun init-program-default ()
   ;; Create defparameters for the paths - or model can pass it
   (let* ((program (gl:create-program)))
@@ -32,6 +62,7 @@
     program))
 
 (defun init-buffers-raster (params-shm)
+  ;; VAO per program?
   (with-slots (vaos)
       *view*
     ;; Setup vaos/bindings for each step
