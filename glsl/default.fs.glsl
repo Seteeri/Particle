@@ -12,8 +12,6 @@ in uv_t vertexUV;
 
 layout(location = 0) out vec4 color;
 
-// Implement filter_bicubic
-
 void main()
 {
     // Note UV's v coord flipped in vertex shader
