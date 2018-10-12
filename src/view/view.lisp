@@ -91,7 +91,7 @@
   
   (gl:enable :cull-face)
   (gl:enable :depth-test)
-  ;; (gl:enable :blend)
+  (gl:enable :blend)
   (gl:blend-func :src-alpha :one-minus-src-alpha)
   
   (%gl:clear-color 0.0
@@ -184,7 +184,8 @@
 
   (fmt-view t "init-view" "Initializing shader bindings~%")
   ;; Shader specific initialization
-  (init-buffers-raster params-model)
+  (init-buffers-raster-default params-model)
+  (init-buffers-raster-msdf params-model)
   (init-buffers-compute params-model)
 
   ;; At this point, shm already has data loaded by model

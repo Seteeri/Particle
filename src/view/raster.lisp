@@ -61,8 +61,19 @@
     
     program))
 
-(defun init-buffers-raster (params-shm)
+(defun init-buffers-raster-default (params-shm)
   ;; VAO per program?
+  (gl:use-program (program-default *view*))
+  (with-slots (vaos)
+      *view*
+    ;; Setup vaos/bindings for each step
+    ;; 1 bind vao > many bind buffer calls
+    (let ((vao (init-vao)))
+      (vector-push vao vaos))))
+
+(defun init-buffers-raster-msdf (params-shm)
+  ;; VAO per program?
+  (gl:use-program (program-msdf *view*))
   (with-slots (vaos)
       *view*
     ;; Setup vaos/bindings for each step

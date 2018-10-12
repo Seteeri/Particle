@@ -137,9 +137,11 @@
 
   ;; Convert ppm to bytes offline for faster loading
   ;; Or turn into lisp data and make a vector
+
+  ;; Load into textures for now...
   
   (with-slots (ptr size)
-      (gethash "glyphs-msdf" (handles-shm *model*))
+      (gethash "texture" (handles-shm *model*))
     
     (loop
        :for code :from 32 :to 255
