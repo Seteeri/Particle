@@ -328,14 +328,14 @@
     (let ((n-0 (init-node-msdf (vec3 0 0 0)
 			       (scale-node *model*)
 			       0
-			       "X")))
+			       #\X)))
       
       (update-transform (model-matrix n-0))
       
       (digraph:insert-vertex digraph n-0)
       
       (copy-nodes-to-shm)
-      (copy-textures-to-shm)
+      ;; (copy-textures-to-shm)
       
       (fmt-model t "main-model" "Init conn to view swank server~%")
       (setup-view))))

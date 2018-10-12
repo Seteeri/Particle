@@ -158,10 +158,10 @@
 			     :model-matrix (make-instance 'model-matrix
 							  :scale scale
 							  :translation cursor)))
-	(metrics-glyph (gethash (char-code #\X) (metrics *model*))))
+	(metrics-glyph (gethash (char-code data) (metrics *model*))))
 
     ;; ascii - 32
-    (setf (offset-texel-texture node) (- (char-code #\X) 32))
+    (setf (offset-texel-texture node) (* (- (char-code data) 32) 96 96))
     (setf (dims-texture node) (vec2 96 96))
 
     ;; set UVs

@@ -167,23 +167,25 @@
 	       (nv/ left-bottom  (/ 96 5.8239365))
 
 	       ;; Flatten
-	       (setf (aref uv 0) (vx2 right-bottom))
-	       (setf (aref uv 1) (vy2 right-bottom))
+	       (setf (aref uv 0) (vx2 right-top))
+	       (setf (aref uv 1) (vy2 right-top))
 	       (setf (aref uv 2) 0.0)
 	       (setf (aref uv 3) 0.0)
 	       
-	       (setf (aref uv 4) (vx2 right-top))
-	       (setf (aref uv 5) (vy2 right-top))
+	       (setf (aref uv 4) (vx2 right-bottom))
+	       (setf (aref uv 5) (vy2 right-bottom))
 	       (setf (aref uv 6) 0.0)
 	       (setf (aref uv 7) 0.0)
-	       
-	       (setf (aref uv 8) (vx2 left-top))
-	       (setf (aref uv 9) (vy2 left-top))
+
+	       (setf (aref uv 8) (vx2 left-bottom))
+	       (setf (aref uv 9) (vy2 left-bottom))
 	       (setf (aref uv 10) 0.0)
 	       (setf (aref uv 11) 0.0)
 	       
-	       (setf (aref uv 12) (vx2 left-bottom))
-	       (setf (aref uv 13) (vy2 left-bottom))
+	       (setf (aref uv 12) (vx2 left-top))
+	       (setf (aref uv 13) (vy2 left-top))
 	       (setf (aref uv 14) 0.0)
 	       (setf (aref uv 15) 0.0)
+	       
+
 	       )))))
