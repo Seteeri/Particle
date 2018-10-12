@@ -1,6 +1,6 @@
 (in-package :protoform.view)
 
-(defun init-program-raster ()
+(defun init-program-default ()
   ;; Create defparameters for the paths - or model can pass it
   (let* ((program (gl:create-program)))
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
@@ -16,18 +16,18 @@
 				 program
 				 shaders-frag)))
       (if (> (length log-vert) 0)
-	  (fmt-view t "init-program-raster" "Shader log: ~%~a~%" log-vert)
-	  (fmt-view t "init-program-raster" "Compiled and attached vertex shader sucessfully~%"))
+	  (fmt-view t "init-program-default" "Shader log: ~%~a~%" log-vert)
+	  (fmt-view t "init-program-default" "Compiled and attached vertex shader sucessfully~%"))
       (if (> (length log-frag) 0)
-	  (fmt-view t "init-program-raster" "Shader log: ~%~a~%" log-frag)
-	  (fmt-view t "init-program-raster" "Compiled and attached fragment shader sucessfully~%")))
+	  (fmt-view t "init-program-default" "Shader log: ~%~a~%" log-frag)
+	  (fmt-view t "init-program-default" "Compiled and attached fragment shader sucessfully~%")))
     
     (gl:link-program program)
     
     (let ((log-prog (gl:get-program-info-log program)))
       (if (> (length log-prog) 0)
-	  (fmt-view t "init-program-raster" "Program log: ~%~a~%" log-prog)
-      	  (fmt-view t "init-program-raster" "Compiled program sucessfully~%")))
+	  (fmt-view t "init-program-default" "Program log: ~%~a~%" log-prog)
+      	  (fmt-view t "init-program-default" "Compiled program sucessfully~%")))
     
     program))
 
@@ -80,7 +80,7 @@
 
 (defun run-raster ()
 
-  (gl:use-program (program-raster *view*))
+  (gl:use-program (program-default *view*))
 
   (update-raster-buffer-bindings)
 

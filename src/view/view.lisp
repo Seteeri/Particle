@@ -18,7 +18,7 @@
    (inst-max :accessor inst-max :initarg :inst-max :initform nil)
    
    ;; Programs
-   (program-raster :accessor program-raster :initarg :program-raster :initform nil)
+   (program-default :accessor program-default :initarg :program-default :initform nil)
    (program-compute :accessor program-compute :initarg :program-compute :initform nil)
    
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
@@ -36,7 +36,7 @@
    (ix-fence :accessor ix-fence :initarg :ix-fence :initform 0)))
 
 (defun clean-up-view (view)
-  (with-slots (program-raster
+  (with-slots (program-default
 	       program-compute
 	       boav-main
 	       boa-uniform-projview
@@ -59,8 +59,8 @@
 
     (%gl:use-program 0)
     
-    (%gl:delete-program program-raster)
-    (format t "[clean-up-view] Deleted program ~a~%" program-raster)
+    (%gl:delete-program program-default)
+    (format t "[clean-up-view] Deleted program ~a~%" program-default)
     (%gl:delete-program program-compute)
     (format t "[clean-up-view] Deleted program ~a~%" program-compute)
 
@@ -111,7 +111,7 @@
 		 :fences (make-array 3
 				     :adjustable nil
 				     :initial-element (null-pointer))
-		 :program-raster (init-program-raster)
+		 :program-default (init-program-default)
 		 :program-compute (init-program-compute)
 		 :inst-max inst-max))
 
