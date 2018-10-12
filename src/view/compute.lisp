@@ -4,7 +4,7 @@
   (let* ((program (gl:create-program)))
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
 	   (path-struct (merge-pathnames #P"glsl/structs.glsl" dir-sys-src))
-	   (path-main (merge-pathnames #P"glsl/msdf.cs.glsl" dir-sys-src))
+	   (path-main (merge-pathnames #P"glsl/default.cs.glsl" dir-sys-src))
 	   (log-main (cad-shader :compute-shader
 				 program
 				 (list path-struct
