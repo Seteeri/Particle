@@ -144,3 +144,33 @@
 					     (* (index node)
 						(/ +size-struct-instance+ 4))))
 			 (digraph *model*)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun init-node-msdf (cursor
+		       scale
+		       ix
+		       data)
+  ;; TODO: use data
+  (let ((node (make-instance 'node
+			     :data data
+			     :index ix
+			     :model-matrix (make-instance 'model-matrix
+							  :scale scale
+							  :translation cursor)))
+	(metrics-glyph (gethash (char-code #\X) (metrics *model*))))
+
+    ;; ascii - 32
+    (setf (offset-texel-texture node) (- (char-code #\X) 32))
+    (setf (dims-texture node) (vec2 96 96))
+
+    ;; set UVs
+    (with-slots (scale-uv)
+	metrics-glyph
+      (setf (vx3 (scale (model-matrix node))) (vx2 scale-uv))
+      (setf (vy3 (scale (model-matrix node))) (vy2 scale-uv)))
+    
+    ;; Update transform
+    (update-transform (model-matrix node))
+    
+    node))

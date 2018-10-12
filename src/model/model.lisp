@@ -315,6 +315,31 @@
       (fmt-model t "main-model" "Init conn to view swank server~%")
       (setup-view))))
 
+(defun init-graph-msdf ()
+  ;; Create DAG
+  (let ((digraph (digraph:make-digraph)))
+
+    (setf (digraph *model*) digraph)
+
+    ;; Create vertices/edge then generate nodes
+    ;; Normally user will create these through input (controller)
+    
+    ;; Node 1
+    (let ((n-0 (init-node-msdf (vec3 0 0 0)
+			       (scale-node *model*)
+			       0
+			       "X")))
+      
+      (update-transform (model-matrix n-0))
+      
+      (digraph:insert-vertex digraph n-0)
+      
+      (copy-nodes-to-shm)
+      (copy-textures-to-shm)
+      
+      (fmt-model t "main-model" "Init conn to view swank server~%")
+      (setup-view))))
+
 (defun main-model (width height
 		   inst-max
 		   path-server-model)
@@ -335,7 +360,7 @@
   
   (fmt-model t "main-model" "Init graph~%")
 
-  (init-graph)
+  (init-graph-msdf)
 
   (defparameter *controller* (init-controller))
 
