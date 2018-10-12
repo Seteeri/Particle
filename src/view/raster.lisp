@@ -4,7 +4,7 @@
   (let* ((program (gl:create-program)))
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
 	   (shaders-vert (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
-			       (merge-pathnames #P"glsl/msdf.vs.glsl" dir-sys-src)))
+			       (merge-pathnames #P"glsl/node.vs.glsl" dir-sys-src)))
 	   (shaders-frag (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
 			       (merge-pathnames #P"glsl/filter-bilinear.fs.glsl" dir-sys-src)
 			       (merge-pathnames #P"glsl/msdf.fs.glsl" dir-sys-src)))
@@ -35,10 +35,10 @@
   (let* ((program (gl:create-program)))
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
 	   (shaders-vert (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
-			       (merge-pathnames #P"glsl/default.vs.glsl" dir-sys-src)))
+			       (merge-pathnames #P"glsl/node.vs.glsl" dir-sys-src)))
 	   (shaders-frag (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
 			       (merge-pathnames #P"glsl/filter-bilinear.fs.glsl" dir-sys-src)
-			       (merge-pathnames #P"glsl/default.fs.glsl" dir-sys-src)))
+			       (merge-pathnames #P"glsl/node.fs.glsl" dir-sys-src)))
 	   (log-vert (cad-shader :vertex-shader
 				 program
 				 shaders-vert))

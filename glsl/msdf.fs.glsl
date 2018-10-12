@@ -8,6 +8,7 @@ uniform samplerBuffer msdf;
 in rgba_t vertexRGBA;
 flat in int vertexOffsetTex;
 flat in ivec2 vertexDimsTex;
+flat in vec2 vertexDimsTexOffset;
 in uv_t vertexUV;
 
 layout(location = 0) out vec4 color;
@@ -19,7 +20,11 @@ float median(float r, float g, float b)
 
 void main()
 {
-    vec4 samp = filter_bilinear(msdf, vertexOffsetTex, vertexDimsTex, vertexUV);
+    vec4 samp = filter_bilinear(msdf, 
+                                vertexOffsetTex,
+                                vertexDimsTex,
+                                vertexUV,
+                                vertexDimsTexOffset);
     
     float sigDist = median(samp.r, samp.g, samp.b);
     float w = fwidth(sigDist);

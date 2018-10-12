@@ -8,6 +8,7 @@ uniform samplerBuffer msdf;
 in rgba_t vertexRGBA;
 flat in int vertexOffsetTex;
 flat in ivec2 vertexDimsTex;
+flat in vec2 vertexDimsTexOffset;
 in uv_t vertexUV;
 
 layout(location = 0) out vec4 color;
@@ -24,6 +25,10 @@ void main()
     //color = texelFetch(msdf, coord.x + (coord.y * 58));
     
     // Switch B and R due to Pango layout
-    vec4 colorFiltered = filter_bilinear(msdf, vertexOffsetTex, vertexDimsTex, vertexUV);
-    color = vec4(colorFiltered.b, colorFiltered.g, colorFiltered.r, colorFiltered.a);
+    vec4 samp = filter_bilinear(msdf, 
+                                vertexOffsetTex,
+                                vertexDimsTex,
+                                vertexUV,
+                                vertexDimsTexOffset);
+    color = vec4(samp.b, samp.g, samp.r, samp.a);
 }

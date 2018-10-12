@@ -3,7 +3,11 @@
 precision mediump float;
 precision mediump samplerBuffer;
 
-vec4 filter_bilinear(samplerBuffer msdf, int vertexOffsetTex, ivec2 vertexDimsTex, uv_t vertexUV)
+vec4 filter_bilinear(samplerBuffer msdf, 
+                      int vertexOffsetTex,
+                      ivec2 vertexDimsTex, 
+                      uv_t vertexUV, 
+                      vec2 vertexDimsTexOffset)
 {
     // https://github.com/WebGLSamples/WebGL2Samples/blob/master/samples/texture_fetch.html
     
@@ -15,8 +19,8 @@ vec4 filter_bilinear(samplerBuffer msdf, int vertexOffsetTex, ivec2 vertexDimsTe
      * texel is located at [S'+0.5, T'+0.5] where S' and T' are the 
      * unnormalized texture coordinates.
      */
-    vec2 f_dims = vec2(float(vertexDimsTex.x-1), float(vertexDimsTex.y-1));
-    vec2 f_coordTexel = vec2(vertexUV.u, vertexUV.v) * f_dims;
+    //vec2 f_dims = vec2(float(vertexDimsTex.x-1), float(vertexDimsTex.y-1));
+    vec2 f_coordTexel = vec2(vertexUV.u, vertexUV.v) * vertexDimsTexOffset;
     ivec2 coordTexel = ivec2(f_coordTexel);
         
     // Below only works when textures are all the same size
