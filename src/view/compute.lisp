@@ -3,12 +3,11 @@
 (defun init-program-compute ()
   (let* ((program (gl:create-program)))
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
-	   (path-struct (merge-pathnames #P"glsl/structs.glsl" dir-sys-src))
-	   (path-main (merge-pathnames #P"glsl/default.cs.glsl" dir-sys-src))
+	   (shaders (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
+			  (merge-pathnames #P"glsl/default.cs.glsl" dir-sys-src)))
 	   (log-main (cad-shader :compute-shader
 				 program
-				 (list path-struct
-				       path-main))))
+				 shaders)))
       (if (> (length log-main) 0)
 	  (fmt-view t "init-program-compute" "Shader log: ~%~a~%" log-main)
 	  (fmt-view t "init-program-compute" "Compiled and attached compute shader sucessfully~%")))

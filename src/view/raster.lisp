@@ -4,17 +4,17 @@
   ;; Create defparameters for the paths - or model can pass it
   (let* ((program (gl:create-program)))
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
-	   (path-struct (merge-pathnames #P"glsl/structs.glsl" dir-sys-src))
-	   (path-vert (merge-pathnames #P"glsl/default.vs.glsl" dir-sys-src))
-	   (path-frag (merge-pathnames #P"glsl/default.fs.glsl" dir-sys-src))
+	   (shaders-vert (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
+			       (merge-pathnames #P"glsl/default.vs.glsl" dir-sys-src)))
+	   (shaders-frag (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
+			       (merge-pathnames #P"glsl/filter-bilinear.fs.glsl" dir-sys-src)
+			       (merge-pathnames #P"glsl/default.fs.glsl" dir-sys-src)))
 	   (log-vert (cad-shader :vertex-shader
 				 program
-				 (list path-struct
-				       path-vert)))
+				 shaders-vert))
 	   (log-frag (cad-shader :fragment-shader
 				 program
-				 (list path-struct
-				       path-frag))))
+				 shaders-frag)))
       (if (> (length log-vert) 0)
 	  (fmt-view t "init-program-raster" "Shader log: ~%~a~%" log-vert)
 	  (fmt-view t "init-program-raster" "Compiled and attached vertex shader sucessfully~%"))
