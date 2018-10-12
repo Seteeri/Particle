@@ -70,12 +70,13 @@
 		 (:module model
 			  :pathname "src/model"
 			  :components ((:file "model")
-				       (:file "matrix-model")
+				       (:file "rpc")
 				       (:file "handle-shm")				       
+				       (:file "matrix-model")
 				       (:file "projview")
 				       (:file "node")
 				       (:file "text")
-				       (:file "rpc")
+				       (:file "metrics")
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "controller")

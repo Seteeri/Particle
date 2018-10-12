@@ -102,6 +102,8 @@
    ;; Instances...
    (inst-max :accessor inst-max :initarg :inst-max :initform nil)
    (digraph :accessor digraph :initarg :digraph :initform nil)
+
+   (metrics :accessor metrics :initarg :metrics :initform nil)   
    
    ;; Textures - list of Texture instances wich store tex parameters
    ;; Use skip list? -> For now use vector
@@ -329,6 +331,7 @@
   (init-shm-data)
 
   (init-glyph-data)
+  (setf (metrics *model*) (init-metrics))
   
   (fmt-model t "main-model" "Init graph~%")
 
