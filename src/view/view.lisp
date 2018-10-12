@@ -19,6 +19,7 @@
    
    ;; Programs
    (program-default :accessor program-default :initarg :program-default :initform nil)
+   (program-msdf :accessor program-msdf :initarg :program-msdf :initform nil)
    (program-compute :accessor program-compute :initarg :program-compute :initform nil)
    
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
