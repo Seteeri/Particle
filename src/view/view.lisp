@@ -159,7 +159,6 @@
 	    ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
 	    ;; Already active...
 	    (gl:active-texture :texture0)
-	    ;; Parse glyph images into texture: (parse-glyphs-ppm bo-texture)	    
 	    
 	    (dotimes (i (count-buffers bo))
 	      (update-binding-buffer bo i)

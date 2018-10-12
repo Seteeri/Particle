@@ -41,7 +41,7 @@
 (defparameter *glyphs-msdf-shm* (list :texture-buffer
 				      "glyphs-msdf"
 				      "/protoform-glyphs-msdf"
-				      16080 ; size of all ppm glyphs
+				      16465920 ; size of all ppm glyphs
 				      -1 -1
 				      :triple
 				      0
@@ -328,6 +328,8 @@
 
   (init-shm-data)
 
+  (init-glyph-data)
+  
   (fmt-model t "main-model" "Init graph~%")
 
   (init-graph)
