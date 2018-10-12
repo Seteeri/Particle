@@ -33,15 +33,24 @@
 (defparameter *nodes-shm* (list :shader-storage-buffer
 				"nodes"
 				"/protoform-nodes"
-				(/ 134217728 2)
+				(/ 134217728 4)
 				2 3
 				:triple
 				0))
 
+(defparameter *glyphs-msdf-shm* (list :texture-buffer
+				      "glyphs-msdf"
+				      "/protoform-glyphs-msdf"
+				      16080 ; size of all ppm glyphs
+				      -1 -1
+				      :triple
+				      0
+				      :rgba8))
+
 (defparameter *texture-shm* (list :texture-buffer
 				  "texture"
 				  "/protoform-texture"
-				  (/ 134217728 2)
+				  (/ 134217728 4)
 				  -1 -1
 				  :triple
 				  0
@@ -74,6 +83,7 @@
 (defparameter *params-shm* (list *projview-shm*
 				 *vertices-shm*
 				 *nodes-shm*
+				 *glyphs-msdf-shm*
 				 *texture-shm*
 				 *element-shm*
 				 *draw-indirect-shm*

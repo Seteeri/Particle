@@ -15,7 +15,7 @@ layout(location = 0) out vec4 color;
 float median(float r, float g, float b) 
 {
     return max(min(r, g), min(max(r, g), b));
-}  
+}
 
 void main()
 {
