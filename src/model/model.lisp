@@ -328,7 +328,8 @@
 
   (init-shm-data)
 
-  (init-glyph-data)
+  (when nil
+    (init-glyph-data))
   
   (fmt-model t "main-model" "Init graph~%")
 
