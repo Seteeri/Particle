@@ -8,7 +8,14 @@ vec4 filter_bilinear(samplerBuffer msdf, int vertexOffsetTex, ivec2 vertexDimsTe
     // https://github.com/WebGLSamples/WebGL2Samples/blob/master/samples/texture_fetch.html
     
     // Move this to vertex shader or CPU/passthrough
-    vec2 f_dims = vec2(float(vertexDimsTex.x-0), float(vertexDimsTex.y-0));
+    // Subtract 1 since coords actually start at 0,0 otherwise visual artifacts will occur
+    /* Make sure you offset your texture coordinates with 1/2 pixel, 
+     * because in OpenGL the texel origin are defined to be the bottom 
+     * left corner of a texel. That means that the exact center of a 
+     * texel is located at [S'+0.5, T'+0.5] where S' and T' are the 
+     * unnormalized texture coordinates.
+     */
+    vec2 f_dims = vec2(float(vertexDimsTex.x-1), float(vertexDimsTex.y-1));
     vec2 f_coordTexel = vec2(vertexUV.u, vertexUV.v) * f_dims;
     ivec2 coordTexel = ivec2(f_coordTexel);
         

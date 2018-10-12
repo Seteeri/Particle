@@ -328,7 +328,7 @@
     (let ((n-0 (init-node-msdf (vec3 0 0 0)
 			       (scale-node *model*)
 			       0
-			       #\X)))
+			       #\A)))
       
       (update-transform (model-matrix n-0))
       

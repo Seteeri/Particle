@@ -167,8 +167,8 @@
     ;; set UVs
     (with-slots (scale-uv)
 	metrics-glyph
-      (setf (vx3 (scale (model-matrix node))) (vx2 scale-uv))
-      (setf (vy3 (scale (model-matrix node))) (vy2 scale-uv)))
+      (setf (vx3 (scale (model-matrix node))) (* (vx2 scale-uv) 10.0))
+      (setf (vy3 (scale (model-matrix node))) (* (vy2 scale-uv) 10.0)))
     
     ;; Update transform
     (update-transform (model-matrix node))
