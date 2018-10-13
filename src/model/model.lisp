@@ -114,7 +114,7 @@
    (node-pointer :accessor node-pointer :initarg :node-pointer :initform nil)
    (cursor :accessor cursor :initarg :cursor :initform (vec3 -10 0 0))
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
-   (scale-node :accessor scale-node :initarg :scale-node :initform 0.01)))
+   (scale-node :accessor scale-node :initarg :scale-node :initform 0.008)))
 
 ;; TODO: Move elsewhere
 (defun init-vector-position ()
@@ -408,65 +408,30 @@
 
   (with-slots (key-callbacks)
       *controller*
-    
-    ;; Create closures for variables needed
-    ;; Controller function should simply call it without arguments except keysym
-    
-    ;; (push-callback key-callbacks +xk-return+ :press
-    ;; 		   #'update-node-text)
 
     (loop
        :for keysym :from 32 :to 255
        :do (progn
 	     (push-callback key-callbacks keysym :press
 			    #'add-node-msdf)))
+
+    (push-callback key-callbacks +xk-backspace+ :press
+		   #'backspace-node-msdf)
     
-    ;; (push-callback key-callbacks +xk-escape+ :press (lambda (keysym)
-    ;; 							(handle-escape controller keysym)))
-
-    ;; (push-callback key-callbacks +xk-backspace+ :press #'handle-backspace)
-    ;; (push-callback key-callbacks +xk-backspace+ :repeat #'handle-backspace)
-
-    ;; (push-callback key-callbacks +xk-delete+ :press #'handle-delete)
-    ;; (push-callback key-callbacks +xk-delete+ :repeat #'handle-delete)
-    
-    ;; camera pan
-    
-    ;; (push-callback key-callbacks +xk-left+ :press #'update-mm-left)
-    ;; (push-callback key-callbacks +xk-left+ :repeat #'update-mm-left)
-
-    ;; (push-callback key-callbacks +xk-right+ :press #'update-mm-right)
-    ;; (push-callback key-callbacks +xk-right+ :repeat #'update-mm-right)
-    
-    ;; (push-callback key-callbacks +xk-up+ :press #'update-mm-up)
-    ;; (push-callback key-callbacks +xk-up+ :repeat #'update-mm-up)
-    
-    ;; (push-callback key-callbacks +xk-down+ :press #'update-mm-dn)
-    ;; (push-callback key-callbacks +xk-down+ :repeat #'update-mm-dn)
-
-    ;; camera zoom
-    
-    ;; (push-callback key-callbacks +xk-minus+ :press #'update-zoom-out)
-    ;; (push-callback key-callbacks +xk-minus+ :repeat #'update-zoom-out)
-
-    ;; (push-callback key-callbacks +xk-equal+ :press #'update-zoom-in)
-    ;; (push-callback key-callbacks +xk-equal+ :repeat #'update-zoom-in)
-
-    ;; cursor
-
-    ;; (push-callback key-callbacks +xk-up+ :press #'handle-up)
-    ;; (push-callback key-callbacks +xk-up+ :repeat #'handle-up)
-    
-    ;; (push-callback key-callbacks +xk-down+ :press #'handle-down)
-    ;; (push-callback key-callbacks +xk-down+ :repeat #'handle-down)
-
-    ;; (push-callback key-callbacks +xk-left+ :press #'handle-left)
-    ;; (push-callback key-callbacks +xk-left+ :repeat #'handle-left)
-
-    ;; (push-callback key-callbacks +xk-right+ :press #'handle-right)
-    ;; (push-callback key-callbacks +xk-right+ :repeat #'handle-right)
-    
-    ;; ascii/ctrl
+    ;; +xk-return+    
+    ;; +xk-escape+
+    ;; +xk-backspace+
+    ;; +xk-delete+
+    ;; +xk-left+
+    ;; +xk-right+
+    ;; +xk-up+
+    ;; +xk-down+
+    ;; +xk-minus+
+    ;; +xk-equal+
+    ;; +xk-up+
+    ;; +xk-down+
+    ;; +xk-left+
+    ;; +xk-right+
     
     t))
 
@@ -515,71 +480,6 @@
 					     0
       					     (offset-bytes-textures *model*))
       				       (list "nodes"
-				       	     0
-      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
-				       					  (digraph:count-edges digraph)))))))))
-
-(defun add-node-msdf (keysym)
-  (with-slots (digraph
-	       node-pointer
-	       scale-node
-	       cursor
-	       metrics)
-      *model*
-    (let* ((metrics-space (gethash 32 metrics))
-	   (spacing (* (advance metrics-space) (scale metrics-space) scale-node))
-	   (cursor-new (vec3 (+ (vx3 cursor) (* 96 scale-node))
-			     (vy3 cursor)
-			     (vz3 cursor)))
-	   (node (init-node-msdf cursor-new
-				 scale-node
-				 (digraph:count-vertices digraph)
-				 (code-char keysym))))
-
-      ;; Advance - origin to origin
-      ;; 1. Find glyph A origin
-      ;;    1. Model trans + glyph trans
-      ;; 2. Set glyph B origin
-      ;;    1. origin A + advance - glyph trans
-
-      (when nil
-	(let* ((prev-metrics (gethash (char-code (data node-pointer)) (metrics *model*)))
-	       (prev-bl (v+ (translation (model-matrix node-pointer))
-			    (vec3 (vx2 (translate prev-metrics))
-				  (vy2 (translate prev-metrics))
-				  0.0)))
-	       (cur-metrics (gethash (char-code (data node-pointer)) (metrics *model*)))
-	       (cur-bl (v+ (translation (model-matrix node-pointer))
-			   (vec3 (vx2 (translate cur-metrics))
-				 (vy2 (translate cur-metrics))
-				 0.0))))
-	  (setf (vx3 (translation (model-matrix node)))
-		(- (+ (vx3 prev-bl)
-		      spacing)
-		   (vx2 (translate cur-metrics))))))
-      
-      ;; node-pointer or use digraph:root
-      
-      (update-transform (model-matrix node))
-      
-      (digraph:insert-vertex digraph node)
-
-      (digraph:insert-edge digraph node-pointer node)
-
-      (setf node-pointer node)
-
-      ;; Keep X, Y will be adjusted
-      (setf cursor (vec3 (vx3 (translation (model-matrix node)))
-			 (vy3 cursor)
-			 (vz3 cursor)))
-
-      (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
-      
-      (copy-node-to-shm node
-			(* (index node)
-			   (/ +size-struct-instance+ 4)))
-
-      (memcpy-shm-to-cache-flag* (list (list "nodes"
 				       	     0
       				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
 				       					  (digraph:count-edges digraph)))))))))
