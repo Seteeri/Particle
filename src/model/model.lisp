@@ -114,7 +114,7 @@
    (node-pointer :accessor node-pointer :initarg :node-pointer :initform nil)
    (cursor :accessor cursor :initarg :cursor :initform (vec3 -10 0 0))
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
-   (scale-node :accessor scale-node :initarg :scale-node :initform (vec3 1.0 1.0 1.0))))
+   (scale-node :accessor scale-node :initarg :scale-node :initform 0.01)))
 
 ;; TODO: Move elsewhere
 (defun init-vector-position ()
@@ -151,6 +151,9 @@
 							:height height
 							:projection-type 'orthographic)
 			       :inst-max inst-max)))
+    
+    ;; (setf (scale-node model) (* 5.8239365 (dpi-glyph model)))
+  
     (init-handle-shm (handles-shm model)
 		     *params-shm*)
     model))
@@ -323,7 +326,7 @@
     ;; Normally user will create these through input (controller)
     
     ;; Node 1
-    (let ((n-0 (init-node-msdf (cursor *model*)
+    (let ((n-0 (init-node-msdf (vcopy3 (cursor *model*))
 			       (scale-node *model*)
 			       0
 			       #\*)))
@@ -520,15 +523,40 @@
   (with-slots (digraph
 	       node-pointer
 	       scale-node
-	       cursor)
+	       cursor
+	       metrics)
       *model*
-    (let* ((cursor-new (vec3 (+ (vx3 cursor) 1.0)
+    (let* ((metrics-space (gethash 32 metrics))
+	   (spacing (* (advance metrics-space) (scale metrics-space) scale-node))
+	   (cursor-new (vec3 (+ (vx3 cursor) (* 96 scale-node))
 			     (vy3 cursor)
 			     (vz3 cursor)))
 	   (node (init-node-msdf cursor-new
 				 scale-node
 				 (digraph:count-vertices digraph)
 				 (code-char keysym))))
+
+      ;; Advance - origin to origin
+      ;; 1. Find glyph A origin
+      ;;    1. Model trans + glyph trans
+      ;; 2. Set glyph B origin
+      ;;    1. origin A + advance - glyph trans
+
+      (when nil
+	(let* ((prev-metrics (gethash (char-code (data node-pointer)) (metrics *model*)))
+	       (prev-bl (v+ (translation (model-matrix node-pointer))
+			    (vec3 (vx2 (translate prev-metrics))
+				  (vy2 (translate prev-metrics))
+				  0.0)))
+	       (cur-metrics (gethash (char-code (data node-pointer)) (metrics *model*)))
+	       (cur-bl (v+ (translation (model-matrix node-pointer))
+			   (vec3 (vx2 (translate cur-metrics))
+				 (vy2 (translate cur-metrics))
+				 0.0))))
+	  (setf (vx3 (translation (model-matrix node)))
+		(- (+ (vx3 prev-bl)
+		      spacing)
+		   (vx2 (translate cur-metrics))))))
       
       ;; node-pointer or use digraph:root
       
@@ -539,7 +567,13 @@
       (digraph:insert-edge digraph node-pointer node)
 
       (setf node-pointer node)
-      (setf cursor cursor-new)
+
+      ;; Keep X, Y will be adjusted
+      (setf cursor (vec3 (vx3 (translation (model-matrix node)))
+			 (vy3 cursor)
+			 (vz3 cursor)))
+
+      (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
       
       (copy-node-to-shm node
 			(* (index node)

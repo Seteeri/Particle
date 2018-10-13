@@ -149,16 +149,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun init-node-msdf (cursor
-		       scale
+		       scale-glyph
 		       ix
 		       data)
-  ;; TODO: use data
+  ;; TODO: use scale
   (let ((node (make-instance 'node
 			     :data data
 			     :index ix
 			     :model-matrix (make-instance 'model-matrix
-							  :scale scale
-							  :translation cursor)))
+							  :scale (vec3 1.0 1.0 1.0)
+							  :translation (vcopy3 cursor))))
 	(metrics-glyph (gethash (char-code data) (metrics *model*))))
 
     ;; ascii - 32
@@ -166,10 +166,23 @@
     (setf (dims-texture node) (vec2 96 96))
 
     ;; set UVs
-    (with-slots (scale-uv)
+    (with-slots (bounds
+		 translate
+		 advance
+		 scale
+		 scale-uv)
 	metrics-glyph
-      (setf (vx3 (scale (model-matrix node))) (* (vx2 scale-uv) 2.5))
-      (setf (vy3 (scale (model-matrix node))) (* (vy2 scale-uv) 2.5)))
+
+      (let ((translation-mm (translation (model-matrix node))))
+	;; (setf (vx3 translation-mm) (- (vx3 cursor) (* (vx2 translate) scale scale-glyph)))
+	(setf (vy3 translation-mm) (- (vy3 cursor) (* (vy2 translate) scale scale-glyph)))
+	(setf (vz3 translation-mm) (vz3 cursor)))
+
+      ;; (fmt-model t "init-node-msdf" "advance: ~a~%" (* advance scale-glyph))
+
+      (let ((scale-mm (scale (model-matrix node))))
+	(setf (vx3 scale-mm) (* (vx2 scale-uv) scale-glyph))
+	(setf (vy3 scale-mm) (* (vy2 scale-uv) scale-glyph))))
     
     ;; Update transform
     (update-transform (model-matrix node))
