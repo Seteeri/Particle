@@ -45,53 +45,6 @@
 					  :initial-contents *uv-default-node*))
    (flags :accessor flags :initarg :flags :initform 1)))
 
-(defun init-node (cursor
-		  scale
-		  ix
-		  data)
-  (let ((node (make-instance 'node
-			     :data data
-			     :index ix
-			     :model-matrix (make-instance 'model-matrix
-							  :scale scale
-							  :translation cursor))))
-    
-    (update-node-texture node
-			 data)
-    
-    ;; Update transform
-    (update-transform (model-matrix node))
-    
-    node))
-
-(defun update-node-texture (node
-			    data)
-
-  (setf (data node) data)
-  
-  ;; Separate this function maybe
-  (multiple-value-bind (offset-texel-texture
-			dims-texture
-			data-size)
-      (convert-pm-to-texture
-       (format nil "<span foreground=\"#FFCC00\" font=\"Inconsolata-g 59\" strikethrough=\"false\">~A</span>" data))
-    
-    (setf (offset-texel-texture node) offset-texel-texture)
-    (setf (dims-texture node) dims-texture)
-
-    (fmt-model t "update-node-texture"
-	       (with-output-to-string (stream)
-		 (write-char #\Newline stream)
-		 (format stream "  Name: ~S~%" data)
-		 (format stream "  Dims: ~S~%" dims-texture)
-		 (format stream "  Start Texels Offset: ~S texels~%" offset-texel-texture)
-		 (format stream "  Data Size: ~S bytes~%" data-size)
-		 (format stream "  Current Offset: ~S bytes~%" (offset-bytes-textures *model*)))))
-
-  ;; Update scale to match texture
-  (setf (vx3 (scale (model-matrix node))) (* (/ 1 96) (vx2 (dims-texture node))))
-  (setf (vy3 (scale (model-matrix node))) (* (/ 1 96) (vy2 (dims-texture node)))))
-
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
     
   (with-slots (ptr size)
@@ -151,7 +104,9 @@
 (defun init-node-msdf (cursor
 		       scale-glyph
 		       ix
-		       data)
+		       data
+		       &optional
+			 (color nil))
 
   (let ((node (make-instance 'node
 			     :data data
@@ -161,6 +116,12 @@
 							  :translation (vcopy3 cursor))))
 	(metrics-glyph (gethash (char-code data) (metrics *model*))))
 
+    ;; Set color
+    (when color
+      (let ((rgba (rgba node)))
+	(dotimes (i 16)
+	  (setf (aref rgba i) (nth i color)))))
+    
     ;; ascii - 32
     (setf (offset-texel-texture node) (* (- (char-code data) 32) 96 96))
     (setf (dims-texture node) (vec2 96 96))

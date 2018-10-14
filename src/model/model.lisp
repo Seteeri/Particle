@@ -91,6 +91,28 @@
 
 (defconstant +size-struct-instance+ 208)
 
+;; From Solaris Red
+;; 220  50  47
+(defparameter *color-default-ptr* (list  (coerce (/ 220 255) 'single-float)
+					 (coerce (/ 50 255)  'single-float)
+					 (coerce (/ 47 255)  'single-float)
+					 (coerce (/ 255 255) 'single-float)
+					 
+					 (coerce (/ 220 255) 'single-float)
+					 (coerce (/ 50 255)  'single-float)
+					 (coerce (/ 47 255)  'single-float)
+					 (coerce (/ 255 255) 'single-float)
+					 
+					 (coerce (/ 220 255) 'single-float)
+					 (coerce (/ 50 255)  'single-float)
+					 (coerce (/ 47 255)  'single-float)
+					 (coerce (/ 255 255) 'single-float)
+					 
+					 (coerce (/ 220 255) 'single-float)
+					 (coerce (/ 50 255)  'single-float)
+					 (coerce (/ 47 255)  'single-float)
+					 (coerce (/ 255 255) 'single-float)))
+
 (defclass model ()
   ((conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
@@ -219,30 +241,29 @@
     (eval-sync conn (format nil "(setf *draw* t)"))))
 
 (defun init-graph-msdf ()
-  ;; Create DAG
-  (let ((digraph (digraph:make-digraph)))
+  (with-slots (cursor
+	       scale-node
+	       digraph
+	       node-pointer)
+      *model*
 
-    (setf (digraph *model*) digraph)
+    (setf digraph (digraph:make-digraph))
 
-    ;; Create vertices/edge then generate nodes
-    ;; Normally user will create these through input (controller)
-    
-    ;; Node 1
-    (let ((n-0 (init-node-msdf (vcopy3 (cursor *model*))
-			       (scale-node *model*)
-			       0
-			       #\>)))
+    ;; Create pointer node
+    (let ((node-ptr (init-node-msdf (vcopy3 cursor)
+				    scale-node
+				    0
+				    #\>
+				    *color-default-ptr*)))
       
-      (update-transform (model-matrix n-0))
+      (update-transform (model-matrix node-ptr))
       
-      (digraph:insert-vertex digraph n-0)
+      (digraph:insert-vertex digraph node-ptr)
       
       (copy-nodes-to-shm)
       ;; (copy-textures-to-shm)
 
-      (setf (node-pointer *model*) n-0)
-      
-      (fmt-model t "main-model" "Init conn to view swank server~%"))))
+      (setf node-pointer node-ptr))))
 
 (defun main-model (width height
 		   inst-max
@@ -255,16 +276,14 @@
 				    inst-max))
   
   (fmt-model t "main-model" "Init shm data~%")
-
   (init-shm-data)
-
   (init-glyph-data)
   (setf (metrics *model*) (init-metrics))
   
   (fmt-model t "main-model" "Init graph~%")
-
   (init-graph-msdf)
 
+  (fmt-model t "main-model" "Init conn to view swank server~%")
   (setup-view addr-swank-view)
   
   (defparameter *controller* (init-controller))
