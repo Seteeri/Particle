@@ -297,6 +297,18 @@
 
        (reset-states-key))))
 
+(defun register-callback-down (seq-key cb)
+  (with-slots (key-callbacks)
+      *controller*
+    (register-callback key-callbacks
+		       seq-key
+		       (list :press)
+		       cb)
+    (register-callback key-callbacks
+		       seq-key
+		       (list :repeat)
+		       cb)))
+  
 (defun register-keyboard-callbacks ()
 
   (with-slots (key-callbacks)
@@ -328,23 +340,15 @@
 			 (fmt-model t "handle-escape" "Model process exiting!~%")
 			 (sb-ext:exit)))
 
-    (register-callback key-callbacks
-		       (list +xk-backspace+)
-		       (list :press)
-		       #'backspace-node-msdf)
+    (register-callback-down (list +xk-backspace+)
+			    #'backspace-node-msdf)
     
     (when t
       (loop
 	 :for keysym :from 32 :to 255
 	 :do (progn
-	       (register-callback key-callbacks
-				  (list keysym)
-				  (list :press)
-				  #'add-node-msdf)
-	       (register-callback key-callbacks
-				  (list keysym)
-				  (list :repeat)
-				  #'add-node-msdf))))
+	       (register-callback-down (list keysym)
+				       #'add-node-msdf))))
 
     ;; ;;; /* Modifiers */
     ;; (defconstant +xk-shift-l+ #xffe1) ;  Left shift 
@@ -377,41 +381,14 @@
     ;; (defconstant +xk-right+ #xff53) ;  Move right, right arrow 
     ;; (defconstant +xk-down+ #xff54) ;  Move down, down arrow 
 
-    (register-callback key-callbacks
-		       (list +xk-left+)
-		       (list :press)
-		       #'move-pointer-left)
-    (register-callback key-callbacks
-		       (list +xk-left+)
-		       (list :repeat)
-		       #'move-pointer-left)
-    
-    (register-callback key-callbacks
-		       (list +xk-up+)
-		       (list :press)
-		       #'move-pointer-up)
-    (register-callback key-callbacks
-		       (list +xk-up+)
-		       (list :repeat)
-		       #'move-pointer-up)
-    
-    (register-callback key-callbacks
-		       (list +xk-right+)
-		       (list :press)
-		       #'move-pointer-right)
-    (register-callback key-callbacks    
-		       (list +xk-right+)
-		       (list :repeat)
-		       #'move-pointer-right)
-  
-    (register-callback key-callbacks
-		       (list +xk-down+)
-		       (list :press)
-		       #'move-pointer-down)
-    (register-callback key-callbacks
-		       (list +xk-down+)
-		       (list :repeat)
-		       #'move-pointer-down)
+    (register-callback-down (list +xk-left+)
+			    #'move-pointer-left)
+    (register-callback-down (list +xk-up+)
+			    #'move-pointer-up)
+    (register-callback-down (list +xk-right+)
+			    #'move-pointer-right)
+    (register-callback-down (list +xk-down+)
+			    #'move-pointer-down)
     
     ;; Print hashtable
     (when nil

@@ -344,7 +344,7 @@
 	       scale-node)
       *model*
     (move-node-y node-pointer
-		 (* 96 scale-node))))
+		 (* (+ 96 (* 9 5.8239365)) scale-node)))) ; add more spacing due to bl adjustments
 
 (defun move-pointer-right (seq-key)
   (with-slots (node-pointer
@@ -358,4 +358,4 @@
 	       scale-node)
       *model*
     (move-node-y node-pointer
-		 (- (* 96 scale-node)))))
+		 (- (* (+ 96 (* 9 5.8239365)) scale-node))))) ; add more spacing due to bl adjustments
