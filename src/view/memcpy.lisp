@@ -19,7 +19,7 @@
 			    name-src
 			    offset
 			    size
-			    &optional (print t))
+			    &optional (print nil))
   (let* ((bo-dest (get-cache-buffer name-dest))
 	 (ptr-dest (aref (ptrs-buffer bo-dest) 0)) ; always 0
 	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*))))))

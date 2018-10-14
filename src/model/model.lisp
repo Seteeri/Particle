@@ -323,7 +323,7 @@
 		       (list +xk-escape+)
 		       (list :press)
 		       (lambda (seq-key)
-			 (clean-up-model)
+			 (clean-up-handles-shm)
 			 (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
 			   (usocket:socket-shutdown sock-swank :io)
 			   (usocket:socket-close sock-swank))
@@ -369,6 +369,31 @@
 			 (list :press :press)
 			 (lambda (seq-key)
 			   (format t "CALLBACK: ~a~%" seq-key))))
+
+    ;; (defconstant +xk-left+ #xff51) ;  Move left, left arrow 
+    ;; (defconstant +xk-up+ #xff52) ;  Move up, up arrow 
+    ;; (defconstant +xk-right+ #xff53) ;  Move right, right arrow 
+    ;; (defconstant +xk-down+ #xff54) ;  Move down, down arrow 
+
+    (register-callback key-callbacks
+		       (list +xk-left+)
+		       (list :press)
+		       #'move-pointer-left)
+    
+    (register-callback key-callbacks
+		       (list +xk-up+)
+		       (list :press)
+		       #'move-pointer-up)
+
+    (register-callback key-callbacks
+		       (list +xk-right+)
+		       (list :press)
+		       #'move-pointer-right)
+
+    (register-callback key-callbacks
+		       (list +xk-down+)
+		       (list :press)
+		       #'move-pointer-down)
     
     ;; Print hashtable
     (when nil

@@ -22,7 +22,7 @@
 	(setf (gethash name handles-shm) mmap)
 	(fmt-model t "init-handle-shm" "~S, ~S bytes~%" path size)))))
 
-(defun clean-up-model ()
+(defun clean-up-handles-shm ()
   (loop 
      :for key :being :the :hash-keys :of (handles-shm *model*)
      :using (hash-value mmap)

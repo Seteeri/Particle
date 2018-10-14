@@ -109,7 +109,7 @@
 	  (setf mods-group (xkb:xkb-state-serialize-mods state 8))
 	  ;; (format t "~a, ~a, ~a~%" mods-depressed mods-latched mods-locked)
 
-	  (when (or (= ev-state +state-event-press+) nil)
+	  (when nil
 	    (fmt-model t "update-keyboard"
 		       "code: ~a, sym: ~a, state: ~a, rep: ~a~%"
 		       (+ ev-keycode 8) (code-char keysym) ev-state repeats))

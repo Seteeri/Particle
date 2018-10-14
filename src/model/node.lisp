@@ -258,3 +258,69 @@
     ;; (fmt-model t "zero-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4))
 
     t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun move-node-x (node displacement)
+  (with-slots (digraph
+	       scale-node)
+      *model*
+
+    (with-slots (model-matrix
+		 index)
+	node
+      (incf (vx3 (translation model-matrix)) displacement)
+      (update-transform model-matrix)
+      (copy-node-to-shm node
+			(* index
+			   (/ +size-struct-instance+ 4)))
+      (memcpy-shm-to-cache-flag* (list (list "nodes"
+				       	     0
+      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
+				       					  (digraph:count-edges digraph)))))))))
+
+(defun move-node-y (node displacement)
+  (with-slots (digraph
+	       scale-node)
+      *model*
+
+    (with-slots (model-matrix
+		 index)
+	node
+      (incf (vy3 (translation model-matrix)) displacement)
+      (update-transform model-matrix)
+      (copy-node-to-shm node
+			(* index
+			   (/ +size-struct-instance+ 4)))
+      (memcpy-shm-to-cache-flag* (list (list "nodes"
+				       	     0
+      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
+				       					  (digraph:count-edges digraph)))))))))
+
+(defun move-pointer-left (seq-key)
+  (with-slots (node-pointer
+	       scale-node)
+      *model*
+    (move-node-x node-pointer
+		 (- (* 96 scale-node)))))
+
+(defun move-pointer-up (seq-key)
+  (with-slots (node-pointer
+	       scale-node)
+      *model*
+    (move-node-y node-pointer
+		 (* 96 scale-node))))
+
+(defun move-pointer-right (seq-key)
+  (with-slots (node-pointer
+	       scale-node)
+      *model*
+    (move-node-x node-pointer
+		 (* 96 scale-node))))
+
+(defun move-pointer-down (seq-key)
+  (with-slots (node-pointer
+	       scale-node)
+      *model*
+    (move-node-y node-pointer
+		 (- (* 96 scale-node)))))
