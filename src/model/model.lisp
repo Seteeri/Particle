@@ -369,17 +369,18 @@
 
   (register-keyboard-callbacks)
   
-  (loop (progn
+  (loop
+     (progn
 
-	  ;; Poll for input events
-	  ;; Dispatch event handlers to update status
-	  (wait-epoll)
+       ;; Poll for input events
+       ;; Dispatch event handlers to update status
+       (wait-epoll)
 
-	  ;; Dispatch callbacks in response to status
-	  ;; Reset keyboard keys
-	  ;; Question: Perform dispatch after updating all events or per event?
-	  (dispatch-callbacks)
-	  (reset-release-keys))))
+       ;; Dispatch callbacks in response to status
+       ;; Reset keyboard keys
+       ;; Question: Perform dispatch after updating all events or per event?
+       (dispatch-callbacks)
+       (reset-release-keys))))
 
 (defun handle-escape (keysym)
   (clean-up-model)

@@ -84,8 +84,7 @@
 				       			     (:file "xkb")
 				       			     (:file "callback")
 				       			     (:file "state")
-				       			     (:file "keysymdef")
-				       			     (:file "projview")))
+				       			     (:file "keysymdef")))
 				       (:module structures
 						:pathname "structures"
 						:components ((:file "dag")))))

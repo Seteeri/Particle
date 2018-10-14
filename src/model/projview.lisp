@@ -51,35 +51,37 @@
 			      (mrotation +vx+ (vx3 camera-rotation))
 			      (mscaling (vec3 1 1 1)))))))
 
-;; Flag dirty also
-
-(defun update-zoom-in (msdf keysym)
+(defun update-zoom-in (keysym)
   (decf (ortho-scale (projview msdf)) (vz3 (camera-displacement (projview msdf))))
-  (update-projview (projview msdf) (conn-view msdf) (mapping-base msdf)))
+  (update-projection-matrix (projview msdf)))
 
-(defun update-zoom-out (msdf keysym)
+(defun update-zoom-out (keysym)
   (incf (ortho-scale (projview msdf)) (vz3 (camera-displacement (projview msdf))))
-  (update-projview (projview msdf) (conn-view msdf) (mapping-base msdf)))
+  (update-projection-matrix (projview msdf)))
 
-(defun update-mm-left (msdf keysym)
-  (with-slots (camera-position camera-displacement) (projview msdf)
+(defun update-mm-left (keysym)
+  (with-slots (camera-position camera-displacement)
+      (projview msdf)
     (decf (vx3 camera-position) (vx3 camera-displacement)))
-  (update-projview (projview msdf) (conn-view msdf) (mapping-base msdf)))
+  (update-projection-matrix (projview msdf)))
 
-(defun update-mm-right (msdf keysym)
-  (with-slots (camera-position camera-displacement) (projview msdf)
+(defun update-mm-right (keysym)
+  (with-slots (camera-position camera-displacement)
+      (projview msdf)
     (incf (vx3 camera-position) (vx3 camera-displacement)))
-  (update-projview (projview msdf) (conn-view msdf) (mapping-base msdf)))
+  (update-projection-matrix (projview msdf)))
 
-(defun update-mm-up (msdf keysym)
-  (with-slots (camera-position camera-displacement) (projview msdf)
+(defun update-mm-up (keysym)
+  (with-slots (camera-position camera-displacement)
+      (projview msdf)
     (incf (vy3 camera-position) (vy3 camera-displacement)))
-  (update-projview (projview msdf) (conn-view msdf) (mapping-base msdf)))
+  (update-projection-matrix (projview msdf)))
 
-(defun update-mm-dn (msdf keysym)
-  (with-slots (camera-position camera-displacement) (projview msdf)
+(defun update-mm-dn (keysym)
+  (with-slots (camera-position camera-displacement)
+      (projview msdf)
     (decf (vy3 camera-position) (vy3 camera-displacement)))
-  (update-projview (projview msdf) (conn-view msdf) (mapping-base msdf)))
+  (update-projection-matrix (projview msdf)))
 
 
 (defun update-clip-planes (msdf)
