@@ -1,59 +1,104 @@
 (in-package :protoform.model)
 
-;; Press should be first press
+;; Use hashtables and sort
+;; {<key seq>} : {<key state>} : {fn1:nil, fn2:nil}
+;; nil/t is dummy
+;; This means callbacks will be called in arbitrary order
 
-(defclass callback-key ()
-  ((up :accessor up :initarg :up :initform (make-array 8 :fill-pointer 0 :adjustable t))
-   (press :accessor press :initarg :press :initform (make-array 8 :fill-pointer 0 :adjustable t))
-   (repeat :accessor repeat :initarg :repeat :initform (make-array 8 :fill-pointer 0 :adjustable t))
-   (release :accessor release :initarg :release :initform (make-array 8 :fill-pointer 0 :adjustable t))))
+(defun get-states (seq-key key-callbacks &optional (add nil))
+  ;; Return value for seq key -> hash table of states
+  (if (gethash seq-key key-callbacks)
+      (gethash seq-key key-callbacks)
+      ;; Key seq does not exist, create, add fn
+      (when add
+	(let ((states (make-hash-table :size 1)))
+	  (setf (gethash seq-key key-callbacks) states)
+	  states))))
 
-(defun get-slot-state (state)
-  (find-symbol (symbol-name state) 'protoform.model))
+(defun get-callbacks (seq-state states &optional (add nil))
+  ;; Return value for seq state -> hash table of fns
+  (if (gethash seq-state states)
+      (gethash seq-state states)
+      ;; Key seq does not exist, create, add fn
+      (when add
+	(let ((callbacks (make-hash-table :size 1)))
+	  (setf (gethash seq-state states) callbacks)
+	  callbacks))))
 
-(defun dispatch-callback (keysym)
-  (with-slots (key-states key-callbacks)
+(defun add-callback (callbacks cb)
+  (if (gethash cb callbacks)
+      ;; Do nothing if already exists
+      nil
+      ;; Callback does not exist, add, return t
+      (setf (gethash cb callbacks) nil)))
+
+(defun remove-callback (callbacks cb)
+  (if (gethash cb callbacks)
+      ;; Callback does exist, remove
+      (remhash cb callbacks)
+      ;; Do nothing if not exists
+      nil))
+
+(defun register-callback (key-callbacks seq-key seq-state cb)
+  (let* ((states (get-states seq-key key-callbacks t))
+	 (callbacks (get-callbacks seq-state states t)))
+    (add-callback callbacks cb)))
+   
+(defun unregister-callback (key-callbacks seq-key seq-state callback)
+  ;; Check each binding
+  (let* ((states (get-states seq-key key-callbacks))
+	 (callbacks (get-callbacks seq-state states)))
+    (remove-callback callbacks cb)))
+
+;; Dispatch functions
+;; Refactor verbosity for dispatch functions
+
+(defun dispatch-seq-key (seq-key &optional (seq-state nil))
+  ;; Dispatch callbacks for specific seq-key and opt seq-state
+  (with-slots (key-callbacks)
       *controller*
-    (let ((state (gethash keysym key-states)))
-      (when state
-	(let ((ck (gethash keysym key-callbacks)))
-	  (when ck
-	    (loop :for cb :across (slot-value ck
-					      (get-slot-state state))
-	       :do (funcall cb keysym))))))))
+    (let ((states (get-states seq-key key-callbacks)))
+      ;; Dispatch for specific seq-state or all if none
+      (if seq-state
+	  (dispatch-seq-state seq-key seq-state states)
+	  (loop
+	     :for seq-state :being :the :hash-keys :of states
+	     ;; :using (hash-value callbacks)
+	     :do (dispatch-seq-state seq-key seq-state states))))))
 
-(defun dispatch-callbacks ()
-  (with-slots (key-states key-callbacks)
+(defun dispatch-seq-state (seq-key seq-state states)
+  (with-slots (key-states)
       *controller*
-    (loop 
-       :for keysym :being :the :hash-keys :of key-callbacks
-       :using (hash-value ck)
-       :for state := (gethash keysym key-states)
-       :do (when state
-	     (loop :for cb :across (slot-value ck
-					      (get-slot-state state))
-		:do (funcall cb keysym))))))
-     
-(defun push-callback (key-callbacks keysym state callback)
-  ;; Ignore if already registered?
-  (if (gethash keysym key-callbacks)
+    (when (is-seq-state-active seq-key seq-state)
+      (dispatch-callbacks seq-key seq-state states))))
 
-      (vector-push-extend callback
-			  (slot-value (gethash keysym key-callbacks)
-				      (get-slot-state state)))
+(defun dispatch-callbacks (seq-key seq-state states)
+  (loop
+     :for cb :being :the :hash-keys :of (get-callbacks seq-state states)
+     ;; :using (hash-value dummy)
+     :do (funcall cb seq-key)))
 
-      (let ((ck (make-instance 'callback-key)))
-	(setf (gethash keysym key-callbacks) ck)
-	(vector-push-extend callback
-			    (slot-value ck
-					(get-slot-state state))))))
+(defun is-seq-state-active (seq-key seq-state)
+  (with-slots (key-states)
+      *controller*
+    ;; Return on first non eq
+    (loop
+       :for key :in seq-key
+       :for state :in seq-state
+       :do (when (not (eq (gethash key key-states) state))
+	     (return-from is-seq-state-active nil)))
+    t))
+  
+(defun dispatch-all-seq-key ()
+  ;; Loop over key callbacks
+  ;; Loop over states
+  ;; Check state for each
+  ;;   If states all match, execute callback
+  ;;   If states don't match, skip
 
-(defun delete-callback (key-callbacks keysym state callback)
-  ;; Delete only if it exists
-  (when (gethash keysym key-callbacks)
-    (let ((ck (gethash keysym key-callbacks)))
-      (when ck
-	(let ((callbacks (slot-value ck
-				     (get-slot-state state))))
-	  (raise "Delete-callback not yet implemented!"))))))
-	  
+  ;; Can do recursive version of this by incorporating loop into dispatch-seq-key upon nil seq-key
+  (loop
+     :for seq-key :being :the :hash-keys :of (key-callbacks *controller*)
+     ;; :using (hash-value states)
+     :do (progn
+	   (dispatch-seq-key seq-key))))

@@ -189,7 +189,7 @@
     
     node))
 
-(defun add-node-msdf (keysym)
+(defun add-node-msdf (seq-key)
   (with-slots (digraph
 	       node-pointer
 	       scale-node
@@ -204,7 +204,7 @@
 	   (node (init-node-msdf cursor-new
 				 scale-node
 				 (digraph:count-vertices digraph)
-				 (code-char keysym))))
+				 (code-char (first seq-key)))))
 
       ;; Advance - origin to origin
       ;; 1. Find glyph A origin
@@ -254,7 +254,7 @@
       				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
 				       					  (digraph:count-edges digraph)))))))))
 
-(defun backspace-node-msdf (keysym)
+(defun backspace-node-msdf (seq-key)
   (with-slots (digraph
 	       node-pointer
 	       scale-node

@@ -21,6 +21,11 @@
 			    keysym
 			    keysym-char)
 
+  ;; Figure out how to handle modifier keys
+  ;; Possible states: PRESS RELEASE UP
+  ;; Should it have REPEAT also?
+  ;; How can user handle mod key pressed by itself
+  
   (with-slots (repeat-char
 	       repeat-timer
 	       repeat-key
@@ -55,7 +60,7 @@
 	   ;; Remove timer only when current repeat key is released
 	   (when (eq keysym repeat-key)
 
-	     (format t "Removed timer ~a~%" repeat-key)
+	     ;; (format t "Removed timer ~a~%" repeat-key)
 	     
 	     (when repeat-timer
 	       (unschedule-timer repeat-timer))
@@ -104,8 +109,8 @@
 	  (setf mods-group (xkb:xkb-state-serialize-mods state 8))
 	  ;; (format t "~a, ~a, ~a~%" mods-depressed mods-latched mods-locked)
 
-	  (when (= ev-state +state-event-press+)
-	    (fmt-model t "update-keybaord"
+	  (when (or (= ev-state +state-event-press+) nil)
+	    (fmt-model t "update-keyboard"
 		       "code: ~a, sym: ~a, state: ~a, rep: ~a~%"
 		       (+ ev-keycode 8) (code-char keysym) ev-state repeats))
 
@@ -132,12 +137,14 @@
   ;; Keys continously pressed will maintain 'press
   ;; If press exceeds repeat delay, timer will handle it and switch to 'repeat
 
+  ;; Modifier keys remain in press state instead of repeat
+  
   (with-slots (key-states)
       *controller*  
     (loop 
        :for keysym :being :the :hash-keys :of key-states
        :using (hash-value state)
        :do (when (and state
-		      (eq state :release)))
-	 (setf (gethash keysym key-states) :up))))
+		      (eq state :release))
+	     (setf (gethash keysym key-states) :up)))))
 

@@ -281,10 +281,10 @@
        ;; Dispatch callbacks in response to status
        ;; Reset keyboard keys
        ;; Question: Perform dispatch after updating all events or per event?
-       (dispatch-callbacks)
+       (dispatch-all-seq-key)
        (reset-release-keys))))
 
-(defun handle-escape (keysym)
+(defun handle-escape (seq-key)
   (clean-up-model)
   (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
     (usocket:socket-shutdown sock-swank :io)
@@ -297,18 +297,6 @@
   (with-slots (key-callbacks)
       *controller*
 
-    (push-callback key-callbacks +xk-escape+ :press
-		   #'handle-escape)
-    
-    (loop
-       :for keysym :from 32 :to 255
-       :do (progn
-	     (push-callback key-callbacks keysym :press
-			    #'add-node-msdf)))
-
-    (push-callback key-callbacks +xk-backspace+ :press
-		   #'backspace-node-msdf)
-    
     ;; +xk-return+    
     ;; +xk-escape+
     ;; +xk-backspace+
@@ -324,6 +312,67 @@
     ;; +xk-left+
     ;; +xk-right+
     
+    (register-callback key-callbacks
+		       (list +xk-escape+)
+		       (list :press)
+		       (lambda (seq-key)
+			 (clean-up-model)
+			 (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
+			   (usocket:socket-shutdown sock-swank :io)
+			   (usocket:socket-close sock-swank))
+			 (fmt-model t "handle-escape" "Model process exiting!~%")
+			 (sb-ext:exit)))
+
+    (register-callback key-callbacks
+		       (list +xk-backspace+)
+		       (list :press)
+		       #'backspace-node-msdf)
+    
+    (when t
+      (loop
+	 :for keysym :from 32 :to 255
+	 :do (progn
+	       (register-callback key-callbacks
+				  (list keysym)
+				  (list :press)
+				  #'add-node-msdf))))
+
+    ;; ;;; /* Modifiers */
+    ;; (defconstant +xk-shift-l+ #xffe1) ;  Left shift 
+    ;; (defconstant +xk-shift-r+ #xffe2) ;  Right shift 
+    ;; (defconstant +xk-control-l+ #xffe3) ;  Left control 
+    ;; (defconstant +xk-control-r+ #xffe4) ;  Right control 
+    ;; (defconstant +xk-caps-lock+ #xffe5) ;  Caps lock 
+    ;; (defconstant +xk-shift-lock+ #xffe6) ;  Shift lock 
+    ;; (defconstant +xk-meta-l+ #xffe7) ;  Left meta 
+    ;; (defconstant +xk-meta-r+ #xffe8) ;  Right meta 
+    ;; (defconstant +xk-alt-l+ #xffe9) ;  Left alt 
+    ;; (defconstant +xk-alt-r+ #xffea) ;  Right alt 
+    ;; (defconstant +xk-super-l+ #xffeb) ;  Left super 
+    ;; (defconstant +xk-super-r+ #xffec) ;  Right super 
+    ;; (defconstant +xk-hyper-l+ #xffed) ;  Left hyper 
+    ;; (defconstant +xk-hyper-r+ #xffee) ;  Right hyper 
+
+    ;; Modifier keys remain in press state instead of repeat
+
+    ;; Test Ctrl-X
+    (register-callback key-callbacks
+		       (list +xk-control-l+ +xk-x+)
+		       (list :press :press)
+		       (lambda (seq-key)
+			 (format t "CALLBACK: ~a~%" seq-key)))
+    
+    ;; Print hashtable
+    (when nil
+      (maphash (lambda (key value)
+		 (format t "Seq-key: ~S = ~S~%" key value)
+		 (maphash (lambda (key value)
+			    (format t "  Seq-state: ~S = ~S~%" key value)
+			    (maphash (lambda (key value)
+				       (format t "    Callback: ~S = ~S~%" key value))
+				     value))
+			  value))
+	       key-callbacks))
     t))
 
 (defun update-node-text (keysym)
