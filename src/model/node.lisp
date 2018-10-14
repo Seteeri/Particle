@@ -337,25 +337,29 @@
 	       scale-node)
       *model*
     (move-node-x node-pointer
-		 (- (* 96 scale-node)))))
+		 (- (* 96 scale-node)))
+    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
 
 (defun move-pointer-up (seq-key)
   (with-slots (node-pointer
 	       scale-node)
       *model*
     (move-node-y node-pointer
-		 (* (+ 96 (* 9 5.8239365)) scale-node)))) ; add more spacing due to bl adjustments
+		 (* (+ 96 (* 9 5.8239365)) scale-node)) ; add more spacing due to bl adjustments
+    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
 
 (defun move-pointer-right (seq-key)
   (with-slots (node-pointer
 	       scale-node)
       *model*
     (move-node-x node-pointer
-		 (* 96 scale-node))))
+		 (* 96 scale-node))
+    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))    
 
 (defun move-pointer-down (seq-key)
   (with-slots (node-pointer
 	       scale-node)
       *model*
     (move-node-y node-pointer
-		 (- (* (+ 96 (* 9 5.8239365)) scale-node))))) ; add more spacing due to bl adjustments
+		 (- (* (+ 96 (* 9 5.8239365)) scale-node))) ; add more spacing due to bl adjustments
+    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))    
