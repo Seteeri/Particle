@@ -50,7 +50,7 @@
 					path-glyphs-msdf))
 	 (metrics (parse-metrics path-metrics)))
     
-    (calculate-uvs-metrics metrics)
+    (calculate-metrics metrics)
     
     metrics))
 
@@ -103,7 +103,7 @@
     ht-metrics))
 
 
-(defun calculate-uvs-metrics (metrics)
+(defun calculate-metrics (metrics)
   (loop
      :for key :being :the :hash-keys :of metrics
      :using (hash-value value)
