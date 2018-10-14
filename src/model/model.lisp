@@ -248,7 +248,7 @@
     (setf digraph (digraph:make-digraph))
 
     ;; Create pointer node
-    (let ((node-ptr (init-node-msdf (vec3 0 0 0)
+    (let ((node-ptr (init-node-msdf (vec3 -11.5199995 14.127416 0)
 				    scale-node
 				    0
 				    #\*
