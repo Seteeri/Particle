@@ -92,9 +92,7 @@
 (defconstant +size-struct-instance+ 208)
 
 (defclass model ()
-  ((width :accessor width :initarg :width :initform nil)
-   (height :accessor height :initarg :height :initform nil)
-   (conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
+  ((conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
 
    (projview :accessor projview :initarg :projview :initform nil)
@@ -144,8 +142,6 @@
 		   path-server-model)
 
   (let* ((model (make-instance 'model
-			       :width width
-			       :height height
 			       :projview (make-instance 'projview
 							:width width
 							:height height
@@ -208,10 +204,12 @@
     (setf (swank-protocol::connection-package conn) "protoform.view")
     
     ;; view should not concern itself with inst-max...
-    (with-slots (width height inst-max)
+    (with-slots (projview inst-max)
 	*model*
-      (eval-sync conn
-		 (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max)))
+      (with-slots (width height)
+	  projview
+	(eval-sync conn
+		   (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max))))
     
     ;; Init buffers
     (eval-sync conn
