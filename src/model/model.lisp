@@ -114,32 +114,10 @@
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
    (scale-node :accessor scale-node :initarg :scale-node :initform 0.008)))
 
-;; TODO: Move elsewhere
-(defun init-vector-position ()
-  (make-array (* 4 4) :element-type 'single-float
-	      ;; top right, bottom right, bottom left, top left
-	      ;;
-	      ;; 3---0
-	      ;; | / |
-	      ;; 2---1
-	      ;;
-	      ;; ccw: 0 2 1 0 3 2
-	      :initial-contents (list 1.0  1.0  0.0  1.0
-				      1.0  0.0  0.0  1.0
-				      0.0  0.0  0.0  1.0
-				      0.0  1.0  0.0  1.0)))
-
-(defun set-matrix (ptr-dest matrix-src offset)
-  (let ((matrix-arr (marr (mtranspose matrix-src))))
-    (dotimes (i 16)
-      (setf (mem-aref ptr-dest :float (+ offset i))
-	    (aref matrix-arr i)))))
-
 ;; Do atomic counter also?
 (defun init-model (width
 		   height
-		   inst-max
-		   path-server-model)
+		   inst-max)
 
   (let* ((model (make-instance 'model
 			       :projview (make-instance 'projview
@@ -171,9 +149,21 @@
       (set-projection-matrix ptr (projection-matrix projview))
       (set-view-matrix ptr (view-matrix projview)))
 
+    ;; top right, bottom right, bottom left, top left
+    ;;
+    ;; 3---0
+    ;; | / |
+    ;; 2---1
+    ;;
+    ;; ccw: 0 2 1 0 3 2    
     (with-slots (ptr size)
 	(gethash "vertices" handles-shm)
-      (let ((data (init-vector-position)))
+      (let ((data (make-array (* 4 4)
+			      :element-type 'single-float
+			      :initial-contents (list 1.0  1.0  0.0  1.0
+						      1.0  0.0  0.0  1.0
+						      0.0  0.0  0.0  1.0
+						      0.0  1.0  0.0  1.0))))
 	(dotimes (i (length data))
 	  (setf (mem-aref ptr :float i)
 		(aref data i)))))
@@ -196,7 +186,9 @@
 	  (setf (mem-aref ptr ::uint i)
 		(aref data i)))))))
 
-(defun setup-view ()
+(defun setup-view (addr-swank-view)
+
+  ;; Get below from addr-swank-view
   
   (let ((conn (init-swank-conn "skynet" 10001)))
 
@@ -226,94 +218,6 @@
     ;; Enable draw flag for view loop
     (eval-sync conn (format nil "(setf *draw* t)"))))
 
-(defun init-graph ()
-  ;; Create DAG
-  (let ((digraph (digraph:make-digraph)))
-
-    (setf (digraph *model*) digraph)
-
-    ;; Create vertices/edge then generate nodes
-    ;; Normally user will create these through input (controller)
-    
-    ;; Node 1
-    (let ((n-0 (init-node (vec3 -8 8 1)
-			  (scale-node *model*)
-			  0
-			  "hello world!"))
-	  (n-1 (init-node (vec3 0 0 0)
-			  (scale-node *model*)
-			  1
-			  " ")) ; "‖↑↓"
-	  (n-2 (init-node (vec3 0 -1 1)
-			  (scale-node *model*)
-			  2
-			  "MASTERMIND")))
-
-      ;; (setf (scale (model-matrix n-1))
-      ;; 	    (vec3 10.0 10.0 1.0))
-      ;; (update-transform (model-matrix n-1))
-
-      ;; * Adjust transforms
-      ;; * Position - center
-      ;; * Rotation - Z
-      ;; * Scale - Y=dist,X=thickness
-      (let* ((mm-0 (model-matrix n-0))
-	     (sca-0 (scale mm-0))
-	     (pos-0 (translation mm-0))
-	     (mm-2 (model-matrix n-2))
-	     (sca-2 (scale mm-2))
-	     (pos-2 (translation mm-2))
-	     (dist (vdistance pos-0 pos-2))
-	     (direction (v- pos-0 pos-2))
-	     (bottom-center (- (vy3 pos-0) (* 0.5 (vy3 sca-0))))
-	     (top-center (+ (vy3 pos-2) (* 0.5 (vy3 sca-2))))
-	     (ang-direct (atan (vy3 direction) (vx3 direction))))
-
-	(with-slots (translation
-		     rotation
-		     scale)
-	    (model-matrix n-1)
-
-	  #|
-	  _[]
-	  |
-	  |_[]
-	  |#
-	  
-	  ;; Set halfway - nodes can have different scales
-
-	  ;; Origin is bottom left
-
-	  (format t "vangle: ~a~%" ang-direct)
-
-	  ;; rads
-	  (setf rotation (vec3 0.0
-			       0.0
-			       (- ang-direct (/ pi 2))))
-	  
-	  (setf translation (vec3 0.0
-				  top-center
-				  0.0))
-	  (setf scale (vec3 0.2
-	  		    dist
-	  		    1.0))
-	  t))
-      
-      (update-transform (model-matrix n-1))
-      
-      (digraph:insert-vertex digraph n-0)
-      (digraph:insert-vertex digraph n-1)
-      (digraph:insert-vertex digraph n-2)
-      
-      (digraph:insert-edge digraph n-0 n-1)
-      (digraph:insert-edge digraph n-1 n-2)
-      
-      (copy-nodes-to-shm)
-      (copy-textures-to-shm)
-      
-      (fmt-model t "main-model" "Init conn to view swank server~%")
-      (setup-view))))
-
 (defun init-graph-msdf ()
   ;; Create DAG
   (let ((digraph (digraph:make-digraph)))
@@ -338,19 +242,17 @@
 
       (setf (node-pointer *model*) n-0)
       
-      (fmt-model t "main-model" "Init conn to view swank server~%")
-      (setup-view))))
+      (fmt-model t "main-model" "Init conn to view swank server~%"))))
 
 (defun main-model (width height
 		   inst-max
-		   path-server-model)
+		   addr-swank-view)
 
   (start-swank-server 10000)
   
   (defparameter *model* (init-model width
 				    height
-				    inst-max
-				    path-server-model))
+				    inst-max))
   
   (fmt-model t "main-model" "Init shm data~%")
 
@@ -363,6 +265,8 @@
 
   (init-graph-msdf)
 
+  (setup-view addr-swank-view)
+  
   (defparameter *controller* (init-controller))
 
   (register-keyboard-callbacks)
@@ -470,3 +374,93 @@
 				       	     0
       				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
 				       					  (digraph:count-edges digraph)))))))))
+
+
+;;;;;;;;;;;;;;;;;;;;
+
+(defun init-graph ()
+  ;; Create DAG
+  (let ((digraph (digraph:make-digraph)))
+
+    (setf (digraph *model*) digraph)
+
+    ;; Create vertices/edge then generate nodes
+    ;; Normally user will create these through input (controller)
+    
+    ;; Node 1
+    (let ((n-0 (init-node (vec3 -8 8 1)
+			  (scale-node *model*)
+			  0
+			  "hello world!"))
+	  (n-1 (init-node (vec3 0 0 0)
+			  (scale-node *model*)
+			  1
+			  " ")) ; "‖↑↓"
+	  (n-2 (init-node (vec3 0 -1 1)
+			  (scale-node *model*)
+			  2
+			  "MASTERMIND")))
+
+      ;; (setf (scale (model-matrix n-1))
+      ;; 	    (vec3 10.0 10.0 1.0))
+      ;; (update-transform (model-matrix n-1))
+
+      ;; * Adjust transforms
+      ;; * Position - center
+      ;; * Rotation - Z
+      ;; * Scale - Y=dist,X=thickness
+      (let* ((mm-0 (model-matrix n-0))
+	     (sca-0 (scale mm-0))
+	     (pos-0 (translation mm-0))
+	     (mm-2 (model-matrix n-2))
+	     (sca-2 (scale mm-2))
+	     (pos-2 (translation mm-2))
+	     (dist (vdistance pos-0 pos-2))
+	     (direction (v- pos-0 pos-2))
+	     (bottom-center (- (vy3 pos-0) (* 0.5 (vy3 sca-0))))
+	     (top-center (+ (vy3 pos-2) (* 0.5 (vy3 sca-2))))
+	     (ang-direct (atan (vy3 direction) (vx3 direction))))
+
+	(with-slots (translation
+		     rotation
+		     scale)
+	    (model-matrix n-1)
+
+	  #|
+	  _[]
+	  |
+	  |_[]
+	  |#
+	  
+	  ;; Set halfway - nodes can have different scales
+
+	  ;; Origin is bottom left
+
+	  (format t "vangle: ~a~%" ang-direct)
+
+	  ;; rads
+	  (setf rotation (vec3 0.0
+			       0.0
+			       (- ang-direct (/ pi 2))))
+	  
+	  (setf translation (vec3 0.0
+				  top-center
+				  0.0))
+	  (setf scale (vec3 0.2
+	  		    dist
+	  		    1.0))
+	  t))
+      
+      (update-transform (model-matrix n-1))
+      
+      (digraph:insert-vertex digraph n-0)
+      (digraph:insert-vertex digraph n-1)
+      (digraph:insert-vertex digraph n-2)
+      
+      (digraph:insert-edge digraph n-0 n-1)
+      (digraph:insert-edge digraph n-1 n-2)
+      
+      (copy-nodes-to-shm)
+      (copy-textures-to-shm)
+      
+      (fmt-model t "main-model" "Init conn to view swank server~%"))))

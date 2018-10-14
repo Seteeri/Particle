@@ -9,6 +9,12 @@
 (defmethod initialize-instance :after ((mm model-matrix) &key)
   (update-transform mm))
 
+(defun set-matrix (ptr-dest matrix-src offset)
+  (let ((matrix-arr (marr (mtranspose matrix-src))))
+    (dotimes (i 16)
+      (setf (mem-aref ptr-dest :float (+ offset i))
+	    (aref matrix-arr i)))))
+
 ;; move to model matrix file?
 (defun update-transform (model-matrix)
   (with-slots (matrix
