@@ -89,7 +89,9 @@
       (setf (mem-aref ptr :int (+ offset-ptr 3)) flags) ; draw
       (incf offset-ptr 4)))
 
-  (fmt-model t "copy-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4)))
+  ;; (fmt-model t "copy-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4))
+
+  t)
 
 ;; TODO: Refactor to pass offsets, range, etc.
 (defun copy-nodes-to-shm ()
@@ -204,7 +206,7 @@
 			 (vy3 cursor)
 			 (vz3 cursor)))
 
-      (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
+      ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
       
       (copy-node-to-shm node
 			(* (index node)
@@ -234,7 +236,7 @@
     (setf cursor (vec3 (- (vx3 cursor) (* 96 scale-node))
 		       (vy3 cursor)
 		       (vz3 cursor)))
-    (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
+    ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
     
     ;; Get predecessor of pointer
     (let ((pred (first (digraph:predecessors digraph node-pointer))))
@@ -253,4 +255,6 @@
     (dotimes (i (/ +size-struct-instance+ 4))
       (setf (mem-aref ptr :int (+ offset-ptr i)) 0))
     
-    (fmt-model t "zero-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4))))
+    ;; (fmt-model t "zero-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4))
+
+    t))

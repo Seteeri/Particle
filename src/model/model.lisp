@@ -301,7 +301,8 @@
        ;; Reset keyboard keys
        ;; Question: Perform dispatch after updating all events or per event?
        (dispatch-all-seq-key)
-       (reset-release-keys))))
+
+       (reset-states-key))))
 
 (defun register-keyboard-callbacks ()
 

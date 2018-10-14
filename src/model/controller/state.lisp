@@ -132,12 +132,30 @@
 				 keysym
 				 keysym-char)))))))
 
-(defun reset-release-keys ()
-  ;; Any keys previously set to 'release -> 'up
-  ;; Keys continously pressed will maintain 'press
-  ;; If press exceeds repeat delay, timer will handle it and switch to 'repeat
+(defun is-modifier-key (keysym)
+  ;; Should use xkb function
+  (if (or (eq keysym +xk-shift-l+)
+	  (eq keysym +xk-shift-r+)
+	  (eq keysym +xk-control-l+)
+	  (eq keysym +xk-control-r+)
+	  (eq keysym +xk-caps-lock+)
+	  (eq keysym +xk-shift-lock+)
+	  (eq keysym +xk-meta-l+)
+	  (eq keysym +xk-meta-r+)
+	  (eq keysym +xk-alt-l+)
+	  (eq keysym +xk-alt-r+)
+	  (eq keysym +xk-super-l+)
+	  (eq keysym +xk-super-r+)
+	  (eq keysym +xk-hyper-l+)
+	  (eq keysym +xk-hyper-r+))
+      t
+      nil))
 
+(defun reset-states-key ()
+  ;; Reset keys to 'up except for 'repeat
+  ;; Press indicates initial press
   ;; Modifier keys remain in press state instead of repeat
+  ;; If press exceeds repeat delay, timer will handle it and switch to 'repeat
   
   (with-slots (key-states)
       *controller*  
@@ -145,6 +163,6 @@
        :for keysym :being :the :hash-keys :of key-states
        :using (hash-value state)
        :do (when (and state
-		      (eq state :release))
+		      (not (eq state :repeat))
+		      (not (is-modifier-key keysym)))
 	     (setf (gethash keysym key-states) :up)))))
-
