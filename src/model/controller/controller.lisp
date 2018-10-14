@@ -51,7 +51,7 @@
     (setf (epoll-fd controller) epoll-fd)
     (setf (epoll-events controller) (foreign-alloc '(:struct event)))))
        
-(defun wait-epoll ()
+(defun dispatch-events-input ()
   (with-slots (context
 	       epoll-fd
 	       epoll-events)

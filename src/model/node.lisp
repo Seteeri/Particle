@@ -123,12 +123,12 @@
       (let ((rgba (rgba node)))
 	(dotimes (i 16)
 	  (setf (aref rgba i) (nth i color)))))
-    
+
     ;; ascii - 32
     (setf (offset-texel-texture node) (* (- (char-code data) 32) 96 96))
     (setf (dims-texture node) (vec2 96 96))
-
-    ;; set UVs
+    
+    ;; Set UVs
     (with-slots (bounds
 		 translate
 		 advance

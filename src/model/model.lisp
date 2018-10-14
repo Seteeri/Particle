@@ -293,13 +293,8 @@
   (loop
      (progn
 
-       ;; Poll for input events
-       ;; Dispatch event handlers to update status
-       (wait-epoll)
+       (dispatch-events-input)
 
-       ;; Dispatch callbacks in response to status
-       ;; Reset keyboard keys
-       ;; Question: Perform dispatch after updating all events or per event?
        (dispatch-all-seq-key)
 
        (reset-states-key))))
