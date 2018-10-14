@@ -75,6 +75,7 @@
 				       (:file "matrix-model")
 				       (:file "projview")
 				       (:file "node")
+				       (:file "pango")
 				       (:file "text")
 				       (:file "metrics")
 				       (:module controller
