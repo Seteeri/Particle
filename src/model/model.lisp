@@ -329,7 +329,7 @@
     (let ((n-0 (init-node-msdf (vcopy3 (cursor *model*))
 			       (scale-node *model*)
 			       0
-			       #\*)))
+			       #\>)))
       
       (update-transform (model-matrix n-0))
       
@@ -381,34 +381,22 @@
 	  (dispatch-callbacks)
 	  (reset-release-keys))))
 
-(defun handle-escape (model
-		      keysym)
-  
-  (clean-up-model model)
-  (glfw:set-window-should-close))
-
-(defun clean-up-model (model)
-  (loop 
-     :for key :being :the :hash-keys :of (handles-shm model)
-     :using (hash-value mmap)
-     :do (cleanup-mmap mmap))
-
-  (request-exit (conn-model model))
-  
-  (format t "[handle-escape] Model/Controller exiting!~%")
-
-  ;; Only for DRM?
+(defun handle-escape (keysym)
+  (clean-up-model)
+  (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
+    (usocket:socket-shutdown sock-swank :io)
+    (usocket:socket-close sock-swank))
+  (fmt-model t "handle-escape" "Model process exiting!~%")
   (sb-ext:exit))
-
-;; /proc/sys/net/core/rmem_default for recv and /proc/sys/net/core/wmem_default
-;; 212992
-;; They contain three numbers, which are minimum, default and maximum memory size values (in byte), respectively.
 
 (defun register-keyboard-callbacks ()
 
   (with-slots (key-callbacks)
       *controller*
 
+    (push-callback key-callbacks +xk-escape+ :press
+		   #'handle-escape)
+    
     (loop
        :for keysym :from 32 :to 255
        :do (progn

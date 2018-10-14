@@ -27,6 +27,7 @@ void main()
     vertexRGBA = instances_out[gl_InstanceID].rgbas[gl_VertexID];
     
     // Flip y since OpenGL stores bottom first (or do in compute shader)
+    // Do this on CPU side
     vertexUV.u = instances_out[gl_InstanceID].uvs[gl_VertexID].u;
     vertexUV.v = 1.0 - instances_out[gl_InstanceID].uvs[gl_VertexID].v;
     

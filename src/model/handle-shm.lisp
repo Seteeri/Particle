@@ -13,7 +13,6 @@
 			 flag-copy
 			 &rest rest)
 	params
-      ;; Is data needed persistently?
       (let ((mmap (init-mmap path
 			     size
 			     t ; create - replace these types with symbols
@@ -22,3 +21,9 @@
 					       :initial-element (coerce 0 '(unsigned-byte 8))))))
 	(setf (gethash name handles-shm) mmap)
 	(fmt-model t "init-handle-shm" "~S, ~S bytes~%" path size)))))
+
+(defun clean-up-model ()
+  (loop 
+     :for key :being :the :hash-keys :of (handles-shm *model*)
+     :using (hash-value mmap)
+     :do (cleanup-mmap mmap)))

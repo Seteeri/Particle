@@ -1,6 +1,12 @@
 #version 320 es
 
-// use vec4s?
+// MSDF
+// UVs are the same
+// Text dims are the same
+// RGBAs are the same - likely to be utilized dynamically
+
+// stpq
+// TODO: use vec4 -> simpler
 struct uv_t {
     float u;
     float v;
@@ -8,7 +14,7 @@ struct uv_t {
     float t;
 };
 
-// use vec4s?
+// TODO: use vec4 -> simpler
 struct rgba_t {
     float r;
     float g;

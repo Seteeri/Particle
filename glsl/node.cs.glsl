@@ -76,12 +76,11 @@ void main()
 
 // Frustum Culling
 // 0. Calculate clip planes on CPU and set uniform
-//    1. TODO: Implement here...only needs to be done once however
+//    1. Only needs to be done once for proj matrix
 // 1. Calculate OOB
-//    1. Use proj/view/model/vertices
-//    2. Save transform into vbo for vertex shader (do later)
-//       (Use drawarrays instead of elements)
-//       (Create another vbo and use instead of model_matrix)
+//    1. For nodes, since they are square, it is already the OOB
+//    2. Save transform into SSBO for vertex shader (do later)
+//       1. Need not do P*V*M*Vertex
 // 2. Cull
 //    1. Copy drawable transforms into cull buffer
 //    2. Copy non-drawable transforms into another buffer?
