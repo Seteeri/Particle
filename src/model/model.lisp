@@ -132,7 +132,6 @@
 
    (metrics :accessor metrics :initarg :metrics :initform nil)
    (node-pointer :accessor node-pointer :initarg :node-pointer :initform nil)
-   (cursor :accessor cursor :initarg :cursor :initform (vec3 -10 0 0))
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
    (scale-node :accessor scale-node :initarg :scale-node :initform 0.008)))
 
@@ -241,8 +240,7 @@
     (eval-sync conn (format nil "(setf *draw* t)"))))
 
 (defun init-graph-msdf ()
-  (with-slots (cursor
-	       scale-node
+  (with-slots (scale-node
 	       digraph
 	       node-pointer)
       *model*
@@ -250,10 +248,10 @@
     (setf digraph (digraph:make-digraph))
 
     ;; Create pointer node
-    (let ((node-ptr (init-node-msdf (vcopy3 cursor)
+    (let ((node-ptr (init-node-msdf (vec3 0 0 0)
 				    scale-node
 				    0
-				    #\>
+				    #\*
 				    *color-default-ptr*)))
       
       (update-transform (model-matrix node-ptr))
@@ -379,20 +377,36 @@
 		       (list +xk-left+)
 		       (list :press)
 		       #'move-pointer-left)
+    (register-callback key-callbacks
+		       (list +xk-left+)
+		       (list :repeat)
+		       #'move-pointer-left)
     
     (register-callback key-callbacks
 		       (list +xk-up+)
 		       (list :press)
 		       #'move-pointer-up)
-
+    (register-callback key-callbacks
+		       (list +xk-up+)
+		       (list :repeat)
+		       #'move-pointer-up)
+    
     (register-callback key-callbacks
 		       (list +xk-right+)
 		       (list :press)
 		       #'move-pointer-right)
-
+    (register-callback key-callbacks    
+		       (list +xk-right+)
+		       (list :repeat)
+		       #'move-pointer-right)
+  
     (register-callback key-callbacks
 		       (list +xk-down+)
 		       (list :press)
+		       #'move-pointer-down)
+    (register-callback key-callbacks
+		       (list +xk-down+)
+		       (list :repeat)
 		       #'move-pointer-down)
     
     ;; Print hashtable

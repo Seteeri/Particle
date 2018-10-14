@@ -26,7 +26,7 @@
 					  (coerce (/ 255 255) 'single-float)))
 
 (defclass node ()
-  ((data :accessor data :initarg :data :initform nil) ; formerly chr
+  ((data :accessor data :initarg :data :initform nil)
    (index :accessor index :initarg :index :initform nil)
    (origin :accessor origin :initarg :origin :initform (vec3 0 0 0))
    (model-matrix :accessor model-matrix :initarg :model-matrix :initform (make-instance 'model-matrix))
@@ -153,65 +153,75 @@
     node))
 
 (defun add-node-msdf (seq-key)
+  ;; Add node to pointer position
+  ;; Move pointer right
+  ;; Maybe have pointer appear below/above so edge will show
+
+  ;; Advance - origin to origin
+  ;; 1. Find glyph A origin
+  ;;    1. Model trans + glyph trans
+  ;; 2. Set glyph B origin
+  ;;    1. origin A + advance - glyph trans  
   (with-slots (digraph
 	       node-pointer
 	       scale-node
-	       cursor
 	       metrics)
       *model*
     (let* ((metrics-space (gethash 32 metrics))
 	   (spacing (* (advance metrics-space) (scale metrics-space) scale-node))
-	   (cursor-new (vec3 (+ (vx3 cursor) (* 96 scale-node))
-			     (vy3 cursor)
-			     (vz3 cursor)))
-	   (node (init-node-msdf cursor-new
+	   (cursor (translation (model-matrix node-pointer)))
+	   (node (init-node-msdf (vcopy3 cursor)
 				 scale-node
 				 (digraph:count-vertices digraph)
 				 (code-char (first seq-key)))))
-
-      ;; Advance - origin to origin
-      ;; 1. Find glyph A origin
-      ;;    1. Model trans + glyph trans
-      ;; 2. Set glyph B origin
-      ;;    1. origin A + advance - glyph trans
-
-      (when nil
-	(let* ((prev-metrics (gethash (char-code (data node-pointer)) (metrics *model*)))
-	       (prev-bl (v+ (translation (model-matrix node-pointer))
-			    (vec3 (vx2 (translate prev-metrics))
-				  (vy2 (translate prev-metrics))
-				  0.0)))
-	       (cur-metrics (gethash (char-code (data node-pointer)) (metrics *model*)))
-	       (cur-bl (v+ (translation (model-matrix node-pointer))
-			   (vec3 (vx2 (translate cur-metrics))
-				 (vy2 (translate cur-metrics))
-				 0.0))))
-	  (setf (vx3 (translation (model-matrix node)))
-		(- (+ (vx3 prev-bl)
-		      spacing)
-		   (vx2 (translate cur-metrics))))))
-      
-      ;; node-pointer or use digraph:root
       
       (update-transform (model-matrix node))
       
+      ;; Make new node a child of pointer node
+      ;; and child of previous
+      ;; Old:
+      ;; [a]-[*]
+      ;; graph
+      ;; [*]
+      ;;  |
+      ;; [a]
+      ;;
+      ;; New:
+      ;; [a]-[b]-[*]
+      ;; graph
+      ;; [*]--+
+      ;;      |
+      ;; [a]-[b]
+
       (digraph:insert-vertex digraph node)
-
-      (digraph:insert-edge digraph node-pointer node)
-
-      (setf node-pointer node)
-
-      ;; Keep X, Y will be adjusted
-      (setf cursor (vec3 (vx3 (translation (model-matrix node)))
-			 (vy3 cursor)
-			 (vz3 cursor)))
+      
+      (when (first (digraph:successors digraph node-pointer))
+	;; Insert edge a-b
+	(digraph:insert-edge digraph
+			     (first (digraph:successors digraph node-pointer))
+			     node)
+	;; Remove edge edge *-a
+	(digraph:remove-edge digraph
+			     node-pointer
+			     (first (digraph:successors digraph node-pointer))))
+      ;; Insert edge *-b
+      (digraph:insert-edge digraph
+			   node-pointer
+			   node)
+      ;; Move pointer node to right
+      (move-node-x node-pointer
+		   (* 96 scale-node)
+		   t
+		   nil)
 
       ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
-      
+
+      ;; Copy only this node
       (copy-node-to-shm node
 			(* (index node)
 			   (/ +size-struct-instance+ 4)))
 
+      ;; Copy all nodes
       (memcpy-shm-to-cache-flag* (list (list "nodes"
 				       	     0
       				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
@@ -221,32 +231,45 @@
   (with-slots (digraph
 	       node-pointer
 	       scale-node
-	       cursor
 	       metrics)
       *model*
 
-    ;; Zero node
-    (zero-node-to-shm (* (index node-pointer)
-			 (/ +size-struct-instance+ 4)))
-    (memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	   0
-      				       	   (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
-				       					(digraph:count-edges digraph))))))
+    (let ((node-tgt (first (digraph:successors digraph node-pointer))))
+      (when node-tgt
 
-    (setf cursor (vec3 (- (vx3 cursor) (* 96 scale-node))
-		       (vy3 cursor)
-		       (vz3 cursor)))
-    ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
-    
-    ;; Get predecessor of pointer
-    (let ((pred (first (digraph:predecessors digraph node-pointer))))
-    
-      (digraph:remove-edge digraph node-pointer pred)
-      (digraph:remove-vertex digraph node-pointer)
+	;; Remove node data
+	(zero-node-to-shm (* (index node-tgt)
+			     (/ +size-struct-instance+ 4)))
+	(memcpy-shm-to-cache-flag* (list (list "nodes"
+				       	       0
+      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
+				       					    (digraph:count-edges digraph))))))
+	
+	;; Remove node from graph
+	;; 1. Insert edge: ptr-pred
+	;; 2. Remove edges: ptr-node, pred-node
+	(let ((preds (digraph:predecessors digraph node-tgt)))
+	  ;; Find non-ptr edge and create edge from ptr to pred
+	  (dolist (pred preds)
+	    (if (not (eq pred node-pointer))
+		(digraph:insert-edge digraph
+				     node-pointer
+				     pred)))
+	  ;; Now can remove edges
+	  (dolist (pred preds)
+	    (digraph:remove-edge digraph
+				 pred
+				 node-tgt)))
+	;; Remove vertex
+	(digraph:remove-vertex digraph
+			       node-tgt)
 
-      (setf node-pointer pred))))
-
-
+	;; Move pointer node to left
+	(move-node-x node-pointer
+		     (- (* 96 scale-node))
+		     t
+		     nil)))))
+      
 (defun zero-node-to-shm (&optional (offset-ptr 0))
     
   (with-slots (ptr size)
@@ -261,7 +284,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun move-node-x (node displacement)
+(defun move-node-x (node
+		    displacement
+		    &optional
+		      (copy-to-shm t)
+		      (copy-to-cache t))
   (with-slots (digraph
 	       scale-node)
       *model*
@@ -271,15 +298,21 @@
 	node
       (incf (vx3 (translation model-matrix)) displacement)
       (update-transform model-matrix)
-      (copy-node-to-shm node
-			(* index
-			   (/ +size-struct-instance+ 4)))
-      (memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	     0
-      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
-				       					  (digraph:count-edges digraph)))))))))
+      (when copy-to-shm
+	(copy-node-to-shm node
+			  (* index
+			     (/ +size-struct-instance+ 4))))
+      (when copy-to-cache
+	(memcpy-shm-to-cache-flag* (list (list "nodes"
+				       	       0
+      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
+				       					    (digraph:count-edges digraph))))))))))
 
-(defun move-node-y (node displacement)
+(defun move-node-y (node
+		    displacement
+		    &optional
+		      (copy-to-shm t)
+		      (copy-to-cache t))
   (with-slots (digraph
 	       scale-node)
       *model*
@@ -289,13 +322,15 @@
 	node
       (incf (vy3 (translation model-matrix)) displacement)
       (update-transform model-matrix)
-      (copy-node-to-shm node
-			(* index
-			   (/ +size-struct-instance+ 4)))
-      (memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	     0
-      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
-				       					  (digraph:count-edges digraph)))))))))
+      (when copy-to-shm
+	(copy-node-to-shm node
+			  (* index
+			     (/ +size-struct-instance+ 4))))
+      (when copy-to-cache
+	(memcpy-shm-to-cache-flag* (list (list "nodes"
+				       	       0
+      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
+				       					    (digraph:count-edges digraph))))))))))
 
 (defun move-pointer-left (seq-key)
   (with-slots (node-pointer

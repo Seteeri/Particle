@@ -14,7 +14,7 @@
   ;; (format t "[handle-keyboard-timer][~a] Repeating ~a~%" (get-internal-real-time) keysym)
   ;; (force-output)
   
-  (setf (gethash keysym (key-states *controller*)) 'repeat))
+  (setf (gethash keysym (key-states *controller*)) :repeat))
 
 (defun update-repeat-timer (xkb
 			    ev-state
@@ -164,5 +164,6 @@
        :using (hash-value state)
        :do (when (and state
 		      (not (eq state :repeat))
+		      (not (eq state :up)) ; redundant?
 		      (not (is-modifier-key keysym)))
 	     (setf (gethash keysym key-states) :up)))))
