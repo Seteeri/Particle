@@ -255,10 +255,6 @@
 	;; Remove node data
 	(zero-node-to-shm (* (index node-tgt)
 			     (/ +size-struct-instance+ 4)))
-	(memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	       0
-      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
-				       					    (digraph:count-edges digraph))))))
 	
 	;; Remove node from graph
 	;; 1. Insert edge: ptr-pred
@@ -266,10 +262,26 @@
 	(let ((preds (digraph:predecessors digraph node-tgt)))
 	  ;; Find non-ptr edge and create edge from ptr to pred
 	  (dolist (pred preds)
-	    (if (not (eq pred node-pointer))
-		(digraph:insert-edge digraph
-				     node-pointer
-				     pred)))
+	    (if (eq pred node-pointer)
+		t
+		(progn
+		  (digraph:insert-edge digraph
+				       node-pointer
+				       pred)
+		  ;; Move pointer node to right of pred and up a line
+		  (move-node-x node-pointer
+			       (+ (vx3 (translation (model-matrix pred)))
+				  (* 96 scale-node))
+			       :absolute
+			       t ; do on move-node-y
+			       nil)
+		  ;; Only move if end of line - REFACTOR ENTER
+		  (when nil
+		    (move-node-y node-pointer
+				 (* +linegap+ scale-node) ; add more spacing due to bl adjustments
+				 :relative
+				 t
+				 nil)))))
 	  ;; Now can remove edges
 	  (dolist (pred preds)
 	    (digraph:remove-edge digraph
@@ -279,15 +291,14 @@
 	(digraph:remove-vertex digraph
 			       node-tgt)
 
-	;; Move pointer node to left
-	(move-node-x node-pointer
-		     (- (* 96 scale-node))
-		     :relative
-		     t
-		     nil)))))
+	(memcpy-shm-to-cache-flag* (list (list "nodes"
+				       	       0
+      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
+				       					    (digraph:count-edges digraph))))))))))
 
 (defun enter-node-msdf (seq-key)
   ;; Move left to starting position
+  ;; Should create node for newline
   (with-slots (node-pointer
 	       scale-node)
       *model*
