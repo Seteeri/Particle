@@ -284,14 +284,6 @@
        (dispatch-all-seq-key)
        (reset-release-keys))))
 
-(defun handle-escape (seq-key)
-  (clean-up-model)
-  (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
-    (usocket:socket-shutdown sock-swank :io)
-    (usocket:socket-close sock-swank))
-  (fmt-model t "handle-escape" "Model process exiting!~%")
-  (sb-ext:exit))
-
 (defun register-keyboard-callbacks ()
 
   (with-slots (key-callbacks)
@@ -356,11 +348,12 @@
     ;; Modifier keys remain in press state instead of repeat
 
     ;; Test Ctrl-X
-    (register-callback key-callbacks
-		       (list +xk-control-l+ +xk-x+)
-		       (list :press :press)
-		       (lambda (seq-key)
-			 (format t "CALLBACK: ~a~%" seq-key)))
+    (when nil
+      (register-callback key-callbacks
+			 (list +xk-control-l+ +xk-x+)
+			 (list :press :press)
+			 (lambda (seq-key)
+			   (format t "CALLBACK: ~a~%" seq-key))))
     
     ;; Print hashtable
     (when nil
