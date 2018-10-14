@@ -25,6 +25,8 @@
 					  (coerce (/ 155 255) 'single-float)
 					  (coerce (/ 255 255) 'single-float)))
 
+(defparameter +linegap+ (+ 96 (* 8 5.8239365)))
+
 (defclass node ()
   ((data :accessor data :initarg :data :initform nil)
    (index :accessor index :initarg :index :initform nil)
@@ -293,7 +295,7 @@
 		 -11.5199995
 		 :absolute)
     (move-node-y node-pointer
-		 (- (* (+ 96 (* 9 5.8239365)) scale-node))
+		 (- (* +linegap+ scale-node))
 		 :relative) ; add more spacing due to bl adjustments    
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
 
@@ -373,7 +375,7 @@
 	       scale-node)
       *model*
     (move-node-y node-pointer
-		 (* (+ 96 (* 9 5.8239365)) scale-node) ; add more spacing due to bl adjustments
+		 (* +linegap+ scale-node) ; add more spacing due to bl adjustments
 		 :relative)
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
 
@@ -391,6 +393,6 @@
 	       scale-node)
       *model*
     (move-node-y node-pointer
-		 (- (* (+ 96 (* 9 5.8239365)) scale-node)) ; add more spacing due to bl adjustments
+		 (- (* +linegap+ scale-node)) ; add more spacing due to bl adjustments
 		 :relative)
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))    
