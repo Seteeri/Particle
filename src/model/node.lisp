@@ -46,7 +46,7 @@
    (flags :accessor flags :initarg :flags :initform 1)))
 
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
-    
+  
   (with-slots (ptr size)
       (gethash "nodes" (handles-shm *model*))
     
@@ -102,6 +102,18 @@
 			 (digraph *model*)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun zero-node-to-shm (&optional (offset-ptr 0))
+  
+  (with-slots (ptr size)
+      (gethash "nodes" (handles-shm *model*))
+
+    (dotimes (i (/ +size-struct-instance+ 4))
+      (setf (mem-aref ptr :int (+ offset-ptr i)) 0))
+    
+    ;; (fmt-model t "zero-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4))
+
+    t))
 
 (defun init-node-msdf (cursor
 		       scale-glyph
@@ -211,6 +223,7 @@
       ;; Move pointer node to right
       (move-node-x node-pointer
 		   (* 96 scale-node)
+		   :relative
 		   t
 		   nil)
 
@@ -267,25 +280,28 @@
 	;; Move pointer node to left
 	(move-node-x node-pointer
 		     (- (* 96 scale-node))
+		     :relative
 		     t
 		     nil)))))
-      
-(defun zero-node-to-shm (&optional (offset-ptr 0))
-    
-  (with-slots (ptr size)
-      (gethash "nodes" (handles-shm *model*))
 
-    (dotimes (i (/ +size-struct-instance+ 4))
-      (setf (mem-aref ptr :int (+ offset-ptr i)) 0))
-    
-    ;; (fmt-model t "zero-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4))
-
-    t))
+(defun enter-node-msdf (seq-key)
+  ;; Move left to starting position
+  (with-slots (node-pointer
+	       scale-node)
+      *model*
+    (move-node-x node-pointer
+		 -11.5199995
+		 :absolute)
+    (move-node-y node-pointer
+		 (- (* (+ 96 (* 9 5.8239365)) scale-node))
+		 :relative) ; add more spacing due to bl adjustments    
+    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun move-node-x (node
 		    displacement
+		    type-displace
 		    &optional
 		      (copy-to-shm t)
 		      (copy-to-cache t))
@@ -296,7 +312,12 @@
     (with-slots (model-matrix
 		 index)
 	node
-      (incf (vx3 (translation model-matrix)) displacement)
+      (cond ((eq type-displace :absolute)
+	     (setf (vx3 (translation model-matrix)) displacement))
+	    ((eq type-displace :relative)
+	     (incf (vx3 (translation model-matrix)) displacement))
+	    (t
+	     (error "Unknown type-displace")))
       (update-transform model-matrix)
       (when copy-to-shm
 	(copy-node-to-shm node
@@ -310,6 +331,7 @@
 
 (defun move-node-y (node
 		    displacement
+		    type-displace
 		    &optional
 		      (copy-to-shm t)
 		      (copy-to-cache t))
@@ -320,7 +342,12 @@
     (with-slots (model-matrix
 		 index)
 	node
-      (incf (vy3 (translation model-matrix)) displacement)
+      (cond ((eq type-displace :absolute)
+	     (setf (vy3 (translation model-matrix)) displacement))
+	    ((eq type-displace :relative)
+	     (incf (vy3 (translation model-matrix)) displacement))
+	    (t
+	     (error "Unknown type-displace")))
       (update-transform model-matrix)
       (when copy-to-shm
 	(copy-node-to-shm node
@@ -337,7 +364,8 @@
 	       scale-node)
       *model*
     (move-node-x node-pointer
-		 (- (* 96 scale-node)))
+		 (- (* 96 scale-node))
+		 :relative)
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
 
 (defun move-pointer-up (seq-key)
@@ -345,7 +373,8 @@
 	       scale-node)
       *model*
     (move-node-y node-pointer
-		 (* (+ 96 (* 9 5.8239365)) scale-node)) ; add more spacing due to bl adjustments
+		 (* (+ 96 (* 9 5.8239365)) scale-node) ; add more spacing due to bl adjustments
+		 :relative)
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
 
 (defun move-pointer-right (seq-key)
@@ -353,7 +382,8 @@
 	       scale-node)
       *model*
     (move-node-x node-pointer
-		 (* 96 scale-node))
+		 (* 96 scale-node)
+		 :relative)
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))    
 
 (defun move-pointer-down (seq-key)
@@ -361,5 +391,6 @@
 	       scale-node)
       *model*
     (move-node-y node-pointer
-		 (- (* (+ 96 (* 9 5.8239365)) scale-node))) ; add more spacing due to bl adjustments
+		 (- (* (+ 96 (* 9 5.8239365)) scale-node)) ; add more spacing due to bl adjustments
+		 :relative)
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))    
