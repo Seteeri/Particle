@@ -340,6 +340,10 @@
 	       (register-callback key-callbacks
 				  (list keysym)
 				  (list :press)
+				  #'add-node-msdf)
+	       (register-callback key-callbacks
+				  (list keysym)
+				  (list :repeat)
 				  #'add-node-msdf))))
 
     ;; ;;; /* Modifiers */
