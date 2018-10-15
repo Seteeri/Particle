@@ -29,7 +29,7 @@
       (gethash "texture" (handles-shm *model*))
     
     (loop
-       :for code :from 32 :to 255
+       :for code :from 1 :to 255
        :with msdf-glyphs-path := (merge-pathnames #P"glyphs-msdf/" (asdf:system-source-directory :protoform))
        :for ppm-path := (merge-pathnames (make-pathname :name (write-to-string code) :type "ppm")
 					 msdf-glyphs-path)

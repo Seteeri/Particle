@@ -138,8 +138,8 @@
 	(dotimes (i 16)
 	  (setf (aref rgba i) (nth i color)))))
 
-    ;; ascii - 32
-    (setf (offset-texel-texture node) (* (- (char-code data) 32) 96 96))
+    ;; ascii - 1
+    (setf (offset-texel-texture node) (* (- (char-code data) 1) 96 96))
     (setf (dims-texture node) (vec2 96 96))
     
     ;; Set UVs
@@ -184,10 +184,14 @@
     (let* ((metrics-space (gethash 32 metrics))
 	   (spacing (* (advance metrics-space) (scale metrics-space) scale-node))
 	   (cursor (translation (model-matrix node-pointer)))
+	   (key-first (first seq-key))
+	   (data (if (= key-first +xk-return+)
+		     #\Newline
+		     (code-char key-first)))
 	   (node (init-node-msdf (vcopy3 cursor)
 				 scale-node
 				 (digraph:count-vertices digraph)
-				 (code-char (first seq-key)))))
+				 data)))
       
       (update-transform (model-matrix node))
       
@@ -240,7 +244,9 @@
       (memcpy-shm-to-cache-flag* (list (list "nodes"
 				       	     0
       				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
-				       					  (digraph:count-edges digraph)))))))))
+				       					  (digraph:count-edges digraph))))))
+
+      node)))
 
 (defun backspace-node-msdf (seq-key)
   (with-slots (digraph
@@ -297,18 +303,19 @@
 				       					    (digraph:count-edges digraph))))))))))
 
 (defun enter-node-msdf (seq-key)
-  ;; Move left to starting position
-  ;; Should create node for newline
+  ;; Add node
+  ;; Move pointer back
   (with-slots (node-pointer
 	       scale-node)
       *model*
-    (move-node-x node-pointer
-		 -11.5199995
-		 :absolute)
-    (move-node-y node-pointer
-		 (- (* +linegap+ scale-node))
-		 :relative) ; add more spacing due to bl adjustments    
-    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
+    (let ((node (add-node-msdf seq-key)))
+      (move-node-x node-pointer
+		   -11.5199995
+		   :absolute)
+      (move-node-y node-pointer
+		   (- (* +linegap+ scale-node))
+		   :relative) ; add more spacing due to bl adjustments    
+      (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
