@@ -38,7 +38,7 @@
 	     
     	     (assert (= (length bmp) (* 96 96 4)))
 
-	     (fmt-model t "init-glyph-data" "Loading ~S~%" lisp-path)
+	     (fmt-model t "init-glyph-data" "Loaded ~S~%" lisp-path)
 	     
 	     (loop 
 		:for c :across bmp

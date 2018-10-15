@@ -143,11 +143,11 @@
     (setf (dims-texture node) (vec2 96 96))
     
     ;; Set UVs
-    (with-slots (bounds
+    (with-slots (advance
 		 translate
-		 advance
+		 bounds
 		 scale
-		 scale-uv)
+		 dims-glyph)
 	metrics-glyph
 
       (let ((translation-mm (translation (model-matrix node))))
@@ -158,8 +158,8 @@
       ;; (fmt-model t "init-node-msdf" "advance: ~a~%" (* advance scale-glyph))
 
       (let ((scale-mm (scale (model-matrix node))))
-	(setf (vx3 scale-mm) (* (vx2 scale-uv) scale-glyph))
-	(setf (vy3 scale-mm) (* (vy2 scale-uv) scale-glyph))))
+	(setf (vx3 scale-mm) (* (vx2 dims-glyph) scale-glyph))
+	(setf (vy3 scale-mm) (* (vy2 dims-glyph) scale-glyph))))
     
     ;; Update transform
     (update-transform (model-matrix node))
