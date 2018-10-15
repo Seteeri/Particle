@@ -302,7 +302,7 @@
       				       	       (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
 				       					    (digraph:count-edges digraph))))))))))
 
-(defun enter-node-msdf (seq-key)
+(defun return-node-msdf (seq-key)
   ;; Add node
   ;; Move pointer back
   (with-slots (node-pointer

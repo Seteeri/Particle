@@ -344,7 +344,7 @@
 			    #'backspace-node-msdf)
 
     (register-callback-down (list +xk-return+)
-			    #'enter-node-msdf)
+			    #'return-node-msdf)
     
     (when t
       (loop
