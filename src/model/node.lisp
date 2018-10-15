@@ -414,3 +414,28 @@
 		 (- (* +linegap+ scale-node)) ; add more spacing due to bl adjustments
 		 :relative)
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))    
+
+(defun eval-node-msdf (seq-key)
+  ;; To eval, build up string from predecessors
+  (with-slots (node-pointer
+	       digraph)
+      *model*
+    
+    (let ((node-tgt (first (digraph:successors digraph node-pointer)))
+          (chrs nil))
+      (loop
+	 :for pred := node-tgt :then (digraph:predecessors digraph pred)
+	 :while pred
+	 :do (progn
+	       (when (listp pred)
+		 (if (eq (first pred) node-pointer)
+		     (setf pred (second pred))
+		     (setf pred (first pred))))
+	       (push (data pred) chrs)
+	       (when nil (format t "~a: ~a~%" pred (data pred)))))
+
+      (fmt-model t "eval-node-msdf" "Eval: ~a~%" (eval (read-from-string (with-output-to-string (stream)
+									   (dolist (c chrs)
+									     (write-char c stream))))))
+      (when nil
+	(digraph.dot:draw digraph :filename "digraph.png" :format :png)))))

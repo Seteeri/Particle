@@ -308,6 +308,18 @@
 		       seq-key
 		       (list :repeat)
 		       cb)))
+
+(defun register-callback-down-2 (seq-key cb)
+  (with-slots (key-callbacks)
+      *controller*
+    (register-callback key-callbacks
+		       seq-key
+		       (list :press :press)
+		       cb)
+    (register-callback key-callbacks
+		       seq-key
+		       (list :repeat :repeat)
+		       cb)))
   
 (defun register-keyboard-callbacks ()
 
@@ -345,6 +357,9 @@
 
     (register-callback-down (list +xk-return+)
 			    #'return-node-msdf)
+
+    (register-callback-down-2 (list +xk-shift-r+ +xk-return+)
+			      #'eval-node-msdf)
     
     (when t
       (loop

@@ -18,6 +18,7 @@
 		 #:3d-vectors
 		 #:3d-matrices
 		 #:cl-digraph
+		 #:cl-digraph.dot
 		 #:usocket
 		 #:pango-markup
 		 #:bordeaux-threads
