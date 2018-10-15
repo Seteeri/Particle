@@ -148,6 +148,7 @@
 	#:protoform.libc
 	#:protoform.opengl
 	#:protoform.conn
+	#:protoform.util
 	#:3d-vectors
 	#:3d-matrices
 	#:trivial-timers
