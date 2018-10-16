@@ -171,6 +171,8 @@
   ;; Move pointer right
   ;; Maybe have pointer appear below/above so edge will show
 
+  (format t "ADDING: ~a~%" seq-key)
+  
   ;; Advance - origin to origin
   ;; 1. Find glyph A origin
   ;;    1. Model trans + glyph trans
@@ -184,7 +186,7 @@
     (let* ((metrics-space (gethash 32 metrics))
 	   (spacing (* (advance metrics-space) (scale metrics-space) scale-node))
 	   (cursor (translation (model-matrix node-pointer)))
-	   (key-first (first seq-key))
+	   (key-first (first (third seq-key)))
 	   (data (if (= key-first +xk-return+)
 		     #\Newline
 		     (code-char key-first)))
@@ -249,6 +251,7 @@
       node)))
 
 (defun backspace-node-msdf (seq-key)
+  
   (with-slots (digraph
 	       node-pointer
 	       scale-node

@@ -1,29 +1,10 @@
 (in-package :protoform.model)
 
-;; Use hashtables and sort
-;; {<key seq>} : {<key state>} : {fn1:nil, fn2:nil}
-;; nil/t is dummy
-;; This means callbacks will be called in arbitrary order
-
-(defun get-states (seq-key key-callbacks &optional (add nil))
-  ;; Return value for seq key -> hash table of states
-  (if (gethash seq-key key-callbacks)
-      (gethash seq-key key-callbacks)
-      ;; Key seq does not exist, create, add fn
-      (when add
-	(let ((states (make-hash-table :size 1)))
-	  (setf (gethash seq-key key-callbacks) states)
-	  states))))
-
-(defun get-callbacks (seq-state states &optional (add nil))
-  ;; Return value for seq state -> hash table of fns
-  (if (gethash seq-state states)
-      (gethash seq-state states)
-      ;; Key seq does not exist, create, add fn
-      (when add
-	(let ((callbacks (make-hash-table :size 1)))
-	  (setf (gethash seq-state states) callbacks)
-	  callbacks))))
+;; Data structure:
+;; ((mods),(key)) : ((mods,key state)) : (fn1:nil, fn2:nil)
+;;
+;; or combine key/state:
+;; (mod-logic, (mods key:state) (norm key:state)) : (fn1:nil, fn2:nil)
 
 (defun add-callback (callbacks cb)
   (if (gethash cb callbacks)
@@ -39,66 +20,91 @@
       ;; Do nothing if not exists
       nil))
 
-(defun register-callback (key-callbacks seq-key seq-state cb)
-  (let* ((states (get-states seq-key key-callbacks t))
-	 (callbacks (get-callbacks seq-state states t)))
+(defun get-callbacks (seq-event &optional (add nil))
+  ;; Return value for seq state -> hash table of fns
+  (with-slots (key-callbacks)
+      *controller*
+    (if (gethash seq-event key-callbacks)
+	(gethash seq-event key-callbacks)
+	;; Key seq does not exist, create, add fn
+	(when add
+	  (let ((callbacks (make-hash-table :size 1)))
+	    (setf (gethash seq-event key-callbacks) callbacks)
+	    callbacks)))))
+
+(defun register-callback (seq-key-state
+			  seq-mods
+			  logic-mods
+			  cb)
+  ;; Build keys and states - order important
+  ;; Then register that specific combination  
+  (let* ((seq-event (list logic-mods seq-mods seq-key-state))
+	 (callbacks (get-callbacks seq-event t)))
     (add-callback callbacks cb)))
    
-(defun unregister-callback (key-callbacks seq-key seq-state callback)
-  ;; Check each binding
-  (let* ((states (get-states seq-key key-callbacks))
-	 (callbacks (get-callbacks seq-state states)))
-    (remove-callback callbacks cb)))
+(defun unregister-callback (seq-event
+			    callback)
+  (let ((callbacks (get-callbacks seq-event)))
+    (when callbacks
+      (remove-callback callbacks cb))))
 
 ;; Dispatch functions
 ;; Refactor verbosity for dispatch functions
 
-(defun dispatch-seq-key (seq-key &optional (seq-state nil))
-  ;; Dispatch callbacks for specific seq-key and opt seq-state
-  (with-slots (key-callbacks)
-      *controller*
-    (let ((states (get-states seq-key key-callbacks)))
-      ;; Dispatch for specific seq-state or all if none
-      (if seq-state
-	  (dispatch-seq-state seq-key seq-state states)
-	  (loop
-	     :for seq-state :being :the :hash-keys :of states
-	     ;; :using (hash-value callbacks)
-	     :do (dispatch-seq-state seq-key seq-state states))))))
-
-(defun dispatch-seq-state (seq-key seq-state states)
-  (with-slots (key-states)
-      *controller*
-    (when (is-seq-state-active seq-key seq-state)
-      (dispatch-callbacks seq-key seq-state states))))
-
-(defun dispatch-callbacks (seq-key seq-state states)
-  (loop
-     :for cb :being :the :hash-keys :of (get-callbacks seq-state states)
-     ;; :using (hash-value dummy)
-     :do (funcall cb seq-key)))
-
-(defun is-seq-state-active (seq-key seq-state)
-  (with-slots (key-states)
-      *controller*
-    ;; Return on first non eq
-    (loop
-       :for key :in seq-key
-       :for state :in seq-state
-       :do (when (not (eq (gethash key key-states) state))
-	     (return-from is-seq-state-active nil)))
-    t))
-  
+;; rename -> event
 (defun dispatch-all-seq-key ()
-  ;; Loop over key callbacks
-  ;; Loop over states
-  ;; Check state for each
-  ;;   If states all match, execute callback
-  ;;   If states don't match, skip
-
-  ;; Can do recursive version of this by incorporating loop into dispatch-seq-key upon nil seq-key
   (loop
-     :for seq-key :being :the :hash-keys :of (key-callbacks *controller*)
+     :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
      ;; :using (hash-value states)
      :do (progn
-	   (dispatch-seq-key seq-key))))
+	   ;; (fmt-model t "dispatch-all-seq" "~a~%" seq-event)
+	   (dispatch-seq-event seq-event))))
+
+(defun dispatch-seq-event (seq-event)
+  (when (is-seq-event-valid seq-event)
+    (dispatch-callbacks-for-event seq-event)))
+
+(defun dispatch-callbacks-for-event (seq-event)
+  (loop
+     :for cb :being :the :hash-keys :of (get-callbacks seq-event)
+     ;; :using (hash-value dummy)
+     :do (funcall cb seq-event)))
+
+(defun is-seq-event-valid (seq-event)
+  (with-slots (key-states
+	       key-states-delta)
+      *controller*
+    
+    ;; seq-event = :keyword (mod:status) (key:status)
+    (destructuring-bind (logic-mod seq-mod-state seq-key-state)
+      seq-event
+
+      ;; Any of these fail, return
+      
+      ;; Check mod states
+      (loop
+	 :for (key state) :on seq-mod-state :by 'cddr
+	 :do (when (not (eq (gethash key key-states) state))
+	       (return-from is-seq-event-valid nil)))
+      
+      ;; Check key states
+      (loop
+	 :for (key state) :on seq-key-state :by 'cddr
+	 :do (when (not (eq (gethash key key-states) state))
+	       (return-from is-seq-event-valid nil)))
+      
+      ;; Check mod
+      ;; Exclusive: make sure no other mods pressed than those specified
+      ;; Inclusive: need not check
+      (when (eq logic-mod :exclusive)
+	;; Generate list on init to save time?
+	;; set-difference returns a list of elements of list-1 that do not appear in list-2. 
+	(loop
+	   :for key-mod :in (set-difference *keysyms-modifier* seq-mod-state)
+	   :for state := (gethash key-mod key-states)
+	   :do (when (and state ; > 255; hash will return nil for non-existent key
+			  (not (or (eq state :up) (eq state :release)))) ; double check this with reset-states
+		 (fmt-model t "is-seq-event-valid" "fail: ~a | ~a, ~a~%" seq-event key-mod state)
+		 (return-from is-seq-event-valid nil))))
+
+      t)))

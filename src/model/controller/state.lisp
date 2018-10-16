@@ -3,6 +3,21 @@
 (defconstant +state-event-press+ 1)
 (defconstant +state-event-release+ 0)
 
+(defparameter *keysyms-modifier* (list +xk-shift-l+
+				       +xk-shift-r+
+				       +xk-control-l+
+				       +xk-control-r+
+				       +xk-caps-lock+
+				       +xk-shift-lock+
+				       +xk-meta-l+
+				       +xk-meta-r+
+				       +xk-alt-l+
+				       +xk-alt-r+
+				       +xk-super-l+
+				       +xk-super-r+
+				       +xk-hyper-l+
+				       +xk-hyper-r+))
+
 (defun handle-repeat-timer (keysym)
 
   ;; Set key state:
@@ -76,6 +91,7 @@
 	       epoll-fd
 	       epoll-events
 	       key-states
+	       key-states-delta
 	       key-callbacks)
       *controller*
     
@@ -121,6 +137,11 @@
 		    :press
 		    :release))
 
+	  (setf (gethash keysym key-states-delta)
+		(if (= ev-state +state-event-press+)
+		    :press
+		    :release))
+	  
 	  ;; Perform callback for key
 	  ;; (dispatch-callback keysym)
 	  ;; Then reset key or do after
@@ -134,6 +155,7 @@
 
 (defun is-modifier-key (keysym)
   ;; Should use xkb function
+  ;; Is this faster than using global+loop?
   (if (or (eq keysym +xk-shift-l+)
 	  (eq keysym +xk-shift-r+)
 	  (eq keysym +xk-control-l+)
@@ -156,14 +178,22 @@
   ;; Press indicates initial press
   ;; Modifier keys remain in press state instead of repeat
   ;; If press exceeds repeat delay, timer will handle it and switch to 'repeat
-  
-  (with-slots (key-states)
-      *controller*  
-    (loop 
-       :for keysym :being :the :hash-keys :of key-states
-       :using (hash-value state)
-       :do (when (and state
-		      (not (eq state :repeat))
-		      (not (eq state :up)) ; redundant?
-		      (not (is-modifier-key keysym)))
-	     (setf (gethash keysym key-states) :up)))))
+  (loop
+     :with key-states := (key-states *controller*)
+     :for keysym :being :the :hash-keys :of key-states
+     :using (hash-value state)
+     :do (when (and state
+		    (and (not (eq state :repeat)) ; repeat keys will be handled by timer signal, what about press?
+		         (not (eq state :up))) ; needed?
+		    (and (not (is-modifier-key keysym)) ; ignore mod keys in press state, only press/release/up
+			 (not (eq state :press)))
+	   (setf (gethash keysym key-states) :up)))))
+
+;; Maybe handle modifier keys separately
+
+(defun reset-states-delta ()
+  (loop
+     :with key-states-delta := (key-states-delta *controller*)
+     :for keysym :being :the :hash-keys :of key-states-delta
+     ;; :using (hash-value state)
+     :do (setf (gethash keysym key-states-delta) nil)))

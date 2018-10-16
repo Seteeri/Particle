@@ -6,6 +6,7 @@
    (epoll-events :accessor epoll-events :initarg :epoll-events :initform nil)
    (epoll-fd :accessor epoll-fd :initarg :epoll-fd :initform nil)
    (key-states :accessor key-states :initarg :key-states :initform (make-hash-table :size 256))
+   (key-states-delta :accessor key-states-delta :initarg :key-states-delta :initform (make-hash-table :size 256))
    (key-callbacks :accessor key-callbacks :initarg :key-callbacks :initform (make-hash-table :size 256))))
 
 (defun init-controller (&rest devices)
@@ -35,7 +36,9 @@
 			   (libinput:path-remove-device device)))))))
       
       (init-epoll controller)
-      ;; Initialize states to none?
+      
+      ;; Initialize states to 'up?
+      
       t)
     controller))
     

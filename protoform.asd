@@ -81,11 +81,11 @@
 				       (:file "metrics")
 				       (:module controller
 				       		:pathname "controller"
-				       		:components ((:file "controller")
+				       		:components ((:file "keysymdef")
+							     (:file "controller")
 				       			     (:file "xkb")
 				       			     (:file "callback")
-				       			     (:file "state")
-				       			     (:file "keysymdef")))
+				       			     (:file "state")))
 				       (:module structures
 						:pathname "structures"
 						:components ((:file "dag")))))
