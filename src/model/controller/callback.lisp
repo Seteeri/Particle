@@ -1,10 +1,7 @@
 (in-package :protoform.model)
 
 ;; Data structure:
-;; ((mods),(key)) : ((mods,key state)) : (fn1:nil, fn2:nil)
-;;
-;; or combine key/state:
-;; (mod-logic, (mods key:state) (norm key:state)) : (fn1:nil, fn2:nil)
+;; (mod-logic, (mods key:(state)) (norm key:(state))) : (fn1:nil, fn2:nil)
 
 (defun add-callback (callbacks cb)
   (if (gethash cb callbacks)

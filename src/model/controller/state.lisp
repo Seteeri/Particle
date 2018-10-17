@@ -19,16 +19,7 @@
 				       +xk-hyper-r+))
 
 (defun handle-repeat-timer (keysym)
-
-  ;; Set key state:
-  ;; PRESS - pressed on frame
-  ;; REPEAT - repeated
-  ;; RELEASE - released on frame
-  ;; UP - depressed or none...
-  
   ;; (format t "[handle-keyboard-timer][~a] Repeating ~a~%" (get-internal-real-time) keysym)
-  ;; (force-output)
-  
   (let ((state (gethash keysym (key-states *controller*))))
     (setf (aref state 1) (aref state 0))
     (setf (aref state 0) :repeat)))
