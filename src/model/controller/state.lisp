@@ -29,7 +29,9 @@
   ;; (format t "[handle-keyboard-timer][~a] Repeating ~a~%" (get-internal-real-time) keysym)
   ;; (force-output)
   
-  (setf (gethash keysym (key-states *controller*)) :repeat))
+  (let ((state (gethash keysym (key-states *controller*))))
+    (setf (aref state 1) (aref state 0))
+    (setf (aref state 0) :repeat)))
 
 (defun update-repeat-timer (xkb
 			    ev-state
@@ -131,16 +133,19 @@
 		       (+ ev-keycode 8) (code-char keysym) ev-state repeats))
 
 	  ;; Update key state
-	  ;; If key is repeated, state will be set to 'repeat at a later time
-	  (setf (gethash keysym key-states)
-		(if (= ev-state +state-event-press+)
-		    :press
-		    :release))
-
-	  (setf (gethash keysym key-states-delta)
-		(if (= ev-state +state-event-press+)
-		    :press
-		    :release))
+	  ;; If key is repeated, state will be set to 'down at a later time
+	  (let ((state (gethash keysym key-states)))
+	    (when (not state)
+	      (setf state (make-array 2
+				      :adjustable nil
+				      :initial-contents (list :up :up)))
+	      (setf (gethash keysym key-states) state))
+	    ;; Copy index 0 to 1
+	    (setf (aref state 1) (aref state 0))
+	    (setf (aref state 0)
+		  (if (= ev-state +state-event-press+)
+		      :press
+		      :release)))
 	  
 	  ;; Perform callback for key
 	  ;; (dispatch-callback keysym)
@@ -174,26 +179,31 @@
       nil))
 
 (defun reset-states-key ()
-  ;; Reset keys to 'up except for 'repeat
-  ;; Press indicates initial press
-  ;; Modifier keys remain in press state instead of repeat
-  ;; If press exceeds repeat delay, timer will handle it and switch to 'repeat
+  ;; This is done at end of frame so on next frame,
+  ;; if state changes, it will override below,
+  ;; otherwise it will remain the same and
+  ;; callbacks will be executed
+  
   (loop
      :with key-states := (key-states *controller*)
      :for keysym :being :the :hash-keys :of key-states
      :using (hash-value state)
-     :do (when (and state
-		    (and (not (eq state :repeat)) ; repeat keys will be handled by timer signal, what about press?
-		         (not (eq state :up))) ; needed?
-		    (and (not (is-modifier-key keysym)) ; ignore mod keys in press state, only press/release/up
-			 (not (eq state :press)))
-	   (setf (gethash keysym key-states) :up)))))
+     :for state-key := (aref state 0)       
+     :do (progn	   
+	   (cond ((eq state-key :press)
+		  ;; (fmt-model t "reset-states-key" "Press -> Down: ~a~%" keysym)
+		  (setf (aref state 1)
+			(aref state 0))
+		  (setf (aref state 0) :down))
+		
+		 ((eq state-key :release)
+		  ;; (fmt-model t "reset-states-key" "Release -> Up : ~a~%" keysym)
+		  (setf (aref state 1)
+			(aref state 0))
+		  (setf (aref state 0) :up))
 
-;; Maybe handle modifier keys separately
-
-(defun reset-states-delta ()
-  (loop
-     :with key-states-delta := (key-states-delta *controller*)
-     :for keysym :being :the :hash-keys :of key-states-delta
-     ;; :using (hash-value state)
-     :do (setf (gethash keysym key-states-delta) nil)))
+		 ((eq state-key :repeat)
+		  ;; (fmt-model t "reset-states-key" "Repeat -> Down : ~a~%" keysym)
+		  (setf (aref state 1)
+			(aref state 0))
+		  (setf (aref state 0) :down))))))

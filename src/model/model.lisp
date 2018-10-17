@@ -291,12 +291,21 @@
   (loop
      (progn
 
+       ;; Update states
+       ;; - For key events, copy index 0 to index 1, set index 0
+       ;; Dispatch state callbacks
+       ;; - For key states in index 0, do callbacks
+       ;; Update states
+       ;; - rel -> up
+       ;; - press -> down
+       
        (dispatch-events-input)
 
        (dispatch-all-seq-key)
 
        (reset-states-key)
-       (reset-states-delta))))
+
+       t)))
 
 (defun register-callback-down (keysym cb)
   (with-slots (key-callbacks)
@@ -367,11 +376,12 @@
 			   (usocket:socket-close sock-swank))
 			 (fmt-model t "handle-escape" "Model process exiting!~%")
 			 (sb-ext:exit)))
-
+    
     (register-callback-down +xk-backspace+
 			    #'backspace-node-msdf)
 
     ;; (return-from register-keyboard-callbacks)
+    
     ;; (clean-up-handles-shm)
     ;; (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
     ;;   (usocket:socket-shutdown sock-swank :io)
@@ -413,10 +423,25 @@
     (when t
       (register-callback (list +xk-x+ :press)
 			 (list +xk-control-l+ :press)
-			 :exclusive
+			 :inclusive
 			 (lambda (seq-key)
-			   (format t "CALLBACK: ~a~%" seq-key))))
-
+			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key)))
+      (register-callback (list +xk-x+ :press)
+			 (list +xk-control-l+ :down)
+			 :inclusive
+			 (lambda (seq-key)
+			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key)))   
+      (register-callback (list +xk-x+ :down)
+			 (list +xk-control-l+ :down)
+			 :inclusive
+			 (lambda (seq-key)
+			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key)))
+      (register-callback (list +xk-x+ :repeat)
+			 (list +xk-control-l+ :down)
+			 :inclusive
+			 (lambda (seq-key)
+			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key))))      
+    
     ;; (defconstant +xk-left+ #xff51) ;  Move left, left arrow 
     ;; (defconstant +xk-up+ #xff52) ;  Move up, up arrow 
     ;; (defconstant +xk-right+ #xff53) ;  Move right, right arrow 
@@ -432,7 +457,7 @@
 			    #'move-pointer-down)
     
     ;; Print hashtable
-    (when t
+    (when nil
       (maphash (lambda (key value)
 		 (format t "Seq-event: ~S = ~S~%" key value))
 	       key-callbacks))

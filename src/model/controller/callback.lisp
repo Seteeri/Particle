@@ -83,15 +83,25 @@
       
       ;; Check mod states
       (loop
-	 :for (key state) :on seq-mod-state :by 'cddr
-	 :do (when (not (eq (gethash key key-states) state))
-	       (return-from is-seq-event-valid nil)))
+	 :for (key state-tgt) :on seq-mod-state :by 'cddr
+	 :for state-key := (if (gethash key key-states)
+			       (aref (gethash key key-states) 0)
+			       :up)
+	 :do (progn
+	       (when (not (eq state-key
+			      state-tgt))
+		 (return-from is-seq-event-valid nil))))
       
       ;; Check key states
       (loop
-	 :for (key state) :on seq-key-state :by 'cddr
-	 :do (when (not (eq (gethash key key-states) state))
-	       (return-from is-seq-event-valid nil)))
+	 :for (key state-tgt) :on seq-key-state :by 'cddr
+	 :for state-key := (if (gethash key key-states)
+			       (aref (gethash key key-states) 0)
+			       :up)
+	 :do (progn
+	       (when (not (eq state-key
+			      state-tgt))
+		 (return-from is-seq-event-valid nil))))
       
       ;; Check mod
       ;; Exclusive: make sure no other mods pressed than those specified
@@ -101,10 +111,14 @@
 	;; set-difference returns a list of elements of list-1 that do not appear in list-2. 
 	(loop
 	   :for key-mod :in (set-difference *keysyms-modifier* seq-mod-state)
-	   :for state := (gethash key-mod key-states)
-	   :do (when (and state ; > 255; hash will return nil for non-existent key
-			  (not (or (eq state :up) (eq state :release)))) ; double check this with reset-states
-		 (fmt-model t "is-seq-event-valid" "fail: ~a | ~a, ~a~%" seq-event key-mod state)
-		 (return-from is-seq-event-valid nil))))
-
-      t)))
+	   :for state-key := (if (gethash key-mod key-states)
+				 (aref (gethash key-mod key-states) 0)
+				 :up)
+	   :do (progn
+		 (when (not (or (eq state-key :up)
+				(eq state-key :release)))
+		   ;; (fmt-model t "is-seq-event-valid" "fail: ~a | ~a, ~a~%" seq-event key-mod state)
+		   (return-from is-seq-event-valid nil)))))))
+  
+  ;; Return t
+  t)
