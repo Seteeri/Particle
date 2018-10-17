@@ -85,7 +85,7 @@
 							     (:file "controller")
 				       			     (:file "xkb")
 				       			     (:file "callback")
-				       			     (:file "state")))
+				       			     (:file "event-keyboard")))
 				       (:module structures
 						:pathname "structures"
 						:components ((:file "dag")))))
