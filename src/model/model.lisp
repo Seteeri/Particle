@@ -363,19 +363,20 @@
     ;; * Add exclusive/inclusive mods options
     ;; * Add ability to follow order
     ;;   * Need timestamp - get from libinput?
+
+    (when nil
+      (register-callback (list +xk-escape+ (list :press))
+    			 ()
+    			 :exclusive
+    			 (lambda (seq-key)
+    			   (clean-up-handles-shm)
+    			   (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
+    			     (usocket:socket-shutdown sock-swank :io)
+    			     (usocket:socket-close sock-swank))
+    			   (fmt-model t "handle-escape" "Model process exiting!~%")
+    			   (sb-ext:exit))))
     
-    (register-callback (list +xk-escape+ (list :press))
-    		       ()
-    		       :exclusive
-    		       (lambda (seq-key)
-    			 (clean-up-handles-shm)
-    			 (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
-    			   (usocket:socket-shutdown sock-swank :io)
-    			   (usocket:socket-close sock-swank))
-    			 (fmt-model t "handle-escape" "Model process exiting!~%")
-    			 (sb-ext:exit)))
-    
-    (when t
+    (when nil
       (loop
 	 :for keysym :from 32 :to 255
 	 :do (register-callback (list keysym (list :press :repeat))
@@ -383,7 +384,7 @@
 				:exclusive
 				#'add-node-msdf)))
 
-    (when t
+    (when nil
       (dolist (k (list (list +xk-left+       #'move-pointer-left)
 		       (list +xk-up+         #'move-pointer-up)
 		       (list +xk-right+      #'move-pointer-right)
@@ -402,13 +403,19 @@
     ;; 			      #'eval-node-msdf)
     
     ;; Test Ctrl-X
+    ;; (when t
+    ;;   (register-callback (list +xk-x+ (list :press :repeat))
+    ;; 			 (list +xk-control-l+ (list :press :down))
+    ;; 			 :inclusive
+    ;; 			 (lambda (seq-key)
+    ;; 			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key))))
+
     (when t
-      (register-callback (list +xk-x+ (list :press :repeat))
-			 (list +xk-control-l+ (list :press :down))
+      (register-callback (list +xk-control-l+ (list :press :down) +xk-x+ (list :press :repeat))
 			 :inclusive
 			 (lambda (seq-key)
 			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key))))
-        
+    
     ;; Print hashtable
     (when nil
       (maphash (lambda (key value)

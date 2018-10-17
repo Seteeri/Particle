@@ -22,7 +22,7 @@
   ;; (format t "[handle-keyboard-timer][~a] Repeating ~a~%" (get-internal-real-time) keysym)
   (let ((state (gethash keysym (key-states *controller*))))
     (setf (aref state 1) (aref state 0))
-    (setf (aref state 0) :repeat)))
+    (setf (nth 0 (aref state 0)) :repeat)))
 
 (defun update-repeat-timer (xkb
 			    ev-state
@@ -90,9 +90,8 @@
     
     (let* ((keyboard-event (libinput:event-get-keyboard-event event))
 	   (ev-state (libinput:event-keyboard-get-key-state keyboard-event))
-	   (ev-keycode (libinput:event-keyboard-get-key keyboard-event)))
-      ;; event-keyboard-get-time
-      ;; event-keyboard-get-time-usec
+	   (ev-keycode (libinput:event-keyboard-get-key keyboard-event))
+	   (ev-time (libinput:event-keyboard-get-time-usec event)))
 
       (with-slots (context keymap state repeat-char repeat-timer repeat-key repeat-delay repeat-interval
 			   mods-depressed mods-latched mods-locked)
@@ -120,23 +119,27 @@
 
 	  (when nil
 	    (fmt-model t "update-keyboard"
-		       "code: ~a, sym: ~a, state: ~a, rep: ~a~%"
-		       (+ ev-keycode 8) (code-char keysym) ev-state repeats))
-
+		       "time: ~a, code: ~a, char: ~a, state: ~a, rep: ~a~%"
+		       ev-time
+		       (+ ev-keycode 8)
+		       (code-char keysym)
+		       ev-state
+		       repeats))
+	  
 	  ;; Update key state
 	  ;; If key is repeated, state will be set to 'down at a later time
 	  (let ((state (gethash keysym key-states)))
 	    (when (not state)
 	      (setf state (make-array 2
 				      :adjustable nil
-				      :initial-contents (list :up :up)))
+				      :initial-contents (list (list :up ev-time) (list :up ev-time))))
 	      (setf (gethash keysym key-states) state))
 	    ;; Copy index 0 to 1
 	    (setf (aref state 1) (aref state 0))
 	    (setf (aref state 0)
 		  (if (= ev-state +state-event-press+)
-		      :press
-		      :release)))
+		      (list :press ev-time)
+		      (list :release ev-time))))
 	  
 	  ;; Perform callback for key
 	  ;; (dispatch-callback keysym)
@@ -181,20 +184,20 @@
      :using (hash-value state)
      :for state-key := (aref state 0)       
      :do (progn	   
-	   (cond ((eq state-key :press)
+	   (cond ((eq (first state-key) :press)
 		  ;; (fmt-model t "reset-states-key" "Press -> Down: ~a~%" keysym)
-		  (setf (aref state 1)
-			(aref state 0))
-		  (setf (aref state 0) :down))
+		  (setf (nth 0 (aref state 1)) (nth 0 state-key))
+		  (setf (nth 1 (aref state 1)) (nth 1 state-key))
+		  (setf (nth 0 state-key) :down))
 		
-		 ((eq state-key :release)
+		 ((eq (first state-key) :release)
 		  ;; (fmt-model t "reset-states-key" "Release -> Up : ~a~%" keysym)
-		  (setf (aref state 1)
-			(aref state 0))
-		  (setf (aref state 0) :up))
+		  (setf (nth 0 (aref state 1)) (nth 0 state-key))
+		  (setf (nth 1 (aref state 1)) (nth 1 state-key))
+		  (setf (nth 0 state-key) :up))
 
-		 ((eq state-key :repeat)
+		 ((eq (first state-key) :repeat)
 		  ;; (fmt-model t "reset-states-key" "Repeat -> Down : ~a~%" keysym)
-		  (setf (aref state 1)
-			(aref state 0))
-		  (setf (aref state 0) :down))))))
+		  (setf (nth 0 (aref state 1)) (nth 0 state-key))
+		  (setf (nth 1 (aref state 1)) (nth 1 state-key))
+		  (setf (nth 0 state-key) :down))))))
