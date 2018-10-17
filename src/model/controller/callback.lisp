@@ -72,32 +72,34 @@
 	       key-states-delta)
       *controller*
     
-    ;; seq-event = :keyword (mod:status) (key:status)
+    ;; seq-event = (mod-logic, (mods key:(state)) (norm key:(state)))
+    ;; 3 lists:
+    ;; :inclusive
+    ;; (list +xk-x+ (:press :down :repeat))
+    ;; (list +xk-control-l+ (:press :down))
     (destructuring-bind (logic-mod seq-mod-state seq-key-state)
       seq-event
-
+      
       ;; Any of these fail, return
       
       ;; Check mod states
       (loop
-	 :for (key state-tgt) :on seq-mod-state :by 'cddr
+	 :for (key states-tgt) :on seq-mod-state :by 'cddr
 	 :for state-key := (if (gethash key key-states)
 			       (aref (gethash key key-states) 0)
 			       :up)
 	 :do (progn
-	       (when (not (eq state-key
-			      state-tgt))
+	       (when (not (is-state-valid states-tgt state-key))
 		 (return-from is-seq-event-valid nil))))
       
       ;; Check key states
       (loop
-	 :for (key state-tgt) :on seq-key-state :by 'cddr
+	 :for (key states-tgt) :on seq-key-state :by 'cddr
 	 :for state-key := (if (gethash key key-states)
 			       (aref (gethash key key-states) 0)
 			       :up)
 	 :do (progn
-	       (when (not (eq state-key
-			      state-tgt))
+	       (when (not (is-state-valid states-tgt state-key))
 		 (return-from is-seq-event-valid nil))))
       
       ;; Check mod
@@ -119,3 +121,9 @@
   
   ;; Return t
   t)
+
+(defun is-state-valid (states-tgt state)
+  ;; Need only match one
+  (dolist (state-tgt states-tgt)
+    (when (eq state state-tgt)
+      (return-from is-state-valid t))))

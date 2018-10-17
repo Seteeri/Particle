@@ -339,123 +339,76 @@
     ;; +xk-left+
     ;; +xk-right+
 
-    ;; Ctrl-X vs X = two mutually exclusive events
-    ;; Unless user wants both to occur
-    ;; X only checks if X is pressed regardless of keys
+    ;; +xk-shift-l+ #xffe1   ;  Left shift 
+    ;; +xk-shift-r+ #xffe2   ;  Right shift 
+    ;; +xk-control-l+ #xffe3   ;  Left control 
+    ;; +xk-control-r+ #xffe4   ;  Right control 
+    ;; +xk-caps-lock+ #xffe5   ;  Caps lock 
+    ;; +xk-shift-lock+ #xffe6   ;  Shift lock 
+    ;; +xk-meta-l+ #xffe7   ;  Left meta 
+    ;; +xk-meta-r+ #xffe8   ;  Right meta 
+    ;; +xk-alt-l+ #xffe9   ;  Left alt 
+    ;; +xk-alt-r+ #xffea   ;  Right alt 
+    ;; +xk-super-l+ #xffeb   ;  Left super 
+    ;; +xk-super-r+ #xffec   ;  Right super 
+    ;; +xk-hyper-l+ #xffed   ;  Left hyper 
+    ;; +xk-hyper-r+ #xffee   ;  Right hyper 
 
+    ;; +xk-left+ #xff51   ;  Move left, left arrow 
+    ;; +xk-up+ #xff52   ;  Move up, up arrow 
+    ;; +xk-right+ #xff53   ;  Move right, right arrow 
+    ;; +xk-down+ #xff54   ;  Move down, down arrow 
+    
     ;; * Use plist [DONE]
     ;; * Add exclusive/inclusive mods options
     ;; * Add ability to follow order
     ;;   * Need timestamp - get from libinput?
     
-    ;; ctrl :press x :press
-    ;; t = exclusive; no other mods can be pressed
-    ;; nil = inclusive; other mods can be pressed like shift-ctrl-x
-    ;;
-    ;; x :press
-    ;; t = exclusive; no other mods can be pressed
-    ;; nil = inclusive; other mods can be pressed like ctrl-x
-    ;;
-    ;; exclusive is default
-
-    ;; if register both
-    ;; x + inc
-    ;; x + exc
-
-    ;; mods
-    ;; keys
-    ;; exclusive/inclusive
+    (register-callback (list +xk-escape+ (list :press))
+    		       ()
+    		       :exclusive
+    		       (lambda (seq-key)
+    			 (clean-up-handles-shm)
+    			 (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
+    			   (usocket:socket-shutdown sock-swank :io)
+    			   (usocket:socket-close sock-swank))
+    			 (fmt-model t "handle-escape" "Model process exiting!~%")
+    			 (sb-ext:exit)))
     
-    (register-callback (list +xk-escape+ :press)
-		       ()
-		       :exclusive
-		       (lambda (seq-key)
-			 (clean-up-handles-shm)
-			 (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
-			   (usocket:socket-shutdown sock-swank :io)
-			   (usocket:socket-close sock-swank))
-			 (fmt-model t "handle-escape" "Model process exiting!~%")
-			 (sb-ext:exit)))
-    
-    (register-callback-down +xk-backspace+
-			    #'backspace-node-msdf)
-
-    ;; (return-from register-keyboard-callbacks)
-    
-    ;; (clean-up-handles-shm)
-    ;; (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
-    ;;   (usocket:socket-shutdown sock-swank :io)
-    ;;   (usocket:socket-close sock-swank))    
-    ;; (sb-ext:exit)
-    
-    (register-callback-down +xk-return+
-    			    #'return-node-msdf)
-
-    ;; (register-callback-down-2 (list +xk-shift-r+ +xk-return+)
-    ;; 			      #'eval-node-msdf)
-
     (when t
       (loop
 	 :for keysym :from 32 :to 255
-	 :do (progn
-	       (register-callback-down keysym
-				       #'add-node-msdf))))
+	 :do (register-callback (list keysym (list :press :repeat))
+				()
+				:exclusive
+				#'add-node-msdf)))
 
-    ;; ;;; /* Modifiers */
-    ;; (defconstant +xk-shift-l+ #xffe1) ;  Left shift 
-    ;; (defconstant +xk-shift-r+ #xffe2) ;  Right shift 
-    ;; (defconstant +xk-control-l+ #xffe3) ;  Left control 
-    ;; (defconstant +xk-control-r+ #xffe4) ;  Right control 
-    ;; (defconstant +xk-caps-lock+ #xffe5) ;  Caps lock 
-    ;; (defconstant +xk-shift-lock+ #xffe6) ;  Shift lock 
-    ;; (defconstant +xk-meta-l+ #xffe7) ;  Left meta 
-    ;; (defconstant +xk-meta-r+ #xffe8) ;  Right meta 
-    ;; (defconstant +xk-alt-l+ #xffe9) ;  Left alt 
-    ;; (defconstant +xk-alt-r+ #xffea) ;  Right alt 
-    ;; (defconstant +xk-super-l+ #xffeb) ;  Left super 
-    ;; (defconstant +xk-super-r+ #xffec) ;  Right super 
-    ;; (defconstant +xk-hyper-l+ #xffed) ;  Left hyper 
-    ;; (defconstant +xk-hyper-r+ #xffee) ;  Right hyper 
-
+    (when t
+      (dolist (k (list (list +xk-left+       #'move-pointer-left)
+		       (list +xk-up+         #'move-pointer-up)
+		       (list +xk-right+      #'move-pointer-right)
+		       (list +xk-down+       #'move-pointer-down)
+		       (list +xk-backspace+  #'backspace-node-msdf)
+		       (list +xk-return+     #'return-node-msdf)))
+	(multiple-value-bind (keysym cb) k
+	  (register-callback (list keysym (list :press :repeat))
+			     ()
+			     :exclusive
+			     cb))))
+    
     ;; Modifier keys remain in press state instead of repeat
 
+    ;; (register-callback-down-2 (list +xk-shift-r+ +xk-return+)
+    ;; 			      #'eval-node-msdf)
+    
     ;; Test Ctrl-X
     (when t
-      (register-callback (list +xk-x+ :press)
-			 (list +xk-control-l+ :press)
+      (register-callback (list +xk-x+ (list :press :repeat))
+			 (list +xk-control-l+ (list :press :down))
 			 :inclusive
 			 (lambda (seq-key)
-			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key)))
-      (register-callback (list +xk-x+ :press)
-			 (list +xk-control-l+ :down)
-			 :inclusive
-			 (lambda (seq-key)
-			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key)))   
-      (register-callback (list +xk-x+ :down)
-			 (list +xk-control-l+ :down)
-			 :inclusive
-			 (lambda (seq-key)
-			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key)))
-      (register-callback (list +xk-x+ :repeat)
-			 (list +xk-control-l+ :down)
-			 :inclusive
-			 (lambda (seq-key)
-			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key))))      
-    
-    ;; (defconstant +xk-left+ #xff51) ;  Move left, left arrow 
-    ;; (defconstant +xk-up+ #xff52) ;  Move up, up arrow 
-    ;; (defconstant +xk-right+ #xff53) ;  Move right, right arrow 
-    ;; (defconstant +xk-down+ #xff54) ;  Move down, down arrow 
-
-    (register-callback-down +xk-left+
-			    #'move-pointer-left)
-    (register-callback-down +xk-up+
-			    #'move-pointer-up)
-    (register-callback-down +xk-right+
-			    #'move-pointer-right)
-    (register-callback-down +xk-down+
-			    #'move-pointer-down)
-    
+			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key))))
+        
     ;; Print hashtable
     (when nil
       (maphash (lambda (key value)
