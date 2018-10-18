@@ -3,70 +3,69 @@
 (defclass projview ()
   ((width :accessor width :initarg :width :initform nil)
    (height :accessor height :initarg :height :initform nil)
-   (projection-matrix :accessor projection-matrix :initarg :projection-matrix :initform nil)
-   (projection-type :accessor projection-type :initarg :projection-type :initform nil)
-   (ortho-scale :accessor ortho-scale :initarg :ortho-scale :initform 24.0) ; bigger number = smaller view
-   (ortho-near :accessor ortho-near :initarg :ortho-near :initform 1)
+   (mat-proj :accessor mat-proj :initarg :mat-proj :initform nil)
+   (type-proj :accessor type-proj :initarg :type-proj :initform nil)
+   (scale-ortho :accessor scale-ortho :initarg :scale-ortho :initform 24.0) ; bigger number = smaller view
+   (near-ortho :accessor near-ortho :initarg :near-ortho :initform 1)
    (ortho-far :accessor ortho-far :initarg :ortho-far :initform 512)
-   (view-matrix :accessor view-matrix :initarg :view-matrix :initform nil)
-   (camera-position :accessor camera-position :initarg :camera-position :initform (vec3 0 0 10))
-   (camera-rotation :accessor camera-rotation :initarg :camera-rotation :initform (vec3 0 0 0))
-   (camera-displacement :accessor camera-displacement :initarg :camera-displacement :initform (vec3 1.0 1.0 0.6))))
+   (mat-view :accessor mat-view :initarg :mat-view :initform nil)
+   (pos :accessor pos :initarg :pos :initform (vec3 0 0 10))
+   (rot :accessor rot :initarg :rot :initform (vec3 0 0 0))
+   (displace :accessor displace :initarg :displace :initform (vec3 1.0 1.0 0.6))))
 
-;; rename to init-*
-(defun update-projection-matrix ()
+(defun update-mat-proj ()
   (with-slots (width
 	       height
-	       projection-type
-	       projection-matrix
-	       ortho-scale
-	       ortho-near
+	       type-proj
+	       mat-proj
+	       scale-ortho
+	       near-ortho
 	       ortho-far)
       (projview *model*)
-    (setf projection-matrix (if (eq projection-type 'perspective)
-				(make-perspective-vector width height)
-				(make-orthographic-vector width height
-							  ortho-scale
-							  ortho-near
-							  ortho-far)))))
+    (setf mat-proj (if (eq type-proj :perspective)
+		       (make-perspective-vector width height)
+		       (make-orthographic-vector width height
+						 scale-ortho
+						 near-ortho
+						 ortho-far)))))
 
-(defun update-view-matrix ()
-  (with-slots (view-matrix
-	       camera-position
-	       camera-rotation)
+(defun update-mat-view ()
+  (with-slots (mat-view
+	       pos
+	       rot)
       (projview *model*)
-  (setf view-matrix (minv (m* (mtranslation camera-position)
-			      (mrotation +vz+ (vz3 camera-rotation))
-			      (mrotation +vy+ (vy3 camera-rotation))
-			      (mrotation +vx+ (vx3 camera-rotation))
-			      (mscaling (vec3 1 1 1)))))))
+    (setf mat-view (minv (m* (mtranslation pos)
+			     (mrotation +vz+ (vz3 rot))
+			     (mrotation +vy+ (vy3 rot))
+			     (mrotation +vx+ (vx3 rot))
+			     (mscaling (vec3 1 1 1)))))))
 
-(defun copy-projection-matrix-to-shm ()
+(defun copy-mat-proj-to-shm ()
   (with-slots (projview handles-shm)
       *model*
     (with-slots (ptr size)
 	(gethash "projview" handles-shm)
       (set-matrix ptr
-		  (projection-matrix projview)
+		  (mat-proj projview)
 		  0))))
 
-(defun copy-view-matrix-to-shm ()
+(defun copy-mat-view-to-shm ()
   (with-slots (projview handles-shm)
       *model*
     (with-slots (ptr size)
 	(gethash "projview" handles-shm)
       (set-matrix ptr
-		  (view-matrix projview)
+		  (mat-view projview)
 		  16))))
 
 (defun copy-projview-to-shm (&optional (memcpy-shm-to-cache t))
-    
-  (update-projection-matrix)
-  (update-view-matrix)
-  ;; (write-matrix (view-matrix (projview model)) t)
+  
+  (update-mat-proj)
+  (update-mat-view)
+  ;; (write-matrix (mat-view (projview model)) t)
 
-  (copy-projection-matrix-to-shm)
-  (copy-view-matrix-to-shm)
+  (copy-mat-proj-to-shm)
+  (copy-mat-view-to-shm)
 
   ;; Flag dirty do at end of loop
   (when memcpy-shm-to-cache
@@ -75,68 +74,68 @@
 (defun update-scale-ortho-in (seq-event) ; in
   (with-slots (projview)
       *model*
-    (with-slots (camera-position
-		 ortho-scale)
+    (with-slots (pos
+		 scale-ortho)
 	projview
-      (decf (ortho-scale projview)
-	    (vz3 (camera-displacement projview)))
+      (decf (scale-ortho projview)
+	    (vz3 (displace projview)))
       (copy-projview-to-shm))))
 
 (defun update-scale-ortho-out (seq-event) ; out
   (with-slots (projview)
       *model*
-    (with-slots (camera-position
-		 ortho-scale)
+    (with-slots (pos
+		 scale-ortho)
 	projview
-      (incf (ortho-scale projview)
-	    (vz3 (camera-displacement projview)))
+      (incf (scale-ortho projview)
+	    (vz3 (displace projview)))
       (copy-projview-to-shm))))
 
 (defun move-camera-left (seq-event)
   (with-slots (projview)
       *model*
-    (with-slots (camera-position
-		 camera-displacement)
+    (with-slots (pos
+		 displace)
 	projview
-      (decf (vx3 camera-position)
-	    (vx3 camera-displacement)))
-      (copy-projview-to-shm)))
+      (decf (vx3 pos)
+	    (vx3 displace)))
+    (copy-projview-to-shm)))
 
 (defun move-camera-right (seq-event)
   (with-slots (projview)
       *model*
-    (with-slots (camera-position
-		 camera-displacement)
+    (with-slots (pos
+		 displace)
 	projview
-      (incf (vx3 camera-position)
-	    (vx3 camera-displacement)))
-      (copy-projview-to-shm)))
+      (incf (vx3 pos)
+	    (vx3 displace)))
+    (copy-projview-to-shm)))
 
 (defun move-camera-up (seq-event)
   (with-slots (projview)
       *model*
-    (with-slots (camera-position
-		 camera-displacement)
+    (with-slots (pos
+		 displace)
 	projview
-      (incf (vy3 camera-position)
-	    (vy3 camera-displacement)))
-      (copy-projview-to-shm)))
+      (incf (vy3 pos)
+	    (vy3 displace)))
+    (copy-projview-to-shm)))
 
 (defun move-camera-down (seq-event)
   (with-slots (projview)
       *model*    
-    (with-slots (camera-position
-		 camera-displacement)
+    (with-slots (pos
+		 displace)
 	projview
-      (decf (vy3 camera-position)
-	    (vy3 camera-displacement)))
-      (copy-projview-to-shm)))
+      (decf (vy3 pos)
+	    (vy3 displace)))
+    (copy-projview-to-shm)))
 
 
 (defun update-clip-planes (msdf)
   (multiple-value-bind (near far bottom top left right)
-      (extract-clip-planes (m* (projection-matrix msdf)
-			       (view-matrix msdf)))
+      (extract-clip-planes (m* (mat-proj msdf)
+			       (mat-view msdf)))
     (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
 							   :element-type 'single-float
 							   :initial-contents (list (vx4 near)

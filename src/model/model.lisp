@@ -211,7 +211,7 @@
 				       :projview (make-instance 'projview
 								:width width
 								:height height
-								:projection-type 'orthographic)
+								:type-proj 'orthographic)
 				       :inst-max inst-max))
   
   (fmt-model t "main-model" "Init shm data~%")
