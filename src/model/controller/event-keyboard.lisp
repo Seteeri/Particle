@@ -119,8 +119,9 @@
 
 	  (when nil
 	    (fmt-model t "update-keyboard"
-		       "time: ~a, code: ~a, char: ~a, state: ~a, rep: ~a~%"
+		       "[~a] keysym: ~a, code: ~a, char: #\~a, state: ~a, rep: ~a~%"
 		       ev-time
+		       keysym
 		       (+ ev-keycode 8)
 		       (code-char keysym)
 		       ev-state

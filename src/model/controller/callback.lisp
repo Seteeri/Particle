@@ -53,7 +53,6 @@
      :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
      ;; :using (hash-value states)
      :do (progn
-	   ;; (fmt-model t "dispatch-all-seq" "~a~%" seq-event)
 	   (dispatch-seq-event seq-event))))
 
 (defun dispatch-seq-event (seq-event)
@@ -96,7 +95,6 @@
 	   :do (when (and (or (eq state-key :press)
 			      (eq state-key :down))
 			  (not (member key-mod seq-keys)))
-		 ;; (fmt-model t "is-seq-event-valid" "fail: ~a | ~a, ~a~%" seq-event key-mod state)
 		 (return-from is-seq-event-valid nil))))))
   
   ;; Return t

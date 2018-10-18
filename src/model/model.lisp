@@ -378,16 +378,15 @@
 				#'add-node-msdf)))
 
     (when t
-      (dolist (k (list (list +xk-left+       #'move-pointer-left)
-		       (list +xk-up+         #'move-pointer-up)
-		       (list +xk-right+      #'move-pointer-right)
-		       (list +xk-down+       #'move-pointer-down)
-		       (list +xk-backspace+  #'backspace-node-msdf)
-		       (list +xk-return+     #'return-node-msdf)))
-	(multiple-value-bind (keysym cb) k
-	  (register-callback (list keysym (list :press :repeat))
+      (dolist (seq-event (list (list +xk-left+       #'move-pointer-left)
+			       (list +xk-up+         #'move-pointer-up)
+			       (list +xk-right+      #'move-pointer-right)
+			       (list +xk-down+       #'move-pointer-down)
+			       (list +xk-backspace+  #'backspace-node-msdf)
+			       (list +xk-return+     #'return-node-msdf)))
+	  (register-callback (list (first seq-event) (list :press :repeat))
 			     :exclusive
-			     cb))))
+			     (second seq-event))))
     
     ;; Modifier keys remain in press state instead of repeat
 
@@ -396,12 +395,12 @@
     
     (when t
       (register-callback (list +xk-control-l+ (list :press :down) +xk-x+ (list :press :repeat))
-			 :inclusive
+			 :exclusive
 			 (lambda (seq-key)
 			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key))))
     
     ;; Print hashtable
-    (when nil
+    (when t
       (maphash (lambda (key value)
 		 (format t "Seq-event: ~S = ~S~%" key value))
 	       key-callbacks))
