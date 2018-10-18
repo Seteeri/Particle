@@ -339,9 +339,20 @@
 			       (list +xk-up+         #'move-camera-up)
 			       (list +xk-right+      #'move-camera-right)
 			       (list +xk-down+       #'move-camera-down)))
-	  (register-callback (list +xk-control-l+ (list :press :down) (first seq-event) (list :press :repeat))
-			     :exclusive
-			     (second seq-event))))
+	(register-callback (list +xk-control-l+ (list :press :down)
+				 (first seq-event) (list :press :repeat))
+			   :exclusive
+			   (second seq-event)))
+
+      (dolist (seq-event (list (list +xk-left+       #'update-scale-ortho-out)
+			       (list +xk-up+         #'update-scale-ortho-in)
+			       (list +xk-right+      #'update-scale-ortho-in)
+			       (list +xk-down+       #'update-scale-ortho-out)))
+	(register-callback (list +xk-control-l+ (list :press :down)
+				 +xk-shift-l+ (list :press :down)
+				 (first seq-event) (list :press :repeat))
+			   :exclusive
+			   (second seq-event))))
     
     ;; Print hashtable
     (when nil
