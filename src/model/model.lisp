@@ -135,77 +135,14 @@
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
    (scale-node :accessor scale-node :initarg :scale-node :initform 0.008)))
 
-;; Do atomic counter also?
-(defun init-model (width
-		   height
-		   inst-max)
-
-  (let* ((model (make-instance 'model
-			       :projview (make-instance 'projview
-							:width width
-							:height height
-							:projection-type 'orthographic)
-			       :inst-max inst-max)))
-    
-    ;; (setf (scale-node model) (* 5.8239365 (dpi-glyph model)))
-  
-    (init-handle-shm (handles-shm model)
-		     *params-shm*)
-    model))
-
-(defun init-shm-data ()
-  (with-slots (inst-max
-	       projview
-	       handles-shm)
-      *model*
-
-    ;; instance and texture is done later
-
-    (copy-projview-to-shm nil)
-    ;; (with-slots (ptr size)
-    ;; 	(gethash "projview" handles-shm)
-    ;;   (update-projection-matrix projview)
-    ;;   (update-view-matrix projview)
-    ;;   ;; (write-matrix (view-matrix (projview model)) t)
-    ;;   (set-projection-matrix ptr (projection-matrix projview))
-    ;;   (set-view-matrix ptr (view-matrix projview)))
-
-    ;; top right, bottom right, bottom left, top left
-    ;;
-    ;; 3---0
-    ;; | / |
-    ;; 2---1
-    ;;
-    ;; ccw: 0 2 1 0 3 2    
-    (with-slots (ptr size)
-	(gethash "vertices" handles-shm)
-      (let ((data (make-array (* 4 4)
-			      :element-type 'single-float
-			      :initial-contents (list 1.0  1.0  0.0  1.0
-						      1.0  0.0  0.0  1.0
-						      0.0  0.0  0.0  1.0
-						      0.0  1.0  0.0  1.0))))
-	(dotimes (i (length data))
-	  (setf (mem-aref ptr :float i)
-		(aref data i)))))
-    
-    (with-slots (ptr size)
-	(gethash "element" handles-shm)
-      (let ((data (make-array 6
-      			      :element-type '(unsigned-byte 32)
-      			      :initial-contents (list 0 2 1 0 3 2))))
-	(dotimes (i (length data))
-	  (setf (mem-aref ptr ::uint i)
-		(aref data i)))))
-
-    (with-slots (ptr size)
-	(gethash "draw-indirect" handles-shm)
-      (let ((data (make-array 5
-      			      :element-type '(unsigned-byte 32)
-      			      :initial-contents (list 6 inst-max 0 0 0))))
-	(dotimes (i (length data))
-	  (setf (mem-aref ptr ::uint i)
-		(aref data i)))))))
+(defun init-shm ()
+  (init-handle-shm (handles-shm *model*)
+		   *params-shm*)
+  ;; instance and texture is done later
+  (copy-projview-to-shm nil)
+  (copy-shm-vertices)
+  (copy-shm-element)
+  (copy-shm-draw-indirect))
 
 (defun setup-view (addr-swank-view)
 
@@ -268,13 +205,19 @@
 		   addr-swank-view)
 
   (start-swank-server 10000)
-  
-  (defparameter *model* (init-model width
-				    height
-				    inst-max))
+
+  ;; (setf (scale-node model) (* 5.8239365 (dpi-glyph model)))
+  (defparameter *model* (make-instance 'model
+				       :projview (make-instance 'projview
+								:width width
+								:height height
+								:projection-type 'orthographic)
+				       :inst-max inst-max))
   
   (fmt-model t "main-model" "Init shm data~%")
-  (init-shm-data)
+  (init-shm)
+
+  (fmt-model t "main-model" "Init glyph data~%")
   (init-glyph-data)
   (setf (metrics *model*) (init-metrics))
   
