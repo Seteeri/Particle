@@ -161,14 +161,14 @@
 
     ;; instance and texture is done later
 
-    ;; Move some of this out
-    (with-slots (ptr size)
-	(gethash "projview" handles-shm)
-      (update-projection-matrix projview)
-      (update-view-matrix projview)
-      ;; (write-matrix (view-matrix (projview model)) t)
-      (set-projection-matrix ptr (projection-matrix projview))
-      (set-view-matrix ptr (view-matrix projview)))
+    (copy-projview-to-shm nil)
+    ;; (with-slots (ptr size)
+    ;; 	(gethash "projview" handles-shm)
+    ;;   (update-projection-matrix projview)
+    ;;   (update-view-matrix projview)
+    ;;   ;; (write-matrix (view-matrix (projview model)) t)
+    ;;   (set-projection-matrix ptr (projection-matrix projview))
+    ;;   (set-view-matrix ptr (view-matrix projview)))
 
     ;; top right, bottom right, bottom left, top left
     ;;
@@ -371,6 +371,7 @@
     			   (sb-ext:exit))))
     
     (when t
+      ;; handlers in node
       (loop
 	 :for keysym :from 32 :to 255
 	 :do (register-callback (list keysym (list :press :repeat))
@@ -378,6 +379,7 @@
 				#'add-node-msdf)))
 
     (when t
+      ;; handlers in node
       (dolist (seq-event (list (list +xk-left+       #'move-pointer-left)
 			       (list +xk-up+         #'move-pointer-up)
 			       (list +xk-right+      #'move-pointer-right)
@@ -388,20 +390,19 @@
 			     :exclusive
 			     (second seq-event))))
     
-    ;; Modifier keys remain in press state instead of repeat
-
-    ;; (register-callback-down-2 (list +xk-shift-r+ +xk-return+)
-    ;; 			      #'eval-node-msdf)
-    
     (when t
-      (register-callback (list +xk-control-l+ (list :press :down) +xk-x+ (list :press :repeat))
-			 :exclusive
-			 (lambda (seq-key)
-			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key))))
+      ;; handlers in projview
+      (dolist (seq-event (list (list +xk-left+       #'move-camera-left)
+			       (list +xk-up+         #'move-camera-up)
+			       (list +xk-right+      #'move-camera-right)
+			       (list +xk-down+       #'move-camera-down)))
+	  (register-callback (list +xk-control-l+ (list :press :down) (first seq-event) (list :press :repeat))
+			     :exclusive
+			     (second seq-event))))
     
     ;; Print hashtable
-    (when t
+    (when nil
       (maphash (lambda (key value)
-		 (format t "Seq-event: ~S = ~S~%" key value))
+		 (fmt-model t "register-keyboard..." "Seq-event: ~S = ~S~%" key value))
 	       key-callbacks))
     t))

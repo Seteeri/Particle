@@ -13,18 +13,26 @@
    (camera-rotation :accessor camera-rotation :initarg :camera-rotation :initform (vec3 0 0 0))
    (camera-displacement :accessor camera-displacement :initarg :camera-displacement :initform (vec3 1.0 1.0 0.6))))
 
-(defun set-projection-matrix (ptr-dest projection-matrix)
-  (set-matrix ptr-dest
-	      projection-matrix
-	      0))
+(defun copy-projection-matrix-to-shm ()
+  (with-slots (projview handles-shm)
+      *model*
+    (with-slots (ptr size)
+	(gethash "projview" handles-shm)
+      (set-matrix ptr
+		  (projection-matrix projview)
+		  0))))
 
-(defun set-view-matrix (ptr-dest view-matrix)
-  (set-matrix ptr-dest
-	      view-matrix
-	      16))
+(defun copy-view-matrix-to-shm ()
+  (with-slots (projview handles-shm)
+      *model*
+    (with-slots (ptr size)
+	(gethash "projview" handles-shm)
+      (set-matrix ptr
+		  (view-matrix projview)
+		  16))))
 
 ;; rename to init-*
-(defun update-projection-matrix (projview)
+(defun update-projection-matrix ()
   (with-slots (width
 	       height
 	       projection-type
@@ -32,7 +40,7 @@
 	       ortho-scale
 	       ortho-near
 	       ortho-far)
-      projview    
+      (projview *model*)
     (setf projection-matrix (if (eq projection-type 'perspective)
 				(make-perspective-vector width height)
 				(make-orthographic-vector width height
@@ -40,48 +48,89 @@
 							  ortho-near
 							  ortho-far)))))
 
-(defun update-view-matrix (projview)
+(defun update-view-matrix ()
   (with-slots (view-matrix
 	       camera-position
 	       camera-rotation)
-      projview
+      (projview *model*)
   (setf view-matrix (minv (m* (mtranslation camera-position)
 			      (mrotation +vz+ (vz3 camera-rotation))
 			      (mrotation +vy+ (vy3 camera-rotation))
 			      (mrotation +vx+ (vx3 camera-rotation))
 			      (mscaling (vec3 1 1 1)))))))
 
-(defun update-zoom-in (keysym)
-  (decf (ortho-scale (projview msdf)) (vz3 (camera-displacement (projview msdf))))
-  (update-projection-matrix (projview msdf)))
+(defun copy-projview-to-shm (&optional (memcpy-shm-to-cache t))
+    
+  (update-projection-matrix)
+  (update-view-matrix)
+  ;; (write-matrix (view-matrix (projview model)) t)
 
-(defun update-zoom-out (keysym)
-  (incf (ortho-scale (projview msdf)) (vz3 (camera-displacement (projview msdf))))
-  (update-projection-matrix (projview msdf)))
+  (copy-projection-matrix-to-shm)
+  (copy-view-matrix-to-shm)
 
-(defun update-mm-left (keysym)
-  (with-slots (camera-position camera-displacement)
-      (projview msdf)
-    (decf (vx3 camera-position) (vx3 camera-displacement)))
-  (update-projection-matrix (projview msdf)))
+  ;; Flag dirty do at end of loop
+  (when memcpy-shm-to-cache
+    (memcpy-shm-to-cache "projview")))
 
-(defun update-mm-right (keysym)
-  (with-slots (camera-position camera-displacement)
-      (projview msdf)
-    (incf (vx3 camera-position) (vx3 camera-displacement)))
-  (update-projection-matrix (projview msdf)))
+(defun update-scale-ortho-in (seq-event) ; in
+  (with-slots (projview)
+      *model*
+    (with-slots (camera-position
+		 ortho-scale)
+	projview
+      (decf (ortho-scale projview)
+	    (vz3 (camera-displacement projview)))
+      (copy-projview-to-shm))))
 
-(defun update-mm-up (keysym)
-  (with-slots (camera-position camera-displacement)
-      (projview msdf)
-    (incf (vy3 camera-position) (vy3 camera-displacement)))
-  (update-projection-matrix (projview msdf)))
+(defun update-scale-ortho-out (seq-event) ; out
+  (with-slots (projview)
+      *model*
+    (with-slots (camera-position
+		 ortho-scale)
+	projview
+      (incf (ortho-scale projview)
+	    (vz3 (camera-displacement projview)))
+      (copy-projview-to-shm))))
 
-(defun update-mm-dn (keysym)
-  (with-slots (camera-position camera-displacement)
-      (projview msdf)
-    (decf (vy3 camera-position) (vy3 camera-displacement)))
-  (update-projection-matrix (projview msdf)))
+(defun move-camera-left (seq-event)
+  (with-slots (projview)
+      *model*
+    (with-slots (camera-position
+		 camera-displacement)
+	projview
+      (decf (vx3 camera-position)
+	    (vx3 camera-displacement)))
+      (copy-projview-to-shm)))
+
+(defun move-camera-right (seq-event)
+  (with-slots (projview)
+      *model*
+    (with-slots (camera-position
+		 camera-displacement)
+	projview
+      (incf (vx3 camera-position)
+	    (vx3 camera-displacement)))
+      (copy-projview-to-shm)))
+
+(defun move-camera-up (seq-event)
+  (with-slots (projview)
+      *model*
+    (with-slots (camera-position
+		 camera-displacement)
+	projview
+      (incf (vy3 camera-position)
+	    (vy3 camera-displacement)))
+      (copy-projview-to-shm)))
+
+(defun move-camera-down (seq-event)
+  (with-slots (projview)
+      *model*    
+    (with-slots (camera-position
+		 camera-displacement)
+	projview
+      (decf (vy3 camera-position)
+	    (vy3 camera-displacement)))
+      (copy-projview-to-shm)))
 
 
 (defun update-clip-planes (msdf)

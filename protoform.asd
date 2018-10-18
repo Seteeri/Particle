@@ -79,6 +79,7 @@
 				       (:file "pango")
 				       (:file "text")
 				       (:file "metrics")
+				       (:file "pointer")
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "keysymdef")

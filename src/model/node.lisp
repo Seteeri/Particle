@@ -103,8 +103,6 @@
 						(/ +size-struct-instance+ 4))))
 			 (digraph *model*)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun zero-node-to-shm (&optional (offset-ptr 0))
   
   (with-slots (ptr size)
@@ -116,6 +114,7 @@
     ;; (fmt-model t "zero-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4))
 
     t))
+
 
 (defun init-node-msdf (cursor
 		       scale-glyph
@@ -165,6 +164,10 @@
     (update-transform (model-matrix node))
     
     node))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Separate callbacks into callbacks-node
 
 (defun add-node-msdf (seq-key)
   ;; Add node to pointer position
@@ -381,42 +384,6 @@
 				       	       0
       				       	       (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
 				       					    (digraph:count-edges digraph))))))))))
-
-(defun move-pointer-left (seq-key)
-  (with-slots (node-pointer
-	       scale-node)
-      *model*
-    (move-node-x node-pointer
-		 (- (* 96 scale-node))
-		 :relative)
-    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
-
-(defun move-pointer-up (seq-key)
-  (with-slots (node-pointer
-	       scale-node)
-      *model*
-    (move-node-y node-pointer
-		 (* +linegap+ scale-node) ; add more spacing due to bl adjustments
-		 :relative)
-    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))
-
-(defun move-pointer-right (seq-key)
-  (with-slots (node-pointer
-	       scale-node)
-      *model*
-    (move-node-x node-pointer
-		 (* 96 scale-node)
-		 :relative)
-    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))    
-
-(defun move-pointer-down (seq-key)
-  (with-slots (node-pointer
-	       scale-node)
-      *model*
-    (move-node-y node-pointer
-		 (- (* +linegap+ scale-node)) ; add more spacing due to bl adjustments
-		 :relative)
-    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix node-pointer)))))    
 
 (defun eval-node-msdf (seq-key)
   ;; To eval, build up string from predecessors
