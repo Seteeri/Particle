@@ -186,7 +186,7 @@
     (let* ((metrics-space (gethash 32 metrics))
 	   (spacing (* (advance metrics-space) (scale metrics-space) scale-node))
 	   (cursor (translation (model-matrix node-pointer)))
-	   (key-first (first (third seq-key)))
+	   (key-first (first (second seq-key)))
 	   (data (if (= key-first +xk-return+)
 		     #\Newline
 		     (code-char key-first)))

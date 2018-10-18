@@ -359,7 +359,7 @@
     ;; +xk-right+ #xff53   ;  Move right, right arrow 
     ;; +xk-down+ #xff54   ;  Move down, down arrow 
 
-    (when nil
+    (when t
       (register-callback (list +xk-escape+ (list :press))
     			 :exclusive
     			 (lambda (seq-key)

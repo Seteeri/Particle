@@ -59,11 +59,11 @@
     ;; Launch swank servers
     (fork (lambda () (protoform.view:main-view width height
     					       inst-max
-    					       path-server-model)))
+    					       "")))
     (sleep 1)
     (fork (lambda () (protoform.model:main-model width height
     						 inst-max
-    						 path-server-model)))
+    						 "")))
 
     ;; (swank-protocol:request-listener-eval connection "(+ 2 2)")
     ;; (format t "~a~%" (swank-protocol:read-message connection)) ; blocks

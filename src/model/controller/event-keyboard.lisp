@@ -183,7 +183,7 @@
      :for keysym :being :the :hash-keys :of key-states
      :using (hash-value state)
      :for state-key := (aref state 0)       
-     :do (progn	   
+     :do (progn
 	   (cond ((eq (first state-key) :press)
 		  ;; (fmt-model t "reset-states-key" "Press -> Down: ~a~%" keysym)
 		  (setf (nth 0 (aref state 1)) (nth 0 state-key))

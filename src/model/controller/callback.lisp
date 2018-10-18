@@ -92,10 +92,10 @@
 	   :for key-mod :in *keysyms-modifier*
 	   :for state-key := (if (gethash key-mod key-states)
 				 (first (aref (gethash key-mod key-states) 0))
-				 (:up 0))
+				 :up)
 	   :do (when (and (or (eq state-key :press)
 			      (eq state-key :down))
-			  (not (member key-mod eq-keys)))
+			  (not (member key-mod seq-keys)))
 		 ;; (fmt-model t "is-seq-event-valid" "fail: ~a | ~a, ~a~%" seq-event key-mod state)
 		 (return-from is-seq-event-valid nil))))))
   
