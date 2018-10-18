@@ -13,24 +13,6 @@
    (camera-rotation :accessor camera-rotation :initarg :camera-rotation :initform (vec3 0 0 0))
    (camera-displacement :accessor camera-displacement :initarg :camera-displacement :initform (vec3 1.0 1.0 0.6))))
 
-(defun copy-projection-matrix-to-shm ()
-  (with-slots (projview handles-shm)
-      *model*
-    (with-slots (ptr size)
-	(gethash "projview" handles-shm)
-      (set-matrix ptr
-		  (projection-matrix projview)
-		  0))))
-
-(defun copy-view-matrix-to-shm ()
-  (with-slots (projview handles-shm)
-      *model*
-    (with-slots (ptr size)
-	(gethash "projview" handles-shm)
-      (set-matrix ptr
-		  (view-matrix projview)
-		  16))))
-
 ;; rename to init-*
 (defun update-projection-matrix ()
   (with-slots (width
@@ -58,6 +40,24 @@
 			      (mrotation +vy+ (vy3 camera-rotation))
 			      (mrotation +vx+ (vx3 camera-rotation))
 			      (mscaling (vec3 1 1 1)))))))
+
+(defun copy-projection-matrix-to-shm ()
+  (with-slots (projview handles-shm)
+      *model*
+    (with-slots (ptr size)
+	(gethash "projview" handles-shm)
+      (set-matrix ptr
+		  (projection-matrix projview)
+		  0))))
+
+(defun copy-view-matrix-to-shm ()
+  (with-slots (projview handles-shm)
+      *model*
+    (with-slots (ptr size)
+	(gethash "projview" handles-shm)
+      (set-matrix ptr
+		  (view-matrix projview)
+		  16))))
 
 (defun copy-projview-to-shm (&optional (memcpy-shm-to-cache t))
     
