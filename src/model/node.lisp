@@ -171,7 +171,7 @@
   ;; Move pointer right
   ;; Maybe have pointer appear below/above so edge will show
 
-  (format t "ADDING: ~a~%" seq-key)
+  (fmt-model t "add-node-msdf" "~a~%" seq-key)
   
   ;; Advance - origin to origin
   ;; 1. Find glyph A origin
