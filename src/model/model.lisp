@@ -301,7 +301,7 @@
        
        (dispatch-events-input)
 
-       (dispatch-all-seq-key)
+       (dispatch-all-seq-event)
 
        (reset-states-key)
 
@@ -358,15 +358,9 @@
     ;; +xk-up+ #xff52   ;  Move up, up arrow 
     ;; +xk-right+ #xff53   ;  Move right, right arrow 
     ;; +xk-down+ #xff54   ;  Move down, down arrow 
-    
-    ;; * Use plist [DONE]
-    ;; * Add exclusive/inclusive mods options
-    ;; * Add ability to follow order
-    ;;   * Need timestamp - get from libinput?
 
     (when nil
       (register-callback (list +xk-escape+ (list :press))
-    			 ()
     			 :exclusive
     			 (lambda (seq-key)
     			   (clean-up-handles-shm)
@@ -376,15 +370,14 @@
     			   (fmt-model t "handle-escape" "Model process exiting!~%")
     			   (sb-ext:exit))))
     
-    (when nil
+    (when t
       (loop
 	 :for keysym :from 32 :to 255
 	 :do (register-callback (list keysym (list :press :repeat))
-				()
 				:exclusive
 				#'add-node-msdf)))
 
-    (when nil
+    (when t
       (dolist (k (list (list +xk-left+       #'move-pointer-left)
 		       (list +xk-up+         #'move-pointer-up)
 		       (list +xk-right+      #'move-pointer-right)
@@ -393,7 +386,6 @@
 		       (list +xk-return+     #'return-node-msdf)))
 	(multiple-value-bind (keysym cb) k
 	  (register-callback (list keysym (list :press :repeat))
-			     ()
 			     :exclusive
 			     cb))))
     
@@ -402,14 +394,6 @@
     ;; (register-callback-down-2 (list +xk-shift-r+ +xk-return+)
     ;; 			      #'eval-node-msdf)
     
-    ;; Test Ctrl-X
-    ;; (when t
-    ;;   (register-callback (list +xk-x+ (list :press :repeat))
-    ;; 			 (list +xk-control-l+ (list :press :down))
-    ;; 			 :inclusive
-    ;; 			 (lambda (seq-key)
-    ;; 			   (format t "[CTRL-X] CALLBACK: ~a~%" seq-key))))
-
     (when t
       (register-callback (list +xk-control-l+ (list :press :down) +xk-x+ (list :press :repeat))
 			 :inclusive

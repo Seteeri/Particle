@@ -48,7 +48,7 @@
 ;; Refactor verbosity for dispatch functions
 
 ;; rename -> event
-(defun dispatch-all-seq-key ()
+(defun dispatch-all-seq-event ()
   (loop
      :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
      ;; :using (hash-value states)
@@ -70,10 +70,6 @@
   (with-slots (key-states)
       *controller*
     
-    ;; seq-event = (mod-logic, (mods key:(state)) (norm key:(state)))
-    ;; 3 lists:
-    ;; :inclusive
-    ;; (list +xk-control-l+ (list :press :down) +xk-x+ (list :press :down :repeat))
     (destructuring-bind (logic-mod seq-keys)
       seq-events-key
 
@@ -86,8 +82,6 @@
       ;; Any of these fail, return
       (when (not (is-seq-state-valid seq-keys))
 	(return-from is-seq-event-valid nil))
-
-      ;; :for key-mod :in (set-difference *keysyms-modifier* seq-mod-state)
       
       ;; Exclusive: make sure no other mods pressed than those specified
       ;; Inclusive: need not check
@@ -109,7 +103,7 @@
   t)
 
 (defun is-seq-state-valid (seq-key)
-    ;; Return mod keys also?
+    ;; Collect mod keys while traversing?
   (with-slots (key-states)
       *controller*  
     (loop
