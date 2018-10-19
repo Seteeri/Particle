@@ -135,14 +135,75 @@
    (dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
    (scale-node :accessor scale-node :initarg :scale-node :initform 0.008)))
 
-(defun init-shm ()
-  (init-handle-shm (handles-shm *model*)
-		   *params-shm*)
-  ;; instance and texture is done later
-  (copy-projview-to-shm nil)
-  (copy-shm-vertices)
-  (copy-shm-element)
-  (copy-shm-draw-indirect))
+(defun main-model (width height
+		   inst-max
+		   addr-swank-view)
+
+  (fmt-model t "main-model" "Init kernel lparallel~%")
+  (init-kernel-lparallel)
+  
+  (submit-task *channel*
+	       (lambda ()
+		 (start-swank-server 10000)
+		 
+		 (defparameter *model* (make-instance 'model
+						      :projview (make-instance 'projview
+									       :width width
+									       :height height
+									       :type-proj 'orthographic)
+						      :inst-max inst-max))
+
+		 ;; Load glyphs and metrics independently?
+		 
+		 (fmt-model t "main-model" "Init shm data~%")
+		 (init-shm)
+		 
+		 (fmt-model t "main-model" "Init glyph data~%")
+		 (init-glyph-data)
+		 (setf (metrics *model*) (init-metrics))
+		 
+		 (fmt-model t "main-model" "Init graph~%")
+		 (init-graph-msdf)
+		 
+		 (fmt-model t "main-model" "Init conn to view swank server~%")
+		 (setup-view addr-swank-view)))
+
+  (submit-task *channel*
+	       (lambda ()  
+		 (defparameter *controller* (init-controller))
+		 (register-keyboard-callbacks)))
+  
+  (dotimes (i 2) (receive-result *channel*))
+
+  (submit-task *channel*
+	       (lambda ()
+		 (loop
+		    ;; Update states
+		    ;; - For key events, copy index 0 to index 1, set index 0
+		    ;; Dispatch state callbacks
+		    ;; - For key states in index 0, do callbacks
+		    ;; Update states
+		    ;; - rel -> up
+		    ;; - press -> down
+		    (dispatch-events-input)
+		    (dispatch-all-seq-event)
+		    (update-states-keyboard-continuous))))
+  
+  ;; Block until above loop exits...
+  (receive-result *channel*))
+
+(defun init-kernel-lparallel ()
+
+  ;; Swank, Input, Wayland
+  ;; (bordeaux-threads:make-thread (lambda () (sleep 1)))
+
+  ;; Queue will be shared - producer/consumer
+  ;; Anim thread must wait for queue to be free
+  ;; Input will trigger/submit anim task, then anim task will submit itself until done
+  ;; Frame repesents data to be copied to shm->rpc->cache
+  (setf *kernel* (make-kernel (+ 1 4)))
+  (setf *channel* (make-channel))
+  (setf *queue-anim* (make-queue)))
 
 (defun setup-view (addr-swank-view)
 
@@ -176,80 +237,6 @@
     ;; Enable draw flag for view loop
     (eval-sync conn (format nil "(setf *draw* t)"))))
 
-(defun init-graph-msdf ()
-  (with-slots (scale-node
-	       digraph
-	       node-pointer)
-      *model*
-
-    (setf digraph (digraph:make-digraph))
-
-    ;; Create pointer node
-    (let ((node-ptr (init-node-msdf (vec3 -11.5199995 14.127416 0)
-				    scale-node
-				    0
-				    #\*
-				    *color-default-ptr*)))
-      
-      (update-transform (model-matrix node-ptr))
-      
-      (digraph:insert-vertex digraph node-ptr)
-      
-      (copy-nodes-to-shm)
-      ;; (copy-textures-to-shm)
-
-      (setf node-pointer node-ptr))))
-
-(defun main-model (width height
-		   inst-max
-		   addr-swank-view)
-
-  (start-swank-server 10000)
-
-  ;; (setf (scale-node model) (* 5.8239365 (dpi-glyph model)))
-  (defparameter *model* (make-instance 'model
-				       :projview (make-instance 'projview
-								:width width
-								:height height
-								:type-proj 'orthographic)
-				       :inst-max inst-max))
-  
-  (fmt-model t "main-model" "Init shm data~%")
-  (init-shm)
-
-  (fmt-model t "main-model" "Init glyph data~%")
-  (init-glyph-data)
-  (setf (metrics *model*) (init-metrics))
-  
-  (fmt-model t "main-model" "Init graph~%")
-  (init-graph-msdf)
-
-  (fmt-model t "main-model" "Init conn to view swank server~%")
-  (setup-view addr-swank-view)
-  
-  (defparameter *controller* (init-controller))
-
-  (register-keyboard-callbacks)
-  
-  (loop
-     (progn
-
-       ;; Update states
-       ;; - For key events, copy index 0 to index 1, set index 0
-       ;; Dispatch state callbacks
-       ;; - For key states in index 0, do callbacks
-       ;; Update states
-       ;; - rel -> up
-       ;; - press -> down
-       
-       (dispatch-events-input)
-
-       (dispatch-all-seq-event)
-
-       (reset-states-key)
-
-       t)))
-
 (defun register-callback-down (keysym cb)
   (with-slots (key-callbacks)
       *controller*
@@ -261,7 +248,7 @@
 		       ()
 		       :exclusive
 		       cb)))
-  
+
 (defun register-keyboard-callbacks ()
 
   (with-slots (key-callbacks)
@@ -329,9 +316,9 @@
 			       (list +xk-down+       #'move-pointer-down)
 			       (list +xk-backspace+  #'backspace-node-msdf)
 			       (list +xk-return+     #'return-node-msdf)))
-	  (register-callback (list (first seq-event) (list :press :repeat))
-			     :exclusive
-			     (second seq-event))))
+	(register-callback (list (first seq-event) (list :press :repeat))
+			   :exclusive
+			   (second seq-event))))
     
     (when t
       ;; handlers in projview

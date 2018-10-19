@@ -1,5 +1,14 @@
 (in-package :protoform.model)
 
+(defun init-shm ()
+  (init-handle-shm (handles-shm *model*)
+		   *params-shm*)
+  ;; instance and texture is done later
+  (copy-projview-to-shm nil)
+  (copy-shm-vertices)
+  (copy-shm-element)
+  (copy-shm-draw-indirect))
+
 (defun init-handle-shm (handles-shm
 			params-shm)
   (dolist (params params-shm)

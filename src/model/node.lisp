@@ -47,6 +47,31 @@
 					  :initial-contents *uv-default-node*))
    (flags :accessor flags :initarg :flags :initform 1)))
 
+;; Put here for now...
+(defun init-graph-msdf ()
+  (with-slots (scale-node
+	       digraph
+	       node-pointer)
+      *model*
+
+    (setf digraph (digraph:make-digraph))
+
+    ;; Create pointer node
+    (let ((node-ptr (init-node-msdf (vec3 -11.5199995 14.127416 0)
+				    scale-node
+				    0
+				    #\*
+				    *color-default-ptr*)))
+      
+      (update-transform (model-matrix node-ptr))
+      
+      (digraph:insert-vertex digraph node-ptr)
+      
+      (copy-nodes-to-shm)
+      ;; (copy-textures-to-shm)
+
+      (setf node-pointer node-ptr))))
+
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
   
   (with-slots (ptr size)

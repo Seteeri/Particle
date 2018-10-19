@@ -48,7 +48,7 @@
   ;; $ sbcl my-command-line-arg
   ;; *posix-argv*
   ;;("sbcl" "my-command-line-arg")
-
+  
   (let ((width (/ 2560 2)) ; 1280
         (height 1600) ; 1600
         (inst-max (expt 2 16)))
@@ -59,11 +59,11 @@
     ;; Launch swank servers
     (fork (lambda () (protoform.view:main-view width height
     					       inst-max
-    					       "")))
+    					       nil)))
     (sleep 1)
     (fork (lambda () (protoform.model:main-model width height
     						 inst-max
-    						 "")))
+    						 nil)))
 
     ;; (swank-protocol:request-listener-eval connection "(+ 2 2)")
     ;; (format t "~a~%" (swank-protocol:read-message connection)) ; blocks
@@ -77,5 +77,5 @@
     ;; (format t "~v@{~A~:*~}~%" 64 "-")
     
     ;; Explicitly exit after loading code
-    (format t "[main] exiting")
+    (format t "[main] Exiting...")
     (sb-ext:exit)))

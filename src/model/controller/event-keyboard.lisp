@@ -173,7 +173,7 @@
       t
       nil))
 
-(defun reset-states-key ()
+(defun update-states-keyboard-continuous ()
   ;; This is done at end of frame so on next frame,
   ;; if state changes, it will override below,
   ;; otherwise it will remain the same and

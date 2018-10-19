@@ -74,5 +74,6 @@
 				:scale 5.8239365
 				:dims-glyph (vec2 96 96)
 				:ratio-aspect (/ 96 96)))
-	   (fmt-model t "init-metrics" "Loaded ~S~%" lisp-path))
+	   ;; (fmt-model t "init-metrics" "Loaded ~S~%" lisp-path)
+	   t)
      :finally (return ht-metrics)))

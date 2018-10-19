@@ -26,11 +26,11 @@
 		 #:swank
 		 #:swank-protocol
 		 #:trivial-timers
-		 #:babel
+		 ;; #:babel
 		 #:str
 		 #:easing
-		 #:skip-list
-		 #:lparallel)
+		 #:lparallel
+		 #:skip-list)
 		 ;; #:dlist
 
     :serial t

@@ -152,6 +152,7 @@
 	#:3d-vectors
 	#:3d-matrices
 	#:trivial-timers
+	#:lparallel
 	#:lparallel.queue)
   (:export #:main-model))
 
