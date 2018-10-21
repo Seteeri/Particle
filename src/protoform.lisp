@@ -56,14 +56,17 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Init/bootstrapper system ;)
 
-    ;; Launch swank servers
-    (fork (lambda () (protoform.view:main-view width height
-    					       inst-max
-    					       nil)))
-    (sleep 1)
-    (fork (lambda () (protoform.model:main-model width height
+    (when t
+      (fork (lambda () (protoform.view:main-view width height
     						 inst-max
-    						 nil)))
+    						 nil))))
+    
+    (sleep 2)
+    
+    (when t
+      (fork (lambda () (protoform.model:main-model width height
+    						   inst-max
+    						   nil))))
 
     ;; (swank-protocol:request-listener-eval connection "(+ 2 2)")
     ;; (format t "~a~%" (swank-protocol:read-message connection)) ; blocks
@@ -77,5 +80,5 @@
     ;; (format t "~v@{~A~:*~}~%" 64 "-")
     
     ;; Explicitly exit after loading code
-    (format t "[main] Exiting...")
+    ;; (format t "[main] Exiting...")
     (sb-ext:exit)))

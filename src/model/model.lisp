@@ -114,7 +114,13 @@
 					 (coerce (/ 255 255) 'single-float)))
 
 (defclass model ()
-  ((conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
+  ((sock-view :accessor sock-view :initarg :sock-view :initform nil)
+   (buffer-sock-ptr :accessor buffer-sock-ptr :initarg :buffer-sock-ptr :initform (foreign-alloc :unsigned-char :count 212992))
+   (buffer-sock-array :accessor buffer-sock-array :initarg :buffer-sock-array :initform (make-array 212992
+												    :adjustable nil
+												    :fill-pointer nil
+												    :element-type '(unsigned-byte 8)))
+
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
 
    (projview :accessor projview :initarg :projview :initform nil)
@@ -141,11 +147,6 @@
 
   (fmt-model t "main-model" "Init kernel lparallel~%")
   (init-kernel-lparallel)
-  
-  ;; swank loop
-  (submit-task *channel*
-	       (lambda ()
-		 (start-swank-server 10000 nil)))
 		 
   (submit-task *channel*
 	       (lambda ()
@@ -167,16 +168,21 @@
 		 
 		 (fmt-model t "main-model" "Init graph~%")
 		 (init-graph-msdf)
-		 
-		 (fmt-model t "main-model" "Init conn to view swank server~%")
-		 (setup-view addr-swank-view)))
+
+		 (fmt-model t "main-model" "Init conn to view~%")
+		 (init-view)))
 
   (submit-task *channel*
 	       (lambda ()  
 		 (defparameter *controller* (init-controller))
-		 (register-keyboard-callbacks)))
+		 (register-keyboard-callbacks)
+		 t))
   
   (dotimes (i 2) (receive-result *channel*))
+
+  ;; sock view loop
+  (submit-task *channel*
+	       #'serve-client)
 
   ;; input loop
   (submit-task *channel*
@@ -203,37 +209,31 @@
   (setf *chan-anim* (make-channel))
   (setf *queue-anim* (make-queue)))
 
-(defun setup-view (addr-swank-view)
-
-  ;; Get below from addr-swank-view
-  
-  (let ((conn (init-swank-conn "skynet" 10001)))
-
-    (setf (conn-swank *model*) conn)
-    (setf (swank-protocol::connection-package conn) "protoform.view")
+(defun init-view ()
+  (with-slots (sock-view
+	       buffer-sock-ptr
+	       projview
+	       inst-max)
+      *model*
     
-    ;; view should not concern itself with inst-max...
-    (with-slots (projview inst-max)
-	*model*
-      (with-slots (width height)
-	  projview
-	(eval-sync conn
-		   (format nil "(setf *view* (init-view-programs ~S ~S ~S))" width height inst-max))))
+    (setf sock-view (init-sock-client "/tmp/protoform-view.socket" :block))
     
     ;; Init buffers
-    (eval-sync conn
-	       (with-output-to-string (stream)
-		 (format stream "(init-view-buffers `(")
-		 (dolist (param *params-shm*)
-		   (format stream "~S " param))
-		 (format stream "))")))
+    (send-message sock-view
+		  buffer-sock-ptr
+		  (with-output-to-string (stream)
+		    (format stream "(init-view-buffers (")
+		    (dolist (param *params-shm*)
+		      (format stream "~S " param))
+		    (format stream "))")))
 
-    ;; Use progn to do all at once
     (memcpy-shm-to-cache* (loop :for params :in *params-shm*
 			     :collect (second params)))
-    
+  
     ;; Enable draw flag for view loop
-    (eval-sync conn (format nil "(setf *draw* t)"))))
+    (send-message sock-view
+		  buffer-sock-ptr
+		  (format nil "(set-draw t)"))))
 
 (defun register-callback-down (keysym cb)
   (with-slots (key-callbacks)
@@ -287,16 +287,15 @@
     ;; +xk-right+ #xff53   ;  Move right, right arrow 
     ;; +xk-down+ #xff54   ;  Move down, down arrow 
 
-    (when t
+    (when nil
       (register-callback (list +xk-escape+ (list :press))
     			 :exclusive
     			 (lambda (seq-key)
     			   (clean-up-handles-shm)
-    			   (let ((sock-swank (swank-protocol:connection-socket (conn-swank *model*))))
-    			     (usocket:socket-shutdown sock-swank :io)
-    			     (usocket:socket-close sock-swank))
+    			   (c-shutdown sock-view)
+    			   (c-close sock-view))
     			   (fmt-model t "handle-escape" "Model process exiting!~%")
-    			   (sb-ext:exit))))
+    			   (sb-ext:exit)))
     
     (when t
       ;; handlers in node
@@ -380,9 +379,10 @@
   ;;    -> Need lock on conn unless we do one conn per thread??
 
   ;; 100 ms or 10 fps
-  (let ((time (osicat:get-monotonic-time)))
-    (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
-    (setf *time-last* time))
+  (when nil
+    (let ((time (osicat:get-monotonic-time)))
+      (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
+      (setf *time-last* time)))
   
   (when *time-run*
     
@@ -447,3 +447,23 @@
 
 (defun floats-epsilon-equal-p (f1 f2)
   (< (abs (- f1 f2)) SINGLE-FLOAT-EPSILON))
+
+(defun serve-client ()
+  (with-slots (sock-view
+	       buffer-sock-ptr)
+      *model*
+    (loop
+       (let ((message (recv-message sock-view
+				    buffer-sock-ptr)))
+	 (when message
+	   ;; (fmt-model t "serve-client" "Message: ~S~%" message)
+	   ;; (print (eval message))
+	   ;; (force-output)
+
+	   ;; To do multiple check if first is a list
+	   (if (listp (first message))
+	       (dolist (n message)
+		 (apply (symbol-function (find-symbol (string (first n)) :protoform.model))
+			(cdr n)))
+	       (apply (symbol-function (find-symbol (string (first message)) :protoform.model))
+		      (cdr message))))))))

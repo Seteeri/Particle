@@ -97,31 +97,11 @@
   (:use #:cl
         #:cffi
 	#:protoform.libc)
-  (:export #:init-conn-client
-	   #:communicate-request
-	   
-	   #:sock
-	   #:id
-	   #:buffer-ptr-recv
-	   #:buffer-arr-recv
-	   #:buffer-ptr-send
-	   #:buffer-arr-send
-
-	   #:send-message
-	   #:recv-message
-
-	   #:init-socket-server
-	   #:init-socket-client
+  (:export #:init-sock-server
+	   #:init-sock-client
 	   #:accept4
-
-	   #:start-swank-server-for-emacs
-	   #:start-swank-server-for-swank-client
-	   #:swank-thread
-	   #:wait-for-swank-thread
-	   #:start-swank-server
-	   #:init-swank-conn
-	   #:eval-sync
-	   ))
+	   #:send-message
+	   #:recv-message))
 
 (defpackage #:protoform.drm
   (:use #:cl

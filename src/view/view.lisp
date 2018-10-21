@@ -8,16 +8,20 @@
 		     ctl-str)
 	 rest))
 
-(defparameter *view* nil)
-(defparameter *draw* nil)
-
 (defclass view ()
   ;; Create a base for these 3 slots?
   ((width :accessor width :initarg :width :initform nil)
    (height :accessor height :initarg :height :initform nil)
    (inst-max :accessor inst-max :initarg :inst-max :initform nil)
 
-   (conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
+   (sock-server :accessor sock-server :initarg :sock-server :initform nil)
+   (sock-client :accessor sock-client :initarg :sock-client :initform nil)
+   (buffer-sock-ptr :accessor buffer-sock-ptr :initarg :buffer-sock-ptr :initform (foreign-alloc :unsigned-char :count 212992))
+   (buffer-sock-array :accessor buffer-sock-array :initarg :buffer-sock-array :initform (make-array 212992
+												    :adjustable nil
+												    :fill-pointer nil
+												    :element-type '(unsigned-byte 8)))
+   
    (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
    
    ;; Programs
@@ -104,27 +108,6 @@
   (loop
      :for pair :in (get-gl-maxes)
      :do (fmt-view t "init-gl-env" "~a = ~a~%" (first pair) (second pair))))
-
-(defun init-view-programs (width
-			   height
-			   inst-max)
-
-  ;; Connect to model server which should already be running
-  
-  (let ((conn (init-swank-conn "skynet" 10000)))
-    (setf (swank-protocol::connection-package conn) "protoform.model")
-    
-    (make-instance 'view
-		   :width width
-		   :height height
-		   :inst-max inst-max
-		   :conn-swank conn
-		   :program-default (init-program-default)
-		   :program-msdf (init-program-msdf)
-		   :program-compute (init-program-compute)
-		   :fences (make-array 3
-				       :adjustable nil
-				       :initial-element (null-pointer)))))
   
 (defun init-bo-step (params-shm)
 
@@ -181,6 +164,8 @@
 
 (defun init-view-buffers (params-model)
 
+  ;; (format t "~S~%" params-model)
+  
   (fmt-view t "init-view" "Initializing shm handles~%")
   (init-handles-shm params-model)
 
@@ -214,51 +199,49 @@
     (glfw:set-window-size-callback 'update-viewport)
     
     (init-gl-env width height)
-
     (calc-opengl-usage)
-
-    ;; Start server after window
-    (start-swank-server 10001)
     
-    ;; Model will connect and execute code in this process      
-    ;; Cannot actually draw until buffers
+    (defparameter *view* (make-instance 'view
+					:width width
+					:height height
+					:inst-max inst-max
+					:sock-server (init-sock-server "/tmp/protoform-view.socket" :nonblock)
+					:program-default (init-program-default)
+					:program-msdf (init-program-msdf)
+					:program-compute (init-program-compute)
+					:fences (make-array 3
+							    :adjustable nil
+							    :initial-element (null-pointer))))
 
-    (fmt-view t "main-view" "Begin loop...~%")
-
-    (defparameter *time-last* 0)
+    (defparameter *time-frame-last* 0)
+    (defparameter *draw* nil)
     
     (loop 
+
+       ;; Server stuff
+       (run-server)
        
-       ;; Need to increment index so memcpy will copy to correct buffers
-       
-       ;; Recv evals from model
-       ;; http://3bb.cc/tutorials/cl-opengl/getting-started.html
-       (sb-sys:serve-all-events 0)
-       
+       ;; Drawing stuff
        (if *draw*
 
 	   (progn
 
 	     (render-frame)
 	     
-	     ;;(glfw:poll-events)		   
+	     ;;(glfw:poll-events)
 	     (glfw:swap-buffers)
 
-	     (when t
+	     (when nil
 	       (let ((time (osicat:get-monotonic-time)))
-		 (format t "View: ~8$ ms~%" (* (- time *time-last*) 1000))
-		 (setf *time-last* time)))
+		 (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
+		 (setf *time-frame-last* time)))
 
-	     ;; Send sync event to  model
+	     ;; Send sync event to model
 	     (when t
-	       (with-slots (conn-swank)
-		   *view*
-		 (eval-sync conn-swank (format nil "(handle-view-sync ~S)" (/ (get-internal-real-time) internal-time-units-per-second)))
-		 ;; (when (swank-protocol:message-waiting-p conn-swank)
-		 ;;   (swank-protocol:read-message conn-swank))
-		 ;; (swank-protocol:read-message conn-swank)
-		 t))
-
+	       (send-message (sock-client *view*)
+    			     (buffer-sock-ptr *view*)
+			     "(handle-view-sync 0)"))
+	     
 	     t)
 	   
 	   (progn
@@ -300,6 +283,9 @@
 
     ; 3 defconstant +fences-max+
     (setf ix-fence (mod (+ ix-fence 1) 3))))
+
+(defun set-draw (value)
+  (setf *draw* value))
 
 (defun update-cache-to-step ()
 
@@ -362,3 +348,41 @@
   
 
   (format t "-------------------~%"))
+
+(defun run-server ()
+  (with-slots (sock-server sock-client)
+      *view*
+    (if sock-client
+	(serve-client)
+	(multiple-value-bind (sock-accept errno)
+	    (accept4 sock-server :nonblock) ;non block
+	  (when (/= sock-accept -1)
+
+	    (fmt-view t "main-view" "Accepted connection: ~a~%" sock-accept)
+	    (setf sock-client sock-accept))))))
+
+(defun serve-client ()
+  (with-slots (sock-client
+	       buffer-sock-ptr)
+      *view*
+    (let ((message (recv-message sock-client
+				 buffer-sock-ptr)))
+      (when message
+	;; (fmt-view t "serve-client" "Message: ~S~%" message)
+	;; (print (eval message))
+	;; (force-output)
+
+	;; To do multiple check if first is a list
+	(if (listp (first message))
+	    (dolist (n message)
+	      (apply (symbol-function (find-symbol (string (first n)) :protoform.view))
+		     (cdr n)))
+	    (apply (symbol-function (find-symbol (string (first message)) :protoform.view))
+		   (cdr message)))))))
+
+
+;; check errno at end?
+;; handle special forms
+	
+
+

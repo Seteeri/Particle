@@ -23,14 +23,12 @@
 		 #:pango-markup
 		 #:bordeaux-threads
 		 #:inferior-shell
-		 #:swank
-		 #:swank-protocol
 		 #:trivial-timers
-		 ;; #:babel
 		 #:str
 		 #:easing
 		 #:lparallel
 		 #:skip-list)
+		 ;; #:babel
 		 ;; #:dlist
 
     :serial t
@@ -48,8 +46,7 @@
 		 (:module conn
 		 	  :pathname "src/conn"
 		 	  :components ((:file "client")
-				       (:file "protocol")
-				       (:file "swank")))
+				       (:file "protocol")))
 		 (:module drm
 			  :pathname "src/drm"
 			  :components ((:file "gbm")

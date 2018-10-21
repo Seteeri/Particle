@@ -2,235 +2,18 @@
 
 ;; socat -v - UNIX-CLIENT:/tmp/protoform-model.socket
 
-(defun write-long-to-byte-array (array integer &optional (offset 0))
-  (setf (aref array offset) (ldb (byte 8 0) integer)
-  (aref array (+ offset 1))(ldb (byte 8 8) integer)
-  (aref array (+ offset 2))(ldb (byte 8 16) integer)
-  (aref array (+ offset 3))(ldb (byte 8 24) integer)))
+;; $ cat /proc/sys/net/ipv4/tcp_mem
 
-(defun read-long-from-byte-array (byte-array &optional (offset 0))
-  (let ((long 0))
-    (setf (ldb (byte 8 0) long) (aref byte-array offset)
-          (ldb (byte 8 8) long) (aref byte-array (+ offset 1))
-          (ldb (byte 8 16) long) (aref byte-array (+ offset 2))
-          (ldb (byte 8 24) long) (aref byte-array (+ offset 3)))
-    long))
+;; $ cat /proc/sys/net/core/rmem_default
+;; $ cat /proc/sys/net/core/rmem_max
 
-(defun write-long-to-ptr (ptr integer &optional (offset 0))
-  (setf (mem-aref ptr :unsigned-char offset) (ldb (byte 8 0) integer)
-	(mem-aref ptr :unsigned-char (+ offset 1))(ldb (byte 8 8) integer)
-	(mem-aref ptr :unsigned-char (+ offset 2))(ldb (byte 8 16) integer)
-	(mem-aref ptr :unsigned-char (+ offset 3))(ldb (byte 8 24) integer)))
+;; $ cat /proc/sys/net/core/wmem_default
+;; $ cat /proc/sys/net/core/wmem_max
 
-(defun read-long-from-ptr (ptr &optional (offset 0))
-  (let ((long 0))
-    (setf (ldb (byte 8 0) long) (mem-aref ptr :unsigned-char offset)
-          (ldb (byte 8 8) long) (mem-aref ptr :unsigned-char (+ offset 1))
-          (ldb (byte 8 16) long) (mem-aref ptr :unsigned-char (+ offset 2))
-          (ldb (byte 8 24) long) (mem-aref ptr :unsigned-char (+ offset 3)))
-    long))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun send-message (sock
-		     buffer-send-ptr
-		     cmd)
-
-  ;; send returns data copied to buffer
-  ;; when data cannot fit in buffer:
-  ;; nonblocking: -1 + EAGAIN/EWOULDBLOCK
-  ;; - can it return 0? -> possible if requested to write 0 bytes but again indictates disconnect/error
-  ;; blocking: wait
-  
-  (let* ((len-string (length cmd)))
-
-    (write-long-to-ptr buffer-send-ptr len-string)
-    (dotimes (i len-string)
-      (setf (mem-aref buffer-send-ptr :unsigned-char (+ i 4))
-    	    (char-code (char cmd i))))
-    
-    (let ((len-sent (c-send sock
-			    buffer-send-ptr
-			    (+ len-string 4)
-			    0)))
-      ;; assert length sent matches
-      len-sent)))
-
-(defun recv-message (sock
-		     buffer-recv-ptr
-		     buffer-recv-array)
-
-  ;; Or receive directly into the ptr
-
-  ;; expected to always get all data
-  ;; otherwise would need to loop until all data received
-  ;; add error for now if not all data received
-
-  ;; nonblocking:
-  ;; 0 = client disconnected
-  ;; -1 = no data (not possible for blocking socks since they wait indefinitely for data)
-
-  ;; returns (values message|nil len-recv)
-  ;; - if nil, check len-recv
-  ;; or create separate function
-  
-  (let* ((len-recv (recv-ptr sock
-			     buffer-recv-ptr
-			     0
-			     :end 4)))
-
-    (when (< len-recv 4)
-      ;; (warn (format nil "[recv-message] recv-message returned ~a" len-recv))
-      (return-from recv-message (values nil
-					len-recv)))
-
-    (let* ((len-data (read-long-from-ptr buffer-recv-ptr))
-	   (len-recv (recv-ptr sock
-			       buffer-recv-ptr
-			       0
-			       :end len-data)))
-
-      (when (< len-recv len-data)
-	;; (warn "[recv-message] len-recv < len-data")
-	(return-from recv-message (values nil
-					  len-recv)))
-
-      ;; copy to array for now
-      ;; manually implement octets for speed (to avoid consing)
-      (let ((start 0))
-	(dotimes (i len-data)
-	  (setf (aref buffer-recv-array start)
-		(mem-aref buffer-recv-ptr :unsigned-char i))
-	  (incf start)))
-
-      ;; Return data instead of code
-      ;;
-      ;; if no valid string, return nil on error
-      ;; how to handle octets-to-string failure? -> warn and return nil
-      (values (read-from-string (babel:octets-to-string buffer-recv-array
-							:encoding :ascii
-							:start 0
-							:end len-data)
-				nil)
-	      len-recv))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Move all of these to protocol?
-
-(defun accept (sockfd)
-  (with-foreign-objects ((addr '(:struct sockaddr-un))
-			 (addr-len :int))
-    (setf (mem-ref addr-len :int) (foreign-type-size '(:struct sockaddr-un)))
-    (let ((sock (c-accept sockfd addr addr-len)))
-      (cond ((<= 0 sock)
-	     (values sock addr))
-	    ((or (= (sb-alien:get-errno) protoform.libc::+e-again+)
-		 (= (sb-alien:get-errno) protoform.libc::+e-wouldblock+))
-	     'non-blocking)
-	    (t
-	     (get-str-errno))))))
-
-(defun accept4 (sockfd &optional (flags 0))
-  ;; Refactor addr - memory leak?
-  
-  ;; PASS BELOW IN
-  (with-foreign-objects ((addr '(:struct sockaddr-un))
-			 (addr-len :int))
-    (setf (mem-ref addr-len :int) (foreign-type-size '(:struct sockaddr-un)))
-    ;; PASS ABOVE IN
-    (let ((sock (c-accept4 sockfd addr addr-len flags)))
-      (cond ((<= 0 sock)
-	     ;; pass single item back?
-	     (values sock addr))
-	    ((or (= (sb-alien:get-errno) protoform.libc::+e-again+)
-		 (= (sb-alien:get-errno) protoform.libc::+e-wouldblock+))
-	     (values nil nil))
-	    (t
-	     (get-str-errno))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (defun recv-vector (sockfd buffer flags &key (start 0) (end (length buffer)))
-;;   "Call recv until buffer is full"
-;;   (declare (type (array (unsigned-byte 8)) buffer))
-;;   (let ((len (- end start)))
-;;     (with-foreign-objects ((buf :unsigned-char len)) ; create pointer to buf with size len
-;;       (let ((r (c-recv sockfd buf len flags)))
-;;         (dotimes (i len)
-;;           (setf (aref buffer start) (mem-aref buf :unsigned-char i))
-;;           (incf start))
-;;         (when (< r 0)
-;;           (error (get-str-errno)))
-;;         r))))
-
-(defun recv (sockfd buffer flags &key (start 0) (end (length buffer)))
-  (declare (type (array (unsigned-byte 8)) buffer))
-  (let ((len (- end start)))
-    (with-foreign-objects ((buf :unsigned-char len)) ; create pointer to buf with size len
-      ;; read into c array, then copy to buffer
-      (let ((r (c-recv sockfd buf len flags)))
-        (dotimes (i len)
-          (setf (aref buffer start) (mem-aref buf :unsigned-char i))
-          (incf start))
-	(cond ((> r 0)
-	       r)
-	      ((and (= r -1)
-		    (or (= (sb-alien:get-errno) protoform.libc::+e-again+)
-			(= (sb-alien:get-errno) protoform.libc::+e-wouldblock+)))
-	       r)
-	      (t ; (= r 0) ; 0-byte buffer or other peer gracefully disconnected
-	       r))))))
-
-(defun recv2 (sockfd buffer-array buffer-vector flags &key (start 0) (end (length buffer-vector)))
-  (declare (type (array (unsigned-byte 8)) buffer-vector))
-  (let ((len (- end start)))
-      ;; read into c array, then copy to buffer
-    (let ((r (c-recv sockfd buffer-array len flags)))
-      ;; (format t "len: ~a~%" len)
-      (dotimes (i len)
-	;; (format t "start: ~a~%" start)
-	(setf (aref buffer-vector start)
-	      (mem-aref buffer-array :unsigned-char i))
-	(incf start))
-      (cond ((> r 0)
-	     r)
-	    ((and (= r -1)
-		  (or (= (sb-alien:get-errno) protoform.libc::+e-again+)
-		      (= (sb-alien:get-errno) protoform.libc::+e-wouldblock+)))
-	     r)
-	    (t ; (= r 0) ; 0-byte buffer or other peer gracefully disconnected ECONNRESET or EINTR
-	     r)))))
-
-(defun recv-ptr (sockfd buffer-ptr flags &key (start 0) (end (length buffer-vector)))
-  ;; increment into pointer for start?
-  ;; mem-aref ptr :void 0
-  (let* ((len-ptr (- end start))
-	 (len-recv (c-recv sockfd buffer-ptr len-ptr flags)))
-      (cond ((> len-recv 0)
-	     len-recv)
-	    ;; nonblocking
-	    ((and (= len-recv -1)
-		  (or (= (sb-alien:get-errno) protoform.libc::+e-again+)
-		      (= (sb-alien:get-errno) protoform.libc::+e-wouldblock+)))
-	     len-recv)
-	    ;; Peer "gracefully" disconnected; ECONNRESET (hard close), EPIPE (normal close)
-	    ;; ECONN = closed but more data remains in the buffer, and open side attemps op
-	    ;; EPIPE = closed and buffer empty, and open side attempts op
-	    ;; 0-byte buffer which normally does not happen unless we specify cpying 0 bytes...
-	    (t ; (= r 0)
-	     len-recv))))
-
-(defun set-nonblock (sock flag)
-  (when (not flag)
-    (sb-posix:fcntl sock
-		    sb-posix::f-setfl
-		    (logand (sb-posix:fcntl sock sb-posix::f-getfl)
-			    (lognot sb-posix::o-nonblock)))))
+;; $ cat /proc/sys/net/core/optmem_max
 
 (defun init-sockaddr (path-server)
   (let ((sockaddr (foreign-alloc '(:struct sockaddr-un))))
-    
     ;; set socket family
     (setf (foreign-slot-value sockaddr '(:struct sockaddr-un) 'sun-family)
 	  1)      
@@ -240,69 +23,176 @@
 						  '(:struct sockaddr-un)
 						  'sun-path)
 			    (+ (length path-server) 1))
-    
-    ;; (format t "[init-socket] sun-path ~a~%" (foreign-string-to-lisp (foreign-slot-value sockaddr-server '(:struct sockaddr-un) 'sun-path)))
-    ;; (format t "[init-socket] sockaddr-un size ~a~%" (foreign-type-size '(:struct sockaddr-un)))
     sockaddr))
 
-(defun init-socket (nonblock path-server)
+(defun init-socket (path-server nonblock)
+
+  (format t "nonblock: ~S~%" nonblock)
   
   (let ((sock (c-socket protoform.libc::+af-unix+
-			(if nonblock
+			(if (eq nonblock :nonblock)
 			    (logior protoform.libc::+sock-stream+ protoform.libc::+sock-nonblock+)
 			    (logior protoform.libc::+sock-stream+))
 			0)))
+    
     (when (= sock -1)
       (error (get-str-errno)))
     
-    ;; return sock and sockaddr
-    ;; caller must free sockaddr
     (values sock
 	    (init-sockaddr path-server))))
 
+(defun set-nonblock (sock flag)
+  (when (not flag)
+    (sb-posix:fcntl sock
+		    sb-posix::f-setfl
+		    (logand (sb-posix:fcntl sock sb-posix::f-getfl)
+			    (lognot sb-posix::o-nonblock)))))
 
-(defun init-socket-server (nonblock path-server)
+(defun init-sock-server (path nonblock)
   
-  (multiple-value-bind (sock-server sockaddr-server)
-      (init-socket nonblock path-server)
+  (multiple-value-bind (sock sockaddr)
+      (init-socket path nonblock)
     
-    (with-foreign-string (ptr path-server)
+    (with-foreign-string (ptr path)
       (c-unlink ptr))
     
-    (let ((ret (c-bind sock-server
-		       sockaddr-server
+    (let ((ret (c-bind sock
+		       sockaddr
 		       (foreign-type-size '(:struct sockaddr-un)))))
-      (when (= ret -1) (error (get-str-errno))))
-    (format t "[init-socket-server] Bound socket~%")
-    
-    ;; Free the struct
-    (foreign-free sockaddr-server)
+      (when (= ret -1) (error (get-str-errno))))    
+    (foreign-free sockaddr)
         
-    (let ((ret (c-listen sock-server 64)))
+    (let ((ret (c-listen sock 1)))
       (when (= ret -1) (error (get-str-errno))))
-    (format t "[init-socket-server] Listening on socket for connections...~%")
     
-    (return-from init-socket-server sock-server)))
+    (return-from init-sock-server sock)))
 
-;; reverse arg order
-;; pass sleep in
-;; refactor
-(defun init-socket-client (path-server nonblock)
+;; Refactor this
+(defun init-sock-client (path nonblock &optional (timeout 0.0167))
   
-  (multiple-value-bind (sock-client sockaddr-server)
-      (init-socket nonblock path-server)
+  (multiple-value-bind (sock sockaddr)
+      (init-socket path nonblock)
 
-    ;; Try to connect - wait for server
-    (loop
-       (when (zerop (c-connect sock-client
-			       sockaddr-server
-			       (foreign-type-size '(:struct sockaddr-un))))
-	 (return))
-       (format t "[init-socket-client] Trying connect again in 0.5 seconds...~%")
-       (sleep 0.5))
+    ;; timeout
+    ;; 0 = return immediately
+    ;; > 0 = wait indefinitely with delay
+    (let ((ret-connect nil))
+      (if (> timeout 0)
+	  (loop
+	     :until (zerop (setf ret-connect (c-connect sock
+							sockaddr
+							(foreign-type-size '(:struct sockaddr-un)))))
+	     :do (sleep timeout))
+	  (setf ret-connect (c-connect sock
+				       sockaddr
+				       (foreign-type-size '(:struct sockaddr-un)))))
+      
+      (foreign-free sockaddr)
 
-    (format t "[init-socket-client] Connected socket~%")
+      ;; Return status
+      (values sock
+	      ret-connect))))
 
-    (foreign-free sockaddr-server)
+;; With flags 0, same as accept
+(defun accept4 (sock nonblock)
+  (with-foreign-objects ((addr '(:struct sockaddr-un))
+			 (addr-len :int))
+    (setf (mem-ref addr-len :int) (foreign-type-size '(:struct sockaddr-un)))
+    (let ((sock-accept (c-accept4 sock
+				  addr
+				  addr-len
+				  (if (eq nonblock :nonblock)
+				      protoform.libc::+sock-nonblock+
+				      0))))
+
+      ;; For nonblocking, will either return a valid fd (> 0)
+      ;; or it will fail and set errno to e-again or e-wouldblock
+      ;; Any other errno indicates failure somewhere else
+      ;;
+      ;; Nonblocking expected by the server (view)
+      ;; ((or (= (sb-alien:get-errno) protoform.libc::+e-again+)
+      ;; 	   (= (sb-alien:get-errno) protoform.libc::+e-wouldblock+))
+
+      (values sock-accept
+	      (sb-alien:get-errno)))))
+
+(defun recv-ptr (sock
+		 buffer-ptr
+		 &optional
+		   (len 212992)
+		   (flags 0))
+  ;; TODO: Use defparameter...
+  ;; Similar to accept and other sock functions
+
+  ;; Upon successful completion, recv() shall return the length of the message in bytes.
+  ;; If no messages are available to be received and the peer has performed an orderly shutdown,
+  ;; recv() shall return 0. Otherwise, -1 shall be returned and errno set to indicate the error. 
+  
+  (let ((len-recv (c-recv sock buffer-ptr len flags)))
+    (values len-recv
+	    (sb-alien:get-errno))))
+
+(defun recv-message (sock
+		     buffer-ptr)
+
+  (let ((len-recv (recv-ptr sock
+			    buffer-ptr
+			    4)))
+    (when (< len-recv 4)
+      ;; (format t "[recv-message] recv-ptr returned ~a~%" len-recv)
+      (return-from recv-message nil))
+
+    (let* ((len-data (read-long-from-ptr buffer-ptr))
+	   (len-recv (recv-ptr sock
+			       buffer-ptr
+			       len-data)))
+      (when (< len-recv len-data)
+	;; (format t "[recv-message] recv-ptr returned ~a < ~a~%" len-recv len-data)
+	(return-from recv-message nil))
+      
+      ;; Bytes -> String -> Data
+      (read-from-string (foreign-string-to-lisp buffer-ptr :count len-recv)))))
+
+(defun send-message (sock
+		     buffer-ptr
+		     msg)
+
+  ;; send returns data copied to buffer
+  ;; When data cannot fit in buffer:
+  ;; nonblocking: -1 + EAGAIN/EWOULDBLOCK
+  ;;   - can it return 0? -> possible if requested to write 0 bytes but again indictates disconnect/error
+  ;; blocking: wait
+  
+  (let* ((len-msg (length msg)))
+
+    ;; Write msg length to ptr
+    (write-long-to-ptr buffer-ptr len-msg)
+    ;; Copy msg to ptr
+    ;; The lisp-string-to-foreign function copies at most bufsize-1 octets from a Lisp string
+    ;; using the specified encoding into buffer+offset.
+    ;; The foreign string will be null-terminated. 
+    (lisp-string-to-foreign msg buffer-ptr (1+ len-msg) :offset 4)
+
+    ;; (format t "SENDING~%")
     
-    (return-from init-socket-client sock-client)))
+    ;; assert length sent matches?
+    (c-send sock
+	    buffer-ptr
+	    (+ len-msg 4)
+	    0)))
+
+(declaim (inline write-long-to-ptr))
+(defun write-long-to-ptr (ptr int)
+  (setf (mem-aref ptr :unsigned-char 0) (ldb (byte 8 0)  int)
+	(mem-aref ptr :unsigned-char 1) (ldb (byte 8 8)  int)
+	(mem-aref ptr :unsigned-char 2) (ldb (byte 8 16) int)
+	(mem-aref ptr :unsigned-char 3) (ldb (byte 8 24) int)))
+
+(declaim (inline read-long-from-ptr))
+(defun read-long-from-ptr (ptr)
+  (let ((long 0))
+    (setf (ldb (byte 8 0)  long)  (mem-aref ptr :unsigned-char 0)
+          (ldb (byte 8 8)  long)  (mem-aref ptr :unsigned-char 1)
+          (ldb (byte 8 16) long)  (mem-aref ptr :unsigned-char 2)
+          (ldb (byte 8 24) long)  (mem-aref ptr :unsigned-char 3))
+    long))
