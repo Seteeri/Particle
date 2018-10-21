@@ -1,6 +1,6 @@
 (in-package #:protoform)
 
-(declaim (optimize (speed 3) (debug 0) (safety 0)))
+(declaim (optimize (speed 3) (space 0) (debug 0) (safety 0)))
 
 ;; (sb-ext:save-lisp-and-die "pf" :toplevel #'protoform:main :executable t)
 

@@ -200,11 +200,7 @@
   ;; Swank, Input, Wayland
   ;; (bordeaux-threads:make-thread (lambda () (sleep 1)))
 
-  ;; Queue will be shared - producer/consumer
-  ;; Anim thread must wait for queue to be free
-  ;; Input will trigger/submit anim task, then anim task will submit itself until done
-  ;; Frame repesents data to be copied to shm->rpc->cache
-  (setf *kernel* (make-kernel (+ 1 4)))
+  (setf *kernel* (make-kernel (+ 2 4)))
   (setf *channel* (make-channel))
   (setf *chan-anim* (make-channel))
   (setf *queue-anim* (make-queue)))
@@ -341,10 +337,12 @@
     (register-callback (list +xk-f7+ (list :press))
 		       :exclusive
 		       (lambda (seq-event)
+			 (setf *fn-anim* #'easing:in-cubic)
+			 (setf *value-start* (vx3 (pos (projview *model*))))
 			 (setf *time-start* (osicat:get-monotonic-time))
-			 (setf *time-end* (+ *time-start* (/ (* 60 2) 60))) ; (/ frame count fps)
+			 (setf *time-end* (+ *time-start* (/ (* 60 4) 60))) ; (/ frame count fps)
 			 (setf *time-duration* (- *time-end* *time-start*)) ; (/ frame-count fps)
-			 (setf *time-elapsed* *time-start*)
+			 (setf *time-elapsed* 0.0)
 			 (setf *time-run* t)))
 			 ;; (submit-task *chan-anim*
 			 ;; 	      #'produce-frames-anim)))
@@ -359,94 +357,88 @@
 
 ;; https://gamedev.stackexchange.com/questions/48227/smooth-movement-pygame
 
+;; (:export :linear
+;; 	 :in-sine :out-sine :in-out-sine
+;; 	 :in-cubic :out-cubic :in-out-cubic
+;; 	 :in-quad :out-quad :in-out-quad
+;; 	 :in-quart :out-quart :in-out-quart
+;; 	 :in-quint :out-quint :in-out-quint
+;; 	 :in-exp :out-exp :in-out-exp
+;; 	 :in-circ :out-circ :in-out-circ
+;; 	 :in-elastic :out-elastic :in-out-elastic
+;; 	 :in-back :out-back :in-out-back
+;; 	 :in-bounce :out-bounce :in-out-bounce)
 
+(defparameter *value-start* 0)
 (defparameter *time-start* 0)
 (defparameter *time-end* 0)
 (defparameter *time-duration* 0)
 (defparameter *time-elapsed* 0)
 (defparameter *time-run* nil)
+(defparameter *fn-anim* nil)
 
 (defparameter *time-last* 0)
 
-(defun handle-view-sync (time-real)
+(defun handle-view-sync (time-view)
 
-  ;; Per animation:
-  ;; time-start = key press frame time - use time prev or time next
-  ;; time-end = (+ time-start (/ frame-count fps))
-  ;; time-duration = (- time-end time-start) =  (/ frame-count fps)
-  ;;
-  ;; -> Submit tasks in this fn for each anim - each thread will do copy-to-shm
-  ;;    -> Need lock on conn unless we do one conn per thread??
+  ;; Submit tasks in this fn for each anim - each thread will do copy-to-shm
+  ;;   -> Need lock on conn unless we do one conn per thread??
 
-  ;; 100 ms or 10 fps
+  ;; Input will trigger animations
+
+  ;; Skipping/dropping frames will result in jerky/choppy animation
+
+  ;; Model generates frames
+  ;; - Updates shm
+  ;; - Model sends msg
+  ;; - Waits for view to recv and reply
+  
   (when nil
     (let ((time (osicat:get-monotonic-time)))
       (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
       (setf *time-last* time)))
+
+  (submit-task *chan-anim*
+	       (lambda ()
+		 
+		 (when *time-run*
+		   
+		   (let* ((projview (projview *model*))
+			  (time-now (osicat:get-monotonic-time))
+			  (time-delta (- time-now *time-start*)))
+
+		     (incf *time-elapsed* time-delta)
+
+		     (when nil
+		       (format t "~4$ { ~4$ } ~4$ (~4$) [~4$] ~%" *time-start* *time-elapsed* *time-end* *time-duration* time-delta)
+		       (format t "  ~7$~%" (osicat:get-monotonic-time)))
+
+		     (with-slots (pos scale-ortho)
+      			 projview
+
+		       ;; normalize x/time elapsed by dividing over duration
+		       ;; normalize y by multiplying by displacement
+		       ;; add to begin value to get new value otherwise its just relative displacement from beginning
+
+		       (let ((pos-new (+ *value-start*
+					 (* (funcall *fn-anim* (/ *time-elapsed* *time-duration*))
+      					    -4.0))))
+			 ;; (format t "t = ~a, y = ~a~%" (/ *time-elapsed* *time-duration*) (easing:out-exp (/ *time-elapsed* *time-duration*)))
+      			 (setf (vx3 pos) pos-new))
+		       
+		       t)
+		     (copy-projview-to-shm)
+		     
+		     ;; Cap time-delta to ending time
+		     (when (> *time-elapsed* *time-duration*)
+		       (format t "Ending anim~%")
+		       (setf *time-run* nil))))))
+      
+  (dotimes (i 1) (receive-result *chan-anim*))
+
+  ;; Send signal back
   
-  (when *time-run*
-    
-    (let* ((projview (projview *model*))
-	   (time-now (osicat:get-monotonic-time))
-	   (time-delta (- time-now *time-elapsed*)))
-
-      ;; Cap time-delta to ending time
-
-      (when nil
-	(format t "~4$ { ~4$ } ~4$ (~4$) [~4$] ~%" *time-start* *time-elapsed* *time-end* *time-duration* time-delta)
-	(format t "  ~7$~%" (osicat:get-monotonic-time)))
-
-      (with-slots (pos)
-      	  projview
-      	;; (decf scale-ortho (* (/ (easing:out-quad (- *time-elapsed* *time-start*))
-	;; 			*time-duration*)
-      	;; 		     0.2)))
-	(decf (vx3 pos)
-	      (* time-delta 1)))
-      (copy-projview-to-shm)
-      
-      (incf *time-elapsed* time-delta)
-      (when (> *time-elapsed* *time-end*)
-	(format t "Ending anim~%")
-	(setf *time-run* nil))
-      
-      (return-from handle-view-sync))))
-
-;; (let ((projview (projview *model*)))
-;;   (with-slots (scale-ortho)
-;; 	projview
-;;     (decf (scale-ortho projview)
-;; 	    displace)
-;;     (copy-projview-to-shm)))
-
-(defun produce-frames-anim ()
-  ;; Do anim @ 60 fps
-  ;; input = time; output = position
-  (let* ((frames-total 60)
-	 (projview (projview *model*))
-	 (pos-final (vz3 (displace projview))))
-    (with-slots (pos
-		 scale-ortho)
-	projview
-      (dotimes (f frames-total)      
-	;; (format t "Anim frame: out-quad(~$) = ~$~%" (/ f frames-total) )
-	;; (decf (scale-ortho projview)
-	;;       (* (easing:out-quad (/ f frames-total)) 0.6))
-	;; (copy-projview-to-shm)
-
-	;; Displacement/position
-	(let ((displacement (* (easing:out-quad (/ f frames-total)) pos-final)))
-	  (push-queue displacement
-		      *queue-anim*))))))
-
-(defun consume-frames-anim ()
-  ;; Don't block - try on next frame
-  (try-pop-queue *queue-anim*))
-
-;; View sends code that runs a func - that gets from queue
-
-(defun floats-epsilon-equal-p (f1 f2)
-  (< (abs (- f1 f2)) SINGLE-FLOAT-EPSILON))
+  t)
 
 (defun serve-client ()
   (with-slots (sock-view
@@ -460,7 +452,6 @@
 	   ;; (print (eval message))
 	   ;; (force-output)
 
-	   ;; To do multiple check if first is a list
 	   (if (listp (first message))
 	       (dolist (n message)
 		 (apply (symbol-function (find-symbol (string (first n)) :protoform.model))

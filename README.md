@@ -10,12 +10,13 @@ information as they moved through the computer. What did they look like?
 
 Protoform is a Common Lisp 3D nodal/graph IDE based on DRM-KMS and 
 Open GL ES designed around working in a freeform/prototyping 
-envirornment with file data from various domains, analagous to a desktop
+envirornment with data across different domains, analagous to a desktop
 environment providing default programs for common tasks.
 
 It is the implementation of my vision of a more consistent programmable
-user-interface to replace the desktop. It aims to integrate the REPL, 
-CLI, WM/DE, and common data/file types into a single 3D interface.
+user-interface to replace the desktop. It aims to integrate concepts 
+from the REPL, CLI, WM/DE, and common data/file types into a single 3D 
+interface.
 
 Traditionally computers have worked by having different applications and
 UIs working on both different and similar data with overlapping 
@@ -29,7 +30,7 @@ not simply numbers and text but much more, and users need an interface
 that can cut across all domains.
 
 It aims to integrate Wayland/X which would provide windows as planes in 
-space, effectively making Protoform a meta-manager around the desktop. 
+space, effectively making Protoform a meta-manager around the desktop.
 This would allow grouping windows into a single plane with the plane 
 representing the conventional desktop, e.g. Weston running on 
 Weston/etc., or have windows existing in the environment in free space.
@@ -104,9 +105,9 @@ naturally remains an orthogonal possibility.
 ## The Architecture
 
 * Atomic modesetting/nuclear pageflipping
-* Muti-channel signed distance textures
-* OpenGL ES 3.2+
+* Task-based parallelism
 * Tiled forward shading engine (Forward+)
+  * OpenGL ES 3.2+
   * Compute shaders
   * AZDO Techniques
     * Persistent mapping
@@ -116,31 +117,33 @@ naturally remains an orthogonal possibility.
   * Fully programmable vertex pulling
     * Texture buffers/UBOs/SSBOs -> gl_VertexID+gl_InstanceID
   * Separate shader stages and programmable pipelines
-  * Future: Implement clustered then volumetric forward shading
 
 ## The Roadmap
 
-Core Functionality
+Core Functionality - Version 0.1
 1. OpenGL infrastructure - DONE
    1. Framebuffers, render to texture, etc. - WIP
-2. Pango text generation - DONE
-3. Drawing nodes, lines - DONE
-4. Interface - WIP
-   1. Controls
-   2. Undo system
+2. Pango text rendering - DONE
+3. MSDF text rendering - DONE
+4. Drawing nodes, lines - DONE
+6. Interface - WIP
+   * Easing animations
 
-Core Extensions
+Core Extensions - Version 0.2
 1. Numbered links for navigations
 2. Wayland compositing
-3. MSDF drawing (more efficient for monospaced fonts)
-4. FFMPEG for media - images, video, audio
-   1. GEGL another option
-5. Per-object vector motion blur (personal favorite)
-6. Portals
+3. Undo system
+
+Personal Extensions - Version 0.3
+1. FFMPEG for media - images, video, audio
+   * GEGL another option
+2. Per-object vector motion blur (personal favorite)
+3. Portals
 
 Future Extensions
 1. Tiled forward rendering (Forward+) including lights
-
+   * Future: Implement clustered then volumetric forward shading
+   
 Tentative Extensions
 1. Native web browser engine
 
@@ -165,18 +168,16 @@ Tentative Extensions
 		 #:3d-vectors
 		 #:3d-matrices
 		 #:cl-digraph
+		 #:cl-digraph.dot
 		 #:usocket
 		 #:pango-markup
 		 #:bordeaux-threads
 		 #:inferior-shell
-		 #:swank
-		 #:swank-protocol
 		 #:trivial-timers
-		 #:babel
 		 #:str
 		 #:easing
-		 #:skip-list
-		 #:lparallel)
+		 #:lparallel
+		 #:skip-list)
 ```
 
 ## The Installation

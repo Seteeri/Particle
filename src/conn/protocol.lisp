@@ -26,8 +26,6 @@
     sockaddr))
 
 (defun init-socket (path-server nonblock)
-
-  (format t "nonblock: ~S~%" nonblock)
   
   (let ((sock (c-socket protoform.libc::+af-unix+
 			(if (eq nonblock :nonblock)
@@ -121,6 +119,9 @@
 		 &optional
 		   (len 212992)
 		   (flags 0))
+  (declare (type fixnum sock))
+  (declare (type fixnum len))
+  (declare (type fixnum flags))
   ;; TODO: Use defparameter...
   ;; Similar to accept and other sock functions
 
@@ -134,7 +135,8 @@
 
 (defun recv-message (sock
 		     buffer-ptr)
-
+  (declare (type fixnum sock))
+  
   (let ((len-recv (recv-ptr sock
 			    buffer-ptr
 			    4)))
@@ -156,7 +158,9 @@
 (defun send-message (sock
 		     buffer-ptr
 		     msg)
-
+  (declare (type fixnum sock))
+  (declare (type string msg))
+  
   ;; send returns data copied to buffer
   ;; When data cannot fit in buffer:
   ;; nonblocking: -1 + EAGAIN/EWOULDBLOCK
@@ -164,7 +168,8 @@
   ;; blocking: wait
   
   (let* ((len-msg (length msg)))
-
+    (declare (type fixnum len-msg))
+    
     ;; Write msg length to ptr
     (write-long-to-ptr buffer-ptr len-msg)
     ;; Copy msg to ptr
@@ -172,8 +177,6 @@
     ;; using the specified encoding into buffer+offset.
     ;; The foreign string will be null-terminated. 
     (lisp-string-to-foreign msg buffer-ptr (1+ len-msg) :offset 4)
-
-    ;; (format t "SENDING~%")
     
     ;; assert length sent matches?
     (c-send sock
@@ -182,15 +185,17 @@
 	    0)))
 
 (declaim (inline write-long-to-ptr))
-(defun write-long-to-ptr (ptr int)
-  (setf (mem-aref ptr :unsigned-char 0) (ldb (byte 8 0)  int)
-	(mem-aref ptr :unsigned-char 1) (ldb (byte 8 8)  int)
-	(mem-aref ptr :unsigned-char 2) (ldb (byte 8 16) int)
-	(mem-aref ptr :unsigned-char 3) (ldb (byte 8 24) int)))
+(defun write-long-to-ptr (ptr long)
+  (declare (type fixnum long))
+  (setf (mem-aref ptr :unsigned-char 0) (ldb (byte 8 0)  long)
+	(mem-aref ptr :unsigned-char 1) (ldb (byte 8 8)  long)
+	(mem-aref ptr :unsigned-char 2) (ldb (byte 8 16) long)
+	(mem-aref ptr :unsigned-char 3) (ldb (byte 8 24) long)))
 
 (declaim (inline read-long-from-ptr))
 (defun read-long-from-ptr (ptr)
   (let ((long 0))
+    (declare (type fixnum long))
     (setf (ldb (byte 8 0)  long)  (mem-aref ptr :unsigned-char 0)
           (ldb (byte 8 8)  long)  (mem-aref ptr :unsigned-char 1)
           (ldb (byte 8 16) long)  (mem-aref ptr :unsigned-char 2)

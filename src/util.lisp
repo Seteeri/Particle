@@ -22,3 +22,5 @@
       (read-sequence data stream)
       data)))
 
+(defun floats-epsilon-equal-p (f1 f2)
+  (< (abs (- f1 f2)) SINGLE-FLOAT-EPSILON))

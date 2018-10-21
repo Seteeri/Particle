@@ -231,18 +231,14 @@
 	     ;;(glfw:poll-events)
 	     (glfw:swap-buffers)
 
-	     (when nil
-	       (let ((time (osicat:get-monotonic-time)))
-		 (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
-		 (setf *time-frame-last* time)))
+	     (let ((time (osicat:get-monotonic-time)))
+	       
+	       ;; (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
+	       (setf *time-frame-last* time)
 
-	     ;; Send sync event to model
-	     (when t
 	       (send-message (sock-client *view*)
     			     (buffer-sock-ptr *view*)
-			     "(handle-view-sync 0)"))
-	     
-	     t)
+			     (format nil "(handle-view-sync ~S)" time))))
 	   
 	   (progn
 	     ;; (sb-sys:serve-all-events 0)
