@@ -24,12 +24,12 @@ interface, to handle Swank Client connection requests."
     (when swank-thread
       (sb-thread:join-thread swank-thread))))
 
-(defun start-swank-server (port)
+(defun start-swank-server (port &optional (style-comm :fd-handler))
   (setf swank:*log-events* nil)
   (setf swank:*global-debugger* nil)
   (setf swank:*configure-emacs-indentation* nil)
   (setf swank:*use-dedicated-output-stream* nil)
-  (setf swank:*communication-style* :fd-handler)
+  (setf swank:*communication-style* style-comm)
   (start-swank-server-for-swank-client port))
   ;; (wait-for-swank-thread)
 

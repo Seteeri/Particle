@@ -66,7 +66,7 @@
 
   (copy-mat-proj-to-shm)
   (copy-mat-view-to-shm)
-
+  
   ;; Flag dirty do at end of loop
   (when memcpy-shm-to-cache
     (memcpy-shm-to-cache "projview")))

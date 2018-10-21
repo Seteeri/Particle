@@ -160,5 +160,6 @@
 (defpackage #:protoform
   (:use #:cl
         #:cffi
+	#:protoform.libc
 	#:protoform.conn)
   (:export #:main))

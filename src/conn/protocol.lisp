@@ -1,5 +1,7 @@
 (in-package :protoform.conn)
 
+;; socat -v - UNIX-CLIENT:/tmp/protoform-model.socket
+
 (defun write-long-to-byte-array (array integer &optional (offset 0))
   (setf (aref array offset) (ldb (byte 8 0) integer)
   (aref array (+ offset 1))(ldb (byte 8 8) integer)

@@ -142,10 +142,13 @@
   (fmt-model t "main-model" "Init kernel lparallel~%")
   (init-kernel-lparallel)
   
+  ;; swank loop
   (submit-task *channel*
 	       (lambda ()
-		 (start-swank-server 10000)
+		 (start-swank-server 10000 nil)))
 		 
+  (submit-task *channel*
+	       (lambda ()
 		 (defparameter *model* (make-instance 'model
 						      :projview (make-instance 'projview
 									       :width width
@@ -175,22 +178,16 @@
   
   (dotimes (i 2) (receive-result *channel*))
 
+  ;; input loop
   (submit-task *channel*
 	       (lambda ()
 		 (loop
-		    ;; Update states
-		    ;; - For key events, copy index 0 to index 1, set index 0
-		    ;; Dispatch state callbacks
-		    ;; - For key states in index 0, do callbacks
-		    ;; Update states
-		    ;; - rel -> up
-		    ;; - press -> down
 		    (dispatch-events-input)
 		    (dispatch-all-seq-event)
 		    (update-states-keyboard-continuous))))
   
-  ;; Block until above loop exits...
-  (receive-result *channel*))
+  ;; Block forever
+  (loop (receive-result *channel*)))
 
 (defun init-kernel-lparallel ()
 
@@ -203,6 +200,7 @@
   ;; Frame repesents data to be copied to shm->rpc->cache
   (setf *kernel* (make-kernel (+ 1 4)))
   (setf *channel* (make-channel))
+  (setf *chan-anim* (make-channel))
   (setf *queue-anim* (make-queue)))
 
 (defun setup-view (addr-swank-view)
@@ -340,6 +338,18 @@
 				 (first seq-event) (list :press :repeat))
 			   :exclusive
 			   (second seq-event))))
+
+    (register-callback (list +xk-f7+ (list :press))
+		       :exclusive
+		       (lambda (seq-event)
+			 (setf *time-start* (osicat:get-monotonic-time))
+			 (setf *time-end* (+ *time-start* (/ (* 60 2) 60))) ; (/ frame count fps)
+			 (setf *time-duration* (- *time-end* *time-start*)) ; (/ frame-count fps)
+			 (setf *time-elapsed* *time-start*)
+			 (setf *time-run* t)))
+			 ;; (submit-task *chan-anim*
+			 ;; 	      #'produce-frames-anim)))
+
     
     ;; Print hashtable
     (when nil
@@ -347,3 +357,93 @@
 		 (fmt-model t "register-keyboard..." "Seq-event: ~S = ~S~%" key value))
 	       key-callbacks))
     t))
+
+;; https://gamedev.stackexchange.com/questions/48227/smooth-movement-pygame
+
+
+(defparameter *time-start* 0)
+(defparameter *time-end* 0)
+(defparameter *time-duration* 0)
+(defparameter *time-elapsed* 0)
+(defparameter *time-run* nil)
+
+(defparameter *time-last* 0)
+
+(defun handle-view-sync (time-real)
+
+  ;; Per animation:
+  ;; time-start = key press frame time - use time prev or time next
+  ;; time-end = (+ time-start (/ frame-count fps))
+  ;; time-duration = (- time-end time-start) =  (/ frame-count fps)
+  ;;
+  ;; -> Submit tasks in this fn for each anim - each thread will do copy-to-shm
+  ;;    -> Need lock on conn unless we do one conn per thread??
+
+  ;; 100 ms or 10 fps
+  (let ((time (osicat:get-monotonic-time)))
+    (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
+    (setf *time-last* time))
+  
+  (when *time-run*
+    
+    (let* ((projview (projview *model*))
+	   (time-now (osicat:get-monotonic-time))
+	   (time-delta (- time-now *time-elapsed*)))
+
+      ;; Cap time-delta to ending time
+
+      (when nil
+	(format t "~4$ { ~4$ } ~4$ (~4$) [~4$] ~%" *time-start* *time-elapsed* *time-end* *time-duration* time-delta)
+	(format t "  ~7$~%" (osicat:get-monotonic-time)))
+
+      (with-slots (pos)
+      	  projview
+      	;; (decf scale-ortho (* (/ (easing:out-quad (- *time-elapsed* *time-start*))
+	;; 			*time-duration*)
+      	;; 		     0.2)))
+	(decf (vx3 pos)
+	      (* time-delta 1)))
+      (copy-projview-to-shm)
+      
+      (incf *time-elapsed* time-delta)
+      (when (> *time-elapsed* *time-end*)
+	(format t "Ending anim~%")
+	(setf *time-run* nil))
+      
+      (return-from handle-view-sync))))
+
+;; (let ((projview (projview *model*)))
+;;   (with-slots (scale-ortho)
+;; 	projview
+;;     (decf (scale-ortho projview)
+;; 	    displace)
+;;     (copy-projview-to-shm)))
+
+(defun produce-frames-anim ()
+  ;; Do anim @ 60 fps
+  ;; input = time; output = position
+  (let* ((frames-total 60)
+	 (projview (projview *model*))
+	 (pos-final (vz3 (displace projview))))
+    (with-slots (pos
+		 scale-ortho)
+	projview
+      (dotimes (f frames-total)      
+	;; (format t "Anim frame: out-quad(~$) = ~$~%" (/ f frames-total) )
+	;; (decf (scale-ortho projview)
+	;;       (* (easing:out-quad (/ f frames-total)) 0.6))
+	;; (copy-projview-to-shm)
+
+	;; Displacement/position
+	(let ((displacement (* (easing:out-quad (/ f frames-total)) pos-final)))
+	  (push-queue displacement
+		      *queue-anim*))))))
+
+(defun consume-frames-anim ()
+  ;; Don't block - try on next frame
+  (try-pop-queue *queue-anim*))
+
+;; View sends code that runs a func - that gets from queue
+
+(defun floats-epsilon-equal-p (f1 f2)
+  (< (abs (- f1 f2)) SINGLE-FLOAT-EPSILON))

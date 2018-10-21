@@ -16,15 +16,16 @@
   ((width :accessor width :initarg :width :initform nil)
    (height :accessor height :initarg :height :initform nil)
    (inst-max :accessor inst-max :initarg :inst-max :initform nil)
+
+   (conn-swank :accessor conn-swank :initarg :conn-swank :initform nil)
+   (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
    
    ;; Programs
    ;; program-* -> array/list
    (program-default :accessor program-default :initarg :program-default :initform nil)
    (program-msdf :accessor program-msdf :initarg :program-msdf :initform nil)
    (program-compute :accessor program-compute :initarg :program-compute :initform nil)
-   
-   (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
-   
+      
    ;; VAO
    (vaos :accessor vaos :initarg :vaos :initform (make-array 3 :adjustable nil :fill-pointer 0))
    ;; Persistently mapped: projview, instance, texture, element, indirect
@@ -107,17 +108,24 @@
 (defun init-view-programs (width
 			   height
 			   inst-max)
-  (make-instance 'view
-		 :width width
-		 :height height
-		 :fences (make-array 3
-				     :adjustable nil
-				     :initial-element (null-pointer))
-		 :program-default (init-program-default)
-		 :program-msdf (init-program-msdf)
-		 :program-compute (init-program-compute)
-		 :inst-max inst-max))
 
+  ;; Connect to model server which should already be running
+  
+  (let ((conn (init-swank-conn "skynet" 10000)))
+    (setf (swank-protocol::connection-package conn) "protoform.model")
+    
+    (make-instance 'view
+		   :width width
+		   :height height
+		   :inst-max inst-max
+		   :conn-swank conn
+		   :program-default (init-program-default)
+		   :program-msdf (init-program-msdf)
+		   :program-compute (init-program-compute)
+		   :fences (make-array 3
+				       :adjustable nil
+				       :initial-element (null-pointer)))))
+  
 (defun init-bo-step (params-shm)
 
   (with-slots (width height
@@ -196,8 +204,6 @@
 		  height
 		  inst-max
 		  path-server)
-
-  (start-swank-server 10001)
     
   (glfw:with-init-window (:title "Protoform"
 			  :width width
@@ -210,29 +216,54 @@
     (init-gl-env width height)
 
     (calc-opengl-usage)
+
+    ;; Start server after window
+    (start-swank-server 10001)
     
     ;; Model will connect and execute code in this process      
     ;; Cannot actually draw until buffers
 
-    (format t "[view] Begin loop...~%")
+    (fmt-view t "main-view" "Begin loop...~%")
+
+    (defparameter *time-last* 0)
     
     (loop 
-       ;; :until (glfw:window-should-close-p)
-       :do (progn
+       
+       ;; Need to increment index so memcpy will copy to correct buffers
+       
+       ;; Recv evals from model
+       ;; http://3bb.cc/tutorials/cl-opengl/getting-started.html
+       (sb-sys:serve-all-events 0)
+       
+       (if *draw*
+
+	   (progn
+
+	     (render-frame)
 	     
-	     ;; Need to increment index so memcpy will copy to correct buffers
-	     
-	     ;; Recv evals from model
-	     ;; http://3bb.cc/tutorials/cl-opengl/getting-started.html
-	     ;; (format t "[view] Serve-all-events~%")
-	     (sb-sys:serve-all-events 0)
-	     
-	     (if *draw*
-		 (progn
-		   (render-frame)
-		   ;;(glfw:poll-events)
-		   (glfw:swap-buffers))
-		 (sleep 0.0167))))))
+	     ;;(glfw:poll-events)		   
+	     (glfw:swap-buffers)
+
+	     (when t
+	       (let ((time (osicat:get-monotonic-time)))
+		 (format t "View: ~8$ ms~%" (* (- time *time-last*) 1000))
+		 (setf *time-last* time)))
+
+	     ;; Send sync event to  model
+	     (when t
+	       (with-slots (conn-swank)
+		   *view*
+		 (eval-sync conn-swank (format nil "(handle-view-sync ~S)" (/ (get-internal-real-time) internal-time-units-per-second)))
+		 ;; (when (swank-protocol:message-waiting-p conn-swank)
+		 ;;   (swank-protocol:read-message conn-swank))
+		 ;; (swank-protocol:read-message conn-swank)
+		 t))
+
+	     t)
+	   
+	   (progn
+	     ;; (sb-sys:serve-all-events 0)
+	     (sleep 0.0167))))))
 
 (defun render-frame ()
   (with-slots (sync fences ix-fence)
@@ -254,8 +285,8 @@
 
     (update-cache-to-step)
     
-    (if nil
-	(run-compute-copy)
+    (if t
+	(run-compute-bypass)
 	(run-compute))
 
     ;; Have run-raster run all programs in a specified order

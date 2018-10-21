@@ -66,7 +66,7 @@
 		 ;; (format t "~a, ~a~%" name bl)
 		 (update-binding-buffer buffer ix-fence)))))))
 
-(defun update-compute-buffers (&optional (force nil))
+(defun update-compute-buffers-ptr (&optional (force nil))
   (with-slots (bo-cache
 	       ix-fence)
       *view*
@@ -87,7 +87,27 @@
 	       (when (> flag-copy 0)
 		 (decf flag-copy)))))))
 
-(defun run-compute-copy ()
+(defun update-compute-buffers-gl (&optional (force nil))
+  (with-slots (bo-cache
+	       ix-fence)
+      *view*
+    (loop 
+       :for name :being :the :hash-keys :of bo-cache
+       :using (hash-value cache)
+       :do (with-slots (buffer flag-copy)
+	       cache
+	     (when (or (/= flag-copy 0)
+		       force)
+	       ;; Can also use gl function to copy between buffers
+	       (when (and (not force) (/= flag-copy -1))
+		 (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
+	       (copy-buffer (aref (buffers (get-cache-buffer name)) 0)
+			    (aref (buffers (gethash name (bo-step *view*))) ix-fence)
+			    (size-buffer (gethash name (bo-step *view*))))
+	       (when (> flag-copy 0)
+		 (decf flag-copy)))))))
+
+(defun run-compute-bypass ()
 
   (with-slots (program-compute
 	       bo-step
@@ -95,10 +115,10 @@
 	       ix-fence)
       *view*
     
-    (gl:use-program program-compute)
+    ;; (gl:use-program program-compute)
     
     (update-compute-bindings)
-    (update-compute-buffers)
+    (update-compute-buffers-ptr)
     
     ;; Set to render all instances
     (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
