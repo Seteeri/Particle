@@ -74,7 +74,6 @@
 				       (:file "projview")
 				       (:file "node")
 				       (:file "pango")
-				       (:file "text")
 				       (:file "metrics")
 				       (:file "pointer")
 				       (:module controller
@@ -83,10 +82,7 @@
 							     (:file "controller")
 				       			     (:file "xkb")
 				       			     (:file "callback")
-				       			     (:file "event-keyboard")))
-				       (:module structures
-						:pathname "structures"
-						:components ((:file "dag")))))
+				       			     (:file "event-keyboard")))))
 		 (:file "src/protoform")))
 
 #+sbcl

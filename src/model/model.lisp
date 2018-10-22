@@ -121,7 +121,7 @@
 												    :fill-pointer nil
 												    :element-type '(unsigned-byte 8)))
 
-   (handles-shm :accessor handles-shm :initarg :handles-shm :initform (make-hash-table :size 6 :test 'equal))
+   (handles-shm :accessor handles-shm :initarg :handles-shm :initform nil)
 
    (projview :accessor projview :initarg :projview :initform nil)
    
@@ -153,23 +153,30 @@
   (submit-task *channel*
 	       (lambda ()
 		 (defparameter *model* (make-instance 'model
-						      :projview (make-instance 'projview
-									       :width width
-									       :height height
-									       :type-proj 'orthographic)
 						      :inst-max inst-max))
 
-		 ;; Load glyphs and metrics independently?
-		 
-		 (fmt-model t "main-model" "Init shm data~%")
-		 (init-shm)
-		 
-		 (fmt-model t "main-model" "Init glyph data~%")
-		 (init-glyph-data)
-		 (setf (metrics *model*) (init-metrics))
-		 
-		 (fmt-model t "main-model" "Init graph~%")
-		 (init-graph-msdf)
+		 ;; Ind of handles-shm
+		 (setf (projview *model*) (make-instance 'projview
+							 :width width
+							 :height height
+							 :type-proj 'orthographic))
+		 ;; Ind of projview
+		 (setf (handles-shm *model*) (init-handles-shm))
+
+		 ;; Load data into shm - independent
+		 (copy-projview-to-shm nil)
+		 (load-shm-vertices)
+		 (load-shm-element)
+		 (load-shm-draw-indirect)	 
+		 (load-shm-texture-glyphs) ; I/O factor
+		 (setf (metrics *model*) (init-metrics)) ; I/O factor
+		 (setf (digraph *model*) (digraph:make-digraph))
+
+		 ;; Setup pointer node
+		 (setf (node-pointer *model*) (init-node-pointer))
+		 (digraph:insert-vertex (digraph *model*)
+					(node-pointer *model*))
+		 (copy-nodes-to-shm)
 
 		 (fmt-model t "main-model" "Init conn to view~%")
 		 (init-view)))

@@ -1,5 +1,23 @@
 (in-package :protoform.model)
 
+(defclass texture ()
+  ((data :accessor data :initarg :data :initform nil)
+   (size :accessor size :initarg :size :initform nil)
+   (dim :accessor dim :initarg :dim :initform nil)))
+
+(defun copy-textures-to-shm ()
+  (let ((offset 0))
+    (with-slots (ptr size)
+	(gethash "texture" (handles-shm *model*))
+      (loop
+	 :for texture :across (textures *model*)
+	 :do (progn
+	       ;; assert
+	       (c-memcpy (inc-pointer ptr offset)
+			 (data texture)
+			 (size texture))
+	       (incf offset (size texture)))))))
+
 (defun init-node (cursor
 		  scale
 		  ix
