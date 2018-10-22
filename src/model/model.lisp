@@ -145,31 +145,63 @@
   
   (submit-task *channel*
 	       (lambda ()
-		 (setf *inst-max* inst-max)
+		 (setf *inst-max* inst-max)))
 
-		 ;; Ind of handles-shm
+  (submit-task *channel*
+	       (lambda ()
 		 (setf *projview* (make-instance 'projview
-							 :width width
-							 :height height
-							 :type-proj 'orthographic))
-		 ;; Ind of projview
-		 (setf *handles-shm* (init-handles-shm))
+						 :width width
+						 :height height
+						 :type-proj 'orthographic))))
+  
+  (submit-task *channel*
+	       (lambda ()
+		 (setf *handles-shm* (init-handles-shm))))
 
-		 ;; Load data into shm - independent
-		 (copy-projview-to-shm nil)
-		 (load-shm-vertices)
-		 (load-shm-element)
-		 (load-shm-draw-indirect)	 
-		 (load-shm-texture-glyphs) ; I/O factor
-		 (setf *metrics* (init-metrics)) ; I/O factor
-		 (setf *digraph* (digraph:make-digraph))
+  (dotimes (i 3) (receive-result *channel*))
+  
+  (submit-task *channel*
+	       (lambda ()
+		 (copy-projview-to-shm nil)))
 
+  (submit-task *channel*
+	       (lambda ()
+		 (load-shm-vertices)))
+
+  (submit-task *channel*
+	       (lambda ()
+		 (load-shm-element)))
+
+  (submit-task *channel*
+	       (lambda ()
+		 (load-shm-draw-indirect)))
+
+  (submit-task *channel*
+	       (lambda ()
+		 (load-shm-texture-glyphs))) ; I/O factor
+
+  (submit-task *channel*
+	       (lambda ()
+		 (setf *metrics* (init-metrics)))) ; I/O factor
+
+  (submit-task *channel*
+	       (lambda ()		 
+		 (setf *digraph* (digraph:make-digraph))))
+
+  (dotimes (i 7) (receive-result *channel*))
+
+  (submit-task *channel*
+	       (lambda ()
 		 ;; Setup pointer node
 		 (setf *node-pointer* (init-node-pointer))
 		 (digraph:insert-vertex *digraph*
 					*node-pointer*)
-		 (copy-nodes-to-shm)
+		 (copy-nodes-to-shm)))
 
+  (dotimes (i 1) (receive-result *channel*))
+  
+  (submit-task *channel*
+	       (lambda ()
 		 (fmt-model t "main-model" "Init conn to view~%")
 		 (init-view)))
 
