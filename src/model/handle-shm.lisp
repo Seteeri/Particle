@@ -26,7 +26,7 @@
   
 (defun clean-up-handles-shm ()
   (loop 
-     :for key :being :the :hash-keys :of (handles-shm *model*)
+     :for key :being :the :hash-keys :of *handles-shm*
      :using (hash-value mmap)
      :do (cleanup-mmap mmap)))
 
@@ -44,7 +44,7 @@
   ;;
   ;; ccw: 0 2 1 0 3 2    
   (with-slots (ptr size)
-      (gethash "vertices" (handles-shm *model*))
+      (gethash "vertices" *handles-shm*)
     (let ((data (make-array (* 4 4)
 			    :element-type 'single-float
 			    :initial-contents (list 1.0  1.0  0.0  1.0
@@ -57,7 +57,7 @@
 
 (defun load-shm-element ()
   (with-slots (ptr size)
-      (gethash "element" (handles-shm *model*))
+      (gethash "element" *handles-shm*)
     (let ((data (make-array 6
       			    :element-type '(unsigned-byte 32)
       			    :initial-contents (list 0 2 1 0 3 2))))
@@ -67,10 +67,10 @@
 
 (defun load-shm-draw-indirect ()
   (with-slots (ptr size)
-      (gethash "draw-indirect" (handles-shm *model*))
+      (gethash "draw-indirect" *handles-shm*)
     (let ((data (make-array 5
       			    :element-type '(unsigned-byte 32)
-      			    :initial-contents (list 6 (inst-max *model*) 0 0 0))))
+      			    :initial-contents (list 6 *inst-max* 0 0 0))))
       (dotimes (i (length data))
 	(setf (mem-aref ptr ::uint i)
 	      (aref data i))))))
@@ -81,7 +81,7 @@
   ;; Load into textures for now...
   
   (with-slots (ptr size)
-      (gethash "texture" (handles-shm *model*))
+      (gethash "texture" *handles-shm*)
     (loop
        :for code :from 1 :to 255
        :with msdf-glyphs-path := (merge-pathnames #P"glyphs-msdf/" (asdf:system-source-directory :protoform))

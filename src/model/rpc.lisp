@@ -6,49 +6,33 @@
 			    &optional
 			      (offset 0)
 			      (size-cpy nil))
-  (with-slots (sock-view
-	       buffer-sock-ptr
-	       handles-shm)
-      *model*
     (with-slots (ptr size)
-	(gethash name handles-shm)
+	(gethash name *handles-shm*)
       ;; (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
-      (send-message sock-view
-    		    buffer-sock-ptr
-		    (format nil "(memcpy-shm-to-cache ~S ~S ~S ~S)" name name offset size-cpy)))))
+      (send-message *sock-view*
+    		    *buffer-sock-ptr*
+		    (format nil "(memcpy-shm-to-cache ~S ~S ~S ~S)" name name offset size-cpy))))
 
 (defun memcpy-shm-to-cache* (names)
   ;; Default to full copy
-  (with-slots (sock-view
-	       buffer-sock-ptr
-	       handles-shm)
-      *model*
-    (send-message sock-view
-    		  buffer-sock-ptr
+    (send-message *sock-view*
+    		    *buffer-sock-ptr*
 		  (with-output-to-string (stream)
 		    (format stream "(")
 		    (dolist (name names)
 		      (with-slots (ptr size)
-			  (gethash name (handles-shm *model*))
+			  (gethash name *handles-shm*)
 			(format stream "(memcpy-shm-to-cache ~S ~S 0 nil) " name name)))
-		    (format stream ")")))))
+		    (format stream ")"))))
 
 (defun set-cache-dirty (name value)
-  (with-slots (sock-view
-	       buffer-sock-ptr
-	       handles-shm)
-      *model*
-    (send-message sock-view
-    		  buffer-sock-ptr
-		  (format nil "(set-cache-flag-copy ~S ~S)" name value))))
+    (send-message *sock-view*
+    		    *buffer-sock-ptr*
+		  (format nil "(set-cache-flag-copy ~S ~S)" name value)))
 
 (defun memcpy-shm-to-cache-flag* (caches)
-  (with-slots (sock-view
-	       buffer-sock-ptr
-	       handles-shm)
-      *model*
-    (send-message sock-view
-    		  buffer-sock-ptr
+    (send-message *sock-view*
+    		    *buffer-sock-ptr*
 		  (with-output-to-string (stream)
 		    (format stream "(")
 		    (dolist (cache caches)
@@ -57,8 +41,8 @@
 					   size-cache)
 			  cache
 			(with-slots (ptr size)
-			    (gethash name-cache handles-shm)
+			    (gethash name-cache *handles-shm*)
 			  ;; Pass offsets
 			  (format stream "(memcpy-shm-to-cache ~S ~S ~S ~S) " name-cache name-cache offset-cache size-cache)
 			  (format stream "(set-cache-flag-copy ~S 3) " name-cache))))
-		    (format stream ")")))))
+		    (format stream ")"))))

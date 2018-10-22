@@ -8,9 +8,9 @@
 (defun copy-textures-to-shm ()
   (let ((offset 0))
     (with-slots (ptr size)
-	(gethash "texture" (handles-shm *model*))
+	(gethash "texture" *handles-shm*)
       (loop
-	 :for texture :across (textures *model*)
+	 :for texture :across *textures*
 	 :do (progn
 	       ;; assert
 	       (c-memcpy (inc-pointer ptr offset)
@@ -59,7 +59,7 @@
 		 (format stream "  Dims: ~S~%" dims-texture)
 		 (format stream "  Start Texels Offset: ~S texels~%" offset-texel-texture)
 		 (format stream "  Data Size: ~S bytes~%" data-size)
-		 (format stream "  Current Offset: ~S bytes~%" (offset-bytes-textures *model*)))))
+		 (format stream "  Current Offset: ~S bytes~%" *offset-bytes-textures*))))
 
   ;; Update scale to match texture
   (setf (vx3 (scale (model-matrix node))) (* (/ 1 96) (vx2 (dims-texture node))))
@@ -129,7 +129,7 @@
 			 4)) ; 4 bytes per pixel
 	   (data (foreign-alloc :unsigned-char :count size-data))
 	   (stride (cairo::cairo_format_stride_for_width 0 (mem-ref width-pango :unsigned-int))) ; send patch upstream
-	   ;; (ptr (ptr (gethash "texture" (handles-shm *model*))))
+	   ;; (ptr (ptr (gethash "texture" *handles-shm*)))
 	   ;; (surface-render (cairo:create-image-surface-for-data (inc-pointer ptr
 	   ;; 								     (offset-bytes-textures *model*))
 	   (surface-render (cairo:create-image-surface-for-data data
@@ -147,9 +147,9 @@
       (cairo:surface-flush surface-render)
 
       ;; Update offsets by size of texture
-      (incf (offset-texel-textures *model*) (* (mem-ref width-pango :unsigned-int)
+      (incf *offset-texel-textures* (* (mem-ref width-pango :unsigned-int)
 					       (mem-ref height-pango :unsigned-int)))
-      (incf (offset-bytes-textures *model*) size-data)
+      (incf *offset-bytes-textures* size-data)
       ;; Store data - free later
       (vector-push (make-instance 'texture
 				  :data data
@@ -176,18 +176,15 @@
       ;; CAIRO_FORMAT_ARGB32: BGRA
       
       (values
-       (- (offset-texel-textures *model*) (truncate (* (vx2 dim) (vy2 dim))))
+       (- *offset-texel-textures* (truncate (* (vx2 dim) (vy2 dim))))
        dim
        size-data))))
 
 (defun update-node-text (seq-key)
-
-  (with-slots (digraph)
-      *model*
   
     (fmt-model t "main-model" "Updating root node~%")
 
-    (let ((node-root (first (digraph:roots digraph))))
+    (let ((node-root (first (digraph:roots *digraph*))))
     
       ;; Generate texture directly to shm
       ;; Update node
@@ -223,18 +220,16 @@
       
       (memcpy-shm-to-cache-flag* (list (list "texture"
 					     0
-      					     (offset-bytes-textures *model*))
+      					     *offset-bytes-textures*)
       				       (list "nodes"
 				       	     0
-      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices digraph)
-				       					  (digraph:count-edges digraph)))))))))
+      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
+				       					  (digraph:count-edges *digraph*))))))))
 
 
 (defun init-graph ()
   ;; Create DAG
   (let ((digraph (digraph:make-digraph)))
-
-    (setf (digraph *model*) digraph)
 
     ;; Create vertices/edge then generate nodes
     ;; Normally user will create these through input (controller)

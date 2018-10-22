@@ -166,17 +166,15 @@
   
   (submit-task *channel*
 	       (lambda ()
-		 ;; (defparameter *model* (make-instance 'model
-		 ;; 				      :inst-max inst-max))
 		 (setf *inst-max* inst-max)
 
 		 ;; Ind of handles-shm
-		 (setf (projview *model*) (make-instance 'projview
+		 (setf *projview* (make-instance 'projview
 							 :width width
 							 :height height
 							 :type-proj 'orthographic))
 		 ;; Ind of projview
-		 (setf (handles-shm *model*) (init-handles-shm))
+		 (setf *handles-shm* (init-handles-shm))
 
 		 ;; Load data into shm - independent
 		 (copy-projview-to-shm nil)
@@ -184,13 +182,13 @@
 		 (load-shm-element)
 		 (load-shm-draw-indirect)	 
 		 (load-shm-texture-glyphs) ; I/O factor
-		 (setf (metrics *model*) (init-metrics)) ; I/O factor
-		 (setf (digraph *model*) (digraph:make-digraph))
+		 (setf *metrics* (init-metrics)) ; I/O factor
+		 (setf *digraph* (digraph:make-digraph))
 
 		 ;; Setup pointer node
-		 (setf (node-pointer *model*) (init-node-pointer))
-		 (digraph:insert-vertex (digraph *model*)
-					(node-pointer *model*))
+		 (setf *node-pointer* (init-node-pointer))
+		 (digraph:insert-vertex *digraph*
+					*node-pointer*)
 		 (copy-nodes-to-shm)
 
 		 (fmt-model t "main-model" "Init conn to view~%")
@@ -232,17 +230,11 @@
   (setf *queue-anim* (make-queue)))
 
 (defun init-view ()
-  (with-slots (sock-view
-	       buffer-sock-ptr
-	       projview
-	       inst-max)
-      *model*
-    
-    (setf sock-view (init-sock-client "/tmp/protoform-view.socket" :block))
+    (setf *sock-view* (init-sock-client "/tmp/protoform-view.socket" :block))
     
     ;; Init buffers
-    (send-message sock-view
-		  buffer-sock-ptr
+    (send-message *sock-view*
+		  *buffer-sock-ptr*
 		  (with-output-to-string (stream)
 		    (format stream "(init-view-buffers (")
 		    (dolist (param *params-shm*)
@@ -253,9 +245,9 @@
 			     :collect (second params)))
   
     ;; Enable draw flag for view loop
-    (send-message sock-view
-		  buffer-sock-ptr
-		  (format nil "(set-draw t)"))))
+    (send-message *sock-view*
+		  *buffer-sock-ptr*
+		  (format nil "(set-draw t)")))
 
 (defun register-callback-down (keysym cb)
   (with-slots (key-callbacks)
@@ -314,8 +306,8 @@
     			 :exclusive
     			 (lambda (seq-key)
     			   (clean-up-handles-shm)
-    			   (c-shutdown sock-view)
-    			   (c-close sock-view))
+    			   (c-shutdown *sock-view*)
+    			   (c-close *sock-view*))
     			   (fmt-model t "handle-escape" "Model process exiting!~%")
     			   (sb-ext:exit)))
     
@@ -364,7 +356,7 @@
 		       :exclusive
 		       (lambda (seq-event)
 			 (setf *fn-anim* #'easing:in-cubic)
-			 (setf *value-start* (vx3 (pos (projview *model*))))
+			 (setf *value-start* (vx3 (pos *projview*)))
 			 (setf *time-start* (osicat:get-monotonic-time))
 			 (setf *time-end* (+ *time-start* 4)) ; (/ frame count fps)
 			 (setf *time-duration* (- *time-end* *time-start*)) ; (/ frame-count fps)
@@ -464,7 +456,7 @@
 		       (format t "  ~7$~%" (osicat:get-monotonic-time)))
 
 		     (with-slots (pos scale-ortho)
-      			 (projview *model*)
+      			 *projview*
 
 		       ;; normalize x/time elapsed by dividing over duration
 		       ;; normalize y by multiplying by displacement
@@ -492,12 +484,9 @@
   t)
 
 (defun serve-client ()
-  (with-slots (sock-view
-	       buffer-sock-ptr)
-      *model*
     (loop
-       (let ((message (recv-message sock-view
-				    buffer-sock-ptr)))
+       (let ((message (recv-message *sock-view*
+				    *buffer-sock-ptr*)))
 	 (when message
 	   ;; (fmt-model t "serve-client" "Message: ~S~%" message)
 	   ;; (print (eval message))
@@ -508,4 +497,4 @@
 		 (apply (symbol-function (find-symbol (string (first n)) :protoform.model))
 			(cdr n)))
 	       (apply (symbol-function (find-symbol (string (first message)) :protoform.model))
-		      (cdr message))))))))
+		      (cdr message)))))))
