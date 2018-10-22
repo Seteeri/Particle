@@ -126,8 +126,7 @@ Core Functionality - Version 0.1
 2. Pango text rendering - DONE
 3. MSDF text rendering - DONE
 4. Drawing nodes, lines - DONE
-6. Interface - WIP
-   * Easing animations
+5. Task-basked parallelism - WIP
 
 Core Extensions - Version 0.2
 1. Numbered links for navigations
