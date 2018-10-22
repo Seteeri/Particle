@@ -113,30 +113,6 @@
 					 (coerce (/ 47 255)  'single-float)
 					 (coerce (/ 255 255) 'single-float)))
 
-#|
-(sock-view :accessor sock-view :initarg :sock-view :initform nil)
-(buffer-sock-ptr :accessor buffer-sock-ptr :initarg :buffer-sock-ptr :initform (foreign-alloc :unsigned-char :count 212992))
-(buffer-sock-array :accessor buffer-sock-array :initarg :buffer-sock-array :initform (make-array 212992
-												 :adjustable nil
-												 :fill-pointer nil
-												 :element-type '(unsigned-byte 8)))
-(handles-shm :accessor handles-shm :initarg :handles-shm :initform nil)
-(projview :accessor projview :initarg :projview :initform nil)
-;; Instances...
-(inst-max :accessor inst-max :initarg :inst-max :initform nil)
-(digraph :accessor digraph :initarg :digraph :initform nil)
-;; Textures - list of Texture instances wich store tex parameters
-;; Use skip list? -> For now use vector
-;; Hmm, when texture is removed need to recopy all (to "defragment")
-(offset-texel-textures :accessor offset-texel-textures :initarg :offset-texel-textures :initform 0) ; sum of wxh
-(offset-bytes-textures :accessor offset-bytes-textures :initarg :offset-bytes-textures :initform 0) ; sum of bytes
-(textures :accessor textures :initarg :textures :initform (make-array 64 :adjustable t :fill-pointer 0))
-(metrics :accessor metrics :initarg :metrics :initform nil)
-(node-pointer :accessor node-pointer :initarg :node-pointer :initform nil)
-(dpi-glyph :accessor dpi-glyph :initarg :dpi-glyph :initform (/ 1 90))
-(scale-node :accessor scale-node :initarg :scale-node :initform 0.008)
-|#
-
 (defparameter *sock-view* nil)
 (defparameter *buffer-sock-ptr* (foreign-alloc :unsigned-char :count 212992))
 (defparameter *buffer-sock-array* (make-array 212992
@@ -147,8 +123,11 @@
 (defparameter *projview* nil)
 (defparameter *inst-max* nil)
 (defparameter *digraph* nil)
-(defparameter *offset-texel-textures* nil)
-(defparameter *offset-bytes-textures* nil)
+(defparameter *offset-texel-textures* nil) ; sum of WxH
+(defparameter *offset-bytes-textures* nil) ; sum of bytes
+;; Textures - list of Texture instances wich store tex parameters
+;; Use skip list? -> For now use vector
+;; Hmm, when texture is removed need to recopy all (to "defragment")
 ;; (defparameter *textures* (make-array 64 :adjustable t :fill-pointer 0))
 (defparameter *metrics* nil)
 (defparameter *node-pointer* nil)
