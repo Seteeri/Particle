@@ -147,7 +147,9 @@
 
   (fmt-model t "main-model" "Init kernel lparallel~%")
   (init-kernel-lparallel)
-		 
+
+  ;; Submit initialization tasks
+  
   (submit-task *channel*
 	       (lambda ()
 		 (defparameter *model* (make-instance 'model
@@ -180,6 +182,8 @@
   
   (dotimes (i 2) (receive-result *channel*))
 
+  ;; Submit loop tasks (daemons)
+  
   ;; sock view loop
   (submit-task *channel*
 	       #'serve-client)
@@ -340,7 +344,7 @@
 			 (setf *fn-anim* #'easing:in-cubic)
 			 (setf *value-start* (vx3 (pos (projview *model*))))
 			 (setf *time-start* (osicat:get-monotonic-time))
-			 (setf *time-end* (+ *time-start* (/ (* 60 4) 60))) ; (/ frame count fps)
+			 (setf *time-end* (+ *time-start* 4)) ; (/ frame count fps)
 			 (setf *time-duration* (- *time-end* *time-start*)) ; (/ frame-count fps)
 			 (setf *time-elapsed* 0.0)
 			 (setf *time-run* t)))
@@ -381,13 +385,10 @@
 
 (defun handle-view-sync (time-view)
 
-  ;; Submit tasks in this fn for each anim - each thread will do copy-to-shm
-  ;;   -> Need lock on conn unless we do one conn per thread??
-
-  ;; Input will trigger animations
-
+  ;; Input will trigger animations - need lock around structure
+  ;;
   ;; Skipping/dropping frames will result in jerky/choppy animation
-
+  ;;
   ;; Model generates frames
   ;; - Updates shm
   ;; - Model sends msg
@@ -398,13 +399,40 @@
       (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
       (setf *time-last* time)))
 
+  ;; Build dependency graph (DAG) - do topology sort and execute
+  ;; - Based around functions and their data
+  ;; - Each fn has a list of symbols that are read/written and functions that are called
+  ;;   - Thus functions should be relatively small and concise...
+  ;; - If function depends on another function, create an edge/vertex
+  ;; - Typically these will be dynamic variables
+  ;; - Model is accessed frequently but specific parts of it...
+  ;;   - Refactor slots into dynamic variables?
+  ;; - Create macro to do this automatically...
+  ;; - Dependency graph can avoid locks...up until I/O calls
+  
+  ;; For example, animation:
+  ;; - look for user defined functions/forms
+  ;;   - these would be recurse further...
+  ;; - look for symbols that are modified by functions/forms
+  ;; 1. any dynamic variables like *model*, *time-run* et. al.
+  ;;    1. projview
+  ;;    2. pos/scale-ortho
+  ;; 2. copy-projview-to-shm's symbols (recursive)
+  ;; 3. t? (stream)...IO resources
+
+  ;; These have to be explicitly stated...unless a code analyzer can figure it out?
+  ;; We'd have to parse code to data via read-from-string
+  ;; Then check all the symbols/atoms
+
+  ;; Create trivial example that calculates a bunch of random things
+  
+  ;; Need locks on conn and shm
   (submit-task *chan-anim*
 	       (lambda ()
 		 
 		 (when *time-run*
 		   
-		   (let* ((projview (projview *model*))
-			  (time-now (osicat:get-monotonic-time))
+		   (let* ((time-now (osicat:get-monotonic-time))
 			  (time-delta (- time-now *time-start*)))
 
 		     (incf *time-elapsed* time-delta)
@@ -414,7 +442,7 @@
 		       (format t "  ~7$~%" (osicat:get-monotonic-time)))
 
 		     (with-slots (pos scale-ortho)
-      			 projview
+      			 (projview *model*)
 
 		       ;; normalize x/time elapsed by dividing over duration
 		       ;; normalize y by multiplying by displacement
@@ -427,6 +455,7 @@
       			 (setf (vx3 pos) pos-new))
 		       
 		       t)
+		     
 		     (copy-projview-to-shm)
 		     
 		     ;; Cap time-delta to ending time
