@@ -78,8 +78,8 @@
 	     (when (or (/= flag-copy 0)
 		       force)
 	       ;; Can also use gl function to copy between buffers
-	       (when (and (not force) (/= flag-copy -1))
-		 (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
+	       ;; (when (and (not force) (/= flag-copy -1))
+	       ;; 	 (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
 	       (memcpy-cache-to-step name ix-fence
     				     name
 				     nil
@@ -99,8 +99,8 @@
 	     (when (or (/= flag-copy 0)
 		       force)
 	       ;; Can also use gl function to copy between buffers
-	       (when (and (not force) (/= flag-copy -1))
-		 (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
+	       ;; (when (and (not force) (/= flag-copy -1))
+	       ;; 	 (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
 	       (copy-buffer (aref (buffers (get-cache-buffer name)) 0)
 			    (aref (buffers (gethash name (bo-step *view*))) ix-fence)
 			    (size-buffer (gethash name (bo-step *view*))))

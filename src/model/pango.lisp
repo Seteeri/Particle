@@ -242,7 +242,7 @@
 	  (n-1 (init-node (vec3 0 0 0)
 			  (scale-node *model*)
 			  1
-			  " ")) ; "‖↑↓"
+			  " "))
 	  (n-2 (init-node (vec3 0 -1 1)
 			  (scale-node *model*)
 			  2

@@ -17,7 +17,7 @@
 
 (declaim (inline read-file-string))
 (defun read-file-string (path)
-  (with-open-file (stream path)
+  (with-open-file (stream path :external-format :utf-8)
     (let ((data (make-string (file-length stream))))
       (read-sequence data stream)
       data)))

@@ -43,7 +43,7 @@
        (error "fork -1")))))
 
 (defun main ()
-
+  
   ;; https://askubuntu.com/questions/125062/how-can-i-find-which-desktop-enviroment-i-am-using
   ;; $ sbcl my-command-line-arg
   ;; *posix-argv*
@@ -68,17 +68,9 @@
     						   inst-max
     						   nil))))
 
-    ;; (swank-protocol:request-listener-eval connection "(+ 2 2)")
-    ;; (format t "~a~%" (swank-protocol:read-message connection)) ; blocks
-    ;; (format t "~a~%" (swank-protocol:read-all-messages connection))
-    ;; (let ((conn (init-swank-conn "skynet" 10001)))
-    ;;   (swank-protocol:request-listener-eval conn
-    ;; 					  "t"))
-    
     ;; https://www.emacswiki.org/emacs/StumpWM
 
     ;; (format t "~v@{~A~:*~}~%" 64 "-")
     
     ;; Explicitly exit after loading code
-    ;; (format t "[main] Exiting...")
     (sb-ext:exit)))

@@ -47,19 +47,10 @@
 					  :initial-contents *uv-default-node*))
    (flags :accessor flags :initarg :flags :initform 1)))
 
-(defun init-node-pointer ()
-    (let ((node-ptr (init-node-msdf (vec3 -11.5199995 14.127416 0)
-				    *scale-node*
-				    0
-				    #\*
-				    *color-default-ptr*)))
-      (update-transform (model-matrix node-ptr))
-      node-ptr))
-
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
   
   (with-slots (ptr size)
-      (gethash "nodes" *handles-shm*)
+      *shm-nodes*
     
     (with-slots (data
 		 model-matrix
@@ -139,7 +130,7 @@
 							  :scale (vec3 scale-glyph scale-glyph scale-glyph)
 							  :translation (vcopy3 cursor))))
 	(metrics-glyph (gethash (char-code data) *metrics*)))
-
+    
     ;; Set color
     (when color
       (let ((rgba (rgba node)))

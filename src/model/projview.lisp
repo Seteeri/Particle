@@ -41,21 +41,20 @@
 			     (mscaling (vec3 1 1 1)))))))
 
 (defun copy-mat-proj-to-shm ()
-    (with-slots (ptr size)
-	(gethash "projview" *handles-shm*)
-      (set-matrix ptr
-		  (mat-proj *projview*)
-		  0)))
+  (with-slots (ptr size)
+      *shm-projview*
+    (set-matrix ptr
+		(mat-proj *projview*)
+		0)))
 
 (defun copy-mat-view-to-shm ()
-    (with-slots (ptr size)
-	(gethash "projview" *handles-shm*)
-      (set-matrix ptr
-		  (mat-view *projview*)
-		  16)))
+  (with-slots (ptr size)
+      *shm-projview*
+    (set-matrix ptr
+		(mat-view *projview*)
+		16)))
 
-(defun copy-projview-to-shm (&optional (memcpy-shm-to-cache t))
-  
+(defun copy-projview-to-shm (&optional (memcpy-shm-to-cache t))  
   (update-mat-proj)
   (update-mat-view)
   ;; (write-matrix (mat-view (projview model)) t)

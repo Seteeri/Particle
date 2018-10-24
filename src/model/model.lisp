@@ -14,29 +14,29 @@
 ;;
 ;; Cache/compute will use cs-in
 ;; Step/raster will use vs-in
-(defparameter *projview-shm* (list :uniform-buffer
-				   "projview"
-				   "/protoform-projview"
-				   (* (+ 16 16) 4)
-				   0 0  ; cs-in (cache), vs-in (raster)
-				   :triple
-				   -1)) ; copy every frame
+(defparameter *params-projview-shm* (list :uniform-buffer
+					  "projview"
+					  "/protoform-projview"
+					  (* (+ 16 16) 4)
+					  0 0  ; cs-in (cache), vs-in (raster)
+					  :triple
+					  -1)) ; copy every frame
 
-(defparameter *vertices-shm* (list :uniform-buffer
-				   "vertices"
-				   "/protoform-vertices"
-				   (* 16 4)
-				   1 1
-				   :triple
-				   0))
+(defparameter *params-vertices-shm* (list :uniform-buffer
+					  "vertices"
+					  "/protoform-vertices"
+					  (* 16 4)
+					  1 1
+					  :triple
+					  0))
 
-(defparameter *nodes-shm* (list :shader-storage-buffer
-				"nodes"
-				"/protoform-nodes"
-				(/ 134217728 4)
-				2 3
-				:triple
-				0))
+(defparameter *params-nodes-shm* (list :shader-storage-buffer
+				       "nodes"
+				       "/protoform-nodes"
+				       (/ 134217728 4)
+				       2 3
+				       :triple
+				       0))
 
 ;; (defparameter *glyphs-msdf-shm* (list :texture-buffer
 ;; 				      "glyphs-msdf"
@@ -47,47 +47,46 @@
 ;; 				      0
 ;; 				      :rgba8))
 
-(defparameter *texture-shm* (list :texture-buffer
-				  "texture"
-				  "/protoform-texture"
-				  (/ 134217728 4)
-				  -1 -1
-				  :triple
-				  0
-				  :rgba8)) ; requires fmt type
+(defparameter *params-texture-shm* (list :texture-buffer
+					 "texture"
+					 "/protoform-texture"
+					 (/ 134217728 4)
+					 -1 -1
+					 :triple
+					 0
+					 :rgba8)) ; requires fmt type
 
-(defparameter *element-shm* (list :element-array-buffer
-				  "element"
-				  "/protoform-element"
-				  (* 4 6)  ; 4 bytes/int * 6 ints or indices
-				  -1 -1
-				  :triple
-				  0))
-
-(defparameter *draw-indirect-shm* (list :draw-indirect-buffer
-					"draw-indirect"
-					"/protoform-draw-indirect"
-					(* 4 6)  ; 6 ints/params
-					-1 -1
-					:triple
-					0))
-
-(defparameter *atomic-counter-shm* (list :atomic-counter-buffer
-					 "atomic-counter"
-					 "/protoform-atomic-counter"
-					 (* 4 6)  ; 6 ints/params
-					 4 -1
+(defparameter *params-element-shm* (list :element-array-buffer
+					 "element"
+					 "/protoform-element"
+					 (* 4 6)  ; 4 bytes/int * 6 ints or indices
+					 -1 -1
 					 :triple
 					 0))
 
-(defparameter *params-shm* (list *projview-shm*
-				 *vertices-shm*
-				 *nodes-shm*
-				 ;; *glyphs-msdf-shm*
-				 *texture-shm*
-				 *element-shm*
-				 *draw-indirect-shm*
-				 *atomic-counter-shm*))
+(defparameter *params-draw-indirect-shm* (list :draw-indirect-buffer
+					       "draw-indirect"
+					       "/protoform-draw-indirect"
+					       (* 4 6)  ; 6 ints/params
+					       -1 -1
+					       :triple
+					       0))
+
+(defparameter *params-atomic-counter-shm* (list :atomic-counter-buffer
+						"atomic-counter"
+						"/protoform-atomic-counter"
+						(* 4 6)  ; 6 ints/params
+						4 -1
+						:triple
+						0))
+
+(defparameter *params-shm* (list :projview *params-projview-shm*
+				 :vertices *params-vertices-shm*
+				 :nodes *params-nodes-shm*
+				 :texture *params-texture-shm*
+				 :element *params-element-shm*
+				 :draw-indirect *params-draw-indirect-shm*
+				 :atomic-counter *params-atomic-counter-shm*))
 
 (defconstant +size-struct-instance+ 208)
 
@@ -121,6 +120,8 @@
 					      :element-type '(unsigned-byte 8)))
 (defparameter *handles-shm* nil)
 (defparameter *projview* nil)
+(defparameter *width* nil)
+(defparameter *height* nil)
 (defparameter *inst-max* nil)
 (defparameter *digraph* nil)
 (defparameter *offset-texel-textures* nil) ; sum of WxH
@@ -134,86 +135,51 @@
 (defparameter *dpi-glyph* (/ 1 90))
 (defparameter *scale-node* 0.008)
 
+(defparameter *shm-projview* nil)
+(defparameter *shm-nodes* nil)
+(defparameter *shm-atomic-counter* nil)
+(defparameter *shm-vertices* nil)
+(defparameter *shm-element* nil)
+(defparameter *shm-draw-indirect* nil)
+(defparameter *shm-texture* nil)
+
+(defparameter *controller* nil)
+
 (defun main-model (width height
 		   inst-max
 		   addr-swank-view)
-
+  
   (fmt-model t "main-model" "Init kernel lparallel~%")
   (init-kernel-lparallel)
 
-  ;; Submit initialization tasks
+  (setf *width* width
+	*height* height
+	*inst-max* inst-max)
   
-  (submit-task *channel*
-	       (lambda ()
-		 (setf *inst-max* inst-max)))
+  ;; Generate the graph
+  (let* ((path (merge-pathnames (make-pathname :name "test-sa"
+					       :type "lisp")
+				(merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform)))))
 
-  (submit-task *channel*
-	       (lambda ()
-		 (setf *projview* (make-instance 'projview
-						 :width width
-						 :height height
-						 :type-proj 'orthographic))))
-  
-  (submit-task *channel*
-	       (lambda ()
-		 (setf *handles-shm* (init-handles-shm))))
+    (multiple-value-bind (digraph root levels)
+	(analyze-file path)
+	 
+      (loop
+	 :for i :from (1- (length levels)) :downto 0
+	 :for nodes := (aref levels i)
+	 :do (progn
+	       (loop
+		  :for node :in nodes
+		  :do (progn
+			(submit-task *channel*
+				     (symbol-function (find-symbol (string (data node)) :protoform.model)))
+			(fmt-model t "main-init" "Submitted task: ~a~%" (data node))
+			;; (receive-result *channel*)
+			t))
+	       (dotimes (i (length nodes)) (receive-result *channel*))
+	       t))))
 
-  (dotimes (i 3) (receive-result *channel*))
-  
-  (submit-task *channel*
-	       (lambda ()
-		 (copy-projview-to-shm nil)))
-
-  (submit-task *channel*
-	       (lambda ()
-		 (load-shm-vertices)))
-
-  (submit-task *channel*
-	       (lambda ()
-		 (load-shm-element)))
-
-  (submit-task *channel*
-	       (lambda ()
-		 (load-shm-draw-indirect)))
-
-  (submit-task *channel*
-	       (lambda ()
-		 (load-shm-texture-glyphs))) ; I/O factor
-
-  (submit-task *channel*
-	       (lambda ()
-		 (setf *metrics* (init-metrics)))) ; I/O factor
-
-  (submit-task *channel*
-	       (lambda ()		 
-		 (setf *digraph* (digraph:make-digraph))))
-
-  (dotimes (i 7) (receive-result *channel*))
-
-  (submit-task *channel*
-	       (lambda ()
-		 ;; Setup pointer node
-		 (setf *node-pointer* (init-node-pointer))
-		 (digraph:insert-vertex *digraph*
-					*node-pointer*)
-		 (copy-nodes-to-shm)))
-
-  (dotimes (i 1) (receive-result *channel*))
-  
-  (submit-task *channel*
-	       (lambda ()
-		 (fmt-model t "main-model" "Init conn to view~%")
-		 (init-view)))
-
-  (submit-task *channel*
-	       (lambda ()  
-		 (defparameter *controller* (init-controller))
-		 (register-keyboard-callbacks)
-		 t))
-  
-  (dotimes (i 2) (receive-result *channel*))
-
-  ;; Submit loop tasks (daemons)
+  (fmt-model t "main-init" "Finished model initialization~%")
   
   ;; sock view loop
   (submit-task *channel*
@@ -228,37 +194,17 @@
 		    (update-states-keyboard-continuous))))
   
   ;; Block forever
-  (loop (receive-result *channel*)))
+  (loop (receive-result *channel*)))  
 
 (defun init-kernel-lparallel ()
 
   ;; Swank, Input, Wayland
   ;; (bordeaux-threads:make-thread (lambda () (sleep 1)))
 
-  (setf *kernel* (make-kernel (+ 2 4)))
+  (setf *kernel* (make-kernel (+ 0 4)))
   (setf *channel* (make-channel))
   (setf *chan-anim* (make-channel))
   (setf *queue-anim* (make-queue)))
-
-(defun init-view ()
-    (setf *sock-view* (init-sock-client "/tmp/protoform-view.socket" :block))
-    
-    ;; Init buffers
-    (send-message *sock-view*
-		  *buffer-sock-ptr*
-		  (with-output-to-string (stream)
-		    (format stream "(init-view-buffers (")
-		    (dolist (param *params-shm*)
-		      (format stream "~S " param))
-		    (format stream "))")))
-
-    (memcpy-shm-to-cache* (loop :for params :in *params-shm*
-			     :collect (second params)))
-  
-    ;; Enable draw flag for view loop
-    (send-message *sock-view*
-		  *buffer-sock-ptr*
-		  (format nil "(set-draw t)")))
 
 (defun register-callback-down (keysym cb)
   (with-slots (key-callbacks)
@@ -319,8 +265,8 @@
     			   (clean-up-handles-shm)
     			   (c-shutdown *sock-view*)
     			   (c-close *sock-view*))
-    			   (fmt-model t "handle-escape" "Model process exiting!~%")
-    			   (sb-ext:exit)))
+    			 (fmt-model t "handle-escape" "Model process exiting!~%")
+    			 (sb-ext:exit)))
     
     (when t
       ;; handlers in node
@@ -373,8 +319,8 @@
 			 (setf *time-duration* (- *time-end* *time-start*)) ; (/ frame-count fps)
 			 (setf *time-elapsed* 0.0)
 			 (setf *time-run* t)))
-			 ;; (submit-task *chan-anim*
-			 ;; 	      #'produce-frames-anim)))
+    ;; (submit-task *chan-anim*
+    ;; 	      #'produce-frames-anim)))
 
     
     ;; Print hashtable
@@ -444,12 +390,6 @@
   ;;    2. pos/scale-ortho
   ;; 2. copy-projview-to-shm's symbols (recursive)
   ;; 3. t? (stream)...IO resources
-
-  ;; These have to be explicitly stated...unless a code analyzer can figure it out?
-  ;; We'd have to parse code to data via read-from-string
-  ;; Then check all the symbols/atoms
-
-  ;; Create trivial example that calculates a bunch of random things
   
   ;; Need locks on conn and shm
   (submit-task *chan-anim*
@@ -487,25 +427,91 @@
 		     (when (> *time-elapsed* *time-duration*)
 		       (format t "Ending anim~%")
 		       (setf *time-run* nil))))))
-      
+  
   (dotimes (i 1) (receive-result *chan-anim*))
 
   ;; Send signal back
   
   t)
 
-(defun serve-client ()
-    (loop
-       (let ((message (recv-message *sock-view*
-				    *buffer-sock-ptr*)))
-	 (when message
-	   ;; (fmt-model t "serve-client" "Message: ~S~%" message)
-	   ;; (print (eval message))
-	   ;; (force-output)
+(defun init-view ()
+  (setf *sock-view* (init-sock-client "/tmp/protoform-view.socket" :block))
 
-	   (if (listp (first message))
-	       (dolist (n message)
-		 (apply (symbol-function (find-symbol (string (first n)) :protoform.model))
-			(cdr n)))
-	       (apply (symbol-function (find-symbol (string (first message)) :protoform.model))
-		      (cdr message)))))))
+  ;; Combine all of below into single call
+  
+  ;; Init buffers  
+  (send-message *sock-view*
+		*buffer-sock-ptr*
+		(with-output-to-string (stream)
+		  (format stream "(init-view-buffers (")
+		  (loop
+		     :for (name params) :on *params-shm* :by #'cddr
+		     :do (format stream "~S " params))
+		  (format stream "))")))
+  
+  (loop
+     :for (name params) :on *params-shm* :by #'cddr
+     :for name2 := (string-downcase (symbol-name name))
+     :do (memcpy-shm-to-cache name2
+			      (symbol-value (find-symbol (str:concat "shm-" name2) :protoform.model))))
+  
+  ;; Enable draw flag for view loop
+  (send-message *sock-view*
+		*buffer-sock-ptr*
+		(format nil "(set-draw t)")))
+
+(defun serve-client ()
+  (loop
+     (let ((message (recv-message *sock-view*
+				  *buffer-sock-ptr*)))
+       (when message
+	 ;; (fmt-model t "serve-client" "Message: ~S~%" message)
+	 ;; (print (eval message))
+	 ;; (force-output)
+
+	 (if (listp (first message))
+	     (dolist (n message)
+	       (apply (symbol-function (find-symbol (string (first n)) :protoform.model))
+		      (cdr n)))
+	     (apply (symbol-function (find-symbol (string (first message)) :protoform.model))
+		    (cdr message)))))))
+
+(defun set-projview ()
+  (setf *projview* (make-instance 'projview
+				  :width *width*
+				  :height *height*
+				  :type-proj 'orthographic)))
+
+(defun set-controller ()  
+  (setf *controller* (init-controller))
+  (register-keyboard-callbacks))
+
+(defun set-metrics ()
+  (setf *metrics* (init-metrics)))
+
+(defun set-digraph ()
+  (setf *digraph* (digraph:make-digraph)))
+
+(defun set-shm-projview ()
+  (setf *shm-projview* (init-shm-projview)))
+
+(defun set-shm-nodes ()
+  (setf *shm-nodes* (init-shm-nodes)))
+
+(defun set-shm-atomic-counter ()
+  (setf *shm-atomic-counter* (init-shm-atomic-counter)))
+
+(defun set-shm-vertices ()
+  (setf *shm-vertices* (init-shm-vertices)))
+
+(defun set-shm-element ()
+  (setf *shm-element* (init-shm-element)))
+
+(defun set-shm-draw-indirect ()
+  (setf *shm-draw-indirect* (init-shm-draw-indirect)))
+
+(defun set-shm-texture-glyphs ()
+  (setf *shm-texture-glyphs* (init-shm-texture-glyphs)))
+
+(defun set-node-pointer ()
+  (setf *node-pointer* (init-node-pointer-graph-shm)))

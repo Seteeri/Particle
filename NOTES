@@ -145,3 +145,169 @@ rendering engine
 Forward... -> Tiled -> Clustered -> Volumetric
 
  Volume Tiled Forward Shading is based on Tiled and Clustered Forward Shading described by Ola Olsson et. al
+ 
+------------------------------------------------------------------------
+
+;; (area   (width height) (* width height))
+;;         (width  (border)       (+ 7 (* 2 border)))
+;;         (height (border)       (+ 5 (* 2 border)))
+;;         (border ()             1))
+
+#|
+
+(defun calc-area (width height)
+  (:rw (:r width height)
+       (:w area))
+  ;; format to t
+  (* width height))
+
+(defun calc-width (border)
+  (:rw (:r border)
+       (:w width))
+  ;; format to t
+  (* 2 border))
+
+(defun calc-height (border)
+  (:rw (:r border)
+       (:w height))
+  ;; format to t
+  (* 2 border))  
+
+(defun calc-border ()
+  (:rw (:r nil)
+       (:w border))
+  ;; format to t
+  (setf border 1))
+
+|#
+
+;; sym = (or (r) (r w) (w))
+;; There is no easy way of implicitly analyzing code to figure out if a symbol is going to be modified
+;; - naive solution is check for *set* functions
+;; - expand macros...should do this at compile time to generate main
+;; Current method is to explicitly define it as the user understands it
+;; a DSL would be needed for all the specifics...
+
+;; for each symbol store read and write functions for each
+
+;; EXAMPLE
+;; For the above, can a program figure out the execution order without the user declaring it?
+
+;; Sort defuns into hashtable where sym -> :r f0 f1 f2..., :w f0 f1 f2
+
+;; Pass program a function, root node, to figure out dependencies
+;; For read symbols, find writer fns
+;; Then for each writer fn, check its read syms and find its writer fns
+;; As program progresses, save fns in list/graph
+;; At the end, iterate and submit tasks
+;; l = (:s calc-border (:p calc-width calc-height) calc-area)
+
+;; Ideally, there should only be one writer
+;; When multiple writers - no way of knowing which should go first
+;; - slap a lock on it, execute functions -> indeterministic execution
+
+;; Iterate over predecessors:
+;; Parallelizable if reads of func a do not include any writes of func b or vice versa
+;; otherwise they are dependent
+;; In other words, reads are arbitrary, but not the same writes
+
+;; It's also assumed the symbols above are global
+
+#|
+(defun calc-b (a)
+  (:rw (:r a)
+       (:w b))
+
+  (+ 2 a))
+
+(defun calc-a ()
+  (:rw (:r nil)
+       (:w a))
+
+  (+ 1 0))
+
+(defun calc-a2 ()
+  (:rw (:r nil)
+       (:w a))
+
+  (- 3 0))
+|#
+
+#|
+1. Build hash table with functions and rw
+
+(:s (:p #'set-inst-max
+	#'set-projview
+	#'set-handles-shm)
+    (:p t
+	t
+	t)
+    t)
+|#
+
+;; Static analysis of Lisp code to determine a call dependency graph
+;; 
+
+;; How to determine execution order?
+;; - All functions have state
+;; - Associated through arguments and return values -> symbols
+;; - Need to know symbols
+;; - What about implicit symbols such as lookup by string such as hashtable
+;;   - intern = string -> symbol
+;;   - program exceptions?
+
+;; - Scan src to tokens -> Analyze branches -> Schedules tasks -> Generate/exec code
+
+;; Upon start up, pass root fn (main) to generator
+;; Exec until infinite loop - constantly repeat process above infinitely
+;; - Memoize results to make faster
+;; - If user changes code, then it changes
+
+;; Forms:
+;; 1. Self-eval
+;; 2. Symbols
+;; 3. Lists
+;;    1. Special forms
+;;    2. Macros
+;;    3. Func calls
+
+;; Valid Forms:
+;; * An Atom
+;; * An empty or non-list
+;; * Any list that has a symbol as its first element
+
+;; For functions, create a node
+;; For functions/symbols - create successor node
+;; - declare whether functions will called or control statement controls evaluation
+;; Works with simple code...
+;; To build function list, find all defuns
+;; Need to scan all files first
+;; Don't need all functions, just the ones that can parallelize
+;; - or our defuns or explicit ones
+;; Final DAG will help visualize fn-symbol dependencies
+;; - e.g. symbols with multiple fn successors mean they share that data
+;;   and threading would require locks
+
+;; top down from root
+;; node = root
+;; do fn
+;;   submit task for node
+;;   if node has successors:
+;;     submit task for each node
+;;     wait for results
+;;     recurse and call this fn on each node
+
+;; sym -> fn -> sym -> fn -> sym -> ...
+;; maintain this pattern
+;; fn inputs not only include arguments but any symbols read
+;; fn ouputs not only include return symbols but any variables written to
+;; it is ambigious whether a symbol is read/written
+
+;; input is expected reads
+;; output is expected writes
+;; reads and writes would be on both predecessors and successors
+
+;; only works with code where certain guarantees can be made
+;; such as for defun, are there any functions that wrap this
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

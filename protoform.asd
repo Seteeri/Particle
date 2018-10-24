@@ -69,13 +69,14 @@
 			  :pathname "src/model"
 			  :components ((:file "model")
 				       (:file "rpc")
-				       (:file "handle-shm")				       
+				       (:file "handle-shm")
 				       (:file "matrix-model")
 				       (:file "projview")
 				       (:file "node")
 				       (:file "pango")
 				       (:file "metrics")
 				       (:file "pointer")
+				       (:file "static-analysis")
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "keysymdef")

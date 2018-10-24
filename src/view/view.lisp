@@ -166,16 +166,16 @@
 
   ;; (format t "~S~%" params-model)
   
-  (fmt-view t "init-view" "Initializing shm handles~%")
+  (fmt-view t "init-view-buffers" "Initializing shm handles~%")
   (init-handles-shm params-model)
 
-  (fmt-view t "init-view" "Initializing buffer object caches~%")
+  (fmt-view t "init-view-buffers" "Initializing buffer object caches~%")
   (init-bo-caches params-model)
 
-  (fmt-view t "init-view" "Initializing buffer object steps~%")
+  (fmt-view t "init-view-buffers" "Initializing buffer object steps~%")
   (init-bo-step params-model)
 
-  (fmt-view t "init-view" "Initializing shader bindings~%")
+  (fmt-view t "init-view-buffers" "Initializing shader bindings~%")
   ;; Shader specific initialization
   (init-buffers-raster-default params-model)
   (init-buffers-raster-msdf params-model)
@@ -183,7 +183,9 @@
 
   ;; At this point, shm already has data loaded by model
   ;; so copy to OpenGL buffers
-  (memcpy-shm-to-all))
+  (memcpy-shm-to-all)
+
+  (fmt-view t "init-view-buffers" "Finished initializing shm handles~%"))
 
 (defun main-view (width
 		  height
@@ -218,27 +220,33 @@
     
     (loop 
 
-       ;; Server stuff
+       ;; (format t "HERE 1~%")
        (run-server)
+       ;; (format t "HERE 2~%")
        
-       ;; Drawing stuff
        (if *draw*
 
 	   (progn
 
+	     ;; (format t "HERE 3~%")
 	     (render-frame)
+	     ;; (format t "HERE 4~%")
 	     
 	     ;;(glfw:poll-events)
 	     (glfw:swap-buffers)
 
-	     (let ((time (osicat:get-monotonic-time)))
-	       
-	       ;; (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
-	       (setf *time-frame-last* time)
+	     (when nil
+	       (let ((time (osicat:get-monotonic-time)))
+		 
+		 ;; (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
+		 (setf *time-frame-last* time)
 
-	       (send-message (sock-client *view*)
-    			     (buffer-sock-ptr *view*)
-			     (format nil "(handle-view-sync ~S)" time))))
+		 (send-message (sock-client *view*)
+    			       (buffer-sock-ptr *view*)
+			       (format nil "(handle-view-sync ~S)" time))
+
+		 ;; recv sync to be synchronous
+		 t)))
 	   
 	   (progn
 	     ;; (sb-sys:serve-all-events 0)
