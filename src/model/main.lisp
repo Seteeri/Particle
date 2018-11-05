@@ -51,31 +51,59 @@
 	*queue-anim* (make-queue)))
 
 (defun exec-graph-dep ()
-  (let* ((path (merge-pathnames (make-pathname :name "deps-model"
-					       :type "lisp")
-				(merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform)))))
+  (let ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
+						   :type "lisp")
+				    (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
+	(path-tasks (merge-pathnames (make-pathname :name "tasks-model"
+						    :type "lisp")
+				     (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
+	(tasks nil))
 
-    (multiple-value-bind (digraph root tasks)
-	(analyze-file path :init-conn-rpc-view)
+    ;; Refactor below into functions and place in analyzer module
+    
+    ;; If tasks exist, load it else generate it
 
-      ;; Tasks can be serialized
+    (if (probe-file path-tasks)
+	(setf tasks (read-from-string (read-file-string path-tasks)))
+	
+	(multiple-value-bind (digraph root tasks-new)
+	    (analyze-file path-lisp :init-conn-rpc-view)
+	  (with-open-file (stream path-tasks
+				  ;; :external-format charset:iso-8859-1
+				  :direction :output
+				  :if-exists :overwrite
+				  :if-does-not-exist :create)
+	    (format stream "#(~%")
+	    (loop
+	       :for task :across tasks-new
+	       :do (if (listp task)
+		       (progn
+			 (format stream "(~%")
+			 (dolist (task-2 task)
+			   (format stream "~S~%" (protoform.analyzer-dep::data task-2)))
+			 (format stream ")~%"))
+		      (format stream "~S~%" (protoform.analyzer-dep::data task))))
+	    (format stream ")~%")
+	    t)
+	  (setf tasks tasks-new)))
 
-      ;; For anims, generate levels offline
-      
-      (loop
-	 :for i :from (1- (length tasks)) :downto 0
-	 :for nodes := (aref tasks i)
-	 :do (progn
-	       (loop
-		  :for node :in nodes
-		  :do (progn
-			(submit-task *channel*
-				     (symbol-function (find-symbol (string (protoform.analyzer-dep::data node)) :protoform.model)))
-			(fmt-model t "main-init" "Submitted task: ~a~%" (protoform.analyzer-dep::data node))
-			;; (receive-result *channel*)
-			t))
-	       (dotimes (i (length nodes)) (receive-result *channel*))
-	       t)))))
+    ;; Then execute it
+
+    ;; TODO: Recurse for more complicated setups, i.e. nested lists
+    (loop
+       :for i :from (1- (length tasks)) :downto 0
+       :for nodes := (aref tasks i)
+       :do (progn
+	     (loop
+		:for node :in nodes
+		:do (progn
+		      (submit-task *channel*
+				   (symbol-function (find-symbol (string (protoform.analyzer-dep::data node)) :protoform.model)))
+		      (fmt-model t "main-init" "Submitted task: ~a~%" (protoform.analyzer-dep::data node))
+		      ;; (receive-result *channel*)
+		      t))
+	     (dotimes (i (length nodes)) (receive-result *channel*))
+	     t))))
 
 (defun set-projview ()
   (setf *projview* (make-instance 'projview
