@@ -173,6 +173,8 @@
   ;; Maybe have pointer appear below/above so edge will show
 
   (fmt-model t "add-node-msdf" "~a~%" seq-key)
+
+  ;; Thread this if possible
   
   ;; Advance - origin to origin
   ;; 1. Find glyph A origin
@@ -232,7 +234,7 @@
 		   nil)
 
       ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
-
+      
       ;; Copy only this node
       (copy-node-to-shm node
 			(* (index node)
@@ -298,14 +300,14 @@
 (defun return-node-msdf (seq-key)
   ;; Add node
   ;; Move pointer back
-    (let ((node (add-node-msdf seq-key)))
-      (move-node-x *node-pointer*
-		   -11.5199995
-		   :absolute)
-      (move-node-y *node-pointer*
-		   (- (* +linegap+ *scale-node*))
-		   :relative) ; add more spacing due to bl adjustments    
-      (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))))
+  (let ((node (add-node-msdf seq-key)))
+    (move-node-x *node-pointer*
+		 -11.5199995
+		 :absolute)
+    (move-node-y *node-pointer*
+		 (- (* +linegap+ *scale-node*))
+		 :relative) ; add more spacing due to bl adjustments    
+    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -363,21 +365,21 @@
 
 (defun eval-node-msdf (seq-key)
   ;; To eval, build up string from predecessors
-    (let ((node-tgt (first (digraph:successors *digraph* *node-pointer*)))
-          (chrs nil))
-      (loop
-	 :for pred := node-tgt :then (digraph:predecessors *digraph* pred)
-	 :while pred
-	 :do (progn
-	       (when (listp pred)
-		 (if (eq (first pred) *node-pointer*)
-		     (setf pred (second pred))
-		     (setf pred (first pred))))
-	       (push (data pred) chrs)
-	       (when nil (format t "~a: ~a~%" pred (data pred)))))
+  (let ((node-tgt (first (digraph:successors *digraph* *node-pointer*)))
+        (chrs nil))
+    (loop
+       :for pred := node-tgt :then (digraph:predecessors *digraph* pred)
+       :while pred
+       :do (progn
+	     (when (listp pred)
+	       (if (eq (first pred) *node-pointer*)
+		   (setf pred (second pred))
+		   (setf pred (first pred))))
+	     (push (data pred) chrs)
+	     (when nil (format t "~a: ~a~%" pred (data pred)))))
 
-      (fmt-model t "eval-node-msdf" "Eval: ~a~%" (eval (read-from-string (with-output-to-string (stream)
-									   (dolist (c chrs)
-									     (write-char c stream))))))
-      (when nil
-	(digraph.dot:draw digraph :filename "digraph.png" :format :png))))
+    (fmt-model t "eval-node-msdf" "Eval: ~a~%" (eval (read-from-string (with-output-to-string (stream)
+									 (dolist (c chrs)
+									   (write-char c stream))))))
+    (when nil
+      (digraph.dot:draw digraph :filename "digraph.png" :format :png))))

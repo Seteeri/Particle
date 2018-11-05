@@ -80,13 +80,15 @@
 			  :components ((:file "variables")
 				       (:file "rpc")
 				       (:file "handle-shm")
-				       (:file "matrix-model")
 				       (:file "projview")
-				       (:file "node")
 				       (:file "pango")
 				       (:file "metrics")
-				       (:file "pointer")
 				       (:file "animation")
+				       (:module node
+				       		:pathname "node"
+				       		:components ((:file "node")
+							     (:file "matrix-model")
+				       			     (:file "pointer")))
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "keysymdef")

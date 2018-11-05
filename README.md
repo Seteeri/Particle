@@ -106,7 +106,7 @@ naturally remains an orthogonal possibility.
 ## The Architecture
 
 * Two process system
-* Task-based parallelism
+* Task-based parallelism - minimize locks and memory synchronization
 * Tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
   * Compute shaders
