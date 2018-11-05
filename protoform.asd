@@ -28,8 +28,8 @@
 		 #:easing
 		 #:lparallel
 		 #:skip-list)
-		 ;; #:babel
-		 ;; #:dlist
+    ;; #:babel
+    ;; #:dlist
 
     :serial t
     :around-compile (lambda (next)
@@ -88,6 +88,8 @@
 				       		:pathname "node"
 				       		:components ((:file "node")
 							     (:file "matrix-model")
+							     (:file "operators")
+							     (:file "callbacks")
 				       			     (:file "pointer")))
 				       (:module controller
 				       		:pathname "controller"
