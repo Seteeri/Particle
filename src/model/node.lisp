@@ -87,8 +87,8 @@
       ;; (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code data) 32))
       ;; http://www.lispworks.com/documentation/lcl50/aug/aug-90.html#HEADING90-0
       (setf (mem-aref ptr :int (+ offset-ptr 0)) offset-texel-texture ; tex offset
-	    (mem-aref ptr :int (+ offset-ptr 1)) (truncate (vx2 dims-texture)) ; tex dim x
-	    (mem-aref ptr :int (+ offset-ptr 2)) (truncate (vy2 dims-texture)) ; tex dim y
+	    (mem-aref ptr :int (+ offset-ptr 1)) (aref dims-texture 0) ; tex dim x
+	    (mem-aref ptr :int (+ offset-ptr 2)) (aref dims-texture 1) ; tex dim y
 	    (mem-aref ptr :int (+ offset-ptr 3)) flags) ; draw
       (incf offset-ptr 4)))
 
@@ -134,8 +134,10 @@
 	  (setf (aref rgba i) (nth i color)))))
 
     ;; ascii - 1
-    (setf (offset-texel-texture node) (* (- (char-code data) 1) 96 96))
-    (setf (dims-texture node) (vec2 96 96))
+    (setf (offset-texel-texture node) (* (- (char-code data) 1) 96 96)
+          (dims-texture node)         (make-array 2
+						  :adjustable nil
+						  :initial-contents '(96 96)))
     
     ;; Set UVs
     (with-slots (advance
