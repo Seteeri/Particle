@@ -12,40 +12,14 @@
 		  inst-max
 		  addr-swank-view)
   
-  (fmt-model t "main-model" "Init kernel lparallel~%")
   (init-kernel-lparallel)
-
+  (fmt-model t "main-model" "Init kernel lparallel~%")
+  
   (setf *width* width
 	*height* height
 	*inst-max* inst-max)
   
-  ;; Generate the graph
-  (let* ((path (merge-pathnames (make-pathname :name "deps-model"
-					       :type "lisp")
-				(merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform)))))
-
-    (multiple-value-bind (digraph root levels)
-	(analyze-file path :init-conn-rpc-view)
-
-      ;; Levels can be serialized
-
-      ;; For anims, generate levels offline
-      
-      (loop
-	 :for i :from (1- (length levels)) :downto 0
-	 :for nodes := (aref levels i)
-	 :do (progn
-	       (loop
-		  :for node :in nodes
-		  :do (progn
-			(submit-task *channel*
-				     (symbol-function (find-symbol (string (protoform.analyzer-dep::data node)) :protoform.model)))
-			(fmt-model t "main-init" "Submitted task: ~a~%" (protoform.analyzer-dep::data node))
-			;; (receive-result *channel*)
-			t))
-	       (dotimes (i (length nodes)) (receive-result *channel*))
-	       t))))
-
+  (run-graph-dep)
   (fmt-model t "main-init" "Finished model initialization~%")
 
   ;; Create new kernel?
@@ -74,6 +48,33 @@
 	*channel* (make-channel)
 	*chan-anim* (make-channel)
 	*queue-anim* (make-queue)))
+
+(defun run-graph-dep ()
+  (let* ((path (merge-pathnames (make-pathname :name "deps-model"
+					       :type "lisp")
+				(merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform)))))
+
+    (multiple-value-bind (digraph root levels)
+	(analyze-file path :init-conn-rpc-view)
+
+      ;; Levels can be serialized
+
+      ;; For anims, generate levels offline
+      
+      (loop
+	 :for i :from (1- (length levels)) :downto 0
+	 :for nodes := (aref levels i)
+	 :do (progn
+	       (loop
+		  :for node :in nodes
+		  :do (progn
+			(submit-task *channel*
+				     (symbol-function (find-symbol (string (protoform.analyzer-dep::data node)) :protoform.model)))
+			(fmt-model t "main-init" "Submitted task: ~a~%" (protoform.analyzer-dep::data node))
+			;; (receive-result *channel*)
+			t))
+	       (dotimes (i (length nodes)) (receive-result *channel*))
+	       t)))))
 
 (defun set-projview ()
   (setf *projview* (make-instance 'projview
