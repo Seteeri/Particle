@@ -58,7 +58,7 @@
     						 inst-max
     						 nil))))
     
-    (sleep 1)
+    ;; (sleep 1)
     
     (when t
       (fork (lambda () (protoform.model:main-model width height
