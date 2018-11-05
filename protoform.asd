@@ -78,7 +78,6 @@
 		 (:module model
 			  :pathname "src/model"
 			  :components ((:file "variables")
-				       (:file "model")
 				       (:file "rpc")
 				       (:file "handle-shm")
 				       (:file "matrix-model")
@@ -87,13 +86,15 @@
 				       (:file "pango")
 				       (:file "metrics")
 				       (:file "pointer")
+				       (:file "animation")
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "keysymdef")
 							     (:file "controller")
 				       			     (:file "xkb")
 				       			     (:file "callback")
-				       			     (:file "event-keyboard")))))
+				       			     (:file "event-keyboard")))
+				       (:file "model")))
 		 (:file "src/protoform")))
 
 #+sbcl
