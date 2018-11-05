@@ -19,27 +19,11 @@
 
 (defconstant +size-struct-instance+ 208)
 
-;; From Solaris Red
-;; 220  50  47
-(defparameter *color-default-ptr* (list  (coerce (/ 220 255) 'single-float)
-					 (coerce (/ 50 255)  'single-float)
-					 (coerce (/ 47 255)  'single-float)
-					 (coerce (/ 255 255) 'single-float)
-					 
-					 (coerce (/ 220 255) 'single-float)
-					 (coerce (/ 50 255)  'single-float)
-					 (coerce (/ 47 255)  'single-float)
-					 (coerce (/ 255 255) 'single-float)
-					 
-					 (coerce (/ 220 255) 'single-float)
-					 (coerce (/ 50 255)  'single-float)
-					 (coerce (/ 47 255)  'single-float)
-					 (coerce (/ 255 255) 'single-float)
-					 
-					 (coerce (/ 220 255) 'single-float)
-					 (coerce (/ 50 255)  'single-float)
-					 (coerce (/ 47 255)  'single-float)
-					 (coerce (/ 255 255) 'single-float)))
+;;;;;;;;;;;;;
+
+(defparameter *width* nil)
+(defparameter *height* nil)
+(defparameter *inst-max* nil)
 
 (defparameter *sock-view* nil)
 (defparameter *buffer-sock-ptr* (foreign-alloc :unsigned-char :count 212992))
@@ -48,10 +32,10 @@
 					      :fill-pointer nil
 					      :element-type '(unsigned-byte 8)))
 (defparameter *projview* nil)
-(defparameter *width* nil)
-(defparameter *height* nil)
-(defparameter *inst-max* nil)
+
 (defparameter *digraph* nil)
+(defparameter *node-pointer* nil)
+
 (defparameter *offset-texel-textures* nil) ; sum of WxH
 (defparameter *offset-bytes-textures* nil) ; sum of bytes
 ;; Textures - list of Texture instances wich store tex parameters
@@ -59,7 +43,6 @@
 ;; Hmm, when texture is removed need to recopy all (to "defragment")
 ;; (defparameter *textures* (make-array 64 :adjustable t :fill-pointer 0))
 (defparameter *metrics* nil)
-(defparameter *node-pointer* nil)
 (defparameter *dpi-glyph* (/ 1 90))
 (defparameter *scale-node* 0.008)
 
