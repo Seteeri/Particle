@@ -64,7 +64,8 @@
   
   ;; Flag dirty do at end of loop
   (when memcpy-shm-to-cache
-    (memcpy-shm-to-cache "projview")))
+    (memcpy-shm-to-cache "projview"
+			 *shm-projview*)))
 
 (defun update-scale-ortho-in (seq-event) ; in
     (with-slots (pos

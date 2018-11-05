@@ -235,7 +235,7 @@
 	     ;;(glfw:poll-events)
 	     (glfw:swap-buffers)
 
-	     (when nil
+	     (when t
 	       (let ((time (osicat:get-monotonic-time)))
 		 
 		 ;; (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))

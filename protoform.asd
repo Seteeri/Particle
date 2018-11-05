@@ -32,6 +32,13 @@
 		 ;; #:dlist
 
     :serial t
+    :around-compile (lambda (next)
+                      (proclaim '(optimize
+				  (debug 0)
+                                  (safety 0)
+				  (space 0)
+                                  (speed 3)))
+                      (funcall next))
     :components ((:file "src/package")
 		 (:file "src/util")
 		 (:module libc
@@ -67,7 +74,8 @@
 				       (:file "glfw")))
 		 (:module model
 			  :pathname "src/model"
-			  :components ((:file "model")
+			  :components ((:file "variables")
+				       (:file "model")
 				       (:file "rpc")
 				       (:file "handle-shm")
 				       (:file "matrix-model")

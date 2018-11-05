@@ -57,11 +57,6 @@
   			:filename (str:concat (str:substring 0 -5 (file-namestring path-lisp))
 					      ".png")
 			:format :png))
-
-    ;; (digraph:mapc-breadth-first (lambda (vertex)
-    ;; 				  (format t "BFS: ~S~%" vertex))
-    ;; 				digraph
-    ;; 				:init-view)
     
     (values digraph *sa-root* levels)))
 

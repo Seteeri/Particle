@@ -30,7 +30,7 @@ not simply numbers and text but much more, and users need an interface
 that can cut across all domains.
 
 It aims to integrate Wayland/X which would provide windows as planes in 
-space, effectively making Protoform a meta-manager around the desktop.
+space, effectively making Protoform a "meta-manager" around the desktop.
 This would allow grouping windows into a single plane with the plane 
 representing the conventional desktop, e.g. Weston running on 
 Weston/etc., or have windows existing in the environment in free space.
@@ -86,10 +86,11 @@ like Cinder, openFrameworks or Processing, and more convergent tools such
 as Blender and Emacs, and sandbox type games such as Minecraft.
 
 One major anti-pattern frequently encountered is the limitations created
-by programs extending functionality by providing a scripting language 
-through embedding an interpreter such as Lua or Python, which eventually 
-leads to interoperability issues where data and code must be managed in 
-two different domains leading to a "desert of complexity and duplication".
+by programs extending functionality through a scripting language and
+embedding an interpreter such as Lua or Python, which as more 
+functionality is developed, leads to interoperability issues, where data
+and code must be managed in two different domains leading to a
+"desert of complexity and duplication".
 
 The goal is not to create virtual realities for HMDs, although that
 naturally remains an orthogonal possibility.
@@ -99,12 +100,12 @@ naturally remains an orthogonal possibility.
 * 3D orthographic non-windowing environment
 * Consistent nodal environment - "turtles all the way down"
 * Primarily keyboard driven interface
-* Wayland - provides conventional desktop
+* Wayland extension provides conventional desktop
 * Undo/revision control/non-destructive editing
 
 ## The Architecture
 
-* Atomic modesetting/nuclear pageflipping
+* Two process system
 * Task-based parallelism
 * Tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
@@ -142,9 +143,7 @@ Personal Extensions - Version 0.3
 Future Extensions
 1. Tiled forward rendering (Forward+) including lights
    * Future: Implement clustered then volumetric forward shading
-   
-Tentative Extensions
-1. Native web browser engine
+2. Native web browser engine
 
 ## The Requirements
 

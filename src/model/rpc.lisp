@@ -60,5 +60,6 @@
 			(format stream "(set-cache-flag-copy ~S 3) " name-cache))))
 		  (format stream ")"))))
 
+;; Memoize
 (defun get-sym-shm-from-string (string)
   (symbol-value (find-symbol (str:concat "shm-" string) :protoform.model)))
