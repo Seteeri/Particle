@@ -254,22 +254,6 @@
 		*buffer-sock-ptr*
 		(format nil "(set-draw t)")))
 
-(defun serve-client ()
-  (loop
-     (let ((message (recv-message *sock-view*
-				  *buffer-sock-ptr*)))
-       (when message
-	 ;; (fmt-model t "serve-client" "Message: ~S~%" message)
-	 ;; (print (eval message))
-	 ;; (force-output)
-
-	 (if (listp (first message))
-	     (dolist (n message)
-	       (apply (symbol-function (find-symbol (string (first n)) :protoform.model))
-		      (cdr n)))
-	     (apply (symbol-function (find-symbol (string (first message)) :protoform.model))
-		    (cdr message)))))))
-
 (defun set-projview ()
   (setf *projview* (make-instance 'projview
 				  :width *width*
