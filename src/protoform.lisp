@@ -42,32 +42,29 @@
       (t
        (error "fork -1")))))
 
-(defun main ()
+(defun main (width
+	     height
+	     inst-max)
   
   ;; https://askubuntu.com/questions/125062/how-can-i-find-which-desktop-enviroment-i-am-using
-  ;; $ sbcl my-command-line-arg
-  ;; *posix-argv*
-  ;;("sbcl" "my-command-line-arg")
-  
-  (let ((width (/ 2560 2)) ; 1280
-        (height 1600) ; 1600
-        (inst-max (expt 2 16)))
 
-    (when t
-      (fork (lambda () (protoform.view:main-view width height
+  ;; (format t "~S~%" sb-ext:*posix-argv*)
+  
+  (when t
+    (fork (lambda () (protoform.view:main-view width height
+    					       inst-max
+    					       nil))))
+  
+  ;; (sleep 1)
+  
+  (when t
+    (fork (lambda () (protoform.model:main-model width height
     						 inst-max
     						 nil))))
-    
-    ;; (sleep 1)
-    
-    (when t
-      (fork (lambda () (protoform.model:main-model width height
-    						   inst-max
-    						   nil))))
 
-    ;; https://www.emacswiki.org/emacs/StumpWM
+  ;; https://www.emacswiki.org/emacs/StumpWM
 
-    ;; (format t "~v@{~A~:*~}~%" 64 "-")
-    
-    ;; Explicitly exit after loading code
-    (sb-ext:exit)))
+  ;; (format t "~v@{~A~:*~}~%" 64 "-")
+  
+  ;; Explicitly exit after loading code
+  (sb-ext:exit))
