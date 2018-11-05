@@ -1,4 +1,6 @@
-(in-package #:protoform.model)
+(in-package #:protoform.analyzer-dep)
+
+;; Move to own package
 
 (defparameter *as-fns* (make-hash-table :size 64))
 (defparameter *as-syms* (make-hash-table :size 64))
@@ -62,9 +64,9 @@
 
 
 (defun recurse-node-dep (digraph fn levels level &optional node-last)
-  (fmt-model t "recurse-..." "~v@{~A~:*~}"
-	     level
-	     "  ")
+  (format t "[recurse-...] ~v@{~A~:*~}"
+	  level
+	  "  ")
   (format t "~a -> #'~a~%"
 	  (if node-last
 	      node-last

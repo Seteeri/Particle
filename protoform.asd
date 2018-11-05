@@ -72,6 +72,9 @@
 				       (:file "raster")
 				       (:file "memcpy")
 				       (:file "glfw")))
+		 (:module analyzer-dep
+		 	  :pathname "src/analyzer-dep"
+		 	  :components ((:file "analyzer-dep")))
 		 (:module model
 			  :pathname "src/model"
 			  :components ((:file "variables")
@@ -84,7 +87,6 @@
 				       (:file "pango")
 				       (:file "metrics")
 				       (:file "pointer")
-				       (:file "static-analysis")
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "keysymdef")

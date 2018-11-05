@@ -108,6 +108,12 @@
         #:cffi
 	#:protoform.libc))
 
+(defpackage #:protoform.analyzer-dep
+  (:use #:cl
+        #:cffi
+	#:protoform.util)
+  (:export #:analyze-file))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defpackage #:protoform.view
@@ -133,7 +139,8 @@
 	#:3d-matrices
 	#:trivial-timers
 	#:lparallel
-	#:lparallel.queue)
+	#:lparallel.queue
+	#:protoform.analyzer-dep)
   (:export #:main-model))
 
 

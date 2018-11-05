@@ -39,8 +39,8 @@
 		  :for node :in nodes
 		  :do (progn
 			(submit-task *channel*
-				     (symbol-function (find-symbol (string (data node)) :protoform.model)))
-			(fmt-model t "main-init" "Submitted task: ~a~%" (data node))
+				     (symbol-function (find-symbol (string (protoform.analyzer-dep::data node)) :protoform.model)))
+			(fmt-model t "main-init" "Submitted task: ~a~%" (protoform.analyzer-dep::data node))
 			;; (receive-result *channel*)
 			t))
 	       (dotimes (i (length nodes)) (receive-result *channel*))
@@ -68,10 +68,10 @@
   ;; Swank, Input, Wayland
   ;; (bordeaux-threads:make-thread (lambda () (sleep 1)))
 
-  (setf *kernel* (make-kernel (+ 0 4)))
-  (setf *channel* (make-channel))
-  (setf *chan-anim* (make-channel))
-  (setf *queue-anim* (make-queue)))
+  (setf *kernel* (make-kernel (+ 0 4))
+	*channel* (make-channel)
+	*chan-anim* (make-channel)
+	*queue-anim* (make-queue)))
 
 (defun register-callback-down (keysym cb)
   (with-slots (key-callbacks)
