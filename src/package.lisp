@@ -126,7 +126,7 @@
 	#:3d-vectors
 	#:3d-matrices
 	#:trivial-timers)
-  (:export #:main-view))
+  (:export #:run-view))
 
 (defpackage #:protoform.model
   (:use #:cl
@@ -141,7 +141,7 @@
 	#:lparallel
 	#:lparallel.queue
 	#:protoform.analyzer-dep)
-  (:export #:main-model))
+  (:export #:run-model))
 
 
 (defpackage #:protoform

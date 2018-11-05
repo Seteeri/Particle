@@ -8,9 +8,9 @@
 		     ctl-str)
 	 rest))
 
-(defun main-model (width height
-		   inst-max
-		   addr-swank-view)
+(defun run-model (width height
+		  inst-max
+		  addr-swank-view)
   
   (fmt-model t "main-model" "Init kernel lparallel~%")
   (init-kernel-lparallel)
@@ -74,6 +74,46 @@
 	*channel* (make-channel)
 	*chan-anim* (make-channel)
 	*queue-anim* (make-queue)))
+
+(defun set-projview ()
+  (setf *projview* (make-instance 'projview
+				  :width *width*
+				  :height *height*
+				  :type-proj 'orthographic)))
+
+(defun set-controller ()  
+  (setf *controller* (init-controller))
+  (register-keyboard-callbacks))
+
+(defun set-metrics ()
+  (setf *metrics* (init-metrics)))
+
+(defun set-digraph ()
+  (setf *digraph* (digraph:make-digraph)))
+
+(defun set-shm-projview ()
+  (setf *shm-projview* (init-shm-projview)))
+
+(defun set-shm-nodes ()
+  (setf *shm-nodes* (init-shm-nodes)))
+
+(defun set-shm-atomic-counter ()
+  (setf *shm-atomic-counter* (init-shm-atomic-counter)))
+
+(defun set-shm-vertices ()
+  (setf *shm-vertices* (init-shm-vertices)))
+
+(defun set-shm-element ()
+  (setf *shm-element* (init-shm-element)))
+
+(defun set-shm-draw-indirect ()
+  (setf *shm-draw-indirect* (init-shm-draw-indirect)))
+
+(defun set-shm-texture-glyphs ()
+  (setf *shm-texture-glyphs* (init-shm-texture-glyphs)))
+
+(defun set-node-pointer ()
+  (setf *node-pointer* (init-node-pointer-graph-shm)))
 
 (defun register-callback-down (keysym cb)
   (with-slots (key-callbacks)
@@ -198,43 +238,3 @@
 		 (fmt-model t "register-keyboard..." "Seq-event: ~S = ~S~%" key value))
 	       key-callbacks))
     t))
-
-(defun set-projview ()
-  (setf *projview* (make-instance 'projview
-				  :width *width*
-				  :height *height*
-				  :type-proj 'orthographic)))
-
-(defun set-controller ()  
-  (setf *controller* (init-controller))
-  (register-keyboard-callbacks))
-
-(defun set-metrics ()
-  (setf *metrics* (init-metrics)))
-
-(defun set-digraph ()
-  (setf *digraph* (digraph:make-digraph)))
-
-(defun set-shm-projview ()
-  (setf *shm-projview* (init-shm-projview)))
-
-(defun set-shm-nodes ()
-  (setf *shm-nodes* (init-shm-nodes)))
-
-(defun set-shm-atomic-counter ()
-  (setf *shm-atomic-counter* (init-shm-atomic-counter)))
-
-(defun set-shm-vertices ()
-  (setf *shm-vertices* (init-shm-vertices)))
-
-(defun set-shm-element ()
-  (setf *shm-element* (init-shm-element)))
-
-(defun set-shm-draw-indirect ()
-  (setf *shm-draw-indirect* (init-shm-draw-indirect)))
-
-(defun set-shm-texture-glyphs ()
-  (setf *shm-texture-glyphs* (init-shm-texture-glyphs)))
-
-(defun set-node-pointer ()
-  (setf *node-pointer* (init-node-pointer-graph-shm)))

@@ -51,16 +51,16 @@
   ;; (format t "~S~%" sb-ext:*posix-argv*)
   
   (when t
-    (fork (lambda () (protoform.view:main-view width height
-    					       inst-max
-    					       nil))))
+    (fork (lambda () (protoform.view:run-view width height
+    					      inst-max
+    					      nil))))
   
   ;; (sleep 1)
   
   (when t
-    (fork (lambda () (protoform.model:main-model width height
-    						 inst-max
-    						 nil))))
+    (fork (lambda () (protoform.model:run-model width height
+    						inst-max
+    						nil))))
 
   ;; https://www.emacswiki.org/emacs/StumpWM
 

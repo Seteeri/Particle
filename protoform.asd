@@ -94,7 +94,7 @@
 				       			     (:file "xkb")
 				       			     (:file "callback")
 				       			     (:file "event-keyboard")))
-				       (:file "model")))
+				       (:file "main")))
 		 (:file "src/protoform")))
 
 #+sbcl

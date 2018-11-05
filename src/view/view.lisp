@@ -187,7 +187,7 @@
 
   (fmt-view t "init-view-buffers" "Finished initializing shm handles~%"))
 
-(defun main-view (width
+(defun run-view (width
 		  height
 		  inst-max
 		  path-server)
