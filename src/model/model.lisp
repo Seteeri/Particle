@@ -20,7 +20,7 @@
 	*inst-max* inst-max)
   
   ;; Generate the graph
-  (let* ((path (merge-pathnames (make-pathname :name "test-sa"
+  (let* ((path (merge-pathnames (make-pathname :name "deps-model"
 					       :type "lisp")
 				(merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform)))))
 
