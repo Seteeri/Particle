@@ -24,7 +24,7 @@
 
 (defparameter *time-last* 0)
 
-(defun move-x ()
+(defun animate-camera-x ()
   
   (when *time-run*
     

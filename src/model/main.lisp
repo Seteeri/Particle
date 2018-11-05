@@ -11,15 +11,16 @@
 (defun run-model (width height
 		  inst-max
 		  addr-swank-view)
-  
-  (init-kernel-lparallel)
-  (fmt-model t "main-model" "Init kernel lparallel~%")
-  
+
+  ;; Faster to do this here since they aren't functions
   (setf *width* width
 	*height* height
 	*inst-max* inst-max)
   
-  (run-graph-dep)
+  (init-kernel-lparallel)
+  (fmt-model t "main-model" "Initialized kernel lparallel~%")
+    
+  (exec-graph-dep)
   (fmt-model t "main-init" "Finished model initialization~%")
 
   ;; Create new kernel?
@@ -44,12 +45,12 @@
   ;; Swank, Input, Wayland
   ;; (bordeaux-threads:make-thread (lambda () (sleep 1)))
 
-  (setf *kernel* (make-kernel (+ 0 4))
-	*channel* (make-channel)
-	*chan-anim* (make-channel)
+  (setf *kernel*     (make-kernel (+ 0 4))
+	*channel*    (make-channel)
+	*chan-anim*  (make-channel)
 	*queue-anim* (make-queue)))
 
-(defun run-graph-dep ()
+(defun exec-graph-dep ()
   (let* ((path (merge-pathnames (make-pathname :name "deps-model"
 					       :type "lisp")
 				(merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform)))))
@@ -116,18 +117,6 @@
 (defun set-node-pointer ()
   (setf *node-pointer* (init-node-pointer-graph-shm)))
 
-(defun register-callback-down (keysym cb)
-  (with-slots (key-callbacks)
-      *controller*
-    (register-callback (list keysym :press)
-		       ()
-		       :exclusive
-		       cb)
-    (register-callback (list keysym :repeat)
-		       ()
-		       :exclusive
-		       cb)))
-
 (defun register-keyboard-callbacks ()
 
   (with-slots (key-callbacks)
@@ -169,7 +158,7 @@
     ;; +xk-down+ #xff54   ;  Move down, down arrow 
 
     (when nil
-      (register-callback (list +xk-escape+ (list :press))
+      (register-callback `(,+xk-escape+ (:press))
     			 :exclusive
     			 (lambda (seq-key)
     			   (clean-up-handles-shm)
@@ -182,44 +171,44 @@
       ;; handlers in node
       (loop
 	 :for keysym :from 32 :to 255
-	 :do (register-callback (list keysym (list :press :repeat))
+	 :do (register-callback `(,keysym (:press :repeat))
 				:exclusive
 				#'add-node-msdf)))
 
     (when t
       ;; handlers in node
-      (dolist (seq-event (list (list +xk-left+       #'move-pointer-left)
-			       (list +xk-up+         #'move-pointer-up)
-			       (list +xk-right+      #'move-pointer-right)
-			       (list +xk-down+       #'move-pointer-down)
-			       (list +xk-backspace+  #'backspace-node-msdf)
-			       (list +xk-return+     #'return-node-msdf)))
-	(register-callback (list (first seq-event) (list :press :repeat))
+      (dolist (seq-event `((,+xk-left+       ,#'move-pointer-left)
+			   (,+xk-up+         ,#'move-pointer-up)
+			   (,+xk-right+      ,#'move-pointer-right)
+			   (,+xk-down+       ,#'move-pointer-down)
+			   (,+xk-backspace+  ,#'backspace-node-msdf)
+			   (,+xk-return+     ,#'return-node-msdf)))
+	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))
     
     (when t
       ;; handlers in projview
-      (dolist (seq-event (list (list +xk-left+       #'move-camera-left)
-			       (list +xk-up+         #'move-camera-up)
-			       (list +xk-right+      #'move-camera-right)
-			       (list +xk-down+       #'move-camera-down)))
-	(register-callback (list +xk-control-l+ (list :press :down)
-				 (first seq-event) (list :press :repeat))
+      (dolist (seq-event `((,+xk-left+       ,#'move-camera-left)
+			   (,+xk-up+         ,#'move-camera-up)
+			   (,+xk-right+      ,#'move-camera-right)
+			   (,+xk-down+       ,#'move-camera-down)))
+	(register-callback `(,+xk-control-l+ (:press :down)
+			     ,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event)))
 
-      (dolist (seq-event (list (list +xk-left+       #'update-scale-ortho-out)
-			       (list +xk-up+         #'update-scale-ortho-in)
-			       (list +xk-right+      #'update-scale-ortho-in)
-			       (list +xk-down+       #'update-scale-ortho-out)))
-	(register-callback (list +xk-control-l+ (list :press :down)
-				 +xk-shift-l+ (list :press :down)
-				 (first seq-event) (list :press :repeat))
+      (dolist (seq-event `((,+xk-left+       ,#'update-scale-ortho-out)
+			   (,+xk-up+         ,#'update-scale-ortho-in)
+			   (,+xk-right+      ,#'update-scale-ortho-in)
+			   (,+xk-down+       ,#'update-scale-ortho-out)))
+	(register-callback `(,+xk-control-l+ (:press :down)
+			     ,+xk-shift-l+ (:press :down)
+			     ,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))
 
-    (register-callback (list +xk-f7+ (list :press))
+    (register-callback `(,+xk-f7+ (:press))
 		       :exclusive
 		       (lambda (seq-event)
 			 (setf *fn-anim* #'easing:in-cubic)
@@ -239,3 +228,15 @@
 		 (fmt-model t "register-keyboard..." "Seq-event: ~S = ~S~%" key value))
 	       key-callbacks))
     t))
+
+(defun register-callback-down (keysym cb)
+  (with-slots (key-callbacks)
+      *controller*
+    (register-callback `(,keysym :press)
+		       ()
+		       :exclusive
+		       cb)
+    (register-callback `(,keysym :repeat)
+		       ()
+		       :exclusive
+		       cb)))

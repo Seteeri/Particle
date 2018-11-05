@@ -105,17 +105,12 @@
 			 *digraph*))
 
 (defun zero-node-to-shm (&optional (offset-ptr 0))
-  
   (with-slots (ptr size)
-      (gethash "nodes" *handles-shm*)
-
+      *shm-nodes*
     (dotimes (i (/ +size-struct-instance+ 4))
       (setf (mem-aref ptr :int (+ offset-ptr i)) 0))
-    
     ;; (fmt-model t "zero-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4))
-
     t))
-
 
 (defun init-node-msdf (cursor
 		       scale-glyph

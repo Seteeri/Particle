@@ -1,5 +1,6 @@
 (in-package #:protoform.model)
 
+(defparameter *path-socket-view* "/tmp/protoform-view.socket")
 (defparameter *time-last* 0)
 
 (defun handle-view-sync (time-view)
@@ -20,7 +21,7 @@
   
   ;; Need locks on conn and shm
   (submit-task *chan-anim*
-	       #'move-x)
+	       #'animate-camera-x)
   
   (dotimes (i 1) (receive-result *chan-anim*))
 
@@ -29,7 +30,7 @@
   t)
 
 (defun init-conn-rpc-view ()
-  (setf *sock-view* (init-sock-client "/tmp/protoform-view.socket" :block))
+  (setf *sock-view* (init-sock-client *path-socket-view* :block))
 
   ;; Combine all of below into single call
   
