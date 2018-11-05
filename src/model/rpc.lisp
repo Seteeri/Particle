@@ -1,5 +1,60 @@
 (in-package #:protoform.model)
 
+(defparameter *time-last* 0)
+
+(defun handle-view-sync (time-view)
+
+  ;; Input will trigger animations - need lock around structure
+  ;;
+  ;; Skipping/dropping frames will result in jerky/choppy animation
+
+  ;; Each frame:
+  ;; - Submit animations as tasks - list generated offline
+  ;; - Wait for completion
+  ;; - Update shm
+  
+  (when nil
+    (let ((time (osicat:get-monotonic-time)))
+      (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
+      (setf *time-last* time)))
+  
+  ;; Need locks on conn and shm
+  (submit-task *chan-anim*
+	       #'move-x)
+  
+  (dotimes (i 1) (receive-result *chan-anim*))
+
+  ;; Send signal back
+  
+  t)
+
+(defun init-conn-rpc-view ()
+  (setf *sock-view* (init-sock-client "/tmp/protoform-view.socket" :block))
+
+  ;; Combine all of below into single call
+  
+  ;; Init buffers  
+  (send-message *sock-view*
+		*buffer-sock-ptr*
+		(with-output-to-string (stream)
+		  (format stream "(init-view-buffers (")
+		  (loop
+		     :for (name params) :on *params-shm* :by #'cddr
+		     :do (format stream "~S " params))
+		  (format stream "))")))
+
+  ;; See get-sym-shm-from-string
+  (loop
+     :for (name params) :on *params-shm* :by #'cddr
+     :for name2 := (string-downcase (symbol-name name))
+     :do (memcpy-shm-to-cache name2
+			      (symbol-value (find-symbol (str:concat "shm-" name2) :protoform.model))))
+  
+  ;; Enable draw flag for view loop
+  (send-message *sock-view*
+		*buffer-sock-ptr*
+		(format nil "(set-draw t)")))
+
 (defun serve-client ()
   (loop
      (let ((message (recv-message *sock-view*

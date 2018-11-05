@@ -75,7 +75,7 @@
   (setf *node-pointer* (init-node-pointer-graph)))
 
 ;; purely for side effects
-(defun init-view ()
+(defun init-conn-rpc-view ()
   (declare (:rw
 	    (:r :*shm-projview*
 		;; :*shm-nodes*

@@ -16,7 +16,7 @@
 (defun get-fn-rw (value)
   (cdr (second value)))
 
-(defun analyze-file (path-lisp)
+(defun analyze-file (path-lisp fn-root)
   
   (with-input-from-string (stream (read-file-string path-lisp))
     (loop
@@ -50,7 +50,7 @@
 	(levels (make-array 3 :adjustable t :initial-contents (list () () ()))))
     
     (recurse-node-dep digraph
-		      :init-view
+		      fn-root
 		      levels
 		      0)
     
