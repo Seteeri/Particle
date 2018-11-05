@@ -1,7 +1,7 @@
 ;; https://common-lisp.net/~mmommer/asdf-howto.shtml
 
 (asdf:defsystem #:protoform
-    :description "A Common Lisp OpenGL UI-shell based on DRM-KMS and OpenGL ES"
+    :description "A Common Lisp nodal UI platform based on DRM-KMS and OpenGL"
     :author "Kevin Ednalino <kcednalino@gmail.com>"
     :license "Apache License 2.0"
     :depends-on (#:osicat
@@ -30,7 +30,6 @@
 		 #:skip-list)
     ;; #:babel
     ;; #:dlist
-
     :serial t
     :around-compile (lambda (next)
                       (proclaim '(optimize
