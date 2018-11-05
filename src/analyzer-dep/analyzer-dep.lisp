@@ -47,11 +47,11 @@
   ;; a-function = :r digraph [unlimited]
 
   (let ((digraph (digraph:make-digraph))
-	(levels (make-array 3 :adjustable t :initial-contents (list () () ()))))
+	(tasks (make-array 3 :adjustable t :initial-contents (list () () ()))))
     
     (recurse-node-dep digraph
 		      fn-root
-		      levels
+		      tasks
 		      0)
     
     (when t
@@ -60,10 +60,10 @@
 					      ".png")
 			:format :png))
     
-    (values digraph *sa-root* levels)))
+    (values digraph *sa-root* tasks)))
 
 
-(defun recurse-node-dep (digraph fn levels level &optional node-last)
+(defun recurse-node-dep (digraph fn tasks level &optional node-last)
   (format t "[recurse-...] ~v@{~A~:*~}"
 	  level
 	  "  ")
@@ -86,7 +86,7 @@
 			   fn))
 
     (push node-w
-	  (aref levels level))
+	  (aref tasks level))
     
     ;; read syms -> write funs -> create dep node for each fun
     (destructuring-bind (reads writes) (get-fn-rw (gethash fn *as-fns*))
@@ -95,7 +95,7 @@
 	  (when (not (eq fn fn-write))
 	    (recurse-node-dep digraph
 			      fn-write
-			      levels
+			      tasks
 			      (1+ level)
 			      fn)))))))
 

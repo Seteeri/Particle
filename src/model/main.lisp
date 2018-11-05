@@ -11,15 +11,15 @@
 (defun run-model (width height
 		  inst-max
 		  addr-swank-view)
+  
+  (init-kernel-lparallel)
+  (fmt-model t "main-model" "Initialized kernel lparallel~%")
 
   ;; Faster to do this here since they aren't functions
   (setf *width* width
 	*height* height
 	*inst-max* inst-max)
   
-  (init-kernel-lparallel)
-  (fmt-model t "main-model" "Initialized kernel lparallel~%")
-    
   (exec-graph-dep)
   (fmt-model t "main-init" "Finished model initialization~%")
 
@@ -55,16 +55,16 @@
 					       :type "lisp")
 				(merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform)))))
 
-    (multiple-value-bind (digraph root levels)
+    (multiple-value-bind (digraph root tasks)
 	(analyze-file path :init-conn-rpc-view)
 
-      ;; Levels can be serialized
+      ;; Tasks can be serialized
 
       ;; For anims, generate levels offline
       
       (loop
-	 :for i :from (1- (length levels)) :downto 0
-	 :for nodes := (aref levels i)
+	 :for i :from (1- (length tasks)) :downto 0
+	 :for nodes := (aref tasks i)
 	 :do (progn
 	       (loop
 		  :for node :in nodes
