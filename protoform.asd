@@ -77,13 +77,16 @@
 		 	  :components ((:file "analyzer-dep")))
 		 (:module model
 			  :pathname "src/model"
-			  :components ((:file "variables")
-				       (:file "rpc")
-				       (:file "handle-shm")
-				       (:file "projview")
-				       (:file "pango")
-				       (:file "metrics")
-				       (:file "animation")
+			  :components ((:module shm
+				       		:pathname "shm"
+				       		:components ((:file "shm")
+							     (:file "atomic-counter")
+							     (:file "draw-indirect")
+							     (:file "element")
+							     (:file "nodes")
+							     (:file "projview")
+							     (:file "texture")
+				       			     (:file "vertices")))
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
@@ -98,6 +101,12 @@
 				       			     (:file "xkb")
 				       			     (:file "callback")
 				       			     (:file "event-keyboard")))
+				       (:file "rpc")
+				       (:file "projview")
+				       (:file "pango")
+				       (:file "metrics")
+				       (:file "animation")
+				       (:file "variables")
 				       (:file "main")))
 		 (:file "src/protoform")))
 
