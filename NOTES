@@ -272,7 +272,7 @@ Forward... -> Tiled -> Clustered -> Volumetric
 ;;    3. Func calls
 
 ;; Valid Forms:
-;; * An Atom
+;; * An atom
 ;; * An empty or non-list
 ;; * Any list that has a symbol as its first element
 

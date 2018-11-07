@@ -23,13 +23,24 @@
   (exec-graph-dep)
   (fmt-model t "main-init" "Finished model initialization~%")
 
-  ;; Create new kernel?
+  ;; Create kernel for each?
+
+  ;; epoll/wait sock -> dispatch/submit tasks -> loop...
+  ;; s - p - s
+
+  ;; - events rely on frame time
+  ;;   - controller can trigger single-frame or multi-frame (per-frame) calculations
+  ;; - would make sense to do controller iteration when frame sent
+  ;;   -> need to read from event queue ASAP
+  ;; - if locks on controller structures, cannot block view...
+  ;; - poss event loop place callbacks in a list/queue for frame-callback to execute
+  ;;   - two types of callbacks - sync or async
   
-  ;; sock view loop
+  ;; RPC loop
   (submit-task *channel*
 	       #'serve-client)
-
-  ;; input loop
+  
+  ;; Input event loop
   (submit-task *channel*
 	       (lambda ()
 		 (loop
@@ -98,8 +109,11 @@
 		:for node :in nodes
 		:do (progn
 		      (submit-task *channel*
-				   (symbol-function (find-symbol (string (protoform.analyzer-dep::data node)) :protoform.model)))
-		      (fmt-model t "main-init" "Submitted task: ~a~%" (protoform.analyzer-dep::data node))
+				   (symbol-function (find-symbol (string node) :protoform.model)))
+		      (fmt-model t "main-init" "Submitted task: ~a~%" node)
+		      ;; (submit-task *channel*
+		      ;; 		   (symbol-function (find-symbol (string (protoform.analyzer-dep::data node)) :protoform.model)))
+		      ;; (fmt-model t "main-init" "Submitted task: ~a~%" (protoform.analyzer-dep::data node))
 		      ;; (receive-result *channel*)
 		      t))
 	     (dotimes (i (length nodes)) (receive-result *channel*))

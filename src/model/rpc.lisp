@@ -5,9 +5,7 @@
 
 (defun handle-view-sync (time-view)
 
-  ;; Input will trigger animations - need lock around structure
-  ;;
-  ;; Skipping/dropping frames will result in jerky/choppy animation
+  ;; How does this interact with input loop?
 
   ;; Each frame:
   ;; - Submit animations as tasks - list generated offline
@@ -19,15 +17,15 @@
       (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
       (setf *time-last* time)))
   
-  ;; Need locks on conn and shm
   (submit-task *chan-anim*
 	       #'animate-camera-x)
-  
-  (dotimes (i 1) (receive-result *chan-anim*))
 
-  ;; Send signal back
+  ;; shms can be done in parallel
+
+  ;; conn cannot be done in parallel
+  ;; as they are encountered, add to list in order of appearance
   
-  t)
+  (dotimes (i 1) (receive-result *chan-anim*)))
 
 (defun init-conn-rpc-view ()
   (setf *sock-view* (init-sock-client *path-socket-view* :block))

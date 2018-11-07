@@ -116,9 +116,9 @@
 
 (defun recv-ptr (sock
 		 buffer-ptr
-		 &optional
-		   (len 212992)
-		   (flags 0))
+		 &key
+		   (flags 0)
+		   (len 212992))
   (declare (type fixnum sock))
   (declare (type fixnum len))
   (declare (type fixnum flags))
@@ -134,12 +134,15 @@
 	    (sb-alien:get-errno))))
 
 (defun recv-message (sock
-		     buffer-ptr)
+		     buffer-ptr
+		     &optional
+		       (flags 0))
   (declare (type fixnum sock))
   
   (let ((len-recv (recv-ptr sock
 			    buffer-ptr
-			    4)))
+			    :flags flags
+			    :len 4)))
     (when (< len-recv 4)
       ;; (format t "[recv-message] recv-ptr returned ~a~%" len-recv)
       (return-from recv-message nil))
@@ -147,7 +150,7 @@
     (let* ((len-data (read-long-from-ptr buffer-ptr))
 	   (len-recv (recv-ptr sock
 			       buffer-ptr
-			       len-data)))
+			       :len len-data)))
       (when (< len-recv len-data)
 	;; (format t "[recv-message] recv-ptr returned ~a < ~a~%" len-recv len-data)
 	(return-from recv-message nil))

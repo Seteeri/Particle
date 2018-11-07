@@ -220,21 +220,18 @@
     
     (loop 
 
-       ;; (format t "HERE 1~%")
        (run-server)
-       ;; (format t "HERE 2~%")
        
        (if *draw*
 
 	   (progn
 
-	     ;; (format t "HERE 3~%")
 	     (render-frame)
-	     ;; (format t "HERE 4~%")
 	     
-	     ;;(glfw:poll-events)
+	     (glfw:poll-events)
 	     (glfw:swap-buffers)
 
+	     ;; send frame
 	     (when t
 	       (let ((time (osicat:get-monotonic-time)))
 		 
@@ -245,8 +242,8 @@
     			       (buffer-sock-ptr *view*)
 			       (format nil "(handle-view-sync ~S)" time))
 
-		 ;; recv sync to be synchronous
-		 t)))
+		 ;; wait all - sync
+		 (serve-client :flags #x100))))
 	   
 	   (progn
 	     ;; (sb-sys:serve-all-events 0)
@@ -365,12 +362,13 @@
 	    (fmt-view t "main-view" "Accepted connection: ~a~%" sock-accept)
 	    (setf sock-client sock-accept))))))
 
-(defun serve-client ()
+(defun serve-client (&optional (flags 0))
   (with-slots (sock-client
 	       buffer-sock-ptr)
       *view*
     (let ((message (recv-message sock-client
-				 buffer-sock-ptr)))
+				 buffer-sock-ptr
+				 flags)))
       (when message
 	;; (fmt-view t "serve-client" "Message: ~S~%" message)
 	;; (print (eval message))
@@ -384,7 +382,7 @@
 	    (apply (symbol-function (find-symbol (string (first message)) :protoform.view))
 		   (cdr message)))))))
 
-
+(defun pass ())
 ;; check errno at end?
 ;; handle special forms
 	

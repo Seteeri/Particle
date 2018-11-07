@@ -49,7 +49,8 @@
       	  (setf (vx3 pos) pos-new))
 	
 	t)
-      
+
+      ;; This sends return signal
       (copy-projview-to-shm)
       
       ;; Cap time-delta to ending time

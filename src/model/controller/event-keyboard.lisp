@@ -87,11 +87,12 @@
 	       key-states-delta
 	       key-callbacks)
       *controller*
-    
-    (let* ((keyboard-event (libinput:event-get-keyboard-event event))
-	   (ev-state (libinput:event-keyboard-get-key-state keyboard-event))
-	   (ev-keycode (libinput:event-keyboard-get-key keyboard-event))
-	   (ev-time (libinput:event-keyboard-get-time-usec event)))
+
+    ;; Move event-get-keyboard-event to caller
+    (let* ((keyboard-event (libinput:event-get-keyboard-event     event))
+	   (ev-state       (libinput:event-keyboard-get-key-state keyboard-event))
+	   (ev-keycode     (libinput:event-keyboard-get-key       keyboard-event))
+	   (ev-time        (libinput:event-keyboard-get-time-usec event)))
 
       (with-slots (context keymap state repeat-char repeat-timer repeat-key repeat-delay repeat-interval
 			   mods-depressed mods-latched mods-locked)
@@ -111,10 +112,10 @@
 					+state-event-press+
 					+state-event-release+))
 
-	  (setf mods-depressed (xkb:xkb-state-serialize-mods state 1))
-	  (setf mods-latched (xkb:xkb-state-serialize-mods state 2))
-	  (setf mods-locked (xkb:xkb-state-serialize-mods state 4))
-	  (setf mods-group (xkb:xkb-state-serialize-mods state 8))
+	  (setf mods-depressed (xkb:xkb-state-serialize-mods state 1)
+		mods-latched   (xkb:xkb-state-serialize-mods state 2)
+		mods-locked    (xkb:xkb-state-serialize-mods state 4)
+		mods-group     (xkb:xkb-state-serialize-mods state 8))
 	  ;; (format t "~a, ~a, ~a~%" mods-depressed mods-latched mods-locked)
 
 	  (when nil
