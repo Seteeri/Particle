@@ -107,8 +107,9 @@ naturally remains an orthogonal possibility.
 
 * Two process system
 * Automated task-based parallelization
+  * Directed acyclic graph
   * Thread pool kernel
-  * Divide and conquer paradigm
+  * Lock-less FIFO queues
 * Tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
   * Compute shaders

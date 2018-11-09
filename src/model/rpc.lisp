@@ -9,6 +9,7 @@
   ;; 1. Input event loop should not use sock
   ;;    -> Refactor callbacks to only do up to update shm function
   ;; 2. Anims push (self) task into next q
+  ;; 3. Use graph like init for consistency
   
   (send-message *sock-view*
   		*buffer-sock-ptr*
@@ -96,6 +97,7 @@
 	 ;; (print (eval message))
 	 ;; (force-output)
 
+	 ;; Add option for self-evaluating symbol to avoid fn call
 	 (if (listp (first message))
 	     (dolist (n message)
 	       (apply (symbol-function (find-symbol (string (first n)) :protoform.model))
