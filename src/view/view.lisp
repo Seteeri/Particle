@@ -1,5 +1,9 @@
 (in-package :protoform.view)
 
+(defparameter *view* nil)
+(defparameter *time-frame-last* 0)
+(defparameter *draw* nil)
+
 (defun fmt-view (dst ctx-str ctl-str &rest rest)
   ;; Add space opt
   (apply #'format
@@ -203,53 +207,46 @@
     (init-gl-env width height)
     (calc-opengl-usage)
     
-    (defparameter *view* (make-instance 'view
-					:width width
-					:height height
-					:inst-max inst-max
-					:sock-server (init-sock-server "/tmp/protoform-view.socket" :nonblock)
-					:program-default (init-program-default)
-					:program-msdf (init-program-msdf)
-					:program-compute (init-program-compute)
-					:fences (make-array 3
-							    :adjustable nil
-							    :initial-element (null-pointer))))
-
-    (defparameter *time-frame-last* 0)
-    (defparameter *draw* nil)
+    (setf *view* (make-instance 'view
+				:width width
+				:height height
+				:inst-max inst-max
+				:sock-server (init-sock-server "/tmp/protoform-view.socket" :nonblock)
+				:program-default (init-program-default)
+				:program-msdf (init-program-msdf)
+				:program-compute (init-program-compute)
+				:fences (make-array 3
+						    :adjustable nil
+						    :initial-element (null-pointer))))
     
     (loop 
-
-       (run-server)
-       
        (if *draw*
+	   (render-frame)
+	   (run-server-sleep)))))
 
-	   (progn
-
-	     (render-frame)
-	     
-	     (glfw:poll-events)
-	     (glfw:swap-buffers)
-
-	     ;; send frame
-	     (when nil
-	       (let ((time (osicat:get-monotonic-time)))
-		 
-		 ;; (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
-		 (setf *time-frame-last* time)
-
-		 (send-message (sock-client *view*)
-    			       (buffer-sock-ptr *view*)
-			       (format nil "(handle-view-sync ~S)" time))
-
-		 ;; wait all - sync
-		 (serve-client :flags #x100))))
-	   
-	   (progn
-	     ;; (sb-sys:serve-all-events 0)
-	     (sleep 0.0167))))))
+(defun run-server-sleep ()
+  (sleep 0.0167)
+  (run-server))
 
 (defun render-frame ()
+  (run-programs-shader)
+  (glfw:poll-events)
+  (glfw:swap-buffers)
+
+  ;; Send frame
+  (when t
+    (let ((time (osicat:get-monotonic-time)))
+      
+      ;; (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
+      (setf *time-frame-last* time)
+
+      (send-message (sock-client *view*)
+    		    (buffer-sock-ptr *view*)
+		    (format nil "(handle-view-sync ~S)" time))))
+
+  (run-server #x100))
+
+(defun run-programs-shader ()
   (with-slots (sync fences ix-fence)
       *view*
 
@@ -350,11 +347,11 @@
 
   (format t "-------------------~%"))
 
-(defun run-server ()
+(defun run-server (&optional (flags 0))
   (with-slots (sock-server sock-client)
       *view*
     (if sock-client
-	(serve-client)
+	(serve-client flags)
 	(multiple-value-bind (sock-accept errno)
 	    (accept4 sock-server :nonblock) ;non block
 	  (when (/= sock-accept -1)

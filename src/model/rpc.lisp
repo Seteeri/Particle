@@ -5,27 +5,60 @@
 
 (defun handle-view-sync (time-view)
 
-  ;; How does this interact with input loop?
+  ;; TODO:
+  ;; 1. Input event loop should not use sock
+  ;;    -> Refactor callbacks to only do up to update shm function
+  ;; 2. Anims push (self) task into next q
+  
+  (send-message *sock-view*
+  		*buffer-sock-ptr*
+  		"(pass)")
+  (return-from handle-view-sync)
+  
+  ;; Brainstorm:
+  ;; - Events rely on frame time
+  ;;   - controller can trigger single-frame or multi-frame (per-frame) calculations
+  ;;   - for multi-frame, task will readd itself to next q
+  ;; - Controller places tasks in queue for frame-callback to execute
+  ;;   - 2 types of tasks - sync, async
+  ;;   - sync - put in queue
+  ;;   - async - submit task
 
   ;; Each frame:
-  ;; - Submit animations as tasks - list generated offline
-  ;; - Wait for completion
-  ;; - Update shm
+  ;; - Get functions/tasks from queue
+  ;; - Submit tasks, receive results
+  ;; - Submit tasks for updating shms, receive results
+  ;; - Send return message to view
   
   (when nil
     (let ((time (osicat:get-monotonic-time)))
       (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
       (setf *time-last* time)))
-  
-  (submit-task *chan-anim*
-	       #'animate-camera-x)
 
-  ;; shms can be done in parallel
+  (loop
+     :with counter := 0
+     :for task := (sb-concurrency:dequeue *queue*)
+     :while task
+     :do (progn
+	   ;; (format t "~S~%" task)
+	   (incf counter)
+	   (submit-task *chan-anim*
+			task))
+     :finally (if (> counter 0)
+		(dotimes (i counter)
+		  (receive-result *chan-anim*))
+		(send-message *sock-view*
+			      *buffer-sock-ptr*
+			      (format nil "(pass)"))))
 
-  ;; conn cannot be done in parallel
-  ;; as they are encountered, add to list in order of appearance
-  
-  (dotimes (i 1) (receive-result *chan-anim*)))
+  ;; Swap queues
+  ;; If controller writes to queue sometime between loop and swap
+  ;; it will be delayed by one frame
+  ;; setf atomic? -> https://sourceforge.net/p/sbcl/mailman/message/14171520/
+  (when nil
+    (if (eq *queue* *queue-front*)
+	(setf *queue* *queue-back*)
+	(setf *queue* *queue-front*))))
 
 (defun init-conn-rpc-view ()
   (setf *sock-view* (init-sock-client *path-socket-view* :block))

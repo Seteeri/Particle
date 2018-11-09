@@ -16,8 +16,8 @@
   (fmt-model t "main-model" "Initialized kernel lparallel~%")
 
   ;; Faster to do this here since they aren't functions
-  (setf *width* width
-	*height* height
+  (setf *width*    width
+	*height*   height
 	*inst-max* inst-max)
   
   (exec-graph-dep)
@@ -28,20 +28,14 @@
   ;; epoll/wait sock -> dispatch/submit tasks -> loop...
   ;; s - p - s
 
-  ;; - events rely on frame time
-  ;;   - controller can trigger single-frame or multi-frame (per-frame) calculations
-  ;; - would make sense to do controller iteration when frame sent
-  ;;   -> need to read from event queue ASAP
-  ;; - if locks on controller structures, cannot block view...
-  ;; - poss event loop place callbacks in a list/queue for frame-callback to execute
-  ;;   - two types of callbacks - sync or async
-
-  (defparameter *queue* (sb-concurrency:make-queue))
+  (defparameter *queue-front* (sb-concurrency:make-queue))
+  (defparameter *queue-back* (sb-concurrency:make-queue))
+  (defparameter *queue* *queue-back*)
   
   ;; RPC loop
   (submit-task *channel*
 	       #'serve-client)
-  
+ 
   ;; Input event loop
   (submit-task *channel*
 	       (lambda ()
@@ -261,10 +255,9 @@
 			 (setf *time-end* (+ *time-start* 4)) ; (/ frame count fps)
 			 (setf *time-duration* (- *time-end* *time-start*)) ; (/ frame-count fps)
 			 (setf *time-elapsed* 0.0)
-			 (setf *time-run* t)))
-    ;; (submit-task *chan-anim*
-    ;; 	      #'produce-frames-anim)))
-
+			 (setf *time-run* t)
+			 (sb-concurrency:enqueue #'animate-camera-x
+						 *queue*)))
     
     ;; Print hashtable
     (when nil
