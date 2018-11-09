@@ -82,7 +82,7 @@
 		:*shm-atomic-counter*
 		:*shm-vertices*
 		:*shm-element*
-		:*shm-indirect*
+		:*shm-draw-indirect*
 		:*shm-texture*
 		:*node-pointer*
 		:*controller*)

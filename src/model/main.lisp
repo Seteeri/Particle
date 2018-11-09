@@ -35,6 +35,8 @@
   ;; - if locks on controller structures, cannot block view...
   ;; - poss event loop place callbacks in a list/queue for frame-callback to execute
   ;;   - two types of callbacks - sync or async
+
+  (defparameter *queue* (sb-concurrency:make-queue))
   
   ;; RPC loop
   (submit-task *channel*

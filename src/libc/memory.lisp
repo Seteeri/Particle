@@ -105,7 +105,7 @@
 (defun init-mmap (path
 		  size
 		  create
-		  &optional
+		  &key
 		    (mlock nil)
 		    (data nil))
   

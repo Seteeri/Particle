@@ -27,7 +27,8 @@
 		 #:str
 		 #:easing
 		 #:lparallel
-		 #:skip-list)
+		 #:skip-list
+		 #:sb-concurrency)
     ;; #:babel
     ;; #:dlist
     :serial t

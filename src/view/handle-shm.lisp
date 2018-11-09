@@ -23,7 +23,8 @@
 (defun init-handle-shm (name
 			path
 			size)
-  (with-slots (handles-shm) *view*
+  (with-slots (handles-shm)
+      *view*
     (let* ((mmap (init-mmap path
 			    size
 			    nil
