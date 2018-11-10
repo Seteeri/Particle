@@ -62,8 +62,8 @@
 (defun dispatch-callbacks-for-event (seq-event)
   (loop
      :for cb :being :the :hash-keys :of (get-callbacks seq-event)
-     ;; :using (hash-value dummy)
-     :do (funcall cb seq-event)))
+     :do (push-queue (list cb seq-event)
+		     *queue-input-model*)))
 
 (defun is-seq-event-valid (seq-events-key)
   (with-slots (key-states)

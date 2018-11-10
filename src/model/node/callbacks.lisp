@@ -8,8 +8,6 @@
   ;; Maybe have pointer appear below/above so edge will show
 
   (fmt-model t "add-node-msdf" "~a~%" seq-key)
-
-  ;; Thread this if possible
   
   ;; Advance - origin to origin
   ;; 1. Find glyph A origin
@@ -69,17 +67,17 @@
 		   nil)
 
       ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
-      
-      ;; Copy only this node
-      (copy-node-to-shm node
-			(* (index node)
-			   (/ +size-struct-instance+ 4)))
 
-      ;; Copy all nodes
-      (memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	     0
-      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
-				       					  (digraph:count-edges *digraph*))))))
+      (when nil
+	;; Copy only this node
+	(copy-node-to-shm node
+			  (* (index node)
+			     (/ +size-struct-instance+ 4)))
+	;; Copy all nodes
+	(memcpy-shm-to-cache-flag* (list (list "nodes"
+				       	       0
+      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
+				       					    (digraph:count-edges *digraph*)))))))
 
       node))
 
@@ -127,10 +125,11 @@
 	(digraph:remove-vertex *digraph*
 			       node-tgt)
 
-	(memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	       0
-      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
-				       					    (digraph:count-edges *digraph*)))))))))
+	(when nil
+	  (memcpy-shm-to-cache-flag* (list (list "nodes"
+				       		 0
+      				       		 (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
+				       					      (digraph:count-edges *digraph*))))))))))
 
 (defun return-node-msdf (seq-key)
   ;; Add node

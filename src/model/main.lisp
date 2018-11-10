@@ -8,6 +8,11 @@
 		     ctl-str)
 	 rest))
 
+(defparameter *queue-input-model* (make-queue))
+(defparameter *queue-front* (sb-concurrency:make-queue))
+(defparameter *queue-back* (sb-concurrency:make-queue))
+(defparameter *queue-main* *queue-back*)
+
 (defun run-model (width height
 		  inst-max
 		  addr-swank-view)
@@ -23,39 +28,21 @@
   (exec-graph-dep)
   (fmt-model t "main-init" "Finished model initialization~%")
 
-  ;; Create kernel for each?
-
-  ;; epoll/wait sock -> dispatch/submit tasks -> loop...
-  ;; s - p - s
-
-  (defparameter *queue-front* (sb-concurrency:make-queue))
-  (defparameter *queue-back* (sb-concurrency:make-queue))
-  (defparameter *queue* *queue-back*)
+  (let ((thread-view  (bordeaux-threads:make-thread #'serve-client))
+	(thread-model (bordeaux-threads:make-thread #'process-queue-input))
+	(thread-input (bordeaux-threads:make-thread (lambda ()
+						      (loop
+							 (dispatch-events-input)
+							 (dispatch-all-seq-event)
+							 (update-states-keyboard-continuous))))))
+    (bordeaux-threads:join-thread thread-view)
+    (bordeaux-threads:join-thread thread-model)
+    (bordeaux-threads:join-thread thread-input)))
   
-  ;; RPC loop
-  (submit-task *channel*
-	       #'serve-client)
- 
-  ;; Input event loop
-  (submit-task *channel*
-	       (lambda ()
-		 (loop
-		    (dispatch-events-input)
-		    (dispatch-all-seq-event)
-		    (update-states-keyboard-continuous))))
-  
-  ;; Block forever
-  (loop (receive-result *channel*)))  
 
 (defun init-kernel-lparallel ()
-
-  ;; Swank, Input, Wayland
-  ;; (bordeaux-threads:make-thread (lambda () (sleep 1)))
-
-  (setf *kernel*     (make-kernel (+ 0 4))
-	*channel*    (make-channel)
-	*chan-anim*  (make-channel)
-	*queue-anim* (make-queue)))
+  (setf *kernel*     (make-kernel 4)
+	*channel*    (make-channel)))
 
 (defun exec-graph-dep ()
   (let ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
@@ -277,3 +264,10 @@
 		       ()
 		       :exclusive
 		       cb)))
+
+(defun process-queue-input ()
+  (loop
+     :for task := (pop-queue *queue-input-model*)
+     :do (progn
+	   ;; (format t "~S~%" task)
+	   (funcall (first task) (second task)))))

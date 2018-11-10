@@ -3,63 +3,72 @@
 (defparameter *path-socket-view* "/tmp/protoform-view.socket")
 (defparameter *time-last* 0)
 
+;; (when nil
+;;   (let ((time (osicat:get-monotonic-time)))
+;;     (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
+;;     (setf *time-last* time)))
+
 (defun handle-view-sync (time-view)
 
-  ;; TODO:
+  ;; Brainstorm:
   ;; 1. Input event loop should not use sock
   ;;    -> Refactor callbacks to only do up to update shm function
   ;; 2. Anims push (self) task into next q
   ;; 3. Use graph like init for consistency
+  ;; 4. Refactor server message processing to accept self-evaluating symbols
+
+  ;; Input -> Model -|-> View
+  ;;
+  ;; 1. Input loop
+  ;;    - push sync tasks to queue
+  ;;      - must execute in order/serial
+  ;;        - if user was typing they'd get random text
+  ;;      - animations go here
+  ;; 2. Model loop
+  ;;    - pull input tasks from queue -> funcall
+  ;;      - purpose of this thread is to let input loop process events ASAP
+  ;;      - funcall can submit tasks as needed to kernel or push sync tasks to queue
+  ;;      - anims can only be done on frame
+  ;;      - adding nodes can be done immediately
+  ;;      - this cannot modify shm so any copying to shm must be done during view
+  ;;        - but to write to shm is to read from lisp data structures which requires locking
+  ;;        - poss when put in queue copy data/state?
+  ;; 3. View loop (callback)
+  ;;    - handles shm essentially -- can only modify shm in this "window"
+  ;;    - pull tasks from queue -> submit tasks -> receive results
+  ;;    - check shm flags, send-message
+
+  ;; For input:
+  ;; - Some events need to be handled in serial such as key presses
+  ;;   - Users expect input to be handled in serial, at least within a domain ie mouse vs keyboard
+  ;; - Each callback should execute a dep graph
+  ;; - Shm is handled by model
   
-  (send-message *sock-view*
-  		*buffer-sock-ptr*
-  		"(pass)")
+  ;; (send-message *sock-view*
+  ;; 		*buffer-sock-ptr*
+  ;; 		"(pass)")
+    
   (return-from handle-view-sync)
   
-  ;; Brainstorm:
-  ;; - Events rely on frame time
-  ;;   - controller can trigger single-frame or multi-frame (per-frame) calculations
-  ;;   - for multi-frame, task will readd itself to next q
-  ;; - Controller places tasks in queue for frame-callback to execute
-  ;;   - 2 types of tasks - sync, async
-  ;;   - sync - put in queue
-  ;;   - async - submit task
-
-  ;; Each frame:
-  ;; - Get functions/tasks from queue
-  ;; - Submit tasks, receive results
-  ;; - Submit tasks for updating shms, receive results
-  ;; - Send return message to view
+  ;; Check shm flags and send copy-shm messages
   
-  (when nil
-    (let ((time (osicat:get-monotonic-time)))
-      (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
-      (setf *time-last* time)))
-
-  (loop
-     :with counter := 0
-     :for task := (sb-concurrency:dequeue *queue*)
-     :while task
-     :do (progn
-	   ;; (format t "~S~%" task)
-	   (incf counter)
-	   (submit-task *chan-anim*
-			task))
-     :finally (if (> counter 0)
-		(dotimes (i counter)
-		  (receive-result *chan-anim*))
-		(send-message *sock-view*
-			      *buffer-sock-ptr*
-			      (format nil "(pass)"))))
-
+  ;; Send sync message
+  
   ;; Swap queues
   ;; If controller writes to queue sometime between loop and swap
   ;; it will be delayed by one frame
   ;; setf atomic? -> https://sourceforge.net/p/sbcl/mailman/message/14171520/
-  (when nil
-    (if (eq *queue* *queue-front*)
-	(setf *queue* *queue-back*)
-	(setf *queue* *queue-front*))))
+
+  ;; (when nil
+  ;;   (if (eq *queue-main* *queue-front*)
+  ;; 	(setf *queue-main* *queue-back*)
+  ;; 	(setf *queue-main* *queue-front*))))
+
+  ;; (setf *queue-main* (if (eq *queue-main* *queue-front*)
+  ;; 			 *queue-back*
+  ;; 			 *queue-front*))
+
+  t)
 
 (defun init-conn-rpc-view ()
   (setf *sock-view* (init-sock-client *path-socket-view* :block))
