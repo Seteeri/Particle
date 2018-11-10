@@ -27,16 +27,18 @@
   ;; 2. Model loop
   ;;    - pull input tasks from queue -> funcall
   ;;      - purpose of this thread is to let input loop process events ASAP
-  ;;      - funcall can submit tasks as needed to kernel or push sync tasks to queue
-  ;;      - anims can only be done on frame
-  ;;      - adding nodes can be done immediately
-  ;;      - this cannot modify shm so any copying to shm must be done during view
-  ;;        - but to write to shm is to read from lisp data structures which requires locking
-  ;;        - poss when put in queue copy data/state?
+  ;;      - funcall can submit tasks+receive result, or push sync tasks to queue
+  ;;        - anims can only be done on frame
+  ;;        - adding nodes can be done immediately
+  ;;      - shm can only be modified during view since poss view process will read during that time
+  ;;        - for view, to write to shm is to read from lisp data which requires locking...
+  ;;        - solution -> copy data/state when putting in queue - such as for a node being modified
+  ;;          - changes propogate like a dag...
+  ;;          - serialize data so view loop simply copies memory
   ;; 3. View loop (callback)
-  ;;    - handles shm essentially -- can only modify shm in this "window"
-  ;;    - pull tasks from queue -> submit tasks -> receive results
-  ;;    - check shm flags, send-message
+  ;;    - SRP: copy from lisp to shm
+  ;;      - execute tasks copy shm
+  ;;      - send shm message
 
   ;; For input:
   ;; - Some events need to be handled in serial such as key presses
