@@ -50,9 +50,6 @@
 	
 	t)
 
-      ;; Place in queue
-      ;; (copy-projview-to-shm)
-
       (update-mat-view)
 
       (let ((arr-view (marr (mtranspose (mat-view *projview*)))))
@@ -71,7 +68,7 @@
 	    (fmt-model t "handle-view-sync" "Ending anim~%")
 	    (setf *time-run* nil))
 	  (progn
-	    ;; insert into other queue for next frame
+	    ;; Push to other queue for next frame or anim will complete same frame
 	    (sb-concurrency:enqueue (list #'ease-camera-x
 	    				  seq-event)
 	    			    (if (eq *queue-input* *queue-front*)
