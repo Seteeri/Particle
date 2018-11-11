@@ -23,12 +23,12 @@
   ;;    - push sync tasks to queue
   ;;      - must execute in order/serial
   ;;        - if user was typing they'd get random text
-  ;;      - animations go here
   ;; 2. Model loop
   ;;    - pull input tasks from queue -> funcall
   ;;      - purpose of this thread is to let input loop process events ASAP
   ;;      - funcall can submit tasks+receive result, or push sync tasks to queue
   ;;        - anims can only be done on frame
+  ;;          - Ex: camera anim and node anim can run simultaneously
   ;;        - adding nodes can be done immediately
   ;;      - shm can only be modified during view since poss view process will read during that time
   ;;        - for view, to write to shm is to read from lisp data which requires locking...
@@ -36,7 +36,8 @@
   ;;          - changes propogate like a dag...
   ;;          - serialize data so view loop simply copies memory
   ;; 3. View loop (callback)
-  ;;    - SRP: copy from lisp to shm
+  ;;    - Execute frame tasks
+  ;;    - Copy from lisp to shm
   ;;      - execute tasks copy shm
   ;;      - send shm message
 
@@ -45,32 +46,63 @@
   ;;   - Users expect input to be handled in serial, at least within a domain ie mouse vs keyboard
   ;; - Each callback should execute a dep graph
   ;; - Shm is handled by model
+
+  ;; Execute frame callbacks
+  ;; - Can use submit task per callback/task
+  ;; - Add flag whether to run sync or async
+  ;; - Non-frame tasks run in other thread
+  (loop
+     :for task := (sb-concurrency:dequeue *queue-input*)
+     :while task
+     :do (funcall (first task)
+		  (second task)))
+
+  ;; Call receive-results as needed
   
-  ;; (send-message *sock-view*
-  ;; 		*buffer-sock-ptr*
-  ;; 		"(pass)")
+  ;; Execute shm copy tasks
+  ;; - Can be done in parallel assuming no overlapping operations...
+  (loop
+     :for task := (sb-concurrency:dequeue *queue-view*)
+     :while task
+     :do (copy-data-to-shm (first task)
+			   (second task)
+			   (third task))) ; use parameters
+
+  ;; Is it faster to copy large contiguous area or numerous small segments?
+  ;; Send message to view to copy shm
+  ;; Use highest offset from copy shm queue...
+  (memcpy-shm-to-cache-flag* (list (list "nodes"
+				       	 0
+      				       	 (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
+				       				      (digraph:count-edges *digraph*))))
+				   (list "projview"
+				       	 0
+      				       	 (* 4 16 2))))
+  
+  ;; (return-from handle-view-sync)
     
-  (return-from handle-view-sync)
-  
-  ;; Check shm flags and send copy-shm messages
-  
-  ;; Send sync message
-  
   ;; Swap queues
   ;; If controller writes to queue sometime between loop and swap
   ;; it will be delayed by one frame
   ;; setf atomic? -> https://sourceforge.net/p/sbcl/mailman/message/14171520/
 
-  ;; (when nil
-  ;;   (if (eq *queue-main* *queue-front*)
-  ;; 	(setf *queue-main* *queue-back*)
-  ;; 	(setf *queue-main* *queue-front*))))
-
-  ;; (setf *queue-main* (if (eq *queue-main* *queue-front*)
-  ;; 			 *queue-back*
-  ;; 			 *queue-front*))
+  (setf *queue-input* (if (eq *queue-input* *queue-front*)
+  			  *queue-back*
+  			  *queue-front*))
 
   t)
+
+(defun copy-data-to-shm (shm data &optional (offset-ptr 0))
+  (declare (type (array (unsigned-byte 8)) data))
+  (with-slots (ptr size)
+      shm
+    (loop
+       :for c :across data
+       :for i :upfrom 0
+       :do (setf (mem-aref ptr
+    			   :uchar
+    			   (+ offset-ptr i))
+    		 c))))
 
 (defun init-conn-rpc-view ()
   (setf *sock-view* (init-sock-client *path-socket-view* :block))

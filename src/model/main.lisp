@@ -8,10 +8,10 @@
 		     ctl-str)
 	 rest))
 
-(defparameter *queue-input-model* (make-queue))
 (defparameter *queue-front* (sb-concurrency:make-queue))
 (defparameter *queue-back* (sb-concurrency:make-queue))
-(defparameter *queue-main* *queue-back*)
+(defparameter *queue-input* *queue-back*)
+(defparameter *queue-view* (sb-concurrency:make-queue))
 
 (defun run-model (width height
 		  inst-max
@@ -29,14 +29,14 @@
   (fmt-model t "main-init" "Finished model initialization~%")
 
   (let ((thread-view  (bordeaux-threads:make-thread #'serve-client))
-	(thread-model (bordeaux-threads:make-thread #'process-queue-input))
+	;; (thread-model (bordeaux-threads:make-thread #'process-queue-input))
 	(thread-input (bordeaux-threads:make-thread (lambda ()
 						      (loop
 							 (dispatch-events-input)
 							 (dispatch-all-seq-event)
 							 (update-states-keyboard-continuous))))))
     (bordeaux-threads:join-thread thread-view)
-    (bordeaux-threads:join-thread thread-model)
+    ;; (bordeaux-threads:join-thread thread-model)
     (bordeaux-threads:join-thread thread-input)))
   
 
@@ -200,7 +200,7 @@
 				:exclusive
 				#'add-node-msdf)))
 
-    (when t
+    (when nil
       ;; handlers in node
       (dolist (seq-event `((,+xk-left+       ,#'move-pointer-left)
 			   (,+xk-up+         ,#'move-pointer-up)
@@ -212,7 +212,7 @@
 			   :exclusive
 			   (second seq-event))))
     
-    (when t
+    (when nil
       ;; handlers in projview
       (dolist (seq-event `((,+xk-left+       ,#'move-camera-left)
 			   (,+xk-up+         ,#'move-camera-up)
@@ -243,8 +243,7 @@
 			 (setf *time-duration* (- *time-end* *time-start*)) ; (/ frame-count fps)
 			 (setf *time-elapsed* 0.0)
 			 (setf *time-run* t)
-			 (sb-concurrency:enqueue #'animate-camera-x
-						 *queue*)))
+			 (ease-camera-x seq-event)))
     
     ;; Print hashtable
     (when nil
@@ -268,6 +267,5 @@
 (defun process-queue-input ()
   (loop
      :for task := (pop-queue *queue-input-model*)
-     :do (progn
-	   ;; (format t "~S~%" task)
-	   (funcall (first task) (second task)))))
+     :do (funcall (first task)
+		  (second task))))

@@ -22,7 +22,7 @@
 ;; :in-back :out-back :in-out-back
 ;; :in-bounce :out-bounce :in-out-bounce
 
-(defun animate-camera-x ()
+(defun ease-camera-x (seq-event)
   
   (when *time-run*
     
@@ -50,10 +50,30 @@
 	
 	t)
 
-      ;; This sends return signal
-      (copy-projview-to-shm)
-      
+      ;; Place in queue
+      ;; (copy-projview-to-shm)
+
+      (update-mat-view)
+
+      (let ((arr-view (marr (mtranspose (mat-view *projview*)))))
+	(sb-concurrency:enqueue (list *shm-projview*
+				      (pack:pack "<16f"
+						 (aref arr-view 0)  (aref arr-view 1)  (aref arr-view 2)  (aref arr-view 3)
+						 (aref arr-view 4)  (aref arr-view 5)  (aref arr-view 6)  (aref arr-view 7)
+						 (aref arr-view 8)  (aref arr-view 9)  (aref arr-view 10) (aref arr-view 11)
+						 (aref arr-view 12) (aref arr-view 13) (aref arr-view 14) (aref arr-view 15))
+				      (* 16 4))
+				*queue-view*))
+    
       ;; Cap time-delta to ending time
-      (when (> *time-elapsed* *time-duration*)
-	(fmt-model t "handle-view-sync" "Ending anim~%")
-	(setf *time-run* nil)))))
+      (if (> *time-elapsed* *time-duration*)
+	  (progn
+	    (fmt-model t "handle-view-sync" "Ending anim~%")
+	    (setf *time-run* nil))
+	  (progn
+	    ;; insert into other queue for next frame
+	    (sb-concurrency:enqueue (list #'ease-camera-x
+	    				  seq-event)
+	    			    (if (eq *queue-input* *queue-front*)
+  					*queue-back*
+  					*queue-front*)))))))

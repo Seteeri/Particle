@@ -28,15 +28,16 @@
 		 #:easing
 		 #:lparallel
 		 #:skip-list
-		 #:sb-concurrency)
+		 #:sb-concurrency
+		 #:pack)
     ;; #:babel
     ;; #:dlist
     :serial t
     :around-compile (lambda (next)
                       (proclaim '(optimize
-				  (debug 0)
+    				  (debug 0)
                                   (safety 0)
-				  (space 0)
+    				  (space 0)
                                   (speed 3)))
                       (funcall next))
     :components ((:file "src/package")
