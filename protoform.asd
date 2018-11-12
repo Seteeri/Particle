@@ -101,6 +101,7 @@
 							     (:file "controller")
 				       			     (:file "xkb")
 				       			     (:file "callback")
+							     (:file "dispatch")
 				       			     (:file "event-keyboard")))
 				       (:file "rpc")
 				       (:file "projview")
