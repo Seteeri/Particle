@@ -1,5 +1,7 @@
 (in-package :protoform.model)
 
+(defconstant +size-struct-instance+ 208)
+
 (defparameter *uv-default-node* (list 1.0 1.0  0.0 0.0
 			  	      1.0 0.0  0.0 0.0
 			  	      0.0 0.0  0.0 0.0

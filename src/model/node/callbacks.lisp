@@ -1,5 +1,14 @@
 (in-package :protoform.model)
 
+(defparameter *data-zero-node* (make-array +size-struct-instance+
+					   :adjustable nil
+					   :fill-pointer nil
+					   :element-type '(unsigned-byte 8)
+					   :initial-element (coerce 0 '(unsigned-byte 8))))
+;; :data (make-array size
+;; 		  :element-type '(unsigned-byte 8)
+;; 		  :initial-element (coerce 0 '(unsigned-byte 8)))
+  
 (defun add-node-msdf (seq-key)
   ;; Add node to pointer position
   ;; Move pointer right
@@ -66,23 +75,11 @@
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
-    ;; Serialize the node so need not require a lock
     (sb-concurrency:enqueue (list *shm-nodes*
 				  (serialize-node node)
 				  (* (index node)
 				     +size-struct-instance+))
-			    *queue-view*)
-      
-    (when nil
-      ;; Copy only this node
-      (copy-node-to-shm node
-			(* (index node)
-			   (/ +size-struct-instance+ 4)))
-      ;; Copy all nodes
-      (memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	     0
-      				       	     (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
-				       					  (digraph:count-edges *digraph*)))))))
+			    *queue-view*)))
 
     node))
 
@@ -126,21 +123,11 @@
       (digraph:remove-vertex *digraph*
 			     node-tgt)
 
-      (when nil
-	;; Serialize the node so need not require a lock
-	(sb-concurrency:enqueue (list (serialize-node node)
-				      (* (index node)
-					 +size-struct-instance+))
-				*queue-view*))
-      
-      (when nil
-	(zero-node-to-shm (* (index node-tgt)
-			     (/ +size-struct-instance+ 4)))
-
-	(memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	       0
-      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
-				       					    (digraph:count-edges *digraph*))))))))))
+      (sb-concurrency:enqueue (list *shm-nodes*
+				    *data-zero-node*
+				    (* (index node-tgt)
+				       +size-struct-instance+))
+			      *queue-view*))))
 
 (defun return-node-msdf (seq-key)
   ;; Add node

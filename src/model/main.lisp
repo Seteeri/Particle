@@ -167,14 +167,20 @@
 				:exclusive
 				#'add-node-msdf)))
 
+    (when t
+      ;; handlers in node
+      (dolist (seq-event `((,+xk-backspace+  ,#'backspace-node-msdf)
+			   (,+xk-return+     ,#'return-node-msdf)))
+	(register-callback `(,(first seq-event) (:press :repeat))
+			   :exclusive
+			   (second seq-event))))
+    
     (when nil
       ;; handlers in node
       (dolist (seq-event `((,+xk-left+       ,#'move-pointer-left)
 			   (,+xk-up+         ,#'move-pointer-up)
 			   (,+xk-right+      ,#'move-pointer-right)
-			   (,+xk-down+       ,#'move-pointer-down)
-			   (,+xk-backspace+  ,#'backspace-node-msdf)
-			   (,+xk-return+     ,#'return-node-msdf)))
+			   (,+xk-down+       ,#'move-pointer-down)))
 	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))

@@ -17,8 +17,6 @@
 				 :draw-indirect *params-draw-indirect-shm*
 				 :atomic-counter *params-atomic-counter-shm*))
 
-(defconstant +size-struct-instance+ 208)
-
 ;;;;;;;;;;;;;
 
 (defparameter *width* nil)
