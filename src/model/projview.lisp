@@ -54,6 +54,8 @@
 		(mat-view *projview*)
 		16)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun copy-projview-to-shm (&optional (memcpy-shm-to-cache t))  
   (update-mat-proj)
   (update-mat-view)
