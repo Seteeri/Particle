@@ -30,11 +30,7 @@
 
   (let ((thread-view  (bordeaux-threads:make-thread #'serve-client))
 	;; (thread-model (bordeaux-threads:make-thread #'process-queue-input))
-	(thread-input (bordeaux-threads:make-thread (lambda ()
-						      (loop
-							 (dispatch-events-input)
-							 (dispatch-all-seq-event)
-							 (update-states-keyboard-continuous))))))
+	(thread-input (bordeaux-threads:make-thread #'run-controller)))
     (bordeaux-threads:join-thread thread-view)
     ;; (bordeaux-threads:join-thread thread-model)
     (bordeaux-threads:join-thread thread-input)))

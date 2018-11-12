@@ -112,8 +112,7 @@
   (:use #:cl
         #:cffi
 	#:protoform.util)
-  (:export #:analyze-file
-	   #:submit-receive-graph))
+  (:export #:analyze-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

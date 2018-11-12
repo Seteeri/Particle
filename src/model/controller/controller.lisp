@@ -52,7 +52,13 @@
     
     (setf (epoll-fd controller) epoll-fd)
     (setf (epoll-events controller) (foreign-alloc '(:struct event)))))
-       
+
+(defun run-controller ()
+  (loop
+     (dispatch-events-input)
+     (dispatch-all-seq-event)
+     (update-states-keyboard-continuous)))
+
 (defun dispatch-events-input ()
   (with-slots (context
 	       epoll-fd
