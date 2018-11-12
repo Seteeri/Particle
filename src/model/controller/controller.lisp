@@ -55,9 +55,10 @@
 
 (defun run-controller ()
   (loop
-     (dispatch-events-input)
-     (dispatch-all-seq-event)
-     (update-states-keyboard-continuous)))
+     (dispatch-events-input)             ; serial
+     (dispatch-all-seq-event)            ; parallel
+     (update-states-keyboard-continuous) ; parallel
+     t))
 
 (defun dispatch-events-input ()
   (with-slots (context

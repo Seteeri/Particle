@@ -1,6 +1,6 @@
 (in-package :protoform.model)
 
-(defconstant +state-event-press+ 1)
+(defconstant +state-event-press+   1)
 (defconstant +state-event-release+ 0)
 
 (defparameter *keysyms-modifier* (list +xk-shift-l+
@@ -18,6 +18,7 @@
 				       +xk-hyper-l+
 				       +xk-hyper-r+))
 
+;; How does this interact with controller loop?
 (defun handle-repeat-timer (keysym)
   ;; (format t "[handle-keyboard-timer][~a] Repeating ~a~%" (get-internal-real-time) keysym)
   (let ((state (gethash keysym (key-states *controller*))))
@@ -184,21 +185,28 @@
      :with key-states := (key-states *controller*)
      :for keysym :being :the :hash-keys :of key-states
      :using (hash-value state)
-     :for state-key := (aref state 0)       
-     :do (cond ((eq (first state-key) :press)
-		;; (fmt-model t "reset-states-key" "Press -> Down: ~a~%" keysym)
-		(setf (nth 0 (aref state 1)) (nth 0 state-key))
-		(setf (nth 1 (aref state 1)) (nth 1 state-key))
-		(setf (nth 0 state-key) :down))
-	       
-	       ((eq (first state-key) :release)
-		;; (fmt-model t "reset-states-key" "Release -> Up : ~a~%" keysym)
-		(setf (nth 0 (aref state 1)) (nth 0 state-key))
-		(setf (nth 1 (aref state 1)) (nth 1 state-key))
-		(setf (nth 0 state-key) :up))
+     :do (submit-task *channel-input*
+		      #'check-reset-state
+		      state)
+     :finally (dotimes (i (hash-table-count key-states))
+		(receive-result *channel-input*))))
 
-	       ((eq (first state-key) :repeat)
-		;; (fmt-model t "reset-states-key" "Repeat -> Down : ~a~%" keysym)
-		(setf (nth 0 (aref state 1)) (nth 0 state-key))
-		(setf (nth 1 (aref state 1)) (nth 1 state-key))
-		(setf (nth 0 state-key) :down)))))
+(defun check-reset-state (state)
+  (let ((state-key (aref state 0)))
+    (cond ((eq (first state-key) :press)
+	   ;; (fmt-model t "reset-states-key" "Press -> Down: ~a~%" keysym)
+	   (setf (nth 0 (aref state 1)) (nth 0 state-key)
+		 (nth 1 (aref state 1)) (nth 1 state-key)
+		 (nth 0 state-key)      :down))
+	  
+	  ((eq (first state-key) :release)
+	   ;; (fmt-model t "reset-states-key" "Release -> Up : ~a~%" keysym)
+	   (setf (nth 0 (aref state 1)) (nth 0 state-key)
+		 (nth 1 (aref state 1)) (nth 1 state-key)
+		 (nth 0 state-key)      :up))
+	  
+	  ((eq (first state-key) :repeat)
+	   ;; (fmt-model t "reset-states-key" "Repeat -> Down : ~a~%" keysym)
+	   (setf (nth 0 (aref state 1)) (nth 0 state-key)
+		 (nth 1 (aref state 1)) (nth 1 state-key)
+		 (nth 0 state-key)      :down)))))

@@ -102,7 +102,9 @@
 				       			     (:file "xkb")
 				       			     (:file "callback")
 							     (:file "dispatch")
-				       			     (:file "event-keyboard")))
+				       			     (:module events
+				       				      :pathname "events"
+				       				      :components ((:file "keyboard")))))
 				       (:file "rpc")
 				       (:file "projview")
 				       (:file "pango")

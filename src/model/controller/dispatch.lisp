@@ -3,15 +3,15 @@
 ;; Data structure:
 ;; (mod-logic, (mods key:(state)) (norm key:(state))) : (fn1:nil, fn2:nil)
 
-;; Dispatch functions
-;; Refactor verbosity for dispatch functions
-
-;; rename -> event
 (defun dispatch-all-seq-event ()
   (loop
      :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
      ;; :using (hash-value states)
-     :do (dispatch-seq-event seq-event)))
+     :do (submit-task *channel-input*
+		      #'dispatch-seq-event
+		      seq-event)
+     :finally (dotimes (i (hash-table-count (key-callbacks *controller*))) ; use counter?
+		(receive-result *channel-input*))))
 
 (defun dispatch-seq-event (seq-event)
   (when (is-seq-event-valid seq-event)

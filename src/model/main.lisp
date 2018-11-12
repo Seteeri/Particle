@@ -37,8 +37,9 @@
   
 
 (defun init-kernel-lparallel ()
-  (setf *kernel*     (make-kernel 4)
-	*channel*    (make-channel)))
+  (setf *kernel*        (make-kernel 4)
+	*channel*       (make-channel)
+	*channel-input* (make-channel)))
 
 (defun run-graph-dep ()
   (let* ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
