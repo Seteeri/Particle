@@ -25,7 +25,7 @@
 	*height*   height
 	*inst-max* inst-max)
   
-  (exec-graph-dep)
+  (run-graph-dep)
   (fmt-model t "main-init" "Finished model initialization~%")
 
   (let ((thread-view  (bordeaux-threads:make-thread #'serve-client))
@@ -44,63 +44,33 @@
   (setf *kernel*     (make-kernel 4)
 	*channel*    (make-channel)))
 
-(defun exec-graph-dep ()
-  (let ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
-						   :type "lisp")
-				    (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
-	(path-tasks (merge-pathnames (make-pathname :name "tasks-model"
+(defun run-graph-dep ()
+  (let* ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
 						    :type "lisp")
 				     (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
-	(tasks nil))
-
-    ;; Refactor below into functions and place in analyzer module
-    
-    ;; If tasks exist, load it else generate it
-
-    (if (probe-file path-tasks)
-	(setf tasks (read-from-string (read-file-string path-tasks)))
-	
-	(multiple-value-bind (digraph root tasks-new)
-	    (analyze-file path-lisp :init-conn-rpc-view)
-	  (with-open-file (stream path-tasks
-				  ;; :external-format charset:iso-8859-1
-				  :direction :output
-				  :if-exists :overwrite
-				  :if-does-not-exist :create)
-	    (format stream "#(~%")
-	    (loop
-	       :for task :across tasks-new
-	       :do (if (listp task)
-		       (progn
-			 (format stream "(~%")
-			 (dolist (task-2 task)
-			   (format stream "~S~%" (protoform.analyzer-dep::data task-2)))
-			 (format stream ")~%"))
-		      (format stream "~S~%" (protoform.analyzer-dep::data task))))
-	    (format stream ")~%")
-	    t)
-	  (setf tasks tasks-new)))
-
-    ;; Then execute it
+	 (path-tasks (merge-pathnames (make-pathname :name "tasks-model"
+						     :type "lisp")
+				      (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
+	 (tasks (if (probe-file path-tasks) ; If tasks exist, load it else generate it
+		    (read-from-string (read-file-string path-tasks))
+		    (multiple-value-bind (digraph root tasks-new)
+			(analyze-file path-lisp path-tasks :init-conn-rpc-view)
+		      tasks-new))))
 
     ;; TODO: Recurse for more complicated setups, i.e. nested lists
-    (loop
-       :for i :from (1- (length tasks)) :downto 0
-       :for nodes := (aref tasks i)
-       :do (progn
-	     (loop
-		:for node :in nodes
-		:do (progn
-		      (submit-task *channel*
-				   (symbol-function (find-symbol (string node) :protoform.model)))
-		      (fmt-model t "main-init" "Submitted task: ~a~%" node)
-		      ;; (submit-task *channel*
-		      ;; 		   (symbol-function (find-symbol (string (protoform.analyzer-dep::data node)) :protoform.model)))
-		      ;; (fmt-model t "main-init" "Submitted task: ~a~%" (protoform.analyzer-dep::data node))
-		      ;; (receive-result *channel*)
-		      t))
-	     (dotimes (i (length nodes)) (receive-result *channel*))
-	     t))))
+    (submit-receive-graph tasks)))
+
+(defun submit-receive-graph (tasks)
+  (loop
+     :for i :from (1- (length tasks)) :downto 0
+     :for nodes := (aref tasks i)
+     :do (progn
+	   (loop
+	      :for node :in nodes
+	      :do (progn
+		    (submit-task *channel*
+				 (symbol-function (find-symbol (string node) :protoform.model))))
+	      :finally (dotimes (i (length nodes)) (receive-result *channel*))))))
 
 (defun set-projview ()
   (setf *projview* (make-instance 'projview

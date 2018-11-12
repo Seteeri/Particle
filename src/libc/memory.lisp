@@ -88,18 +88,6 @@
      :for c :across arr
      :do (setf (mem-aref ptr-mmap :uchar i) c)))
 
-;; (defun copy-data-to-shm (shm data &optional (offset-ptr 0))
-;;   (declare (type (array (unsigned-byte 8)) data))
-;;   (with-slots (ptr size)
-;;       shm
-;;     (loop
-;;        :for c :across data
-;;        :for i :upfrom 0
-;;        :do (setf (mem-aref ptr
-;;     			   :uchar
-;;     			   (+ offset-ptr i))
-;;     		 c))))
-
 (defun cleanup-mmap (mmap &optional (unlink nil))
   (when (lock mmap)
     (c-munlock (ptr mmap) (size mmap)))

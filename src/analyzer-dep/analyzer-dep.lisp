@@ -16,7 +16,7 @@
 (defun get-fn-rw (value)
   (cdr (second value)))
 
-(defun analyze-file (path-lisp fn-root)
+(defun analyze-file (path-lisp path-tasks fn-root)
   
   (with-input-from-string (stream (read-file-string path-lisp))
     (loop
@@ -59,6 +59,23 @@
   			:filename (str:concat (str:substring 0 -5 (file-namestring path-lisp))
 					      ".png")
 			:format :png))
+
+    (with-open-file (stream path-tasks
+			    ;; :external-format charset:iso-8859-1
+			    :direction :output
+			    :if-exists :overwrite
+			    :if-does-not-exist :create)
+      (format stream "#(~%")
+      (loop
+	 :for task :across tasks-new
+	 :do (if (listp task)
+		 (progn
+		   (format stream "(~%")
+		   (dolist (task-2 task)
+		     (format stream "~S~%" (data task-2)))
+		   (format stream ")~%"))
+		 (format stream "~S~%" (data task))))
+      (format stream ")~%"))
     
     (values digraph *sa-root* tasks)))
 
