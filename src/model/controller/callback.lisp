@@ -52,8 +52,7 @@
   (loop
      :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
      ;; :using (hash-value states)
-     :do (progn
-	   (dispatch-seq-event seq-event))))
+     :do (dispatch-seq-event seq-event)))
 
 (defun dispatch-seq-event (seq-event)
   (when (is-seq-event-valid seq-event)

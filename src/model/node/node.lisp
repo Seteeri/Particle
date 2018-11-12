@@ -180,40 +180,63 @@
 		 flags)
 	node
 
-      ;; Unroll below
-      (loop
-	 :for c :across (marr (matrix model-matrix))
-	 :for c-i :upfrom 0
-	 :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-		   c))
-      (incf offset-ptr 16)
+      (let ((marr (marr (matrix model-matrix))))
+	(setf (mem-aref ptr :float offset-ptr)        (aref marr 0)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 1)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 2)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 3)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 4)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 5)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 6)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 7)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 8)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 9)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 10)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 11)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 12)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 13)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 14)
+	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 15)))
+
+      (setf (mem-aref ptr :float (incf offset-ptr)) (aref rgba 0)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 1)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 2)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 3)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 4)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 5)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 6)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 7)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 8)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 9)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 10)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 11)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 12)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 13)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 14)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 15)
+	    
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 0)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 1)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 2)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 3)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 4)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 5)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 6)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 7)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 8)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 9)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 10)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 11)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 12)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 13)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 14)
+	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 15)
       
-      (loop
-	 :for c :across rgba
-	 :for c-i :upfrom 0
-	 :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-		   c))
-      (incf offset-ptr 16)
-
-      (loop
-	 :for c :across uv
-	 :for c-i :upfrom 0
-	 :do (setf (mem-aref ptr :float (+ offset-ptr c-i))
-		   c))
-      (incf offset-ptr 16)
-      
-      ;; Glyph, Flags, pad, pad
-      ;; (setf (mem-aref ptr :int (+ offset-ptr 0)) (- (char-code data) 32))
-      ;; http://www.lispworks.com/documentation/lcl50/aug/aug-90.html#HEADING90-0
-      (setf (mem-aref ptr :int (+ offset-ptr 0)) offset-texel-texture ; tex offset
-	    (mem-aref ptr :int (+ offset-ptr 1)) (aref dims-texture 0) ; tex dim x
-	    (mem-aref ptr :int (+ offset-ptr 2)) (aref dims-texture 1) ; tex dim y
-	    (mem-aref ptr :int (+ offset-ptr 3)) flags) ; draw
-      (incf offset-ptr 4)))
-
-  ;; (fmt-model t "copy-node-to-shm" "offset: ~S, bytes: ~S~%" offset-ptr (* offset-ptr 4))
-
-  t)
+	    ;; http://www.lispworks.com/documentation/lcl50/aug/aug-90.html#HEADING90-0
+            (mem-aref ptr :int (incf offset-ptr)) offset-texel-texture  ; tex offset
+	    (mem-aref ptr :int (incf offset-ptr)) (aref dims-texture 0) ; tex dim x
+	    (mem-aref ptr :int (incf offset-ptr)) (aref dims-texture 1) ; tex dim y
+	    (mem-aref ptr :int (incf offset-ptr)) flags))))
 
 ;; TODO: Refactor to pass offsets, range, etc.
 (defun copy-nodes-to-shm ()

@@ -242,7 +242,6 @@
 			 (setf *time-end* (+ *time-start* 4)) ; (/ frame count fps)
 			 (setf *time-duration* (- *time-end* *time-start*)) ; (/ frame-count fps)
 			 (setf *time-elapsed* 0.0)
-			 (setf *time-run* t)
 			 (ease-camera-x seq-event)))
     
     ;; Print hashtable
