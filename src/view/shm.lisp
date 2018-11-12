@@ -27,10 +27,7 @@
       *view*
     (let* ((mmap (init-mmap path
 			    size
-			    nil
-			    :data (make-array size
-					      :element-type '(unsigned-byte 8)
-					      :initial-element (coerce 0 '(unsigned-byte 8)))))
+			    nil))
 	   (inst (make-instance 'handle-shm
 				:name name
 				:mmap mmap)))

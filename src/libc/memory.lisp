@@ -75,22 +75,30 @@
    (lock :accessor lock :initarg :lock :initform nil)))
 
 (defun fill-mmap-2 (ptr-mmap arr)
-  ;; Set inital data for mmap
   (declare (type (array (unsigned-byte 8)) arr))
-  (cffi-sys:with-pointer-to-vector-data (ptr arr)
+  (cffi-sys:with-pointer-to-vector-data (ptr-arr arr)
     (c-memcpy ptr-mmap
-	      ptr
-	      (1- (length arr)))))
+	      ptr-arr
+	      (length arr))))
 
 (defun fill-mmap (ptr-mmap arr)
-  ;; Set inital data for mmap
-  ;; (loop
-  ;;    :for i :from 0 :below (length arr)
-  ;;    :for c :across arr
-  ;;    :do (setf (mem-aref ptr-mmap :char i)
-  ;; 	       c)))
-  t)
-  
+  (declare (type (array (unsigned-byte 8)) arr))
+  (loop
+     :for i :from 0 :below (length arr)
+     :for c :across arr
+     :do (setf (mem-aref ptr-mmap :uchar i) c)))
+
+;; (defun copy-data-to-shm (shm data &optional (offset-ptr 0))
+;;   (declare (type (array (unsigned-byte 8)) data))
+;;   (with-slots (ptr size)
+;;       shm
+;;     (loop
+;;        :for c :across data
+;;        :for i :upfrom 0
+;;        :do (setf (mem-aref ptr
+;;     			   :uchar
+;;     			   (+ offset-ptr i))
+;;     		 c))))
 
 (defun cleanup-mmap (mmap &optional (unlink nil))
   (when (lock mmap)
@@ -106,8 +114,7 @@
 		  size
 		  create
 		  &key
-		    (mlock nil)
-		    (data nil))
+		    (mlock nil))
   
   (when create
     (c-shm-unlink path))
@@ -118,16 +125,11 @@
 				   (logior #o100 #o2 #o200)
 				   (logior #o2)) ;; O_CREAT | O_RDWR | O_EXCL
 			       (logior #o0400 #o0200)))))  ;; S_IRUSR | S_IWUSR
-
-    ;; (format t "[init-mmap-shm] fd-shm: ~a~%" fd-shm)
-
-    ;; (format t "[init-mmap-shm] fd-shm: ~a, size: ~a~%" fd-shm size)
     
     (when (= fd-shm -1)
       (error (get-str-errno)))
     
-    ;; Configure the size of the shared memory segment
-    ;; Only do on creation
+    ;; Configure the size of the shared memory segment - only on create
     (when create 
       (c-ftruncate fd-shm size))
     
@@ -149,21 +151,14 @@
       ;; 		 length-shm
       ;; 		 3) ;MADV_WILLNEED
       
-      ;; (when mlock
-      (c-mlock ptr-shm-base size)
-      
-      ;; (format t "[init-mmap-shm] ptr-shm-base ~a~%" ptr-shm-base)
+      (when mlock
+	(c-mlock ptr-shm-base size))
       
       ;; if (shm_base == MAP_FAILED) {
       ;;   printf("prod: Map failed: %s\n", strerror(errno));
       ;;   // close and shm_unlink?
       ;;   exit(1);
       ;; }
-
-      ;; (format t "[init-mmap-shm] fd-shm: ~a~%" fd-shm)
-      
-      (when data
-	(fill-mmap ptr-shm-base data))
       
       (make-instance 'mmap
 		     :path path

@@ -233,6 +233,7 @@
 			   :exclusive
 			   (second seq-event))))
 
+    ;; How to handle situation if animation running
     (register-callback `(,+xk-f7+ (:press))
 		       :exclusive
 		       (lambda (seq-event)

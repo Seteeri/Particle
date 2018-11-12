@@ -11,11 +11,7 @@
 (defun handle-view-sync (time-view)
 
   ;; Brainstorm:
-  ;; 1. Input event loop should not use sock
-  ;;    -> Refactor callbacks to only do up to update shm function
-  ;; 2. Anims push (self) task into next q
-  ;; 3. Use graph like init for consistency
-  ;; 4. Refactor server message processing to accept self-evaluating symbols
+  ;; 1. Refactor server message processing to accept self-evaluating symbols
 
   ;; Input -> Model -|-> View
   ;;
@@ -44,13 +40,13 @@
   ;; For input:
   ;; - Some events need to be handled in serial such as key presses
   ;;   - Users expect input to be handled in serial, at least within a domain ie mouse vs keyboard
-  ;; - Each callback should execute a dep graph
-  ;; - Shm is handled by model
+  ;; - Each callback could execute a dep graph
 
   ;; Execute frame callbacks
   ;; - Can use submit task per callback/task
   ;; - Add flag whether to run sync or async
-  ;; - Non-frame tasks run in other thread
+  ;;   - Can run async if no dependent on any other variables used by other threads
+  ;; - Non-frame tasks would run in other thread...
   (loop
      :for task := (sb-concurrency:dequeue *queue-input*)
      :while task
@@ -62,11 +58,18 @@
   ;; Execute shm copy tasks
   ;; - Can be done in parallel assuming no overlapping operations...
   (loop
+     :for counter := 0
      :for task := (sb-concurrency:dequeue *queue-view*)
      :while task
-     :do (copy-data-to-shm (first task)
-			   (second task)
-			   (third task))) ; use parameters
+     :do (progn
+	   (incf counter)
+	   (submit-task *channel*
+			#'copy-data-to-shm
+			(first task)
+			(second task)
+			(third task)))
+     :finally (dotimes (i counter)
+		(receive-result *channel*)))
 
   ;; Is it faster to copy large contiguous area or numerous small segments?
   ;; Send message to view to copy shm
@@ -78,9 +81,7 @@
 				   (list "projview"
 				       	 0
       				       	 (* 4 16 2))))
-  
-  ;; (return-from handle-view-sync)
-    
+      
   ;; Swap queues
   ;; If controller writes to queue sometime between loop and swap
   ;; it will be delayed by one frame

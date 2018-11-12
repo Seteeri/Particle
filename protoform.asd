@@ -68,7 +68,7 @@
 		 	  :pathname "src/view"
 		 	  :components ((:file "view")
 				       (:file "cache")
-				       (:file "handle-shm")
+				       (:file "shm")
 				       (:file "compute")
 				       (:file "raster")
 				       (:file "memcpy")
