@@ -163,10 +163,20 @@
       ;; handlers in node
       (loop
 	 :for keysym :from 32 :to 255
-	 :do (register-callback `(,keysym (:press :repeat))
-				:exclusive
-				#'add-node-msdf)))
-
+	 :do (progn
+	       (register-callback `(,keysym (:press :repeat))
+	 			  :exclusive
+	 			  #'add-node-msdf)
+	       (register-callback `(,+xk-shift-l+ (:press :down)
+	       			    ,keysym (:press :repeat))
+	       			  :exclusive
+	       			  #'add-node-msdf)
+	       (register-callback `(,+xk-shift-r+ (:press :down)
+	       			    ,keysym (:press :repeat))
+	       			  :exclusive
+	       			  #'add-node-msdf)
+	       t)))
+    
     (when t
       ;; handlers in node
       (dolist (seq-event `((,+xk-backspace+  ,#'backspace-node-msdf)
