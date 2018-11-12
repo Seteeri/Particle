@@ -75,11 +75,12 @@
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
-    (sb-concurrency:enqueue (list *shm-nodes*
+    (sb-concurrency:enqueue (list *channel*
+				  *shm-nodes*
 				  (serialize-node node)
 				  (* (index node)
 				     +size-struct-instance+))
-			    *queue-view*)))
+			    *queue-view*)
 
     node))
 
@@ -123,7 +124,8 @@
       (digraph:remove-vertex *digraph*
 			     node-tgt)
 
-      (sb-concurrency:enqueue (list *shm-nodes*
+      (sb-concurrency:enqueue (list *channel*
+				    *shm-nodes*
 				    *data-zero-node*
 				    (* (index node-tgt)
 				       +size-struct-instance+))

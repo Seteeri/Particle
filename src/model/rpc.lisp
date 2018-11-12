@@ -50,8 +50,15 @@
   (loop
      :for task := (sb-concurrency:dequeue *queue-input*)
      :while task
-     :do (funcall (first task)
-		  (second task)))
+     :do (destructuring-bind (channel
+			      fn
+			      seq-key)
+	     task
+	   (if channel
+	       (submit-task channel
+			    fn
+			    seq-key)
+	       (funcall fn seq-key))))
 
   ;; Call receive-results as needed
   
@@ -61,13 +68,17 @@
      :for counter := 0
      :for task := (sb-concurrency:dequeue *queue-view*)
      :while task
-     :do (progn
+     :do (destructuring-bind (channel
+			      name-shm
+			      data
+			      offset)
+	     task
 	   (incf counter)
 	   (submit-task *channel*
 			#'copy-data-to-shm
-			(first task)
-			(second task)
-			(third task)))
+			name-shm
+			data
+			offset))
      :finally (dotimes (i counter)
 		(receive-result *channel*)))
 

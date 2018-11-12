@@ -50,7 +50,8 @@
     (update-mat-view)
 
     (let ((arr-view (marr (mtranspose (mat-view *projview*)))))
-      (sb-concurrency:enqueue (list *shm-projview*
+      (sb-concurrency:enqueue (list *channel*
+				    *shm-projview*
 				    (pack:pack "<16f"
 					       (aref arr-view 0)  (aref arr-view 1)  (aref arr-view 2)  (aref arr-view 3)
 					       (aref arr-view 4)  (aref arr-view 5)  (aref arr-view 6)  (aref arr-view 7)
@@ -66,7 +67,8 @@
 	  (setf *time-run* nil))
 	(progn
 	  ;; Push to other queue for next frame or anim will complete same frame
-	  (sb-concurrency:enqueue (list #'ease-camera-x
+	  (sb-concurrency:enqueue (list *channel*
+					#'ease-camera-x
 	    				seq-event)
 	    			  (if (eq *queue-input* *queue-front*)
   				      *queue-back*
