@@ -15,6 +15,10 @@
   ;; Maybe have pointer appear below/above so edge will show
 
   (fmt-model t "add-node-msdf" "~a~%" seq-key)
+
+  ;; Split into
+  ;; node
+  ;; digraph
   
   ;; Advance - origin to origin
   ;; 1. Find glyph A origin
@@ -66,12 +70,13 @@
     (digraph:insert-edge *digraph*
 			 *node-pointer*
 			 node)
+    
     ;; Move pointer node to right
-    (move-node-x *node-pointer*
-		 (* 96 *scale-node*)
-		 :relative
-		 t
-		 nil)
+    (displace-node-x *node-pointer*
+		     (* 96 *scale-node*)
+		     :relative
+		     t
+		     nil)
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
@@ -102,15 +107,15 @@
 				     *node-pointer*
 				     pred)
 		;; Move pointer node to right of pred and up a line
-		(move-node-x *node-pointer*
-			     (+ (vx3 (translation (model-matrix pred)))
-				(* 96 *scale-node*))
-			     :absolute
-			     t ; do on move-node-y
-			     nil)
+		(displace-node-x *node-pointer*
+				 (+ (vx3 (translation (model-matrix pred)))
+				    (* 96 *scale-node*))
+				 :absolute
+				 t ; do on move-node-y
+				 nil)
 		;; Only move if end of line - REFACTOR ENTER
 		(when nil
-		  (move-node-y *node-pointer*
+		  (displace-node-y *node-pointer*
 			       (* +linegap+ scale-node) ; add more spacing due to bl adjustments
 			       :relative
 			       t
@@ -135,10 +140,10 @@
   ;; Add node
   ;; Move pointer back
   (let ((node (add-node-msdf seq-key)))
-    (move-node-x *node-pointer*
+    (displace-node-x *node-pointer*
 		 -11.5199995
 		 :absolute)
-    (move-node-y *node-pointer*
+    (displace-node-y *node-pointer*
 		 (- (* +linegap+ *scale-node*))
 		 :relative) ; add more spacing due to bl adjustments    
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))))

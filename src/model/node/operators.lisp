@@ -1,6 +1,6 @@
 (in-package :protoform.model)
 
-(defun move-node-x (node
+(defun displace-node-x (node
 		    displacement
 		    type-displace
 		    &optional
@@ -26,7 +26,7 @@
       				       	       (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
 				       					    (digraph:count-edges *digraph*)))))))))
 
-(defun move-node-y (node
+(defun displace-node-y (node
 		    displacement
 		    type-displace
 		    &optional

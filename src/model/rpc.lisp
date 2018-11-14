@@ -42,6 +42,9 @@
   ;;   - Users expect input to be handled in serial, at least within a domain ie mouse vs keyboard
   ;; - Each callback could execute a dep graph
 
+  ;; Time duration
+  ;; If exceed 16.7 ms, break
+  
   ;; Execute frame callbacks
   ;; - Can use submit task per callback/task
   ;; - Add flag whether to run sync or async
