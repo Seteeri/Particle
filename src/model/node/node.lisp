@@ -29,6 +29,15 @@
 
 (defparameter +linegap+ (+ 96 (* 8 5.8239365)))
 
+(defparameter *data-zero-node* (make-array +size-struct-instance+
+					   :adjustable nil
+					   :fill-pointer nil
+					   :element-type '(unsigned-byte 8)
+					   :initial-element (coerce 0 '(unsigned-byte 8))))
+;; :data (make-array size
+;; 		  :element-type '(unsigned-byte 8)
+;; 		  :initial-element (coerce 0 '(unsigned-byte 8)))
+
 (defclass node ()
   ((data :accessor data :initarg :data :initform nil)
    (index :accessor index :initarg :index :initform nil)

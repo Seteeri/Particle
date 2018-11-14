@@ -18,6 +18,14 @@
 				   +size-struct-instance+))
 			  *queue-view*))  
 
+(defun enqueue-node-zero (index)
+  (sb-concurrency:enqueue (list *channel*
+				*shm-nodes*
+				*data-zero-node*
+				(* index
+				   +size-struct-instance+))
+			  *queue-view*))
+
 (defun displace-node-x (node
 			displacement
 			type-displace)

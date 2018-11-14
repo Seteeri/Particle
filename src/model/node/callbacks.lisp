@@ -1,14 +1,5 @@
 (in-package :protoform.model)
 
-(defparameter *data-zero-node* (make-array +size-struct-instance+
-					   :adjustable nil
-					   :fill-pointer nil
-					   :element-type '(unsigned-byte 8)
-					   :initial-element (coerce 0 '(unsigned-byte 8))))
-;; :data (make-array size
-;; 		  :element-type '(unsigned-byte 8)
-;; 		  :initial-element (coerce 0 '(unsigned-byte 8)))
-
 (defun add-node-msdf (seq-key)
   ;; Add node to pointer position
   ;; Move pointer right
@@ -75,9 +66,7 @@
     ;; Move pointer node to right
     (displace-node-x *node-pointer*
 		     (* 96 *scale-node*)
-		     :rel
-		     t
-		     nil)
+		     :rel)
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
@@ -106,16 +95,12 @@
 		(displace-node-x *node-pointer*
 				 (+ (vx3 (translation (model-matrix pred)))
 				    (* 96 *scale-node*))
-				 :abs
-				 t ; do on move-node-y
-				 nil)
+				 :abs)
 		;; Only move if end of line - REFACTOR ENTER
 		(when nil
 		  (displace-node-y *node-pointer*
 			       (* +linegap+ scale-node) ; add more spacing due to bl adjustments
-			       :rel
-			       t
-			       nil)))))
+			       :rel)))))
 	;; Now can remove edges
 	(dolist (pred preds)
 	  (digraph:remove-edge *digraph*
@@ -125,7 +110,8 @@
       (digraph:remove-vertex *digraph*
 			     node-tgt)
 
-      (enqueue-node node))))
+      (enqueue-node-pointer)
+      (enqueue-node-zero (index node-tgt)))))
 
 (defun return-node-msdf (seq-key)
   ;; Move pointer
