@@ -49,16 +49,7 @@
 
     (update-mat-view)
 
-    (let ((arr-view (marr (mtranspose (mat-view *projview*)))))
-      (sb-concurrency:enqueue (list *channel*
-				    *shm-projview*
-				    (pack:pack "<16f"
-					       (aref arr-view 0)  (aref arr-view 1)  (aref arr-view 2)  (aref arr-view 3)
-					       (aref arr-view 4)  (aref arr-view 5)  (aref arr-view 6)  (aref arr-view 7)
-					       (aref arr-view 8)  (aref arr-view 9)  (aref arr-view 10) (aref arr-view 11)
-					       (aref arr-view 12) (aref arr-view 13) (aref arr-view 14) (aref arr-view 15))
-				    (* 16 4))
-			      *queue-view*))
+    (enqueue-projview)
     
     ;; Cap time-delta to ending time
     (if (> *time-elapsed* *time-duration*)

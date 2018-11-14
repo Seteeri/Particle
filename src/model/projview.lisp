@@ -69,6 +69,18 @@
     (memcpy-shm-to-cache "projview"
 			 *shm-projview*)))
 
+(defun enqueue-projview ()
+  (let ((arr-view (marr (mtranspose (mat-view *projview*)))))
+    (sb-concurrency:enqueue (list *channel*
+				  *shm-projview*
+				  (pack:pack "<16f"
+					     (aref arr-view 0)  (aref arr-view 1)  (aref arr-view 2)  (aref arr-view 3)
+					     (aref arr-view 4)  (aref arr-view 5)  (aref arr-view 6)  (aref arr-view 7)
+					     (aref arr-view 8)  (aref arr-view 9)  (aref arr-view 10) (aref arr-view 11)
+					     (aref arr-view 12) (aref arr-view 13) (aref arr-view 14) (aref arr-view 15))
+				  (* 16 4))
+			    *queue-view*)))
+
 (defun update-scale-ortho-in (seq-event) ; in
   (with-slots (pos
 	       scale-ortho
@@ -76,7 +88,7 @@
       *projview*
     (decf scale-ortho
 	  (vz3 displace))
-    (copy-projview-to-shm)))
+    (enqueue-projview)))
 
 (defun update-scale-ortho-out (seq-event) ; out
   (with-slots (pos
@@ -85,7 +97,7 @@
       *projview*
     (incf scale-ortho
 	  (vz3 displace))
-    (copy-projview-to-shm)))
+    (enqueue-projview)))
 
 (defun move-camera-left (seq-event)
   (with-slots (pos
@@ -93,7 +105,7 @@
       *projview*
     (decf (vx3 pos)
 	  (vx3 displace)))
-  (copy-projview-to-shm))
+  (enqueue-projview))
 
 (defun move-camera-right (seq-event)
   (with-slots (pos
@@ -101,7 +113,7 @@
       *projview*
     (incf (vx3 pos)
 	  (vx3 displace)))
-  (copy-projview-to-shm))
+    (enqueue-projview))
 
 (defun move-camera-up (seq-event)
   (with-slots (pos
@@ -109,7 +121,7 @@
       *projview*
     (incf (vy3 pos)
 	  (vy3 displace)))
-  (copy-projview-to-shm))
+    (enqueue-projview))
 
 (defun move-camera-down (seq-event)
   (with-slots (pos
@@ -117,7 +129,7 @@
       *projview*
     (decf (vy3 pos)
 	  (vy3 displace)))
-  (copy-projview-to-shm))
+    (enqueue-projview))
 
 
 (defun update-clip-planes (msdf)
