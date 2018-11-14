@@ -167,6 +167,7 @@
 	       (register-callback `(,keysym (:press :repeat))
 	 			  :exclusive
 	 			  #'add-node-msdf)
+	       ;; Better way to handle below?
 	       (register-callback `(,+xk-shift-l+ (:press :down)
 	       			    ,keysym (:press :repeat))
 	       			  :exclusive
