@@ -42,26 +42,26 @@
   (displace-node-x *node-pointer*
 		   (- (* 96 *scale-node*))
 		   :rel)
-  (enqueue-pointer)
+  (enqueue-node-pointer)
   (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*))))
 
 (defun move-pointer-up (seq-key)
   (displace-node-y *node-pointer*
 		   (* +linegap+ *scale-node*) ; add more spacing due to bl adjustments
 		   :rel)
-  (enqueue-pointer)
+  (enqueue-node-pointer)
   (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*))))
 
 (defun move-pointer-right (seq-key)
   (displace-node-x *node-pointer*
 		   (* 96 *scale-node*)
 		   :rel)
-  (enqueue-pointer)
+  (enqueue-node-pointer)
   (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*))))  
 
 (defun move-pointer-down (seq-key)
   (displace-node-y *node-pointer*
 		   (- (* +linegap+ *scale-node*)) ; add more spacing due to bl adjustments
 		   :rel)
-  (enqueue-pointer)
+  (enqueue-node-pointer)
   (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*))))  
