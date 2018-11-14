@@ -6,9 +6,9 @@
     (with-slots (model-matrix
 		 index)
 	node
-      (cond ((eq type-displace :absolute)
+      (cond ((eq type-displace :abs)
 	     (setf (vx3 (translation model-matrix)) displacement))
-	    ((eq type-displace :relative)
+	    ((eq type-displace :rel)
 	     (incf (vx3 (translation model-matrix)) displacement))
 	    (t
 	     (error "Unknown type-displace")))
@@ -20,9 +20,9 @@
     (with-slots (model-matrix
 		 index)
 	node
-      (cond ((eq type-displace :absolute)
+      (cond ((eq type-displace :abs)
 	     (setf (vy3 (translation model-matrix)) displacement))
-	    ((eq type-displace :relative)
+	    ((eq type-displace :rel)
 	     (incf (vy3 (translation model-matrix)) displacement))
 	    (t
 	     (error "Unknown type-displace")))

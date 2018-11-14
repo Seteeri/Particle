@@ -93,7 +93,7 @@
     ;; Move pointer node to right
     (displace-node-x *node-pointer*
 		     (* 96 *scale-node*)
-		     :relative
+		     :rel
 		     t
 		     nil)
 
@@ -124,14 +124,14 @@
 		(displace-node-x *node-pointer*
 				 (+ (vx3 (translation (model-matrix pred)))
 				    (* 96 *scale-node*))
-				 :absolute
+				 :abs
 				 t ; do on move-node-y
 				 nil)
 		;; Only move if end of line - REFACTOR ENTER
 		(when nil
 		  (displace-node-y *node-pointer*
 			       (* +linegap+ scale-node) ; add more spacing due to bl adjustments
-			       :relative
+			       :rel
 			       t
 			       nil)))))
 	;; Now can remove edges
@@ -152,10 +152,10 @@
   ;; Do first since add-node will do pointer also - refactor that...
   (displace-node-x *node-pointer*
 		   -11.5199995
-		   :absolute)
+		   :abs)
   (displace-node-y *node-pointer*
 		   (- (* +linegap+ *scale-node*))
-		   :relative) ; add more spacing due to bl adjustments
+		   :rel) ; add more spacing due to bl adjustments
   
   (add-node-msdf seq-key)
 
