@@ -8,6 +8,21 @@
 ;; :data (make-array size
 ;; 		  :element-type '(unsigned-byte 8)
 ;; 		  :initial-element (coerce 0 '(unsigned-byte 8)))
+
+(defun enqueue-node (node &optional (pointer t))
+  (when pointer
+    (sb-concurrency:enqueue (list *channel*
+				  *shm-nodes*
+				  (serialize-node *node-pointer*)
+				  (* (index *node-pointer*)
+				     +size-struct-instance+))
+			    *queue-view*))
+  (sb-concurrency:enqueue (list *channel*
+				*shm-nodes*
+				(serialize-node node)
+				(* (index node)
+				   +size-struct-instance+))
+			  *queue-view*))
   
 (defun add-node-msdf (seq-key)
   ;; Add node to pointer position
@@ -81,19 +96,7 @@
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
-    (sb-concurrency:enqueue (list *channel*
-				  *shm-nodes*
-				  (serialize-node *node-pointer*)
-				  (* (index *node-pointer*)
-				     +size-struct-instance+))
-			    *queue-view*)
-    
-    (sb-concurrency:enqueue (list *channel*
-				  *shm-nodes*
-				  (serialize-node node)
-				  (* (index node)
-				     +size-struct-instance+))
-			    *queue-view*)
+    (enqueue-node node)
 
     node))
 
@@ -137,37 +140,22 @@
       (digraph:remove-vertex *digraph*
 			     node-tgt)
 
-    (sb-concurrency:enqueue (list *channel*
-				  *shm-nodes*
-				  (serialize-node *node-pointer*)
-				  (* (index *node-pointer*)
-				     +size-struct-instance+))
-			    *queue-view*)
-      
-    (sb-concurrency:enqueue (list *channel*
-				  *shm-nodes*
-				  *data-zero-node*
-				  (* (index node-tgt)
-				     +size-struct-instance+))
-			    *queue-view*))))
+      (enqueue-node node))))
 
 (defun return-node-msdf (seq-key)
+  ;; Move pointer
   ;; Add node
-  ;; Move pointer back
-  (let ((node (add-node-msdf seq-key)))
-    (displace-node-x *node-pointer*
-		     -11.5199995
-		     :absolute)
-    (displace-node-y *node-pointer*
-		     (- (* +linegap+ *scale-node*))
-		     :relative) ; add more spacing due to bl adjustments
 
-    ;; add-node-msdf enqueues also
-    (sb-concurrency:enqueue (list *channel*
-				  *shm-nodes*
-				  (serialize-node *node-pointer*)
-				  (* (index *node-pointer*)
-				     +size-struct-instance+))
-			    *queue-view*)
-    
-    (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))))
+  ;; Do first since add-node will do pointer also - refactor that...
+  (displace-node-x *node-pointer*
+		   -11.5199995
+		   :absolute)
+  (displace-node-y *node-pointer*
+		   (- (* +linegap+ *scale-node*))
+		   :relative) ; add more spacing due to bl adjustments
+  
+  (add-node-msdf seq-key)
+
+  ;; (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))
+  
+  t)
