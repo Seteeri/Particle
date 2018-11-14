@@ -70,54 +70,54 @@
 			 *shm-projview*)))
 
 (defun update-scale-ortho-in (seq-event) ; in
-    (with-slots (pos
-		 scale-ortho
-		 displace)
-	*projview*
-      (decf scale-ortho
-	    (vz3 displace))
-      (copy-projview-to-shm)))
+  (with-slots (pos
+	       scale-ortho
+	       displace)
+      *projview*
+    (decf scale-ortho
+	  (vz3 displace))
+    (copy-projview-to-shm)))
 
 (defun update-scale-ortho-out (seq-event) ; out
-    (with-slots (pos
-		 scale-ortho
-		 displace)
-	*projview*
-      (incf scale-ortho
-	    (vz3 displace))
-      (copy-projview-to-shm)))
+  (with-slots (pos
+	       scale-ortho
+	       displace)
+      *projview*
+    (incf scale-ortho
+	  (vz3 displace))
+    (copy-projview-to-shm)))
 
 (defun move-camera-left (seq-event)
-    (with-slots (pos
-		 displace)
-	*projview*
-      (decf (vx3 pos)
-	    (vx3 displace)))
-    (copy-projview-to-shm))
+  (with-slots (pos
+	       displace)
+      *projview*
+    (decf (vx3 pos)
+	  (vx3 displace)))
+  (copy-projview-to-shm))
 
 (defun move-camera-right (seq-event)
-    (with-slots (pos
-		 displace)
-	*projview*
-      (incf (vx3 pos)
-	    (vx3 displace)))
-    (copy-projview-to-shm))
+  (with-slots (pos
+	       displace)
+      *projview*
+    (incf (vx3 pos)
+	  (vx3 displace)))
+  (copy-projview-to-shm))
 
 (defun move-camera-up (seq-event)
-    (with-slots (pos
-		 displace)
-	*projview*
-      (incf (vy3 pos)
-	    (vy3 displace)))
-    (copy-projview-to-shm))
+  (with-slots (pos
+	       displace)
+      *projview*
+    (incf (vy3 pos)
+	  (vy3 displace)))
+  (copy-projview-to-shm))
 
 (defun move-camera-down (seq-event)
-    (with-slots (pos
-		 displace)
-	*projview*
-      (decf (vy3 pos)
-	    (vy3 displace)))
-    (copy-projview-to-shm))
+  (with-slots (pos
+	       displace)
+      *projview*
+    (decf (vy3 pos)
+	  (vy3 displace)))
+  (copy-projview-to-shm))
 
 
 (defun update-clip-planes (msdf)
