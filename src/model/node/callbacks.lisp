@@ -11,19 +11,22 @@
 
 (defun enqueue-node (node &optional (pointer t))
   (when pointer
-    (sb-concurrency:enqueue (list *channel*
-				  *shm-nodes*
-				  (serialize-node *node-pointer*)
-				  (* (index *node-pointer*)
-				     +size-struct-instance+))
-			    *queue-view*))
+    (enqueue-node-pointer))
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
 				(serialize-node node)
 				(* (index node)
 				   +size-struct-instance+))
 			  *queue-view*))
-  
+
+(defun enqueue-node-pointer ()
+  (sb-concurrency:enqueue (list *channel*
+				*shm-nodes*
+				(serialize-node *node-pointer*)
+				(* (index *node-pointer*)
+				   +size-struct-instance+))
+			  *queue-view*))  
+
 (defun add-node-msdf (seq-key)
   ;; Add node to pointer position
   ;; Move pointer right
