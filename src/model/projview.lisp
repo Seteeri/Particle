@@ -11,7 +11,7 @@
    (mat-view :accessor mat-view :initarg :mat-view :initform nil)
    (pos :accessor pos :initarg :pos :initform (vec3 0 0 10))
    (rot :accessor rot :initarg :rot :initform (vec3 0 0 0))
-   (displace :accessor displace :initarg :displace :initform (vec3 1.0 1.0 0.6))))
+   (displace :accessor displace :initarg :displace :initform (vec3 1.0 1.0 0.75))))
 
 (defun update-mat-proj ()
   (with-slots (width
@@ -54,22 +54,21 @@
 		(mat-view *projview*)
 		16)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun copy-projview-to-shm (&optional (memcpy-shm-to-cache t))  
-  (update-mat-proj)
-  (update-mat-view)
-  ;; (write-matrix (mat-view (projview model)) t)
+(defun enqueue-mat-proj ()
+  (let ((arr-proj (marr (mtranspose (mat-proj *projview*)))))
+    (sb-concurrency:enqueue (list *channel*
+				  *shm-projview*
+				  (pack:pack "<16f"
+					     (aref arr-proj 0)  (aref arr-proj 1)  (aref arr-proj 2)  (aref arr-proj 3)
+					     (aref arr-proj 4)  (aref arr-proj 5)  (aref arr-proj 6)  (aref arr-proj 7)
+					     (aref arr-proj 8)  (aref arr-proj 9)  (aref arr-proj 10) (aref arr-proj 11)
+					     (aref arr-proj 12) (aref arr-proj 13) (aref arr-proj 14) (aref arr-proj 15))
+				  0)
+			    *queue-view*)))
 
-  (copy-mat-proj-to-shm)
-  (copy-mat-view-to-shm)
-  
-  ;; Flag dirty do at end of loop
-  (when memcpy-shm-to-cache
-    (memcpy-shm-to-cache "projview"
-			 *shm-projview*)))
-
-(defun enqueue-projview ()
+(defun enqueue-mat-view ()
   (let ((arr-view (marr (mtranspose (mat-view *projview*)))))
     (sb-concurrency:enqueue (list *channel*
 				  *shm-projview*
@@ -81,23 +80,25 @@
 				  (* 16 4))
 			    *queue-view*)))
 
+
 (defun update-scale-ortho-in (seq-event) ; in
-  (with-slots (pos
-	       scale-ortho
+  (with-slots (scale-ortho
 	       displace)
       *projview*
     (decf scale-ortho
-	  (vz3 displace))
-    (enqueue-projview)))
+	  (vz3 displace)))
+  (update-mat-proj)
+  (enqueue-mat-proj))
 
 (defun update-scale-ortho-out (seq-event) ; out
-  (with-slots (pos
-	       scale-ortho
+  (with-slots (scale-ortho
 	       displace)
       *projview*
     (incf scale-ortho
-	  (vz3 displace))
-    (enqueue-projview)))
+	  (vz3 displace)))
+  (update-mat-proj)
+  (enqueue-mat-proj))
+
 
 (defun move-camera-left (seq-event)
   (with-slots (pos
@@ -105,7 +106,8 @@
       *projview*
     (decf (vx3 pos)
 	  (vx3 displace)))
-  (enqueue-projview))
+  (update-mat-view)
+  (enqueue-mat-view))
 
 (defun move-camera-right (seq-event)
   (with-slots (pos
@@ -113,7 +115,8 @@
       *projview*
     (incf (vx3 pos)
 	  (vx3 displace)))
-    (enqueue-projview))
+  (update-mat-view)
+  (enqueue-mat-view))
 
 (defun move-camera-up (seq-event)
   (with-slots (pos
@@ -121,7 +124,8 @@
       *projview*
     (incf (vy3 pos)
 	  (vy3 displace)))
-    (enqueue-projview))
+  (update-mat-view)
+  (enqueue-mat-view))
 
 (defun move-camera-down (seq-event)
   (with-slots (pos
@@ -129,7 +133,8 @@
       *projview*
     (decf (vy3 pos)
 	  (vy3 displace)))
-    (enqueue-projview))
+  (update-mat-view)
+  (enqueue-mat-view))
 
 
 (defun update-clip-planes (msdf)

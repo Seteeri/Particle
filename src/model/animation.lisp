@@ -48,8 +48,7 @@
       t)
 
     (update-mat-view)
-
-    (enqueue-projview)
+    (enqueue-mat-view)
     
     ;; Cap time-delta to ending time
     (if (> *time-elapsed* *time-duration*)

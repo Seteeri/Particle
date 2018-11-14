@@ -169,11 +169,11 @@
 	 			  #'add-node-msdf)
 	       ;; Better way to handle below?
 	       (register-callback `(,+xk-shift-l+ (:press :down)
-	       			    ,keysym (:press :repeat))
+	       			    ,keysym       (:press :repeat))
 	       			  :exclusive
 	       			  #'add-node-msdf)
 	       (register-callback `(,+xk-shift-r+ (:press :down)
-	       			    ,keysym (:press :repeat))
+	       			    ,keysym       (:press :repeat))
 	       			  :exclusive
 	       			  #'add-node-msdf)
 	       t)))
@@ -196,13 +196,13 @@
 			   :exclusive
 			   (second seq-event))))
     
-    (when nil
+    (when t
       ;; handlers in projview
       (dolist (seq-event `((,+xk-left+       ,#'move-camera-left)
 			   (,+xk-up+         ,#'move-camera-up)
 			   (,+xk-right+      ,#'move-camera-right)
 			   (,+xk-down+       ,#'move-camera-down)))
-	(register-callback `(,+xk-control-l+ (:press :down)
+	(register-callback `(,+xk-control-l+    (:press :down)
 			     ,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event)))
@@ -211,8 +211,8 @@
 			   (,+xk-up+         ,#'update-scale-ortho-in)
 			   (,+xk-right+      ,#'update-scale-ortho-in)
 			   (,+xk-down+       ,#'update-scale-ortho-out)))
-	(register-callback `(,+xk-control-l+ (:press :down)
-			     ,+xk-shift-l+ (:press :down)
+	(register-callback `(,+xk-control-l+    (:press :down)
+			     ,+xk-shift-l+      (:press :down)
 			     ,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))
