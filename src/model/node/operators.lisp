@@ -1,5 +1,23 @@
 (in-package :protoform.model)
 
+(defun enqueue-node (node &optional (pointer t))
+  (when pointer
+    (enqueue-node-pointer))
+  (sb-concurrency:enqueue (list *channel*
+				*shm-nodes*
+				(serialize-node node)
+				(* (index node)
+				   +size-struct-instance+))
+			  *queue-view*))
+
+(defun enqueue-node-pointer ()
+  (sb-concurrency:enqueue (list *channel*
+				*shm-nodes*
+				(serialize-node *node-pointer*)
+				(* (index *node-pointer*)
+				   +size-struct-instance+))
+			  *queue-view*))  
+
 (defun displace-node-x (node
 			displacement
 			type-displace)

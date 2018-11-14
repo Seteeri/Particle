@@ -9,24 +9,6 @@
 ;; 		  :element-type '(unsigned-byte 8)
 ;; 		  :initial-element (coerce 0 '(unsigned-byte 8)))
 
-(defun enqueue-node (node &optional (pointer t))
-  (when pointer
-    (enqueue-node-pointer))
-  (sb-concurrency:enqueue (list *channel*
-				*shm-nodes*
-				(serialize-node node)
-				(* (index node)
-				   +size-struct-instance+))
-			  *queue-view*))
-
-(defun enqueue-node-pointer ()
-  (sb-concurrency:enqueue (list *channel*
-				*shm-nodes*
-				(serialize-node *node-pointer*)
-				(* (index *node-pointer*)
-				   +size-struct-instance+))
-			  *queue-view*))  
-
 (defun add-node-msdf (seq-key)
   ;; Add node to pointer position
   ;; Move pointer right
