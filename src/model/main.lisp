@@ -186,7 +186,7 @@
 			   :exclusive
 			   (second seq-event))))
     
-    (when nil
+    (when t
       ;; handlers in node
       (dolist (seq-event `((,+xk-left+       ,#'move-pointer-left)
 			   (,+xk-up+         ,#'move-pointer-up)
