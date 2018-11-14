@@ -1,11 +1,8 @@
 (in-package :protoform.model)
 
 (defun displace-node-x (node
-		    displacement
-		    type-displace
-		    &optional
-		      (copy-to-shm t)
-		      (copy-to-cache t))
+			displacement
+			type-displace)
     (with-slots (model-matrix
 		 index)
 	node
@@ -15,23 +12,11 @@
 	     (incf (vx3 (translation model-matrix)) displacement))
 	    (t
 	     (error "Unknown type-displace")))
-      (update-transform model-matrix)
-      (when copy-to-shm
-	(copy-node-to-shm node
-			  (* index
-			     (/ +size-struct-instance+ 4))))
-      (when copy-to-cache
-	(memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	       0
-      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
-				       					    (digraph:count-edges *digraph*)))))))))
+      (update-transform model-matrix)))
 
 (defun displace-node-y (node
-		    displacement
-		    type-displace
-		    &optional
-		      (copy-to-shm t)
-		      (copy-to-cache t))
+			displacement
+			type-displace)
     (with-slots (model-matrix
 		 index)
 	node
@@ -41,16 +26,7 @@
 	     (incf (vy3 (translation model-matrix)) displacement))
 	    (t
 	     (error "Unknown type-displace")))
-      (update-transform model-matrix)
-      (when copy-to-shm
-	(copy-node-to-shm node
-			  (* index
-			     (/ +size-struct-instance+ 4))))
-      (when copy-to-cache
-	(memcpy-shm-to-cache-flag* (list (list "nodes"
-				       	       0
-      				       	       (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
-				       					    (digraph:count-edges *digraph*)))))))))
+      (update-transform model-matrix)))
 
 (defun eval-node-msdf (seq-key)
   ;; To eval, build up string from predecessors

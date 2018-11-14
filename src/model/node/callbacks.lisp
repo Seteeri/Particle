@@ -17,8 +17,9 @@
   (fmt-model t "add-node-msdf" "~a~%" seq-key)
 
   ;; Split into
-  ;; node
+  ;; node new
   ;; digraph
+  ;; pointer
   
   ;; Advance - origin to origin
   ;; 1. Find glyph A origin
@@ -82,6 +83,13 @@
 
     (sb-concurrency:enqueue (list *channel*
 				  *shm-nodes*
+				  (serialize-node *node-pointer*)
+				  (* (index *node-pointer*)
+				     +size-struct-instance+))
+			    *queue-view*)
+    
+    (sb-concurrency:enqueue (list *channel*
+				  *shm-nodes*
 				  (serialize-node node)
 				  (* (index node)
 				     +size-struct-instance+))
@@ -129,21 +137,37 @@
       (digraph:remove-vertex *digraph*
 			     node-tgt)
 
-      (sb-concurrency:enqueue (list *channel*
-				    *shm-nodes*
-				    *data-zero-node*
-				    (* (index node-tgt)
-				       +size-struct-instance+))
-			      *queue-view*))))
+    (sb-concurrency:enqueue (list *channel*
+				  *shm-nodes*
+				  (serialize-node *node-pointer*)
+				  (* (index *node-pointer*)
+				     +size-struct-instance+))
+			    *queue-view*)
+      
+    (sb-concurrency:enqueue (list *channel*
+				  *shm-nodes*
+				  *data-zero-node*
+				  (* (index node-tgt)
+				     +size-struct-instance+))
+			    *queue-view*))))
 
 (defun return-node-msdf (seq-key)
   ;; Add node
   ;; Move pointer back
   (let ((node (add-node-msdf seq-key)))
     (displace-node-x *node-pointer*
-		 -11.5199995
-		 :absolute)
+		     -11.5199995
+		     :absolute)
     (displace-node-y *node-pointer*
-		 (- (* +linegap+ *scale-node*))
-		 :relative) ; add more spacing due to bl adjustments    
+		     (- (* +linegap+ *scale-node*))
+		     :relative) ; add more spacing due to bl adjustments
+
+    ;; add-node-msdf enqueues also
+    (sb-concurrency:enqueue (list *channel*
+				  *shm-nodes*
+				  (serialize-node *node-pointer*)
+				  (* (index *node-pointer*)
+				     +size-struct-instance+))
+			    *queue-view*)
+    
     (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))))
