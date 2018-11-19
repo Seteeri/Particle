@@ -8,15 +8,12 @@ information as they moved through the computer. What did they look like?
  Ships? Motorcycles? Were the circuits like freeways? I kept dreaming of
   a world I thought I'd never see. And then one day . . .
 
-Protoform is a Common Lisp 3D nodal/graph IDE based on DRM-KMS and 
-Open GL ES designed around working in a freeform/prototyping 
-envirornment with data across different domains, analagous to a desktop
-environment providing default programs for common tasks.
+Protoform is a Common Lisp 3D nodal/graph shell based on DRM-KMS and 
+Open GL ES.
 
 It is the implementation of my vision of a more consistent programmable
-user-interface to replace the desktop. It aims to integrate concepts 
-from the REPL, CLI, WM/DE, and common data/file types into a single 3D 
-interface.
+user-interface to replace the desktop. It integrates concepts from
+REPLs/CLIs, WMs/DEs into a single 3D interface.
 
 Traditionally computers have worked by having different applications and
 UIs working on both different and similar data with overlapping 
@@ -29,11 +26,10 @@ interface with less redundancy which is faster to learn. Data today is
 not simply numbers and text but much more, and users need an interface
 that can cut across all domains.
 
-It aims to integrate Wayland/X which would provide windows as planes in 
-space, effectively making Protoform a "meta-manager" around the desktop.
-This would allow grouping windows into a single plane with the plane 
-representing the conventional desktop, e.g. Weston running on 
-Weston/etc., or have windows existing in the environment in free space.
+It aims to integrate Wayland/X initially by provide the desktop as a
+plane (window) in 3D space, effectively making Protoform a 
+"meta-manager" around the desktop. Later, Protoform could be extended to
+allow windows to exist in 3D space.
 
 The target audience consists of programmers, developers, system
 administrators, power users and the like. It is designed for workstations 
@@ -42,7 +38,8 @@ information across various domains.
 
 Eventually, I would like to implement a different interface for the less
 programmatically inclined users, starting with people that are familiar
-with the MS Office suite.
+with the MS Office suite, which may be considered ubiquitious to the
+average user.
 
 ## The Inspiration
 
@@ -124,7 +121,7 @@ naturally remains an orthogonal possibility.
 
 ## The Roadmap
 
-Core Functionality - Version 0.1
+Core (REPL) Functionality
 1. OpenGL infrastructure - DONE
    1. Framebuffers, render to texture, etc. - WIP
 2. Pango text rendering - DONE
@@ -132,20 +129,20 @@ Core Functionality - Version 0.1
 4. Drawing nodes, lines - DONE
 5. Task-basked parallelism - WIP
 
-Core Extensions - Version 0.2
+Core Extensions
 1. Numbered links for navigations
-2. Wayland compositing
-3. Undo system
-
-Personal Extensions - Version 0.3
-1. FFMPEG for media - images, video, audio
+2. Undo system
+3. FFMPEG for media - images, video, audio
    * GEGL another option
-2. Per-object vector motion blur (personal favorite)
-3. Portals
+4. Wayland compositing
+
+Personal Extensions
+1. Per-object vector motion blur (personal favorite)
+2. Portals (physical shortcuts)
 
 Future Extensions
 1. Tiled forward rendering (Forward+) including lights
-   * Future: Implement clustered then volumetric forward shading
+   * Future: Implement clustered -> volumetric forward shading
 2. Native web browser engine
 
 ## The Requirements
