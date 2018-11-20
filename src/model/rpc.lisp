@@ -10,42 +10,11 @@
 
 (defun handle-view-sync (time-view)
 
-  ;; Brainstorm:
-  ;; 1. Refactor server message processing to accept self-evaluating symbols
-
-  ;; Input -> Model -|-> View
-  ;;
-  ;; 1. Input loop
-  ;;    - push sync tasks to queue
-  ;;      - must execute in order/serial
-  ;;        - if user was typing they'd get random text
-  ;; 2. Model loop
-  ;;    - pull input tasks from queue -> funcall
-  ;;      - purpose of this thread is to let input loop process events ASAP
-  ;;      - funcall can submit tasks+receive result, or push sync tasks to queue
-  ;;        - anims can only be done on frame
-  ;;          - Ex: camera anim and node anim can run simultaneously
-  ;;        - adding nodes can be done immediately
-  ;;      - shm can only be modified during view since poss view process will read during that time
-  ;;        - for view, to write to shm is to read from lisp data which requires locking...
-  ;;        - solution -> copy data/state when putting in queue - such as for a node being modified
-  ;;          - changes propogate like a dag...
-  ;;          - serialize data so view loop simply copies memory
-  ;; 3. View loop (callback)
-  ;;    - Execute frame tasks
-  ;;    - Copy from lisp to shm
-  ;;      - execute tasks copy shm
-  ;;      - send shm message
-
-  ;; For input:
-  ;; - Some events need to be handled in serial such as key presses
-  ;;   - Users expect input to be handled in serial, at least within a domain ie mouse vs keyboard
-
-  ;; TODO: Execute dependency graph, i.e. use submit-receive-graph fn from main
-  ;; Memoize results
+  ;; TODO: Execute dependency graph for each callback/task
+  ;; - share code with analyzer - use submit-receive-graph fn from main
+  ;; - controller callbacks need to add to a graph
   
   ;; Execute frame callbacks
-  ;; - Can use submit task per callback/task
   ;; - Non-frame tasks would run in other thread - complicates things...
   ;; - optimistic loop - if > 16.7 ms: break (do on next frame)
   (loop
@@ -67,8 +36,6 @@
 	       (funcall fn seq-key)))
      :finally (dotimes (i counter)
 		(receive-result *channel*)))
-
-  ;; Call receive-results as needed
   
   ;; Execute shm copy tasks
   ;; - Can be done in parallel assuming no overlapping operations...

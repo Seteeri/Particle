@@ -17,6 +17,30 @@
   (cdr (second value)))
 
 (defun analyze-file (path-lisp path-tasks fn-root)
+
+  ;; PROCESS:
+  ;; 1. Sort into hashtables - this should not be done everytime! -> generate offline, save to lisp file
+  ;;    1. Functions : declare
+  ;;    2. Symbols : fns-read, fns-write
+  ;; 2. Pass function to start building dependency graph
+  ;;    1. Build graph and sort into levels: vertical = serial, horizontal = parallel
+  ;; 3. Derive levels from dependency graph
+  ;;    - Could keep DAG and submit tasks during traversal?
+  ;;    - Could only submit tasks that have no child nodes (and mark as submitted)
+  ;;    - This can be memoized
+
+  ;; Given a set of fns, if writes from one fn overlap with reads from another fn then cannot parallelize
+  ;; However, reads from one fn can overlap with reads from another fn
+  ;; access/modify; load/store
+  
+  ;; set-digraph = :r nil, :w digraph [single]
+  ;; set-node-pointer = :r digraph, :w digraph [single]
+  ;; a-function = :r digraph [unlimited]
+  ;; - in this case, need to define intermediate variables to determine dependency
+  ;; - ...instead of globals, store in another structure to manage namespaces...package?
+
+  ;; MT:
+  ;; Do search, add nodes to work queue, while threads grab from work queue
   
   (with-input-from-string (stream (read-file-string path-lisp))
     (loop
@@ -29,22 +53,6 @@
     (maphash (lambda (key value)
 	       (format t "~S = ~S~%" key value))
 	     *as-syms*))
-
-  ;; PROCESS
-  ;; 1. Sort into hashtables
-  ;;    1. Functions : declare
-  ;;    2. Symbols : fns-read, fns-write
-  ;; 2. Pass function to start analyzing - check dependencies
-  ;;    1. Build graph and sort into levels: vertical = serial, horizontal = parallel
-  ;; 3. Execute levels
-
-  ;; Given a set of fns, if writes from one fn overlap with reads from another fn then cannot parallelize
-  ;; However, reads from one fn can overlap with reads from another fn
-  ;; access/modify; load/store
-  
-  ;; set-digraph = :r nil, :w digraph [single]
-  ;; set-node-pointer = :r digraph, :w digraph [single]
-  ;; a-function = :r digraph [unlimited]
 
   (let ((digraph (digraph:make-digraph))
 	(tasks (make-array 3 :adjustable t :initial-contents (list () () ()))))
@@ -77,7 +85,9 @@
 		 (format stream "~S~%" (data task))))
       (format stream ")~%"))
     
-    (values digraph *sa-root* tasks)))
+    (values digraph
+	    *sa-root*
+	    tasks)))
 
 
 (defun recurse-node-dep (digraph fn tasks level &optional node-last)

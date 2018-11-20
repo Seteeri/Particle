@@ -311,3 +311,34 @@ Forward... -> Tiled -> Clustered -> Volumetric
 ;; such as for defun, are there any functions that wrap this
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; Brainstorm:
+  ;; 1. Refactor server message processing to accept self-evaluating symbols
+
+  ;; Input -> Model -|-> View
+  ;;
+  ;; 1. Input loop
+  ;;    - push sync tasks to queue
+  ;;      - must execute in order/serial
+  ;;        - if user was typing they'd get random text
+  ;; 2. Model loop
+  ;;    - pull input tasks from queue -> funcall
+  ;;      - purpose of this thread is to let input loop process events ASAP
+  ;;      - funcall can submit tasks+receive result, or push sync tasks to queue
+  ;;        - anims can only be done on frame
+  ;;          - Ex: camera anim and node anim can run simultaneously
+  ;;        - adding nodes can be done immediately
+  ;;      - shm can only be modified during view since poss view process will read during that time
+  ;;        - for view, to write to shm is to read from lisp data which requires locking...
+  ;;        - solution -> copy data/state when putting in queue - such as for a node being modified
+  ;;          - changes propogate like a dag...
+  ;;          - serialize data so view loop simply copies memory
+  ;; 3. View loop (callback)
+  ;;    - Execute frame tasks
+  ;;    - Copy from lisp to shm
+  ;;      - execute tasks copy shm
+  ;;      - send shm message
+
+  ;; For input:
+  ;; - Some events need to be handled in serial such as key presses
+  ;;   - Users expect input to be handled in serial, at least within a domain ie mouse vs keyboard
