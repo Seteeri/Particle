@@ -3,19 +3,20 @@
 (defclass controller () 
   ((context :accessor context :initarg :context :initform nil)
    (xkb :accessor xkb :initarg :xkb :initform (init-xkb))
-   (epoll-events :accessor epoll-events :initarg :epoll-events :initform nil)
-   (epoll-fd :accessor epoll-fd :initarg :epoll-fd :initform nil)
    (key-states :accessor key-states :initarg :key-states :initform (make-hash-table :size 256))
-   (key-callbacks :accessor key-callbacks :initarg :key-callbacks :initform (make-hash-table :size 256))))
+   (key-callbacks :accessor key-callbacks :initarg :key-callbacks :initform (make-hash-table :size 256))
+   (ep-events :accessor ep-events :initarg :ep-events :initform nil)
+   (ep-fd :accessor ep-fd :initarg :ep-fd :initform nil)))   
 
 (defun init-controller (&rest devices)
   (let ((controller (make-instance 'controller)))
     (with-slots (context
 		 key-states
 		 key-callbacks
-		 epoll-fd)
+		 ep-fd
+		 ep-events)
 	controller
-
+      
       ;; Initialize libinput
       (setf context (libinput:path-create-context (libinput:make-libinput-interface)
 						  (null-pointer)))
@@ -34,24 +35,17 @@
 				    (libinput:device-has-capability device libinput:device-cap-pointer)))
 			   (libinput:path-remove-device device)))))))
       
-      (init-epoll controller)
-      
-      ;; Initialize states to 'up?
-      
-      t)
+      (setf ep-fd     (init-epoll context)
+            ep-events (foreign-alloc '(:struct event))))
     controller))
-    
-(defun init-epoll (controller)
-  
-  (let ((epoll-fd (c-epoll-create 1)))
 
-    (ctl-epoll epoll-fd
-	       (libinput:get-fd (context controller))
-	       #x0001
+(defun init-epoll (context)
+  (let ((ep-fd (c-epoll-create 1)))
+    (ctl-epoll ep-fd
+	       (libinput:get-fd context)
+	       #x0001 ; TODO: defconstant
 	       :add)
-    
-    (setf (epoll-fd controller) epoll-fd)
-    (setf (epoll-events controller) (foreign-alloc '(:struct event)))))
+    ep-fd))
 
 (defun run-controller ()
   (loop
@@ -62,13 +56,16 @@
 
 (defun dispatch-events-input ()
   (with-slots (context
-	       epoll-fd
-	       epoll-events)
+	       ep-fd
+	       ep-events)
       *controller*
     ;; -1 = timeout = block/infinite
     ;; 0 = return if nothing
-    (let ((epoll-fds (c-epoll-wait epoll-fd epoll-events 1 -1)))
-      (when (> epoll-fds 0)
+    (let ((ep-fds (c-epoll-wait ep-fd
+				ep-events
+				1
+				-1)))
+      (when (> ep-fds 0)
 	(libinput:dispatch context)
 	(loop
 	   :for event := (libinput:get-event context)

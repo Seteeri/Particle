@@ -12,7 +12,7 @@
 
 (defun init-shm-projview ()
   (let ((shm (init-shm :projview)))
-    (setf *shm-projview* shm)
+    (setf *shm-projview* shm) ; below require this
     (update-mat-proj)
     (update-mat-view)
     (copy-mat-proj-to-shm)

@@ -27,7 +27,7 @@
   
   (run-graph-dep)
   (fmt-model t "main-init" "Finished model initialization~%")
-
+  
   (let ((thread-view  (bordeaux-threads:make-thread #'serve-client))
 	;; (thread-model (bordeaux-threads:make-thread #'process-queue-input))
 	(thread-input (bordeaux-threads:make-thread #'run-controller)))
@@ -42,6 +42,11 @@
 	*channel-input* (make-channel)))
 
 (defun run-graph-dep ()
+  ;; If user modifies, any related functionality during runtime
+  ;; this needs to be ran again
+  ;; TODO: user needs to be able to run the analyzer during runtime
+  ;; for code that runs in the main loop (rpc)
+
   (let* ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
 						    :type "lisp")
 				     (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
@@ -61,13 +66,15 @@
   (loop
      :for i :from (1- (length tasks)) :downto 0
      :for nodes := (aref tasks i)
-     :do (progn
-	   (loop
-	      :for node :in nodes
-	      :do (progn
-		    (submit-task *channel*
-				 (symbol-function (find-symbol (string node) :protoform.model))))
-	      :finally (dotimes (i (length nodes)) (receive-result *channel*))))))
+     :do (loop
+	    :for node :in nodes
+	    :do (progn
+		  (fmt-model t "submit-receive-graph" "task: ~a~%" (string node))
+		  (submit-task *channel*
+			       (symbol-function (find-symbol (string node)
+							     :protoform.model))))
+	    :finally (dotimes (i (length nodes))
+		       (receive-result *channel*)))))
 
 (defun set-projview ()
   (setf *projview* (make-instance 'projview
@@ -113,7 +120,7 @@
 
   (with-slots (key-callbacks)
       *controller*
-
+    
     ;; +xk-return+    
     ;; +xk-escape+
     ;; +xk-backspace+
@@ -234,6 +241,7 @@
       (maphash (lambda (key value)
 		 (fmt-model t "register-keyboard..." "Seq-event: ~S = ~S~%" key value))
 	       key-callbacks))
+    
     t))
 
 (defun register-callback-down (keysym cb)

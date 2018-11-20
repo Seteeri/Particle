@@ -40,17 +40,16 @@
   ;; For input:
   ;; - Some events need to be handled in serial such as key presses
   ;;   - Users expect input to be handled in serial, at least within a domain ie mouse vs keyboard
-  ;; - Each callback could execute a dep graph
 
-  ;; Time duration
-  ;; If exceed 16.7 ms, break
+  ;; TODO: Execute dependency graph, i.e. use submit-receive-graph fn from main
+  ;; Memoize results
   
   ;; Execute frame callbacks
   ;; - Can use submit task per callback/task
-  ;; - Add flag whether to run sync or async
-  ;;   - Can run async if no dependent on any other variables used by other threads
-  ;; - Non-frame tasks would run in other thread...
+  ;; - Non-frame tasks would run in other thread - complicates things...
+  ;; - optimistic loop - if > 16.7 ms: break (do on next frame)
   (loop
+     :with counter := 0
      :for task := (sb-concurrency:dequeue *queue-input*)
      :while task
      :do (destructuring-bind (channel
@@ -58,15 +57,22 @@
 			      seq-key)
 	     task
 	   (if channel
-	       (submit-task channel
-			    fn
-			    seq-key)
-	       (funcall fn seq-key))))
+	       (progn
+		 ;; For now, assume same channel for all
+		 ;; or add channel to list and receive-result for each channel
+		 (submit-task channel
+			      fn
+			      seq-key)
+		 (incf counter))
+	       (funcall fn seq-key)))
+     :finally (dotimes (i counter)
+		(receive-result *channel*)))
 
   ;; Call receive-results as needed
   
   ;; Execute shm copy tasks
   ;; - Can be done in parallel assuming no overlapping operations...
+  ;; - Can add detection code
   (loop
      :for counter := 0
      :for task := (sb-concurrency:dequeue *queue-view*)
@@ -88,6 +94,11 @@
   ;; Is it faster to copy large contiguous area or numerous small segments?
   ;; Send message to view to copy shm
   ;; Use highest offset from copy shm queue...
+  ;;
+  ;; TODO:
+  ;; digraph:count-vertices - checks hash-table-size
+  ;; digraph:count-edges    - loops through vertices then edges
+  ;; Reimplement cl-digaph with cl-tries
   (memcpy-shm-to-cache-flag* (list (list "nodes"
 				       	 0
       				       	 (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
