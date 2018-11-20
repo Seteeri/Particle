@@ -28,6 +28,7 @@
   ;;    - Could keep DAG and submit tasks during traversal?
   ;;    - Could only submit tasks that have no child nodes (and mark as submitted)
   ;;    - This can be memoized
+  ;;    - Do breadth first traversal
 
   ;; Given a set of fns, if writes from one fn overlap with reads from another fn then cannot parallelize
   ;; However, reads from one fn can overlap with reads from another fn
@@ -54,36 +55,44 @@
 	       (format t "~S = ~S~%" key value))
 	     *as-syms*))
 
-  (let ((digraph (digraph:make-digraph))
-	(tasks (make-array 3 :adjustable t :initial-contents (list () () ()))))
+  ;; (let ((digraph (digraph:make-digraph))
+  ;; 	(tasks (list))) ; could use skip list
+  ;; (recurse-node-dep digraph
+  ;; 		      fn-root
+  ;; 		      tasks
+  ;; 		      0)
+
+  (multiple-value-bind (digraph tasks)
+      (iter-node-dep fn-root)
     
-    (recurse-node-dep digraph
-		      fn-root
-		      tasks
-		      0)
+    (format t "~a~%" tasks)
     
     (when t
       (digraph.dot:draw digraph
   			:filename (str:concat (str:substring 0 -5 (file-namestring path-lisp))
 					      ".png")
 			:format :png))
-
-    (with-open-file (stream path-tasks
-			    ;; :external-format charset:iso-8859-1
-			    :direction :output
-			    :if-exists :overwrite
-			    :if-does-not-exist :create)
-      (format stream "#(~%")
-      (loop
-	 :for task :across tasks-new
-	 :do (if (listp task)
-		 (progn
-		   (format stream "(~%")
-		   (dolist (task-2 task)
-		     (format stream "~S~%" (data task-2)))
-		   (format stream ")~%"))
-		 (format stream "~S~%" (data task))))
-      (format stream ")~%"))
+    
+    ;; (sb-ext:exit)
+    
+    (when t
+    
+      (with-open-file (stream path-tasks
+			      ;; :external-format charset:iso-8859-1
+			      :direction :output
+			      :if-exists :overwrite
+			      :if-does-not-exist :create)
+	(format stream "#(~%")
+	(loop     ;; Reverse iterate
+	   :for i :from (1- (length tasks)) :downto 0
+	   :for task := (aref tasks i)
+	   :do (progn
+		 (format stream "#(~%")
+		 (loop
+		    :for task-2 :across task
+		    :do (format stream "~S~%" (data task-2)))
+		 (format stream ")~%")))
+	(format stream ")~%")))
     
     (values digraph
 	    *sa-root*
@@ -112,8 +121,16 @@
 			   node-last
 			   fn))
 
-    (push node-w
-	  (aref tasks level))
+    ;; Create level as needed, then push it
+    (let ((level-task nil))
+      (if (= (length tasks) level)
+	  (progn
+	    (setf level-task (list))
+	    (push level-task
+		  tasks))
+	  (setf level-task (nth level tasks)))
+      (push node-w
+	    level-task))
     
     ;; read syms -> write funs -> create dep node for each fun
     (destructuring-bind (reads writes) (get-fn-rw (gethash fn *as-fns*))
@@ -125,6 +142,74 @@
 			      tasks
 			      (1+ level)
 			      fn)))))))
+
+(defun iter-node-dep (fn-root)
+  (let* ((digraph (digraph:make-digraph))
+	 (arr-root (make-array 1 :adjustable t :fill-pointer 0))
+	 (tasks (make-array 1 :adjustable t :fill-pointer 1 :initial-contents (list arr-root))))
+    (loop
+       :with fns := (list (list fn-root
+				0
+				nil))
+       :for fn-args := (pop fns)
+       :while fn-args
+       :do (destructuring-bind (fn level fn-last)
+	       fn-args
+	     
+	     (format t "[iter-...] ~v@{~A~:*~}"
+		     level
+		     "  ")
+	     (format t "~a -> #'~a~%"
+		     (if fn-last
+			 fn-last
+			 nil)
+		     (symbol-name fn))
+
+	     (format t "~a, ~a~%" fn level)
+	     
+	     (let* ((node-w (make-instance 'node-dep :data fn)))
+	       (digraph:insert-vertex digraph
+    				      fn)
+	       ;; Save root
+	       (when (not *sa-root*)
+		 (setf *sa-root* node-w))
+	       
+	       (when fn-last
+		 (digraph:insert-edge digraph
+				      fn-last
+				      fn))
+	       
+	       (vector-push-extend node-w
+				   (aref tasks level))
+	       
+	       ;; read syms -> write funs -> create dep node for each fun
+
+	       ;; if level exists get it
+	       (let ((deps nil)
+		     (list-deps (if (>= (1+ level) (length tasks))
+				    (make-array 1 :adjustable t :fill-pointer 0)
+				    (aref tasks (1+ level)))))
+		 
+		 (destructuring-bind (reads writes) (get-fn-rw (gethash fn *as-fns*))
+		   (dolist (sym-read (cdr reads))
+		     (dolist (fn-write (second (gethash sym-read *as-syms*)))
+		       (when (not (eq fn fn-write))
+			 ;; all are on the same level, aka run parallel
+			 (setf deps t)
+			 ;; push to list
+			 ;; need to make sure this node hasn't been processed if multiple edges
+			 (push (list fn-write
+				     (1+ level)
+				     fn)
+			       fns)))))
+
+		 ;; Found new level so add to list
+		 (when (and deps
+			    (>= (1+ level) (length tasks)))
+		   (vector-push-extend list-deps tasks))))))
+    
+    (values digraph
+	    tasks)))
 
 (defun process-data (data)
   (when (listp data)

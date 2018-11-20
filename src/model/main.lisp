@@ -46,7 +46,7 @@
   ;; this needs to be ran again
   ;; TODO: user needs to be able to run the analyzer during runtime
   ;; for code that runs in the main loop (rpc)
-
+  
   (let* ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
 						    :type "lisp")
 				     (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
@@ -56,18 +56,19 @@
 	 (tasks (if (probe-file path-tasks) ; If tasks exist, load it else generate it
 		    (read-from-string (read-file-string path-tasks))
 		    (multiple-value-bind (digraph root tasks-new)
-			(analyze-file path-lisp path-tasks :init-conn-rpc-view)
+			(analyze-file path-lisp
+				      path-tasks
+				      :init-conn-rpc-view)
 		      tasks-new))))
-
+    
     ;; TODO: Recurse for more complicated setups, i.e. nested lists
     (submit-receive-graph tasks)))
 
 (defun submit-receive-graph (tasks)
   (loop
-     :for i :from (1- (length tasks)) :downto 0
-     :for nodes := (aref tasks i)
+     :for nodes :across tasks
      :do (loop
-	    :for node :in nodes
+	    :for node :across nodes
 	    :do (progn
 		  (fmt-model t "submit-receive-graph" "task: ~a~%" (string node))
 		  (submit-task *channel*
