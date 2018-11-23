@@ -48,6 +48,13 @@
     ep-fd))
 
 (defun run-controller ()
+
+  ;; Build dep graph from events and push to queue
+  ;; - init is static, controller is dynamic
+  ;; - use root t - add callbacks as successors
+  ;;   - or each callback adds a graph that is traversed
+  ;; - memoize processing nodes - any graph based operations can be memoized at nodal level
+
   (loop
      (dispatch-events-input)             ; serial
      (dispatch-all-seq-event)            ; parallel
@@ -61,19 +68,16 @@
       *controller*
     ;; -1 = timeout = block/infinite
     ;; 0 = return if nothing
-    (let ((ep-fds (c-epoll-wait ep-fd
-				ep-events
-				1
-				-1)))
-      (when (> ep-fds 0)
-	(libinput:dispatch context)
-	(loop
-	   :for event := (libinput:get-event context)
-	   :until (null-pointer-p event)
-	   :do (progn
-		 (dispatch-event-handler event)
-		 (libinput:event-destroy event)
-		 (libinput:dispatch context)))))))
+    (when (> (c-epoll-wait ep-fd ep-events 1 -1) 0)
+      (loop
+      	 :for event := (progn
+			 (libinput:dispatch context)
+			 (libinput:get-event context))
+      	 :until (null-pointer-p event)
+      	 :do
+      	   (dispatch-event-handler event)
+      	   (libinput:event-destroy event)
+      	   (libinput:dispatch context)))))
 
 (defun dispatch-event-handler (event)
 

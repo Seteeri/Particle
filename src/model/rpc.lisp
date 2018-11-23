@@ -13,6 +13,20 @@
   ;; TODO: Execute dependency graph for each callback/task
   ;; - share code with analyzer - use submit-receive-graph fn from main
   ;; - controller callbacks need to add to a graph
+
+  ;; hmm, the callback fn should have declares and a graph analyzed offline and a task list produced
+  ;; - all these tasks are then pushed to the queue every time
+  ;; - or flatten all tasks for all callbacks, only use funcall here, place a receive result as needed
+  ;; - so make this function as simple as possible
+
+  ;; input callbacks segregate by domain
+  ;; output callbacks like cont anims
+  ;; - option for recv-res
+  ;;   - delay n events, or n=-1 for end of loop, n=0 for immediately after
+  ;; - for example anims can run while processing input...what if one anim interferes with another? dep graph can resolve it
+  ;; - for anims, need to be able to stop/pause/rewind/ffwd etc -> besides stop, others rely on undo system
+
+  ;; nodal anims can be moved to shader, however have to pass in data
   
   ;; Execute frame callbacks
   ;; - Non-frame tasks would run in other thread - complicates things...
