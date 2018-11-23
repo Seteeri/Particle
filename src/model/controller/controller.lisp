@@ -62,6 +62,8 @@
      t))
 
 (defun dispatch-events-input ()
+  ;; Poss pull events and submit task instead of processing in parallel
+  ;; However, would need to allocate separate ep-events for each callback
   (with-slots (context
 	       ep-fd
 	       ep-events)
@@ -77,7 +79,7 @@
       	 :do
       	   (dispatch-event-handler event)
       	   (libinput:event-destroy event)
-      	   (libinput:dispatch context)))))
+	 :finally (libinput:dispatch context)))))
 
 (defun dispatch-event-handler (event)
 
