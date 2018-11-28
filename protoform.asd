@@ -108,7 +108,8 @@
 				       (:module rpc
 				       		:pathname "rpc"
 				       		:components ((:file "rpc")
-							     (:file "view")))
+							     (:file "view")
+							     (:file "memcpy")))
 				       (:file "projview")
 				       (:file "pango")
 				       (:file "metrics")
