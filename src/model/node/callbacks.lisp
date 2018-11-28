@@ -19,7 +19,9 @@
   ;;    1. origin A + advance - glyph trans  
   (let* ((metrics-space (gethash 32 *metrics*))
 	 (spacing (* (advance metrics-space) (scale metrics-space) *scale-node*))
+	 
 	 (cursor (translation (model-matrix *node-pointer*)))
+
 	 (key-first (second (reverse (second seq-key))))
 	 (data (if (= key-first +xk-return+)
 		   #\Newline
@@ -75,6 +77,8 @@
     node))
 
 (defun backspace-node-msdf (seq-key)
+
+  (fmt-model t "backspace-node-msdf" "~a~%" seq-key)
   
   (let ((node-tgt (first (digraph:successors *digraph* *node-pointer*))))
     (when node-tgt

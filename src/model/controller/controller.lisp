@@ -55,6 +55,10 @@
   ;;   - or each callback adds a graph that is traversed
   ;; - memoize processing nodes - any graph based operations can be memoized at nodal level
 
+  ;; 2 solutions
+  ;; A) Each task build and push graph to queue
+  ;; B) Each task builds into single graph and push to queue at the end
+  
   (loop
      (dispatch-events-input)             ; serial
      (dispatch-all-seq-event)            ; parallel

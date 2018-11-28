@@ -105,7 +105,10 @@
 				       			     (:module events
 				       				      :pathname "events"
 				       				      :components ((:file "keyboard")))))
-				       (:file "rpc")
+				       (:module rpc
+				       		:pathname "rpc"
+				       		:components ((:file "rpc")
+							     (:file "view")))
 				       (:file "projview")
 				       (:file "pango")
 				       (:file "metrics")

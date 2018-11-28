@@ -8,16 +8,45 @@
 ;;     (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
 ;;     (setf *time-last* time)))
 
+(defun submit-receive-graph (tasks)
+  (loop
+     :for nodes :across tasks
+     :do (loop
+	    :for node :across nodes
+	    :do (progn
+		  (fmt-model t "submit-receive-graph" "task: ~a~%" (string node))
+		  (submit-task *channel*
+			       (symbol-function (find-symbol (string node)
+							     :protoform.model))))
+	    :finally (dotimes (i (length nodes))
+		       (receive-result *channel*)))))
+
+(defun mapc-breadth-first-2 (function digraph start-vertex)
+  "Apply `function` to the vertices of a breadth-first traversal of `digraph`.
+  Returns `nil`.
+  Vertices are processed in breadth-first order, beginning at `start-vertex`.
+  Cycles in the graph will not be traversed into.
+  "
+  (let ((seen nil)
+        (remaining nil))
+    (labels ((recur (vertex)
+               (when (not (member vertex seen :test (digraph-test digraph)))
+                 (push vertex seen)
+                 (funcall function vertex)
+                 ;;; todo maybe use jpl queues here...
+                 (appendf remaining (succ digraph vertex)))
+               (when remaining
+                 (recur (pop remaining)))))
+      (when (contains-vertex-p digraph start-vertex)
+        (recur start-vertex))))
+  nil)
+
 (defun handle-view-sync (time-view)
 
   ;; TODO: Execute dependency graph for each callback/task
   ;; - share code with analyzer - use submit-receive-graph fn from main
   ;; - controller callbacks need to add to a graph
-
-  ;; hmm, the callback fn should have declares and a graph analyzed offline and a task list produced
-  ;; - all these tasks are then pushed to the queue every time
-  ;; - or flatten all tasks for all callbacks, only use funcall here, place a receive result as needed
-  ;; - so make this function as simple as possible
+  ;; - poss flatten callback tasks, use funcall here, callbacks place receive result as needed
 
   ;; input callbacks segregate by domain
   ;; output callbacks like cont anims
@@ -27,8 +56,13 @@
   ;; - for anims, need to be able to stop/pause/rewind/ffwd etc -> besides stop, others rely on undo system
 
   ;; nodal anims can be moved to shader, however have to pass in data
+
+  ;; Loop
+  ;; - controller will build dep graphs, enqueue task list
+  ;;   - breadth-first search on graph to create levels, then execute levels
+  ;;   - memoize nodes to speed up
   
-  ;; Execute frame callbacks
+  ;; Execute frame tasks
   ;; - Non-frame tasks would run in other thread - complicates things...
   ;; - optimistic loop - if > 16.7 ms: break (do on next frame)
   (loop
