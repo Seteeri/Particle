@@ -57,9 +57,13 @@
 	  (setf *time-run* nil))
 	(progn
 	  ;; Push to other queue for next frame or anim will complete same frame
-	  (sb-concurrency:enqueue (list *channel*
-					#'ease-camera-x
-	    				seq-event)
-	    			  (if (eq *queue-input* *queue-front*)
-  				      *queue-back*
-  				      *queue-front*))))))
+	  (enqueue-anim seq-event
+			#'ease-camera-x)))))
+
+(defun enqueue-anim (seq-event fn)
+  (sb-concurrency:enqueue (list (list (list *channel*
+					    fn
+	    				    seq-event)))
+	    		  (if (eq *queue-frame* *queue-front*)
+  			      *queue-back*
+  			      *queue-front*)))

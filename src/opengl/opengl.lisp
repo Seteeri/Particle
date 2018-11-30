@@ -245,3 +245,62 @@
 			   (+ (- (mcref4 mvp 0 1)) (mcref4 mvp 3 1))
 			   (+ (- (mcref4 mvp 0 2)) (mcref4 mvp 3 2))
 			   (+ (- (mcref4 mvp 0 3)) (mcref4 mvp 3 3)))))
+
+(defun update-clip-planes (msdf)
+  (multiple-value-bind (near far bottom top left right)
+      (extract-clip-planes (m* (mat-proj msdf)
+			       (mat-view msdf)))
+    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
+							   :element-type 'single-float
+							   :initial-contents (list (vx4 near)
+										   (vy4 near)
+										   (vz4 near)
+										   (vw4 near))))
+      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_near")
+		       1
+		       ptr))
+    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
+							   :element-type 'single-float
+							   :initial-contents (list (vx4 far)
+										   (vy4 far)
+										   (vz4 far)
+										   (vw4 far))))
+      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_far")
+		       1
+		       ptr))
+    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
+							   :element-type 'single-float
+							   :initial-contents (list (vx4 bottom)
+										   (vy4 bottom)
+										   (vz4 bottom)
+										   (vw4 bottom))))
+      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_bottom")
+		       1
+		       ptr))
+    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
+							   :element-type 'single-float
+							   :initial-contents (list (vx4 top)
+										   (vy4 top)
+										   (vz4 top)
+										   (vw4 top))))
+      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_top")
+		       1
+		       ptr))
+    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
+							   :element-type 'single-float
+							   :initial-contents (list (vx4 left)
+										   (vy4 left)
+										   (vz4 left)
+										   (vw4 left))))
+      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_left")
+		       1
+		       ptr))
+    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
+							   :element-type 'single-float
+							   :initial-contents (list (vx4 right)
+										   (vy4 right)
+										   (vz4 right)
+										   (vw4 right))))
+      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_right")
+		       1
+		       ptr))))

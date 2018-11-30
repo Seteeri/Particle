@@ -5,7 +5,7 @@
    (height :accessor height :initarg :height :initform nil)
    (mat-proj :accessor mat-proj :initarg :mat-proj :initform nil)
    (type-proj :accessor type-proj :initarg :type-proj :initform nil)
-   (scale-ortho :accessor scale-ortho :initarg :scale-ortho :initform 24.0) ; bigger number = smaller view
+   (scale-ortho :accessor scale-ortho :initarg :scale-ortho :initform 48.0) ; bigger number = smaller view
    (near-ortho :accessor near-ortho :initarg :near-ortho :initform 1)
    (ortho-far :accessor ortho-far :initarg :ortho-far :initform 512)
    (mat-view :accessor mat-view :initarg :mat-view :initform nil)
@@ -135,63 +135,3 @@
 	  (vy3 displace)))
   (update-mat-view)
   (enqueue-mat-view))
-
-
-(defun update-clip-planes (msdf)
-  (multiple-value-bind (near far bottom top left right)
-      (extract-clip-planes (m* (mat-proj msdf)
-			       (mat-view msdf)))
-    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
-							   :element-type 'single-float
-							   :initial-contents (list (vx4 near)
-										   (vy4 near)
-										   (vz4 near)
-										   (vw4 near))))
-      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_near")
-		       1
-		       ptr))
-    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
-							   :element-type 'single-float
-							   :initial-contents (list (vx4 far)
-										   (vy4 far)
-										   (vz4 far)
-										   (vw4 far))))
-      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_far")
-		       1
-		       ptr))
-    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
-							   :element-type 'single-float
-							   :initial-contents (list (vx4 bottom)
-										   (vy4 bottom)
-										   (vz4 bottom)
-										   (vw4 bottom))))
-      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_bottom")
-		       1
-		       ptr))
-    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
-							   :element-type 'single-float
-							   :initial-contents (list (vx4 top)
-										   (vy4 top)
-										   (vz4 top)
-										   (vw4 top))))
-      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_top")
-		       1
-		       ptr))
-    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
-							   :element-type 'single-float
-							   :initial-contents (list (vx4 left)
-										   (vy4 left)
-										   (vz4 left)
-										   (vw4 left))))
-      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_left")
-		       1
-		       ptr))
-    (cffi-sys:with-pointer-to-vector-data (ptr (make-array 4
-							   :element-type 'single-float
-							   :initial-contents (list (vx4 right)
-										   (vy4 right)
-										   (vz4 right)
-										   (vw4 right))))
-      (%gl:uniform-4fv (gl:get-uniform-location (program-compute msdf) "clip_right")
-		       1
-		       ptr))))

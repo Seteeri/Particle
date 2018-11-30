@@ -8,9 +8,10 @@
 		     ctl-str)
 	 rest))
 
+(defparameter *queue-input* (sb-concurrency:make-queue))
 (defparameter *queue-front* (sb-concurrency:make-queue))
 (defparameter *queue-back* (sb-concurrency:make-queue))
-(defparameter *queue-input* *queue-back*)
+(defparameter *queue-frame* *queue-back*)
 (defparameter *queue-view* (sb-concurrency:make-queue))
 
 (defun run-model (width height

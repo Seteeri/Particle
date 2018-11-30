@@ -49,16 +49,19 @@
 
 (defun run-controller ()
 
-  ;; Build dep graph from events and push to queue
-  ;; - init is static, controller is dynamic
-  ;; - use root t - add callbacks as successors
-  ;;   - or each callback adds a graph that is traversed
-  ;; - memoize processing nodes - any graph based operations can be memoized at nodal level
+  ;; Refactor to Use kernel ptree!!!
+  ;; - deps gaph -> task list -> ptree
+  ;; - instead of globals, define symbols and use in ptree
 
-  ;; 2 solutions
-  ;; A) Each task build and push graph to queue
-  ;; B) Each task builds into single graph and push to queue at the end
-  
+  ;; TODO
+  ;; 1. Refactor init to use ptree
+  ;; 2. Input callbacks will each have a ptree -
+  ;;    - Will run all tasks in serial, waiting for each to complete, but sub-tasks run in parallel
+  ;;    - Callbacks will use pre-setup ptree
+  ;;      - or cache/memoize essentially
+  ;;    - Simpler for now, eventually integrate callbacks into a single ptree
+
+  ;; Refactor below to per-event
   (loop
      (dispatch-events-input)             ; serial
      (dispatch-all-seq-event)            ; parallel

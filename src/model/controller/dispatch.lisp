@@ -20,10 +20,10 @@
 (defun dispatch-callbacks-for-event (seq-event)
   (loop
      :for cb :being :the :hash-keys :of (get-callbacks seq-event)
-     :do (sb-concurrency:enqueue (list *channel*
-				       cb
-				       seq-event)
-				 *queue-input*)))
+     :do (sb-concurrency:enqueue (list (list (list *channel*
+						   cb
+						   seq-event)))
+				 *queue-frame*)))
 
 (defun is-seq-event-valid (seq-events-key)
   (with-slots (key-states)

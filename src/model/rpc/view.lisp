@@ -5,19 +5,6 @@
 ;;     (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
 ;;     (setf *time-last* time)))
 
-(defun submit-receive-graph (tasks)
-  (loop
-     :for nodes :across tasks
-     :do (loop
-	    :for node :across nodes
-	    :do (progn
-		  (fmt-model t "submit-receive-graph" "task: ~a~%" (string node))
-		  (submit-task *channel*
-			       (symbol-function (find-symbol (string node)
-							     :protoform.model))))
-	    :finally (dotimes (i (length nodes))
-		       (receive-result *channel*)))))
-
 (defun mapc-breadth-first-2 (function digraph start-vertex)
   "Apply `function` to the vertices of a breadth-first traversal of `digraph`.
   Returns `nil`.
@@ -38,49 +25,52 @@
         (recur start-vertex))))
   nil)
 
+;; (when nil
+;;   (loop
+;;      :with counter := 0
+;;      :for task := (sb-concurrency:dequeue *queue-input*)
+;;      :while task
+;;      :do (destructuring-bind (channel
+;; 				fn
+;; 				seq-key)
+;; 	       task
+;; 	     (if channel
+;; 		 (progn
+;; 		   ;; For now, assume same channel for all
+;; 		   ;; or add channel to list and receive-result for each channel
+;; 		   (submit-task channel
+;; 				fn
+;; 				seq-key)
+;; 		   (incf counter))
+;; 		 (funcall fn seq-key)))
+;;      :finally (dotimes (i counter)
+;; 		  (receive-result *channel*))))
+
 (defun handle-view-sync (time-view)
 
-  ;; TODO: Execute dependency graph for each callback/task
-  ;; - share code with analyzer - use submit-receive-graph fn from main
-  ;; - controller callbacks need to add to a graph
-  ;; - poss flatten callback tasks, use funcall here, callbacks place receive result as needed
-
-  ;; input callbacks segregate by domain
-  ;; output callbacks like cont anims
-  ;; - option for recv-res
-  ;;   - delay n events, or n=-1 for end of loop, n=0 for immediately after
-  ;; - for example anims can run while processing input...what if one anim interferes with another? dep graph can resolve it
-  ;; - for anims, need to be able to stop/pause/rewind/ffwd etc -> besides stop, others rely on undo system
-
-  ;; nodal anims can be moved to shader, however have to pass in data
-
-  ;; Loop
-  ;; - controller will build dep graphs, enqueue task list
-  ;;   - breadth-first search on graph to create levels, then execute levels
-  ;;   - memoize nodes to speed up
+  ;; Process
+  ;; - controller will build-enqueue ptrees
+  ;; - model will pop ptrees and execute
   
-  ;; Execute frame tasks
-  ;; - Non-frame tasks would run in other thread - complicates things...
+  ;; Execute frame task lists
+  ;; - 2 sources: callback or continuation
   ;; - optimistic loop - if > 16.7 ms: break (do on next frame)
   (loop
-     :with counter := 0
-     :for task := (sb-concurrency:dequeue *queue-input*)
+     :for task := (sb-concurrency:dequeue *queue-frame*)
      :while task
-     :do (destructuring-bind (channel
-			      fn
-			      seq-key)
-	     task
-	   (if channel
-	       (progn
-		 ;; For now, assume same channel for all
-		 ;; or add channel to list and receive-result for each channel
-		 (submit-task channel
-			      fn
-			      seq-key)
-		 (incf counter))
-	       (funcall fn seq-key)))
-     :finally (dotimes (i counter)
-		(receive-result *channel*)))
+     :do (loop
+	    :for level :in task
+	    :do (loop
+		   :for task-sub :in level
+		   :do (destructuring-bind (channel
+					    fn
+					    seq-key)
+			   task-sub
+			 (submit-task channel
+				      fn
+				      seq-key))
+		   :finally (dotimes (i (length level))
+			      (receive-result *channel*)))))
   
   ;; Execute shm copy tasks
   ;; - Can be done in parallel assuming no overlapping operations...
