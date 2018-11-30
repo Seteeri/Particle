@@ -1,4 +1,4 @@
-(defun set-projview ()
+(defun set-projview (width height)
   (declare (:rw
 	    (:r :width :height)
 	    (:w :*projview*)))
@@ -26,7 +26,7 @@
 	    (:w :*digraph*)))  
   (setf *digraph* (digraph:make-digraph)))
 
-(defun set-shm-projview ()
+(defun set-shm-projview (projview)
   (declare (:rw
 	    (:r :*projview*)
 	    (:w :*shm-projview*)))  
@@ -75,7 +75,15 @@
   (setf *node-pointer* (init-node-pointer-graph)))
 
 ;; purely for side effects
-(defun init-conn-rpc-view ()
+(defun init-conn-rpc-view (shm-projview
+			   shm-nodes
+			   shm-atomic-counter
+			   shm-vertices
+			   shm-element
+			   shm-draw-indirect
+			   shm-texture
+			   node-pointer
+			   controller)
   (declare (:rw
 	    (:r :*shm-projview*
 		;; :*shm-nodes*

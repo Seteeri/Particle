@@ -1,6 +1,7 @@
 (in-package :protoform.model)
 
-(defparameter *shm-texture* nil)
+;; postfix with -glyphs
+(defparameter *shm-texture-glyphs* nil)
 
 ;; (defparameter *glyphs-msdf-shm* (list :texture-buffer
 ;; 				      "glyphs-msdf"
@@ -12,7 +13,7 @@
 ;; 				      :rgba8))
 
 (defparameter *params-texture-shm* (list :texture-buffer
-					 "texture"
+					 "texture" ; rename to -glyphs
 					 "/protoform-texture"
 					 (/ 134217728 4)
 					 -1 -1

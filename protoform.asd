@@ -115,6 +115,7 @@
 				       (:file "metrics")
 				       (:file "animation")
 				       (:file "variables")
+				       (:file "init")
 				       (:file "main")))
 		 (:file "src/protoform")))
 

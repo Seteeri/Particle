@@ -3,7 +3,16 @@
 (defparameter *path-socket-view* "/tmp/protoform-view.socket")
 (defparameter *time-last* 0)
 
-(defun init-conn-rpc-view ()
+(defun init-conn-rpc-view (shm-projview
+			   shm-nodes
+			   shm-atomic-counter
+			   shm-vertices
+			   shm-element
+			   shm-draw-indirect
+			   shm-texture-glyphs
+			   node-pointer
+			   controller)
+
   (setf *sock-view* (init-sock-client *path-socket-view* :block))
 
   ;; Combine all of below into single call
