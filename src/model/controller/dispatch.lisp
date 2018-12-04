@@ -7,8 +7,10 @@
   ;; Execute callbacks in order -> merge deps into single ptree
   ;; which will later be executed during view
   ;; - Could make separate ptree for immediate execution and/or thread
+  
   (let ((ptree (make-ptree))
 	(queue (sb-concurrency:make-queue)))
+
     ;; Fill ptree/queue
     (loop
        :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
@@ -23,6 +25,8 @@
 		    (destructuring-bind (cb ev)
 			cb-ev
 		      (funcall cb ev ptree queue)))))
+
+    ;; Place in queue for frame
     (unless (sb-concurrency:queue-empty-p queue)
       (sb-concurrency:enqueue (list ptree queue)
 			      *queue-frame*))))

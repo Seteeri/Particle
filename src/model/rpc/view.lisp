@@ -8,7 +8,7 @@
 (defun handle-view-sync (time-view)
 
   ;; Controller creates ptree/queue
-  ;; Pushes into queue for frame to consume
+  ;; Pushes into queue for frame to consume here
   
   ;;;;;;;;;;;;;;;;
   ;; Execute ptree
@@ -27,7 +27,7 @@
   ;; Execute shm copy tasks
   ;; - Can be done in parallel assuming no overlapping operations...
   ;; - Can add detection code
-
+  
   (loop
      :for counter := 0
      :for task := (sb-concurrency:dequeue *queue-view*)
@@ -53,7 +53,7 @@
   ;; TODO:
   ;; digraph:count-vertices - checks hash-table-size
   ;; digraph:count-edges    - loops through vertices then edges
-  ;; Reimplement cl-digaph with cl-tries
+  ;; Reimplement cl-digaph with cl-tries?
   (memcpy-shm-to-cache-flag*
    (list (list "nodes"
 	       0
@@ -61,10 +61,4 @@
 				       	    (digraph:count-edges *digraph*))))
 	 (list "projview"
 	       0
-      	       (* 4 16 2))))
-  
-  ;; If controller writes to queue sometime between loop and swap...
-  ;; it will be delayed by one frame
-  ;; setf atomic? -> https://sourceforge.net/p/sbcl/mailman/message/14171520/
-
-  t)
+      	       (* 4 16 2)))))

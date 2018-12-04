@@ -133,10 +133,11 @@
 				    (* 96 *scale-node*))
 				 :abs)
 		;; Only move if end of line - REFACTOR ENTER
+		;; Add more spacing due to bl adjustments
 		(when nil
 		  (displace-node-y *node-pointer*
-			       (* +linegap+ scale-node) ; add more spacing due to bl adjustments
-			       :rel)))))
+				   (* +linegap+ scale-node) 
+				   :rel)))))
 	;; Now can remove edges
 	(dolist (pred preds)
 	  (digraph:remove-edge *digraph*
