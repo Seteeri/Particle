@@ -13,16 +13,18 @@
   ;;;;;;;;;;;;;;;;
   ;; Execute ptree
   ;; - Pop ids from queue
-  
-  (loop
-     :for ptree-queue := (sb-concurrency:dequeue *queue-frame*)
-     :while ptree-queue
-     :do (destructuring-bind (ptree queue)
-	     ptree-queue
-	   (loop
-	      :for id-node := (sb-concurrency:dequeue queue)
-	      :while id-node
-	      :do (call-ptree id-node ptree))))
+
+  ;; Pop only once
+  (dotimes (i 2)
+    (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*)))
+      ;; Submit task for each ptree to run parallel
+      (when ptree-queue
+	(destructuring-bind (ptree queue)
+	    ptree-queue
+	  (loop
+	     :for id-node := (sb-concurrency:dequeue queue)
+	     :while id-node
+	     :do (call-ptree id-node ptree))))))
   
   ;; Execute shm copy tasks
   ;; - Can be done in parallel assuming no overlapping operations...

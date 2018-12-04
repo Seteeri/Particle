@@ -52,7 +52,9 @@
   ;; 2. Set glyph B origin
   ;;    1. origin A + advance - glyph trans  
   (let* ((metrics-space (gethash 32 *metrics*))
-	 (spacing (* (advance metrics-space) (scale metrics-space) *scale-node*))
+	 (spacing (* (advance metrics-space)
+		     (scale metrics-space)
+		     *scale-node*))
 	 
 	 (cursor (translation (model-matrix *node-pointer*)))
 
@@ -88,12 +90,14 @@
     (when (first (digraph:successors *digraph* *node-pointer*))
       ;; Insert edge a-b
       (digraph:insert-edge *digraph*
-			   (first (digraph:successors *digraph* *node-pointer*))
+			   (first (digraph:successors *digraph*
+						      *node-pointer*))
 			   node)
       ;; Remove edge edge *-a
       (digraph:remove-edge *digraph*
 			   *node-pointer*
-			   (first (digraph:successors *digraph* *node-pointer*))))
+			   (first (digraph:successors *digraph*
+						      *node-pointer*))))
     ;; Insert edge *-b
     (digraph:insert-edge *digraph*
 			 *node-pointer*
@@ -112,13 +116,15 @@
   
 (defun backspace-node-msdf-2 (seq-key)
   
-  (let ((node-tgt (first (digraph:successors *digraph* *node-pointer*))))
+  (let ((node-tgt (first (digraph:successors *digraph*
+					     *node-pointer*))))
     (when node-tgt
       
       ;; Remove node from graph
       ;; 1. Insert edge: ptr-pred
       ;; 2. Remove edges: ptr-node, pred-node
-      (let ((preds (digraph:predecessors *digraph* node-tgt)))
+      (let ((preds (digraph:predecessors *digraph*
+					 node-tgt)))
 	;; Find non-ptr edge and create edge from ptr to pred
 	(dolist (pred preds)
 	  (if (eq pred *node-pointer*)

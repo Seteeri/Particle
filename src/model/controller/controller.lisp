@@ -29,10 +29,13 @@
 	  (let ((device-paths (directory "/dev/input/event*")))
 	    (loop
 	       :for device-path :in device-paths
-	       :do (let ((device (libinput:path-add-device context (namestring device-path))))
+	       :do (let ((device (libinput:path-add-device context
+							   (namestring device-path))))
 		     (when (not (null-pointer-p device))
-		       (if (not (or (libinput:device-has-capability device libinput:device-cap-keyboard)
-				    (libinput:device-has-capability device libinput:device-cap-pointer)))
+		       (if (not (or (libinput:device-has-capability device
+								    libinput:device-cap-keyboard)
+				    (libinput:device-has-capability device
+								    libinput:device-cap-pointer)))
 			   (libinput:path-remove-device device)))))))
       
       (setf ep-fd     (init-epoll context)
@@ -48,20 +51,7 @@
     ep-fd))
 
 (defun run-controller ()
-
-  ;; Refactor to Use kernel ptree!!!
-  ;; - deps gaph -> task list -> ptree
-  ;; - instead of globals, define symbols and use in ptree
-
-  ;; TODO
-  ;; 1. Refactor init to use ptree
-  ;; 2. Input callbacks will each have a ptree -
-  ;;    - Will run all tasks in serial, waiting for each to complete, but sub-tasks run in parallel
-  ;;    - Callbacks will use pre-setup ptree
-  ;;      - or cache/memoize essentially
-  ;;    - Simpler for now, eventually integrate callbacks into a single ptree
-
-  ;; Refactor below to per-event
+  ;; Refactor below to per-event?
   (loop
      (dispatch-events-input)             ; serial
      (dispatch-all-seq-event)            ; parallel

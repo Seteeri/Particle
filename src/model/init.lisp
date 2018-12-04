@@ -161,14 +161,14 @@
     ;; How to handle situation if animation running
     (register-callback `(,+xk-f7+ (:press))
 		       :exclusive
-		       (lambda (seq-event)
+		       (lambda (seq-event ptree queue)
 			 (setf *fn-anim* #'easing:in-cubic)
 			 (setf *value-start* (vx3 (pos *projview*)))
 			 (setf *time-start* (osicat:get-monotonic-time))
 			 (setf *time-end* (+ *time-start* 4)) ; (/ frame count fps)
 			 (setf *time-duration* (- *time-end* *time-start*)) ; (/ frame-count fps)
 			 (setf *time-elapsed* 0.0)
-			 (ease-camera-x seq-event)))
+			 (ease-camera-x seq-event ptree queue)))
     
     ;; Print hashtable
     (when nil

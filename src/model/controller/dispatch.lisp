@@ -26,7 +26,7 @@
 			cb-ev
 		      (funcall cb ev ptree queue)))))
 
-    ;; Place in queue for frame
+    ;; Enqueue for frame
     (unless (sb-concurrency:queue-empty-p queue)
       (sb-concurrency:enqueue (list ptree queue)
 			      *queue-frame*))))
