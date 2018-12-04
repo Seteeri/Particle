@@ -150,7 +150,7 @@
       (enqueue-node-pointer)
       (enqueue-node-zero (index node-tgt)))))
 
-(defun return-node-msdf (seq-key)
+(defun return-node-msdf-2 (seq-key)
   ;; Move pointer
   ;; Add node
 

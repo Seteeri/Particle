@@ -27,7 +27,7 @@
   ;; Execute shm copy tasks
   ;; - Can be done in parallel assuming no overlapping operations...
   ;; - Can add detection code
-  
+
   (loop
      :for counter := 0
      :for task := (sb-concurrency:dequeue *queue-view*)
