@@ -40,7 +40,8 @@
       ;; add to begin value to get new value otherwise its just relative displacement from beginning
 
       (let ((pos-new (+ *value-start*
-			(* (funcall *fn-anim* (/ *time-elapsed* *time-duration*))
+			(* (funcall *fn-anim*
+				    (/ *time-elapsed* *time-duration*))
       			   -4.0))))
 	;; (format t "t = ~a, y = ~a~%" (/ *time-elapsed* *time-duration*) (easing:out-exp (/ *time-elapsed* *time-duration*)))
       	(setf (vx3 pos) pos-new))

@@ -342,3 +342,19 @@ Forward... -> Tiled -> Clustered -> Volumetric
   ;; For input:
   ;; - Some events need to be handled in serial such as key presses
   ;;   - Users expect input to be handled in serial, at least within a domain ie mouse vs keyboard
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; POSS:
+  ;; - Define 2 ptree's used by controller (ptree per frame)
+  ;;   - Create new ptree for current frame before swap
+  
+  ;; Example: anim won't run concurrently - input, anims
+
+  ;; Scenario: playing camera anim, then user moves camera, then what?
+  ;; - A: do one - play anim, pass move
+  ;; - B: do one - stop anim, move camera
+  ;; - C: do both - result depends
+  ;;   - camera may end up in different end position than expected
+  ;; - C seems the most logical to the user

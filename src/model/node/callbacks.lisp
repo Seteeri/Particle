@@ -1,12 +1,46 @@
 (in-package :protoform.model)
 
-(defun add-node-msdf (seq-key)
+(defun add-node-msdf (seq-key ptree queue)
   ;; Add node to pointer position
   ;; Move pointer right
   ;; Maybe have pointer appear below/above so edge will show
 
   (fmt-model t "add-node-msdf" "~a~%" seq-key)
 
+  (ptree-fn 'add-node-msdf
+	    '()
+	    (lambda ()
+	      (funcall #'add-node-msdf-2 seq-key))
+	    ptree)
+
+  (sb-concurrency:enqueue 'add-node-msdf queue))
+
+(defun backspace-node-msdf (seq-key ptree queue)
+
+  (fmt-model t "backspace-node-msdf" "~a~%" seq-key)
+
+  (ptree-fn 'backspace-node-msdf
+	    '()
+	    (lambda ()
+	      (funcall #'backspace-node-msdf-2 seq-key))
+	    ptree)
+
+  (sb-concurrency:enqueue 'backspace-node-msdf queue))
+
+(defun return-node-msdf (seq-key ptree queue)
+  
+  (fmt-model t "return-node-msdf" "~a~%" seq-key)
+
+  (ptree-fn 'return-node-msdf
+	    '()
+	    (lambda ()
+	      (funcall #'return-node-msdf-2 seq-key))
+	    ptree)
+
+  (sb-concurrency:enqueue 'return-node-msdf queue))
+
+(defun add-node-msdf-2 (seq-key)
+  
   ;; Split into
   ;; node new
   ;; digraph
@@ -75,10 +109,8 @@
     (enqueue-node node)
 
     node))
-
-(defun backspace-node-msdf (seq-key)
-
-  (fmt-model t "backspace-node-msdf" "~a~%" seq-key)
+  
+(defun backspace-node-msdf-2 (seq-key)
   
   (let ((node-tgt (first (digraph:successors *digraph* *node-pointer*))))
     (when node-tgt
@@ -129,7 +161,7 @@
 		   (- (* +linegap+ *scale-node*))
 		   :rel) ; add more spacing due to bl adjustments
   
-  (add-node-msdf seq-key)
+  (add-node-msdf-2 seq-key)
 
   ;; (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))
   

@@ -11,15 +11,20 @@
 (defun run-model (width height
 		  inst-max
 		  addr-swank-view)
+
+  ;; *queue-input*   (sb-concurrency:make-queue)
+  ;; *queue-front*   (sb-concurrency:make-queue)
+  ;; *queue-back*    (sb-concurrency:make-queue)
+  ;; *queue-frame*   *queue-back*
   
-  (setf *queue-input*   (sb-concurrency:make-queue)
-	*queue-front*   (sb-concurrency:make-queue)
-	*queue-back*    (sb-concurrency:make-queue)
-	*queue-frame*   *queue-back*
-	*queue-view*    (sb-concurrency:make-queue)
-	*kernel*        (make-kernel 4)
+  (setf *kernel*        (make-kernel 4)
 	*channel*       (make-channel)
 	*channel-input* (make-channel)
+
+	*queue-frame*   (sb-concurrency:make-queue)
+			 
+	*queue-view*    (sb-concurrency:make-queue)
+	
 	;; Simply set here since no fn required
 	*width*         width
 	*height*        height
