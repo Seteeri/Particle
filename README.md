@@ -103,7 +103,7 @@ naturally remains an orthogonal possibility.
 ## The Architecture
 
 * Two process system
-* Automated task-based parallelization
+* Task-based parallelization
   * Dependency tree
   * Thread pool kernel
 * Tiled forward shading engine (Forward+)
