@@ -182,12 +182,6 @@
 		       :exclusive
 		       cb)))
 
-(defun process-queue-input ()
-  (loop
-     :for task := (pop-queue *queue-input-model*)
-     :do (funcall (first task)
-		  (second task))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun run-graph-dep ()

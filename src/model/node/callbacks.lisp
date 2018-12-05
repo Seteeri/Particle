@@ -163,10 +163,14 @@
   ;; Do first since add-node will do pointer also - refactor that...
   (displace-node-x *node-pointer*
 		   -11.5199995
-		   :abs)
+		   :abs
+		   nil)
   (displace-node-y *node-pointer*
 		   (- (* +linegap+ *scale-node*))
-		   :rel) ; add more spacing due to bl adjustments
+		   :rel
+		   nil) ; add more spacing due to bl adjustments
+
+  (update-transform (model-matrix *node-pointer*))
   
   (add-node-msdf-2 seq-key)
 

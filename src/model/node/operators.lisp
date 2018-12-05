@@ -28,7 +28,8 @@
 
 (defun displace-node-x (node
 			displacement
-			type-displace)
+			type-displace
+			&optional (update t))
   (with-slots (model-matrix
 	       index)
       node
@@ -38,11 +39,13 @@
 	   (incf (vx3 (translation model-matrix)) displacement))
 	  (t
 	   (error "Unknown type-displace")))
-    (update-transform model-matrix)))
+    (when update
+      (update-transform model-matrix))))
 
 (defun displace-node-y (node
 			displacement
-			type-displace)
+			type-displace
+			&optional (update t))
   (with-slots (model-matrix
 	       index)
       node
@@ -52,7 +55,8 @@
 	   (incf (vy3 (translation model-matrix)) displacement))
 	  (t
 	   (error "Unknown type-displace")))
-    (update-transform model-matrix)))
+    (when update
+      (update-transform model-matrix))))
 
 (defun eval-node-msdf (seq-key)
   ;; To eval, build up string from predecessors

@@ -76,7 +76,7 @@
     ;; Cap time-delta to ending time
     (if (> *time-elapsed* *time-duration*)
 	(progn
-	  (fmt-model t "handle-view-sync" "Ending anim~%")
+	  (fmt-model t "ease-camera-x" "Ending anim~%")
 	  (setf *time-run* nil))
 	(progn
 	  ;; Push to queue
@@ -84,7 +84,7 @@
 
 (defun enqueue-anim (seq-event)
     
-  (fmt-model t "play ease-camera-x" "~a~%" seq-event)
+  (fmt-model t "enqueue-anim" "~a~%" seq-event)
   
   (sb-concurrency:enqueue (list 'ease-camera-x
 				'()
