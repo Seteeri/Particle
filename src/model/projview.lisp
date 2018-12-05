@@ -58,28 +58,29 @@
 
 (defun enqueue-mat-proj ()
   (let ((arr-proj (marr (mtranspose (mat-proj *projview*)))))
-    (sb-concurrency:enqueue (list *channel*
-				  *shm-projview*
-				  (pack:pack "<16f"
-					     (aref arr-proj 0)  (aref arr-proj 1)  (aref arr-proj 2)  (aref arr-proj 3)
-					     (aref arr-proj 4)  (aref arr-proj 5)  (aref arr-proj 6)  (aref arr-proj 7)
-					     (aref arr-proj 8)  (aref arr-proj 9)  (aref arr-proj 10) (aref arr-proj 11)
-					     (aref arr-proj 12) (aref arr-proj 13) (aref arr-proj 14) (aref arr-proj 15))
-				  0)
-			    *queue-view*)))
+    (sb-concurrency:enqueue
+     (list *channel*
+	   *shm-projview*
+	   (pack:pack "<16f"
+		      (aref arr-proj 0)  (aref arr-proj 1)  (aref arr-proj 2)  (aref arr-proj 3)
+		      (aref arr-proj 4)  (aref arr-proj 5)  (aref arr-proj 6)  (aref arr-proj 7)
+		      (aref arr-proj 8)  (aref arr-proj 9)  (aref arr-proj 10) (aref arr-proj 11)
+		      (aref arr-proj 12) (aref arr-proj 13) (aref arr-proj 14) (aref arr-proj 15))
+	   0)
+     *queue-view*)))
 
 (defun enqueue-mat-view ()
   (let ((arr-view (marr (mtranspose (mat-view *projview*)))))
-    (sb-concurrency:enqueue (list *channel*
-				  *shm-projview*
-				  (pack:pack "<16f"
-					     (aref arr-view 0)  (aref arr-view 1)  (aref arr-view 2)  (aref arr-view 3)
-					     (aref arr-view 4)  (aref arr-view 5)  (aref arr-view 6)  (aref arr-view 7)
-					     (aref arr-view 8)  (aref arr-view 9)  (aref arr-view 10) (aref arr-view 11)
-					     (aref arr-view 12) (aref arr-view 13) (aref arr-view 14) (aref arr-view 15))
-				  (* 16 4))
-			    *queue-view*)))
-
+    (sb-concurrency:enqueue
+     (list *channel*
+	   *shm-projview*
+	   (pack:pack "<16f"
+		      (aref arr-view 0)  (aref arr-view 1)  (aref arr-view 2)  (aref arr-view 3)
+		      (aref arr-view 4)  (aref arr-view 5)  (aref arr-view 6)  (aref arr-view 7)
+		      (aref arr-view 8)  (aref arr-view 9)  (aref arr-view 10) (aref arr-view 11)
+		      (aref arr-view 12) (aref arr-view 13) (aref arr-view 14) (aref arr-view 15))
+	   (* 16 4))
+     *queue-view*)))
 
 (defun scale-ortho-in (seq-event) ; in
   (with-slots (scale-ortho

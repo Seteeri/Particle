@@ -129,11 +129,12 @@ Core (REPL) Functionality
 5. Task-basked parallelism - WIP
 
 Core Extensions
-1. Numbered links for navigations
-2. Undo system
-3. FFMPEG for media - images, video, audio
+1. Animations (easing functions)
+2. Numbered links for navigations
+3. Undo system
+4. FFMPEG for media - images, video, audio
    * GEGL another option
-4. Wayland compositing
+5. Wayland compositing
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
