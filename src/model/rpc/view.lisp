@@ -9,23 +9,64 @@
 
   ;; Controller creates ptree/queue
   ;; Pushes into queue for frame to consume here
-  
-  ;;;;;;;;;;;;;;;;
-  ;; Execute ptree
-  ;; - Pop ids from queue
 
-  ;; Pop only once
-  (dotimes (i 2)
-    (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*)))
-      ;; Submit task for each ptree to run parallel
-      (when ptree-queue
-	(destructuring-bind (ptree queue)
-	    ptree-queue
-	  (loop
-	     :for id-node := (sb-concurrency:dequeue queue)
-	     :while id-node
-	     :do (call-ptree id-node ptree))))))
+  ;; How to run anims and input in parallel?
+
+  ;; Anims can only run during frame call
+  ;; so must integrate anim nodes during frame call
+  ;; Queue anims
+
+  ;; Controller callback will place ptree-fn args in
+  ;; queue which will then be dequeued here
   
+  ;; Execute ptrees
+  ;; - if anims and ptree: add anim nodes to ptree
+  ;;   else: create ptree and add
+  ;; - Then pop ids from queue
+  
+  (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*))
+	(ptree-frame nil))
+    (if ptree-queue
+
+	(destructuring-bind (ptree queue)
+  	    ptree-queue
+	  (setf ptree-frame ptree)
+	  
+	  ;; Add anim nodes first
+	  (let ((ids ()))
+	    (loop
+	       :for anim := (sb-concurrency:dequeue *queue-anim*)
+	       :while anim
+	       :do (destructuring-bind (id args fn)
+	  	       anim
+	  	     (push id ids)
+	  	     (ptree-fn id args fn ptree-frame)))
+	    ;; Call nodes
+  	    (loop
+  	       :for id-node := (sb-concurrency:dequeue queue)
+  	       :while id-node
+  	       :do (call-ptree id-node ptree-frame))
+	    (loop
+  	       :for id-node :in ids
+  	       :do (call-ptree id-node ptree-frame))))
+
+	;; Create ptree
+	(progn
+	  (setf ptree-frame (make-ptree))
+
+	  ;; Add all nodes, then call each fn
+	  (let ((ids ()))
+	    (loop
+	       :for anim := (sb-concurrency:dequeue *queue-anim*)
+	       :while anim
+	       :do (destructuring-bind (id args fn)
+		       anim
+		     (push id ids)
+		     (ptree-fn id args fn ptree-frame)))
+	    (loop
+  	       :for id-node :in ids
+  	       :do (call-ptree id-node ptree-frame))))))
+    
   ;; Execute shm copy tasks
   ;; - Can be done in parallel assuming no overlapping operations...
   ;; - Can add detection code

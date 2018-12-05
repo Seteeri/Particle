@@ -21,8 +21,16 @@
 ;; :in-back :out-back :in-out-back
 ;; :in-bounce :out-bounce :in-out-bounce
 
-(defun ease-camera-x (seq-key ptree queue)
+(defun ease-camera-x-callback (seq-key ptree queue)
   
+  ;; Should not be global!
+  (setf *fn-anim* #'easing:in-cubic
+	*value-start* (vx3 (pos *projview*))
+	*time-start* (osicat:get-monotonic-time)
+	*time-end* (+ *time-start* 4) ; (/ frame count fps)
+	*time-duration* (- *time-end* *time-start*) ; (/ frame-count fps)
+	*time-elapsed* 0.0)
+
   (fmt-model t "ease-camera-x" "~a~%" seq-key)
 
   (ptree-fn 'ease-camera-x
@@ -30,8 +38,9 @@
 	    (lambda ()
 	      (funcall #'ease-camera-x-2 seq-key))
 	    ptree)
-
-  (sb-concurrency:enqueue 'ease-camera-x queue))
+  
+  (sb-concurrency:enqueue 'ease-camera-x
+			  queue))
 
 (defun ease-camera-x-2 (seq-event)
       
@@ -70,23 +79,15 @@
 	  (fmt-model t "handle-view-sync" "Ending anim~%")
 	  (setf *time-run* nil))
 	(progn
-	  ;; Push to new tree for next frame
+	  ;; Push to queue
 	  (enqueue-anim seq-event)))))
 
 (defun enqueue-anim (seq-event)
-  ;; Create separate ptree
-  ;; Maybe frame can make the ptrees and enqueue separately
+    
+  (fmt-model t "play ease-camera-x" "~a~%" seq-event)
   
-  (let ((ptree (make-ptree))
-	(queue (sb-concurrency:make-queue)))
-    
-    (ptree-fn 'ease-camera-x
-	      '()
-	      (lambda ()
-		(funcall #'ease-camera-x-2 seq-key))
-	      ptree)
-    (sb-concurrency:enqueue 'ease-camera-x
-			    queue)
-    
-    (sb-concurrency:enqueue (list ptree queue)
-			    *queue-frame*)))
+  (sb-concurrency:enqueue (list 'ease-camera-x
+				'()
+				(lambda ()
+				  (funcall #'ease-camera-x-2 seq-event)))
+			  *queue-anim*))

@@ -21,6 +21,7 @@
 	*channel*       (make-channel)
 	*channel-input* (make-channel)
 
+	*queue-anim*    (sb-concurrency:make-queue)
 	*queue-frame*   (sb-concurrency:make-queue)
 			 
 	*queue-view*    (sb-concurrency:make-queue)
