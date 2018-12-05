@@ -5,11 +5,11 @@
    (height :accessor height :initarg :height :initform nil)
    (mat-proj :accessor mat-proj :initarg :mat-proj :initform nil)
    (type-proj :accessor type-proj :initarg :type-proj :initform nil)
-   (scale-ortho :accessor scale-ortho :initarg :scale-ortho :initform 48.0) ; bigger number = smaller view
+   (scale-ortho :accessor scale-ortho :initarg :scale-ortho :initform 20.25) ; bigger number = smaller view
    (near-ortho :accessor near-ortho :initarg :near-ortho :initform 1)
    (ortho-far :accessor ortho-far :initarg :ortho-far :initform 512)
    (mat-view :accessor mat-view :initarg :mat-view :initform nil)
-   (pos :accessor pos :initarg :pos :initform (vec3 0 0 10))
+   (pos :accessor pos :initarg :pos :initform (vec3 -3 8 10))
    (rot :accessor rot :initarg :rot :initform (vec3 0 0 0))
    (displace :accessor displace :initarg :displace :initform (vec3 1.0 1.0 0.75))))
 
@@ -81,21 +81,25 @@
 			    *queue-view*)))
 
 
-(defun update-scale-ortho-in (seq-event) ; in
+(defun scale-ortho-in (seq-event) ; in
   (with-slots (scale-ortho
 	       displace)
       *projview*
-    (decf scale-ortho
-	  (vz3 displace)))
+    (fmt-model t "scale-ortho-in" "~a -> ~a~%"
+	       scale-ortho
+	       (decf scale-ortho
+		     (vz3 displace))))
   (update-mat-proj)
   (enqueue-mat-proj))
 
-(defun update-scale-ortho-out (seq-event) ; out
+(defun scale-ortho-out (seq-event) ; out
   (with-slots (scale-ortho
 	       displace)
       *projview*
-    (incf scale-ortho
-	  (vz3 displace)))
+    (fmt-model t "scale-ortho-out" "~a -> ~a~%"
+	       scale-ortho
+	       (incf scale-ortho
+		     (vz3 displace))))
   (update-mat-proj)
   (enqueue-mat-proj))
 
@@ -104,8 +108,10 @@
   (with-slots (pos
 	       displace)
       *projview*
-    (decf (vx3 pos)
-	  (vx3 displace)))
+    (fmt-model t "move-camera-left" "~a -> ~a~%"
+	       (vx3 pos)
+	       (decf (vx3 pos)
+		     (vx3 displace))))
   (update-mat-view)
   (enqueue-mat-view))
 
@@ -113,8 +119,10 @@
   (with-slots (pos
 	       displace)
       *projview*
-    (incf (vx3 pos)
-	  (vx3 displace)))
+    (fmt-model t "move-camera-right" "~a -> ~a~%"
+	       (vx3 pos)
+	       (incf (vx3 pos)
+		     (vx3 displace))))
   (update-mat-view)
   (enqueue-mat-view))
 
@@ -122,8 +130,10 @@
   (with-slots (pos
 	       displace)
       *projview*
-    (incf (vy3 pos)
-	  (vy3 displace)))
+    (fmt-model t "move-camera-up" "~a -> ~a~%"
+	       (vy3 pos)
+	       (incf (vy3 pos)
+		     (vy3 displace))))
   (update-mat-view)
   (enqueue-mat-view))
 
@@ -131,7 +141,9 @@
   (with-slots (pos
 	       displace)
       *projview*
-    (decf (vy3 pos)
-	  (vy3 displace)))
+    (fmt-model t "move-camera-down" "~a -> ~a~%"
+	       (vy3 pos)
+	       (decf (vy3 pos)
+		     (vy3 displace))))
   (update-mat-view)
   (enqueue-mat-view))
