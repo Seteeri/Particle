@@ -31,15 +31,21 @@
   ;; Anims can only run during frame call
   ;; so must integrate anim nodes during frame call
 
-  ;; Controller callback will place ptree-fn args in
-  ;; queue which will then be dequeued here
-
-  ;; - if anims and ptree: add anim nodes to ptree
-  ;;   else: create ptree and add
-  ;; - Then pop ids from queue
+  ;; Controller callbacks will place ids in queue
+  ;; Anims will place ptree-fn args in another queue
+  ;; - ids will be generated from it
 
   ;; To run multiple anims in parallel in a single ptree
   ;; need to link them to a final function
+  ;; ....or anims will enqueue and create final function node here
+  ;; since can't modify the fn
+
+  ;; To run entire ptree, need a final function that
+  ;; has all previous ids as args
+  ;; - Use existing queue to build a list
+
+  ;; Can optimize by caching some of the analysis internally
+  ;; - look into lparallel code
   
   (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*)))
     (if ptree-queue
@@ -47,7 +53,7 @@
 	(destructuring-bind (ptree queue)
   	    ptree-queue
 	  
-	  ;; Add anim nodes first
+	  ;; Add anim nodes, collect ids, add finish node, call finish node
 	  (let ((ids ()))
 	    (loop
 	       :for anim := (sb-concurrency:dequeue *queue-anim*)
@@ -59,16 +65,15 @@
 			       args
 			       fn
 			       ptree)))
-	    ;; Call nodes
   	    (loop
   	       :for id-node := (sb-concurrency:dequeue queue)
   	       :while id-node
-  	       :do (call-ptree id-node
-			       ptree))
-	    (loop
-  	       :for id-node :in ids
-  	       :do (call-ptree id-node
-			       ptree))))
+  	       :do (push id-node ids))
+	    (ptree-fn 'finish
+		      ids
+		      (lambda ())
+		      ptree))
+	  (call-ptree 'finish ptree))
 
 	;; Create ptree
 	(let ((ptree (make-ptree)))
@@ -85,10 +90,11 @@
 			       args
 			       fn
 			       ptree)))
-	    (loop
-  	       :for id-node :in ids
-  	       :do (call-ptree id-node
-			       ptree)))))))
+	    (ptree-fn 'finish
+		      ids
+		      (lambda ())
+		      ptree))
+	  (call-ptree 'finish ptree)))))
 
 (defun execute-tasks-shm ()
   ;; Can be done in parallel assuming no overlapping operations...

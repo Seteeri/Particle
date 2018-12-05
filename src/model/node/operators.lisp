@@ -59,6 +59,10 @@
       (update-transform model-matrix))))
 
 (defun eval-node-msdf (seq-key)
+  ;; For eval, if code modifies data used by a thread
+  ;; will result in corruption...how to detect?
+  ;; - Warn user before eval - see if id exist in graph
+  
   ;; To eval, build up string from predecessors
   (let ((node-tgt (first (digraph:successors *digraph* *node-pointer*)))
         (chrs nil))
