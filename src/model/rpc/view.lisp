@@ -27,14 +27,9 @@
       	       (* 4 16 2)))))
 
 (defun execute-tasks-main ()
-  ;; Controller creates ptree/queue
-  ;; Pushes into queue for frame to consume here
-
-  ;; How to run anims and input in parallel?
 
   ;; Anims can only run during frame call
   ;; so must integrate anim nodes during frame call
-  ;; Queue anims
 
   ;; Controller callback will place ptree-fn args in
   ;; queue which will then be dequeued here
@@ -43,6 +38,9 @@
   ;;   else: create ptree and add
   ;; - Then pop ids from queue
 
+  ;; To run multiple anims in parallel in a single ptree
+  ;; need to link them to a final function
+  
   (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*)))
     (if ptree-queue
 
