@@ -23,7 +23,31 @@
   ;; - if anims and ptree: add anim nodes to ptree
   ;;   else: create ptree and add
   ;; - Then pop ids from queue
-  
+  (execute-tasks-main)
+    
+  ;; Execute shm copy tasks
+  ;; - Can be done in parallel assuming no overlapping operations...
+  ;; - Can add detection code
+  (execute-tasks-shm)
+
+  ;; Is it faster to copy large contiguous area or numerous small segments?
+  ;; Send message to view to copy shm
+  ;; Use highest offset from copy shm queue...
+  ;;
+  ;; TODO:
+  ;; digraph:count-vertices - checks hash-table-size
+  ;; digraph:count-edges    - loops through vertices then edges
+  ;; Reimplement cl-digaph with cl-tries?
+  (memcpy-shm-to-cache-flag*
+   (list (list "nodes"
+	       0
+      	       (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
+				       	    (digraph:count-edges *digraph*))))
+	 (list "projview"
+	       0
+      	       (* 4 16 2)))))
+
+(defun execute-tasks-main ()
   (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*))
 	(ptree-frame nil))
     (if ptree-queue
@@ -65,12 +89,9 @@
 		     (ptree-fn id args fn ptree-frame)))
 	    (loop
   	       :for id-node :in ids
-  	       :do (call-ptree id-node ptree-frame))))))
-    
-  ;; Execute shm copy tasks
-  ;; - Can be done in parallel assuming no overlapping operations...
-  ;; - Can add detection code
+  	       :do (call-ptree id-node ptree-frame)))))))
 
+(defun execute-tasks-shm ()
   (loop
      :for counter := 0
      :for task := (sb-concurrency:dequeue *queue-view*)
@@ -87,21 +108,4 @@
 			data
 			offset))
      :finally (dotimes (i counter)
-		(receive-result *channel*)))
-
-  ;; Is it faster to copy large contiguous area or numerous small segments?
-  ;; Send message to view to copy shm
-  ;; Use highest offset from copy shm queue...
-  ;;
-  ;; TODO:
-  ;; digraph:count-vertices - checks hash-table-size
-  ;; digraph:count-edges    - loops through vertices then edges
-  ;; Reimplement cl-digaph with cl-tries?
-  (memcpy-shm-to-cache-flag*
-   (list (list "nodes"
-	       0
-      	       (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
-				       	    (digraph:count-edges *digraph*))))
-	 (list "projview"
-	       0
-      	       (* 4 16 2)))))
+		(receive-result *channel*))))
