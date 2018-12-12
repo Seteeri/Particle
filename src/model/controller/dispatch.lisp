@@ -10,7 +10,6 @@
   
   (let ((ptree (make-ptree))
 	(queue (sb-concurrency:make-queue)))
-
     ;; Fill ptree/queue
     (loop
        :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
@@ -19,7 +18,7 @@
 			#'dispatch-seq-event
 			seq-event)
        :finally (dotimes (i (hash-table-count (key-callbacks *controller*)))
-		  ;; Call callbacks to enqueue
+		  ;; Call callbacks to enqueue - sole responsibility, should not do other things
 		  ;; Assumption here is callbacks do not share data...
 		  (dolist (cb-ev (receive-result *channel-input*))
 		    (destructuring-bind (cb ev)
@@ -27,9 +26,8 @@
 		      (funcall cb ev ptree queue)))))
 
     ;; Enqueue for frame
-    (unless (sb-concurrency:queue-empty-p queue)
-      (sb-concurrency:enqueue (list ptree queue)
-			      *queue-frame*))))
+    (sb-concurrency:enqueue (list ptree queue)
+			    *queue-frame*)))
 
 (defun dispatch-seq-event (seq-event)
   (when (is-seq-event-valid seq-event)

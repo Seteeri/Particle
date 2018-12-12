@@ -46,55 +46,95 @@
 
   ;; Can optimize by caching some of the analysis internally
   ;; - look into lparallel code
-  
-  (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*)))
-    (if ptree-queue
 
-	(destructuring-bind (ptree queue)
-  	    ptree-queue
-	  
-	  ;; Add anim nodes, collect ids, add finish node, call finish node
-	  (let ((ids ()))
-	    (loop
-	       :for anim := (sb-concurrency:dequeue *queue-anim*)
-	       :while anim
-	       :do (destructuring-bind (id args fn)
-	  	       anim
-	  	     (push id ids)
-	  	     (ptree-fn id
-			       args
-			       fn
-			       ptree)))
-  	    (loop
-  	       :for id-node := (sb-concurrency:dequeue queue)
-  	       :while id-node
-  	       :do (push id-node ids))
-	    (ptree-fn 'finish
-		      ids
-		      (lambda ())
-		      ptree))
-	  (call-ptree 'finish ptree))
+  ;; Either integrate anims into existing input ptree
+  ;; Or run each ptree in parallel - one for anims, one for input
 
-	;; Create ptree
-	(let ((ptree (make-ptree)))
-	  
-	  ;; Add all nodes, then call each fn
-	  (let ((ids ()))
-	    (loop
-	       :for anim := (sb-concurrency:dequeue *queue-anim*)
-	       :while anim
-	       :do (destructuring-bind (id args fn)
-		       anim
-		     (push id ids)
-		     (ptree-fn id
-			       args
-			       fn
-			       ptree)))
-	    (ptree-fn 'finish
-		      ids
-		      (lambda ())
-		      ptree))
-	  (call-ptree 'finish ptree)))))
+  ;; For now, run each ptree separately - run input then anim
+  (loop
+     :for ptree-queue := (sb-concurrency:dequeue *queue-frame*)
+     :while ptree-queue
+     :do (destructuring-bind (ptree queue)
+	     ptree-queue
+	   (let ((ids ()))
+	     (loop
+  		:for id-node := (sb-concurrency:dequeue queue)
+  		:while id-node
+  		:do (push id-node ids))
+	     (ptree-fn 'finish
+  		       ids
+  		       (lambda ())
+  		       ptree)
+	     (call-ptree 'finish ptree))))
+
+  (let ((ptree (make-ptree)))
+    ;; Add all nodes, then call each fn
+    (let ((ids ()))
+      (loop
+	 :for anim := (sb-concurrency:dequeue *queue-anim*)
+	 :while anim
+	 :do (destructuring-bind (id args fn)
+  		 anim
+  	       (push id ids)
+  	       (ptree-fn id
+  			 args
+  			 fn
+  			 ptree)))
+      (ptree-fn 'finish
+  		ids
+  		(lambda ())
+  		ptree))
+    (call-ptree 'finish ptree))
+
+  (when nil
+    (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*)))       
+      (if ptree-queue
+
+  	  (destructuring-bind (ptree queue)
+  	      ptree-queue
+	    
+  	    ;; Add anim nodes, collect ids, add finish node, call finish node
+  	    (let ((ids ()))
+  	      (loop
+  		 :for anim := (sb-concurrency:dequeue *queue-anim*)
+  		 :while anim
+  		 :do (destructuring-bind (id args fn)
+  	  		 anim
+  	  	       (push id ids)
+  	  	       (ptree-fn id
+  				 args
+  				 fn
+  				 ptree)))
+  	      (loop
+  		 :for id-node := (sb-concurrency:dequeue queue)
+  		 :while id-node
+  		 :do (push id-node ids))
+  	      (ptree-fn 'finish
+  			ids
+  			(lambda ())
+  			ptree))
+  	    (call-ptree 'finish ptree))
+
+  	  ;; Create ptree
+  	  (let ((ptree (make-ptree)))
+	    
+  	    ;; Add all nodes, then call each fn
+  	    (let ((ids ()))
+  	      (loop
+  		 :for anim := (sb-concurrency:dequeue *queue-anim*)
+  		 :while anim
+  		 :do (destructuring-bind (id args fn)
+  			 anim
+  		       (push id ids)
+  		       (ptree-fn id
+  				 args
+  				 fn
+  				 ptree)))
+  	      (ptree-fn 'finish
+  			ids
+  			(lambda ())
+  			ptree))
+  	    (call-ptree 'finish ptree))))))
 
 (defun execute-tasks-shm ()
   ;; Can be done in parallel assuming no overlapping operations...

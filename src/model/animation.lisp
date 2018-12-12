@@ -30,7 +30,7 @@
   ;; Create animation instance and pass instance continuously
   
   ;; time-end:       (+ *time-start* 4)         ; (/ frame count fps)
-  ;; time-duration: (- *time-end* *time-start*) ; (/ frame-count fps)
+  ;; time-duration:  (- *time-end* *time-start*) ; (/ frame-count fps)
 
   (fmt-model t "ease-camera-x" "~a~%" seq-key)
   
@@ -77,7 +77,7 @@
       ;; 		time-start time-elapsed time-end time-duration time-delta)
       ;; 	(format t "  ~7$~%" (osicat:get-monotonic-time)))
       
-      (with-slots (pos scale-ortho)
+      (with-slots (pos)
       	  *projview*
 	
 	;; normalize x/time elapsed by dividing over duration
