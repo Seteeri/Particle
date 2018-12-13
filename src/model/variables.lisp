@@ -19,11 +19,9 @@
 
 ;;;;;;;;;;;;;
 
-(defparameter *queue-input* nil)
-(defparameter *queue-front* nil)
-(defparameter *queue-back* nil)
+(defparameter *queue-anim* nil)
 (defparameter *queue-frame* nil)
-(defparameter *queue-view* nil)
+(defparameter *queue-shm* nil)
 
 (defparameter *width* nil)
 (defparameter *height* nil)

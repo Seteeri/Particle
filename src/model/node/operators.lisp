@@ -8,7 +8,7 @@
 				(serialize-node node)
 				(* (index node)
 				   +size-struct-instance+))
-			  *queue-view*))
+			  *queue-shm*))
 
 (defun enqueue-node-pointer ()
   (sb-concurrency:enqueue (list *channel*
@@ -16,7 +16,7 @@
 				(serialize-node *node-pointer*)
 				(* (index *node-pointer*)
 				   +size-struct-instance+))
-			  *queue-view*))  
+			  *queue-shm*))  
 
 (defun enqueue-node-zero (index)
   (sb-concurrency:enqueue (list *channel*
@@ -24,7 +24,7 @@
 				*data-zero-node*
 				(* index
 				   +size-struct-instance+))
-			  *queue-view*))
+			  *queue-shm*))
 
 (defun displace-node-x (node
 			displacement

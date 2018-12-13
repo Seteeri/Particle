@@ -61,7 +61,7 @@
 		      (aref arr 8)  (aref arr 9)  (aref arr 10) (aref arr 11)
 		      (aref arr 12) (aref arr 13) (aref arr 14) (aref arr 15))
 	   offset)
-     *queue-view*)))
+     *queue-shm*)))
 
 (defun enqueue-mat-proj ()
   (enqueue-mat (mat-proj *projview*)

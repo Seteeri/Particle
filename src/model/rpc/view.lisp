@@ -141,7 +141,7 @@
   ;; Can add detection code
   (loop
      :for counter := 0
-     :for task := (sb-concurrency:dequeue *queue-view*)
+     :for task := (sb-concurrency:dequeue *queue-shm*)
      :while task
      :do (destructuring-bind (channel
 			      name-shm

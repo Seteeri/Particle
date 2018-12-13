@@ -74,10 +74,6 @@
       ;; Alternative: flag shm as dirty; check during loop
       (update-mat-proj)
       (enqueue-mat-proj)
-
-      ;; TODO:
-      ;; Rename queue-view -> queue-shm
-      ;; Rename channel -> chan-shm
       
       ;; Cap time-delta to ending time
       (if (> time-elapsed time-duration)
