@@ -41,44 +41,35 @@
 			     (mscaling (vec3 1 1 1)))))))
 
 (defun copy-mat-proj-to-shm ()
-  (with-slots (ptr size)
-      *shm-projview*
-    (set-matrix ptr
-		(mat-proj *projview*)
-		0)))
+  (set-matrix (ptr *shm-projview*)
+	      (mat-proj *projview*)
+	      0))
 
 (defun copy-mat-view-to-shm ()
-  (with-slots (ptr size)
-      *shm-projview*
-    (set-matrix ptr
-		(mat-view *projview*)
-		16)))
+  (set-matrix (ptr *shm-projview*)
+	      (mat-view *projview*)
+	      16))
+
+(defun enqueue-mat (mat offset)
+  (let ((arr (marr (mtranspose mat))))
+    (sb-concurrency:enqueue
+     (list *channel*
+	   *shm-projview*
+	   (pack:pack "<16f"
+		      (aref arr 0)  (aref arr 1)  (aref arr 2)  (aref arr 3)
+		      (aref arr 4)  (aref arr 5)  (aref arr 6)  (aref arr 7)
+		      (aref arr 8)  (aref arr 9)  (aref arr 10) (aref arr 11)
+		      (aref arr 12) (aref arr 13) (aref arr 14) (aref arr 15))
+	   offset)
+     *queue-view*)))
 
 (defun enqueue-mat-proj ()
-  (let ((arr-proj (marr (mtranspose (mat-proj *projview*)))))
-    (sb-concurrency:enqueue
-     (list *channel*
-	   *shm-projview*
-	   (pack:pack "<16f"
-		      (aref arr-proj 0)  (aref arr-proj 1)  (aref arr-proj 2)  (aref arr-proj 3)
-		      (aref arr-proj 4)  (aref arr-proj 5)  (aref arr-proj 6)  (aref arr-proj 7)
-		      (aref arr-proj 8)  (aref arr-proj 9)  (aref arr-proj 10) (aref arr-proj 11)
-		      (aref arr-proj 12) (aref arr-proj 13) (aref arr-proj 14) (aref arr-proj 15))
-	   0)
-     *queue-view*)))
+  (enqueue-mat (mat-proj *projview*)
+	       0))
 
 (defun enqueue-mat-view ()
-  (let ((arr-view (marr (mtranspose (mat-view *projview*)))))
-    (sb-concurrency:enqueue
-     (list *channel*
-	   *shm-projview*
-	   (pack:pack "<16f"
-		      (aref arr-view 0)  (aref arr-view 1)  (aref arr-view 2)  (aref arr-view 3)
-		      (aref arr-view 4)  (aref arr-view 5)  (aref arr-view 6)  (aref arr-view 7)
-		      (aref arr-view 8)  (aref arr-view 9)  (aref arr-view 10) (aref arr-view 11)
-		      (aref arr-view 12) (aref arr-view 13) (aref arr-view 14) (aref arr-view 15))
-	   (* 16 4))
-     *queue-view*)))
+  (enqueue-mat (mat-view *projview*)
+	       (* 16 4)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
