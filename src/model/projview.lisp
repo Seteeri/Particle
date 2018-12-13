@@ -54,8 +54,6 @@
 		(mat-view *projview*)
 		16)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun enqueue-mat-proj ()
   (let ((arr-proj (marr (mtranspose (mat-proj *projview*)))))
     (sb-concurrency:enqueue
@@ -82,17 +80,111 @@
 	   (* 16 4))
      *queue-view*)))
 
-(defun scale-ortho-in (seq-event) ; in
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (defun scale-ortho-in (seq-event) ; in
+;;   (with-slots (scale-ortho
+;; 	       displace)
+;;       *projview*
+;;     (fmt-model t "scale-ortho-in" "~a -> ~a~%"
+;; 	       scale-ortho
+;; 	       (decf scale-ortho
+;; 		     (vz3 displace))))
+;;   (update-mat-proj)
+;;   (enqueue-mat-proj))
+
+;; (defun scale-ortho-out (seq-event) ; out
+;;   (with-slots (scale-ortho
+;; 	       displace)
+;;       *projview*
+;;     (fmt-model t "scale-ortho-out" "~a -> ~a~%"
+;; 	       scale-ortho
+;; 	       (incf scale-ortho
+;; 		     (vz3 displace))))
+;;   (update-mat-proj)
+;;   (enqueue-mat-proj))
+
+
+;; (defun move-camera-left (seq-event)
+;;   (with-slots (pos
+;; 	       displace)
+;;       *projview*
+;;     (fmt-model t "move-camera-left" "~a -> ~a~%"
+;; 	       (vx3 pos)
+;; 	       (decf (vx3 pos)
+;; 		     (vx3 displace))))
+;;   (update-mat-view)
+;;   (enqueue-mat-view))
+
+;; (defun move-camera-right (seq-event)
+;;   (with-slots (pos
+;; 	       displace)
+;;       *projview*
+;;     (fmt-model t "move-camera-right" "~a -> ~a~%"
+;; 	       (vx3 pos)
+;; 	       (incf (vx3 pos)
+;; 		     (vx3 displace))))
+;;   (update-mat-view)
+;;   (enqueue-mat-view))
+
+;; (defun move-camera-up (seq-event)
+;;   (with-slots (pos
+;; 	       displace)
+;;       *projview*
+;;     (fmt-model t "move-camera-up" "~a -> ~a~%"
+;; 	       (vy3 pos)
+;; 	       (incf (vy3 pos)
+;; 		     (vy3 displace))))
+;;   (update-mat-view)
+;;   (enqueue-mat-view))
+
+;; (defun move-camera-down (seq-event)
+;;   (with-slots (pos
+;; 	       displace)
+;;       *projview*
+;;     (fmt-model t "move-camera-down" "~a -> ~a~%"
+;; 	       (vy3 pos)
+;; 	       (decf (vy3 pos)
+;; 		     (vy3 displace))))
+;;   (update-mat-view)
+;;   (enqueue-mat-view))
+
+(defun scale-ortho-in (seq-event ptree queue) ; in
   (with-slots (scale-ortho
 	       displace)
       *projview*
+    
     (fmt-model t "scale-ortho-in" "~a -> ~a~%"
 	       scale-ortho
-	       (decf scale-ortho
-		     (vz3 displace))))
-  (update-mat-proj)
-  (enqueue-mat-proj))
-
+	       (- scale-ortho
+		  (vz3 displace)))
+    
+    (let ((anim (make-instance 'animation
+			       :object *projview*
+			       :slot 'scale-ortho
+			       :fn #'easing:in-cubic
+			       :value-start scale-ortho
+			       :value-delta (- (vz3 displace))
+			       :time-start (osicat:get-monotonic-time)
+			       :time-elapsed 0.0)))
+      (with-slots (time-start
+		   time-end
+		   time-duration)
+	  anim
+	(setf time-end (+ time-start 4))
+	(setf time-duration (- time-end time-start)))
+      
+      (ptree-fn 'run-anim-scale
+		'()
+		(lambda ()
+		  (funcall #'run-anim
+			   seq-key
+			   anim))
+		ptree))
+    
+    (sb-concurrency:enqueue 'run-anim-scale
+			    queue)))
+  
 (defun scale-ortho-out (seq-event) ; out
   (with-slots (scale-ortho
 	       displace)

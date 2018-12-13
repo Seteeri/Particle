@@ -13,54 +13,36 @@
 ;; :in-bounce :out-bounce :in-out-bounce
 
 (defclass animation ()
-  ((fn :accessor fn :initarg :fn :initform nil)
+  ((object :accessor object :initarg :object :initform nil)
+   (slot :accessor slot :initarg :slot :initform nil)
+   (fn :accessor fn :initarg :fn :initform nil)
    (value-start :accessor value-start :initarg :value-start :initform nil)
+   (value-delta :accessor value-delta :initarg :value-delta :initform nil)
    (time-start :accessor time-start :initarg :time-start :initform nil)
    (time-end :accessor time-end :initarg :time-end :initform nil)
    (time-duration :accessor time-duration :initarg :time-duration :initform nil)
    (time-elapsed :accessor time-elapsed :initarg :time-elapsed :initform nil)))
+
+;; time-end:       (+ *time-start* 4)          ; (/ frame count fps)
+;; time-duration:  (- *time-end* *time-start*) ; (/ frame-count fps)
 
 ;; What to do if object is destroyed, this must be destroyed also
 ;; Which means attach animations to the object (node) so they can be tracked
 ;; On delete, stop/remove animations and set valid property
 ;; Give node valid property so anim can check it
 
-(defun ease-camera-x-callback (seq-key ptree queue)
-  
-  ;; Create animation instance and pass instance continuously
-  
-  ;; time-end:       (+ *time-start* 4)         ; (/ frame count fps)
-  ;; time-duration:  (- *time-end* *time-start*) ; (/ frame-count fps)
+;; If animation already playing, stop existing, then interpolate...
+;; Poss issue - same anims/obj in same ptree
 
-  (fmt-model t "ease-camera-x" "~a~%" seq-key)
-  
-  (let ((anim (make-instance 'animation
-			     :fn #'easing:in-cubic
-			     :value-start (vx3 (pos *projview*))
-			     :time-start (osicat:get-monotonic-time)
-			     :time-elapsed 0.0)))
-    (with-slots (time-start
-		 time-end
-		 time-duration)
-	anim
-      (setf time-end (+ time-start 4))
-      (setf time-duration (- time-end time-start)))
-    
-    (ptree-fn 'ease-camera-x
-	      '()
-	      (lambda ()
-		(funcall #'ease-camera-x-2
-			 seq-key
-			 anim))
-	      ptree))
-  
-  (sb-concurrency:enqueue 'ease-camera-x
-			  queue))
+;; Per object->slot - can run slots in parallel
 
-(defun ease-camera-x-2 (seq-event anim)
+(defun run-anim (seq-event anim)
 
-  (with-slots (fn
+  (with-slots (object
+	       slot
+	       fn
 	       value-start
+	       value-delta
 	       time-start
 	       time-end
 	       time-duration
@@ -69,48 +51,47 @@
     
     (let* ((time-now (osicat:get-monotonic-time))
 	   (time-delta (- time-now time-start)))
-      
       (incf time-elapsed time-delta)
-      
+
       ;; (when nil
       ;; 	(format t "~4$ { ~4$ } ~4$ (~4$) [~4$] ~%"
       ;; 		time-start time-elapsed time-end time-duration time-delta)
       ;; 	(format t "  ~7$~%" (osicat:get-monotonic-time)))
       
-      (with-slots (pos)
-      	  *projview*
-	
-	;; normalize x/time elapsed by dividing over duration
-	;; normalize y by multiplying by displacement
-	;; add to begin value to get new value otherwise its just relative displacement from beginning
-	
-	(let ((pos-new (+ value-start
-			  (* (funcall fn
-				      (/ time-elapsed time-duration))
-      			     -4.0))))
+      (let ((value-new (+ value-start
+			(* (funcall fn
+				    (/ time-elapsed time-duration))
+      			   value-delta))))
 
-	  ;; (format t "t = ~a, y = ~a~%"
-	  ;;         (/ *time-elapsed* *time-duration*)
-	  ;;         (easing:out-exp (/ *time-elapsed* *time-duration*)))
-	  
-      	  (setf (vx3 pos) pos-new)))
-      
-      (update-mat-view)
-      (enqueue-mat-view)
+	(fmt-model t "run-anim" "~a -> ~a~%" (slot-value object slot) value-new)
+	
+      	(setf (slot-value object slot) value-new))
+
+      ;; Alternative: flag shm as dirty; check during loop
+      (update-mat-proj)
+      (enqueue-mat-proj)
+
+      ;; TODO:
+      ;; Rename queue-view -> queue-shm
+      ;; Rename channel -> chan-shm
       
       ;; Cap time-delta to ending time
       (if (> time-elapsed time-duration)
-	  (fmt-model t "ease-camera-x" "Ending anim~%")
+	  (fmt-model t "run-anim" "Ending anim~%")
 	  (enqueue-anim seq-event
-			anim)))))
+			anim
+			'run-anim-scale
+			(lambda ()
+			  (funcall #'run-anim
+				   seq-event
+				   anim)))))))
 
-(defun enqueue-anim (seq-event anim)
-  
-  (fmt-model t "enqueue-anim" "~a~%" seq-event)
-  
-  (sb-concurrency:enqueue (list 'ease-camera-x
+(defun enqueue-anim (seq-event
+		     anim
+		     id
+		     fn)
+  ;; (fmt-model t "enqueue-anim" "~a~%" seq-event)  
+  (sb-concurrency:enqueue (list id 
 				'()
-				(lambda ()
-				  (funcall #'ease-camera-x-2 seq-event
-					   anim)))
+				fn)
 			  *queue-anim*))

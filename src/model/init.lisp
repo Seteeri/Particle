@@ -158,9 +158,12 @@
 			   :exclusive
 			   (second seq-event))))
 
-    (register-callback `(,+xk-f7+ (:press))
-		       :exclusive
-		       #'ease-camera-x-callback)
+    ;; for testing
+    (when nil
+      (register-callback `(,+xk-f7+ (:press))
+			 :exclusive
+			 (lambda (seq-event ptree queue)
+			   t)))
     
     ;; Print hashtable
     (when nil
