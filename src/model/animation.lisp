@@ -13,16 +13,14 @@
 ;; :in-bounce :out-bounce :in-out-bounce
 
 (defclass animation ()
-  ((object        :accessor object        :initarg :object        :initform nil)
-   (slot          :accessor slot          :initarg :slot          :initform nil)
-   (fn-easing     :accessor fn-easing     :initarg :fn-easing     :initform nil)
+  ((fn-easing     :accessor fn-easing     :initarg :fn-easing     :initform nil)
    (fn-new        :accessor fn-new        :initarg :fn-new        :initform nil)
    (value-start   :accessor value-start   :initarg :value-start   :initform nil)
    (value-delta   :accessor value-delta   :initarg :value-delta   :initform nil)
    (time-start    :accessor time-start    :initarg :time-start    :initform nil)
    (time-end      :accessor time-end      :initarg :time-end      :initform nil)
    (time-duration :accessor time-duration :initarg :time-duration :initform 1.0)
-   (time-elapsed  :accessor time-elapsed  :initarg :time-elapsed  :initform nil)))
+   (time-elapsed  :accessor time-elapsed  :initarg :time-elapsed  :initform 0.0)))
 
 ;; time-end:       (+ *time-start* 4)          ; (/ frame count fps)
 ;; time-duration:  (- *time-end* *time-start*) ; (/ frame-count fps)
@@ -37,11 +35,18 @@
 
 ;; Per object->slot - can run slots in parallel
 
-(defun run-anim (seq-event anim)
+(defun enqueue-anim (seq-event
+		     anim
+		     id
+		     fn)
+  ;; (fmt-model t "enqueue-anim" "~a~%" seq-event)  
+  (sb-concurrency:enqueue (list id 
+				'()
+				fn)
+			  *queue-anim*))
 
-  (with-slots (object
-	       slot
-	       fn-easing
+(defun run-anim-pv (seq-event anim fn-update id-enqueue fn-enqueue)
+  (with-slots (fn-easing
 	       fn-new
 	       value-start
 	       value-delta
@@ -70,31 +75,38 @@
 			  (* (funcall fn-easing
 				      (/ time-elapsed time-duration))
       			     value-delta))))
-	(fmt-model t "run-anim" "~a -> ~a~%" (slot-value object slot) value-new)
+	(fmt-model t "run-anim" "~a -> ~a~%" value-start value-new)
 	(funcall fn-new
 		 value-new))
       
       ;; Alternative: flag shm as dirty; check during loop
-      (update-mat-proj)
-      (enqueue-mat-proj)
+      (funcall fn-update)
       
       ;; Cap time-delta to ending time
       (if (> time-elapsed time-duration)
 	  (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed)
 	  (enqueue-anim seq-event
 			anim
-			'run-anim-scale
+			id-enqueue
 			(lambda ()
-			  (funcall #'run-anim
+			  (funcall fn-enqueue
 				   seq-event
 				   anim)))))))
+  
+(defun run-anim-proj (seq-event anim)
+  (run-anim-pv seq-event
+	       anim
+	       (lambda ()
+		 (update-mat-proj)
+		 (enqueue-mat-proj))
+	       'run-anim-proj
+	       #'run-anim-proj))
 
-(defun enqueue-anim (seq-event
-		     anim
-		     id
-		     fn)
-  ;; (fmt-model t "enqueue-anim" "~a~%" seq-event)  
-  (sb-concurrency:enqueue (list id 
-				'()
-				fn)
-			  *queue-anim*))
+(defun run-anim-view (seq-event anim)
+  (run-anim-pv seq-event
+	       anim
+	       (lambda ()
+		 (update-mat-view)
+		 (enqueue-mat-view))
+	       'run-anim-view
+	       #'run-anim-view))

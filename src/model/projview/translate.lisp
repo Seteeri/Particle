@@ -1,28 +1,26 @@
 (in-package :protoform.model)
 
-(defun translate-camera (seq-event ptree queue id delta)
+;; Abstract function to anim
+(defun translate-camera (seq-event ptree queue fn-new start delta id)
   (with-slots (pos)
       *projview*
     
-    (fmt-model t "pos" "~a -> ~a~%"
-	       pos
-	       (+ pos
+    (fmt-model t "translate-camera" "~a -> ~a~%"
+	       start
+	       (+ start
 		  delta))
     
     (let ((anim (make-instance 'animation
-			       :object *projview*
-			       :slot 'pos
-			       :fn #'easing:in-cubic
-			       :value-start scale-ortho
-			       :value-delta delta
-			       ;; :time-duration 4.0 ; secs
-			       :time-elapsed 0.0)))
+			       :fn-easing #'easing:in-cubic
+			       :fn-new fn-new
+			       :value-start start
+			       :value-delta delta)))
 
       ;; Deps = obj/slot
       (ptree-fn id
 		'()
 		(lambda ()
-		  (funcall #'run-anim
+		  (funcall #'run-anim-view
 			   seq-key
 			   anim))
 		ptree))
@@ -30,64 +28,54 @@
     (sb-concurrency:enqueue id
 			    queue)))
 
-;; (defun translate-camera-left (seq-event ptree queue)
-;;   (translate-camera-left seq-event
-;; 			 ptree
-;; 			 queue
-;; 			 'run-anim-translate-camera-left
-;; 			 (- (vx3 (displace *projview*)))))
-
-(defun translate-camera-left (seq-event)
+(defun translate-camera-left (seq-event ptree queue)
   (with-slots (pos
 	       displace)
       *projview*
-    (fmt-model t "move-camera-left" "~a -> ~a~%"
-	       (vx3 pos)
-	       (decf (vx3 pos)
-		     (vx3 displace))))
-  (update-mat-view)
-  (enqueue-mat-view))
+    (translate-camera seq-event
+		      ptree
+		      queue
+		      (lambda (value-new)
+			(setf (vx3 pos) value-new))
+		      (vx3 pos)
+		      (- (vx3 displace))
+		      'run-anim-view)))
 
-(defun translate-camera-left (seq-event)
+(defun translate-camera-right (seq-event ptree queue)
   (with-slots (pos
 	       displace)
       *projview*
-    (fmt-model t "move-camera-left" "~a -> ~a~%"
-	       (vx3 pos)
-	       (decf (vx3 pos)
-		     (vx3 displace))))
-  (update-mat-view)
-  (enqueue-mat-view))
+    (translate-camera seq-event
+		      ptree
+		      queue
+		      (lambda (value-new)
+			(setf (vx3 pos) value-new))
+		      (vx3 pos)
+		      (vx3 displace)
+		      'run-anim-view)))
 
-(defun move-camera-right (seq-event)
+(defun translate-camera-up (seq-event ptree queue)
   (with-slots (pos
 	       displace)
       *projview*
-    (fmt-model t "move-camera-right" "~a -> ~a~%"
-	       (vx3 pos)
-	       (incf (vx3 pos)
-		     (vx3 displace))))
-  (update-mat-view)
-  (enqueue-mat-view))
+    (translate-camera seq-event
+		      ptree
+		      queue
+		      (lambda (value-new)
+			(setf (vy3 pos) value-new))
+		      (vy3 pos)
+		      (vy3 displace)
+		      'run-anim-view)))
 
-(defun move-camera-up (seq-event)
+(defun translate-camera-down (seq-event ptree queue)
   (with-slots (pos
 	       displace)
       *projview*
-    (fmt-model t "move-camera-up" "~a -> ~a~%"
-	       (vy3 pos)
-	       (incf (vy3 pos)
-		     (vy3 displace))))
-  (update-mat-view)
-  (enqueue-mat-view))
-
-(defun move-camera-down (seq-event)
-  (with-slots (pos
-	       displace)
-      *projview*
-    (fmt-model t "move-camera-down" "~a -> ~a~%"
-	       (vy3 pos)
-	       (decf (vy3 pos)
-		     (vy3 displace))))
-  (update-mat-view)
-  (enqueue-mat-view))
+    (translate-camera seq-event
+		      ptree
+		      queue
+		      (lambda (value-new)
+			(setf (vy3 pos) value-new))
+		      (vy3 pos)
+		      (- (vy3 displace))
+		      'run-anim-view)))
