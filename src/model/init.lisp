@@ -148,10 +148,10 @@
 			   :exclusive
 			   (second seq-event)))
 
-      (dolist (seq-event `((,+xk-left+       ,#'scale-ortho-out)
-			   (,+xk-up+         ,#'scale-ortho-in)
-			   (,+xk-right+      ,#'scale-ortho-in)
-			   (,+xk-down+       ,#'scale-ortho-out)))
+      (dolist (seq-event `((,+xk-left+       ,#'scale-ortho-up)
+			   (,+xk-up+         ,#'scale-ortho-down)
+			   (,+xk-right+      ,#'scale-ortho-down)
+			   (,+xk-down+       ,#'scale-ortho-up)))
 	(register-callback `(,+xk-control-l+    (:press :down)
 			     ,+xk-shift-l+      (:press :down)
 			     ,(first seq-event) (:press :repeat))

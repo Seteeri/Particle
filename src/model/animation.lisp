@@ -13,15 +13,15 @@
 ;; :in-bounce :out-bounce :in-out-bounce
 
 (defclass animation ()
-  ((object :accessor object :initarg :object :initform nil)
-   (slot :accessor slot :initarg :slot :initform nil)
-   (fn :accessor fn :initarg :fn :initform nil)
-   (value-start :accessor value-start :initarg :value-start :initform nil)
-   (value-delta :accessor value-delta :initarg :value-delta :initform nil)
-   (time-start :accessor time-start :initarg :time-start :initform nil)
-   (time-end :accessor time-end :initarg :time-end :initform nil)
-   (time-duration :accessor time-duration :initarg :time-duration :initform nil)
-   (time-elapsed :accessor time-elapsed :initarg :time-elapsed :initform nil)))
+  ((object        :accessor object        :initarg :object        :initform nil)
+   (slot          :accessor slot          :initarg :slot          :initform nil)
+   (fn            :accessor fn            :initarg :fn            :initform nil)
+   (value-start   :accessor value-start   :initarg :value-start   :initform nil)
+   (value-delta   :accessor value-delta   :initarg :value-delta   :initform nil)
+   (time-start    :accessor time-start    :initarg :time-start    :initform nil)
+   (time-end      :accessor time-end      :initarg :time-end      :initform nil)
+   (time-duration :accessor time-duration :initarg :time-duration :initform 1.0)
+   (time-elapsed  :accessor time-elapsed  :initarg :time-elapsed  :initform nil)))
 
 ;; time-end:       (+ *time-start* 4)          ; (/ frame count fps)
 ;; time-duration:  (- *time-end* *time-start*) ; (/ frame-count fps)
@@ -48,25 +48,29 @@
 	       time-duration
 	       time-elapsed)
       anim
-    
-    (let* ((time-now (osicat:get-monotonic-time))
-	   (time-delta (- time-now time-start)))
-      (incf time-elapsed time-delta)
 
-      ;; (when nil
-      ;; 	(format t "~4$ { ~4$ } ~4$ (~4$) [~4$] ~%"
-      ;; 		time-start time-elapsed time-end time-duration time-delta)
-      ;; 	(format t "  ~7$~%" (osicat:get-monotonic-time)))
+    ;; Set time start here instead of at callback
+    (let* ((time-now (if time-start
+			 (osicat:get-monotonic-time)
+			 (progn
+			   (setf time-start (osicat:get-monotonic-time))
+			   (setf time-end (+ time-start time-duration))
+			   time-start))))
+      (setf time-elapsed (- time-now time-start))
+
+      (when nil
+      	(format t "{ ~4$ ~4$ ~4$ } (~4$) ~%"
+      		time-start time-elapsed time-end time-duration)
+      	(format t "  ~7$~%" (osicat:get-monotonic-time))
+	t)
       
       (let ((value-new (+ value-start
-			(* (funcall fn
-				    (/ time-elapsed time-duration))
-      			   value-delta))))
-
+			  (* (funcall fn
+				      (/ time-elapsed time-duration))
+      			     value-delta))))
 	(fmt-model t "run-anim" "~a -> ~a~%" (slot-value object slot) value-new)
-	
       	(setf (slot-value object slot) value-new))
-
+      
       ;; Alternative: flag shm as dirty; check during loop
       (update-mat-proj)
       (enqueue-mat-proj)
@@ -77,7 +81,7 @@
       
       ;; Cap time-delta to ending time
       (if (> time-elapsed time-duration)
-	  (fmt-model t "run-anim" "Ending anim~%")
+	  (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed)
 	  (enqueue-anim seq-event
 			anim
 			'run-anim-scale
