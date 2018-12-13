@@ -15,7 +15,8 @@
 (defclass animation ()
   ((object        :accessor object        :initarg :object        :initform nil)
    (slot          :accessor slot          :initarg :slot          :initform nil)
-   (fn            :accessor fn            :initarg :fn            :initform nil)
+   (fn-easing     :accessor fn-easing     :initarg :fn-easing     :initform nil)
+   (fn-new        :accessor fn-new        :initarg :fn-new        :initform nil)
    (value-start   :accessor value-start   :initarg :value-start   :initform nil)
    (value-delta   :accessor value-delta   :initarg :value-delta   :initform nil)
    (time-start    :accessor time-start    :initarg :time-start    :initform nil)
@@ -40,7 +41,8 @@
 
   (with-slots (object
 	       slot
-	       fn
+	       fn-easing
+	       fn-new
 	       value-start
 	       value-delta
 	       time-start
@@ -65,11 +67,12 @@
 	t)
       
       (let ((value-new (+ value-start
-			  (* (funcall fn
+			  (* (funcall fn-easing
 				      (/ time-elapsed time-duration))
       			     value-delta))))
 	(fmt-model t "run-anim" "~a -> ~a~%" (slot-value object slot) value-new)
-      	(setf (slot-value object slot) value-new))
+	(funcall fn-new
+		 value-new))
       
       ;; Alternative: flag shm as dirty; check during loop
       (update-mat-proj)

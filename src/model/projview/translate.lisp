@@ -1,36 +1,54 @@
 (in-package :protoform.model)
 
-;; (defun scale-ortho (seq-event ptree queue id delta)
-;;   (with-slots (scale-ortho)
-;;       *projview*
+(defun translate-camera (seq-event ptree queue id delta)
+  (with-slots (pos)
+      *projview*
     
-;;     (fmt-model t "scale-ortho" "~a -> ~a~%"
-;; 	       scale-ortho
-;; 	       (+ scale-ortho
-;; 		  delta))
+    (fmt-model t "pos" "~a -> ~a~%"
+	       pos
+	       (+ pos
+		  delta))
     
-;;     (let ((anim (make-instance 'animation
-;; 			       :object *projview*
-;; 			       :slot 'scale-ortho
-;; 			       :fn #'easing:in-cubic
-;; 			       :value-start scale-ortho
-;; 			       :value-delta delta
-;; 			       ;; :time-duration 4.0 ; secs
-;; 			       :time-elapsed 0.0)))
+    (let ((anim (make-instance 'animation
+			       :object *projview*
+			       :slot 'pos
+			       :fn #'easing:in-cubic
+			       :value-start scale-ortho
+			       :value-delta delta
+			       ;; :time-duration 4.0 ; secs
+			       :time-elapsed 0.0)))
 
-;;       ;; Deps = obj/slot
-;;       (ptree-fn id
-;; 		'()
-;; 		(lambda ()
-;; 		  (funcall #'run-anim
-;; 			   seq-key
-;; 			   anim))
-;; 		ptree))
+      ;; Deps = obj/slot
+      (ptree-fn id
+		'()
+		(lambda ()
+		  (funcall #'run-anim
+			   seq-key
+			   anim))
+		ptree))
     
-;;     (sb-concurrency:enqueue id
-;; 			    queue)))
+    (sb-concurrency:enqueue id
+			    queue)))
 
-(defun move-camera-left (seq-event)
+;; (defun translate-camera-left (seq-event ptree queue)
+;;   (translate-camera-left seq-event
+;; 			 ptree
+;; 			 queue
+;; 			 'run-anim-translate-camera-left
+;; 			 (- (vx3 (displace *projview*)))))
+
+(defun translate-camera-left (seq-event)
+  (with-slots (pos
+	       displace)
+      *projview*
+    (fmt-model t "move-camera-left" "~a -> ~a~%"
+	       (vx3 pos)
+	       (decf (vx3 pos)
+		     (vx3 displace))))
+  (update-mat-view)
+  (enqueue-mat-view))
+
+(defun translate-camera-left (seq-event)
   (with-slots (pos
 	       displace)
       *projview*

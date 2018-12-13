@@ -1,6 +1,6 @@
 (in-package :protoform.model)
 
-(defun scale-ortho (seq-event ptree queue id delta)
+(defun scale-ortho (seq-event ptree queue id delta fn-new)
   (with-slots (scale-ortho)
       *projview*
     
@@ -12,10 +12,10 @@
     (let ((anim (make-instance 'animation
 			       :object *projview*
 			       :slot 'scale-ortho
-			       :fn #'easing:in-cubic
+			       :fn-easing #'easing:in-cubic
+			       :fn-new fn-new
 			       :value-start scale-ortho
 			       :value-delta delta
-			       ;; :time-duration 4.0 ; secs
 			       :time-elapsed 0.0)))
 
       ;; Deps = obj/slot
@@ -35,11 +35,15 @@
 	       ptree
 	       queue
 	       'run-anim-scale-ortho-down
-	       (- (vz3 (displace *projview*)))))
+	       (- (vz3 (displace *projview*)))
+	       (lambda (value-new)
+		 (setf (scale-ortho *projview*) value-new))))
 
 (defun scale-ortho-up (seq-event ptree queue) ; zoom out
   (scale-ortho seq-event
 	       ptree
 	       queue
 	       'run-anim-scale-ortho-up
-	       (vz3 (displace *projview*))))
+	       (vz3 (displace *projview*))
+	       (lambda (value-new)
+		 (setf (scale-ortho *projview*) value-new))))

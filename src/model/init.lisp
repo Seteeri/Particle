@@ -139,10 +139,10 @@
     
     (when t
       ;; handlers in projview
-      (dolist (seq-event `((,+xk-left+       ,#'move-camera-left)
-			   (,+xk-up+         ,#'move-camera-up)
-			   (,+xk-right+      ,#'move-camera-right)
-			   (,+xk-down+       ,#'move-camera-down)))
+      (dolist (seq-event `((,+xk-left+       ,#'translate-camera-left)
+			   (,+xk-up+         ,#'translate-camera-up)
+			   (,+xk-right+      ,#'translate-camera-right)
+			   (,+xk-down+       ,#'translate-camera-down)))
 	(register-callback `(,+xk-control-l+    (:press :down)
 			     ,(first seq-event) (:press :repeat))
 			   :exclusive
