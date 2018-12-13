@@ -2,25 +2,25 @@
 
 ;; From Solaris Red
 ;; 220  50  47
-(defparameter *color-default-ptr* (list  (coerce (/ 220 255) 'single-float)
-					 (coerce (/ 50 255)  'single-float)
-					 (coerce (/ 47 255)  'single-float)
-					 (coerce (/ 255 255) 'single-float)
-					 
-					 (coerce (/ 220 255) 'single-float)
-					 (coerce (/ 50 255)  'single-float)
-					 (coerce (/ 47 255)  'single-float)
-					 (coerce (/ 255 255) 'single-float)
-					 
-					 (coerce (/ 220 255) 'single-float)
-					 (coerce (/ 50 255)  'single-float)
-					 (coerce (/ 47 255)  'single-float)
-					 (coerce (/ 255 255) 'single-float)
-					 
-					 (coerce (/ 220 255) 'single-float)
-					 (coerce (/ 50 255)  'single-float)
-					 (coerce (/ 47 255)  'single-float)
-					 (coerce (/ 255 255) 'single-float)))
+(defparameter *color-default-ptr* (list (coerce (/ 181 255) 'single-float)
+					(coerce (/ 137 255) 'single-float)
+					(coerce (/ 0   255) 'single-float)
+					(coerce (/ 255 255) 'single-float)
+					
+					(coerce (/ 181 255) 'single-float)
+					(coerce (/ 137 255) 'single-float)
+					(coerce (/ 0   255) 'single-float)
+					(coerce (/ 255 255) 'single-float)
+					
+					(coerce (/ 181 255) 'single-float)
+					(coerce (/ 137 255) 'single-float)
+					(coerce (/ 0   255) 'single-float)
+					(coerce (/ 255 255) 'single-float)
+					
+					(coerce (/ 181 255) 'single-float)
+					(coerce (/ 137 255) 'single-float)
+					(coerce (/ 0   255) 'single-float)
+					(coerce (/ 255 255) 'single-float)))
 
 (defun init-node-pointer ()
   (let ((node-ptr (init-node-msdf (vec3 -11.5199995 14.127416 0)
