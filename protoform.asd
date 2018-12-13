@@ -98,7 +98,8 @@
 				       (:module projview
 				       		:pathname "projview"
 				       		:components ((:file "projview")
-				       			     (:file "callbacks")))				       
+							     (:file "scale-ortho")
+				       			     (:file "translate")))				       
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "keysymdef")
