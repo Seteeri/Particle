@@ -1,5 +1,6 @@
 (in-package :protoform.model)
 
+;; Match translate fn?
 (defun scale-ortho (seq-event ptree queue fn-new delta id)
   (with-slots (scale-ortho)
       *projview*

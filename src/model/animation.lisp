@@ -45,7 +45,11 @@
 				fn)
 			  *queue-anim*))
 
-(defun run-anim-pv (seq-event anim fn-update id-enqueue fn-enqueue)
+(defun run-anim (seq-event
+		 anim
+		 fn-update
+		 id-enqueue
+		 fn-enqueue)
   (with-slots (fn-easing
 	       fn-new
 	       value-start
@@ -94,19 +98,28 @@
 				   anim)))))))
   
 (defun run-anim-proj (seq-event anim)
-  (run-anim-pv seq-event
-	       anim
-	       (lambda ()
-		 (update-mat-proj)
-		 (enqueue-mat-proj))
-	       'run-anim-proj
-	       #'run-anim-proj))
+  (run-anim seq-event
+	    anim
+	    (lambda ()
+	      (update-mat-proj)
+	      (enqueue-mat-proj))
+	    'run-anim-proj
+	    #'run-anim-proj))
 
 (defun run-anim-view (seq-event anim)
-  (run-anim-pv seq-event
-	       anim
-	       (lambda ()
-		 (update-mat-view)
-		 (enqueue-mat-view))
-	       'run-anim-view
-	       #'run-anim-view))
+  (run-anim seq-event
+	    anim
+	    (lambda ()
+	      (update-mat-view)
+	      (enqueue-mat-view))
+	    'run-anim-view
+	    #'run-anim-view))
+
+(defun run-anim-node (seq-event anim)
+  (run-anim seq-event
+	    anim
+	    (lambda ()
+	      (update-transform (model-matrix *node-pointer*))
+	      (enqueue-node-pointer))
+	    'run-anim-node
+	    #'run-anim-node))

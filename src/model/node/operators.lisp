@@ -30,8 +30,7 @@
 			displacement
 			type-displace
 			&optional (update t))
-  (with-slots (model-matrix
-	       index)
+  (with-slots (model-matrix)
       node
     (cond ((eq type-displace :abs)
 	   (setf (vx3 (translation model-matrix)) displacement))
@@ -46,8 +45,7 @@
 			displacement
 			type-displace
 			&optional (update t))
-  (with-slots (model-matrix
-	       index)
+  (with-slots (model-matrix)
       node
     (cond ((eq type-displace :abs)
 	   (setf (vy3 (translation model-matrix)) displacement))

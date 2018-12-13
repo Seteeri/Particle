@@ -38,30 +38,90 @@
     (copy-nodes-to-shm)
     node-pointer))
 
-(defun move-pointer-left (seq-key)
-  (displace-node-x *node-pointer*
-		   (- (* 96 *scale-node*))
-		   :rel)
-  (enqueue-node-pointer)
-  (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun move-pointer-up (seq-key)
-  (displace-node-y *node-pointer*
-		   (* +linegap+ *scale-node*) ; add more spacing due to bl adjustments
-		   :rel)
-  (enqueue-node-pointer)
-  (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*))))
+(defun translate-pointer (seq-event
+			  ptree
+			  queue
+			  fn-new
+			  start
+			  delta
+			  id)
+  (fmt-model t "translate-pointer" "~a -> ~a~%"
+	     start
+	     (+ start
+		delta))
+  
+  (let ((anim (make-instance 'animation
+			     :fn-easing #'easing:in-cubic
+			     :fn-new fn-new
+			     :value-start start
+			     :value-delta delta)))
 
-(defun move-pointer-right (seq-key)
-  (displace-node-x *node-pointer*
-		   (* 96 *scale-node*)
-		   :rel)
-  (enqueue-node-pointer)
-  (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*))))  
+    ;; Deps = obj/slot
+    (ptree-fn id
+	      '()
+	      (lambda ()
+		(funcall #'run-anim-node
+			 seq-key
+			 anim))
+	      ptree))
+  
+  (sb-concurrency:enqueue id
+			  queue))
 
-(defun move-pointer-down (seq-key)
-  (displace-node-y *node-pointer*
-		   (- (* +linegap+ *scale-node*)) ; add more spacing due to bl adjustments
-		   :rel)
-  (enqueue-node-pointer)
-  (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*))))  
+(defun move-pointer-left (seq-event
+			  ptree
+			  queue)
+  (with-slots (model-matrix)
+      *node-pointer*
+    (translate-pointer seq-event
+		       ptree
+		       queue
+		       (lambda (value-new)
+			 (setf (vx3 (translation model-matrix)) value-new))
+		       (vx3 (translation model-matrix))
+		       (- (* 96 *scale-node*))
+		       'run-anim-node)))
+
+(defun move-pointer-right (seq-event
+			   ptree
+			   queue)
+  (with-slots (model-matrix)
+      *node-pointer*
+    (translate-pointer seq-event
+		       ptree
+		       queue
+		       (lambda (value-new)
+			 (setf (vx3 (translation model-matrix)) value-new))
+		       (vx3 (translation model-matrix))
+		       (* 96 *scale-node*)
+		       'run-anim-node)))
+
+(defun move-pointer-up (seq-event
+			ptree
+			queue)
+  (with-slots (model-matrix)
+      *node-pointer*
+    (translate-pointer seq-event
+		       ptree
+		       queue
+		       (lambda (value-new)
+			 (setf (vy3 (translation model-matrix)) value-new))
+		       (vy3 (translation model-matrix))
+		       (* +linegap+ *scale-node*)
+		       'run-anim-node)))
+  
+(defun move-pointer-down (seq-event
+			  ptree
+			  queue)
+  (with-slots (model-matrix)
+      *node-pointer*
+    (translate-pointer seq-event
+		       ptree
+		       queue
+		       (lambda (value-new)
+			 (setf (vy3 (translation model-matrix)) value-new))
+		       (vy3 (translation model-matrix))
+		       (- (* +linegap+ *scale-node*))
+		       'run-anim-node)))

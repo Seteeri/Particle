@@ -1,32 +1,35 @@
 (in-package :protoform.model)
 
-;; Abstract function to anim
-(defun translate-camera (seq-event ptree queue fn-new start delta id)
-  (with-slots (pos)
-      *projview*
-    
-    (fmt-model t "translate-camera" "~a -> ~a~%"
-	       start
-	       (+ start
-		  delta))
-    
-    (let ((anim (make-instance 'animation
-			       :fn-easing #'easing:in-cubic
-			       :fn-new fn-new
-			       :value-start start
-			       :value-delta delta)))
+;; Abstract function to anim later
+(defun translate-camera (seq-event
+			  ptree
+			  queue
+			  fn-new
+			  start
+			  delta
+			 id)
+  (fmt-model t "translate-camera" "~a -> ~a~%"
+	     start
+	     (+ start
+		delta))
+  
+  (let ((anim (make-instance 'animation
+			     :fn-easing #'easing:in-cubic
+			     :fn-new fn-new
+			     :value-start start
+			     :value-delta delta)))
 
-      ;; Deps = obj/slot
-      (ptree-fn id
-		'()
-		(lambda ()
-		  (funcall #'run-anim-view
-			   seq-key
-			   anim))
-		ptree))
-    
-    (sb-concurrency:enqueue id
-			    queue)))
+    ;; Deps = obj/slot
+    (ptree-fn id
+	      '()
+	      (lambda ()
+		(funcall #'run-anim-view
+			 seq-key
+			 anim))
+	      ptree))
+  
+  (sb-concurrency:enqueue id
+			  queue))
 
 (defun translate-camera-left (seq-event ptree queue)
   (with-slots (pos
