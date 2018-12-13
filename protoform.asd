@@ -95,6 +95,10 @@
 							     (:file "operators")
 							     (:file "callbacks")
 				       			     (:file "pointer")))
+				       (:module projview
+				       		:pathname "projview"
+				       		:components ((:file "projview")
+				       			     (:file "callbacks")))				       
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "keysymdef")
@@ -110,7 +114,6 @@
 				       		:components ((:file "rpc")
 							     (:file "view")
 							     (:file "memcpy")))
-				       (:file "projview")
 				       (:file "pango")
 				       (:file "metrics")
 				       (:file "animation")
