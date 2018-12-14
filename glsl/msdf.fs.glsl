@@ -25,13 +25,14 @@ void main()
                                 vertexDimsTex,
                                 vertexUV,
                                 vertexDimsTexOffset);
-    
     float sigDist = median(samp.r, samp.g, samp.b);
     float w = fwidth(sigDist);
     float opacity = smoothstep(0.5 - w, 0.5 + w, sigDist);
-
+    
     color = vec4(vec3(vertexRGBA.r,
                        vertexRGBA.g,
                        vertexRGBA.b),
                  opacity*vertexRGBA.a);
 }
+
+// http://www.java-gaming.org/topics/solved-signed-distance-field-fonts-look-crappy-at-small-pt-sizes/33612/view.html

@@ -16,8 +16,11 @@
 ;; https://ux.stackexchange.com/questions/66604/optimal-duration-for-animating-transitions
 
 (defclass animation ()
-  ((fn-easing     :accessor fn-easing     :initarg :fn-easing     :initform nil)
+  ((id            :accessor id            :initarg :id            :initform nil)
+   (fn-easing     :accessor fn-easing     :initarg :fn-easing     :initform nil)
    (fn-new        :accessor fn-new        :initarg :fn-new        :initform nil)
+   (fn-update     :accessor fn-update     :initarg :fn-update     :initform nil)
+   (fn-enqueue    :accessor fn-enqueue    :initarg :fn-enqueue    :initform nil)
    (value-start   :accessor value-start   :initarg :value-start   :initform nil)
    (value-delta   :accessor value-delta   :initarg :value-delta   :initform nil)
    (time-start    :accessor time-start    :initarg :time-start    :initform nil)
@@ -42,19 +45,19 @@
 		     anim
 		     id
 		     fn)
-  ;; (fmt-model t "enqueue-anim" "~a~%" seq-event)  
+  ;; (fmt-model t "enqueue-anim" "~a~%" id)
   (sb-concurrency:enqueue (list id 
 				'()
 				fn)
 			  *queue-anim*))
 
 (defun run-anim (seq-event
-		 anim
-		 fn-update
-		 id-enqueue
-		 fn-enqueue)
-  (with-slots (fn-easing
+		 anim)
+  (with-slots (id
+	       fn-easing
 	       fn-new
+	       fn-update
+	       fn-enqueue
 	       value-start
 	       value-delta
 	       time-start
@@ -94,7 +97,7 @@
 	  (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed)
 	  (enqueue-anim seq-event
 			anim
-			id-enqueue
+			id
 			(lambda ()
 			  (funcall fn-enqueue
 				   seq-event
@@ -117,12 +120,3 @@
 	      (enqueue-mat-view))
 	    'run-anim-view
 	    #'run-anim-view))
-
-(defun run-anim-node (seq-event anim)
-  (run-anim seq-event
-	    anim
-	    (lambda ()
-	      (update-transform (model-matrix *node-pointer*))
-	      (enqueue-node-pointer))
-	    'run-anim-node
-	    #'run-anim-node))

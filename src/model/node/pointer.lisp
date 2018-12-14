@@ -47,14 +47,20 @@
 			  start
 			  delta
 			  id)
-  (fmt-model t "translate-pointer" "~a -> ~a~%"
+  (fmt-model t "translate-pointer" "~a, ~a -> ~a~%"
+	     id
 	     start
 	     (+ start
 		delta))
   
   (let ((anim (make-instance 'animation
+			     :id id
 			     :fn-easing #'easing:in-cubic
 			     :fn-new fn-new
+			     :fn-update (lambda ()
+					  (update-transform (model-matrix *node-pointer*))
+					  (enqueue-node-pointer))
+			     :fn-enqueue #'run-anim
 			     :value-start start
 			     :value-delta delta)))
 
@@ -62,7 +68,7 @@
     (ptree-fn id
 	      '()
 	      (lambda ()
-		(funcall #'run-anim-node
+		(funcall #'run-anim
 			 seq-key
 			 anim))
 	      ptree))
@@ -82,7 +88,7 @@
 			 (setf (vx3 (translation model-matrix)) value-new))
 		       (vx3 (translation model-matrix))
 		       (- (* 96 *scale-node*))
-		       'run-anim-node)))
+		       'run-anim-node-left)))
 
 (defun move-pointer-right (seq-event
 			   ptree
@@ -96,7 +102,7 @@
 			 (setf (vx3 (translation model-matrix)) value-new))
 		       (vx3 (translation model-matrix))
 		       (* 96 *scale-node*)
-		       'run-anim-node)))
+		       'run-anim-node-right)))
 
 (defun move-pointer-up (seq-event
 			ptree
@@ -110,7 +116,7 @@
 			 (setf (vy3 (translation model-matrix)) value-new))
 		       (vy3 (translation model-matrix))
 		       (* +linegap+ *scale-node*)
-		       'run-anim-node)))
+		       'run-anim-node-up)))
   
 (defun move-pointer-down (seq-event
 			  ptree
@@ -124,4 +130,4 @@
 			 (setf (vy3 (translation model-matrix)) value-new))
 		       (vy3 (translation model-matrix))
 		       (- (* +linegap+ *scale-node*))
-		       'run-anim-node)))
+		       'run-anim-node-down)))

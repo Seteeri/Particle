@@ -80,6 +80,7 @@
   			 args
   			 fn
   			 ptree)))
+      ;; (format t "Anim IDs: ~a~%" ids)
       (ptree-fn 'finish
   		ids
   		(lambda ())

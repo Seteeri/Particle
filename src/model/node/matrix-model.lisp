@@ -1,5 +1,7 @@
 (in-package :protoform.model)
 
+;; TODO
+;; - Move up
 (defclass model-matrix ()
   ((matrix :accessor matrix :initarg :matrix :initform (mat4 1))
    (translation :accessor translation :initarg :translation :initform (vec3 0.0 0.0 0.0))
