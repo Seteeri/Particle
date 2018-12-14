@@ -1,7 +1,13 @@
 (in-package :protoform.model)
 
 ;; Match translate fn?
-(defun scale-ortho (seq-event ptree queue fn-new delta id)
+(defun scale-ortho (seq-event
+		    ptree
+		    queue
+		    fn-new
+		    fn-update
+		    delta
+		    id)
   (with-slots (scale-ortho)
       *projview*
     
@@ -11,8 +17,11 @@
 		  delta))
     
     (let ((anim (make-instance 'animation
+			       :id id
 			       :fn-easing #'easing:in-cubic
 			       :fn-new fn-new
+			       :fn-update fn-update
+			       :fn-enqueue #'run-anim
 			       :value-start scale-ortho
 			       :value-delta delta)))
 
@@ -20,7 +29,7 @@
       (ptree-fn id
 		'()
 		(lambda ()
-		  (funcall #'run-anim-proj
+		  (funcall #'run-anim
 			   seq-key
 			   anim))
 		ptree))
@@ -34,6 +43,9 @@
 	       queue
 	       (lambda (value-new)
 		 (setf (scale-ortho *projview*) value-new))
+	       (lambda ()
+		 (update-mat-proj)
+		 (enqueue-mat-proj))	       
 	       (- (vz3 (displace *projview*)))
 	       'run-anim-proj))
 
@@ -43,5 +55,8 @@
 	       queue
 	       (lambda (value-new)
 		 (setf (scale-ortho *projview*) value-new))
+	       (lambda ()
+		 (update-mat-proj)
+		 (enqueue-mat-proj))	       
 	       (vz3 (displace *projview*))
 	       'run-anim-proj))

@@ -102,12 +102,3 @@
 			  (funcall fn-enqueue
 				   seq-event
 				   anim)))))))
-  
-(defun run-anim-proj (seq-event anim)
-  (run-anim seq-event
-	    anim
-	    (lambda ()
-	      (update-mat-proj)
-	      (enqueue-mat-proj))
-	    'run-anim-proj
-	    #'run-anim-proj))

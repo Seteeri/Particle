@@ -15,6 +15,7 @@
 		delta))
   
   (let ((anim (make-instance 'animation
+			     :id id
 			     :fn-easing #'easing:in-cubic
 			     :fn-new fn-new
 			     :fn-update fn-update
@@ -26,7 +27,7 @@
     (ptree-fn id
 	      '()
 	      (lambda ()
-		(funcall #'run-anim-view
+		(funcall #'run-anim
 			 seq-key
 			 anim))
 	      ptree))
