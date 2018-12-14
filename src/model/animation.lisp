@@ -111,12 +111,3 @@
 	      (enqueue-mat-proj))
 	    'run-anim-proj
 	    #'run-anim-proj))
-
-(defun run-anim-view (seq-event anim)
-  (run-anim seq-event
-	    anim
-	    (lambda ()
-	      (update-mat-view)
-	      (enqueue-mat-view))
-	    'run-anim-view
-	    #'run-anim-view))

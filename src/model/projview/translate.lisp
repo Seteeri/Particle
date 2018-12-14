@@ -2,11 +2,12 @@
 
 ;; Abstract function to anim later
 (defun translate-camera (seq-event
-			  ptree
-			  queue
-			  fn-new
-			  start
-			  delta
+			 ptree
+			 queue
+			 fn-new
+			 fn-update
+			 start
+			 delta
 			 id)
   (fmt-model t "translate-camera" "~a -> ~a~%"
 	     start
@@ -16,6 +17,8 @@
   (let ((anim (make-instance 'animation
 			     :fn-easing #'easing:in-cubic
 			     :fn-new fn-new
+			     :fn-update fn-update
+			     :fn-enqueue #'run-anim
 			     :value-start start
 			     :value-delta delta)))
 
@@ -40,6 +43,9 @@
 		      queue
 		      (lambda (value-new)
 			(setf (vx3 pos) value-new))
+		      (lambda ()
+			(update-mat-view)
+			(enqueue-mat-view))	
 		      (vx3 pos)
 		      (- (vx3 displace))
 		      'run-anim-view)))
@@ -53,6 +59,9 @@
 		      queue
 		      (lambda (value-new)
 			(setf (vx3 pos) value-new))
+		      (lambda ()
+			(update-mat-view)
+			(enqueue-mat-view))		      
 		      (vx3 pos)
 		      (vx3 displace)
 		      'run-anim-view)))
@@ -66,6 +75,9 @@
 		      queue
 		      (lambda (value-new)
 			(setf (vy3 pos) value-new))
+		      (lambda ()
+			(update-mat-view)
+			(enqueue-mat-view))		      
 		      (vy3 pos)
 		      (vy3 displace)
 		      'run-anim-view)))
@@ -79,6 +91,9 @@
 		      queue
 		      (lambda (value-new)
 			(setf (vy3 pos) value-new))
+		      (lambda ()
+			(update-mat-view)
+			(enqueue-mat-view))			      
 		      (vy3 pos)
 		      (- (vy3 displace))
 		      'run-anim-view)))
