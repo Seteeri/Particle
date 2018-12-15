@@ -19,7 +19,7 @@
   ((id            :accessor id            :initarg :id            :initform nil)
    (fn-easing     :accessor fn-easing     :initarg :fn-easing     :initform nil)
    (fn-new        :accessor fn-new        :initarg :fn-new        :initform nil)
-   (fn-enqueue    :accessor fn-enqueue    :initarg :fn-enqueue    :initform nil)
+   (fn-enqueue    :accessor fn-enqueue    :initarg :fn-enqueue    :initform #'run-anim)
    (value-start   :accessor value-start   :initarg :value-start   :initform nil)
    (value-delta   :accessor value-delta   :initarg :value-delta   :initform nil)
    (time-start    :accessor time-start    :initarg :time-start    :initform nil)
@@ -30,15 +30,8 @@
 ;; time-end:       (+ *time-start* 4)          ; (/ frame count fps)
 ;; time-duration:  (- *time-end* *time-start*) ; (/ frame-count fps)
 
-;; What to do if object is destroyed, this must be destroyed also
+;; What to do if object/node is destroyed, this must be destroyed also
 ;; Which means attach animations to the object (node) so they can be tracked
-;; On delete, stop/remove animations and set valid property
-;; Give node valid property so anim can check it
-
-;; If animation already playing, stop existing, then interpolate...
-;; Poss issue - same anims/obj in same ptree
-
-;; Per object->slot - can run slots in parallel
 
 (defun enqueue-anim (seq-event
 		     anim

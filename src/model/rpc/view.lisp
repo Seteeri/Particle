@@ -91,59 +91,8 @@
   ;; Then add to queue-shm
   (update-mat-view)
   (enqueue-mat-view)
-
   (update-mat-proj)
-  (enqueue-mat-proj)
-  
-  (when nil
-    (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*)))       
-      (if ptree-queue
-
-  	  (destructuring-bind (ptree queue)
-  	      ptree-queue
-	    
-  	    ;; Add anim nodes, collect ids, add finish node, call finish node
-  	    (let ((ids ()))
-  	      (loop
-  		 :for anim := (sb-concurrency:dequeue *queue-anim*)
-  		 :while anim
-  		 :do (destructuring-bind (id args fn)
-  	  		 anim
-  	  	       (push id ids)
-  	  	       (ptree-fn id
-  				 args
-  				 fn
-  				 ptree)))
-  	      (loop
-  		 :for id-node := (sb-concurrency:dequeue queue)
-  		 :while id-node
-  		 :do (push id-node ids))
-  	      (ptree-fn 'finish
-  			ids
-  			(lambda ())
-  			ptree))
-  	    (call-ptree 'finish ptree))
-
-  	  ;; Create ptree
-  	  (let ((ptree (make-ptree)))
-	    
-  	    ;; Add all nodes, then call each fn
-  	    (let ((ids ()))
-  	      (loop
-  		 :for anim := (sb-concurrency:dequeue *queue-anim*)
-  		 :while anim
-  		 :do (destructuring-bind (id args fn)
-  			 anim
-  		       (push id ids)
-  		       (ptree-fn id
-  				 args
-  				 fn
-  				 ptree)))
-  	      (ptree-fn 'finish
-  			ids
-  			(lambda ())
-  			ptree))
-  	    (call-ptree 'finish ptree))))))
+  (enqueue-mat-proj))
 
 (defun execute-tasks-shm ()
   ;; Can be done in parallel assuming no overlapping operations...

@@ -20,6 +20,16 @@
 			     :value-start start
 			     :value-delta delta)))
 
+    ;; Below will throw error if the func exists (anim already playing)
+    ;; Solutions:
+    ;; 1. Replace existing animation
+    ;;    - Get anim instance and set state to :cancel
+    ;;    - Need to store anims somewhere...
+    ;;      - obj: tcl=anim, tcr=anim, tcu=anim, tcd=anim
+    ;; 2. On error, ignore
+    ;;    - Anim will only play if users activates it
+    ;;      when there is no existing anim playing
+    
     ;; Deps = obj/slot
     (ptree-fn id
 	      '()
