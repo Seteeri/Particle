@@ -17,7 +17,6 @@
 			     :id id
 			     :fn-easing #'easing:in-cubic
 			     :fn-new fn-new
-			     :fn-enqueue #'run-anim
 			     :value-start start
 			     :value-delta delta)))
 
