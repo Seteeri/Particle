@@ -5,7 +5,6 @@
 		    ptree
 		    queue
 		    fn-new
-		    fn-update
 		    delta
 		    id)
   (with-slots (scale-ortho)
@@ -20,7 +19,6 @@
 			       :id id
 			       :fn-easing #'easing:in-cubic
 			       :fn-new fn-new
-			       :fn-update fn-update
 			       :fn-enqueue #'run-anim
 			       :value-start scale-ortho
 			       :value-delta delta)))
@@ -43,11 +41,8 @@
 	       queue
 	       (lambda (value-new)
 		 (setf (scale-ortho *projview*) value-new))
-	       (lambda ()
-		 (update-mat-proj)
-		 (enqueue-mat-proj))	       
 	       (- (vz3 (displace *projview*)))
-	       'run-anim-proj))
+	       'scale-ortho-down))
 
 (defun scale-ortho-up (seq-event ptree queue) ; zoom out
   (scale-ortho seq-event
@@ -55,8 +50,5 @@
 	       queue
 	       (lambda (value-new)
 		 (setf (scale-ortho *projview*) value-new))
-	       (lambda ()
-		 (update-mat-proj)
-		 (enqueue-mat-proj))	       
 	       (vz3 (displace *projview*))
-	       'run-anim-proj))
+	       'scale-ortho-up))

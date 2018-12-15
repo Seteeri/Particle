@@ -57,9 +57,6 @@
 			     :id id
 			     :fn-easing #'easing:in-cubic
 			     :fn-new fn-new
-			     :fn-update (lambda ()
-					  (update-transform (model-matrix *node-pointer*))
-					  (enqueue-node-pointer))
 			     :fn-enqueue #'run-anim
 			     :value-start start
 			     :value-delta delta)))
@@ -85,10 +82,14 @@
 		       ptree
 		       queue
 		       (lambda (value-new)
-			 (setf (vx3 (translation model-matrix)) value-new))
+			 (setf (vx3 (translation model-matrix)) value-new)
+			 (update-transform (model-matrix *node-pointer*))
+			 (enqueue-node-pointer))			 
 		       (vx3 (translation model-matrix))
 		       (- (* 96 *scale-node*))
-		       'run-anim-node-left)))
+		       'move-pointer-left)))
+
+
 
 (defun move-pointer-right (seq-event
 			   ptree
@@ -99,10 +100,12 @@
 		       ptree
 		       queue
 		       (lambda (value-new)
-			 (setf (vx3 (translation model-matrix)) value-new))
+			 (setf (vx3 (translation model-matrix)) value-new)
+			 (update-transform (model-matrix *node-pointer*))
+			 (enqueue-node-pointer))
 		       (vx3 (translation model-matrix))
 		       (* 96 *scale-node*)
-		       'run-anim-node-right)))
+		       'move-pointer-right)))
 
 (defun move-pointer-up (seq-event
 			ptree
@@ -113,10 +116,12 @@
 		       ptree
 		       queue
 		       (lambda (value-new)
-			 (setf (vy3 (translation model-matrix)) value-new))
+			 (setf (vy3 (translation model-matrix)) value-new)
+			 (update-transform (model-matrix *node-pointer*))
+			 (enqueue-node-pointer))
 		       (vy3 (translation model-matrix))
 		       (* +linegap+ *scale-node*)
-		       'run-anim-node-up)))
+		       'move-pointer-up)))
   
 (defun move-pointer-down (seq-event
 			  ptree
@@ -127,7 +132,9 @@
 		       ptree
 		       queue
 		       (lambda (value-new)
-			 (setf (vy3 (translation model-matrix)) value-new))
+			 (setf (vy3 (translation model-matrix)) value-new)
+			 (update-transform (model-matrix *node-pointer*))
+			 (enqueue-node-pointer))
 		       (vy3 (translation model-matrix))
 		       (- (* +linegap+ *scale-node*))
-		       'run-anim-node-down)))
+		       'move-pointer-down)))

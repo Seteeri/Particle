@@ -5,7 +5,6 @@
 			 ptree
 			 queue
 			 fn-new
-			 fn-update
 			 start
 			 delta
 			 id)
@@ -18,7 +17,6 @@
 			     :id id
 			     :fn-easing #'easing:in-cubic
 			     :fn-new fn-new
-			     :fn-update fn-update
 			     :fn-enqueue #'run-anim
 			     :value-start start
 			     :value-delta delta)))
@@ -44,12 +42,9 @@
 		      queue
 		      (lambda (value-new)
 			(setf (vx3 pos) value-new))
-		      (lambda ()
-			(update-mat-view)
-			(enqueue-mat-view))	
 		      (vx3 pos)
 		      (- (vx3 displace))
-		      'run-anim-view)))
+		      'translate-camera-left)))
 
 (defun translate-camera-right (seq-event ptree queue)
   (with-slots (pos
@@ -60,12 +55,9 @@
 		      queue
 		      (lambda (value-new)
 			(setf (vx3 pos) value-new))
-		      (lambda ()
-			(update-mat-view)
-			(enqueue-mat-view))		      
 		      (vx3 pos)
 		      (vx3 displace)
-		      'run-anim-view)))
+		      'translate-camera-right)))
 
 (defun translate-camera-up (seq-event ptree queue)
   (with-slots (pos
@@ -75,13 +67,10 @@
 		      ptree
 		      queue
 		      (lambda (value-new)
-			(setf (vy3 pos) value-new))
-		      (lambda ()
-			(update-mat-view)
-			(enqueue-mat-view))		      
+			(setf (vy3 pos) value-new))   
 		      (vy3 pos)
 		      (vy3 displace)
-		      'run-anim-view)))
+		      'translate-camera-up)))
 
 (defun translate-camera-down (seq-event ptree queue)
   (with-slots (pos
@@ -91,10 +80,7 @@
 		      ptree
 		      queue
 		      (lambda (value-new)
-			(setf (vy3 pos) value-new))
-		      (lambda ()
-			(update-mat-view)
-			(enqueue-mat-view))			      
+			(setf (vy3 pos) value-new))   
 		      (vy3 pos)
 		      (- (vy3 displace))
-		      'run-anim-view)))
+		      'translate-camera-down)))

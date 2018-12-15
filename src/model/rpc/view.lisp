@@ -87,6 +87,14 @@
   		ptree))
     (call-ptree 'finish ptree))
 
+  ;; Check projview and nodes if they are dirty
+  ;; Then add to queue-shm
+  (update-mat-view)
+  (enqueue-mat-view)
+
+  (update-mat-proj)
+  (enqueue-mat-proj)
+  
   (when nil
     (let ((ptree-queue (sb-concurrency:dequeue *queue-frame*)))       
       (if ptree-queue

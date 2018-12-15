@@ -19,7 +19,6 @@
   ((id            :accessor id            :initarg :id            :initform nil)
    (fn-easing     :accessor fn-easing     :initarg :fn-easing     :initform nil)
    (fn-new        :accessor fn-new        :initarg :fn-new        :initform nil)
-   (fn-update     :accessor fn-update     :initarg :fn-update     :initform nil)
    (fn-enqueue    :accessor fn-enqueue    :initarg :fn-enqueue    :initform nil)
    (value-start   :accessor value-start   :initarg :value-start   :initform nil)
    (value-delta   :accessor value-delta   :initarg :value-delta   :initform nil)
@@ -88,10 +87,7 @@
 	(fmt-model t "run-anim" "~a -> ~a~%" value-start value-new)
 	(funcall fn-new
 		 value-new))
-      
-      ;; Alternative: flag shm as dirty; check during loop
-      (funcall fn-update)
-      
+            
       ;; Cap time-delta to ending time
       (if (> time-elapsed time-duration)
 	  (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed)
