@@ -36,10 +36,13 @@ administrators, power users and the like. It is designed for workstations
 and creators, or any computing situation dealing with integrating 
 information across various domains.
 
-Eventually, I would like to implement a different interface for the less
+I would like to implement a different interface for the less 
 programmatically inclined users, starting with people that are familiar
 with the MS Office suite, which may be considered ubiquitious to the
 average user.
+
+Finally, my hope is to get the software onto a mobile platform, such as
+the Librem 5 (should it be successful...).
 
 ## The Inspiration
 
@@ -64,11 +67,11 @@ It was designed to address limitations I've personally encountered in
 the quest for a more efficient workflow; the main limitation being, 
 confinement to the desktop/window metaphor and the staticness of widgets.
 
-With the growth of open-source, the new direction of Wayland, 
-fragmentation of the desktop, and increasing computing resources, I 
-believe this presents an opportunity to redefine the computing 
-environment. Protoform is not an entirely new idea, but a different 
-attempt to build upon the success and failures of those before.
+With the growth of open-source, Wayland, fragmentation of the desktop, 
+increasing computing resources, and privacy issues, I believe this 
+presents an opportunity to redefine the computing environment. Protoform 
+is not an entirely new idea, but a different attempt to build upon the 
+success and failures of those before.
 
 The initial inspiration came from Blender's multi-domain toolset and 
 later from Emacs's text buffer oriented system. The idea was to fuse the
@@ -80,8 +83,9 @@ visualize the different types of data today.
 > Successful programming is all about managing complexity.
 
 It is a fusion between expressive creative coding through frameworks 
-like Cinder, openFrameworks or Processing, and more convergent tools such
-as Blender and Emacs, and sandbox type games such as Minecraft.
+like Cinder, openFrameworks or Processing, more convergent tools such
+as Blender and Emacs, sandbox type games such as Minecraft, and finally
+business intelligence analysis tools.
 
 One major anti-pattern frequently encountered is the limitations created
 by programs extending functionality through a scripting language and
@@ -133,7 +137,7 @@ Core Extensions
    * Integrate GEGL? Image/graphicsmagick? etc...
 4. Wayland compositing
 5. IPFS integration
-6. Native web browser engine
+6. Native web browser engine?
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
