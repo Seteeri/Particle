@@ -77,13 +77,17 @@
 			  (* (funcall fn-easing
 				      (/ time-elapsed time-duration))
       			     value-delta))))
-	(fmt-model t "run-anim" "~a -> ~a~%" value-start value-new)
+	(when nil
+	  (fmt-model t "run-anim" "~a -> ~a~%" value-start value-new))
 	(funcall fn-new
 		 value-new))
             
       ;; Cap time-delta to ending time
       (if (> time-elapsed time-duration)
-	  (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed)
+	  (progn
+	    (when nil
+	      (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed))
+	    t)
 	  (enqueue-anim seq-event
 			anim
 			id

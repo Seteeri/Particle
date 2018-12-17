@@ -7,10 +7,8 @@
 
 (defun handle-view-sync (time-view)
   
-  ;; Execute ptrees
-  (execute-tasks-main)
-    
-  ;; Execute shm copy tasks
+  (execute-tasks-frame)
+  (execute-tasks-anim)    
   (execute-tasks-shm)
 
   ;; TODO:
@@ -26,7 +24,7 @@
 	       0
       	       (* 4 16 2)))))
 
-(defun execute-tasks-main ()
+(defun execute-tasks-frame ()
 
   ;; Anims can only run during frame call
   ;; so must integrate anim nodes during frame call
@@ -65,8 +63,9 @@
   		       ids
   		       (lambda ())
   		       ptree)
-	     (call-ptree 'finish ptree))))
+	     (call-ptree 'finish ptree)))))
 
+(defun execute-tasks-anim ()
   (let ((ptree (make-ptree)))
     ;; Add all nodes, then call each fn
     (let ((ids ()))
@@ -76,10 +75,15 @@
 	 :do (destructuring-bind (id args fn)
   		 anim
   	       (push id ids)
-  	       (ptree-fn id
-  			 args
-  			 fn
-  			 ptree)))
+	       (handler-case
+  		   (ptree-fn id
+  			     args
+  			     fn
+  			     ptree)
+		 (lparallel.ptree:ptree-redefinition-error (c)
+		   ;; Modify existing anim instance
+		   ;; - Get from object anim hashtable
+		   (fmt-model t "execute-tasks-anim" "Anim running already for ~a~%" id)))))
       ;; (format t "Anim IDs: ~a~%" ids)
       (ptree-fn 'finish
   		ids

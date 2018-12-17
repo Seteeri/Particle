@@ -26,6 +26,7 @@
     ;;    - Get anim instance and set state to :cancel
     ;;    - Need to store anims somewhere...
     ;;      - obj: tcl=anim, tcr=anim, tcu=anim, tcd=anim
+    ;;    - or modify anim object...
     ;; 2. On error, ignore
     ;;    - Anim will only play if users activates it
     ;;      when there is no existing anim playing

@@ -59,7 +59,8 @@
 			     :fn-new fn-new
 			     :value-start start
 			     :value-delta delta)))
-
+    ;; Error would be raised if same callback
+    ;; was called by two different events
     ;; Deps = obj/slot
     (ptree-fn id
 	      '()
