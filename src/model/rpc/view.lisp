@@ -29,22 +29,6 @@
   ;; Anims can only run during frame call
   ;; so must integrate anim nodes during frame call
 
-  ;; Controller callbacks will place ids in queue
-  ;; Anims will place ptree-fn args in another queue
-  ;; - ids will be generated from it
-
-  ;; To run multiple anims in parallel in a single ptree
-  ;; need to link them to a final function
-  ;; ....or anims will enqueue and create final function node here
-  ;; since can't modify the fn
-
-  ;; To run entire ptree, need a final function that
-  ;; has all previous ids as args
-  ;; - Use existing queue to build a list
-
-  ;; Can optimize by caching some of the analysis internally
-  ;; - look into lparallel code
-
   ;; Either integrate anims into existing input ptree
   ;; Or run each ptree in parallel - one for anims, one for input
 
@@ -84,6 +68,7 @@
 		 (lparallel.ptree:ptree-redefinition-error (c)
 		   ;; Modify existing anim instance to restart?
 		   ;; - Store object in anim, retrieve from destructuring-bind (enqueue list)
+		   ;;   - Instead of list of ids; use hashtable?
 		   ;; - Assumes only one instance of anim per object/node -> store in object
 		   (fmt-model t "execute-tasks-anim" "Anim running already for ~a~%" id)))))
       (ptree-fn 'finish
@@ -92,14 +77,17 @@
   		ptree))
     (call-ptree 'finish ptree))
 
-  ;; Check projview and nodes if they are dirty
-  ;; Then add to queue-shm
+  ;; TODO:
+  ;; - Implement dirty flags for projview and nodes
   (update-mat-view)
-  (enqueue-mat-view)
-  (update-mat-proj)
-  (enqueue-mat-proj))
+  (update-mat-proj))
 
 (defun execute-tasks-shm ()
+
+  ;; Will be refactored...
+  (enqueue-mat-view)
+  (enqueue-mat-proj)
+  
   ;; Can be done in parallel assuming no overlapping operations...
   ;; Can add detection code
   (loop

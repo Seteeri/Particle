@@ -57,7 +57,8 @@ average user.
     
 * Personal Influences:
     * Gypsy by Larry Tesler
-    * The Humane Interface by Jeff Raskin - commands/transformers    
+    * The Humane Interface by Jeff Raskin - commands/transformers
+    * WWW by Sir Tim Berners-Lee
 
 It was designed to address limitations I've personally encountered in
 the quest for a more efficient workflow; the main limitation being, 
@@ -89,9 +90,6 @@ functionality is developed, leads to interoperability issues, where data
 and code must be managed in two different domains leading to a
 "desert of complexity and duplication".
 
-The goal is not to create virtual realities for HMDs, although that
-naturally remains an orthogonal possibility.
-
 ## The Interface
 
 * 3D orthographic non-windowing environment
@@ -122,20 +120,20 @@ naturally remains an orthogonal possibility.
 
 Core (REPL) Functionality
 1. OpenGL infrastructure - DONE
-   1. Framebuffers, render to texture, etc. - WIP
 2. Pango text rendering - DONE
 3. MSDF text rendering - DONE
 4. Drawing nodes, lines - DONE
-5. Task-basked parallelism - WIP
+5. Task-basked parallelism - DONE
+6. Animations (easing functions) - DONE
 
 Core Extensions
-1. Animations (easing functions)
-2. Numbered links for navigations
-3. Undo system
-4. FFMPEG for media - images, video, audio
-   * GEGL another option
-5. Wayland compositing
-6. IPFS integration
+1. Numbered links for navigations
+2. Undo system
+3. FFMPEG for media - images, video, audio
+   * Integrate GEGL? Image/graphicsmagick? etc...
+4. Wayland compositing
+5. IPFS integration
+6. Native web browser engine
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
@@ -144,7 +142,6 @@ Personal Extensions
 Future Extensions
 1. Tiled forward rendering (Forward+) including lights
    * Future: Implement clustered -> volumetric forward shading
-2. Native web browser engine
 
 ## The Requirements
 
