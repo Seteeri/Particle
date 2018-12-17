@@ -74,17 +74,18 @@
 	 :while anim
 	 :do (destructuring-bind (id args fn)
   		 anim
-  	       (push id ids)
 	       (handler-case
-  		   (ptree-fn id
-  			     args
-  			     fn
-  			     ptree)
+		   (progn
+  		     (ptree-fn id
+  			       args
+  			       fn
+  			       ptree)
+		     (push id ids))
 		 (lparallel.ptree:ptree-redefinition-error (c)
-		   ;; Modify existing anim instance
-		   ;; - Get from object anim hashtable
+		   ;; Modify existing anim instance to restart?
+		   ;; - Store object in anim, retrieve from destructuring-bind (enqueue list)
+		   ;; - Assumes only one instance of anim per object/node -> store in object
 		   (fmt-model t "execute-tasks-anim" "Anim running already for ~a~%" id)))))
-      ;; (format t "Anim IDs: ~a~%" ids)
       (ptree-fn 'finish
   		ids
   		(lambda ())

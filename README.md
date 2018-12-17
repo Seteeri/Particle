@@ -135,6 +135,7 @@ Core Extensions
 4. FFMPEG for media - images, video, audio
    * GEGL another option
 5. Wayland compositing
+6. IPFS integration
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
