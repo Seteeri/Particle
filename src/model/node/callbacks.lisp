@@ -1,5 +1,7 @@
 (in-package :protoform.model)
 
+;; Create macro
+
 (defun add-node-msdf (seq-key ptree queue)
   ;; Add node to pointer position
   ;; Move pointer right
@@ -115,6 +117,8 @@
     node))
   
 (defun backspace-node-msdf-2 (seq-key)
+
+  ;; Move pointer to node
   
   (let ((node-tgt (first (digraph:successors *digraph*
 					     *node-pointer*))))
@@ -138,6 +142,10 @@
 				 (+ (vx3 (translation (model-matrix pred)))
 				    (* 96 *scale-node*))
 				 :abs)
+		(displace-node-y *node-pointer*
+				 (vy3 (translation (model-matrix pred)))
+				 :abs)
+
 		;; Only move if end of line - REFACTOR ENTER
 		;; Add more spacing due to bl adjustments
 		(when nil
