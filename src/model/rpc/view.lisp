@@ -52,27 +52,35 @@
 (defun execute-tasks-anim ()
   (let ((ptree (make-ptree)))
     ;; Add all nodes, then call each fn
-    (let ((ids ()))
+    (let ((ids (make-hash-table :size 64)))
       (loop
-	 :for anim := (sb-concurrency:dequeue *queue-anim*)
-	 :while anim
-	 :do (destructuring-bind (id args fn)
-  		 anim
+	 :for item := (sb-concurrency:dequeue *queue-anim*)
+	 :while item
+	 :do (destructuring-bind (anim
+				  id
+				  args
+				  fn)
+  		 item
 	       (handler-case
 		   (progn
   		     (ptree-fn id
   			       args
   			       fn
   			       ptree)
-		     (push id ids))
+		     (setf (gethash id ids) anim))
 		 (lparallel.ptree:ptree-redefinition-error (c)
-		   ;; Modify existing anim instance to restart?
-		   ;; - Store object in anim, retrieve from destructuring-bind (enqueue list)
-		   ;;   - Instead of list of ids; use hashtable?
-		   ;; - Assumes only one instance of anim per object/node -> store in object
-		   (fmt-model t "execute-tasks-anim" "Anim running already for ~a~%" id)))))
+		   ;; Keep anim with latest start time or nil
+		   ;; - Create callback for when animation pauses?
+		   (let ((anim-prev (gethash id ids)))
+		     (unless (time-start anim-prev)
+		       ;; Modify existing anim value-start and value-delta
+		       (setf (value-start  anim-prev) (value-start  anim)
+			     (time-start   anim-prev) (time-start   anim)
+		             (time-end     anim-prev) (time-end     anim)
+			     (time-elapsed anim-prev) (time-elapsed anim))))
+		   (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id)))))
       (ptree-fn 'finish
-  		ids
+		(loop :for key :being :the hash-keys :of ids :collect key)
   		(lambda ())
   		ptree))
     (call-ptree 'finish ptree))

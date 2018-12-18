@@ -38,7 +38,8 @@
 		     id
 		     fn)
   ;; (fmt-model t "enqueue-anim" "~a~%" id)
-  (sb-concurrency:enqueue (list id 
+  (sb-concurrency:enqueue (list anim
+				id 
 				'()
 				fn)
 			  *queue-anim*))
