@@ -71,9 +71,10 @@
 		 (lparallel.ptree:ptree-redefinition-error (c)
 		   ;; Keep anim with latest start time or nil
 		   ;; - Create callback for when animation pauses?
+		   ;; - Create option to ignore instead of restart
 		   (let ((anim-prev (gethash id ids)))
 		     (unless (time-start anim-prev)
-		       ;; Modify existing anim value-start and value-delta
+		       ;; Modify existing anim slots
 		       (setf (value-start  anim-prev) (value-start  anim)
 			     (time-start   anim-prev) (time-start   anim)
 		             (time-end     anim-prev) (time-end     anim)
@@ -86,7 +87,8 @@
     (call-ptree 'finish ptree))
 
   ;; TODO:
-  ;; - Implement dirty flags for projview and nodes
+  ;; - Implement atomic dirty flags for projview and nodes
+  (enqueue-node-pointer)
   (update-mat-view)
   (update-mat-proj))
 

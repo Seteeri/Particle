@@ -57,9 +57,13 @@
       (update-transform model-matrix))))
 
 (defun eval-node-msdf (seq-key)
-  ;; For eval, if code modifies data used by a thread
-  ;; will result in corruption...how to detect?
-  ;; - Warn user before eval - see if id exist in graph
+  ;; Two execution contexts:
+  ;; 1. Inside frame
+  ;; 2. Outside frame
+
+  ;; Outside frame runs into concurrency/locking issues
+  ;; POSS: Detect before running and warn user?
+  ;; - See if ID exists in graph
   
   ;; To eval, build up string from predecessors
   (let ((node-tgt (first (digraph:successors *digraph* *node-pointer*)))
@@ -75,8 +79,9 @@
 	     (push (data pred) chrs)
 	     (when nil (format t "~a: ~a~%" pred (data pred)))))
 
-    (fmt-model t "eval-node-msdf" "Eval: ~a~%" (eval (read-from-string (with-output-to-string (stream)
-									 (dolist (c chrs)
-									   (write-char c stream))))))
+    (fmt-model t "eval-node-msdf" "Eval: ~a~%"
+	       (eval (read-from-string (with-output-to-string (stream)
+					 (dolist (c chrs)
+					   (write-char c stream))))))
     (when nil
       (digraph.dot:draw digraph :filename "digraph.png" :format :png))))
