@@ -51,7 +51,8 @@
 		      ptree
 		      queue
 		      (lambda (value-new)
-			(setf (vx3 pos) value-new))
+			(setf (vx3 pos) value-new)
+			(enqueue-mat-view))
 		      (vx3 pos)
 		      (- (vx3 displace))
 		      'translate-camera-left)))
@@ -64,7 +65,8 @@
 		      ptree
 		      queue
 		      (lambda (value-new)
-			(setf (vx3 pos) value-new))
+			(setf (vx3 pos) value-new)
+			(enqueue-mat-view))
 		      (vx3 pos)
 		      (vx3 displace)
 		      'translate-camera-right)))
@@ -77,7 +79,8 @@
 		      ptree
 		      queue
 		      (lambda (value-new)
-			(setf (vy3 pos) value-new))   
+			(setf (vy3 pos) value-new)
+			(enqueue-mat-view))
 		      (vy3 pos)
 		      (vy3 displace)
 		      'translate-camera-up)))
@@ -90,7 +93,8 @@
 		      ptree
 		      queue
 		      (lambda (value-new)
-			(setf (vy3 pos) value-new))   
+			(setf (vy3 pos) value-new)
+			(enqueue-mat-view))
 		      (vy3 pos)
 		      (- (vy3 displace))
 		      'translate-camera-down)))

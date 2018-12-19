@@ -5,7 +5,9 @@
     (enqueue-node-pointer))
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
-				(serialize-node node)
+				(lambda ()
+				  (update-transform (model-matrix node))
+				  (serialize-node node))
 				(* (index node)
 				   +size-struct-instance+))
 			  *queue-shm*))
@@ -13,7 +15,9 @@
 (defun enqueue-node-pointer ()
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
-				(serialize-node *node-pointer*)
+				(lambda ()
+				  (update-transform (model-matrix *node-pointer*))
+				  (serialize-node *node-pointer*))
 				(* (index *node-pointer*)
 				   +size-struct-instance+))
 			  *queue-shm*))  
@@ -21,7 +25,8 @@
 (defun enqueue-node-zero (index)
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
-				*data-zero-node*
+				(lambda ()
+				  *data-zero-node*)
 				(* index
 				   +size-struct-instance+))
 			  *queue-shm*))
@@ -146,7 +151,7 @@
       (digraph:remove-vertex *digraph*
 			     node-tgt)
 
-      ;; (enqueue-node-pointer)
+      (enqueue-node-pointer)
       (enqueue-node-zero (index node-tgt)))))
 
 (defun return-node (seq-key)
@@ -162,12 +167,13 @@
 		   (- (* +linegap+ *scale-node*))
 		   :rel
 		   nil) ; add more spacing due to bl adjustments
-
   (update-transform (model-matrix *node-pointer*))
+  (enqueue-node-pointer)
   
   (add-node seq-key)
 
-  ;; (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))
+  ;; (fmt-model t "move-pointer-*" "~a~%"
+  ;; (translation (model-matrix *node-pointer*)))
   
   t)
 

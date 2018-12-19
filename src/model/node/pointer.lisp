@@ -83,7 +83,7 @@
 		       queue
 		       (lambda (value-new)
 			 (setf (vx3 (translation model-matrix)) value-new)
-			 (update-transform (model-matrix *node-pointer*)))			 
+			 (enqueue-node-pointer))
 		       (vx3 (translation model-matrix))
 		       (- (* 96 *scale-node*))
 		       'move-pointer-left)))
@@ -100,7 +100,7 @@
 		       queue
 		       (lambda (value-new)
 			 (setf (vx3 (translation model-matrix)) value-new)
-			 (update-transform (model-matrix *node-pointer*)))
+			 (enqueue-node-pointer))
 		       (vx3 (translation model-matrix))
 		       (* 96 *scale-node*)
 		       'move-pointer-right)))
@@ -115,7 +115,7 @@
 		       queue
 		       (lambda (value-new)
 			 (setf (vy3 (translation model-matrix)) value-new)
-			 (update-transform (model-matrix *node-pointer*)))
+			 (enqueue-node-pointer))
 		       (vy3 (translation model-matrix))
 		       (* +linegap+ *scale-node*)
 		       'move-pointer-up)))
@@ -130,7 +130,7 @@
 		       queue
 		       (lambda (value-new)
 			 (setf (vy3 (translation model-matrix)) value-new)
-			 (update-transform (model-matrix *node-pointer*)))
+			 (enqueue-node-pointer))
 		       (vy3 (translation model-matrix))
 		       (- (* +linegap+ *scale-node*))
 		       'move-pointer-down)))

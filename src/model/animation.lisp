@@ -24,8 +24,7 @@
    (value-delta   :accessor value-delta   :initarg :value-delta   :initform nil)
    (time-start    :accessor time-start    :initarg :time-start    :initform nil)
    (time-end      :accessor time-end      :initarg :time-end      :initform nil)
-   ;; (time-duration :accessor time-duration :initarg :time-duration :initform (/ 100 1000))
-   (time-duration :accessor time-duration :initarg :time-duration :initform (/ 100 1000))
+   (time-duration :accessor time-duration :initarg :time-duration :initform (/ 1000 1000))
    (time-elapsed  :accessor time-elapsed  :initarg :time-elapsed  :initform 0.0)))
 
 ;; time-end:       (+ *time-start* 4)          ; (/ frame count fps)
@@ -79,7 +78,7 @@
 			  (* (funcall fn-easing
 				      (/ time-elapsed time-duration))
       			     value-delta))))
-	(when nil
+	(when t
 	  (fmt-model t "run-anim" "~a~%" value-new))
 	(funcall fn-new
 		 value-new))

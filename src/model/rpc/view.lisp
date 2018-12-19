@@ -84,39 +84,43 @@
 		(loop :for key :being :the hash-keys :of ids :collect key)
   		(lambda ())
   		ptree))
-    (call-ptree 'finish ptree))
-
-  ;; TODO:
-  ;; - Implement atomic dirty flags for projview and nodes
-  (update-mat-view)
-  (update-mat-proj))
+    (call-ptree 'finish ptree)))
 
 (defun execute-tasks-shm ()
 
-  ;; Check flags in parallel?
-  ;; If so, serialize and add data?
+  ;; Check flags in parallel or have cb queue flags (prefer queue)
+  ;; - With flags, need to reset after
+  ;; If so, serialize data and memcpy it
+
+  ;; Issue is if different callbacks work on the same node
+  ;; then both changes won't be captured
   
-  ;; Will be refactored...
-  (enqueue-mat-view)
-  (enqueue-mat-proj)
-  (enqueue-node-pointer)
-  
-  ;; Can be done in parallel assuming no overlapping operations...
-  ;; Can add detection code
-  (loop
-     :for counter := 0
-     :for task := (sb-concurrency:dequeue *queue-shm*)
-     :while task
-     :do (destructuring-bind (channel
-			      name-shm
-			      data
-			      offset)
-	     task
-	   (incf counter)
-	   (submit-task *channel*
-			#'copy-data-to-shm
-			name-shm
-			data
-			offset))
-     :finally (dotimes (i counter)
-		(receive-result *channel*))))
+  ;; (update-mat-view)
+  ;; (update-mat-proj)
+  ;; (enqueue-mat-view)
+  ;; (enqueue-mat-proj)
+  ;; (enqueue-node-pointer)
+
+  ;; For below, ignore if same node...
+  (let ((ids (make-hash-table :size 64)))
+    (loop
+       :for counter := 0
+       :for task := (sb-concurrency:dequeue *queue-shm*)
+       :while task
+       :do (destructuring-bind (channel
+				name-shm
+				fn-data
+				offset)
+	       task
+	     ;; TODO: Use name and offset
+	     (when (not (gethash offset ids))
+	       ;; (format t "~a, ~a~%" name-shm offset)
+	       (incf counter)
+	       (submit-task *channel*
+			    #'copy-data-to-shm
+			    name-shm
+			    fn-data
+			    offset)
+	       (setf (gethash offset ids) t)))
+       :finally (dotimes (i counter)
+		  (receive-result *channel*)))))

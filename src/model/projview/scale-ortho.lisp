@@ -17,7 +17,7 @@
     
     (let ((anim (make-instance 'animation
 			       :id id
-			       :fn-easing #'easing:in-cubic
+			       :fn-easing #'easing:linear
 			       :fn-new fn-new
 			       :value-start scale-ortho
 			       :value-delta delta)))
@@ -39,7 +39,8 @@
 	       ptree
 	       queue
 	       (lambda (value-new)
-		 (setf (scale-ortho *projview*) value-new))
+		 (setf (scale-ortho *projview*) value-new)
+		 (enqueue-mat-proj))
 	       (- (vz3 (displace *projview*)))
 	       'scale-ortho-down))
 
@@ -48,6 +49,7 @@
 	       ptree
 	       queue
 	       (lambda (value-new)
-		 (setf (scale-ortho *projview*) value-new))
+		 (setf (scale-ortho *projview*) value-new)
+		 (enqueue-mat-proj))
 	       (vz3 (displace *projview*))
 	       'scale-ortho-up))
