@@ -225,7 +225,7 @@
 	   (run-server-sleep)))))
 
 (defun run-server-sleep ()
-  (sleep 0.0167)
+  (sleep (/ 1 144))
   (run-server))
 
 (defun render-frame ()

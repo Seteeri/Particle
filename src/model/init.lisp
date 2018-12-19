@@ -90,15 +90,15 @@
     ;; +xk-right+ #xff53   ;  Move right, right arrow 
     ;; +xk-down+ #xff54   ;  Move down, down arrow 
 
-    (when nil
+    (when t
       (register-callback `(,+xk-escape+ (:press))
     			 :exclusive
     			 (lambda (seq-key)
-    			   (clean-up-handles-shm)
+    			   ;; (clean-up-handles-shm)
     			   (c-shutdown *sock-view*)
-    			   (c-close *sock-view*))
-    			 (fmt-model t "handle-escape" "Model process exiting!~%")
-    			 (sb-ext:exit)))
+    			   (c-close *sock-view*)
+    			   (fmt-model t "handle-escape" "Model process exiting!~%")
+    			   (sb-ext:exit))))
     
     (when t
       ;; handlers in node

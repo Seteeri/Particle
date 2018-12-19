@@ -180,7 +180,7 @@
 
   (update-transform (model-matrix *node-pointer*))
   
-  (add-node-2 seq-key)
+  (add-node seq-key)
 
   ;; (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))
   
