@@ -137,17 +137,16 @@
 		(digraph:insert-edge *digraph*
 				     *node-pointer*
 				     pred)
-		;; Move pointer node to right of pred and up a line
+
 		(displace-node-x *node-pointer*
 				 (+ (vx3 (translation (model-matrix pred)))
 				    (* 96 *scale-node*))
 				 :abs)
-		(displace-node-y *node-pointer*
-				 (vy3 (translation (model-matrix pred)))
-				 :abs)
 
-		;; Only move if end of line - REFACTOR ENTER
-		;; Add more spacing due to bl adjustments
+		(when nil
+		  (displace-node-y *node-pointer*
+				   (vy3 (translation (model-matrix pred)))
+				   :abs))
 		(when nil
 		  (displace-node-y *node-pointer*
 				   (* +linegap+ scale-node) 
