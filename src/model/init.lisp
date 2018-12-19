@@ -107,22 +107,22 @@
 	 :do (progn
 	       (register-callback `(,keysym (:press :repeat))
 	 			  :exclusive
-	 			  #'add-node-msdf)
+	 			  #'add-node-callback)
 	       ;; Better way to handle below?
 	       (register-callback `(,+xk-shift-l+ (:press :down)
 	       			    ,keysym       (:press :repeat))
 	       			  :exclusive
-	       			  #'add-node-msdf)
+	       			  #'add-node-callback)
 	       (register-callback `(,+xk-shift-r+ (:press :down)
 	       			    ,keysym       (:press :repeat))
 	       			  :exclusive
-	       			  #'add-node-msdf)
+	       			  #'add-node-callback)
 	       t)))
     
     (when t
       ;; handlers in node
-      (dolist (seq-event `((,+xk-backspace+  ,#'backspace-node-msdf)
-			   (,+xk-return+     ,#'return-node-msdf)))
+      (dolist (seq-event `((,+xk-backspace+  ,#'backspace-node-callback)
+			   (,+xk-return+     ,#'return-node-callback)))
 	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))

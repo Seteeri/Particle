@@ -2,46 +2,46 @@
 
 ;; Create macro
 
-(defun add-node-msdf (seq-key ptree queue)
+(defun add-node-callback (seq-key ptree queue)
   ;; Add node to pointer position
   ;; Move pointer right
   ;; Maybe have pointer appear below/above so edge will show
 
-  (fmt-model t "add-node-msdf" "~a~%" seq-key)
+  (fmt-model t "add-node" "~a~%" seq-key)
 
-  (ptree-fn 'add-node-msdf
+  (ptree-fn 'add-node
 	    '()
 	    (lambda ()
-	      (funcall #'add-node-msdf-2 seq-key))
+	      (funcall #'add-node seq-key))
 	    ptree)
 
-  (sb-concurrency:enqueue 'add-node-msdf queue))
+  (sb-concurrency:enqueue 'add-node queue))
 
-(defun backspace-node-msdf (seq-key ptree queue)
+(defun backspace-node-callback (seq-key ptree queue)
 
-  (fmt-model t "backspace-node-msdf" "~a~%" seq-key)
+  (fmt-model t "backspace-node" "~a~%" seq-key)
 
-  (ptree-fn 'backspace-node-msdf
+  (ptree-fn 'backspace-node
 	    '()
 	    (lambda ()
-	      (funcall #'backspace-node-msdf-2 seq-key))
+	      (funcall #'backspace-node seq-key))
 	    ptree)
 
-  (sb-concurrency:enqueue 'backspace-node-msdf queue))
+  (sb-concurrency:enqueue 'backspace-node queue))
 
-(defun return-node-msdf (seq-key ptree queue)
+(defun return-node-callback (seq-key ptree queue)
   
-  (fmt-model t "return-node-msdf" "~a~%" seq-key)
+  (fmt-model t "return-node" "~a~%" seq-key)
 
-  (ptree-fn 'return-node-msdf
+  (ptree-fn 'return-node
 	    '()
 	    (lambda ()
-	      (funcall #'return-node-msdf-2 seq-key))
+	      (funcall #'return-node seq-key))
 	    ptree)
 
-  (sb-concurrency:enqueue 'return-node-msdf queue))
+  (sb-concurrency:enqueue 'return-node queue))
 
-(defun add-node-msdf-2 (seq-key)
+(defun add-node (seq-key)
   
   ;; Split into
   ;; node new
@@ -64,7 +64,7 @@
 	 (data (if (= key-first +xk-return+)
 		   #\Newline
 		   (code-char key-first)))
-	 (node (init-node-msdf (vcopy3 cursor)
+	 (node (init-node-msdf cursor
 			       *scale-node*
 			       (digraph:count-vertices *digraph*)
 			       data)))
@@ -116,7 +116,7 @@
 
     node))
   
-(defun backspace-node-msdf-2 (seq-key)
+(defun backspace-node (seq-key)
 
   ;; Move pointer to node
   
@@ -161,17 +161,17 @@
       (digraph:remove-vertex *digraph*
 			     node-tgt)
 
-      (enqueue-node-pointer)
+      ;; (enqueue-node-pointer)
       (enqueue-node-zero (index node-tgt)))))
 
-(defun return-node-msdf-2 (seq-key)
+(defun return-node (seq-key)
   ;; Move pointer
   ;; Add node
 
   ;; Do first since add-node will do pointer also - refactor that...
   (displace-node-x *node-pointer*
-		   -11.5199995
-		   :abs
+		   -11.5199995 ; need to track newline chars
+		   :rel
 		   nil)
   (displace-node-y *node-pointer*
 		   (- (* +linegap+ *scale-node*))
@@ -180,7 +180,7 @@
 
   (update-transform (model-matrix *node-pointer*))
   
-  (add-node-msdf-2 seq-key)
+  (add-node-2 seq-key)
 
   ;; (fmt-model t "move-pointer-*" "~a~%" (translation (model-matrix *node-pointer*)))
   

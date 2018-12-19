@@ -88,15 +88,18 @@
 
   ;; TODO:
   ;; - Implement atomic dirty flags for projview and nodes
-  (enqueue-node-pointer)
   (update-mat-view)
   (update-mat-proj))
 
 (defun execute-tasks-shm ()
 
+  ;; Check flags in parallel?
+  ;; If so, serialize and add data?
+  
   ;; Will be refactored...
   (enqueue-mat-view)
   (enqueue-mat-proj)
+  (enqueue-node-pointer)
   
   ;; Can be done in parallel assuming no overlapping operations...
   ;; Can add detection code

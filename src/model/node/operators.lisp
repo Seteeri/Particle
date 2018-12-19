@@ -64,6 +64,9 @@
   ;; Outside frame runs into concurrency/locking issues
   ;; POSS: Detect before running and warn user?
   ;; - See if ID exists in graph
+
+  ;; https://lispcookbook.github.io/cl-cookbook/os.html#running-external-programs
+  ;; https://www.reddit.com/r/lisp/comments/8kpbcz/shcl_an_unholy_union_of_posix_shell_and_common/
   
   ;; To eval, build up string from predecessors
   (let ((node-tgt (first (digraph:successors *digraph* *node-pointer*)))

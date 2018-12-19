@@ -55,7 +55,7 @@
   
   (let ((anim (make-instance 'animation
 			     :id id
-			     :fn-easing #'easing:in-out-back ;cubic
+			     :fn-easing #'easing:in-exp ;cubic
 			     :fn-new fn-new
 			     :value-start start
 			     :value-delta delta)))

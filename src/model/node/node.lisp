@@ -69,7 +69,9 @@
 			     :data data
 			     :index ix
 			     :model-matrix (make-instance 'model-matrix
-							  :scale (vec3 scale-glyph scale-glyph scale-glyph)
+							  :scale (vec3 scale-glyph
+								       scale-glyph
+								       scale-glyph)
 							  :translation (vcopy3 cursor))))
 	(metrics-glyph (gethash (char-code data) *metrics*)))
     
@@ -94,11 +96,9 @@
 	metrics-glyph
 
       (let ((translation-mm (translation (model-matrix node))))
-	;; (setf (vx3 translation-mm) (- (vx3 cursor) (* (vx2 translate) scale scale-glyph)))
-	(setf (vy3 translation-mm) (- (vy3 cursor) (* (vy2 translate) scale scale-glyph))
+	(setf (vy3 translation-mm) (- (vy3 cursor)
+				      (* (vy2 translate) scale scale-glyph))
 	      (vz3 translation-mm) (vz3 cursor)))
-
-      ;; (fmt-model t "init-node-msdf" "advance: ~a~%" (* advance scale-glyph))
 
       (let ((scale-mm (scale (model-matrix node))))
 	(setf (vx3 scale-mm) (* (vx2 dims-glyph) scale-glyph)

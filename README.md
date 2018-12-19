@@ -57,11 +57,13 @@ the Librem 5 (should it be successful...).
     * Minecraft - expressiveness
     * EagleMode - example of a ZUI
     * OpenDoc - early proprietary attempt by Apple to create compound documents
+    * LightTable - drafting table metaphor
     
 * Personal Influences:
     * Gypsy by Larry Tesler
     * The Humane Interface by Jeff Raskin - commands/transformers
     * WWW by Sir Tim Berners-Lee
+    * Inventing on Principle by Brett Victor
 
 It was designed to address limitations I've personally encountered in
 the quest for a more efficient workflow; the main limitation being, 
