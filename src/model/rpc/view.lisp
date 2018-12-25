@@ -6,11 +6,11 @@
 ;;     (setf *time-last* time)))
 
 (defun handle-view-sync (time-view)
-  
-  (execute-tasks-frame)
-  (execute-tasks-anim)    
-  (execute-tasks-shm)
 
+  (execute-tasks-frame)
+  (execute-tasks-anim)
+  (execute-tasks-shm)
+  
   ;; TODO:
   ;; digraph:count-vertices - checks hash-table-size
   ;; digraph:count-edges    - loops through vertices then edges
@@ -52,7 +52,7 @@
 (defun execute-tasks-anim ()
   (let ((ptree (make-ptree)))
     ;; Add all nodes, then call each fn
-    (let ((ids (make-hash-table :size 64)))
+    (let ((ids (make-hash-table :size 64 :test 'equal)))
       (loop
 	 :for item := (sb-concurrency:dequeue *queue-anim*)
 	 :while item
@@ -99,9 +99,8 @@
   ;; (enqueue-node-pointer)
 
   ;; For below, ignore if same node...
-  (let ((ids (make-hash-table :size 64)))
+  (let ((ids (make-hash-table :size 64 :test 'equal)))
     (loop
-       :for counter := 0
        :for task := (sb-concurrency:dequeue *queue-shm*)
        :while task
        :do (destructuring-bind (channel
@@ -109,15 +108,13 @@
 				fn-data
 				offset)
 	       task
-	     ;; TODO: Use name and offset
-	     (when (not (gethash offset ids))
-	       ;; (format t "~a, ~a~%" name-shm offset)
-	       (incf counter)
+	     (when (not (gethash (list name-shm offset) ids))
 	       (submit-task *channel*
 			    #'copy-data-to-shm
 			    name-shm
 			    fn-data
 			    offset)
-	       (setf (gethash offset ids) t)))
-       :finally (dotimes (i counter)
+	       (setf (gethash (list name-shm offset) ids)
+		     t)))
+       :finally (dotimes (i (hash-table-count ids))
 		  (receive-result *channel*)))))
