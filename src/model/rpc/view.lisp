@@ -11,27 +11,14 @@
   (execute-tasks-anim)
   (execute-tasks-shm)
   
-  ;; TODO:
-  ;; digraph:count-vertices - checks hash-table-size
-  ;; digraph:count-edges    - loops through vertices then edges
-  ;; Reimplement cl-digaph with cl-tries?
-  ;; (memcpy-shm-to-cache-flag*
-  ;;  (list (list "nodes"
-  ;; 	       0
-  ;;     	       (* +size-struct-instance+ (+ (digraph:count-vertices *digraph*)
-  ;; 				       	    (digraph:count-edges *digraph*))))
-  ;; 	 (list "projview"
-  ;; 	       0
-  ;;     	       (* 4 16 2)))))
-
   (memcpy-shm-to-cache-flag*
-   (list (list "nodes"
-  	       0
-      	       (* +size-struct-instance+ (+ (car *vertices-digraph*)
-  				       	    (car *edges-digraph*))))
-  	 (list "projview"
-  	       0
-      	       (* 4 16 2)))))
+   `(("nodes"
+      ,0
+      ,(* +size-struct-instance+ (+ (car *vertices-digraph*)
+  				    (car *edges-digraph*))))
+     ("projview"
+      0
+      ,(* 4 16 2)))))
   
 (defun execute-tasks-frame ()
 
