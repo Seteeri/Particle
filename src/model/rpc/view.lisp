@@ -13,7 +13,7 @@
   
   (memcpy-shm-to-cache-flag*
    `(("nodes"
-      ,0
+      0
       ,(* +size-struct-instance+ (+ (car *vertices-digraph*)
   				    (car *edges-digraph*))))
      ("projview"

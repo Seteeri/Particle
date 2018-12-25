@@ -29,6 +29,8 @@
 				  #\*
 				  *color-default-ptr*)))
     (update-transform (model-matrix node-ptr))
+    ;; Remember to dec on removal
+    (sb-ext:atomic-incf (car *vertices-digraph*))
     node-ptr))
 
 (defun init-node-pointer-graph-shm ()

@@ -167,7 +167,7 @@
   ;; Do first since add-node will do pointer also - refactor that...
   (displace-node-x *node-pointer*
 		   -11.5199995 ; need to track newline chars
-		   :rel
+		   :abs
 		   nil)
   (displace-node-y *node-pointer*
 		   (- (* +linegap+ *scale-node*))
@@ -229,20 +229,20 @@
   ;; https://www.reddit.com/r/lisp/comments/8kpbcz/shcl_an_unholy_union_of_posix_shell_and_common/
   
   (let* ((str (build-string-from-nodes))
-	 (blah       (fmt-model t "eval-node" "Str: ~S~%" str))
 	 (output-eval (eval (read-from-string str))))
       (fmt-model t "eval-node" "Str: ~S~%" str)
       (fmt-model t "eval-node" "Eval: ~a~%" output-eval)
 
       (displace-node-x *node-pointer*
-		       -11.5199995
-		       :rel
+		       -11.5199995 ; starting node pos
+		       :abs
 		       nil)
       (displace-node-y *node-pointer*
 		       (- (* +linegap+ *scale-node*))
 		       :rel
 		       nil)
       (update-transform (model-matrix *node-pointer*))
+      (enqueue-node-pointer)
       
       ;; Then do add-node for each char in output eval
       ;; (key-first (second (reverse (second seq-key))))
