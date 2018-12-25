@@ -243,11 +243,16 @@
 		       nil)
       (update-transform (model-matrix *node-pointer*))
       (enqueue-node-pointer)
+
+      ;; TODO
+      ;; 1. Handle stdout/stderr
+      ;; 2. Parallelize add-node
+      ;; 3. Store output object in node...
       
       ;; Then do add-node for each char in output eval
       ;; (key-first (second (reverse (second seq-key))))
       (loop
-      	 :for char :across str
+      	 :for char :across (format nil "~s" output-eval)
       	 :do (add-node `(t (,(char-code char) t) t)))
 
       t))
