@@ -54,14 +54,14 @@ the Librem 5 (should it be successful...).
 * Secondary Inspirations:
     * Uzbl/Conkeror - numbered links for navigation
     * Unreal Blueprints - nodal system
-    * Minecraft - expressiveness
     * EagleMode - example of a ZUI
     * OpenDoc - early proprietary attempt by Apple to create compound documents
     * LightTable - drafting table metaphor
+    * Minecraft - expressiveness
     
 * Personal Influences:
     * Gypsy by Larry Tesler
-    * The Humane Interface by Jeff Raskin - commands/transformers
+    * The Humane Interface by Jeff Raskin
     * WWW by Sir Tim Berners-Lee
     * Inventing on Principle by Brett Victor
 
@@ -102,15 +102,15 @@ and code must be managed in two different domains leading to a
 * Consistent nodal environment - "turtles all the way down"
 * Primarily keyboard driven interface
 * Wayland extension provides conventional desktop
-* Undo/revision control/non-destructive editing
+* Undo/revision control/non-destructive editing (when possible)
 
 ## The Architecture
 
-* Two process system
+* Two process system - model/view
 * Task-based parallelization
-  * Fork-join model with atomics to minimize locking
-  * Thread pool kernel
   * Dependency tree
+  * Thread pool kernel
+  * Fork-join model with atomics and lock-free queues to minimize locking
 * Tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
   * Compute shaders
@@ -118,7 +118,7 @@ and code must be managed in two different domains leading to a
     * Persistent mapping
     * Instanced drawing
     * Indirect drawing
-      * Multi-indirect - not yet implemented in OpenGL ES API
+      * Multi-indirect (not yet implemented in OpenGL ES API)
   * Fully programmable vertex pulling
     * Texture buffers/UBOs/SSBOs -> gl_VertexID+gl_InstanceID
   * Separate shader stages and programmable pipelines
@@ -180,7 +180,9 @@ Future Extensions
 		 #:str
 		 #:easing
 		 #:lparallel
-		 #:skip-list)
+		 #:skip-list
+		 #:sb-concurrency
+		 #:pack)
 ```
 
 ## The Installation
@@ -188,6 +190,8 @@ Future Extensions
 ...
 
 ## The Hardware
+
+I will acquire better hardware in the future...
 
 Lenovo Miix 720:
 
