@@ -84,7 +84,7 @@
 			  (* (funcall fn-easing
 				      (/ time-elapsed time-duration))
       			     value-delta))))
-	(when t
+	(when nil
 	  (fmt-model t "run-anim" "~a~%" value-new))
 	(funcall fn-new
 		 value-new))

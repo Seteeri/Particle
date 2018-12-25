@@ -35,6 +35,8 @@
 
 (defparameter *digraph* nil)
 (defparameter *node-pointer* nil)
+(defparameter *vertices-digraph* (cons 0 nil))
+(defparameter *edges-digraph* (cons 0 nil))
 
 (defparameter *offset-texel-textures* nil) ; sum of WxH
 (defparameter *offset-bytes-textures* nil) ; sum of bytes

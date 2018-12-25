@@ -108,8 +108,9 @@ and code must be managed in two different domains leading to a
 
 * Two process system
 * Task-based parallelization
-  * Dependency tree
+  * Fork-join model with atomics to minimize locking
   * Thread pool kernel
+  * Dependency tree
 * Tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
   * Compute shaders

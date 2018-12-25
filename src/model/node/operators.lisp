@@ -103,6 +103,9 @@
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
+    (sb-ext:atomic-incf (car *vertices-digraph*))
+    (sb-ext:atomic-incf (car *edges-digraph*))
+    
     (enqueue-node node)
 
     node))
@@ -151,6 +154,9 @@
       (digraph:remove-vertex *digraph*
 			     node-tgt)
 
+      (sb-ext:atomic-decf (car *vertices-digraph*))
+      (sb-ext:atomic-decf (car *edges-digraph*))
+      
       (enqueue-node-pointer)
       (enqueue-node-zero (index node-tgt)))))
 
