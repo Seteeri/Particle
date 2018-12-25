@@ -1,7 +1,5 @@
 (in-package :protoform.model)
 
-(defparameter *time-last* 0)
-
 ;; For now, determine these through view - maybe model can request from view?
 ;; GL_MAX_SHADER_STORAGE_BLOCK_SIZE = 134217728 = 134.217728 MBs
 ;; GL_MAX_TEXTURE_BUFFER_SIZE       = 134217728 = 134.217728 MBs

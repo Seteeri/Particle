@@ -1,7 +1,6 @@
 (in-package #:protoform.model)
 
 (defparameter *path-socket-view* "/tmp/protoform-view.socket")
-(defparameter *time-last* 0)
 
 (defun copy-data-to-shm (shm fn-data &optional (offset-ptr 0))
   (copy-data-to-shm-2 shm

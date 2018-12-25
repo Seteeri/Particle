@@ -1,7 +1,6 @@
 (in-package #:protoform.model)
 
 (defparameter *path-socket-view* "/tmp/protoform-view.socket")
-(defparameter *time-last* 0)
 
 (defun init-conn-rpc-view (shm-projview
 			   shm-nodes
