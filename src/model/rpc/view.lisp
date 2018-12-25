@@ -75,10 +75,7 @@
 		   (let ((anim-prev (gethash id ids)))
 		     (unless (time-start anim-prev)
 		       ;; Modify existing anim slots
-		       (setf (value-start  anim-prev) (value-start  anim)
-			     (time-start   anim-prev) (time-start   anim)
-		             (time-end     anim-prev) (time-end     anim)
-			     (time-elapsed anim-prev) (time-elapsed anim))))
+		       (copy-anim anim-prev anim)))
 		   (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id)))))
       (ptree-fn 'finish
 		(loop :for key :being :the hash-keys :of ids :collect key)

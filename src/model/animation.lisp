@@ -44,6 +44,12 @@
 				fn)
 			  *queue-anim*))
 
+(defun copy-anim (a b)
+  (setf (value-start  a) (value-start  b)
+	(time-start   a) (time-start   b)
+	(time-end     a) (time-end     b)
+	(time-elapsed a) (time-elapsed b)))
+
 (defun run-anim (seq-event
 		 anim)
   (with-slots (id
