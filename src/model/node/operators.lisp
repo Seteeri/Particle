@@ -213,7 +213,10 @@
     (when update
       (update-transform model-matrix))))
 
-(defun eval-node-msdf (seq-key)
+;; Refactor and move to callbacks later
+(defun eval-node (seq-event
+		  ptree
+		  queue)
   ;; Two execution contexts:
   ;; 1. Inside frame
   ;; 2. Outside frame
@@ -224,24 +227,30 @@
 
   ;; https://lispcookbook.github.io/cl-cookbook/os.html#running-external-programs
   ;; https://www.reddit.com/r/lisp/comments/8kpbcz/shcl_an_unholy_union_of_posix_shell_and_common/
+
+  ;; (format t "Pointer: ~a~%" *node-pointer*)
   
   ;; To eval, build up string from predecessors
-  (let ((node-tgt (first (digraph:successors *digraph* *node-pointer*)))
-        (chrs nil))
+  (let ((chrs nil))
     (loop
-       :for pred := node-tgt :then (digraph:predecessors *digraph* pred)
-       :while pred
+       ;; currently assuming linear
+       :for pred
+	 := (first (digraph:successors *digraph* *node-pointer*))
+         :then (digraph:predecessors *digraph* pred)
+       :while (and pred
+		   (not (eq pred *node-pointer*)))
        :do (progn
+	     ;; Go to first non-ptr node
 	     (when (listp pred)
-	       (if (eq (first pred) *node-pointer*)
-		   (setf pred (second pred))
-		   (setf pred (first pred))))
+	       (loop
+		  :for n :in pred
+		  :do (when (not (eq n *node-pointer*))
+			(setf pred n))))
 	     (push (data pred) chrs)
 	     (when nil (format t "~a: ~a~%" pred (data pred)))))
-
-    (fmt-model t "eval-node-msdf" "Eval: ~a~%"
-	       (eval (read-from-string (with-output-to-string (stream)
-					 (dolist (c chrs)
-					   (write-char c stream))))))
-    (when nil
-      (digraph.dot:draw digraph :filename "digraph.png" :format :png))))
+    (let ((str (with-output-to-string (stream)
+		 (dolist (c chrs)
+		   (write-char c stream)))))
+      (fmt-model t "eval-node" "Str: ~S~%" str)
+      (fmt-model t "eval-node" "Eval: ~a~%"
+		 (eval (read-from-string str))))))

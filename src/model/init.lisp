@@ -158,6 +158,12 @@
 			   :exclusive
 			   (second seq-event))))
 
+    ;; Eval
+    (register-callback `(,+xk-shift-r+  (:press :down)
+			 ,+xk-return+  (:press :repeat))
+		       :exclusive
+		       #'eval-node)
+    
     ;; for testing
     (when nil
       (register-callback `(,+xk-f7+ (:press))
