@@ -82,14 +82,15 @@ extensible, and ultimately efficient UI that could incorporate
 tried-and-true concepts like the command-line interface but also 
 visualize the different types of data today. 
 
-> Successful programming is all about managing complexity.
-
 It is a fusion between expressive creative coding through frameworks 
 like Cinder, openFrameworks or Processing, more convergent tools such
 as Blender and Emacs, sandbox type games such as Minecraft, and finally
 business intelligence analysis tools.
 
-One major anti-pattern frequently encountered is the limitations created
+> Successful programming is all about managing complexity.
+
+One of the reasons Lisp was chosen was for its ability to mitigate a
+major anti-pattern frequently encountered - the limitations created
 by programs extending functionality through a scripting language and
 embedding an interpreter such as Lua or Python, which as more 
 functionality is developed, leads to interoperability issues, where data

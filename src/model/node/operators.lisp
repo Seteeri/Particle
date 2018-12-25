@@ -227,30 +227,51 @@
 
   ;; https://lispcookbook.github.io/cl-cookbook/os.html#running-external-programs
   ;; https://www.reddit.com/r/lisp/comments/8kpbcz/shcl_an_unholy_union_of_posix_shell_and_common/
-
-  ;; (format t "Pointer: ~a~%" *node-pointer*)
   
+  (let* ((str (build-string-from-nodes))
+	 (blah       (fmt-model t "eval-node" "Str: ~S~%" str))
+	 (output-eval (eval (read-from-string str))))
+      (fmt-model t "eval-node" "Str: ~S~%" str)
+      (fmt-model t "eval-node" "Eval: ~a~%" output-eval)
+
+      (displace-node-x *node-pointer*
+		       -11.5199995
+		       :rel
+		       nil)
+      (displace-node-y *node-pointer*
+		       (- (* +linegap+ *scale-node*))
+		       :rel
+		       nil)
+      (update-transform (model-matrix *node-pointer*))
+      
+      ;; Then do add-node for each char in output eval
+      ;; (key-first (second (reverse (second seq-key))))
+      (loop
+      	 :for char :across str
+      	 :do (add-node `(t (,(char-code char) t) t)))
+
+      t))
+
+(defun build-string-from-nodes ()
   ;; To eval, build up string from predecessors
+
+  (fmt-model t "build-string-from-nodes" "Pointer: ~a~%" *node-pointer*)
+  
   (let ((chrs nil))
     (loop
        ;; currently assuming linear
        :for pred
-	 := (first (digraph:successors *digraph* *node-pointer*))
+	 := (digraph:successors *digraph* *node-pointer*)
          :then (digraph:predecessors *digraph* pred)
-       :while (and pred
-		   (not (eq pred *node-pointer*)))
-       :do (progn
-	     ;; Go to first non-ptr node
-	     (when (listp pred)
-	       (loop
-		  :for n :in pred
-		  :do (when (not (eq n *node-pointer*))
-			(setf pred n))))
-	     (push (data pred) chrs)
-	     (when nil (format t "~a: ~a~%" pred (data pred)))))
-    (let ((str (with-output-to-string (stream)
-		 (dolist (c chrs)
-		   (write-char c stream)))))
-      (fmt-model t "eval-node" "Str: ~S~%" str)
-      (fmt-model t "eval-node" "Eval: ~a~%"
-		 (eval (read-from-string str))))))
+       :while pred
+       :do (loop
+	      ;; Leave on first non-ptr node
+	      :for n :in pred
+	      :do (when (not (eq n *node-pointer*))
+		    (push (data n) chrs)
+		    (setf pred n)
+		    (return))))
+  
+    (with-output-to-string (stream)
+      (dolist (c chrs)
+	(write-char c stream)))))
