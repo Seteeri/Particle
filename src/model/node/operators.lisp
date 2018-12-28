@@ -259,6 +259,7 @@
 
 (defun build-string-from-nodes ()
   ;; To eval, build up string from predecessors
+  ;; Stop right before newline
 
   (fmt-model t "build-string-from-nodes" "Pointer: ~a~%" *node-pointer*)
   
@@ -273,6 +274,8 @@
 	      ;; Leave on first non-ptr node
 	      :for n :in pred
 	      :do (when (not (eq n *node-pointer*))
+		    (when (char-equal (data n) #\Newline)
+		      (return))
 		    (push (data n) chrs)
 		    (setf pred n)
 		    (return))))

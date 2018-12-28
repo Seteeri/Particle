@@ -58,6 +58,7 @@ the Librem 5 (should it be successful...).
     * OpenDoc - early proprietary attempt by Apple to create compound documents
     * LightTable - drafting table metaphor
     * Minecraft - expressiveness
+    * CLIM
     
 * Personal Influences:
     * Gypsy by Larry Tesler
@@ -141,7 +142,8 @@ Core Extensions
    * Integrate GEGL? Image/graphicsmagick? etc...
 4. Wayland compositing
 5. IPFS integration
-6. Native web browser engine?
+6. Native web browser engine
+   * Integrate Next Lisp Web Browser as first step
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
