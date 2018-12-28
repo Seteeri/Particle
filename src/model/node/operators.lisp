@@ -233,17 +233,8 @@
       (fmt-model t "eval-node" "Str: ~S~%" str)
       (fmt-model t "eval-node" "Eval: ~a~%" output-eval)
 
-      (displace-node-x *node-pointer*
-		       -11.5199995 ; starting node pos
-		       :abs
-		       nil)
-      (displace-node-y *node-pointer*
-		       (- (* +linegap+ *scale-node*))
-		       :rel
-		       nil)
-      (update-transform (model-matrix *node-pointer*))
-      (enqueue-node-pointer)
-
+      (return-node `(t (,+xk-return+ t) t))
+      
       ;; TODO
       ;; 1. Handle stdout/stderr
       ;; 2. Parallelize add-node
