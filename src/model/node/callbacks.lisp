@@ -40,3 +40,15 @@
 	    ptree)
 
   (sb-concurrency:enqueue 'return-node queue))
+
+(defun eval-node-callback (seq-key ptree queue)
+  
+  (fmt-model t "eval-node" "~a~%" seq-key)
+
+  (ptree-fn 'eval-node
+	    '()
+	    (lambda ()
+	      (funcall #'eval-node seq-key))
+	    ptree)
+
+  (sb-concurrency:enqueue 'eval-node queue))

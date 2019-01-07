@@ -41,8 +41,8 @@ programmatically inclined users, starting with people that are familiar
 with the MS Office suite, which may be considered ubiquitious to the
 average user.
 
-Finally, my hope is to get the software onto a mobile platform, such as
-the Librem 5 (should it be successful...).
+Finally, my hope is to get Protoform onto a mobile platform, such as
+the Librem 5 or Gemini PDA as a proof of concept.
 
 ## The Inspiration
 

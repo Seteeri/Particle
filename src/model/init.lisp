@@ -159,10 +159,10 @@
 			   (second seq-event))))
 
     ;; Eval
-    (register-callback `(,+xk-shift-r+  (:press :down)
+    (register-callback `(,+xk-shift-r+ (:press :down)
 			 ,+xk-return+  (:press :repeat))
 		       :exclusive
-		       #'eval-node)
+		       #'eval-node-callback)
     
     ;; for testing
     (when nil
