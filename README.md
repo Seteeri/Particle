@@ -29,7 +29,7 @@ that can cut across all domains.
 It aims to integrate Wayland/X initially by provide the desktop as a
 plane (window) in 3D space, effectively making Protoform a 
 "meta-manager" around the desktop. Later, Protoform could be extended to
-allow windows to exist in 3D space.
+allow windows to exist in 3D space. This should allow for convergence.
 
 The target audience consists of programmers, developers, system
 administrators, power users and the like. It is designed for workstations 
@@ -141,9 +141,6 @@ Core Extensions
 3. FFMPEG for media - images, video, audio
    * Integrate GEGL? Image/graphicsmagick? etc...
 4. Wayland compositing
-5. IPFS integration
-6. Native web browser engine
-   * Integrate Next Lisp Web Browser as first step
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
@@ -152,6 +149,16 @@ Personal Extensions
 Future Extensions
 1. Tiled forward rendering (Forward+) including lights
    * Future: Implement clustered -> volumetric forward shading
+
+Future Ideas
+* IPFS integration
+* Native web browser - build around webkit/gecko/etc. like Next
+  * Allows for objects to be represented in 3D
+  * Web remains accessible through Wayland->Browser
+* Common Lisp to WebAssembly 
+  * WebAssembly describes an AST ;)
+* Augmented reality through OpenCV
+* Convergence...
 
 ## The Requirements
 
