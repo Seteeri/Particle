@@ -122,7 +122,7 @@
     (when t
       ;; handlers in node
       (dolist (seq-event `((,+xk-backspace+  ,#'backspace-node-callback)
-			   (,+xk-return+     ,#'return-node-callback)))
+			   (,+xk-return+     ,#'insert-node-newline-callback)))
 	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))

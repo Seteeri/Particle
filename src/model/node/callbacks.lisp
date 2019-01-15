@@ -29,17 +29,17 @@
 
   (sb-concurrency:enqueue 'backspace-node queue))
 
-(defun return-node-callback (seq-key ptree queue)
+(defun insert-node-newline-callback (seq-key ptree queue)
   
-  (fmt-model t "return-node" "~a~%" seq-key)
+  (fmt-model t "insert-node-newline" "~a~%" seq-key)
 
-  (ptree-fn 'return-node
+  (ptree-fn 'insert-node-newline
 	    '()
 	    (lambda ()
-	      (funcall #'return-node seq-key))
+	      (funcall #'insert-node-newline seq-key))
 	    ptree)
 
-  (sb-concurrency:enqueue 'return-node queue))
+  (sb-concurrency:enqueue 'insert-node-newline queue))
 
 (defun eval-node-callback (seq-key ptree queue)
   

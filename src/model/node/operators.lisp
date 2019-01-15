@@ -160,7 +160,7 @@
       (enqueue-node-pointer)
       (enqueue-node-zero (index node-tgt)))))
 
-(defun return-node (seq-key)
+(defun insert-node-newline (seq-key)
   ;; Move pointer
   ;; Add node
 
@@ -233,7 +233,7 @@
       (fmt-model t "eval-node" "Str: ~S~%" str)
       (fmt-model t "eval-node" "Eval: ~a~%" output-eval)
 
-      (return-node `(t (,+xk-return+ t) t))
+      (insert-node-newline `(t (,+xk-return+ t) t))
       
       ;; TODO
       ;; 1. Handle stdout/stderr

@@ -59,6 +59,7 @@ the Librem 5 or Gemini PDA as a proof of concept.
     * LightTable - drafting table metaphor
     * Minecraft - expressiveness
     * CLIM
+    * Xerox Parc
     
 * Personal Influences:
     * Gypsy by Larry Tesler
