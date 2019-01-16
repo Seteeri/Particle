@@ -227,12 +227,17 @@
 
   ;; https://lispcookbook.github.io/cl-cookbook/os.html#running-external-programs
   ;; https://www.reddit.com/r/lisp/comments/8kpbcz/shcl_an_unholy_union_of_posix_shell_and_common/
+
+  ;; TODO:
+  ;; Add error handling...
   
   (let* ((str (build-string-from-nodes))
 	 (output-eval (eval (read-from-string str))))
       (fmt-model t "eval-node" "Str: ~S~%" str)
       (fmt-model t "eval-node" "Eval: ~a~%" output-eval)
 
+      ;; Can't output if eval function modifies below
+      
       (insert-node-newline `(t (,+xk-return+ t) t))
       
       ;; TODO
@@ -274,3 +279,11 @@
     (with-output-to-string (stream)
       (dolist (c chrs)
 	(write-char c stream)))))
+
+(defun remove-all-nodes ()
+  (digraph:mapc-vertices (lambda (v)
+			   (digraph:remove-vertex *digraph* v))
+			 *digraph*)
+  (digraph:mapc-edges (lambda (e)
+			(digraph:remove-edge *digraph* e))
+		      *digraph*))
