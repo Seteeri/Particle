@@ -40,14 +40,6 @@
 
 (defclass node ()
   ((data :accessor data :initarg :data :initform nil)
-   (index :accessor index :initarg :index :initform nil)
-   (origin :accessor origin :initarg :origin :initform (vec3 0 0 0))
-   (model-matrix :accessor model-matrix :initarg :model-matrix :initform (make-instance 'model-matrix))
-   (rgba :accessor rgba :initarg :rgba :initform (make-array (* 4 4) ; or use vec4
-							     :adjustable nil
-							     :fill-pointer nil
-							     :element-type 'single-float
-							     :initial-contents *color-default-node*))
    
    (offset-texel-texture :accessor offset-texel-texture :initarg :offset-texel-texture :initform 0)
    (dims-texture :accessor dims-texture :initarg :dims-texture :initform (vec2 0 0))
@@ -56,6 +48,15 @@
 					  :fill-pointer nil
 					  :element-type 'single-float
 					  :initial-contents *uv-default-node*))
+   
+   (index :accessor index :initarg :index :initform nil)
+   (origin :accessor origin :initarg :origin :initform (vec3 0 0 0))
+   (model-matrix :accessor model-matrix :initarg :model-matrix :initform (make-instance 'model-matrix))
+   (rgba :accessor rgba :initarg :rgba :initform (make-array (* 4 4) ; or use vec4
+							     :adjustable nil
+							     :fill-pointer nil
+							     :element-type 'single-float
+							     :initial-contents *color-default-node*))
    (flags :accessor flags :initarg :flags :initform 1)))
 
 (defun init-node-msdf (cursor

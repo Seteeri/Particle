@@ -216,7 +216,8 @@
 ;; Refactor and move to callbacks later
 (defun eval-node (seq-event
 		  ptree
-		  queue)
+		  queue
+		  &optional (create-node-output t))
   ;; Two execution contexts:
   ;; 1. Inside frame
   ;; 2. Outside frame
@@ -236,22 +237,22 @@
       (fmt-model t "eval-node" "Str: ~S~%" str)
       (fmt-model t "eval-node" "Eval: ~a~%" output-eval)
 
-      ;; Can't output if eval function modifies below
-      
-      (insert-node-newline `(t (,+xk-return+ t) t))
-      
-      ;; TODO
-      ;; 1. Handle stdout/stderr
-      ;; 2. Parallelize add-node
-      ;; 3. Store output object in node...
-      
-      ;; Then do add-node for each char in output eval
-      ;; (key-first (second (reverse (second seq-key))))
-      (loop
-      	 :for char :across (format nil "~s" output-eval)
-      	 :do (add-node `(t (,(char-code char) t) t)))
+      ;; Should we create nodes for t/nil?
+      ;; Solution: Create another function which ignores output
 
-      t))
+      (when create-node-output
+	(insert-node-newline `(t (,+xk-return+ t) t))
+      
+	;; TODO
+	;; 1. Handle stdout/stderr
+	;; 2. Parallelize add-node
+	;; 3. Store output object in node...
+	
+	;; Then do add-node for each char in output eval
+	;; (key-first (second (reverse (second seq-key))))
+	(loop
+      	   :for char :across (format nil "~s" output-eval)
+      	   :do (add-node `(t (,(char-code char) t) t))))))
 
 (defun build-string-from-nodes ()
   ;; To eval, build up string from predecessors
