@@ -233,9 +233,11 @@
   ;; Add error handling...
   
   (let* ((str (build-string-from-nodes))
-	 (output-eval (eval (read-from-string str))))
+	 (output-eval (eval (read-from-string str)))
+	 (output-str  (format nil "~S" output-eval)))
+    
       (fmt-model t "eval-node" "Str: ~S~%" str)
-      (fmt-model t "eval-node" "Eval: ~a~%" output-eval)
+      (fmt-model t "eval-node" "Eval: ~S~%" output-str)
 
       ;; Should we create nodes for t/nil?
       ;; Solution: Create another function which ignores output
@@ -251,7 +253,7 @@
 	;; Then do add-node for each char in output eval
 	;; (key-first (second (reverse (second seq-key))))
 	(loop
-      	   :for char :across (format nil "~s" output-eval)
+      	   :for char :across output-str
       	   :do (add-node `(t (,(char-code char) t) t))))))
 
 (defun build-string-from-nodes ()
