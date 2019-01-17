@@ -1,5 +1,7 @@
 (in-package :protoform.model)
 
+;; shm functions
+
 (defun enqueue-node (node &optional (pointer t))
   (when pointer
     (enqueue-node-pointer))
@@ -31,6 +33,7 @@
 				   +size-struct-instance+))
 			  *queue-shm*))
 
+;; core functions
 
 (defun add-node (seq-key)
   
@@ -252,7 +255,7 @@
 	;; 1. Do add-node for each char in output str
 	;; 2. Set data for each new node, to output object
 
-	;; Keep track of output objects?
+	;; Keep track of output objects -> use gensym
 	
 	;; (key-first (second (reverse (second seq-key))))
 	(loop
@@ -296,3 +299,24 @@
   (digraph:mapc-edges (lambda (e)
 			(digraph:remove-edge *digraph* e))
 		      *digraph*))
+
+;; secondary operators
+
+(defun link-node (node-a node-b)
+  (digraph:insert-edge *digraph*
+		       node-a
+		       node-b))
+
+(defun unlink-node (node-a node-b)
+  (digraph:remove-edge *digraph*
+		       node-a
+		       node-b))  
+
+(defun swap-nodes (node-src node-dest)
+  ;; Get preds of src
+  ;; Remove edges
+  ;; Get preds of dest
+  ;; Remove edges
+  ;; Insert edges between src pres and dest
+  ;; Swap positions
+  t)
