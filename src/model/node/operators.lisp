@@ -230,7 +230,14 @@
   ;; https://www.reddit.com/r/lisp/comments/8kpbcz/shcl_an_unholy_union_of_posix_shell_and_common/
 
   ;; TODO:
-  ;; Add error handling...
+  ;; 1. Add error handling...
+  ;; 2. Store output object in node...
+  ;; 3. Parallelize add-node  
+  ;; 4. Create another function which ignores output
+
+  ;; 2 eval versions
+  ;; 1. Create object
+  ;; 2. Create chars/string
   
   (let* ((str (build-string-from-nodes))
 	 (output-eval (eval (read-from-string str)))
@@ -239,18 +246,14 @@
       (fmt-model t "eval-node" "Str: ~S~%" str)
       (fmt-model t "eval-node" "Eval: ~S~%" output-str)
 
-      ;; Should we create nodes for t/nil?
-      ;; Solution: Create another function which ignores output
-
       (when create-node-output
 	(insert-node-newline `(t (,+xk-return+ t) t))
-      
-	;; TODO
-	;; 1. Handle stdout/stderr
-	;; 2. Parallelize add-node
-	;; 3. Store output object in node...
 	
-	;; Then do add-node for each char in output eval
+	;; 1. Do add-node for each char in output str
+	;; 2. Set data for each new node, to output object
+
+	;; Keep track of output objects?
+	
 	;; (key-first (second (reverse (second seq-key))))
 	(loop
       	   :for char :across output-str
@@ -284,8 +287,11 @@
 	(write-char c stream)))))
 
 (defun remove-all-nodes ()
+  ;; Exclude pointer
   (digraph:mapc-vertices (lambda (v)
-			   (digraph:remove-vertex *digraph* v))
+			   (unless (eq v *node-pointer*)
+			     (enqueue-node-zero (index v))
+			     (digraph:remove-vertex *digraph* v)))
 			 *digraph*)
   (digraph:mapc-edges (lambda (e)
 			(digraph:remove-edge *digraph* e))
