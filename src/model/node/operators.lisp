@@ -246,21 +246,38 @@
 	 (output-eval (eval (read-from-string str)))
 	 (output-str  (format nil "~S" output-eval)))
     
-      (fmt-model t "eval-node" "Str: ~S~%" str)
-      (fmt-model t "eval-node" "Eval: ~S~%" output-str)
+      (fmt-model t "eval-node" "Input Str (to eval): ~S~%" str)
+      (fmt-model t "eval-node" "Output Str (from eval): ~S~%" output-str)
+      (fmt-model t "eval-node" "Gensym: ~S~%" (gensym))
 
       (when create-node-output
-	(insert-node-newline `(t (,+xk-return+ t) t))
+	
+	;; (insert-node-newline `(t (,+xk-return+ t) t))
 	
 	;; 1. Do add-node for each char in output str
 	;; 2. Set data for each new node, to output object
 
 	;; Keep track of output objects -> use gensym
+
+	;; Move pointer down - use anim? -> translate-pointer instead
+	(displace-node-x *node-pointer*
+			 -11.5199995 ; need to track newline chars
+			 :abs
+			 nil)
+	(displace-node-y *node-pointer*
+			 (- (* +linegap+ *scale-node*))
+			 :rel
+			 nil) ; add more spacing due to bl adjustments
+	(update-transform (model-matrix *node-pointer*))
+	(enqueue-node-pointer)	
 	
 	;; (key-first (second (reverse (second seq-key))))
 	(loop
       	   :for char :across output-str
-      	   :do (add-node `(t (,(char-code char) t) t))))))
+      	   :do (let ((node (add-node `(t (,(char-code char) t) t))))
+		 ;; initial data used for glyph
+		 (setf (data node) output-eval)
+		 t)))))
 
 (defun build-string-from-nodes ()
   ;; To eval, build up string from predecessors
