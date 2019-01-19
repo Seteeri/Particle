@@ -234,29 +234,21 @@
 
   ;; TODO:
   ;; 1. Add error handling...
-  ;; 2. Store output object in node...
-  ;; 3. Parallelize add-node  
-  ;; 4. Create another function which ignores output
+  ;; 2. Parallelize add-node  
+  ;; 3. Create another function which ignores output
 
-  ;; 2 eval versions
-  ;; 1. Create object
-  ;; 2. Create chars/string
-  
   (let* ((str (build-string-from-nodes))
 	 (output-eval (eval (read-from-string str)))
 	 (output-str  (format nil "~S" output-eval)))
-    
+
       (fmt-model t "eval-node" "Input Str (to eval): ~S~%" str)
       (fmt-model t "eval-node" "Output Str (from eval): ~S~%" output-str)
-      (fmt-model t "eval-node" "Gensym: ~S~%" (gensym))
+      (fmt-model t "eval-node" "ID (monotonic time): ~S~%" (osicat:get-monotonic-time))
 
       (when create-node-output
 	
 	;; (insert-node-newline `(t (,+xk-return+ t) t))
 	
-	;; 1. Do add-node for each char in output str
-	;; 2. Set data for each new node, to output object
-
 	;; Keep track of output objects -> use gensym
 
 	;; Move pointer down - use anim? -> translate-pointer instead
@@ -269,7 +261,7 @@
 			 :rel
 			 nil) ; add more spacing due to bl adjustments
 	(update-transform (model-matrix *node-pointer*))
-	(enqueue-node-pointer)	
+	(enqueue-node-pointer)
 	
 	;; (key-first (second (reverse (second seq-key))))
 	(loop
@@ -279,9 +271,49 @@
 		 (setf (data node) output-eval)
 		 t)))))
 
+(defun remove-all-nodes ()
+  ;; Exclude pointer
+  (digraph:mapc-vertices (lambda (v)
+			   (unless (eq v *node-pointer*)
+			     (enqueue-node-zero (index v))
+			     (digraph:remove-vertex *digraph* v)))
+			 *digraph*)
+  (digraph:mapc-edges (lambda (e)
+			(digraph:remove-edge *digraph* e))
+		      *digraph*))
+
+;; Secondary operators
+;; Need to implement hyperweb first to identify nodes
+
+(defun link-node (node-a node-b)
+  (digraph:insert-edge *digraph*
+		       node-a
+		       node-b))
+
+(defun unlink-node (node-a node-b)
+  (digraph:remove-edge *digraph*
+		       node-a
+		       node-b))  
+
+(defun swap-nodes (node-src node-dest)
+  ;; Get preds of src
+  ;; Remove edges
+  ;; Get preds of dest
+  ;; Remove edges
+  ;; Insert edges between src pres and dest
+  ;; Swap positions
+  t)
+
+(defun swap-id-with-node (node-src node-dest)
+  ;; node-src should be chars or string object
+  ;; node-dest should be dest
+  ;;
+  ;; provide inverse operation to produce id from node
+  t)
+
 (defun build-string-from-nodes ()
-  ;; To eval, build up string from predecessors
-  ;; Stop right before newline
+  ;; Pass starting node else use node-pointer
+  ;; To eval, build string from predecessors until newline
 
   (fmt-model t "build-string-from-nodes" "Pointer: ~a~%" *node-pointer*)
   
@@ -305,35 +337,3 @@
     (with-output-to-string (stream)
       (dolist (c chrs)
 	(write-char c stream)))))
-
-(defun remove-all-nodes ()
-  ;; Exclude pointer
-  (digraph:mapc-vertices (lambda (v)
-			   (unless (eq v *node-pointer*)
-			     (enqueue-node-zero (index v))
-			     (digraph:remove-vertex *digraph* v)))
-			 *digraph*)
-  (digraph:mapc-edges (lambda (e)
-			(digraph:remove-edge *digraph* e))
-		      *digraph*))
-
-;; secondary operators
-
-(defun link-node (node-a node-b)
-  (digraph:insert-edge *digraph*
-		       node-a
-		       node-b))
-
-(defun unlink-node (node-a node-b)
-  (digraph:remove-edge *digraph*
-		       node-a
-		       node-b))  
-
-(defun swap-nodes (node-src node-dest)
-  ;; Get preds of src
-  ;; Remove edges
-  ;; Get preds of dest
-  ;; Remove edges
-  ;; Insert edges between src pres and dest
-  ;; Swap positions
-  t)

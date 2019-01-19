@@ -5,7 +5,8 @@
    (height :accessor height :initarg :height :initform nil)
    (mat-proj :accessor mat-proj :initarg :mat-proj :initform nil)
    (type-proj :accessor type-proj :initarg :type-proj :initform nil)
-   (scale-ortho :accessor scale-ortho :initarg :scale-ortho :initform 20.25) ; bigger number = smaller view
+   (scale-ortho :accessor scale-ortho :initarg :scale-ortho :initform 24.0)
+   ;; bigger number = smaller view
    (near-ortho :accessor near-ortho :initarg :near-ortho :initform 1)
    (ortho-far :accessor ortho-far :initarg :ortho-far :initform 512)
    (mat-view :accessor mat-view :initarg :mat-view :initform nil)
