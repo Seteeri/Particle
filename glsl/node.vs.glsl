@@ -8,6 +8,7 @@ layout (std140, binding = 0) uniform projview
 layout (std140, binding = 1) uniform vertices
 {
     vec4 vertex[4];
+    //vec3 barycentric[3];
 };
 layout(std430, binding = 3) readonly buffer data_instances_out
 {
@@ -19,6 +20,8 @@ flat out int vertexOffsetTex;
 flat out ivec2 vertexDimsTex;
 flat out vec2 vertexDimsTexOffset;
 out uv_t vertexUV;
+
+out vec3 vBC;
 
 void main()
 {
@@ -35,5 +38,7 @@ void main()
     vertexDimsTex = ivec2(instances_out[gl_InstanceID].w_flags[1],
                           instances_out[gl_InstanceID].w_flags[2]);
     vertexDimsTexOffset = vec2(float(vertexDimsTex.x-1), 
-                                float(vertexDimsTex.y-1));                          
+                                float(vertexDimsTex.y-1));
+                                
+    vBC = vec3(1.0,1.0,1.0);
 }

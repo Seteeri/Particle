@@ -35,7 +35,7 @@
 
 ;; core functions
 
-(defun add-node (seq-key)
+(defun add-node (code)
   
   ;; Split into
   ;; node new
@@ -46,22 +46,19 @@
   ;; 1. Find glyph A origin
   ;;    1. Model trans + glyph trans
   ;; 2. Set glyph B origin
-  ;;    1. origin A + advance - glyph trans  
+  ;;    1. origin A + advance - glyph trans
+  
   (let* ((metrics-space (gethash 32 *metrics*))
 	 (spacing (* (advance metrics-space)
 		     (scale metrics-space)
 		     *scale-node*))
 	 
 	 (cursor (translation (model-matrix *node-pointer*)))
-
-	 (key-first (second (reverse (second seq-key))))
-	 (data (if (= key-first +xk-return+)
-		   #\Newline
-		   (code-char key-first)))
+	 
 	 (node (init-node-msdf cursor
 			       *scale-node*
 			       (digraph:count-vertices *digraph*)
-			       data)))
+			       (code-char code))))
     
     (update-transform (model-matrix node))
     
@@ -178,13 +175,10 @@
 		   nil) ; add more spacing due to bl adjustments
   (update-transform (model-matrix *node-pointer*))
   (enqueue-node-pointer)
-  
-  (add-node seq-key)
 
-  ;; (fmt-model t "move-pointer-*" "~a~%"
-  ;; (translation (model-matrix *node-pointer*)))
-  
-  t)
+  ;; Seq-key is +xk-return+ = 65293
+  ;; Pass newline char however
+  (add-node (char-code #\Newline)))
 
 (defun displace-node-x (node
 			displacement
@@ -262,11 +256,10 @@
 			 nil) ; add more spacing due to bl adjustments
 	(update-transform (model-matrix *node-pointer*))
 	(enqueue-node-pointer)
-	
-	;; (key-first (second (reverse (second seq-key))))
+
 	(loop
       	   :for char :across output-str
-      	   :do (let ((node (add-node `(t (,(char-code char) t) t))))
+      	   :do (let ((node (add-node (char-code char))))
 		 ;; initial data used for glyph
 		 (setf (data node) output-eval)
 		 t)))))

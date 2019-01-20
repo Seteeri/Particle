@@ -346,15 +346,20 @@ Forward... -> Tiled -> Clustered -> Volumetric
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  ;; POSS:
-  ;; - Define 2 ptree's used by controller (ptree per frame)
-  ;;   - Create new ptree for current frame before swap
-  
-  ;; Example: anim won't run concurrently - input, anims
+;; POSS:
+;; - Define 2 ptree's used by controller (ptree per frame)
+;;   - Create new ptree for current frame before swap
 
-  ;; Scenario: playing camera anim, then user moves camera, then what?
-  ;; - A: do one - play anim, pass move
-  ;; - B: do one - stop anim, move camera
-  ;; - C: do both - result depends
-  ;;   - camera may end up in different end position than expected
-  ;; - C seems the most logical to the user
+;; Example: anim won't run concurrently - input, anims
+
+;; Scenario: playing camera anim, then user moves camera, then what?
+;; - A: do one - play anim, pass move
+;; - B: do one - stop anim, move camera
+;; - C: do both - result depends
+;;   - camera may end up in different end position than expected
+;; - C seems the most logical to the user
+
+  
+https://stackoverflow.com/questions/24839857/wireframe-shader-issue-with-barycentric-coordinates-when-using-shared-vertices
+https://catlikecoding.com/unity/tutorials/advanced-rendering/flat-and-wireframe-shading
+https://www.reddit.com/r/opengl/comments/3yrv79/simplistic_texture_less_tronlike_3d_with_opengl/

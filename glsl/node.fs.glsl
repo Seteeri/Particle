@@ -11,6 +11,8 @@ flat in ivec2 vertexDimsTex;
 flat in vec2 vertexDimsTexOffset;
 in uv_t vertexUV;
 
+in vec3 vBC;
+
 layout(location = 0) out vec4 color;
 
 void main()

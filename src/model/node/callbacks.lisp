@@ -12,7 +12,7 @@
   (ptree-fn 'add-node
 	    '()
 	    (lambda ()
-	      (funcall #'add-node seq-key))
+	      (funcall #'add-node (second (reverse (second seq-key)))))
 	    ptree)
 
   (sb-concurrency:enqueue 'add-node queue))
