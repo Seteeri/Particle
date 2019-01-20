@@ -165,16 +165,29 @@
   ;; Add node
 
   ;; Do first since add-node will do pointer also - refactor that...
-  (displace-node-x *node-pointer*
-		   -11.5199995 ; need to track newline chars
-		   :abs
-		   nil)
-  (displace-node-y *node-pointer*
-		   (- (* +linegap+ *scale-node*))
-		   :rel
-		   nil) ; add more spacing due to bl adjustments
-  (update-transform (model-matrix *node-pointer*))
-  (enqueue-node-pointer)
+  (when nil
+    (displace-node-x *node-pointer*
+		     -11.5199995 ; need to track newline chars
+		     :abs
+		     nil)
+    (displace-node-y *node-pointer*
+		     (- (* +linegap+ *scale-node*))
+		     :rel
+		     nil) ; add more spacing due to bl adjustments
+    (update-transform (model-matrix *node-pointer*))
+    (enqueue-node-pointer))
+
+  ;; (with-slots (model-matrix)
+  ;;     *node-pointer*
+  ;;   (translate-pointer seq-key
+  ;; 		       ptree
+  ;; 		       queue
+  ;; 		       (lambda (value-new)
+  ;; 			 (setf (vx3 (translation model-matrix)) value-new)
+  ;; 			 (enqueue-node-pointer))
+  ;; 		       (vx3 (translation model-matrix))
+  ;; 		       (- (* 96 *scale-node*))
+  ;; 		       'move-pointer-left)))  
 
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however

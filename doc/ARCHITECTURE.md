@@ -279,11 +279,27 @@ Model ``view.lisp`` frame procedures:
 To exit, model will send an exit message to view, and then both processes
 will shutdown simultaneously.
 
+## Animations
+
+1. Controller receives input event which triggers callback function
+   * Callbacks are called in serial, however, validation is done in
+   parallel - this allows callbacks to build the ptree in controller thread
+   * For each input frame, controller creates a ptree and queue for IDs
+   which is passed to callback functions
+2. Callback creates tree node and places node ID in queue which will be
+   dequeued by model frame.
+   * For animations, initial trigger is done in input ptree and continued
+   animations are placed in animation queue, where ptree is built during
+   frame
+
 NOTES:
 1. Should controller execute ptrees for non-frame tasks? Where should
 this occur? This creates concurrency issues because now have to make
 sure frame (RPC thread) is modfying data used by controller thread (or
 whatever thread executes it)
+2. Unable to reuse input ptree since it is only used once per frame
+and then free'd
+   * Solution is to build ptree in frame for both input and anim tasks
 
 # User Operation
 

@@ -83,11 +83,11 @@
     (translate-pointer seq-event
 		       ptree
 		       queue
-		       (lambda (value-new)
+		       (lambda (value-new) ; update fn
 			 (setf (vx3 (translation model-matrix)) value-new)
 			 (enqueue-node-pointer))
-		       (vx3 (translation model-matrix))
-		       (- (* 96 *scale-node*))
+		       (vx3 (translation model-matrix)) ; start
+		       (- (* 96 *scale-node*))          ; delta
 		       'move-pointer-left)))
 
 

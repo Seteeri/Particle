@@ -26,9 +26,8 @@
   ;; so must integrate anim nodes during frame call
 
   ;; Either integrate anims into existing input ptree
-  ;; Or run each ptree in parallel - one for anims, one for input
+  ;; or run each ptree in parallel - one for anims, one for input
 
-  ;; For now, run each ptree separately - run input then anim
   (loop
      :for ptree-queue := (sb-concurrency:dequeue *queue-frame*)
      :while ptree-queue
@@ -52,10 +51,7 @@
       (loop
 	 :for item := (sb-concurrency:dequeue *queue-anim*)
 	 :while item
-	 :do (destructuring-bind (anim
-				  id
-				  args
-				  fn)
+	 :do (destructuring-bind (anim id args fn)
   		 item
 	       (handler-case
 		   (progn
