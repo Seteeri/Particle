@@ -107,51 +107,51 @@
 	 :do (progn
 	       (register-callback `(,keysym (:press :repeat))
 	 			  :exclusive
-	 			  #'add-node-callback)
+	 			  #'add-node-cb)
 	       ;; Better way to handle below?
 	       (register-callback `(,+xk-shift-l+ (:press :down)
 	       			    ,keysym       (:press :repeat))
 	       			  :exclusive
-	       			  #'add-node-callback)
+	       			  #'add-node-cb)
 	       (register-callback `(,+xk-shift-r+ (:press :down)
 	       			    ,keysym       (:press :repeat))
 	       			  :exclusive
-	       			  #'add-node-callback)
+	       			  #'add-node-cb)
 	       t)))
     
     (when t
       ;; handlers in node
-      (dolist (seq-event `((,+xk-backspace+  ,#'backspace-node-callback)
-			   (,+xk-return+     ,#'insert-node-newline-callback)))
+      (dolist (seq-event `((,+xk-backspace+  ,#'backspace-node-cb)
+			   (,+xk-return+     ,#'insert-node-newline-cb)))
 	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))
     
     (when t
       ;; handlers in node
-      (dolist (seq-event `((,+xk-left+       ,#'move-pointer-left)
-			   (,+xk-up+         ,#'move-pointer-up)
-			   (,+xk-right+      ,#'move-pointer-right)
-			   (,+xk-down+       ,#'move-pointer-down)))
+      (dolist (seq-event `((,+xk-left+       ,#'translate-pointer-left-cb)
+			   (,+xk-up+         ,#'translate-pointer-up-cb)
+			   (,+xk-right+      ,#'translate-pointer-right-cb)
+			   (,+xk-down+       ,#'translate-pointer-down-cb)))
 	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))
     
     (when t
       ;; handlers in projview
-      (dolist (seq-event `((,+xk-left+       ,#'translate-camera-left)
-			   (,+xk-up+         ,#'translate-camera-up)
-			   (,+xk-right+      ,#'translate-camera-right)
-			   (,+xk-down+       ,#'translate-camera-down)))
+      (dolist (seq-event `((,+xk-left+       ,#'translate-camera-left-cb)
+			   (,+xk-up+         ,#'translate-camera-up-cb)
+			   (,+xk-right+      ,#'translate-camera-right-cb)
+			   (,+xk-down+       ,#'translate-camera-down-cb)))
 	(register-callback `(,+xk-control-l+    (:press :down)
 			     ,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event)))
 
-      (dolist (seq-event `((,+xk-left+       ,#'scale-ortho-up)
-			   (,+xk-up+         ,#'scale-ortho-down)
-			   (,+xk-right+      ,#'scale-ortho-down)
-			   (,+xk-down+       ,#'scale-ortho-up)))
+      (dolist (seq-event `((,+xk-left+       ,#'scale-ortho-up-cb)
+			   (,+xk-up+         ,#'scale-ortho-down-cb)
+			   (,+xk-right+      ,#'scale-ortho-down-cb)
+			   (,+xk-down+       ,#'scale-ortho-up-cb)))
 	(register-callback `(,+xk-control-l+    (:press :down)
 			     ,+xk-shift-l+      (:press :down)
 			     ,(first seq-event) (:press :repeat))
@@ -162,7 +162,7 @@
     (register-callback `(,+xk-shift-r+ (:press :down)
 			 ,+xk-return+  (:press :repeat))
 		       :exclusive
-		       #'eval-node-callback)
+		       #'eval-node-cb)
     
     ;; for testing
     (when nil

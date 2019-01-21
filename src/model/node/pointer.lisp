@@ -61,23 +61,17 @@
 			     :fn-new fn-new
 			     :value-start start
 			     :value-delta delta)))
-    ;; Error would be raised if same callback
-    ;; was called by two different events
-    ;; Deps = obj/slot
-    (ptree-fn id
-	      '()
-	      (lambda ()
-		(funcall #'run-anim
-			 seq-key
-			 anim))
-	      ptree))
-  
-  (sb-concurrency:enqueue id
-			  queue))
+    ;; in animation.lisp
+    (enqueue-anim anim
+		  id
+		  (lambda ()
+		    (funcall #'run-anim
+			     seq-key
+			     anim)))))
 
-(defun move-pointer-left (seq-event
-			  ptree
-			  queue)
+(defun translate-pointer-left-cb (seq-event
+				  ptree
+				  queue)
   (with-slots (model-matrix)
       *node-pointer*
     (translate-pointer seq-event
@@ -90,11 +84,9 @@
 		       (- (* 96 *scale-node*))          ; delta
 		       'move-pointer-left)))
 
-
-
-(defun move-pointer-right (seq-event
-			   ptree
-			   queue)
+(defun translate-pointer-right-cb (seq-event
+				   ptree
+				   queue)
   (with-slots (model-matrix)
       *node-pointer*
     (translate-pointer seq-event
@@ -107,9 +99,9 @@
 		       (* 96 *scale-node*)
 		       'move-pointer-right)))
 
-(defun move-pointer-up (seq-event
-			ptree
-			queue)
+(defun translate-pointer-up-cb (seq-event
+				ptree
+				queue)
   (with-slots (model-matrix)
       *node-pointer*
     (translate-pointer seq-event
@@ -121,10 +113,10 @@
 		       (vy3 (translation model-matrix))
 		       (* +linegap+ *scale-node*)
 		       'move-pointer-up)))
-  
-(defun move-pointer-down (seq-event
-			  ptree
-			  queue)
+
+(defun translate-pointer-down-cb (seq-event
+				  ptree
+				  queue)
   (with-slots (model-matrix)
       *node-pointer*
     (translate-pointer seq-event

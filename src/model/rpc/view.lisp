@@ -8,9 +8,10 @@
 (defun handle-view-sync (time-view)
 
   (execute-tasks-frame)
-  (execute-tasks-anim)
   (execute-tasks-shm)
-  
+
+  ;; TODO:
+  ;; Instead of copying everything, find max index during execute-tasks-shm
   (memcpy-shm-to-cache-flag*
    `(("nodes"
       0
@@ -21,59 +22,41 @@
       ,(* 4 16 2)))))
   
 (defun execute-tasks-frame ()
-
-  ;; Anims can only run during frame call
-  ;; so must integrate anim nodes during frame call
-
-  ;; Either integrate anims into existing input ptree
-  ;; or run each ptree in parallel - one for anims, one for input
-
-  (loop
-     :for ptree-queue := (sb-concurrency:dequeue *queue-frame*)
-     :while ptree-queue
-     :do (destructuring-bind (ptree queue)
-	     ptree-queue
-	   (let ((ids ()))
-	     (loop
-  		:for id-node := (sb-concurrency:dequeue queue)
-  		:while id-node
-  		:do (push id-node ids))
-	     (ptree-fn 'finish
-  		       ids
-  		       (lambda ())
-  		       ptree)
-	     (call-ptree 'finish ptree)))))
-
-(defun execute-tasks-anim ()
-  (let ((ptree (make-ptree)))
-    ;; Add all nodes, then call each fn
-    (let ((ids (make-hash-table :size 64 :test 'equal)))
-      (loop
-	 :for item := (sb-concurrency:dequeue *queue-anim*)
-	 :while item
-	 :do (destructuring-bind (anim id args fn)
-  		 item
-	       (handler-case
-		   (progn
-  		     (ptree-fn id
-  			       args
-  			       fn
-  			       ptree)
-		     (setf (gethash id ids) anim))
-		 (lparallel.ptree:ptree-redefinition-error (c)
-		   ;; Keep anim with latest start time or nil
-		   ;; - Create callback for when animation pauses?
-		   ;; - Create option to ignore instead of restart
-		   (let ((anim-prev (gethash id ids)))
-		     (unless (time-start anim-prev)
-		       ;; Modify existing anim slots
-		       (copy-anim anim-prev anim)))
-		   (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id)))))
-      (ptree-fn 'finish
-		(loop :for key :being :the hash-keys :of ids :collect key)
-  		(lambda ())
-  		ptree))
+  ;; Build ptree - serial
+  ;; Execute ptree - parallel
+  (let ((ptree (make-ptree))
+	(ids (make-hash-table :size 32 :test 'equal)))
+    (loop
+       :for item := (sb-concurrency:dequeue *queue-anim*)
+       :while item
+       :do (parse-task item ptree ids))
+    (ptree-fn 'finish
+	      (loop :for key :being :the hash-keys :of ids :collect key)
+  	      (lambda ())
+  	      ptree)
     (call-ptree 'finish ptree)))
+
+(defun parse-task (item ptree ids)
+  (destructuring-bind (anim id args fn)
+      item
+    (handler-case
+	(progn
+  	  (ptree-fn id
+  		    args
+  		    fn
+  		    ptree)
+	  ;; Does below need to be in handler-case?
+	  (setf (gethash id ids) anim))
+      (lparallel.ptree:ptree-redefinition-error (c)
+	;; Keep anim with latest start time or nil
+	;; - Create callback for when animation pauses?
+	;; - Create option to ignore instead of restart
+	(when anim
+	  (let ((anim-prev (gethash id ids)))
+	    (unless (time-start anim-prev)
+	      ;; Modify existing anim slots
+	      (copy-anim anim-prev anim)))
+	  (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id))))))
 
 (defun execute-tasks-shm ()
 

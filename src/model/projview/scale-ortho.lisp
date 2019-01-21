@@ -1,7 +1,7 @@
 (in-package :protoform.model)
 
 ;; Match translate fn?
-(defun scale-ortho (seq-event
+(defun scale-ortho-cb (seq-event
 		    ptree
 		    queue
 		    fn-new
@@ -34,7 +34,7 @@
     (sb-concurrency:enqueue id
 			    queue)))
 
-(defun scale-ortho-down (seq-event ptree queue) ; zoom in
+(defun scale-ortho-down-cb (seq-event ptree queue) ; zoom in
   (scale-ortho seq-event
 	       ptree
 	       queue
@@ -44,7 +44,7 @@
 	       (- (vz3 (displace *projview*)))
 	       'scale-ortho-down))
 
-(defun scale-ortho-up (seq-event ptree queue) ; zoom out
+(defun scale-ortho-up-cb (seq-event ptree queue) ; zoom out
   (scale-ortho seq-event
 	       ptree
 	       queue

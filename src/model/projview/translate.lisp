@@ -43,7 +43,7 @@
   (sb-concurrency:enqueue id
 			  queue))
 
-(defun translate-camera-left (seq-event ptree queue)
+(defun translate-camera-left-cb (seq-event ptree queue)
   (with-slots (pos
 	       displace)
       *projview*
@@ -57,7 +57,7 @@
 		      (- (vx3 displace))
 		      'translate-camera-left)))
 
-(defun translate-camera-right (seq-event ptree queue)
+(defun translate-camera-right-cb (seq-event ptree queue)
   (with-slots (pos
 	       displace)
       *projview*
@@ -71,7 +71,7 @@
 		      (vx3 displace)
 		      'translate-camera-right)))
 
-(defun translate-camera-up (seq-event ptree queue)
+(defun translate-camera-up-cb (seq-event ptree queue)
   (with-slots (pos
 	       displace)
       *projview*
@@ -85,7 +85,7 @@
 		      (vy3 displace)
 		      'translate-camera-up)))
 
-(defun translate-camera-down (seq-event ptree queue)
+(defun translate-camera-down-cb (seq-event ptree queue)
   (with-slots (pos
 	       displace)
       *projview*

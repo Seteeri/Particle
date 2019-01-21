@@ -33,8 +33,7 @@
 ;; What to do if object/node is destroyed, this must be destroyed also
 ;; Which means attach animations to the object (node) so they can be tracked
 
-(defun enqueue-anim (seq-event
-		     anim
+(defun enqueue-anim (anim
 		     id
 		     fn)
   ;; (fmt-model t "enqueue-anim" "~a~%" id)
@@ -95,8 +94,7 @@
 	    (when nil
 	      (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed))
 	    t)
-	  (enqueue-anim seq-event
-			anim
+	  (enqueue-anim anim
 			id
 			(lambda ()
 			  (funcall fn-enqueue
