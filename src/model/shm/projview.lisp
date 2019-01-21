@@ -8,7 +8,7 @@
 					  (* (+ 16 16) 4)
 					  0 0  ; cs-in (cache), vs-in (raster)
 					  :triple
-					  -1)) ; copy every frame
+					  0)) ; copy every frame
 
 (defun init-shm-projview ()
   (let ((shm (init-shm :projview)))

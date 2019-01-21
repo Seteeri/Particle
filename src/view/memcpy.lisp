@@ -30,7 +30,7 @@
 		(if size
 		    size
 		    (size-buffer bo-dest))))
-  (when print
+  (when nil
     (fmt-view t "memcpy-shm-to-cache" "~a, ~a bytes~%" name-src size)))
 
 ;; Can either use this function to cpy between buffers or use GL func

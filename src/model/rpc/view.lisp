@@ -9,23 +9,31 @@
 	     (fmt-model t "" "~S : ~S~%" key value))
 	   ht))
 
+(defun get-extents (shm extents)
+  (let ((extents-nodes (gethash *shm-nodes* extents)))
+    (when extents-nodes
+      (values (first extents-nodes)
+	      (second extents-nodes)))))
+
 (defun handle-view-sync (time-view)
 
   (execute-tasks-frame)
   
   ;; TODO
   ;; - refactor to function
+  ;; All mem
+  ;; (* +size-struct-instance+ (+ (car *vertices-digraph*)
+  ;; 				 (car *edges-digraph*))))
   (let ((extents (execute-tasks-shm)))
     (when (> (hash-table-count extents) 0)
-      (let* ((extents-nodes (gethash *shm-nodes* extents))
-	     (min-nodes (first extents-nodes))
-	     (max-nodes (second extents-nodes)))
-	;; All mem
-	;; (* +size-struct-instance+ (+ (car *vertices-digraph*)
-	;; 				 (car *edges-digraph*))))
-	(memcpy-shm-to-cache-flag*
-	 `(("nodes"    ,min-nodes ,max-nodes)
-	   ("projview" 0          ,(* 4 16 2))))))))
+      (multiple-value-bind (min-nodes max-nodes)
+	  (get-extents *shm-nodes* extents)
+	(if min-nodes
+	    (memcpy-shm-to-cache-flag*
+	     `(("nodes"    ,min-nodes ,max-nodes)
+	       ("projview" 0          ,(* 4 16 2))))
+	    (memcpy-shm-to-cache-flag*
+	     `(("projview" 0          ,(* 4 16 2)))))))))
   
 (defun execute-tasks-frame ()
   ;; Build ptree - serial

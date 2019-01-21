@@ -266,7 +266,7 @@
 
     (update-cache-to-step)
     
-    (if t
+    (if nil
 	(run-compute-bypass)
 	(run-compute))
 

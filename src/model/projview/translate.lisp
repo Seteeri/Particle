@@ -31,17 +31,13 @@
     ;;    - Anim will only play if users activates it
     ;;      when there is no existing anim playing
     
-    ;; Deps = obj/slot
-    (ptree-fn id
-	      '()
-	      (lambda ()
-		(funcall #'run-anim
-			 seq-key
-			 anim))
-	      ptree))
-  
-  (sb-concurrency:enqueue id
-			  queue))
+    ;; in animation.lisp
+    (enqueue-anim anim
+		  id
+		  (lambda ()
+		    (funcall #'run-anim
+			     seq-event
+			     anim)))))
 
 (defun translate-camera-left-cb (seq-event ptree queue)
   (with-slots (pos

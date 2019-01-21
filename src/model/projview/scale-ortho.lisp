@@ -1,7 +1,7 @@
 (in-package :protoform.model)
 
 ;; Match translate fn?
-(defun scale-ortho-cb (seq-event
+(defun scale-ortho (seq-event
 		    ptree
 		    queue
 		    fn-new
@@ -21,18 +21,13 @@
 			       :fn-new fn-new
 			       :value-start scale-ortho
 			       :value-delta delta)))
-
-      ;; Deps = obj/slot
-      (ptree-fn id
-		'()
-		(lambda ()
-		  (funcall #'run-anim
-			   seq-key
-			   anim))
-		ptree))
-    
-    (sb-concurrency:enqueue id
-			    queue)))
+      ;; in animation.lisp
+      (enqueue-anim anim
+		    id
+		    (lambda ()
+		      (funcall #'run-anim
+			       seq-event
+			       anim))))))
 
 (defun scale-ortho-down-cb (seq-event ptree queue) ; zoom in
   (scale-ortho seq-event

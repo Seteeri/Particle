@@ -72,6 +72,7 @@
 			   (setf time-end (+ time-start time-duration))
 			   time-start))))
       (setf time-elapsed (- time-now time-start))
+      ;; delta time elapsed = new time elapsed - old time elapsed
 
       (when nil
       	(format t "{ ~4$ ~4$ ~4$ } (~4$) ~%"
