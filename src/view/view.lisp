@@ -264,12 +264,12 @@
     	(%gl:delete-sync fence)
     	(setf (aref fences ix-fence) (null-pointer))))
 
-    (update-cache-to-step)
-    
     (if nil
 	(run-compute-bypass)
-	(run-compute))
-
+	(progn
+	  (update-cache-to-step)
+	  (run-compute)))
+  
     ;; Have run-raster run all programs in a specified order
     ;; (run-raster-default)
     (run-raster-msdf)

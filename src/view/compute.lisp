@@ -67,6 +67,7 @@
 		 (update-binding-buffer buffer ix-fence)))))))
 
 (defun update-compute-buffers-ptr (&optional (force nil))
+  ;; check projview here
   (with-slots (bo-cache
 	       ix-fence)
       *view*
@@ -77,15 +78,17 @@
 	       cache
 	     (when (or (/= flag-copy 0)
 		       force)
-	       ;; Can also use gl function to copy between buffers
-	       ;; (when (and (not force) (/= flag-copy -1))
-	       ;; 	 (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
+	       ;; (fmt-view t "update-compute-buffers-ptr"
+	       ;; 		 "~S: ~a, flag ~a~%" name ix-fence flag-copy)
 	       (memcpy-cache-to-step name ix-fence
     				     name
 				     nil
 				     nil) ; no print
-	       (when (> flag-copy 0)
-		 (decf flag-copy)))))))
+	       (when (or (> flag-copy 0) t)
+		 (decf flag-copy)
+		 ;; (fmt-view t "update-compute-buffers-ptr"
+		 ;; 	   "               flag ~a~%" flag-copy)
+		 t))))))
 
 (defun update-compute-buffers-gl (&optional (force nil))
   (with-slots (bo-cache
@@ -98,9 +101,7 @@
 	       cache
 	     (when (or (/= flag-copy 0)
 		       force)
-	       ;; Can also use gl function to copy between buffers
-	       ;; (when (and (not force) (/= flag-copy -1))
-	       ;; 	 (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
+	       ;; (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
 	       (copy-buffer (aref (buffers (get-cache-buffer name)) 0)
 			    (aref (buffers (gethash name (bo-step *view*))) ix-fence)
 			    (size-buffer (gethash name (bo-step *view*))))
@@ -118,6 +119,7 @@
     ;; (gl:use-program program-compute)
     
     (update-compute-bindings)
+
     (update-compute-buffers-ptr)
     
     ;; Set to render all instances

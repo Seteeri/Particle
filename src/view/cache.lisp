@@ -55,4 +55,6 @@
   (flag-copy (gethash name (bo-cache *view*))))
 
 (defun set-cache-flag-copy (name value)
-  (setf (flag-copy (gethash name (bo-cache *view*))) value))
+  (with-slots (flag-copy)
+      (gethash name (bo-cache *view*))
+    (setf flag-copy value)))
