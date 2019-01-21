@@ -2,23 +2,6 @@
 
 (defparameter *path-socket-view* "/tmp/protoform-view.socket")
 
-(defun copy-data-to-shm (shm fn-data &optional (offset-ptr 0))
-  (copy-data-to-shm-2 shm
-		      (funcall fn-data)
-		      offset-ptr))
-
-(defun copy-data-to-shm-2 (shm data &optional (offset-ptr 0))
-  (declare (type (array (unsigned-byte 8)) data))
-  (with-slots (ptr size)
-      shm
-    (loop
-       :for c :across data
-       :for i :upfrom 0
-       :do (setf (mem-aref ptr
-    			   :uchar
-    			   (+ offset-ptr i))
-    		 c))))
-
 ;; TODO: Use macro
 
 (defun memcpy-shm-to-cache (name

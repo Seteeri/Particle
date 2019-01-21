@@ -1,25 +1,31 @@
 (in-package #:protoform.model)
 
-;; (when nil
-;;   (let ((time (osicat:get-monotonic-time)))
-;;     (format t "Model: ~8$ ms~%" (* (- time *time-last*) 1000))
-;;     (setf *time-last* time)))
+(defun print-monotonic-time ()
+  (let ((time (osicat:get-monotonic-time)))
+    (format t "Model: ~8$ ms~%" (* time 1000))))
+
+(defun print-hash-table (ht)
+  (maphash (lambda (key value)
+	     (fmt-model t "" "~S : ~S~%" key value))
+	   ht))
 
 (defun handle-view-sync (time-view)
 
   (execute-tasks-frame)
-  (execute-tasks-shm)
-
-  ;; TODO:
-  ;; Instead of copying everything, find max index during execute-tasks-shm
-  (memcpy-shm-to-cache-flag*
-   `(("nodes"
-      0
-      ,(* +size-struct-instance+ (+ (car *vertices-digraph*)
-  				    (car *edges-digraph*))))
-     ("projview"
-      0
-      ,(* 4 16 2)))))
+  
+  ;; TODO
+  ;; - refactor to function
+  (let ((extents (execute-tasks-shm)))
+    (when (> (hash-table-count extents) 0)
+      (let* ((extents-nodes (gethash *shm-nodes* extents))
+	     (min-nodes (first extents-nodes))
+	     (max-nodes (second extents-nodes)))
+	;; All mem
+	;; (* +size-struct-instance+ (+ (car *vertices-digraph*)
+	;; 				 (car *edges-digraph*))))
+	(memcpy-shm-to-cache-flag*
+	 `(("nodes"    ,min-nodes ,max-nodes)
+	   ("projview" 0          ,(* 4 16 2))))))))
   
 (defun execute-tasks-frame ()
   ;; Build ptree - serial
@@ -59,13 +65,6 @@
 	  (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id))))))
 
 (defun execute-tasks-shm ()
-
-  ;; Check flags in parallel or have cb queue flags (prefer queue)
-  ;; - With flags, need to reset after
-  ;; If so, serialize data and memcpy it
-
-  ;; Issue is if different callbacks work on the same node
-  ;; then both changes won't be captured
   
   ;; (update-mat-view)
   ;; (update-mat-proj)
@@ -73,23 +72,68 @@
   ;; (enqueue-mat-proj)
   ;; (enqueue-node-pointer)
 
-  ;; For below, ignore if same node...
-  (let ((ids (make-hash-table :size 64 :test 'equal)))
+  ;; REFACTOR:
+  ;; Use ptree instead?
+  
+  (let ((ids (make-hash-table :size 16 :test 'equal))
+	(extents (make-hash-table :size 16 :test 'equal)))
     (loop
        :for task := (sb-concurrency:dequeue *queue-shm*)
        :while task
        :do (destructuring-bind (channel
-				name-shm
+				shm
 				fn-data
 				offset)
 	       task
-	     (when (not (gethash (list name-shm offset) ids))
-	       (submit-task *channel*
-			    #'copy-data-to-shm
-			    name-shm
-			    fn-data
-			    offset)
-	       (setf (gethash (list name-shm offset) ids)
-		     t)))
+	     ;; Ignore if already in task list
+	     (let ((hash (list shm offset)))
+	       (unless (gethash hash ids)
+		 (submit-task *channel*
+			      #'copy-data-to-shm
+			      shm
+			      offset
+			      fn-data)
+		 (setf (gethash hash ids)
+		       t))))
        :finally (dotimes (i (hash-table-count ids))
-		  (receive-result *channel*)))))
+		  (destructuring-bind (shm offset len-data)
+		      (receive-result *channel*)
+		    ;; Check if range exceeds current
+		    ;;
+		    ;; Cannot do in loop since
+		    ;; data is not serialized until task is called
+		    ;; so it can be done in parallel
+
+		    (if (gethash shm extents)
+			(progn
+			  (setf (first (gethash shm extents))
+				(min (first (gethash shm extents))
+				     offset))
+			  (setf (second (gethash shm extents))
+				(max (second (gethash shm extents))
+				     (+ offset len-data))))
+			(progn
+			  (setf (gethash shm extents)
+				(list offset (+ offset len-data))))))))
+    extents))
+
+;; Maybe move to memcpy
+(defun copy-data-to-shm (shm offset-ptr fn-data)
+  (list shm
+	offset-ptr
+	(copy-data-to-shm-2 shm
+			    offset-ptr
+			    (funcall fn-data))))
+
+(defun copy-data-to-shm-2 (shm offset-ptr data)
+  (declare (type (array (unsigned-byte 8)) data))
+  (with-slots (ptr size)
+      shm
+    (loop
+       :for c :across data
+       :for i :upfrom 0
+       :do (setf (mem-aref ptr
+    			   :uchar
+    			   (+ offset-ptr i))
+    		 c)))
+  (length data))
