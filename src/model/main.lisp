@@ -17,8 +17,6 @@
 	*channel-input* (make-channel) ; rename to -controller
 
 	*queue-anim*    (sb-concurrency:make-queue)
-	*queue-frame*   (sb-concurrency:make-queue)
-			 
 	*queue-shm*     (sb-concurrency:make-queue)
 	
 	;; Simply set here since no fn required

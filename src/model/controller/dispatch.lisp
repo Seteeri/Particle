@@ -23,11 +23,7 @@
 		  (dolist (cb-ev (receive-result *channel-input*))
 		    (destructuring-bind (cb ev)
 			cb-ev
-		      (funcall cb ev ptree queue)))))
-
-    ;; Enqueue for frame
-    (sb-concurrency:enqueue (list ptree queue)
-			    *queue-frame*)))
+		      (funcall cb ev ptree queue)))))))
 
 (defun dispatch-seq-event (seq-event)
   (when (is-seq-event-valid seq-event)

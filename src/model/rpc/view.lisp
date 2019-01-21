@@ -29,14 +29,14 @@
     (loop
        :for item := (sb-concurrency:dequeue *queue-anim*)
        :while item
-       :do (parse-task item ptree ids))
+       :do (parse-task-frame item ptree ids))
     (ptree-fn 'finish
 	      (loop :for key :being :the hash-keys :of ids :collect key)
   	      (lambda ())
   	      ptree)
     (call-ptree 'finish ptree)))
 
-(defun parse-task (item ptree ids)
+(defun parse-task-frame (item ptree ids)
   (destructuring-bind (anim id args fn)
       item
     (handler-case
