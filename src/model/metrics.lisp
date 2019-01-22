@@ -14,18 +14,18 @@
     :accessor range
     :initarg :range
     :documentation "")
-   (bounds-shape
-    :accessor bounds-shape
-    :initarg :bounds-shape
+   (bounds-origin
+    :accessor bounds-origin
+    :initarg :bounds-origin
     :initform (make-array 4
 			  :adjustable nil
 			  :fill-pointer nil
 			  :element-type 'single-float
 			  :initial-element 0.0)
     :documentation "")
-   (bounds
-    :accessor bounds
-    :initarg :bounds
+   (bounds-texture
+    :accessor bounds-texture
+    :initarg :bounds-texture
     :initform (make-array 4
 			  :adjustable nil
 			  :fill-pointer nil
@@ -37,13 +37,15 @@
     :initarg :scale
     :initform 5.8239365
     :documentation "") 
-   (dims-glyph ; rename to dim-glyph
+   (dims-glyph
     :accessor dims-glyph
     :initarg :dims-glyph
+    :initform (vec2 0.0 0.0)
     :documentation "")
-   (ratio-aspect
+   (ratio-aspect ; ratio aspect of dims-glyph
     :accessor ratio-aspect
     :initarg :ratio-aspect
+    :initform 0.0
     :documentation "")
    (scale-uv
     :accessor scale-uv
@@ -52,6 +54,14 @@
    (uv
     :accessor uv
     :initarg :uv
+    :initform (make-array 16
+			  :adjustable nil
+			  :fill-pointer nil
+			  :element-type 'single-float
+			  :initial-contents (list 1.0 1.0 0.0 0.0
+						  1.0 0.0 0.0 0.0
+						  0.0 0.0 0.0 0.0
+						  0.0 1.0 0.0 0.0))
     :documentation "")))
 
 (defun init-metrics ()
@@ -67,42 +77,37 @@
      :with i := 0
      :do (destructuring-bind (&key code advance translate range (bounds nil))
 	     (eval (read-from-string (read-file-string lisp-path)))
+
 	   ;; Invalid if no bounds?
 	   ;; Bounds is referred to as bearings by freetype
-	   (setf (gethash code ht-metrics)
-		 (make-instance 'metrics
-				:advance advance
-				:translate (vec2 (aref translate 0)
-						 (aref translate 1))
-				:range range
-				:bounds-shape (if bounds ; rel-to-translate bounds in pixel
-						  (make-array 4
-							      :adjustable nil
-							      :fill-pointer nil
-							      :element-type 'single-float
-							      :initial-contents (loop :for x :across bounds
-										   :collect (* x scale)))
-						  #(0.0 0.0 0.0 0.0))
-				:bounds (if bounds ; rel-to-zero bounds in pixel
-					    (calculate-bounds translate bounds scale)
-					    #(0.0 0.0 0.0 0.0))
-				:scale scale
-				:dims-glyph (if bounds
-						(calculate-dims (calculate-bounds translate bounds scale))
-						(vec2 0.0 0.0))
-				:ratio-aspect (if bounds
-						  (calculate-ar (calculate-dims (calculate-bounds translate bounds scale)))
-						  0.0)
-				:uv (if bounds
-					(calculate-uv (calculate-bounds translate bounds scale) 96)
-					(make-array 16
-						    :adjustable nil
-						    :fill-pointer nil
-						    :element-type 'single-float
-						    :initial-contents (list 1.0 1.0 0.0 0.0
-									    1.0 0.0 0.0 0.0
-									    0.0 0.0 0.0 0.0
-									    0.0 1.0 0.0 0.0))))))
+
+	   (let ((metrics (make-instance 'metrics
+					 :advance advance
+					 :translate (vec2 (aref translate 0)
+							  (aref translate 1))
+					 :range range
+					 :scale scale)))
+
+	     (setf (gethash code ht-metrics) metrics)
+	     
+	     (with-slots (bounds-origin ; rel-to-origin bounds in pixel
+			  bounds-texture   ; rel-to-texture bounds in pixel
+			  dims-glyph
+			  ratio-aspect
+			  uv)
+		 metrics
+	       (when bounds
+		 (setf bounds-origin (make-array 4
+						 :adjustable nil
+						 :fill-pointer nil
+						 :element-type 'single-float
+						 :initial-contents (loop :for x :across bounds
+								      :collect (* x scale))))
+		 (setf bounds-texture (calculate-bounds translate bounds scale))
+		 (setf dims-glyph (calculate-dims bounds-texture))
+		 (setf ratio-aspect (calculate-ar dims-glyph))
+		 (setf uv (calculate-uv bounds-texture 96))))))
+
      :finally (return ht-metrics)))
 
 (defun calculate-bounds (baseline bounds scale)

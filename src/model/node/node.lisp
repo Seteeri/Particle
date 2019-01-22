@@ -93,7 +93,7 @@
 						  :adjustable nil
 						  :initial-contents '(96 96)))
     
-    (with-slots (bounds-shape
+    (with-slots (bounds-origin
 		 dims-glyph
 		 uv)
 	metrics-glyph
@@ -113,9 +113,9 @@
       ;;   - Then first char x pos would need not be shifted
       (let ((translation-mm (translation (model-matrix node))))
 	(setf (vx3 translation-mm) (+ (vx3 cursor)
-				      (* (aref bounds-shape 0) scale-glyph))
+				      (* (aref bounds-origin 0) scale-glyph))
 	      (vy3 translation-mm) (+ (vy3 cursor)
-				      (* (aref bounds-shape 1) scale-glyph))
+				      (* (aref bounds-origin 1) scale-glyph))
 	      (vz3 translation-mm) (vz3 cursor)))
 
       ;; Aspect ratio of node must match aspect ratio of UV
