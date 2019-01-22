@@ -363,3 +363,56 @@ Forward... -> Tiled -> Clustered -> Volumetric
 https://stackoverflow.com/questions/24839857/wireframe-shader-issue-with-barycentric-coordinates-when-using-shared-vertices
 https://catlikecoding.com/unity/tutorials/advanced-rendering/flat-and-wireframe-shading
 https://www.reddit.com/r/opengl/comments/3yrv79/simplistic_texture_less_tronlike_3d_with_opengl/
+
+Protoform closest to Blender?
+Except Protoform is optimized to draw maximum number of instances 
+whereas Blender is designed to draw different types of models
+
+Protoform focused on productivity and efficiency and simplicity
+
+17. Vertices
+    * How to represent vertices? They can't be nodes -> infinite recursion
+      * Limit nodes to 2D/4 vertices...or n vertices in a circle?
+      * Nodes can be seen as vertices
+      * Remember, the underlying data model is a graph where 
+      objects/vertices can be linked through edges so need not only use 
+      planes/nodes, however, we default to them since they're the 
+      simplest shape and very efficient to render (next to other OpenGL
+      primitives like triangles/vertices). Many fundamental objects are 
+      modeled as quads like windows, pixels, etc. In addition, they are
+      the most convenient for drawing text.
+        * Alternative route of differentiating objects besides shape is
+        to use colors - how many colors can humans distinguish? 8? 
+        rainbow colors?
+        
+        
+IDEA!!!
+
+Assume home environment with gaming router
+- Similar to Apple HomeKit
+
+Model process - run as dedicated server
+View - any client such as laptop, desktop, mobile
+
+View just needs to have the same program version
+
+View same object on multiple devices
+Transfer objects between devices
+- Create a drop portal where stuff popups up
+
+CAN WE REVOLUTIONIZE THE SMART HOME! (AND/OR OFFICE)
+
+-----------------------------------------------------
+
+First engine is called Maximum Instancing Engine -> "Maxstance Engine"
+- Maximum instances
+- Per-instance color/alpha/texture/UVs
+  - Make these command line options
+- No lighting?
+- Post processing effects: motion blur
+  - Focused on creating aesthetic appearance over technically correct
+...
+
+Use EVVEE for more lighting-based renderings...
+
+Anyhow, limitations to engine is limitations to instancing

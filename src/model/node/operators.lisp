@@ -59,7 +59,8 @@
 			       *scale-node*
 			       (digraph:count-vertices *digraph*)
 			       (code-char code))))
-    
+
+    ;; Why repeat when init-node does this?
     (update-transform (model-matrix node))
     
     ;; Make new node a child of pointer node

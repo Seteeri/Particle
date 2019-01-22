@@ -25,6 +25,8 @@ vec4 filter_bilinear(samplerBuffer msdf,
         
     // Below only works when textures are all the same size
     //int offsetTex = vertexOffsetTex * vertexDimsTex.x * vertexDimsTex.y;
+    // Otherwise offset has to be generated and passed here per glyph
+    // Currently, vertexOffsetTex is simply the char index
         
     int offsetTexel00 = vertexOffsetTex + ( coordTexel.x       + (coordTexel.y       * vertexDimsTex.x));
     int offsetTexel10 = vertexOffsetTex + ((coordTexel.x + 1)  + (coordTexel.y       * vertexDimsTex.x));

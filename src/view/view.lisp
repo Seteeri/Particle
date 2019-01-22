@@ -102,6 +102,9 @@
   (gl:enable :depth-test)
   (gl:enable :blend)
   (gl:blend-func :src-alpha :one-minus-src-alpha)
+
+  ;; for testing - semi-transparent
+  (gl:blend-func :one :one-minus-src-alpha)
   
   (%gl:clear-color 0.0
 		   (coerce (/ 43 255) 'single-float)

@@ -18,8 +18,12 @@
 			#'dispatch-seq-event
 			seq-event)
        :finally (dotimes (i (hash-table-count (key-callbacks *controller*)))
-		  ;; Call callbacks to enqueue - sole responsibility, should not do other things
-		  ;; Assumption here is callbacks do not share data...
+		  ;; Do callbacks
+		  ;; Callbacks must not share data...
+		  ;; User can do so through proper synchronization methods
+		  ;; however the intent is to operate in parallel
+		  ;; Callbacks simply build a list for ptree nodes
+		  ;; that is simply enqueued
 		  (dolist (cb-ev (receive-result *channel-input*))
 		    (destructuring-bind (cb ev)
 			cb-ev

@@ -7,6 +7,11 @@
 			  	      0.0 0.0  0.0 0.0
 			  	      0.0 1.0  0.0 0.0))
 
+;; (defparameter *uv-default-node* (list 1.0                 1.0        0.0 0.0 ; tr
+;; 			  	      1.0                 0.23742993 0.0 0.0 ; br
+;; 			  	      0.22463319791666667 0.23742993 0.0 0.0 ; bl
+;; 			  	      0.22463319791666667 1.0        0.0 0.0))  ; tl
+
 (defparameter *color-default-node* (list  (coerce (/ 131 255) 'single-float)
 					  (coerce (/ 148 255) 'single-float)
 					  (coerce (/ 155 255) 'single-float)
@@ -88,12 +93,12 @@
 						  :adjustable nil
 						  :initial-contents '(96 96)))
     
-    ;; Set UVs
     (with-slots (advance
 		 translate
 		 bounds
 		 scale
-		 dims-glyph)
+		 dims-glyph
+		 uv)
 	metrics-glyph
 
       (let ((translation-mm (translation (model-matrix node))))
@@ -101,9 +106,15 @@
 				      (* (vy2 translate) scale scale-glyph))
 	      (vz3 translation-mm) (vz3 cursor)))
 
+      ;; Aspect ratio of node must match aspect ratio of UV
+      ;; otherwise texture will appear distorted
       (let ((scale-mm (scale (model-matrix node))))
-	(setf (vx3 scale-mm) (* (vx2 dims-glyph) scale-glyph)
-	      (vy3 scale-mm) (* (vy2 dims-glyph) scale-glyph))))
+      	(setf (vx3 scale-mm) (* (vx2 dims-glyph) scale-glyph)
+      	      (vy3 scale-mm) (* (vy2 dims-glyph) scale-glyph)))
+
+      (setf (uv node) uv)
+      
+      t)
     
     ;; Update transform
     (update-transform (model-matrix node))

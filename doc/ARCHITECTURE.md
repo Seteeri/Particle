@@ -303,6 +303,16 @@ and then free'd
 
 # User Operation
 
+The underlying data model is the directed graph. On a fundamental level,
+there exists only vertices and edges, i.e. any objects can be linked to
+other objects.
+
+Planes are used for their simplicity, efficiency, and convenience. Many
+objects are modeled as quads such as windows, pixels are typically
+square, glyph rendering and metrics, etc. Other shapes can be used
+however, there are tradeoffs such as using more advanced models as nodes
+will lower the amount of instances that can be rendered.
+
 Three graphs are presented to the user:
 1. Timeline symbols - undo graph; when functions are executed they are
 moved here including input data

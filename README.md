@@ -152,10 +152,10 @@ Future Extensions
    * Future: Implement clustered -> volumetric forward shading
 
 Future Ideas
-* IPFS integration
-* Native web browser - build around webkit/gecko/etc. like Next
+* Native web browser - build around Webkit like Next
   * Allows for objects to be represented in 3D
   * Web remains accessible through Wayland->Browser
+* Integrate EEVEE for rendering
 * Common Lisp to WebAssembly 
   * WebAssembly describes an AST ;)
 * Augmented reality through OpenCV
