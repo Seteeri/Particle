@@ -93,17 +93,29 @@
 						  :adjustable nil
 						  :initial-contents '(96 96)))
     
-    (with-slots (advance
-		 translate
-		 bounds
-		 scale
+    (with-slots (bounds-shape
 		 dims-glyph
 		 uv)
 	metrics-glyph
 
+      ;; All textures have been cropped through UV
+      ;; so glyphs touch edges of node - allows proper spacing
+      ;; so nodes don't physically overlap
+      ;; This means the y position needs to be adjusted
+      ;; by the rel-to-baseline/translate bottom bounds
+      ;;
+      ;; The x position is adjusted also...
+      ;;
+      ;; Fonts are monospaced so the advance is the same for every font
+      ;; Advance is from one origin to the next origin
+      ;; The left bottom corner of the first char/node is considered the baseline
+      ;; - Question is whether the glyph should touch that or adjust from there
+      ;;   - Then first char x pos would need not be shifted
       (let ((translation-mm (translation (model-matrix node))))
-	(setf (vy3 translation-mm) (- (vy3 cursor)
-				      (* (vy2 translate) scale scale-glyph))
+	(setf (vx3 translation-mm) (+ (vx3 cursor)
+				      (* (aref bounds-shape 0) scale-glyph))
+	      (vy3 translation-mm) (+ (vy3 cursor)
+				      (* (aref bounds-shape 1) scale-glyph))
 	      (vz3 translation-mm) (vz3 cursor)))
 
       ;; Aspect ratio of node must match aspect ratio of UV
@@ -112,9 +124,7 @@
       	(setf (vx3 scale-mm) (* (vx2 dims-glyph) scale-glyph)
       	      (vy3 scale-mm) (* (vy2 dims-glyph) scale-glyph)))
 
-      (setf (uv node) uv)
-      
-      t)
+      (setf (uv node) uv))
     
     ;; Update transform
     (update-transform (model-matrix node))

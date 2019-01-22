@@ -99,7 +99,7 @@
     
     ;; Move pointer node to right
     (displace-node-x *node-pointer*
-		     (* 96 *scale-node*)
+		     (* 9.375 5.8239365 *scale-node*)
 		     :rel)
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
