@@ -60,7 +60,7 @@
     (digraph:insert-vertex *digraph* node)
 
     ;; Insert node before pointer
-    (insert-node node)
+    (insert-node node :pos-ref :before)
     
     ;; Move pointer node to right - make this an optional arg
     (when move-pointer-right
@@ -114,6 +114,10 @@
 
     ;; If node not found, i.e. no chars except newline
     ;; use newline pos
+
+    ;; Might help with debugging that something is wrong
+    (when (eq node-start node-nl)
+      (warn (format nil "insert-node-newline -> CHAR NODES NOT FOUND")))
 
     ;; Move right of node and then y down
     ;; Use pos with adjustments:

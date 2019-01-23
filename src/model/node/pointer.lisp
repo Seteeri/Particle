@@ -42,7 +42,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun delete-node (&optional
+(defun get-node-pointer-reference (pos node-ptr)
+  ;; TODO:
+  ;; - Add arg to get first or all
+  (cond ((eq pos :after)
+	 (first (digraph:successors *digraph* node-ptr)))
+	((eq pos :before)
+	 (first (digraph:predecessors *digraph* node-ptr)))
+	(t
+	 t)))
+
+(defun delete-node (&key
 		      (node-ptr *node-pointer*)
 		      (pos :before))
 
@@ -122,9 +132,10 @@
       node-*)))
 
 (defun insert-node (node
-		    &optional
+		    &key
 		      (node-ptr *node-pointer*)
-		      (pos :before))
+		      (pos-ptr :after)
+		      (pos-ref :before))
   ;; Linking Process:
   ;;
   ;; (ins here)
@@ -144,17 +155,34 @@
 
   ;; Ordered this way in case there is no node-*
   
-  ;; Really inserting node before pointer
-  (let ((node-* (first (digraph:successors *digraph* node-ptr))))
-    (when node-*
-      ;; 1. Remove edge between node-*   and ptr
-      ;; 2. Insert edge between node-*   and node-new
-      (digraph:remove-edge *digraph* node-ptr node-*)
-      (digraph:insert-edge *digraph* node-*   node)))
+  (let ((node-* (get-node-pointer-reference pos-ptr node-ptr)))
+    (when node-*    
+      (cond ((eq pos-ref :before)
+  	     ;; 1. Remove edge between node-*   and ptr
+  	     (if (eq pos-ptr :after)
+  	     	 (digraph:remove-edge *digraph* node-ptr node-*)
+  	     	 (digraph:remove-edge *digraph* node-* node-ptr))
+	     ;; 2. Insert edge between node-*   and node-new
+  	     (digraph:insert-edge *digraph* node-* node))
+	     
+  	    ((eq pos-ref :after)
+  	     ;; 1. Remove edge between node-*   and ptr
+  	     (if (eq pos-ptr :after)
+  		 (digraph:remove-edge *digraph* node-ptr node-*)
+  		 (digraph:remove-edge *digraph* node-* node-ptr))
+  	     ;; Flip above
+  	     ;; 2. Insert edge between node-*   and node-new
+  	     (digraph:insert-edge *digraph* node node-*))
+	    
+  	    (t
+  	     t))))
   
   ;; 3. Insert edge between node new and ptr
-  (digraph:insert-edge *digraph* node-ptr node))
+  (if (eq pos-ptr :after)
+      (digraph:insert-edge *digraph* node-ptr node)
+      (digraph:insert-edge *digraph* node node-ptr)))
 
+;; rename to replace-* ?
 (defun link-node-pointer (node &optional (unlink-preds nil))
   ;; 1. Remove edge between node-*
   ;; 2. Insert edge between node new
@@ -167,6 +195,8 @@
       (digraph:insert-edge *digraph*
 			   *node-pointer*
 			   node))))
+
+;; translate block
 
 (defun translate-pointer (seq-event
 			  ptree
