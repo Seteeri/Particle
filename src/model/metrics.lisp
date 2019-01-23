@@ -35,7 +35,7 @@
    (scale
     :accessor scale
     :initarg :scale
-    :initform 5.8239365
+    :initform +scale-msdf+
     :documentation "") 
    (dims-glyph
     :accessor dims-glyph
@@ -73,7 +73,7 @@
      :for lisp-path := (merge-pathnames (make-pathname :name (format nil "~a-metrics" (write-to-string code))
 						       :type "lisp")
 					msdf-glyphs-path)
-     :with scale := 5.8239365 ; taken from script
+     :with scale := +scale-msdf+ ; taken from script
      :with i := 0
      :do (destructuring-bind (&key code advance translate range (bounds nil))
 	     (eval (read-from-string (read-file-string lisp-path)))
@@ -133,7 +133,7 @@
   ;; - bounds = l b r t
   ;;            0 1 2 3
   ;; - origin (0,0) is considered bottom left corner so (1,1) is top right corner
-  ;; - Shape->Pixels = multiply by 5.8239365
+  ;; - Shape->Pixels = multiply by +scale-msdf+
   ;;
   ;; bounds-abs:
   ;; baseline.x - bounds.l

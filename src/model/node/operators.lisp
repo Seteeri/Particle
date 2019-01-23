@@ -35,7 +35,7 @@
 
 ;; core functions
 
-(defun add-node (code)
+(defun add-node (code &optional (move-pointer-right t))
   
   ;; Split into
   ;; node new
@@ -97,10 +97,11 @@
 			 *node-pointer*
 			 node)
     
-    ;; Move pointer node to right
-    (translate-node-x *node-pointer*
-		      (* 9.375 5.8239365 *scale-node*)
-		      :rel)
+    ;; Move pointer node to right - make this an optional arg
+    (when move-pointer-right
+      (translate-node-x *node-pointer*
+			(* 9.375 +scale-msdf+ *scale-node*)
+			:rel))
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
@@ -162,8 +163,11 @@
       (enqueue-node-zero (index node-tgt)))))
 
 (defun insert-node-newline ()
-  ;; Move pointer
-  ;; Add node
+  ;; 1. Move pointer right
+  ;; 2. Add node
+  ;; 3. Move pointer down
+  ;; 3. Update newline property: pos-start-line
+  ;;    1. Find beginning of line
 
   ;; Do first since add-node will do pointer also - refactor that...
   (when nil
@@ -178,22 +182,11 @@
     (update-transform (model-matrix *node-pointer*))
     (enqueue-node-pointer))
 
-  ;; (with-slots (model-matrix)
-  ;;     *node-pointer*
-  ;;   (translate-pointer seq-key
-  ;; 		       ptree
-  ;; 		       queue
-  ;; 		       (lambda (value-new)
-  ;; 			 (setf (vx3 (translation model-matrix)) value-new)
-  ;; 			 (enqueue-node-pointer))
-  ;; 		       (vx3 (translation model-matrix))
-  ;; 		       (- (* 96 *scale-node*))
-  ;; 		       'move-pointer-left)))  
-
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however
   (add-node (char-code #\Newline)))
 
+;; Alternative is to animate it
 (defun translate-node-x (node
 			 displacement
 			 type-displace

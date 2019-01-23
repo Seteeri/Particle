@@ -1,6 +1,8 @@
 (in-package :protoform.model)
 
 (defconstant +size-struct-instance+ 208)
+(defconstant +scale-msdf+ 5.8239365)
+(defparameter +linegap+ (+ 96 (* 9.375 5.8239365))) ;; use advance....
 
 (defparameter *uv-default-node* (list 1.0 1.0  0.0 0.0
 			  	      1.0 0.0  0.0 0.0
@@ -31,8 +33,6 @@
 					  (coerce (/ 148 255) 'single-float)
 					  (coerce (/ 155 255) 'single-float)
 					  (coerce (/ 255 255) 'single-float)))
-
-(defparameter +linegap+ (+ 96 (* 8 5.8239365)))
 
 (defparameter *data-zero-node* (make-array +size-struct-instance+
 					   :adjustable nil
