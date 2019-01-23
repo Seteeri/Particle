@@ -35,7 +35,7 @@
 
 ;; core functions - callbacks
 
-(defun add-node (code &optional (move-pointer-right t))
+(defun add-node (code &optional (move-pointer t))
   
   ;; Split into
   ;; node new
@@ -63,8 +63,8 @@
     (insert-node node)
     
     ;; Move pointer node to right - make this an optional arg
-    (when move-pointer-right
-      (move-node-right-of-node *node-pointer* node))
+    (when move-pointer
+      (move-node-x-of-node *node-pointer* node :+))
 
     (sb-ext:atomic-incf (car *vertices-digraph*))
     (sb-ext:atomic-incf (car *edges-digraph*))
@@ -197,20 +197,23 @@
 ;; Secondary/Aux operators
 ;; Need to implement hyperweb first to identify nodes
 
-(defun move-node-right-of-node (node-a node-b &optional (offset (vec3 0 0 0)))
-  ;; Move a to right of b
+(defun move-node-x-of-node (node-a node-b pos &optional (offset (vec3 0 0 0)))
+  ;; Move a rel to b
   ;;
   ;; REFACTOR
   ;; - Add option for update
-  ;; - Create left version
-  ;; - Add offsets option
   (let ((pos-a (translation (model-matrix node-a)))
 	(pos-b (translation (model-matrix node-b)))
 	(bounds-origin (bounds-origin (gethash (char-code (data node-b)) *metrics*))))
     (setf (translation (model-matrix node-a))
 	  (vec3 (+ (vx3 pos-b) (vx3 offset)
-		   (- (* (aref bounds-origin 0) *scale-node*))
-		   (* 9.375 +scale-msdf+ *scale-node*))
+		   (- (* (aref bounds-origin 0) *scale-node*)) ; l b r t
+		   (cond ((eq pos :+)
+			  (* 9.375 +scale-msdf+ *scale-node*))
+			 ((eq pos :-)
+			  (- (* 9.375 +scale-msdf+ *scale-node*)))
+			 (t
+			  t)))
 		(+ (vy3 pos-b) (vy3 offset)
 		   (- (* (aref bounds-origin 1) *scale-node*)))
 		(+ (vz3 pos-b) (vz3 offset)))))

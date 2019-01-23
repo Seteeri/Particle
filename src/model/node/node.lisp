@@ -262,3 +262,123 @@
 (defun insert-edge (node-a node-b)
   (digraph:insert-edge *digraph* node-a node-b)
   (sb-ext:atomic-incf (car *edges-digraph*)))
+
+;; move back to ops?
+(defun delete-node (&key
+		      (node-ptr *node-pointer*)
+		      (pos-ptr :after))
+
+  ;; Linking Process:
+  ;;
+  ;; From:
+  ;; [a]->[b]<-[*] (start)
+  ;; To:
+  ;; [a]<-[*] (start)
+  ;;
+  ;; #1 - Break b edges
+  ;; [a] [*]
+  ;; [b] 
+  ;;
+  ;; #2 - Link pointer to a
+  ;; [a]<-[*]
+  ;;
+  ;; #3 - Remove [b]
+
+  (let ((node-* (get-node-pointer-reference pos-ptr node-ptr))
+	(node-** nil))
+    
+    (when node-*
+
+      ;; Note:
+      ;; preds - nodes that point to it (pointer)
+      ;; succs - nodes that it points to (prev chars)
+      
+      ;; Remove node-* preds
+      ;; - char node(s), pointer(s)
+      ;; - Assume 1 char for now...
+      ;; - Multi ptrs possible which we ignore
+      ;; Get node-** first before removing etc
+      (let ((nbhrs (digraph:predecessors *digraph* node-*)))
+	(dolist (node-i nbhrs)
+	  (remove-edge node-i node-*)
+	  (unless (eq node-i node-ptr)
+	    (setf node-** node-i))))
+
+      ;; Remove node-* succs
+      ;; - char node(s)
+      ;; - should not be pointers
+      (let ((nbhrs (digraph:successors *digraph* node-*)))
+	(dolist (node-i nbhrs)
+	  (remove-edge node-* node-i)))
+
+      (when node-**
+	(insert-edge node-ptr node-**))
+      
+      (remove-vertex node-*)
+
+      ;; TODO:
+      ;; * Refactor move-node-right-of... to take :before/after arg
+      
+      ;; If not node-**, that means first char just deleted
+      ;; so use its position instead
+      (if node-**
+	  ;; Update pointer to right of node-** (instead of node-* pos)
+	  (if (char-equal (data node-**) #\Newline)
+	      (move-node-to-node node-ptr node-*)
+	      (move-node-x-of-node node-ptr node-** :+))
+	  (move-node-to-node node-ptr node-*)))
+
+    ;; Return deleted node
+    ;; Caller should not store this so it can be GC'd
+    node-*))
+
+(defun insert-node (node
+		    &key
+		      (node-ptr *node-pointer*)
+		      (pos-ptr :after)
+		      (pos-ref :before))
+  ;; Linking Process:
+  ;;
+  ;; (ins here)
+  ;;    |
+  ;; [a]<-[*] (start)
+  ;; [b]
+  ;;
+  ;; #1
+  ;; [a] [*]
+  ;; [b] 
+  ;;
+  ;; #2
+  ;; [a]->[b] [*]
+  ;;
+  ;; #3
+  ;; [a]->[b]<-[*]
+
+  ;; Ordered this way in case there is no node-*
+  
+  (let ((node-* (get-node-pointer-reference pos-ptr node-ptr)))
+    (when node-*    
+      (cond ((eq pos-ref :before)
+  	     ;; 1. Remove edge between node-*   and ptr
+  	     (if (eq pos-ptr :after)
+  	     	 (remove-edge node-ptr node-*)
+  	     	 (remove-edge node-* node-ptr))
+	     ;; 2. Insert edge between node-*   and node-new
+  	     (insert-edge node-* node))
+	     
+  	    ((eq pos-ref :after)
+  	     ;; 1. Remove edge between node-*   and ptr
+  	     (if (eq pos-ptr :after)
+  		 (remove-edge node-ptr node-*)
+  		 (remove-edge node-* node-ptr))
+  	     ;; Flip above
+  	     ;; 2. Insert edge between node-*   and node-new
+  	     (insert-edge node node-*))
+	    
+  	    (t
+  	     t))))
+  
+  ;; 3. Insert edge between node new and ptr
+  (if (eq pos-ptr :after)
+      (insert-edge node-ptr node)
+      (insert-edge node node-ptr)))
