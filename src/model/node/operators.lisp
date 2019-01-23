@@ -95,22 +95,6 @@
 
     ;; Why repeat when init-node does this?
     (update-transform (model-matrix node))
-    
-    ;; Make new node a child of pointer node
-    ;; and child of previous
-    ;; Old:
-    ;; [a]-[*]
-    ;; graph
-    ;; [*]
-    ;;  |
-    ;; [a]
-    ;;
-    ;; New:
-    ;; [a]-[b]-[*]
-    ;; graph
-    ;; [*]--+
-    ;;      |
-    ;; [a]-[b]
 
     (digraph:insert-vertex *digraph* node)
     
@@ -132,9 +116,7 @@
     
     ;; Move pointer node to right - make this an optional arg
     (when move-pointer-right
-      (translate-node-x *node-pointer*
-			(* 9.375 +scale-msdf+ *scale-node*)
-			:rel))
+      (move-node-right-of-node *node-pointer* node))
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
