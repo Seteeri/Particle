@@ -192,23 +192,10 @@
       ;; if not node-**, that means first char just deleted
       ;; so use its position instead
       (if node-**
-
 	  ;; Update pointer to right of node-** (instead of node-* pos)
-	  ;; use advance
 	  (if (char-equal (data node-**) #\Newline)
-	      
 	      (move-node-to-node *node-pointer* node-*)
-	      
-	      (progn ; use node-**, adjust y by origin bounds
-		(let ((pos-a (translation (model-matrix *node-pointer*)))
-		      (pos-b (translation (model-matrix node-**)))
-		      (bounds-origin (bounds-origin (gethash (char-code (data node-**)) *metrics*))))
-		  (setf (translation (model-matrix *node-pointer*))
-			(vec3 (+ (vx3 pos-b) (* 9.375 +scale-msdf+ *scale-node*))
-			      (+ (vy3 pos-b) (- (* (aref bounds-origin 1) *scale-node*)))
-			      (vz3 pos-b))))
-		(update-transform (model-matrix *node-pointer*))))
-
+	      (move-node-right-of-node *node-pointer* node-**))
 	  (move-node-to-node *node-pointer* node-*))
 
       ;; Update shm
@@ -329,6 +316,20 @@
 
 ;; Secondary operators
 ;; Need to implement hyperweb first to identify nodes
+
+(defun move-node-right-of-node (node-a node-b)
+  ;; Move a to right of b
+  ;;
+  ;; REFACTOR
+  ;; - Create left version
+  (let ((pos-a (translation (model-matrix node-a)))
+	(pos-b (translation (model-matrix node-b)))
+	(bounds-origin (bounds-origin (gethash (char-code (data node-b)) *metrics*))))
+    (setf (translation (model-matrix node-a))
+	  (vec3 (+ (vx3 pos-b) (* 9.375 +scale-msdf+ *scale-node*))
+		(+ (vy3 pos-b) (- (* (aref bounds-origin 1) *scale-node*)))
+		(vz3 pos-b))))
+  (update-transform (model-matrix node-a)))
 
 (defun move-node-to-node (node-a node-b)
   ;; Move node-a to node-b
