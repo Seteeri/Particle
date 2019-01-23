@@ -465,3 +465,6 @@ nodes as they popup...use augmented reality like pokemon
  Mouse is continous whereas keyboard is discrete
  Keyboard can move 1 step whereas mouse can use physical properties 
  like velocity/acceleration
+ 
+ 22. Should pointer target be predecessor or successor?
+    - Successor makes sense since pointer is like an arrow

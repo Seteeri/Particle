@@ -37,7 +37,7 @@
 		 (setf (scale-ortho *projview*) value-new)
 		 (enqueue-mat-proj))
 	       (- (vz3 (displace *projview*)))
-	       'scale-ortho-down))
+	       'scale-ortho))
 
 (defun scale-ortho-up-cb (seq-event ptree queue) ; zoom out
   (scale-ortho seq-event
@@ -47,4 +47,4 @@
 		 (setf (scale-ortho *projview*) value-new)
 		 (enqueue-mat-proj))
 	       (vz3 (displace *projview*))
-	       'scale-ortho-up))
+	       'scale-ortho))
