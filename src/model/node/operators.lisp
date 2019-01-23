@@ -42,12 +42,6 @@
   ;; digraph
   ;; pointer
   
-  ;; Advance - origin to origin
-  ;; 1. Find glyph A origin
-  ;;    1. Model trans + glyph trans
-  ;; 2. Set glyph B origin
-  ;;    1. origin A + advance - glyph trans
-  
   (let* ((metrics-space (gethash 32 *metrics*))
 	 (spacing (* (advance metrics-space)
 		     (scale metrics-space)
@@ -64,28 +58,13 @@
     (update-transform (model-matrix node))
 
     (digraph:insert-vertex *digraph* node)
-    
-    (when (first (digraph:successors *digraph* *node-pointer*))
-      ;; Insert edge a-b
-      (digraph:insert-edge *digraph*
-			   (first (digraph:successors *digraph*
-						      *node-pointer*))
-			   node)
-      ;; Remove edge edge *-a
-      (digraph:remove-edge *digraph*
-			   *node-pointer*
-			   (first (digraph:successors *digraph*
-						      *node-pointer*))))
-    ;; Insert edge *-b
-    (digraph:insert-edge *digraph*
-			 *node-pointer*
-			 node)
+
+    ;; Insert node before pointer
+    (insert-node node)
     
     ;; Move pointer node to right - make this an optional arg
     (when move-pointer-right
       (move-node-right-of-node *node-pointer* node))
-
-    ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
     (sb-ext:atomic-incf (car *vertices-digraph*))
     (sb-ext:atomic-incf (car *edges-digraph*))
@@ -159,7 +138,7 @@
 
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however
-  (let* ((node-nl (add-node (char-code #\Newline)))
+  (let* ((node-nl (add-node (char-code #\Newline) nil))
 	 (node-start node-nl))
 
     ;; Create fn - loop until specified character or pass lambda as predicate
@@ -186,7 +165,8 @@
     ;; Move right of node and then y down
     ;; Use pos with adjustments:
     ;; x: undo left bounds shift
-    ;; y: shift down a line space - adjust original pos to baseline first by subtracting bounds
+    ;; y: shift down a line space -
+    ;; adjust original pos to baseline first by subtracting bounds
 
     (let* ((bounds-origin (bounds-origin (gethash (char-code (data node-start)) *metrics*))))
       (move-node-to-node *node-pointer*
@@ -269,7 +249,7 @@
     (setf (translation (model-matrix node-a))
 	  (vec3 (+ (vx3 pos-b) (vx3 offset) (* 9.375 +scale-msdf+ *scale-node*))
 		(+ (vy3 pos-b) (vy3 offset) (- (* (aref bounds-origin 1) *scale-node*)))
-		(+ (vz3 pos-b) (vx3 offset)))))
+		(+ (vz3 pos-b) (vz3 offset)))))
   (update-transform (model-matrix node-a)))
 
 (defun move-node-to-node (node-a node-b &optional (offset (vec3 0 0 0)))

@@ -42,6 +42,52 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; These should have argument for pointer: default is pointer
+
+(defun insert-node (node &optional (pos :before))
+  ;; Linking Process:
+  ;;
+  ;; (ins here)
+  ;;    |
+  ;; [a]<-[*] (start)
+  ;; [b]
+  ;;
+  ;; #1
+  ;; [a] [*]
+  ;; [b] 
+  ;;
+  ;; #2
+  ;; [a]->[b] [*]
+  ;;
+  ;; #3
+  ;; [a]->[b]<-[*]
+
+  ;; Ordered this way in case there is no node-*
+  
+  ;; Really inserting node before pointer
+  (let ((node-* (first (digraph:successors *digraph* *node-pointer*))))
+    (when node-*
+      ;; 1. Remove edge between node-*   and ptr
+      ;; 2. Insert edge between node-*   and node-new
+      (digraph:remove-edge *digraph* *node-pointer* node-*)
+      (digraph:insert-edge *digraph* node-*         node)))
+  
+  ;; 3. Insert edge between node new and ptr
+  (digraph:insert-edge *digraph* *node-pointer* node))
+
+(defun link-node-pointer (node &optional (unlink-preds nil))
+  ;; 1. Remove edge between node-*
+  ;; 2. Insert edge between node new
+  (let ((node-* (first (digraph:successors *digraph* *node-pointer*))))
+    (when node-*
+      (when unlink-preds
+	(digraph:remove-edge *digraph*
+			     *node-pointer*
+			     node-*))
+      (digraph:insert-edge *digraph*
+			   *node-pointer*
+			   node))))
+
 (defun translate-pointer (seq-event
 			  ptree
 			  queue
