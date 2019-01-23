@@ -174,7 +174,7 @@
 	    (digraph:insert-edge *digraph*
 				 *node-pointer*
 				 node-i)
-	    (sb-ext:atomic-incf (car *edges-digraph*))	    
+	    (sb-ext:atomic-incf (car *edges-digraph*)) 
 	    (setf node-** node-i)))
 
 	;; # 3
@@ -248,11 +248,13 @@
 
     ;; Use pos with adjustments:
     ;; x: undo left bounds shift
-    ;; y: shift down a line space    
+    ;; y: shift down a line space - adjust original pos to baseline first by subtracting bounds
     (let* ((bounds-origin (bounds-origin (gethash (char-code (data node-start)) *metrics*)))
 	   (pos-start (translation (model-matrix node-start)))
 	   (new-pos (vec3 (- (vx3 pos-start) (* (aref bounds-origin 0) *scale-node*))
-			  (+ (vy3 pos-start) (-  (* +linegap+ *scale-node*)))
+			  (+ (vy3 pos-start)
+			     (- (* (aref bounds-origin 1) *scale-node*))
+			     (- (* +linegap+ *scale-node*)))
 			  (vz3 pos-start))))
       (setf (translation (model-matrix *node-pointer*)) new-pos)
       (update-transform (model-matrix *node-pointer*))
