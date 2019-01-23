@@ -199,12 +199,13 @@
 	      
 	      (move-node-to-node *node-pointer* node-*)
 	      
-	      (progn ; use node-**
+	      (progn ; use node-**, adjust y by origin bounds
 		(let ((pos-a (translation (model-matrix *node-pointer*)))
-		      (pos-b (translation (model-matrix node-**))))
+		      (pos-b (translation (model-matrix node-**)))
+		      (bounds-origin (bounds-origin (gethash (char-code (data node-**)) *metrics*))))
 		  (setf (translation (model-matrix *node-pointer*))
 			(vec3 (+ (vx3 pos-b) (* 9.375 +scale-msdf+ *scale-node*))
-			      (vy3 pos-b)
+			      (+ (vy3 pos-b) (- (* (aref bounds-origin 1) *scale-node*)))
 			      (vz3 pos-b))))
 		(update-transform (model-matrix *node-pointer*))))
 
