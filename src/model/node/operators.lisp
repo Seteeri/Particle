@@ -147,56 +147,72 @@
 
 (defun backspace-node ()
 
-  ;; Move pointer to node
-
   ;; TODO
-  ;; - Refactor: create fn to get pointee
+  ;; - fn: get pointee
+  ;; - fn: pos ptr to right of node
+  ;; - fn: add/del edges - need to update counters
+  ;; - fn: move pos node to node [DONE]
+
+  ;; 1. Get node-*
+  ;; 2. Remove node-* from graph
+  ;;    1. Get pred of node-* = node-**
+  ;;    2. Link node-** to pointer
+  ;;    3. Remove vertex
+  ;;       - This auto? - unlink *node from pointer et. al.
+  ;; 3. Pos p tr to right of node-**
   
-  (let ((node-tgt (first (digraph:successors *digraph*
-					     *node-pointer*))))
-    (when node-tgt
+  (let ((node-* (first (digraph:successors *digraph* *node-pointer*)))
+	(node-** nil))
+    
+    (when node-*
       
-      ;; Remove node from graph
-      ;; 1. Insert edge: ptr-pred
-      ;; 2. Remove edges: ptr-node, pred-node
-      (let ((preds (digraph:predecessors *digraph*
-					 node-tgt)))
-	;; Find non-ptr edge and create edge from ptr to pred
-	(dolist (pred preds)
-	  (if (eq pred *node-pointer*)
-	      t
-	      (progn
-		(digraph:insert-edge *digraph*
-				     *node-pointer*
-				     pred)
+      (let ((preds (digraph:predecessors *digraph* node-*)))
+	;; # 1
+	(dolist (node-i preds)
+	  (unless (eq node-i *node-pointer*)
+	    ;; # 2
+	    (digraph:insert-edge *digraph*
+				 *node-pointer*
+				 node-i)
+	    (sb-ext:atomic-incf (car *edges-digraph*))	    
+	    (setf node-** node-i)))
 
-		(translate-node-x *node-pointer*
-				  (+ (vx3 (translation (model-matrix pred)))
-				     (* 96 *scale-node*))
-				  :abs)
+	;; # 3
+	(dolist (node-i preds)
+	  ;; (digraph:remove-edge *digraph* node-**-i  node-*)
+	  (sb-ext:atomic-decf (car *edges-digraph*))))
 
-		(when nil
-		  (translate-node-y *node-pointer*
-				    (vy3 (translation (model-matrix pred)))
-				    :abs))
-		(when nil
-		  (translate-node-y *node-pointer*
-				    (* +linegap+ scale-node) 
-				    :rel)))))
-	;; Now can remove edges
-	(dolist (pred preds)
-	  (digraph:remove-edge *digraph*
-			       pred
-			       node-tgt)))
-      ;; Remove vertex
-      (digraph:remove-vertex *digraph*
-			     node-tgt)
-
+      (when (and node-** node-* nil)
+	(fmt-model t "backspace-node" "char: ~S -> ~S~%"
+		   (data node-**) (data node-*)))
+      
+      (digraph:remove-vertex *digraph* node-*)
       (sb-ext:atomic-decf (car *vertices-digraph*))
-      (sb-ext:atomic-decf (car *edges-digraph*))
-      
+
+      ;; if not node-**, that means first char just deleted
+      ;; so use its position instead
+      (if node-**
+
+	  ;; Update pointer to right of node-** (instead of node-* pos)
+	  ;; use advance
+	  (if (char-equal (data node-**) #\Newline)
+	      
+	      (move-node-to-node *node-pointer* node-*)
+	      
+	      (progn ; use node-**
+		(let ((pos-a (translation (model-matrix *node-pointer*)))
+		      (pos-b (translation (model-matrix node-**))))
+		  (setf (translation (model-matrix *node-pointer*))
+			(vec3 (+ (vx3 pos-b) (* 9.375 +scale-msdf+ *scale-node*))
+			      (vy3 pos-b)
+			      (vz3 pos-b))))
+		(update-transform (model-matrix *node-pointer*))))
+
+	  (move-node-to-node *node-pointer* node-*))
+
+      ;; Update shm
       (enqueue-node-pointer)
-      (enqueue-node-zero (index node-tgt)))))
+      (enqueue-node-zero (index node-*)))))
 
 (defun insert-node-newline ()
   ;; 1. Add newline node; pointer will move right
@@ -240,7 +256,11 @@
 			  (vz3 pos-start))))
       (setf (translation (model-matrix *node-pointer*)) new-pos)
       (update-transform (model-matrix *node-pointer*))
-      (enqueue-node-pointer))))
+      (enqueue-node-pointer)))
+
+  ;; Store pos in newline...
+  
+  t)
 
 ;; Refactor and move to callbacks later
 (defun eval-node (&optional (create-node-output t))
@@ -306,6 +326,15 @@
 
 ;; Secondary operators
 ;; Need to implement hyperweb first to identify nodes
+
+(defun move-node-to-node (node-a node-b)
+  ;; Move node-a to node-b
+  ;; REFACTOR
+  ;; - either copy/replace or modify
+  ;; - add option for update
+  (setf (translation (model-matrix node-a))
+	(vcopy3 (translation (model-matrix node-b))))
+  (update-transform (model-matrix node-a)))
 
 (defun link-node (node-a node-b)
   (digraph:insert-edge *digraph*
