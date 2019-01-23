@@ -74,61 +74,14 @@
     node))
 
 (defun backspace-node ()
-
   ;; TODO
   ;; - fn: get pointee
-  ;; - fn: pos ptr to right of node
   ;; - fn: add/del edges - need to update counters
-  ;; - fn: move pos node to node [DONE]
-
-  ;; 1. Get node-*
-  ;; 2. Remove node-* from graph
-  ;;    1. Get pred of node-* = node-**
-  ;;    2. Link node-** to pointer
-  ;;    3. Remove vertex
-  ;;       - This auto? - unlink *node from pointer et. al.
-  ;; 3. Pos p tr to right of node-**
-  
-  (let ((node-* (first (digraph:successors *digraph* *node-pointer*)))
-	(node-** nil))
-    
-    (when node-*
-      
-      (let ((preds (digraph:predecessors *digraph* node-*)))
-	;; # 1
-	(dolist (node-i preds)
-	  (unless (eq node-i *node-pointer*)
-	    ;; # 2
-	    (digraph:insert-edge *digraph*
-				 *node-pointer*
-				 node-i)
-	    (sb-ext:atomic-incf (car *edges-digraph*)) 
-	    (setf node-** node-i)))
-
-	;; # 3
-	(dolist (node-i preds)
-	  ;; (digraph:remove-edge *digraph* node-**-i  node-*)
-	  (sb-ext:atomic-decf (car *edges-digraph*))))
-
-      (when (and node-** node-* nil)
-	(fmt-model t "backspace-node" "char: ~S -> ~S~%"
-		   (data node-**) (data node-*)))
-      
-      (digraph:remove-vertex *digraph* node-*)
-      (sb-ext:atomic-decf (car *vertices-digraph*))
-
-      ;; if not node-**, that means first char just deleted
-      ;; so use its position instead
-      (if node-**
-	  ;; Update pointer to right of node-** (instead of node-* pos)
-	  (if (char-equal (data node-**) #\Newline)
-	      (move-node-to-node *node-pointer* node-*)
-	      (move-node-right-of-node *node-pointer* node-**))
-	  (move-node-to-node *node-pointer* node-*))
-
+  (let ((node-del (delete-node)))
+    (when node-del
       ;; Update shm
       (enqueue-node-pointer)
-      (enqueue-node-zero (index node-*)))))
+      (enqueue-node-zero (index node-del)))))
 
 (defun insert-node-newline ()
   ;; 1. Add newline node; pointer will move right

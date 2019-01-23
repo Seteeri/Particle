@@ -44,6 +44,77 @@
 
 ;; These should have argument for pointer: default is pointer
 
+(defun delete-node (&optional (pos :before))
+
+  ;; Linking Process:
+  ;;
+  ;; From:
+  ;; [a]->[b]<-[*] (start)
+  ;; To:
+  ;; [a]<-[*] (start)
+  ;;
+  ;; #1 - Break b edges
+  ;; [a] [*]
+  ;; [b] 
+  ;;
+  ;; #2 - Link pointer to a
+  ;; [a]<-[*]
+  ;;
+  ;; #3 - Remove [b]
+  
+  (let ((node-* (first (digraph:successors *digraph* *node-pointer*)))
+	(node-** nil))
+    
+    (when node-*
+
+      ;; Note:
+      ;; preds - nodes that point to it (pointer)
+      ;; succs - nodes that it points to (prev chars)
+      
+      ;; Remove node-* preds - assume 1 vertex/edge for now...
+      ;; - ignore pointer
+      ;; Get node-** first
+      (let ((preds (digraph:predecessors *digraph* node-*)))
+	(dolist (node-i preds)
+	  (digraph:remove-edge *digraph* node-i node-*)
+	  ;; (sb-ext:atomic-decf (car *edges-digraph*))
+	  (unless (eq node-i *node-pointer*)
+	    ;; (sb-ext:atomic-incf (car *edges-digraph*))
+	    (setf node-** node-i))))
+
+      ;; Remove node-* succs
+      ;; - includes pointer
+      (let ((succs (digraph:successors *digraph* node-*)))
+	(dolist (node-i succs)
+	  (digraph:remove-edge *digraph* node-* node-i)
+	  (sb-ext:atomic-decf (car *edges-digraph*))))
+      
+      ;; (when (and node-** node-* nil)
+      ;; 	(fmt-model t "backspace-node" "char: ~S -> ~S~%"
+      ;; 		   (data node-**) (data node-*)))
+
+      (when node-**
+	(digraph:insert-edge *digraph*
+			     *node-pointer*
+			     node-**)
+	(sb-ext:atomic-incf (car *edges-digraph*)))
+      
+      (digraph:remove-vertex *digraph* node-*)
+      (sb-ext:atomic-decf (car *vertices-digraph*))
+
+      ;; If not node-**, that means first char just deleted
+      ;; so use its position instead
+      (if node-**
+	  ;; Update pointer to right of node-** (instead of node-* pos)
+	  (if (char-equal (data node-**) #\Newline)
+	      (move-node-to-node *node-pointer* node-*)
+	      (move-node-right-of-node *node-pointer* node-**))
+	  (move-node-to-node *node-pointer* node-*)))
+
+    ;; Return deleted node
+    ;; Caller should not store this so it can be GC'd
+    node-*))
+
 (defun insert-node (node &optional (pos :before))
   ;; Linking Process:
   ;;
