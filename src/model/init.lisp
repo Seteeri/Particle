@@ -135,7 +135,11 @@
 	(register-callback `(,+xk-control-l+    (:press :down)
 			     ,(first seq-event) (:press :repeat))
 			   :exclusive
-			   (second seq-event))))
+			   (second seq-event))
+	(register-callback `(,+xk-control-r+    (:press :down)
+			     ,(first seq-event) (:press :repeat))
+			   :exclusive
+			   (second seq-event))))	
     
     (when t
       ;; handlers in node
@@ -156,6 +160,10 @@
 	(register-callback `(,+xk-control-l+    (:press :down)
 			     ,(first seq-event) (:press :repeat))
 			   :exclusive
+			   (second seq-event))
+	(register-callback `(,+xk-control-r+    (:press :down)
+			     ,(first seq-event) (:press :repeat))
+			   :exclusive
 			   (second seq-event)))
 
       (dolist (seq-event `((,+xk-left+       ,#'scale-ortho-up-cb)
@@ -166,10 +174,19 @@
 			     ,+xk-shift-l+      (:press :down)
 			     ,(first seq-event) (:press :repeat))
 			   :exclusive
+			   (second seq-event))
+	(register-callback `(,+xk-control-r+    (:press :down)
+			     ,+xk-shift-r+      (:press :down)
+			     ,(first seq-event) (:press :repeat))
+			   :exclusive
 			   (second seq-event))))
 
     ;; Eval
     (register-callback `(,+xk-shift-r+ (:press :down)
+			 ,+xk-return+  (:press :repeat))
+		       :exclusive
+		       #'eval-node-cb)
+    (register-callback `(,+xk-shift-l+ (:press :down)
 			 ,+xk-return+  (:press :repeat))
 		       :exclusive
 		       #'eval-node-cb)
