@@ -44,7 +44,9 @@
 
 ;; These should have argument for pointer: default is pointer
 
-(defun delete-node (&optional (pos :before))
+(defun delete-node (&optional
+		      (node-ptr *node-pointer*)
+		      (pos :before))
 
   ;; Linking Process:
   ;;
@@ -62,7 +64,7 @@
   ;;
   ;; #3 - Remove [b]
   
-  (let ((node-* (first (digraph:successors *digraph* *node-pointer*)))
+  (let ((node-* (first (digraph:successors *digraph* node-ptr)))
 	(node-** nil))
     
     (when node-*
@@ -78,7 +80,7 @@
 	(dolist (node-i preds)
 	  (digraph:remove-edge *digraph* node-i node-*)
 	  ;; (sb-ext:atomic-decf (car *edges-digraph*))
-	  (unless (eq node-i *node-pointer*)
+	  (unless (eq node-i node-ptr)
 	    ;; (sb-ext:atomic-incf (car *edges-digraph*))
 	    (setf node-** node-i))))
 
@@ -95,7 +97,7 @@
 
       (when node-**
 	(digraph:insert-edge *digraph*
-			     *node-pointer*
+			     node-ptr
 			     node-**)
 	(sb-ext:atomic-incf (car *edges-digraph*)))
       
@@ -107,15 +109,18 @@
       (if node-**
 	  ;; Update pointer to right of node-** (instead of node-* pos)
 	  (if (char-equal (data node-**) #\Newline)
-	      (move-node-to-node *node-pointer* node-*)
-	      (move-node-right-of-node *node-pointer* node-**))
-	  (move-node-to-node *node-pointer* node-*)))
+	      (move-node-to-node node-ptr node-*)
+	      (move-node-right-of-node node-ptr node-**))
+	  (move-node-to-node node-ptr node-*)))
 
     ;; Return deleted node
     ;; Caller should not store this so it can be GC'd
     node-*))
 
-(defun insert-node (node &optional (pos :before))
+(defun insert-node (node
+		    &optional
+		      (node-ptr *node-pointer*)
+		      (pos :before))
   ;; Linking Process:
   ;;
   ;; (ins here)
@@ -136,15 +141,15 @@
   ;; Ordered this way in case there is no node-*
   
   ;; Really inserting node before pointer
-  (let ((node-* (first (digraph:successors *digraph* *node-pointer*))))
+  (let ((node-* (first (digraph:successors *digraph* node-ptr))))
     (when node-*
       ;; 1. Remove edge between node-*   and ptr
       ;; 2. Insert edge between node-*   and node-new
-      (digraph:remove-edge *digraph* *node-pointer* node-*)
-      (digraph:insert-edge *digraph* node-*         node)))
+      (digraph:remove-edge *digraph* node-ptr node-*)
+      (digraph:insert-edge *digraph* node-*   node)))
   
   ;; 3. Insert edge between node new and ptr
-  (digraph:insert-edge *digraph* *node-pointer* node))
+  (digraph:insert-edge *digraph* node-ptr node))
 
 (defun link-node-pointer (node &optional (unlink-preds nil))
   ;; 1. Remove edge between node-*

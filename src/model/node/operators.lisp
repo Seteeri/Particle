@@ -176,12 +176,16 @@
 	       t)))))
 
 (defun cut-node ()
+  ;; Cut node from left side (succ) -> right side (pred)
+  ;; Delete original node
   t)
 
 (defun copy-node ()
+  ;; Copy node from left side (succ) -> right side (pred)
   t)
 
 (defun paste-node ()
+  ;; Take node from right side (pred) -> left side (succ)
   t)
 
 ;; Secondary/Aux operators

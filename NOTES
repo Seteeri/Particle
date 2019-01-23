@@ -423,9 +423,12 @@ Anyhow, limitations to engine is limitations to instancing
 - Two types of nodes: vertices and edges [binary system ;)]
   - Node is a linkable object (thus not simply called an object)
 - Vertices
+  - use arbitrary textures
   - can only link to edges
     - ostensibly the user selects two vertices but automatically done
 - Edges
+  - use arrow textures only
+  - +property - pred or succ -> determines orientation
   - can only link to vertices
   - typically not textured for optimization purposes
 
