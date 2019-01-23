@@ -128,7 +128,7 @@
 			 (enqueue-node-pointer))
 		       (vx3 (translation model-matrix)) ; start
 		       (- (* 96 *scale-node*))          ; delta
-		       'move-pointer-left)))
+		       'move-pointer-x)))
 
 (defun translate-pointer-right-cb (seq-event
 				   ptree
@@ -143,7 +143,7 @@
 			 (enqueue-node-pointer))
 		       (vx3 (translation model-matrix))
 		       (* 96 *scale-node*)
-		       'move-pointer-right)))
+		       'move-pointer-x)))
 
 (defun translate-pointer-up-cb (seq-event
 				ptree
@@ -158,7 +158,7 @@
 			 (enqueue-node-pointer))
 		       (vy3 (translation model-matrix))
 		       (* +linegap+ *scale-node*)
-		       'move-pointer-up)))
+		       'move-pointer-y)))
 
 (defun translate-pointer-down-cb (seq-event
 				  ptree
@@ -173,4 +173,4 @@
 			 (enqueue-node-pointer))
 		       (vy3 (translation model-matrix))
 		       (- (* +linegap+ *scale-node*))
-		       'move-pointer-down)))
+		       'move-pointer-y)))
