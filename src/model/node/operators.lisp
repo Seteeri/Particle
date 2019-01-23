@@ -98,9 +98,9 @@
 			 node)
     
     ;; Move pointer node to right
-    (displace-node-x *node-pointer*
-		     (* 9.375 5.8239365 *scale-node*)
-		     :rel)
+    (translate-node-x *node-pointer*
+		      (* 9.375 5.8239365 *scale-node*)
+		      :rel)
 
     ;; (fmt-model t "init-node-msdf" "cursor: ~a~%" cursor)
 
@@ -110,7 +110,7 @@
     (enqueue-node node)
 
     node))
-  
+
 (defun backspace-node ()
 
   ;; Move pointer to node
@@ -133,19 +133,19 @@
 				     *node-pointer*
 				     pred)
 
-		(displace-node-x *node-pointer*
-				 (+ (vx3 (translation (model-matrix pred)))
-				    (* 96 *scale-node*))
-				 :abs)
+		(translate-node-x *node-pointer*
+				  (+ (vx3 (translation (model-matrix pred)))
+				     (* 96 *scale-node*))
+				  :abs)
 
 		(when nil
-		  (displace-node-y *node-pointer*
-				   (vy3 (translation (model-matrix pred)))
-				   :abs))
+		  (translate-node-y *node-pointer*
+				    (vy3 (translation (model-matrix pred)))
+				    :abs))
 		(when nil
-		  (displace-node-y *node-pointer*
-				   (* +linegap+ scale-node) 
-				   :rel)))))
+		  (translate-node-y *node-pointer*
+				    (* +linegap+ scale-node) 
+				    :rel)))))
 	;; Now can remove edges
 	(dolist (pred preds)
 	  (digraph:remove-edge *digraph*
@@ -167,14 +167,14 @@
 
   ;; Do first since add-node will do pointer also - refactor that...
   (when nil
-    (displace-node-x *node-pointer*
-		     -11.5199995 ; need to track newline chars
-		     :abs
-		     nil)
-    (displace-node-y *node-pointer*
-		     (- (* +linegap+ *scale-node*))
-		     :rel
-		     nil) ; add more spacing due to bl adjustments
+    (translate-node-x *node-pointer*
+		      -11.5199995 ; need to track newline chars
+		      :abs
+		      nil)
+    (translate-node-y *node-pointer*
+		      (- (* +linegap+ *scale-node*))
+		      :rel
+		      nil) ; add more spacing due to bl adjustments
     (update-transform (model-matrix *node-pointer*))
     (enqueue-node-pointer))
 
@@ -194,10 +194,10 @@
   ;; Pass newline char however
   (add-node (char-code #\Newline)))
 
-(defun displace-node-x (node
-			displacement
-			type-displace
-			&optional (update t))
+(defun translate-node-x (node
+			 displacement
+			 type-displace
+			 &optional (update t))
   (with-slots (model-matrix)
       node
     (cond ((eq type-displace :abs)
@@ -209,10 +209,10 @@
     (when update
       (update-transform model-matrix))))
 
-(defun displace-node-y (node
-			displacement
-			type-displace
-			&optional (update t))
+(defun translate-node-y (node
+			 displacement
+			 type-displace
+			 &optional (update t))
   (with-slots (model-matrix)
       node
     (cond ((eq type-displace :abs)
@@ -246,34 +246,34 @@
 	 (output-eval (eval (read-from-string str)))
 	 (output-str  (format nil "~S" output-eval)))
 
-      (fmt-model t "eval-node" "Input Str (to eval): ~S~%" str)
-      (fmt-model t "eval-node" "Output Str (from eval): ~S~%" output-str)
-      (fmt-model t "eval-node" "ID (monotonic time): ~S~%" (osicat:get-monotonic-time))
+    (fmt-model t "eval-node" "Input Str (to eval): ~S~%" str)
+    (fmt-model t "eval-node" "Output Str (from eval): ~S~%" output-str)
+    (fmt-model t "eval-node" "ID (monotonic time): ~S~%" (osicat:get-monotonic-time))
 
-      (when create-node-output
-	
-	;; (insert-node-newline `(t (,+xk-return+ t) t))
-	
-	;; Keep track of output objects -> use gensym
+    (when create-node-output
+      
+      ;; (insert-node-newline `(t (,+xk-return+ t) t))
+      
+      ;; Keep track of output objects -> use gensym
 
-	;; Move pointer down - use anim? -> translate-pointer instead
-	(displace-node-x *node-pointer*
-			 -11.5199995 ; need to track newline chars
-			 :abs
-			 nil)
-	(displace-node-y *node-pointer*
-			 (- (* +linegap+ *scale-node*))
-			 :rel
-			 nil) ; add more spacing due to bl adjustments
-	(update-transform (model-matrix *node-pointer*))
-	(enqueue-node-pointer)
+      ;; Move pointer down - use anim? -> translate-pointer instead
+      (translate-node-x *node-pointer*
+		       -11.5199995 ; need to track newline chars
+		       :abs
+		       nil)
+      (translate-node-y *node-pointer*
+		       (- (* +linegap+ *scale-node*))
+		       :rel
+		       nil) ; add more spacing due to bl adjustments
+      (update-transform (model-matrix *node-pointer*))
+      (enqueue-node-pointer)
 
-	(loop
-      	   :for char :across output-str
-      	   :do (let ((node (add-node (char-code char))))
-		 ;; initial data used for glyph
-		 (setf (data node) output-eval)
-		 t)))))
+      (loop
+      	 :for char :across output-str
+      	 :do (let ((node (add-node (char-code char))))
+	       ;; initial data used for glyph
+	       (setf (data node) output-eval)
+	       t)))))
 
 (defun remove-all-nodes ()
   ;; Exclude pointer
@@ -326,7 +326,7 @@
        ;; currently assuming linear
        :for pred
 	 := (digraph:successors *digraph* *node-pointer*)
-         :then (digraph:predecessors *digraph* pred)
+       :then (digraph:predecessors *digraph* pred)
        :while pred
        :do (loop
 	      ;; Leave on first non-ptr node
@@ -337,7 +337,7 @@
 		    (push (data n) chrs)
 		    (setf pred n)
 		    (return))))
-  
+    
     (with-output-to-string (stream)
       (dolist (c chrs)
 	(write-char c stream)))))
