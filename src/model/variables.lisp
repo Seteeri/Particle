@@ -45,7 +45,5 @@
 ;; Hmm, when texture is removed need to recopy all (to "defragment")
 ;; (defparameter *textures* (make-array 64 :adjustable t :fill-pointer 0))
 (defparameter *metrics* nil)
-(defparameter *dpi-glyph* (/ 1 90))
-(defparameter *scale-node* 0.008)
 
 (defparameter *controller* nil)

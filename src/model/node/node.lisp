@@ -1,8 +1,12 @@
 (in-package :protoform.model)
 
+(defparameter *dpi-glyph* (/ 1 90))
+(defparameter *scale-node* 0.008)
+
 (defconstant +size-struct-instance+ 208)
 (defconstant +scale-msdf+ 5.8239365)
-(defparameter +linegap+ (+ 96 (* 9.375 5.8239365))) ;; use advance....
+(defparameter +linegap+ (* (* 9.375 2)    ;; use advance....
+			   +scale-msdf+))  ;; multiplied by scale-node later (per node)
 
 (defparameter *uv-default-node* (list 1.0 1.0  0.0 0.0
 			  	      1.0 0.0  0.0 0.0
@@ -112,10 +116,8 @@
       ;; - Question is whether the glyph should touch that or adjust from there
       ;;   - Then first char x pos would need not be shifted
       (let ((translation-mm (translation (model-matrix node))))
-	(setf (vx3 translation-mm) (+ (vx3 cursor)
-				      (* (aref bounds-origin 0) scale-glyph))
-	      (vy3 translation-mm) (+ (vy3 cursor)
-				      (* (aref bounds-origin 1) scale-glyph))
+	(setf (vx3 translation-mm) (+ (vx3 cursor) (* (aref bounds-origin 0) scale-glyph))
+	      (vy3 translation-mm) (+ (vy3 cursor) (* (aref bounds-origin 1) scale-glyph))
 	      (vz3 translation-mm) (vz3 cursor)))
 
       ;; Aspect ratio of node must match aspect ratio of UV

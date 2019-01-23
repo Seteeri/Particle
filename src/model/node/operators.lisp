@@ -33,7 +33,40 @@
 				   +size-struct-instance+))
 			  *queue-shm*))
 
-;; core functions
+;; util functions
+
+;; Alternative is to animate it
+(defun translate-node-x (node
+			 displacement
+			 type-displace
+			 &optional (update t))
+  (with-slots (model-matrix)
+      node
+    (cond ((eq type-displace :abs)
+	   (setf (vx3 (translation model-matrix)) displacement))
+	  ((eq type-displace :rel)
+	   (incf (vx3 (translation model-matrix)) displacement))
+	  (t
+	   (error "Unknown type-displace")))
+    (when update
+      (update-transform model-matrix))))
+
+(defun translate-node-y (node
+			 displacement
+			 type-displace
+			 &optional (update t))
+  (with-slots (model-matrix)
+      node
+    (cond ((eq type-displace :abs)
+	   (setf (vy3 (translation model-matrix)) displacement))
+	  ((eq type-displace :rel)
+	   (incf (vy3 (translation model-matrix)) displacement))
+	  (t
+	   (error "Unknown type-displace")))
+    (when update
+      (update-transform model-matrix))))
+
+;; core functions - callbacks
 
 (defun add-node (code &optional (move-pointer-right t))
   
@@ -115,6 +148,9 @@
 (defun backspace-node ()
 
   ;; Move pointer to node
+
+  ;; TODO
+  ;; - Refactor: create fn to get pointee
   
   (let ((node-tgt (first (digraph:successors *digraph*
 					     *node-pointer*))))
@@ -163,59 +199,48 @@
       (enqueue-node-zero (index node-tgt)))))
 
 (defun insert-node-newline ()
-  ;; 1. Move pointer right
-  ;; 2. Add node
-  ;; 3. Move pointer down
-  ;; 3. Update newline property: pos-start-line
-  ;;    1. Find beginning of line
-
-  ;; Do first since add-node will do pointer also - refactor that...
-  (when nil
-    (translate-node-x *node-pointer*
-		      -11.5199995 ; need to track newline chars
-		      :abs
-		      nil)
-    (translate-node-y *node-pointer*
-		      (- (* +linegap+ *scale-node*))
-		      :rel
-		      nil) ; add more spacing due to bl adjustments
-    (update-transform (model-matrix *node-pointer*))
-    (enqueue-node-pointer))
+  ;; 1. Add newline node; pointer will move right
+  ;; 2. Find beginning of line - loop preds until nil
+  ;; 3. Update newline slot: pos-start-line
+  ;; 3. Move pointer to newline
 
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however
-  (add-node (char-code #\Newline)))
+  (let* ((node-nl (add-node (char-code #\Newline)))
+	 (node-start node-nl))
 
-;; Alternative is to animate it
-(defun translate-node-x (node
-			 displacement
-			 type-displace
-			 &optional (update t))
-  (with-slots (model-matrix)
-      node
-    (cond ((eq type-displace :abs)
-	   (setf (vx3 (translation model-matrix)) displacement))
-	  ((eq type-displace :rel)
-	   (incf (vx3 (translation model-matrix)) displacement))
-	  (t
-	   (error "Unknown type-displace")))
-    (when update
-      (update-transform model-matrix))))
+    ;; Create fn - loop until specified character or pass lambda as predicate
+    ;; Start with newline char instead of pointer or it will terminate immediately
+    (loop
+       :for pred := (digraph:predecessors *digraph* node-nl)
+       :then (digraph:predecessors *digraph* pred)
+       :while pred
+       :do (loop
+	      :for node :in pred
+	      :do (unless (equal node *node-pointer*) ; skip pointer
+		    (when (char-equal (data node) #\Newline)
+		      ;; leave until newline (or end)
+		      (return))
+		    ;; (format t "~S : ~S~%" node (data node))
+		    ;; Else set node to get preds and goto next iteration
+		    (setf pred node
+			  node-start node)
+		    (return))))
 
-(defun translate-node-y (node
-			 displacement
-			 type-displace
-			 &optional (update t))
-  (with-slots (model-matrix)
-      node
-    (cond ((eq type-displace :abs)
-	   (setf (vy3 (translation model-matrix)) displacement))
-	  ((eq type-displace :rel)
-	   (incf (vy3 (translation model-matrix)) displacement))
-	  (t
-	   (error "Unknown type-displace")))
-    (when update
-      (update-transform model-matrix))))
+    ;; If node not found, i.e. no chars except newline
+    ;; use newline pos
+
+    ;; Use pos with adjustments:
+    ;; x: undo left bounds shift
+    ;; y: shift down a line space    
+    (let* ((bounds-origin (bounds-origin (gethash (char-code (data node-start)) *metrics*)))
+	   (pos-start (translation (model-matrix node-start)))
+	   (new-pos (vec3 (- (vx3 pos-start) (* (aref bounds-origin 0) *scale-node*))
+			  (+ (vy3 pos-start) (-  (* +linegap+ *scale-node*)))
+			  (vz3 pos-start))))
+      (setf (translation (model-matrix *node-pointer*)) new-pos)
+      (update-transform (model-matrix *node-pointer*))
+      (enqueue-node-pointer))))
 
 ;; Refactor and move to callbacks later
 (defun eval-node (&optional (create-node-output t))
@@ -317,20 +342,19 @@
   (let ((chrs nil))
     (loop
        ;; currently assuming linear
-       :for pred
-	 := (digraph:successors *digraph* *node-pointer*)
+       :for pred := (digraph:successors *digraph* *node-pointer*)
        :then (digraph:predecessors *digraph* pred)
        :while pred
        :do (loop
 	      ;; Leave on first non-ptr node
-	      :for n :in pred
-	      :do (when (not (eq n *node-pointer*))
-		    (when (char-equal (data n) #\Newline)
+	      :for node :in pred
+	      :do (unless (eq node *node-pointer*))
+		    (when (char-equal (data node) #\Newline)
 		      (return))
-		    (push (data n) chrs)
-		    (setf pred n)
+		    (push (data node) chrs)
+		    (setf pred node)
 		    (return))))
     
     (with-output-to-string (stream)
       (dolist (c chrs)
-	(write-char c stream)))))
+	(write-char c stream))))
