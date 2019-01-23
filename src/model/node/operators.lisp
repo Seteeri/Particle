@@ -234,19 +234,20 @@
     ;; If node not found, i.e. no chars except newline
     ;; use newline pos
 
+    ;; Move right of node and then y down
     ;; Use pos with adjustments:
     ;; x: undo left bounds shift
     ;; y: shift down a line space - adjust original pos to baseline first by subtracting bounds
-    (let* ((bounds-origin (bounds-origin (gethash (char-code (data node-start)) *metrics*)))
-	   (pos-start (translation (model-matrix node-start)))
-	   (new-pos (vec3 (- (vx3 pos-start) (* (aref bounds-origin 0) *scale-node*))
-			  (+ (vy3 pos-start)
-			     (- (* (aref bounds-origin 1) *scale-node*))
-			     (- (* +linegap+ *scale-node*)))
-			  (vz3 pos-start))))
-      (setf (translation (model-matrix *node-pointer*)) new-pos)
-      (update-transform (model-matrix *node-pointer*))
-      (enqueue-node-pointer)))
+
+    (let* ((bounds-origin (bounds-origin (gethash (char-code (data node-start)) *metrics*))))
+      (move-node-to-node *node-pointer*
+			 node-start
+			 (vec3 (- (* (aref bounds-origin 0) *scale-node*))
+    			       (+ (- (* (aref bounds-origin 1) *scale-node*))
+    				  (- (* +linegap+ *scale-node*)))
+    			       0.0)))
+    
+    (enqueue-node-pointer))
 
   ;; Store pos in newline...
   
@@ -317,27 +318,31 @@
 ;; Secondary operators
 ;; Need to implement hyperweb first to identify nodes
 
-(defun move-node-right-of-node (node-a node-b)
+(defun move-node-right-of-node (node-a node-b &optional (offset (vec3 0 0 0)))
   ;; Move a to right of b
   ;;
   ;; REFACTOR
+  ;; - Add option for update
   ;; - Create left version
+  ;; - Add offsets option
   (let ((pos-a (translation (model-matrix node-a)))
 	(pos-b (translation (model-matrix node-b)))
 	(bounds-origin (bounds-origin (gethash (char-code (data node-b)) *metrics*))))
     (setf (translation (model-matrix node-a))
-	  (vec3 (+ (vx3 pos-b) (* 9.375 +scale-msdf+ *scale-node*))
-		(+ (vy3 pos-b) (- (* (aref bounds-origin 1) *scale-node*)))
-		(vz3 pos-b))))
+	  (vec3 (+ (vx3 pos-b) (vx3 offset) (* 9.375 +scale-msdf+ *scale-node*))
+		(+ (vy3 pos-b) (vy3 offset) (- (* (aref bounds-origin 1) *scale-node*)))
+		(+ (vz3 pos-b) (vx3 offset)))))
   (update-transform (model-matrix node-a)))
 
-(defun move-node-to-node (node-a node-b)
+(defun move-node-to-node (node-a node-b &optional (offset (vec3 0 0 0)))
   ;; Move node-a to node-b
   ;; REFACTOR
-  ;; - either copy/replace or modify
-  ;; - add option for update
+  ;; - Copy/replace or modify
+  ;; - Add option for update
+  ;; - Add option for offset
   (setf (translation (model-matrix node-a))
-	(vcopy3 (translation (model-matrix node-b))))
+	(v+ (translation (model-matrix node-b))
+	    offset))
   (update-transform (model-matrix node-a)))
 
 (defun link-node (node-a node-b)
