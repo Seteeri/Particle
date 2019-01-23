@@ -47,6 +47,39 @@
 ;; 		  :element-type '(unsigned-byte 8)
 ;; 		  :initial-element (coerce 0 '(unsigned-byte 8)))
 
+;; shm functions
+
+(defun enqueue-node (node &optional (pointer t))
+  (when pointer
+    (enqueue-node-pointer))
+  (sb-concurrency:enqueue (list *channel*
+				*shm-nodes*
+				(lambda ()
+				  (update-transform (model-matrix node))
+				  (serialize-node node))
+				(* (index node)
+				   +size-struct-instance+))
+			  *queue-shm*))
+
+(defun enqueue-node-pointer ()
+  (sb-concurrency:enqueue (list *channel*
+				*shm-nodes*
+				(lambda ()
+				  (update-transform (model-matrix *node-pointer*))
+				  (serialize-node *node-pointer*))
+				(* (index *node-pointer*)
+				   +size-struct-instance+))
+			  *queue-shm*))  
+
+(defun enqueue-node-zero (index)
+  (sb-concurrency:enqueue (list *channel*
+				*shm-nodes*
+				(lambda ()
+				  *data-zero-node*)
+				(* index
+				   +size-struct-instance+))
+			  *queue-shm*))
+
 (defclass node ()
   ((data :accessor data :initarg :data :initform nil)
    
@@ -382,3 +415,77 @@
   (if (eq pos-ptr :after)
       (insert-edge node-ptr node)
       (insert-edge node node-ptr)))
+
+
+;; Secondary/Aux operators
+;; Need to implement hyperweb first to identify nodes
+
+(defun move-node-x-of-node (node-a node-b pos &optional (offset (vec3 0 0 0)))
+  ;; Move a rel to b
+  ;;
+  ;; REFACTOR
+  ;; - Add option for update
+  (let ((pos-a (translation (model-matrix node-a)))
+	(pos-b (translation (model-matrix node-b)))
+	(bounds-origin (bounds-origin (gethash (char-code (data node-b)) *metrics*))))
+    (setf (translation (model-matrix node-a))
+	  (vec3 (+ (vx3 pos-b) (vx3 offset)
+		   (- (* (aref bounds-origin 0) *scale-node*)) ; l b r t
+		   (cond ((eq pos :+)
+			  (* 9.375 +scale-msdf+ *scale-node*))
+			 ((eq pos :-)
+			  (- (* 9.375 +scale-msdf+ *scale-node*)))
+			 (t
+			  t)))
+		(+ (vy3 pos-b) (vy3 offset)
+		   (- (* (aref bounds-origin 1) *scale-node*)))
+		(+ (vz3 pos-b) (vz3 offset)))))
+  (update-transform (model-matrix node-a)))
+
+(defun move-node-to-node (node-a node-b &optional (offset (vec3 0 0 0)))
+  ;; Move node-a to node-b
+  ;; REFACTOR
+  ;; - Copy/replace or modify
+  ;; - Add option for update
+  ;; - Add option for offset
+  (setf (translation (model-matrix node-a))
+	(v+ (translation (model-matrix node-b))
+	    offset))
+  (update-transform (model-matrix node-a)))
+
+(defun build-string-from-nodes ()
+  ;; Pass starting node else use node-pointer
+  ;; To eval, build string from predecessors until newline
+
+  (fmt-model t "build-string-from-nodes" "Pointer: ~a~%" *node-pointer*)
+  
+  (let ((chrs nil))
+    (loop
+       ;; currently assuming linear
+       :for pred := (digraph:successors *digraph* *node-pointer*)
+       :then (digraph:predecessors *digraph* pred)
+       :while pred
+       :do (loop
+	      ;; Leave on first non-ptr node
+	      :for node :in pred
+	      :do (unless (eq node *node-pointer*)
+		    (when (char-equal (data node) #\Newline)
+		      (return))
+		    (push (data node) chrs)
+		    (setf pred node)
+		    (return))))
+    
+    (with-output-to-string (stream)
+      (dolist (c chrs)
+	(write-char c stream)))))
+
+(defun remove-all-nodes ()
+  ;; Exclude pointer
+  (digraph:mapc-vertices (lambda (v)
+			   (unless (eq v *node-pointer*)
+			     (enqueue-node-zero (index v))
+			     (digraph:remove-vertex *digraph* v)))
+			 *digraph*)
+  (digraph:mapc-edges (lambda (e)
+			(digraph:remove-edge *digraph* e))
+		      *digraph*))
