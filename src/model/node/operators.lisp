@@ -33,39 +33,6 @@
 				   +size-struct-instance+))
 			  *queue-shm*))
 
-;; util functions
-
-;; Alternative is to animate it
-(defun translate-node-x (node
-			 displacement
-			 type-displace
-			 &optional (update t))
-  (with-slots (model-matrix)
-      node
-    (cond ((eq type-displace :abs)
-	   (setf (vx3 (translation model-matrix)) displacement))
-	  ((eq type-displace :rel)
-	   (incf (vx3 (translation model-matrix)) displacement))
-	  (t
-	   (error "Unknown type-displace")))
-    (when update
-      (update-transform model-matrix))))
-
-(defun translate-node-y (node
-			 displacement
-			 type-displace
-			 &optional (update t))
-  (with-slots (model-matrix)
-      node
-    (cond ((eq type-displace :abs)
-	   (setf (vy3 (translation model-matrix)) displacement))
-	  ((eq type-displace :rel)
-	   (incf (vy3 (translation model-matrix)) displacement))
-	  (t
-	   (error "Unknown type-displace")))
-    (when update
-      (update-transform model-matrix))))
-
 ;; core functions - callbacks
 
 (defun add-node (code &optional (move-pointer-right t))
