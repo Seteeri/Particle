@@ -10,7 +10,7 @@
    (near-ortho :accessor near-ortho :initarg :near-ortho :initform 1)
    (ortho-far :accessor ortho-far :initarg :ortho-far :initform 512)
    (mat-view :accessor mat-view :initarg :mat-view :initform nil)
-   (pos :accessor pos :initarg :pos :initform (vec3 -12 14 10))
+   (pos :accessor pos :initarg :pos :initform (vec3 0 0 10))
    (rot :accessor rot :initarg :rot :initform (vec3 0 0 0))
    (displace :accessor displace :initarg :displace :initform (vec3 1.0 1.0 1.0))))
 

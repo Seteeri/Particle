@@ -23,7 +23,7 @@
 					(coerce (/ 255 255) 'single-float)))
 
 (defun init-node-pointer ()
-  (let ((node-ptr (init-node-msdf (vec3 -11.5199995 14.127416 0)
+  (let ((node-ptr (init-node-msdf (vec3 0 0 0)
 				  *scale-node*
 				  0
 				  #\*
