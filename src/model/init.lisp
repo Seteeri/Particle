@@ -126,6 +126,16 @@
 	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))
+
+    (when t
+      ;; cut/copy/paste
+      (dolist (seq-event `((,+xk-x+ ,#'cut-node-cb)
+			   (,+xk-c+ ,#'copy-node-cb)
+			   (,+xk-v+ ,#'paste-node-cb)))
+	(register-callback `(,+xk-control-l+    (:press :down)
+			     ,(first seq-event) (:press :repeat))
+			   :exclusive
+			   (second seq-event))))
     
     (when t
       ;; handlers in node

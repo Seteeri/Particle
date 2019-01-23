@@ -175,18 +175,16 @@
 	       (setf (data node) output-eval)
 	       t)))))
 
-(defun remove-all-nodes ()
-  ;; Exclude pointer
-  (digraph:mapc-vertices (lambda (v)
-			   (unless (eq v *node-pointer*)
-			     (enqueue-node-zero (index v))
-			     (digraph:remove-vertex *digraph* v)))
-			 *digraph*)
-  (digraph:mapc-edges (lambda (e)
-			(digraph:remove-edge *digraph* e))
-		      *digraph*))
+(defun cut-node ()
+  t)
 
-;; Secondary operators
+(defun copy-node ()
+  t)
+
+(defun paste-node ()
+  t)
+
+;; Secondary/Aux operators
 ;; Need to implement hyperweb first to identify nodes
 
 (defun move-node-right-of-node (node-a node-b &optional (offset (vec3 0 0 0)))
@@ -270,3 +268,14 @@
     (with-output-to-string (stream)
       (dolist (c chrs)
 	(write-char c stream)))))
+
+(defun remove-all-nodes ()
+  ;; Exclude pointer
+  (digraph:mapc-vertices (lambda (v)
+			   (unless (eq v *node-pointer*)
+			     (enqueue-node-zero (index v))
+			     (digraph:remove-vertex *digraph* v)))
+			 *digraph*)
+  (digraph:mapc-edges (lambda (e)
+			(digraph:remove-edge *digraph* e))
+		      *digraph*))

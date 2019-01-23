@@ -468,3 +468,22 @@ nodes as they popup...use augmented reality like pokemon
  
  22. Should pointer target be predecessor or successor?
     - Successor makes sense since pointer is like an arrow
+    
+Implement NOTEPAD:
+
+Edit:
+* Undo/Redo - TODO
+* Cut/Copy/Paste/Delete - Del:YES
+* Select All - TODO
+
+Search: TODO
+* Find
+* Find Next/Prev
+* Replace
+* Jump To
+
+Options: TODO
+* Font - not really feasible right now other than fixed-width/monospace
+* Word Wrap - yes
+* Line Numbers - yes
+* Auto Indent - yes

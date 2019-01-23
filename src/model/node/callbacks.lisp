@@ -35,3 +35,30 @@
 				(lambda ()
 				  (funcall #'eval-node)))
 			  *queue-anim*))
+
+(defun cut-node-cb (seq-key ptree queue)  
+  (fmt-model t "cut-node" "~a~%" seq-key)
+  (sb-concurrency:enqueue (list nil
+				'cut-node
+				'()
+				(lambda ()
+				  (funcall #'cut-node)))
+			  *queue-anim*))
+
+(defun copy-node-cb (seq-key ptree queue)  
+  (fmt-model t "copy-node" "~a~%" seq-key)
+  (sb-concurrency:enqueue (list nil
+				'copy-node
+				'()
+				(lambda ()
+				  (funcall #'copy-node)))
+			  *queue-anim*))
+
+(defun paste-node-cb (seq-key ptree queue)  
+  (fmt-model t "paste-node" "~a~%" seq-key)
+  (sb-concurrency:enqueue (list nil
+				'paste-node
+				'()
+				(lambda ()
+				  (funcall #'paste-node)))
+			  *queue-anim*))
