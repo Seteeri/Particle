@@ -20,8 +20,8 @@
     :initform (make-array 4
 			  :adjustable nil
 			  :fill-pointer nil
-			  :element-type 'single-float
-			  :initial-element 0.0)
+			  :element-type 'single-float ; l b r t
+			  :initial-contents (list 0.0 0.0 9.375 9.375))
     :documentation "")
    (bounds-texture
     :accessor bounds-texture
@@ -30,7 +30,7 @@
 			  :adjustable nil
 			  :fill-pointer nil
 			  :element-type 'single-float
-			  :initial-element 0.0)
+			  :initial-contents (list 0.0 0.0 9.375 9.375))
     :documentation "")
    (scale
     :accessor scale
