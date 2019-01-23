@@ -44,6 +44,18 @@
 
 ;; These should have argument for pointer: default is pointer
 
+(defun remove-vertex (vert)
+  (digraph:remove-vertex *digraph* vert)
+  (sb-ext:atomic-decf (car *vertices-digraph*)))
+
+(defun remove-edge (node-a node-b)
+  (digraph:remove-edge *digraph* node-a node-b)
+  (sb-ext:atomic-decf (car *edges-digraph*)))
+
+(defun insert-edge (node-a node-b)
+  (digraph:insert-edge *digraph* node-a node-b)
+  (sb-ext:atomic-incf (car *edges-digraph*)))
+
 (defun delete-node (&optional
 		      (node-ptr *node-pointer*)
 		      (pos :before))
@@ -63,59 +75,65 @@
   ;; [a]<-[*]
   ;;
   ;; #3 - Remove [b]
-  
-  (let ((node-* (first (digraph:successors *digraph* node-ptr)))
-	(node-** nil))
+
+  (let ((fns (cond ((eq pos :before)
+		    (list #'digraph:successors
+			  #'digraph:predecessors
+			  #'digraph:successors))
+		   ((eq pos :after)
+		    (list #'digraph:predecessors
+			  #'digraph:successors
+			  #'digraph:predecessors))
+		   (t
+		    (error (format nil "delete-node -> unknown option: pos = ~S" pos))))))
     
-    (when node-*
-
-      ;; Note:
-      ;; preds - nodes that point to it (pointer)
-      ;; succs - nodes that it points to (prev chars)
+    (let ((node-* (first (funcall (first fns) *digraph* node-ptr)))
+	  (node-** nil))
       
-      ;; Remove node-* preds - assume 1 vertex/edge for now...
-      ;; - ignore pointer
-      ;; Get node-** first
-      (let ((preds (digraph:predecessors *digraph* node-*)))
-	(dolist (node-i preds)
-	  (digraph:remove-edge *digraph* node-i node-*)
-	  ;; (sb-ext:atomic-decf (car *edges-digraph*))
-	  (unless (eq node-i node-ptr)
-	    ;; (sb-ext:atomic-incf (car *edges-digraph*))
-	    (setf node-** node-i))))
+      (when node-*
 
-      ;; Remove node-* succs
-      ;; - includes pointer
-      (let ((succs (digraph:successors *digraph* node-*)))
-	(dolist (node-i succs)
-	  (digraph:remove-edge *digraph* node-* node-i)
-	  (sb-ext:atomic-decf (car *edges-digraph*))))
-      
-      ;; (when (and node-** node-* nil)
-      ;; 	(fmt-model t "backspace-node" "char: ~S -> ~S~%"
-      ;; 		   (data node-**) (data node-*)))
+	;; Note:
+	;; preds - nodes that point to it (pointer)
+	;; succs - nodes that it points to (prev chars)
+	
+	;; Remove node-* preds
+	;; - char node(s), pointer(s)
+	;; - Assume 1 char for now...
+	;; - Multi ptrs possible which we ignore
+	;; Get node-** first before removing etc
+	(let ((nbhrs (funcall (second fns) *digraph* node-*)))
+	  (dolist (node-i nbhrs)
+	    (remove-edge node-i node-*)
+	    (unless (eq node-i node-ptr)
+	      (setf node-** node-i))))
 
-      (when node-**
-	(digraph:insert-edge *digraph*
-			     node-ptr
-			     node-**)
-	(sb-ext:atomic-incf (car *edges-digraph*)))
-      
-      (digraph:remove-vertex *digraph* node-*)
-      (sb-ext:atomic-decf (car *vertices-digraph*))
+	;; Remove node-* succs
+	;; - char node(s)
+	;; - should not be pointers
+	(let ((nbhrs (funcall (third fns) *digraph* node-*)))
+	  (dolist (node-i nbhrs)
+	    (remove-edge node-* node-i)))
 
-      ;; If not node-**, that means first char just deleted
-      ;; so use its position instead
-      (if node-**
-	  ;; Update pointer to right of node-** (instead of node-* pos)
-	  (if (char-equal (data node-**) #\Newline)
-	      (move-node-to-node node-ptr node-*)
-	      (move-node-right-of-node node-ptr node-**))
-	  (move-node-to-node node-ptr node-*)))
+	(when node-**
+	  (insert-edge node-ptr node-**))
+	
+	(remove-vertex node-*)
 
-    ;; Return deleted node
-    ;; Caller should not store this so it can be GC'd
-    node-*))
+	;; TODO:
+	;; * Refactor move-node-right-of... to take :before/after arg
+	
+	;; If not node-**, that means first char just deleted
+	;; so use its position instead
+	(if node-**
+	    ;; Update pointer to right of node-** (instead of node-* pos)
+	    (if (char-equal (data node-**) #\Newline)
+		(move-node-to-node node-ptr node-*)
+		(move-node-right-of-node node-ptr node-**))
+	    (move-node-to-node node-ptr node-*)))
+
+      ;; Return deleted node
+      ;; Caller should not store this so it can be GC'd
+      node-*)))
 
 (defun insert-node (node
 		    &optional
