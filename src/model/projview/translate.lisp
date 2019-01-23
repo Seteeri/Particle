@@ -51,7 +51,7 @@
 			(enqueue-mat-view))
 		      (vx3 pos)
 		      (- (vx3 displace))
-		      'translate-camera-left)))
+		      'translate-camera-x)))
 
 (defun translate-camera-right-cb (seq-event ptree queue)
   (with-slots (pos
@@ -65,7 +65,7 @@
 			(enqueue-mat-view))
 		      (vx3 pos)
 		      (vx3 displace)
-		      'translate-camera-right)))
+		      'translate-camera-x)))
 
 (defun translate-camera-up-cb (seq-event ptree queue)
   (with-slots (pos
@@ -79,7 +79,7 @@
 			(enqueue-mat-view))
 		      (vy3 pos)
 		      (vy3 displace)
-		      'translate-camera-up)))
+		      'translate-camera-y)))
 
 (defun translate-camera-down-cb (seq-event ptree queue)
   (with-slots (pos
@@ -93,4 +93,4 @@
 			(enqueue-mat-view))
 		      (vy3 pos)
 		      (- (vy3 displace))
-		      'translate-camera-down)))
+		      'translate-camera-y)))
