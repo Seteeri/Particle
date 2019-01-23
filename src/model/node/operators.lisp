@@ -281,22 +281,11 @@
 
     (when create-node-output
       
-      ;; (insert-node-newline `(t (,+xk-return+ t) t))
-      
       ;; Keep track of output objects -> use gensym
 
-      ;; Move pointer down - use anim? -> translate-pointer instead
-      (translate-node-x *node-pointer*
-		       -11.5199995 ; need to track newline chars
-		       :abs
-		       nil)
-      (translate-node-y *node-pointer*
-		       (- (* +linegap+ *scale-node*))
-		       :rel
-		       nil) ; add more spacing due to bl adjustments
-      (update-transform (model-matrix *node-pointer*))
-      (enqueue-node-pointer)
-
+      ;; Add newline to str?
+      (insert-node-newline)
+      
       (loop
       	 :for char :across output-str
       	 :do (let ((node (add-node (char-code char))))
@@ -386,7 +375,7 @@
        :do (loop
 	      ;; Leave on first non-ptr node
 	      :for node :in pred
-	      :do (unless (eq node *node-pointer*))
+	      :do (unless (eq node *node-pointer*)
 		    (when (char-equal (data node) #\Newline)
 		      (return))
 		    (push (data node) chrs)
@@ -395,4 +384,4 @@
     
     (with-output-to-string (stream)
       (dolist (c chrs)
-	(write-char c stream))))
+	(write-char c stream)))))
