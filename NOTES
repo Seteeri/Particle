@@ -416,3 +416,52 @@ First engine is called Maximum Instancing Engine -> "Maxstance Engine"
 Use EVVEE for more lighting-based renderings...
 
 Anyhow, limitations to engine is limitations to instancing
+
+------------------------------------------------------------------------
+
+:RULES:
+- Two types of nodes: vertices and edges [binary system ;)]
+  - Node is a linkable object (thus not simply called an object)
+- Vertices
+  - can only link to edges
+    - ostensibly the user selects two vertices but automatically done
+- Edges
+  - can only link to vertices
+  - typically not textured for optimization purposes
+
+**If abstraction is broken, all hell breaks loose!**
+
+------------------------------------------------------------------------
+
+How to Design Help System
+
+Use lisp describe method as starting point
+
+User sees an object and wants to do something with it but does not know
+
+Object -> What Function? -> Desired Output
+
+Type help after it and it will print info for that node
+
+- Use a game to teach commands? Like ad destroyer...user has to destroy
+nodes as they popup...use augmented reality like pokemon
+ - start with basic commands like add/delete nodes, linking nodes, eval,
+ swapping nodes, toggling ids
+ 
+ - Use it to introduce concepts for widgets/GUI so users understand
+ how they work - or should animations
+ 
+ What are the most addictive games? 
+ Fruit ninja, gem stone game, pokemon go?
+ 
+ - People like mice because it has two buttons - easy to use and understand
+   - They move/hover/point at an object -> press a button -> something happens
+ - Mouse's buttons (functions) act on widgets which are generally 
+ standardized across programs
+ - Essentially we want something like that but more powerful
+ - Instead of the mouse, we use basic keyboard functions...
+ 
+ How to combine mouse on one hand, and keyboard on the other?
+ Mouse is continous whereas keyboard is discrete
+ Keyboard can move 1 step whereas mouse can use physical properties 
+ like velocity/acceleration

@@ -6,7 +6,7 @@
 				'add-node
 				'()
 				(lambda ()
-				  (funcall #'add-node (second (reverse (second seq-key))))))
+				  (funcall #'add-node (second (reverse (second seq-key)))))) ; create aux fn for this
 			  *queue-anim*))
 
 (defun backspace-node-cb (seq-key ptree queue)
@@ -15,7 +15,7 @@
 				'backspace-node
 				'()
 				(lambda ()
-				  (funcall #'backspace-node seq-key)))
+				  (funcall #'backspace-node)))
 			  *queue-anim*))
   
 (defun insert-node-newline-cb (seq-key ptree queue)
@@ -24,7 +24,7 @@
 				'insert-node-newline
 				'()
   				(lambda ()
-  				  (funcall #'insert-node-newline seq-key)))
+  				  (funcall #'insert-node-newline)))
 			  *queue-anim*))
   
 (defun eval-node-cb (seq-key ptree queue)  
@@ -33,5 +33,5 @@
 				'eval-node
 				'()
 				(lambda ()
-				  (funcall #'eval-node seq-key)))
+				  (funcall #'eval-node)))
 			  *queue-anim*))

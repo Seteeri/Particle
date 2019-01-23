@@ -111,7 +111,7 @@
 
     node))
   
-(defun backspace-node (seq-key)
+(defun backspace-node ()
 
   ;; Move pointer to node
   
@@ -161,7 +161,7 @@
       (enqueue-node-pointer)
       (enqueue-node-zero (index node-tgt)))))
 
-(defun insert-node-newline (seq-key)
+(defun insert-node-newline ()
   ;; Move pointer
   ;; Add node
 
@@ -225,10 +225,7 @@
       (update-transform model-matrix))))
 
 ;; Refactor and move to callbacks later
-(defun eval-node (seq-event
-		  ptree
-		  queue
-		  &optional (create-node-output t))
+(defun eval-node (&optional (create-node-output t))
   ;; Two execution contexts:
   ;; 1. Inside frame
   ;; 2. Outside frame

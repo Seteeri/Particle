@@ -179,6 +179,10 @@ is a node like any other node and thus can be operated on likewise. All
 nodal functions have an option to ignore the pointer which is set to t 
 by default.
 
+The keyboard can only manipulate one pointer, however, that pointer
+can in turn manipulate other poitners. A touchscreen interface should
+allow for manipulating as many pointers as there are touch events.
+
 **ALL FUNCTIONS ARE PASSED POINTERS, UNDO OPTION**
 1. input pointer  - what node to use for input
 2. output pointer - what node to link output to; default to input; nil means free node
@@ -319,12 +323,19 @@ moved here including input data
 2. Protoform/default/implicit symbols - default program options etc.
 3. User/runtime/explicit symbols - symbols created by user through eval/REPL
 
-Primitive Ops
+## Primitive Ops
+
+These have bindings associated with them due to their primitiveness
+
 - Add/Remove nodes (default is to link automatically)
-  - ascii -> edge+node
-  - backspace/delete -> edge+node
+  - ASCII -> edge+node (default for char objects?)
+  - Backspace/Delete -> edge+node (default for char objects?)
 - Add/Remove edges
-  - must type command after dangling edge
+  - Option: dangling edges
+  - [lk/uk] Link/unlink pointed node from pred
+    - unlinks all by default
+  - [lkp/ukp] Link/unlink pointer from pointee
+    - unlinks all by default
 - Eval node(s)
   - shift + enter: eval node from string-chars-cursor backwards -> newline node
   - alt   + enter: eval node
@@ -333,15 +344,79 @@ Primitive Ops
   - option: undo
     - t: save
     - nil: do not save
+- Cut/Copy/Paste (Ctrl-X/C/V)
+ - Cut: move node to right of pointer (alt+right)
+ - Copy: copy and move node right of pointer (alt+up)
+ - Paste: move node from right side to left side of pointer if possible (alt+left)
+   - Nothing on the left - creates a free node
+ - Use arrow keys to move objects also? -> Use alt + arrow?
+ - After cutting a bunch of stuff, user can seperate into a graph or
+   perform other basic operations...
+- Help: F1 or Ctrl H or 911? or type it - 4 strokes
+  - Move node to clear area (or dimension) and display satellite nodes
 
-Base Ops
-- Link/unlink nodes (implicitly add/remove edges)
-  - This does not delete the node - could make option with unlink
-- Swap node(s) locations
-- Sawp ID->node (and node->ID?)
+## Base Ops
+
+These have alternative shortened names. Fast way to execute these
+functions is to unlink pointer -> type command -> eval -> link pointer.
+Or newline before above so eval has marker to stop.
+
+- Undo/Redo? (Ctrl-Z/Y) - exception
+- [nn] Swap node(s) locations
+- [in/ni] Swap ID->node (and node->ID?)
   - User types ID, then types swap, and magic happens
-- Toggle node IDs
-  - Assign to TAB?
-- Center camera on node
+- [tn][shift+tab] Toggle node IDs
+- [cc] Center camera on node
+- [bi/ubi] Bind/unbind keys
 
 Selections are performed through pointer + primitive ops
+
+## Default Controls
+
+* Functions
+ * Attachments: In(put), Out(put), Opt(ions)
+* Pointer
+  * Type+eval: (make-node-pointer)
+  * Default is to select all children
+    * Universal - apply to all/future
+    * Global - apply to all/present
+    * Local - apply to single
+      
+* Escape = exit
+* Meta = toggle Wayland
+* ASCII/Enter/Tab = create child node of selected node with char
+  * Optimize spaces by not drawing them?
+  * Or create separate buffer for them?
+  * Can at least save shader time
+* Shift + Tab = toggle node IDs
+* Shift + Enter = eval ptr
+* Backspace/Delete = destroy pred/suc
+* Arrows = movement; default is pointer
+  * Use zoom to control distance? so screen distance is consistent
+  * Ptr - default/shift:
+    * XY (nearest node)
+      - or when attached to node, keep hopping nodes; if user breaks
+      link, then go free mode until reattach
+      - (spatial:intergraph;semantic:intragraph)
+    * +Shift = Z?
+      - use to move between layers?
+    * +Shift+Alt = ?
+    * +Shift+Alt+Ctrl = ? 
+  * Camera - ctrl:
+    * Ctrl = XY (nearest node)
+      - follow pointer
+    * Ctrl+Shift = Z
+      - fit to next nearest node on screen bounds?
+    * Ctrl+Shift+Alt = ?
+  * Graph (semantic) - +Alt with above
+    * Up/Down = move up/down level
+    * Left/Right = move sideways on same level
+
+* Alt+Dir = help/associated nodes (toggle or hold?)
+* Chunk into fours
+* Show transformers for data type
+* How to show???
+  1. Show on another layer - interrupts UI?
+  2. Teleport the node
+  3. Move/push other nodes out
+  4. Show on another dimension
