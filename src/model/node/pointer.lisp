@@ -54,7 +54,8 @@
 
 (defun delete-node (&key
 		      (node-ptr *node-pointer*)
-		      (pos :before))
+		      (pos-ptr :after)
+		      (pos-ref :before))
 
   ;; Linking Process:
   ;;
@@ -72,17 +73,18 @@
   ;;
   ;; #3 - Remove [b]
 
-  (let ((fns (cond ((eq pos :before)
+  (let ((fns (cond ((eq pos-ref :before)
 		    (list #'digraph:successors
 			  #'digraph:predecessors
 			  #'digraph:successors))
-		   ((eq pos :after)
+		   ((eq pos-ref :after)
 		    (list #'digraph:predecessors
 			  #'digraph:successors
 			  #'digraph:predecessors))
 		   (t
 		    (error (format nil "delete-node -> unknown option: pos = ~S" pos))))))
-    
+
+    ;; REFACTOR to use get-node-pointer-reference
     (let ((node-* (first (funcall (first fns) *digraph* node-ptr)))
 	  (node-** nil))
       
@@ -160,41 +162,37 @@
       (cond ((eq pos-ref :before)
   	     ;; 1. Remove edge between node-*   and ptr
   	     (if (eq pos-ptr :after)
-  	     	 (digraph:remove-edge *digraph* node-ptr node-*)
-  	     	 (digraph:remove-edge *digraph* node-* node-ptr))
+  	     	 (remove-edge node-ptr node-*)
+  	     	 (remove-edge node-* node-ptr))
 	     ;; 2. Insert edge between node-*   and node-new
-  	     (digraph:insert-edge *digraph* node-* node))
+  	     (insert-edge node-* node))
 	     
   	    ((eq pos-ref :after)
   	     ;; 1. Remove edge between node-*   and ptr
   	     (if (eq pos-ptr :after)
-  		 (digraph:remove-edge *digraph* node-ptr node-*)
-  		 (digraph:remove-edge *digraph* node-* node-ptr))
+  		 (remove-edge node-ptr node-*)
+  		 (remove-edge node-* node-ptr))
   	     ;; Flip above
   	     ;; 2. Insert edge between node-*   and node-new
-  	     (digraph:insert-edge *digraph* node node-*))
+  	     (insert-edge node node-*))
 	    
   	    (t
   	     t))))
   
   ;; 3. Insert edge between node new and ptr
   (if (eq pos-ptr :after)
-      (digraph:insert-edge *digraph* node-ptr node)
-      (digraph:insert-edge *digraph* node node-ptr)))
+      (insert-edge node-ptr node)
+      (insert-edge node node-ptr)))
 
 ;; rename to replace-* ?
 (defun link-node-pointer (node &optional (unlink-preds nil))
   ;; 1. Remove edge between node-*
   ;; 2. Insert edge between node new
-  (let ((node-* (first (digraph:successors *digraph* *node-pointer*))))
+  (let ((node-* (get-node-pointer-reference :after node-ptr)))
     (when node-*
       (when unlink-preds
-	(digraph:remove-edge *digraph*
-			     *node-pointer*
-			     node-*))
-      (digraph:insert-edge *digraph*
-			   *node-pointer*
-			   node))))
+	(remove-edge *node-pointer* node-*))
+      (insert-edge *node-pointer* node))))
 
 ;; translate block
 

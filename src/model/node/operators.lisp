@@ -60,7 +60,7 @@
     (digraph:insert-vertex *digraph* node)
 
     ;; Insert node before pointer
-    (insert-node node :pos-ref :before)
+    (insert-node node)
     
     ;; Move pointer node to right - make this an optional arg
     (when move-pointer-right
@@ -94,6 +94,8 @@
   (let* ((node-nl (add-node (char-code #\Newline) nil))
 	 (node-start node-nl))
 
+    ;; Could detect first char to see which direction text is in
+    
     ;; Create fn - loop until specified character or pass lambda as predicate
     ;; Start with newline char instead of pointer or it will terminate immediately
     (loop
