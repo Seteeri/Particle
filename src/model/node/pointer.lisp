@@ -42,20 +42,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; These should have argument for pointer: default is pointer
-
-(defun remove-vertex (vert)
-  (digraph:remove-vertex *digraph* vert)
-  (sb-ext:atomic-decf (car *vertices-digraph*)))
-
-(defun remove-edge (node-a node-b)
-  (digraph:remove-edge *digraph* node-a node-b)
-  (sb-ext:atomic-decf (car *edges-digraph*)))
-
-(defun insert-edge (node-a node-b)
-  (digraph:insert-edge *digraph* node-a node-b)
-  (sb-ext:atomic-incf (car *edges-digraph*)))
-
 (defun delete-node (&optional
 		      (node-ptr *node-pointer*)
 		      (pos :before))

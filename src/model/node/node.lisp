@@ -250,3 +250,15 @@
       *shm-nodes*
     (dotimes (i (/ +size-struct-instance+ 4))
       (setf (mem-aref ptr :int (+ offset-ptr i)) 0))))
+
+(defun remove-vertex (vert)
+  (digraph:remove-vertex *digraph* vert)
+  (sb-ext:atomic-decf (car *vertices-digraph*)))
+
+(defun remove-edge (node-a node-b)
+  (digraph:remove-edge *digraph* node-a node-b)
+  (sb-ext:atomic-decf (car *edges-digraph*)))
+
+(defun insert-edge (node-a node-b)
+  (digraph:insert-edge *digraph* node-a node-b)
+  (sb-ext:atomic-incf (car *edges-digraph*)))
