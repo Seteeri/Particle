@@ -247,8 +247,11 @@
 	(pos-b (translation (model-matrix node-b)))
 	(bounds-origin (bounds-origin (gethash (char-code (data node-b)) *metrics*))))
     (setf (translation (model-matrix node-a))
-	  (vec3 (+ (vx3 pos-b) (vx3 offset) (* 9.375 +scale-msdf+ *scale-node*))
-		(+ (vy3 pos-b) (vy3 offset) (- (* (aref bounds-origin 1) *scale-node*)))
+	  (vec3 (+ (vx3 pos-b) (vx3 offset)
+		   (- (* (aref bounds-origin 0) *scale-node*))
+		   (* 9.375 +scale-msdf+ *scale-node*))
+		(+ (vy3 pos-b) (vy3 offset)
+		   (- (* (aref bounds-origin 1) *scale-node*)))
 		(+ (vz3 pos-b) (vz3 offset)))))
   (update-transform (model-matrix node-a)))
 
