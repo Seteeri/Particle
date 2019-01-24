@@ -117,6 +117,9 @@
 								       scale-glyph)
 							  :translation (vcopy3 cursor))))
 	(metrics-glyph (gethash (char-code data) *metrics*)))
+
+    ;; Remember to dec on removal
+    (sb-ext:atomic-incf (car *vertices-digraph*))
     
     ;; Set color
     (when color
@@ -284,17 +287,21 @@
     (dotimes (i (/ +size-struct-instance+ 4))
       (setf (mem-aref ptr :int (+ offset-ptr i)) 0))))
 
+(defun insert-vertex (vert)
+  (digraph:insert-vertex *digraph* vert)
+  (sb-ext:atomic-incf (car *vertices-digraph*)))
+
 (defun remove-vertex (vert)
   (digraph:remove-vertex *digraph* vert)
   (sb-ext:atomic-decf (car *vertices-digraph*)))
 
-(defun remove-edge (node-a node-b)
-  (digraph:remove-edge *digraph* node-a node-b)
-  (sb-ext:atomic-decf (car *edges-digraph*)))
-
-(defun insert-edge (node-a node-b)
-  (digraph:insert-edge *digraph* node-a node-b)
+(defun insert-edge (vert-a vert-b)
+  (digraph:insert-edge *digraph* vert-a vert-b)
   (sb-ext:atomic-incf (car *edges-digraph*)))
+
+(defun remove-edge (vert-a vert-b)
+  (digraph:remove-edge *digraph* vert-a vert-b)
+  (sb-ext:atomic-decf (car *edges-digraph*)))
 
 ;; move back to ops?
 (defun delete-node (&key
@@ -484,8 +491,8 @@
   (digraph:mapc-vertices (lambda (v)
 			   (unless (eq v *node-pointer*)
 			     (enqueue-node-zero (index v))
-			     (digraph:remove-vertex *digraph* v)))
+			     (remove-vertex v)))
 			 *digraph*)
   (digraph:mapc-edges (lambda (e)
-			(digraph:remove-edge *digraph* e))
+			(remove-edge e))
 		      *digraph*))

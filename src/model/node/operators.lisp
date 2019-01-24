@@ -24,7 +24,7 @@
     ;; Why repeat when init-node does this?
     (update-transform (model-matrix node))
 
-    (digraph:insert-vertex *digraph* node)
+    (insert-vertex node)
 
     ;; Insert node before pointer
     (insert-node node)
@@ -32,9 +32,6 @@
     ;; Move pointer node to right - make this an optional arg
     (when move-pointer
       (move-node-x-of-node *node-pointer* node :+))
-
-    (sb-ext:atomic-incf (car *vertices-digraph*))
-    (sb-ext:atomic-incf (car *edges-digraph*))
     
     (enqueue-node node)
 
@@ -150,26 +147,37 @@
 
 (defun cut-node ()
   ;; Cut node from left side (succ) -> right side (pred)
-  ;; Delete original node
+  ;;
+  ;; Procedure:
+  ;; 1. Unlink ptr node
+  ;; 2. Link node ptr
+  ;; 3. move-node-x-of-node node ptr :+
   t)
 
 (defun copy-node ()
   ;; Copy node from left side (succ) -> right side (pred)
+  ;;
+  ;; Procedure:
+  ;; 1. Copy node
+  ;; 2. Link ptr node-new
+  ;; 3. move-node-x-of-node node-new ptr :+
   t)
 
 (defun paste-node ()
   ;; Take node from right side (pred) -> left side (succ)
+  ;;
+  ;; Procedure:
+  ;; 1. Unlink ptr node-paste
+  ;; 2. Insert node-ptr
+  ;; 3. move-node-x-of-node node-paste node-ptr :+
+  ;; 4. move-node-x-of-node node-ptr node-paste
   t)
 
 (defun link-node (node-a node-b)
-  (digraph:insert-edge *digraph*
-		       node-a
-		       node-b))
+  (insert-edge node-a node-b))
 
 (defun unlink-node (node-a node-b)
-  (digraph:remove-edge *digraph*
-		       node-a
-		       node-b))  
+  (remove-edge node-a node-b))
 
 (defun swap-nodes (node-src node-dest)
   ;; Get preds of src
