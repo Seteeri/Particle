@@ -8,26 +8,24 @@
   ;; which will later be executed during view
   ;; - Could make separate ptree for immediate execution and/or thread
   
-  (let ((ptree (make-ptree))
-	(queue (sb-concurrency:make-queue)))
-    ;; Fill ptree/queue
-    (loop
-       :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
-       ;; :using (hash-value states)
-       :do (submit-task *channel-input*
-			#'dispatch-seq-event
-			seq-event)
-       :finally (dotimes (i (hash-table-count (key-callbacks *controller*)))
-		  ;; Do callbacks
-		  ;; Callbacks must not share data...
-		  ;; User can do so through proper synchronization methods
-		  ;; however the intent is to operate in parallel
-		  ;; Callbacks simply build a list for ptree nodes
-		  ;; that is simply enqueued
-		  (dolist (cb-ev (receive-result *channel-input*))
-		    (destructuring-bind (cb ev)
-			cb-ev
-		      (funcall cb ev)))))))
+  ;; Fill ptree/queue
+  (loop
+     :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
+     ;; :using (hash-value states)
+     :do (submit-task *channel-input*
+		      #'dispatch-seq-event
+		      seq-event)
+     :finally (dotimes (i (hash-table-count (key-callbacks *controller*)))
+		;; Do callbacks
+		;; Callbacks must not share data...
+		;; User can do so through proper synchronization methods
+		;; however the intent is to operate in parallel
+		;; Callbacks simply build a list for ptree nodes
+		;; that is simply enqueued
+		(dolist (cb-ev (receive-result *channel-input*))
+		  (destructuring-bind (cb ev)
+		      cb-ev
+		    (funcall cb ev))))))
 
 (defun dispatch-seq-event (seq-event)
   (when (is-seq-event-valid seq-event)

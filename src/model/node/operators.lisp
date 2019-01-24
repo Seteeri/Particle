@@ -128,6 +128,11 @@
 	       (setf (data node) output-eval)
 	       t)))))
 
+(defun toggle-alpha-node ()
+  ;; Procedure:
+  ;; Modify each
+  t)
+
 (defun cut-node ()
   ;; Cut node from left side (succ) -> right side (pred)
   ;;

@@ -191,6 +191,17 @@
 			 ,+xk-return+  (:press :repeat))
 		       :exclusive
 		       #'eval-node-cb)
+
+    ;; TAB Alpha
+    ;; When used with modifiers, need to use iso-left-tab
+    (register-callback `(,+xk-shift-r+      (:press :down)
+			 ,+xk-iso-left-tab+ (:press))
+		       :exclusive
+		       #'toggle-alpha-node-cb)
+    (register-callback `(,+xk-shift-l+ (:press :down)
+			 ,+xk-iso-left-tab+     (:press))
+		       :exclusive
+		       #'toggle-alpha-node-cb)
     
     ;; for testing
     (when nil
