@@ -38,9 +38,6 @@
     node))
 
 (defun backspace-node ()
-  ;; TODO
-  ;; - fn: get pointee
-  ;; - fn: add/del edges - need to update counters
   (let ((node-del (delete-node)))
     (when node-del
       ;; Update shm
