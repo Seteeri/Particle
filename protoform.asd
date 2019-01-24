@@ -93,13 +93,10 @@
 				       		:components ((:file "node")
 							     (:file "matrix-model")
 							     (:file "operators")
-							     (:file "callbacks")
 				       			     (:file "pointer")))
 				       (:module projview
 				       		:pathname "projview"
-				       		:components ((:file "projview")
-							     (:file "scale-ortho")
-				       			     (:file "translate")))				       
+				       		:components ((:file "projview")))
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "keysymdef")
@@ -119,6 +116,7 @@
 				       (:file "metrics")
 				       (:file "animation")
 				       (:file "variables")
+				       (:file "callbacks")
 				       (:file "init")
 				       (:file "main")))
 		 (:file "src/protoform")))
