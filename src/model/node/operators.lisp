@@ -9,18 +9,11 @@
   ;; digraph
   ;; pointer
   
-  (let* ((metrics-space (gethash 32 *metrics*))
-	 (spacing (* (advance metrics-space)
-		     (scale metrics-space)
-		     *scale-node*))
-	 
-	 (cursor (translation (model-matrix *node-pointer*)))
-	 
-	 (node (init-node-msdf cursor
-			       *scale-node*
-			       (digraph:count-vertices *digraph*)
-			       (code-char code))))
-
+  (let ((node (init-node-msdf (translation (model-matrix *node-pointer*))
+			      *scale-node*
+			      (digraph:count-vertices *digraph*)
+			      (code-char code))))
+    
     ;; Why repeat when init-node does this?
     (update-transform (model-matrix node))
 
@@ -162,27 +155,37 @@
 
       ;; (format t "** = ~S; * = ~S~%" (data node-**) (data node-*))
 
-      ;; Unlink node-* from everything...
+      ;; Unlink node-* from everything...aka isolate
+      ;; - pass nil to unlink function to isolate? or make explicit function?
       ;;
       ;; Unlink node-** and node-*
       (unlink-node node-** node-*)
       ;; Unlink node-* <- ptr
       ;; Link node-** <- ptr
       (if (eq node-** node-*)
-	  ;; If same, actions cancel out so just unlink
-	  (unlink-node-pointer)
-	  (relink-node-pointer node-**))
+	  (progn
+	    ;; If same:
+	    ;; - actions cancel out so just unlink
+	    ;; - move pointer to its position	    
+	    (unlink-node-pointer)
+	    ;; passing self will move it 1x advance
+	    (move-node-x-of-node *node-pointer* *node-pointer* :- :ignore-y t))
+	  (progn
+	    (relink-node-pointer node-**)
+	    ;; Move pointer to right of node-**
+	    (move-node-x-of-node *node-pointer* node-** :+ :ignore-y t)))
 
-      ;; Move pointer to right of node-**
-      (move-node-x-of-node *node-pointer* node-** :+)
-      
+      ;; - for moves, ignore y adjustment?
+      ;;   - or readjust for new character - but should already be aligned to baseline so need not
+      ;; do anything
+            
       (let ((node-ptr-end-r (find-node-end *node-pointer*
 					   :before
 					   :before)))
 	;; Link ptr/node <- node-*
 	(link-node node-* node-ptr-end-r)
 	;; Move node-* (copy) to right of ptr
-	(move-node-x-of-node node-* node-ptr-end-r :+))
+	(move-node-x-of-node node-* node-ptr-end-r :+ :ignore-y t))
 
       ;; - Must move everything...can run || given index assuming monospace
       ;; (do-node (node *node-pointer* :after :before)

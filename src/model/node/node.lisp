@@ -422,7 +422,10 @@
 ;; Secondary/Aux operators
 ;; Need to implement hyperweb first to identify nodes
 
-(defun move-node-x-of-node (node-a node-b pos &optional (offset (vec3 0 0 0)))
+(defun move-node-x-of-node (node-a node-b pos
+			    &key
+			      (offset (vec3 0 0 0))
+			      (ignore-y nil))
   ;; Move a rel to b
   ;;
   ;; REFACTOR
@@ -431,7 +434,7 @@
 	(pos-b (translation (model-matrix node-b)))
 	(bounds-origin (bounds-origin (gethash (char-code (data node-b)) *metrics*))))
     (setf (translation (model-matrix node-a))
-	  (vec3 (+ (vx3 pos-b) (vx3 offset)
+	  (vec3 (+ (vx3 pos-b) (vx3 offset) ; get x origin of b 
 		   (- (* (aref bounds-origin 0) *scale-node*)) ; l b r t
 		   (cond ((eq pos :+)
 			  (* 9.375 +scale-msdf+ *scale-node*))
@@ -439,8 +442,11 @@
 			  (- (* 9.375 +scale-msdf+ *scale-node*)))
 			 (t
 			  t)))
+		;; To get baseline of B, inverse bounds (subtract) since its rel to origin
 		(+ (vy3 pos-b) (vy3 offset)
-		   (- (* (aref bounds-origin 1) *scale-node*)))
+		   (if ignore-y
+		       0.0
+		       (- (* (aref bounds-origin 1) *scale-node*))))
 		(+ (vz3 pos-b) (vz3 offset)))))
   (update-transform (model-matrix node-a)))
 
