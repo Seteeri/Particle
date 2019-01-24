@@ -175,9 +175,9 @@
 	    ;; Move pointer to right of node-**
 	    (move-node-x-of-node *node-pointer* node-** :+ :ignore-y t)))
 
-      ;; - for moves, ignore y adjustment?
-      ;;   - or readjust for new character - but should already be aligned to baseline so need not
-      ;; do anything
+      ;; For moves - ignore y adjustment
+      ;; - node-pointer is not aligned when created so
+      ;;   bottom of node is resting on baseline
             
       (let ((node-ptr-end-r (find-node-end *node-pointer*
 					   :before
@@ -187,15 +187,34 @@
 	;; Move node-* (copy) to right of ptr
 	(move-node-x-of-node node-* node-ptr-end-r :+ :ignore-y t))
 
-      ;; - Must move everything...can run || given index assuming monospace
-      ;; (do-node (node *node-pointer* :after :before)
-      ;; 	(format t "n = ~S:~S~%" node (data node)))
-      
+      (when t
+
+	;; Pass starting position, i.e. node-pointer position
+	;; For nodes, index to calculate
+	;; Have to set index serially...
+	;; - faster way would be to use spatial relationship to calculate index
+	;;   -> only works when nodes are sequentially positioned
+	;;   -> radial would be better
+	;;
+
+	;; pos = start + (advance * index)
+	;; adjust-pos by bounds
+	
+	(digraph:mapc-vertices (lambda (vert)
+				 (sb-concurrency:enqueue
+				  (list nil
+					(make-symbol (format nil "node-~a~%" (index vert)))
+					'()
+					(lambda ()
+					  (format t "~S~%" (translation (model-matrix vert)))
+					  ;; (funcall #'randomize-color-node vert)
+					  ))
+				  *queue-anim*))
+			       *digraph*))
+    
       (enqueue-node node-*)
       (enqueue-node node-**)
-      (enqueue-node-pointer)
-      
-      t)))
+      (enqueue-node-pointer))))
 
 (defun copy-node ()
   ;; Copy node from left side (succ) -> right side (pred)

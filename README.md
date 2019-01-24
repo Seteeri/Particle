@@ -48,8 +48,10 @@ the Librem 5 or Gemini PDA as a proof of concept.
 
 * Primary Inspirations:
     * Blender - 3D, multi-domain dataset, flexible UI
-    * Emacs - consistency, extensibility, text and keyboard driven
     * Compiz - 3D desktop effects
+    * The Humane Interface by Jeff Raskin
+    * Emacs - consistency, extensibility, text and keyboard driven
+    * McCLIM - central concept of "presentation types"
     
 * Secondary Inspirations:
     * Uzbl/Conkeror - numbered links for navigation
@@ -58,12 +60,10 @@ the Librem 5 or Gemini PDA as a proof of concept.
     * OpenDoc - early proprietary attempt by Apple to create compound documents
     * LightTable - drafting table metaphor
     * Minecraft - expressiveness
-    * CLIM
-    * Xerox Parc
+    * Xerox Parc - so much...
     
 * Personal Influences:
     * Gypsy by Larry Tesler
-    * The Humane Interface by Jeff Raskin
     * WWW by Sir Tim Berners-Lee
     * Inventing on Principle by Brett Victor
 

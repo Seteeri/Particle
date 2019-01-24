@@ -108,6 +108,9 @@
 		  id
 		  (lambda ()
 		    (funcall #'run-anim
-			     seq-key
+			     seq-event
 			     anim)))))
 
+(defun edge-pointer ()
+  ;; Move before or after
+  t)

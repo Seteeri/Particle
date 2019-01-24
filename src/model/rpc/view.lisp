@@ -45,6 +45,8 @@
        :while item
        :do (parse-task-frame item ptree ids))
     (ptree-fn 'finish
+	      ;; the only ids need are the terminal ones
+	      ;; -> prefix id with finish so we know which ids to track
 	      (loop :for key :being :the hash-keys :of ids :collect key)
   	      (lambda ())
   	      ptree)
