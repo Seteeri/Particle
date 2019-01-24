@@ -39,7 +39,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun get-node-pointer-reference (pos node-ptr)
+(defun get-node-pointer-reference (&optional
+				     (pos :after)
+				     (node-ptr *node-pointer*))
   ;; TODO:
   ;; - Add arg to get first or all
   (cond ((eq pos :after)
@@ -49,15 +51,38 @@
 	(t
 	 t)))
 
-;; rename to replace-* ?
-(defun link-node-pointer (node &optional (unlink-preds nil))
-  ;; 1. Remove edge between node-*
-  ;; 2. Insert edge between node new
-  (let ((node-* (get-node-pointer-reference :after node-ptr)))
+ ;; Specific functions for pointer-context linking
+
+(defun link-node-pointer (node &optional (pos :after))
+  ;; pos:
+  ;; before = node -> *
+  ;; after = * -> node
+  (cond ((eq pos :before)
+	 (insert-edge node *node-pointer*))
+	((eq pos :after)
+	 (insert-edge *node-pointer* node))
+	(t
+	 t)))
+
+;; use above fn
+(defun relink-node-pointer (node &optional
+				   (pos-old :after)
+				   (pos-new :after))
+  ;; Remove old link, create new link
+  ;; Return edges?
+  (unlink-node-pointer pos-old)
+  (link-node-pointer node pos-new))
+
+(defun unlink-node-pointer (&optional (pos :after))
+  ;; Assumes :after...
+  (let ((node-* (get-node-pointer-reference pos)))
     (when node-*
-      (when unlink-preds
-	(remove-edge *node-pointer* node-*))
-      (insert-edge *node-pointer* node))))
+      (cond ((eq pos :before)
+	     (remove-edge node-* *node-pointer*))
+	    ((eq pos :after)
+	     (remove-edge *node-pointer* node-*))
+	    (t
+	     t)))))
 
 ;; translate block
 

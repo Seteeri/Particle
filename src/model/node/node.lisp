@@ -492,15 +492,24 @@
 			(remove-edge e))
 		      *digraph*))
 
-(defun find-node-line-start (node-end)
-  (let* ((node-start node-end))
-    ;; Could detect first char to see which direction text is in
-    ;;
+;; Find end, specify successor or predecessor direction
+(defun find-node-line-start (node-end direction)
+  (let ((node-start node-end)
+	(fn (cond ((eq direction :before)
+		   #'digraph:predecessors)
+		  ((eq direction :after)
+		   #'digraph:successors)
+		  (t
+		   t))))
+
+    ;; Could detect first char to see which direction text is in...
+    ;; - Might introduce bugs -> print warning?
+    
     ;; Create fn - loop until specified character or pass lambda as predicate
     ;; Start with newline char instead of pointer or it will terminate immediately
     (loop
-       :for pred := (digraph:predecessors *digraph* node-end)
-       :then (digraph:predecessors *digraph* pred)
+       :for pred := (funcall fn *digraph* node-end)
+       :then (funcall fn *digraph* pred)
        :while pred
        :do (loop
 	      :for node :in pred
@@ -514,3 +523,68 @@
 			  node-start node)
 		    (return))))
     node-start))
+
+(defun find-node-end (node-default dir-1 dir-2)
+  (let ((node-start node-default)
+	(fn-1 (cond ((eq dir-1 :before)
+		     #'digraph:predecessors)
+		    ((eq dir-1 :after)
+		     #'digraph:successors)
+		    (t
+		     t)))
+	(fn-2 (cond ((eq dir-2 :before)
+		     #'digraph:predecessors)
+		    ((eq dir-2 :after)
+		     #'digraph:successors)
+		    (t
+		     t))))
+    ;; Could detect first char to see which direction text is in...
+    ;; - Might introduce bugs -> print warning?
+    
+    ;; Create fn - loop until specified character or pass lambda as predicate
+    ;; Start with newline char instead of pointer or it will terminate immediately
+    (loop
+       :for pred := (funcall fn-1 *digraph* node-default)
+       :then (funcall fn-2 *digraph* pred)
+       :while pred
+       :do (loop
+	      :for node :in pred
+	      :do (unless (equal node *node-pointer*) ; skip pointer option
+		    ;; Else set node to get preds and goto next iteration
+		    (setf pred node
+			  node-start node)
+		    (return))))
+    node-start))
+
+;; Need do-node macro
+(defmacro do-node ((var node-default dir-1 dir-2) &body body)
+  `(let ((fn-1 (cond ((eq ,dir-1 :before)
+		    #'digraph:predecessors)
+		     ((eq ,dir-1 :after)
+		      #'digraph:successors)
+		     (t
+		      t)))
+	 (fn-2 (cond ((eq ,dir-2 :before)
+		      #'digraph:predecessors)
+		     ((eq ,dir-2 :after)
+		      #'digraph:successors)
+		     (t
+		      t))))
+     ;; Could detect first char to see which direction text is in...
+     ;; - Might introduce bugs -> print warning?
+     
+     ;; Create fn - loop until specified character or pass lambda as predicate
+     ;; Start with newline char instead of pointer or it will terminate immediately
+     (loop
+	:for pred := (funcall fn-1 *digraph* ,node-default)
+	:then (funcall fn-2 *digraph* pred)
+	:while pred
+	:do (loop
+	       :for node-pred :in pred
+	       :do (unless (equal node-pred *node-pointer*) ; skip pointer
+		     (let ((,var node-pred))
+		       ,@body)
+		     (setf pred node-pred))))))
+
+(defun nth-node (node-end nth)
+  t)

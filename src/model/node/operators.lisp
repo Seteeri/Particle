@@ -26,10 +26,8 @@
 
     (insert-vertex node)
 
-    ;; Insert node before pointer
     (insert-node node)
     
-    ;; Move pointer node to right - make this an optional arg
     (when move-pointer
       (move-node-x-of-node *node-pointer* node :+))
     
@@ -59,7 +57,7 @@
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however
   (let* ((node-nl (add-node (char-code #\Newline) nil))
-	 (node-start (find-node-line-start node-nl)))
+	 (node-start (find-node-line-start node-nl :before)))
 
     ;; If node not found, i.e. no chars except newline
     ;; use newline pos
@@ -136,10 +134,65 @@
   ;; Cut node from left side (succ) -> right side (pred)
   ;;
   ;; Procedure:
-  ;; 1. Unlink ptr node
-  ;; 2. Link node ptr
-  ;; 3. move-node-x-of-node node ptr :+
-  t)
+  ;; 1. Get node-*
+  ;; 2. Get node-**
+  ;; 3. Unlink ** and *
+  ;; 4. Relink pointer to node-**
+  ;; 5. Link pointer to node-* (+x)
+  ;; 6. Move to right of pointer
+  ;;
+  ;; A -> B -> C <- *
+  ;;
+  ;; A -> B <- * <- C
+  ;;
+  ;; A <- * <- C <- B
+  ;;
+  ;; * <- C <- B  <- A
+  
+  (let* ((node-* (get-node-pointer-reference))
+	 (node-** node-*))
+    
+    (when node-*
+      
+      ;; Get node-**
+      (let ((nbhrs (digraph:predecessors *digraph* node-*)))
+	(dolist (node-i nbhrs)
+	  (unless (eq node-i *node-pointer*)
+	    (setf node-** node-i))))
+
+      ;; (format t "** = ~S; * = ~S~%" (data node-**) (data node-*))
+
+      ;; Unlink node-* from everything...
+      ;;
+      ;; Unlink node-** and node-*
+      (unlink-node node-** node-*)
+      ;; Unlink node-* <- ptr
+      ;; Link node-** <- ptr
+      (if (eq node-** node-*)
+	  ;; If same, actions cancel out so just unlink
+	  (unlink-node-pointer)
+	  (relink-node-pointer node-**))
+
+      ;; Move pointer to right of node-**
+      (move-node-x-of-node *node-pointer* node-** :+)
+      
+      (let ((node-ptr-end-r (find-node-end *node-pointer*
+					   :before
+					   :before)))
+	;; Link ptr/node <- node-*
+	(link-node node-* node-ptr-end-r)
+	;; Move node-* (copy) to right of ptr
+	(move-node-x-of-node node-* node-ptr-end-r :+))
+
+      ;; - Must move everything...can run || given index assuming monospace
+      ;; (do-node (node *node-pointer* :after :before)
+      ;; 	(format t "n = ~S:~S~%" node (data node)))
+      
+      (enqueue-node node-*)
+      (enqueue-node node-**)
+      (enqueue-node-pointer)
+      
+      t)))
 
 (defun copy-node ()
   ;; Copy node from left side (succ) -> right side (pred)
@@ -161,6 +214,7 @@
   t)
 
 (defun link-node (node-a node-b)
+  ;; Need not pos argument - user switches args
   (insert-edge node-a node-b))
 
 (defun unlink-node (node-a node-b)
