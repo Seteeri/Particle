@@ -1,10 +1,11 @@
 (in-package :protoform.model)
 
-(defparameter *dpi-glyph* (/ 1 90))
-(defparameter *scale-node* 0.008)
-
 (defconstant +size-struct-instance+ 208)
 (defconstant +scale-msdf+ 5.8239365)
+(defconstant +spaces-tab+ 1)
+
+(defparameter *dpi-glyph* (/ 1 90))
+(defparameter *scale-node* 0.008)
 (defparameter +linegap+ (* (* 9.375 2)    ;; use advance....
 			   +scale-msdf+))  ;; multiplied by scale-node later (per node)
 
@@ -12,11 +13,6 @@
 			  	      1.0 0.0  0.0 0.0
 			  	      0.0 0.0  0.0 0.0
 			  	      0.0 1.0  0.0 0.0))
-
-;; (defparameter *uv-default-node* (list 1.0                 1.0        0.0 0.0 ; tr
-;; 			  	      1.0                 0.23742993 0.0 0.0 ; br
-;; 			  	      0.22463319791666667 0.23742993 0.0 0.0 ; bl
-;; 			  	      0.22463319791666667 1.0        0.0 0.0))  ; tl
 
 (defparameter *color-default-node* (list  (coerce (/ 131 255) 'single-float)
 					  (coerce (/ 148 255) 'single-float)

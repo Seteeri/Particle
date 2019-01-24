@@ -17,7 +17,16 @@
 				(lambda ()
 				  (funcall #'backspace-node)))
 			  *queue-anim*))
-  
+
+(defun insert-node-tab-cb (seq-key ptree queue)
+  (fmt-model t "insert-node-tab" "~a~%" seq-key)
+  (sb-concurrency:enqueue (list nil
+				'insert-node-tab
+				'()
+  				(lambda ()
+  				  (funcall #'insert-node-tab)))
+			  *queue-anim*))
+
 (defun insert-node-newline-cb (seq-key ptree queue)
   (fmt-model t "insert-node-newline" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil

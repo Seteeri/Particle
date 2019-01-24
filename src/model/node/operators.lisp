@@ -47,6 +47,12 @@
       (enqueue-node-pointer)
       (enqueue-node-zero (index node-del)))))
 
+(defun insert-node-tab ()
+  (dotimes (n (1- +spaces-tab+))
+    (add-node (char-code #\Tab) nil))
+  ;; On last add-node move pointer
+  (add-node (char-code #\Tab)))
+
 (defun insert-node-newline ()
   ;; 1. Add newline node; pointer will move right
   ;; 2. Find beginning of line - loop preds until nil

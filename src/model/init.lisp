@@ -121,8 +121,9 @@
     
     (when t
       ;; handlers in node
-      (dolist (seq-event `((,+xk-backspace+  ,#'backspace-node-cb)
-			   (,+xk-return+     ,#'insert-node-newline-cb)))
+      (dolist (seq-event `((,+xk-backspace+ ,#'backspace-node-cb)
+			   (,+xk-return+    ,#'insert-node-newline-cb)
+			   (,+xk-tab+       ,#'insert-node-tab-cb)))
 	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))
