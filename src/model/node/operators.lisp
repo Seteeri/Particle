@@ -128,9 +128,8 @@
 	       (setf (data node) output-eval)
 	       t)))))
 
-(defun toggle-alpha-node ()
+(defun show-node-ids ()
   ;; Procedure:
-  ;; Modify each
   t)
 
 (defun cut-node ()
