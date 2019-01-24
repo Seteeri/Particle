@@ -5,10 +5,6 @@
 
 (defun dispatch-all-seq-event ()
   ;; Execute callbacks in order -> merge deps into single ptree
-  ;; which will later be executed during view
-  ;; - Could make separate ptree for immediate execution and/or thread
-  
-  ;; Fill ptree/queue
   (loop
      :for seq-event :being :the :hash-keys :of (key-callbacks *controller*)
      ;; :using (hash-value states)
@@ -16,23 +12,20 @@
 		      #'dispatch-seq-event
 		      seq-event)
      :finally (dotimes (i (hash-table-count (key-callbacks *controller*)))
-		;; Do callbacks
-		;; Callbacks must not share data...
-		;; User can do so through proper synchronization methods
-		;; however the intent is to operate in parallel
-		;; Callbacks simply build a list for ptree nodes
-		;; that is simply enqueued
-		(dolist (cb-ev (receive-result *channel-input*))
-		  (destructuring-bind (cb ev)
-		      cb-ev
-		    (funcall cb ev))))))
+		t)))
 
 (defun dispatch-seq-event (seq-event)
+  ;; Callbacks are executed in order
+  ;; Can run all callbacks in parallel?
   (when (is-seq-event-valid seq-event)
     (loop
        :for cb :being :the :hash-keys :of (get-callbacks seq-event)
-	 ;; could also use queue
-       :collect (list cb seq-event))))
+       ;; Callbacks must not share data...
+       ;; User can do so through proper synchronization methods
+       ;; however the intent is to operate in parallel
+       ;; Callbacks simply build a list for ptree nodes
+       ;; that is simply enqueued	 
+       :collect (funcall cb seq-event))))
 
 (defun is-seq-event-valid (seq-events-key)
   (with-slots (key-states)
