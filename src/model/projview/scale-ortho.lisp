@@ -2,8 +2,6 @@
 
 ;; Match translate fn?
 (defun scale-ortho (seq-event
-		    ptree
-		    queue
 		    fn-new
 		    delta
 		    id)
@@ -29,20 +27,18 @@
 			       seq-event
 			       anim))))))
 
-(defun scale-ortho-down-cb (seq-event ptree queue) ; zoom in
+(defun scale-ortho-down-cb (seq-event)
+  ;; zoom in
   (scale-ortho seq-event
-	       ptree
-	       queue
 	       (lambda (value-new)
 		 (setf (scale-ortho *projview*) value-new)
 		 (enqueue-mat-proj))
 	       (- (vz3 (displace *projview*)))
 	       'scale-ortho))
 
-(defun scale-ortho-up-cb (seq-event ptree queue) ; zoom out
+(defun scale-ortho-up-cb (seq-event)
+  ;; zoom out
   (scale-ortho seq-event
-	       ptree
-	       queue
 	       (lambda (value-new)
 		 (setf (scale-ortho *projview*) value-new)
 		 (enqueue-mat-proj))

@@ -1,6 +1,6 @@
 (in-package :protoform.model)
 
-(defun add-node-cb (seq-key ptree queue)
+(defun add-node-cb (seq-key)
   (fmt-model t "add-node" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'add-node
@@ -9,7 +9,7 @@
 				  (funcall #'add-node (second (reverse (second seq-key)))))) ; create aux fn for this
 			  *queue-anim*))
 
-(defun backspace-node-cb (seq-key ptree queue)
+(defun backspace-node-cb (seq-key)
   (fmt-model t "backspace-node" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'backspace-node
@@ -18,7 +18,7 @@
 				  (funcall #'backspace-node)))
 			  *queue-anim*))
 
-(defun insert-node-tab-cb (seq-key ptree queue)
+(defun insert-node-tab-cb (seq-key)
   (fmt-model t "insert-node-tab" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'insert-node-tab
@@ -27,7 +27,7 @@
   				  (funcall #'insert-node-tab)))
 			  *queue-anim*))
 
-(defun insert-node-newline-cb (seq-key ptree queue)
+(defun insert-node-newline-cb (seq-key)
   (fmt-model t "insert-node-newline" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'insert-node-newline
@@ -36,7 +36,7 @@
   				  (funcall #'insert-node-newline)))
 			  *queue-anim*))
   
-(defun eval-node-cb (seq-key ptree queue)  
+(defun eval-node-cb (seq-key)
   (fmt-model t "eval-node" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'eval-node
@@ -45,7 +45,7 @@
 				  (funcall #'eval-node)))
 			  *queue-anim*))
 
-(defun cut-node-cb (seq-key ptree queue)  
+(defun cut-node-cb (seq-key)
   (fmt-model t "cut-node" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'cut-node
@@ -54,7 +54,7 @@
 				  (funcall #'cut-node)))
 			  *queue-anim*))
 
-(defun copy-node-cb (seq-key ptree queue)  
+(defun copy-node-cb (seq-key)
   (fmt-model t "copy-node" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'copy-node
@@ -63,7 +63,7 @@
 				  (funcall #'copy-node)))
 			  *queue-anim*))
 
-(defun paste-node-cb (seq-key ptree queue)  
+(defun paste-node-cb (seq-key)
   (fmt-model t "paste-node" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'paste-node

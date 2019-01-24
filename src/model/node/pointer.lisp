@@ -62,8 +62,6 @@
 ;; translate block
 
 (defun translate-pointer (seq-event
-			  ptree
-			  queue
 			  fn-new
 			  start
 			  delta
@@ -88,14 +86,10 @@
 			     seq-key
 			     anim)))))
 
-(defun translate-pointer-left-cb (seq-event
-				  ptree
-				  queue)
+(defun translate-pointer-left-cb (seq-event)
   (with-slots (model-matrix)
       *node-pointer*
     (translate-pointer seq-event
-		       ptree
-		       queue
 		       (lambda (value-new) ; update fn
 			 (setf (vx3 (translation model-matrix)) value-new)
 			 (enqueue-node-pointer))
@@ -103,14 +97,10 @@
 		       (- (* 96 *scale-node*))          ; delta
 		       'move-pointer-x)))
 
-(defun translate-pointer-right-cb (seq-event
-				   ptree
-				   queue)
+(defun translate-pointer-right-cb (seq-event)
   (with-slots (model-matrix)
       *node-pointer*
     (translate-pointer seq-event
-		       ptree
-		       queue
 		       (lambda (value-new)
 			 (setf (vx3 (translation model-matrix)) value-new)
 			 (enqueue-node-pointer))
@@ -118,14 +108,10 @@
 		       (* 96 *scale-node*)
 		       'move-pointer-x)))
 
-(defun translate-pointer-up-cb (seq-event
-				ptree
-				queue)
+(defun translate-pointer-up-cb (seq-event)
   (with-slots (model-matrix)
       *node-pointer*
     (translate-pointer seq-event
-		       ptree
-		       queue
 		       (lambda (value-new)
 			 (setf (vy3 (translation model-matrix)) value-new)
 			 (enqueue-node-pointer))
@@ -133,14 +119,10 @@
 		       (* +linegap+ *scale-node*)
 		       'move-pointer-y)))
 
-(defun translate-pointer-down-cb (seq-event
-				  ptree
-				  queue)
+(defun translate-pointer-down-cb (seq-event)
   (with-slots (model-matrix)
       *node-pointer*
     (translate-pointer seq-event
-		       ptree
-		       queue
 		       (lambda (value-new)
 			 (setf (vy3 (translation model-matrix)) value-new)
 			 (enqueue-node-pointer))

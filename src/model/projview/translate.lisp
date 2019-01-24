@@ -2,8 +2,6 @@
 
 ;; Abstract function to anim later
 (defun translate-camera (seq-event
-			 ptree
-			 queue
 			 fn-new
 			 start
 			 delta
@@ -39,13 +37,11 @@
 			     seq-event
 			     anim)))))
 
-(defun translate-camera-left-cb (seq-event ptree queue)
+(defun translate-camera-left-cb (seq-event)
   (with-slots (pos
 	       displace)
       *projview*
     (translate-camera seq-event
-		      ptree
-		      queue
 		      (lambda (value-new)
 			(setf (vx3 pos) value-new)
 			(enqueue-mat-view))
@@ -53,13 +49,11 @@
 		      (- (vx3 displace))
 		      'translate-camera-x)))
 
-(defun translate-camera-right-cb (seq-event ptree queue)
+(defun translate-camera-right-cb (seq-event)
   (with-slots (pos
 	       displace)
       *projview*
     (translate-camera seq-event
-		      ptree
-		      queue
 		      (lambda (value-new)
 			(setf (vx3 pos) value-new)
 			(enqueue-mat-view))
@@ -67,13 +61,11 @@
 		      (vx3 displace)
 		      'translate-camera-x)))
 
-(defun translate-camera-up-cb (seq-event ptree queue)
+(defun translate-camera-up-cb (seq-event)
   (with-slots (pos
 	       displace)
       *projview*
     (translate-camera seq-event
-		      ptree
-		      queue
 		      (lambda (value-new)
 			(setf (vy3 pos) value-new)
 			(enqueue-mat-view))
@@ -81,13 +73,11 @@
 		      (vy3 displace)
 		      'translate-camera-y)))
 
-(defun translate-camera-down-cb (seq-event ptree queue)
+(defun translate-camera-down-cb (seq-event)
   (with-slots (pos
 	       displace)
       *projview*
     (translate-camera seq-event
-		      ptree
-		      queue
 		      (lambda (value-new)
 			(setf (vy3 pos) value-new)
 			(enqueue-mat-view))
