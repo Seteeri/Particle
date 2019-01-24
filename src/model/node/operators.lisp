@@ -55,31 +55,11 @@
   ;; 2. Find beginning of line - loop preds until nil
   ;; 3. Update newline slot: pos-start-line
   ;; 3. Move pointer to newline
-
+    
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however
   (let* ((node-nl (add-node (char-code #\Newline) nil))
-	 (node-start node-nl))
-
-    ;; Could detect first char to see which direction text is in
-    
-    ;; Create fn - loop until specified character or pass lambda as predicate
-    ;; Start with newline char instead of pointer or it will terminate immediately
-    (loop
-       :for pred := (digraph:predecessors *digraph* node-nl)
-       :then (digraph:predecessors *digraph* pred)
-       :while pred
-       :do (loop
-	      :for node :in pred
-	      :do (unless (equal node *node-pointer*) ; skip pointer
-		    (when (char-equal (data node) #\Newline)
-		      ;; leave until newline (or end)
-		      (return))
-		    ;; (format t "~S : ~S~%" node (data node))
-		    ;; Else set node to get preds and goto next iteration
-		    (setf pred node
-			  node-start node)
-		    (return))))
+	 (node-start (find-node-line-start node-nl)))
 
     ;; If node not found, i.e. no chars except newline
     ;; use newline pos

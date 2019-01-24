@@ -299,6 +299,57 @@
   (digraph:remove-edge *digraph* vert-a vert-b)
   (sb-ext:atomic-decf (car *edges-digraph*)))
 
+(defun insert-node (node
+		    &key
+		      (node-ptr *node-pointer*)
+		      (pos-ptr :after)
+		      (pos-ref :before))
+  ;; Linking Process:
+  ;;
+  ;; (ins here)
+  ;;    |
+  ;; [a]<-[*] (start)
+  ;; [b]
+  ;;
+  ;; #1
+  ;; [a] [*]
+  ;; [b] 
+  ;;
+  ;; #2
+  ;; [a]->[b] [*]
+  ;;
+  ;; #3
+  ;; [a]->[b]<-[*]
+
+  ;; Ordered this way in case there is no node-*
+  
+  (let ((node-* (get-node-pointer-reference pos-ptr node-ptr)))
+    (when node-*    
+      (cond ((eq pos-ref :before)
+  	     ;; 1. Remove edge between node-*   and ptr
+  	     (if (eq pos-ptr :after)
+  	     	 (remove-edge node-ptr node-*)
+  	     	 (remove-edge node-* node-ptr))
+	     ;; 2. Insert edge between node-*   and node-new
+  	     (insert-edge node-* node))
+	     
+  	    ((eq pos-ref :after)
+  	     ;; 1. Remove edge between node-*   and ptr
+  	     (if (eq pos-ptr :after)
+  		 (remove-edge node-ptr node-*)
+  		 (remove-edge node-* node-ptr))
+  	     ;; Flip above
+  	     ;; 2. Insert edge between node-*   and node-new
+  	     (insert-edge node node-*))
+	    
+  	    (t
+  	     t))))
+  
+  ;; 3. Insert edge between node new and ptr
+  (if (eq pos-ptr :after)
+      (insert-edge node-ptr node)
+      (insert-edge node node-ptr)))
+
 ;; move back to ops?
 (defun delete-node (&key
 		      (node-ptr *node-pointer*)
@@ -367,58 +418,6 @@
     ;; Return deleted node
     ;; Caller should not store this so it can be GC'd
     node-*))
-
-(defun insert-node (node
-		    &key
-		      (node-ptr *node-pointer*)
-		      (pos-ptr :after)
-		      (pos-ref :before))
-  ;; Linking Process:
-  ;;
-  ;; (ins here)
-  ;;    |
-  ;; [a]<-[*] (start)
-  ;; [b]
-  ;;
-  ;; #1
-  ;; [a] [*]
-  ;; [b] 
-  ;;
-  ;; #2
-  ;; [a]->[b] [*]
-  ;;
-  ;; #3
-  ;; [a]->[b]<-[*]
-
-  ;; Ordered this way in case there is no node-*
-  
-  (let ((node-* (get-node-pointer-reference pos-ptr node-ptr)))
-    (when node-*    
-      (cond ((eq pos-ref :before)
-  	     ;; 1. Remove edge between node-*   and ptr
-  	     (if (eq pos-ptr :after)
-  	     	 (remove-edge node-ptr node-*)
-  	     	 (remove-edge node-* node-ptr))
-	     ;; 2. Insert edge between node-*   and node-new
-  	     (insert-edge node-* node))
-	     
-  	    ((eq pos-ref :after)
-  	     ;; 1. Remove edge between node-*   and ptr
-  	     (if (eq pos-ptr :after)
-  		 (remove-edge node-ptr node-*)
-  		 (remove-edge node-* node-ptr))
-  	     ;; Flip above
-  	     ;; 2. Insert edge between node-*   and node-new
-  	     (insert-edge node node-*))
-	    
-  	    (t
-  	     t))))
-  
-  ;; 3. Insert edge between node new and ptr
-  (if (eq pos-ptr :after)
-      (insert-edge node-ptr node)
-      (insert-edge node node-ptr)))
-
 
 ;; Secondary/Aux operators
 ;; Need to implement hyperweb first to identify nodes
@@ -492,3 +491,26 @@
   (digraph:mapc-edges (lambda (e)
 			(remove-edge e))
 		      *digraph*))
+
+(defun find-node-line-start (node-end)
+  (let* ((node-start node-end))
+    ;; Could detect first char to see which direction text is in
+    ;;
+    ;; Create fn - loop until specified character or pass lambda as predicate
+    ;; Start with newline char instead of pointer or it will terminate immediately
+    (loop
+       :for pred := (digraph:predecessors *digraph* node-end)
+       :then (digraph:predecessors *digraph* pred)
+       :while pred
+       :do (loop
+	      :for node :in pred
+	      :do (unless (equal node *node-pointer*) ; skip pointer
+		    (when (char-equal (data node) #\Newline)
+		      ;; leave until newline (or end)
+		      (return))
+		    ;; (format t "~S : ~S~%" node (data node))
+		    ;; Else set node to get preds and goto next iteration
+		    (setf pred node
+			  node-start node)
+		    (return))))
+    node-start))
