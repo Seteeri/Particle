@@ -8,21 +8,21 @@
   ;; node new
   ;; digraph
   ;; pointer
-  
-  (let ((node (init-node-msdf (translation (model-matrix *node-pointer*))
-			      *scale-node*
-			      (digraph:count-vertices *digraph*)
-			      (code-char code))))
     
-    ;; Why repeat when init-node does this?
-    (update-transform (model-matrix node))
+  (let* ((baseline (get-origin-from-node-pos *node-pointer*))
+	 (node (init-node-msdf baseline
+			       *scale-node*
+			       (digraph:count-vertices *digraph*)
+			       (code-char code))))
 
     (insert-vertex node)
 
     (insert-node node)
     
     (when move-pointer
-      (move-node-x-of-node *node-pointer* node :+))
+      (advance-node-of-node *node-pointer*
+			    node
+			    :+))
     
     (enqueue-node node)
 
@@ -181,14 +181,12 @@
 	    (progn
 	      (unlink-nodes node-ref-new node-ref)
 	      (link-nodes *node-pointer* node-ref-new)
-  	      (move-node-x-of-node *node-pointer*
+  	      (advance-node-of-node *node-pointer*
   	  			   node-ref-new
-  	  			   :+
-  	  			   :ignore-y t))
-  	    (move-node-x-of-node *node-pointer*
+  	  			   :+s))
+  	    (advance-node-of-node *node-pointer*
   	  			 *node-pointer*
-  	  			 :-
-  	  			 :ignore-y t))
+  	  			 :-))
 	
 	;; This part depends on whether buffer filled or not
 	;; POSS: Use insert function?
@@ -197,21 +195,18 @@
 	      (link-nodes node-buf node-ref)
 	      (link-nodes node-ref *node-pointer*)
 	      ;; Move buf right of itself
-	      (move-node-x-of-node node-buf
+	      (advance-node-of-node node-buf
   				   node-buf
-  				   :+
-  				   :ignore-y t)	      
+  				   :+)	      
 	      ;; Then move ref left of buf
-	      (move-node-x-of-node node-ref
+	      (advance-node-of-node node-ref
   				   node-buf
-  				   :-
-  				   :ignore-y t))
+  				   :-))
 	    (progn
 	      (link-nodes node-ref *node-pointer*)
-	      (move-node-x-of-node node-ref
+	      (advance-node-of-node node-ref
 				   *node-pointer*
-  				   :+
-  				   :ignore-y t))))
+  				   :+))))
       
       ;; (multiple-value-bind (node-buf node-ref)
       ;; 	  (get-node-bi-ptr)
@@ -234,7 +229,7 @@
   ;; Procedure:
   ;; 1. Copy node
   ;; 2. Link ptr node-new
-  ;; 3. move-node-x-of-node node-new ptr :+
+  ;; 3. advance-node-of-node node-new ptr :+
   t)
 
 (defun paste-node ()
@@ -261,15 +256,13 @@
 	(link-node-pointer node-buf)
 
 	;; Move ptr right
-  	(move-node-x-of-node *node-pointer*
+  	(advance-node-of-node *node-pointer*
   	  		     *node-pointer*
-  	  		     :+
-  	  		     :ignore-y t)
+  	  		     :+)
 	;; Position node-buf left of ptr
-	(move-node-x-of-node node-buf
+	(advance-node-of-node node-buf
   			     *node-pointer*
-  			     :-
-  			     :ignore-y t)	      
+  			     :-)	      
 	
 	(when node-buf-new
 	  (link-node-pointer node-buf-new)))
@@ -306,26 +299,22 @@
 	  (progn
 	    (link-node node-* node-tgt)
 	    ;; Move copy node right of pointed node
-	    (move-node-x-of-node node-tgt
+	    (advance-node-of-node node-tgt
 				 node-*
-				 :+
-				 :ignore-y t)
+				 :+)
 	    ;; Move ptr node right of copy node
-	    (move-node-x-of-node *node-pointer*
+	    (advance-node-of-node *node-pointer*
 				 node-tgt
-				 :+
-				 :ignore-y t))
+				 :+))
 	  (progn
 	    ;; No pointed node so move ptr right
 	    ;; Then move copy node left of ptr
-	    (move-node-x-of-node *node-pointer*
+	    (advance-node-of-node *node-pointer*
 				 *node-pointer*
-				 :+
-				 :ignore-y t)
-	    (move-node-x-of-node node-tgt
+				 :+)
+	    (advance-node-of-node node-tgt
 				 *node-pointer*
-				 :-
-				 :ignore-y t)))
+				 :-)))
             
       (enqueue-node node-tgt)
       (enqueue-node-pointer))))

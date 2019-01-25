@@ -139,8 +139,10 @@
       ;; - Question is whether the glyph should touch that or adjust from there
       ;;   - Then first char x pos would need not be shifted
       (let ((translation-mm (translation (model-matrix node))))
-	(setf (vx3 translation-mm) (+ (vx3 cursor) (* (aref bounds-origin 0) scale-glyph))
-	      (vy3 translation-mm) (+ (vy3 cursor) (* (aref bounds-origin 1) scale-glyph))
+	(setf (vx3 translation-mm) (+ (vx3 cursor)
+				      (* (aref bounds-origin 0) scale-glyph))
+	      (vy3 translation-mm) (+ (vy3 cursor)
+				      (* (aref bounds-origin 1) scale-glyph))
 	      (vz3 translation-mm) (vz3 cursor)))
 
       ;; Aspect ratio of node must match aspect ratio of UV
@@ -371,7 +373,7 @@
 	  ;; Update pointer to right of node-** (instead of node-* pos)
 	  (if (char-equal (data node-**) #\Newline)
 	      (move-node-to-node node-ptr node-*)
-	      (move-node-x-of-node node-ptr node-** :+))
+	      (advance-node-of-node node-ptr node-** :+))
 	  (move-node-to-node node-ptr node-*)))
 
     ;; Return deleted node
@@ -381,34 +383,35 @@
 ;; Secondary/Aux operators
 ;; Need to implement hyperweb first to identify nodes
 
-(defun move-node-x-of-node (node-a node-b pos
-			    &key
-			      (offset (vec3 0 0 0))
-			      (ignore-y nil))
-  ;; Move a rel to b
-  ;;
-  ;; REFACTOR
-  ;; - Add option for update
-  (let ((pos-a (translation (model-matrix node-a)))
-	(pos-b (translation (model-matrix node-b)))
-	(bounds-origin (bounds-origin (gethash (char-code (data node-b)) *metrics*))))
-    (setf (translation (model-matrix node-a))
-	  (vec3 (+ (vx3 pos-b) (vx3 offset) ; get x origin of b 
-		   (- (* (aref bounds-origin 0) *scale-node*)) ; l b r t
-		   (cond ((eq pos :+)
-			  (* 9.375 +scale-msdf+ *scale-node*))
-			 ((eq pos :-)
-			  (- (* 9.375 +scale-msdf+ *scale-node*)))
-			 (t
-			  t)))
-		;; To get baseline of B, inverse bounds (subtract) since its rel to origin
-		(+ (vy3 pos-b) (vy3 offset)
-		   (if ignore-y
-		       0.0
-		       (- (* (aref bounds-origin 1) *scale-node*))))
-		(+ (vz3 pos-b) (vz3 offset)))))
-  (update-transform (model-matrix node-a)))
+(defun get-origin-from-node-pos (node)
+  ;; Get origin from node position
+  ;; l b r t
+  (v+ (translation (model-matrix node))
+      (let ((bounds-origin (bounds-origin (gethash (char-code (data node)) *metrics*))))
+	(vec3 (- (* (aref bounds-origin 0) *scale-node*))
+	      (- (* (aref bounds-origin 1) *scale-node*))
+	      0.0))))
 
+(defun advance-node-of-node (node-a
+			     node-b
+			     dir
+			     &key
+			       (offset (vec3 0 0 0)))
+  (let* ((origin-b (get-origin-from-node-pos node-b))
+	 (bounds-a (bounds-origin (gethash (char-code (data node-a)) *metrics*)))
+	 (new-pos (v+ origin-b
+		      offset
+		      (vec3 (+ (cond ((eq dir :+)
+				      (* 9.375 +scale-msdf+ *scale-node*))
+				     ((eq dir :-)
+				      (- (* 9.375 +scale-msdf+ *scale-node*))))
+			       (* (aref bounds-a 0) *scale-node*))
+			    (* (aref bounds-a 1) *scale-node*)
+			    0.0))))
+    (setf (translation (model-matrix node-a)) new-pos)
+    (update-transform (model-matrix node-a))
+    new-pos))
+  
 (defun move-node-to-node (node-a node-b &optional (offset (vec3 0 0 0)))
   ;; Move node-a to node-b
   ;; REFACTOR
