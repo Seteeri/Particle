@@ -53,16 +53,35 @@
 
  ;; Specific functions for pointer-context linking
 
+;; Refactor these to generic nodes....
+
 (defun link-node-pointer (node &optional (dir :out))
   ;; pos:
   ;; before = node -> *
   ;; after = * -> nodae
+  (cond ((eq dir :in)  (insert-edge node *node-pointer*))
+	((eq dir :out) (insert-edge *node-pointer* node))
+	(t             (error "link-node-pointer: dir invalid"))))
+
+(defun unlink-node-pointer (&optional (dir :out))
   (cond ((eq dir :in)
-	 (insert-edge node *node-pointer*))
+	 (when-let ((* (get-node-in-ptr)))
+		   (remove-edge * *node-pointer*)
+		   *))
 	((eq dir :out)
-	 (insert-edge *node-pointer* node))
+	 (when-let ((* (get-node-out-ptr)))
+		   (remove-edge *node-pointer* *)
+		   *))
+	((eq dir :bi)
+	 (multiple-value-bind (node-* *-node)
+	     (get-node-bi-ptr)
+	   (when node-*
+	     (remove-edge node-* *node-pointer*))
+	   (when *-node
+	     (remove-edge *node-pointer* *-node))
+	   (values node-* *-node)))
 	(t
-	 (error "link-node-pointer: dir invalid"))))
+	 (error "unlink-node-pointer: dir invalid"))))
 
 (defun relink-node-pointer (node &optional
 				   (dir-old :out)
@@ -70,22 +89,6 @@
   ;; Return edges?
   (unlink-node-pointer dir-old)
   (link-node-pointer node dir-new))
-
-(defun unlink-node-pointer (&optional (dir :out))
-  (cond ((eq dir :in)
-	 (get-node-in-ptr))
-	((eq dir :out)
-	 (get-node-out-ptr))
-	((eq dir :bi)
-	 (multiple-value-bind (node-* *-node)
-	     (get-node-bi-ptr)
-	   (when node-*
-	     (remove-edge node-* *node-pointer*))
-	   (when *-node
-	     (remove-edge *node-pointer* node-*))
-	   (values node-* *-node)))
-	(t
-	 (error "unlink-node-pointer: dir invalid"))))
 
 ;; translate block
 

@@ -119,107 +119,114 @@
 	       (setf (data node) output-eval)
 	       t)))))
 
+(defun draw-graph ()
+  (digraph.dot:draw *digraph*
+  		    :filename (str:concat (format nil "graph-~a" (osicat:get-monotonic-time))
+					  ".png")
+		    :format :png))
+
 (defun cut-node ()
   ;; Cut node from left side (succ) -> right side (pred)
-  ;;
-  ;; Procedure:
-  ;; 1. Get node-*
-  ;; 2. Get node-**
-  ;; 3. Unlink ** and *
-  ;; 4. Relink pointer to node-**
-  ;; 5. Link pointer to node-* (+x)
-  ;; 6. Move to right of pointer
-  ;;
-  ;; A -> B -> C <- *
-  ;;
-  ;; A -> B <- * <- C
-  ;;
-  ;; A <- * <- C <- B
-  ;;
-  ;; * <- C <- B  <- A
   
-  (let* ((node-* (get-node-out-ptr))
-	 (node-** node-*))
+  ;; Empty buffer:
+  ;; A -> B -> C <- *      | START
+  ;; A -> B -> C    *      | Unlink ptr
+  ;;
+  ;; A -> B    C    *      | Unlink C (B-C)
+  ;; A <- B <------ *    C | Link ptr B
+  ;;
+  ;; A -> B <------ * <- C | Link C ptr
+
+  ;; Filled buffer:
+  ;; A -> B  <- * <- C     | START
+  ;; A -> B     *    C     | Unlink ptr
+  ;;
+  ;; A    B     *    C     | Unlink B (A-B)
+  ;; A <------- *    C   B | Link ptr A
+  ;;
+  ;; A <------- * <- B    C | Link B ptr (should link ptr last?)
+  ;; A <------- * <- B <- C | Link C B
+
+  ;; Last item:
+  ;; A <- * <-      C <- B      | START
+  ;; A    *         C <- B      | Unlink ptr
+  ;;
+  ;;      *    A <- C <- B      | Link C A
+  ;;      * <- A <- C <- B      | Link A ptr
+  
+  ;; Default to FIFO
+  (multiple-value-bind (node-buf node-ref)
+      (unlink-node-pointer :bi)
+
+    ;; (format t "*:: ~S~%" (digraph:predecessors *digraph* *node-pointer*))
+    ;; (format t "*:: ~S~%" (digraph:successors *digraph* *node-pointer*))
     
-    (when node-*
-      
-      ;; Get node-**
-      (let ((nbhrs (digraph:predecessors *digraph* node-*)))
-	(dolist (node-i nbhrs)
-	  (unless (eq node-i *node-pointer*)
-	    (setf node-** node-i))))
+    ;; (format t "A:: ~S <- * <- ~S~%"
+    ;; 	    (if node-ref
+    ;; 		(data node-ref)
+    ;; 		nil)
+    ;; 	    (if node-buf
+    ;; 		(data node-buf)
+    ;; 		nil))
 
-      ;; (format t "** = ~S; * = ~S~%" (data node-**) (data node-*))
+    ;; Ensure node to cut
+    (when node-ref
+      (let ((node-ref-new (get-node-in node-ref)))
 
-      ;; Unlink node-* from everything...aka isolate
-      ;; - pass nil to unlink function to isolate? or make explicit function?
-      ;;
-      ;; Unlink node-** and node-*
-      (unlink-node node-** node-*)
-      ;; Unlink node-* <- ptr
-      ;; Link node-** <- ptr
-      (if (eq node-** node-*)
-	  (progn
-	    ;; If same:
-	    ;; - actions cancel out so just unlink
-	    ;; - move pointer to its position	    
-	    (unlink-node-pointer)
-	    ;; passing self will move it 1x advance
-	    (move-node-x-of-node *node-pointer*
-				 *node-pointer*
-				 :-
-				 :ignore-y t))
-	  (progn
-	    (relink-node-pointer node-**)
-	    ;; Move pointer to right of node-**
-	    (move-node-x-of-node *node-pointer*
-				 node-**
-				 :+
-				 :ignore-y t)))
+	;; (format t "  node-ref-new: ~S~%"
+	;; 	(if node-ref-new (data node-ref-new) nil))
 
-      ;; For moves - ignore y adjustment
-      ;; - node-pointer is not aligned when created so
-      ;;   bottom of node is resting on baseline
-            
-      (let ((node-ptr-end-r (find-node-end *node-pointer*
-					   :in
-					   :in)))
-	;; Link ptr/node <- node-*
-	(link-node node-* node-ptr-end-r)
-	;; Move node-* (copy) to right of ptr
-	(move-node-x-of-node node-*
-			     node-ptr-end-r
-			     :+
-			     :ignore-y t))
-
-      (when nil
-
-	;; Pass starting position, i.e. node-pointer position
-	;; For nodes, index to calculate
-	;; Have to set index serially...
-	;; - faster way would be to use spatial relationship to calculate index
-	;;   -> only works when nodes are sequentially positioned
-	;;   -> radial would be better
-	;;
-
-	;; pos = start + (advance * index)
-	;; adjust-pos by bounds
+	;; Position pointer first since later moves are relative to pointer
+	(if node-ref-new
+	    (progn
+	      (unlink-node node-ref-new node-ref)
+	      (link-node *node-pointer* node-ref-new)
+  	      (move-node-x-of-node *node-pointer*
+  	  			   node-ref-new
+  	  			   :+
+  	  			   :ignore-y t))
+  	    (move-node-x-of-node *node-pointer*
+  	  			 *node-pointer*
+  	  			 :-
+  	  			 :ignore-y t))
 	
-	(digraph:mapc-vertices (lambda (vert)
-				 (sb-concurrency:enqueue
-				  (list nil
-					(make-symbol (format nil "node-~a~%" (index vert)))
-					'()
-					(lambda ()
-					  (format t "~S~%" (translation (model-matrix vert)))
-					  ;; (funcall #'randomize-color-node vert)
-					  ))
-				  *queue-anim*))
-			       *digraph*))
-    
-      (enqueue-node node-*)
-      (enqueue-node node-**)
-      (enqueue-node-pointer))))
+	;; This part depends on whether buffer filled or not
+	;; POSS: Use insert function?
+	(if node-buf
+	    (progn
+	      (link-node node-buf node-ref)
+	      (link-node node-ref *node-pointer*)
+	      ;; Move buf right of itself
+	      (move-node-x-of-node node-buf
+  				   node-buf
+  				   :+
+  				   :ignore-y t)	      
+	      ;; Then move ref left of buf
+	      (move-node-x-of-node node-ref
+  				   node-buf
+  				   :-
+  				   :ignore-y t))
+	    (progn
+	      (link-node node-ref *node-pointer*)
+	      (move-node-x-of-node node-ref
+				   *node-pointer*
+  				   :+
+  				   :ignore-y t))))
+      
+      ;; (multiple-value-bind (node-buf node-ref)
+      ;; 	  (get-node-bi-ptr)
+      ;; 	(format t "B:: ~S <- * <- ~S~%"
+      ;; 		(if node-ref
+      ;; 		    (data node-ref)
+      ;; 		nil)
+      ;; 		(if node-buf
+      ;; 		    (data node-buf)
+      ;; 		    nil)))
+      
+      (when node-buf
+	(enqueue-node node-buf))
+      (enqueue-node node-ref)
+      (enqueue-node-pointer))))  
 
 (defun copy-node ()
   ;; Copy node from left side (succ) -> right side (pred)
@@ -241,35 +248,54 @@
   ;;    - instead of calling move repeatedly, use flag to mark as dirty
 
   ;; Unlink ptr
-  (multiple-value-bind (node-* *-node)
+  ;; in out
+  ;; Given a<-*<-b:
+  ;; in = b, out = a
+  ;; b = buffer node
+  (multiple-value-bind (node-tgt node-*)
       (unlink-node-pointer :bi)
-	 
-    ;; Link pred node after pointer
-    ;; - later use swap function
-    (link-node-pointer node-*)
-
-    ;; Link pred node after succ node
-    (link-node *-node node-*)
-
-    ;; Link buffer remainder to ptr
-    ;; (when-let ((*-node-node t))
-    ;; 	      (link-node-pointer *-node-node
-    ;; 				 :in))
     
-    ;; Move node-p to ptr
-    (move-node-x-of-node node-*
-			 *-node
-			 :+
-			 :ignore-y t)
-    
-    ;; Move ptr to node-p
-    (move-node-x-of-node *node-pointer*
-			 node-*
-			 :+
-			 :ignore-y t)
+    (when node-tgt
+      
+      ;; Link buffer remainder to ptr
+      (when-let ((1-node-* (get-node-in node-tgt)))
+		;; (format t "LINKING ~S to ~S~%" (data *-node-1) (data *-node))
+		(unlink-node 1-node-* node-tgt)
+    		(link-node-pointer 1-node-*
+    				   :in))
 
-    (enqueue-node node-*)
-    (enqueue-node-pointer)))
+      ;; Link pred node after pointer
+      ;; - later use swap function
+      (link-node-pointer node-tgt)
+      
+      ;; Link copy node to pointed node if possible
+      (if node-*
+	  (progn
+	    (link-node node-* node-tgt)
+	    ;; Move copy node right of pointed node
+	    (move-node-x-of-node node-tgt
+				 node-*
+				 :+
+				 :ignore-y t)
+	    ;; Move ptr node right of copy node
+	    (move-node-x-of-node *node-pointer*
+				 node-tgt
+				 :+
+				 :ignore-y t))
+	  (progn
+	    ;; No pointed node so move ptr right
+	    ;; Then move copy node left of ptr
+	    (move-node-x-of-node *node-pointer*
+				 *node-pointer*
+				 :+
+				 :ignore-y t)
+	    (move-node-x-of-node node-tgt
+				 *node-pointer*
+				 :-
+				 :ignore-y t)))
+            
+      (enqueue-node node-tgt)
+      (enqueue-node-pointer))))
 
 (defun link-node (node-a node-b)
   ;; Need not pos argument - user switches args
@@ -300,3 +326,27 @@
 (defun show-node-ids ()
   ;; Procedure:
   t)
+
+
+;; 	;; Pass starting position, i.e. node-pointer position
+;; 	;; For nodes, index to calculate
+;; 	;; Have to set index serially...
+;; 	;; - faster way would be to use spatial relationship to calculate index
+;; 	;;   -> only works when nodes are sequentially positioned
+;; 	;;   -> radial would be better
+;; 	;;
+
+;; 	;; pos = start + (advance * index)
+;; 	;; adjust-pos by bounds
+
+;; 	(digraph:mapc-vertices (lambda (vert)
+;; 				 (sb-concurrency:enqueue
+;; 				  (list nil
+;; 					(make-symbol (format nil "node-~a~%" (index vert)))
+;; 					'()
+;; 					(lambda ()
+;; 					  (format t "~S~%" (translation (model-matrix vert)))
+;; 					  ;; (funcall #'randomize-color-node vert)
+;; 					  ))
+;; 				  *queue-anim*))
+;; 			       *digraph*))

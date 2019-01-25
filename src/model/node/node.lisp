@@ -204,19 +204,21 @@
   (digraph:remove-edge *digraph* vert-a vert-b)
   (sb-ext:atomic-decf (car *edges-digraph*)))
 
-;; Refactor 3x below to macros
+;; TODO:
+;; - Refactor 3x below to macros
+;; - Add arg to get first or all
+;;   - Ignore pointer
 
-(defun get-node-in (*)
-  ;; TODO:
-  ;; - Add arg to get first or all
-  (when-let ((node-* (first (digraph:predecessors *digraph* *))))
-	    (remove-edge node-* *)
-	    node-*))
+(defun get-node-in (* &optional (ptr-ignore t))
+  (if ptr-ignore
+      (dolist (node-i (digraph:predecessors *digraph* *))
+      	(unless (eq node-i *node-pointer*)
+      	  (return-from get-node-in node-i)))
+      (first (digraph:predecessors *digraph* *))))
 
 (defun get-node-out (*)
-  (when-let ((*-node (first (digraph:successors *digraph* *))))
-	    (remove-edge * *-node)
-	    *-node))
+  ;; POSS: Add ignore-ptr
+  (first (digraph:successors *digraph* *)))
 
 (defun get-node-bi (*)
   (values (get-node-in *)
@@ -225,7 +227,7 @@
 (defun get-node-neighs (* dir)
   (cond ((eq dir :in)  (get-node-in *))
 	((eq dir :out) (get-node-out *))
-	(t t)))
+	((eq dir :bi)  (get-node-bi *))))
 
 ;; Rewrite this function
 (defun insert-node (node
@@ -267,7 +269,7 @@
   	     	 (remove-edge node-* node-ptr))
 	     ;; 2. Insert edge between node-*   and node-new
   	     (insert-edge node-* node))
-	     
+	    
   	    ((eq dir-ref :out)
   	     ;; 1. Remove edge between node-*   and ptr
   	     (if (eq dir-ptr :out)
@@ -306,11 +308,13 @@
   ;;
   ;; #3 - Remove [b]
 
-(let ((node-* (get-node-neighs node-ptr dir-ptr))
-      (node-** nil))
+  (let ((node-* (get-node-out-ptr))
+	(node-** nil))
     
     (when node-*
 
+      ;; (setf node-** (get-node-in node-*))
+      
       ;; Note:
       ;; preds - nodes that point to it (pointer)
       ;; succs - nodes that it points to (prev chars)
@@ -321,11 +325,11 @@
       ;; - Multi ptrs possible which we ignore
       ;; Get node-** first before removing etc
       (let ((nbhrs (digraph:predecessors *digraph* node-*)))
-	(dolist (node-i nbhrs)
-	  (remove-edge node-i node-*)
-	  (unless (eq node-i node-ptr)
-	    (setf node-** node-i))))
-
+      	(dolist (node-i nbhrs)
+      	  (remove-edge node-i node-*)
+      	  (unless (eq node-i node-ptr)
+      	    (setf node-** node-i))))
+      
       ;; Remove node-* succs
       ;; - char node(s)
       ;; - should not be pointers
@@ -500,7 +504,7 @@
 ;; Need do-node macro
 (defmacro do-node ((var node-default dir-1 dir-2) &body body)
   `(let ((fn-1 (cond ((eq ,dir-1 :in)
-		    #'digraph:predecessors)
+		      #'digraph:predecessors)
 		     ((eq ,dir-1 :out)
 		      #'digraph:successors)
 		     (t
