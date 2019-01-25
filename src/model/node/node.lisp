@@ -314,71 +314,31 @@
 		      (node-ptr *node-pointer*)
 		      (dir-ptr :out))
 
-  ;; Linking Process:
-  ;;
-  ;; From:
-  ;; [a]->[b]<-[*] (start)
-  ;; To:
-  ;; [a]<-[*] (start)
-  ;;
-  ;; #1 - Break b edges
-  ;; [a] [*]
-  ;; [b] 
-  ;;
-  ;; #2 - Link pointer to a
-  ;; [a]<-[*]
-  ;;
-  ;; #3 - Remove [b]
+  ;; Process:
+  ;; a -> b -> c <- * ... | GIVEN
+  ;; a -> b -> c    * ... | Unlink ptr C
+  
+  (when-let ((node-ref (get-node-out-ptr)))
+      ;; Only unlink left side of pointer
+      (unlink-node-pointer :out)
 
-  (let ((node-* (get-node-out-ptr))
-	(node-** nil))
-    
-    (when node-*
+      ;; Check if node-ref pts to anything
+      (if-let ((node-ref-new (get-node-in node-ref)))
+	      ;; Update pointer to right of node-** (instead of node-* pos)
+	      (progn
+		(link-node-pointer node-ref-new)
+		(if (char-equal (data node-ref-new) #\Newline)
+		    (move-node-to-node *node-pointer*
+				       node-ref)
+		    (advance-node-of-node *node-pointer*
+					  node-ref-new
+					  :+)))
+	      
+	      (move-node-to-node *node-pointer*
+				 node-ref))
 
-      ;; (setf node-** (get-node-in node-*))
-      
-      ;; Note:
-      ;; preds - nodes that point to it (pointer)
-      ;; succs - nodes that it points to (prev chars)
-      
-      ;; Remove node-* preds
-      ;; - char node(s), pointer(s)
-      ;; - Assume 1 char for now...
-      ;; - Multi ptrs possible which we ignore
-      ;; Get node-** first before removing etc
-      (let ((nbhrs (digraph:predecessors *digraph* node-*)))
-      	(dolist (node-i nbhrs)
-      	  (remove-edge node-i node-*)
-      	  (unless (eq node-i node-ptr)
-      	    (setf node-** node-i))))
-      
-      ;; Remove node-* succs
-      ;; - char node(s)
-      ;; - should not be pointers
-      (let ((nbhrs (digraph:successors *digraph* node-*)))
-	(dolist (node-i nbhrs)
-	  (remove-edge node-* node-i)))
-
-      (when node-**
-	(insert-edge node-ptr node-**))
-      
-      (remove-vertex node-*)
-
-      ;; TODO:
-      ;; * Refactor move-node-right-of... to take :before/after arg
-      
-      ;; If not node-**, that means first char just deleted
-      ;; so use its position instead
-      (if node-**
-	  ;; Update pointer to right of node-** (instead of node-* pos)
-	  (if (char-equal (data node-**) #\Newline)
-	      (move-node-to-node node-ptr node-*)
-	      (advance-node-of-node node-ptr node-** :+))
-	  (move-node-to-node node-ptr node-*)))
-
-    ;; Return deleted node
-    ;; Caller should not store this so it can be GC'd
-    node-*))
+      ;; Caller should not store this so it can be GC'd
+      node-ref))
 
 ;; Secondary/Aux operators
 ;; Need to implement hyperweb first to identify nodes
@@ -417,7 +377,6 @@
   ;; REFACTOR
   ;; - Copy/replace or modify
   ;; - Add option for update
-  ;; - Add option for offset
   (setf (translation (model-matrix node-a))
 	(v+ (translation (model-matrix node-b))
 	    offset))
