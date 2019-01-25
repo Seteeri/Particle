@@ -243,8 +243,43 @@
   ;; Empty buffer:
   ;;      * <- A <- B <- C | START
   ;;      *    A <- B <- C | Unlink ptr
-  ;;      *    A <- B <- C | Unlink B A
+  ;;      *    A    B <- C | Unlink A (B-A)
+  ;;
+  ;; A <- *         B <- C | Link ptr A
+  ;; A <- * <------ B <- C | Link B ptr
 
+  (multiple-value-bind (node-buf node-ref)
+      (unlink-node-pointer :bi)
+    
+    ;; Ensure buffer node to paste
+    (when node-buf
+      (let ((node-buf-new (get-node-in node-buf)))
+
+	;; Remove all links for node-buf
+	(unlink-node node-buf :bi)
+
+	(link-node-pointer node-buf)
+
+	;; Move ptr right
+  	(move-node-x-of-node *node-pointer*
+  	  		     *node-pointer*
+  	  		     :+
+  	  		     :ignore-y t)
+	;; Position node-buf left of ptr
+	(move-node-x-of-node node-buf
+  			     *node-pointer*
+  			     :-
+  			     :ignore-y t)	      
+	
+	(when node-buf-new
+	  (link-node-pointer node-buf-new)))
+      
+      ;; (enqueue-node node-ref) ; move?
+      (enqueue-node node-buf)
+      (enqueue-node-pointer))))
+	
+
+(defun paste-node-old ()	
   ;; Unlink ptr
   ;; in out
   ;; Given a<-*<-b:
