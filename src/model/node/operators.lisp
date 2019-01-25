@@ -179,8 +179,8 @@
 	;; Position pointer first since later moves are relative to pointer
 	(if node-ref-new
 	    (progn
-	      (unlink-node node-ref-new node-ref)
-	      (link-node *node-pointer* node-ref-new)
+	      (unlink-nodes node-ref-new node-ref)
+	      (link-nodes *node-pointer* node-ref-new)
   	      (move-node-x-of-node *node-pointer*
   	  			   node-ref-new
   	  			   :+
@@ -194,8 +194,8 @@
 	;; POSS: Use insert function?
 	(if node-buf
 	    (progn
-	      (link-node node-buf node-ref)
-	      (link-node node-ref *node-pointer*)
+	      (link-nodes node-buf node-ref)
+	      (link-nodes node-ref *node-pointer*)
 	      ;; Move buf right of itself
 	      (move-node-x-of-node node-buf
   				   node-buf
@@ -207,7 +207,7 @@
   				   :-
   				   :ignore-y t))
 	    (progn
-	      (link-node node-ref *node-pointer*)
+	      (link-nodes node-ref *node-pointer*)
 	      (move-node-x-of-node node-ref
 				   *node-pointer*
   				   :+
@@ -239,13 +239,11 @@
 
 (defun paste-node ()
   ;; Take node from right side (pred) -> left side (succ)
-  ;;
-  ;; Procedure:
-  ;; 1. Unlink ptr node-paste
-  ;; 2. Insert node-ptr
-  ;; 3. move-node-x-of-node node-paste node-ptr :+
-  ;; 4. move-node-x-of-node node-ptr node-paste
-  ;;    - instead of calling move repeatedly, use flag to mark as dirty
+
+  ;; Empty buffer:
+  ;;      * <- A <- B <- C | START
+  ;;      *    A <- B <- C | Unlink ptr
+  ;;      *    A <- B <- C | Unlink B A
 
   ;; Unlink ptr
   ;; in out
@@ -260,7 +258,7 @@
       ;; Link buffer remainder to ptr
       (when-let ((1-node-* (get-node-in node-tgt)))
 		;; (format t "LINKING ~S to ~S~%" (data *-node-1) (data *-node))
-		(unlink-node 1-node-* node-tgt)
+		(unlink-nodes 1-node-* node-tgt)
     		(link-node-pointer 1-node-*
     				   :in))
 
@@ -297,11 +295,11 @@
       (enqueue-node node-tgt)
       (enqueue-node-pointer))))
 
-(defun link-node (node-a node-b)
+(defun link-nodes (node-a node-b)
   ;; Need not pos argument - user switches args
   (insert-edge node-a node-b))
 
-(defun unlink-node (node-a node-b)
+(defun unlink-nodes (node-a node-b)
   (remove-edge node-a node-b))
 
 (defun swap-nodes (node-src node-dest)

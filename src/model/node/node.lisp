@@ -229,6 +229,26 @@
 	((eq dir :out) (get-node-out *))
 	((eq dir :bi)  (get-node-bi *))))
 
+(defun unlink-node (* &optional (dir :out))
+  (cond ((eq dir :in)
+	 (when-let ((node-* (get-node-in-ptr)))
+		   (remove-edge node-* *)
+		   node-*))
+	((eq dir :out)
+	 (when-let ((*-node (get-node-out-ptr)))
+		   (remove-edge * *-node)
+		   *-node))
+	((eq dir :bi)
+	 (multiple-value-bind (node-* *-node)
+	     (get-node-bi *)
+	   (when node-*
+	     (remove-edge node-* *))
+	   (when *-node
+	     (remove-edge * *-node))
+	   (values node-* *-node)))
+	(t
+	 (error "unlink-pointer: dir invalid"))))
+
 ;; Rewrite this function
 (defun insert-node (node
 		    &key
