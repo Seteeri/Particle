@@ -42,66 +42,66 @@
 ;; rename before/after to in/out
 
 (defun get-node-pointer-reference (&optional
-				     (pos :out)
+				     (dir :out)
 				     (node-ptr *node-pointer*))
   ;; TODO:
   ;; - Add arg to get first or all
-  (cond ((eq pos :out)
+  (cond ((eq dir :out)
 	 (first (digraph:successors *digraph* node-ptr)))
-	((eq pos :in)
+	((eq dir :in)
 	 (first (digraph:predecessors *digraph* node-ptr)))
 	(t
-	 (error "get-node-pointer-reference: pos invalid"))))
+	 (error "get-node-pointer-reference: dir invalid"))))
 
 (defun get-node-in-pointer ()
   (when-let ((node (get-node-pointer-reference :in)))
 	    (remove-edge node *node-pointer*)
 	    node))
 
-(defun get-node-after-pointer ()
+(defun get-node-out-pointer ()
   (when-let ((node (get-node-pointer-reference :out)))
 	    (remove-edge *node-pointer* node)
 	    node))
 
-(defun get-nodes-bi-pointer ()
+(defun get-node-bi-pointer ()
   (values (get-node-in-pointer)
-	  (get-node-after-pointer)))
+	  (get-node-out-pointer)))
 
  ;; Specific functions for pointer-context linking
 
-(defun link-node-pointer (node &optional (pos :out))
+(defun link-node-pointer (node &optional (dir :out))
   ;; pos:
   ;; before = node -> *
   ;; after = * -> node
-  (cond ((eq pos :in)
+  (cond ((eq dir :in)
 	 (insert-edge node *node-pointer*))
-	((eq pos :out)
+	((eq dir :out)
 	 (insert-edge *node-pointer* node))
 	(t
-	 (error "link-node-pointer: pos invalid"))))
+	 (error "link-node-pointer: dir invalid"))))
 
 (defun relink-node-pointer (node &optional
-				   (pos-old :out)
-				   (pos-new :out))
+				   (dir-old :out)
+				   (dir-new :out))
   ;; Return edges?
-  (unlink-node-pointer pos-old)
-  (link-node-pointer node pos-new))
+  (unlink-node-pointer dir-old)
+  (link-node-pointer node dir-new))
 
-(defun unlink-node-pointer (&optional (pos :out))
-  (cond ((eq pos :in)
-	 (get-node-before-pointer))
-	((eq pos :out)
-	 (get-node-after-pointer))
-	((eq pos :bi)
+(defun unlink-node-pointer (&optional (dir :out))
+  (cond ((eq dir :in)
+	 (get-node-in-pointer))
+	((eq dir :out)
+	 (get-node-out-pointer))
+	((eq dir :bi)
 	 (multiple-value-bind (node-* *-node)
-	     (get-nodes-bi-pointer)
+	     (get-node-bi-pointer)
 	   (when node-*
 	     (remove-edge node-* *node-pointer*))
 	   (when *-node
 	     (remove-edge *node-pointer* node-*))
 	   (values node-* *-node)))
 	(t
-	 (error "unlink-node-pointer: pos invalid"))))
+	 (error "unlink-node-pointer: dir invalid"))))
 
 ;; translate block
 

@@ -327,8 +327,8 @@
 (defun insert-node (node
 		    &key
 		      (node-ptr *node-pointer*)
-		      (pos-ptr :out) ; will unlink node in this pos
-		      (pos-ref :in)) ;; will link node in this pos
+		      (dir-ptr :out) ; will unlink node in this pos
+		      (dir-ref :in)) ;; will link node in this pos
 
   ;; REFACTOR:
   ;; - args = node-tgt node-ptr
@@ -354,19 +354,19 @@
 
   ;; Ordered this way in case there is no node-*
   
-  (let ((node-* (get-node-pointer-reference pos-ptr node-ptr)))
+  (let ((node-* (get-node-pointer-reference dir-ptr node-ptr)))
     (when node-*    
-      (cond ((eq pos-ref :in)
+      (cond ((eq dir-ref :in)
   	     ;; 1. Remove edge between node-*   and ptr
-  	     (if (eq pos-ptr :out)
+  	     (if (eq dir-ptr :out)
   	     	 (remove-edge node-ptr node-*)
   	     	 (remove-edge node-* node-ptr))
 	     ;; 2. Insert edge between node-*   and node-new
   	     (insert-edge node-* node))
 	     
-  	    ((eq pos-ref :out)
+  	    ((eq dir-ref :out)
   	     ;; 1. Remove edge between node-*   and ptr
-  	     (if (eq pos-ptr :out)
+  	     (if (eq dir-ptr :out)
   		 (remove-edge node-ptr node-*)
   		 (remove-edge node-* node-ptr))
   	     ;; Flip above
@@ -377,14 +377,14 @@
   	     t))))
   
   ;; 3. Insert edge between node new and ptr
-  (if (eq pos-ptr :out)
+  (if (eq dir-ptr :out)
       (insert-edge node-ptr node)
       (insert-edge node node-ptr)))
 
 ;; move back to ops?
 (defun delete-node (&key
 		      (node-ptr *node-pointer*)
-		      (pos-ptr :out))
+		      (dir-ptr :out))
 
   ;; Linking Process:
   ;;
@@ -402,7 +402,7 @@
   ;;
   ;; #3 - Remove [b]
 
-  (let ((node-* (get-node-pointer-reference pos-ptr node-ptr))
+  (let ((node-* (get-node-pointer-reference dir-ptr node-ptr))
 	(node-** nil))
     
     (when node-*
@@ -530,11 +530,11 @@
 		      *digraph*))
 
 ;; Find end, specify successor or predecessor direction
-(defun find-node-line-start (node-end direction)
+(defun find-node-line-start (node-end dir)
   (let ((node-start node-end)
-	(fn (cond ((eq direction :in)
+	(fn (cond ((eq dir :in)
 		   #'digraph:predecessors)
-		  ((eq direction :out)
+		  ((eq dir :out)
 		   #'digraph:successors)
 		  (t
 		   t))))
