@@ -94,6 +94,7 @@
 				       		:components ((:file "node")
 							     (:file "matrix-model")
 							     (:file "operators")
+							     (:file "shm")
 				       			     (:file "pointer")))
 				       (:module projview
 				       		:pathname "projview"
