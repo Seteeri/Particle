@@ -323,11 +323,12 @@
   (digraph:remove-edge *digraph* vert-a vert-b)
   (sb-ext:atomic-decf (car *edges-digraph*)))
 
+;; Rewrite this function
 (defun insert-node (node
 		    &key
 		      (node-ptr *node-pointer*)
-		      (pos-ptr :after)
-		      (pos-ref :before))
+		      (pos-ptr :after) ; will unlink node in this pos
+		      (pos-ref :before)) ;; will link node in this pos
 
   ;; REFACTOR:
   ;; - args = node-tgt node-ptr

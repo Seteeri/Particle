@@ -187,7 +187,7 @@
 	;; Move node-* (copy) to right of ptr
 	(move-node-x-of-node node-* node-ptr-end-r :+ :ignore-y t))
 
-      (when t
+      (when nil
 
 	;; Pass starting position, i.e. node-pointer position
 	;; For nodes, index to calculate
@@ -233,7 +233,27 @@
   ;; 2. Insert node-ptr
   ;; 3. move-node-x-of-node node-paste node-ptr :+
   ;; 4. move-node-x-of-node node-ptr node-paste
-  t)
+  ;;    - instead of calling move repeatedly, use flag to mark as dirty
+
+  ;; Unlink ptr
+  (let* ((node-p (unlink-node-pointer :before))
+	 (node-s (unlink-node-pointer :after)))
+	 
+    ;; Link pred node after pointer
+    ;; - later use swap function
+    (link-node-pointer node-p)
+
+    ;; Link pred node after succ node
+    (link-node node-s node-p)
+
+    ;; Move node-p to ptr
+    (move-node-x-of-node node-p node-s :+ :ignore-y t)
+    
+    ;; Move ptr to node-p
+    (move-node-x-of-node *node-pointer* node-p :+ :ignore-y t)
+
+    (enqueue-node node-p)
+    (enqueue-node-pointer)))
 
 (defun link-node (node-a node-b)
   ;; Need not pos argument - user switches args

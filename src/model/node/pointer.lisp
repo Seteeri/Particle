@@ -49,7 +49,7 @@
 	((eq pos :before)
 	 (first (digraph:predecessors *digraph* node-ptr)))
 	(t
-	 t)))
+	 (error "get-node-pointer-reference: pos invalid"))))
 
  ;; Specific functions for pointer-context linking
 
@@ -62,27 +62,34 @@
 	((eq pos :after)
 	 (insert-edge *node-pointer* node))
 	(t
-	 t)))
+	 (error "link-node-pointer: pos invalid"))))
 
-;; use above fn
 (defun relink-node-pointer (node &optional
 				   (pos-old :after)
 				   (pos-new :after))
-  ;; Remove old link, create new link
   ;; Return edges?
   (unlink-node-pointer pos-old)
   (link-node-pointer node pos-new))
 
 (defun unlink-node-pointer (&optional (pos :after))
-  ;; Assumes :after...
-  (let ((node-* (get-node-pointer-reference pos)))
-    (when node-*
-      (cond ((eq pos :before)
+  (cond ((eq pos :before)
+	 (when-let ((node-* (get-node-pointer-reference pos)))
+		   (remove-edge node-* *node-pointer*)
+		   node-*))
+	((eq pos :after)
+	 (when-let ((node-* (get-node-pointer-reference pos)))
+		   (remove-edge *node-pointer* node-*)
+		   node-*))
+	((eq pos :bi)
+	 (let* ((node-* (get-node-pointer-reference :before))
+		(*-node (get-node-pointer-reference :after)))
+	   (when node-*
 	     (remove-edge node-* *node-pointer*))
-	    ((eq pos :after)
+	   (when *-node
 	     (remove-edge *node-pointer* node-*))
-	    (t
-	     t)))))
+	   (values node-* *-node)))
+	(t
+	 (error "unlink-node-pointer: pos invalid"))))
 
 ;; translate block
 

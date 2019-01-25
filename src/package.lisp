@@ -131,6 +131,7 @@
 (defpackage #:protoform.model
   (:use #:cl
         #:cffi
+	#:alexandria
 	#:protoform.libc
 	#:protoform.opengl
 	#:protoform.conn
@@ -139,8 +140,7 @@
 	#:3d-matrices
 	#:trivial-timers
 	#:lparallel
-	#:lparallel.queue
-	#:protoform.analyzer-dep)
+	#:lparallel.queue)
   (:export #:run-model))
 
 

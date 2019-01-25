@@ -4,7 +4,8 @@
     :description "A Common Lisp nodal UI platform based on DRM-KMS and OpenGL"
     :author "Kevin Ednalino <kcednalino@gmail.com>"
     :license "Apache License 2.0"
-    :depends-on (#:osicat
+    :depends-on (#:alexandria
+		 #:osicat
 		 #:cl-drm
 		 #:cl-gbm
 		 #:cl-egl
