@@ -42,11 +42,11 @@
 ;; rename before/after to in/out
 
 (defun get-node-pointer-reference (&optional
-				     (pos :after)
+				     (pos :out)
 				     (node-ptr *node-pointer*))
   ;; TODO:
   ;; - Add arg to get first or all
-  (cond ((eq pos :after)
+  (cond ((eq pos :out)
 	 (first (digraph:successors *digraph* node-ptr)))
 	((eq pos :in)
 	 (first (digraph:predecessors *digraph* node-ptr)))
@@ -59,7 +59,7 @@
 	    node))
 
 (defun get-node-after-pointer ()
-  (when-let ((node (get-node-pointer-reference :after)))
+  (when-let ((node (get-node-pointer-reference :out)))
 	    (remove-edge *node-pointer* node)
 	    node))
 
@@ -69,28 +69,28 @@
 
  ;; Specific functions for pointer-context linking
 
-(defun link-node-pointer (node &optional (pos :after))
+(defun link-node-pointer (node &optional (pos :out))
   ;; pos:
   ;; before = node -> *
   ;; after = * -> node
   (cond ((eq pos :in)
 	 (insert-edge node *node-pointer*))
-	((eq pos :after)
+	((eq pos :out)
 	 (insert-edge *node-pointer* node))
 	(t
 	 (error "link-node-pointer: pos invalid"))))
 
 (defun relink-node-pointer (node &optional
-				   (pos-old :after)
-				   (pos-new :after))
+				   (pos-old :out)
+				   (pos-new :out))
   ;; Return edges?
   (unlink-node-pointer pos-old)
   (link-node-pointer node pos-new))
 
-(defun unlink-node-pointer (&optional (pos :after))
+(defun unlink-node-pointer (&optional (pos :out))
   (cond ((eq pos :in)
 	 (get-node-before-pointer))
-	((eq pos :after)
+	((eq pos :out)
 	 (get-node-after-pointer))
 	((eq pos :bi)
 	 (multiple-value-bind (node-* *-node)

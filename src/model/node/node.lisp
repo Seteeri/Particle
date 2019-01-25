@@ -327,7 +327,7 @@
 (defun insert-node (node
 		    &key
 		      (node-ptr *node-pointer*)
-		      (pos-ptr :after) ; will unlink node in this pos
+		      (pos-ptr :out) ; will unlink node in this pos
 		      (pos-ref :in)) ;; will link node in this pos
 
   ;; REFACTOR:
@@ -358,15 +358,15 @@
     (when node-*    
       (cond ((eq pos-ref :in)
   	     ;; 1. Remove edge between node-*   and ptr
-  	     (if (eq pos-ptr :after)
+  	     (if (eq pos-ptr :out)
   	     	 (remove-edge node-ptr node-*)
   	     	 (remove-edge node-* node-ptr))
 	     ;; 2. Insert edge between node-*   and node-new
   	     (insert-edge node-* node))
 	     
-  	    ((eq pos-ref :after)
+  	    ((eq pos-ref :out)
   	     ;; 1. Remove edge between node-*   and ptr
-  	     (if (eq pos-ptr :after)
+  	     (if (eq pos-ptr :out)
   		 (remove-edge node-ptr node-*)
   		 (remove-edge node-* node-ptr))
   	     ;; Flip above
@@ -377,14 +377,14 @@
   	     t))))
   
   ;; 3. Insert edge between node new and ptr
-  (if (eq pos-ptr :after)
+  (if (eq pos-ptr :out)
       (insert-edge node-ptr node)
       (insert-edge node node-ptr)))
 
 ;; move back to ops?
 (defun delete-node (&key
 		      (node-ptr *node-pointer*)
-		      (pos-ptr :after))
+		      (pos-ptr :out))
 
   ;; Linking Process:
   ;;
@@ -534,7 +534,7 @@
   (let ((node-start node-end)
 	(fn (cond ((eq direction :in)
 		   #'digraph:predecessors)
-		  ((eq direction :after)
+		  ((eq direction :out)
 		   #'digraph:successors)
 		  (t
 		   t))))
@@ -565,13 +565,13 @@
   (let ((node-start node-default)
 	(fn-1 (cond ((eq dir-1 :in)
 		     #'digraph:predecessors)
-		    ((eq dir-1 :after)
+		    ((eq dir-1 :out)
 		     #'digraph:successors)
 		    (t
 		     t)))
 	(fn-2 (cond ((eq dir-2 :in)
 		     #'digraph:predecessors)
-		    ((eq dir-2 :after)
+		    ((eq dir-2 :out)
 		     #'digraph:successors)
 		    (t
 		     t))))
@@ -597,13 +597,13 @@
 (defmacro do-node ((var node-default dir-1 dir-2) &body body)
   `(let ((fn-1 (cond ((eq ,dir-1 :in)
 		    #'digraph:predecessors)
-		     ((eq ,dir-1 :after)
+		     ((eq ,dir-1 :out)
 		      #'digraph:successors)
 		     (t
 		      t)))
 	 (fn-2 (cond ((eq ,dir-2 :in)
 		      #'digraph:predecessors)
-		     ((eq ,dir-2 :after)
+		     ((eq ,dir-2 :out)
 		      #'digraph:successors)
 		     (t
 		      t))))
