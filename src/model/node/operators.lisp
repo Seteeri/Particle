@@ -183,7 +183,7 @@
 	      ;; Unlink pointer
 	      (unlink-node-pointer :bi)
 
-	      (format t "ref: ~S, buf: ~S~%" node-ref node-buf)
+	      ;; (format t "ref: ~S, buf: ~S~%" node-ref node-buf)
 	      
 	      ;; Handle left side
 	      
@@ -238,16 +238,6 @@
 	      (enqueue-node node-ref)
 	      (enqueue-node-pointer))))
 	      
-(defun copy-node () ;;-to-pointer
-  ;; Copy node from left side (succ) -> right side (pred)
-  ;; Remainder same as cut node
-  ;;
-  ;; Procedure:
-  ;; 1. Copy node
-  ;; 2. Link ptr node-new
-  ;; 3. advance-node-of-node node-new ptr :+
-  t)
-
 (defun paste-node ()
   ;; Take node from right side (pred) -> left side (succ)
 
@@ -322,6 +312,63 @@
 	    
 	    (enqueue-node node-buf)
 	    (enqueue-node-pointer)))
+
+(defun copy-node () ;;-to-pointer
+  ;; Copy node from left side (succ) -> right side (pred)
+  ;; Remainder same as cut node
+  ;;
+  ;; Procedure:
+  ;; 1. Copy node
+  ;; 2. Link ptr node-new
+  ;; 3. advance-node-of-node node-new ptr :+
+
+  (when-let ((node-src (get-node-out-ptr))) ; aka node-ref
+    (let ((node-ref (copy-node-to-node node-src))
+	  (node-buf (get-node-in-ptr)))
+      ;; Only unlink right side of pointer
+      (unlink-node-pointer :in)
+
+      ;; Remainder of this is right side handling from cut
+
+      ;; This assumes node is appended left side of right side
+      (link-node-pointer node-ref :in)  
+      
+      (if node-buf
+	  (progn
+	    (link-nodes node-buf node-ref)
+	    ;; Move node-ref left of node-buf
+  	    (advance-node-of-node node-ref
+  				  node-buf
+  				  :-)
+	    ;; Move ptr right (of new-ref-new)
+	    (if-let ((node-ref-new (get-node-out-ptr)))
+		    (advance-node-of-node *node-pointer*
+  					  node-ref-new
+  					  :+)
+  		    (advance-node-of-node *node-pointer*
+  					  *node-pointer*
+  					  :-)))
+	  
+	  (progn
+	    ;; Move directly right of pointer
+	    (advance-node-of-node node-ref
+  				  *node-pointer*
+  				  :+)
+	    ;; Then move ptr to right of out
+	    ;; Else move ptr left
+	    ;; This will maintain a gap
+	    (if-let ((node-ref-new (get-node-out-ptr)))
+		    (advance-node-of-node *node-pointer*
+  					  node-ref-new
+  					  :+)
+  		    (advance-node-of-node *node-pointer*
+  					  *node-pointer*
+  					  :-))))
+      
+      (when node-buf
+	(enqueue-node node-buf))
+      (enqueue-node node-ref)
+      (enqueue-node-pointer))))
 
 (defun link-nodes (node-a node-b)
   ;; Need not pos argument - user switches args

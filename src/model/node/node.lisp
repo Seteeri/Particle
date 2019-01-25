@@ -460,6 +460,21 @@
 			(remove-edge e))
 		      *digraph*))
 
+(defun nth-node (node-end nth)
+  t)
+
+(defun copy-node-to-node (node-src)
+  (let* ((baseline (get-origin-from-node-pos node-src))
+	 (node (init-node-msdf baseline
+			       *scale-node* ; get from node-src
+			       (digraph:count-vertices *digraph*)
+			       (data node-src))))
+    (insert-vertex node)
+    node))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Find end, specify successor or predecessor direction
 (defun find-node-line-start (node-end dir)
   (let ((node-start node-end)
@@ -553,6 +568,3 @@
 		     (let ((,var node-pred))
 		       ,@body)
 		     (setf pred node-pred))))))
-
-(defun nth-node (node-end nth)
-  t)
