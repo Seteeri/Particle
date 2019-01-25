@@ -232,8 +232,8 @@
   ;;    - instead of calling move repeatedly, use flag to mark as dirty
 
   ;; Unlink ptr
-  (let* ((node-p (unlink-node-pointer :in))
-	 (node-s (unlink-node-pointer :out)))
+  (multiple-value-bind (node-p node-s)
+      (unlink-node-pointer :bi)
 	 
     ;; Link pred node after pointer
     ;; - later use swap function
