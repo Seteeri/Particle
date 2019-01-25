@@ -138,7 +138,7 @@
   ;;
   ;; * <- C <- B  <- A
   
-  (let* ((node-* (get-node-pointer-reference))
+  (let* ((node-* (get-node-out-ptr))
 	 (node-** node-*))
     
     (when node-*
@@ -251,6 +251,11 @@
     ;; Link pred node after succ node
     (link-node *-node node-*)
 
+    ;; Link buffer remainder to ptr
+    ;; (when-let ((*-node-node t))
+    ;; 	      (link-node-pointer *-node-node
+    ;; 				 :in))
+    
     ;; Move node-p to ptr
     (move-node-x-of-node node-*
 			 *-node

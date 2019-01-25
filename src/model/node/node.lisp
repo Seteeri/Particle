@@ -204,6 +204,29 @@
   (digraph:remove-edge *digraph* vert-a vert-b)
   (sb-ext:atomic-decf (car *edges-digraph*)))
 
+;; Refactor 3x below to macros
+
+(defun get-node-in (*)
+  ;; TODO:
+  ;; - Add arg to get first or all
+  (when-let ((node-* (first (digraph:predecessors *digraph* *))))
+	    (remove-edge node-* *)
+	    node-*))
+
+(defun get-node-out (*)
+  (when-let ((*-node (first (digraph:successors *digraph* *))))
+	    (remove-edge * *-node)
+	    *-node))
+
+(defun get-node-bi (*)
+  (values (get-node-in *)
+	  (get-node-out *)))
+
+(defun get-node-neighs (* dir)
+  (cond ((eq dir :in)  (get-node-in *))
+	((eq dir :out) (get-node-out *))
+	(t t)))
+
 ;; Rewrite this function
 (defun insert-node (node
 		    &key
@@ -235,7 +258,7 @@
 
   ;; Ordered this way in case there is no node-*
   
-  (let ((node-* (get-node-pointer-reference dir-ptr node-ptr)))
+  (let ((node-* (get-node-neighs node-ptr dir-ptr)))
     (when node-*    
       (cond ((eq dir-ref :in)
   	     ;; 1. Remove edge between node-*   and ptr
@@ -283,8 +306,8 @@
   ;;
   ;; #3 - Remove [b]
 
-  (let ((node-* (get-node-pointer-reference dir-ptr node-ptr))
-	(node-** nil))
+(let ((node-* (get-node-neighs node-ptr dir-ptr))
+      (node-** nil))
     
     (when node-*
 

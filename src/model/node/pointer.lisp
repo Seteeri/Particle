@@ -39,40 +39,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; rename before/after to in/out
+;; POSS: Refactor get-node-* to use *node-pointer* when no arg
 
-(defun get-node-pointer-reference (&optional
-				     (dir :out)
-				     (node-ptr *node-pointer*))
-  ;; TODO:
-  ;; - Add arg to get first or all
-  (cond ((eq dir :in)
-	 (first (digraph:predecessors *digraph* node-ptr)))
-	((eq dir :out)
-	 (first (digraph:successors *digraph* node-ptr)))
-	(t
-	 (error "get-node-pointer-reference: dir invalid"))))
+(defun get-node-in-ptr ()
+  (get-node-in *node-pointer*))
 
-(defun get-node-in-pointer ()
-  (when-let ((node (get-node-pointer-reference :in)))
-	    (remove-edge node *node-pointer*)
-	    node))
+(defun get-node-out-ptr ()
+  (get-node-out *node-pointer*))
 
-(defun get-node-out-pointer ()
-  (when-let ((node (get-node-pointer-reference :out)))
-	    (remove-edge *node-pointer* node)
-	    node))
-
-(defun get-node-bi-pointer ()
-  (values (get-node-in-pointer)
-	  (get-node-out-pointer)))
+(defun get-node-bi-ptr ()
+  (values (get-node-in *node-pointer*)
+	  (get-node-out *node-pointer*)))
 
  ;; Specific functions for pointer-context linking
 
 (defun link-node-pointer (node &optional (dir :out))
   ;; pos:
   ;; before = node -> *
-  ;; after = * -> node
+  ;; after = * -> nodae
   (cond ((eq dir :in)
 	 (insert-edge node *node-pointer*))
 	((eq dir :out)
@@ -89,12 +73,12 @@
 
 (defun unlink-node-pointer (&optional (dir :out))
   (cond ((eq dir :in)
-	 (get-node-in-pointer))
+	 (get-node-in-ptr))
 	((eq dir :out)
-	 (get-node-out-pointer))
+	 (get-node-out-ptr))
 	((eq dir :bi)
 	 (multiple-value-bind (node-* *-node)
-	     (get-node-bi-pointer)
+	     (get-node-bi-ptr)
 	   (when node-*
 	     (remove-edge node-* *node-pointer*))
 	   (when *-node
