@@ -39,6 +39,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; rename before/after to in/out
+
 (defun get-node-pointer-reference (&optional
 				     (pos :after)
 				     (node-ptr *node-pointer*))
@@ -50,6 +52,20 @@
 	 (first (digraph:predecessors *digraph* node-ptr)))
 	(t
 	 (error "get-node-pointer-reference: pos invalid"))))
+
+(defun get-node-before-pointer ()
+  (when-let ((node (get-node-pointer-reference :before)))
+	    (remove-edge node *node-pointer*)
+	    node))
+
+(defun get-node-after-pointer ()
+  (when-let ((node (get-node-pointer-reference :after)))
+	    (remove-edge *node-pointer* node)
+	    node))
+
+(defun get-nodes-bi-pointer ()
+  (values (get-node-before-pointer)
+	  (get-node-after-pointer)))
 
  ;; Specific functions for pointer-context linking
 
@@ -71,28 +87,14 @@
   (unlink-node-pointer pos-old)
   (link-node-pointer node pos-new))
 
-(defun get-node-before-pointer ()
-  (when-let ((node (get-node-pointer-reference :before)))
-	    (remove-edge node *node-pointer*)
-	    node))
-
-(defun get-node-after-pointer ()
-  (when-let ((node (get-node-pointer-reference :after)))
-	    (remove-edge *node-pointer* node)
-	    node))
-
 (defun unlink-node-pointer (&optional (pos :after))
   (cond ((eq pos :before)
-	 (when-let ((node-* (get-node-pointer-reference pos)))
-		   (remove-edge node-* *node-pointer*)
-		   node-*))
+	 (get-node-before-pointer))
 	((eq pos :after)
-	 (when-let ((node-* (get-node-pointer-reference pos)))
-		   (remove-edge *node-pointer* node-*)
-		   node-*))
+	 (get-node-after-pointer))
 	((eq pos :bi)
-	 (let* ((node-* (get-node-pointer-reference :before))
-		(*-node (get-node-pointer-reference :after)))
+	 (multiple-value-bind (node-* *-node)
+	     (get-nodes-bi-pointer)
 	   (when node-*
 	     (remove-edge node-* *node-pointer*))
 	   (when *-node
