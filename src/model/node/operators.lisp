@@ -165,11 +165,17 @@
 	    ;; - move pointer to its position	    
 	    (unlink-node-pointer)
 	    ;; passing self will move it 1x advance
-	    (move-node-x-of-node *node-pointer* *node-pointer* :- :ignore-y t))
+	    (move-node-x-of-node *node-pointer*
+				 *node-pointer*
+				 :-
+				 :ignore-y t))
 	  (progn
 	    (relink-node-pointer node-**)
 	    ;; Move pointer to right of node-**
-	    (move-node-x-of-node *node-pointer* node-** :+ :ignore-y t)))
+	    (move-node-x-of-node *node-pointer*
+				 node-**
+				 :+
+				 :ignore-y t)))
 
       ;; For moves - ignore y adjustment
       ;; - node-pointer is not aligned when created so
@@ -181,7 +187,10 @@
 	;; Link ptr/node <- node-*
 	(link-node node-* node-ptr-end-r)
 	;; Move node-* (copy) to right of ptr
-	(move-node-x-of-node node-* node-ptr-end-r :+ :ignore-y t))
+	(move-node-x-of-node node-*
+			     node-ptr-end-r
+			     :+
+			     :ignore-y t))
 
       (when nil
 
