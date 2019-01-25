@@ -71,6 +71,16 @@
   (unlink-node-pointer pos-old)
   (link-node-pointer node pos-new))
 
+(defun get-node-before-pointer ()
+  (when-let ((node (get-node-pointer-reference :before)))
+	    (remove-edge node *node-pointer*)
+	    node))
+
+(defun get-node-after-pointer ()
+  (when-let ((node (get-node-pointer-reference :after)))
+	    (remove-edge *node-pointer* node)
+	    node))
+
 (defun unlink-node-pointer (&optional (pos :after))
   (cond ((eq pos :before)
 	 (when-let ((node-* (get-node-pointer-reference pos)))
