@@ -36,14 +36,24 @@
 	     `(("projview" 0          ,(* 4 16 2)))))))))
   
 (defun execute-tasks-frame ()
+  ;; TODO:
+  ;; - Need serial executor list that runs before or after this
+
   ;; Build ptree - serial
   ;; Execute ptree - parallel
   (let ((ptree (make-ptree))
 	(ids (make-hash-table :size 32 :test 'equal)))
+    
     (loop
        :for item := (sb-concurrency:dequeue *queue-anim*)
        :while item
-       :do (parse-task-frame item ptree ids))
+       :do (when-let ((item-retry (parse-task-frame item ptree ids)))
+		     ;; Readd to queue
+		     ;; (warn (format nil "parse-task-frame -> retry enqueue task: ~S" item-retry))
+		     ;; (sb-concurrency:enqueue item-retry
+		     ;; 			     *queue-anim*)
+		     t))
+    
     (ptree-fn 'finish
 	      ;; the only ids need are the terminal ones
 	      ;; -> prefix id with finish so we know which ids to track
@@ -64,6 +74,11 @@
 	  ;; Does below need to be in handler-case?
 	  (setf (gethash id ids) anim))
       (lparallel.ptree:ptree-redefinition-error (c)
+
+	(when (not anim)
+	  (warn (format nil "parse-task-frame -> retry enqueue task: ~S" item))
+	  (return-from parse-task-frame item))
+	
 	;; Keep anim with latest start time or nil
 	;; - Create callback for when animation pauses?
 	;; - Create option to ignore instead of restart
@@ -72,7 +87,9 @@
 	    (unless (time-start anim-prev)
 	      ;; Modify existing anim slots
 	      (copy-anim anim-prev anim)))
-	  (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id))))))
+	  
+	  (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id)))))
+  nil)
 
 (defun execute-tasks-shm ()
   

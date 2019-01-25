@@ -8,7 +8,7 @@
   ;; node new
   ;; digraph
   ;; pointer
-    
+  
   (let* ((baseline (get-origin-from-node-pos *node-pointer*))
 	 (node (init-node-msdf baseline
 			       *scale-node*
@@ -46,7 +46,7 @@
   ;; 2. Find beginning of line - loop preds until nil
   ;; 3. Update newline slot: pos-start-line
   ;; 3. Move pointer to newline
-    
+  
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however
   (let* ((node-nl (add-node (char-code #\Newline) nil))
@@ -125,6 +125,17 @@
 					  ".png")
 		    :format :png))
 
+;; (format t "*:: ~S~%" (digraph:predecessors *digraph* *node-pointer*))
+;; (format t "*:: ~S~%" (digraph:successors *digraph* *node-pointer*))
+
+;; (format t "A:: ~S <- * <- ~S~%"
+;; 	    (if node-ref
+;; 		(data node-ref)
+;; 		nil)
+;; 	    (if node-buf
+;; 		(data node-buf)
+;; 		nil))  
+
 (defun cut-node ()
   ;; Cut node from left side (succ) -> right side (pred)
   
@@ -144,8 +155,8 @@
   ;; A    B     *    C     | Unlink B (A-B)
   ;; A <------- *    C   B | Link ptr A
   ;;
+  ;; A <------- *    B <- C | Link C B  
   ;; A <------- * <- B    C | Link B ptr (should link ptr last?)
-  ;; A <------- * <- B <- C | Link C B
 
   ;; Last item:
   ;; A <- * <-      C <- B      | START
@@ -153,78 +164,83 @@
   ;;
   ;;      *    A <- C <- B      | Link C A
   ;;      * <- A <- C <- B      | Link A ptr
+
+  ;; Must be ref node to do anything
+
+  ;; (multiple-value-bind (node-buf node-ref)
+  ;; 	  (get-node-bi-ptr)
+  ;; 	(format t "B:: ~S <- * <- ~S~%"
+  ;; 		(if node-ref
+  ;; 		    (data node-ref)
+  ;; 		nil)
+  ;; 		(if node-buf
+  ;; 		    (data node-buf)
+  ;; 		    nil)))
   
-  ;; Default to FIFO
-  (multiple-value-bind (node-buf node-ref)
-      (unlink-node-pointer :bi)
+  (when-let ((node-ref (get-node-out-ptr)))
+	    ;; Get in before unlinking ptr
+	    (let ((node-buf (get-node-in-ptr)))
+	      ;; Unlink pointer
+	      (unlink-node-pointer :bi)
 
-    ;; (format t "*:: ~S~%" (digraph:predecessors *digraph* *node-pointer*))
-    ;; (format t "*:: ~S~%" (digraph:successors *digraph* *node-pointer*))
-    
-    ;; (format t "A:: ~S <- * <- ~S~%"
-    ;; 	    (if node-ref
-    ;; 		(data node-ref)
-    ;; 		nil)
-    ;; 	    (if node-buf
-    ;; 		(data node-buf)
-    ;; 		nil))
+	      (format t "ref: ~S, buf: ~S~%" node-ref node-buf)
+	      
+	      ;; Handle left side
+	      
+	      ;; Unlink node-ref if needed
+	      (when-let ((node-ref-new (get-node-in node-ref)))
+			(when node-ref-new
+			  ;; Unlink
+			  (unlink-nodes node-ref-new node-ref)
+			  ;; Link pointer to node-buf in
+			  (link-node-pointer node-ref-new :out)))
 
-    ;; Ensure node to cut
-    (when node-ref
-      (let ((node-ref-new (get-node-in node-ref)))
+	      ;; This assumes node is appended left side of right side
+	      (link-node-pointer node-ref :in)
 
-	;; (format t "  node-ref-new: ~S~%"
-	;; 	(if node-ref-new (data node-ref-new) nil))
+	      ;; Handle right side
+	      
+	      (if node-buf
+		  (progn
+		    (link-nodes node-buf node-ref)
 
-	;; Position pointer first since later moves are relative to pointer
-	(if node-ref-new
-	    (progn
-	      (unlink-nodes node-ref-new node-ref)
-	      (link-nodes *node-pointer* node-ref-new)
-  	      (advance-node-of-node *node-pointer*
-  	  			   node-ref-new
-  	  			   :+s))
-  	    (advance-node-of-node *node-pointer*
-  	  			 *node-pointer*
-  	  			 :-))
-	
-	;; This part depends on whether buffer filled or not
-	;; POSS: Use insert function?
-	(if node-buf
-	    (progn
-	      (link-nodes node-buf node-ref)
-	      (link-nodes node-ref *node-pointer*)
-	      ;; Move buf right of itself
-	      (advance-node-of-node node-buf
-  				   node-buf
-  				   :+)	      
-	      ;; Then move ref left of buf
-	      (advance-node-of-node node-ref
-  				   node-buf
-  				   :-))
-	    (progn
-	      (link-nodes node-ref *node-pointer*)
-	      (advance-node-of-node node-ref
-				   *node-pointer*
-  				   :+))))
-      
-      ;; (multiple-value-bind (node-buf node-ref)
-      ;; 	  (get-node-bi-ptr)
-      ;; 	(format t "B:: ~S <- * <- ~S~%"
-      ;; 		(if node-ref
-      ;; 		    (data node-ref)
-      ;; 		nil)
-      ;; 		(if node-buf
-      ;; 		    (data node-buf)
-      ;; 		    nil)))
-      
-      (when node-buf
-	(enqueue-node node-buf))
-      (enqueue-node node-ref)
-      (enqueue-node-pointer))))  
+		    ;; Move node-ref left of node-buf
+  		    (advance-node-of-node node-ref
+  					  node-buf
+  					  :-)
+		    ;; Move ptr right (of new-ref-new)
+		    (if-let ((node-ref-new (get-node-out-ptr)))
+			    (advance-node-of-node *node-pointer*
+  						  node-ref-new
+  						  :+)
+  			    (advance-node-of-node *node-pointer*
+  						  *node-pointer*
+  						  :-)))
+		  
+		  (progn
+		    ;; Move directly right of pointer
+		    (advance-node-of-node node-ref
+  					  *node-pointer*
+  					  :+)
+		    ;; Then move ptr to right of out
+		    ;; Else move ptr left
+		    ;; This will maintain a gap
+		    (if-let ((node-ref-new (get-node-out-ptr)))
+			    (advance-node-of-node *node-pointer*
+  						  node-ref-new
+  						  :+)
+  			    (advance-node-of-node *node-pointer*
+  						  *node-pointer*
+  						  :-))))
 
-(defun copy-node ()
+	      (when node-buf
+  		(enqueue-node node-buf))
+	      (enqueue-node node-ref)
+	      (enqueue-node-pointer))))
+	      
+(defun copy-node () ;;-to-pointer
   ;; Copy node from left side (succ) -> right side (pred)
+  ;; Remainder same as cut node
   ;;
   ;; Procedure:
   ;; 1. Copy node
@@ -235,89 +251,77 @@
 (defun paste-node ()
   ;; Take node from right side (pred) -> left side (succ)
 
-  ;; Empty buffer:
+  ;; nil node-ref:
   ;;      * <- A <- B <- C | START
   ;;      *    A <- B <- C | Unlink ptr
   ;;      *    A    B <- C | Unlink A (B-A)
   ;;
+  ;; A <- * <------ B <- C | Link B ptr  
   ;; A <- *         B <- C | Link ptr A
-  ;; A <- * <------ B <- C | Link B ptr
 
-  (multiple-value-bind (node-buf node-ref)
-      (unlink-node-pointer :bi)
-    
-    ;; Ensure buffer node to paste
-    (when node-buf
-      (let ((node-buf-new (get-node-in node-buf)))
 
-	;; Remove all links for node-buf
-	(unlink-node node-buf :bi)
+  ;; t node-ref:
+  ;; A <------- * <- B <- C | START
+  ;; A          *    B <- C | Unlink ptr
+  ;; A          *    B    C | Unlink B (C-B)
+  ;;
+  ;; A    B     * <------ C | Link C ptr
+  ;; A    B <-- * <------ C | Link ptr B
+  ;;
+  ;; A -> B <-- * <------ C | Link A B
 
-	(link-node-pointer node-buf)
+  ;; (format t "* <- ~S <- ~S~%"
+  ;; 	    (if node-buf
+  ;; 		(data node-buf)
+  ;; 		nil)
+  ;; 	    (if node-buf
+  ;; 		(if (get-node-in node-buf)
+  ;; 		    (data (get-node-in node-buf))
+  ;; 		    nil)
+  ;; 		nil))
 
-	;; Move ptr right
-  	(advance-node-of-node *node-pointer*
-  	  		     *node-pointer*
-  	  		     :+)
-	;; Position node-buf left of ptr
-	(advance-node-of-node node-buf
-  			     *node-pointer*
-  			     :-)	      
-	
-	(when node-buf-new
-	  (link-node-pointer node-buf-new)))
-      
-      ;; (enqueue-node node-ref) ; move?
-      (enqueue-node node-buf)
-      (enqueue-node-pointer))))
-	
+  ;; Must be buffer node to do anything
+  (when-let ((node-buf (get-node-in-ptr)))
+	    (let ((node-ref (get-node-out-ptr)))
+	      ;; Unlink pointer
+	      (unlink-node-pointer :bi)
+	      
+	      ;; Handle right side of ptr first
+	      	      
+	      ;; Unlink node-buf if needed
+	      (when-let ((node-buf-new (get-node-in node-buf)))
+			;; Unlink
+			(unlink-nodes node-buf-new node-buf)
+			;; Link pointer to node-buf in
+			(link-node-pointer node-buf-new :in))
 
-(defun paste-node-old ()	
-  ;; Unlink ptr
-  ;; in out
-  ;; Given a<-*<-b:
-  ;; in = b, out = a
-  ;; b = buffer node
-  (multiple-value-bind (node-tgt node-*)
-      (unlink-node-pointer :bi)
-    
-    (when node-tgt
-      
-      ;; Link buffer remainder to ptr
-      (when-let ((1-node-* (get-node-in node-tgt)))
-		;; (format t "LINKING ~S to ~S~%" (data *-node-1) (data *-node))
-		(unlink-nodes 1-node-* node-tgt)
-    		(link-node-pointer 1-node-*
-    				   :in))
-
-      ;; Link pred node after pointer
-      ;; - later use swap function
-      (link-node-pointer node-tgt)
-      
-      ;; Link copy node to pointed node if possible
-      (if node-*
-	  (progn
-	    (link-node node-* node-tgt)
-	    ;; Move copy node right of pointed node
-	    (advance-node-of-node node-tgt
-				 node-*
-				 :+)
-	    ;; Move ptr node right of copy node
-	    (advance-node-of-node *node-pointer*
-				 node-tgt
-				 :+))
-	  (progn
-	    ;; No pointed node so move ptr right
-	    ;; Then move copy node left of ptr
-	    (advance-node-of-node *node-pointer*
-				 *node-pointer*
-				 :+)
-	    (advance-node-of-node node-tgt
-				 *node-pointer*
-				 :-)))
-            
-      (enqueue-node node-tgt)
-      (enqueue-node-pointer))))
+	      (link-node-pointer node-buf :out)
+	      
+	      ;; Handle left side of ptr
+	      (if node-ref
+		  (progn
+		    ;; Link node-buf
+		    (link-nodes node-ref node-buf)
+		    ;; Move node-buf right of node-ref
+		    (advance-node-of-node node-buf
+  		    			  node-ref
+  		    			  :+)
+		    ;; Move ptr right of node-buf
+		    (advance-node-of-node *node-pointer*
+  		    			  node-buf
+  		    			  :+))
+		  (progn
+		    ;; Move ptr right
+  		    (advance-node-of-node *node-pointer*
+  	  				  *node-pointer*
+  	  				  :+)
+		    ;; Position node-buf left of ptr
+		    (advance-node-of-node node-buf
+  					  *node-pointer*
+  					  :-))))
+	    
+	    (enqueue-node node-buf)
+	    (enqueue-node-pointer)))
 
 (defun link-nodes (node-a node-b)
   ;; Need not pos argument - user switches args
@@ -350,16 +354,16 @@
   t)
 
 
-;; 	;; Pass starting position, i.e. node-pointer position
-;; 	;; For nodes, index to calculate
-;; 	;; Have to set index serially...
-;; 	;; - faster way would be to use spatial relationship to calculate index
-;; 	;;   -> only works when nodes are sequentially positioned
-;; 	;;   -> radial would be better
-;; 	;;
+;; Pass starting position, i.e. node-pointer position
+;; For nodes, index to calculate
+;; Have to set index serially...
+;; - faster way would be to use spatial relationship to calculate index
+;;   -> only works when nodes are sequentially positioned
+;;   -> radial would be better
+;;
 
-;; 	;; pos = start + (advance * index)
-;; 	;; adjust-pos by bounds
+;; pos = start + (advance * index)
+;; adjust-pos by bounds
 
 ;; 	(digraph:mapc-vertices (lambda (vert)
 ;; 				 (sb-concurrency:enqueue

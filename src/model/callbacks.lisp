@@ -5,7 +5,7 @@
 (defun add-node-cb (seq-key)
   (fmt-model t "add-node" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
-				'add-node
+				'add-node ;; (make-symbol (format nil "~a~%" seq-key))
 				'()
 				(lambda ()
 				  (funcall #'add-node (second (reverse (second seq-key)))))) ; create aux fn for this
