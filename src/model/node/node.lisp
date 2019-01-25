@@ -328,7 +328,7 @@
 		    &key
 		      (node-ptr *node-pointer*)
 		      (pos-ptr :after) ; will unlink node in this pos
-		      (pos-ref :before)) ;; will link node in this pos
+		      (pos-ref :in)) ;; will link node in this pos
 
   ;; REFACTOR:
   ;; - args = node-tgt node-ptr
@@ -356,7 +356,7 @@
   
   (let ((node-* (get-node-pointer-reference pos-ptr node-ptr)))
     (when node-*    
-      (cond ((eq pos-ref :before)
+      (cond ((eq pos-ref :in)
   	     ;; 1. Remove edge between node-*   and ptr
   	     (if (eq pos-ptr :after)
   	     	 (remove-edge node-ptr node-*)
@@ -532,7 +532,7 @@
 ;; Find end, specify successor or predecessor direction
 (defun find-node-line-start (node-end direction)
   (let ((node-start node-end)
-	(fn (cond ((eq direction :before)
+	(fn (cond ((eq direction :in)
 		   #'digraph:predecessors)
 		  ((eq direction :after)
 		   #'digraph:successors)
@@ -563,13 +563,13 @@
 
 (defun find-node-end (node-default dir-1 dir-2)
   (let ((node-start node-default)
-	(fn-1 (cond ((eq dir-1 :before)
+	(fn-1 (cond ((eq dir-1 :in)
 		     #'digraph:predecessors)
 		    ((eq dir-1 :after)
 		     #'digraph:successors)
 		    (t
 		     t)))
-	(fn-2 (cond ((eq dir-2 :before)
+	(fn-2 (cond ((eq dir-2 :in)
 		     #'digraph:predecessors)
 		    ((eq dir-2 :after)
 		     #'digraph:successors)
@@ -595,13 +595,13 @@
 
 ;; Need do-node macro
 (defmacro do-node ((var node-default dir-1 dir-2) &body body)
-  `(let ((fn-1 (cond ((eq ,dir-1 :before)
+  `(let ((fn-1 (cond ((eq ,dir-1 :in)
 		    #'digraph:predecessors)
 		     ((eq ,dir-1 :after)
 		      #'digraph:successors)
 		     (t
 		      t)))
-	 (fn-2 (cond ((eq ,dir-2 :before)
+	 (fn-2 (cond ((eq ,dir-2 :in)
 		      #'digraph:predecessors)
 		     ((eq ,dir-2 :after)
 		      #'digraph:successors)

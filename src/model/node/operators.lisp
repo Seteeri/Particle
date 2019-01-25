@@ -50,7 +50,7 @@
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however
   (let* ((node-nl (add-node (char-code #\Newline) nil))
-	 (node-start (find-node-line-start node-nl :before)))
+	 (node-start (find-node-line-start node-nl :in)))
 
     ;; If node not found, i.e. no chars except newline
     ;; use newline pos
@@ -119,10 +119,6 @@
 	       (setf (data node) output-eval)
 	       t)))))
 
-(defun show-node-ids ()
-  ;; Procedure:
-  t)
-
 (defun cut-node ()
   ;; Cut node from left side (succ) -> right side (pred)
   ;;
@@ -180,8 +176,8 @@
       ;;   bottom of node is resting on baseline
             
       (let ((node-ptr-end-r (find-node-end *node-pointer*
-					   :before
-					   :before)))
+					   :in
+					   :in)))
 	;; Link ptr/node <- node-*
 	(link-node node-* node-ptr-end-r)
 	;; Move node-* (copy) to right of ptr
@@ -276,4 +272,8 @@
   ;; node-dest should be dest
   ;;
   ;; provide inverse operation to produce id from node
+  t)
+
+(defun show-node-ids ()
+  ;; Procedure:
   t)
