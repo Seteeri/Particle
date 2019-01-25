@@ -46,10 +46,10 @@
 				     (node-ptr *node-pointer*))
   ;; TODO:
   ;; - Add arg to get first or all
-  (cond ((eq dir :out)
-	 (first (digraph:successors *digraph* node-ptr)))
-	((eq dir :in)
+  (cond ((eq dir :in)
 	 (first (digraph:predecessors *digraph* node-ptr)))
+	((eq dir :out)
+	 (first (digraph:successors *digraph* node-ptr)))
 	(t
 	 (error "get-node-pointer-reference: dir invalid"))))
 

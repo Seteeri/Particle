@@ -232,23 +232,29 @@
   ;;    - instead of calling move repeatedly, use flag to mark as dirty
 
   ;; Unlink ptr
-  (multiple-value-bind (node-p node-s)
+  (multiple-value-bind (node-* *-node)
       (unlink-node-pointer :bi)
 	 
     ;; Link pred node after pointer
     ;; - later use swap function
-    (link-node-pointer node-p)
+    (link-node-pointer node-*)
 
     ;; Link pred node after succ node
-    (link-node node-s node-p)
+    (link-node *-node node-*)
 
     ;; Move node-p to ptr
-    (move-node-x-of-node node-p node-s :+ :ignore-y t)
+    (move-node-x-of-node node-*
+			 *-node
+			 :+
+			 :ignore-y t)
     
     ;; Move ptr to node-p
-    (move-node-x-of-node *node-pointer* node-p :+ :ignore-y t)
+    (move-node-x-of-node *node-pointer*
+			 node-*
+			 :+
+			 :ignore-y t)
 
-    (enqueue-node node-p)
+    (enqueue-node node-*)
     (enqueue-node-pointer)))
 
 (defun link-node (node-a node-b)
@@ -259,6 +265,9 @@
   (remove-edge node-a node-b))
 
 (defun swap-nodes (node-src node-dest)
+  ;; Swap links
+  ;; - option to swap positions?
+  
   ;; Get preds of src
   ;; Remove edges
   ;; Get preds of dest
