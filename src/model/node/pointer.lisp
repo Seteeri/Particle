@@ -49,11 +49,15 @@
   (values (get-node-in *)
 	  (get-node-out *)))
 
-(defun link-node-ptr (node &optional (dir :out))
+(defun link-node-ptr (node
+		      &optional
+			(dir :out))
   (link-node node *node-pointer* dir))
 
-(defun unlink-node-ptr (&optional (dir :out))
-  (unlink-node-first *node-pointer* dir))
+(defun unlink-node-ptr (&optional
+			  (* *node-pointer*)
+			  (dir :out))
+  (unlink-node-first * dir))
 
 (defun relink-node-ptr (node &optional
 			       (dir-old :out)
@@ -88,3 +92,20 @@
 		    (funcall #'run-anim
 			     seq-event
 			     anim)))))
+
+(defun move-node-ptr (dir)
+  ;; Check for node in dir
+  ;; If node, goto it
+
+  ;; NOTE: Not euclidean
+  
+  ;; left = in
+  ;; right = out
+
+  (when-let* ((node-ref (get-node-ptr-out))
+	      (node-nxt (get-node-dir node-ref dir)))
+	     (unlink-node-ptr)
+	     (link-node-ptr node-nxt)
+	     (translate-node-to-node *node-pointer*
+				     node-nxt)
+	     (enqueue-node-pointer)))

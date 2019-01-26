@@ -2,6 +2,19 @@
 
 ;; See notes in dispatch
 
+(defun print-graph-cb (seq-key)
+  (fmt-model t "print-graph" "~a~%" seq-key)
+  (sb-concurrency:enqueue (list nil
+				'backspace-node
+				'()
+				(lambda ()
+				  (digraph:mapc-vertices
+				   (lambda (node)
+				     (format t "~S = ~S~%" node (data node)))
+				   *digraph*)
+				  (funcall #'draw-graph)))
+			  *queue-anim*))
+
 (defun add-node-cb (seq-key)
   (fmt-model t "add-node" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
@@ -126,6 +139,24 @@
 		       (vy3 (translation model-matrix))
 		       (- (* +linegap+ *scale-node*))
 		       'move-pointer-y)))
+
+(defun move-node-ptr-in-cb (seq-event)
+  (fmt-model t "move-node-ptr-in" "~a~%" seq-event)
+  (sb-concurrency:enqueue (list nil
+				'move-node-ptr-in
+				'()
+				(lambda ()
+				  (funcall #'move-node-ptr :in)))
+			  *queue-anim*))
+
+(defun move-node-ptr-out-cb (seq-event)
+  (fmt-model t "move-node-ptr-out" "~a~%" seq-event)
+  (sb-concurrency:enqueue (list nil
+				'move-node-ptr-out
+				'()
+				(lambda ()
+				  (funcall #'move-node-ptr :out)))
+			  *queue-anim*))
 
 (defun scale-ortho-down-cb (seq-event)
   ;; zoom in

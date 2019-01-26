@@ -2,6 +2,12 @@
 
 ;; core functions - triggered by callbacks or meant to be called by user
 
+(defun draw-graph ()
+  (digraph.dot:draw *digraph*
+  		    :filename (str:concat (format nil "graph-~a" (osicat:get-monotonic-time))
+					  ".png")
+		    :format :png))
+
 (defun add-node (code &optional (move-pointer t))
   ;; Rel to pointer
   
@@ -114,12 +120,6 @@
 	       ;; initial data used for glyph
 	       (setf (data node) output-eval)
 	       t)))))
-
-(defun draw-graph ()
-  (digraph.dot:draw *digraph*
-  		    :filename (str:concat (format nil "graph-~a" (osicat:get-monotonic-time))
-					  ".png")
-		    :format :png))
 
 ;; (format t "*:: ~S~%" (digraph:predecessors *digraph* *node-pointer*))
 ;; (format t "*:: ~S~%" (digraph:successors *digraph* *node-pointer*))

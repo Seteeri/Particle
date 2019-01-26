@@ -143,15 +143,23 @@
 			   (second seq-event))))	
     
     (when t
-      ;; handlers in node
-      (dolist (seq-event `((,+xk-left+       ,#'translate-node-ptr-left-cb)
+
+      ;; (dolist (seq-event `((,+xk-left+       ,#'move-node-ptr-in-cb)
+      ;; 			   (,+xk-up+         ,#'translate-node-ptr-up-cb)
+      ;; 			   (,+xk-right+      ,#'move-node-ptr-out-cb)
+      ;; 			   (,+xk-down+       ,#'translate-node-ptr-down-cb)))
+      ;; 	(register-callback `(,(first seq-event) (:press :repeat))
+      ;; 			   :exclusive
+      ;; 			   (second seq-event)))
+      
+      (dolist (seq-event `((,+xk-left+       ,#'move-node-ptr-in-cb)
 			   (,+xk-up+         ,#'translate-node-ptr-up-cb)
-			   (,+xk-right+      ,#'translate-node-ptr-right-cb)
+			   (,+xk-right+      ,#'move-node-ptr-out-cb)
 			   (,+xk-down+       ,#'translate-node-ptr-down-cb)))
 	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))
-    
+      
     (when t
       ;; handlers in projview
       (dolist (seq-event `((,+xk-left+       ,#'translate-camera-left-cb)
@@ -192,16 +200,15 @@
 		       :exclusive
 		       #'eval-node-cb)
 
-    ;; TAB Alpha
     ;; When used with modifiers, need to use iso-left-tab
     (register-callback `(,+xk-shift-r+      (:press :down)
 			 ,+xk-iso-left-tab+ (:press))
 		       :exclusive
-		       #'toggle-alpha-node-cb)
+		       #'print-graph-cb)
     (register-callback `(,+xk-shift-l+ (:press :down)
 			 ,+xk-iso-left-tab+     (:press))
 		       :exclusive
-		       #'toggle-alpha-node-cb)
+		       #'print-graph-cb)
     
     ;; for testing
     (when nil

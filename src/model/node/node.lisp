@@ -234,7 +234,7 @@
   (values (get-node-in *)
 	  (get-node-out *)))
 
-(defun get-node-neighs (* dir)
+(defun get-node-dir (* dir)
   (cond ((eq dir :in)  (get-node-in *))
 	((eq dir :out) (get-node-out *))
 	((eq dir :bi)  (get-node-bi *))))
@@ -367,6 +367,9 @@
 
 	      (translate-node-to-node *node-pointer*
 				      node-ref))
+
+      ;; Remove from graph
+      (remove-vertex node-ref)
       
       ;; Caller should not store this so it can be GC'd
       node-ref))
