@@ -53,7 +53,7 @@
 
     ;; Debugging indication
     (when (eq node-start node-nl)
-      (warn (format nil "insert-node-newline -> CHAR NODES NOT FOUND")))
+      (warn "[insert-node-newline] unlinked char"))
 
     ;; Move right of node and then y down
     ;; Use pos with adjustments:
