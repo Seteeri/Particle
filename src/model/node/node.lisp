@@ -367,8 +367,6 @@
 	      
 	      (translate-node-to-node *node-pointer*
 				 node-ref))
-
-      (draw-graph)
       
       ;; Caller should not store this so it can be GC'd
       node-ref))
