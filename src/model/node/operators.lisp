@@ -17,7 +17,7 @@
 
     (insert-vertex node)
 
-    (insert-node node)
+    (insert-node node *node-pointer* :out)
     
     (when move-pointer
       (advance-node-of-node *node-pointer*

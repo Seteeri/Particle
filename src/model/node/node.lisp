@@ -211,6 +211,14 @@
 ;; - Add arg to get first or all
 ;;   - Ignore pointer
 
+(defun get-nodes-in (* &optional (ptr-ignore t))
+  ;; Filter pointer?
+  (digraph:predecessors *digraph* *))
+
+(defun get-nodes-out (*)
+  ;; POSS: Add ignore-ptr
+  (digraph:successors *digraph* *))
+
 (defun get-node-in (* &optional (ptr-ignore t))
   (if ptr-ignore
       (dolist (node-i (digraph:predecessors *digraph* *))
@@ -231,7 +239,19 @@
 	((eq dir :out) (get-node-out *))
 	((eq dir :bi)  (get-node-bi *))))
 
-(defun unlink-node (* &optional (dir :out))
+(defun link-node (node-src node-dest dir)
+  (cond ((eq dir :in)
+	 (insert-edge node-src node-dest))
+	((eq dir :out)
+	 (insert-edge node-dest node-src))))
+
+(defun unlink-node-2 (node-src node-dest dir)
+  (cond ((eq dir :in)
+	 (remove-edge node-src node-dest))
+	((eq dir :out)
+	 (remove-edge node-dest node-src))))
+
+(defun unlink-node (* &optional (dir :out)) ; does first
   (cond ((eq dir :in)
 	 (when-let ((node-* (get-node-in-ptr)))
 		   (remove-edge node-* *)
@@ -247,12 +267,82 @@
 	     (remove-edge node-* *))
 	   (when *-node
 	     (remove-edge * *-node))
-	   (values node-* *-node)))
-	(t
-	 (error "unlink-pointer: dir invalid"))))
+	   (values node-* *-node)))))
+
+(defun replace-node (node-src
+		     node-dest
+		     dir-src)
+  
+  ;; Procedure
+  ;;
+  ;; Insert d:
+  ;;
+  ;; a <- b <- * <- a | GIVEN
+  ;;
+  ;; 1. Unlink src
+  ;; 1. Get all the ins of dest
+  ;;    2. Unlink old, link new
+  ;; 3. Get all the outs of dest
+  ;;    4. Unlink old, link new
+
+  ;; unlink old
+  
+  (let ((nodes-in (get-nodes-in node-dest))
+	(nodes-out (get-nodes-out node-dest)))
+
+    ;; Unlink dest
+    (loop
+       :for node :in nodes-in
+       :do (remove-edge node node-dest))
+    (loop
+       :for node :in nodes-out
+       :do (remove-edge node-dest node))
+
+    ;; Link src
+    (loop
+       :for node :in nodes-in
+       :do (insert-edge node node-src))
+    (loop
+       :for node :in nodes-out
+       :do (insert-edge node-src node)))
+
+  ;; Could easily do swap function
+  t)
+
+(defun insert-node (node-src
+		    node-dest
+		    dir-src)
+  
+  ;; Procedure
+  ;;
+  ;; Scenario #1 - Insert b out of * (into a):
+  ;; a <------ * | GIVEN B
+  ;; a <- b <- * | GOAL
+  ;;
+  ;; - Plugin 
+
+  ;; Scenario #2 - Insert b into *:
+  ;; a <- * <------ c | GIVEN B
+  ;; a <- * <- b <- c | GOAL
+  
+  ;; nodes in opposite direction remain attached
+
+  (loop
+     :for node :in (cond ((eq dir-src :in)
+			  (get-nodes-in node-dest))
+			 ((eq dir-src :out)
+			  (get-nodes-out node-dest)))
+     :do (progn
+	   (unlink-node-2 node-src node-dest dir-src)
+	   (link-node node-src node-dest dir-src)))
+  
+  ;; link src to dest
+  (link-node node-src node-dest dir-src)
+  
+  t)
 
 ;; Rewrite this function
-(defun insert-node (node
+(defun insert-node-2 (node
 		    &key
 		      (node-ptr *node-pointer*)
 		      (dir-ptr :out) ; will unlink node in this pos
@@ -337,6 +427,8 @@
 	      (move-node-to-node *node-pointer*
 				 node-ref))
 
+      (draw-graph)
+      
       ;; Caller should not store this so it can be GC'd
       node-ref))
 
