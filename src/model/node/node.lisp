@@ -494,38 +494,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun find-node-end (node-default dir-1 dir-2)
-  (let ((node-start node-default)
-	(fn-1 (cond ((eq dir-1 :in)
-		     #'digraph:predecessors)
-		    ((eq dir-1 :out)
-		     #'digraph:successors)
-		    (t
-		     t)))
-	(fn-2 (cond ((eq dir-2 :in)
-		     #'digraph:predecessors)
-		    ((eq dir-2 :out)
-		     #'digraph:successors)
-		    (t
-		     t))))
-    ;; Could detect first char to see which direction text is in...
-    ;; - Might introduce bugs -> print warning?
-    
-    ;; Create fn - loop until specified character or pass lambda as predicate
-    ;; Start with newline char instead of pointer or it will terminate immediately
-    (loop
-       :for pred := (funcall fn-1 *digraph* node-default)
-       :then (funcall fn-2 *digraph* pred)
-       :while pred
-       :do (loop
-	      :for node :in pred
-	      :do (unless (equal node *node-pointer*) ; skip pointer option
-		    ;; Else set node to get preds and goto next iteration
-		    (setf pred node
-			  node-start node)
-		    (return))))
-    node-start))
-
 ;; Need do-node macro
 (defmacro do-node ((var node-default dir-1 dir-2) &body body)
   `(let ((fn-1 (cond ((eq ,dir-1 :in)
