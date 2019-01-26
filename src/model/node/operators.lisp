@@ -31,11 +31,17 @@
     node))
 
 (defun backspace-node ()
-  (let ((node-del (delete-node)))
+  (multiple-value-bind (node-del
+			node-del-in
+			node-del-out)
+      (delete-node)
     (when node-del
-      ;; Update shm
+      (enqueue-node-zero (index node-del)) ; refactor this func
       (enqueue-node-pointer)
-      (enqueue-node-zero (index node-del)))))
+      (when node-del-in
+	(enqueue-node node-del-in))
+      (when node-del-out
+	(enqueue-node node-del-out)))))
 
 (defun insert-node-tab ()
   (dotimes (n (1- +spaces-tab+))

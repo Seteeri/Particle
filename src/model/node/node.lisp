@@ -240,6 +240,8 @@
 	((eq dir :bi)  (get-node-bi *))))
 
 (defun link-node (node-src node-dest dir)
+  ;; TEMP: add assertion to prevent cycles, aka node link to itself
+  (assert (not (eq node-src node-dest)))
   (cond ((eq dir :in)
 	 (insert-edge node-src node-dest))
 	((eq dir :out)
@@ -309,6 +311,7 @@
   ;; Could easily do swap function
   t)
 
+;; rename to join
 (defun insert-node (node-src
 		    node-dest
 		    dir-src)
@@ -327,52 +330,125 @@
   
   ;; nodes in opposite direction remain attached
 
+  ;; a -> f
+  
   (loop
      :for node :in (cond ((eq dir-src :in)
 			  (get-nodes-in node-dest))
 			 ((eq dir-src :out)
 			  (get-nodes-out node-dest)))
      :do (progn
-	   (unlink-node node node-dest dir-src)
-	   (link-node node-src node dir-src)))
+	   (unlink-node node     node-dest dir-src)
+	   ;; (format t "~S ~S: ~S~%" (data node-dest) dir-src (data node))
+	   ;; (format t "~S - ~S : ~S~%" (data node-src) (data node) dir-src)
+	   (link-node   node-src node      dir-src)))
   
   ;; link src to dest
-  (link-node node-src node-dest dir-src)
-  
-  t)
+  (link-node node-src
+	     node-dest
+	     dir-src))
+
+(defun print-node-dirs (&key
+			  (node-ptr *node-pointer*)
+			  (dir-ptr :out))
+  ;; Print node
+  (when-let ((node-ref (get-node-ptr-out)))	    
+	    (let ((nodes-ref-in (loop :for n :in (get-nodes-in node-ref) :collect (data n)))
+		  (nodes-ref-out (loop :for n :in (get-nodes-out node-ref) :collect (data n))))
+	      (format t "ptr: ~a~%" *node-pointer*)
+	      (format t "ptr-ref (ptr out): ~a~%" node-ref)
+	      (format t "in: ~a~%" nodes-ref-in)
+	      (format t "out: ~a~%" nodes-ref-out))))
 
 (defun delete-node (&key
 		      (node-ptr *node-pointer*)
 		      (dir-ptr :out))
 
-  ;; Process:
-  ;; a -> b -> c <- * ... | GIVEN
-  ;; a -> b -> c    * ... | Unlink ptr C
-  
+  ;; Cases:
+  ;;   
+  ;; - intra node:  y in, y out
+  ;;   A -> B -> C
+  ;;        *
+  ;;   A ->   -> C
+  ;;        *
+  ;;   - move C next to A
+  ;;   - point to C
+  ;;
+  ;;
+  ;; - end node:    y in, n out
+  ;;   A -> B -> C
+  ;;             *
+  ;;   A -> B -> 
+  ;;        *
+  ;;   - point to B
+  ;;
+  ;;
+  ;; - start node:  n in, y out
+  ;;   A -> B -> C
+  ;;   *
+  ;;     -> B -> C
+  ;;        *
+  ;;   - point to B
+  ;;
+  ;;
+  ;; - single node: n in, n out
+  ;;     B 
+  ;;     *
+  ;;   - do nothing
+
   (when-let ((node-ref (get-node-ptr-out)))
-      ;; Only unlink left side of pointer
-      (unlink-node-ptr :out)
+	    ;; Only unlink left side of pointer
+	    (unlink-node-ptr :out)
+	    
+	    (let ((node-ref-in (get-node-in node-ref))
+		  (node-ref-out (get-node-out node-ref)))
 
-      ;; Check if node-ref pts to anything
-      (if-let ((node-ref-new (get-node-in node-ref)))
-	      ;; Update pointer to right of node-** (instead of node-* pos)
-	      (progn
-		(link-node-ptr node-ref-new)
-		(if (char-equal (data node-ref-new) #\Newline)
-		    (translate-node-to-node *node-pointer*
-					    node-ref)
-		    (advance-node-of-node *node-pointer*
-					  node-ref-new
-					  1.0)))
+	      (cond ((and node-ref-in  ; delete-node-intra
+			  node-ref-out)
+		     ;; Insert C out of A
+		     (insert-node noderef-out node-ref-in :out)
+		     ;; Link pointer to next node
+		     (link-node-ptr node-ref-out)
+		     ;; Move C next to A
+  		     (advance-node-of-node node-ref-out
+  					   node-ref-in
+  					   1.0)	     
+		     ;; Move pointer - must do again to readjust
+  		     (translate-node-to-node *node-pointer*
+  					     node-ref-in)
+		     t)
+		    
+		    ;; delete-node-end
+		    ((and node-ref-in
+			  (not node-ref-out))
+		     (link-node-ptr node-ref-in)
+		     ;; Move pointer - must do again to readjust
+  		     (translate-node-to-node *node-pointer*
+  					     node-ref-in)
+		     t)
 
-	      (translate-node-to-node *node-pointer*
-				      node-ref))
+		    ;; delete-node-start
+		    ((and (not node-ref-in)
+			  node-ref-out)
+		     (link-node-ptr node-ref-out)
+  		     (translate-node-to-node *node-pointer*
+  					     node-ref-out)		     
+		     t)
 
-      ;; Remove from graph
-      (remove-vertex node-ref)
-      
-      ;; Caller should not store this so it can be GC'd
-      node-ref))
+		    ;; delete-node-iso
+		    ((and (not node-ref-in)
+			  (not node-ref-out))
+		     t))
+
+	      ;; Remove from graph (removes edges?)
+	      ;; or move under let?
+	      ;; poss caller should remove from graph while this function pops?
+	      (remove-vertex node-ref)
+	      
+	      ;; Return deleted node, and surrounding nodes (for shm update)
+	      (values node-ref
+		      node-ref-in
+		      node-ref-out))))
 
 ;; Secondary/Aux operators
 ;; Need to implement hyperweb first to identify nodes
