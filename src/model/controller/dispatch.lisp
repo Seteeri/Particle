@@ -24,7 +24,9 @@
 	   ;; User can do so through proper synchronization methods
 	   ;; however the intent is to operate in parallel
 	   ;; Callbacks simply build a list for ptree nodes
-	   ;; that is simply enqueued	 
+	   ;; that is simply enqueued
+
+	   ;; Typicall one callback so execute here instead of after loop
 	   :collect (funcall cb seq-event))))
 
 (defun is-seq-event-valid (seq-events-key)

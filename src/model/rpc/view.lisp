@@ -65,7 +65,7 @@
 	       (return)
 	       (progn
 		 (setf q queue-retry)
-		 (format t "RETRY~%"))))))
+		 (warn "[execute-tasks-frame] retrying task~%"))))))
 
 (defun parse-task-frame (item ptree ids)
   (destructuring-bind (anim id args fn)
