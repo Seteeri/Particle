@@ -18,7 +18,6 @@
 ;;;;;;;;;;;;;
 
 (defparameter *queue-anim* nil)
-(defparameter *queue-frame* nil)
 (defparameter *queue-shm* nil)
 
 (defparameter *width* nil)

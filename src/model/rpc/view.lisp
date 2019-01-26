@@ -34,33 +34,38 @@
 	       ("projview" 0          ,(* 4 16 2))))
 	    (memcpy-shm-to-cache-flag*
 	     `(("projview" 0          ,(* 4 16 2)))))))))
-  
-(defun execute-tasks-frame ()
-  ;; TODO:
-  ;; - Need serial executor list that runs before or after this
 
+(defun execute-tasks-frame ()
   ;; Build ptree - serial
   ;; Execute ptree - parallel
-  (let ((ptree (make-ptree))
-	(ids (make-hash-table :size 32 :test 'equal)))
-    
-    (loop
-       :for item := (sb-concurrency:dequeue *queue-anim*)
-       :while item
-       :do (when-let ((item-retry (parse-task-frame item ptree ids)))
-		     ;; Readd to queue
-		     ;; (warn (format nil "parse-task-frame -> retry enqueue task: ~S" item-retry))
-		     ;; (sb-concurrency:enqueue item-retry
-		     ;; 			     *queue-anim*)
-		     t))
-    
-    (ptree-fn 'finish
-	      ;; the only ids need are the terminal ones
-	      ;; -> prefix id with finish so we know which ids to track
-	      (loop :for key :being :the hash-keys :of ids :collect key)
-  	      (lambda ())
-  	      ptree)
-    (call-ptree 'finish ptree)))
+
+  ;; Loop until queue empty
+  (loop
+     :with q := *queue-anim*
+     :do (let ((ptree (make-ptree))
+	       (ids (make-hash-table :size 32 :test 'equal))
+	       (queue-retry (sb-concurrency:make-queue)))
+	   
+	   (loop
+	      :for item := (sb-concurrency:dequeue q)
+	      :while item
+	      :do (when-let ((item-retry (parse-task-frame item ptree ids)))
+			    (sb-concurrency:enqueue item-retry queue-retry)))
+	   
+	   (unless (zerop (hash-table-size ids))
+	     (ptree-fn 'finish
+		       ;; the only ids need are the terminal ones
+		       ;; -> prefix id with finish so we know which ids to track
+		       (loop :for key :being :the hash-keys :of ids :collect key)
+  		       (lambda ())
+  		       ptree)
+	     (call-ptree 'finish ptree))
+
+	   (if (sb-concurrency:queue-empty-p queue-retry)
+	       (return)
+	       (progn
+		 (setf q queue-retry)
+		 (format t "RETRY~%"))))))
 
 (defun parse-task-frame (item ptree ids)
   (destructuring-bind (anim id args fn)
@@ -76,7 +81,7 @@
       (lparallel.ptree:ptree-redefinition-error (c)
 
 	(when (not anim)
-	  (warn (format nil "parse-task-frame -> retry enqueue task: ~S" item))
+	  ;; (warn (format nil "parse-task-frame -> retry enqueue task: ~S" item))
 	  (return-from parse-task-frame item))
 	
 	;; Keep anim with latest start time or nil

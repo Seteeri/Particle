@@ -3,6 +3,7 @@
 ;; Data structure:
 ;; (mod-logic, (mods key:(state)) (norm key:(state))) : (fn1:nil, fn2:nil)
 
+;; produce callbacks or call callbacks
 (defun dispatch-all-seq-event ()
   ;; Execute callbacks in order -> merge deps into single ptree
   (loop
@@ -12,20 +13,19 @@
 		      #'dispatch-seq-event
 		      seq-event)
      :finally (dotimes (i (hash-table-count (key-callbacks *controller*)))
-		t)))
+		(receive-result *channel-input*))))
 
 (defun dispatch-seq-event (seq-event)
   ;; Callbacks are executed in order
-  ;; Can run all callbacks in parallel?
+  ;; Can run all callbacks in parallel?(format t "a~%" i)
   (when (is-seq-event-valid seq-event)
-    (loop
-       :for cb :being :the :hash-keys :of (get-callbacks seq-event)
-       ;; Callbacks must not share data...
-       ;; User can do so through proper synchronization methods
-       ;; however the intent is to operate in parallel
-       ;; Callbacks simply build a list for ptree nodes
-       ;; that is simply enqueued	 
-       :collect (funcall cb seq-event))))
+	(loop :for cb :being :the :hash-keys :of (get-callbacks seq-event)
+	   ;; Callbacks must not share data...
+	   ;; User can do so through proper synchronization methods
+	   ;; however the intent is to operate in parallel
+	   ;; Callbacks simply build a list for ptree nodes
+	   ;; that is simply enqueued	 
+	   :collect (funcall cb seq-event))))
 
 (defun is-seq-event-valid (seq-events-key)
   (with-slots (key-states)
@@ -41,7 +41,7 @@
       ;; (format t "~%")
 	
       ;; Any of these fail, return
-      (when (not (is-seq-state-valid seq-keys))
+      (unless (is-seq-state-valid seq-keys)
 	(return-from is-seq-event-valid nil))
       
       ;; Exclusive: make sure no other mods pressed than those specified
