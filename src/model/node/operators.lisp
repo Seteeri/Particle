@@ -191,7 +191,7 @@
 	      (when-let ((node-ref-new (get-node-in node-ref)))
 			(when node-ref-new
 			  ;; Unlink
-			  (unlink-nodes node-ref-new node-ref)
+			  (unlink-node node-ref-new node-ref :in)
 			  ;; Link pointer to node-buf in
 			  (link-node-pointer node-ref-new :out)))
 
@@ -202,7 +202,7 @@
 	      
 	      (if node-buf
 		  (progn
-		    (link-nodes node-buf node-ref)
+		    (link-node node-buf node-ref :in)
 
 		    ;; Move node-ref left of node-buf
   		    (advance-node-of-node node-ref
@@ -281,7 +281,7 @@
 	      ;; Unlink node-buf if needed
 	      (when-let ((node-buf-new (get-node-in node-buf)))
 			;; Unlink
-			(unlink-nodes node-buf-new node-buf)
+			(unlink-node node-buf-new node-buf :in)
 			;; Link pointer to node-buf in
 			(link-node-pointer node-buf-new :in))
 
@@ -291,7 +291,7 @@
 	      (if node-ref
 		  (progn
 		    ;; Link node-buf
-		    (link-nodes node-ref node-buf)
+		    (link-node node-ref node-buf :in)
 		    ;; Move node-buf right of node-ref
 		    (advance-node-of-node node-buf
   		    			  node-ref
@@ -335,7 +335,7 @@
       
       (if node-buf
 	  (progn
-	    (link-nodes node-buf node-ref)
+	    (link-node node-buf node-ref :in)
 	    ;; Move node-ref left of node-buf
   	    (advance-node-of-node node-ref
   				  node-buf
@@ -370,12 +370,12 @@
       (enqueue-node node-ref)
       (enqueue-node-pointer))))
 
-(defun link-nodes (node-a node-b)
-  ;; Need not pos argument - user switches args
-  (insert-edge node-a node-b))
+;; (defun link-nodes (node-a node-b)
+;;   ;; Need not pos argument - user switches args
+;;   (insert-edge node-a node-b))
 
-(defun unlink-nodes (node-a node-b)
-  (remove-edge node-a node-b))
+;; (defun unlink-nodes (node-a node-b)
+;;   (remove-edge node-a node-b))
 
 (defun swap-nodes (node-src node-dest)
   ;; Swap links
