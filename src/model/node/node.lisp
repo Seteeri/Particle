@@ -360,13 +360,13 @@
 		(link-node-pointer node-ref-new)
 		(if (char-equal (data node-ref-new) #\Newline)
 		    (translate-node-to-node *node-pointer*
-				       node-ref)
+					    node-ref)
 		    (advance-node-of-node *node-pointer*
 					  node-ref-new
 					  :+)))
-	      
+
 	      (translate-node-to-node *node-pointer*
-				 node-ref))
+				      node-ref))
       
       ;; Caller should not store this so it can be GC'd
       node-ref))
@@ -402,13 +402,23 @@
     (setf (translation (model-matrix node-a)) new-pos)
     (update-transform (model-matrix node-a))
     new-pos))
-  
-(defun translate-node-to-node (node-a node-b &optional (offset (vec3 0 0 0)))
+
+(defun translate-node-to-node (node-a
+			       node-b
+			       &key
+				 (offset (vec3 0 0 0)))
   ;; Move node-a to node-b position; don't change links
-  (setf (translation (model-matrix node-a))
-	(v+ (translation (model-matrix node-b))
-	    offset))
-  (update-transform (model-matrix node-a)))
+  ;; Adjust for baseline
+  (let* ((origin-b (get-origin-from-node-pos node-b))
+	 (bounds-a (bounds-origin (gethash (char-code (data node-a)) *metrics*)))
+	 (new-pos (v+ origin-b
+		      offset
+		      (vec3 (* (aref bounds-a 0) *scale-node*)
+			    (* (aref bounds-a 1) *scale-node*)
+			    0.0))))
+    (setf (translation (model-matrix node-a)) new-pos)
+    (update-transform (model-matrix node-a))
+    new-pos))
 
 (defun build-string-from-nodes ()
   ;; Pass starting node else use node-pointer
