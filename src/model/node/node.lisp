@@ -333,8 +333,8 @@
 			 ((eq dir-src :out)
 			  (get-nodes-out node-dest)))
      :do (progn
-	   (unlink-node node-src node-dest dir-src)
-	   (link-node node-src node-dest dir-src)))
+	   (unlink-node node node-dest dir-src)
+	   (link-node node-src node dir-src)))
   
   ;; link src to dest
   (link-node node-src node-dest dir-src)
@@ -466,40 +466,33 @@
     (insert-vertex node)
     node))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; Find end, specify successor or predecessor direction
 (defun find-node-line-start (node-end dir)
   (let ((node-start node-end)
 	(fn (cond ((eq dir :in)
 		   #'digraph:predecessors)
 		  ((eq dir :out)
-		   #'digraph:successors)
-		  (t
-		   t))))
-
-    ;; Could detect first char to see which direction text is in...
-    ;; - Might introduce bugs -> print warning?
+		   #'digraph:successors))))
     
     ;; Create fn - loop until specified character or pass lambda as predicate
     ;; Start with newline char instead of pointer or it will terminate immediately
-    (loop
-       :for pred := (funcall fn *digraph* node-end)
+    (loop :for pred := (funcall fn *digraph* node-end)
        :then (funcall fn *digraph* pred)
        :while pred
-       :do (loop
-	      :for node :in pred
+       :do (loop :for node :in pred
 	      :do (unless (equal node *node-pointer*) ; skip pointer
+		    ;; (format t "node: ~S = ~S~%" node (data node))
 		    (when (char-equal (data node) #\Newline)
-		      ;; leave until newline (or end)
 		      (return))
-		    ;; (format t "~S : ~S~%" node (data node))
 		    ;; Else set node to get preds and goto next iteration
 		    (setf pred node
 			  node-start node)
 		    (return))))
+    
     node-start))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun find-node-end (node-default dir-1 dir-2)
   (let ((node-start node-default)

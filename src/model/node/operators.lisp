@@ -3,11 +3,7 @@
 ;; core functions - triggered by callbacks or meant to be called by user
 
 (defun add-node (code &optional (move-pointer t))
-  
-  ;; Split into
-  ;; node new
-  ;; digraph
-  ;; pointer
+  ;; Rel to pointer
   
   (let* ((baseline (get-origin-from-node-pos *node-pointer*))
 	 (node (init-node-msdf baseline
@@ -25,7 +21,7 @@
 			    1.0))
     
     (enqueue-node node)
-
+    
     node))
 
 (defun backspace-node ()
@@ -55,7 +51,7 @@
     ;; If node not found, i.e. no chars except newline
     ;; use newline pos
 
-    ;; Might help with debugging that something is wrong
+    ;; Debugging indication
     (when (eq node-start node-nl)
       (warn (format nil "insert-node-newline -> CHAR NODES NOT FOUND")))
 
@@ -67,7 +63,7 @@
 
     (let* ((bounds-origin (bounds-origin (gethash (char-code (data node-start)) *metrics*))))
       (translate-node-to-node *node-pointer*
-			      node-start
+			      node-start ; use get-origin-from-node-pos
 			      :offset (vec3 (- (* (aref bounds-origin 0) *scale-node*))
     					    (+ (- (* (aref bounds-origin 1) *scale-node*))
     					       (- (* +linegap+ *scale-node*)))
