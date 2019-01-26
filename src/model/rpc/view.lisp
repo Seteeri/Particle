@@ -1,14 +1,5 @@
 (in-package #:protoform.model)
 
-(defun print-monotonic-time ()
-  (let ((time (osicat:get-monotonic-time)))
-    (format t "Model: ~8$ ms~%" (* time 1000))))
-
-(defun print-hash-table (ht)
-  (maphash (lambda (key value)
-	     (fmt-model t "" "~S : ~S~%" key value))
-	   ht))
-
 (defun get-extents (shm extents)
   (let ((extents-nodes (gethash *shm-nodes* extents)))
     (when extents-nodes

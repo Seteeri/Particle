@@ -24,3 +24,12 @@
 
 (defun floats-epsilon-equal-p (f1 f2)
   (< (abs (- f1 f2)) SINGLE-FLOAT-EPSILON))
+
+(defun print-monotonic-time ()
+  (let ((time (osicat:get-monotonic-time)))
+    (format t "Model: ~8$ ms~%" (* time 1000))))
+
+(defun print-hash-table (ht)
+  (maphash (lambda (key value)
+	     (fmt-model t "" "~S : ~S~%" key value))
+	   ht))
