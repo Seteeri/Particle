@@ -341,64 +341,6 @@
   
   t)
 
-;; Rewrite this function
-(defun insert-node-2 (node
-		    &key
-		      (node-ptr *node-pointer*)
-		      (dir-ptr :out) ; will unlink node in this pos
-		      (dir-ref :in)) ;; will link node in this pos
-
-  ;; REFACTOR:
-  ;; - args = node-tgt node-ptr
-  ;;          ptr can be pointer or specific node
-  ;;          if not passed, use pointer
-  
-  ;; Linking Process:
-  ;;
-  ;; (ins here)
-  ;;    |
-  ;; [a]<-[*] (start)
-  ;; [b]
-  ;;
-  ;; #1
-  ;; [a] [*]
-  ;; [b] 
-  ;;
-  ;; #2
-  ;; [a]->[b] [*]
-  ;;
-  ;; #3
-  ;; [a]->[b]<-[*]
-
-  ;; Ordered this way in case there is no node-*
-  
-  (let ((node-* (get-node-neighs node-ptr dir-ptr)))
-    (when node-*    
-      (cond ((eq dir-ref :in)
-  	     ;; 1. Remove edge between node-*   and ptr
-  	     (if (eq dir-ptr :out)
-  	     	 (remove-edge node-ptr node-*)
-  	     	 (remove-edge node-* node-ptr))
-	     ;; 2. Insert edge between node-*   and node-new
-  	     (insert-edge node-* node))
-	    
-  	    ((eq dir-ref :out)
-  	     ;; 1. Remove edge between node-*   and ptr
-  	     (if (eq dir-ptr :out)
-  		 (remove-edge node-ptr node-*)
-  		 (remove-edge node-* node-ptr))
-  	     ;; Flip above
-  	     ;; 2. Insert edge between node-*   and node-new
-  	     (insert-edge node node-*))
-	    
-  	    (t
-  	     t))))
-  
-  ;; 3. Insert edge between node new and ptr
-  (if (eq dir-ptr :out)
-      (insert-edge node-ptr node)
-      (insert-edge node node-ptr)))
-
 ;; move back to ops?
 (defun delete-node (&key
 		      (node-ptr *node-pointer*)
