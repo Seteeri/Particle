@@ -140,52 +140,58 @@
 
 (defun cut-node ()
   ;; Cut node from left side (succ) -> right side (pred)
+
+  ;; Two parts
+  ;; 1. Pop node from left side
+  ;;    - Relink remainder
+  ;; 2. Insert node on right side
+  ;;    - Relink remainder
   
-  ;; Empty buffer:
-  ;; A -> B -> C <- *      | START
-  ;; A -> B -> C    *      | Unlink ptr
-  ;;
-  ;; A -> B    C    *      | Unlink C (B-C)
-  ;; A <- B <------ *    C | Link ptr B
-  ;;
-  ;; A -> B <------ * <- C | Link C ptr
+  ;; Cases (same as del)
 
-  ;; Filled buffer:
-  ;; A -> B  <- * <- C     | START
-  ;; A -> B     *    C     | Unlink ptr
+  ;; Left Side:
   ;;
-  ;; A    B     *    C     | Unlink B (A-B)
-  ;; A <------- *    C   B | Link ptr A
+  ;; A -> B -> C
+  ;;           |
+  ;;           * ...
   ;;
-  ;; A <------- *    B <- C | Link C B  
-  ;; A <------- * <- B    C | Link B ptr (should link ptr last?)
 
-  ;; Last item:
-  ;; A <- * <-      C <- B      | START
-  ;; A    *         C <- B      | Unlink ptr
+  ;; A -> B -> C
+  ;;           |
+  ;;           * ...  
+
+  ;; Right Side:
   ;;
-  ;;      *    A <- C <- B      | Link C A
-  ;;      * <- A <- C <- B      | Link A ptr
+  ;; Empty buffer
+  ;; A -> B -> C
+  ;;           |
+  ;;           *
+  ;;
+  ;;
+  ;; Filled buffer
+  ;; A -> B -> C
+  ;;           |
+  ;;           * <- D <- E <- F
+  ;;
 
-  ;; Must be ref node to do anything
+  ;; (when-let ((node-ref (get-node-ptr-out)))
+  ;; 	    ;; Get node-buf before unlinking ptr bi
+  ;; 	    (let ((node-buf (get-node-ptr-in)))
+  ;; 	      ;; Unlink pointer
+  ;; 	      (unlink-node-ptr :bi)
 
-  ;; (multiple-value-bind (node-buf node-ref)
-  ;; 	  (get-node-ptr-bi)
-  ;; 	(format t "B:: ~S <- * <- ~S~%"
-  ;; 		(if node-ref
-  ;; 		    (data node-ref)
-  ;; 		nil)
-  ;; 		(if node-buf
-  ;; 		    (data node-buf)
-  ;; 		    nil)))
+  ;; 	      (if node-buf
+  ;; 		  (progn
+  ;; 		    (insert-node 
+  ;; 		    t)
+  ;; 		  (progn
+  ;; 		    t))
   
   (when-let ((node-ref (get-node-ptr-out)))
-	    ;; Get in before unlinking ptr
+	    ;; Get node-buf before unlinking ptr bi
 	    (let ((node-buf (get-node-ptr-in)))
 	      ;; Unlink pointer
 	      (unlink-node-ptr :bi)
-
-	      ;; (format t "ref: ~S, buf: ~S~%" node-ref node-buf)
 	      
 	      ;; Handle left side
 	      

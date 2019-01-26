@@ -241,6 +241,9 @@
 
 (defun link-node (node-src node-dest dir)
   ;; TEMP: add assertion to prevent cycles, aka node link to itself
+  ;; (when (not (eq node-src node-dest))
+  ;;   (draw-graph)
+  ;;   (assert (not (eq node-src node-dest))))
   (assert (not (eq node-src node-dest)))
   (cond ((eq dir :in)
 	 (insert-edge node-src node-dest))
@@ -270,6 +273,18 @@
 	   (when *-node
 	     (remove-edge * *-node))
 	   (values node-* *-node)))))
+
+(defun print-node-dirs (&key
+			  (node-ptr *node-pointer*)
+			  (dir-ptr :out))
+  ;; Print node
+  (when-let ((node-ref (get-node-ptr-out)))	    
+	    (let ((nodes-ref-in (loop :for n :in (get-nodes-in node-ref) :collect (data n)))
+		  (nodes-ref-out (loop :for n :in (get-nodes-out node-ref) :collect (data n))))
+	      (format t "ptr: ~a~%" *node-pointer*)
+	      (format t "ptr-ref (ptr out): ~a~%" node-ref)
+	      (format t "in: ~a~%" nodes-ref-in)
+	      (format t "out: ~a~%" nodes-ref-out))))
 
 (defun replace-node (node-src
 		     node-dest
@@ -348,22 +363,10 @@
 	     node-dest
 	     dir-src))
 
-(defun print-node-dirs (&key
-			  (node-ptr *node-pointer*)
-			  (dir-ptr :out))
-  ;; Print node
-  (when-let ((node-ref (get-node-ptr-out)))	    
-	    (let ((nodes-ref-in (loop :for n :in (get-nodes-in node-ref) :collect (data n)))
-		  (nodes-ref-out (loop :for n :in (get-nodes-out node-ref) :collect (data n))))
-	      (format t "ptr: ~a~%" *node-pointer*)
-	      (format t "ptr-ref (ptr out): ~a~%" node-ref)
-	      (format t "in: ~a~%" nodes-ref-in)
-	      (format t "out: ~a~%" nodes-ref-out))))
-
-(defun delete-node (&key
-		      (node-ptr *node-pointer*)
-		      (dir-ptr :out))
-
+(defun pop-node (&key
+		   (node-ptr *node-pointer*)
+		   (dir-ptr :out))
+  
   ;; Cases:
   ;;   
   ;; - intra node:  y in, y out
@@ -439,16 +442,29 @@
 		    ((and (not node-ref-in)
 			  (not node-ref-out))
 		     t))
-
-	      ;; Remove from graph (removes edges?)
-	      ;; or move under let?
-	      ;; poss caller should remove from graph while this function pops?
-	      (remove-vertex node-ref)
 	      
 	      ;; Return deleted node, and surrounding nodes (for shm update)
 	      (values node-ref
 		      node-ref-in
 		      node-ref-out))))
+
+(defun delete-node (&key
+		      (node-ptr *node-pointer*)
+		      (dir-ptr :out))
+
+  (multiple-value-bind (node-ref
+			node-ref-in
+			node-ref-out)
+      (pop-node :node-ptr node-ptr
+		:dir-ptr dir-ptr)
+    (when node-ref
+      ;; Remove from graph (removes edges?)
+      ;; or move under let?
+      ;; poss caller should remove from graph while this function pops?
+      (remove-vertex node-ref))
+    (values node-ref
+	    node-ref-in
+	    node-ref-out)))
 
 ;; Secondary/Aux operators
 ;; Need to implement hyperweb first to identify nodes
