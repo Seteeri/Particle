@@ -217,7 +217,7 @@
 		    ;; Move directly right of pointer
 		    (advance-node-of-node node-ref
   					  *node-pointer*
-  					  :+)
+  					  1.0)
 		    ;; Then move ptr to right of out
 		    ;; Else move ptr left
 		    ;; This will maintain a gap
