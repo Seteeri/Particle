@@ -245,13 +245,13 @@
 	((eq dir :out)
 	 (insert-edge node-dest node-src))))
 
-(defun unlink-node-2 (node-src node-dest dir)
+(defun unlink-node (node-src node-dest dir)
   (cond ((eq dir :in)
 	 (remove-edge node-src node-dest))
 	((eq dir :out)
 	 (remove-edge node-dest node-src))))
 
-(defun unlink-node (* &optional (dir :out)) ; does first
+(defun unlink-node-first (* &optional (dir :out)) ; does first
   (cond ((eq dir :in)
 	 (when-let ((node-* (get-node-in-ptr)))
 		   (remove-edge node-* *)
@@ -333,7 +333,7 @@
 			 ((eq dir-src :out)
 			  (get-nodes-out node-dest)))
      :do (progn
-	   (unlink-node-2 node-src node-dest dir-src)
+	   (unlink-node node-src node-dest dir-src)
 	   (link-node node-src node-dest dir-src)))
   
   ;; link src to dest
