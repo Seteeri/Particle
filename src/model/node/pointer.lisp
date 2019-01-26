@@ -39,39 +39,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; POSS: Refactor get-node-* to use *node-pointer* when no arg
+(defun get-node-ptr-in (&optional (* *node-pointer*))
+  (get-node-in *))
 
-(defun get-node-in-ptr ()
-  (get-node-in *node-pointer*))
+(defun get-node-ptr-out (&optional (* *node-pointer*))
+  (get-node-out *))
 
-(defun get-node-out-ptr ()
-  (get-node-out *node-pointer*))
+(defun get-node-ptr-bi (&optional (* *node-pointer*))
+  (values (get-node-in *)
+	  (get-node-out *)))
 
-(defun get-node-bi-ptr ()
-  (values (get-node-in *node-pointer*)
-	  (get-node-out *node-pointer*)))
-
-(defun link-node-pointer (node &optional (dir :out))
+(defun link-node-ptr (node &optional (dir :out))
   (link-node node *node-pointer* dir))
 
-(defun unlink-node-pointer (&optional (dir :out))
+(defun unlink-node-ptr (&optional (dir :out))
   (unlink-node-first *node-pointer* dir))
 
-(defun relink-node-pointer (node &optional
-				   (dir-old :out)
-				   (dir-new :out))
+(defun relink-node-ptr (node &optional
+			       (dir-old :out)
+			       (dir-new :out))
   ;; Return edges?
-  (unlink-node-pointer dir-old)
-  (link-node-pointer node dir-new))
+  (unlink-node-ptr dir-old)
+  (link-node-ptr node dir-new))
 
 ;; translate block
 
-(defun translate-pointer (seq-event
-			  fn-new
-			  start
-			  delta
-			  id)
-  (fmt-model t "translate-pointer" "~a, ~a -> ~a~%"
+(defun translate-node-ptr (seq-event
+			   fn-new
+			   start
+			   delta
+			   id)
+  (fmt-model t "translate-node-ptr" "~a, ~a -> ~a~%"
 	     id
 	     start
 	     (+ start
@@ -90,7 +88,3 @@
 		    (funcall #'run-anim
 			     seq-event
 			     anim)))))
-
-(defun edge-pointer ()
-  ;; Move before or after
-  t)

@@ -253,11 +253,11 @@
 
 (defun unlink-node-first (* &optional (dir :out)) ; does first
   (cond ((eq dir :in)
-	 (when-let ((node-* (get-node-in-ptr)))
+	 (when-let ((node-* (get-node-ptr-in)))
 		   (remove-edge node-* *)
 		   node-*))
 	((eq dir :out)
-	 (when-let ((*-node (get-node-out-ptr)))
+	 (when-let ((*-node (get-node-ptr-out)))
 		   (remove-edge * *-node)
 		   *-node))
 	((eq dir :bi)
@@ -349,15 +349,15 @@
   ;; a -> b -> c <- * ... | GIVEN
   ;; a -> b -> c    * ... | Unlink ptr C
   
-  (when-let ((node-ref (get-node-out-ptr)))
+  (when-let ((node-ref (get-node-ptr-out)))
       ;; Only unlink left side of pointer
-      (unlink-node-pointer :out)
+      (unlink-node-ptr :out)
 
       ;; Check if node-ref pts to anything
       (if-let ((node-ref-new (get-node-in node-ref)))
 	      ;; Update pointer to right of node-** (instead of node-* pos)
 	      (progn
-		(link-node-pointer node-ref-new)
+		(link-node-ptr node-ref-new)
 		(if (char-equal (data node-ref-new) #\Newline)
 		    (translate-node-to-node *node-pointer*
 					    node-ref)

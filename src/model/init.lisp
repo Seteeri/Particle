@@ -144,10 +144,10 @@
     
     (when t
       ;; handlers in node
-      (dolist (seq-event `((,+xk-left+       ,#'translate-pointer-left-cb)
-			   (,+xk-up+         ,#'translate-pointer-up-cb)
-			   (,+xk-right+      ,#'translate-pointer-right-cb)
-			   (,+xk-down+       ,#'translate-pointer-down-cb)))
+      (dolist (seq-event `((,+xk-left+       ,#'translate-node-ptr-left-cb)
+			   (,+xk-up+         ,#'translate-node-ptr-up-cb)
+			   (,+xk-right+      ,#'translate-node-ptr-right-cb)
+			   (,+xk-down+       ,#'translate-node-ptr-down-cb)))
 	(register-callback `(,(first seq-event) (:press :repeat))
 			   :exclusive
 			   (second seq-event))))

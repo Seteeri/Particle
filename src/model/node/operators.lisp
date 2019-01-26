@@ -164,7 +164,7 @@
   ;; Must be ref node to do anything
 
   ;; (multiple-value-bind (node-buf node-ref)
-  ;; 	  (get-node-bi-ptr)
+  ;; 	  (get-node-ptr-bi)
   ;; 	(format t "B:: ~S <- * <- ~S~%"
   ;; 		(if node-ref
   ;; 		    (data node-ref)
@@ -173,11 +173,11 @@
   ;; 		    (data node-buf)
   ;; 		    nil)))
   
-  (when-let ((node-ref (get-node-out-ptr)))
+  (when-let ((node-ref (get-node-ptr-out)))
 	    ;; Get in before unlinking ptr
-	    (let ((node-buf (get-node-in-ptr)))
+	    (let ((node-buf (get-node-ptr-in)))
 	      ;; Unlink pointer
-	      (unlink-node-pointer :bi)
+	      (unlink-node-ptr :bi)
 
 	      ;; (format t "ref: ~S, buf: ~S~%" node-ref node-buf)
 	      
@@ -189,10 +189,10 @@
 			  ;; Unlink
 			  (unlink-node node-ref-new node-ref :in)
 			  ;; Link pointer to node-buf in
-			  (link-node-pointer node-ref-new :out)))
+			  (link-node-ptr node-ref-new :out)))
 
 	      ;; This assumes node is appended left side of right side
-	      (link-node-pointer node-ref :in)
+	      (link-node-ptr node-ref :in)
 
 	      ;; Handle right side
 	      
@@ -205,7 +205,7 @@
   					  node-buf
   					  :-)
 		    ;; Move ptr right (of new-ref-new)
-		    (if-let ((node-ref-new (get-node-out-ptr)))
+		    (if-let ((node-ref-new (get-node-ptr-out)))
 			    (advance-node-of-node *node-pointer*
   						  node-ref-new
   						  1.0)
@@ -221,7 +221,7 @@
 		    ;; Then move ptr to right of out
 		    ;; Else move ptr left
 		    ;; This will maintain a gap
-		    (if-let ((node-ref-new (get-node-out-ptr)))
+		    (if-let ((node-ref-new (get-node-ptr-out)))
 			    (advance-node-of-node *node-pointer*
   						  node-ref-new
   						  1.0)
@@ -267,10 +267,10 @@
   ;; 		nil))
 
   ;; Must be buffer node to do anything
-  (when-let ((node-buf (get-node-in-ptr)))
-	    (let ((node-ref (get-node-out-ptr)))
+  (when-let ((node-buf (get-node-ptr-in)))
+	    (let ((node-ref (get-node-ptr-out)))
 	      ;; Unlink pointer
-	      (unlink-node-pointer :bi)
+	      (unlink-node-ptr :bi)
 	      
 	      ;; Handle right side of ptr first
 	      	      
@@ -279,9 +279,9 @@
 			;; Unlink
 			(unlink-node node-buf-new node-buf :in)
 			;; Link pointer to node-buf in
-			(link-node-pointer node-buf-new :in))
+			(link-node-ptr node-buf-new :in))
 
-	      (link-node-pointer node-buf :out)
+	      (link-node-ptr node-buf :out)
 	      
 	      ;; Handle left side of ptr
 	      (if node-ref
@@ -318,16 +318,16 @@
   ;; 2. Link ptr node-new
   ;; 3. advance-node-of-node node-new ptr :+
 
-  (when-let ((node-src (get-node-out-ptr))) ; aka node-ref
+  (when-let ((node-src (get-node-ptr-out))) ; aka node-ref
     (let ((node-ref (copy-node-to-node node-src))
-	  (node-buf (get-node-in-ptr)))
+	  (node-buf (get-node-ptr-in)))
       ;; Only unlink right side of pointer
-      (unlink-node-pointer :in)
+      (unlink-node-ptr :in)
 
       ;; Remainder of this is right side handling from cut
 
       ;; This assumes node is appended left side of right side
-      (link-node-pointer node-ref :in)  
+      (link-node-ptr node-ref :in)  
       
       (if node-buf
 	  (progn
@@ -337,7 +337,7 @@
   				  node-buf
   				  -1.0)
 	    ;; Move ptr right (of new-ref-new)
-	    (if-let ((node-ref-new (get-node-out-ptr)))
+	    (if-let ((node-ref-new (get-node-ptr-out)))
 		    (advance-node-of-node *node-pointer*
   					  node-ref-new
   					  1.0)
@@ -353,7 +353,7 @@
 	    ;; Then move ptr to right of out
 	    ;; Else move ptr left
 	    ;; This will maintain a gap
-	    (if-let ((node-ref-new (get-node-out-ptr)))
+	    (if-let ((node-ref-new (get-node-ptr-out)))
 		    (advance-node-of-node *node-pointer*
   					  node-ref-new
   					  1.0)
