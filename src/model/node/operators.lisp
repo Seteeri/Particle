@@ -209,7 +209,7 @@
 		    ;; Move node-ref left of node-buf
   		    (advance-node-of-node node-ref
   					  node-buf
-  					  :-)
+  					  -1.0)
 		    ;; Move ptr right (of new-ref-new)
 		    (if-let ((node-ref-new (get-node-ptr-out)))
 			    (advance-node-of-node *node-pointer*
