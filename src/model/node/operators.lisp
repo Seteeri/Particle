@@ -68,10 +68,10 @@
     (let* ((bounds-origin (bounds-origin (gethash (char-code (data node-start)) *metrics*))))
       (translate-node-to-node *node-pointer*
 			      node-start
-			      (vec3 (- (* (aref bounds-origin 0) *scale-node*))
-    				    (+ (- (* (aref bounds-origin 1) *scale-node*))
-    				       (- (* +linegap+ *scale-node*)))
-    				    0.0)))
+			      :offset (vec3 (- (* (aref bounds-origin 0) *scale-node*))
+    					    (+ (- (* (aref bounds-origin 1) *scale-node*))
+    					       (- (* +linegap+ *scale-node*)))
+    					    0.0)))
     
     (enqueue-node-pointer))
 
