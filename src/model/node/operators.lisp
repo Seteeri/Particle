@@ -22,7 +22,7 @@
     (when move-pointer
       (advance-node-of-node *node-pointer*
 			    node
-			    :+))
+			    1.0))
     
     (enqueue-node node)
 
@@ -212,10 +212,10 @@
 		    (if-let ((node-ref-new (get-node-out-ptr)))
 			    (advance-node-of-node *node-pointer*
   						  node-ref-new
-  						  :+)
+  						  1.0)
   			    (advance-node-of-node *node-pointer*
   						  *node-pointer*
-  						  :-)))
+  						  -1.0)))
 		  
 		  (progn
 		    ;; Move directly right of pointer
@@ -228,10 +228,10 @@
 		    (if-let ((node-ref-new (get-node-out-ptr)))
 			    (advance-node-of-node *node-pointer*
   						  node-ref-new
-  						  :+)
+  						  1.0)
   			    (advance-node-of-node *node-pointer*
   						  *node-pointer*
-  						  :-))))
+						  -1.0))))
 
 	      (when node-buf
   		(enqueue-node node-buf))
@@ -295,20 +295,20 @@
 		    ;; Move node-buf right of node-ref
 		    (advance-node-of-node node-buf
   		    			  node-ref
-  		    			  :+)
+  		    			  1.0)
 		    ;; Move ptr right of node-buf
 		    (advance-node-of-node *node-pointer*
   		    			  node-buf
-  		    			  :+))
+  		    			  1.0))
 		  (progn
 		    ;; Move ptr right
   		    (advance-node-of-node *node-pointer*
   	  				  *node-pointer*
-  	  				  :+)
+  	  				  1.0)
 		    ;; Position node-buf left of ptr
 		    (advance-node-of-node node-buf
   					  *node-pointer*
-  					  :-))))
+  					  -1.0))))
 	    
 	    (enqueue-node node-buf)
 	    (enqueue-node-pointer)))
@@ -339,31 +339,31 @@
 	    ;; Move node-ref left of node-buf
   	    (advance-node-of-node node-ref
   				  node-buf
-  				  :-)
+  				  -1.0)
 	    ;; Move ptr right (of new-ref-new)
 	    (if-let ((node-ref-new (get-node-out-ptr)))
 		    (advance-node-of-node *node-pointer*
   					  node-ref-new
-  					  :+)
+  					  1.0)
   		    (advance-node-of-node *node-pointer*
   					  *node-pointer*
-  					  :-)))
+  					  -1.0)))
 	  
 	  (progn
 	    ;; Move directly right of pointer
 	    (advance-node-of-node node-ref
   				  *node-pointer*
-  				  :+)
+  				  1.0)
 	    ;; Then move ptr to right of out
 	    ;; Else move ptr left
 	    ;; This will maintain a gap
 	    (if-let ((node-ref-new (get-node-out-ptr)))
 		    (advance-node-of-node *node-pointer*
   					  node-ref-new
-  					  :+)
+  					  1.0)
   		    (advance-node-of-node *node-pointer*
   					  *node-pointer*
-  					  :-))))
+  					  -1.0))))
       
       (when node-buf
 	(enqueue-node node-buf))

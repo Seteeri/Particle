@@ -363,7 +363,7 @@
 					    node-ref)
 		    (advance-node-of-node *node-pointer*
 					  node-ref-new
-					  :+)))
+					  1.0)))
 
 	      (translate-node-to-node *node-pointer*
 				      node-ref))
@@ -385,17 +385,14 @@
 
 (defun advance-node-of-node (node-a
 			     node-b
-			     dir
+			     n-adv
 			     &key
 			       (offset (vec3 0 0 0)))
   (let* ((origin-b (get-origin-from-node-pos node-b))
 	 (bounds-a (bounds-origin (gethash (char-code (data node-a)) *metrics*)))
 	 (new-pos (v+ origin-b
 		      offset
-		      (vec3 (+ (cond ((eq dir :+)
-				      (* 9.375 +scale-msdf+ *scale-node*))
-				     ((eq dir :-)
-				      (- (* 9.375 +scale-msdf+ *scale-node*))))
+		      (vec3 (+ (* 9.375 +scale-msdf+ *scale-node* n-adv)
 			       (* (aref bounds-a 0) *scale-node*))
 			    (* (aref bounds-a 1) *scale-node*)
 			    0.0))))
