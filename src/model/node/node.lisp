@@ -341,7 +341,6 @@
   
   t)
 
-;; move back to ops?
 (defun delete-node (&key
 		      (node-ptr *node-pointer*)
 		      (dir-ptr :out))
@@ -360,13 +359,13 @@
 	      (progn
 		(link-node-pointer node-ref-new)
 		(if (char-equal (data node-ref-new) #\Newline)
-		    (move-node-to-node *node-pointer*
+		    (translate-node-to-node *node-pointer*
 				       node-ref)
 		    (advance-node-of-node *node-pointer*
 					  node-ref-new
 					  :+)))
 	      
-	      (move-node-to-node *node-pointer*
+	      (translate-node-to-node *node-pointer*
 				 node-ref))
 
       (draw-graph)
@@ -406,11 +405,8 @@
     (update-transform (model-matrix node-a))
     new-pos))
   
-(defun move-node-to-node (node-a node-b &optional (offset (vec3 0 0 0)))
-  ;; Move node-a to node-b
-  ;; REFACTOR
-  ;; - Copy/replace or modify
-  ;; - Add option for update
+(defun translate-node-to-node (node-a node-b &optional (offset (vec3 0 0 0)))
+  ;; Move node-a to node-b position; don't change links
   (setf (translation (model-matrix node-a))
 	(v+ (translation (model-matrix node-b))
 	    offset))

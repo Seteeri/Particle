@@ -66,12 +66,12 @@
     ;; adjust original pos to baseline first by subtracting bounds
 
     (let* ((bounds-origin (bounds-origin (gethash (char-code (data node-start)) *metrics*))))
-      (move-node-to-node *node-pointer*
-			 node-start
-			 (vec3 (- (* (aref bounds-origin 0) *scale-node*))
-    			       (+ (- (* (aref bounds-origin 1) *scale-node*))
-    				  (- (* +linegap+ *scale-node*)))
-    			       0.0)))
+      (translate-node-to-node *node-pointer*
+			      node-start
+			      (vec3 (- (* (aref bounds-origin 0) *scale-node*))
+    				    (+ (- (* (aref bounds-origin 1) *scale-node*))
+    				       (- (* +linegap+ *scale-node*)))
+    				    0.0)))
     
     (enqueue-node-pointer))
 
