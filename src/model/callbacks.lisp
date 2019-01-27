@@ -143,7 +143,7 @@
 (defun move-node-ptr-in-cb (seq-event)
   (fmt-model t "move-node-ptr-in" "~a~%" seq-event)
   (sb-concurrency:enqueue (list nil
-				'move-node-ptr-in
+				'move-node-ptr
 				'()
 				(lambda ()
 				  (funcall #'move-node-ptr :in)))
@@ -152,7 +152,7 @@
 (defun move-node-ptr-out-cb (seq-event)
   (fmt-model t "move-node-ptr-out" "~a~%" seq-event)
   (sb-concurrency:enqueue (list nil
-				'move-node-ptr-out
+				'move-node-ptr
 				'()
 				(lambda ()
 				  (funcall #'move-node-ptr :out)))

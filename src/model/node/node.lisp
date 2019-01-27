@@ -258,11 +258,11 @@
 
 (defun unlink-node-first (* &optional (dir :out)) ; does first
   (cond ((eq dir :in)
-	 (when-let ((node-* (get-node-ptr-in)))
+	 (when-let ((node-* (get-node-in *)))
 		   (remove-edge node-* *)
 		   node-*))
 	((eq dir :out)
-	 (when-let ((*-node (get-node-ptr-out)))
+	 (when-let ((*-node (get-node-out *)))
 		   (remove-edge * *-node)
 		   *-node))
 	((eq dir :bi)
@@ -286,46 +286,6 @@
 	      (format t "in: ~a~%" nodes-ref-in)
 	      (format t "out: ~a~%" nodes-ref-out))))
 
-(defun replace-node (node-src
-		     node-dest
-		     dir-src)
-  
-  ;; Procedure
-  ;;
-  ;; Insert d:
-  ;;
-  ;; a <- b <- * <- a | GIVEN
-  ;;
-  ;; 1. Unlink src
-  ;; 1. Get all the ins of dest
-  ;;    2. Unlink old, link new
-  ;; 3. Get all the outs of dest
-  ;;    4. Unlink old, link new
-
-  ;; unlink old
-  
-  (let ((nodes-in (get-nodes-in node-dest))
-	(nodes-out (get-nodes-out node-dest)))
-
-    ;; Unlink dest
-    (loop
-       :for node :in nodes-in
-       :do (remove-edge node node-dest))
-    (loop
-       :for node :in nodes-out
-       :do (remove-edge node-dest node))
-
-    ;; Link src
-    (loop
-       :for node :in nodes-in
-       :do (insert-edge node node-src))
-    (loop
-       :for node :in nodes-out
-       :do (insert-edge node-src node)))
-
-  ;; Could easily do swap function
-  t)
-
 ;; rename to join
 (defun insert-node (node-src
 		    node-dest
@@ -344,8 +304,6 @@
   ;; a <- * <- b <- c | GOAL
   
   ;; nodes in opposite direction remain attached
-
-  ;; a -> f
   
   (loop
      :for node :in (cond ((eq dir-src :in)
@@ -365,7 +323,11 @@
 
 (defun pop-node (&key
 		   (node-ptr *node-pointer*)
-		   (dir-ptr :out))
+		   (dir-ptr :out)
+		   (update-transform t))
+
+  ;; TODO
+  ;; - add option for updating position
   
   ;; Cases:
   ;;   
@@ -409,38 +371,46 @@
 	      (cond ((and node-ref-in  ; delete-node-intra
 			  node-ref-out)
 		     ;; Insert C out of A
-		     (insert-node noderef-out node-ref-in :out)
+		     (insert-node node-ref-out node-ref-in :out)
 		     ;; Link pointer to next node
 		     (link-node-ptr node-ref-out)
-		     ;; Move C next to A
-  		     (advance-node-of-node node-ref-out
-  					   node-ref-in
-  					   1.0)	     
-		     ;; Move pointer - must do again to readjust
-  		     (translate-node-to-node *node-pointer*
-  					     node-ref-in)
-		     t)
+		     (when update-transform
+		       ;; Move C next to A
+  		       (advance-node-of-node node-ref-out
+  					     node-ref-in
+  					     1.0)	     
+		       ;; or use advance with self
+  		       (translate-node-to-node *node-pointer*
+  		       			       node-ref)
+		       t))
 		    
 		    ;; delete-node-end
 		    ((and node-ref-in
 			  (not node-ref-out))
 		     (link-node-ptr node-ref-in)
-		     ;; Move pointer - must do again to readjust
-  		     (translate-node-to-node *node-pointer*
-  					     node-ref-in)
-		     t)
+		     (when update-transform
+		       ;; or use advance with self
+  		       (translate-node-to-node *node-pointer*
+  		       			       node-ref)
+		       t))
 
 		    ;; delete-node-start
 		    ((and (not node-ref-in)
 			  node-ref-out)
 		     (link-node-ptr node-ref-out)
-  		     (translate-node-to-node *node-pointer*
-  					     node-ref-out)		     
-		     t)
+		     (when update-transform
+		       ;; or use advance with self
+  		       (translate-node-to-node *node-pointer*
+  		       			       node-ref)
+		       t))
 
 		    ;; delete-node-iso
 		    ((and (not node-ref-in)
 			  (not node-ref-out))
+		     (when update-transform
+		       ;; or use advance with self		     
+  		       (translate-node-to-node *node-pointer*
+  		       			       node-ref))
 		     t))
 	      
 	      ;; Return deleted node, and surrounding nodes (for shm update)
@@ -585,6 +555,46 @@
 		    (return))))
     
     node-start))
+
+(defun replace-node (node-src
+		     node-dest
+		     dir-src)
+  
+  ;; Procedure
+  ;;
+  ;; Insert d:
+  ;;
+  ;; a <- b <- * <- a | GIVEN
+  ;;
+  ;; 1. Unlink src
+  ;; 1. Get all the ins of dest
+  ;;    2. Unlink old, link new
+  ;; 3. Get all the outs of dest
+  ;;    4. Unlink old, link new
+
+  ;; unlink old
+  
+  (let ((nodes-in (get-nodes-in node-dest))
+	(nodes-out (get-nodes-out node-dest)))
+
+    ;; Unlink dest
+    (loop
+       :for node :in nodes-in
+       :do (remove-edge node node-dest))
+    (loop
+       :for node :in nodes-out
+       :do (remove-edge node-dest node))
+
+    ;; Link src
+    (loop
+       :for node :in nodes-in
+       :do (insert-edge node node-src))
+    (loop
+       :for node :in nodes-out
+       :do (insert-edge node-src node)))
+
+  ;; Could easily do swap function
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

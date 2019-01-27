@@ -102,10 +102,37 @@
   ;; left = in
   ;; right = out
 
+  ;; do case
+
   (when-let* ((node-ref (get-node-ptr-out))
 	      (node-nxt (get-node-dir node-ref dir)))
 	     (unlink-node-ptr)
 	     (link-node-ptr node-nxt)
-	     (translate-node-to-node *node-pointer*
-				     node-nxt)
+
+	     ;; a - b - c - *
+	     ;; a - b - * - c
+
+	     ;; a - b - * - c
+	     ;; a - b - c - *
+	     
+	     ;; move ptr
+  	     (advance-node-of-node *node-pointer*
+  				   *node-pointer*
+  				   (cond ((eq dir :in)
+					  -1.0)
+					 ((eq dir :out)
+					  1.0)))
+
+	     ;; move ref node right
+  	     (advance-node-of-node node-ref
+  	     			   node-ref
+  	     			   (cond ((eq dir :in)
+	     				  1.0)
+	     				 ((eq dir :out)
+	     				  -1.0)))
+	     
+	     ;; (translate-node-to-node *node-pointer*
+	     ;; 			     node-nxt)
+
+	     (enqueue-node node-ref)
 	     (enqueue-node-pointer)))

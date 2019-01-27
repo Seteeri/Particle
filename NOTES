@@ -495,3 +495,87 @@ Options: TODO
 
 Never liked the idea of the cursor being inbetween chars...
 WHAT IS IT SELECTING???
+
+CLI: Type command -> Enter (no shortcuts)
+Emacs: Key chords/bindings + modes [MAX KEYBINDINGS/MODESish]
+Archy: Quasimode + type command [MIN KEYBINDINGS/MIN MODES]
+
+US: Type command -> Eval
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+EMACS: modes tied to buffer
+PF: modes tied to pointer/cursor
+
+EMACS:
+b1:m1 b2:m2 b3:m3 ....
+
+PF:
+n1 n2 n3
+ptr:mode
+
+27. Implement pointer movement
+    * If linked: sequential move 
+      * (or spatial move? - use hotkey for global access)
+      * Options to show selection: color node, draw on top, link between
+      * Move through pred/successors
+        - up/down only works for binary trees since never more than 4 edges
+        - paragraphs/lines are binary trees?
+          -> the fox jumped over the fence \n
+             _|_                            |
+             \|/                            |
+             and then chased the rabbit....\n
+          OR
+          -> the fox jumped over the fence \n - pt \n, dn:start, up:end
+                                         |
+               /------------------------/      (first line has ptr-*-* instead of \n-*-*
+              *-----------------------------*   \n-*----------*
+             /                              |       L_ start   L_ end
+             and then chased the rabbit... \n
+        - newline is like .
+          -> (a b c (d e)) = a-b-c-(  .nil)
+                                     -d-e
+    * If unlinked, move arbitrarily [DONE]
+      * BUT...how to go from unlinked to link?
+        - Need nearest node -> need spatial graph
+    * On delete, move to next node or previous [DONE]
+      * backspace/delete acts the same
+      * currently, node links to previous
+      
+      
+30. Pointer conventionally has modes: insert/replace -> how to reconcile?
+    * Pointer is used to select objects
+    * Pointer needs to move either over node or between nodes
+      -> Not a solution
+    * Does anyone actually used insert?
+    * Expectation is if node is linked to a node, it will be added after
+      at least for char objects
+    * Instead of modes, we have pointers, that users can switch
+        -> Create an insert ptr and replace ptr
+          * User can switch ptrs -> but only one master ptr
+          -> attach pointer to main pointer    
+    * To simulate insert/replace: verbose method is to type a command + arg:char, and eval
+    * Pointer is an input transformer: input -> data
+      - physical key -> char type
+      - default: new + tgt link out
+      - replace: new + tgt replace
+      - other types possible??? but what are the most basic?
+    * Use -> for append
+    * Use * for replace/swap
+    -> SOLUTION: If at end, insert out (append); if in middle, replace - expected behavior
+      - To add commands
+        -> SOLUTION: Unlink and create new
+      - If out node already, would insert - we need to make a branch
+      - Replace old branch (move to undo)      
+      
+Create 3 pointers by default
+0. Main pointer - semantic graph
+1. Buffer pointer  - cut/copy/paste objects
+   - can create multiples of these
+   - another scene graph
+2. Transform pointer - aka scene graph or is the main graph the scene graph?
+   - only one
+3. Spatial pointer - aka spatial graph - octree
+   - only one
+4. Undo pointer - undo graph; another scene graph
+   - only one

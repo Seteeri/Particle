@@ -10,7 +10,7 @@
 
 (defun add-node (code &optional (move-pointer t))
   ;; Rel to pointer
-  
+ 
   (let* ((baseline (get-origin-from-node-pos *node-pointer*))
 	 (node (init-node-msdf baseline
 			       *scale-node*
@@ -20,11 +20,17 @@
     (insert-vertex node)
 
     (insert-node node *node-pointer* :out)
+
+    ;; Create node at pointer location
+
+    ;; If ptr on top of node
+    ;; advance
     
     (when move-pointer
       (advance-node-of-node *node-pointer*
-			    node
-			    1.0))
+    			    node
+    			    1.0)
+      (enqueue-node-pointer))
     
     (enqueue-node node)
     
@@ -140,12 +146,6 @@
 
 (defun cut-node ()
   ;; Cut node from left side (succ) -> right side (pred)
-
-  ;; Two parts
-  ;; 1. Pop node from left side
-  ;;    - Relink remainder
-  ;; 2. Insert node on right side
-  ;;    - Relink remainder
   
   ;; Cases (same as del)
 
@@ -174,18 +174,32 @@
   ;;           * <- D <- E <- F
   ;;
 
-  ;; (when-let ((node-ref (get-node-ptr-out)))
-  ;; 	    ;; Get node-buf before unlinking ptr bi
-  ;; 	    (let ((node-buf (get-node-ptr-in)))
-  ;; 	      ;; Unlink pointer
-  ;; 	      (unlink-node-ptr :bi)
+  ;; Two parts
+  ;; 1. Pop node from left side
+  ;;    - Relink remainder
+  ;; 2. Insert node on right side
+  ;;    - Relink remainder
+  
+  ;; (multiple-value-bind (node-pop
+  ;; 			node-pop-in
+  ;; 			node-pop-out)
+  ;;     (pop-node :update-transform nil)
+  ;;   (when node-pop
+  ;;     (insert-node node-pop
+  ;; 		   *node-pointer*
+  ;; 		   :in)
 
-  ;; 	      (if node-buf
-  ;; 		  (progn
-  ;; 		    (insert-node 
-  ;; 		    t)
-  ;; 		  (progn
-  ;; 		    t))
+  ;;     (when node-pop-in
+  ;; 	(enqueue-node node-pop-in))
+  ;;     (when node-pop-out
+  ;; 	(enqueue-node node-pop-out))
+	
+  ;;     (enqueue-node node-pop)
+  ;;     (enqueue-node-pointer)))
+      
+
+  ;; (return-from cut-node)
+    
   
   (when-let ((node-ref (get-node-ptr-out)))
 	    ;; Get node-buf before unlinking ptr bi

@@ -50,6 +50,13 @@ the Librem 5 or Gemini PDA as a proof of concept.
     * Blender - 3D, multi-domain dataset, flexible UI
     * Compiz - 3D desktop effects
     * The Humane Interface by Jeff Raskin
+      * Elimination of modes
+      * Persistence
+      * Unlimited undo
+      * Incremental search
+      * Elmintation of applications -> commands
+      * Redesign file hierarchies
+      * ZUIs as an alternative
     * Emacs - consistency, extensibility, text and keyboard driven
     * McCLIM - central concept of "presentation types"
     
@@ -105,7 +112,8 @@ and code must be managed in two different domains leading to a
 * Consistent nodal environment - "turtles all the way down"
 * Primarily keyboard driven interface
 * Wayland extension provides conventional desktop
-* Undo/revision control/non-destructive editing (when possible)
+* Undo/Non-destructive editing
+  * Warn when not possible such as side-effects
 
 ## The Architecture
 
