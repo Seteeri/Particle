@@ -22,16 +22,13 @@
     (insert-node node *node-pointer* :out)
 
     ;; Create node at pointer location
-
-    ;; If ptr on top of node
-    ;; advance
     
     (when move-pointer
       (advance-node-of-node *node-pointer*
     			    node
-    			    1.0)
-      (enqueue-node-ptr))
-    
+    			    1.0))
+
+    ;; this enqueues pointer also
     (enqueue-node node)
     
     node))
