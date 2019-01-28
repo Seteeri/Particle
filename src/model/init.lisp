@@ -22,7 +22,10 @@
   (setf *metrics* (init-metrics)))
 
 (defun set-digraph ()
-  (setf *digraph* (digraph:make-digraph)))
+  (setf *digraph*           (digraph:make-digraph)
+	*digraph-undo*      (digraph:make-digraph)
+	*digraph-clipboard* (digraph:make-digraph)
+	*digraph-repl*      (digraph:make-digraph)))
 
 (defun set-shm-projview (projview)
   (setf *shm-projview* (init-shm-projview)))

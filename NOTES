@@ -569,13 +569,24 @@ ptr:mode
       - Replace old branch (move to undo)      
       
 Create 3 pointers by default
-0. Main pointer - semantic graph
-1. Buffer pointer  - cut/copy/paste objects
+
+DIM XY:
+0. Main pointer - spatial/semantic/logical graph
+1. Clipboard pointer  - cut/copy/paste objects
    - can create multiples of these
    - another scene graph
-2. Transform pointer - aka scene graph or is the main graph the scene graph?
+2. Spatial pointer - aka spatial graph - octree
    - only one
-3. Spatial pointer - aka spatial graph - octree
-   - only one
+   - show this? need not to...
+      
+DIM YZ:
 4. Undo pointer - undo graph; another scene graph
    - only one
+
+DIM XZ:
+5. objects...non-char types
+   
+   
+LISP CODE IS VIEWED AS DATA - LISTS OF STRINGS
+
+https://academia.stackexchange.com/questions/109/is-there-any-efficient-non-linear-note-taking-software

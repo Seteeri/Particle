@@ -54,11 +54,10 @@
 			  (dir :out))
   (unlink-node-first * dir))
 
-(defun deref-ptr (*
-		  &optional
+(defun deref-ptr (&optional
 		    (* *node-pointer*)
 		    (dir :out))
-  ;; Find final pointer
+  ;; Find final pointer or nth...
   t)
 
 ;; translate block
@@ -109,6 +108,9 @@
 
 	     ;; a - b - * - c
 	     ;; a - b - c - *
+
+	     ;; above requires transforming the remainder characters
+	     ;; if we add, it will be on top
 	     
 	     ;; move ptr
   	     (advance-node-of-node *node-pointer*
@@ -119,12 +121,12 @@
 					  1.0)))
 
 	     ;; move ref node right
-  	     (advance-node-of-node node-ref
-  	     			   node-ref
-  	     			   (cond ((eq dir :in)
-	     				  1.0)
-	     				 ((eq dir :out)
-	     				  -1.0)))
+  	     ;; (advance-node-of-node node-ref
+  	     ;; 			   node-ref
+  	     ;; 			   (cond ((eq dir :in)
+	     ;; 				  1.0)
+	     ;; 				 ((eq dir :out)
+	     ;; 				  -1.0)))
 	     
 	     ;; (translate-node-to-node *node-pointer*
 	     ;; 			     node-nxt)
