@@ -87,49 +87,58 @@
 			     seq-event
 			     anim)))))
 
-(defun move-node-ptr (dir)
-  ;; Check for node in dir
-  ;; If node, goto it
-
-  ;; NOTE: Not euclidean
+(defun move-node-ptr (dir) ; pass seq-event?
   
   ;; left = in
   ;; right = out
 
-  ;; do case
-
-  (when-let* ((node-ref (get-node-ptr-out))
-	      (node-nxt (get-node-dir node-ref dir)))
-	     (unlink-node-ptr)
-	     (link-node-ptr node-nxt)
-
-	     ;; a - b - c - *
-	     ;; a - b - * - c
-
-	     ;; a - b - * - c
-	     ;; a - b - c - *
-
-	     ;; above requires transforming the remainder characters
-	     ;; if we add, it will be on top
-	     
-	     ;; move ptr
-  	     (advance-node-of-node *node-pointer*
-  				   *node-pointer*
-  				   (cond ((eq dir :in)
+  (let* ((node-ref (get-node-ptr-out)))
+    
+    (if (not node-ref)
+	;; euclidean move
+	(progn
+	  (with-slots (model-matrix)
+	      *node-pointer*
+	    (translate-node-ptr nil
+				(lambda (value-new) ; update fn
+				  (setf (vx3 (translation model-matrix)) value-new)
+				  (enqueue-node-ptr))
+				(vx3 (translation model-matrix)) ; start
+				(* 96
+				   *scale-node*
+				   (cond ((eq dir :in)
 					  -1.0)
 					 ((eq dir :out)
 					  1.0)))
+				'move-pointer-x))
+	  (enqueue-node-ptr))
 
-	     ;; move ref node right
-  	     ;; (advance-node-of-node node-ref
-  	     ;; 			   node-ref
-  	     ;; 			   (cond ((eq dir :in)
-	     ;; 				  1.0)
-	     ;; 				 ((eq dir :out)
-	     ;; 				  -1.0)))
-	     
-	     ;; (translate-node-to-node *node-pointer*
-	     ;; 			     node-nxt)
+	(when-let ((node-nxt (get-node-dir node-ref dir)))
 
-	     (enqueue-node node-ref)
-	     (enqueue-node-ptr)))
+		  (unlink-node-ptr)
+		  (link-node-ptr node-nxt)
+		  
+		  ;; move ptr
+  		  ;; (advance-node-of-node *node-pointer*
+  		  ;; 			   *node-pointer*
+  		  ;; 			   (cond ((eq dir :in)
+		  ;; 				  -1.0)
+		  ;; 				 ((eq dir :out)
+		  ;; 				  1.0)))
+
+		  ;; move ref node right
+  		  ;; (advance-node-of-node node-ref
+  		  ;; 			   node-ref
+  		  ;; 			   (cond ((eq dir :in)
+		  ;; 				  1.0)
+		  ;; 				 ((eq dir :out)
+		  ;; 				  -1.0)))
+		  
+		  (translate-node-to-node *node-pointer*
+	     				  node-nxt)
+
+		  (fmt-model t "move-node-ptr" "* -> ~S = ~S~%" node-nxt (data node-nxt))
+		  
+		  ;; (enqueue-node node-ref)
+		  (enqueue-node-ptr)))))
+

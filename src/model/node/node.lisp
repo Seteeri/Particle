@@ -520,6 +520,7 @@
 		      *digraph*))
 
 (defun nth-node (node-end nth)
+  ;; This assumes a non-branching graph
   t)
 
 (defun copy-node-to-node (node-src)
@@ -644,3 +645,14 @@
 	  ((and (not node-ref-in)
 		(not node-ref-out))
 	   :iso))))
+
+(defun update-transform-line (node-start offset)
+  ;; If assumed, glyphs are already aligned,
+  ;; can use offset in line to update nodes simultaneously
+  (let ((pos-start (translate (model-matrix node-start)))
+	(node-prev nil))
+    (do-node (node node-start :out :out)
+      (setf (translation (model-matrix node))
+	    (v+ (translation (model-matrix node))))
+      (update-transform (model-matrix node))
+      (enqueue-node node))))

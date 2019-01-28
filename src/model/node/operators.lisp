@@ -18,18 +18,36 @@
 			       (code-char code))))
 
     (insert-vertex node)
-
-    (insert-node node *node-pointer* :out)
-
-    ;; Create node at pointer location
     
+    ;; hello-world
+    ;;
+    ;;         world
+    ;; hello-<
+    ;;         user
+    
+    (when-let* ((node-ptr-out (get-node-ptr-out))
+		(node-type (get-node-type node-ptr-out)))
+
+	       ;; Push new node above for now
+	       (when (or (eq node-type :intra)
+			 (eq node-type :start))
+		 (let* ((bounds-origin (bounds-origin (gethash (char-code (data node)) *metrics*))))
+		   (translate-node-to-node node
+					   node
+					   :offset (vec3 0.0
+    							 (* +linegap+ *scale-node*)
+    							 0.0)))))
+		     
+    (insert-node node *node-pointer* :out)
+        
     (when move-pointer
       (advance-node-of-node *node-pointer*
     			    node
-    			    1.0))
-
-    ;; this enqueues pointer also
-    (enqueue-node node)
+    			    1.0)
+      (enqueue-node-ptr))
+    
+    ;; This enqueues pointer also - will be refactored out
+    (enqueue-node node nil)
     
     node))
 
