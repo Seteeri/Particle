@@ -132,4 +132,4 @@
 	     ;; 			     node-nxt)
 
 	     (enqueue-node node-ref)
-	     (enqueue-node-pointer)))
+	     (enqueue-node-ptr)))

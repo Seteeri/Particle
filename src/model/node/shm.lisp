@@ -1,8 +1,9 @@
 (in-package :protoform.model)
 
 (defun enqueue-node (node &optional (pointer t))
+  ;; FIX THIS - remove
   (when pointer
-    (enqueue-node-pointer))
+    (enqueue-node-ptr))
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
 				(lambda ()
@@ -12,7 +13,7 @@
 				   +size-struct-instance+))
 			  *queue-shm*))
 
-(defun enqueue-node-pointer ()
+(defun enqueue-node-ptr ()
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
 				(lambda ()

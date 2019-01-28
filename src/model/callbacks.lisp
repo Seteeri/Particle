@@ -102,7 +102,7 @@
     (translate-node-ptr seq-event
 		       (lambda (value-new) ; update fn
 			 (setf (vx3 (translation model-matrix)) value-new)
-			 (enqueue-node-pointer))
+			 (enqueue-node-ptr))
 		       (vx3 (translation model-matrix)) ; start
 		       (- (* 96 *scale-node*))          ; delta
 		       'move-pointer-x)))
@@ -113,7 +113,7 @@
     (translate-node-ptr seq-event
 		       (lambda (value-new)
 			 (setf (vx3 (translation model-matrix)) value-new)
-			 (enqueue-node-pointer))
+			 (enqueue-node-ptr))
 		       (vx3 (translation model-matrix))
 		       (* 96 *scale-node*)
 		       'move-pointer-x)))
@@ -124,7 +124,7 @@
     (translate-node-ptr seq-event
 		       (lambda (value-new)
 			 (setf (vy3 (translation model-matrix)) value-new)
-			 (enqueue-node-pointer))
+			 (enqueue-node-ptr))
 		       (vy3 (translation model-matrix))
 		       (* +linegap+ *scale-node*)
 		       'move-pointer-y)))
@@ -135,7 +135,7 @@
     (translate-node-ptr seq-event
 		       (lambda (value-new)
 			 (setf (vy3 (translation model-matrix)) value-new)
-			 (enqueue-node-pointer))
+			 (enqueue-node-ptr))
 		       (vy3 (translation model-matrix))
 		       (- (* +linegap+ *scale-node*))
 		       'move-pointer-y)))

@@ -30,7 +30,7 @@
       (advance-node-of-node *node-pointer*
     			    node
     			    1.0)
-      (enqueue-node-pointer))
+      (enqueue-node-ptr))
     
     (enqueue-node node)
     
@@ -43,7 +43,7 @@
       (delete-node)
     (when node-del
       (enqueue-node-zero (index node-del)) ; refactor this func
-      (enqueue-node-pointer)
+      (enqueue-node-ptr)
       (when node-del-in
 	(enqueue-node node-del-in))
       (when node-del-out
@@ -87,7 +87,7 @@
     					       (- (* +linegap+ *scale-node*)))
     					    0.0)))
     
-    (enqueue-node-pointer))
+    (enqueue-node-ptr))
 
   ;; Store pos in newline...
   
@@ -252,7 +252,7 @@
   ;; 	(enqueue-node node-pop-out))
 	
   ;;     (enqueue-node node-pop)
-  ;;     (enqueue-node-pointer)))
+  ;;     (enqueue-node-ptr)))
       
 
   ;; (return-from cut-node)
@@ -315,7 +315,7 @@
 	      (when node-buf
   		(enqueue-node node-buf))
 	      (enqueue-node node-ref)
-	      (enqueue-node-pointer))))
+	      (enqueue-node-ptr))))
 	      
 (defun paste-node ()
   ;; Take node from right side (pred) -> left side (succ)
@@ -390,7 +390,7 @@
   					  -1.0))))
 	    
 	    (enqueue-node node-buf)
-	    (enqueue-node-pointer)))
+	    (enqueue-node-ptr)))
 
 (defun copy-node () ;;-to-pointer
   ;; Copy node from left side (succ) -> right side (pred)
@@ -447,4 +447,4 @@
       (when node-buf
 	(enqueue-node node-buf))
       (enqueue-node node-ref)
-      (enqueue-node-pointer))))
+      (enqueue-node-ptr))))

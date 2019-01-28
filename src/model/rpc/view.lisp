@@ -93,7 +93,7 @@
   ;; (update-mat-proj)
   ;; (enqueue-mat-view)
   ;; (enqueue-mat-proj)
-  ;; (enqueue-node-pointer)
+  ;; (enqueue-node-ptr)
 
   ;; REFACTOR:
   ;; Use ptree instead?
