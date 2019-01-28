@@ -39,32 +39,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun get-node-ptr-in (&optional (* *node-pointer*))
-  (get-node-in *))
-
-(defun get-node-ptr-out (&optional (* *node-pointer*))
-  (get-node-out *))
-
-(defun get-node-ptr-bi (&optional (* *node-pointer*))
-  (values (get-node-in *)
-	  (get-node-out *)))
+(defun get-node-ptr-in  (&optional (* *node-pointer*)) (get-node-in *))
+(defun get-node-ptr-out (&optional (* *node-pointer*)) (get-node-out *))
+(defun get-node-ptr-bi  (&optional (* *node-pointer*)) (values (get-node-in *) (get-node-out *)))
 
 (defun link-node-ptr (node
 		      &optional
+			(* *node-pointer*)
 			(dir :out))
-  (link-node node *node-pointer* dir))
+  (link-node node * dir))
 
 (defun unlink-node-ptr (&optional
 			  (* *node-pointer*)
 			  (dir :out))
   (unlink-node-first * dir))
 
-(defun relink-node-ptr (node &optional
-			       (dir-old :out)
-			       (dir-new :out))
-  ;; Return edges?
-  (unlink-node-ptr dir-old)
-  (link-node-ptr node dir-new))
+(defun deref-ptr (*
+		  &optional
+		    (* *node-pointer*)
+		    (dir :out))
+  ;; Find final pointer
+  t)
 
 ;; translate block
 
