@@ -21,7 +21,7 @@
 				'add-node-ascii ;; (make-symbol (format nil "~a~%" seq-key))
 				'()
 				(lambda ()
-				  (funcall #'add-node-ascii (second (reverse (second seq-key)))))) ; create aux fn for this
+				  (funcall #'add-node-ascii (code-char (second (reverse (second seq-key))))))) ; create aux fn for this
 			  *queue-anim*))
 
 (defun backspace-node-cb (seq-key)

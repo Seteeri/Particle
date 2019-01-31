@@ -44,7 +44,8 @@
 ;; 		  :initial-element (coerce 0 '(unsigned-byte 8)))
 
 (defclass node ()
-  ((data :accessor data :initarg :data :initform nil)
+  ((data :accessor data :initarg :data :initform nil) ; data-glyph/char
+   (data-2 :accessor data-2 :initarg :data-2 :initform nil) ; data object
    
    (offset-texel-texture :accessor offset-texel-texture :initarg :offset-texel-texture :initform 0)
    (dims-texture :accessor dims-texture :initarg :dims-texture :initform (vec2 0 0))

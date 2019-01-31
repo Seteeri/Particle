@@ -8,12 +8,12 @@
 					  ".png")
 		    :format :png))
 
-(defun add-node-ascii (code &optional (move-pointer t))
-  (let ((node-new (add-node (code-char code)
+(defun add-node-ascii (char &optional (move-pointer t))
+  (let ((node-new (add-node char
 			    move-pointer)))
     (enqueue-node-ptr)
-    ;; This enqueues pointer also - will be refactored out
-    (enqueue-node node-new)))
+    (enqueue-node node-new)
+    node-new))
 
 (defun backspace-node ()
   (multiple-value-bind (node-del
@@ -43,7 +43,7 @@
   
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however
-  (let* ((node-nl (add-node #\Newline nil))
+  (let* ((node-nl (add-node-ascii #\Newline))
 	 (node-start (find-node-line-start node-nl :in)))
 
     ;; If node not found, i.e. no chars except newline
@@ -58,7 +58,7 @@
     ;; x: undo left bounds shift
     ;; y: shift down a line space -
     ;; adjust original pos to baseline first by subtracting bounds
-
+    
     (let* ((bounds-origin (bounds-origin (gethash (char-code (data node-start)) *metrics*))))
       (translate-node-to-node *node-pointer*
 			      node-start ; use get-origin-from-node-pos
@@ -91,9 +91,9 @@
   ;; 2. Parallelize add-node  
   ;; 3. Create another function which ignores output
 
-  (let* ((str (str:concat "(progn (in-package :protoform.model) "
-			  (build-string-from-nodes)
-			  ")"))
+  (eval '(in-package #:protoform.model))
+  
+  (let* ((str (build-string-from-nodes))
 	 (data-input (read-from-string str))
 	 (output-eval (eval data-input))
 	 (output-str  (format nil "~S" output-eval)))
@@ -103,18 +103,18 @@
     (fmt-model t "eval-node" "ID (monotonic time): ~S~%" (osicat:get-monotonic-time))
 
     (when create-node-output
-      
-      ;; Keep track of output objects -> use gensym
 
-      ;; Add newline to str?
+      ;; Add newline to ptr
       (insert-node-newline)
       
       (loop
       	 :for char :across output-str
-      	 :do (let ((node (add-node char)))
+      	 :do (let ((node (add-node-ascii char)))
 	       ;; initial data used for glyph
-	       (setf (data node) output-eval)
+	       (setf (data-2 node) output-eval)
 	       t)))))
+
+(defun thunder () 'flash)
 
 (defun link (tgt)
   (cond ((eq tgt :near)
@@ -128,7 +128,7 @@
 
 (defun unlink (&optional (tgt nil))
   (cond ((eq tgt nil) ; default to unlinking ptr
-	 t)
+	 (unlink-node-ptr))
 
 	;; otherwise unlink tgt node
 	(t
