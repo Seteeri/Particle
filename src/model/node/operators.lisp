@@ -113,12 +113,23 @@
 	       (setf (data node) output-eval)
 	       t)))))
 
-;; (defun link-nodes (node-a node-b)
-;;   ;; Need not pos argument - user switches args
-;;   (insert-edge node-a node-b))
+(defun link (tgt)
+  (cond ((eq tgt :near)
+	 t)
 
-;; (defun unlink-nodes (node-a node-b)
-;;   (remove-edge node-a node-b))
+	((eq tgt :end)
+	 t)
+
+	(t
+	 t)))
+
+(defun unlink (&optional (tgt nil))
+  (cond ((eq tgt nil) ; default to unlinking ptr
+	 t)
+
+	;; otherwise unlink tgt node
+	(t
+	 (warn "unlink cond t not implemented"))))
 
 (defun swap-nodes (node-src node-dest)
   ;; Swap links
@@ -142,31 +153,6 @@
 (defun show-node-ids ()
   ;; Procedure:
   t)
-
-
-;; Pass starting position, i.e. node-pointer position
-;; For nodes, index to calculate
-;; Have to set index serially...
-;; - faster way would be to use spatial relationship to calculate index
-;;   -> only works when nodes are sequentially positioned
-;;   -> radial would be better
-;;
-
-;; pos = start + (advance * index)
-;; adjust-pos by bounds
-
-;; 	(digraph:mapc-vertices (lambda (vert)
-;; 				 (sb-concurrency:enqueue
-;; 				  (list nil
-;; 					(make-symbol (format nil "node-~a~%" (index vert)))
-;; 					'()
-;; 					(lambda ()
-;; 					  (format t "~S~%" (translation (model-matrix vert)))
-;; 					  ;; (funcall #'randomize-color-node vert)
-;; 					  ))
-;; 				  *queue-anim*))
-;; 			       *digraph*))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

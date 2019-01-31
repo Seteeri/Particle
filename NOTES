@@ -673,3 +673,27 @@ A different pointer can have a different set of bindings
      -> Move to newline underneath?
      -> Create separate section per line?
         * auto update positions to prevent overlap
+        
+        
+;; Pass starting position, i.e. node-pointer position
+;; For nodes, index to calculate
+;; Have to set index serially...
+;; - faster way would be to use spatial relationship to calculate index
+;;   -> only works when nodes are sequentially positioned
+;;   -> radial would be better
+;;
+
+;; pos = start + (advance * index)
+;; adjust-pos by bounds
+
+;; 	(digraph:mapc-vertices (lambda (vert)
+;; 				 (sb-concurrency:enqueue
+;; 				  (list nil
+;; 					(make-symbol (format nil "node-~a~%" (index vert)))
+;; 					'()
+;; 					(lambda ()
+;; 					  (format t "~S~%" (translation (model-matrix vert)))
+;; 					  ;; (funcall #'randomize-color-node vert)
+;; 					  ))
+;; 				  *queue-anim*))
+;; 			       *digraph*))
