@@ -590,3 +590,80 @@ DIM XZ:
 LISP CODE IS VIEWED AS DATA - LISTS OF STRINGS
 
 https://academia.stackexchange.com/questions/109/is-there-any-efficient-non-linear-note-taking-software
+
+
+MOVEMENT:
+1. Link move (semantic move)
+2. Euclidean move (discrete steps)
+3. Jump move (jump to node)
+  -> Requires IDs
+  
+How would user move from main graph to buffers?
+
+F1 : jump to undo - press again to move back
+F1+: jump to buffers - press again to move back 
+
+last selected buffer will be set to default? make explicit for now
+
+question is which do they need more of?
+
+When user enters new text, old text is moved (char-by-char) to undo graph...
+
+QUESTIONS!
+? Undo global + local (per graph)?
+? Buffer global + local (per graph)?
+   -> Buffer should be global
+   
+Technically, undo encompasses buffer, however, buffer acts like a 
+shortcut to the undo part
+
+users can implement
+1. Different types of nodes (data to data transformers)
+2. Different types of pointers  (input to data transformers)
+
+35.  For backspace, pop before node-ref, instead of pointing node
+      - case
+      
+            a-b-c
+                |
+                *    
+              
+            a-c
+              |
+              *
+             
+            c
+            |
+            *
+      - or double pointer?
+        a-b-c-*
+              |
+              *    
+        a-c-*
+            |
+            *
+        c-*
+          |
+          *  
+        *
+        |
+        *
+        - https://stackoverflow.com/questions/5580761/why-use-double-pointer-or-why-use-pointers-to-pointers
+        - might be more intuitive...!!!
+        - so to create a string/line/sentence -> create a pointer
+          - master pointer, then secondary pointers
+          - user can switch between pointers
+          - ptr represents a string/line
+            a grouping...selection? essentially equivalent to a c ptr
+            
+            
+Keyboard bindings -> Pointer -> Object
+
+Currently all keyboard bindings map to same pointer
+Imagine
+a: ptr-a
+b: ptr-b
+
+Thus is ptr-a is selected, any key press results in #\a node
+
+A different pointer can have a different set of bindings
