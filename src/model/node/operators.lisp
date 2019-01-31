@@ -8,51 +8,12 @@
 					  ".png")
 		    :format :png))
 
-(defun add-node (code &optional (move-pointer t))
-  ;; rename to add-node-ascii
-  
-  (let* ((baseline (get-origin-from-node-pos *node-pointer*))
-	 (node (init-node-msdf baseline
-			       *scale-node*
-			       (digraph:count-vertices *digraph*)
-			       (code-char code))))
-
-    ;; move somewhere else?
-    (insert-vertex node)
-
-    (spatial-trees:insert node *r-tree*)
-    
-    ;; hello-world
-    ;;
-    ;;         world
-    ;; hello-<
-    ;;         user
-    
-    (when-let* ((node-ptr-out (get-node-ptr-out))
-		(node-type (get-node-type node-ptr-out)))
-
-	       ;; Push new node above for now
-	       (when (or (eq node-type :intra)
-			 (eq node-type :start))
-		 (let* ((bounds-origin (bounds-origin (gethash (char-code (data node)) *metrics*))))
-		   (translate-node-to-node node
-					   node
-					   :offset (vec3 0.0
-    							 (* +linegap+ *scale-node*)
-    							 0.0)))))
-		     
-    (insert-node node *node-pointer* :out)
-        
-    (when move-pointer
-      (advance-node-of-node *node-pointer*
-    			    node
-    			    1.0)
-      (enqueue-node-ptr))
-    
+(defun add-node-ascii (code &optional (move-pointer t))
+  (let ((node-new (add-node (code-char code)
+			    move-pointer)))
+    (enqueue-node-ptr)
     ;; This enqueues pointer also - will be refactored out
-    (enqueue-node node nil)
-    
-    node))
+    (enqueue-node node-new nil)))
 
 (defun backspace-node ()
   (multiple-value-bind (node-del
@@ -61,9 +22,6 @@
       (delete-node)
 
     (when node-del
-      ;; move elsewhere?
-      (spatial-trees:delete node-del *r-tree*)
-      
       (enqueue-node-zero (index node-del)) ; refactor this func
       (enqueue-node-ptr)
       (when node-del-in

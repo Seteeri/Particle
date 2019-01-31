@@ -110,16 +110,16 @@
 	 :do (progn
 	       (register-callback `(,keysym (:press :repeat))
 	 			  :exclusive
-	 			  #'add-node-cb)
+	 			  #'add-node-ascii-cb)
 	       ;; Better way to handle below?
 	       (register-callback `(,+xk-shift-l+ (:press :down)
 	       			    ,keysym       (:press :repeat))
 	       			  :exclusive
-	       			  #'add-node-cb)
+	       			  #'add-node-ascii-cb)
 	       (register-callback `(,+xk-shift-r+ (:press :down)
 	       			    ,keysym       (:press :repeat))
 	       			  :exclusive
-	       			  #'add-node-cb)
+	       			  #'add-node-ascii-cb)
 	       t)))
     
     (when t

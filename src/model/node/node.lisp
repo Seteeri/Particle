@@ -305,6 +305,44 @@
 	      (format t "in: ~a~%" nodes-ref-in)
 	      (format t "out: ~a~%" nodes-ref-out))))
 
+(defun add-node (data &optional (move-pointer t))
+  (let* ((baseline (get-origin-from-node-pos *node-pointer*))
+	 (node (init-node-msdf baseline
+			       *scale-node*
+			       (digraph:count-vertices *digraph*)
+			       data)))
+
+    (insert-vertex node)
+    (spatial-trees:insert node *r-tree*)
+    
+    ;; hello-world
+    ;;
+    ;;         world
+    ;; hello-<
+    ;;         user
+    
+    (when-let* ((node-ptr-out (get-node-ptr-out))
+		(node-type (get-node-type node-ptr-out)))
+
+	       ;; Push new node above for now
+	       (when (or (eq node-type :intra)
+			 (eq node-type :start))
+		 (let* ((bounds-origin (bounds-origin (gethash (char-code (data node)) *metrics*))))
+		   (translate-node-to-node node
+					   node
+					   :offset (vec3 0.0
+    							 (* +linegap+ *scale-node*)
+    							 0.0)))))
+    ;; attach node to ptr
+    (insert-node node *node-pointer* :out)
+    ;; advance pointer
+    (when move-pointer
+      (advance-node-of-node *node-pointer*
+    			    node
+    			    1.0))
+        
+    node))
+
 ;; rename to join
 (defun insert-node (node-src
 		    node-dest
@@ -323,6 +361,8 @@
   ;; a <- * <- b <- c | GOAL
   
   ;; nodes in opposite direction remain attached
+
+  ;; does not insert-vertex into graph
   
   (loop
      :for node :in (cond ((eq dir-src :in)
@@ -448,9 +488,8 @@
 		:dir-ptr dir-ptr)
     (when node-ref
       ;; Remove from graph (removes edges?)
-      ;; or move under let?
-      ;; poss caller should remove from graph while this function pops?
-      (remove-vertex node-ref))
+      (remove-vertex node-ref)
+      (spatial-trees:delete node-del *r-tree*))
     (values node-ref
 	    node-ref-in
 	    node-ref-out)))

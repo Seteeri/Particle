@@ -15,13 +15,13 @@
 				  (funcall #'draw-graph)))
 			  *queue-anim*))
 
-(defun add-node-cb (seq-key)
+(defun add-node-ascii-cb (seq-key)
   (fmt-model t "add-node" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
-				'add-node ;; (make-symbol (format nil "~a~%" seq-key))
+				'add-node-ascii ;; (make-symbol (format nil "~a~%" seq-key))
 				'()
 				(lambda ()
-				  (funcall #'add-node (second (reverse (second seq-key)))))) ; create aux fn for this
+				  (funcall #'add-node-ascii (second (reverse (second seq-key)))))) ; create aux fn for this
 			  *queue-anim*))
 
 (defun backspace-node-cb (seq-key)
