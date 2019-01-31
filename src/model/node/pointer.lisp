@@ -67,11 +67,11 @@
 			   start
 			   delta
 			   id)
-  (fmt-model t "translate-node-ptr" "~a, ~a -> ~a~%"
-	     id
-	     start
-	     (+ start
-		delta))
+  (when nil
+    (fmt-model t "translate-node-ptr" "~a, ~a -> ~a~%"
+	       id
+	       start
+	       (+ start delta)))
   
   (let ((anim (make-instance 'animation
 			     :id id

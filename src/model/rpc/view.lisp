@@ -84,7 +84,8 @@
 	      ;; Modify existing anim slots
 	      (copy-anim anim-prev anim)))
 	  
-	  (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id)))))
+	  ;; (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id)
+	  t))))
   nil)
 
 (defun execute-tasks-shm ()
