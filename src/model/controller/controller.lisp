@@ -116,12 +116,22 @@
       ((= type libinput:pointer-motion)
        ;; (format t "type: ~a~%" type)
        t)
-      ((or (= type libinput:touch-down)
-	   (= type libinput:touch-frame)
-	   (= type libinput:touch-motion)
-	   (= type libinput:touch-up))
-       ;; (format t "type: ~a~%" type)
-       t)
+      
+      ((= type libinput:touch-down)
+       (handle-event-touch event))
+
+      ((= type libinput:touch-motion)
+       (handle-event-touch event))
+
+      ((= type libinput:touch-up)
+       (handle-event-touch-2 event))
+
+      ((= type libinput:touch-cancel)
+       (handle-event-touch-2 event))
+      
+      ((= type libinput:touch-frame)
+       (handle-event-touch-2 event))
+      
       ((= type libinput:pointer-button)
        t)
       (t

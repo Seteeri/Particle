@@ -108,7 +108,8 @@
 							     (:file "dispatch")
 				       			     (:module events
 				       				      :pathname "events"
-				       				      :components ((:file "keyboard")))))
+				       				      :components ((:file "keyboard")
+										   (:file "touch")))))
 				       (:module rpc
 				       		:pathname "rpc"
 				       		:components ((:file "rpc")
