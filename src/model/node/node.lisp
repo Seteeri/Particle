@@ -489,7 +489,7 @@
     (when node-ref
       ;; Remove from graph (removes edges?)
       (remove-vertex node-ref)
-      (spatial-trees:delete node-del *r-tree*))
+      (spatial-trees:delete node-ref *r-tree*))
     (values node-ref
 	    node-ref-in
 	    node-ref-out)))

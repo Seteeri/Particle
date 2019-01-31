@@ -13,7 +13,7 @@
 			    move-pointer)))
     (enqueue-node-ptr)
     ;; This enqueues pointer also - will be refactored out
-    (enqueue-node node-new nil)))
+    (enqueue-node node-new)))
 
 (defun backspace-node ()
   (multiple-value-bind (node-del
@@ -43,7 +43,7 @@
   
   ;; Seq-key is +xk-return+ = 65293
   ;; Pass newline char however
-  (let* ((node-nl (add-node (char-code #\Newline) nil))
+  (let* ((node-nl (add-node #\Newline nil))
 	 (node-start (find-node-line-start node-nl :in)))
 
     ;; If node not found, i.e. no chars except newline
