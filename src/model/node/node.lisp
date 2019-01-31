@@ -544,7 +544,7 @@
   ;; Pass starting node else use node-pointer
   ;; To eval, build string from predecessors until newline
 
-  (fmt-model t "build-string-from-nodes" "Pointer: ~a~%" *node-pointer*)
+  ;; (fmt-model t "build-string-from-nodes" "Pointer: ~a~%" *node-pointer*)
   
   (let ((chrs nil))
     (loop

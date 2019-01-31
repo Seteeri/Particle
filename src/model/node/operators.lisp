@@ -91,8 +91,11 @@
   ;; 2. Parallelize add-node  
   ;; 3. Create another function which ignores output
 
-  (let* ((str (build-string-from-nodes))
-	 (output-eval (eval (read-from-string str)))
+  (let* ((str (str:concat "(progn (in-package :protoform.model) "
+			  (build-string-from-nodes)
+			  ")"))
+	 (data-input (read-from-string str))
+	 (output-eval (eval data-input))
 	 (output-str  (format nil "~S" output-eval)))
 
     (fmt-model t "eval-node" "Input Str (to eval): ~S~%" str)
@@ -108,7 +111,7 @@
       
       (loop
       	 :for char :across output-str
-      	 :do (let ((node (add-node (char-code char))))
+      	 :do (let ((node (add-node char)))
 	       ;; initial data used for glyph
 	       (setf (data node) output-eval)
 	       t)))))
