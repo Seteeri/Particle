@@ -9,15 +9,18 @@
 		    :format :png))
 
 (defun add-node (code &optional (move-pointer t))
-  ;; Rel to pointer
- 
+  ;; rename to add-node-ascii
+  
   (let* ((baseline (get-origin-from-node-pos *node-pointer*))
 	 (node (init-node-msdf baseline
 			       *scale-node*
 			       (digraph:count-vertices *digraph*)
 			       (code-char code))))
 
+    ;; move somewhere else?
     (insert-vertex node)
+
+    (spatial-trees:insert node *r-tree*)
     
     ;; hello-world
     ;;
@@ -56,7 +59,11 @@
 			node-del-in
 			node-del-out)
       (delete-node)
+
     (when node-del
+      ;; move elsewhere?
+      (spatial-trees:delete node-del *r-tree*)
+      
       (enqueue-node-zero (index node-del)) ; refactor this func
       (enqueue-node-ptr)
       (when node-del-in

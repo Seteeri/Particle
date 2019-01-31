@@ -30,7 +30,8 @@
 		 #:lparallel
 		 #:skip-list
 		 #:sb-concurrency
-		 #:pack)
+		 #:pack
+		 #:spatial-trees)
     ;; #:babel
     ;; #:dlist
     :serial t

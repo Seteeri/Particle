@@ -667,3 +667,9 @@ b: ptr-b
 Thus is ptr-a is selected, any key press results in #\a node
 
 A different pointer can have a different set of bindings
+
+   * Where to place old text???
+     -> Move before line - can collapse
+     -> Move to newline underneath?
+     -> Create separate section per line?
+        * auto update positions to prevent overlap

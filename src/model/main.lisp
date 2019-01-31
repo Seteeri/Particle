@@ -18,6 +18,9 @@
 
 	*queue-anim*    (sb-concurrency:make-queue)
 	*queue-shm*     (sb-concurrency:make-queue)
+
+	*r-tree*        (spatial-trees:make-spatial-tree :r
+							 :rectfun #'node-rect)
 	
 	;; Simply set here since no fn required
 	*width*         width

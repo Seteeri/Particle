@@ -64,6 +64,25 @@
 							     :initial-contents *color-default-node*))
    (flags :accessor flags :initarg :flags :initform 1)))
 
+(defun node-rect (node)
+  "make a bounding box function."
+  (with-slots (model-matrix)
+      node
+
+    (let ((pos (translation model-matrix))
+	  (scale (scale model-matrix)))
+      
+      ;; use scale to create bounds
+
+      ;; lx,ly = left-bottom
+      ;; hx,hy = top right
+      
+      (rectangles:make-rectangle
+       :lows (list (vx3 pos)
+		   (vy3 pos))
+       :highs (list (+ (vx3 pos) (vx3 scale))
+		    (+ (vy3 pos) (vy3 scale)))))))
+
 (defun randomize-color-node (vert)
   ;; random color
   (setf (aref (rgba vert) 0)  (coerce (random 1.0) 'single-float)
