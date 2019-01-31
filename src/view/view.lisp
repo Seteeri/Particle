@@ -206,6 +206,7 @@
 			  :context-version-major 3
 			  :depth-bits 16)
     (glfw:set-window-size-callback 'update-viewport)
+    (fmt-view t "run-view" "Window Position: ~S~%" (glfw:get-window-position (glfw:get-current-context)))
     
     (init-gl-env width height)
     (calc-opengl-usage)
