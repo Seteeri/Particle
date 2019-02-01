@@ -19,6 +19,9 @@
 	*queue-anim*    (sb-concurrency:make-queue)
 	*queue-shm*     (sb-concurrency:make-queue)
 
+	*stack-i-nodes* (loop :for i :from 1 :to (/ 134217728 4)
+			   :collect i) ; buffer size / node struct size
+	
 	*r-tree*        (spatial-trees:make-spatial-tree :r
 							 :rectfun #'node-rect)
 	

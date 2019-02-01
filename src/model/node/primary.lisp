@@ -37,7 +37,7 @@
 								       scale-glyph)
 							  :translation (vcopy3 cursor))))
 	(metrics-glyph (gethash (char-code data) *metrics*)))
-
+    
     ;; Remember to dec on removal
     (sb-ext:atomic-incf (car *vertices-digraph*))
     
@@ -206,9 +206,9 @@
   (let* ((baseline (get-origin-from-node-pos *node-pointer*))
 	 (node (init-node-msdf baseline
 			       *scale-node*
-			       (digraph:count-vertices *digraph*)
+			       (pop *stack-i-nodes*)
 			       data)))
-
+    
     (insert-vertex node)
     (spatial-trees:insert node *r-tree*)
     
@@ -381,6 +381,7 @@
 		:dir-ptr dir-ptr)
     (when node-ref
       ;; Remove from graph (removes edges?)
+      (push (index node-ref) *stack-i-nodes*)
       (remove-vertex node-ref)
       (spatial-trees:delete node-ref *r-tree*))
     (values node-ref
