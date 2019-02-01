@@ -93,9 +93,13 @@
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
-							     (:file "linking")
-							     (:file "relations")
-							     (:file "secondary")
+							     (:module primary
+				       				      :pathname "primary"
+				       				      :components ((:file "linking")
+										   (:file "relations")))
+							     (:module secondary
+				       				      :pathname "secondary"
+				       				      :components ((:file "secondary")))
 							     (:file "operators")
 				       			     (:file "pointer")
 							     (:file "shm")))
