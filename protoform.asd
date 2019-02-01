@@ -78,9 +78,6 @@
 				       (:file "raster")
 				       (:file "memcpy")
 				       (:file "glfw")))
-		 (:module analyzer-dep
-		 	  :pathname "src/analyzer-dep"
-		 	  :components ((:file "analyzer-dep")))
 		 (:module model
 			  :pathname "src/model"
 			  :components ((:module shm
@@ -96,6 +93,7 @@
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
+							     (:file "primitive")
 							     (:file "operators")
 							     (:file "shm")
 				       			     (:file "pointer")))
