@@ -32,7 +32,7 @@ Make this a smart process - release tile if user moves to another tile
 after a certain amount of time or learn users behavior to calculate the
 threshold
 
-]-----------------------------------------------------------------------
+########################################################################
 
 text   -> raster (texture) 
 raster -> text (OCR)
@@ -63,7 +63,7 @@ UNREAL BLUEPRINTS
 
 https://news.ycombinator.com/item?id=14482988
 
-------------------------------------------------------------------------
+########################################################################
 
 EMACS Model:
 
@@ -138,7 +138,7 @@ the OpenGL context, and attached to that node, the default framebuffer.
 * A process can have multiple contexts, which represents a viewable
 surface. Current context is thread-local so possibly  one context/thread
 
-------------------------------------------------------------------------
+########################################################################
 
 rendering engine
 
@@ -146,122 +146,7 @@ Forward... -> Tiled -> Clustered -> Volumetric
 
  Volume Tiled Forward Shading is based on Tiled and Clustered Forward Shading described by Ola Olsson et. al
  
-------------------------------------------------------------------------
-
-;; (area   (width height) (* width height))
-;;         (width  (border)       (+ 7 (* 2 border)))
-;;         (height (border)       (+ 5 (* 2 border)))
-;;         (border ()             1))
-
-#|
-
-(defun calc-area (width height)
-  (:rw (:r width height)
-       (:w area))
-  ;; format to t
-  (* width height))
-
-(defun calc-width (border)
-  (:rw (:r border)
-       (:w width))
-  ;; format to t
-  (* 2 border))
-
-(defun calc-height (border)
-  (:rw (:r border)
-       (:w height))
-  ;; format to t
-  (* 2 border))  
-
-(defun calc-border ()
-  (:rw (:r nil)
-       (:w border))
-  ;; format to t
-  (setf border 1))
-
-|#
-
-;; sym = (or (r) (r w) (w))
-;; There is no easy way of implicitly analyzing code to figure out if a symbol is going to be modified
-;; - naive solution is check for *set* functions
-;; - expand macros...should do this at compile time to generate main
-;; Current method is to explicitly define it as the user understands it
-;; a DSL would be needed for all the specifics...
-
-;; for each symbol store read and write functions for each
-
-;; EXAMPLE
-;; For the above, can a program figure out the execution order without the user declaring it?
-
-;; Sort defuns into hashtable where sym -> :r f0 f1 f2..., :w f0 f1 f2
-
-;; Pass program a function, root node, to figure out dependencies
-;; For read symbols, find writer fns
-;; Then for each writer fn, check its read syms and find its writer fns
-;; As program progresses, save fns in list/graph
-;; At the end, iterate and submit tasks
-;; l = (:s calc-border (:p calc-width calc-height) calc-area)
-
-;; Ideally, there should only be one writer
-;; When multiple writers - no way of knowing which should go first
-;; - slap a lock on it, execute functions -> indeterministic execution
-
-;; Iterate over predecessors:
-;; Parallelizable if reads of func a do not include any writes of func b or vice versa
-;; otherwise they are dependent
-;; In other words, reads are arbitrary, but not the same writes
-
-;; It's also assumed the symbols above are global
-
-#|
-(defun calc-b (a)
-  (:rw (:r a)
-       (:w b))
-
-  (+ 2 a))
-
-(defun calc-a ()
-  (:rw (:r nil)
-       (:w a))
-
-  (+ 1 0))
-
-(defun calc-a2 ()
-  (:rw (:r nil)
-       (:w a))
-
-  (- 3 0))
-|#
-
-#|
-1. Build hash table with functions and rw
-
-(:s (:p #'set-inst-max
-	#'set-projview
-	#'set-handles-shm)
-    (:p t
-	t
-	t)
-    t)
-|#
-
-;; Static analysis of Lisp code to determine a call dependency graph
-;; 
-
-;; How to determine execution order?
-;; - All functions have state
-;; - Associated through arguments and return values -> symbols
-;; - Need to know symbols
-;; - What about implicit symbols such as lookup by string such as hashtable
-;;   - intern = string -> symbol
-;;   - program exceptions?
-
-;; - Scan src to tokens -> Analyze branches -> Schedules tasks -> Generate/exec code
-
-;; Upon start up, pass root fn (main) to generator
-;; Exec until infinite loop - constantly repeat process above infinitely
-;; - Memoize results to make faster
-;; - If user changes code, then it changes
+########################################################################
 
 ;; Forms:
 ;; 1. Self-eval
@@ -310,55 +195,7 @@ Forward... -> Tiled -> Clustered -> Volumetric
 ;; only works with code where certain guarantees can be made
 ;; such as for defun, are there any functions that wrap this
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-  ;; Brainstorm:
-  ;; 1. Refactor server message processing to accept self-evaluating symbols
-
-  ;; Input -> Model -|-> View
-  ;;
-  ;; 1. Input loop
-  ;;    - push sync tasks to queue
-  ;;      - must execute in order/serial
-  ;;        - if user was typing they'd get random text
-  ;; 2. Model loop
-  ;;    - pull input tasks from queue -> funcall
-  ;;      - purpose of this thread is to let input loop process events ASAP
-  ;;      - funcall can submit tasks+receive result, or push sync tasks to queue
-  ;;        - anims can only be done on frame
-  ;;          - Ex: camera anim and node anim can run simultaneously
-  ;;        - adding nodes can be done immediately
-  ;;      - shm can only be modified during view since poss view process will read during that time
-  ;;        - for view, to write to shm is to read from lisp data which requires locking...
-  ;;        - solution -> copy data/state when putting in queue - such as for a node being modified
-  ;;          - changes propogate like a dag...
-  ;;          - serialize data so view loop simply copies memory
-  ;; 3. View loop (callback)
-  ;;    - Execute frame tasks
-  ;;    - Copy from lisp to shm
-  ;;      - execute tasks copy shm
-  ;;      - send shm message
-
-  ;; For input:
-  ;; - Some events need to be handled in serial such as key presses
-  ;;   - Users expect input to be handled in serial, at least within a domain ie mouse vs keyboard
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; POSS:
-;; - Define 2 ptree's used by controller (ptree per frame)
-;;   - Create new ptree for current frame before swap
-
-;; Example: anim won't run concurrently - input, anims
-
-;; Scenario: playing camera anim, then user moves camera, then what?
-;; - A: do one - play anim, pass move
-;; - B: do one - stop anim, move camera
-;; - C: do both - result depends
-;;   - camera may end up in different end position than expected
-;; - C seems the most logical to the user
-
+########################################################################
   
 https://stackoverflow.com/questions/24839857/wireframe-shader-issue-with-barycentric-coordinates-when-using-shared-vertices
 https://catlikecoding.com/unity/tutorials/advanced-rendering/flat-and-wireframe-shading
@@ -402,7 +239,7 @@ Transfer objects between devices
 
 CAN WE REVOLUTIONIZE THE SMART HOME! (AND/OR OFFICE)
 
------------------------------------------------------
+########################################################################
 
 First engine is called Maximum Instancing Engine -> "Maxstance Engine"
 - Maximum instances
@@ -417,7 +254,7 @@ Use EVVEE for more lighting-based renderings...
 
 Anyhow, limitations to engine is limitations to instancing
 
-------------------------------------------------------------------------
+########################################################################
 
 :RULES:
 - Two types of nodes: vertices and edges [binary system ;)]
@@ -434,7 +271,7 @@ Anyhow, limitations to engine is limitations to instancing
 
 **If abstraction is broken, all hell breaks loose!**
 
-------------------------------------------------------------------------
+########################################################################
 
 How to Design Help System
 
@@ -471,6 +308,8 @@ nodes as they popup...use augmented reality like pokemon
  
  22. Should pointer target be predecessor or successor?
     - Successor makes sense since pointer is like an arrow
+
+########################################################################
     
 Implement NOTEPAD:
 
@@ -697,3 +536,120 @@ A different pointer can have a different set of bindings
 ;; 					  ))
 ;; 				  *queue-anim*))
 ;; 			       *digraph*))
+
+
+   * Diagram:
+      
+      h-e-l-l-o---w-o-r-l-d-*
+      
+      h-e-l-l-o---w-o-r-l-d
+                  *
+
+      Case A
+                  w
+                  *
+      h-e-l-l-o---a-o-r-l-d
+                  *
+
+                  w-o-r-l-d
+                  * * * * *
+      h-e-l-l-o---a-b-c-d-e
+                          *
+
+                  w-o-r-l-d
+                  * * * * *
+                  | | c | |  (c still linked to b and d) !-> b has 3 outputs now...
+                  | | * | |
+      h-e-l-l-o---a-b-z-d-e
+                      *
+
+      Case B - this would need to be explicitly done
+               use command like "branch" to move "world" 
+               to a list
+
+                  *-w-o-r-l-d
+                  *
+      h-e-l-l-o---a-b-c-d-e
+                          *
+
+                  *-w-o-r-l-d
+                  *
+                  |   *-c-d-e
+                  |   *
+      h-e-l-l-o---a-b-z
+                      *
+
+                  *-w-o-r-l-d
+                  *-a
+                  *
+                  |   *-c-d-e
+                  |   *
+      h-e-l-l-o---x-b-z
+                  *
+
+      If x is deleted, then entire branch moves to undo graph
+
+      Case C - user modifies history; undo will still track changes
+               below achieves users intentions
+     
+                  *-w-o-r-l-d
+                  *
+      h-e-l-l-o---a
+                  *     
+
+                  *-w
+                  *
+      h-e-l-l-o---a-o-r-l-d
+                          *    
+
+      alternatives - user retypes it; user copies it
+
+      Case D - this is implicit - "insert-node"
+               this actually behaves like overwrite (insert mode) - usually used to maintain spacing
+               use alt+<char> for this?
+      
+                  w o r l d
+                  * * * * *
+      h-e-l-l-o---a-b-c-d-e
+                          *      
+
+      ________________________
+
+                 (* w-o-r-l-d)
+                  |
+                  *
+      h-e-l-l-o---u
+                  *
+        
+      undo*----->(* w-o-r-l-d)
+                 /|\   
+                  |
+                  *
+                 /|\
+                  ------------------|
+      h -> e -> l -> l -> o -> - -> u -> s -> e -> r
+                                   /|\
+                                    |
+                                    *
+                        
+      * If user wanted to simulate insert, multiple ways:
+        - Branch text, link text (del ptr)
+        - Cut text/line, insert text, paste text
+        - verbose: manually unlink/move everything
+
+                  * w-o-r-l-d
+                  *
+      h-e-l-l-o---u-s-e-r
+                        *
+             
+      Relink "world" by typing command:
+
+                  * w-o-r-l-d
+                  *         
+      h-e-l-l-o---u-s-e-r-\n-l-i-n-k---i-d
+                          {               }* -> eval
+      
+      Eval will unlink newline (input) and link output
+      
+      h-e-l-l-o---u-s-e-r-w-o-r-l-d
+                                  *
