@@ -97,22 +97,26 @@
 	((eq dir :out)
 	 (remove-edge node-dest node-src graph edges))))
 
-(defun unlink-node-first (* &optional (dir :out)) ; does first
+(defun unlink-node-first (*
+			  dir
+			  &optional
+			    (graph *digraph*)
+			    (edges *edges-digraph))
   (cond ((eq dir :in)
 	 (when-let ((node-* (get-node-in *)))
-		   (remove-edge node-* *)
+		   (remove-edge node-* * digraph edges)
 		   node-*))
 	((eq dir :out)
 	 (when-let ((*-node (get-node-out *)))
-		   (remove-edge * *-node)
+		   (remove-edge * *-node digraph edges)
 		   *-node))
 	((eq dir :bi)
 	 (multiple-value-bind (node-* *-node)
 	     (get-node-bi *)
 	   (when node-*
-	     (remove-edge node-* *))
+	     (remove-edge node-* * digraph edges))
 	   (when *-node
-	     (remove-edge * *-node))
+	     (remove-edge * *-node digraph edges))
 	   (values node-* *-node)))))
 
 (defun get-node-type (node-ref
