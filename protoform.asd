@@ -90,6 +90,9 @@
 							     (:file "projview")
 							     (:file "texture")
 				       			     (:file "vertices")))
+				       (:module vcs
+				       		:pathname "vcs"
+				       		:components ((:file "vcs")))
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
