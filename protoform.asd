@@ -93,10 +93,11 @@
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
-							     (:file "primitive")
+							     (:file "primary")
+							     (:file "secondary")
 							     (:file "operators")
-							     (:file "shm")
-				       			     (:file "pointer")))
+				       			     (:file "pointer")
+							     (:file "shm")))
 				       (:module projview
 				       		:pathname "projview"
 				       		:components ((:file "projview")))
