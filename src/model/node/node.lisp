@@ -65,6 +65,34 @@
 							     :initial-contents *color-default-node*))
    (flags :accessor flags :initarg :flags :initform 1)))
 
+(defun insert-vertex (vert &optional
+			     (digraph *digraph*)
+			     (verts   *vertices-digraph*))
+  (digraph:insert-vertex digraph vert)
+  (sb-ext:atomic-incf (car verts)))
+
+(defun remove-vertex (vert &optional
+			     (digraph *digraph*)
+			     (verts   *vertices-digraph*))
+  (digraph:remove-vertex digraph vert)
+  (sb-ext:atomic-decf (car verts)))
+
+(defun insert-edge (vert-a
+		    vert-b
+		    &optional
+		      (digraph *digraph*)
+		      (edges   *edges-digraph*))
+  (digraph:insert-edge digraph vert-a vert-b)
+  (sb-ext:atomic-incf (car edges)))
+
+(defun remove-edge (vert-a
+		    vert-b
+		    &optional
+		      (digraph *digraph*)
+		      (edges   *edges-digraph*))
+  (digraph:remove-edge digraph vert-a vert-b)
+  (sb-ext:atomic-decf (car edges)))
+
 (defun node-rect (node)
   "make a bounding box function."
   (with-slots (model-matrix)
