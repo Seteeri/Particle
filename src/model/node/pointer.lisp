@@ -23,20 +23,28 @@
 					(coerce (/ 255 255) 'single-float)))
 
 ;; POSS: Use add-node instead?
-(defun init-node-pointer ()
-  (let ((node-ptr (init-node-msdf (vec3 0 0 0)
+(defun init-node-ptr (graph
+		      verts
+		      pos)
+  (let ((node-ptr (init-node-msdf pos
 				  *scale-node*
-				  0
+				  (pop *stack-i-nodes*)
 				  #\*
 				  *color-default-ptr*)))
     (update-transform (model-matrix node-ptr))
-    (insert-vertex node-ptr)
+    (insert-vertex node-ptr
+		   graph
+		   verts)
     (spatial-trees:insert node-ptr *r-tree*)
     node-ptr))
 
-(defun init-node-pointer-graph-shm ()
-  (let ((node-ptr (init-node-pointer)))
-    (copy-nodes-to-shm)
+(defun init-node-ptr-shm (graph
+			  verts
+			  pos)
+  (let ((node-ptr (init-node-ptr graph
+				 verts
+				 pos)))
+    (copy-nodes-to-shm graph)
     node-ptr))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

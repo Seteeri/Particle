@@ -102,12 +102,12 @@
 	    (mem-aref ptr :int (incf offset-ptr)) flags))))
 
 ;; TODO: Refactor to pass offsets, range, etc.
-(defun copy-nodes-to-shm ()
+(defun copy-nodes-to-shm (graph)
   (digraph:mapc-vertices (lambda (node)
 			   (copy-node-to-shm node
 					     (* (index node)
 						(/ +size-struct-instance+ 4))))
-			 *digraph*))
+			 graph))
 
 (defun zero-node-to-shm (&optional (offset-ptr 0))
   (with-slots (ptr size)

@@ -32,10 +32,15 @@
 					      :element-type '(unsigned-byte 8)))
 (defparameter *projview* nil)
 
+;; digraph main
 (defparameter *digraph* nil)
 (defparameter *node-pointer* nil)
 (defparameter *vertices-digraph* (cons 0 nil))
 (defparameter *edges-digraph* (cons 0 nil))
+
+(defparameter *node-ptr-vcs* nil)
+(defparameter *vertices-vcs* (cons 0 nil))
+(defparameter *edges-vcs* (cons 0 nil))
 
 (defparameter *offset-texel-textures* nil) ; sum of WxH
 (defparameter *offset-bytes-textures* nil) ; sum of bytes

@@ -51,9 +51,12 @@
 (defun set-node-pointer (digraph
 			 metrics
 			 shm-nodes)
-  (setf *node-pointer* (init-node-pointer-graph-shm))
-  ;; Create pointer for vcs graph
-  t)
+  (setf *node-pointer* (init-node-ptr-shm *digraph*
+					   *vertices-digraph*
+					   (vec3 0 0 0)))
+  (setf *node-ptr-vcs* (init-node-ptr-shm *digraph-vcs*
+					  *vertices-vcs*
+					  (vec3 0 -10 0))))
 
 (defun register-keyboard-callbacks ()
 
