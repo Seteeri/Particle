@@ -111,7 +111,8 @@
 										   (:file "operators-projview")))))
 				       (:module projview
 				       		:pathname "projview"
-				       		:components ((:file "projview")))
+				       		:components ((:file "projview")
+							     (:file "shm")))
 				       (:module controller
 				       		:pathname "controller"
 				       		:components ((:file "keysymdef")
