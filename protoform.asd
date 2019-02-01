@@ -45,7 +45,7 @@
     :components ((:file "src/package")
 		 (:file "src/util")
 		 (:module libc
-		 	  :pathname "src/libc"
+			  :pathname "src/libc"
 		 	  :components ((:file "epoll")
 				       (:file "memory")
 				       (:file "socket")))
@@ -118,11 +118,13 @@
 							     (:file "memcpy")))
 				       (:file "metrics")
 				       (:file "animation")
-				       (:file "variables")
-				       (:file "callbacks")
 				       (:file "matrix-model")
-				       (:file "init")
-				       (:file "main")))
+				       (:module main
+						:pathname "main"
+						:components ((:file "variables")
+							     (:file "callbacks")				       
+							     (:file "init")
+							     (:file "main")))))
 		 (:file "src/protoform")))
 
 #+sbcl
