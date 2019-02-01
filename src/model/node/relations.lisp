@@ -55,8 +55,6 @@
 (defun pop-node (&key
 		   (node-ptr *node-pointer*)
 		   (dir-ptr :out))
-
-  ;; SHOULD only manage linkage, not moving
   
   ;; Cases:
   ;;   
@@ -120,6 +118,8 @@
 		      node-ref-out))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Move to operators?
 
 (defun add-node (data &optional (move-pointer t)) ; rename add-node-to-ptr
   (let* ((baseline (get-origin-from-node-pos *node-pointer*))

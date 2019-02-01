@@ -5,6 +5,7 @@
 (defun thunder () 'flash)
 
 (defun draw-graph ()
+  ;; Create new graph using data...
   (digraph.dot:draw *digraph*
   		    :filename (str:concat (format nil "graph-~a" (osicat:get-monotonic-time))
 					  ".png")

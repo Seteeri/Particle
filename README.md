@@ -108,12 +108,10 @@ and code must be managed in two different domains leading to a
 
 ## The Interface
 
-* 3D orthographic non-windowing environment
-* Consistent nodal environment - "turtles all the way down"
+* 3D orthographic nodal environment - "turtles all the way down"
 * Primarily keyboard driven interface
 * Wayland extension provides conventional desktop
-* Undo/Non-destructive editing
-  * Warn when not possible such as side-effects
+* Built around undo graph - non-destructive editing
 
 ## The Architecture
 
