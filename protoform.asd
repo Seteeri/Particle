@@ -110,7 +110,8 @@
 				       			     (:module events
 				       				      :pathname "events"
 				       				      :components ((:file "keyboard")
-										   (:file "touch")))))
+										   (:file "touch")
+										   (:file "tablet-tool")))))
 				       (:module rpc
 				       		:pathname "rpc"
 				       		:components ((:file "rpc")

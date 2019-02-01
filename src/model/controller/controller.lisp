@@ -134,5 +134,15 @@
       
       ((= type libinput:pointer-button)
        t)
+
+      ((= type libinput:tablet-tool-axis)
+       (handle-event-tablet-tool-axis event))
+
+      ((= type libinput:tablet-tool-proximity)
+       (handle-event-tablet-tool-proximity event))
+
+      ((= type libinput:tablet-tool-tip)
+       (handle-event-tablet-tool-tip event))
+      
       (t
        t))))
