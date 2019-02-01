@@ -22,7 +22,7 @@
   (setf *metrics* (init-metrics)))
 
 (defun set-digraph ()
-  (setf *digraph*           (digraph:make-digraph)
+  (setf *digraph-main*           (digraph:make-digraph)
 	*digraph-vcs*       (digraph:make-digraph)
 	*digraph-clipboard* (digraph:make-digraph)
 	*digraph-repl*      (digraph:make-digraph)))
@@ -51,8 +51,8 @@
 (defun set-node-pointer (digraph
 			 metrics
 			 shm-nodes)
-  (setf *node-pointer* (init-node-ptr-shm *digraph*
-					   *vertices-digraph*
+  (setf *node-ptr-main* (init-node-ptr-shm *digraph-main*
+					   *vertices-main*
 					   (vec3 0 0 0))
 	
 	*node-ptr-vcs* (init-node-ptr-shm *digraph-vcs*
@@ -130,7 +130,7 @@
     
     (when t
       ;; handlers in node
-      (dolist (seq-event `((,+xk-backspace+ ,#'backspace-node-cb)
+      (dolist (seq-event `((,+xk-backspace+ ,#'backspace-node-ascii-cb)
 			   (,+xk-return+    ,#'insert-node-newline-cb)
 			   (,+xk-tab+       ,#'insert-node-tab-cb)))
 	(register-callback `(,(first seq-event) (:press :repeat))

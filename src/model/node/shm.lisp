@@ -14,9 +14,9 @@
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
 				(lambda ()
-				  (update-transform (model-matrix *node-pointer*))
-				  (serialize-node *node-pointer*))
-				(* (index *node-pointer*)
+				  (update-transform (model-matrix *node-ptr-main*))
+				  (serialize-node *node-ptr-main*))
+				(* (index *node-ptr-main*)
 				   +size-struct-instance+))
 			  *queue-shm*))  
 

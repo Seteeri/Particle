@@ -4,13 +4,13 @@
 ;; relational
 
 (defun print-node-dirs (&key
-			  (node-ptr *node-pointer*)
+			  (node-ptr *node-ptr-main*)
 			  (dir-ptr :out))
   ;; Print node
   (when-let ((node-ref (get-node-ptr-out)))	    
 	    (let ((nodes-ref-in (loop :for n :in (get-nodes-in node-ref) :collect (data n)))
 		  (nodes-ref-out (loop :for n :in (get-nodes-out node-ref) :collect (data n))))
-	      (format t "ptr: ~a~%" *node-pointer*)
+	      (format t "ptr: ~a~%" *node-ptr-main*)
 	      (format t "ptr-ref (ptr out): ~a~%" node-ref)
 	      (format t "in: ~a~%" nodes-ref-in)
 	      (format t "out: ~a~%" nodes-ref-out))))
@@ -20,8 +20,8 @@
 		    node-dest
 		    dir-src
 		    &optional
-		      (graph *digraph*)
-		      (edges *edges-digraph*))
+		      (graph *digraph-main*)
+		      (edges *edges-main*))
   
   ;; Procedure
   ;;
@@ -64,7 +64,7 @@
 	     edges))
 
 (defun pop-node (&key
-		   (node-ptr *node-pointer*)
+		   (node-ptr *node-ptr-main*)
 		   (dir-ptr :out))
   
   ;; Cases:
@@ -133,7 +133,7 @@
 ;; Move to operators?
 
 (defun add-node (data &optional (move-pointer t)) ; rename add-node-to-ptr
-  (let* ((baseline (get-origin-from-node-pos *node-pointer*))
+  (let* ((baseline (get-origin-from-node-pos *node-ptr-main*))
 	 (node (init-node-msdf baseline
 			       *scale-node*
 			       (pop *stack-i-nodes*)
@@ -156,18 +156,18 @@
     							 (* +linegap+ *scale-node*)
     							 0.0)))))
     ;; Attach node to ptr
-    (insert-node node *node-pointer* :out)
+    (insert-node node *node-ptr-main* :out)
     
     ;; Advance pointer
     (when move-pointer
-      (advance-node-of-node *node-pointer*
+      (advance-node-of-node *node-ptr-main*
     			    node
     			    1.0))
         
     node))
 
 (defun delete-node (&key
-		      (node-ptr *node-pointer*)
+		      (node-ptr *node-ptr-main*)
 		      (dir-ptr :out))
 
   (multiple-value-bind (node-ref
@@ -177,7 +177,7 @@
       (pop-node :node-ptr node-ptr
 		:dir-ptr dir-ptr)
     (when node-ref
-      (translate-node-to-node *node-pointer*
+      (translate-node-to-node *node-ptr-main*
   		       	      node-ref)
       (when (eq type-node-ref :intra)
 	;; Move C next to A
@@ -195,7 +195,7 @@
   (let* ((baseline (get-origin-from-node-pos node-src))
 	 (node (init-node-msdf baseline
 			       *scale-node* ; get from node-src
-			       (digraph:count-vertices *digraph*)
+			       (digraph:count-vertices *digraph-main*)
 			       (data node-src))))
     (insert-vertex node)
     (spatial-trees:insert node *r-tree*)
@@ -205,13 +205,13 @@
 (defun remove-all-nodes ()
   ;; Exclude pointer
   (digraph:mapc-vertices (lambda (v)
-			   (unless (eq v *node-pointer*)
+			   (unless (eq v *node-ptr-main*)
 			     (enqueue-node-zero (index v))
 			     (remove-vertex v)))
-			 *digraph*)
+			 *digraph-main*)
   (digraph:mapc-edges (lambda (e)
 			(remove-edge e))
-		      *digraph*))
+		      *digraph-main*))
 
 (defun replace-node (node-src
 		     node-dest

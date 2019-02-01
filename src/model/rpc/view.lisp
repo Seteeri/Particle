@@ -13,8 +13,8 @@
   ;; TODO
   ;; - refactor to function
   ;; All mem
-  ;; (* +size-struct-instance+ (+ (car *vertices-digraph*)
-  ;; 				 (car *edges-digraph*))))
+  ;; (* +size-struct-instance+ (+ (car *vertices-main*)
+  ;; 				 (car *edges-main*))))
   (let ((extents (execute-tasks-shm)))
     (when (> (hash-table-count extents) 0)
       (multiple-value-bind (min-nodes max-nodes)

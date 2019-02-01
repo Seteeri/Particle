@@ -33,10 +33,10 @@
 (defparameter *projview* nil)
 
 ;; digraph main
-(defparameter *digraph* nil)
-(defparameter *node-pointer* nil)
-(defparameter *vertices-digraph* (cons 0 nil))
-(defparameter *edges-digraph* (cons 0 nil))
+(defparameter *digraph-main* nil)
+(defparameter *node-ptr-main* nil)
+(defparameter *vertices-main* (cons 0 nil))
+(defparameter *edges-main*(cons 0 nil))
 
 (defparameter *node-ptr-vcs* nil)
 (defparameter *vertices-vcs* (cons 0 nil))

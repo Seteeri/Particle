@@ -108,11 +108,11 @@ and code must be managed in two different domains leading to a
 
 ## The Interface
 
+* Built around version control
+  * Non-destructive editing and undo/redo capabilities
 * 3D orthographic nodal environment - "turtles all the way down"
 * Primarily keyboard driven interface
 * Wayland extension provides conventional desktop
-* Built around version control
-  * Non-destructive editing and undo/redo capabilities
 
 ## The Architecture
 
@@ -132,6 +132,8 @@ and code must be managed in two different domains leading to a
   * Fully programmable vertex pulling
     * Texture buffers/UBOs/SSBOs -> gl_VertexID+gl_InstanceID
   * Separate shader stages and programmable pipelines
+* R-tree for spatial indexing
+* Nodal interface based upon directed graph
 
 ## The Roadmap
 
@@ -142,6 +144,7 @@ Official Core (equivalent to OpenGL core)
 3. Image Functionality
 4. Hyperweb
 5. Wayland Integration 
+6. Widget Toolkit
 
 Official Extensions (equivalent to OpenGL ARB...)
 1. FFMPEG for media - images, video, audio

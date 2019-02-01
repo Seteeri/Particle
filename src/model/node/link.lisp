@@ -4,8 +4,8 @@
 		  node-dest
 		  dir
 		  &optional
-		    (graph *digraph*)
-		    (edges *edges-digraph*))
+		    (graph *digraph-main*)
+		    (edges *edges-main*))
   ;; TEMP: add assertion to prevent cycles, aka node link to itself
   ;; (when (not (eq node-src node-dest))
   ;;   (draw-graph)
@@ -20,8 +20,8 @@
 		    node-dest
 		    dir
 		    &optional
-		      (graph *digraph*)
-		      (edges *edges-digraph*))
+		      (graph *digraph-main*)
+		      (edges *edges-main*))
   (cond ((eq dir :in)
 	 (remove-edge node-src node-dest graph edges))
 	((eq dir :out)
@@ -30,7 +30,7 @@
 (defun unlink-node-first (*
 			  dir
 			  &optional
-			    (graph *digraph*)
+			    (graph *digraph-main*)
 			    (edges *edges-digraph))
   (cond ((eq dir :in)
 	 (when-let ((node-* (get-node-in *)))

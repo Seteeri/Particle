@@ -49,23 +49,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun get-node-ptr-in  (&optional (* *node-pointer*)) (get-node-in *))
-(defun get-node-ptr-out (&optional (* *node-pointer*)) (get-node-out *))
-(defun get-node-ptr-bi  (&optional (* *node-pointer*)) (values (get-node-in *) (get-node-out *)))
+(defun get-node-ptr-in  (&optional (* *node-ptr-main*)) (get-node-in *))
+(defun get-node-ptr-out (&optional (* *node-ptr-main*)) (get-node-out *))
+(defun get-node-ptr-bi  (&optional (* *node-ptr-main*)) (values (get-node-in *) (get-node-out *)))
 
 (defun link-node-ptr (node
 		      &optional
-			(* *node-pointer*)
+			(* *node-ptr-main*)
 			(dir :out))
   (link-node node * dir))
 
 (defun unlink-node-ptr (&optional
-			  (* *node-pointer*)
+			  (* *node-ptr-main*)
 			  (dir :out))
   (unlink-node-first * dir))
 
 (defun deref-ptr (&optional
-		    (* *node-pointer*)
+		    (* *node-ptr-main*)
 		    (dir :out))
   ;; Find final pointer or nth...
   t)

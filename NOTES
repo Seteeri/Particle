@@ -535,7 +535,7 @@ A different pointer can have a different set of bindings
 ;; 					  ;; (funcall #'randomize-color-node vert)
 ;; 					  ))
 ;; 				  *queue-anim*))
-;; 			       *digraph*))
+;; 			       *digraph-main*))
 
 
    * Diagram:
@@ -656,3 +656,29 @@ A different pointer can have a different set of bindings
                                   
 DALE language
 BONES language
+
+*
+
+a
+*
+
+a - b
+    *
+
+a - b - c
+        *
+
+
+(RE)DO:
+add-node-ascii ptr->a ptr
+add-node-ascii a->b
+add-node-ascii b->c
+
+UNDO:
+rem-node-ascii c b
+rem-node-ascii b a
+rem-node-ascii a ptr
+
+https://softwareengineering.stackexchange.com/questions/224146/how-has-an-increase-in-the-complexity-of-systems-affected-successive-generations/224152
+
+Moreover, let's not forget what we're actually trying to optimize for, which is value produced for a given cost. Programmers are way more expensive than machines. Anything we do that makes programmers produce working, correct, robust, fully-featured programs faster and cheaper leads to the creation of more value in the world.

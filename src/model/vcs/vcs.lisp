@@ -18,5 +18,6 @@
     (advance-node-of-node *node-ptr-vcs*
 			  node
   			  1.0)
+    
     (enqueue-node *node-ptr-vcs*)
     (enqueue-node node)))  

@@ -29,7 +29,7 @@
       (format t "~,2f, ~,2f ->  ~,2f, ~,2f~%" x-win-gl y-win-gl (vx3 coords-touch) (vy3 coords-touch))
 
       (with-slots (model-matrix)
-	  *node-pointer*
+	  *node-ptr-main*
 	(when t
 	  (translate-node-ptr t ;seq-event
 			      (lambda (value-new) ; update fn

@@ -7,13 +7,13 @@
   (let ((chrs nil))
     (loop
        ;; currently assuming linear
-       :for pred := (digraph:successors *digraph* *node-pointer*)
-       :then (digraph:predecessors *digraph* pred)
+       :for pred := (digraph:successors *digraph-main* *node-ptr-main*)
+       :then (digraph:predecessors *digraph-main* pred)
        :while pred
        :do (loop
 	      ;; Leave on first non-ptr node
 	      :for node :in pred
-	      :do (unless (eq node *node-pointer*)
+	      :do (unless (eq node *node-ptr-main*)
 		    (when (char-equal (data node) #\Newline)
 		      (return))
 		    (push (data node) chrs)
@@ -35,11 +35,11 @@
     ;; Create fn - loop until specified character or pass lambda as predicate
     ;; Start with newline char instead of pointer or it will terminate immediately
     (loop
-       :for pred := (funcall fn *digraph* node-end)
-       :then (funcall fn *digraph* pred)
+       :for pred := (funcall fn *digraph-main* node-end)
+       :then (funcall fn *digraph-main* pred)
        :while pred
        :do (loop :for node :in pred
-	      :do (unless (equal node *node-pointer*) ; skip pointer
+	      :do (unless (equal node *node-ptr-main*) ; skip pointer
 		    ;; (format t "node: ~S = ~S~%" node (data node))
 		    (when (char-equal (data node) #\Newline)
 		      (return))
@@ -73,12 +73,12 @@
      ;; Create fn - loop until specified character or pass lambda as predicate
      ;; Start with newline char instead of pointer or it will terminate immediately
      (loop
-	:for pred := (funcall fn-1 *digraph* ,node-default)
-	:then (funcall fn-2 *digraph* pred)
+	:for pred := (funcall fn-1 *digraph-main* ,node-default)
+	:then (funcall fn-2 *digraph-main* pred)
 	:while pred
 	:do (loop
 	       :for node-pred :in pred
-	       :do (unless (equal node-pred *node-pointer*) ; skip pointer
+	       :do (unless (equal node-pred *node-ptr-main*) ; skip pointer
 		     (let ((,var node-pred))
 		       ,@body)
 		     (setf pred node-pred))))))

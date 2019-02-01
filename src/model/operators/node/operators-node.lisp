@@ -9,7 +9,7 @@
 
 (defun draw-graph ()
   ;; Create new graph using data...
-  (digraph.dot:draw *digraph*
+  (digraph.dot:draw *digraph-main*
   		    :filename (str:concat (format nil "graph-~a" (osicat:get-monotonic-time))
 					  ".png")
 		    :format :png))
@@ -20,7 +20,7 @@
     (enqueue-node-ptr)
     (enqueue-node node-new)
 
-    ;; Add to VCS graph
+    ;; Add event to VCS graph
     (add-node-vcs)
     
     node-new))
@@ -68,7 +68,7 @@
     ;; y: shift down a line space -
     ;; adjust original pos to baseline first by subtracting bounds
     
-    (translate-node-to-node *node-pointer*
+    (translate-node-to-node *node-ptr-main*
 			    node-start
 			    :offset (vec3 0.0
     					  (+ (- (* +linegap+ *scale-node*)))
@@ -173,7 +173,7 @@
 	;; euclidean move
 	(progn
 	  (with-slots (model-matrix)
-	      *node-pointer*
+	      *node-ptr-main*
 	    (translate-node-ptr nil
 				(lambda (value-new) ; update fn
 				  (setf (vx3 (translation model-matrix)) value-new)
@@ -194,8 +194,8 @@
 		  (link-node-ptr node-nxt)
 		  
 		  ;; move ptr
-  		  ;; (advance-node-of-node *node-pointer*
-  		  ;; 			   *node-pointer*
+  		  ;; (advance-node-of-node *node-ptr-main*
+  		  ;; 			   *node-ptr-main*
   		  ;; 			   (cond ((eq dir :in)
 		  ;; 				  -1.0)
 		  ;; 				 ((eq dir :out)
@@ -209,7 +209,7 @@
 		  ;; 				 ((eq dir :out)
 		  ;; 				  -1.0)))
 		  
-		  (translate-node-to-node *node-pointer*
+		  (translate-node-to-node *node-ptr-main*
 	     				  node-nxt)
 
 		  (fmt-model t "move-node-ptr" "* -> ~S = ~S~%" node-nxt (data node-nxt))
@@ -246,8 +246,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (format t "*:: ~S~%" (digraph:predecessors *digraph* *node-pointer*))
-;; (format t "*:: ~S~%" (digraph:successors *digraph* *node-pointer*))
+;; (format t "*:: ~S~%" (digraph:predecessors *digraph-main* *node-ptr-main*))
+;; (format t "*:: ~S~%" (digraph:successors *digraph-main* *node-ptr-main*))
 
 ;; (format t "A:: ~S <- * <- ~S~%"
 ;; 	    (if node-ref
@@ -299,7 +299,7 @@
   ;;     (pop-node :update-transform nil)
   ;;   (when node-pop
   ;;     (insert-node node-pop
-  ;; 		   *node-pointer*
+  ;; 		   *node-ptr-main*
   ;; 		   :in)
 
   ;;     (when node-pop-in
@@ -345,27 +345,27 @@
   					  -1.0)
 		    ;; Move ptr right (of new-ref-new)
 		    (if-let ((node-ref-new (get-node-ptr-out)))
-			    (advance-node-of-node *node-pointer*
+			    (advance-node-of-node *node-ptr-main*
   						  node-ref-new
   						  1.0)
-  			    (advance-node-of-node *node-pointer*
-  						  *node-pointer*
+  			    (advance-node-of-node *node-ptr-main*
+  						  *node-ptr-main*
   						  -1.0)))
 		  
 		  (progn
 		    ;; Move directly right of pointer
 		    (advance-node-of-node node-ref
-  					  *node-pointer*
+  					  *node-ptr-main*
   					  1.0)
 		    ;; Then move ptr to right of out
 		    ;; Else move ptr left
 		    ;; This will maintain a gap
 		    (if-let ((node-ref-new (get-node-ptr-out)))
-			    (advance-node-of-node *node-pointer*
+			    (advance-node-of-node *node-ptr-main*
   						  node-ref-new
   						  1.0)
-  			    (advance-node-of-node *node-pointer*
-  						  *node-pointer*
+  			    (advance-node-of-node *node-ptr-main*
+  						  *node-ptr-main*
 						  -1.0))))
 
 	      (when node-buf
@@ -432,17 +432,17 @@
   		    			  node-ref
   		    			  1.0)
 		    ;; Move ptr right of node-buf
-		    (advance-node-of-node *node-pointer*
+		    (advance-node-of-node *node-ptr-main*
   		    			  node-buf
   		    			  1.0))
 		  (progn
 		    ;; Move ptr right
-  		    (advance-node-of-node *node-pointer*
-  	  				  *node-pointer*
+  		    (advance-node-of-node *node-ptr-main*
+  	  				  *node-ptr-main*
   	  				  1.0)
 		    ;; Position node-buf left of ptr
 		    (advance-node-of-node node-buf
-  					  *node-pointer*
+  					  *node-ptr-main*
   					  -1.0))))
 	    
 	    (enqueue-node node-buf)
@@ -477,27 +477,27 @@
   				  -1.0)
 	    ;; Move ptr right (of new-ref-new)
 	    (if-let ((node-ref-new (get-node-ptr-out)))
-		    (advance-node-of-node *node-pointer*
+		    (advance-node-of-node *node-ptr-main*
   					  node-ref-new
   					  1.0)
-  		    (advance-node-of-node *node-pointer*
-  					  *node-pointer*
+  		    (advance-node-of-node *node-ptr-main*
+  					  *node-ptr-main*
   					  -1.0)))
 	  
 	  (progn
 	    ;; Move directly right of pointer
 	    (advance-node-of-node node-ref
-  				  *node-pointer*
+  				  *node-ptr-main*
   				  1.0)
 	    ;; Then move ptr to right of out
 	    ;; Else move ptr left
 	    ;; This will maintain a gap
 	    (if-let ((node-ref-new (get-node-ptr-out)))
-		    (advance-node-of-node *node-pointer*
+		    (advance-node-of-node *node-ptr-main*
   					  node-ref-new
   					  1.0)
-  		    (advance-node-of-node *node-pointer*
-  					  *node-pointer*
+  		    (advance-node-of-node *node-ptr-main*
+  					  *node-ptr-main*
   					  -1.0))))
       
       (when node-buf

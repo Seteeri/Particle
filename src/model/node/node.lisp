@@ -66,30 +66,30 @@
    (flags :accessor flags :initarg :flags :initform 1)))
 
 (defun insert-vertex (vert &optional
-			     (digraph *digraph*)
-			     (verts   *vertices-digraph*))
+			     (digraph *digraph-main*)
+			     (verts   *vertices-main*))
   (digraph:insert-vertex digraph vert)
   (sb-ext:atomic-incf (car verts)))
 
 (defun remove-vertex (vert &optional
-			     (digraph *digraph*)
-			     (verts   *vertices-digraph*))
+			     (digraph *digraph-main*)
+			     (verts   *vertices-main*))
   (digraph:remove-vertex digraph vert)
   (sb-ext:atomic-decf (car verts)))
 
 (defun insert-edge (vert-a
 		    vert-b
 		    &optional
-		      (digraph *digraph*)
-		      (edges   *edges-digraph*))
+		      (digraph *digraph-main*)
+		      (edges   *edges-main*))
   (digraph:insert-edge digraph vert-a vert-b)
   (sb-ext:atomic-incf (car edges)))
 
 (defun remove-edge (vert-a
 		    vert-b
 		    &optional
-		      (digraph *digraph*)
-		      (edges   *edges-digraph*))
+		      (digraph *digraph-main*)
+		      (edges   *edges-main*))
   (digraph:remove-edge digraph vert-a vert-b)
   (sb-ext:atomic-decf (car edges)))
 

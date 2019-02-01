@@ -11,7 +11,7 @@
 				  (digraph:mapc-vertices
 				   (lambda (node)
 				     (format t "~S = ~S~%" node (data node)))
-				   *digraph*)
+				   *digraph-main*)
 				  (funcall #'draw-graph)))
 			  *queue-anim*))
 
@@ -98,7 +98,7 @@
 
 (defun translate-node-ptr-left-cb (seq-event)
   (with-slots (model-matrix)
-      *node-pointer*
+      *node-ptr-main*
     (translate-node-ptr seq-event
 		       (lambda (value-new) ; update fn
 			 (setf (vx3 (translation model-matrix)) value-new)
@@ -109,7 +109,7 @@
 
 (defun translate-node-ptr-right-cb (seq-event)
   (with-slots (model-matrix)
-      *node-pointer*
+      *node-ptr-main*
     (translate-node-ptr seq-event
 		       (lambda (value-new)
 			 (setf (vx3 (translation model-matrix)) value-new)
@@ -120,7 +120,7 @@
 
 (defun translate-node-ptr-up-cb (seq-event)
   (with-slots (model-matrix)
-      *node-pointer*
+      *node-ptr-main*
     (translate-node-ptr seq-event
 		       (lambda (value-new)
 			 (setf (vy3 (translation model-matrix)) value-new)
@@ -131,7 +131,7 @@
 
 (defun translate-node-ptr-down-cb (seq-event)
   (with-slots (model-matrix)
-      *node-pointer*
+      *node-ptr-main*
     (translate-node-ptr seq-event
 		       (lambda (value-new)
 			 (setf (vy3 (translation model-matrix)) value-new)
