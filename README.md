@@ -42,7 +42,7 @@ with the MS Office suite, which may be considered ubiquitious to the
 average user.
 
 Finally, my hope is to get Protoform onto a mobile platform, such as
-the Librem 5 or Gemini PDA as a proof of concept.
+the Librem 5 as a proof of concept or even a prototype...
 
 ## The Inspiration
 
@@ -135,30 +135,24 @@ and code must be managed in two different domains leading to a
 
 ## The Roadmap
 
-Core (REPL) Functionality
-1. OpenGL infrastructure - DONE
-2. Pango text rendering - DONE
-3. MSDF text rendering - DONE
-4. Drawing nodes, lines - DONE
-5. Task-basked parallelism - DONE
-6. Animations (easing functions) - DONE
+Official Core (equivalent to OpenGL core)
+1. Text Editor Functionality
+   * Version Control System
+2. REPL Functionality
+3. Image Functionality
+4. Hyperweb
+5. Wayland Integration 
 
-Core Extensions
-1. Numbered links for navigations
-2. Undo system
-3. FFMPEG for media - images, video, audio
+Official Extensions (equivalent to OpenGL ARB...)
+1. FFMPEG for media - images, video, audio
    * Integrate GEGL? Image/graphicsmagick? etc...
-4. Wayland compositing
 
-Personal Extensions
+User Extensions (equivalent to OpenGL EXT)
 1. Per-object vector motion blur (personal favorite)
-2. Portals (physical shortcuts)
-
-Future Extensions
-1. Tiled forward rendering (Forward+) including lights
+2. Tiled forward rendering (Forward+) including lights
    * Future: Implement clustered -> volumetric forward shading
 
-Future Ideas
+Future Extensions
 * Native web browser - build around Webkit like Next
   * Allows for objects to be represented in 3D
   * Web remains accessible through Wayland->Browser
@@ -205,7 +199,7 @@ Future Ideas
 
 ## The Installation
 
-...
+*Will update when ready...*
 
 ## The Hardware
 
