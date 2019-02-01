@@ -95,7 +95,7 @@
 				       		:components ((:file "node")
 							     (:file "link")
 							     (:file "degree")
-							     (:file "relations")
+							     (:file "methods")
 							     (:file "translation")
 							     (:file "traversal")
 				       			     (:file "pointer")
