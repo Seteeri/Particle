@@ -25,7 +25,7 @@
     
     node-new))
 
-(defun backspace-node ()
+(defun backspace-node-ascii ()
   (multiple-value-bind (node-del
 			node-del-in
 			node-del-out)

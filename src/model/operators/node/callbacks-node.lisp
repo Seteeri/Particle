@@ -16,7 +16,7 @@
 			  *queue-anim*))
 
 (defun add-node-ascii-cb (seq-key)
-  (fmt-model t "add-node" "~a~%" seq-key)
+  (fmt-model t "add-node-ascii" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'add-node-ascii ;; (make-symbol (format nil "~a~%" seq-key))
 				'()
@@ -24,13 +24,13 @@
 				  (funcall #'add-node-ascii (code-char (second (reverse (second seq-key))))))) ; create aux fn for this
 			  *queue-anim*))
 
-(defun backspace-node-cb (seq-key)
-  (fmt-model t "backspace-node" "~a~%" seq-key)
+(defun backspace-node-ascii-cb (seq-key)
+  (fmt-model t "backspace-node-ascii" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
-				'backspace-node
+				'backspace-node-ascii
 				'()
 				(lambda ()
-				  (funcall #'backspace-node)))
+				  (funcall #'backspace-node-ascii)))
 			  *queue-anim*))
 
 (defun insert-node-tab-cb (seq-key)
