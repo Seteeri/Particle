@@ -1,6 +1,9 @@
 (in-package :protoform.model)
 
 ;; user-facing functions - triggered by callbacks or commands typed and eval'd by user
+;; Responsibilities:
+;; - enqueue shm ops
+;; - append vcs
 
 (defun thunder () 'flash)
 
@@ -16,6 +19,10 @@
 			    move-pointer)))
     (enqueue-node-ptr)
     (enqueue-node node-new)
+
+    ;; Add to VCS graph
+    ;; *digraph-vcs*
+    
     node-new))
 
 (defun backspace-node ()

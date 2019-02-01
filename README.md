@@ -111,7 +111,8 @@ and code must be managed in two different domains leading to a
 * 3D orthographic nodal environment - "turtles all the way down"
 * Primarily keyboard driven interface
 * Wayland extension provides conventional desktop
-* Built around undo graph - non-destructive editing
+* Built around version control
+  * Non-destructive editing and undo/redo capabilities
 
 ## The Architecture
 

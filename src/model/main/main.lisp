@@ -57,6 +57,8 @@
               #'set-metrics
 	      tree)
 
+    ;; graphs
+    
     (ptree-fn 'digraph
 	      '()
               #'set-digraph
@@ -99,6 +101,9 @@
 	      tree)
 
     ;; Pre-view
+
+    ;; Create initial ptr nodes for graphs
+    
     (ptree-fn 'node-pointer
 	      '(digraph
 		shm-nodes

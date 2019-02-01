@@ -23,7 +23,7 @@
 
 (defun set-digraph ()
   (setf *digraph*           (digraph:make-digraph)
-	*digraph-undo*      (digraph:make-digraph)
+	*digraph-vcs*       (digraph:make-digraph)
 	*digraph-clipboard* (digraph:make-digraph)
 	*digraph-repl*      (digraph:make-digraph)))
 
@@ -51,7 +51,9 @@
 (defun set-node-pointer (digraph
 			 metrics
 			 shm-nodes)
-  (setf *node-pointer* (init-node-pointer-graph-shm)))
+  (setf *node-pointer* (init-node-pointer-graph-shm))
+  ;; Create pointer for vcs graph
+  t)
 
 (defun register-keyboard-callbacks ()
 
