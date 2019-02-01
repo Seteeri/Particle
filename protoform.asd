@@ -93,7 +93,8 @@
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
-							     (:file "linking")
+							     (:file "link")
+							     (:file "degree")
 							     (:file "relations")
 							     (:file "translation")
 							     (:file "traversal")
