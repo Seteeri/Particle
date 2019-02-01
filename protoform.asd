@@ -43,7 +43,10 @@
                                   (speed 3)))
                       (funcall next))
     :components ((:file "src/package")
-		 (:file "src/util")
+		 (:module aux
+			  :pathname "src/aux"
+		 	  :components ((:file "matrix-model")
+				       (:file "util")))
 		 (:module libc
 			  :pathname "src/libc"
 		 	  :components ((:file "epoll")
@@ -118,7 +121,6 @@
 							     (:file "memcpy")))
 				       (:file "metrics")
 				       (:file "animation")
-				       (:file "matrix-model")
 				       (:module main
 						:pathname "main"
 						:components ((:file "variables")

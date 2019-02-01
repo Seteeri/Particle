@@ -1,7 +1,5 @@
 (in-package :protoform.model)
 
-;; TODO
-;; - Move up
 (defclass model-matrix ()
   ((matrix :accessor matrix :initarg :matrix :initform (mat4 1))
    (translation :accessor translation :initarg :translation :initform (vec3 0.0 0.0 0.0))
@@ -17,7 +15,6 @@
       (setf (mem-aref ptr-dest :float (+ offset i))
 	    (aref matrix-arr i)))))
 
-;; move to model matrix file?
 (defun update-transform (model-matrix)
   (with-slots (matrix
 	       translation
