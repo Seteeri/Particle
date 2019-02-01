@@ -187,3 +187,28 @@
 		 (aref dims-texture 0)
 		 (aref dims-texture 1)
 		 flags))))
+
+;; idk where to put this, but for now...
+(defun randomize-color-node (vert)
+  ;; random color
+  (setf (aref (rgba vert) 0)  (coerce (random 1.0) 'single-float)
+	(aref (rgba vert) 1)  (coerce (random 1.0) 'single-float)
+	(aref (rgba vert) 2)  (coerce (random 1.0) 'single-float)
+	;; (aref (rgba vert) 3)  (coerce (/ 255 255)  'single-float)
+	
+	(aref (rgba vert) 4)  (coerce (random 1.0) 'single-float)
+	(aref (rgba vert) 5)  (coerce (random 1.0) 'single-float)
+	(aref (rgba vert) 6)  (coerce (random 1.0) 'single-float)
+	;; (aref (rgba vert) 7)  (coerce (/ 255 255)  'single-float)
+	
+	(aref (rgba vert) 8)  (coerce (random 1.0) 'single-float)
+	(aref (rgba vert) 9)  (coerce (random 1.0) 'single-float)
+	(aref (rgba vert) 10) (coerce (random 1.0) 'single-float)
+	;; (aref (rgba vert) 11) (coerce (/ 255 255)  'single-float)
+	
+	(aref (rgba vert) 12) (coerce (random 1.0) 'single-float)
+	(aref (rgba vert) 13) (coerce (random 1.0) 'single-float)
+	(aref (rgba vert) 14) (coerce (random 1.0) 'single-float)
+	;; (aref (rgba vert) 15) (coerce (/ 255 255)  'single-float)
+	)
+  (enqueue-node vert))

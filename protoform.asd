@@ -93,16 +93,16 @@
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
-							     (:module primary
-				       				      :pathname "primary"
-				       				      :components ((:file "linking")
-										   (:file "relations")))
-							     (:module secondary
-				       				      :pathname "secondary"
-				       				      :components ((:file "secondary")))
-							     (:file "operators")
+							     (:file "linking")
+							     (:file "relations")
+							     (:file "translation")
+							     (:file "traversal")
 				       			     (:file "pointer")
 							     (:file "shm")))
+				       (:module operators
+				       		:pathname "operators"
+				       		:components ((:file "operators")
+							     (:file "callbacks")))
 				       (:module projview
 				       		:pathname "projview"
 				       		:components ((:file "projview")))
@@ -128,7 +128,6 @@
 				       (:module main
 						:pathname "main"
 						:components ((:file "variables")
-							     (:file "callbacks")				       
 							     (:file "init")
 							     (:file "main")))))
 		 (:file "src/protoform")))

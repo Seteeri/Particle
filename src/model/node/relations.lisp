@@ -3,6 +3,18 @@
 ;;;;;;;;;;;;;
 ;; relational
 
+(defun print-node-dirs (&key
+			  (node-ptr *node-pointer*)
+			  (dir-ptr :out))
+  ;; Print node
+  (when-let ((node-ref (get-node-ptr-out)))	    
+	    (let ((nodes-ref-in (loop :for n :in (get-nodes-in node-ref) :collect (data n)))
+		  (nodes-ref-out (loop :for n :in (get-nodes-out node-ref) :collect (data n))))
+	      (format t "ptr: ~a~%" *node-pointer*)
+	      (format t "ptr-ref (ptr out): ~a~%" node-ref)
+	      (format t "in: ~a~%" nodes-ref-in)
+	      (format t "out: ~a~%" nodes-ref-out))))
+
 ;; rename to join
 (defun insert-node (node-src
 		    node-dest
@@ -167,3 +179,65 @@
     (values node-ref
 	    node-ref-in
 	    node-ref-out)))
+
+(defun copy-node-to-node (node-src)
+  (let* ((baseline (get-origin-from-node-pos node-src))
+	 (node (init-node-msdf baseline
+			       *scale-node* ; get from node-src
+			       (digraph:count-vertices *digraph*)
+			       (data node-src))))
+    (insert-vertex node)
+    (spatial-trees:insert node *r-tree*)
+    
+    node))
+
+(defun remove-all-nodes ()
+  ;; Exclude pointer
+  (digraph:mapc-vertices (lambda (v)
+			   (unless (eq v *node-pointer*)
+			     (enqueue-node-zero (index v))
+			     (remove-vertex v)))
+			 *digraph*)
+  (digraph:mapc-edges (lambda (e)
+			(remove-edge e))
+		      *digraph*))
+
+(defun replace-node (node-src
+		     node-dest
+		     dir-src)
+  
+  ;; Procedure
+  ;;
+  ;; Insert d:
+  ;;
+  ;; a <- b <- * <- a | GIVEN
+  ;;
+  ;; 1. Unlink src
+  ;; 1. Get all the ins of dest
+  ;;    2. Unlink old, link new
+  ;; 3. Get all the outs of dest
+  ;;    4. Unlink old, link new
+
+  ;; unlink old
+  
+  (let ((nodes-in (get-nodes-in node-dest))
+	(nodes-out (get-nodes-out node-dest)))
+
+    ;; Unlink dest
+    (loop
+       :for node :in nodes-in
+       :do (remove-edge node node-dest))
+    (loop
+       :for node :in nodes-out
+       :do (remove-edge node-dest node))
+
+    ;; Link src
+    (loop
+       :for node :in nodes-in
+       :do (insert-edge node node-src))
+    (loop
+       :for node :in nodes-out
+       :do (insert-edge node-src node)))
+
+  ;; Could easily do swap function
+  t)
