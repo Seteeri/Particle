@@ -1,4 +1,4 @@
-(in-package #:protoform.util)
+(in-package #:protoform.aux)
 
 (defun align-size (size &optional (boundary 4))
   (+ size (- boundary (mod size boundary))))

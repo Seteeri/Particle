@@ -1,11 +1,20 @@
-(defpackage #:protoform.util
+(defpackage #:protoform.aux
   (:use #:cl
-        #:cffi)
+        #:cffi
+	#:3d-vectors
+	#:3d-matrices)
   (:export #:align-size
 	   #:normalize
 	   #:rad-to-deg
 	   #:deg-to-rad
-	   #:read-file-string))
+	   #:read-file-string
+	   #:model-matrix
+	   #:matrix
+	   #:translation
+	   #:rotation
+	   #:scale
+	   #:set-matrix
+	   #:update-transform))
 
 (defpackage #:protoform.libc
   (:use #:cl
@@ -57,7 +66,7 @@
         #:cffi
 	#:3d-vectors
 	#:3d-matrices
-	#:protoform.util)	
+	#:protoform.aux)	
   (:export #:init-gles
 	   #:cad-shader
 	   #:compile-shader
@@ -108,11 +117,11 @@
         #:cffi
 	#:protoform.libc))
 
-(defpackage #:protoform.analyzer-dep
-  (:use #:cl
-        #:cffi
-	#:protoform.util)
-  (:export #:analyze-file))
+;; (defpackage #:protoform.analyzer-dep
+;;   (:use #:cl
+;;         #:cffi
+;; 	#:protoform.util)
+;;   (:export #:analyze-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -135,7 +144,7 @@
 	#:protoform.libc
 	#:protoform.opengl
 	#:protoform.conn
-	#:protoform.util
+	#:protoform.aux
 	#:3d-vectors
 	#:3d-matrices
 	#:trivial-timers

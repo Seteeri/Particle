@@ -1,4 +1,4 @@
-(in-package :protoform.model)
+(in-package :protoform.aux)
 
 (defclass model-matrix ()
   ((matrix :accessor matrix :initarg :matrix :initform (mat4 1))
