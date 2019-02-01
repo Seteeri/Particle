@@ -101,7 +101,6 @@
 	    (mem-aref ptr :int (incf offset-ptr)) (aref dims-texture 1) ; tex dim y
 	    (mem-aref ptr :int (incf offset-ptr)) flags))))
 
-;; TODO: Refactor to pass offsets, range, etc.
 (defun copy-nodes-to-shm (graph)
   (digraph:mapc-vertices (lambda (node)
 			   (copy-node-to-shm node

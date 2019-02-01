@@ -18,7 +18,10 @@
 ;; rename to join
 (defun insert-node (node-src
 		    node-dest
-		    dir-src)
+		    dir-src
+		    &optional
+		      (graph *digraph*)
+		      (edges *edges-digraph*))
   
   ;; Procedure
   ;;
@@ -38,19 +41,27 @@
   
   (loop
      :for node :in (cond ((eq dir-src :in)
-			  (get-nodes-in node-dest))
+			  (get-nodes-in node-dest graph))
 			 ((eq dir-src :out)
-			  (get-nodes-out node-dest)))
+			  (get-nodes-out node-dest graph)))
      :do (progn
-	   (unlink-node node     node-dest dir-src)
-	   ;; (format t "~S ~S: ~S~%" (data node-dest) dir-src (data node))
-	   ;; (format t "~S - ~S : ~S~%" (data node-src) (data node) dir-src)
-	   (link-node   node-src node      dir-src)))
+	   (unlink-node node
+			node-dest
+			dir-src
+			graph
+			edges)
+	   (link-node node-src
+		      node
+		      dir-src
+		      graph
+		      edges)))
   
   ;; link src to dest
   (link-node node-src
 	     node-dest
-	     dir-src))
+	     dir-src
+	     graph
+	     edges))
 
 (defun pop-node (&key
 		   (node-ptr *node-pointer*)
@@ -130,7 +141,7 @@
     
     (insert-vertex node)
     (spatial-trees:insert node *r-tree*)
-    
+
     ;; Factor this out...
     (when-let* ((node-ptr-out (get-node-ptr-out))
 		(node-type (get-node-type node-ptr-out)))

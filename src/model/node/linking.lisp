@@ -28,50 +28,74 @@
   (digraph:remove-edge digraph vert-a vert-b)
   (sb-ext:atomic-decf (car edges)))
 
-(defun get-nodes-in (* &optional (ptr-ignore t))
+(defun get-nodes-in (*
+		     &optional
+		       (digraph *digraph*))
   ;; Filter pointer?
-  (digraph:predecessors *digraph* *))
+  (digraph:predecessors digraph *))
 
-(defun get-nodes-out (*)
+(defun get-nodes-out (*
+		      &optional
+			(digraph *digraph*))
   ;; POSS: Add ignore-ptr
-  (digraph:successors *digraph* *))
+  (digraph:successors digraph *))
 
-(defun get-node-in (* &optional (ptr-ignore t))
-  (if ptr-ignore
-      (dolist (node-i (digraph:predecessors *digraph* *))
+(defun get-node-in (*
+		    &optional
+		      (digraph *digraph*))
+  ;; Pass ptr
+  (if t ; ptr-ignore
+      (dolist (node-i (digraph:predecessors digraph *))
       	(unless (eq node-i *node-pointer*)
       	  (return-from get-node-in node-i)))
-      (first (digraph:predecessors *digraph* *))))
+      (first (digraph:predecessors digraph *))))
 
-(defun get-node-out (*)
+(defun get-node-out (*
+		    &optional
+		      (digraph *digraph*))		     
   ;; POSS: Add ignore-ptr
-  (first (digraph:successors *digraph* *)))
+  (first (digraph:successors digraph *)))
 
-(defun get-node-bi (*)
-  (values (get-node-in *)
-	  (get-node-out *)))
+(defun get-node-bi (*
+		    &optional
+		      (digraph *digraph*))		    
+  (values (get-node-in * digraph)
+	  (get-node-out * digraph)))
 
-(defun get-node-dir (* dir)
-  (cond ((eq dir :in)  (get-node-in *))
-	((eq dir :out) (get-node-out *))
-	((eq dir :bi)  (get-node-bi *))))
+(defun get-node-dir (*
+		     dir
+		     &optional
+		       (digraph *digraph*))
+  (cond ((eq dir :in)  (get-node-in * digraph))
+	((eq dir :out) (get-node-out * digraph))
+	((eq dir :bi)  (get-node-bi * digraph))))
 
-(defun link-node (node-src node-dest dir)
+(defun link-node (node-src
+		  node-dest
+		  dir
+		  &optional
+		    (graph *digraph*)
+		    (edges *edges-digraph*))
   ;; TEMP: add assertion to prevent cycles, aka node link to itself
   ;; (when (not (eq node-src node-dest))
   ;;   (draw-graph)
   ;;   (assert (not (eq node-src node-dest))))
   (assert (not (eq node-src node-dest)))
   (cond ((eq dir :in)
-	 (insert-edge node-src node-dest))
+	 (insert-edge node-src node-dest graph edges))
 	((eq dir :out)
-	 (insert-edge node-dest node-src))))
+	 (insert-edge node-dest node-src graph edges))))
 
-(defun unlink-node (node-src node-dest dir)
+(defun unlink-node (node-src
+		    node-dest
+		    dir
+		    &optional
+		      (graph *digraph*)
+		      (edges *edges-digraph*))
   (cond ((eq dir :in)
-	 (remove-edge node-src node-dest))
+	 (remove-edge node-src node-dest graph edges))
 	((eq dir :out)
-	 (remove-edge node-dest node-src))))
+	 (remove-edge node-dest node-src graph edges))))
 
 (defun unlink-node-first (* &optional (dir :out)) ; does first
   (cond ((eq dir :in)
@@ -91,9 +115,13 @@
 	     (remove-edge * *-node))
 	   (values node-* *-node)))))
 
-(defun get-node-type (node-ref) ; rename to get-node-type-rel?
-  (let ((node-ref-in  (get-node-in node-ref))
-	(node-ref-out (get-node-out node-ref)))
+(defun get-node-type (node-ref
+		      &optional
+			(graph *digraph*))
+  ;; rename to get-node-type-rel?
+  ;; Pass digraph
+  (let ((node-ref-in  (get-node-in node-ref graph))
+	(node-ref-out (get-node-out node-ref graph)))
     (values (cond ((and node-ref-in
 			node-ref-out)
 		   :intra)

@@ -53,8 +53,9 @@
 			 shm-nodes)
   (setf *node-pointer* (init-node-ptr-shm *digraph*
 					   *vertices-digraph*
-					   (vec3 0 0 0)))
-  (setf *node-ptr-vcs* (init-node-ptr-shm *digraph-vcs*
+					   (vec3 0 0 0))
+	
+	*node-ptr-vcs* (init-node-ptr-shm *digraph-vcs*
 					  *vertices-vcs*
 					  (vec3 0 -10 0))))
 
