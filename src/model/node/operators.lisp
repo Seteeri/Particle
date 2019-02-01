@@ -20,7 +20,6 @@
 			node-del-in
 			node-del-out)
       (delete-node)
-
     (when node-del
       (enqueue-node-zero (index node-del)) ; refactor this func
       (enqueue-node-ptr)

@@ -73,7 +73,9 @@
     (let ((pos (translation model-matrix))
 	  (scale (scale model-matrix)))
       
-      ;; use scale to create bounds
+      ;; Use scale to create bounds
+      ;; Origin/pos is from bottom-left
+      ;; Note, scale is already adjusted by glyph scale
 
       ;; lx,ly = left-bottom
       ;; hx,hy = top right
@@ -306,7 +308,7 @@
 	      (format t "in: ~a~%" nodes-ref-in)
 	      (format t "out: ~a~%" nodes-ref-out))))
 
-(defun add-node (data &optional (move-pointer t))
+(defun add-node (data &optional (move-pointer t)) ; rename add-node-to-ptr
   (let* ((baseline (get-origin-from-node-pos *node-pointer*))
 	 (node (init-node-msdf baseline
 			       *scale-node*
@@ -316,12 +318,7 @@
     (insert-vertex node)
     (spatial-trees:insert node *r-tree*)
     
-    ;; hello-world
-    ;;
-    ;;         world
-    ;; hello-<
-    ;;         user
-    
+    ;; Factor this out...
     (when-let* ((node-ptr-out (get-node-ptr-out))
 		(node-type (get-node-type node-ptr-out)))
 
@@ -334,9 +331,10 @@
 					   :offset (vec3 0.0
     							 (* +linegap+ *scale-node*)
     							 0.0)))))
-    ;; attach node to ptr
+    ;; Attach node to ptr
     (insert-node node *node-pointer* :out)
-    ;; advance pointer
+    
+    ;; Advance pointer
     (when move-pointer
       (advance-node-of-node *node-pointer*
     			    node
