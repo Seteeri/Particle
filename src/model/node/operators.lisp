@@ -1,6 +1,8 @@
 (in-package :protoform.model)
 
-;; core functions - triggered by callbacks or meant to be called by user
+;; user-facing functions - triggered by callbacks or commands typed and eval'd by user
+
+(defun thunder () 'flash)
 
 (defun draw-graph ()
   (digraph.dot:draw *digraph*
@@ -110,8 +112,6 @@
 	       ;; initial data used for glyph
 	       (setf (data-2 node) output-eval)
 	       t)))))
-
-(defun thunder () 'flash)
 
 (defun link (tgt)
   (cond ((eq tgt :near)
