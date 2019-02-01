@@ -93,7 +93,8 @@
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
-							     (:file "primary")
+							     (:file "linking")
+							     (:file "relations")
 							     (:file "secondary")
 							     (:file "operators")
 				       			     (:file "pointer")
