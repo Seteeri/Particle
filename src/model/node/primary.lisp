@@ -123,6 +123,9 @@
 		 (aref dims-texture 1)
 		 flags))))
 
+;;;;;;;;;;;
+;; linking
+
 (defun insert-vertex (vert)
   (digraph:insert-vertex *digraph* vert)
   (sb-ext:atomic-incf (car *vertices-digraph*)))
@@ -202,6 +205,26 @@
 	     (remove-edge * *-node))
 	   (values node-* *-node)))))
 
+(defun get-node-type (node-ref)
+  ;; POSS: return in/out nodes?
+  (let ((node-ref-in  (get-node-in node-ref))
+	(node-ref-out (get-node-out node-ref)))
+    (cond ((and node-ref-in
+		node-ref-out)
+	   :intra)
+	  ((and node-ref-in
+		(not node-ref-out))
+	   :end)
+	  ((and (not node-ref-in)
+		node-ref-out)
+	   :start)
+	  ((and (not node-ref-in)
+		(not node-ref-out))
+	   :iso))))
+
+;;;;;;;;;;;;;
+;; relational
+
 (defun add-node (data &optional (move-pointer t)) ; rename add-node-to-ptr
   (let* ((baseline (get-origin-from-node-pos *node-pointer*))
 	 (node (init-node-msdf baseline
@@ -255,7 +278,7 @@
   
   ;; nodes in opposite direction remain attached
 
-  ;; does not insert-vertex into graph
+  ;; only manages linkage
   
   (loop
      :for node :in (cond ((eq dir-src :in)
@@ -278,8 +301,7 @@
 		   (dir-ptr :out)
 		   (update-transform t))
 
-  ;; TODO
-  ;; - add option for updating position
+  ;; SHOULD only manage linkage, not moving
   
   ;; Cases:
   ;;   

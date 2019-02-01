@@ -14,22 +14,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun get-node-type (node-ref)
-  (let ((node-ref-in  (get-node-in node-ref))
-	(node-ref-out (get-node-out node-ref)))
-    (cond ((and node-ref-in
-		node-ref-out)
-	   :intra)
-	  ((and node-ref-in
-		(not node-ref-out))
-	   :end)
-	  ((and (not node-ref-in)
-		node-ref-out)
-	   :start)
-	  ((and (not node-ref-in)
-		(not node-ref-out))
-	   :iso))))
-
 (defun get-origin-from-node-pos (node)
   ;; Get origin from node position
   ;; l b r t
