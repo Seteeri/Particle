@@ -103,9 +103,6 @@
 							  :translation (vcopy3 cursor))))
 	(metrics-glyph (gethash (char-code data) *metrics*)))
     
-    ;; Remember to dec on removal
-    (sb-ext:atomic-incf (car *vertices-digraph*))
-    
     ;; Set color
     (when color
       (let ((rgba (rgba node)))
