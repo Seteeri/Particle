@@ -93,7 +93,6 @@
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
-							     (:file "matrix-model")
 							     (:file "operators")
 							     (:file "shm")
 				       			     (:file "pointer")))
@@ -122,6 +121,7 @@
 				       (:file "animation")
 				       (:file "variables")
 				       (:file "callbacks")
+				       (:file "matrix-model")
 				       (:file "init")
 				       (:file "main")))
 		 (:file "src/protoform")))
