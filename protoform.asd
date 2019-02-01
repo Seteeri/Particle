@@ -116,7 +116,6 @@
 				       		:components ((:file "rpc")
 							     (:file "view")
 							     (:file "memcpy")))
-				       (:file "pango")
 				       (:file "metrics")
 				       (:file "animation")
 				       (:file "variables")
