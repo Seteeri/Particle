@@ -101,8 +101,14 @@
 							     (:file "shm")))
 				       (:module operators
 				       		:pathname "operators"
-				       		:components ((:file "operators")
-							     (:file "callbacks")))
+				       		:components ((:module node
+				       				      :pathname "node"
+				       				      :components ((:file "callbacks-node")
+										   (:file "operators-node")))
+							     (:module projview
+				       				      :pathname "projview"
+				       				      :components ((:file "callbacks-projview")
+										   (:file "operators-projview")))))
 				       (:module projview
 				       		:pathname "projview"
 				       		:components ((:file "projview")))
