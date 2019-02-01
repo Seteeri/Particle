@@ -205,7 +205,7 @@
 	     (remove-edge * *-node))
 	   (values node-* *-node)))))
 
-(defun get-node-type (node-ref)
+(defun get-node-type (node-ref) ; rename to get-node-type-rel?
   (let ((node-ref-in  (get-node-in node-ref))
 	(node-ref-out (get-node-out node-ref)))
     (values (cond ((and node-ref-in
@@ -339,12 +339,13 @@
   (when-let ((node-ref (get-node-ptr-out)))
 	    ;; Only unlink left side of pointer
 	    (unlink-node-ptr :out)
-	    
-	    (let ((node-ref-in (get-node-in node-ref))
-		  (node-ref-out (get-node-out node-ref)))
 
-	      (cond ((and node-ref-in  ; delete-node-intra
-			  node-ref-out)
+	    (multiple-value-bind (type-node-ref
+				  node-ref-in
+				  node-ref-out)
+		(get-node-type node-ref)
+
+	      (cond ((eq type-node-ref :intra)
 		     ;; Insert C out of A
 		     (insert-node node-ref-out node-ref-in :out)
 		     ;; Link pointer to next node
@@ -356,38 +357,28 @@
   					     1.0)	     
 		       ;; or use advance with self
   		       (translate-node-to-node *node-pointer*
-  		       			       node-ref)
-		       t))
+  		       			       node-ref)))
 		    
-		    ;; delete-node-end
-		    ((and node-ref-in
-			  (not node-ref-out))
+		    ((eq type-node-ref :end)
 		     (link-node-ptr node-ref-in)
 		     (when update-transform
 		       ;; or use advance with self
   		       (translate-node-to-node *node-pointer*
-  		       			       node-ref)
-		       t))
+  		       			       node-ref)))
 
-		    ;; delete-node-start
-		    ((and (not node-ref-in)
-			  node-ref-out)
+		    ((eq type-node-ref :start)
 		     (link-node-ptr node-ref-out)
 		     (when update-transform
 		       ;; or use advance with self
   		       (translate-node-to-node *node-pointer*
-  		       			       node-ref)
-		       t))
+  		       			       node-ref)))
 
-		    ;; delete-node-iso
-		    ((and (not node-ref-in)
-			  (not node-ref-out))
+		    ((eq type-node-ref :iso)
 		     (when update-transform
 		       ;; or use advance with self		     
   		       (translate-node-to-node *node-pointer*
-  		       			       node-ref))
-		     t))
-	      
+  		       			       node-ref))))
+	      	      
 	      ;; Return deleted node, and surrounding nodes (for shm update)
 	      (values node-ref
 		      node-ref-in
