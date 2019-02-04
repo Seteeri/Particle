@@ -45,7 +45,7 @@
 
 (defclass node ()
   ((char-glyph :accessor char-glyph :initarg :char-glyph :initform nil)
-   (data-2 :accessor data-2 :initarg :data-2 :initform nil)
+   (data-obj :accessor data-obj :initarg :data-obj :initform nil)
    
    (offset-texel-texture :accessor offset-texel-texture :initarg :offset-texel-texture :initform 0)
    (dims-texture :accessor dims-texture :initarg :dims-texture :initform (vec2 0 0))

@@ -116,7 +116,7 @@
       	 :for char :across output-str
       	 :do (let ((node (add-node-ascii char)))
 	       ;; initial data used for glyph
-	       (setf (data-2 node) output-eval)
+	       (setf (data-obj node) output-eval)
 	       t)))))
 
 (defun link (tgt)
