@@ -89,6 +89,7 @@
 				       		:pathname "events"
 				       		:components ((:file "keyboard")
 							     (:file "touch")
+							     (:file "pointer")
 							     (:file "tablet-tool")))))
 		 (:module font
 			  :pathname "src/font"

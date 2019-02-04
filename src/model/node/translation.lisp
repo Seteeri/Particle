@@ -49,6 +49,29 @@
     (spatial-trees:insert node-a *r-tree*)
     new-pos))
 
+(defun translate-node-rel (node
+			   dx
+			   dy)
+
+  (when (not node)
+    (setf node *node-ptr-main*))
+
+  (with-slots (translation)
+      (model-matrix node)
+  
+    ;; Don't adjust for baseline
+    (let* ((new-pos (nv+ translation
+			 (vec3 (* dx *scale-node*)
+			       (* dy *scale-node* -1)
+			       0))))
+      (update-transform (model-matrix node))
+      (spatial-trees:delete node *r-tree*)
+      (spatial-trees:insert node *r-tree*)
+      new-pos))
+
+  ;; TEMP
+  (enqueue-node-ptr))
+
 (defun update-transform-line (node-start offset)
   ;; If assumed, glyphs are already aligned,
   ;; can use offset in line to update nodes simultaneously

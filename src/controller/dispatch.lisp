@@ -67,7 +67,7 @@
   t)
 
 (defun is-seq-state-valid (seq-key)
-    ;; Collect mod keys while traversing?
+  ;; Must run serially
   (with-slots (key-states)
       *controller*  
     (loop
@@ -77,8 +77,11 @@
 			     (list :up 0)) ; use last element
        :with time-last := 0
        :do (progn
+	     ;; If not key matches one of the states
+	     ;; or not keys pressed in order
+	     ;; - return nil
 	     (when (or (not (is-state-valid states-tgt (first state-key)))
-		       (< (second state-key) time-last)) ; key pressed before
+		       (< (second state-key) time-last))
 	       (return-from is-seq-state-valid nil))
 	     (setf time-last (second state-key)))
        :finally (return-from is-seq-state-valid t))))

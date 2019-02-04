@@ -3,6 +3,11 @@
 ;; mirror of model variables
 (defparameter *controller* nil)
 (defparameter *channel-input* nil)
+
+;; TEMP
+(defparameter *queue-anim* nil)
+(defparameter *translate-node-rel* nil)
+
 (defparameter *path-devices* "/dev/input/event*")
 
 (defclass controller () 
@@ -13,7 +18,7 @@
    (ep-events :accessor ep-events :initarg :ep-events :initform nil)
    (ep-fd :accessor ep-fd :initarg :ep-fd :initform nil)))   
 
-(defun init-controller (channel-input &rest devices)
+(defun init-controller (channel-input queue-anim translate-node-rel &rest devices)
   (let ((controller (make-instance 'controller
 				   :context (libinput:path-create-context (libinput:make-libinput-interface)
 									  (null-pointer))
@@ -30,6 +35,8 @@
 
     (setf *controller* controller)
     (setf *channel-input* channel-input)
+    (setf *queue-anim* queue-anim)
+    (setf *translate-node-rel* translate-node-rel)
     
     controller))
 
@@ -128,9 +135,9 @@
     (cond
       ((= type libinput:keyboard-key)
        (handle-event-keyboard event))
+      
       ((= type libinput:pointer-motion)
-       ;; (format t "type: ~a~%" type)
-       t)
+       (handle-event-pointer-motion event))
       
       ((= type libinput:touch-down)
        (handle-event-touch event))

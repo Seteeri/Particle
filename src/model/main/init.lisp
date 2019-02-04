@@ -15,7 +15,9 @@
 				  :type-proj 'orthographic)))
 
 (defun set-controller ()  
-  (setf *controller* (init-controller *channel-input*))
+  (setf *controller* (init-controller *channel-input*
+				      *queue-anim*
+				      #'translate-node-rel))
   (register-keyboard-callbacks))
 
 (defun set-metrics ()
@@ -24,7 +26,7 @@
 				+scale-msdf+)))
 
 (defun set-digraph ()
-  (setf *digraph-main*           (digraph:make-digraph)
+  (setf *digraph-main*       (digraph:make-digraph)
 	*digraph-vcs*       (digraph:make-digraph)
 	*digraph-clipboard* (digraph:make-digraph)
 	*digraph-repl*      (digraph:make-digraph)))
@@ -97,7 +99,7 @@
   ;; protoform.controller::+xk-up+ #xff52   ;  Move up, up arrow 
   ;; protoform.controller::+xk-right+ #xff53   ;  Move right, right arrow 
   ;; protoform.controller::+xk-down+ #xff54   ;  Move down, down arrow 
-
+  
   (when t
     (register-callback `(,protoform.controller::+xk-escape+ (:press))
     		       :exclusive
