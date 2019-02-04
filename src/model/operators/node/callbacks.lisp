@@ -33,22 +33,22 @@
 				  (funcall #'backspace-node-ascii)))
 			  *queue-anim*))
 
-(defun insert-node-tab-cb (seq-key)
-  (fmt-model t "insert-node-tab" "~a~%" seq-key)
+(defun add-node-tab-cb (seq-key)
+  (fmt-model t "add-node-tab" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'add-node
 				'()
   				(lambda ()
-  				  (funcall #'insert-node-tab)))
+  				  (funcall #'add-node-tab)))
 			  *queue-anim*))
 
-(defun insert-node-newline-cb (seq-key)
-  (fmt-model t "insert-node-newline" "~a~%" seq-key)
+(defun add-node-newline-cb (seq-key)
+  (fmt-model t "add-node-newline" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
 				'add-node
 				'()
   				(lambda ()
-  				  (funcall #'insert-node-newline)))
+  				  (funcall #'add-node-newline)))
 			  *queue-anim*))
   
 (defun eval-node-cb (seq-key)
