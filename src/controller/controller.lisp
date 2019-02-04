@@ -60,31 +60,36 @@
 
 (defun run-controller ()
   (loop
-     (dispatch-events-input)             ; serial
-     ;; only do below if keyboard events
-     (dispatch-all-seq-event)            ; parallel
-     (update-states-keyboard-continuous) ; parallel
-     t))
+     (let ((kb (dispatch-events-input)))
+       ;; only do below if keyboard events
+       (when kb
+	 (dispatch-all-seq-event)))
+     (update-states-keyboard-continuous)))
 
 (defun dispatch-events-input ()
   ;; Poss pull events and submit task instead of processing in parallel
   ;; However, would need to allocate separate ep-events for each callback
-  (with-slots (context
-	       ep-fd
-	       ep-events)
-      *controller*
-    ;; -1 = timeout = block/infinite
-    ;; 0 = return if nothing
-    (when (> (c-epoll-wait ep-fd ep-events 1 -1) 0)
-      (loop
-      	 :for event := (progn
-			 (libinput:dispatch context)
-			 (libinput:get-event context))
-      	 :until (null-pointer-p event)
-      	 :do
-      	   (dispatch-event-handler event)
-      	   (libinput:event-destroy event)
-	 :finally (libinput:dispatch context)))))
+  (let ((kb nil))
+    (with-slots (context
+		 ep-fd
+		 ep-events)
+	*controller*
+      ;; -1 = timeout = block/infinite
+      ;; 0 = return if nothing
+      (when (> (c-epoll-wait ep-fd ep-events 1 -1) 0)
+	(loop
+      	   :for event := (progn
+			   (libinput:dispatch context)
+			   (libinput:get-event context))
+      	   :until (null-pointer-p event)
+      	   :do
+      	     (progn
+	       (let ((type-event (dispatch-event-handler event)))
+		 (when (eq type-event libinput:keyboard-key)
+		   (setf kb t)))
+      	       (libinput:event-destroy event))
+	   :finally (libinput:dispatch context))))
+    kb))
 
 (defun dispatch-event-handler (event)
 

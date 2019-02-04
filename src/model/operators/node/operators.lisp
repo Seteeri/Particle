@@ -110,7 +110,7 @@
     (when create-node-output
 
       ;; Add newline to ptr
-      (insert-node-newline)
+      (add-node-newline)
       
       (loop
       	 :for char :across output-str

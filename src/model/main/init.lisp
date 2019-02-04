@@ -130,8 +130,8 @@
   (when t
     ;; handlers in node
     (dolist (seq-event `((,protoform.controller::+xk-backspace+ ,#'backspace-node-ascii-cb)
-			 (,protoform.controller::+xk-return+    ,#'insert-node-newline-cb)
-			 (,protoform.controller::+xk-tab+       ,#'insert-node-tab-cb)))
+			 (,protoform.controller::+xk-return+    ,#'add-node-newline-cb)
+			 (,protoform.controller::+xk-tab+       ,#'add-node-tab-cb)))
       (register-callback `(,(first seq-event) (:press :repeat))
 			 :exclusive
 			 (second seq-event))))
