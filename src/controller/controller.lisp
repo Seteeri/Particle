@@ -3,6 +3,7 @@
 ;; mirror of model variables
 (defparameter *controller* nil)
 (defparameter *channel-input* nil)
+(defparameter *path-devices* "/dev/input/event*")
 
 (defclass controller () 
   ((context :accessor context :initarg :context :initform nil)
@@ -30,7 +31,7 @@
 	  (mapcar (lambda (path)
 		    (libinput:path-add-device context path))
 		  devices)
-	  (let ((device-paths (directory "/dev/input/event*")))
+	  (let ((device-paths (directory *path-devices*)))
 	    (loop
 	       :for device-path :in device-paths
 	       :do (let ((device (libinput:path-add-device context
