@@ -7,41 +7,23 @@
 
 (defclass controller () 
   ((context :accessor context :initarg :context :initform nil)
-   (xkb :accessor xkb :initarg :xkb :initform (init-xkb))
+   (xkb :accessor xkb :initarg :xkb :initform nil)
    (key-states :accessor key-states :initarg :key-states :initform (make-hash-table :size 256))
    (key-callbacks :accessor key-callbacks :initarg :key-callbacks :initform (make-hash-table :size 256))
    (ep-events :accessor ep-events :initarg :ep-events :initform nil)
    (ep-fd :accessor ep-fd :initarg :ep-fd :initform nil)))   
 
 (defun init-controller (channel-input &rest devices)
-  (let ((controller (make-instance 'controller)))
+  (let ((controller (make-instance 'controller
+				   :context (libinput:path-create-context (libinput:make-libinput-interface)
+									  (null-pointer))
+				   :xkb (init-xkb))))
     (with-slots (context
-		 key-states
-		 key-callbacks
 		 ep-fd
 		 ep-events)
 	controller
-      
-      ;; Initialize libinput
-      (setf context (libinput:path-create-context (libinput:make-libinput-interface)
-						  (null-pointer)))
-      ;; (let* ((fd-li (libinput:get-fd context-li)))
 
-      (if devices
-	  (mapcar (lambda (path)
-		    (libinput:path-add-device context path))
-		  devices)
-	  (let ((device-paths (directory *path-devices*)))
-	    (loop
-	       :for device-path :in device-paths
-	       :do (let ((device (libinput:path-add-device context
-							   (namestring device-path))))
-		     (when (not (null-pointer-p device))
-		       (if (not (or (libinput:device-has-capability device
-								    libinput:device-cap-keyboard)
-				    (libinput:device-has-capability device
-								    libinput:device-cap-pointer)))
-			   (libinput:path-remove-device device)))))))
+      (init-devices devices context)
       
       (setf ep-fd     (init-epoll context)
             ep-events (foreign-alloc '(:struct event))))
@@ -50,6 +32,23 @@
     (setf *channel-input* channel-input)
     
     controller))
+
+(defun init-devices (devices context)
+  (if devices
+      (mapcar (lambda (path)
+		(libinput:path-add-device context path))
+	      devices)
+      (let ((device-paths (directory *path-devices*)))
+	(loop
+	   :for device-path :in device-paths
+	   :do (let ((device (libinput:path-add-device context
+						       (namestring device-path))))
+		 (when (not (null-pointer-p device))
+		   (if (not (or (libinput:device-has-capability device
+								libinput:device-cap-keyboard)
+				(libinput:device-has-capability device
+								libinput:device-cap-pointer)))
+		       (libinput:path-remove-device device))))))))
 
 (defun init-epoll (context)
   (let ((ep-fd (c-epoll-create 1)))
