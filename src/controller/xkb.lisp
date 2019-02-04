@@ -42,11 +42,7 @@
 			     :mods-latched latched-mods
 			     :mods-locked locked-mods
 			     :mods-group group-mods)))
-
     (xkb:xkb-state-update-mask state
 			       0 latched-mods locked-mods
 			       0 0 0)
-
-    (defparameter *xkb* xkb)
-    
     xkb))
