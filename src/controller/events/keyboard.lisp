@@ -18,12 +18,12 @@
 				       +xk-hyper-l+
 				       +xk-hyper-r+))
 
-;; How does this interact with controller loop?
 (defun handle-repeat-timer (keysym)
-  ;; (format t "[handle-keyboard-timer][~a] Repeating ~a~%" (get-internal-real-time) keysym)
+  ;; TODO:
+  ;; - key-states requires a lock
   (let ((state (gethash keysym (key-states *controller*))))
-    (setf (aref state 1) (aref state 0))
-    (setf (nth 0 (aref state 0)) :repeat)))
+    (setf (aref state 1)         (aref state 0)
+	  (nth 0 (aref state 0)) :repeat)))
 
 (defun update-repeat-timer (xkb
 			    ev-state
@@ -135,7 +135,8 @@
 	    (when (not state)
 	      (setf state (make-array 2
 				      :adjustable nil
-				      :initial-contents (list (list :up ev-time) (list :up ev-time))))
+				      :initial-contents (list (list :up ev-time)
+							      (list :up ev-time))))
 	      (setf (gethash keysym key-states) state))
 	    ;; Copy index 0 to 1
 	    (setf (aref state 1) (aref state 0))

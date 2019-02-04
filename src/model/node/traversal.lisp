@@ -1,5 +1,11 @@
 (in-package :protoform.model)
 
+(defun build-nodes-from-string (string)
+  (loop
+     :for char :across string
+     :do (let ((node (add-node-ascii char)))
+	   t)))
+
 (defun build-string-from-nodes ()
   ;; Pass starting node else use node-pointer
   ;; To eval, build string from predecessors until newline

@@ -111,13 +111,11 @@
 
       ;; Add newline to ptr
       (add-node-newline)
-      
-      (loop
-      	 :for char :across output-str
-      	 :do (let ((node (add-node-ascii char)))
-	       ;; initial data used for glyph
-	       (setf (data-obj node) output-eval)
-	       t)))))
+
+      (build-nodes-from-string output-str)
+      ;; (setf (data-obj node) output-eval)
+
+      t)))
 
 (defun link (tgt)
   (cond ((eq tgt :near)
