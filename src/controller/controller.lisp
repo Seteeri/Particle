@@ -60,16 +60,18 @@
 
 (defun run-controller ()
   (loop
-     (let ((kb (dispatch-events-input)))
+     (multiple-value-bind (kb pointer touch tablet)
+	 (dispatch-events-input)
        ;; only do below if keyboard events
        (when kb
 	 (dispatch-all-seq-event)))
      (update-states-keyboard-continuous)))
 
 (defun dispatch-events-input ()
-  ;; Poss pull events and submit task instead of processing in parallel
-  ;; However, would need to allocate separate ep-events for each callback
-  (let ((kb nil))
+  ;; POSS: handle events in parallel
+
+  ;; Use structure for this
+  (let (kb pointer touch tablet)
     (with-slots (context
 		 ep-fd
 		 ep-events)
@@ -89,7 +91,7 @@
 		   (setf kb t)))
       	       (libinput:event-destroy event))
 	   :finally (libinput:dispatch context))))
-    kb))
+    (values kb pointer touch tablet)))
 
 (defun dispatch-event-handler (event)
 
