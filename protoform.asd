@@ -122,12 +122,12 @@
 				       		:pathname "operators"
 				       		:components ((:module node
 				       				      :pathname "node"
-				       				      :components ((:file "callbacks-node")
-										   (:file "operators-node")))
+				       				      :components ((:file "callbacks")
+										   (:file "operators")))
 							     (:module projview
 				       				      :pathname "projview"
-				       				      :components ((:file "callbacks-projview")
-										   (:file "operators-projview")))))
+				       				      :components ((:file "callbacks")
+										   (:file "operators")))))
 				       (:module projview
 				       		:pathname "projview"
 				       		:components ((:file "projview")
