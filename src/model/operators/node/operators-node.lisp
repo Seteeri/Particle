@@ -16,13 +16,11 @@
 
 (defun add-node-ascii (char &optional (move-pointer t))
   (let ((node-new (add-node char
-			    move-pointer)))
+			    move-pointer)))    
     (enqueue-node-ptr)
     (enqueue-node node-new)
-
     ;; Add event to VCS graph
     (add-node-vcs)
-    
     node-new))
 
 (defun backspace-node-ascii ()

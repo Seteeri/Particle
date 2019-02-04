@@ -1,4 +1,4 @@
-(in-package :protoform.model)
+(in-package :protoform.controller)
 
 (defun handle-event-tablet-tool-axis (event)
   (let* ((event-tablet-tool (libinput:event-get-tablet-tool-event         event))

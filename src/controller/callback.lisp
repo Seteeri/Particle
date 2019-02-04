@@ -1,4 +1,4 @@
-(in-package :protoform.model)
+(in-package :protoform.controller)
 
 ;; Data structure:
 ;; (mod-logic, (mods key:(state)) (norm key:(state))) : (fn1:nil, fn2:nil)

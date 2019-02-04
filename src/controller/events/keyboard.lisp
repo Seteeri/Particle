@@ -1,4 +1,4 @@
-(in-package :protoform.model)
+(in-package :protoform.controller)
 
 (defconstant +state-event-press+   1)
 (defconstant +state-event-release+ 0)

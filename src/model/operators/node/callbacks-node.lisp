@@ -5,7 +5,7 @@
 (defun print-graph-cb (seq-key)
   (fmt-model t "print-graph" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
-				'backspace-node
+				'print-graph
 				'()
 				(lambda ()
 				  (digraph:mapc-vertices
@@ -18,7 +18,7 @@
 (defun add-node-ascii-cb (seq-key)
   (fmt-model t "add-node-ascii" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
-				'add-node-ascii ;; (make-symbol (format nil "~a~%" seq-key))
+				'add-node ;; (make-symbol (format nil "~a~%" seq-key))
 				'()
 				(lambda ()
 				  (funcall #'add-node-ascii (code-char (second (reverse (second seq-key))))))) ; create aux fn for this
@@ -27,7 +27,7 @@
 (defun backspace-node-ascii-cb (seq-key)
   (fmt-model t "backspace-node-ascii" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
-				'backspace-node-ascii
+				'add-node ; verify
 				'()
 				(lambda ()
 				  (funcall #'backspace-node-ascii)))
@@ -36,7 +36,7 @@
 (defun insert-node-tab-cb (seq-key)
   (fmt-model t "insert-node-tab" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
-				'insert-node-tab
+				'add-node
 				'()
   				(lambda ()
   				  (funcall #'insert-node-tab)))
@@ -45,7 +45,7 @@
 (defun insert-node-newline-cb (seq-key)
   (fmt-model t "insert-node-newline" "~a~%" seq-key)
   (sb-concurrency:enqueue (list nil
-				'insert-node-newline
+				'add-node
 				'()
   				(lambda ()
   				  (funcall #'insert-node-newline)))

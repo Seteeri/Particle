@@ -1,4 +1,4 @@
-(in-package :protoform.model)
+(in-package :protoform.font)
 
 (defclass metrics ()
   ((advance
@@ -64,20 +64,17 @@
 						  0.0 1.0 0.0 0.0))
     :documentation "")))
 
-(defun init-metrics ()
+(defun init-metrics (path scale)
   (loop
      :for code :from 1 :to 255
      :with ht-metrics := (make-hash-table :size 255)
-     :with msdf-glyphs-path := (merge-pathnames #P"glyphs-msdf/"
-						(asdf:system-source-directory :protoform))
-     :for lisp-path := (merge-pathnames (make-pathname :name (format nil "~a-metrics" (write-to-string code))
-						       :type "lisp")
-					msdf-glyphs-path)
-     :with scale := +scale-msdf+ ; taken from script
      :with i := 0
+     :for path-metrics := (merge-pathnames (make-pathname :name (format nil "~a-metrics" (write-to-string code))
+						       :type "lisp")
+					path)
      :do (destructuring-bind (&key code advance translate range (bounds nil))
-	     (eval (read-from-string (read-file-string lisp-path)))
-
+	     (eval (read-from-string (read-file-string path-metrics)))
+	   
 	   ;; Invalid if no bounds?
 	   ;; Bounds is referred to as bearings by freetype
 

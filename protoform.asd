@@ -1,7 +1,7 @@
 ;; https://common-lisp.net/~mmommer/asdf-howto.shtml
 
 (asdf:defsystem #:protoform
-    :description "A Common Lisp nodal UI platform based on DRM-KMS and OpenGL"
+    :description " A Common Lisp nodal REPL shell based on DRM-KMS, OpenGL and Wayland"
     :author "Kevin Ednalino <kcednalino@gmail.com>"
     :license "Apache License 2.0"
     :depends-on (#:alexandria
@@ -90,6 +90,9 @@
 				       		:components ((:file "keyboard")
 							     (:file "touch")
 							     (:file "tablet-tool")))))
+		 (:module font
+			  :pathname "src/font"
+			  :components ((:file "metrics")))
 		 (:module model
 			  :pathname "src/model"
 			  :components ((:module shm
@@ -134,7 +137,6 @@
 				       		:components ((:file "rpc")
 							     (:file "view")
 							     (:file "memcpy")))
-				       (:file "metrics")
 				       (:file "animation")
 				       (:module main
 						:pathname "main"

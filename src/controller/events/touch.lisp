@@ -1,4 +1,4 @@
-(in-package :protoform.model)
+(in-package :protoform.controller)
 
 (defun handle-event-touch (event)
   ;; Libinput coords are from top left

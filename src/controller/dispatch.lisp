@@ -1,4 +1,4 @@
-(in-package :protoform.model)
+(in-package :protoform.controller)
 
 ;; Data structure:
 ;; (mod-logic, (mods key:(state)) (norm key:(state))) : (fn1:nil, fn2:nil)
@@ -19,15 +19,15 @@
   ;; Callbacks are executed in order
   ;; Can run all callbacks in parallel?(format t "a~%" i)
   (when (is-seq-event-valid seq-event)
-	(loop :for cb :being :the :hash-keys :of (get-callbacks seq-event)
-	   ;; Callbacks must not share data...
-	   ;; User can do so through proper synchronization methods
-	   ;; however the intent is to operate in parallel
-	   ;; Callbacks simply build a list for ptree nodes
-	   ;; that is simply enqueued
+    (loop :for cb :being :the :hash-keys :of (get-callbacks seq-event)
+       ;; Callbacks must not share data...
+       ;; User can do so through proper synchronization methods
+       ;; however the intent is to operate in parallel
+       ;; Callbacks simply build a list for ptree nodes
+       ;; that is simply enqueued
 
-	   ;; Typicall one callback so execute here instead of after loop
-	   :collect (funcall cb seq-event))))
+       ;; Typically one callback so execute here instead of after loop
+       :collect (funcall cb seq-event))))
 
 (defun is-seq-event-valid (seq-events-key)
   (with-slots (key-states)

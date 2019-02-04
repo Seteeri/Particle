@@ -1,4 +1,4 @@
-(in-package :protoform.model)
+(in-package :protoform.controller)
 
 (defclass xkb () 
   ((context :accessor context :initarg :context :initform nil)

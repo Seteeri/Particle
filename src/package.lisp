@@ -125,6 +125,43 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defpackage #:protoform.controller
+  (:use #:cl
+        #:cffi
+	#:protoform.libc
+	#:protoform.aux
+	#:3d-vectors
+	#:3d-matrices
+	#:lparallel
+	#:lparallel.queue
+	#:trivial-timers)
+  (:export #:init-controller
+	   #:run-controller
+	   #:register-callback
+	   #:unregister-callback
+	   #:key-callbacks))
+
+(defpackage #:protoform.font
+  (:use #:cl
+        #:cffi
+	#:protoform.libc
+	#:protoform.aux
+	#:3d-vectors
+	#:3d-matrices
+	#:lparallel
+	#:lparallel.queue)
+  (:export #:init-metrics
+	   #:advance
+	   #:translate
+	   #:range
+	   #:bounds-origin
+	   #:bounds-texture
+	   #:scale
+	   #:dims-glyph
+	   #:ratio-aspect
+	   #:scale-uv
+	   #:uv))
+
 (defpackage #:protoform.view
   (:use #:cl
         #:cffi
@@ -145,9 +182,10 @@
 	#:protoform.opengl
 	#:protoform.conn
 	#:protoform.aux
+	#:protoform.font
+	#:protoform.controller	
 	#:3d-vectors
 	#:3d-matrices
-	#:trivial-timers
 	#:lparallel
 	#:lparallel.queue)
   (:export #:run-model))

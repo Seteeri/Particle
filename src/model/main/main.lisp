@@ -32,6 +32,7 @@
 
   ;; Run init fns
   (run-ptree-init)
+  
   ;; Then start permanent threads
   (init-threads)
   

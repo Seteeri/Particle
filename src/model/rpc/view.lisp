@@ -43,17 +43,18 @@
 	      :do (when-let ((item-retry (parse-task-frame item ptree ids)))
 			    (sb-concurrency:enqueue item-retry queue-retry)))
 	   
-	   (unless (zerop (hash-table-size ids))
+	   (unless (zerop (hash-table-count ids))
 	     (ptree-fn 'finish
 		       ;; the only ids need are the terminal ones
 		       ;; -> prefix id with finish so we know which ids to track
 		       (loop :for key :being :the hash-keys :of ids :collect key)
-  		       (lambda ())
+  		       (lambda (&rest ids))
   		       ptree)
 	     (call-ptree 'finish ptree))
 
 	   (if (sb-concurrency:queue-empty-p queue-retry)
-	       (return)
+	       (progn
+		 (return))
 	       (progn
 		 (setf q queue-retry)
 		 (warn "[execute-tasks-frame] retrying task~%"))))))
@@ -70,7 +71,7 @@
 	  ;; Does below need to be in handler-case?
 	  (setf (gethash id ids) anim))
       (lparallel.ptree:ptree-redefinition-error (c)
-
+	
 	(when (not anim)
 	  ;; (warn (format nil "parse-task-frame -> retry enqueue task: ~S" item))
 	  (return-from parse-task-frame item))
@@ -139,6 +140,7 @@
 			(progn
 			  (setf (gethash shm extents)
 				(list offset (+ offset len-data))))))))
+    
     extents))
 
 ;; Maybe move to memcpy

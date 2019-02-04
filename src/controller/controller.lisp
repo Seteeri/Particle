@@ -1,4 +1,8 @@
-(in-package :protoform.model)
+(in-package :protoform.controller)
+
+;; mirror of model variables
+(defparameter *controller* nil)
+(defparameter *channel-input* nil)
 
 (defclass controller () 
   ((context :accessor context :initarg :context :initform nil)
@@ -8,7 +12,7 @@
    (ep-events :accessor ep-events :initarg :ep-events :initform nil)
    (ep-fd :accessor ep-fd :initarg :ep-fd :initform nil)))   
 
-(defun init-controller (&rest devices)
+(defun init-controller (channel-input &rest devices)
   (let ((controller (make-instance 'controller)))
     (with-slots (context
 		 key-states
@@ -40,6 +44,10 @@
       
       (setf ep-fd     (init-epoll context)
             ep-events (foreign-alloc '(:struct event))))
+
+    (setf *controller* controller)
+    (setf *channel-input* channel-input)
+    
     controller))
 
 (defun init-epoll (context)

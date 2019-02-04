@@ -15,11 +15,13 @@
 				  :type-proj 'orthographic)))
 
 (defun set-controller ()  
-  (setf *controller* (init-controller))
+  (setf *controller* (init-controller *channel-input*))
   (register-keyboard-callbacks))
 
 (defun set-metrics ()
-  (setf *metrics* (init-metrics)))
+  (setf *metrics* (init-metrics (merge-pathnames #P"glyphs-msdf/"
+						 (asdf:system-source-directory :protoform))
+				+scale-msdf+)))
 
 (defun set-digraph ()
   (setf *digraph-main*           (digraph:make-digraph)
@@ -60,191 +62,186 @@
 					  (vec3 0 -10 0))))
 
 (defun register-keyboard-callbacks ()
+  
+  ;; protoform.controller::+xk-return+    
+  ;; protoform.controller::+xk-escape+
+  ;; protoform.controller::+xk-backspace+
+  ;; protoform.controller::+xk-delete+
+  ;; protoform.controller::+xk-left+
+  ;; protoform.controller::+xk-right+
+  ;; protoform.controller::+xk-up+
+  ;; protoform.controller::+xk-down+
+  ;; protoform.controller::+xk-minus+
+  ;; protoform.controller::+xk-equal+
+  ;; protoform.controller::+xk-up+
+  ;; protoform.controller::+xk-down+
+  ;; protoform.controller::+xk-left+
+  ;; protoform.controller::+xk-right+
 
-  (with-slots (key-callbacks)
-      *controller*
-    
-    ;; +xk-return+    
-    ;; +xk-escape+
-    ;; +xk-backspace+
-    ;; +xk-delete+
-    ;; +xk-left+
-    ;; +xk-right+
-    ;; +xk-up+
-    ;; +xk-down+
-    ;; +xk-minus+
-    ;; +xk-equal+
-    ;; +xk-up+
-    ;; +xk-down+
-    ;; +xk-left+
-    ;; +xk-right+
+  ;; protoform.controller::+xk-shift-l+ #xffe1   ;  Left shift 
+  ;; protoform.controller::+xk-shift-r+ #xffe2   ;  Right shift 
+  ;; protoform.controller::+xk-control-l+ #xffe3   ;  Left control 
+  ;; protoform.controller::+xk-control-r+ #xffe4   ;  Right control 
+  ;; protoform.controller::+xk-caps-lock+ #xffe5   ;  Caps lock 
+  ;; protoform.controller::+xk-shift-lock+ #xffe6   ;  Shift lock 
+  ;; protoform.controller::+xk-meta-l+ #xffe7   ;  Left meta 
+  ;; protoform.controller::+xk-meta-r+ #xffe8   ;  Right meta 
+  ;; protoform.controller::+xk-alt-l+ #xffe9   ;  Left alt 
+  ;; protoform.controller::+xk-alt-r+ #xffea   ;  Right alt 
+  ;; protoform.controller::+xk-super-l+ #xffeb   ;  Left super 
+  ;; protoform.controller::+xk-super-r+ #xffec   ;  Right super 
+  ;; protoform.controller::+xk-hyper-l+ #xffed   ;  Left hyper 
+  ;; protoform.controller::+xk-hyper-r+ #xffee   ;  Right hyper 
 
-    ;; +xk-shift-l+ #xffe1   ;  Left shift 
-    ;; +xk-shift-r+ #xffe2   ;  Right shift 
-    ;; +xk-control-l+ #xffe3   ;  Left control 
-    ;; +xk-control-r+ #xffe4   ;  Right control 
-    ;; +xk-caps-lock+ #xffe5   ;  Caps lock 
-    ;; +xk-shift-lock+ #xffe6   ;  Shift lock 
-    ;; +xk-meta-l+ #xffe7   ;  Left meta 
-    ;; +xk-meta-r+ #xffe8   ;  Right meta 
-    ;; +xk-alt-l+ #xffe9   ;  Left alt 
-    ;; +xk-alt-r+ #xffea   ;  Right alt 
-    ;; +xk-super-l+ #xffeb   ;  Left super 
-    ;; +xk-super-r+ #xffec   ;  Right super 
-    ;; +xk-hyper-l+ #xffed   ;  Left hyper 
-    ;; +xk-hyper-r+ #xffee   ;  Right hyper 
+  ;; protoform.controller::+xk-left+ #xff51   ;  Move left, left arrow 
+  ;; protoform.controller::+xk-up+ #xff52   ;  Move up, up arrow 
+  ;; protoform.controller::+xk-right+ #xff53   ;  Move right, right arrow 
+  ;; protoform.controller::+xk-down+ #xff54   ;  Move down, down arrow 
 
-    ;; +xk-left+ #xff51   ;  Move left, left arrow 
-    ;; +xk-up+ #xff52   ;  Move up, up arrow 
-    ;; +xk-right+ #xff53   ;  Move right, right arrow 
-    ;; +xk-down+ #xff54   ;  Move down, down arrow 
-
-    (when t
-      (register-callback `(,+xk-escape+ (:press))
-    			 :exclusive
-    			 (lambda (seq-key)
-    			   ;; (clean-up-handles-shm)
-    			   (c-shutdown *sock-view*)
-    			   (c-close *sock-view*)
-    			   (fmt-model t "handle-escape" "Model process exiting!~%")
-    			   (sb-ext:exit))))
-    
-    (when t
-      ;; handlers in node
-      (loop
-	 :for keysym :from 32 :to 255
-	 :do (progn
-	       (register-callback `(,keysym (:press :repeat))
-	 			  :exclusive
-	 			  #'add-node-ascii-cb)
-	       ;; Better way to handle below?
-	       (register-callback `(,+xk-shift-l+ (:press :down)
-	       			    ,keysym       (:press :repeat))
-	       			  :exclusive
-	       			  #'add-node-ascii-cb)
-	       (register-callback `(,+xk-shift-r+ (:press :down)
-	       			    ,keysym       (:press :repeat))
-	       			  :exclusive
-	       			  #'add-node-ascii-cb)
-	       t)))
-    
-    (when t
-      ;; handlers in node
-      (dolist (seq-event `((,+xk-backspace+ ,#'backspace-node-ascii-cb)
-			   (,+xk-return+    ,#'insert-node-newline-cb)
-			   (,+xk-tab+       ,#'insert-node-tab-cb)))
-	(register-callback `(,(first seq-event) (:press :repeat))
-			   :exclusive
-			   (second seq-event))))
-
-    (when t
-      ;; cut/copy/paste
-      (dolist (seq-event `((,+xk-x+ ,#'cut-node-cb)
-			   (,+xk-c+ ,#'copy-node-cb)
-			   (,+xk-v+ ,#'paste-node-cb)))
-	(register-callback `(,+xk-control-l+    (:press :down)
-			     ,(first seq-event) (:press :repeat))
-			   :exclusive
-			   (second seq-event))
-	(register-callback `(,+xk-control-r+    (:press :down)
-			     ,(first seq-event) (:press :repeat))
-			   :exclusive
-			   (second seq-event))))	
-    
-    (when t
-
-      ;; (dolist (seq-event `((,+xk-left+       ,#'move-node-ptr-in-cb)
-      ;; 			   (,+xk-up+         ,#'translate-node-ptr-up-cb)
-      ;; 			   (,+xk-right+      ,#'move-node-ptr-out-cb)
-      ;; 			   (,+xk-down+       ,#'translate-node-ptr-down-cb)))
-      ;; 	(register-callback `(,(first seq-event) (:press :repeat))
-      ;; 			   :exclusive
-      ;; 			   (second seq-event)))
-      
-      (dolist (seq-event `((,+xk-left+       ,#'move-node-ptr-in-cb)
-			   (,+xk-up+         ,#'translate-node-ptr-up-cb)
-			   (,+xk-right+      ,#'move-node-ptr-out-cb)
-			   (,+xk-down+       ,#'translate-node-ptr-down-cb)))
-	(register-callback `(,(first seq-event) (:press :repeat))
-			   :exclusive
-			   (second seq-event))))
-      
-    (when t
-      ;; handlers in projview
-      (dolist (seq-event `((,+xk-left+       ,#'translate-camera-left-cb)
-			   (,+xk-up+         ,#'translate-camera-up-cb)
-			   (,+xk-right+      ,#'translate-camera-right-cb)
-			   (,+xk-down+       ,#'translate-camera-down-cb)))
-	(register-callback `(,+xk-control-l+    (:press :down)
-			     ,(first seq-event) (:press :repeat))
-			   :exclusive
-			   (second seq-event))
-	(register-callback `(,+xk-control-r+    (:press :down)
-			     ,(first seq-event) (:press :repeat))
-			   :exclusive
-			   (second seq-event)))
-
-      (dolist (seq-event `((,+xk-left+       ,#'scale-ortho-up-cb)
-			   (,+xk-up+         ,#'scale-ortho-down-cb)
-			   (,+xk-right+      ,#'scale-ortho-down-cb)
-			   (,+xk-down+       ,#'scale-ortho-up-cb)))
-	(register-callback `(,+xk-control-l+    (:press :down)
-			     ,+xk-shift-l+      (:press :down)
-			     ,(first seq-event) (:press :repeat))
-			   :exclusive
-			   (second seq-event))
-	(register-callback `(,+xk-control-r+    (:press :down)
-			     ,+xk-shift-r+      (:press :down)
-			     ,(first seq-event) (:press :repeat))
-			   :exclusive
-			   (second seq-event))))
-
-    ;; Eval
-    (register-callback `(,+xk-shift-r+ (:press :down)
-			 ,+xk-return+  (:press :repeat))
-		       :exclusive
-		       #'eval-node-cb)
-    (register-callback `(,+xk-shift-l+ (:press :down)
-			 ,+xk-return+  (:press :repeat))
-		       :exclusive
-		       #'eval-node-cb)
-
-    ;; When used with modifiers, need to use iso-left-tab
-    (register-callback `(,+xk-shift-r+      (:press :down)
-			 ,+xk-iso-left-tab+ (:press))
-		       :exclusive
-		       #'print-graph-cb)
-    (register-callback `(,+xk-shift-l+ (:press :down)
-			 ,+xk-iso-left-tab+     (:press))
-		       :exclusive
-		       #'print-graph-cb)
-    
-    ;; for testing
-    (when nil
-      (register-callback `(,+xk-f7+ (:press))
+  (when t
+    (register-callback `(,protoform.controller::+xk-escape+ (:press))
+    		       :exclusive
+    		       (lambda (seq-key)
+    			 ;; (clean-up-handles-shm)
+    			 (c-shutdown *sock-view*)
+    			 (c-close *sock-view*)
+    			 (fmt-model t "handle-escape" "Model process exiting!~%")
+    			 (sb-ext:exit))))
+  
+  (when t
+    ;; handlers in node
+    (loop
+       :for keysym :from 32 :to 255
+       :do (progn
+	     (register-callback `(,keysym (:press :repeat))
+	 			:exclusive
+	 			#'add-node-ascii-cb)
+	     ;; Better way to handle below?
+	     (register-callback `(,protoform.controller::+xk-shift-l+ (:press :down)
+	       					,keysym       (:press :repeat))
+	       			:exclusive
+	       			#'add-node-ascii-cb)
+	     (register-callback `(,protoform.controller::+xk-shift-r+ (:press :down)
+	       					,keysym       (:press :repeat))
+	       			:exclusive
+	       			#'add-node-ascii-cb)
+	     t)))
+  
+  (when t
+    ;; handlers in node
+    (dolist (seq-event `((,protoform.controller::+xk-backspace+ ,#'backspace-node-ascii-cb)
+			 (,protoform.controller::+xk-return+    ,#'insert-node-newline-cb)
+			 (,protoform.controller::+xk-tab+       ,#'insert-node-tab-cb)))
+      (register-callback `(,(first seq-event) (:press :repeat))
 			 :exclusive
-			 (lambda (seq-event ptree queue)
-			   t)))
+			 (second seq-event))))
+
+  (when t
+    ;; cut/copy/paste
+    (dolist (seq-event `((,protoform.controller::+xk-x+ ,#'cut-node-cb)
+			 (,protoform.controller::+xk-c+ ,#'copy-node-cb)
+			 (,protoform.controller::+xk-v+ ,#'paste-node-cb)))
+      (register-callback `(,protoform.controller::+xk-control-l+    (:press :down)
+					      ,(first seq-event) (:press :repeat))
+			 :exclusive
+			 (second seq-event))
+      (register-callback `(,protoform.controller::+xk-control-r+    (:press :down)
+					      ,(first seq-event) (:press :repeat))
+			 :exclusive
+			 (second seq-event))))	
+  
+  (when t
+
+    ;; (dolist (seq-event `((,protoform.controller::+xk-left+       ,#'move-node-ptr-in-cb)
+    ;; 			   (,protoform.controller::+xk-up+         ,#'translate-node-ptr-up-cb)
+    ;; 			   (,protoform.controller::+xk-right+      ,#'move-node-ptr-out-cb)
+    ;; 			   (,protoform.controller::+xk-down+       ,#'translate-node-ptr-down-cb)))
+    ;; 	(register-callback `(,(first seq-event) (:press :repeat))
+    ;; 			   :exclusive
+    ;; 			   (second seq-event)))
     
-    ;; Print hashtable
-    (when nil
-      (maphash (lambda (key value)
-		 (fmt-model t "register-keyboard..." "Seq-event: ~S = ~S~%" key value))
-	       key-callbacks))
-    
-    t))
+    (dolist (seq-event `((,protoform.controller::+xk-left+       ,#'move-node-ptr-in-cb)
+			 (,protoform.controller::+xk-up+         ,#'translate-node-ptr-up-cb)
+			 (,protoform.controller::+xk-right+      ,#'move-node-ptr-out-cb)
+			 (,protoform.controller::+xk-down+       ,#'translate-node-ptr-down-cb)))
+      (register-callback `(,(first seq-event) (:press :repeat))
+			 :exclusive
+			 (second seq-event))))
+  
+  (when t
+    ;; handlers in projview
+    (dolist (seq-event `((,protoform.controller::+xk-left+       ,#'translate-camera-left-cb)
+			 (,protoform.controller::+xk-up+         ,#'translate-camera-up-cb)
+			 (,protoform.controller::+xk-right+      ,#'translate-camera-right-cb)
+			 (,protoform.controller::+xk-down+       ,#'translate-camera-down-cb)))
+      (register-callback `(,protoform.controller::+xk-control-l+    (:press :down)
+					      ,(first seq-event) (:press :repeat))
+			 :exclusive
+			 (second seq-event))
+      (register-callback `(,protoform.controller::+xk-control-r+    (:press :down)
+					      ,(first seq-event) (:press :repeat))
+			 :exclusive
+			 (second seq-event)))
+
+    (dolist (seq-event `((,protoform.controller::+xk-left+       ,#'scale-ortho-up-cb)
+			 (,protoform.controller::+xk-up+         ,#'scale-ortho-down-cb)
+			 (,protoform.controller::+xk-right+      ,#'scale-ortho-down-cb)
+			 (,protoform.controller::+xk-down+       ,#'scale-ortho-up-cb)))
+      (register-callback `(,protoform.controller::+xk-control-l+    (:press :down)
+					      ,protoform.controller::+xk-shift-l+      (:press :down)
+					      ,(first seq-event) (:press :repeat))
+			 :exclusive
+			 (second seq-event))
+      (register-callback `(,protoform.controller::+xk-control-r+    (:press :down)
+					      ,protoform.controller::+xk-shift-r+      (:press :down)
+					      ,(first seq-event) (:press :repeat))
+			 :exclusive
+			 (second seq-event))))
+
+  ;; Eval
+  (register-callback `(,protoform.controller::+xk-shift-r+ (:press :down)
+				     ,protoform.controller::+xk-return+  (:press :repeat))
+		     :exclusive
+		     #'eval-node-cb)
+  (register-callback `(,protoform.controller::+xk-shift-l+ (:press :down)
+				     ,protoform.controller::+xk-return+  (:press :repeat))
+		     :exclusive
+		     #'eval-node-cb)
+
+  ;; When used with modifiers, need to use iso-left-tab
+  (register-callback `(,protoform.controller::+xk-shift-r+      (:press :down)
+					  ,protoform.controller::+xk-iso-left-tab+ (:press))
+		     :exclusive
+		     #'print-graph-cb)
+  (register-callback `(,protoform.controller::+xk-shift-l+ (:press :down)
+				     ,protoform.controller::+xk-iso-left-tab+     (:press))
+		     :exclusive
+		     #'print-graph-cb)
+  
+  ;; for testing
+  (when nil
+    (register-callback `(,protoform.controller::+xk-f7+ (:press))
+		       :exclusive
+		       (lambda (seq-event ptree queue)
+			 t)))
+  
+  ;; Print hashtable
+  ;;(when nil
+  ;;  (maphash (lambda (key value)
+  ;;		(fmt-model t "register-keyboard..." "Seq-event: ~S = ~S~%" key value))
+  ;;	       key-callbacks))
+  
+  t)
 
 (defun register-callback-down (keysym cb)
-  (with-slots (key-callbacks)
-      *controller*
-    (register-callback `(,keysym :press)
-		       ()
-		       :exclusive
-		       cb)
-    (register-callback `(,keysym :repeat)
-		       ()
-		       :exclusive
-		       cb)))
+  (register-callback `(,keysym :press)
+		     ()
+		     :exclusive
+		     cb)
+  (register-callback `(,keysym :repeat)
+		     ()
+		     :exclusive
+		     cb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
