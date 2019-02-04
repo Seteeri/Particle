@@ -156,8 +156,8 @@
 				 keysym-char)))))))
 
 (defun is-modifier-key (keysym)
-  ;; Should use xkb function
-  ;; Is this faster than using global+loop?
+  ;; POSS: use xkb function
+  ;; Is this faster than using global+loop?  
   (if (or (eq keysym +xk-shift-l+)
 	  (eq keysym +xk-shift-r+)
 	  (eq keysym +xk-control-l+)

@@ -59,9 +59,9 @@
     ep-fd))
 
 (defun run-controller ()
-  ;; Refactor below to per-event?
   (loop
      (dispatch-events-input)             ; serial
+     ;; only do below if keyboard events
      (dispatch-all-seq-event)            ; parallel
      (update-states-keyboard-continuous) ; parallel
      t))
@@ -153,4 +153,6 @@
        (handle-event-tablet-tool-tip event))
       
       (t
-       t))))
+       t))
+
+    type))
