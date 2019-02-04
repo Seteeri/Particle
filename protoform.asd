@@ -78,6 +78,18 @@
 				       (:file "raster")
 				       (:file "memcpy")
 				       (:file "glfw")))
+		 (:module controller
+			  :pathname "src/controller"
+			  :components ((:file "keysymdef")
+				       (:file "controller")
+				       (:file "xkb")
+				       (:file "callback")
+				       (:file "dispatch")
+				       (:module events
+				       		:pathname "events"
+				       		:components ((:file "keyboard")
+							     (:file "touch")
+							     (:file "tablet-tool")))))
 		 (:module model
 			  :pathname "src/model"
 			  :components ((:module shm
@@ -117,18 +129,6 @@
 				       		:pathname "projview"
 				       		:components ((:file "projview")
 							     (:file "shm")))
-				       (:module controller
-				       		:pathname "controller"
-				       		:components ((:file "keysymdef")
-							     (:file "controller")
-				       			     (:file "xkb")
-				       			     (:file "callback")
-							     (:file "dispatch")
-				       			     (:module events
-				       				      :pathname "events"
-				       				      :components ((:file "keyboard")
-										   (:file "touch")
-										   (:file "tablet-tool")))))
 				       (:module rpc
 				       		:pathname "rpc"
 				       		:components ((:file "rpc")

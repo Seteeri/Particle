@@ -682,3 +682,22 @@ rem-node-ascii a ptr
 https://softwareengineering.stackexchange.com/questions/224146/how-has-an-increase-in-the-complexity-of-systems-affected-successive-generations/224152
 
 Moreover, let's not forget what we're actually trying to optimize for, which is value produced for a given cost. Programmers are way more expensive than machines. Anything we do that makes programmers produce working, correct, robust, fully-featured programs faster and cheaper leads to the creation of more value in the world.
+
+########################################################################
+
+Need to create TEXT object to manage lines
+- Text object can be replaced by a pointer
+
+User evals new/create/make-page
+
+Show slots as edges for objects/structs
+- By default hidden for node, xkb, controller, projview, animation, metrics
+  - add slot option?
+
+#<TEXT> -> * -> width-line -> #
+           |
+           * -> pos -> vec3 [updates if user moves text obj]
+           |
+           * -> line/string
+           
+           or put options on left and line on right
