@@ -14,9 +14,9 @@
 	      ;; Leave on first non-ptr node
 	      :for node :in pred
 	      :do (unless (eq node *node-ptr-main*)
-		    (when (char-equal (data node) #\Newline)
+		    (when (char-equal (char-glyph node) #\Newline)
 		      (return))
-		    (push (data node) chrs)
+		    (push (char-glyph node) chrs)
 		    (setf pred node)
 		    (return))))
     
@@ -40,8 +40,8 @@
        :while pred
        :do (loop :for node :in pred
 	      :do (unless (equal node *node-ptr-main*) ; skip pointer
-		    ;; (format t "node: ~S = ~S~%" node (data node))
-		    (when (char-equal (data node) #\Newline)
+		    ;; (format t "node: ~S = ~S~%" node (char-glyph node))
+		    (when (char-equal (char-glyph node) #\Newline)
 		      (return))
 		    ;; Else set node to get preds and goto next iteration
 		    (setf pred node

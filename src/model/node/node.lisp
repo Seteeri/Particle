@@ -44,8 +44,8 @@
 ;; 		  :initial-element (coerce 0 '(unsigned-byte 8)))
 
 (defclass node ()
-  ((data :accessor data :initarg :data :initform nil) ; data-glyph/char
-   (data-2 :accessor data-2 :initarg :data-2 :initform nil) ; data object
+  ((char-glyph :accessor char-glyph :initarg :char-glyph :initform nil)
+   (data-2 :accessor data-2 :initarg :data-2 :initform nil)
    
    (offset-texel-texture :accessor offset-texel-texture :initarg :offset-texel-texture :initform 0)
    (dims-texture :accessor dims-texture :initarg :dims-texture :initform (vec2 0 0))
@@ -122,7 +122,7 @@
 			 (color nil))
 
   (let ((node (make-instance 'node
-			     :data data
+			     :char-glyph data
 			     :index ix
 			     :model-matrix (make-instance 'model-matrix
 							  :scale (vec3 scale-glyph
@@ -182,10 +182,6 @@
     node))
 
 (defun serialize-node (node)
-  ;; (let ((data (make-array +size-struct-instance+
-  ;; 			  :fill-pointer 0
-  ;;                      :adjustable nil
-  ;; 			  :element-type '(unsigned-byte 8))))
   (with-slots (data
 	       model-matrix
 	       rgba

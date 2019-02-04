@@ -8,8 +8,8 @@
 			  (dir-ptr :out))
   ;; Print node
   (when-let ((node-ref (get-node-ptr-out)))	    
-	    (let ((nodes-ref-in (loop :for n :in (get-nodes-in node-ref) :collect (data n)))
-		  (nodes-ref-out (loop :for n :in (get-nodes-out node-ref) :collect (data n))))
+	    (let ((nodes-ref-in (loop :for n :in (get-nodes-in node-ref) :collect (char-glyph n)))
+		  (nodes-ref-out (loop :for n :in (get-nodes-out node-ref) :collect (char-glyph n))))
 	      (format t "ptr: ~a~%" *node-ptr-main*)
 	      (format t "ptr-ref (ptr out): ~a~%" node-ref)
 	      (format t "in: ~a~%" nodes-ref-in)
@@ -149,7 +149,7 @@
 	       ;; Push new node above for now
 	       (when (or (eq node-type :intra)
 			 (eq node-type :start))
-		 (let* ((bounds-origin (bounds-origin (gethash (char-code (data node)) *metrics*))))
+		 (let* ((bounds-origin (bounds-origin (gethash (char-code (char-glyph node)) *metrics*))))
 		   (translate-node-to-node node
 					   node
 					   :offset (vec3 0.0
@@ -196,7 +196,7 @@
 	 (node (init-node-msdf baseline
 			       *scale-node* ; get from node-src
 			       (digraph:count-vertices *digraph-main*)
-			       (data node-src))))
+			       (char-glyph node-src))))
     (insert-vertex node)
     (spatial-trees:insert node *r-tree*)
     

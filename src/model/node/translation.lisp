@@ -6,7 +6,7 @@
   ;;
   ;; Get scale from model-matrix
   (v+ (translation (model-matrix node))
-      (let ((bounds-origin (bounds-origin (gethash (char-code (data node)) *metrics*))))
+      (let ((bounds-origin (bounds-origin (gethash (char-code (char-glyph node)) *metrics*))))
 	(vec3 (- (* (aref bounds-origin 0) *scale-node*))
 	      (- (* (aref bounds-origin 1) *scale-node*))
 	      0.0))))
@@ -17,7 +17,7 @@
 			     &key
 			       (offset (vec3 0 0 0)))
   (let* ((origin-b (get-origin-from-node-pos node-b))
-	 (bounds-a (bounds-origin (gethash (char-code (data node-a)) *metrics*)))
+	 (bounds-a (bounds-origin (gethash (char-code (char-glyph node-a)) *metrics*)))
 	 (new-pos (v+ origin-b
 		      offset
 		      (vec3 (+ (* 9.375 +scale-msdf+ *scale-node* n-adv)
@@ -37,7 +37,7 @@
   ;; Move node-a to node-b position; don't change links
   ;; Adjust for baseline
   (let* ((origin-b (get-origin-from-node-pos node-b))
-	 (bounds-a (bounds-origin (gethash (char-code (data node-a)) *metrics*)))
+	 (bounds-a (bounds-origin (gethash (char-code (char-glyph node-a)) *metrics*)))
 	 (new-pos (v+ origin-b
 		      offset
 		      (vec3 (* (aref bounds-a 0) *scale-node*)
