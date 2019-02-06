@@ -70,8 +70,9 @@
      (multiple-value-bind (kb pointer touch tablet)
 	 (dispatch-handlers-events)
        ;; only do below if keyboard events
+       ;; implement for other devices
        (when kb
-	 (dispatch-all-seq-event)))
+	 (dispatch-callbacks-keyboard)))
      (update-states-keyboard-continuous)))
 
 (defun dispatch-handlers-event ()

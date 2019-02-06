@@ -4,7 +4,7 @@
 ;; (mod-logic, (mods key:(state)) (norm key:(state))) : (fn1:nil, fn2:nil)
 
 ;; produce callbacks or call callbacks
-(defun dispatch-all-seq-event ()
+(defun dispatch-callbacks-keyboard ()
   ;; Execute callbacks in order -> merge deps into single ptree
   (with-slots (key-callbacks)
       *controller*
