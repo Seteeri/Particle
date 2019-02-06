@@ -75,8 +75,6 @@
      (update-states-keyboard-continuous)))
 
 (defun dispatch-events-input ()
-  ;; POSS: handle events in parallel
-
   ;; Use structure for this
   (let (kb pointer touch tablet)
     (with-slots (context
@@ -86,18 +84,16 @@
       ;; -1 = timeout = block/infinite
       ;; 0 = return if nothing
       (when (> (c-epoll-wait ep-fd ep-events 1 -1) 0)
+	(libinput:dispatch context)
 	(loop
-      	   :for event := (progn
-			   (libinput:dispatch context)
-			   (libinput:get-event context))
+      	   :for event := (libinput:get-event context)
       	   :until (null-pointer-p event)
-      	   :do
-      	     (progn
-	       (let ((type-event (dispatch-event-handler event)))
-		 (when (eq type-event libinput:keyboard-key)
-		   (setf kb t)))
-      	       (libinput:event-destroy event))
-	   :finally (libinput:dispatch context))))
+      	   :do (progn
+		 (let ((type-event (dispatch-event-handler event)))
+		   (when (eq type-event libinput:keyboard-key)
+		     (setf kb t)))
+      		 (libinput:event-destroy event)
+		 (libinput:dispatch context)))))
     (values kb pointer touch tablet)))
 
 (defun dispatch-event-handler (event)
