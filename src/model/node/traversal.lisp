@@ -3,8 +3,7 @@
 (defun build-nodes-from-string (string)
   (loop
      :for char :across string
-     :do (let ((node (add-node-ascii char)))
-	   t)))
+     :collect (add-node-ascii char)))
 
 (defun build-string-from-nodes ()
   ;; Pass starting node else use node-pointer

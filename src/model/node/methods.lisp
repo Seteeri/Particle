@@ -130,40 +130,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Move to operators?
-
-(defun add-node (data &optional (move-pointer t)) ; rename add-node-to-ptr
-  (let* ((baseline (get-origin-from-node-pos *node-ptr-main*))
-	 (node (init-node-msdf baseline
-			       *scale-node*
-			       (pop *stack-i-nodes*)
-			       data)))
-    
+;; Rename add-node-to-ptr
+(defun add-node (data
+		 &optional
+		   (ix (pop *stack-i-nodes*))
+		   (baseline (get-origin-from-node-pos *node-ptr-main*)))
+  (let ((node (init-node-msdf baseline
+			      *scale-node*
+			      ix
+			      data)))
     (insert-vertex node)
-    (spatial-trees:insert node *r-tree*)
-
-    ;; Factor this out...
-    (when-let* ((node-ptr-out (get-node-ptr-out))
-		(node-type (get-node-type node-ptr-out)))
-
-	       ;; Push new node above for now
-	       (when (or (eq node-type :intra)
-			 (eq node-type :start))
-		 (let* ((bounds-origin (bounds-origin (gethash (char-code (char-glyph node)) *metrics*))))
-		   (translate-node-to-node node
-					   node
-					   :offset (vec3 0.0
-    							 (* +linegap+ *scale-node*)
-    							 0.0)))))
-    ;; Attach node to ptr
-    (insert-node node *node-ptr-main* :out)
-    
-    ;; Advance pointer
-    (when move-pointer
-      (advance-node-of-node *node-ptr-main*
-    			    node
-    			    1.0))
-        
+    (spatial-trees:insert node *r-tree*)    
     node))
 
 (defun delete-node (&key

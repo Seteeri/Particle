@@ -701,3 +701,29 @@ Show slots as edges for objects/structs
            * -> line/string
            
            or put options on left and line on right
+           
+########################################################################
+
+;; (loop
+;;    :do (handler-case
+;; 	   (sb-ext:with-timeout 1
+;; 	     (sleep 2))
+;; 	 (sb-ext:timeout (e)
+;; 	   (format t "Lag detected~%"))))
+
+ (loop
+    :do (handler-case
+ 	   (sb-ext:with-timeout (/ 1 60)
+         (let ((r (+ 0 (random 0.017)))) (sleep r))
+ 	     (format t "Ahead of schedule - flush shm queue~%"))
+ 	 (sb-ext:timeout (e)
+ 	   (format t "Lag detected - flush shm queue~%")
+       (sleep 0.1))))
+       
+Process:
+1. Receive frame
+2. Start timer
+3. On finish early or late: copy shm
+4. If finish late: copy whatever shm
+   - enqueue is atomic
+5. Return frame

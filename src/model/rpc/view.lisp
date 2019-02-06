@@ -9,7 +9,7 @@
 (defun handle-view-sync (time-view)
 
   (execute-tasks-frame)
-  
+
   ;; TODO
   ;; - refactor to function
   ;; All mem
@@ -35,11 +35,14 @@
      :with q := *queue-anim*
      :do (let ((ptree (make-ptree))
 	       (ids (make-hash-table :size 32 :test 'equal))
-	       (queue-retry (sb-concurrency:make-queue)))
+	       (queue-retry (sb-concurrency:make-queue))
+	       (n 0)) ; use list
 	   
 	   (loop
 	      :for item := (sb-concurrency:dequeue q)
 	      :while item
+	      :while (< n 1)
+	      :do (incf n)
 	      :do (when-let ((item-retry (parse-task-frame item ptree ids)))
 			    (sb-concurrency:enqueue item-retry queue-retry)))
 	   
@@ -48,7 +51,7 @@
 		       ;; the only ids need are the terminal ones
 		       ;; -> prefix id with finish so we know which ids to track
 		       (loop :for key :being :the hash-keys :of ids :collect key)
-  		       (lambda (&rest ids))
+  		       (lambda (&rest ids)) ; use ignore?
   		       ptree)
 	     (call-ptree 'finish ptree))
 
@@ -57,6 +60,9 @@
 		 (return))
 	       (progn
 		 (setf q queue-retry)
+
+		 ;; push unto queue-anim again
+		 
 		 ;; (warn "[execute-tasks-frame] retrying task~%")
 		 t)))))
 
