@@ -15,6 +15,7 @@
    (xkb :accessor xkb :initarg :xkb :initform nil)
    (key-states :accessor key-states :initarg :key-states :initform (make-hash-table :size 256))
    (key-callbacks :accessor key-callbacks :initarg :key-callbacks :initform (make-hash-table :size 256))
+   (mailbox-event :accessor mailbox-event :initarg :mailbox-event :initform (sb-concurrency:make-mailbox))
    (ep-events :accessor ep-events :initarg :ep-events :initform nil)
    (ep-fd :accessor ep-fd :initarg :ep-fd :initform nil)))   
 
@@ -65,37 +66,39 @@
 	       :add)
     ep-fd))
 
-(defun run-controller ()
-  (loop
-     (multiple-value-bind (kb pointer touch tablet)
-	 (dispatch-handlers-event)
-       ;; only do below if keyboard events
-       ;; implement for other devices
-       (when kb
-	 (dispatch-callbacks-keyboard)))
-     (update-states-keyboard-continuous)))
+(defun poll-fd-li ()
+  ;; Poll events ASAP and enqueue for processing by controller thread
+  (with-slots (context
+	       mailbox-event
+	       ep-fd
+	       ep-events)
+      *controller*  
+    (loop
+       ;; -1 = timeout = block/infinite
+       ;; 0 = return if nothing
+       (when (> (c-epoll-wait ep-fd ep-events 1 -1) 0)
+	 (libinput:dispatch context)
+	 (loop
+      	    :for event := (libinput:get-event context)
+      	    :until (null-pointer-p event)
+      	    :do (progn
+		  (sb-concurrency:send-message mailbox-event
+					       event)
+		  (libinput:dispatch context)))))))
 
-(defun dispatch-handlers-event ()
-  ;; Use structure for this
-  (let (kb pointer touch tablet)
-    (with-slots (context
-		 ep-fd
-		 ep-events)
-	*controller*
-      ;; -1 = timeout = block/infinite
-      ;; 0 = return if nothing
-      (when (> (c-epoll-wait ep-fd ep-events 1 -1) 0)
-	(libinput:dispatch context)
-	(loop
-      	   :for event := (libinput:get-event context)
-      	   :until (null-pointer-p event)
-      	   :do (progn
-		 (let ((type-event (dispatch-handler-event event)))
-		   (when (eq type-event libinput:keyboard-key)
-		     (setf kb t)))
-      		 (libinput:event-destroy event)
-		 (libinput:dispatch context)))))
-    (values kb pointer touch tablet)))
+(defun run-controller ()
+  (with-slots (mailbox-event)
+      *controller*
+    (loop
+       :for event := (sb-concurrency:receive-message mailbox-event)
+       :do (progn
+	     (let ((type-event (dispatch-handler-event event)))
+	       (libinput:event-destroy event)
+	       ;; implement for other devices
+	       (when (eq type-event libinput:keyboard-key)
+		 (dispatch-callbacks-keyboard)))
+	     ;; always update
+	     (update-states-keyboard-continuous)))))
 
 (defun dispatch-handler-event (event)
 

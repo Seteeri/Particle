@@ -136,6 +136,7 @@
 	#:lparallel.queue
 	#:trivial-timers)
   (:export #:init-controller
+	   #:poll-fd-li
 	   #:run-controller
 	   #:register-callback
 	   #:unregister-callback

@@ -1,12 +1,12 @@
 (in-package :protoform.model)
 
 (defun init-threads ()
-  (let ((thread-view  (bordeaux-threads:make-thread #'serve-client))
-	;; (thread-model (bordeaux-threads:make-thread #'process-queue-input))
-	(thread-input (bordeaux-threads:make-thread #'run-controller)))
+  (let ((thread-view       (bordeaux-threads:make-thread #'serve-client))
+	(thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))
+	(thread-controller (bordeaux-threads:make-thread #'run-controller)))
     (bordeaux-threads:join-thread thread-view)
-    ;; (bordeaux-threads:join-thread thread-model)
-    (bordeaux-threads:join-thread thread-input)))
+    (bordeaux-threads:join-thread thread-libinput)
+    (bordeaux-threads:join-thread thread-controller)))
 
 (defun set-projview ()
   (setf *projview* (make-instance 'projview
