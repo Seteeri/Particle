@@ -18,8 +18,6 @@
 		  (receive-result *channel-input*)))))
 
 (defun dispatch-seq-event (seq-event)
-  ;; Callbacks are executed in order
-  ;; Can run all callbacks in parallel?(format t "a~%" i)
   (when (is-seq-event-valid seq-event)
     (loop :for cb :being :the :hash-keys :of (get-callbacks seq-event)
        ;; Callbacks must not share data...

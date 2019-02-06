@@ -1,7 +1,5 @@
 (in-package :protoform.model)
 
-;; user-facing functions - triggered by callbacks or commands typed and eval'd by user
-
 ;; Abstract function to anim later
 (defun animate-translate-camera (seq-event
 				 fn-new
@@ -19,7 +17,8 @@
 			     :fn-easing #'easing:in-cubic
 			     :fn-new fn-new
 			     :value-start start
-			     :value-delta delta)))
+			     :value-delta delta))
+	(ptree (make-ptree)))	
 
     ;; Below will throw error if the func exists (anim already playing)
     ;; Solutions:
@@ -32,13 +31,18 @@
     ;;    - Anim will only play if users activates it
     ;;      when there is no existing anim playing
     
-    ;; in animation.lisp
-    (enqueue-anim anim
-		  id
-		  (lambda ()
-		    (funcall #'run-anim
-			     seq-event
-			     anim)))))
+    (ptree-fn id
+	      '()
+	      (lambda ()
+		(funcall #'run-anim
+			 seq-event
+			 anim))
+	      ptree)
+    
+    (sb-concurrency:enqueue (list ptree
+				  id)
+			    *queue-anim*)))
+
 
 ;; Match translate fn?
 (defun animate-scale-ortho (seq-event
@@ -58,12 +62,17 @@
 			       :fn-easing #'easing:linear
 			       :fn-new fn-new
 			       :value-start scale-ortho
-			       :value-delta delta)))
-      ;; in animation.lisp
-      (enqueue-anim anim
-		    id
-		    (lambda ()
-		      (funcall #'run-anim
-			       seq-event
-			       anim))))))
-
+			       :value-delta delta))
+	  (ptree (make-ptree)))
+    
+    (ptree-fn id
+	      '()
+	      (lambda ()
+		(funcall #'run-anim
+			 seq-event
+			 anim))
+	      ptree)
+    
+    (sb-concurrency:enqueue (list ptree
+				  id)
+			    *queue-anim*))))

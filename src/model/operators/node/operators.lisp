@@ -249,14 +249,20 @@
 			     :fn-easing #'easing:in-exp ;cubic
 			     :fn-new fn-new
 			     :value-start start
-			     :value-delta delta)))
-    ;; in animation.lisp
-    (enqueue-anim anim
-		  id
-		  (lambda ()
-		    (funcall #'run-anim
-			     seq-event
-			     anim)))))
+			     :value-delta delta))
+	(ptree (make-ptree)))
+
+    (ptree-fn id
+	      '()
+	      (lambda ()
+		(funcall #'run-anim
+			 seq-event
+			 anim))
+	      ptree)
+    
+    (sb-concurrency:enqueue (list ptree
+				  id)
+			    *queue-anim*)))
 
 
 

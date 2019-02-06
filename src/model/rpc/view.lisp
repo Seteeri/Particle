@@ -27,74 +27,25 @@
 	     `(("projview" 0          ,(* 4 16 2)))))))))
 
 (defun execute-tasks-frame ()
-  ;; Build ptree - serial
-  ;; Execute ptree - parallel
+  (let ((items-next ()))
+    (loop
+       :for item := (sb-concurrency:dequeue *queue-anim*)
+       :while item
+       :do (destructuring-bind (ptree id)
+	       item
+	     ;; Function can return item for next frame
+	     (let ((ptree-next (call-ptree id ptree)))
+	       (when (listp ptree-next)
+		 (push ptree-next items-next)))))
+    (dolist (item-ptree items-next)
+      (sb-concurrency:enqueue item-ptree	    
+			      *queue-anim*))))
 
-  ;; Loop until queue empty
-  (loop
-     :with q := *queue-anim*
-     :do (let ((ptree (make-ptree))
-	       (ids (make-hash-table :size 32 :test 'equal))
-	       (queue-retry (sb-concurrency:make-queue))
-	       (n 0)) ; use list
-	   
-	   (loop
-	      :for item := (sb-concurrency:dequeue q)
-	      :while item
-	      :while (< n 1)
-	      :do (incf n)
-	      :do (when-let ((item-retry (parse-task-frame item ptree ids)))
-			    (sb-concurrency:enqueue item-retry queue-retry)))
-	   
-	   (unless (zerop (hash-table-count ids))
-	     (ptree-fn 'finish
-		       ;; the only ids need are the terminal ones
-		       ;; -> prefix id with finish so we know which ids to track
-		       (loop :for key :being :the hash-keys :of ids :collect key)
-  		       (lambda (&rest ids)) ; use ignore?
-  		       ptree)
-	     (call-ptree 'finish ptree))
-
-	   (if (sb-concurrency:queue-empty-p queue-retry)
-	       (progn
-		 (return))
-	       (progn
-		 (setf q queue-retry)
-
-		 ;; push unto queue-anim again
-		 
-		 ;; (warn "[execute-tasks-frame] retrying task~%")
-		 t)))))
-
-(defun parse-task-frame (item ptree ids)
-  (destructuring-bind (anim id args fn)
-      item
-    (handler-case
-	(progn
-  	  (ptree-fn id
-  		    args
-  		    fn
-  		    ptree)
-	  ;; Does below need to be in handler-case?
-	  (setf (gethash id ids) anim))
-      (lparallel.ptree:ptree-redefinition-error (c)
-	
-	(when (not anim)
-	  ;; (warn (format nil "parse-task-frame -> retry enqueue task: ~S" item))
-	  (return-from parse-task-frame item))
-	
-	;; Keep anim with latest start time or nil
-	;; - Create callback for when animation pauses?
-	;; - Create option to ignore instead of restart
-	(when anim
-	  (let ((anim-prev (gethash id ids)))
-	    (unless (time-start anim-prev)
-	      ;; Modify existing anim slots
-	      (copy-anim anim-prev anim)))
-	  
-	  ;; (fmt-model t "execute-tasks-anim" "Restart anim for ~a~%" id)
-	  t))))
-  nil)
+;; (handler-case
+;; 	(progn
+;; 	  t
+;;   (lparallel.ptree:ptree-redefinition-error (c)
+;; 	t)
 
 (defun execute-tasks-shm ()
   

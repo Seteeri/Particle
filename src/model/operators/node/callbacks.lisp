@@ -80,84 +80,84 @@
 
 (defun add-node-ascii-cb (seq-key)
   (fmt-model t "add-node-ascii" "~a~%" seq-key)
-  (sb-concurrency:enqueue (list nil
-				'add-node ;; (make-symbol (format nil "~a~%" seq-key))
-				'()
-				(lambda ()
-				  (funcall #'add-node-ascii (code-char (second (reverse (second seq-key))))))) ; create aux fn for this
-			  *queue-anim*))
+  (let ((ptree (make-ptree)))
+    (ptree-fn 'add-node ;; (make-symbol (format nil "~a~%" seq-key))
+	      '()
+	      (lambda ()
+		(funcall #'add-node-ascii (code-char (second (reverse (second seq-key))))))
+	      ptree) ; create aux fn for this
+    (sb-concurrency:enqueue (list ptree
+				  'add-node)
+			    *queue-anim*)))
 
 (defun backspace-node-ascii-cb (seq-key)
   (fmt-model t "backspace-node-ascii" "~a~%" seq-key)
-  (sb-concurrency:enqueue (list nil
-				'add-node ; verify
-				'()
-				(lambda ()
-				  (funcall #'backspace-node-ascii)))
-			  *queue-anim*))
+  (let ((ptree (make-ptree)))
+    (ptree-fn 'backspace-node ; verify
+	      '()
+	      (lambda ()
+		(funcall #'backspace-node-ascii))
+	      ptree)
+    (sb-concurrency:enqueue (list ptree
+				  'backspace-node)
+			    *queue-anim*)))
 
 (defun add-node-tab-cb (seq-key)
   (fmt-model t "add-node-tab" "~a~%" seq-key)
-  (sb-concurrency:enqueue (list nil
-				'add-node
-				'()
-  				(lambda ()
-  				  (funcall #'add-node-tab)))
-			  *queue-anim*))
+  (let ((ptree (make-ptree)))
+    (ptree-fn 'add-node-tab
+	      '()
+  	      (lambda ()
+  		(funcall #'add-node-tab))
+	      ptree)
+    (sb-concurrency:enqueue (list ptree
+				  'add-node-tab-node)
+			    *queue-anim*)))
 
 (defun add-node-newline-cb (seq-key)
   (fmt-model t "add-node-newline" "~a~%" seq-key)
-  (sb-concurrency:enqueue (list nil
-				'add-node
-				'()
-  				(lambda ()
-  				  (funcall #'add-node-newline)))
-			  *queue-anim*))
+  (let ((ptree (make-ptree)))
+    (ptree-fn 'add-node-newline
+	      '()
+  	      (lambda ()
+  		(funcall #'add-node-newline))
+	      ptree)
+    (sb-concurrency:enqueue (list ptree
+				  'add-node-newline)
+			    *queue-anim*)))
   
 (defun eval-node-cb (seq-key)
   (fmt-model t "eval-node" "~a~%" seq-key)
-  (sb-concurrency:enqueue (list nil
-				'eval-node
-				'()
-				(lambda ()
-				  (funcall #'eval-node)))
-			  *queue-anim*))
+  (let ((ptree (make-ptree)))
+    (ptree-fn 'eval-node
+	      '()
+	      (lambda ()
+		(funcall #'eval-node))
+	      ptree)
+    (sb-concurrency:enqueue (list ptree
+				  'eval-node)
+			    *queue-anim*)))
 
 (defun show-node-ids-cb (seq-key)
   (fmt-model t "show-node-ids" "~a~%" seq-key)
-  (sb-concurrency:enqueue (list nil
-				'show-node-ids
-				'()
-				(lambda ()
-				  (funcall #'show-node-ids)))
-			  *queue-anim*))
+  (let ((ptree (make-ptree)))
+    (ptree-fn 'show-node-ids
+	      '()
+	      (lambda ()
+		(funcall #'show-node-ids))
+	      ptree)
+    (sb-concurrency:enqueue (list ptree
+				  'show-node-ids
+				  *queue-anim*))))
 
 (defun cut-node-cb (seq-key)
-  (fmt-model t "cut-node" "~a~%" seq-key)
-  (sb-concurrency:enqueue (list nil
-				'cut-node
-				'()
-				(lambda ()
-				  (funcall #'cut-node)))
-			  *queue-anim*))
+  (fmt-model t "cut-node" "~a~%" seq-key))
 
 (defun copy-node-cb (seq-key)
-  (fmt-model t "copy-node" "~a~%" seq-key)
-  (sb-concurrency:enqueue (list nil
-				'copy-node
-				'()
-				(lambda ()
-				  (funcall #'copy-node)))
-			  *queue-anim*))
+  (fmt-model t "copy-node" "~a~%" seq-key))
 
 (defun paste-node-cb (seq-key)
-  (fmt-model t "paste-node" "~a~%" seq-key)
-  (sb-concurrency:enqueue (list nil
-				'paste-node
-				'()
-				(lambda ()
-				  (funcall #'paste-node)))
-			  *queue-anim*))
+  (fmt-model t "paste-node" "~a~%" seq-key))
 
 (defun translate-node-ptr-left-cb (seq-event)
   (with-slots (model-matrix)

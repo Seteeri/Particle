@@ -33,16 +33,6 @@
 ;; What to do if object/node is destroyed, this must be destroyed also
 ;; Which means attach animations to the object (node) so they can be tracked
 
-(defun enqueue-anim (anim
-		     id
-		     fn)
-  ;; (fmt-model t "enqueue-anim" "~a~%" id)
-  (sb-concurrency:enqueue (list anim
-				id 
-				'()
-				fn)
-			  *queue-anim*))
-
 (defun copy-anim (a b)
   (setf (value-start  a) (value-start  b)
 	(time-start   a) (time-start   b)
@@ -94,10 +84,14 @@
 	  (progn
 	    (when nil
 	      (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed))
-	    t)
-	  (enqueue-anim anim
-			id
-			(lambda ()
-			  (funcall fn-enqueue
-				   seq-event
-				   anim)))))))
+	    nil)
+
+	  (let ((ptree (make-ptree)))
+	    (ptree-fn id
+		      '()
+		      (lambda ()
+			(funcall fn-enqueue
+				 seq-event
+				 anim))
+		      ptree)
+	    (list ptree id))))))
