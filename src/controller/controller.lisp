@@ -68,13 +68,13 @@
 (defun run-controller ()
   (loop
      (multiple-value-bind (kb pointer touch tablet)
-	 (dispatch-events-input)
+	 (dispatch-handlers-events)
        ;; only do below if keyboard events
        (when kb
 	 (dispatch-all-seq-event)))
      (update-states-keyboard-continuous)))
 
-(defun dispatch-events-input ()
+(defun dispatch-handlers-event ()
   ;; Use structure for this
   (let (kb pointer touch tablet)
     (with-slots (context
@@ -89,14 +89,14 @@
       	   :for event := (libinput:get-event context)
       	   :until (null-pointer-p event)
       	   :do (progn
-		 (let ((type-event (dispatch-event-handler event)))
+		 (let ((type-event (dispatch-handler-event event)))
 		   (when (eq type-event libinput:keyboard-key)
 		     (setf kb t)))
       		 (libinput:event-destroy event)
 		 (libinput:dispatch context)))))
     (values kb pointer touch tablet)))
 
-(defun dispatch-event-handler (event)
+(defun dispatch-handler-event (event)
 
   ;; libinput:none
   ;; libinput:device-added
