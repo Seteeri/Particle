@@ -87,18 +87,13 @@
 		    ;; data is not serialized until task is called
 		    ;; so it can be done in parallel
 
-		    (if (gethash shm extents)
-			(progn
-			  (setf (first (gethash shm extents))
-				(min (first (gethash shm extents))
-				     offset))
-			  (setf (second (gethash shm extents))
-				(max (second (gethash shm extents))
-				     (+ offset len-data))))
-			(progn
-			  (setf (gethash shm extents)
-				(list offset (+ offset len-data))))))))
-    
+		    (if-let ((extent (gethash shm extents)))
+		      (setf (first extent)  (min (first extent)
+					          offset)
+			    (second extent) (max (second extent)
+						 (+ offset len-data)))
+		      (setf (gethash shm extents)
+			    (list offset (+ offset len-data)))))))
     extents))
 
 ;; Maybe move to memcpy
