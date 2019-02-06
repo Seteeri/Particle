@@ -68,7 +68,7 @@
 (defun run-controller ()
   (loop
      (multiple-value-bind (kb pointer touch tablet)
-	 (dispatch-handlers-events)
+	 (dispatch-handlers-event)
        ;; only do below if keyboard events
        ;; implement for other devices
        (when kb

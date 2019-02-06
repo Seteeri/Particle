@@ -84,13 +84,19 @@
 				       (:file "controller")
 				       (:file "xkb")
 				       (:file "callback")
-				       (:file "dispatch")
-				       (:module events
-				       		:pathname "events"
+				       (:module keyboard
+				       		:pathname "keyboard"
 				       		:components ((:file "keyboard")
-							     (:file "touch")
-							     (:file "pointer")
-							     (:file "tablet-tool")))))
+							     (:file "dispatch")))
+				       (:module touch
+				       		:pathname "touch"
+				       		:components ((:file "touch")))
+				       (:module pointer
+				       		:pathname "pointer"
+				       		:components ((:file "pointer")))
+				       (:module tablet-tool
+				       		:pathname "tablet-tool"
+				       		:components ((:file "tablet-tool")))))
 		 (:module font
 			  :pathname "src/font"
 			  :components ((:file "metrics")))
