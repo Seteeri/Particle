@@ -50,7 +50,7 @@
 	   :for device-path :in device-paths
 	   :do (let ((device (libinput:path-add-device context
 						       (namestring device-path))))
-		 (when (not (null-pointer-p device))
+		 (unless (null-pointer-p device)
 		   (if (not (or (libinput:device-has-capability device
 								libinput:device-cap-keyboard)
 				(libinput:device-has-capability device
@@ -135,36 +135,36 @@
     (cond
       ((= type libinput:keyboard-key)
        (handle-event-keyboard event))
+
+      ;; ((= type libinput:pointer-button)
+      ;;  t)
       
-      ((= type libinput:pointer-motion)
-       (handle-event-pointer-motion event))
+      ;; ((= type libinput:pointer-motion)
+      ;;  (handle-event-pointer-motion event))
       
-      ((= type libinput:touch-down)
-       (handle-event-touch event))
+      ;; ((= type libinput:touch-down)
+      ;;  (handle-event-touch event))
 
-      ((= type libinput:touch-motion)
-       (handle-event-touch event))
+      ;; ((= type libinput:touch-motion)
+      ;;  (handle-event-touch event))
 
-      ((= type libinput:touch-up)
-       (handle-event-touch-2 event))
+      ;; ((= type libinput:touch-up)
+      ;;  (handle-event-touch-2 event))
 
-      ((= type libinput:touch-cancel)
-       (handle-event-touch-2 event))
+      ;; ((= type libinput:touch-cancel)
+      ;;  (handle-event-touch-2 event))
       
-      ((= type libinput:touch-frame)
-       (handle-event-touch-2 event))
-      
-      ((= type libinput:pointer-button)
-       t)
+      ;; ((= type libinput:touch-frame)
+      ;;  (handle-event-touch-2 event))
 
-      ((= type libinput:tablet-tool-axis)
-       (handle-event-tablet-tool-axis event))
+      ;; ((= type libinput:tablet-tool-axis)
+      ;;  (handle-event-tablet-tool-axis event))
 
-      ((= type libinput:tablet-tool-proximity)
-       (handle-event-tablet-tool-proximity event))
+      ;; ((= type libinput:tablet-tool-proximity)
+      ;;  (handle-event-tablet-tool-proximity event))
 
-      ((= type libinput:tablet-tool-tip)
-       (handle-event-tablet-tool-tip event))
+      ;; ((= type libinput:tablet-tool-tip)
+      ;;  (handle-event-tablet-tool-tip event))
       
       (t
        t))
