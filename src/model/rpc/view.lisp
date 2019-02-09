@@ -6,38 +6,19 @@
       (values (first extents-nodes)
 	      (second extents-nodes)))))
 
-(defun handle-view-sync (time-view)
+(defun handle-view-sync (time-frame)
 
   (let ((time (osicat:get-monotonic-time)))
-
-    ;; (sb-concurrency:enqueue time-view
-    ;; 			    *queue-time-frame*)
     
     (execute-tasks-sync)
     
-    ;; TODO
-    ;; - refactor to function
-    ;; All mem
-    ;; (* +size-struct-instance+ (+ (car *vertices-main*)
-    ;; 				 (car *edges-main*))))
-    (let ((extents (execute-tasks-shm)))
-      (when (> (hash-table-count extents) 0)
-	(multiple-value-bind (min-nodes max-nodes)
-	    (get-extents *shm-nodes* extents)
-	  (if min-nodes
-	      (memcpy-shm-to-cache-flag*
-	       `(("nodes"    ,min-nodes ,max-nodes)
-		 ("projview" 0          ,(* 4 16 2))))
-	      (memcpy-shm-to-cache-flag*
-	       `(("projview" 0          ,(* 4 16 2))))))))
+    (send-msg-shm)
 
     (let* ((time-final (osicat:get-monotonic-time))
 	   (time-delta (- time-final time))
 	   (time-delta-ms (* time-delta 1000)))
       (when (> time-delta-ms (* (/ 1 60) 1000))
 	(format t "Frame Time: ~8$ ms~%" time-delta-ms)))
-
-    ;; (sb-ext:gc)
 
     t))
 
@@ -55,6 +36,23 @@
     (dolist (item-ptree items-next)
       (sb-concurrency:enqueue item-ptree	    
 			      *queue-anim*))))
+
+(defun send-msg-shm ()
+  ;; TODO
+  ;; - refactor to function
+  ;; All mem
+  ;; (* +size-struct-instance+ (+ (car *vertices-main*)
+  ;; 				 (car *edges-main*))))
+  (let ((extents (execute-tasks-shm)))
+    (when (> (hash-table-count extents) 0)
+      (multiple-value-bind (min-nodes max-nodes)
+	  (get-extents *shm-nodes* extents)
+	(if min-nodes
+	    (memcpy-shm-to-cache-flag*
+	     `(("nodes"    ,min-nodes ,max-nodes)
+	       ("projview" 0          ,(* 4 16 2))))
+	    (memcpy-shm-to-cache-flag*
+	     `(("projview" 0          ,(* 4 16 2)))))))))
 
 (defun execute-tasks-shm ()
   

@@ -19,7 +19,6 @@
 	*queue-anim*       (sb-concurrency:make-queue) ; sync tasks
 	*mailbox-model*    (sb-concurrency:make-mailbox) ; async tasks
 	*queue-shm*        (sb-concurrency:make-queue)
-	;; *queue-time-frame* (sb-concurrency:make-queue)
 
 	;; move to ptree?
 	*stack-i-nodes* (loop :for i :from 1 :to (/ 134217728 4)
