@@ -28,10 +28,13 @@
 				+scale-msdf+)))
 
 (defun set-digraph ()
-  (setf *digraph-main*       (digraph:make-digraph)
-	*digraph-vcs*       (digraph:make-digraph)
-	*digraph-clipboard* (digraph:make-digraph)
-	*digraph-repl*      (digraph:make-digraph)))
+  (setf *digraph-main* (digraph:make-digraph)
+	*lock-main*    (sb-thread:make-mutex)
+	*digraph-vcs*  (digraph:make-digraph)
+	*lock-vcs*     (sb-thread:make-mutex)
+	
+	*digraph-clip* (digraph:make-digraph)
+	*digraph-repl* (digraph:make-digraph)))
 
 (defun set-shm-projview (projview)
   (setf *shm-projview* (init-shm-projview)))

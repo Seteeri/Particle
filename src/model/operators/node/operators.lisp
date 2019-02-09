@@ -259,7 +259,7 @@
 			 seq-event
 			 anim))
 	      ptree)
-    
+
     (sb-concurrency:enqueue (list ptree
 				  id)
 			    *queue-anim*)))
