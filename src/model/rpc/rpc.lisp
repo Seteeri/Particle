@@ -4,6 +4,12 @@
 
 (defun init-conn-rpc-view (&rest deps)
   (declare (ignore deps))
+
+  (setf *buffer-sock-ptr* (foreign-alloc :unsigned-char :count 212992)
+	*buffer-sock-array* (make-array 212992
+					:adjustable nil
+					:fill-pointer nil
+					:element-type '(unsigned-byte 8)))
   
   (setf *sock-view* (init-sock-client *path-socket-view* :block))
 
