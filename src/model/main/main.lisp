@@ -16,12 +16,16 @@
 	*channel*       (make-channel)
 	*channel-input* (make-channel) ; rename to -controller
 
-	*queue-anim*    (sb-concurrency:make-queue)
-	*queue-shm*     (sb-concurrency:make-queue)
+	*queue-anim*       (sb-concurrency:make-queue) ; sync tasks
+	*mailbox-model*      (sb-concurrency:make-mailbox) ; async tasks
+	*queue-shm*        (sb-concurrency:make-queue)
+	*queue-time-frame* (sb-concurrency:make-queue)
 
+	;; move to ptree?
 	*stack-i-nodes* (loop :for i :from 1 :to (/ 134217728 4)
 			   :collect i) ; buffer size / node struct size
-	
+
+	;; move to ptree
 	*r-tree*        (spatial-trees:make-spatial-tree :r
 							 :rectfun #'node-rect)
 	
@@ -143,3 +147,34 @@
     ;; 	       (call-ptree id tree))))
     
     (call-ptree 'sock-view tree)))
+
+(defun execute-tasks-async ()
+  ;; - bound frame time drift -> indictes model loop is slowing
+
+  ;; Problem: Anims rely on frame times...
+  ;; - must do synchronous
+  ;; - if possible, move code to compute shader
+  ;;   http://theorangeduck.com/page/avoiding-shader-conditionals
+
+  ;; - Implement per-node lock
+  ;; - Refactor non-anim callbacks to use this
+  
+  (loop
+     (let ((items-next ()))
+	   ;; (time-frame (sb-concurrency:dequeue *queue-time-frame*)))
+
+       ;; (when time-frame
+       ;; 	 (format t "~a~%" time-frame))
+       
+       (loop
+	  :for item := (sb-concurrency:receive-message *mailbox-model*)
+	  :while item
+	  :do (destructuring-bind (ptree id)
+		  item
+		(call-ptree id ptree))))))
+
+;; (handler-case
+;; 	(progn
+;; 	  t
+;;   (lparallel.ptree:ptree-redefinition-error (c)
+;; 	t)

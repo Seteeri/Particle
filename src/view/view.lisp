@@ -238,15 +238,14 @@
   (glfw:swap-buffers)
 
   ;; Send frame
-  (when t
-    (let ((time (osicat:get-monotonic-time)))
-      
-      ;; (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
-      (setf *time-frame-last* time)
-
-      (send-message (sock-client *view*)
-    		    (buffer-sock-ptr *view*)
-		    (format nil "(handle-view-sync ~S)" time))))
+  (let ((time (osicat:get-monotonic-time)))
+    
+    ;; (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
+    ;; (setf *time-frame-last* time)
+    
+    (send-message (sock-client *view*)
+    		  (buffer-sock-ptr *view*)
+		  (format nil "(handle-view-sync ~S)" time)))
 
   (run-server #x100))
 

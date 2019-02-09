@@ -727,3 +727,42 @@ Process:
 4. If finish late: copy whatever shm
    - enqueue is atomic
 5. Return frame
+
+
+Model waits for message
+View sends message after draw
+Model executes tasks
+Model sends message, and waits again...
+
+Problem is model has to wait until draw to start next op
+
+-> Must figure out how to operate on nodes without locks...
+
+Add/remove nodes relies on graph which has to be locked
+Modifying node slots relies on per-node lock
+
+Instead of digraph, rewrite graph using lock free skip list
+
+Digraph uses hashtable of nodes : (preds . succs)
+
+https://stackoverflow.com/questions/14338732/is-it-possible-to-implement-lock-free-map-in-c
+
+Do per node lock, remove edge or insert edge will have to lock both
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+* sync - must finish same frame; will block rasterizer
+- thread pool
+- use for status information
+- these functions are assumed to finish in sufficient time so just
+have async run independent of frame...no wait shm has to be sync'd
+  - async can block sync
+- remember, views checks messages to see if it needs to copy shm
+  once model sends message, cannot do shm ops until next message (or make this explicit)
+  -> MAKE MODEL RECEIVE MESSAGE FROM VIEW WHEN SHM DONE
+* async - can finish any frame
+- thread pool
+- run independent of view frame message; inserts into shm
+  -> PROBLEM! sync/async share data which requires locks/sync...
+  - user must make ensure no overlapping ops...
+- when async done, insert shm which will only be done in sync
