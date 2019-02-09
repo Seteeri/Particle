@@ -17,19 +17,28 @@
 
 ;;;;;;;;;;;;;
 
-(defparameter *queue-anim* nil)
-(defparameter *queue-shm* nil)
-
 (defparameter *width* nil)
 (defparameter *height* nil)
 (defparameter *inst-max* nil)
 
+(defparameter *queue-anim* nil)
+(defparameter *queue-shm* nil)
+(defparameter *mailbox-model* nil)
+
+(defparameter *stack-i-nodes* nil)
+(defparameter *mutex-stack-nodes* nil)
+
+(defparameter *r-tree* nil)
+(defparameter *mutex-r-tree* nil)
+
+(defparameter *digraph-main* nil)
+(defparameter *mutex-main* nil)
+(defparameter *digraph-vcs* nil)
+(defparameter *mutex-vcs* nil)
+
 (defparameter *sock-view* nil)
-(defparameter *buffer-sock-ptr* (foreign-alloc :unsigned-char :count 212992))
-(defparameter *buffer-sock-array* (make-array 212992
-					      :adjustable nil
-					      :fill-pointer nil
-					      :element-type '(unsigned-byte 8)))
+(defparameter *buffer-sock-ptr* nil)
+(defparameter *buffer-sock-array* nil)
 (defparameter *projview* nil)
 
 ;; digraph main

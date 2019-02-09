@@ -15,6 +15,12 @@
   (setf *kernel*        (make-kernel 4)
 	*channel*       (make-channel)
 	*channel-input* (make-channel) ; rename to -controller
+
+	*buffer-sock-ptr* (foreign-alloc :unsigned-char :count 212992)
+	*buffer-sock-array* (make-array 212992
+					:adjustable nil
+					:fill-pointer nil
+					:element-type '(unsigned-byte 8))
 	
 	;; Simply set here since no fn required
 	*width*         width
@@ -26,6 +32,10 @@
   
   ;; Then start permanent threads
   (init-threads)
+
+  (sb-ext:gc :full t)
+  ;; (room t)
+  ;; (force-output)
   
   (fmt-model t "main-init" "Finished model initialization~%"))
 
