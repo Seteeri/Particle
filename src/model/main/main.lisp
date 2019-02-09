@@ -157,20 +157,20 @@
 
   ;; - Implement per-node lock
   ;; - Refactor non-anim callbacks to use this
-  
-  (loop
-     (let ((items-next ()))
-	   ;; (time-frame (sb-concurrency:dequeue *queue-time-frame*)))
 
-       ;; (when time-frame
-       ;; 	 (format t "~a~%" time-frame))
-       
-       (loop
-	  :for item := (sb-concurrency:receive-message *mailbox-model*)
-	  :while item
-	  :do (destructuring-bind (ptree id)
-		  item
-		(call-ptree id ptree))))))
+  (loop
+     :for item := (sb-concurrency:receive-message *mailbox-model*)
+     :do (let ((items-next ()))	   
+	   (destructuring-bind (ptree id)
+	       item
+	     (call-ptree id ptree)))))
+
+;; (defparameter *array* (make-array 1000000
+;; 				  :element-type '(UNSIGNED-BYTE 8)
+;; 				  :adjustable nil
+;; 				  :fill-pointer nil
+;; 				  :initial-contents (loop :for i :from 0 :below 1000000 :collect 0)))
+;; (time (progn (qbase64:encode-bytes *array*) t))
 
 ;; (handler-case
 ;; 	(progn

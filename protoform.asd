@@ -31,7 +31,9 @@
 		 #:skip-list
 		 #:sb-concurrency
 		 #:pack
-		 #:spatial-trees)
+		 #:spatial-trees
+		 #:qbase64
+		 #:cl-redis)
     ;; #:babel
     ;; #:dlist
     :serial t

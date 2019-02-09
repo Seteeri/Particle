@@ -766,3 +766,7 @@ have async run independent of frame...no wait shm has to be sync'd
   -> PROBLEM! sync/async share data which requires locks/sync...
   - user must make ensure no overlapping ops...
 - when async done, insert shm which will only be done in sync
+
+Placing data in redis adds additional steps
+view: send redis + wait + recv redis/decode str->base64 + memcpy
+model: encode base64->str
