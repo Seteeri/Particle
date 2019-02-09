@@ -104,7 +104,7 @@
 			 (setf (vy3 (translation model-matrix)) value-new)
 			 (enqueue-node-ptr))
 		       (vy3 (translation model-matrix))
-		       (* +linegap+ *scale-node*)
+		       (* +linegap+ *scale-node* 4)
 		       'move-pointer-y)))
 
 (defun translate-node-ptr-down-cb (seq-event)
@@ -115,26 +115,32 @@
 			 (setf (vy3 (translation model-matrix)) value-new)
 			 (enqueue-node-ptr))
 		       (vy3 (translation model-matrix))
-		       (- (* +linegap+ *scale-node*))
+		       (- (* +linegap+ *scale-node* 4))
 		       'move-pointer-y)))
 
 (defun move-node-ptr-in-cb (seq-event)
   (fmt-model t "move-node-ptr-in" "~a~%" seq-event)
-  (sb-concurrency:enqueue (list nil
-				'move-node-ptr
-				'()
-				(lambda ()
-				  (funcall #'move-node-ptr :in)))
-			  *queue-anim*))
+  (let ((ptree (make-ptree)))
+    (ptree-fn 'move-node-ptr-in
+	      '()
+	      (lambda ()
+		(funcall #'move-node-ptr :in))
+	      ptree)
+    (sb-concurrency:send-message *mailbox-model*
+				 (list ptree
+				       'move-node-ptr-in))))
 
 (defun move-node-ptr-out-cb (seq-event)
   (fmt-model t "move-node-ptr-out" "~a~%" seq-event)
-  (sb-concurrency:enqueue (list nil
-				'move-node-ptr
-				'()
-				(lambda ()
-				  (funcall #'move-node-ptr :out)))
-			  *queue-anim*))
+  (let ((ptree (make-ptree)))
+    (ptree-fn 'move-node-ptr-out
+	      '()
+	      (lambda ()
+		(funcall #'move-node-ptr :out))
+	      ptree)
+    (sb-concurrency:send-message *mailbox-model*
+				 (list ptree
+				       'move-node-ptr-out))))
 
 ;; (defun print-graph-cb (seq-key)
 ;;   (fmt-model t "print-graph" "~a~%" seq-key)
@@ -180,7 +186,18 @@
   ;;     node))
 
   ;; symbol can do about 800 chars in 16.7 ms
-  
+
+  (let ((ptree (make-ptree)))
+    (ptree-fn 'print-text
+	      '()
+  	      (lambda ()
+  		(funcall #'print-text))
+	      ptree)
+    (sb-concurrency:send-message *mailbox-model*
+				 (list ptree
+				       'print-text))))
+
+(defun print-text ()
   (let ((string "HELLO_WORLD!")
 	(baseline (get-origin-from-node-pos *node-ptr-main*))
 	(sym-prev nil))
@@ -195,19 +212,13 @@
 				  (list sym-prev)
 				  '())))
 	     (setf sym-prev sym)
-	     (sb-concurrency:enqueue (list nil
-					   sym
-					   sym-prev-2
-					   (lambda ()
-					     (let ((node (init-node-msdf (v+ baseline
-									     (vec3 (* 9.375 +scale-msdf+ *scale-node* i-2)
-										   0
-										   0))
-  									 *scale-node*
-  									 ix
-  									 c)))
-					       (insert-vertex node)
-					       (spatial-trees:insert node *r-tree*)					       
-					       (enqueue-node node))))
-				     *queue-anim*)
-	     t))))
+	     (let ((node (init-node-msdf (v+ baseline
+					     (vec3 (* 9.375 +scale-msdf+ *scale-node* i-2)
+						   0
+						   0))
+  					 *scale-node*
+  					 ix
+  					 c)))
+	       (insert-vertex node)
+	       (spatial-trees:insert node *r-tree*)					       
+	       (enqueue-node node))))))

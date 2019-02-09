@@ -39,8 +39,10 @@
 
     (enqueue-node-ptr)
     (enqueue-node node-new)
+    
     ;; Add event to VCS graph
     (add-node-vcs)
+    
     node-new))
 
 (defun backspace-node-ascii ()
@@ -246,7 +248,7 @@
   
   (let ((anim (make-instance 'animation
 			     :id id
-			     :fn-easing #'easing:in-exp ;cubic
+			     :fn-easing #'easing:linear ;in-exp ;cubic
 			     :fn-new fn-new
 			     :value-start start
 			     :value-delta delta))

@@ -768,5 +768,11 @@ have async run independent of frame...no wait shm has to be sync'd
 - when async done, insert shm which will only be done in sync
 
 Placing data in redis adds additional steps
-view: send redis + wait + recv redis/decode str->base64 + memcpy
+view: [send redis + wait + recv redis/decode str->base64] + memcpy
+      vs
+      [] + memcpy
 model: encode base64->str
+
+would inc latency by several ms
+
+model encodes, redis writes->reads, view decodes->writes
