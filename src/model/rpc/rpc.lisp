@@ -2,16 +2,9 @@
 
 (defparameter *path-socket-view* "/tmp/protoform-view.socket")
 
-(defun init-conn-rpc-view (shm-projview
-			   shm-nodes
-			   shm-atomic-counter
-			   shm-vertices
-			   shm-element
-			   shm-draw-indirect
-			   shm-texture-glyphs
-			   node-pointer
-			   controller)
-
+(defun init-conn-rpc-view (&rest deps)
+  (declare (ignore deps))
+  
   (setf *sock-view* (init-sock-client *path-socket-view* :block))
 
   ;; Combine all of below into single call

@@ -33,8 +33,14 @@
 	*queue-shm*        (sb-concurrency:make-queue)))
 
 (defun set-stack-node ()
-  (setf *stack-i-nodes*     (loop :for i :from 1 :to (/ 134217728 4)
-			       :collect i) ; buffer size / node struct size
+  (setf *stack-i-nodes*     (loop ; run in parallel?
+			       :with cursor := (vec3 0 0 0)
+			       :for i :from 0 :below (/ 134217728 4 +size-struct-instance+) ; buffer size / node struct size
+			       :collect (init-node-msdf cursor
+							*scale-node*
+							i
+							nil
+							nil))
 	*mutex-stack-nodes* (sb-thread:make-mutex)))
 
 (defun set-r-tree ()
@@ -72,9 +78,8 @@
 (defun set-shm-texture-glyphs ()
   (setf *shm-texture-glyphs* (init-shm-texture-glyphs)))
 
-(defun set-node-pointer (digraph
-			 metrics
-			 shm-nodes)
+(defun set-node-pointer (&rest deps)
+  (declare (ignore deps))
   (setf *node-ptr-main* (init-node-ptr-shm *digraph-main*
 					   *vertices-main*
 					   (vec3 0 0 0))

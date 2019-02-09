@@ -1,11 +1,12 @@
 (in-package :protoform.model)
 
 (defun add-node-vcs ()
-  (let ((node (init-node-msdf (get-origin-from-node-pos *node-ptr-vcs*)
-			      *scale-node*
-			      (pop *stack-i-nodes*)
-			      #\*)))
+  (let ((node (pop *stack-i-nodes*)))
     
+    (update-translation-node node (get-origin-from-node-pos *node-ptr-vcs*))
+    (update-glyph-node node #\*)
+    (update-transform-node node)
+
     (insert-vertex node *digraph-vcs* *vertices-vcs*)
     (spatial-trees:insert node *r-tree*)
     
@@ -20,4 +21,4 @@
   			  1.0)
     
     (enqueue-node *node-ptr-vcs*)
-    (enqueue-node node)))  
+    (enqueue-node node)))

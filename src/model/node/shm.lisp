@@ -33,15 +33,14 @@
   (with-slots (ptr size)
       *shm-nodes*
     
-    (with-slots (data
-		 model-matrix
+    (with-slots (model-matrix
 		 rgba
 		 offset-texel-texture
 		 dims-texture
 		 uv
 		 flags)
 	node
-
+      
       (let ((marr (marr (matrix model-matrix))))
 	(setf (mem-aref ptr :float offset-ptr)        (aref marr 0)
 	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 1)
@@ -59,7 +58,7 @@
 	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 13)
 	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 14)
 	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 15)))
-
+      
       (setf (mem-aref ptr :float (incf offset-ptr)) (aref rgba 0)
 	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 1)
 	    (mem-aref ptr :float (incf offset-ptr)) (aref rgba 2)
@@ -93,7 +92,7 @@
 	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 13)
 	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 14)
 	    (mem-aref ptr :float (incf offset-ptr)) (aref uv 15)
-      
+	    
 	    ;; http://www.lispworks.com/documentation/lcl50/aug/aug-90.html#HEADING90-0
             (mem-aref ptr :int (incf offset-ptr)) offset-texel-texture  ; tex offset
 	    (mem-aref ptr :int (incf offset-ptr)) (aref dims-texture 0) ; tex dim x

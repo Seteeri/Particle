@@ -39,8 +39,8 @@
     :serial t
     :around-compile (lambda (next)
                       (proclaim '(optimize
-    				  (debug 0)
-                                  (safety 0)
+    				  (debug 3)
+                                  (safety 3)
     				  (space 0)
                                   (speed 3)))
                       (funcall next))

@@ -131,16 +131,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Rename add-node-to-ptr
-(defun add-node (data
+(defun add-node (char-glyph
 		 &optional
-		   (ix (pop *stack-i-nodes*))
 		   (baseline (get-origin-from-node-pos *node-ptr-main*)))
-  (let ((node (init-node-msdf baseline
-			      *scale-node*
-			      ix
-			      data)))
+  (let ((node (pop *stack-i-nodes*)))
+    
+    (update-translation-node node baseline)
+    (update-glyph-node node char-glyph)
+    (update-transform-node node)
+
     (insert-vertex node)
-    (spatial-trees:insert node *r-tree*)    
+    (spatial-trees:insert node *r-tree*)
     node))
 
 (defun delete-node (&key

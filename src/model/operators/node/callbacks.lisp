@@ -208,15 +208,16 @@
     (loop
        :for ch :across string
        :for i :upfrom 0
-       :do (let* ((ix (sb-thread:with-mutex (*mutex-stack-nodes*)
-			(pop *stack-i-nodes*)))
-		  (node (init-node-msdf (v+ baseline
-					   (vec3 (* 9.375 +scale-msdf+ *scale-node* i)
+       :do (let* ((node (sb-thread:with-mutex (*mutex-stack-nodes*)
+			  (pop *stack-i-nodes*))))
+
+	     (update-translation-node node (v+ baseline
+					       (vec3 (* 9.375 +scale-msdf+ *scale-node* i)
 						 0
-						 0))
-  				       *scale-node*
-				       ix
-  				       ch)))
+						 0)))
+	     (update-glyph-node node ch)
+	     (update-transform-node node)
+	     
 	     (sb-thread:with-mutex ((mutex node))
 	       (sb-thread:with-mutex (*mutex-main*)
 		 (insert-vertex node))

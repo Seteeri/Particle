@@ -16,7 +16,7 @@
 
 (defun add-node-ascii (char &optional (move-pointer t))
   (let ((node-new (add-node char)))
-
+    
     ;; Factor this out...
     (when nil
       (when-let* ((node-ptr-out (get-node-ptr-out))
@@ -36,7 +36,7 @@
     (advance-node-of-node *node-ptr-main*
     			  node-new
     			  1.0)
-
+    
     (enqueue-node-ptr)
     (enqueue-node node-new)
     

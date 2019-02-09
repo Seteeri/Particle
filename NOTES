@@ -781,3 +781,5 @@ model: encode base64->str
 would inc latency by several ms
 
 model encodes, redis writes->reads, view decodes->writes
+
+can detect conflict if nodes are known

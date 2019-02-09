@@ -54,15 +54,15 @@
               #'set-cc
 	      tree)	
     
-    (ptree-fn 'stack-node
-	      '()
-              #'set-stack-node
-	      tree)
-
     (ptree-fn 'r-tree
 	      '()
               #'set-r-tree
 	      tree)
+
+    (ptree-fn 'stack-node
+	      '()
+              #'set-stack-node
+	      tree)    
     
     ;; graphs
     
