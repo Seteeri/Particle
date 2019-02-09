@@ -109,7 +109,7 @@
 	offset-ptr
 	(copy-data-to-shm-2 shm
 			    offset-ptr
-			    (funcall fn-data))))
+			    fn-data)))
 
 (defun copy-data-to-shm-2 (shm offset-ptr data)
   (declare (type (array (unsigned-byte 8)) data))

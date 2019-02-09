@@ -3,7 +3,7 @@
 (defun enqueue-node (node)
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
-				(lambda ()
+				(progn
 				  (update-transform (model-matrix node))
 				  (serialize-node node))
 				(* (index node)
@@ -13,7 +13,7 @@
 (defun enqueue-node-ptr ()
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
-				(lambda ()
+				(progn
 				  (update-transform (model-matrix *node-ptr-main*))
 				  (serialize-node *node-ptr-main*))
 				(* (index *node-ptr-main*)
@@ -23,8 +23,7 @@
 (defun enqueue-node-zero (index)
   (sb-concurrency:enqueue (list *channel*
 				*shm-nodes*
-				(lambda ()
-				  *data-zero-node*)
+				*data-zero-node*
 				(* index
 				   +size-struct-instance+))
 			  *queue-shm*))
