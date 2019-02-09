@@ -27,11 +27,26 @@
 						 (asdf:system-source-directory :protoform))
 				+scale-msdf+)))
 
+(defun set-cc ()
+  (setf *queue-anim*       (sb-concurrency:make-queue) ; sync tasks
+	*mailbox-model*    (sb-concurrency:make-mailbox) ; async tasks
+	*queue-shm*        (sb-concurrency:make-queue)))
+
+(defun set-stack-node ()
+  (setf *stack-i-nodes*     (loop :for i :from 1 :to (/ 134217728 4)
+			       :collect i) ; buffer size / node struct size
+	*mutex-stack-nodes* (sb-thread:make-mutex)))
+
+(defun set-r-tree ()
+  (setf *r-tree*        (spatial-trees:make-spatial-tree :r
+							 :rectfun #'node-rect)
+	*mutex-r-tree*  (sb-thread:make-mutex)))
+
 (defun set-digraph ()
   (setf *digraph-main* (digraph:make-digraph)
-	*lock-main*    (sb-thread:make-mutex)
+	*mutex-main*    (sb-thread:make-mutex)
 	*digraph-vcs*  (digraph:make-digraph)
-	*lock-vcs*     (sb-thread:make-mutex)
+	*mutex-vcs*     (sb-thread:make-mutex)
 	
 	*digraph-clip* (digraph:make-digraph)
 	*digraph-repl* (digraph:make-digraph)))

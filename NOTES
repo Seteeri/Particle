@@ -749,6 +749,11 @@ https://stackoverflow.com/questions/14338732/is-it-possible-to-implement-lock-fr
 
 Do per node lock, remove edge or insert edge will have to lock both
 
+OR
+
+Implement lock free concurrent skip list and use as dictionary
+- queue number of node is the key
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 * sync - must finish same frame; will block rasterizer

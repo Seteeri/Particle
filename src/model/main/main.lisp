@@ -15,18 +15,6 @@
   (setf *kernel*        (make-kernel 4)
 	*channel*       (make-channel)
 	*channel-input* (make-channel) ; rename to -controller
-
-	*queue-anim*       (sb-concurrency:make-queue) ; sync tasks
-	*mailbox-model*    (sb-concurrency:make-mailbox) ; async tasks
-	*queue-shm*        (sb-concurrency:make-queue)
-
-	;; move to ptree?
-	*stack-i-nodes* (loop :for i :from 1 :to (/ 134217728 4)
-			   :collect i) ; buffer size / node struct size
-
-	;; move to ptree
-	*r-tree*        (spatial-trees:make-spatial-tree :r
-							 :rectfun #'node-rect)
 	
 	;; Simply set here since no fn required
 	*width*         width
@@ -61,6 +49,21 @@
               #'set-metrics
 	      tree)
 
+    (ptree-fn 'cc
+	      '()
+              #'set-cc
+	      tree)	
+    
+    (ptree-fn 'stack-node
+	      '()
+              #'set-stack-node
+	      tree)
+
+    (ptree-fn 'r-tree
+	      '()
+              #'set-r-tree
+	      tree)
+    
     ;; graphs
     
     (ptree-fn 'digraph
@@ -109,7 +112,10 @@
     ;; Create initial ptr nodes for graphs
     
     (ptree-fn 'node-pointer
-	      '(digraph
+	      '(cc
+		stack-node
+		r-tree
+		digraph
 		shm-nodes
 		metrics)
 	      #'set-node-pointer

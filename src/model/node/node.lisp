@@ -65,7 +65,7 @@
 							     :initial-contents *color-default-node*))
    (flags :accessor flags :initarg :flags :initform 1)
 
-   (lock :accessor lock :initarg :lock :initform (sb-thread:make-mutex))))
+   (mutex :accessor mutex :initarg :mutex :initform (sb-thread:make-mutex))))
 
 (defun insert-vertex (vert &optional
 			     (digraph *digraph-main*)

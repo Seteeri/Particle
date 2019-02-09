@@ -198,27 +198,28 @@
 				       'print-text))))
 
 (defun print-text ()
+  ;; Make ptree version
+
+  ;; 0: string | baseline
+  ;; 1: node,main,r-tree,enqueue | ...
+  
   (let ((string "HELLO_WORLD!")
-	(baseline (get-origin-from-node-pos *node-ptr-main*))
-	(sym-prev nil))
+	(baseline (get-origin-from-node-pos *node-ptr-main*)))
     (loop
        :for ch :across string
        :for i :upfrom 0
-       :do (let* ((c ch)
-		  (i-2 i)
-		  (ix (pop *stack-i-nodes*))
-		  (sym (make-symbol (str:concat "print-graph-" (write-to-string ix))))
-		  (sym-prev-2 (if sym-prev
-				  (list sym-prev)
-				  '())))
-	     (setf sym-prev sym)
-	     (let ((node (init-node-msdf (v+ baseline
-					     (vec3 (* 9.375 +scale-msdf+ *scale-node* i-2)
-						   0
-						   0))
-  					 *scale-node*
-  					 ix
-  					 c)))
-	       (insert-vertex node)
-	       (spatial-trees:insert node *r-tree*)					       
+       :do (let* ((ix (sb-thread:with-mutex (*mutex-stack-nodes*)
+			(pop *stack-i-nodes*)))
+		  (node (init-node-msdf (v+ baseline
+					   (vec3 (* 9.375 +scale-msdf+ *scale-node* i)
+						 0
+						 0))
+  				       *scale-node*
+				       ix
+  				       ch)))
+	     (sb-thread:with-mutex ((mutex node))
+	       (sb-thread:with-mutex (*mutex-main*)
+		 (insert-vertex node))
+	       (sb-thread:with-mutex (*mutex-r-tree*)
+		 (spatial-trees:insert node *r-tree*))
 	       (enqueue-node node))))))
