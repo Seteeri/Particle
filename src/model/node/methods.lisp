@@ -139,9 +139,10 @@
     (update-translation-node node baseline)
     (update-glyph-node node char-glyph)
     (update-transform-node node)
-
+    
     (insert-vertex node)
     (spatial-trees:insert node *r-tree*)
+    
     node))
 
 (defun delete-node (&key

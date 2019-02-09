@@ -32,16 +32,16 @@
 	*mailbox-model*    (sb-concurrency:make-mailbox) ; async tasks
 	*queue-shm*        (sb-concurrency:make-queue)))
 
-(defun set-stack-node ()
+(defun set-stack-node ()   
   (setf *stack-i-nodes*     (loop ; run in parallel?
-			       :with cursor := (vec3 0 0 0)
-			       :for i :from 0 :below (/ 134217728 4 +size-struct-instance+) ; buffer size / node struct size
-			       :collect (init-node-msdf cursor
-							*scale-node*
-							i
-							nil
-							nil))
-	*mutex-stack-nodes* (sb-thread:make-mutex)))
+  			       :with cursor := (vec3 0 0 0)
+  			       :for i :from 0 :below (floor (/ 134217728 4 +size-struct-instance+)) ; buffer size / node struct size
+  			       :collect (init-node-msdf cursor
+  							*scale-node*
+  							i
+  							nil
+  							nil))
+  	*mutex-stack-nodes* (sb-thread:make-mutex)))
 
 (defun set-r-tree ()
   (setf *r-tree*        (spatial-trees:make-spatial-tree :r

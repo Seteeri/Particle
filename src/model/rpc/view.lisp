@@ -13,7 +13,7 @@
     (execute-tasks-sync)
     
     (send-msg-shm)
-
+    
     (let* ((time-final (osicat:get-monotonic-time))
 	   (time-delta (- time-final time))
 	   (time-delta-ms (* time-delta 1000)))

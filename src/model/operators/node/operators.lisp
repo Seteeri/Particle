@@ -30,6 +30,7 @@
 					     :offset (vec3 0.0
     							   (* +linegap+ *scale-node*)
     							   0.0))))))
+    
     ;; Attach node to ptr
     (insert-node node-new *node-ptr-main* :out)
     ;; Advance pointer

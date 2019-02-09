@@ -41,7 +41,6 @@
 (defparameter *buffer-sock-array* nil)
 (defparameter *projview* nil)
 
-;; digraph main
 (defparameter *digraph-main* nil)
 (defparameter *node-ptr-main* nil)
 (defparameter *vertices-main* (cons 0 nil))
