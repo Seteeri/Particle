@@ -23,6 +23,19 @@
     t))
 
 (defun execute-tasks-sync ()
+  ;; Try to run anims in parallel
+  ;; - Use old method where callbacks enqueue a list and ptree is built/exec here
+
+  ;; Benchmark checking each node in parallel
+  ;; (time
+  ;;  (loop
+  ;;     :for node :in *stack-i-nodes*
+  ;;     :do (process-node node)))
+
+  ;; (let ((l (length *stack-i-nodes*)))
+  ;;   (time
+  ;;    (pmapc #'process-node :size l *stack-i-nodes*)))
+  
   (let ((items-next ()))
     (loop
        :for item := (sb-concurrency:dequeue *queue-anim*)

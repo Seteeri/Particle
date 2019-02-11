@@ -783,3 +783,13 @@ would inc latency by several ms
 model encodes, redis writes->reads, view decodes->writes
 
 can detect conflict if nodes are known
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Create task class
+Place task instances in queue
+Execute in parallel
+
+Async tasks can execute without any deadlines
+Sync tasks must finish within the time frame
+- Should this be a soft guarantee??

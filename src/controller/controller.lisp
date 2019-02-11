@@ -95,6 +95,7 @@
 	     (let ((type-event (dispatch-handler-event event)))
 	       (libinput:event-destroy event)
 	       ;; implement for other devices
+	       ;; can run in parallel for each device
 	       (when (eq type-event libinput:keyboard-key)
 		 (dispatch-callbacks-keyboard)))
 	     ;; always update

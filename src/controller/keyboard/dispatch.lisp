@@ -3,31 +3,18 @@
 ;; Data structure:
 ;; (mod-logic, (mods key:(state)) (norm key:(state))) : (fn1:nil, fn2:nil)
 
-;; produce callbacks or call callbacks
 (defun dispatch-callbacks-keyboard ()
-  ;; Execute callbacks in order -> merge deps into single ptree
   (with-slots (key-callbacks)
       *controller*
-    (loop
-       :for seq-event :being :the :hash-keys :of key-callbacks
-       ;; :using (hash-value states)
-       :do (submit-task *channel-input*
-		      #'dispatch-seq-event
-		      seq-event)
-       :finally (dotimes (i (hash-table-count key-callbacks))
-		  (receive-result *channel-input*)))))
+     (loop
+	:for seq-event :being :the :hash-keys :of key-callbacks
+	:using (hash-value callbacks)
+	:do (dispatch-seq-event-2 seq-event callbacks))))
 
-(defun dispatch-seq-event (seq-event)
+(defun dispatch-seq-event-2 (seq-event callbacks)
   (when (is-seq-event-valid seq-event)
-    (loop :for cb :being :the :hash-keys :of (get-callbacks seq-event)
-       ;; Callbacks must not share data...
-       ;; User can do so through proper synchronization methods
-       ;; however the intent is to operate in parallel
-       ;; Callbacks simply build a list for ptree nodes
-       ;; that is simply enqueued
-
-       ;; Typically one callback so execute here instead of after loop
-       :collect (funcall cb seq-event))))
+    (loop :for cb :being :the :hash-keys :of callbacks ; (get-callbacks seq-event)
+       :do (funcall cb seq-event))))
 
 (defun is-seq-event-valid (seq-events-key)
   (with-slots (key-states)
