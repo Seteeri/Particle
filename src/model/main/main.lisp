@@ -156,34 +156,3 @@
     ;; 	       (call-ptree id tree))))
     
     (call-ptree 'sock-view tree)))
-
-(defun execute-tasks-async ()
-  ;; - bound frame time drift -> indictes model loop is slowing
-
-  ;; Problem: Anims rely on frame times...
-  ;; - must do synchronous
-  ;; - if possible, move code to compute shader
-  ;;   http://theorangeduck.com/page/avoiding-shader-conditionals
-
-  ;; - Implement per-node lock
-  ;; - Refactor non-anim callbacks to use this
-
-  (loop
-     :for item := (sb-concurrency:receive-message *mailbox-model*)
-     :do (let ((items-next ()))	   
-	   (destructuring-bind (ptree id)
-	       item
-	     (call-ptree id ptree)))))
-
-;; (defparameter *array* (make-array 1000000
-;; 				  :element-type '(UNSIGNED-BYTE 8)
-;; 				  :adjustable nil
-;; 				  :fill-pointer nil
-;; 				  :initial-contents (loop :for i :from 0 :below 1000000 :collect 0)))
-;; (time (progn (qbase64:encode-bytes *array*) t))
-
-;; (handler-case
-;; 	(progn
-;; 	  t
-;;   (lparallel.ptree:ptree-redefinition-error (c)
-;; 	t)

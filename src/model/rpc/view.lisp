@@ -10,7 +10,11 @@
 
   (let ((time (osicat:get-monotonic-time)))
     
-    (execute-tasks-sync)
+    (execute-queue-tasks *queue-anim*)
+    ;; execute tasks shm
+    
+    (execute-queue-tasks *queue-tasks-async*)
+    ;; execute tasks shm
     
     (send-msg-shm)
     
@@ -22,23 +26,19 @@
 
     t))
 
-(defun execute-tasks-sync ()
+
+(defun execute-queue-tasks (queue)
+  ;; Problem: Anims rely on frame times...
+  ;; - must do synchronous
+  ;; - if possible, move code to compute shader
+  ;;   http://theorangeduck.com/page/avoiding-shader-conditionals
+
   ;; Try to run anims in parallel
   ;; - Use old method where callbacks enqueue a list and ptree is built/exec here
 
-  ;; Benchmark checking each node in parallel
-  ;; (time
-  ;;  (loop
-  ;;     :for node :in *stack-i-nodes*
-  ;;     :do (process-node node)))
-
-  ;; (let ((l (length *stack-i-nodes*)))
-  ;;   (time
-  ;;    (pmapc #'process-node :size l *stack-i-nodes*)))
-  
   (let ((items-next ()))
     (loop
-       :for item := (sb-concurrency:dequeue *queue-anim*)
+       :for item := (sb-concurrency:dequeue queue)
        :while item
        :do (destructuring-bind (ptree id)
 	       item
@@ -47,8 +47,8 @@
 	       (when (listp ptree-next)
 		 (push ptree-next items-next)))))
     (dolist (item-ptree items-next)
-      (sb-concurrency:enqueue item-ptree	    
-			      *queue-anim*))))
+      (sb-concurrency:enqueue item-ptree
+			      queue))))
 
 (defun send-msg-shm ()
   ;; TODO
@@ -136,3 +136,16 @@
     			   (+ offset-ptr i))
     		 c)))
   (length data))
+
+;; (defparameter *array* (make-array 1000000
+;; 				  :element-type '(UNSIGNED-BYTE 8)
+;; 				  :adjustable nil
+;; 				  :fill-pointer nil
+;; 				  :initial-contents (loop :for i :from 0 :below 1000000 :collect 0)))
+;; (time (progn (qbase64:encode-bytes *array*) t))
+
+;; (handler-case
+;; 	(progn
+;; 	  t
+;;   (lparallel.ptree:ptree-redefinition-error (c)
+;; 	t)

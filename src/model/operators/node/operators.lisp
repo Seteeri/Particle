@@ -17,20 +17,11 @@
 (defun add-node-ascii (char &optional (move-pointer t))
   (let ((node-new (add-node char)))
     
-    ;; Factor this out...
-    (when nil
-      (when-let* ((node-ptr-out (get-node-ptr-out))
-		  (node-type (get-node-type node-ptr-out)))
-		 ;; Push new node above for now
-		 (when (or (eq node-type :intra)
-			   (eq node-type :start))
-		   (let* ((bounds-origin (bounds-origin (gethash (char-code (char-glyph node)) *metrics*))))
-		     (translate-node-to-node node
-					     node
-					     :offset (vec3 0.0
-    							   (* +linegap+ *scale-node*)
-    							   0.0))))))
-    
+    ;; Handle when char exists
+    ;; (when-let* ((node-ptr-out (get-node-ptr-out))
+    ;; 		(node-type (get-node-type node-ptr-out)))
+    ;; 	       t)
+  
     ;; Attach node to ptr
     (insert-node node-new *node-ptr-main* :out)
     ;; Advance pointer

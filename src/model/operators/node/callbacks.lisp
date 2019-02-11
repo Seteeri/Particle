@@ -1,64 +1,46 @@
 (in-package :protoform.model)
 
-(defun add-node-ascii-cb (seq-key)
-  (fmt-model t "add-node-ascii" "~a~%" seq-key)
-  (let ((ptree (make-ptree)))
-    (ptree-fn 'add-node ;; (make-symbol (format nil "~a~%" seq-key))
-	      '()
-	      (lambda ()
-		(funcall #'add-node-ascii (code-char (second (reverse (second seq-key))))))
-	      ptree) ; create aux fn for this
-    (sb-concurrency:send-message *mailbox-model*
-				 (list ptree
-				       'add-node))))
+(defmacro define-cb-async (name-fn id-fn fn)
+  `(defun ,name-fn (seq-key)
+       (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
+       (let ((ptree (make-ptree)))
+	 (ptree-fn ,id-fn ; (make-symbol (format nil "~a~%" seq-key))
+		   '()
+		   ,fn
+		   ptree) ; create aux fn for this
+	 (sb-concurrency:enqueue (list ptree
+				       ,id-fn)
+				 *queue-tasks-async*))))
 
-(defun backspace-node-ascii-cb (seq-key)
-  (fmt-model t "backspace-node-ascii" "~a~%" seq-key)
-  (let ((ptree (make-ptree)))
-    (ptree-fn 'backspace-node ; verify
-	      '()
-	      (lambda ()
-		(funcall #'backspace-node-ascii))
-	      ptree)
-    (sb-concurrency:send-message *mailbox-model*
-				 (list ptree
-				       'backspace-node))))
+(define-cb-async
+    add-node-ascii-cb
+    'add-node-ascii
+  (lambda ()
+    (funcall #'add-node-ascii (code-char (second (reverse (second seq-key)))))))
 
-(defun add-node-tab-cb (seq-key)
-  (fmt-model t "add-node-tab" "~a~%" seq-key)
-  (let ((ptree (make-ptree)))
-    (ptree-fn 'add-node-tab
-	      '()
-  	      (lambda ()
-  		(funcall #'add-node-tab))
-	      ptree)
-    (sb-concurrency:send-message *mailbox-model*
-				 (list ptree
-				       'add-node-tab-node))))
+(define-cb-async
+    backspace-node-ascii-cb
+    'backspace-node-ascii
+  (lambda ()
+    (funcall #'backspace-node-ascii)))
 
-(defun add-node-newline-cb (seq-key)
-  (fmt-model t "add-node-newline" "~a~%" seq-key)
-  (let ((ptree (make-ptree)))
-    (ptree-fn 'add-node-newline
-	      '()
-  	      (lambda ()
-  		(funcall #'add-node-newline))
-	      ptree)
-    (sb-concurrency:send-message *mailbox-model*
-				 (list ptree
-				       'add-node-newline))))
+(define-cb-async
+    add-node-tab-cb
+    'add-node-tab
+  (lambda ()
+    (funcall #'add-node-tab)))
+
+(define-cb-async
+    add-node-newline-cb
+    'add-node-newline
+  (lambda ()
+    (funcall #'add-node-newline)))
   
-(defun eval-node-cb (seq-key)
-  (fmt-model t "eval-node" "~a~%" seq-key)
-  (let ((ptree (make-ptree)))
-    (ptree-fn 'eval-node
-	      '()
-	      (lambda ()
-		(funcall #'eval-node))
-	      ptree)
-    (sb-concurrency:send-message *mailbox-model*
-				 (list ptree
-				       'eval-node))))
+(define-cb-async
+    eval-node-cb
+    'eval-node
+  (lambda ()
+    (funcall #'eval-node)))
 
 (defun show-node-ids-cb (seq-key)
   (fmt-model t "show-node-ids" "~a~%" seq-key))
@@ -126,7 +108,7 @@
 	      (lambda ()
 		(funcall #'move-node-ptr :in))
 	      ptree)
-    (sb-concurrency:send-message *mailbox-model*
+    (sb-concurrency:enqueue *queue-tasks-async*
 				 (list ptree
 				       'move-node-ptr-in))))
 
@@ -138,7 +120,7 @@
 	      (lambda ()
 		(funcall #'move-node-ptr :out))
 	      ptree)
-    (sb-concurrency:send-message *mailbox-model*
+    (sb-concurrency:enqueue *queue-tasks-async*
 				 (list ptree
 				       'move-node-ptr-out))))
 
@@ -193,9 +175,9 @@
   	      (lambda ()
   		(funcall #'print-text))
 	      ptree)
-    (sb-concurrency:send-message *mailbox-model*
-				 (list ptree
-				       'print-text))))
+    (sb-concurrency:enqueue (list ptree
+				  'print-text)
+			    *queue-tasks-async*)))
 
 (defun print-text ()
   ;; Make ptree version
@@ -208,9 +190,8 @@
     (loop
        :for ch :across string
        :for i :upfrom 0
-       :do (let* ((node (sb-thread:with-mutex (*mutex-stack-nodes*)
-			  (pop *stack-i-nodes*))))
-
+       :do (let* ((node (pop *stack-i-nodes*)))
+	     
 	     (update-translation-node node (v+ baseline
 					       (vec3 (* 9.375 +scale-msdf+ *scale-node* i)
 						 0
@@ -218,9 +199,6 @@
 	     (update-glyph-node node ch)
 	     (update-transform-node node)
 	     
-	     (sb-thread:with-mutex ((mutex node))
-	       (sb-thread:with-mutex (*mutex-main*)
-		 (insert-vertex node))
-	       (sb-thread:with-mutex (*mutex-r-tree*)
-		 (spatial-trees:insert node *r-tree*))
-	       (enqueue-node node))))))
+	     (insert-vertex node)
+	     (spatial-trees:insert node *r-tree*)
+	     (enqueue-node node)))))

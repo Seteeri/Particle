@@ -2,11 +2,11 @@
 
 (defun init-threads ()
   (let ((thread-view       (bordeaux-threads:make-thread #'serve-client))
-	(thread-model      (bordeaux-threads:make-thread #'execute-tasks-async))
+	;; (thread-model      (bordeaux-threads:make-thread #'execute-tasks-async))
 	(thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))
 	(thread-controller (bordeaux-threads:make-thread #'run-controller)))
     (bordeaux-threads:join-thread thread-view)
-    (bordeaux-threads:join-thread thread-model)
+    ;; (bordeaux-threads:join-thread thread-model)
     (bordeaux-threads:join-thread thread-libinput)
     (bordeaux-threads:join-thread thread-controller)))
 
@@ -29,7 +29,7 @@
 
 (defun set-cc ()
   (setf *queue-anim*       (sb-concurrency:make-queue) ; sync tasks
-	*mailbox-model*    (sb-concurrency:make-mailbox) ; async tasks
+	*queue-tasks-async*    (sb-concurrency:make-queue) ; async tasks
 	*queue-shm*        (sb-concurrency:make-queue)))
 
 (defun set-stack-node ()   
@@ -41,18 +41,20 @@
   							i
   							nil
   							nil))
-  	*mutex-stack-nodes* (sb-thread:make-mutex)))
+  	;; *mutex-stack-nodes* (sb-thread:make-mutex)
+	))
 
 (defun set-r-tree ()
   (setf *r-tree*        (spatial-trees:make-spatial-tree :r
 							 :rectfun #'node-rect)
-	*mutex-r-tree*  (sb-thread:make-mutex)))
+	;; *mutex-r-tree*  (sb-thread:make-mutex)
+	))
 
 (defun set-digraph ()
   (setf *digraph-main* (digraph:make-digraph)
-	*mutex-main*    (sb-thread:make-mutex)
+	;; *mutex-main*    (sb-thread:make-mutex)
 	*digraph-vcs*  (digraph:make-digraph)
-	*mutex-vcs*     (sb-thread:make-mutex)
+	;; *mutex-vcs*     (sb-thread:make-mutex)
 	
 	*digraph-clip* (digraph:make-digraph)
 	*digraph-repl* (digraph:make-digraph)))

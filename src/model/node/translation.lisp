@@ -5,12 +5,11 @@
   ;; l b r t
   ;;
   ;; Get scale from model-matrix
-  (sb-thread:with-mutex ((mutex node))
-    (v+ (translation (model-matrix node))
-	(let ((bounds-origin (bounds-origin (gethash (char-code (char-glyph node)) *metrics*))))
-	  (vec3 (- (* (aref bounds-origin 0) *scale-node*))
-		(- (* (aref bounds-origin 1) *scale-node*))
-		0.0)))))
+  (v+ (translation (model-matrix node))
+      (let ((bounds-origin (bounds-origin (gethash (char-code (char-glyph node)) *metrics*))))
+	(vec3 (- (* (aref bounds-origin 0) *scale-node*))
+	      (- (* (aref bounds-origin 1) *scale-node*))
+	      0.0))))
 
 (defun advance-node-of-node (node-a
 			     node-b
