@@ -71,13 +71,17 @@
 	       (when (listp ptree-next)
 		 (push ptree-next items-next))
 	       (incf time-elapsed time-delta-ms)
-	       (setf (gethash id *ht-timing-fn*) time-delta-ms) ; avg this or use kalman filter
+	       (update-timing-fn time-delta-ms)
 	       (when (> time-elapsed deadline)
 		 (format t "(> ~a ~a)" time-elapsed deadline)
 		 (return)))))
     (dolist (item-ptree items-next)
       (sb-concurrency:enqueue item-ptree
 			      queue))))
+
+(defun update-timing-fn (time-delta)
+  ;; avg or use kalman filter
+  (setf (gethash id *ht-timing-fn*) time-delta))
 
 (defun send-msg-shm ()
   ;; TODO
