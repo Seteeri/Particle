@@ -18,7 +18,7 @@
 
 (defun set-controller ()  
   (setf *controller* (init-controller *channel-input*
-				      *queue-anim*
+				      *queue-tasks-sync*
 				      #'translate-node-rel))
   (register-keyboard-callbacks))
 
@@ -28,7 +28,7 @@
 				+scale-msdf+)))
 
 (defun set-cc ()
-  (setf *queue-anim*        (sb-concurrency:make-queue) ; sync tasks
+  (setf *queue-tasks-sync*        (sb-concurrency:make-queue) ; sync tasks
 	*queue-shm-sync*    (sb-concurrency:make-queue)
 
 	*queue-tasks-async* (sb-concurrency:make-queue) ; async tasks

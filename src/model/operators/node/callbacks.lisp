@@ -135,7 +135,7 @@
 ;; 				     (format t "~S = ~S~%" node (data node)))
 ;; 				   *digraph-main*)
 ;; 				  (funcall #'draw-graph)))
-;; 			  *queue-anim*))
+;; 			  *queue-tasks-sync*))
 
 (defun print-graph-cb (seq-key)
   (fmt-model t "print-graph" "~a~%" seq-key)

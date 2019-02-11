@@ -256,7 +256,7 @@
 
     (sb-concurrency:enqueue (list ptree
 				  id)
-			    *queue-anim*)))
+			    *queue-tasks-sync*)))
 
 
 

@@ -5,7 +5,7 @@
 (defparameter *channel-input* nil)
 
 ;; TEMP
-(defparameter *queue-anim* nil)
+(defparameter *queue-tasks-sync* nil)
 (defparameter *translate-node-rel* nil)
 
 (defparameter *path-devices* "/dev/input/event*")
@@ -36,7 +36,7 @@
 
     (setf *controller* controller)
     (setf *channel-input* channel-input)
-    (setf *queue-anim* queue-anim)
+    (setf *queue-tasks-sync* queue-anim)
     (setf *translate-node-rel* translate-node-rel)
     
     controller))

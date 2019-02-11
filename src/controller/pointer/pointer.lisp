@@ -10,7 +10,7 @@
 				  '()
 				  (lambda ()
 				    (funcall *translate-node-rel* nil dx dy)))
-			    *queue-anim*)
+			    *queue-tasks-sync*)
     
     ;; (format t "dx: ~A, dy: ~A~%" dx dy)
 

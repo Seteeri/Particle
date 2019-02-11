@@ -21,7 +21,7 @@
 (defparameter *height* nil)
 (defparameter *inst-max* nil)
 
-(defparameter *queue-anim* nil)
+(defparameter *queue-tasks-sync* nil)
 (defparameter *queue-shm* nil)
 (defparameter *mailbox-model* nil)
 

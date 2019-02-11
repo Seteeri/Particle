@@ -534,7 +534,7 @@ A different pointer can have a different set of bindings
 ;; 					  (format t "~S~%" (translation (model-matrix vert)))
 ;; 					  ;; (funcall #'randomize-color-node vert)
 ;; 					  ))
-;; 				  *queue-anim*))
+;; 				  *queue-tasks-sync*))
 ;; 			       *digraph-main*))
 
 

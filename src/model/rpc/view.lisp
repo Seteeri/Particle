@@ -10,7 +10,7 @@
 
   (let ((time (osicat:get-monotonic-time)))
     
-    (execute-queue-tasks *queue-anim*)
+    (execute-queue-tasks *queue-tasks-sync*)
     ;; execute tasks shm
     
     (execute-queue-tasks *queue-tasks-async*)

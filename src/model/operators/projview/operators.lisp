@@ -41,7 +41,7 @@
     
     (sb-concurrency:enqueue (list ptree
 				  id)
-			    *queue-anim*)))
+			    *queue-tasks-sync*)))
 
 
 ;; Match translate fn?
@@ -75,4 +75,4 @@
     
     (sb-concurrency:enqueue (list ptree
 				  id)
-			    *queue-anim*))))
+			    *queue-tasks-sync*))))
