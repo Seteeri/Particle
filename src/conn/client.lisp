@@ -14,22 +14,14 @@
    (buffer-arr-send :accessor buffer-arr-send :initarg :buffer-arr-send :initform (make-array 4096
 											      :adjustable nil
 											      :fill-pointer nil
-											      :element-type '(unsigned-byte 8)))
-
-   (lock-recv :accessor lock-recv :initarg :lock-recv :initform (bt:make-lock))
-   (lock-send :accessor lock-send :initarg :lock-send :initform (bt:make-lock))))
+											      :element-type '(unsigned-byte 8)))))
 
 ;; Switch to overloading initialize-instance
 (defun init-conn-client (&optional (sock nil))
   (make-instance 'conn-client
 		 :sock sock))
 
-;; Make macro?
 (defun communicate-request (conn-client message ret)
-
-  ;; do need locks since conn shared by threads
-  ;; or allow server to handle multiple requests
-  
   (with-slots (sock
 	       buffer-ptr-recv
 	       buffer-arr-recv
@@ -39,13 +31,13 @@
 	       lock-send)
       conn-client
 
-    (bt:with-lock-held (lock-send)
-      (send-message sock
-		    buffer-ptr-send
-		    message))
+    ;; (bt:with-lock-held (lock-send)
+    (send-message sock
+		  buffer-ptr-send
+		  message)
   
     (when ret
-      (bt:with-lock-held (lock-recv)
-	(recv-message sock
-		      buffer-ptr-send
-		      buffer-arr-send)))))
+      ;; (bt:with-lock-held (lock-recv)
+      (recv-message sock
+		    buffer-ptr-send
+		    buffer-arr-send))))
