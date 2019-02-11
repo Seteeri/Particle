@@ -1,5 +1,5 @@
 (in-package :protoform.drm)
-  
+
 (defun main-drm ()
   
   ;; ;; Use when running sbcl to prevent SysRq kill
@@ -9,19 +9,27 @@
   ;; 			    (format t "SIG* received~%")
   ;; 			    (quit)))
   
-  (let* ((drm (init-drm))
-	 (width (drm:get-mode-hdisplay (mode drm)))
-	 (height (drm:get-mode-vdisplay (mode drm)))
-	 (gbm (init-gbm (fd drm) width height nil))
-	 (egl (init-egl gbm))
-	 (gles (init-gles width height))
+  (let* ((drm       (init-drm))
+	 (width     (drm:get-mode-hdisplay (mode drm)))
+	 (height    (drm:get-mode-vdisplay (mode drm)))
+	 (gbm       (init-gbm (fd drm) width height nil))
+	 (egl       (init-egl gbm))
+	 (gles      (init-gles width height))
 	 (dev-input (init-dev-input)))
 
     (init-msdf width height)
     (init-dev-input-epoll dev-input)
 
-    (multiple-value-bind (bo fb) (run drm gbm egl dev-input)
-      (shutdown drm gbm egl bo fb))))
+    (multiple-value-bind (bo fb)
+	(run drm
+	     gbm
+	     egl
+	     dev-input)
+      (shutdown drm
+		gbm
+		egl
+		bo
+		fb))))
 
 
 (defclass drm () 
@@ -58,9 +66,9 @@
 
 (defun create-fence (display fd)
   (with-foreign-object (attrib-list :int32 3)
-    (setf (mem-aref attrib-list :int32 0) #x3145)  ; :EGL-SYNC-NATIVE-FENCE-FD-ANDROID
-    (setf (mem-aref attrib-list :int32 1) fd)
-    (setf (mem-aref attrib-list :int32 2) #x3038)  ; :EGL-NONE
+    (setf (mem-aref attrib-list :int32 0) #x3145  ; :EGL-SYNC-NATIVE-FENCE-FD-ANDROID
+	  (mem-aref attrib-list :int32 1) fd
+	  (mem-aref attrib-list :int32 2) #x3038)  ; :EGL-NONE
 
     (let ((fence (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglCreateSyncKHR) nil
 					  :pointer display
@@ -77,45 +85,44 @@
 
 (defun open-drm-device (path)
   (let ((fd (nix:open "/dev/dri/card0" nix:o-rdwr)))
-    (when (< fd 0) (error "could not open drm device~%"))
+    (when (< fd 0)
+      (error "could not open drm device~%"))
     fd))
-	
+
 (defun init-drm ()
-  (let* ((fd (open-drm-device "/dev/dri/card0"))
-	 (drm (make-instance 'drm :fd fd))
-	 (resources (drm:get-resources fd))
-	 (connector (drm:find-connector fd resources))
-	 (mode (drm:find-mode fd connector))
-	 (crtc-id (drm:find-encoder-crtc-id fd resources connector))
-	 (crtc-index (drm:find-crtc-index resources crtc-id)))
-
-    (setf (mode drm) mode)
-    (setf (crtc-id drm) crtc-id)
-    (setf (crtc-index drm) crtc-index)
-    (setf (connector-id drm) (foreign-slot-value connector
-						 '(:struct drm:mode-connector)
-						 'drm:connector-id))
-
-    (setf (kms-out-fence-fd drm) (foreign-alloc :int :initial-element -1))
+  (let* ((fd         (open-drm-device "/dev/dri/card0"))
+	 (resources  (drm:get-resources fd))
+	 (connector  (drm:find-connector fd resources))
+	 (mode       (drm:find-mode fd connector))
+	 (crtc-id    (drm:find-encoder-crtc-id fd resources connector))
+	 (crtc-index (drm:find-crtc-index resources crtc-id))
+	 (drm        (make-instance 'drm
+				    :fd fd
+				    :mode mode
+				    :crtc-id crtc-id
+				    :connector-id (foreign-slot-value connector
+								      '(:struct drm:mode-connector)
+								      'drm:connector-id)
+				    :kms-out-fence-fd (foreign-alloc :int :initial-element -1))))
     
     ;; plane, crtc, connector are instanced later
-    (when (/= (drm:set-client-cap fd
-				  3 ;drm-client-cap-atomic
-				  1)
-	      0)
+    (unless (zerop (drm:set-client-cap fd
+				       3 ; drm-client-cap-atomic
+				       1))
       (error "Atomic modesetting unsupported"))
 
-    (setf (plane drm) (init-plane drm))
-    (setf (crtc drm) (init-crtc drm))
-    (setf (connector drm) (init-connector drm))
+    ;; Must this be done after set-client-cap?
+    (setf (plane drm)     (init-plane fd crtc-index)
+	  (crtc drm)      (init-crtc fd crtc-id)
+	  (connector drm) (init-connector fd connector-id))
 
     
-    (format t "[init-drm] fd: ~a~%" (fd drm))
-    (format t "[init-drm] resources: ~a~%" resources)
-    (format t "[init-drm] mode: ~a~%" mode)
-    (format t "[init-drm] crtc-id: ~a~%" crtc-id)
-    (format t "[init-drm] crtc-index: ~a~%" crtc-index)
-    (format t "[init-drm] connector-id: ~a~%" (connector-id drm))
+    (format t "[init-drm] fd: ~a~%"           fd)
+    (format t "[init-drm] resources: ~a~%"    resources)
+    (format t "[init-drm] mode: ~a~%"         mode)
+    (format t "[init-drm] crtc-id: ~a~%"      crtc-id)
+    (format t "[init-drm] crtc-index: ~a~%"   crtc-index)
+    (format t "[init-drm] connector-id: ~a~%" connector-id)
     
     drm))
 
@@ -126,7 +133,7 @@
 	(blob-id (foreign-alloc :uint32)))
 
     ;; Do various properties
-    (when (not (= (logand flags #x0400) 0))
+    (unless (zerop (logand flags #x0400))
       
       (when (< (drm:add-connector-property (props (connector drm)) (props-info (connector drm)) req (connector-id drm) "CRTC_ID" (crtc-id drm))
 	       0)
@@ -187,7 +194,7 @@
     ;; Do atomic commit
     (let ((ret (drm:mode-atomic-commit (fd drm) req flags (null-pointer))))
       
-      (when (/= ret 0)
+      (unless (zerop ret)
 	(format t "mode-atomic-commit returned ~a~%" ret)
 	(drm:mode-atomic-free req)
 	(return-from commit ret))
@@ -202,119 +209,115 @@
       ret)))
 
 (defun wait-for-previous-commit (display kms-fence)
-  (when (not (null-pointer-p kms-fence))
-    (iter (while t)
-	  (let ((status (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglClientWaitSyncKHR) ()
-						 :pointer display
-						 :pointer kms-fence
-						 :int32 0
-						 :uint64 #xFFFFFFFFFFFFFFFF ; EGLTimeKHR EGL_FOREVER_KHR 0xFFFFFFFFFFFFFFFFull
-						 :int32)))
-	    (if (= status #x30F6) ; :EGL-CONDITION-SATISFIED-KHR
-		(leave))))
+  (unless (null-pointer-p kms-fence)
+    (loop
+       (let ((status (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglClientWaitSyncKHR) ()
+					      :pointer display
+					      :pointer kms-fence
+					      :int32 0
+					      :uint64 #xFFFFFFFFFFFFFFFF ; EGLTimeKHR EGL_FOREVER_KHR 0xFFFFFFFFFFFFFFFFull
+					      :int32)))
+	 (when (= status #x30F6) ; :EGL-CONDITION-SATISFIED-KHR
+	   (return))))
     (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglDestroySyncKHR) ()
 			     :pointer display
 			     :pointer kms-fence
 			     :int)))
 
 (defun run (drm gbm egl dev-input)
- 
+  
   (assert (= (mem-ref (kms-out-fence-fd drm) :int) -1))
 
   (let ((flags #x0200) ; DRM_MODE_ATOMIC_NONBLOCK
 	(bo (null-pointer))
 	(fb (null-pointer))
 	(running t))
-	  
+    
     (setf flags (logior flags #x0400))  ; DRM_MODE_ATOMIC_ALLOW_MODESET
     
-    (iter (while running)
-	  
-	  (let ((next-bo (null-pointer))
-		(gpu-fence (null-pointer)) ;/* out-fence from gpu, in-fence to kms */
-		(kms-fence (null-pointer))) ;/* in-fence to gpu, out-fence from kms */
-	    
-	    (when (/= (mem-ref (kms-out-fence-fd drm) :int) -1)
-	      (setf kms-fence
-		    (create-fence (display egl) (mem-ref (kms-out-fence-fd drm) :int)))
-	      (assert (not (null-pointer-p kms-fence)))
-	      
-	      ;; /* driver now has ownership of the fence fd: */
-	      (setf (mem-ref (kms-out-fence-fd drm) :int) -1)
-	      
-	      ;; /* wait "on the gpu" (ie. this won't necessarily block, but
-	      ;;  * will block the rendering until fence is signaled), until
-	      ;;  * the previous pageflip completes so we don't render into
-	      ;;  * the buffer that is still on screen.
-	      ;;  */
-	      (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglWaitSyncKHR) ()
-				       :pointer (display egl)
-				       :pointer kms-fence
-				       :int32 0
-				       :int32))
+    (loop
+       :while running
+       :do (let ((next-bo   (null-pointer))
+		 (gpu-fence (null-pointer)) ;/* out-fence from gpu, in-fence to kms */
+		 (kms-fence (null-pointer))) ;/* in-fence to gpu, out-fence from kms */
+	     
+	     (when (/= (mem-ref (kms-out-fence-fd drm) :int) -1)
+	       (setf kms-fence
+		     (create-fence (display egl)
+				   (mem-ref (kms-out-fence-fd drm) :int)))
+	       (assert (not (null-pointer-p kms-fence)))
+	       
+	       ;; /* driver now has ownership of the fence fd: */
+	       (setf (mem-ref (kms-out-fence-fd drm) :int) -1)
+	       
+	       ;; /* wait "on the gpu" (ie. this won't necessarily block, but
+	       ;;  * will block the rendering until fence is signaled), until
+	       ;;  * the previous pageflip completes so we don't render into
+	       ;;  * the buffer that is still on screen.
+	       ;;  */
+	       (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglWaitSyncKHR) ()
+					:pointer (display egl)
+					:pointer kms-fence
+					:int32 0
+					:int32))
 
-	    ;;;;;;;;;;;
-	    ;; DO STUFF
-	    ;; (gl:clear-color (- 1.0 (/ i 600.0)) (/ i 600.0) 0.0 1.0)
-	    ;; (gl:clear :color-buffer-bit)
-	    (input-main dev-input)
-	    (when (not (msdf-run))
-	      (setf running nil))
-	    ;;;;;;;;;;
-	    
-	    ;; /* insert fence to be singled in cmdstream.. this fence will be
-	    ;;  * signaled when gpu rendering done
-	    ;;  */
-	    (setf gpu-fence (create-fence (display egl) -1)) ;:EGL-NO-NATIVE-FENCE-FD-ANDROID
-	    (assert (not (null-pointer-p gpu-fence)))
-	    
-	    (egl:swap-buffers (display egl) (surface egl))
+	     ;; DO STUFF
+	     ;; (gl:clear-color (- 1.0 (/ i 600.0)) (/ i 600.0) 0.0 1.0)
+	     ;; (gl:clear :color-buffer-bit)
+	     (input-main dev-input)
+	     (when (not (msdf-run))
+	       (setf running nil))
+	     
+	     ;; Insert fence to be singled in cmdstream.. this fence will be
+	     ;; signaled when gpu rendering done
+	     (setf gpu-fence (create-fence (display egl) -1)) ;:EGL-NO-NATIVE-FENCE-FD-ANDROID
+	     (assert (not (null-pointer-p gpu-fence)))
+	     
+	     (egl:swap-buffers (display egl)
+			       (surface egl))
+	     
+	     ;; After swapbuffers, gpu_fence should be flushed, so safe
+	     ;; to get fd:
+	     (setf (kms-in-fence-fd drm) (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglDupNativeFenceFDANDROID) ()
+								  :pointer (display egl)
+								  :pointer gpu-fence
+								  :int32))
+	     (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglDestroySyncKHR) ()
+				      :pointer (display egl)
+				      :pointer gpu-fence
+				      :int)
+	     (assert (/= (kms-in-fence-fd drm) -1))
+	     
+	     (setf next-bo (gbm:surface-lock-front-buffer (surface gbm)))
+	     (when (null-pointer-p next-bo)
+	       (error "Failed to lock frontbuffer~%"))
 
-	    ;; /* after swapbuffers, gpu_fence should be flushed, so safe
-	    ;;  * to get fd:
-	    ;;  */
-	    (setf (kms-in-fence-fd drm) (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglDupNativeFenceFDANDROID) ()
-								 :pointer (display egl)
-								 :pointer gpu-fence
-								 :int32))
-	    (foreign-funcall-pointer (getf *egl-fn-ptrs* 'eglDestroySyncKHR) ()
-				     :pointer (display egl)
-				     :pointer gpu-fence
-				     :int)
-	    (assert (/= (kms-in-fence-fd drm) -1))
-	    
-	    (setf next-bo (gbm:surface-lock-front-buffer (surface gbm)))
-	    (when (null-pointer-p next-bo)
-	      (error "Failed to lock frontbuffer~%"))
+	     (setf fb (drm-fb-get-from-bo next-bo))
+	     (when (null-pointer-p fb)
+	       (error "Failed to get a new framebuffer BO~%"))
+	     
+	     ;; Wait on the CPU side for the _previous_ commit to
+	     ;; complete before we post the flip through KMS, as
+	     ;; atomic will reject the commit if we post a new one
+	     ;; whilst the previous one is still pending.
+	     (wait-for-previous-commit (display egl)
+				       kms-fence)
+	     
+	     ;; Here you could also update drm plane layers if you want
+	     ;; hw composition
+	     (let ((ret (commit drm
+				(foreign-slot-value fb '(:struct drm:drm-fb) 'drm:fb-id)
+				flags)))
+	       (unless (zerop ret)
+		 (error "failed to commit modeset")))
+	     
+	     ;; Release last buffer to render on again
+	     (unless (null-pointer-p bo)
+	       (gbm:surface-release-buffer (surface gbm) bo))
+	     (setf bo next-bo)
 
-	    (setf fb (drm-fb-get-from-bo next-bo))
-	    (when (null-pointer-p fb)
-	      (error "Failed to get a new framebuffer BO~%"))
-	    
-	    ;; 	/* Wait on the CPU side for the _previous_ commit to
-	    ;; 	 * complete before we post the flip through KMS, as
-	    ;; 	 * atomic will reject the commit if we post a new one
-	    ;; 	 * whilst the previous one is still pending.
-	    ;; 	 */
-	    (wait-for-previous-commit (display egl) kms-fence)
-	    
-	    ;; /*
-	    ;;  * Here you could also update drm plane layers if you want
-	    ;;  * hw composition
-	    ;;  */
-	    (let ((ret (commit drm
-			       (foreign-slot-value fb '(:struct drm:drm-fb) 'drm:fb-id)
-			       flags)))
-	      (when (/= ret 0)
-		(error "failed to commit modeset")))
-	    
-	    ;; /* release last buffer to render on again: */
-	    (when (not (null-pointer-p bo))
-	      (gbm:surface-release-buffer (surface gbm) bo))
-	    (setf bo next-bo)
-
-	    ;; /* Allow a modeset change for the first commit only. */
-	    (setf flags (logand flags (lognot #x0400)))))
+	     ;; Allow a modeset change for the first commit only
+	     (setf flags (logand flags (lognot #x0400)))))
 
     ;; Return current bo/fb for shutdown function
     (values bo fb)))
@@ -330,7 +333,7 @@
 	(egl-display (display egl)))
     
     ;; Restore previous crtc
-    (when (not (null-pointer-p crtc))
+    (unless (null-pointer-p crtc)
       (with-foreign-objects ((connector-id :uint32))
 	(setf (mem-aref connector-id :uint32) (connector-id drm))
 	(drm:mode-set-crtc fd
@@ -342,23 +345,29 @@
 			   1
 			   (incf-pointer crtc (foreign-slot-offset '(:struct drm:mode-crtc) 'drm:mode)))
 	(format t "[shutdown] Reset CRTC~%")))
-	;; (drm:mode-free-crtc crtc)) ; invalid pointer
+    ;; (drm:mode-free-crtc crtc)) ; invalid pointer
     
     ;; Remove FB
-    (when (not (null-pointer-p bo))
+    (unless (null-pointer-p bo)
       (drm:mode-remove-framebuffer fd (foreign-slot-value fb '(:struct drm:drm-fb) 'drm:fb-id))
       (gbm:surface-release-buffer gbm-surface bo))
     (format t "[shutdown] FB removed~%")
 
     ;; Destroy various objects
-    (when (surface egl) (egl:destroy-surface egl-display (surface egl)))
+    (when (surface egl)
+      (egl:destroy-surface egl-display (surface egl)))
 
-    (when gbm-surface (gbm:surface-destroy gbm-surface))
+    (when gbm-surface
+      (gbm:surface-destroy gbm-surface))
 
-    (when (context egl) (egl:destroy-context egl-display (context egl)))
+    (when (context egl)
+      (egl:destroy-context egl-display (context egl)))
 
-    (when egl-display (egl:terminate2 egl-display))
+    (when egl-display
+      (egl:terminate2 egl-display))
 
-    (when (dev gbm) (gbm:device-destroy (dev gbm)))
+    (when (dev gbm)
+      (gbm:device-destroy (dev gbm)))
 
-    (when fd (nix:close fd))))
+    (when fd
+      (nix:close fd))))

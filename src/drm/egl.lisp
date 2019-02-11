@@ -1,5 +1,7 @@
 (in-package :protoform.drm)
 
+(defparameter *egl-fn-ptrs* nil)
+
 (defclass egl () 
   ((display :accessor display :initarg :display :initform nil)
    (config :accessor config :initarg :config :initform nil)
@@ -11,7 +13,8 @@
   (let* ((egl (make-instance 'egl))
 	 (display (egl:get-display (dev gbm))))
     
-    (multiple-value-bind (major minor) (egl:initialize display) ;; prints out code
+    (multiple-value-bind (major minor)
+	(egl:initialize display) ;; prints out code
       (format t "[init-egl] EGL version: ~d.~d~%" major minor))
     
     (egl:bind-api :opengl-es-api)
@@ -46,19 +49,18 @@
       (format t "[init-egl] surface: ~a~%" surface)
       (format t "[init-egl] make-current: ~a~%" (egl:make-current display surface surface context))
 
-      (setf (display egl) display)
-      (setf (config egl) config)
-      (setf (context egl) context)
-      (setf (surface egl) surface))
+      ;; flip this
+      (setf (display egl) display
+	    (config egl)  config
+	    (context egl) context
+	    (surface egl) surface))
 
     ;; Move *egl-fn-ptrs* to egl?
     (get-egl-fn-ptrs)
     
     egl))
 
-
 (defun get-egl-fn-ptrs ()
-  (defparameter *egl-fn-ptrs* ())
   
   (with-foreign-strings ((n1 "eglDupNativeFenceFDANDROID")
 			 (n2 "eglCreateSyncKHR")
