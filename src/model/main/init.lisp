@@ -28,9 +28,13 @@
 				+scale-msdf+)))
 
 (defun set-cc ()
-  (setf *queue-anim*       (sb-concurrency:make-queue) ; sync tasks
-	*queue-tasks-async*    (sb-concurrency:make-queue) ; async tasks
-	*queue-shm*        (sb-concurrency:make-queue)))
+  (setf *queue-anim*        (sb-concurrency:make-queue) ; sync tasks
+	*queue-shm-sync*    (sb-concurrency:make-queue)
+
+	*queue-tasks-async* (sb-concurrency:make-queue) ; async tasks
+	*queue-shm-async*   (sb-concurrency:make-queue)
+	
+	*queue-shm*         (sb-concurrency:make-queue)))
 
 (defun set-stack-node ()   
   (setf *stack-i-nodes*     (loop ; run in parallel?
