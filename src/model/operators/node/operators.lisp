@@ -21,7 +21,7 @@
     ;; (when-let* ((node-ptr-out (get-node-ptr-out))
     ;; 		(node-type (get-node-type node-ptr-out)))
     ;; 	       t)
-  
+    
     ;; Attach node to ptr
     (insert-node node-new *node-ptr-main* :out)
     ;; Advance pointer

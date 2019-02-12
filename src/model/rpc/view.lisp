@@ -8,24 +8,26 @@
 
 (defun handle-view-sync (time-frame)
 
-  (let ((time (osicat:get-monotonic-time)))
-    
-    (execute-queue-tasks *queue-tasks-sync*)
-    ;; execute tasks shm
+  (let* ((time (* (osicat:get-monotonic-time) 1000))
+	 (time-alloted (* (/ 1 120) 1000))
+	 (time-remain time-alloted)) ; 8 ms runtime
 
+    ;; Frame time ratio:
+    ;; 2x + 2y + 1z = 16
+
+    (execute-queue-tasks *queue-tasks-sync*)
+    ;; execute task shm sync
+
+    (decf time-remain (- (* (osicat:get-monotonic-time) 1000) time))
+    
     ;; async-deadline = alloted time - sync time
     ;; or min one...always executes at least one task
     (execute-queue-tasks-deadline *queue-tasks-async*
-				  (* (/ 1 100) 1000))
-    ;; execute tasks shm
+				  time-remain)
+    ;; execute task shm async
     
+    ;; Consider negligible for now or give 1 ms
     (send-msg-shm)
-    
-    (let* ((time-final (osicat:get-monotonic-time))
-	   (time-delta (- time-final time))
-	   (time-delta-ms (* time-delta 1000)))
-      (when (> time-delta-ms (* (/ 1 60) 1000))
-	(format t "handle-view-sync: ~8$ ms~%" time-delta-ms)))
 
     t))
 
@@ -39,8 +41,7 @@
   ;; Try to run anims in parallel
   ;; - Use old method where callbacks enqueue a list and ptree is built/exec here
 
-  (let ((items-next ())
-	(time-elapsed 0.0))
+  (let ((items-next ()))
     (loop
        :for item := (sb-concurrency:dequeue queue)
        :while item
@@ -57,6 +58,8 @@
 (defun execute-queue-tasks-deadline (queue deadline)
   (let ((items-next ())
 	(time-elapsed 0.0))
+    ;; POSS pull items until empty
+    ;; Then call ptree
     (loop
        :for item := (sb-concurrency:dequeue queue)
        :while item
@@ -71,7 +74,7 @@
 	       (when (listp ptree-next)
 		 (push ptree-next items-next))
 	       (incf time-elapsed time-delta-ms)
-	       (update-timing-fn time-delta-ms)
+	       (update-timing-fn id time-delta-ms)
 	       (when (> time-elapsed deadline)
 		 (format t "(> ~a ~a)" time-elapsed deadline)
 		 (return)))))
@@ -79,7 +82,7 @@
       (sb-concurrency:enqueue item-ptree
 			      queue))))
 
-(defun update-timing-fn (time-delta)
+(defun update-timing-fn (id time-delta)
   ;; avg or use kalman filter
   (setf (gethash id *ht-timing-fn*) time-delta))
 

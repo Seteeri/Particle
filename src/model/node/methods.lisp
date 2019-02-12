@@ -163,7 +163,7 @@
   	(advance-node-of-node node-ref-out
   			      node-ref-in
   			      1.0))
-      (push (index node-ref) *stack-i-nodes*)
+      (push node-ref *stack-i-nodes*)
       (remove-vertex node-ref)
       (spatial-trees:delete node-ref *r-tree*))
     (values node-ref

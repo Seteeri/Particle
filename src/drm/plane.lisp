@@ -10,7 +10,7 @@
   (let* ((plane (make-instance 'plane))
 	 (plane-id (drm:find-plane-id fd
 				      crtc-index)))
-    (unless plane-id)
+    (unless plane-id
       (error "Could not find unsuitable plane"))
 
     (format t "[init-drm-atomic] plane-id: ~a~%" plane-id)

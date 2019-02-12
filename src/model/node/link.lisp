@@ -31,7 +31,7 @@
 			  dir
 			  &optional
 			    (graph *digraph-main*)
-			    (edges *edges-digraph))
+			    (edges *edges-main*))
   (cond ((eq dir :in)
 	 (when-let ((node-* (get-node-in *)))
 		   (remove-edge node-* * digraph edges)
