@@ -163,7 +163,14 @@
   	(advance-node-of-node node-ref-out
   			      node-ref-in
   			      1.0))
-      (push node-ref *stack-i-nodes*)
+      ;; Reset existing or push new
+      (push (init-node-msdf (vec3 0 0 0)
+  			    *scale-node*
+  			    (index node-ref)
+  			    nil
+  			    nil)
+	    *stack-i-nodes*)
+      
       (remove-vertex node-ref)
       (spatial-trees:delete node-ref *r-tree*))
     (values node-ref

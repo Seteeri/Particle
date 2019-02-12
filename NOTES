@@ -1,3 +1,16 @@
+Traditionally computers have worked by having different applications and
+UIs working on both different and similar data with overlapping 
+operations and functionality. For example, a word processor might include
+some image editing operations, and an image editor might provide the
+ability to rasterize text.
+
+The idea of Protoform is to invert that model so users have a consistent
+interface with less redundancy which is faster to learn. Data today is 
+not simply numbers and text but much more, and users need an interface
+that can cut across all domains.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 buffer for glyphs - number, size etc
 
 buffer for text - arbitrary size like max RAM

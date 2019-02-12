@@ -9,32 +9,32 @@ information as they moved through the computer. What did they look like?
   a world I thought I'd never see. And then one day . . .
 
 Protoform is a Common Lisp 3D nodal/graph shell based on DRM-KMS and 
-Open GL ES.
+Open GL ES. It is the implementation of my vision of a more consistent 
+programmable UI to replace the desktop/application paradigm. 
 
-It is the implementation of my vision of a more consistent programmable
-user-interface to replace the desktop. It integrates concepts from
-REPLs/CLIs, WMs/DEs into a single 3D interface.
+The aim is to create a full Lisp environment short of creating a pure
+Lisp OS/kernel (PID 1 might be an option); Protoform may be considered a top-down approach rather
+than a bottom-up approach. From a consumer perspective, the lower
+abstractions are becoming virtualized at the convenience of the user, 
+i.e. web browser becoming a platform. However, the increase in the
+number of data breaches and security issues have kept the OS to remain
+an important factor.
 
-Traditionally computers have worked by having different applications and
-UIs working on both different and similar data with overlapping 
-operations and functionality. For example, a word processor might include
-some image editing operations, and an image editor might provide the
-ability to rasterize text.
+It aims to integrate Wayland by provide the desktop as a node (plane) in
+3D space, making Protoform a "meta-manager" around the desktop. Later, 
+Protoform could be extended to allow windows to exist in 3D space 
+(feasibility dependent upon performance), allowing for convergence.
 
-The idea of Protoform is to invert that model so users have a consistent
-interface with less redundancy which is faster to learn. Data today is 
-not simply numbers and text but much more, and users need an interface
-that can cut across all domains.
+Protoform integrates concepts from CLIs/shells/REPLs/notebooks, WMs/DEs,
+and mindmapping into a single 3D interface.
 
-It aims to integrate Wayland/X initially by provide the desktop as a
-plane (window) in 3D space, effectively making Protoform a 
-"meta-manager" around the desktop. Later, Protoform could be extended to
-allow windows to exist in 3D space. This should allow for convergence.
+It is **not** an attempt to create a visual programming language; it is
+akin to an IDE. It is designed to edit Lisp code/data, which are 
+effectively binary trees. It makes Lisp code/data first-class objects
+just as conventional windows are.
 
 The target audience consists of programmers, developers, system
-administrators, power users and the like. It is designed for workstations 
-and creators, or any computing situation dealing with integrating 
-information across various domains.
+administrators, power users, tech-savy users and the like.
 
 I would like to implement a different interface for the less 
 programmatically inclined users, starting with people that are familiar
@@ -47,8 +47,9 @@ the Librem 5 as a proof of concept or even a prototype...
 ## The Inspiration
 
 * Primary Inspirations:
-    * Blender - 3D, multi-domain dataset, flexible UI
     * Compiz - 3D desktop effects
+    * Blender - 3D, multi-domain dataset, flexible UI
+    * Emacs - consistency, extensibility, text and keyboard driven    
     * The Humane Interface by Jeff Raskin
       * Elimination of modes
       * Persistence
@@ -57,10 +58,9 @@ the Librem 5 as a proof of concept or even a prototype...
       * Elmintation of applications -> commands
       * Redesign file hierarchies
       * ZUIs as an alternative
-    * Emacs - consistency, extensibility, text and keyboard driven
-    * McCLIM - central concept of "presentation types"
     
 * Secondary Inspirations:
+    * McCLIM - central concept of "presentation types"
     * Uzbl/Conkeror - numbered links for navigation
     * Unreal Blueprints - nodal system
     * EagleMode - example of a ZUI
@@ -79,32 +79,86 @@ the quest for a more efficient workflow; the main limitation being,
 confinement to the desktop/window metaphor and the staticness of widgets.
 
 With the growth of open-source, Wayland, fragmentation of the desktop, 
-increasing computing resources, and privacy issues, I believe this 
-presents an opportunity to redefine the computing environment. Protoform 
-is not an entirely new idea, but a different attempt to build upon the 
-success and failures of those before.
+Moore's Law, data breaches and privacy issues, and finally AR/VR, I 
+believe this presents an opportunity to redefine the computing 
+environment. Protoform is not an entirely new idea, but a different 
+attempt to build upon the success and failures of those before. The 
+initial inspiration came from the robustness of Emacs, and its strengths
+and weaknesses.
 
-The initial inspiration came from Blender's multi-domain toolset and 
-later from Emacs's text buffer oriented system. The idea was to fuse the
-ideas of Blender, Emacs, and other programs to abstract a consistent,
-extensible, and ultimately efficient UI that could incorporate 
-tried-and-true concepts like the command-line interface but also 
-visualize the different types of data today. 
+[**What if we could take Emacs to another level?**](https://www.google.com/search?q=what+can%27t+emacs+do+site:www.reddit.com)
+* Elisp -> Common Lisp
+  * Single-thread -> Multithreading
+* Software rendering -> OpenGL
+* Help system/manual -> Simplify
 
-It is a fusion between expressive creative coding through frameworks 
-like Cinder, openFrameworks or Processing, more convergent tools such
-as Blender and Emacs, sandbox type games such as Minecraft, and finally
-business intelligence analysis tools.
+I imagine - what if there were something like Emacs for the non-programmer
+user? Considering the way technology and computers are becoming more
+and more integrated into our everyday lives, the bottleneck to 
+leveraging computing most effectively and driving innovation will be the
+connection between man and machine.
 
-> Successful programming is all about managing complexity.
+What the average user is familiar with are GUIs and their widgets, but
+what if we could make those dynamic, just as Emacs allows everything to
+be customized through elisp. Attempting to teach a lay user how to 
+program is no easy feat as evidenced by VPLs. Having observed, Blender's
+nodal workflow and Unreal's Blueprint system, I attempted to combine
+those models of interaction with the analogy of LEGOs, while at the same
+time allowing for the entire system to remain hackable to programmers.
 
-One of the reasons Lisp was chosen was for its ability to mitigate a
-major anti-pattern frequently encountered - the limitations created
-by programs extending functionality through a scripting language and
-embedding an interpreter such as Lua or Python, which as more 
-functionality is developed, leads to interoperability issues, where data
-and code must be managed in two different domains leading to a
-"desert of complexity and duplication".
+I do not believe it is about dumbing down programming to make it easier
+to learn, but creating the right tools around programming to drive
+motivation and learning.
+
+[A comment made by lispm, an old time lisper, on the concept of
+a Lisp OS](https://news.ycombinator.com/item?id=15466124):
+
+> I expect this will be a fairly controversial comment, so I want to 
+> preface this by saying that I'm a big Lisp fan (just look at my 
+> handle). Lisp is my favorite programming language. I've been using it 
+> for nearly forty years. My first Lisp was P-Lisp on an Apple II in 
+> 1980. And I worked on Symbolics Lisp machines in the 1990s. They were 
+> very cool, but there's a reason they failed: general-purpose computing
+> is infrastructure, and the economics of infrastructure are such that 
+> having a single standard is the most economical solution, even if that
+> standard is sub-optimal. For better or worse, the standard for 
+> general-purpose computing is the C machine.
+>
+> Because it's general-purpose you certainly can run Lisp on a C machine
+> (just as you could run C on a Lisp machine). You can even do this at 
+> the system level. But Lisp will always be at a disadvantage because 
+> the hardware is optimized for C. Because of this, C will always win at
+> the system level because at that level performance matters.
+>
+> But that in and of itself is not the determining factor. The 
+> determining factor is the infrastructure that has grown up around the 
+> C machine in the last few decades. There is an enormous amount of work
+> that has gone into building compilers, network stacks, data 
+> interchange formats, libraries, etc. etc. and they are all optimized 
+> for C. For Lisp to be competitive at the system level, nearly all of 
+> this infrastructure would have to be re-created, and that is not going
+> to happen. Even with the enormous productivity advantages that Lisp 
+> has over C (and they really are enormous) this is not enough to 
+> overcome the economic advantages that C has by virtue of being the 
+> entrenched standard.
+>
+> The way Lisp can still win in today's world is not by trying to 
+> replace C on the system level, but by "embracing and extending" C at 
+> the application level. I use Clozure Common Lisp. It has an 
+> Objective-C bridge, so I can call ObjC functions as if they were Lisp 
+> functions. There is no reason for me to know or care that these 
+> functions are actually written in C (except insofar as I have to be a 
+> little bit careful about memory management when I call C functions 
+> from Lisp) and so using Lisp in this way still gives me a huge lever 
+> that is economically viable even in today's world. I have web servers 
+> in production running in CCL on Linux, and it's a huge win. I can spin
+> up a new web app on AWS in just a few minutes from a standing start. 
+> It's a Lisp machine, but at the application level, not the system 
+> level. My kernel (Linux) and web front end (nginx) are written in C, 
+> but that doesn't impact me at all because they are written by someone 
+> else. I just treat them as black boxes.
+>
+> ...But cool is not enough to win in the real world.
 
 ## The Interface
 
@@ -113,6 +167,8 @@ and code must be managed in two different domains leading to a
 * 3D orthographic nodal environment - "turtles all the way down"
 * Primarily keyboard driven interface
 * Wayland extension provides conventional desktop
+* Non-blocking UI - user should always be aware of whether the computer 
+is busy/responding
 
 ## The Architecture
 
