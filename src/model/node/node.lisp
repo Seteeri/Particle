@@ -271,4 +271,4 @@
 	(aref (rgba vert) 14) (coerce (random 1.0) 'single-float)
 	;; (aref (rgba vert) 15) (coerce (/ 255 255)  'single-float)
 	)
-  (enqueue-node vert))
+  (send-node vert))

@@ -70,7 +70,7 @@
       new-pos))
 
   ;; TEMP
-  (enqueue-node-ptr))
+  (send-node *node-ptr-main*))
 
 (defun update-transform-line (node-start offset)
   ;; If assumed, glyphs are already aligned,
@@ -81,4 +81,4 @@
       (setf (translation (model-matrix node))
 	    (v+ (translation (model-matrix node))))
       (update-transform (model-matrix node))
-      (enqueue-node node))))
+      (send-node node))))

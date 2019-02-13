@@ -29,14 +29,8 @@
 
 (defun set-cc ()
   (setf *queue-tasks-sync*  (sb-concurrency:make-queue)
-	*queue-shm-sync*    (sb-concurrency:make-queue)
-
 	*queue-tasks-async* (sb-concurrency:make-queue)
-	*queue-shm-async*   (sb-concurrency:make-queue)
-
-	*ht-timing-fn*      (make-hash-table :size 64)
-	
-	*queue-shm*         (sb-concurrency:make-queue)))
+	*ht-timing-fn*      (make-hash-table :size 64)))
 
 (defun set-stack-node ()   
   (setf *stack-i-nodes*     (loop ; run in parallel?

@@ -825,3 +825,10 @@ The way Lisp can still win in today's world is not by trying to replace C on the
 I don't want to denigrate ChrysaLisp in any way. It's tremendously cool. But cool is not enough to win in the real world.
 
 [UPDATE] ChrysaLisp is actually doing the Right Thing with respect to its GUI by using a C-library (SDL). But it's trying to re-invent the compiler wheel (and the language design wheel) so that it can run on bare metal and "grow up to be a real Lisp machine" some day, and I think that aspect of the project is a fool's errand. There are already many Lisps that can run on bare metal (ECL was specifically designed for that). None of them have succeeding in displacing C, and I believe none ever will because the economic hurdles are insurmountable. 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+possible to have
+
+1 controller - nCPU models - 1 view
+

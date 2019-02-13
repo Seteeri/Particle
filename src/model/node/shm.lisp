@@ -1,38 +1,36 @@
 (in-package :protoform.model)
 
-(defun enqueue-node (node)
-  (sb-concurrency:enqueue (list *channel*
-				*shm-nodes*
-				(progn
-				  (update-transform (model-matrix node))
-				  (serialize-node node))
-				(* (index node)
-				   +size-struct-instance+))
-			  *queue-shm*))
+;; move out of shm
+(defun send-node (node)
+  (enqueue-node node
+		(progn
+		  (update-transform (model-matrix node))
+		  (serialize-node node)))
+  (send-memcpy-node node))  
 
-(defun enqueue-node-ptr ()
-  (sb-concurrency:enqueue (list *channel*
-				*shm-nodes*
-				(progn
-				  (update-transform (model-matrix *node-ptr-main*))
-				  (serialize-node *node-ptr-main*))
-				(* (index *node-ptr-main*)
-				   +size-struct-instance+))
-			  *queue-shm*))  
+(defun send-node-zero (node)
+  (enqueue-node node
+		*data-zero-node*)
+  (send-memcpy-node node))
 
-(defun enqueue-node-zero (index)
-  (sb-concurrency:enqueue (list *channel*
-				*shm-nodes*
-				*data-zero-node*
-				(* index
-				   +size-struct-instance+))
-			  *queue-shm*))
+(defun enqueue-node (node data)
+  (copy-data-to-shm *shm-nodes* 
+		    data
+		    (* (index node)
+		       +size-struct-instance+)))
 
+(defun send-memcpy-node (node)
+  (let* ((start (* (index node)
+		   +size-struct-instance+))
+	 (end (+ start +size-struct-instance+)))
+  (memcpy-shm-to-cache-flag*
+   `(("nodes"    ,start ,end)))))
+
+;; rename to serialize-node-to-shm
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
-  
+  ;; see serialize-node
   (with-slots (ptr size)
-      *shm-nodes*
-    
+      *shm-nodes*    
     (with-slots (model-matrix
 		 rgba
 		 offset-texel-texture
@@ -40,7 +38,6 @@
 		 uv
 		 flags)
 	node
-      
       (let ((marr (marr (matrix model-matrix))))
 	(setf (mem-aref ptr :float offset-ptr)        (aref marr 0)
 	      (mem-aref ptr :float (incf offset-ptr)) (aref marr 1)
@@ -111,3 +108,17 @@
       *shm-nodes*
     (dotimes (i (/ +size-struct-instance+ 4))
       (setf (mem-aref ptr :int (+ offset-ptr i)) 0))))
+
+(defun copy-data-to-shm (shm data offset-ptr)
+  (declare (type (array (unsigned-byte 8)) data))
+  ;; faster way to do this?
+  (with-slots (ptr size)
+      shm
+    (loop
+       :for c :across data
+       :for i :upfrom 0
+       :do (setf (mem-aref ptr
+    			   :uchar
+    			   (+ offset-ptr i))
+    		 c)))
+  (length data))

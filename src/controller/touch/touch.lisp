@@ -34,7 +34,7 @@
 	  (translate-node-ptr t ;seq-event
 			      (lambda (value-new) ; update fn
 				(setf (vx3 (translation model-matrix)) value-new)
-				(enqueue-node-ptr))
+				(send-node *node-ptr-main*))
 			      (vx3 (translation model-matrix)) ; start
 			      (- (vx3 coords-touch)
 				 (vx3 (translation model-matrix)))
@@ -43,7 +43,7 @@
 	  (translate-node-ptr t ;seq-event
 			      (lambda (value-new) ; update fn
 				(setf (vy3 (translation model-matrix)) value-new)
-				(enqueue-node-ptr))
+				(send-node *node-ptr-main*))
 			      (vy3 (translation model-matrix)) ; start
 			      (- (vy3 coords-touch)
 				 (vy3 (translation model-matrix)))

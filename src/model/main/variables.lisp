@@ -22,14 +22,8 @@
 (defparameter *inst-max* nil)
 
 (defparameter *queue-tasks-sync* nil)
-(defparameter *queue-shm-sync* nil)
-
 (defparameter *queue-tasks-async* nil)
-(defparameter *queue-shm-async* nil)
-
 (defparameter *ht-timing-fn* nil)
-
-(defparameter *queue-shm* nil)
 
 (defparameter *stack-i-nodes* nil)
 ;; (defparameter *mutex-stack-nodes* nil)

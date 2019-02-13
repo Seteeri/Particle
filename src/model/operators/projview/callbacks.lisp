@@ -7,7 +7,7 @@
   (animate-scale-ortho seq-event
 		       (lambda (value-new)
 			 (setf (scale-ortho *projview*) value-new)
-			 (enqueue-mat-proj))
+			 (send-mat-proj))
 		       (- (vz3 (displace *projview*)))
 		       'scale-ortho))
 
@@ -16,7 +16,7 @@
   (animate-scale-ortho seq-event
 		       (lambda (value-new)
 			 (setf (scale-ortho *projview*) value-new)
-			 (enqueue-mat-proj))
+			 (send-mat-proj))
 		       (vz3 (displace *projview*))
 		       'scale-ortho))
 
@@ -27,7 +27,7 @@
     (animate-translate-camera seq-event
 			      (lambda (value-new)
 				(setf (vx3 pos) value-new)
-				(enqueue-mat-view))
+				(send-mat-view))
 			      (vx3 pos)
 			      (- (vx3 displace))
 			      'translate-camera-x)))
@@ -39,7 +39,7 @@
     (animate-translate-camera seq-event
 			      (lambda (value-new)
 				(setf (vx3 pos) value-new)
-				(enqueue-mat-view))
+				(send-mat-view))
 			      (vx3 pos)
 			      (vx3 displace)
 			      'translate-camera-x)))
@@ -51,7 +51,7 @@
     (animate-translate-camera seq-event
 			      (lambda (value-new)
 				(setf (vy3 pos) value-new)
-				(enqueue-mat-view))
+				(send-mat-view))
 			      (vy3 pos)
 			      (vy3 displace)
 			      'translate-camera-y)))
@@ -63,7 +63,7 @@
     (animate-translate-camera seq-event
 			      (lambda (value-new)
 				(setf (vy3 pos) value-new)
-				(enqueue-mat-view))
+				(send-mat-view))
 			      (vy3 pos)
 			      (- (vy3 displace))
 			      'translate-camera-y)))

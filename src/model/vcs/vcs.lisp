@@ -20,5 +20,5 @@
 			  node
   			  1.0)
     
-    (enqueue-node *node-ptr-vcs*)
-    (enqueue-node node)))
+    (send-node *node-ptr-vcs*)
+    (send-node node)))

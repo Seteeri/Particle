@@ -29,8 +29,8 @@
     			  node-new
     			  1.0)
     
-    (enqueue-node-ptr)
-    (enqueue-node node-new)
+    (send-node *node-ptr-main*)
+    (send-node node-new)
     
     ;; Add event to VCS graph
     (add-node-vcs)
@@ -43,12 +43,12 @@
 			node-del-out)
       (delete-node)
     (when node-del
-      (enqueue-node-zero (index node-del)) ; refactor this func
-      (enqueue-node-ptr)
+      (send-node-zero node-del) ; refactor this func
+      (send-node *node-ptr-main*)
       (when node-del-in
-	(enqueue-node node-del-in))
+	(send-node node-del-in))
       (when node-del-out
-	(enqueue-node node-del-out)))))
+	(send-node node-del-out)))))
 
 (defun add-node-tab ()
   (dotimes (n (1- +spaces-tab+))
@@ -86,7 +86,7 @@
     					  (+ (- (* +linegap+ *scale-node*)))
     					  0.0))
     
-    (enqueue-node-ptr))
+    (send-node *node-ptr-main*))
 
   ;; Store pos in newline...
   
@@ -187,7 +187,7 @@
 	    (translate-node-ptr nil
 				(lambda (value-new) ; update fn
 				  (setf (vx3 (translation model-matrix)) value-new)
-				  (enqueue-node-ptr))
+				  (send-node *node-ptr-main*))
 				(vx3 (translation model-matrix)) ; start
 				(* 96
 				   *scale-node*
@@ -196,7 +196,7 @@
 					 ((eq dir :out)
 					  1.0)))
 				'move-pointer-x))
-	  (enqueue-node-ptr))
+	  (send-node *node-ptr-main*))
 
 	(when-let ((node-nxt (get-node-dir node-ref dir)))
 
@@ -225,7 +225,7 @@
 		  (fmt-model t "move-node-ptr" "* -> ~S = ~S~%" node-nxt (data node-nxt))
 		  
 		  ;; (enqueue-node node-ref)
-		  (enqueue-node-ptr)))))
+		  (send-node *node-ptr-main*)))))
 
 (defun translate-node-ptr (seq-event
 			   fn-new
@@ -385,9 +385,9 @@
 						  -1.0))))
 
 	      (when node-buf
-  		(enqueue-node node-buf))
-	      (enqueue-node node-ref)
-	      (enqueue-node-ptr))))
+  		(send-node node-buf))
+	      (send-node node-ref)
+	      (send-node *node-ptr-main*))))
 	      
 (defun paste-node ()
   ;; Take node from right side (pred) -> left side (succ)
@@ -461,8 +461,8 @@
   					  *node-ptr-main*
   					  -1.0))))
 	    
-	    (enqueue-node node-buf)
-	    (enqueue-node-ptr)))
+	    (send-node node-buf)
+	    (send-node *node-ptr-main*)))
 
 (defun copy-node () ;;-to-pointer
   ;; Copy node from left side (succ) -> right side (pred)
@@ -517,6 +517,6 @@
   					  -1.0))))
       
       (when node-buf
-	(enqueue-node node-buf))
-      (enqueue-node node-ref)
-      (enqueue-node-ptr))))
+	(send-node node-buf))
+      (send-node node-ref)
+      (send-node *node-ptr-main*))))
