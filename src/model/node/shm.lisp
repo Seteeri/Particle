@@ -1,12 +1,13 @@
 (in-package :protoform.model)
 
 ;; move out of shm
-(defun send-node (node)
+(defun send-node (node &optional (update-transform t))
   (enqueue-node node
 		(progn
-		  (update-transform (model-matrix node))
+		  (when update-transform
+		    (update-transform (model-matrix node)))
 		  (serialize-node node)))
-  (send-memcpy-node node))  
+  (send-memcpy-node node))
 
 (defun send-node-zero (node)
   (enqueue-node node

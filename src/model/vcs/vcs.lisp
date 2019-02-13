@@ -20,5 +20,5 @@
 			  node
   			  1.0)
     
-    (send-node *node-ptr-vcs*)
+    (send-node *node-ptr-vcs* nil)
     (send-node node)))

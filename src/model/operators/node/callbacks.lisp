@@ -190,15 +190,28 @@
     (loop
        :for ch :across string
        :for i :upfrom 0
-       :do (let* ((node (pop *stack-i-nodes*)))
-	     
-	     (update-translation-node node (v+ baseline
-					       (vec3 (* 9.375 +scale-msdf+ *scale-node* i)
-						 0
-						 0)))
-	     (update-glyph-node node ch)
-	     (update-transform-node node)
-	     
-	     (insert-vertex node)
-	     (spatial-trees:insert node *r-tree*)
-	     (send-node node)))))
+       :do (let ((ptree (make-ptree)))
+	     (ptree-fn 'print-text
+		       '()
+  		       (lambda ()
+			 (let* ((node (pop *stack-i-nodes*))
+				(bl baseline)
+				(i-2 i)
+				(ch-2 ch))
+			   (update-translation-node node (v+ bl
+							     (vec3 (* 9.375 +scale-msdf+ *scale-node* i-2)
+								   0
+								   0)))
+			   (update-glyph-node node ch-2)
+			   (update-transform-node node)
+			   
+			   (insert-vertex node)
+			   (spatial-trees:insert node *r-tree*)
+			   ;; (send-node node nil)
+			   t))
+		       ptree)
+	     (sb-concurrency:enqueue (list ptree
+					   'print-text)
+				     *queue-tasks-async*)))))
+
+

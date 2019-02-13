@@ -29,7 +29,7 @@
     			  node-new
     			  1.0)
     
-    (send-node *node-ptr-main*)
+    (send-node *node-ptr-main* nil)
     (send-node node-new)
     
     ;; Add event to VCS graph
@@ -86,7 +86,7 @@
     					  (+ (- (* +linegap+ *scale-node*)))
     					  0.0))
     
-    (send-node *node-ptr-main*))
+    (send-node *node-ptr-main* nil))
 
   ;; Store pos in newline...
   
@@ -225,7 +225,7 @@
 		  (fmt-model t "move-node-ptr" "* -> ~S = ~S~%" node-nxt (data node-nxt))
 		  
 		  ;; (enqueue-node node-ref)
-		  (send-node *node-ptr-main*)))))
+		  (send-node *node-ptr-main* nil)))))
 
 (defun translate-node-ptr (seq-event
 			   fn-new
@@ -461,8 +461,8 @@
   					  *node-ptr-main*
   					  -1.0))))
 	    
-	    (send-node node-buf)
-	    (send-node *node-ptr-main*)))
+	    (send-node node-buf nil)
+	    (send-node *node-ptr-main* nil)))
 
 (defun copy-node () ;;-to-pointer
   ;; Copy node from left side (succ) -> right side (pred)
@@ -518,5 +518,5 @@
       
       (when node-buf
 	(send-node node-buf))
-      (send-node node-ref)
+      (send-node node-ref nil)
       (send-node *node-ptr-main*))))

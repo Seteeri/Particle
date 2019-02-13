@@ -247,6 +247,7 @@
     		  (buffer-sock-ptr *view*)
 		  (format nil "(handle-view-sync ~S)" time)))
 
+  ;; MSG_WAITALL	0x100
   (run-server #x100))
 
 (defun run-programs-shader ()
@@ -358,7 +359,6 @@
 	(multiple-value-bind (sock-accept errno)
 	    (accept4 sock-server :nonblock) ;non block
 	  (when (/= sock-accept -1)
-
 	    (fmt-view t "main-view" "Accepted connection: ~a~%" sock-accept)
 	    (setf sock-client sock-accept))))))
 

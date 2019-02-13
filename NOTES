@@ -832,3 +832,5 @@ possible to have
 
 1 controller - nCPU models - 1 view
 
+if we check each node for dirty, could same redundant memcpy if queue
+backs up

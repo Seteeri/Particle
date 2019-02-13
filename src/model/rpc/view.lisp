@@ -2,22 +2,29 @@
 
 (defun handle-view-sync (time-frame)
 
-  (let* ((time (* (osicat:get-monotonic-time) 1000))
-	 (time-alloted (* (/ 1 120) 1000))
+  (let* ((time (osicat:get-monotonic-time))
+	 (time-alloted (/ 8 1000))
 	 (time-remain time-alloted)) ; 8 ms runtime
     
     ;; Frame time ratio:
     ;; 2x + 2y + 1z = 16
 
     (execute-queue-tasks *queue-tasks-sync*)
+    ;; send shm messages
 
-    (decf time-remain (- (* (osicat:get-monotonic-time) 1000) time))
+    ;; Ensure view executes shm on next frame
+    ;; It will require same procedure as this
+    
+    (decf time-remain (- (osicat:get-monotonic-time) time))
+
+    ;; (format t "time-remain: ~a~%" time-remain)
     
     ;; async-deadline = alloted time - sync time
     ;; or min one...always executes at least one task
     (execute-queue-tasks-deadline *queue-tasks-async*
 				  time-remain)
-
+    ;; send shm messages
+    
     t))
 
 
@@ -54,16 +61,16 @@
        :while item
        :do (destructuring-bind (ptree id)
 	       item
+	     (format t "time-elapsed: ~a | deadline: ~a | id: ~a~%" time-elapsed deadline id)
 	     ;; Function can return item for next frame
 	     (let* ((time (osicat:get-monotonic-time))
 		    (ptree-next (call-ptree id ptree))
 		    (time-final (osicat:get-monotonic-time))
-		    (time-delta (- time-final time))
-		    (time-delta-ms (* time-delta 1000)))
+		    (time-delta (- time-final time)))
 	       (when (listp ptree-next)
 		 (push ptree-next items-next))
-	       (incf time-elapsed time-delta-ms)
-	       (update-timing-fn id time-delta-ms)
+	       (incf time-elapsed time-delta)
+	       (update-timing-fn id time-delta)
 	       (when (> time-elapsed deadline)
 		 (format t "(> ~a ~a)" time-elapsed deadline)
 		 (return)))))

@@ -25,7 +25,7 @@
 			    (* (aref bounds-a 1) *scale-node*)
 			    0.0))))
     (setf (translation (model-matrix node-a)) new-pos)
-    (update-transform (model-matrix node-a))
+    (update-transform (model-matrix node-a)) ; should let caller handle this
     (spatial-trees:delete node-a *r-tree*)
     (spatial-trees:insert node-a *r-tree*)
     new-pos))
@@ -44,7 +44,7 @@
 			    (* (aref bounds-a 1) *scale-node*)
 			    0.0))))
     (setf (translation (model-matrix node-a)) new-pos)
-    (update-transform (model-matrix node-a))
+    (update-transform (model-matrix node-a))  ; should let caller handle this
     (spatial-trees:delete node-a *r-tree*)
     (spatial-trees:insert node-a *r-tree*)
     new-pos))
