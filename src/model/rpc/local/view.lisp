@@ -1,33 +1,21 @@
 (in-package #:protoform.model)
 
 (defun handle-view-sync (time-frame)
-
+  ;; async-deadline = alloted time - sync time
+  ;; or min one...always executes at least one task  
   (let* ((time (osicat:get-monotonic-time))
-	 (time-alloted (/ 1 1000))
+	 (time-alloted (/ 8 1000))
 	 (time-remain time-alloted)) ; 8 ms runtime
     
-    ;; Frame time ratio:
-    ;; 2x + 2y + 1z = 16
-
     (execute-queue-tasks *queue-tasks-sync*)
-    ;; send shm messages
 
-    ;; Ensure view executes shm on next frame
-    ;; It will require same procedure as this
-    
     (decf time-remain (- (osicat:get-monotonic-time) time))
-
-    ;; (format t "time-remain: ~a~%" time-remain)
     
-    ;; async-deadline = alloted time - sync time
-    ;; or min one...always executes at least one task
     (execute-queue-tasks-deadline *queue-tasks-async*
 				  time-remain)
-    ;; send shm messages
 
-    ;; view will execute all messages sent to it
-    ;; in the same frame so it should read until empty
-
+    ;; Ensure view executes shm on next frame
+    ;; view will execute all messages sent to it until message
     (send-serving nil)
     
     t))
