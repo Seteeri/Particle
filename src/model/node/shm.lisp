@@ -25,7 +25,7 @@
 		   +size-struct-instance+))
 	 (end (+ start +size-struct-instance+)))
   (send-memcpy-shm-to-cache-flag*
-   `(("nodes"    ,start ,end)))))
+   `((,*shm-nodes* "/protoform-nodes"    ,start ,end)))))
 
 ;; rename to serialize-node-to-shm
 (defun copy-node-to-shm (node &optional (offset-ptr 0))

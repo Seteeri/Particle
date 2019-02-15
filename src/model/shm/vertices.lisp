@@ -3,7 +3,7 @@
 (defparameter *shm-vertices* nil)
 
 (defparameter *params-vertices-shm* (list :uniform-buffer
-					  "vertices"
+					  "/protoform-vertices"
 					  "/protoform-vertices"
 					  (* 16 4)
 					  1 1
@@ -18,7 +18,7 @@
   ;; 2---1
   ;;
   ;; ccw: 0 2 1 0 3 2
-  (let ((shm (init-shm :vertices)))
+  (let ((shm (init-shm '*shm-vertices*)))
     (with-slots (ptr size)
 	shm
       (let ((data (make-array (* 4 4)

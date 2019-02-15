@@ -3,7 +3,7 @@
 (defparameter *shm-nodes* nil)
 
 (defparameter *params-nodes-shm* (list :shader-storage-buffer
-				       "nodes"
+				       "/protoform-nodes"
 				       "/protoform-nodes"
 				       (/ 134217728 4)
 				       2 3
@@ -11,4 +11,4 @@
 				       0))
 
 (defun init-shm-nodes ()
-  (init-shm :nodes))
+  (init-shm '*shm-nodes*))

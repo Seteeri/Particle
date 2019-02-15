@@ -31,7 +31,7 @@
 	   (inst (make-instance 'handle-shm
 				:name name
 				:mmap mmap)))
-      ;; (format t "[init-mapping-buffer] Set hash for ~S~%" name)
+      (fmt-view t "init-handle-shm" "Set hash for ~S~%" name)
       (setf (gethash name handles-shm) inst))))
 
 (defun clean-up-handles-shm ()

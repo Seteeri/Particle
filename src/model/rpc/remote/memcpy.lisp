@@ -16,18 +16,6 @@
     		  *buffer-sock-ptr*
 		  (format nil "(memcpy-shm-to-cache ~S ~S ~S ~S)" name name offset size-cpy))))
 
-(defun send-memcpy-shm-to-cache* (names)
-  ;; Default to full copy
-  (send-message *sock-view*
-    		*buffer-sock-ptr*
-		(with-output-to-string (stream)
-		  (format stream "(")
-		  (dolist (name names)
-		    (with-slots (ptr size)
-			(gethash name *handles-shm*)
-		      (format stream "(memcpy-shm-to-cache ~S ~S 0 nil) " name name)))
-		  (format stream ")"))))
-
 (defun send-set-cache-dirty (name value)
   (send-message *sock-view*
     		*buffer-sock-ptr*
@@ -39,18 +27,18 @@
 		(with-output-to-string (stream)
 		  (format stream "(")
 		  (dolist (cache caches)
-		    (destructuring-bind (name-cache
+		    (destructuring-bind (shm
+					 name-cache
 					 offset-cache
 					 size-cache)
 			cache
 		      (with-slots (ptr size)
-			  ;; (gethash name-cache *handles-shm*)
-			  (get-sym-shm-from-string name-cache)
+			  shm
 			;; Pass offsets
-			(format stream "(memcpy-shm-to-cache ~S ~S ~S ~S) " name-cache name-cache offset-cache size-cache)
+			(format stream "(memcpy-shm-to-cache ~S ~S ~S ~S) "
+				name-cache
+				name-cache
+				offset-cache
+				size-cache)
 			(format stream "(set-cache-flag-copy ~S 3) " name-cache))))
 		  (format stream ")"))))
-
-;; Memoize
-(defun get-sym-shm-from-string (string)
-  (symbol-value (find-symbol (str:concat "shm-" string) :protoform.model)))

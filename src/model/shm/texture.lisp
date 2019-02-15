@@ -12,21 +12,21 @@
 ;; 				      0
 ;; 				      :rgba8))
 
-(defparameter *params-texture-shm* (list :texture-buffer
-					 "texture" ; rename to -glyphs
-					 "/protoform-texture"
-					 (/ 134217728 4)
-					 -1 -1
-					 :triple
-					 0
-					 :rgba8)) ; requires fmt type
+(defparameter *params-texture-glyphs-shm* (list :texture-buffer
+						"/protoform-texture-glyphs"
+						"/protoform-texture-glyphs"
+						(/ 134217728 4)
+						-1 -1
+						:triple
+						0
+						:rgba8)) ; requires fmt type
 
 (defun init-shm-texture-glyphs ()
 
   ;; Could convert lisp data straight to bytes...
   ;; Load into textures for now...
 
-  (let ((shm (init-shm :texture)))
+  (let ((shm (init-shm '*shm-texture-glyphs*)))
     (with-slots (ptr size)
 	shm
       (loop

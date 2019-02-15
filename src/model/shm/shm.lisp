@@ -1,5 +1,5 @@
 (in-package :protoform.model)
-  
+
 ;; (defun clean-up-handles-shm ()
 ;;   (loop 
 ;;      :for key :being :the :hash-keys :of *handles-shm*

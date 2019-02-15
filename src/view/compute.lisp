@@ -123,7 +123,7 @@
     (update-compute-buffers-ptr)
     
     ;; Set to render all instances
-    (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
+    (setf (mem-aref (aref (ptrs-buffer (gethash "/protoform-draw-indirect" bo-step)) ix-fence) :uint 1)
     	  inst-max)
 
     t))
@@ -144,7 +144,7 @@
     (update-compute-bindings)
     
     ;; Reset counter before every dispatch
-    (setf (mem-aref (aref (ptrs-buffer (gethash "atomic-counter" bo-step)) ix-fence)
+    (setf (mem-aref (aref (ptrs-buffer (gethash "/protoform-atomic-counter" bo-step)) ix-fence)
 		    :uint 0)
 	  0)
     
@@ -164,9 +164,9 @@
 
     (when nil
       (fmt-view t "run-compute" "Counter: ~a~%"
-    		(mem-aref (aref (ptrs-buffer (gethash "atomic-counter" bo-step)) ix-fence)
+    		(mem-aref (aref (ptrs-buffer (gethash "/protoform-atomic-counter" bo-step)) ix-fence)
     			  :uint 0)))
     
     ;; Update indirect primCount with counter
-    (setf (mem-aref (aref (ptrs-buffer (gethash "draw-indirect" bo-step)) ix-fence) :uint 1)
-	  (mem-aref (aref (ptrs-buffer (gethash "atomic-counter" bo-step)) ix-fence) :uint 0))))
+    (setf (mem-aref (aref (ptrs-buffer (gethash "/protoform-draw-indirect" bo-step)) ix-fence) :uint 1)
+	  (mem-aref (aref (ptrs-buffer (gethash "/protoform-atomic-counter" bo-step)) ix-fence) :uint 0))))

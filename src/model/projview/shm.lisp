@@ -29,7 +29,7 @@
 (defun send-memcpy-mat ()
   ;; pass in range
   (send-memcpy-shm-to-cache-flag*
-   `(("projview" 0          ,(* 4 16 2)))))
+   `((,*shm-projview* "/protoform-projview" 0          ,(* 4 16 2)))))
 
 (defun serialize-mat (mat)
   (let ((arr (marr (mtranspose mat))))

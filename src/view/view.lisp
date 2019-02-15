@@ -306,7 +306,7 @@
     (loop 
        :for name :being :the :hash-keys :of bo-cache
        :using (hash-value cache)
-       :do (when (not (string= name "nodes"))
+       :do (when (not (string= name "*shm-nodes*"))
 	     (with-slots (buffer flag-copy)
 		 cache
 	       (when (/= flag-copy 0)

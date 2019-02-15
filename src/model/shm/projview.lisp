@@ -3,7 +3,7 @@
 (defparameter *shm-projview* nil)
 
 (defparameter *params-projview-shm* (list :uniform-buffer
-					  "projview"
+					  "/protoform-projview"
 					  "/protoform-projview"
 					  (* (+ 16 16) 4)
 					  0 0  ; cs-in (cache), vs-in (raster)
@@ -11,7 +11,7 @@
 					  0))
 
 (defun init-shm-projview ()
-  (let ((shm (init-shm :projview)))
+  (let ((shm (init-shm '*shm-projview*)))
     (setf *shm-projview* shm) ; below require this
     (update-mat-proj)
     (update-mat-view)

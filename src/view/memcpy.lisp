@@ -19,7 +19,8 @@
 			    name-src
 			    offset
 			    size
-			    &optional (print nil))  
+			    &optional (print nil))
+  ;; (format t "shm-to-cache: ~a~%" (get-cache-buffer name-dest))
   (let* ((bo-dest (get-cache-buffer name-dest))
 	 (ptr-dest (aref (ptrs-buffer bo-dest) 0)) ; always 0
 	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*))))))
@@ -40,6 +41,7 @@
 			     &optional
 			       (size nil)
 			       (print t))
+  ;; (format t "cache-to-step: ~a~%" (get-cache-buffer name-dest))
   (let* ((bo-dest (gethash name-dest (bo-step *view*)))
 	 (ptr-dest (aref (ptrs-buffer bo-dest) ix-dest))
 	 (ptr-src (aref (ptrs-buffer (get-cache-buffer name-dest)) 0)))
@@ -57,6 +59,7 @@
 (defun memcpy-cache-to-step-all (name-dest
 				 name-src
 				 &optional (size nil))
+  ;; (format t "cache-to-step-all: ~a~%" (get-cache-buffer shm-nodes))
   (let* ((bo-dest (gethash name-dest (bo-step *view*)))
 	 (ptr-src (aref (ptrs-buffer (get-cache-buffer name-dest)) 0))
 	 (size (if size

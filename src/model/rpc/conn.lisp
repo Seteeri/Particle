@@ -11,21 +11,40 @@
 					:fill-pointer nil
 					:element-type '(unsigned-byte 8))
 	*sock-view* (init-sock-client *path-socket-view* :block))
+
+  ;; (init-sym-to-shm)
+
+  ;; (format t "~a~%" (with-output-to-string (stream)
+  ;; 		     (format stream "(init-view-buffers (")
+  ;; 		     (loop
+  ;; 			:for (name params) :on *params-shm* :by #'cddr
+  ;; 			:do (format stream "~S " params))
+  ;; 		     (format stream "))")))
   
   (send-init-view-buffers)
 
-  ;; See get-sym-shm-from-string
+  ;; (loop 
+  ;;    :for name :being :the :hash-keys :of *sym-to-shm*
+  ;;    :using (hash-value shm)
+  ;;    :do (send-memcpy-shm-to-cache name
+  ;; 				   shm))
   (loop
-     :for (name params) :on *params-shm* :by #'cddr
-     :for name2 := (string-downcase (symbol-name name))
-     :do (send-memcpy-shm-to-cache name2
-				   (get-sym-shm-from-string name2)))
+     :for (sym params) :on *params-shm* :by #'cddr
+     :do (send-memcpy-shm-to-cache (second params)
+				   (symbol-value sym)))
   
   (send-draw t)
 
   (send-serving nil)
 
   t)
+
+;; (defun init-sym-to-shm ()
+;;   (setf *sym-to-shm* (make-hash-table :size (length *params-shm*)))
+;;   (loop
+;;      :for (sym params) :on *params-shm* :by #'cddr
+;;      :do (setf (gethash sym *sym-to-shm*)
+;; 	       (symbol-value sym))))
 
 (defun serve-client ()
   (loop
