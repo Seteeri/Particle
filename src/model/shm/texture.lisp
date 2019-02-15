@@ -14,7 +14,6 @@
 
 (defparameter *params-texture-glyphs-shm* (list :texture-buffer
 						"/protoform-texture-glyphs"
-						"/protoform-texture-glyphs"
 						(/ 134217728 4)
 						-1 -1
 						:triple

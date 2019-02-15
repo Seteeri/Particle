@@ -12,9 +12,10 @@
 ;; (size-dirty :accessor dirty :initarg :dirty :initform nil)))
 
 (defun init-bo-caches (params-model)
-  (dolist (params params-model)
+  (with-slots (bo-cache)
+      *view*
+    (dolist (params params-model)
       (destructuring-bind (target
-			   name
 			   path
 			   size
 			   bind-cs
@@ -23,27 +24,15 @@
 			   flag-copy
 			   &rest rest)
 	  params
-      (init-bo-cache target
-		     name
-  		     size
-		     bind-cs
-		     flag-copy))))
-
-(defun init-bo-cache (target
-		      name
-		      size
-		      bind-cs
-		      flag-copy)
-  (with-slots (program-compute bo-cache) *view*
-    (setf (gethash name bo-cache)
-	  (make-instance 'cache
-			 :buffer (init-buffer-object target
-						     name
-						     size
-						     bind-cs
-						     t
-						     :buffering :single)
-			 :flag-copy flag-copy))))
+	(setf (gethash path bo-cache)
+	      (make-instance 'cache
+			     :buffer (init-buffer-object target
+							 path
+							 size
+							 bind-cs
+							 t
+							 :buffering :single)
+			     :flag-copy flag-copy))))))
 
 (defun get-cache (name)
   (gethash name (bo-cache *view*)))

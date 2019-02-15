@@ -4,7 +4,6 @@
 
 (defparameter *params-vertices-shm* (list :uniform-buffer
 					  "/protoform-vertices"
-					  "/protoform-vertices"
 					  (* 16 4)
 					  1 1
 					  :triple

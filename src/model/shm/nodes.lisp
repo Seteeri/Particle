@@ -4,7 +4,6 @@
 
 (defparameter *params-nodes-shm* (list :shader-storage-buffer
 				       "/protoform-nodes"
-				       "/protoform-nodes"
 				       (/ 134217728 4)
 				       2 3
 				       :triple

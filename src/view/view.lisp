@@ -137,7 +137,6 @@
     
     (dolist (params params-shm)
       (destructuring-bind (target
-			   name
 			   path
 			   size
 			   bind-cs
@@ -148,12 +147,12 @@
 	  params
 	
 	(let ((bo (init-buffer-object target
-    				      name
+    				      path
     				      size
     				      (if (> bind-vs -1) bind-vs bind-cs)
     				      t ; pmap
     				      :buffering count-buffer)))
-	  (setf (gethash name bo-step)
+	  (setf (gethash path bo-step)
 		bo)
 
 	  (when (eq target :texture-buffer)
@@ -306,7 +305,7 @@
     (loop 
        :for name :being :the :hash-keys :of bo-cache
        :using (hash-value cache)
-       :do (when (not (string= name "*shm-nodes*"))
+       :do (when (not (string= name "/protoform-nodes"))
 	     (with-slots (buffer flag-copy)
 		 cache
 	       (when (/= flag-copy 0)

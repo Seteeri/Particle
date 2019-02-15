@@ -9,7 +9,6 @@
 ;; rename mmap -> shm
 (defun init-shm (name)
   (destructuring-bind (target
-		       name
 		       path
 		       size
 		       bind-cs

@@ -5,9 +5,10 @@
    (mmap :accessor mmap :initarg :mmap :initform nil)))
 
 (defun init-handles-shm (params-model)
-  (dolist (params params-model)
+  (with-slots (handles-shm)
+      *view*
+    (dolist (params params-model)
       (destructuring-bind (target
-			   name
 			   path
 			   size
 			   bind-cs
@@ -16,23 +17,13 @@
 			   flag-copy
 			   &rest rest)
 	  params
-      (init-handle-shm name
-  		       path
-  		       size))))
-
-(defun init-handle-shm (name
-			path
-			size)
-  (with-slots (handles-shm)
-      *view*
-    (let* ((mmap (init-mmap path
-			    size
-			    nil))
-	   (inst (make-instance 'handle-shm
-				:name name
-				:mmap mmap)))
-      (fmt-view t "init-handle-shm" "Set hash for ~S~%" name)
-      (setf (gethash name handles-shm) inst))))
+	(setf (gethash path handles-shm)
+	      (make-instance 'handle-shm
+			     :name path
+			     :mmap (init-mmap path
+					      size
+					      nil)))
+	(fmt-view t "init-handles-shm" "Set hash for ~S~%" path)))))
 
 (defun clean-up-handles-shm ()
   (loop 

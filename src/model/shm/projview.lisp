@@ -4,7 +4,6 @@
 
 (defparameter *params-projview-shm* (list :uniform-buffer
 					  "/protoform-projview"
-					  "/protoform-projview"
 					  (* (+ 16 16) 4)
 					  0 0  ; cs-in (cache), vs-in (raster)
 					  :triple

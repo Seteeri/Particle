@@ -4,7 +4,6 @@
 
 (defparameter *params-draw-indirect-shm* (list :draw-indirect-buffer
 					       "/protoform-draw-indirect"
-					       "/protoform-draw-indirect"
 					       (* 4 6)  ; 6 ints/params
 					       -1 -1
 					       :triple

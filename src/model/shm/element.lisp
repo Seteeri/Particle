@@ -4,7 +4,6 @@
 
 (defparameter *params-element-shm* (list :element-array-buffer
 					 "/protoform-element"
-					 "/protoform-element"
 					 (* 4 6)  ; 4 bytes/int * 6 ints or indices
 					 -1 -1
 					 :triple
