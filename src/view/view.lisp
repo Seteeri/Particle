@@ -3,6 +3,7 @@
 (defparameter *view* nil)
 (defparameter *time-frame-last* 0)
 (defparameter *draw* nil)
+(defparameter *serving* t)
 
 (defun fmt-view (dst ctx-str ctl-str &rest rest)
   ;; Add space opt
@@ -355,7 +356,9 @@
   (with-slots (sock-server sock-client)
       *view*
     (if sock-client
-	(serve-client flags)
+	(progn
+	  (set-serving t)
+	  (serve-client flags))
 	(multiple-value-bind (sock-accept errno)
 	    (accept4 sock-server :nonblock) ;non block
 	  (when (/= sock-accept -1)
@@ -366,21 +369,26 @@
   (with-slots (sock-client
 	       buffer-sock-ptr)
       *view*
-    (let ((message (recv-message sock-client
-				 buffer-sock-ptr
-				 flags)))
-      (when message
-	;; (fmt-view t "serve-client" "Message: ~S~%" message)
-	;; (print (eval message))
-	;; (force-output)
+    (loop
+       :while *serving*
+       :do (let ((message (recv-message sock-client
+					buffer-sock-ptr
+					flags)))
+	     (when message
+	       ;; (fmt-view t "serve-client" "Message: ~S~%" message)
+	       ;; (print (eval message))
+	       ;; (force-output)
+	       
+	       ;; To do multiple check if first is a list
+	       (if (listp (first message))
+		   (dolist (n message)
+		     (apply (symbol-function (find-symbol (string (first n)) :protoform.view))
+			    (cdr n)))
+		   (apply (symbol-function (find-symbol (string (first message)) :protoform.view))
+			  (cdr message))))))))
 
-	;; To do multiple check if first is a list
-	(if (listp (first message))
-	    (dolist (n message)
-	      (apply (symbol-function (find-symbol (string (first n)) :protoform.view))
-		     (cdr n)))
-	    (apply (symbol-function (find-symbol (string (first message)) :protoform.view))
-		   (cdr message)))))))
+(defun set-serving (value)
+  (setf *serving* value))
 
 (defun pass ())
 ;; check errno at end?

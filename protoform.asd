@@ -143,7 +143,8 @@
 							     (:file "shm")))
 				       (:module rpc
 				       		:pathname "rpc"
-				       		:components ((:file "rpc")
+				       		:components ((:file "send")
+							     (:file "rpc")
 							     (:file "view")
 							     (:file "memcpy")))
 				       (:file "animation")

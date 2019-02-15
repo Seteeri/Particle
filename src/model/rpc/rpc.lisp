@@ -15,15 +15,7 @@
 
   ;; Combine all of below into single call
   
-  ;; Init buffers  
-  (send-message *sock-view*
-		*buffer-sock-ptr*
-		(with-output-to-string (stream)
-		  (format stream "(init-view-buffers (")
-		  (loop
-		     :for (name params) :on *params-shm* :by #'cddr
-		     :do (format stream "~S " params))
-		  (format stream "))")))
+  (send-init-view-buffers)
 
   ;; See get-sym-shm-from-string
   (loop
@@ -32,10 +24,11 @@
      :do (memcpy-shm-to-cache name2
 			      (symbol-value (find-symbol (str:concat "shm-" name2) :protoform.model))))
   
-  ;; Enable draw flag for view loop
-  (send-message *sock-view*
-		*buffer-sock-ptr*
-		(format nil "(set-draw t)")))
+  (send-draw t)
+
+  (send-serving nil)
+
+  t)
 
 (defun serve-client ()
   (loop

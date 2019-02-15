@@ -207,7 +207,7 @@
 			   
 			   (insert-vertex node)
 			   (spatial-trees:insert node *r-tree*)
-			   ;; (send-node node nil)
+			   (send-node node nil)
 			   t))
 		       ptree)
 	     (sb-concurrency:enqueue (list ptree

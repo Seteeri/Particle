@@ -3,7 +3,7 @@
 (defun handle-view-sync (time-frame)
 
   (let* ((time (osicat:get-monotonic-time))
-	 (time-alloted (/ 8 1000))
+	 (time-alloted (/ 1 1000))
 	 (time-remain time-alloted)) ; 8 ms runtime
     
     ;; Frame time ratio:
@@ -24,6 +24,11 @@
     (execute-queue-tasks-deadline *queue-tasks-async*
 				  time-remain)
     ;; send shm messages
+
+    ;; view will execute all messages sent to it
+    ;; in the same frame so it should read until empty
+
+    (send-serving nil)
     
     t))
 
@@ -61,7 +66,7 @@
        :while item
        :do (destructuring-bind (ptree id)
 	       item
-	     (format t "time-elapsed: ~a | deadline: ~a | id: ~a~%" time-elapsed deadline id)
+	     ;; (format t "time-elapsed: ~a | deadline: ~a | id: ~a~%" time-elapsed deadline id)
 	     ;; Function can return item for next frame
 	     (let* ((time (osicat:get-monotonic-time))
 		    (ptree-next (call-ptree id ptree))
@@ -72,7 +77,7 @@
 	       (incf time-elapsed time-delta)
 	       (update-timing-fn id time-delta)
 	       (when (> time-elapsed deadline)
-		 (format t "(> ~a ~a)" time-elapsed deadline)
+		 ;; (format t "(> ~a ~a)" time-elapsed deadline)
 		 (return)))))
     (dolist (item-ptree items-next)
       (sb-concurrency:enqueue item-ptree

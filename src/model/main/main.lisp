@@ -26,7 +26,7 @@
   
   ;; Then start permanent threads
   (init-threads)
-
+  
   (sb-ext:gc :full t)
   ;; (room t)
   ;; (force-output)

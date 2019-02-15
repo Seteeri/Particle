@@ -173,10 +173,7 @@ is busy/responding
 ## The Architecture
 
 * Two process system - model/view
-* Task-based parallelization
-  * Dependency tree
-  * Thread pool kernel
-  * Fork-join model with atomics and lock-free queues to minimize locking
+  * Frame balancing
 * Tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
   * Compute shaders
