@@ -9,11 +9,8 @@
 	*buffer-sock-array* (make-array 212992
 					:adjustable nil
 					:fill-pointer nil
-					:element-type '(unsigned-byte 8)))
-  
-  (setf *sock-view* (init-sock-client *path-socket-view* :block))
-
-  ;; Combine all of below into single call
+					:element-type '(unsigned-byte 8))
+	*sock-view* (init-sock-client *path-socket-view* :block))
   
   (send-init-view-buffers)
 
