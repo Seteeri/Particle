@@ -24,7 +24,7 @@
   (let* ((start (* (index node)
 		   +size-struct-instance+))
 	 (end (+ start +size-struct-instance+)))
-  (memcpy-shm-to-cache-flag*
+  (send-memcpy-shm-to-cache-flag*
    `(("nodes"    ,start ,end)))))
 
 ;; rename to serialize-node-to-shm

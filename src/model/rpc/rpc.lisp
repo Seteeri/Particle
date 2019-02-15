@@ -18,8 +18,8 @@
   (loop
      :for (name params) :on *params-shm* :by #'cddr
      :for name2 := (string-downcase (symbol-name name))
-     :do (memcpy-shm-to-cache name2
-			      (symbol-value (find-symbol (str:concat "shm-" name2) :protoform.model))))
+     :do (send-memcpy-shm-to-cache name2
+				   (get-sym-shm-from-string name2)))
   
   (send-draw t)
 

@@ -4,11 +4,11 @@
 
 ;; TODO: Use macro
 
-(defun memcpy-shm-to-cache (name
-			    shm
-			    &optional
-			      (offset 0)
-			      (size-cpy nil))
+(defun send-memcpy-shm-to-cache (name
+				 shm
+				 &optional
+				   (offset 0)
+				   (size-cpy nil))
   (with-slots (ptr size)
       shm
     ;; (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
@@ -16,18 +16,7 @@
     		  *buffer-sock-ptr*
 		  (format nil "(memcpy-shm-to-cache ~S ~S ~S ~S)" name name offset size-cpy))))
 
-;; (defun memcpy-shm-to-cache (name
-;; 			    &optional
-;; 			      (offset 0)
-;; 			      (size-cpy nil))
-;;   (with-slots (ptr size)
-;;       (gethash name *handles-shm*)
-;;     ;; (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
-;;     (send-message *sock-view*
-;;     		  *buffer-sock-ptr*
-;; 		  (format nil "(memcpy-shm-to-cache ~S ~S ~S ~S)" name name offset size-cpy))))
-
-(defun memcpy-shm-to-cache* (names)
+(defun send-memcpy-shm-to-cache* (names)
   ;; Default to full copy
   (send-message *sock-view*
     		*buffer-sock-ptr*
@@ -39,12 +28,12 @@
 		      (format stream "(memcpy-shm-to-cache ~S ~S 0 nil) " name name)))
 		  (format stream ")"))))
 
-(defun set-cache-dirty (name value)
+(defun send-set-cache-dirty (name value)
   (send-message *sock-view*
     		*buffer-sock-ptr*
 		(format nil "(set-cache-flag-copy ~S ~S)" name value)))
 
-(defun memcpy-shm-to-cache-flag* (caches)
+(defun send-memcpy-shm-to-cache-flag* (caches)
   (send-message *sock-view*
     		*buffer-sock-ptr*
 		(with-output-to-string (stream)
