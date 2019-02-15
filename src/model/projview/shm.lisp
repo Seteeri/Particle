@@ -28,7 +28,7 @@
 
 (defun send-memcpy-mat ()
   ;; pass in range
-  (memcpy-shm-to-cache-flag*
+  (send-memcpy-shm-to-cache-flag*
    `(("projview" 0          ,(* 4 16 2)))))
 
 (defun serialize-mat (mat)
