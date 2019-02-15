@@ -143,10 +143,14 @@
 							     (:file "shm")))
 				       (:module rpc
 				       		:pathname "rpc"
-				       		:components ((:file "send")
-							     (:file "rpc")
-							     (:file "view")
-							     (:file "memcpy")))
+				       		:components ((:file "conn")
+							     (:module local
+				       				      :pathname "local"
+				       				      :components ((:file "view")))
+							     (:module remote
+				       				      :pathname "remote"
+				       				      :components ((:file "send")
+										   (:file "memcpy")))))
 				       (:file "animation")
 				       (:module main
 						:pathname "main"
