@@ -9,11 +9,15 @@
 	 rest))
 
 (defun run-model ()
-  (loop
-     :for msg := (sb-concurrency:receive-message *mb-model*)
-     :do (funcall msg))
-  ;; do same as view with return
-  t)
+  (let ((fns-next ()))
+    (loop
+       :for fn := (sb-concurrency:receive-message *mb-model*)
+       :while fn
+       :do (let ((fn-next (funcall fn)))
+	     (when fn-next
+	       (push fn-next fns-next))))
+    (dolist (fn-next fns-next)
+      (sb-concurrency:send-message *mb-model* fn-next))))
 
 (defun init-model (width height
 		   inst-max
