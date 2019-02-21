@@ -82,9 +82,20 @@ With the growth of open-source, Wayland, fragmentation of the desktop,
 Moore's Law, data breaches and privacy issues, and finally AR/VR, I 
 believe this presents an opportunity to redefine the computing 
 environment. Protoform is not an entirely new idea, but a different 
-attempt to build upon the success and failures of those before. The 
-initial inspiration came from the robustness of Emacs, and its strengths
-and weaknesses.
+attempt to build upon the success and failures of those before. 
+
+There have been numerous implementations and attemps at structured or 
+projectional editors going all the way back to the days of Interlisp-D 
+and to the new projects being crowdfunded. However, several issues
+have yet to be addressed:
+
+* Integration with existing interfaces (the desktop)
+* Making the GUI homoiconic
+  * For nodal systems, nodes must be able to edit nodes
+  * A step further, the editor must be able to edit itself (able to bootstrap itself)
+
+The initial inspiration came from Blender and later from the robustness
+of Emacs, and its strengths and weaknesses.
 
 [**What if we could take Emacs to another level?**](https://www.google.com/search?q=what+can%27t+emacs+do+site:www.reddit.com)
 * Elisp -> Common Lisp

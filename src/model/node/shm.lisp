@@ -30,6 +30,7 @@
 ;; rename to serialize-node-to-shm
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
   ;; see serialize-node
+  ;; time these?
   (with-slots (ptr size)
       *shm-nodes*    
     (with-slots (model-matrix

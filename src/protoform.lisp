@@ -58,9 +58,9 @@
   ;; (sleep 2)
   
   (when t
-    (fork (lambda () (protoform.model:run-model width height
-    						inst-max
-    						nil))))
+    (fork (lambda () (protoform.model:init-model width height
+    						 inst-max
+    						 nil))))
 
   ;; https://www.emacswiki.org/emacs/StumpWM
 

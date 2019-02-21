@@ -184,12 +184,12 @@
 	#:protoform.conn
 	#:protoform.aux
 	#:protoform.font
-	#:protoform.controller	
+	#:protoform.controller
 	#:3d-vectors
 	#:3d-matrices
 	#:lparallel
 	#:lparallel.queue)
-  (:export #:run-model))
+  (:export #:init-model))
 
 
 (defpackage #:protoform

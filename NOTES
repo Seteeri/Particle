@@ -834,3 +834,176 @@ possible to have
 
 if we check each node for dirty, could same redundant memcpy if queue
 backs up
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun read-64 (buf)
+  (let ((u 0))
+    (setf (ldb (byte 8 56) u) (aref buf 7))
+    (setf (ldb (byte 8 48) u) (aref buf 6))
+    (setf (ldb (byte 8 40) u) (aref buf 5))
+    (setf (ldb (byte 8 32) u) (aref buf 4))
+    (setf (ldb (byte 8 24) u) (aref buf 3))
+    (setf (ldb (byte 8 16) u) (aref buf 2))
+    (setf (ldb (byte 8 8) u) (aref buf 1))
+    (setf (ldb (byte 8 0) u) (aref buf 0))
+    u))
+
+(defun read-32 (buf)
+   (let ((u 0))
+    (setf (ldb (byte 8 24) u) (aref buf 3))
+    (setf (ldb (byte 8 16) u) (aref buf 2))
+    (setf (ldb (byte 8 8) u) (aref buf 1))
+    (setf (ldb (byte 8 0) u) (aref buf 0))
+    u))
+
+(defun read-16 (buf)
+  (let ((u 0))
+    (setf (ldb (byte 8 8) u) (aref buf 1))
+    (setf (ldb (byte 8 0) u) (aref buf 0))
+    u))
+    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+What if we use the source code as a key?
+
+source code -> object data
+
+OR since lisp has two name spaces, one for value/var and one for funcs
+
+name -> source code, object data
+
+add-two-numbers -> "(defun add-two-numbers (a b) (+ a b))"
+add-two-numbers -> #'ADD-TWO-NUMBERS
+
+1 -> "1", 1
+
+would need to manage entire state...map entire state onto a graph
+
+or is the source code the serialized state?
+
+IMAGE--------------|-REDIS
+"add-two-numbers" -> "(defun add-two-numbers (a b) (+ a b))"
+
+(compile value) -> #'ADD-TWO-NUMBERS
+CODE -> DATA
+
+#'ADD-TWO-NUMBERS -> "(defun add-two-numbers (a b) (+ a b))"
+
+(decompile #'add-two-numbers) -> "..." [lookup in table]
+DATA -> CODE
+
+
+(compile "(list 1 2 3)") -> *list*
+
+*list* -> "(list 1 2 3)"
+
+what if modify list so it's (list 4 5 6)
+then source needs to change to "(list 4 5 6)"
+question is how to transform the data object to printable?
+what about list of functions?
+
+(compile "(list - + * /)") -> (list - + * /)
+(list - + * #'foobar) -> 
+would need to take the data and build string
+
+macros do data -> data ... so is protoform a UI for macros?
+
+NEED TO HANDLE TOP LEVEL FORMS MANUALLY
+
+########################################################################
+
+In protoform, all code entered is transformed into data/atoms
+automatically, or more specifically data beyond chars/strings
+
+list 1 2 3 -> [list] [1] [2] [3]
+                sym   n   n   n
+ 
+list #'+ #'- #'* #'/ -> [list] + - * /
+                          sym  f f f f
+                          
+so to loop:
+
+- eval prev            <list> <1> <2> <3>
+- type:                  |
+<loop> <:for> <x> <:in> <*> <:collect> <x>
+- eval it
+  - need not read, build list, input to eval
+- returns list *itself* NOT list *symbol*
+  <list>
+- essentially just transforming data like a macro
+
+- type <#\1>
+- how to get number object? <1>
+- use #'parse-integer or #'read...
+- options: alt+# or default to number
+
+########################################################################
+
+How do ASCII keys map to REPL forms?
+
+Pressing a key = inputting a form (func), evaluating it
+
+So frame is essentially executing top level forms for the repl
+
+So controller is pushing forms to be executed by model
+
+...animations are self perpetuating forms since they push themselves
+into the queue again
+
+Represent REPLs as graphs? Is this what we're doing
+
+And then whatever form is evaluated, we link the input (code) to the
+output (data)
+- we can use a hash table or redis
+- can use one redis instance (database) per graph?
+
+model: serialize, send redis
+view:  recv redis, deserialize
+
+redis module shm?
+
+STORE NODES AND GRAPHS IN REDIS
+* Follow cl-digraph hash table - node : edges
+* Spread nodes through redis instances
+  * n cpus = n redis insts
+  * each redis inst = n nodes / n cpus
+* 1 graph per redis instance
+* Ideally, only one SET/GET per frame
+  * Use pipelining
+  
+MODEL/LISP = graph (code:data aka input:output)
+REDIS/C    = nodes (in redis since shared with view; prevent GC?)
+
+TEST splitting nodes into 4 groups and looping through in parallel
+vs 1 group 1 cpu
+
+Maybe can tune GC to match current allocation patterns
+
+(defun test-redis ()
+  (sb-ext:gc :full t)
+  (redis:connect)
+
+  ;; Timer #1
+  ;; 1. Serialize
+  ;; 2. Send
+  ;;
+  ;; Timer #2
+  ;; 1. Recv
+  ;; 2. Deserialize
+  ;; 3. Apply to instance
+  
+  (let ((node (pop *stack-i-nodes*)))
+    (benchmark:with-timing (100)
+      ;; Serialize+Encode | ~200 nodes per 8 ms
+      ;; ...+Set    | ~180 nodes per 8 ms
+      (red:set "foo" (qbase64:encode-bytes (serialize-node node))))
+
+    (let ((str (red:get "foo")))
+      (benchmark:with-timing (100)
+	;; Decode     | 0.000003 sec = 0.003 ms or 3/1000 of ms
+	;; Get+Decode | 9 ms
+	(qbase64:decode-string (red:get "foo")))))
+	;; (red:get "foo"))))
+    
+  (redis:disconnect))

@@ -8,13 +8,19 @@
 		     ctl-str)
 	 rest))
 
-(defun run-model (width height
-		  inst-max
-		  addr-swank-view)
+(defun run-model ()
+  (loop
+     :do (sb-concurrency:receive-message *mb-model*)))
+
+(defun init-model (width height
+		   inst-max
+		   addr-swank-view)
   
   (setf *kernel*        (make-kernel 4)
 	*channel*       (make-channel)
 	*channel-input* (make-channel) ; rename to -controller
+
+	*mb-model*      (sb-concurrency:make-mailbox)
 	
 	;; Simply set here since no fn required
 	*width*         width
@@ -136,6 +142,7 @@
     		node-pointer
     		controller)
     	      #'init-conn-rpc-view
+	      ;; (lambda (&rest stuff))
     	      tree)
 
     ;; Make sure all nodes computed

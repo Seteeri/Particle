@@ -33,7 +33,8 @@
 		 #:pack
 		 #:spatial-trees
 		 #:qbase64
-		 #:cl-redis)
+		 #:cl-redis
+		 #:trivial-benchmark)
     ;; #:babel
     ;; #:dlist
     :serial t

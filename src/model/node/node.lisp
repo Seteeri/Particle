@@ -48,7 +48,11 @@
    (data-obj :accessor data-obj :initarg :data-obj :initform nil)
    
    (offset-texel-texture :accessor offset-texel-texture :initarg :offset-texel-texture :initform 0)
-   (dims-texture :accessor dims-texture :initarg :dims-texture :initform (vec2 0 0))
+   (dims-texture :accessor dims-texture :initarg :dims-texture :initform (make-array 2
+										     :adjustable nil
+										     :fill-pointer nil
+										     :element-type 'integer
+										     :initial-contents '(0 0)))
    (uv :accessor uv :initform (make-array 16
 					  :adjustable nil
 					  :fill-pointer nil
@@ -180,7 +184,7 @@
           dims-texture         (make-array 2
 					   :adjustable nil
 					   :initial-contents '(96 96)))
-  
+    
     (with-slots (bounds-origin
 		 dims-glyph
 		 uv)
@@ -221,8 +225,7 @@
       (setf (uv node) uv))))
 
 (defun serialize-node (node)
-  (with-slots (data
-	       model-matrix
+  (with-slots (model-matrix
 	       rgba
 	       offset-texel-texture
 	       dims-texture
