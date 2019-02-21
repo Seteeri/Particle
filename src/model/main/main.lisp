@@ -11,7 +11,9 @@
 (defun run-model ()
   (loop
      :for msg := (sb-concurrency:receive-message *mb-model*)
-     :do (funcall msg)))
+     :do (funcall msg))
+  ;; do same as view with return
+  t)
 
 (defun init-model (width height
 		   inst-max

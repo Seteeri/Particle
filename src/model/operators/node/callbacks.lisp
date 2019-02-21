@@ -163,12 +163,101 @@
 
   ;; symbol can do about 800 chars in 16.7 ms
   
-  (sb-concurrency:enqueue (list 'print-text
-				(lambda ()
-    	      			  (funcall #'test-load-file "/home/user/quicklisp/local-projects/protoform/src/protoform.lisp" 0 4096)))
-			  *queue-tasks-async*))
+  (sb-concurrency:send-message *mb-model*
+			       (lambda ()
+    	      			 (funcall #'test-load-file
+					  nil
+					  0
+					  4096
+					  (make-pathname :directory '(:absolute "home" "user" "quicklisp" "local-projects" "protoform" "src")
+							 :name "protoform" :type "lisp")))))
 
 ;; use fn keys for testing
+
+(defun test-load-file (in start length &optional (path nil))
+  ;; Read data
+  ;; Return params for next frame
+
+  (when path
+    (setf in (open path :external-format :utf-8)))
+  
+  (when in
+    (let* ((data (make-string length))
+	   (pos (read-sequence data in)))
+      (format t "pos = ~a~%" pos)
+      (when (plusp pos)
+	;; Enqueue in async so it can create nodes
+	;; When it is done with the chunk, it will request another here
+	;; And this will repeat...
+	(let ((in-2 in)
+	      (start-2 start)
+	      (length-2 length)
+	      (data-2 data))
+	  (sb-concurrency:enqueue (list 'load-char-from-file
+					(lambda ()
+					  (load-char-from-file in-2
+							       start-2
+							       length-2
+							       data-2)))
+				  *queue-tasks-async*))))))
+
+
+;; MOVE
+(defun load-char-from-file (in start length data
+			    &optional
+			      (index-data 0)
+			      (index-char 0)
+			      (baseline-start (get-origin-from-node-pos *node-ptr-main*))
+			      (baseline       (get-origin-from-node-pos *node-ptr-main*)))
+  
+  (when (>= index-data (length data))
+    (close in)
+    (return-from load-char-from-file))
+  
+  (let ((char (schar data index-data)))
+
+    (when (char-equal char #\Nul)
+      (close in)
+      (return-from load-char-from-file))
+    
+    ;; calc pos relative to line rather than prev char
+    (let* ((node (pop *stack-i-nodes*))
+	   (pos (v+ (if (char-equal char #\Newline)
+			(progn
+			  (setf (vx3 baseline) (vx3 baseline-start))
+			  (decf (vy3 baseline) (* +linegap+ *scale-node*))
+			  (setf index-char 0))
+			(progn
+			  baseline))
+		    (vec3 (* 9.375 +scale-msdf+ *scale-node* index-char)
+			  0
+			  0))))
+      (update-translation-node node pos)
+      (update-glyph-node node char)
+      (update-transform-node node)
+      (insert-vertex node)
+      (spatial-trees:insert node *r-tree*)
+      (send-node node nil)
+      
+      (format t "[load-char-from-file] Created node for ~S~%" char)
+      
+      ;; Continue to consume data
+      ;; Depends how many chars to create at once
+      (list 'load-char-from-file
+	    (lambda ()
+	      (load-char-from-file in
+				   start
+				   length
+				   data
+				   (1+ index-data)
+				   (1+ index-char)
+				   baseline-start
+				   baseline))))))
+
+;; (with-open-file (in filename)
+;;   (let ((scratch (make-string 4096)))
+;;     (loop for read = (read-sequence scratch in)
+;;        while (plusp read) sum read)))
 
 (defun print-text ()
   ;; Make ptree version
@@ -200,19 +289,3 @@
 					     (send-node node nil)
 					     t))
 				     *queue-tasks-async*)))))
-
-(defun test-load-file (path start length)
-  ;; Enqueue task
-  (let* ((in (open path
-		   :external-format :utf-8)))
-    (when in
-      (let ((data (make-string length)))
-	(read-sequence data stream)
-	data)
-      (close in)))
-  (format t "DONE~%"))
-
-;; (with-open-file (in filename)
-;;   (let ((scratch (make-string 4096)))
-;;     (loop for read = (read-sequence scratch in)
-;;        while (plusp read) sum read)))

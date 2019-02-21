@@ -5,7 +5,7 @@
 (defconstant +spaces-tab+ 1)
 
 (defparameter *dpi-glyph* (/ 1 90))
-(defparameter *scale-node* 0.008)
+(defparameter *scale-node* 0.008) ;0.008)
 (defparameter +linegap+ (* (* 9.375 2)    ;; use advance....
 			   +scale-msdf+))  ;; multiplied by scale-node later (per node)
 
