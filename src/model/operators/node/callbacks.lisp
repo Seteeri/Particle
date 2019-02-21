@@ -3,14 +3,8 @@
 (defmacro define-cb-async (name-fn id-fn fn)
   `(defun ,name-fn (seq-key)
        (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
-       (let ((ptree (make-ptree)))
-	 (ptree-fn ,id-fn ; (make-symbol (format nil "~a~%" seq-key))
-		   '()
-		   ,fn
-		   ptree) ; create aux fn for this
-	 (sb-concurrency:enqueue (list ptree
-				       ,id-fn)
-				 *queue-tasks-async*))))
+       (sb-concurrency:enqueue (list ,id-fn ,fn)
+			       *queue-tasks-async*)))
 
 (define-cb-async
     add-node-ascii-cb
@@ -168,18 +162,11 @@
   ;;     node))
 
   ;; symbol can do about 800 chars in 16.7 ms
-
-  (let ((ptree (make-ptree)))
-    (ptree-fn 'print-text
-    	      '()
-    	      ;; (lambda ()
-    	      ;; 	(funcall #'print-text))
-    	      (lambda ()
-    	      	(funcall #'test-load-file "/home/user/quicklisp/local-projects/protoform/src/protoform.lisp" 0 4096))
-    	      ptree)
-    (sb-concurrency:enqueue (list ptree
-				  'print-text)
-			    *queue-tasks-async*)))
+  
+  (sb-concurrency:enqueue (list 'print-text
+				(lambda ()
+    	      			  (funcall #'test-load-file "/home/user/quicklisp/local-projects/protoform/src/protoform.lisp" 0 4096)))
+			  *queue-tasks-async*))
 
 ;; use fn keys for testing
 
@@ -194,8 +181,7 @@
     (loop
        :for ch :across string
        :for i :upfrom 0
-       :do (let* ((ptree (make-ptree))
-		  (node (pop *stack-i-nodes*))
+       :do (let* ((node (pop *stack-i-nodes*))
 		  (bl baseline)
 		  (i-2 i)
 		  (ch-2 ch)
@@ -203,20 +189,16 @@
 			   (vec3 (* 9.375 +scale-msdf+ *scale-node* i-2)
 				 0
 				 0))))
-	     (ptree-fn 'print-text
-		       '()
-  		       (lambda ()
-			   (update-translation-node node pos)
-			   (update-glyph-node node ch-2)
-			   (update-transform-node node)
-			   
-			   (insert-vertex node)
-			   (spatial-trees:insert node *r-tree*)
-			   (send-node node nil)
-			   t)
-		       ptree)
-	     (sb-concurrency:enqueue (list ptree
-					   'print-text)
+	     (sb-concurrency:enqueue (list 'print-text
+  					   (lambda ()
+					     (update-translation-node node pos)
+					     (update-glyph-node node ch-2)
+					     (update-transform-node node)
+					     
+					     (insert-vertex node)
+					     (spatial-trees:insert node *r-tree*)
+					     (send-node node nil)
+					     t))
 				     *queue-tasks-async*)))))
 
 (defun test-load-file (path start length)
@@ -227,7 +209,8 @@
       (let ((data (make-string length)))
 	(read-sequence data stream)
 	data)
-      (close in))))
+      (close in)))
+  (format t "DONE~%"))
 
 ;; (with-open-file (in filename)
 ;;   (let ((scratch (make-string 4096)))

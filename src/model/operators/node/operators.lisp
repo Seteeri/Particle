@@ -237,25 +237,17 @@
 	       id
 	       start
 	       (+ start delta)))
-  
   (let ((anim (make-instance 'animation
 			     :id id
 			     :fn-easing #'easing:linear ;in-exp ;cubic
 			     :fn-new fn-new
 			     :value-start start
-			     :value-delta delta))
-	(ptree (make-ptree)))
-
-    (ptree-fn id
-	      '()
-	      (lambda ()
-		(funcall #'run-anim
-			 seq-event
-			 anim))
-	      ptree)
-
-    (sb-concurrency:enqueue (list ptree
-				  id)
+			     :value-delta delta)))
+    (sb-concurrency:enqueue (list id
+				  (lambda ()
+				    (funcall #'run-anim
+					     seq-event
+					     anim)))
 			    *queue-tasks-sync*)))
 
 

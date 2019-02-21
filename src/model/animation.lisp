@@ -86,12 +86,9 @@
 	      (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed))
 	    nil)
 
-	  (let ((ptree (make-ptree)))
-	    (ptree-fn id
-		      '()
-		      (lambda ()
-			(funcall fn-enqueue
-				 seq-event
-				 anim))
-		      ptree)
-	    (list ptree id))))))
+	  (list id
+		(lambda ()
+		  (funcall fn-enqueue
+			   seq-event
+			   anim)))))))
+  

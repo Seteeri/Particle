@@ -17,9 +17,7 @@
 			     :fn-easing #'easing:in-cubic
 			     :fn-new fn-new
 			     :value-start start
-			     :value-delta delta))
-	(ptree (make-ptree)))	
-
+			     :value-delta delta)))
     ;; Below will throw error if the func exists (anim already playing)
     ;; Solutions:
     ;; 1. Replace existing animation
@@ -30,17 +28,11 @@
     ;; 2. On error, ignore
     ;;    - Anim will only play if users activates it
     ;;      when there is no existing anim playing
-    
-    (ptree-fn id
-	      '()
-	      (lambda ()
-		(funcall #'run-anim
-			 seq-event
-			 anim))
-	      ptree)
-    
-    (sb-concurrency:enqueue (list ptree
-				  id)
+    (sb-concurrency:enqueue (list id
+				  (lambda ()
+				    (funcall #'run-anim
+					     seq-event
+					     anim)))
 			    *queue-tasks-sync*)))
 
 
@@ -62,17 +54,10 @@
 			       :fn-easing #'easing:linear
 			       :fn-new fn-new
 			       :value-start scale-ortho
-			       :value-delta delta))
-	  (ptree (make-ptree)))
-    
-    (ptree-fn id
-	      '()
-	      (lambda ()
-		(funcall #'run-anim
-			 seq-event
-			 anim))
-	      ptree)
-    
-    (sb-concurrency:enqueue (list ptree
-				  id)
-			    *queue-tasks-sync*))))
+			       :value-delta delta)))
+      (sb-concurrency:enqueue (list id
+				    (lambda ()
+				      (funcall #'run-anim
+					       seq-event
+					       anim)))
+			      *queue-tasks-sync*))))

@@ -20,7 +20,6 @@
     
     t))
 
-
 (defun execute-queue-tasks (queue)
   ;; Problem: Anims rely on frame times...
   ;; - must do synchronous
@@ -34,14 +33,13 @@
     (loop
        :for item := (sb-concurrency:dequeue queue)
        :while item
-       :do (destructuring-bind (ptree id)
-	       item
-	     ;; Function can return item for next frame
-	     (let ((ptree-next (call-ptree id ptree)))
-	       (when (listp ptree-next)
-		 (push ptree-next items-next)))))
-    (dolist (item-ptree items-next)
-      (sb-concurrency:enqueue item-ptree
+       :do (destructuring-bind (id fn)
+	       item	 
+	     (let ((item-next (funcall fn)))
+	       (when (listp item-next)
+		 (push item-next items-next)))))
+    (dolist (item-next items-next)
+      (sb-concurrency:enqueue item-next
 			      queue))))
 
 (defun execute-queue-tasks-deadline (queue deadline)
@@ -52,23 +50,23 @@
     (loop
        :for item := (sb-concurrency:dequeue queue)
        :while item
-       :do (destructuring-bind (ptree id)
+       :do (destructuring-bind (id fn)
 	       item
-	     ;; (format t "time-elapsed: ~a | deadline: ~a | id: ~a~%" time-elapsed deadline id)
-	     ;; Function can return item for next frame
 	     (let* ((time (osicat:get-monotonic-time))
-		    (ptree-next (call-ptree id ptree))
+		    (item-next (funcall fn))
 		    (time-final (osicat:get-monotonic-time))
 		    (time-delta (- time-final time)))
-	       (when (listp ptree-next)
-		 (push ptree-next items-next))
+	       ;; (format t "time-elapsed: ~a | deadline: ~a | id: ~a~%" time-elapsed deadline id)
+	       ;; Function can return item for next frame
+	       (when (listp item-next)
+		 (push item-next items-next))
 	       (incf time-elapsed time-delta)
 	       (update-timing-fn id time-delta)
 	       (when (> time-elapsed deadline)
 		 ;; (format t "(> ~a ~a)" time-elapsed deadline)
 		 (return)))))
-    (dolist (item-ptree items-next)
-      (sb-concurrency:enqueue item-ptree
+    (dolist (item-next items-next)
+      (sb-concurrency:enqueue item-next
 			      queue))))
 
 (defun update-timing-fn (id time-delta)
