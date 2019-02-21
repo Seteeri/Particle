@@ -10,7 +10,8 @@
 
 (defun run-model ()
   (loop
-     :do (sb-concurrency:receive-message *mb-model*)))
+     :for msg := (sb-concurrency:receive-message *mb-model*)
+     :do (funcall msg)))
 
 (defun init-model (width height
 		   inst-max

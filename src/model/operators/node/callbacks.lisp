@@ -171,13 +171,17 @@
 
   (let ((ptree (make-ptree)))
     (ptree-fn 'print-text
-	      '()
-  	      (lambda ()
-  		(funcall #'print-text))
-	      ptree)
+    	      '()
+    	      ;; (lambda ()
+    	      ;; 	(funcall #'print-text))
+    	      (lambda ()
+    	      	(funcall #'test-load-file "/home/user/quicklisp/local-projects/protoform/src/protoform.lisp" 0 4096))
+    	      ptree)
     (sb-concurrency:enqueue (list ptree
 				  'print-text)
 			    *queue-tasks-async*)))
+
+;; use fn keys for testing
 
 (defun print-text ()
   ;; Make ptree version
@@ -215,4 +219,17 @@
 					   'print-text)
 				     *queue-tasks-async*)))))
 
+(defun test-load-file (path start length)
+  ;; Enqueue task
+  (let* ((in (open path
+		   :external-format :utf-8)))
+    (when in
+      (let ((data (make-string length)))
+	(read-sequence data stream)
+	data)
+      (close in))))
 
+;; (with-open-file (in filename)
+;;   (let ((scratch (make-string 4096)))
+;;     (loop for read = (read-sequence scratch in)
+;;        while (plusp read) sum read)))
