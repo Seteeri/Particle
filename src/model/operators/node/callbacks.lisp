@@ -213,8 +213,6 @@
 							     baseline)))
 				*queue-tasks-async*)))))
 
-
-;; MOVE
 (defun load-char-from-file (in
 			    start
 			    length
@@ -224,62 +222,66 @@
 			    index-char
 			    baseline-start
 			    baseline)
-  
-  (when (>= index-data (length data))
-    ;; Read new chunk
-    (sb-concurrency:send-message *mb-model*
-				 (lambda ()
-    	      			   (funcall #'load-chunk-file
-					    in
-					    (+ start length)
-					    4096
-					    0 ; reset
-					    index-char
-					    baseline-start
-					    baseline)))
-    (return-from load-char-from-file))
-  
-  (let ((char (schar data index-data)))
 
-    (when (char-equal char #\Nul)
-      ;; EOF
-      ;; (format t "FOUND EOF~%")
-      (close in)
+  ;; pass loop count
+  (dotimes (i 8)
+    
+    (when (>= index-data (length data))
+      ;; Read new chunk
+      (sb-concurrency:send-message *mb-model*
+				   (lambda ()
+    	      			     (funcall #'load-chunk-file
+					      in
+					      (+ start length)
+					      4096
+					      0 ; reset
+					      index-char
+					      baseline-start
+					      baseline)))
       (return-from load-char-from-file))
     
-    ;; calc pos relative to line rather than prev char
-    (let* ((node (pop *stack-i-nodes*))
-	   (pos (v+ (if (char-equal char #\Newline)
-			(progn
-			  (setf (vx3 baseline) (vx3 baseline-start))
-			  (decf (vy3 baseline) (* +linegap+ *scale-node*))
-			  (setf index-char 0))
-			(progn
-			  baseline))
-		    (vec3 (* 9.375 +scale-msdf+ *scale-node* index-char)
-			  0
-			  0))))
-      (update-translation-node node pos)
-      (update-glyph-node node char)
-      (update-transform-node node)
-      (insert-vertex node)
-      (spatial-trees:insert node *r-tree*)
-      (send-node node nil)
+    (let ((char (schar data index-data)))
+
+      (when (char-equal char #\Nul)
+	;; EOF
+	;; (format t "FOUND EOF~%")
+	(close in)
+	(return-from load-char-from-file))
       
-      ;; (format t "[load-char-from-file] Created node for ~S~%" char)
-      
-      ;; Continue to consume data
-      ;; Depends how many chars to create at once
-      (list 'load-char-from-file
-	    (lambda ()
-	      (load-char-from-file in
-				   start
-				   length
-				   data
-				   (1+ index-data)
-				   (1+ index-char)
-				   baseline-start
-				   baseline))))))
+      ;; calc pos relative to line rather than prev char
+      (let* ((node (pop *stack-i-nodes*))
+	     (pos (v+ (if (char-equal char #\Newline)
+			  (progn
+			    (setf (vx3 baseline) (vx3 baseline-start))
+			    (decf (vy3 baseline) (* +linegap+ *scale-node*))
+			    (setf index-char 0))
+			  (progn
+			    baseline))
+		      (vec3 (* 9.375 +scale-msdf+ *scale-node* index-char)
+			    0
+			    0))))
+	(update-translation-node node pos)
+	(update-glyph-node node char)
+	(update-transform-node node)
+	(insert-vertex node)
+	(spatial-trees:insert node *r-tree*)
+	(send-node node nil))
+
+      (incf index-data)
+      (incf index-char)))
+	
+  ;; Continue to consume data
+  ;; Depends how many chars to create at once
+  (list 'load-char-from-file
+	(lambda ()
+	  (load-char-from-file in
+			       start
+			       length
+			       data
+			       index-data
+			       index-char
+			       baseline-start
+			       baseline))))
 
 ;; (with-open-file (in filename)
 ;;   (let ((scratch (make-string 4096)))
