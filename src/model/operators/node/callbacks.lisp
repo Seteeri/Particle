@@ -162,61 +162,88 @@
   ;;     node))
 
   ;; symbol can do about 800 chars in 16.7 ms
-  
-  (sb-concurrency:send-message *mb-model*
-			       (lambda ()
-    	      			 (funcall #'test-load-file
-					  nil
-					  0
-					  4096
-					  (make-pathname :directory '(:absolute "home" "user" "quicklisp" "local-projects" "protoform" "src")
-							 :name "protoform" :type "lisp")))))
+
+  (when-let ((in (open (make-pathname :directory '(:absolute "home" "user" "quicklisp" "local-projects" "protoform")
+				      :name "README" :type "md")
+		       :external-format :utf-8)))
+    (sb-concurrency:send-message *mb-model*
+				 (lambda ()
+    	      			   (funcall #'load-chunk-file
+					    in
+					    0
+					    4096
+					    0
+					    0
+					    (get-origin-from-node-pos *node-ptr-main*)
+					    (get-origin-from-node-pos *node-ptr-main*))))))
 
 ;; use fn keys for testing
 
-(defun test-load-file (in start length &optional (path nil))
+(defun load-chunk-file (in
+			start
+			length
+			;; create structure for below
+			index-data
+			index-char
+			baseline-start
+			baseline)
   ;; Read data
   ;; Return params for next frame
-
-  (when path
-    (setf in (open path :external-format :utf-8)))
   
-  (when in
-    (let* ((data (make-string length))
-	   (pos (read-sequence data in)))
-      (format t "pos = ~a~%" pos)
-      (when (plusp pos)
-	;; Enqueue in async so it can create nodes
-	;; When it is done with the chunk, it will request another here
-	;; And this will repeat...
-	(let ((in-2 in)
-	      (start-2 start)
-	      (length-2 length)
-	      (data-2 data))
-	  (sb-concurrency:enqueue (list 'load-char-from-file
-					(lambda ()
-					  (load-char-from-file in-2
-							       start-2
-							       length-2
-							       data-2)))
-				  *queue-tasks-async*))))))
+  (let* ((data (make-string length))
+	 (pos (read-sequence data in)))
+    (format t "pos = ~a~%" pos)
+    (when (plusp pos)
+      ;; Enqueue in async so it can create nodes
+      ;; When it is done with the chunk, it will request another here
+      ;; And this will repeat...
+      (let* ((in-2 in)
+	     (start-2 start)
+	     (pos-2 pos)
+	     (data-2 data))
+	(sb-concurrency:enqueue (list 'load-char-from-file
+				      (lambda ()
+					(load-char-from-file in-2
+							     start-2
+							     pos-2
+							     data-2
+							     index-data
+							     index-char
+							     baseline-start
+							     baseline)))
+				*queue-tasks-async*)))))
 
 
 ;; MOVE
-(defun load-char-from-file (in start length data
-			    &optional
-			      (index-data 0)
-			      (index-char 0)
-			      (baseline-start (get-origin-from-node-pos *node-ptr-main*))
-			      (baseline       (get-origin-from-node-pos *node-ptr-main*)))
+(defun load-char-from-file (in
+			    start
+			    length
+			    data
+			    ;; create structure for below
+			    index-data
+			    index-char
+			    baseline-start
+			    baseline)
   
   (when (>= index-data (length data))
-    (close in)
+    ;; Read new chunk
+    (sb-concurrency:send-message *mb-model*
+				 (lambda ()
+    	      			   (funcall #'load-chunk-file
+					    in
+					    (+ start length)
+					    4096
+					    0 ; reset
+					    index-char
+					    baseline-start
+					    baseline)))
     (return-from load-char-from-file))
   
   (let ((char (schar data index-data)))
 
     (when (char-equal char #\Nul)
+      ;; EOF
+      ;; (format t "FOUND EOF~%")
       (close in)
       (return-from load-char-from-file))
     
@@ -239,7 +266,7 @@
       (spatial-trees:insert node *r-tree*)
       (send-node node nil)
       
-      (format t "[load-char-from-file] Created node for ~S~%" char)
+      ;; (format t "[load-char-from-file] Created node for ~S~%" char)
       
       ;; Continue to consume data
       ;; Depends how many chars to create at once
