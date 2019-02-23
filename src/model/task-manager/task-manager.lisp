@@ -5,7 +5,11 @@
 ;; - if possible, move code to compute shader
 ;;   http://theorangeduck.com/page/avoiding-shader-conditionals
 
-;; move below into task-manager
+(defclass task ()
+  ((id       :accessor id       :initarg :id       :initform nil)
+   (fn-play  :accessor fn-play  :initarg :fn-play  :initform nil)
+   (fn-stop  :accessor fn-stop  :initarg :fn-stop  :initform nil)
+   (fn-pause :accessor fn-pause :initarg :fn-pause :initform nil)))
 
 (defun execute-queue-tasks (queue)
   (let ((items-next ()))
