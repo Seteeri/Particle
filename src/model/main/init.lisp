@@ -30,6 +30,18 @@
 (defun set-cc ()
   (setf *queue-tasks-sync*  (sb-concurrency:make-queue)
 	*queue-tasks-async* (sb-concurrency:make-queue)
+	*mb-model*          (sb-concurrency:make-mailbox)
+
+	;; list should be performant enough right now
+	;; later can use an O(1) structure if needed
+	*cancel-qts*        ()
+	*cancel-qta*        ()
+	*cancel-mm*         ()
+	
+	;; *mutex-qts*         (sb-concurrency:make-mutex)
+	;; *mutex-qta*         (sb-concurrency:make-mutex)
+	;; *mutex-mm*          (sb-concurrency:make-mutex)
+	
 	*ht-timing-fn*      (make-hash-table :size 64)))
 
 (defun set-stack-node ()   
@@ -248,11 +260,10 @@
 		     #'print-graph-cb)
   
   ;; for testing
-  (when nil
+  (when t
     (register-callback `(,protoform.controller::+xk-f7+ (:press))
 		       :exclusive
-		       (lambda (seq-event ptree queue)
-			 t)))
+		       #'cancel-task))
   
   ;; Print hashtable
   ;;(when nil

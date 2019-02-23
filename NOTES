@@ -1007,3 +1007,28 @@ Maybe can tune GC to match current allocation patterns
 	;; (red:get "foo"))))
     
   (redis:disconnect))
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Need data structure with following properties:
+* Maintain order
+* O(log n) or better lookup
+* O(1) insert/delete (ends)
+
+1. playing...
+
+2. playing...add to cancel list
+
+3. playing [cancels]...
+
+4. ...
+
+;;;;;;
+
+1. anim-0...
+input triggers anim - could modify anim to restart instead...
+2. anim-0...+[cancel list]...+[anim-1]
+
+3. anim-0(cancels)...anim-1
+
+4. ...

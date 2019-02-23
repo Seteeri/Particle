@@ -283,6 +283,21 @@
 			       baseline-start
 			       baseline))))
 
+(defun cancel-task (event)
+  
+  ;; Solution A:
+  ;; * Cancel task by ID
+  ;; * Create cancel list, canceling will add ID to list, as queue is
+  ;;   consumed, check each
+  ;;
+  ;; Solution B:
+  ;; * Dump entire queue, check all, merge new items unto old items
+  ;;   * O(n) + O(n) + O(n)+O(n)
+  ;;   * Parallelize search -> O(n) + O(n/4) + O(n)
+
+  (push 'load-char-from-file *cancel-qta*))
+
+
 ;; (with-open-file (in filename)
 ;;   (let ((scratch (make-string 4096)))
 ;;     (loop for read = (read-sequence scratch in)

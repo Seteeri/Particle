@@ -184,7 +184,8 @@ is busy/responding
 ## The Architecture
 
 * Two process system - model/view
-  * Frame balancing
+  * Task manager - designed to run concurrently
+  * Frame balancing - maintains responsive UI through soft deadlines
 * Tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
   * Compute shaders

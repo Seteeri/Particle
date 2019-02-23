@@ -26,8 +26,6 @@
   (setf *kernel*        (make-kernel 4)
 	*channel*       (make-channel)
 	*channel-input* (make-channel) ; rename to -controller
-
-	*mb-model*      (sb-concurrency:make-mailbox)
 	
 	;; Simply set here since no fn required
 	*width*         width
