@@ -29,9 +29,9 @@
 	       task
 	     ;; Check ID if it's on the cancellation list
 	     ;; otherwise execute - later check pause/play
-	     (if (member id *cancel-qts*)
+	     (if (member id *stop-qts*)
 		 (progn
-		   (remove id *cancel-qts*)
+		   (remove id *stop-qts*)
 		   (when fn-stop
 		     (funcall fn-stop task)))
 		 (let ((task-next (funcall fn-play)))
@@ -49,9 +49,9 @@
        :while task
        :do (with-slots (id fn-play fn-stop)
 	       task
-	     (if (member id *cancel-qta*)
+	     (if (member id *stop-qta*)
 		 (progn
-		   (remove id *cancel-qta*)
+		   (remove id *stop-qta*)
 		   (when fn-stop
 		     (funcall fn-stop task)))
 		 (let* ((time (osicat:get-monotonic-time))

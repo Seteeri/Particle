@@ -294,7 +294,7 @@
 
   (format t "CANCEL~%")
   
-  (push 'load-char-from-file *cancel-qta*))
+  (push 'load-char-from-file *stop-qta*))
 
 
 ;; (with-open-file (in filename)

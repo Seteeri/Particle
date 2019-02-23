@@ -34,9 +34,9 @@
 
 	;; list should be performant enough right now
 	;; later can use an O(1) structure if needed
-	*cancel-qts*        ()
-	*cancel-qta*        ()
-	*cancel-mm*         ()
+	*stop-qts*        ()
+	*stop-qta*        ()
+	*stop-mm*         ()
 	
 	;; *mutex-qts*         (sb-concurrency:make-mutex)
 	;; *mutex-qta*         (sb-concurrency:make-mutex)
