@@ -152,6 +152,9 @@
 				       				      :pathname "remote"
 				       				      :components ((:file "send")
 										   (:file "memcpy")))))
+				       (:module task-manager
+				       		:pathname "task-manager"
+				       		:components ((:file "task-manager")))			       
 				       (:file "animation")
 				       (:module main
 						:pathname "main"
