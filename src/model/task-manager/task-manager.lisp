@@ -11,57 +11,64 @@
    (fn-stop  :accessor fn-stop  :initarg :fn-stop  :initform nil)
    (fn-pause :accessor fn-pause :initarg :fn-pause :initform nil)))
 
+;; option: queue
+(defun enqueue-task-async (task)
+  (sb-concurrency:enqueue task
+			  *queue-tasks-async*))
+
+(defun enqueue-task-sync (task)
+  (sb-concurrency:enqueue task
+			  *queue-tasks-sync*))
+
 (defun execute-queue-tasks (queue)
-  (let ((items-next ()))
+  (let ((tasks-next ()))
     (loop
-       :for item := (sb-concurrency:dequeue queue)
-       :while item
-       :do (destructuring-bind (id fn)
-	       item
+       :for task := (sb-concurrency:dequeue queue)
+       :while task
+       :do (with-slots (id fn-play fn-stop)
+	       task
 	     ;; Check ID if it's on the cancellation list
 	     ;; otherwise execute - later check pause/play
 	     (if (member id *cancel-qts*)
 		 (progn
 		   (remove id *cancel-qts*)
-		   ;; should call cleanup fn also - create structure for item now
-		   t)
-		 (let ((item-next (funcall fn)))
-		   (when (listp item-next)
-		     (push item-next items-next))))))
-    (dolist (item-next items-next)
-      (sb-concurrency:enqueue item-next
-			      queue))))
+		   (when fn-stop
+		     (funcall fn-stop task)))
+		 (let ((task-next (funcall fn-play)))
+		   (when (eq (type-of task-next) 'task)
+		     (push task-next tasks-next))))))
+    (dolist (task-next tasks-next)
+      (enqueue-task-sync task-next))))
 
 (defun execute-queue-tasks-deadline (queue deadline)
-  (let ((items-next ())
+  (let ((tasks-next ())
 	(time-elapsed 0.0))
     ;; POSS pull items until empty instead of processing one at a time
     (loop
-       :for item := (sb-concurrency:dequeue queue)
-       :while item
-       :do (destructuring-bind (id fn)
-	       item
+       :for task := (sb-concurrency:dequeue queue)
+       :while task
+       :do (with-slots (id fn-play fn-stop)
+	       task
 	     (if (member id *cancel-qta*)
 		 (progn
 		   (remove id *cancel-qta*)
-		   ;; should call cleanup fn also - create structure for item now
-		   t)
+		   (when fn-stop
+		     (funcall fn-stop task)))
 		 (let* ((time (osicat:get-monotonic-time))
-			(item-next (funcall fn))
+			(task-next (funcall fn-play))
 			(time-final (osicat:get-monotonic-time))
 			(time-delta (- time-final time)))
 		   ;; (format t "time-elapsed: ~a | deadline: ~a | id: ~a~%" time-elapsed deadline id)
 		   ;; Function can return item for next frame
-		   (when (listp item-next)
-		     (push item-next items-next))
+		   (when (eq (type-of task-next) 'task)
+		     (push task-next tasks-next))
 		   (incf time-elapsed time-delta)
 		   (update-timing-fn id time-delta)
 		   (when (> time-elapsed deadline)
 		     ;; (format t "(> ~a ~a)" time-elapsed deadline)
 		     (return))))))
-    (dolist (item-next items-next)
-      (sb-concurrency:enqueue item-next
-			      queue))))
+    (dolist (task-next tasks-next)
+      (enqueue-task-async task-next))))
 
 (defun update-timing-fn (id time-delta)
   ;; avg or use kalman filter

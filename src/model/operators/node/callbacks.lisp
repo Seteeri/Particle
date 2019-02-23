@@ -2,9 +2,10 @@
 
 (defmacro define-cb-async (name-fn id-fn fn)
   `(defun ,name-fn (seq-key)
-       (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
-       (sb-concurrency:enqueue (list ,id-fn ,fn)
-			       *queue-tasks-async*)))
+     (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
+    (enqueue-task-async (make-instance 'task
+				      :id ,id-fn
+				      :fn-play ,fn))))
 
 (define-cb-async
     add-node-ascii-cb
@@ -96,27 +97,17 @@
 
 (defun move-node-ptr-in-cb (seq-event)
   (fmt-model t "move-node-ptr-in" "~a~%" seq-event)
-  (let ((ptree (make-ptree)))
-    (ptree-fn 'move-node-ptr-in
-	      '()
-	      (lambda ()
-		(funcall #'move-node-ptr :in))
-	      ptree)
-    (sb-concurrency:enqueue *queue-tasks-async*
-				 (list ptree
-				       'move-node-ptr-in))))
+  (enqueue-task-async (make-instance 'task
+				     :id 'move-node-ptr-in
+				     :fn-play (lambda ()
+						(funcall #'move-node-ptr :in)))))
 
 (defun move-node-ptr-out-cb (seq-event)
   (fmt-model t "move-node-ptr-out" "~a~%" seq-event)
-  (let ((ptree (make-ptree)))
-    (ptree-fn 'move-node-ptr-out
-	      '()
-	      (lambda ()
-		(funcall #'move-node-ptr :out))
-	      ptree)
-    (sb-concurrency:enqueue *queue-tasks-async*
-				 (list ptree
-				       'move-node-ptr-out))))
+  (enqueue-task-async (make-instance 'task
+				     :id 'move-node-ptr-out
+				     :fn-play (lambda ()
+						(funcall #'move-node-ptr :out)))))
 
 ;; (defun print-graph-cb (seq-key)
 ;;   (fmt-model t "print-graph" "~a~%" seq-key)
@@ -189,7 +180,6 @@
 			baseline)
   ;; Read data
   ;; Return params for next frame
-  
   (let* ((data (make-string length))
 	 (pos (read-sequence data in)))
     (format t "pos = ~a~%" pos)
@@ -201,17 +191,17 @@
 	     (start-2 start)
 	     (pos-2 pos)
 	     (data-2 data))
-	(sb-concurrency:enqueue (list 'load-char-from-file
-				      (lambda ()
-					(load-char-from-file in-2
-							     start-2
-							     pos-2
-							     data-2
-							     index-data
-							     index-char
-							     baseline-start
-							     baseline)))
-				*queue-tasks-async*)))))
+	(enqueue-task-async (make-instance 'task
+					   :id 'load-char-from-file
+					   :fn-play (lambda ()
+						      (load-char-from-file in-2
+									   start-2
+									   pos-2
+									   data-2
+									   index-data
+									   index-char
+									   baseline-start
+									   baseline))))))))
 
 (defun load-char-from-file (in
 			    start
@@ -272,16 +262,23 @@
 	
   ;; Continue to consume data
   ;; Depends how many chars to create at once
-  (list 'load-char-from-file
-	(lambda ()
-	  (load-char-from-file in
-			       start
-			       length
-			       data
-			       index-data
-			       index-char
-			       baseline-start
-			       baseline))))
+
+  ;; Technically could add task here to execute on same frame
+  ;; Or return to execute on next frame
+  ;;
+  ;; Maybe return async or sync option
+
+  (make-instance 'task
+		 :id 'load-char-from-file
+		 :fn-play (lambda ()
+			    (load-char-from-file in
+						 start
+						 length
+						 data
+						 index-data
+						 index-char
+						 baseline-start
+						 baseline))))
 
 (defun cancel-task (event)
   
@@ -295,6 +292,8 @@
   ;;   * O(n) + O(n) + O(n)+O(n)
   ;;   * Parallelize search -> O(n) + O(n/4) + O(n)
 
+  (format t "CANCEL~%")
+  
   (push 'load-char-from-file *cancel-qta*))
 
 

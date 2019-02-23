@@ -86,9 +86,10 @@
 	      (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed))
 	    nil)
 
-	  (list id
-		(lambda ()
-		  (funcall fn-enqueue
-			   seq-event
-			   anim)))))))
+	  (make-instance 'task
+			 :id id
+			 :fn-play (lambda ()
+				    (funcall fn-enqueue
+					     seq-event
+					     anim)))))))
   

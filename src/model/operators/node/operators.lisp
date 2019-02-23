@@ -243,14 +243,12 @@
 			     :fn-new fn-new
 			     :value-start start
 			     :value-delta delta)))
-    (sb-concurrency:enqueue (list id
-				  (lambda ()
-				    (funcall #'run-anim
-					     seq-event
-					     anim)))
-			    *queue-tasks-sync*)))
-
-
+    (enqueue-task-sync (make-instance 'task
+				      :id id
+				      :fn-play (lambda ()
+						 (funcall #'run-anim
+							  seq-event
+							  anim))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
