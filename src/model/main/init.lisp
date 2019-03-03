@@ -32,6 +32,9 @@
 	*queue-tasks-async* (sb-concurrency:make-queue)
 	*mb-model*          (sb-concurrency:make-mailbox)
 
+	*tasks-inactive*    (make-hash-table :size 64)
+	*tasks-active*      (make-hash-table :size 64)
+	
 	;; list should be performant enough right now
 	;; later can use an O(1) structure if needed
 	*stop-qts*        ()

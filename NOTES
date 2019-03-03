@@ -1032,3 +1032,12 @@ input triggers anim - could modify anim to restart instead...
 3. anim-0(cancels)...anim-1
 
 4. ...
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+http://www.cs.cmu.edu/afs/cs/academic/class/15210-f15/www/tapp.html#ch:multithreading
+
+Keys to Achieving Parallelism
+
+1. DAG
+2. Atomics - minimize usage of locks
