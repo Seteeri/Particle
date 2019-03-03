@@ -16,14 +16,14 @@ The aim is to create a full Lisp environment short of creating a pure
 Lisp OS/kernel (PID 1 might be an option); Protoform may be considered a top-down approach rather
 than a bottom-up approach. From a consumer perspective, the lower
 abstractions are becoming virtualized at the convenience of the user, 
-i.e. web browser becoming a platform. However, the increase in the
-number of data breaches and security issues have kept the OS to remain
-an important factor.
+i.e. web browser becoming a platform. However, the increase in data 
+breaches and security issues have not completely eroded the OS a key
+factor.
 
-It aims to integrate Wayland by provide the desktop as a node (plane) in
-3D space, making Protoform a "meta-manager" around the desktop. Later, 
-Protoform could be extended to allow windows to exist in 3D space 
-(feasibility dependent upon performance), allowing for convergence.
+It aims to integrate Wayland by providing the desktop as a node (plane) 
+in 3D space, making Protoform a "meta-manager" around the desktop. 
+(It is possible to allow windows to exist in 3D space allowing for 
+convergence, however memcpy performance limits the number of windows)
 
 Protoform integrates concepts from CLIs/shells/REPLs/notebooks, WMs/DEs,
 and mindmapping into a single 3D interface.
@@ -41,9 +41,6 @@ programmatically inclined users, starting with people that are familiar
 with the MS Office suite, which may be considered ubiquitious to the
 average user.
 
-Finally, my hope is to get Protoform onto a mobile platform, such as
-the Librem 5 as a proof of concept or even a prototype...
-
 ## The Inspiration
 
 * Primary Inspirations:
@@ -56,18 +53,18 @@ the Librem 5 as a proof of concept or even a prototype...
       * Unlimited undo
       * Incremental search
       * Elmintation of applications -> commands
-      * Redesign file hierarchies
+      * Redesigned file hierarchies
       * ZUIs as an alternative
     
 * Secondary Inspirations:
     * McCLIM - central concept of "presentation types"
     * Uzbl/Conkeror - numbered links for navigation
     * Unreal Blueprints - nodal system
-    * EagleMode - example of a ZUI
+    * EagleMode - ZUI system
     * OpenDoc - early proprietary attempt by Apple to create compound documents
     * LightTable - drafting table metaphor
     * Minecraft - expressiveness
-    * Xerox Parc - so much...
+    * Xerox Parc - ...
     
 * Personal Influences:
     * Gypsy by Larry Tesler
@@ -90,9 +87,10 @@ and to the new projects being crowdfunded. However, several issues
 have yet to be addressed:
 
 * Integration with existing interfaces (the desktop)
-* Making the GUI homoiconic
-  * For nodal systems, nodes must be able to edit nodes
-  * A step further, the editor must be able to edit itself (able to bootstrap itself)
+* Homoiconic GUI 
+  * Requires meta-circular evaluator of language implementation + homoiconicity of language design
+  * The nodes must be able to edit nodes (itself)
+  * The editor must be able to edit itself
 
 The initial inspiration came from Blender and later from the robustness
 of Emacs, and its strengths and weaknesses.
@@ -104,18 +102,21 @@ of Emacs, and its strengths and weaknesses.
 * Help system/manual -> Simplify
 
 I imagine - what if there were something like Emacs for the non-programmer
-user? Considering the way technology and computers are becoming more
-and more integrated into our everyday lives, the bottleneck to 
+user? Considering the way technology and computers are becoming 
+increasingly integrated into our everyday lives, the bottleneck to 
 leveraging computing most effectively and driving innovation will be the
 connection between man and machine.
 
-What the average user is familiar with are GUIs and their widgets, but
-what if we could make those dynamic, just as Emacs allows everything to
-be customized through elisp. Attempting to teach a lay user how to 
-program is no easy feat as evidenced by VPLs. Having observed, Blender's
-nodal workflow and Unreal's Blueprint system, I attempted to combine
-those models of interaction with the analogy of LEGOs, while at the same
-time allowing for the entire system to remain hackable to programmers.
+The average user is familiar with GUI widgets, but what if those were 
+completely dynamic and an intrinsic property, similar to how Emacs 
+allows everything to be customized through elisp. Teaching a lay user
+how to program is not a trivial task as it is inherently based upon the 
+user's ability to think, a reflection of the mind if you will (the 
+history and usefulness of VPLs are a good study). Having observed 
+Blender's nodal workflow and Unreal's Blueprint system, I attempted to 
+combine those models of interaction with the analogy of LEGOs, while at 
+the same time allowing for the entire system to remain hackable to 
+programmers to maintain a gradual learning curve.
 
 I do not believe it is about dumbing down programming to make it easier
 to learn, but creating the right tools around programming to drive
@@ -173,13 +174,13 @@ a Lisp OS](https://news.ycombinator.com/item?id=15466124):
 
 ## The Interface
 
-* Built around version control
+* Built around task management and version control - DAGs
   * Non-destructive editing and undo/redo capabilities
+* Non-blocking UI - user should always be aware of whether the computer 
+is busy/responding
 * 3D orthographic nodal environment - "turtles all the way down"
 * Primarily keyboard driven interface
 * Wayland extension provides conventional desktop
-* Non-blocking UI - user should always be aware of whether the computer 
-is busy/responding
 
 ## The Architecture
 
