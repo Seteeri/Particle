@@ -51,6 +51,18 @@
 
 ;; Anims so these use queue-anim
 
+(define-cb-async
+    move-node-ptr-in-cb
+    'move-node-ptr-in
+  (lambda ()
+    (funcall #'move-node-ptr :in)))
+
+(define-cb-async
+    move-node-ptr-out-cb
+    'move-node-ptr-out
+  (lambda ()
+    (funcall #'move-node-ptr :out)))
+
 (defun translate-node-ptr-left-cb (seq-event)
   (with-slots (model-matrix)
       *node-ptr-main*
@@ -94,20 +106,6 @@
 		       (vy3 (translation model-matrix))
 		       (- (* +linegap+ *scale-node* 4))
 		       'move-pointer-y)))
-
-(defun move-node-ptr-in-cb (seq-event)
-  (fmt-model t "move-node-ptr-in" "~a~%" seq-event)
-  (enqueue-task-async (make-instance 'task
-				     :id 'move-node-ptr-in
-				     :fn-play (lambda ()
-						(funcall #'move-node-ptr :in)))))
-
-(defun move-node-ptr-out-cb (seq-event)
-  (fmt-model t "move-node-ptr-out" "~a~%" seq-event)
-  (enqueue-task-async (make-instance 'task
-				     :id 'move-node-ptr-out
-				     :fn-play (lambda ()
-						(funcall #'move-node-ptr :out)))))
 
 ;; (defun print-graph-cb (seq-key)
 ;;   (fmt-model t "print-graph" "~a~%" seq-key)
