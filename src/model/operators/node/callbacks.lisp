@@ -274,6 +274,8 @@
 	(spatial-trees:insert node *r-tree*)
 	(send-node node nil))
 
+      (add-node-vcs)
+
       (incf index-data)
       (incf index-char)))
 	
