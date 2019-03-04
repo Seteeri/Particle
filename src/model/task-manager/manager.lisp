@@ -16,25 +16,49 @@
   (sb-concurrency:enqueue task
 			  *queue-tasks-sync*))
 
+(defun enqueue-task-queue (queue task)
+  (setf (gethash (id task) *tasks-active*) task)
+  (sb-concurrency:enqueue task
+			  queue))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun execute-mb-tasks (mb)
+  (execute-loop-task mb
+		     #'sb-concurrency:receive-message
+		     #'sb-concurrency:send-message))
+
 (defun execute-queue-tasks (queue)
+  (execute-loop-task queue
+		     #'sb-concurrency:dequeue
+		     #'enqueue-task-queue))
+
+(defun execute-loop-task (tgt
+			  fn-for
+			  fn-post)
   ;; Alternative: Pull tasks into list until empty
   ;; - fn-play can then enqueue immediately instead of post-loop
   (let ((tasks-next ()))
     (loop
-       :for task := (sb-concurrency:dequeue queue)
+       :for task := (funcall fn-for tgt)
        :while task
-       :do (with-slots (id stat fn-play fn-stop)
-	       task
-	     ;; Check ID if it's on the cancellation list
-	     ;; otherwise execute - later check pause/play
-
-	     ;; use cond and funcall play stop etc
-	     (when (eq stat 'play)
-	       (let ((task-next (funcall fn-play task)))
-		 (when (eq (type-of task-next) 'task)
-		   (push task-next tasks-next))))))
+       :do (let* ((stat (stat task))
+		  (fn (cond ((eq stat 'play)
+			     (fn-play task))
+			    ((eq stat 'stop)
+			     (fn-stop task))
+			    ((eq stat 'pause)
+			     (fn-pause task))
+			    ((eq stat 'resume)
+			     (fn-resume task))))
+		  (task-next (when fn
+			       (funcall fn task))))
+	     (when (eq (type-of task-next) 'task)
+	       (push task-next tasks-next))))
     (dolist (task-next tasks-next)
-      (enqueue-task-sync task-next))))
+      (funcall fn-post tgt task-next))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun execute-queue-tasks-deadline (queue deadline)
   (let ((tasks-next ())
@@ -43,23 +67,29 @@
     (loop
        :for task := (sb-concurrency:dequeue queue)
        :while task
-       :do (with-slots (id stat fn-play fn-stop)
-	       task
-	     ;; (format t "[exec...] ~a ~a = ~a~%" id task stat)
-	     (when (eq stat 'play)	     
-	       (let* ((time (osicat:get-monotonic-time))
-		      (task-next (funcall fn-play task))
-		      (time-final (osicat:get-monotonic-time))
-		      (time-delta (- time-final time)))
-		 ;; (format t "time-elapsed: ~a | deadline: ~a | id: ~a~%" time-elapsed deadline id)
-		 ;; Function can return item for next frame
-		 (when (eq (type-of task-next) 'task)
-		   (push task-next tasks-next))
-		 (incf time-elapsed time-delta)
-		 (update-timing-fn id time-delta)
-		 (when (> time-elapsed deadline)
-		   ;; (format t "(> ~a ~a)" time-elapsed deadline)
-		   (return))))))
+       :do (let* ((stat (stat task))
+		  (fn (cond ((eq stat 'play)
+			     (fn-play task))
+			    ((eq stat 'stop)
+			     (fn-stop task))
+			    ((eq stat 'pause)
+			     (fn-pause task))
+			    ((eq stat 'resume)
+			     (fn-resume task))))
+		  (time (osicat:get-monotonic-time))
+		  (task-next (when fn
+			       (funcall fn task)))
+		  (time-final (osicat:get-monotonic-time))
+		  (time-delta (- time-final time)))
+	     ;; (format t "time-elapsed: ~a | deadline: ~a | id: ~a~%" time-elapsed deadline id)
+	     ;; Function can return item for next frame
+	     (when (eq (type-of task-next) 'task)
+	       (push task-next tasks-next))
+	     (incf time-elapsed time-delta)
+	     (update-timing-fn (id task) time-delta)
+	     (when (> time-elapsed deadline)
+	       ;; (format t "(> ~a ~a)" time-elapsed deadline)
+	       (return))))
     (dolist (task-next tasks-next)
       ;; (format t "[dolist...] ~a ~a~%" (id task-next) task-next)
       (enqueue-task-async task-next))))
@@ -67,19 +97,3 @@
 (defun update-timing-fn (id time-delta)
   ;; avg or use kalman filter
   (setf (gethash id *ht-timing-fn*) time-delta))
-
-(defun execute-mb-tasks (mb)
-  (let ((tasks-next ()))
-    (loop
-       :for task := (sb-concurrency:receive-message mb)
-       :while task
-       :do (with-slots (id stat fn-play fn-stop)
-	       task
-	     ;; Check ID if it's on the cancellation list
-	     ;; otherwise execute - later check pause/play
-	     (when (eq stat 'play)
-	       (let ((task-next (funcall fn-play task)))
-		 (when (eq (type-of task-next) 'task)
-		   (push task-next tasks-next))))))
-    (dolist (task-next tasks-next)
-      (sb-concurrency:send-message mb fn-next))))

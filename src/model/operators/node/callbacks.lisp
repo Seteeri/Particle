@@ -279,11 +279,6 @@
 	
   ;; Continue to consume data
   ;; Depends how many chars to create at once
-
-  ;; Technically could add task here to execute on same frame
-  ;; Or return to execute on next frame
-  ;;
-  ;; Maybe return async or sync option
   
   (let ((task (make-instance 'task
 			     :id 'load-char-from-file
