@@ -88,7 +88,7 @@
 
 	  (make-instance 'task
 			 :id id
-			 :fn-play (lambda ()
+			 :fn-play (lambda (task)
 				    (funcall fn-enqueue
 					     seq-event
 					     anim)))))))

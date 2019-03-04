@@ -31,7 +31,7 @@
 
     (enqueue-task-sync (make-instance 'task
 				      :id id
-				      :fn-play (lambda ()
+				      :fn-play (lambda (task)
 						 (funcall #'run-anim
 							  seq-event
 							  anim))))))
@@ -57,7 +57,7 @@
 			       :value-delta delta)))
     (enqueue-task-sync (make-instance 'task
 				      :id id
-				      :fn-play (lambda ()
+				      :fn-play (lambda (task)
 						 (funcall #'run-anim
 							  seq-event
 							  anim)))))))

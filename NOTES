@@ -1041,3 +1041,6 @@ Keys to Achieving Parallelism
 
 1. DAG
 2. Atomics - minimize usage of locks
+
+Should a task that readds itself create a new task instance or reuse
+existing?

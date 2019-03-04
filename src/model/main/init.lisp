@@ -35,16 +35,6 @@
 	*tasks-inactive*    (make-hash-table :size 64)
 	*tasks-active*      (make-hash-table :size 64)
 	
-	;; list should be performant enough right now
-	;; later can use an O(1) structure if needed
-	*stop-qts*        ()
-	*stop-qta*        ()
-	*stop-mm*         ()
-	
-	;; *mutex-qts*         (sb-concurrency:make-mutex)
-	;; *mutex-qta*         (sb-concurrency:make-mutex)
-	;; *mutex-mm*          (sb-concurrency:make-mutex)
-	
 	*ht-timing-fn*      (make-hash-table :size 64)))
 
 (defun set-stack-node ()   
@@ -264,9 +254,15 @@
   
   ;; for testing
   (when t
+    (register-callback `(,protoform.controller::+xk-f5+ (:press))
+		       :exclusive
+		       #'pause-task-load-char-from-file)    
+    (register-callback `(,protoform.controller::+xk-f6+ (:press))
+		       :exclusive
+		       #'resume-task-load-char-from-file)
     (register-callback `(,protoform.controller::+xk-f7+ (:press))
 		       :exclusive
-		       #'cancel-task))
+		       #'stop-task-load-char-from-file))
   
   ;; Print hashtable
   ;;(when nil

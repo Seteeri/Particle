@@ -152,19 +152,28 @@
 
   ;; symbol can do about 800 chars in 16.7 ms
 
+  ;; move opening file handle to load-chunk-file (model thread)?
+  ;; should be okay in controller thread for now...
+  
   (when-let ((in (open (make-pathname :directory '(:absolute "home" "user" "quicklisp" "local-projects" "protoform")
 				      :name "README" :type "md")
 		       :external-format :utf-8)))
-    (sb-concurrency:send-message *mb-model*
-				 (lambda ()
-    	      			   (funcall #'load-chunk-file
-					    in
-					    0
-					    4096
-					    0
-					    0
-					    (get-origin-from-node-pos *node-ptr-main*)
-					    (get-origin-from-node-pos *node-ptr-main*))))))
+	    (sb-concurrency:send-message
+	     *mb-model*
+	     (make-instance 'task
+			    :id 'load-chunk-file
+			    :fn-play (lambda (task)
+				       
+				       (setf (gethash 'load-chunk-file *tasks-active*) task)
+				       
+    	      			       (funcall #'load-chunk-file
+						in
+						0
+						4096
+						0
+						0
+						(get-origin-from-node-pos *node-ptr-main*)
+						(get-origin-from-node-pos *node-ptr-main*)))))))
 
 ;; use fn keys for testing
 
@@ -188,18 +197,20 @@
       (let* ((in-2 in)
 	     (start-2 start)
 	     (pos-2 pos)
-	     (data-2 data))
-	(enqueue-task-async (make-instance 'task
-					   :id 'load-char-from-file
-					   :fn-play (lambda ()
-						      (load-char-from-file in-2
-									   start-2
-									   pos-2
-									   data-2
-									   index-data
-									   index-char
-									   baseline-start
-									   baseline))))))))
+	     (data-2 data)
+	     (task (make-instance 'task
+				  :id 'load-char-from-file
+				  :fn-play (lambda (task)				   
+					     (load-char-from-file in-2
+								  start-2
+								  pos-2
+								  data-2
+								  index-data
+								  index-char
+								  baseline-start
+								  baseline)))))
+	(enqueue-task-async task)
+	task))))
 
 (defun load-char-from-file (in
 			    start
@@ -212,20 +223,26 @@
 			    baseline)
 
   ;; pass loop count
-  (dotimes (i 8)
+  (dotimes (i 1)
     
     (when (>= index-data (length data))
       ;; Read new chunk
-      (sb-concurrency:send-message *mb-model*
-				   (lambda ()
-    	      			     (funcall #'load-chunk-file
-					      in
-					      (+ start length)
-					      4096
-					      0 ; reset
-					      index-char
-					      baseline-start
-					      baseline)))
+      (sb-concurrency:send-message
+       *mb-model*
+       (make-instance 'task
+		      :id 'load-chunk-file
+		      :fn-play (lambda (task)
+				 
+				 (setf (gethash 'load-chunk-file *tasks-active*) task)
+				 
+    	      			 (funcall #'load-chunk-file
+					  in
+					  (+ start length)
+					  4096
+					  0 ; reset
+					  index-char
+					  baseline-start
+					  baseline))))
       (return-from load-char-from-file))
     
     (let ((char (schar data index-data)))
@@ -234,6 +251,8 @@
 	;; EOF
 	;; (format t "FOUND EOF~%")
 	(close in)
+	(remhash 'load-chunk-file *tasks-active*)
+	(remhash 'load-char-from-file *tasks-active*)
 	(return-from load-char-from-file))
       
       ;; calc pos relative to line rather than prev char
@@ -265,35 +284,106 @@
   ;; Or return to execute on next frame
   ;;
   ;; Maybe return async or sync option
-
-  (make-instance 'task
-		 :id 'load-char-from-file
-		 :fn-play (lambda ()
-			    (load-char-from-file in
-						 start
-						 length
-						 data
-						 index-data
-						 index-char
-						 baseline-start
-						 baseline))))
-
-(defun cancel-task (event)
   
-  ;; Solution A:
-  ;; * Cancel task by ID
-  ;; * Create cancel list, canceling will add ID to list, as queue is
-  ;;   consumed, check each
-  ;;
-  ;; Solution B:
-  ;; * Dump entire queue, check all, merge new items unto old items
-  ;;   * O(n) + O(n) + O(n)+O(n)
-  ;;   * Parallelize search -> O(n) + O(n/4) + O(n)
+  (let ((task (make-instance 'task
+			     :id 'load-char-from-file
+			     :fn-play (lambda (task)			    
+					(load-char-from-file in
+							     start
+							     length
+							     data
+							     index-data
+							     index-char
+							     baseline-start
+							     baseline)))))
+    ;; Must do this here so a subsequent stop task can stop the new task
+    (setf (gethash 'load-char-from-file *tasks-active*) task)
+    ;; (format t "[load/make...] NEW TASK = ~a~%" task)
+    task))
 
-  (format t "CANCEL~%")
+(defun stop-task-load-char-from-file (event)
+
+  ;; handle pausing in stop state
   
-  (push 'load-char-from-file *stop-qta*))
+  (sb-concurrency:send-message
+   *mb-model*
+   (make-instance 'task
+		  :id 'stop-task-load-chunk-file
+		  :fn-play (lambda (task)			     
+			     ;; change stat of existing task
+			     (setf (stat (gethash 'load-chunk-file *tasks-active*)) 'stop)
+			     ;; del from hash table active (or move to undo tree etc)
+			     (remhash 'load-chunk-file *tasks-active*))))
+  
+  (enqueue-task-async
+   (make-instance 'task
+		  :id 'stop-task-load-char-from-file
+		  :fn-play (lambda (task)
+			     ;; (format t "[stop...] ~a -> STOP~%" (gethash 'load-char-from-file *tasks-active*))
+			     ;; stop existing task to prevent execution (and enqueueing)
+			     (setf (stat (gethash 'load-char-from-file *tasks-active*)) 'stop)
+			     ;; del from hash table active (or move to undo tree etc)
+			     (remhash 'load-char-from-file *tasks-active*)))))
 
+
+(defun pause-task-load-char-from-file (event)
+
+  (format t "PAUSE LOAD-CHAR-FROM-FILE~%")
+
+  (sb-concurrency:send-message
+   *mb-model*
+   (make-instance 'task
+		  :id 'stop-task-load-chunk-file
+		  :fn-play (lambda (task)			     
+			     ;; stop existing task to prevent execution (and enqueueing)
+			     (setf (stat (gethash 'load-chunk-file *tasks-active*)) 'stop))))
+
+  (enqueue-task-async
+   (make-instance 'task
+		  :id 'pause-task-load-chunk-file
+		  :fn-play (lambda (task)
+			     ;; stop task already placed which will remove it
+			     ;; by time this is executed
+			     (let ((task-tgt (gethash 'load-chunk-file *tasks-active*)))
+			       ;; move from hash table active -> inactive (handle undo tree etc)
+			       (setf (gethash 'load-chunk-file *tasks-inactive*) task-tgt
+				     (stat task-tgt) 'pause))
+			     (remhash 'load-chunk-file *tasks-active*))))
+  
+  (enqueue-task-async
+   (make-instance 'task
+		  :id 'stop-task-load-char-from-file
+		  :fn-play (lambda (task)
+			     ;; stop existing task to prevent execution (and enqueueing)
+			     ;; don't remove it from tree since pause task calls gethash
+			     (setf (stat (gethash 'load-char-from-file *tasks-active*)) 'stop))))
+  
+  (enqueue-task-async
+   (make-instance 'task
+		  :id 'pause-task-load-char-from-file
+		  :fn-play (lambda (task)
+			     ;; stop task already placed which will remove it
+			     ;; by time this is executed
+			     (let ((task-tgt (gethash 'load-char-from-file *tasks-active*)))
+			       ;; move from hash table active -> inactive (handle undo tree etc)
+			       (setf (gethash 'load-char-from-file *tasks-inactive*) task-tgt
+				     (stat task-tgt) 'pause))
+			     (remhash 'load-char-from-file *tasks-active*)))))
+
+(defun resume-task-load-char-from-file (event)
+  
+  (format t "RESUME LOAD-CHAR-FROM-FILE~%")
+
+  (enqueue-task-async
+   (make-instance 'task
+		  :id 'resume-task-load-char-from-file
+		  :fn-play (lambda (task)
+			     (let ((task-tgt (gethash 'load-char-from-file *tasks-inactive*)))
+			       ;; move from hash table active -> inactive (handle undo tree etc)
+			       (setf (gethash 'load-char-from-file *tasks-active*) task-tgt
+				     (stat task-tgt) 'play)
+			       (enqueue-task-async task-tgt))
+			     (remhash 'load-char-from-file *tasks-inactive*)))))
 
 ;; (with-open-file (in filename)
 ;;   (let ((scratch (make-string 4096)))

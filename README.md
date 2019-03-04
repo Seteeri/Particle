@@ -176,8 +176,7 @@ a Lisp OS](https://news.ycombinator.com/item?id=15466124):
 
 * Built around task management and version control - DAGs
   * Non-destructive editing and undo/redo capabilities
-* Non-blocking UI - user should always be aware of whether the computer 
-is busy/responding
+* Non-blocking UI - user always aware of computer status
 * 3D orthographic nodal environment - "turtles all the way down"
 * Primarily keyboard driven interface
 * Wayland extension provides conventional desktop
