@@ -70,7 +70,7 @@
 			    ;; stop task already placed which will remove it
 			    ;; by time this is executed
 			    ;; move from hash table active -> inactive (handle undo tree etc)
-			    (multiple-value-bind (task bool)d
+			    (multiple-value-bind (task bool)
 				(gethash id *tasks-active*)
 			      (when bool
 				(setf (gethash id *tasks-inactive*) task
@@ -98,5 +98,3 @@
 				(gethash id *tasks-active*)
 			      (when bool
 				(setf (stat task) 'stop))))))
-  
-
