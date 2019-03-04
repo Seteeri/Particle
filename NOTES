@@ -1044,3 +1044,19 @@ Keys to Achieving Parallelism
 
 Should a task that readds itself create a new task instance or reuse
 existing?
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (defparameter *array* (make-array 1000000
+;; 				  :element-type '(UNSIGNED-BYTE 8)
+;; 				  :adjustable nil
+;; 				  :fill-pointer nil
+;; 				  :initial-contents (loop :for i :from 0 :below 1000000 :collect 0)))
+;; (time (progn (qbase64:encode-bytes *array*) t))
+
+;; (handler-case
+;; 	(progn
+;; 	  t
+;;   (lparallel.ptree:ptree-redefinition-error (c)
+;; 	t)
+

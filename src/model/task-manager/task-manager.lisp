@@ -92,28 +92,95 @@
 		   (push task-next tasks-next))))))
     (dolist (task-next tasks-next)
       (sb-concurrency:send-message mb fn-next))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun pause-task-mb (id)
+  (sb-concurrency:send-message
+   *mb-model*
+   (make-task-stop id))
+
+  (sb-concurrency:send-message
+   *mb-model*
+   (make-task-inactivate id)))
+
+(defun resume-task-mb (id)
+  (sb-concurrency:send-message
+   *mb-model*
+   (make-task-activate id)))
+
+(defun stop-task-mb (id)
+  ;; handle pausing in stop state
+  (sb-concurrency:send-message
+   *mb-model*
+   (make-task-stop-remove id)))
+
+;;;;;;;;;;;;;;;;;;;;;
+
+(defun pause-task (id)
+  (enqueue-task-async
+   (make-task-stop id))
   
-;; (let ((fns-next ()))
-;;   (loop
-;;      :for fn := (sb-concurrency:receive-message *mb-model*)
-;;      :while fn
-;;      :do (let ((fn-next (funcall fn)))
-;; 	     (when fn-next
-;; 	       (push fn-next fns-next))))
-;;   (dolist (fn-next fns-next)
-;;     (sb-concurrency:send-message *mb-model* fn-next))))
+  (enqueue-task-async
+   (make-task-inactivate id)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun resume-task (id)
+  (enqueue-task-async
+   (make-task-activate id)))
 
-;; (defparameter *array* (make-array 1000000
-;; 				  :element-type '(UNSIGNED-BYTE 8)
-;; 				  :adjustable nil
-;; 				  :fill-pointer nil
-;; 				  :initial-contents (loop :for i :from 0 :below 1000000 :collect 0)))
-;; (time (progn (qbase64:encode-bytes *array*) t))
+(defun stop-task (id)  
+  (enqueue-task-async
+   (make-task-stop-remove id)))
 
-;; (handler-case
-;; 	(progn
-;; 	  t
-;;   (lparallel.ptree:ptree-redefinition-error (c)
-;; 	t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun make-task-activate (id)
+  (make-instance 'task
+		 :id 'resume-task
+		 :fn-play (lambda (task)
+			    ;; move from hash table active -> inactive (handle undo tree etc)
+			    (multiple-value-bind (task bool)
+				(gethash id *tasks-inactive*)
+			      (when bool			     
+				(setf (gethash id *tasks-active*) task
+				      (stat task) 'play)
+				(enqueue-task-async task)))
+			    (remhash id *tasks-inactive*))))
+
+(defun make-task-inactivate (id)
+  (make-instance 'task
+		 :id 'pause-task
+		 :fn-play (lambda (task)
+			    ;; stop task already placed which will remove it
+			    ;; by time this is executed
+			    ;; move from hash table active -> inactive (handle undo tree etc)
+			    (multiple-value-bind (task bool)
+				(gethash id *tasks-active*)
+			      (when bool
+				(setf (gethash id *tasks-inactive*) task
+				      (stat task) 'pause))
+			      (remhash id *tasks-active*)))))
+
+(defun make-task-stop-remove (id)
+  (make-instance 'task
+		 :id 'stop-task
+		 :fn-play (lambda (task)			     
+			    ;; change stat of existing task
+			    ;; del from hash table active (or move to undo tree etc)			     
+			    (multiple-value-bind (task bool)
+				(gethash id *tasks-active*)
+			      (when bool
+				(setf (stat task) 'stop))
+			      (remhash id *tasks-active*)))))
+
+(defun make-task-stop (id)
+  (make-instance 'task
+		 :id 'pause-task
+		 :fn-play (lambda (task)			     
+			    ;; stop existing task to prevent execution (and enqueueing)
+			    (multiple-value-bind (task bool)
+				(gethash id *tasks-active*)
+			      (when bool
+				(setf (stat task) 'stop))))))
+  
+

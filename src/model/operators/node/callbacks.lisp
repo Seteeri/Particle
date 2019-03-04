@@ -302,88 +302,15 @@
     task))
 
 (defun stop-task-load-char-from-file (event)
-
-  ;; handle pausing in stop state
-  
-  (sb-concurrency:send-message
-   *mb-model*
-   (make-instance 'task
-		  :id 'stop-task-load-chunk-file
-		  :fn-play (lambda (task)			     
-			     ;; change stat of existing task
-			     (setf (stat (gethash 'load-chunk-file *tasks-active*)) 'stop)
-			     ;; del from hash table active (or move to undo tree etc)
-			     (remhash 'load-chunk-file *tasks-active*))))
-  
-  (enqueue-task-async
-   (make-instance 'task
-		  :id 'stop-task-load-char-from-file
-		  :fn-play (lambda (task)
-			     ;; (format t "[stop...] ~a -> STOP~%" (gethash 'load-char-from-file *tasks-active*))
-			     ;; stop existing task to prevent execution (and enqueueing)
-			     (setf (stat (gethash 'load-char-from-file *tasks-active*)) 'stop)
-			     ;; del from hash table active (or move to undo tree etc)
-			     (remhash 'load-char-from-file *tasks-active*)))))
-
+  (stop-task-mb 'load-chunk-file)
+  (stop-task 'load-char-from-file))
 
 (defun pause-task-load-char-from-file (event)
-
-  (format t "PAUSE LOAD-CHAR-FROM-FILE~%")
-
-  (sb-concurrency:send-message
-   *mb-model*
-   (make-instance 'task
-		  :id 'stop-task-load-chunk-file
-		  :fn-play (lambda (task)			     
-			     ;; stop existing task to prevent execution (and enqueueing)
-			     (setf (stat (gethash 'load-chunk-file *tasks-active*)) 'stop))))
-
-  (enqueue-task-async
-   (make-instance 'task
-		  :id 'pause-task-load-chunk-file
-		  :fn-play (lambda (task)
-			     ;; stop task already placed which will remove it
-			     ;; by time this is executed
-			     (let ((task-tgt (gethash 'load-chunk-file *tasks-active*)))
-			       ;; move from hash table active -> inactive (handle undo tree etc)
-			       (setf (gethash 'load-chunk-file *tasks-inactive*) task-tgt
-				     (stat task-tgt) 'pause))
-			     (remhash 'load-chunk-file *tasks-active*))))
-  
-  (enqueue-task-async
-   (make-instance 'task
-		  :id 'stop-task-load-char-from-file
-		  :fn-play (lambda (task)
-			     ;; stop existing task to prevent execution (and enqueueing)
-			     ;; don't remove it from tree since pause task calls gethash
-			     (setf (stat (gethash 'load-char-from-file *tasks-active*)) 'stop))))
-  
-  (enqueue-task-async
-   (make-instance 'task
-		  :id 'pause-task-load-char-from-file
-		  :fn-play (lambda (task)
-			     ;; stop task already placed which will remove it
-			     ;; by time this is executed
-			     (let ((task-tgt (gethash 'load-char-from-file *tasks-active*)))
-			       ;; move from hash table active -> inactive (handle undo tree etc)
-			       (setf (gethash 'load-char-from-file *tasks-inactive*) task-tgt
-				     (stat task-tgt) 'pause))
-			     (remhash 'load-char-from-file *tasks-active*)))))
+  (pause-task-mb 'load-chunk-file)
+  (pause-task 'load-char-from-file))
 
 (defun resume-task-load-char-from-file (event)
-  
-  (format t "RESUME LOAD-CHAR-FROM-FILE~%")
-
-  (enqueue-task-async
-   (make-instance 'task
-		  :id 'resume-task-load-char-from-file
-		  :fn-play (lambda (task)
-			     (let ((task-tgt (gethash 'load-char-from-file *tasks-inactive*)))
-			       ;; move from hash table active -> inactive (handle undo tree etc)
-			       (setf (gethash 'load-char-from-file *tasks-active*) task-tgt
-				     (stat task-tgt) 'play)
-			       (enqueue-task-async task-tgt))
-			     (remhash 'load-char-from-file *tasks-inactive*)))))
+  (resume-task 'load-char-from-file))
 
 ;; (with-open-file (in filename)
 ;;   (let ((scratch (make-string 4096)))
