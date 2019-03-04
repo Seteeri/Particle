@@ -154,7 +154,8 @@
 										   (:file "memcpy")))))
 				       (:module task-manager
 				       		:pathname "task-manager"
-				       		:components ((:file "task-manager")))			       
+				       		:components ((:file "manager")
+							     (:file "task")))
 				       (:file "animation")
 				       (:module main
 						:pathname "main"
