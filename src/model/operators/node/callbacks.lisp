@@ -1,11 +1,18 @@
 (in-package :protoform.model)
 
+(defmacro define-cb-sync (name-fn id-fn fn)
+  `(defun ,name-fn (seq-key)
+     (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
+     (enqueue-task-sync (make-instance 'task
+				       :id ,id-fn
+				       :fn-play ,fn))))
+
 (defmacro define-cb-async (name-fn id-fn fn)
   `(defun ,name-fn (seq-key)
      (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
-    (enqueue-task-async (make-instance 'task
-				      :id ,id-fn
-				      :fn-play ,fn))))
+     (enqueue-task-async (make-instance 'task
+					:id ,id-fn
+					:fn-play ,fn))))
 
 (define-cb-async
     add-node-ascii-cb
@@ -51,13 +58,13 @@
 
 ;; Anims so these use queue-anim
 
-(define-cb-async
+(define-cb-sync
     move-node-ptr-in-cb
     'move-node-ptr-in
   (lambda ()
     (funcall #'move-node-ptr :in)))
 
-(define-cb-async
+(define-cb-sync
     move-node-ptr-out-cb
     'move-node-ptr-out
   (lambda ()
