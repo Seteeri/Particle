@@ -1060,3 +1060,12 @@ existing?
 ;;   (lparallel.ptree:ptree-redefinition-error (c)
 ;; 	t)
 
+https://en.wikipedia.org/wiki/List_of_GNU_Core_Utilities_commands
+
+From
+a consumer perspective, the lower abstractions are becoming virtualized 
+at the convenience of the user, i.e. web browser becoming a platform. 
+However, the increase in data breaches and security issues have not 
+completely eroded the OS a key factor.
+
+https://www.reddit.com/r/lisp/comments/9q68y8/has_the_gnu_coreutils_ever_been_implemented_in/

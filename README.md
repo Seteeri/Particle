@@ -10,28 +10,29 @@ information as they moved through the computer. What did they look like?
 
 Protoform is a Common Lisp 3D nodal/graph shell based on DRM-KMS and 
 Open GL ES. It is the implementation of my vision of a more consistent 
-programmable UI to replace the desktop/application paradigm. 
+programmable UI to replace the desktop/application paradigm - a way to
+map our thoughts into the computer. It integrates concepts from 
+CLIs/shells/REPLs/notebooks, WMs/DEs, and mindmapping into a single 3D 
+interface.
 
-The aim is to create a full Lisp environment short of creating a pure
-Lisp OS/kernel (PID 1 might be an option); Protoform may be considered a top-down approach rather
-than a bottom-up approach. From a consumer perspective, the lower
-abstractions are becoming virtualized at the convenience of the user, 
-i.e. web browser becoming a platform. However, the increase in data 
-breaches and security issues have not completely eroded the OS a key
-factor.
+User-aspect Goals:
 
-It aims to integrate Wayland by providing the desktop as a node (plane) 
-in 3D space, making Protoform a "meta-manager" around the desktop. 
-(It is possible to allow windows to exist in 3D space allowing for 
-convergence, however memcpy performance limits the number of windows)
-
-Protoform integrates concepts from CLIs/shells/REPLs/notebooks, WMs/DEs,
-and mindmapping into a single 3D interface.
+1. Create a Common Lisp environment/userland short of 
+creating a pure Lisp OS/kernel; PID 1 might be an option (Protoform may
+be considered a top-down approach rather than a bottom-up approach).
+2. Integrate Wayland by providing the desktop as a node (plane) 
+in 3D space, making Protoform a "meta-manager" (It is possible to allow 
+windows to exist in 3D space allowing for convergence, however memcpy 
+performance limits the number of windows).
 
 It is **not** an attempt to create a visual programming language; it is
-akin to an IDE. It is designed to edit Lisp code/data, which are 
+more akin to an IDE. It is designed to edit Lisp code/data, which are 
 effectively binary trees. It makes Lisp code/data first-class objects
-just as conventional windows are.
+just as conventional windows are. It takes a more pragmatic approach
+to the idea of a Lisp environment by building on top of the Unix model
+to allow integrating Lisp into existing interfaces and leveraging the
+existing FOSS ecosystem and infrastructure, thus allowing more seamless 
+adoption, rather than taking an adamant approach.
 
 The target audience consists of programmers, developers, system
 administrators, power users, tech-savy users and the like.
@@ -67,9 +68,10 @@ average user.
     * Xerox Parc - ...
     
 * Personal Influences:
-    * Gypsy by Larry Tesler
-    * WWW by Sir Tim Berners-Lee
-    * Inventing on Principle by Brett Victor
+    * Gypsy - Larry Tesler
+    * WWW - Sir Tim Berners-Lee
+    * Inventing on Principle - Brett Victor
+    * Robert Strandh - CLOSOS
 
 It was designed to address limitations I've personally encountered in
 the quest for a more efficient workflow; the main limitation being, 
