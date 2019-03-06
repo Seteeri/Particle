@@ -1,44 +1,44 @@
 (in-package :protoform.model)
 
-(defmacro define-cb-sync (name-fn id-fn fn)
+(defmacro defcb-sync (name-fn id-fn fn)
   `(defun ,name-fn (seq-key)
      (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
      (enqueue-task-sync (make-instance 'task
 				       :id ,id-fn
 				       :fn-play ,fn))))
 
-(defmacro define-cb-async (name-fn id-fn fn)
+(defmacro defcb-async (name-fn id-fn fn)
   `(defun ,name-fn (seq-key)
      (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
      (enqueue-task-async (make-instance 'task
 					:id ,id-fn
 					:fn-play ,fn))))
 
-(define-cb-async
+(defcb-async
     add-node-ascii-cb
     'add-node-ascii
   (lambda ()
     (funcall #'add-node-ascii (code-char (second (reverse (second seq-key)))))))
 
-(define-cb-async
+(defcb-async
     backspace-node-ascii-cb
     'backspace-node-ascii
   (lambda ()
     (funcall #'backspace-node-ascii)))
 
-(define-cb-async
+(defcb-async
     add-node-tab-cb
     'add-node-tab
   (lambda ()
     (funcall #'add-node-tab)))
 
-(define-cb-async
+(defcb-async
     add-node-newline-cb
     'add-node-newline
   (lambda ()
     (funcall #'add-node-newline)))
   
-(define-cb-async
+(defcb-async
     eval-node-cb
     'eval-node
   (lambda ()
@@ -58,13 +58,13 @@
 
 ;; Anims so these use queue-anim
 
-(define-cb-sync
+(defcb-sync
     move-node-ptr-in-cb
     'move-node-ptr-in
   (lambda ()
     (funcall #'move-node-ptr :in)))
 
-(define-cb-sync
+(defcb-sync
     move-node-ptr-out-cb
     'move-node-ptr-out
   (lambda ()
