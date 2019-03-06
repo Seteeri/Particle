@@ -53,8 +53,10 @@
 			     (fn-resume task))))
 		  (task-next (when fn
 			       (funcall fn task))))
-	     (when (eq (type-of task-next) 'task)
-	       (push task-next tasks-next))))
+	     ;; Fn will return new task or nothing which means its done
+	     (if (eq (type-of task-next) 'task)
+		 (push task-next tasks-next)
+		 (remhash (id task) *tasks-active*))))
     (dolist (task-next tasks-next)
       (funcall fn-post tgt task-next))))
 
@@ -83,8 +85,9 @@
 		  (time-delta (- time-final time)))
 	     ;; (format t "time-elapsed: ~a | deadline: ~a | id: ~a~%" time-elapsed deadline id)
 	     ;; Function can return item for next frame
-	     (when (eq (type-of task-next) 'task)
-	       (push task-next tasks-next))
+	     (if (eq (type-of task-next) 'task)
+		 (push task-next tasks-next)
+		 (remhash (id task) *tasks-active*))
 	     (incf time-elapsed time-delta)
 	     (update-timing-fn (id task) time-delta)
 	     (when (> time-elapsed deadline)
