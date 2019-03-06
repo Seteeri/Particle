@@ -49,7 +49,7 @@
 		 (:module aux
 			  :pathname "src/aux"
 		 	  :components ((:file "matrix-model")
-				       (:file "util")))
+				       (:file "misc")))
 		 (:module libc
 			  :pathname "src/libc"
 		 	  :components ((:file "epoll")
