@@ -127,21 +127,19 @@
 							     (:file "translation")
 							     (:file "traversal")
 				       			     (:file "pointer")
-							     (:file "shm")))
-				       (:module operators
-				       		:pathname "operators"
-				       		:components ((:module node
-				       				      :pathname "node"
-				       				      :components ((:file "callbacks")
-										   (:file "operators")))
-							     (:module projview
-				       				      :pathname "projview"
+							     (:file "shm")
+							     (:module ops
+				       				      :pathname "ops"
 				       				      :components ((:file "callbacks")
 										   (:file "operators")))))
 				       (:module projview
 				       		:pathname "projview"
 				       		:components ((:file "projview")
-							     (:file "shm")))
+							     (:file "shm")
+							     (:module ops
+				       				      :pathname "ops"
+				       				      :components ((:file "callbacks")
+										   (:file "operators")))))
 				       (:module rpc
 				       		:pathname "rpc"
 				       		:components ((:file "conn")
