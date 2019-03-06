@@ -1069,3 +1069,42 @@ However, the increase in data breaches and security issues have not
 completely eroded the OS a key factor.
 
 https://www.reddit.com/r/lisp/comments/9q68y8/has_the_gnu_coreutils_ever_been_implemented_in/
+
+(defun run-graph-dep ()
+  ;; If user modifies, any related functionality during runtime
+  ;; this needs to be ran again
+  ;; TODO: user needs to be able to run the analyzer during runtime
+  ;; for code that runs in the main loop (rpc)
+  
+  (let* ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
+						    :type "lisp")
+				     (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
+	 (path-tasks (merge-pathnames (make-pathname :name "tasks-model"
+						     :type "lisp")
+				      (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
+	 (tasks (if (probe-file path-tasks) ; If tasks exist, load it else generate it
+		    (read-from-string (read-file-string path-tasks))
+		    (multiple-value-bind (digraph root tasks-new)
+			(analyze-file path-lisp
+				      path-tasks
+				      :init-conn-rpc-view)
+		      tasks-new))))
+
+    ;; Convert to ptree and execute
+    ;; Build ptree manually    
+    
+    ;; TODO: Recurse for more complicated setups, i.e. nested lists
+    (submit-receive-graph tasks)))
+
+(defun submit-receive-graph (tasks)
+  (loop
+     :for nodes :across tasks
+     :do (loop
+	    :for node :across nodes
+	    :do (progn
+		  (fmt-model t "submit-receive-graph" "task: ~a~%" (string node))
+		  (submit-task *channel*
+			       (symbol-function (find-symbol (string node)
+							     :protoform.model))))
+	    :finally (dotimes (i (length nodes))
+		       (receive-result *channel*)))))
