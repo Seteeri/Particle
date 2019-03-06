@@ -8,7 +8,7 @@ information as they moved through the computer. What did they look like?
  Ships? Motorcycles? Were the circuits like freeways? I kept dreaming of
   a world I thought I'd never see. And then one day . . .
 
-Protoform is a Common Lisp 3D nodal/graph shell based on DRM-KMS and 
+Protoform is a Common Lisp 3D nodal userland based on DRM-KMS and 
 Open GL ES. It is the implementation of my vision of a more consistent 
 programmable UI to replace the desktop/application paradigm - a way to
 map our thoughts into the computer. It integrates concepts from 
@@ -17,30 +17,26 @@ interface.
 
 User-aspect Goals:
 
-1. Create a Common Lisp environment/userland short of 
-creating a pure Lisp OS/kernel; PID 1 might be an option (Protoform may
-be considered a top-down approach rather than a bottom-up approach).
+1. Create a Common Lisp userland short of creating a pure Lisp OS/kernel
+(Protoform may be considered a top-down approach rather than a bottom-up 
+approach).
 2. Integrate Wayland by providing the desktop as a node (plane) 
-in 3D space, making Protoform a "meta-manager" (It is possible to allow 
-windows to exist in 3D space allowing for convergence, however memcpy 
-performance limits the number of windows).
+in 3D space (It is possible to allow windows to exist in 3D space 
+allowing for convergence, however memcpy performance limits the number 
+of windows...).
 
 It is **not** an attempt to create a visual programming language; it is
 more akin to an IDE. It is designed to edit Lisp code/data, which are 
 effectively binary trees. It makes Lisp code/data first-class objects
 just as conventional windows are. It takes a more pragmatic approach
-to the idea of a Lisp environment by building on top of the Unix model
-to allow integrating Lisp into existing interfaces and leveraging the
-existing FOSS ecosystem and infrastructure, thus allowing more seamless 
-adoption, rather than taking an adamant approach.
+to a Lisp environment by building on top of the Unix model to allow 
+integrating Lisp into existing interfaces and leveraging the existing 
+FOSS ecosystem and infrastructure, thus allowing more seamless adoption, 
+rather than taking a more adamant fundamental approach, which would 
+require a high initial investment.
 
 The target audience consists of programmers, developers, system
 administrators, power users, tech-savy users and the like.
-
-I would like to implement a different interface for the less 
-programmatically inclined users, starting with people that are familiar
-with the MS Office suite, which may be considered ubiquitious to the
-average user.
 
 ## The Inspiration
 
@@ -68,10 +64,12 @@ average user.
     * Xerox Parc - ...
     
 * Personal Influences:
-    * Gypsy - Larry Tesler
-    * WWW - Sir Tim Berners-Lee
-    * Inventing on Principle - Brett Victor
+    * Sir Tim Berners-Lee - WWW
+    * Brett Victor - Inventing on Principle
     * Robert Strandh - CLOSOS
+    * Chris Schafmeister - Molecular Metaprogramming
+    * Paul Graham, Peter Norvig - ...
+    * Zach Bean - quicklisp
 
 It was designed to address limitations I've personally encountered in
 the quest for a more efficient workflow; the main limitation being, 
@@ -173,6 +171,8 @@ a Lisp OS](https://news.ycombinator.com/item?id=15466124):
 > else. I just treat them as black boxes.
 >
 > ...But cool is not enough to win in the real world.
+
+*See writings*
 
 ## The Interface
 

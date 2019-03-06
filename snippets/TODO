@@ -1,0 +1,1067 @@
+
+1. Refactor model *params-shm* and corresponding view:init-* [DONE]
+2. Remove size argument from opengl:init-buffer-object [DONE]
+3. For raster, map element and indirect [DONE]
+   1. Refactor model *params-shm* to include these and create mmaps
+   ** Create mmap for each mapped buffer **
+4. Refactor compute:init-buffers-compute [DONE]
+   * Redundant name/fn since buffers can be accessed by all shaders
+
+1. Split mapping-base:init-mapping-buffer [DONE]
+    * Integrate init-mapping-base and init-raster-buffers [DONE]
+2. Remove program from opengl buffer creation [DONE]
+
+1. Refactor compute:update-computer-buffers so c-memcpy only done on dirty
+   * Projview copied automatically on every frame for now... 
+2. Remove all msdf references [DONE]
+
+1. Create memcpy functions [DONE]
+2. Double check view update-* functions [DONE]
+3. Double check texture functions [DONE]
+
+Render Unique Nodes
+1. Rename node to instance? -> Conflicts with node in cl-digraph...[NO]
+1. Pass texture size to shader [DONE]
+   * Each inst will have texture size, however same texture can be used by different nodes...
+2. Adjust scale [DONE]
+4. Create function to serialize node to shm [DONE]
+5. Add origin slot for char [DONE]
+
+3. Refactor init-layout - save to specific segment (inc ptr) [DONE]
+
+1. Create di-graph to save nodes [DONE]
+2. Implement dirty flag for view [DONE]
+
+1. Separate element buffer from projview [DONE]
+2. Refactor init-buffers-compute [DONE]
+3. Integrate atomic counter buffer [DONE]
+4. Add buffering option to params [DONE]
+
+1. Refactor convert-text
+3. Start view/model processes separately so dont need to keep init view
+5. Implement spatial tree (octree)
+
+1. Refactor texture storage -> make more manageable [DONE]
+   * Everytime tex is removed, need to memcpy subsequent memory
+   * Texture need O(1) random removal/deletion
+2. Refactor copying functions to include arguments: offsets [DONE]
+3. Setup different VAOs for each step [DONE]
+
+1. Fix projview - create always flag for dirty [DONE]
+   3 - n times
+   0 - none
+   -1 - always
+2. Implement drawing edges [DONE]
+   * Edge = nodes essentially
+   * Adjust transforms
+     * Position - center
+     * Rotation - Z
+     * Scale - XY components of distance vector
+3. Integrate controller [DONE]
+
+1+2 = 1 week
+3 = Days
+1. Refactor controller [DONE]
+   1. Refactor callback system
+   2. Get rid of epoll bindings - use separate library like cffi-epoll
+2. Implement node creation/deletion [DONE]
+3. Investigate flickering [DONE]
+
+1. Reimplement MSDF [DONE]
+   1. Create layout engine as independent library
+   2. Or for now, generate chars with pango and inconsolata
+2. Establish node creation/destruction + eval functionality
+   1. Refactor event registration to use multiple keys [DONE]
+      1. Need to iterate over registered events instead of keys
+      2. Key = list of events
+   2. Implement pointer node [DONE]
+      1. Color code this yellow etc [DONE]
+      2. Directional keys move pointer node [DONE]
+      3. Move pointer node on del/create [DONE]
+      4. Create dirty flag for node shm
+   3. Test adding multiple successors [DONE]
+      1. Refactor layout - line spacing - see freetype for linegap
+      2. Need ascent/descent min/max   
+   4. Refactor metrics [DONE]
+      1. Parse offline into lisp data            
+
+1. Refactor event handling - store previous, implement up/down [DONE]
+2. Controls for camera, pointer to maneuver more nodes [DONE]
+  1. Dir = pointer move
+  2. Ctrl + Dir = camera move
+  3. Ctrl + Shift + Dir = zoom
+     - should consider zoom a camera movement?
+     - what if could use numbers or letter of alphabet to scale
+3. Integrate easing functions [DONE]
+4. Replace swank [DONE]
+5. Implement task-based parallelism [DONEish]
+   1. Save function declarations in lisp file [DONE]
+   2. Place levels in separate lisp file [WIP]
+
+1. Make view synchronous with model [DONE]
+2. Refactor task-based parallelism [DONE]
+3. Refactor animation parallelism [DONE+1...]
+4. Implement more controls/anims [DONE]
+   * Can only animate struct properties or nodes as a whole
+   * Create system for animating any property
+     - Anim will have target object/node and property
+     - Animation system is really an extension
+     - How to handle anim interrupts?
+   1. Easing anims for cam zoom/move [DONE]
+   2. Easing anims for pointer/node move [DONE]
+   3. Fade in/out add/delete node [???]
+      - In practice, wouldn't use anims for speed? Hmm, what about power plugin for electron?
+5. Combine fn-new/fn-update [DONE]
+6. Handle animation already playing... [DONE]
+  - Solution - replace it; cancel existing
+9. Refactor memcpy in view - use flags or queue [DONE]
+10. Manually keep track of edges and vertices to speedup node add [DONE]
+11. Eval/REPL [DONE-ish]
+  1. "Print" output [DONE]
+  2. Eval up to last newline [DONE]
+  3. Add commands: clear-all, clear-line [DONE]
+  4. Store eval output in new node [DONE]
+     * Refactor node slots:
+       - icon: texture parameters (create object)
+         - standardize interface between chars and images
+           - imgs reference an index...and so do chars
+       - data:
+         - all chars reference same object
+         - to reference chars from string/data (object), user
+           must convert to chars; data references a non-char object
+           - string: call function that loops and produces nodes
+           - object: call format that produces string, then use above 
+              - create convenience fn
+         - string: d=#'format; i="<FUNCTION FORMAT>"
+           - user types chars then converts to string
+             - explicit: use funcall: type command after that will iterate through all previous nodes
+             - implicit: use enter/shortcut to make strings (ostensibly, lines)
+         - symbol: d=blah; i="<OBJECT BLAH>"
+         - hash-table: d=(make-hash-table); i="#<HASH-TABLE :TEST EQL :COUNT 0 {1003DB43F3}>"
+  5. For IDs, use queue of numbers
+     * Store in hash-table
+12. Rewrite animation system - make simpler [DONE]
+13. Optimize memcpy to use extents [DONE]
+14. Fix camera glitching [DONE]
+15. Refactor glyph images/layout [DONE]
+    * Test cropping the images to see if MSDF is still correct
+    * Crop to bounds + pxrange
+      * Either crop images or adjust UVs...
+      * Crop images makes it difficult since dims aren't consistent 
+      which makes randomly accessing textures harder; also 96x96
+      fits the biggest char...
+      * UV follows bounds coordinate system
+16. Fix inconsistent scaling [DONE]
+18. Fix newline/blank chars to use advance/2 for the bounds [DONE]
+19. Fix newline/backspace issues - adjust original y for baseline [DONE]
+19. Refactor transform-node - redundant update-transform
+20. Newline traces pointer [DONE]
+    * Update when it moves?
+    -> What if moving between different lines/paragraphs?
+    - Newline position belongs to newline
+      - All properties of objects store as a node? or store like 
+      normal but give the ability to be nodified...
+21. Fix scale-in-out - use same id so they cancel each other out [DONE]
+22. Verify vert/edge counts [DONE]
+23. Implement TAB (and other control chars) [DONE]
+    - Option: Convert to spaces or use tab char
+    - Tab indents to next level which is arbitrarily defined
+      - We treat as a space
+      - Most editors use 4 spaces
+    - Implement more chars later as open files is implemented and different
+    characters are encountered
+24. Refactor controller dispatch to run in parallel [DONE]
+    * Refactor callback function arguments - removed unused
+    * Move all callbacks to a single file?
+25. Implement initial cut/copy/paste (through pointer) [DONE]
+    * Refactor delete/insert before/after functionality [DONE]
+    * Refactor move-node-to-right-of-node to specify left/right [DONE]
+    * Need node traversal functions [DONE]
+    * Implement CUT [DONE]
+    * Implement PASTE [DONE]
+    * Implement COPY [DONE] 
+    * Operators: replace unlink-nodes -> node functions [DONE]
+    * Rewrote node functions [DONE]
+    * Fix delete positioning [DONE]
+    * Refactor advance-node-* to take number instead of sign [DONE]
+    * Handle cutting newline?
+      - How?
+      - Newline is like a list marker
+    * Default is FIFO [LATER]
+       * First-In-First-Out - visually matches
+       * Last-In-Last-Out
+       * Create option: LIFO/FIFO
+       * There is push order (visible order) and pull order (action)
+         - Push: items either are at the front or back
+         - Pull; items either pull from front or back
+         - Semantic relationship stays the same however
+26. Input not always registering -> check controller/dispatch [DONE]
+    * Add-node must be done in serial - otherwise tasks cancel out
+    * Solution is to run in serial like a queue or break down tasks...
+27. Make consistent seq-event/seq-key in callbacks
+28. Refactor pointer add/delete [DONE]
+    - These are cutting the object being pointed at
+    - Adding node to node with an out will create a new branch
+      - Conventionally will insert, or without overtype, replace
+      - We want to focus on non-destructive/non-linear editing
+      - User can type up to whatever new string and then join the node
+      - Works on generic objects, besides chars/text, like a list
+    - WHERE TO PLACE OLD/NEW NODES?
+      - New nodes appear above old [DONE]
+29. Implement graphs [DONE]
+    * Master graph: Always exists
+    * Undo graph: ESC to move to?
+    * Buffer graph: Use FN keys to switch
+    * LISP objects need to exist in default graph
+      - global variables should be visible
+      
+-> MIGHT NOT NEED MULTIPLE GRAPHS...OR ONE GRAPH PER SCENE
+      
+FRI:
+1. Implement touchscreen/mouse moving [DONE]
+   * Mouse moving requires finding object under cursor
+     -> Invert unproject, get coords and search r-tree
+     -> Or nearest object from coords
+        - Mouse move, search and color object or move ptr
+
+2. Implement spatial indexing with r tree [INITIAL]
+    * Implement move to nearest neighbor
+      * Limit spaces to visibility
+      * With arrows keys divide along axis
+        * up/dn = +Y/-Y
+        
+          [up:find closest object in space]
+          -----------------*----------------
+          [dn:find closest object in space]
+            
+        * left/right = -X/+X
+
+          [left:find closest | [right:find closest
+           object in space]  |  object in space]
+                             *
+                             |
+                             |
+   * Reinsert into r-tree when position changes [DONE]
+       -> Use translate-node function   
+
+3. Verify Basic Ops [DONE]
+   * Add-node uses stack for indices
+     * As nodes are created/destroyed push/pull nodes from stack
+     * Basic memory management
+
+
+MON:
+
+* Implement mouse-ptr moving [DONE]
+  * Cannot get mouse coords, only delta
+  -> Implement our cursor, move ptr by delta
+
+* Refactor node data -> glyph [DONE]
+
+* Refactor controller and task execution [DONE]
+  * Controller execute callbacks time-based [LATER]
+    - Time of funcall callback determines ptree enqueue order
+    -> Not major issue right now
+  * Build ptree in callbacks; execute ptrees serially [DONE]
+  * Refactor reset state
+
+* Segregate tasks into sync/async:
+  -> Refactor shm coordination [DONE]
+     - View should send finish message right away instead of waiting
+     for next frame
+  -> Create model thread for async [DONE]
+     * Perform sync tasks in RPC
+     * Create separate kernels...might not work...share for now?
+  -> Create queue for frame times [DONE]
+     * view enqueues
+     * model dequeues
+     * model has own FPS     
+  -> Model thread must serialize data [DONE]
+
+* Implement node pool [DONE]
+  * Given that shm is fixed...
+ 
+* Execute tasks serially
+  * Attempt parallelization later
+  * Locking still required
+    - Does not completely resolve issues such as deleting object -> must invalidate it
+  * Add timer cap to sync execution
+    * Execution time can still exceed frame time, however we can limit
+    the lag - soft deadline?
+    * Time functions can give us probabilistic expectations
+      - Output can change depending on input...
+      - Add/remove node is not as sensitive
+      - Locks create unpredictability when there is conflict
+        - sync needs to have priority over async
+        - to avoid locks, have to put enqueue tasks in sync, then we can 
+        measure it and decide
+          - we know elapsed time since start and how much time will 
+          elapse
+        - won't this essentially create a single queue???
+      -> Instead of executing in parallel which will require a more elaborate ptree
+        execute in serial for now and preempt
+        - Build graph in protoform to prototype
+      - Anims still need higher priority...
+        - Need one task that guarantees and another that doesn't
+    * This can be easily abused
+  * TODO
+    - Time functions and limit execution [DONE]
+    - Execute shm same time as function [DONE]
+      - Refactor ptr [DONE]
+    - Have SHM accumulate in queue and then send final message [DONE]
+      -> Have frame continue upon specific message? Or on first message?
+    - Rename shm names to model global names [DONE]
+      - use fp as name [DONE]
+    - Check send-node transforms are not redundant
+    
+    - Deconflict anims [TODO]
+      - Attach to object - both are put in queue - need to be able to
+      detect if anim already playing
+      - Atomically check the node
+        - use incf/decf on cons
+        - Create slot with plist of slots being animated
+        - Only one anim can play so has to be a lock
+
+* Refactor task manager control [DONE]
+    * Implement load/save file [DONE]
+      * Load from disk -> RAM -> async
+      * Implement less type command...?
+      * Create load-page load-all
+        * load-page will read n bytes and produce nodes
+          * frame-async:load-page will add task to model
+            * model-loop will read/send chunk
+            * frame-async will recv chunk, request another chunk by 
+            enqueueing task until done
+          * it will add itself like an animation until no more data
+      * Loops/Processors
+        * View loop - wait for message from model
+        * Frame sync - must finish by end of frame
+        * Frame async - finish as many by end of frame
+        * Model loop - enqueue task into async (or sync)
+          - model cannot add/remove nodes
+            - to do this must enqueue
+          - can only work on unshared data like I/O
+      * Change tasks to execute fn instead of ptree (more flexible) [DONE]
+      * Test buffer on large file [DONE]
+      * Load more than 1 char depending on speed [DONE]
+      * How to undo??
+    - Implement Stop/TerminateORKill [DONE]
+    - Implement Pause/Resume... [DONE]
+        - QUESTION: When task is in paused state, should it still call fn-pause every frame?
+    - Deconflict anims... [DONE]
+      - Implement task types: single or multiple
+        - I.e. one can only exist at once or multiple      
+      -> For task ID use time...or name + time
+         - Create serial ID?
+    - Refactor other callbacks
+    - Test load/save robustness
+      - Implement save...not too difficult if load already implemented
+
+* Implement graphs:
+  * Global Variables
+    * Linear graph essentially
+    * Attach main graph here
+    * Render debug info
+      * Frame critical - place in sync such as status updates
+        * Node pool usage
+        * Task counter
+  * Graph structures can be represented directly
+    * Undo - global/local; local is per mindset
+    * Clipboard - global/local; local is per mindset
+    * Global is a global variable
+  * REPL Buffer
+    * These are created arbitrarily
+    * Effectively the terminal
+    * Main commands use undo
+  * Load on start...scan source dynamically or generate before hand
+    * Detect date change
+    * Note, technically all nodes reside in same graph 
+    but semantically different graphs (visually different groups)
+
+* Implement graph/node commands (basic text editing)
+   * Must be able to move between pages...
+   * unlink(-ptr)
+   * link(-ptr) [LATER]
+     * link(-ptr) :nearest (IMPLEMENT USING R-TREE)
+     * link(-ptr) :end
+     * link(-ptr) id (requires hyperweb)
+
+   * If unlinked, move euclidean [DONE]
+   * If linked, move binary...
+     * Left  = in  non-ptr
+     * Right = out non-ptr
+     * Up    = out ptr
+     * Dn    = in  ptr
+
+* Undo?
+
+########################################################################
+BOOTSTRAP- load, save, eval, manx
+########################################################################
+
+* Draw IDs [1-2 DAYs]
+    * ID = index
+    * Implementation: When adding node, add nodes for ID
+    * IDs are strings (makes more sense than chars) that are linked to the object
+      * For example, user can change object IDs by swapping IDs
+    * IDs consists of multiple glyphs/nodes
+      * Draw on top of linked node - scale to fit within node boundaries
+      * User can zoom in if too small
+      * Should nodes be positioned in a way that there is always room
+      for the ID nodes?
+      * primary: hold for dispay - tab
+        * 2nd: toggle for display - shift + tab
+    * Ideas
+      * Make nodes persistent and hidden (static)
+      * Generate nodes on demand (dynamic)
+      - Nodes are "made" through memcpy rather than malloc etc
+      - Same issue for edges... -> START SIMPLE - CREATE NODES
+        - Faster to change single flag than memcpy everything
+        - If memcpy everything, possibly run out of space
+
+* Draw edges (also nodes) []
+    * Implementation: When adding node, add nodes for edge
+      * Create separate buffer - no UVs - smaller size
+      * Create separate program - no MSDF - faster render speed
+      * Use colors to differentiate edges
+    * Draw first so appears underneath nodes
+    * Scale based on distance?  
+    * See NOTES for future ideas on node models
+      * char/pixel nodes should be quads since they most dominant/common
+      * Non-char nodes (lisp objects) should be a pentagon or something or
+      as many points as an asterisk - hexagon
+    * How are these manipulated - they cannot link since they are the link!
+
+########################################################################
+HYPERWEB - ids
+########################################################################
+
+* Implement Undo Graph
+  * TODO
+    * Operators should add to undo graph
+      * Map opposing function: insert = add + link; delete = unlink + remove
+    * Implement Ctrl-Z, Ctrl-Y
+      * Undo: move back
+      * Redo: move forward
+      * Branches can be managed manually
+      * Test Add/Remove (ascii/backspace)
+        * Cut/Paste
+        * Copy/Delete
+        * Any numerical value such as transformations
+        * Eval: delete output, restore input
+        * Link/Unlink
+        * Swap/Swap
+    * When adding new node to existing node, move existing to undo
+      * Update transform/scene hierarchy -> need function    
+  * NOTES
+    * Undo will occur in source task context - either async or sync
+    * Undo graph is not a binary tree! (see branching)
+    * Input events included? -> Manage granularity
+    * If user undos, and performs new action -> new branch created
+      * User uses redo to move forward
+      * User can undo as many times as wanted, to create as many branches
+      as wanted...
+        * Merging possible? -> use node IDs
+        * If surrounding nodes non-existant, cannot perform
+      * More advanced operations require manual manipulation of undo tree
+      * EXCEPTION! Changes to undo tree are not undoable...infinite recursion?
+  
+  * Leave ptr above to show undo link or number
+    -> Move old node to undo graph
+        *
+        |
+        * en -> op, in(old), out(new)
+        |
+        * ...
+
+        *
+        |
+        * e1 -> cut (unlink ptr ref node, relinking node to buffer graph)
+        |
+        * e2 -> paste
+        
+    * Warn when operation is non-reversible due to side effects etc
+    * Undo is implemented internally as moving nodes between undo graph
+    and main graph (scene graph)
+
+########################################################################
+UNDO - cut copy paste
+########################################################################
+
+STUFF
+
+* Controller: Fix broken repeat - due to loop refactor
+  -> POSS timer run in dedicated thread
+  -> Refactor keyboard state handling
+
+* Rewrite cut/copy/paste
+    * Need undo graph? -> Need buffer graph
+    * Cut node minus successors versus cut node plus sucessors
+      - Essentially cut-in (ctrl+x)
+        - Using sole cmd, cut-in, move to next node, cut-in again
+      - Create cut-out? (alt+x)
+        - Using both, cut-in, cut-out
+    * Copy does not...what would alternate copy do? change dest?
+    * Paste have similar functionality?
+    
+4. Move to rtg-math or mathkit instead of 3d-vectors/3d-matrices
+   - Move to rtg-math for quaternions etc
+5. Print window position change
+6. Verify pointer transform anims don't conflict
+
+6. Optimize lparallel/ptree -> Write custom thread pool with atomics
+   - Reuse ptree
+   - Replace functions
+
+7. Predict frame time
+   - Use Kalman filter
+   - Would animations appear jerky?
+   - Would still have to wait for frame before calculating new frames
+
+  * Time functions (place in hash table)
+    * Use kalman filter
+
+* Refactor metrics to use arrays...look for other places
+  * Create as separate system
+  * Rename with msdf to indicate it is specific to msdf
+
+* Implement text object...how???
+
+5. Implement eval error handling and refactor to show errors etc
+
+* Pre-build nodes from special forms and common symbols etc.
+
+3. Add option for buffer respecification [1 DAY or do later?]
+    * Not necessarily faster? Similar performance...
+    * Gives more memory
+    * Should be optional rather than hard coded in case user wants more
+    space
+
+4. Update node positions in ||
+    * Works for linear characters
+    * Procedure
+      1. og baseline = start + (advance * i)
+      2. adj origin by baseline
+
+5. Verify callback confliction such as copy+paste so they don't 
+    execute ||
+
+6. Cut/Paste are essentially an undo tuple...
+    - make undo functionality same as cut/paste
+
+1. Implement hyperweb [???]
+    * NOTE: This will reduce amount of available nodes
+      - Also nodes does not necessarily correlate with the number of objects
+      - To mitigate, provide launch option that uses same colors/UVs/etc.
+        - Disables per instance modifications to increase space availability
+    * Functions:
+      * Display hyperIDs -  type fn, eval
+          * Camera: c0
+          * Pointer: p0
+      * To display IDs - place on another axis and rotate camera
+      * Translate camera/pointer to hyperID
+      * Swap hyperIDs
+    * NOTE: Nodes can exist freely without being linked to any graph
+      * User can have unlimited graphs, but there is a default graph
+      * User can create graphs, then set them as the default etc
+3. Extract layout code from node to metrics
+4. Misc refactor
+    * Create serial version of eval
+      - With eval, what if we use read or backquoting to produce objects?
+    * Fix translate pointer causing repeated memcpy
+5. Use Kalman filter to predict frame to make asynchronous
+    * If framerate is choppy, no amount of prediction will help
+6. Draw node wireframe - make option
+   * If with texture, draw textured first, then wireframe on top
+7. Support multiple pointers/pointer operators
+    * Pointer needs to be an object and use a different symbol...
+       * 3 types of data/objects: nodes, edges, pointers
+         * They are all nodes in the underlying code, thus have the same 
+         interface
+8. Refactor add-node to use data for determining glyph rather than storing it
+10. Pointer option:
+    - Color when over and use asterisk when outside or blend asterisk      
+    - Use arrow icon instead of asterisk? Or make option. 
+      - C programmers will be biased towards the asterisk ;)
+    - list is center dot
+    
+20. ADV TEXT: Generate bold and italicized glyphs
+    * How to do underline?      
+    * Do this later for advanced text extension -> ODT
+18. Do preliminary image loading - teaser ;)
+  1. Create seperate image buffer
+  2. Call ffmpeg program
+  3. Create separate OpenGL program to draw it
+19. Better logging
+21. Refactor anim callbacks to use ptree (original intention)
+  - Fix dependencies like for matrix
+
+########################################################################
+
+** Video 1: Render MSDF Text [DONE]
+
+** Video 2: Basic Interface (Char Nodes/Notepad-like functionality+CLI/REPL)
+1. Demo camera pan/zoom [DONE]
+2. Demo basic text capabilities [DONE]
+   1. Cut/Copy/Paste
+3. Demo eval/CLI
+   1. Eval
+      1. Camera transform (view matrix)
+      2. Projection transform (proj matrix)
+      3. Node model transform (model matrix)
+      4. Node text color change (rgb struct)
+      5. Execute "ls" through uiop
+   2. Objects
+      1. Cut/Copy/Paste
+         * Loop Through a List
+           1. chars -> string = "(list a b c)"
+           2. string -> data = (list a b c)
+           ...
+           3. chars+data -> string+data...
+              - ... = "(loop :for x :in " <> ":do (format nil "~S" x))"
+              - Have to convert chars to objects
+                - Problem is if chars is part of the data...
+                - Create func, skip non-char objects
+              - loop -> convert, :for -> convert, etc. then link                      
+           4. string -> data = (loop :for x :in <> :do (format nil "~S" x))
+           ...
+           5. eval data = "a b c"
+      2. Link/Unlink
+      2. Demo adv. pointer (i.e. selecting/moving objects)
+
+** Video 3: Images (Custom Node)
+1. Loading/pixelization
+2. Resizing
+3. Filters
+
+** Video 4: Hyperweb
+
+** Video 5: Wayland Integration
+
+########################################################################
+
+Refactor/cleanup
+
+** Version 0.1 **
+
+1. Optimize shaders
+   1. Simplify PVM
+   2. Move calculations to compute shader
+2. Frustum culling in compute shader
+
+** Version 0.2 **
+
+max chrs/inst = 35x this file
+1. File loading/saving - modify program intrisinsically
+   0. Max chars/insts = 134217728 / 208 = 645,277 insts
+      1. Can reduce inst struct by 32 -> 208-32 = 176 -> 762,600 insts
+      2. If static RGBA/UV = 208-128 = 80 = 1,677,721 insts 
+   1. Optimize for large number of nodes
+      1. Do in batches/waves...use memcpy speed as benchmark - see how
+      much memory can move in 16.7 ms = 192 MB roughly
+   2. Test loading file
+      1. Create nodes
+      2. Space on newline
+   3. Parse files into shm data, backup shm inst data to disk and swap when
+   user changes files
+      * LISP data simply states in memory?
+   
+2. Algorithms for handling large numbers of nodes
+
+1. Integrate Wayland - Version 1.0
+
+* Implement frame recording through glReadPixels + PBO (triple buffer)
+
+6. Use cl-trie instead of hash-tables for digraph
+
+ASCII
+
+------------------------------------------------------------------------
+########################################################################
+########################################################################
+
+benchmark graphs
+
+SHM INIT PROCESS
+Model:
+init shm
+init data
+init memcpy on client connect
+View:
+init OpenGL buffer objects for compute and raster; set binding points
+init shm
+render loop, bind/memcpy buffers
+
+* View should create the shm since shm is arbitrary without the GL
+buffer behind it
+    * Multiple views would then create multiple shms...
+    * And model would be responsible for transforming its data for each
+    
+model (<-controller)
+- view 1 - protoform, shader program 3
+- view 2 - user creates new process with OpenGL context and different shader program 2
+- view 3 - shader program 3
+
+or view
+- model 1 (<-controller)
+- model 2 (<-controller)
+- model 3 (<-controller)
+[How would models all get their data to view? Would require logic in
+view to process - however our goal is to minimize view work since it is
+dedicated to drawing]
+[View is slave to model - only works on buffers and most basic operations - create/destroy, memcpy, draw
+[View would service requests by all models, then draw]
+[Actually works both ways]
+
+We can decouple it but in the end, they are tied to each other
+
+Model data -> shm -> View data
+
+The tricky part is making this all dynamic during runtime.
+User would create their structures and then remove the existing
+
+Model needs to define parameters for shm and for OpenGL
+
+So all we need to do is create initial data structure in model. On view
+connect, it will create the appropriate buffers with parameters
+
+Model on its own make sense, but view doesn't
+
+https://hackernoon.com/model-view-controller-and-loose-coupling-6370f76e9cde
+
+View code can change through swank thread then...no way around this?
+
+http://cvberry.com/tech_writings/howtos/remotely_modifying_a_running_program_using_swank.html
+
+Ultimately make this a peer to peer network later
+
+https://medium.freecodecamp.org/simplified-explanation-to-mvc-5d307796df30
+
+------------------------------------------------------------------------
+
+(progn (ql:quickload 'swank) (swank:create-server :port 10001 :dont-close t))
+
+(progn (ql:quickload 'swank-client) (defparameter conn (swank-client:slime-connect "localhost" 4005)))
+(swank-client:slime-eval t conn)
+(swank-client:slime-eval '(defun test (a) "boopp") conn)
+(swank-client:slime-eval 'a conn)
+
+(swank-client:with-slime-connection (conn "localhost" 4005) (swank-client:slime-eval t conn))
+
+https://www.reddit.com/r/Common_Lisp/comments/4oe9me/is_it_possible_to_connect_to_a_repl/
+
+----------------------------------
+
+(progn
+(defvar *emacs-port* 4005)
+(defvar *swank-client-port* 10000)
+
+(defun start-swank-server-for-emacs (port)
+  "Starts a Swank server thread, listening on PORT of the host's loopback
+interface, to handle Emacs/Slime connection requests."
+  (swank:create-server :port port :dont-close t))
+
+(defun start-swank-server-for-swank-client (port)
+  "Starts a Swank server thread, listening on PORT of the host's network
+interface, to handle Swank Client connection requests."
+  (let ((swank::*loopback-interface* (sb-unix:unix-gethostname)))
+    (swank:create-server :port port :dont-close t)))
+
+(defun swank-thread ()
+  "Returns a thread that's acting as a Swank server."
+  (dolist (thread (sb-thread:list-all-threads))
+    (when (com.google.base:prefixp "Swank" (sb-thread:thread-name thread))
+      (return thread))))
+
+(defun wait-for-swank-thread ()
+  "Wait for the Swank server thread to exit."
+  (let ((swank-thread (swank-thread)))
+    (when swank-thread
+      (sb-thread:join-thread swank-thread))))
+
+(defun main ()
+  (setf swank:*configure-emacs-indentation* nil
+        swank::*enable-event-history* nil
+        swank:*log-events* t)
+  (start-swank-server-for-emacs *emacs-port*)
+  (start-swank-server-for-swank-client *swank-client-port*)
+  (wait-for-swank-thread)))
+  
+---------------------------
+
+How to handle textures?
+
+Skip-list -> Texture
+
+2880 * 1920 = 5,529,600 pixels
+512 MB = 536,870,912 Bytes / 4 bytes/px = 134,217,728 pixels
+1 char = 20x56 px * = 1120 px^2 * 4 bytes = 4480 bytes
+536,870,912 / 4480 = 119,837 chars = 27x this todo
+
+134 MB max per texture buffer
+
+Texture of rendered layout:
+* Generate and store in RAM (or disk)
+* Swap mem when node in/out FOV
+    * On change, need to memcpy everything
+* Number of nodes limited by texture size
+* Update:
+  * Font/char change would require regeneration of texture
+* Advantages:
+  * Technically correct layout
+  * Faster to render (1 plane vs n planes, per node)
+* Disadvantages:
+  * Uses RAM
+  * No multi-channel SDF
+
+Individual Chars/Glyphs:
+* Manually implement layout engine, or poss Pango to get kerning
+* Font change would only require regenerating textures: O(n), n=#glyphs
+* Update:
+  * Update instance attributes (in skip list)
+  * Then ofc, iterating and copying
+  * When one changes, all subsequent ones change
+    * Compute shader figures out which one to draw
+* Advantages:
+  * Less RAM
+* Disadvantages:
+  * Very limited, for now, to monospace fonts - works best for CODE
+
+Nodes are squares
+Types: Text nodes -> Group (tex), Instances  (models)
+
+Combine both methods so nodes either get from group or instance and
+user can switch between both
+
+Can use texture method to render to monospace (without msdf)
+From individual method, can build texture method by rendering to tex?
+
+Limits:
+Tex   - instance buffer + model struct + size of node texture/tex buffer
+Model - instance buffer + model struct
+
+########################################################################
+
+FFMPEG decode frames -> ...
+
+1. Thread of model
+   1. Decode to shm, then signal view to memcpy shm -> texture
+   1. Track timestamps so model knows when to send signal to view
+2. Launch another "model" process
+   1. Connects to view, decodes and sends signal
+3. Directly to GL buffer - not possible unless decoding was done in view
+
+Texture buffer data flow:
+decode to shm -> cache -> step, DRAW
+            memcpy   memcpy
+
+Possible to skip cache? Cache exists due to compute shader since shm
+could be modified by model while view is running
+
+http://roxlu.com/2014/048/fast-pixel-transfers-with-pixel-buffer-objects
+http://www.songho.ca/opengl/gl_pbo.html
+http://blog.mmacklin.com/2013/06/11/real-time-video-capture-with-ffmpeg/
+
+glReadPixels BGRA + PBO = async DMA
+Memcpy PBO ptr data...
+If FFMPEG available, save to disk and feed directly to encoder
+
+------------------------------------------------------------------------
+
+NODES
+* Show dynamic variables (global)
+* Context -> Default FB
+* Default FN -> Pipeline -> Buffers [SHOW ENTIRE ENGINE LAYOUT IN REALTIME]
+* Render into a node...or select a framebuffer
+
+node
+- glsl struct data
+    - offset-texture or index-texture
+    - size-texture
+- transforms - location/rotation/scale
+- data
+
+1. Nodes (contain node instance)
+   1. Data (or underlying data like text or pixels)
+      1. For chars: skip-list (opt between array, gap buffer)
+      2. For images: vector of bytes (RGBA)
+   2. Textures (representation of data)
+      1. Node needs to know which texels to fetch in texture buffer
+   
+1. Logical/semantic tree (DAG)
+2. Spatial tree for scenegraph (octree)
+   
+Generate ID for node/texture/text
+
+------------------------------------------------------------------------
+
+Is there a way to unblock lisp during clear since it waits for vsync
+" if your rendered frame rate is faster than your refresh rate, 
+the whole pipeline fills up and often times you end up with your CPU draw thread synchronized to the VSync rate. 
+Alternatively, if your rendered frame rate is slower than the refresh rate, 
+then you'll see all sorts of frame times measured on the CPU. "
+
+One thread for shm->cache (swank)
+One thread to cache->step (draw)
+[cache needs lock then]
+
+While draw blocks, shm can update cache which is not being used
+
+Texture Array:
+[0-99][100-199][200-299]
+Index:
+[0]   [1]      [2]
+
+If 1 is removed
+[0-99][       ][200-299]
+Index:
+[0]   [       ][   2   ]
+
+What if object #3 is really on texture #2?
+Update node, before updating texture - one at at a time for each subsequent texture
+[0-99][100-199]
+
+Upon removal of texture [gl buffer AKA array]:
+-Update subsequent offsets
+-Memcpy segment
+ * if multiple textures are removed, faster to memcpy once
+ 
+Upon removal of texture [LISP, use skip list]:
+-Update subsequent offsets
+-Iterate through all, copy to shm
+-Data structure needs random delete
+
+Have to recalc texel index in inst
+list is efficient if index known
+min time is O(n), n= num of textures
+
+1. Generate texture bytes
+2. Create holder
+
+* Controls (tentative)
+    * Spacebar - create node/edge
+    * Delete - delete node/edge
+    * Tab (hold) - show possible valid nodes (or menu?)
+    * Alt (hold) - display links for nodes; create text node for link,
+    attach move node, eval to visit, delete nodes after
+    * Shift - create selection node, visit nodes and attach node (how?), eval
+    to create edges to selection node, delete nodes after
+        * Types of select: branch, root
+        * Change (option) by attaching node
+        
+https://computergraphics.stackexchange.com/questions/4413/texture-coordinates-are-not-updating-according-to-the-vertex-divisor-specified/4415
+
+Need a way to show progress and determine threshold...
+
+------------------------------------------------------
+
+REFACTOR   
+Refactor textures -> update-raster-bindings - bind to glyph instead of texture
+NEED TO APPLY TRANSLATION TO IMAGES
+
+VERTS DIFFERENT
+
+---------------------
+
+Forms:
+1. Self-eval
+2. Symbols
+3. Lists
+   1. Special forms
+   2. Macros
+   3. Func calls
+   
+https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node59.html#SECTION00913000000000000000   
+
+So need to identify symbols/variables, special forms, macros (to expand), functions
+
+LISP Data:
+1. Atoms
+2. Lists (cons)
+3. Strings
+
+tron shader
+
+see lisp fibonacci by fare for optimization algorithms
+
+ ; "‖↑↓"
+ 
+ EXAMPLE WIDGET - convert to nodes
+ https://www.phoronix.com/scan.php?page=news_item&px=WattmanGTK-Linux-AMDGPU
+ 
+ ;; Resources:
+;; https://gamedev.stackexchange.com/questions/48227/smooth-movement-pygame
+
+https://stackoverflow.com/questions/7721081/does-there-exist-standard-way-to-run-external-program-in-common-lisp/11918829
+https://stackoverflow.com/questions/51342950/how-to-pipe-data-to-other-process-via-temporary-file
+https://github.com/guicho271828/eazy-process
+https://lispcookbook.github.io/cl-cookbook/os.html#running-external-programs
+
+The question is, when evaluating, what happens to the output?
+
+Chars are straight forward such as from format but what about
+non-string objects?
+
+All text can be represented as images, but not all images can be
+represented as text
+
+** Create node to represent it with the data holding the output **
+
+Or since text is a line of nodes, attach data to first item
+or all nodes attach to it...refactor slots
+
+Format would return a string which is different from an individual char
+
+https://github.com/bradleyjensen/shcl
+https://github.com/Neronus/clesh
+
+http://www.billthelizard.com/2011/01/sicp-224-226-hierarchical-structure.html
+
+------------------------------------------------------------------------
+
+pointer = ->
+list = center dot
+
+how to differentiate:
+t
+"t" - quotes make it a string
+
+Does graph=string? including newlines means = paragraph
+
+chars -> data (string, which is code) -> data -|
+     loop                            read     eval
+     
+     
+format nil "foobar"
+"format nil \"foobar\"" (insert parenthesis before and after)
+(format nil "foobar")
+...
+
+graph is the advantage over text editor - leverage it
+
+------------------------------------------------------------------------
+
+1. Create node folder/module
+2. Refactor fmt to send to t by default
+3. Rotation needs quaternions
+4. Test load/save file to load more nodes []
+5. Draw wireframe/outline...to see nodes []
+  1. Do second render pass on top
+  https://stackoverflow.com/questions/137629/how-do-you-render-primitives-as-wireframes-in-opengl
+  http://codeflow.org/entries/2012/aug/02/easy-wireframe-display-with-barycentric-coordinates/
+6. Implement render layers []
+  * Allow keep things on top? Essentially managing multiple scenes/worlds
+  * Refactor pipeline/program execution - create data to pass
+  
+  
+* Pointer buffer - which direction?
+  - Follow text or reverse?
+  - FIFO or LIFO
+  - In the context of text, cut a bunch of nodes and readd in order
+  - Node closest to pointer consumed first so direction should be
+    text <- * <- buffer
+  - a <- * <- b <- c (LIFO) - think undo/redo
+    - or a<-*<-c<-b (FIFO)
+* Another option is to position as such
+  a -> b -> c <- * <- a <- b <- c
+  even though cut order was c-b-a  

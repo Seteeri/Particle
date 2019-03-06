@@ -1108,3 +1108,5 @@ https://www.reddit.com/r/lisp/comments/9q68y8/has_the_gnu_coreutils_ever_been_im
 							     :protoform.model))))
 	    :finally (dotimes (i (length nodes))
 		       (receive-result *channel*)))))
+
+https://www.reddit.com/r/lisp/comments/1fj0qf/lisp_vs_haskell/

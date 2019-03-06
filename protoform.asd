@@ -1,7 +1,7 @@
 ;; https://common-lisp.net/~mmommer/asdf-howto.shtml
 
 (asdf:defsystem #:protoform
-    :description " A Common Lisp nodal REPL shell based on DRM-KMS, OpenGL and Wayland"
+    :description "A Common Lisp nodal userland based on DRM-KMS, OpenGL and Wayland"
     :author "Kevin Ednalino <kcednalino@gmail.com>"
     :license "Apache License 2.0"
     :depends-on (#:alexandria

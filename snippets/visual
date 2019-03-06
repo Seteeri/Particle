@@ -1,0 +1,132 @@
+Given:
+(defun add (a b)
+    (+ a b))
+    
+defun
+add
++----+
+     a
+     b
++----+
+     +
+     a
+     b
+
+
+defun add  .    .
+           a b  + a b
+
+
+{defun}-{add}-{.}-{.} = (defun add () ())
+
+{defun}-{add}-{a}-{+} = (defun add (a b) (+ a b))
+               |   |
+              {b} {a}
+                   |
+                  {b}
+
+
+{defun}-{add}-{.}-{.} = (defun add (a b) (+ a b))
+               |   |
+              {a} {+}
+               |   |
+              {b} {a}
+                   |
+                  {b}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+TASK: Change argument 'a -> 'xyz
+
+    -{.}-
+      |
+ {*}-{a}
+      |
+     {b}
+
+
+<mod> + . OR <mod> + l produces:
+
+(defun (a () b) (+ a b))
+
+[append]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+* overwrite [NO]
+
+(defun (() b) (+ a b))
+
+    -{.}-
+      |
+ {*}-{.}
+      |
+     {b}
+
+Alternative: del -> (ptr mov b) -> prepend
+* Backspace would remove before ptr
+* Delete would remove after ptr
+* Does not make sense, since cannot build chains (lists) if constantly replacing item
+* In typing, chars are added after so default to append
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+* append; pointer must move to new object
+
+(defun (a () b) (+ a b))
+
+    -{.}-
+      |
+     {a}
+      |
+ {*}-{.}
+      |
+     {b}
+
+So from here, how to append to list contents versus adding atom after list?
+Need to enter list -> Use arrow keys and then do as normal
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+How to produce (((nil)))?
+
+{.}-{.}-{.}
+
+>> (cons nil (cons nil (cons nil nil)))
+(NIL NIL NIL)
+
+>> (cons (cons (cons nil nil) nil) nil) 
+(((NIL)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+NOTES:
+  
+* Shortcuts
+
+  * nil/() : <mod>+n or <mod>+.[dot] or <mod>+c[ons] (visually represented by dot)
+  * t      : <mod>+t
+  * #      : <mod>+# (produce char instead of number; default to char...)
+
+  * Listify : <mod>+l
+    * Take ptr and place in list
+  * Unlistify : <mod>+f
+    * Opposite action of listify is to use first item in list (aka first)
+    * Remainder is deleted or remains in list and appended after so
+      * (a (b c d)) -> (a b (c d))
+      
+  * Atomize : <mod>+a
+    * Build string from current pointer backwards until non-char and then
+    input to read
+    * Basically transform data -> data or chars to a string
+    * When converting chars/string -> atom (aka code->data through read)
+      * For atoms/symbols etc. with char count > 1, remove #\- between nodes
+      * Default does not show it so maybe use colors to indicate char and
+      data
+  
+  * ascii : append to list containing ptr
+
+  * Up : supercede (closest semantic list)
+  * Dn : infra (closest semantic list) 
+    * Infra = within vs sub- = below so super/infra vs epi/sub]
+  * Lt : precede
+  * Rt : succede
