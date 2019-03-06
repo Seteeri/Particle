@@ -237,6 +237,12 @@
 	       id
 	       start
 	       (+ start delta)))
+
+  ;; Make sure existing anim not running
+  (when (or (gethash id *tasks-active*)
+	    (gethash id *tasks-inactive*))
+    (return-from translate-node-ptr))
+  
   (let ((anim (make-instance 'animation
 			     :id id
 			     :fn-easing #'easing:linear ;in-exp ;cubic

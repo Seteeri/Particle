@@ -11,6 +11,11 @@
 	     start
 	     (+ start
 		delta))
+
+  ;; Make sure existing anim not running
+  (when (or (gethash id *tasks-active*)
+	    (gethash id *tasks-inactive*))
+    (return-from animate-translate-camera))
   
   (let ((anim (make-instance 'animation
 			     :id id
@@ -41,6 +46,12 @@
 			    fn-new
 			    delta
 			    id)
+
+  ;; Make sure existing anim not running
+  (when (or (gethash id *tasks-active*)
+	    (gethash id *tasks-inactive*))
+    (return-from animate-scale-ortho))
+
   (with-slots (scale-ortho)
       *projview*
     
