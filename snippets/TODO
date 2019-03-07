@@ -353,20 +353,17 @@ MON:
         - I.e. one can only exist at once or multiple      
       -> For task ID use time...or name + time
          - Create serial ID?
-    - Refactor other callbacks
+    - Refactor other callbacks [DONE]
 
-* Test load/save robustness
-  - Implement save...not too difficult if load already implemented
-  - Load all lisp files and convert to data  
-
-* Implement graphs:
+* Load graphs on init:
   * Global Variables
+    * Manually create these from source
     * Linear graph essentially
     * Attach main graph here
     * Render debug info
       * Frame critical - place in sync such as status updates
         * Node pool usage
-        * Task counter
+        * Task counter - numbers not useful so use dashes or something
   * Graph structures can be represented directly
     * Undo - global/local; local is per mindset
     * Clipboard - global/local; local is per mindset
@@ -375,25 +372,24 @@ MON:
     * These are created arbitrarily
     * Effectively the terminal
     * Main commands use undo
-  * Load on start...scan source dynamically or generate before hand
-    * Detect date change
-    * Note, technically all nodes reside in same graph 
-    but semantically different graphs (visually different groups)
 
-* Implement graph/node commands (basic text editing)
-   * Must be able to move between pages...
-   * unlink(-ptr)
-   * link(-ptr) [LATER]
-     * link(-ptr) :nearest (IMPLEMENT USING R-TREE)
-     * link(-ptr) :end
-     * link(-ptr) id (requires hyperweb)
+* Test load/save robustness
+  - Implement save...not too difficult if load already implemented
+  - Load all lisp files and convert to data
 
-   * If unlinked, move euclidean [DONE]
-   * If linked, move binary...
-     * Left  = in  non-ptr
-     * Right = out non-ptr
-     * Up    = out ptr
-     * Dn    = in  ptr
+* Implement graph/node commands-shortcuts (see visual)
+   * Move:
+     * Unlinked: 
+       * euclidean [DONE]
+       * nearest - same as link nearest (use r-tree to get nearest)
+     * Linked:   binary
+
+   * link/unlink
+     * id
+     * ...nearest
+     * ...start/end of list (of tgt node)
+     
+   
 
 * Undo?
 

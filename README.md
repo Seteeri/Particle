@@ -99,7 +99,7 @@ of Emacs, and its strengths and weaknesses.
 * Elisp -> Common Lisp
   * Single-thread -> Multithreading
 * Software rendering -> OpenGL
-* Help system/manual -> Simplify
+* Help system/manual -> Better discoverability
 
 I imagine - what if there were something like Emacs for the non-programmer
 user? Considering the way technology and computers are becoming 
@@ -205,17 +205,20 @@ a Lisp OS](https://news.ycombinator.com/item?id=15466124):
 ## The Roadmap
 
 Official Core (equivalent to OpenGL core)
-1. Text Editor Functionality
+1. Node/Text Editor Functionality
    * Version Control System
+   * Hyperweb
 2. REPL Functionality
-3. Image Functionality
-4. Hyperweb
-5. Wayland Integration 
-6. Widget Toolkit
+3. Media Functionality
+   * FFMPEG for media - images, video, audio
+4. Wayland Integration 
+   * Objects represented in 3D
+   * Web remains accessible through Wayland/DE -> browser
+5. Widget Toolkit
+6. WebKit Integration
 
 Official Extensions (equivalent to OpenGL ARB...)
-1. FFMPEG for media - images, video, audio
-   * Integrate GEGL? Image/graphicsmagick? etc...
+1. Integrate GEGL? Image/graphicsmagick? etc...
 
 User Extensions (equivalent to OpenGL EXT)
 1. Per-object vector motion blur (personal favorite)
@@ -224,8 +227,6 @@ User Extensions (equivalent to OpenGL EXT)
 
 Future Extensions
 * Native web browser - build around Webkit like Next
-  * Allows for objects to be represented in 3D
-  * Web remains accessible through Wayland->Browser
 * Integrate EEVEE for rendering
 * Common Lisp to WebAssembly 
   * WebAssembly describes an AST ;)
