@@ -93,7 +93,7 @@
 	
 	*node-ptr-vcs* (init-node-ptr-shm *digraph-vcs*
 					  *vertices-vcs*
-					  (vec3 0 -10 0))))
+					  (vec3 0 10 0))))
 
 (defun register-keyboard-callbacks ()
   

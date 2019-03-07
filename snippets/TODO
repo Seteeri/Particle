@@ -354,8 +354,10 @@ MON:
       -> For task ID use time...or name + time
          - Create serial ID?
     - Refactor other callbacks
-    - Test load/save robustness
-      - Implement save...not too difficult if load already implemented
+
+* Test load/save robustness
+  - Implement save...not too difficult if load already implemented
+  - Load all lisp files and convert to data  
 
 * Implement graphs:
   * Global Variables

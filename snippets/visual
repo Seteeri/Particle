@@ -119,9 +119,9 @@ NOTES:
     input to read
     * Basically transform data -> data or chars to a string
     * When converting chars/string -> atom (aka code->data through read)
-      * For atoms/symbols etc. with char count > 1, remove #\- between nodes
-      * Default does not show it so maybe use colors to indicate char and
-      data
+      * For non-char atoms (char count > 1), remove #\- between nodes
+      * Default does not show it so maybe use colors to indicate among
+      char, strings, numbers and other atoms
   
   * ascii : append to list containing ptr
 

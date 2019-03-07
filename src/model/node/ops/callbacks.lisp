@@ -17,31 +17,31 @@
 (defcb-async
     add-node-ascii-cb
     'add-node-ascii
-  (lambda ()
+  (lambda (task)
     (funcall #'add-node-ascii (code-char (second (reverse (second seq-key)))))))
 
 (defcb-async
     backspace-node-ascii-cb
     'backspace-node-ascii
-  (lambda ()
+  (lambda (task)
     (funcall #'backspace-node-ascii)))
 
 (defcb-async
     add-node-tab-cb
     'add-node-tab
-  (lambda ()
+  (lambda (task)
     (funcall #'add-node-tab)))
 
 (defcb-async
     add-node-newline-cb
     'add-node-newline
-  (lambda ()
+  (lambda (task)
     (funcall #'add-node-newline)))
   
 (defcb-async
     eval-node-cb
     'eval-node
-  (lambda ()
+  (lambda (task)
     (funcall #'eval-node)))
 
 (defun cut-node-cb (seq-key)
@@ -61,13 +61,13 @@
 (defcb-sync
     move-node-ptr-in-cb
     'move-node-ptr-in
-  (lambda ()
+  (lambda (task)
     (funcall #'move-node-ptr :in)))
 
 (defcb-sync
     move-node-ptr-out-cb
     'move-node-ptr-out
-  (lambda ()
+  (lambda (task)
     (funcall #'move-node-ptr :out)))
 
 (defun translate-node-ptr-left-cb (seq-event)
