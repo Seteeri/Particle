@@ -14,6 +14,8 @@
 (defun init-model (width height
 		   inst-max
 		   addr-swank-view)
+
+  (sb-ext:gc :full t)
   
   (setf *kernel*        (make-kernel 4)
 	*channel*       (make-channel)
@@ -26,13 +28,18 @@
 
   ;; Run init fns
   (run-ptree-init)
-  
-  ;; Then start permanent threads
-  (init-threads)
-  
+    
   (sb-ext:gc :full t)
   ;; (room t)
   ;; (force-output)
+
+  (init-defaults)
+  
+  ;; Init globals
+  ;; - Create graphs
+  ;; - Create text
+
+  (init-threads)
   
   (fmt-model t "main-init" "Finished model initialization~%"))
 
@@ -71,13 +78,6 @@
               #'set-stack-node
 	      tree)    
     
-    ;; graphs
-    
-    (ptree-fn 'digraph
-	      '()
-              #'set-digraph
-	      tree)
-
     ;; Shm functions
     (ptree-fn 'shm-projview
 	      '(projview)
@@ -115,48 +115,24 @@
 	      tree)
 
     ;; Pre-view
-
-    ;; Create initial ptr nodes for graphs
     
-    (ptree-fn 'node-pointer
-	      '(cc
-		stack-node
+    (ptree-fn 'init-conn-rpc-view
+    	      '(projview
+		controller
+		metrics
+		cc
 		r-tree
-		digraph
-		shm-nodes
-		metrics)
-	      #'set-node-pointer
-	      tree)
-    
-    (ptree-fn 'sock-view
-    	      '(shm-projview
+		stack-node
+		shm-projview
     		shm-nodes
     		shm-atomic-counter
     		shm-vertices
     		shm-element
     		shm-draw-indirect
     		shm-texture-glyphs
-    		node-pointer
     		controller)
     	      #'init-conn-rpc-view
 	      ;; (lambda (&rest stuff))
     	      tree)
-
-    ;; Make sure all nodes computed
-    ;; (dolist (id '(projview
-    ;; 		  controller
-    ;; 		  metrics
-    ;; 		  digraph
-    ;; 		  shm-projview
-    ;; 		  shm-nodes
-    ;; 		  shm-atomic-counter
-    ;; 		  shm-vertices
-    ;; 		  shm-element
-    ;; 		  shm-draw-indirect
-    ;; 		  shm-texture-glyphs
-    ;; 		  node-pointer
-    ;; 		  sock-view)
-    ;; 	     (when (not (ptree-computed-p id tree))
-    ;; 	       (call-ptree id tree))))
     
-    (call-ptree 'sock-view tree)))
+    (call-ptree 'init-conn-rpc-view tree)))

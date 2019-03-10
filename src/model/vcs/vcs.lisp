@@ -1,5 +1,8 @@
 (in-package :protoform.model)
 
+;; TODO
+;; * Newline when char reaches limit
+
 (defun add-node-vcs ()
   (let ((node (pop *stack-i-nodes*)))
     

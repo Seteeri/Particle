@@ -10,6 +10,60 @@
     (bordeaux-threads:join-thread thread-libinput)
     (bordeaux-threads:join-thread thread-controller)))
 
+(defun init-defaults ()
+  (setf *digraph-main* (digraph:make-digraph)
+	;; *mutex-main*    (sb-thread:make-mutex)
+	*digraph-vcs*  (digraph:make-digraph)
+	;; *mutex-vcs*     (sb-thread:make-mutex)
+	
+	*digraph-clip* (digraph:make-digraph)
+	*digraph-repl* (digraph:make-digraph))
+
+  (setf *node-ptr-main* (init-node-ptr-shm *digraph-main*
+					   *vertices-main*
+					   (vec3 0 0 0))
+	
+	*node-ptr-vcs* (init-node-ptr-shm *digraph-vcs*
+					  *vertices-vcs*
+					  (vec3 0 10 0))))
+
+(defun init-conn-rpc-view (&rest deps)
+  (declare (ignore deps))
+
+  (setf *buffer-sock-ptr* (foreign-alloc :unsigned-char :count 212992)
+	*buffer-sock-array* (make-array 212992
+					:adjustable nil
+					:fill-pointer nil
+					:element-type '(unsigned-byte 8))
+	*sock-view* (init-sock-client *path-socket-view* :block))
+
+  ;; (init-sym-to-shm)
+
+  ;; (format t "~a~%" (with-output-to-string (stream)
+  ;; 		     (format stream "(init-view-buffers (")
+  ;; 		     (loop
+  ;; 			:for (name params) :on *params-shm* :by #'cddr
+  ;; 			:do (format stream "~S " params))
+  ;; 		     (format stream "))")))
+  
+  (send-init-view-buffers)
+
+  ;; (loop 
+  ;;    :for name :being :the :hash-keys :of *sym-to-shm*
+  ;;    :using (hash-value shm)
+  ;;    :do (send-memcpy-shm-to-cache name
+  ;; 				   shm))
+  (loop
+     :for (sym params) :on *params-shm* :by #'cddr
+     :do (send-memcpy-shm-to-cache (second params)
+				   (symbol-value sym)))
+  
+  (send-draw t)
+
+  (send-serving nil)
+
+  t)
+
 (defun set-projview ()
   (setf *projview* (make-instance 'projview
 				  :width *width*
@@ -43,7 +97,7 @@
   			       :for i :from 0 :below (floor (/ 134217728 4 +size-struct-instance+)) ; buffer size / node struct size
   			       :collect (init-node-msdf cursor
   							*scale-node*
-  							i
+  							i ; use offset?
   							nil
   							nil))
   	;; *mutex-stack-nodes* (sb-thread:make-mutex)
@@ -54,15 +108,6 @@
 							 :rectfun #'node-rect)
 	;; *mutex-r-tree*  (sb-thread:make-mutex)
 	))
-
-(defun set-digraph ()
-  (setf *digraph-main* (digraph:make-digraph)
-	;; *mutex-main*    (sb-thread:make-mutex)
-	*digraph-vcs*  (digraph:make-digraph)
-	;; *mutex-vcs*     (sb-thread:make-mutex)
-	
-	*digraph-clip* (digraph:make-digraph)
-	*digraph-repl* (digraph:make-digraph)))
 
 (defun set-shm-projview (projview)
   (setf *shm-projview* (init-shm-projview)))
@@ -84,16 +129,6 @@
 
 (defun set-shm-texture-glyphs ()
   (setf *shm-texture-glyphs* (init-shm-texture-glyphs)))
-
-(defun set-node-pointer (&rest deps)
-  (declare (ignore deps))
-  (setf *node-ptr-main* (init-node-ptr-shm *digraph-main*
-					   *vertices-main*
-					   (vec3 0 0 0))
-	
-	*node-ptr-vcs* (init-node-ptr-shm *digraph-vcs*
-					  *vertices-vcs*
-					  (vec3 0 10 0))))
 
 (defun register-keyboard-callbacks ()
   

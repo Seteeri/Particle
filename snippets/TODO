@@ -356,22 +356,32 @@ MON:
     - Refactor other callbacks [DONE]
 
 * Load graphs on init:
-  * Global Variables
-    * Manually create these from source
-    * Linear graph essentially
-    * Attach main graph here
+    
+  t (index)
+  L... Dynamic Variables (non-graph vars; graph vars are under t)
+  L... Undo
+  L... REPL (as needed)
+  L... Clipboard (as needed)
+  L... Main (create with command or user press ascii)
+
+  * Dynamic variables aka globals
+    * Manually create from source
     * Render debug info
       * Frame critical - place in sync such as status updates
         * Node pool usage
         * Task counter - numbers not useful so use dashes or something
-  * Graph structures can be represented directly
-    * Undo - global/local; local is per mindset
-    * Clipboard - global/local; local is per mindset
-    * Global is a global variable
+        
   * REPL Buffer
-    * These are created arbitrarily
     * Effectively the terminal
-    * Main commands use undo
+    * Difference: Preserves commands and outputs on newline
+      * At least the operators have this functionality
+      * Would this be an undo in itself?
+    * Created arbitrarily
+
+  * Layout
+    * Render To Texture - render to quad; draw quad
+    * Viewport - set viewport params; draw
+    * NOTE: wayland windows are memcpy to texture ptr
 
 * Test load/save robustness
   - Implement save...not too difficult if load already implemented
@@ -389,13 +399,36 @@ MON:
      * ...nearest
      * ...start/end of list (of tgt node)
      
-   
-
 * Undo?
+  * Create global
+  * Create local - per graph
+
+* Draw lines
+  * Use quads for lines
+  
+* Render To Texture
+
+UI = nodes
+...map to underlying data, not necessarily 1:1, but user can expose it
+...pf organizes nodes to match relationships between underlying data
+...like GC references
 
 ########################################################################
-BOOTSTRAP- load, save, eval, manx
+BOOTSTRAP- ability to edit program in itself
 ########################################################################
+
+* Draw edges (also nodes) []
+    * Implementation: When adding node, add nodes for edge
+      * Create separate buffer - no UVs - smaller size
+      * Create separate program - no MSDF - faster render speed
+      * Use colors to differentiate edges
+    * Draw first so appears underneath nodes
+    * Scale based on distance?  
+    * See NOTES for future ideas on node models
+      * char/pixel nodes should be quads since they most dominant/common
+      * Non-char nodes (lisp objects) should be a pentagon or something or
+      as many points as an asterisk - hexagon
+    * How are these manipulated - they cannot link since they are the link!
 
 * Draw IDs [1-2 DAYs]
     * ID = index
@@ -416,19 +449,6 @@ BOOTSTRAP- load, save, eval, manx
       - Same issue for edges... -> START SIMPLE - CREATE NODES
         - Faster to change single flag than memcpy everything
         - If memcpy everything, possibly run out of space
-
-* Draw edges (also nodes) []
-    * Implementation: When adding node, add nodes for edge
-      * Create separate buffer - no UVs - smaller size
-      * Create separate program - no MSDF - faster render speed
-      * Use colors to differentiate edges
-    * Draw first so appears underneath nodes
-    * Scale based on distance?  
-    * See NOTES for future ideas on node models
-      * char/pixel nodes should be quads since they most dominant/common
-      * Non-char nodes (lisp objects) should be a pentagon or something or
-      as many points as an asterisk - hexagon
-    * How are these manipulated - they cannot link since they are the link!
 
 ########################################################################
 HYPERWEB - ids
