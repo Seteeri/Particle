@@ -28,26 +28,14 @@
 (defparameter *ht-timing-fn* nil)
 
 (defparameter *stack-i-nodes* nil)
-;; (defparameter *mutex-stack-nodes* nil)
-
 (defparameter *r-tree* nil)
-;; (defparameter *mutex-r-tree* nil)
-
-(defparameter *digraph-main* nil)
-;; (defparameter *mutex-main* nil)
-(defparameter *digraph-vcs* nil)
-;; (defparameter *mutex-vcs* nil)
-
-(defparameter *sock-view* nil)
-(defparameter *buffer-sock-ptr* nil)
-(defparameter *buffer-sock-array* nil)
-(defparameter *projview* nil)
 
 (defparameter *digraph-main* nil)
 (defparameter *node-ptr-main* nil)
 (defparameter *vertices-main* (cons 0 nil))
 (defparameter *edges-main*(cons 0 nil))
 
+(defparameter *digraph-vcs* nil)
 (defparameter *node-ptr-vcs* nil)
 (defparameter *vertices-vcs* (cons 0 nil))
 (defparameter *edges-vcs* (cons 0 nil))
@@ -61,3 +49,46 @@
 (defparameter *metrics* nil)
 
 (defparameter *controller* nil)
+
+(defparameter *sock-view* nil)
+(defparameter *buffer-sock-ptr* nil)
+(defparameter *buffer-sock-array* nil)
+(defparameter *projview* nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defparameter *vars-special*
+  (list *params-shm*
+	*sym-to-shm*
+	*width*
+	*height*
+	*inst-max*
+
+	*queue-tasks-sync*
+	*queue-tasks-async*
+	*ht-timing-fn*
+
+	*stack-i-nodes*
+	*r-tree*
+
+	*digraph-main*
+	*node-ptr-main*
+	*vertices-main*
+	*edges-main*
+
+	*digraph-vcs*
+	*node-ptr-vcs*
+	*vertices-vcs*
+	*edges-vcs*
+
+	*offset-texel-textures*
+	*offset-bytes-textures*
+	
+	*metrics*
+
+	*controller*
+
+	*sock-view*
+	*buffer-sock-ptr*
+	*buffer-sock-array*
+	*projview*))

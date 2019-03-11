@@ -261,26 +261,22 @@
 	(remhash 'load-chunk-file *tasks-active*)
 	(remhash 'load-char-from-file *tasks-active*)
 	(return-from load-char-from-file))
-      
-      ;; calc pos relative to line rather than prev char
-      (let* ((node (pop *stack-i-nodes*))
-	     (pos (v+ (if (char-equal char #\Newline)
-			  (progn
-			    (setf (vx3 baseline) (vx3 baseline-start))
-			    (decf (vy3 baseline) (* +linegap+ *scale-node*))
-			    (setf index-char 0))
-			  (progn
-			    baseline))
-		      (vec3 (* 9.375 +scale-msdf+ *scale-node* index-char)
-			    0
-			    0))))
-	(update-translation-node node pos)
-	(update-glyph-node node char)
-	(update-transform-node node)
-	(insert-vertex node)
-	(spatial-trees:insert node *r-tree*)
-	(send-node node nil))
 
+      ;; calc pos relative to line rather than prev char
+      (let* ((baseline (v+ (if (char-equal char #\Newline)
+			       (progn
+				 (setf (vx3 baseline) (vx3 baseline-start))
+				 (decf (vy3 baseline) (* +linegap+ *scale-node*))
+				 (setf index-char 0))
+			       (progn
+				 baseline))
+			   (vec3 (* 9.375 +scale-msdf+ *scale-node* index-char)
+				 0
+				 0)))
+	     (node (add-node char
+			     baseline)))	
+      	(send-node node nil))
+		
       (add-node-vcs)
 
       (incf index-data)

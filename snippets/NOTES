@@ -1116,3 +1116,7 @@ https://github.com/BusFactor1Inc/sxc
 https://news.ycombinator.com/item?id=13199610
 
 https://www.cliki.net/cl-emacs
+
+Difference between having source code and then eval'ing it like in EMACS
+versus having those live data objects accessible in the program like in
+Protoform.

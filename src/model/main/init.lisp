@@ -10,14 +10,10 @@
     (bordeaux-threads:join-thread thread-libinput)
     (bordeaux-threads:join-thread thread-controller)))
 
-(defun init-defaults ()
+(defun init-nodes-default ()
+  ;; *mutex-main*    (sb-thread:make-mutex)
   (setf *digraph-main* (digraph:make-digraph)
-	;; *mutex-main*    (sb-thread:make-mutex)
-	*digraph-vcs*  (digraph:make-digraph)
-	;; *mutex-vcs*     (sb-thread:make-mutex)
-	
-	*digraph-clip* (digraph:make-digraph)
-	*digraph-repl* (digraph:make-digraph))
+	*digraph-vcs*  (digraph:make-digraph))
 
   (setf *node-ptr-main* (init-node-ptr-shm *digraph-main*
 					   *vertices-main*
@@ -25,7 +21,14 @@
 	
 	*node-ptr-vcs* (init-node-ptr-shm *digraph-vcs*
 					  *vertices-vcs*
-					  (vec3 0 10 0))))
+					  (vec3 0 10 0)))
+
+  (loop :for i :in *vars-special*
+     :do (progn
+	   ;; Create nodes with objects for special variables
+	   t))
+  
+  t)
 
 (defun init-conn-rpc-view (&rest deps)
   (declare (ignore deps))

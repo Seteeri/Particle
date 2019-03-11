@@ -15,6 +15,8 @@
 		   inst-max
 		   addr-swank-view)
 
+  ;; Should start recording actions for undo
+  
   (sb-ext:gc :full t)
   
   (setf *kernel*        (make-kernel 4)
@@ -33,7 +35,7 @@
   ;; (room t)
   ;; (force-output)
 
-  (init-defaults)
+  (init-nodes-default)
   
   ;; Init globals
   ;; - Create graphs

@@ -366,6 +366,7 @@ MON:
 
   * Dynamic variables aka globals
     * Manually create from source
+    * Make objects
     * Render debug info
       * Frame critical - place in sync such as status updates
         * Node pool usage
@@ -382,10 +383,6 @@ MON:
     * Render To Texture - render to quad; draw quad
     * Viewport - set viewport params; draw
     * NOTE: wayland windows are memcpy to texture ptr
-
-* Test load/save robustness
-  - Implement save...not too difficult if load already implemented
-  - Load all lisp files and convert to data
 
 * Implement graph/node commands-shortcuts (see visual)
    * Move:
@@ -406,7 +403,9 @@ MON:
 * Draw lines
   * Use quads for lines
   
-* Render To Texture
+* Test load/save robustness
+  - Implement save...not too difficult if load already implemented
+  - Load all lisp files and convert to data
 
 UI = nodes
 ...map to underlying data, not necessarily 1:1, but user can expose it
