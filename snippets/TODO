@@ -364,26 +364,22 @@ MON:
   L... Clipboard (as needed)
   L... Main (create with command or user press ascii)
 
-  * Dynamic variables aka globals
-    * Manually create from source
-    * Make objects
-    * Render debug info
-      * Frame critical - place in sync such as status updates
-        * Node pool usage
-        * Task counter - numbers not useful so use dashes or something
+  * Dynamic variables aka globals [DONE]
+    
+ * Color nodes by atom type (8 colors)
+   * character (white)
+   * string
+   * numbers
+   * symbols
+   * t/nil
+   * functions (red)
+   * other (grey)
+    
+  * Render debug info
+    * Frame critical - place in sync such as status updates
+      * Node pool usage
+      * Task counter - numbers not useful so use dashes or something
         
-  * REPL Buffer
-    * Effectively the terminal
-    * Difference: Preserves commands and outputs on newline
-      * At least the operators have this functionality
-      * Would this be an undo in itself?
-    * Created arbitrarily
-
-  * Layout
-    * Render To Texture - render to quad; draw quad
-    * Viewport - set viewport params; draw
-    * NOTE: wayland windows are memcpy to texture ptr
-
 * Implement graph/node commands-shortcuts (see visual)
    * Move:
      * Unlinked: 

@@ -58,37 +58,37 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defparameter *vars-special*
-  (list *params-shm*
-	*sym-to-shm*
-	*width*
-	*height*
-	*inst-max*
+  '(*params-shm*
+    *sym-to-shm*
+    *width*
+    *height*
+    *inst-max*
 
-	*queue-tasks-sync*
-	*queue-tasks-async*
-	*ht-timing-fn*
+    *queue-tasks-sync*
+    *queue-tasks-async*
+    *ht-timing-fn*
 
-	*stack-i-nodes*
-	*r-tree*
+    *stack-i-nodes*
+    *r-tree*
 
-	*digraph-main*
-	*node-ptr-main*
-	*vertices-main*
-	*edges-main*
+    *digraph-main*
+    *node-ptr-main*
+    *vertices-main*
+    *edges-main*
 
-	*digraph-vcs*
-	*node-ptr-vcs*
-	*vertices-vcs*
-	*edges-vcs*
+    *digraph-vcs*
+    *node-ptr-vcs*
+    *vertices-vcs*
+    *edges-vcs*
 
-	*offset-texel-textures*
-	*offset-bytes-textures*
-	
-	*metrics*
+    *offset-texel-textures*
+    *offset-bytes-textures*
+    
+    *metrics*
 
-	*controller*
+    *controller*
 
-	*sock-view*
-	*buffer-sock-ptr*
-	*buffer-sock-array*
-	*projview*))
+    *sock-view*
+    *buffer-sock-ptr*
+    *buffer-sock-array*
+    *projview*))

@@ -23,12 +23,32 @@
 					  *vertices-vcs*
 					  (vec3 0 10 0)))
 
-  (loop :for i :in *vars-special*
-     :do (progn
-	   ;; Create nodes with objects for special variables
-	   t))
+  (send-node *node-ptr-main* nil)
+  (send-node *node-ptr-vcs* nil)
   
-  t)
+  ;; Create nodes with objects for special variables
+  (loop
+     :with baseline := (get-origin-from-node-pos *node-ptr-main*)
+     :with baseline-cursor := (get-origin-from-node-pos *node-ptr-main*)
+     :for var :in *vars-special*
+     :for sym := (symbol-value var)
+     ;; adjust baseline
+     :do (loop
+	    :for char :across (string var)
+	    :for i :upfrom 0
+	    ;; adjust baseline x
+	    :do (let ((node (add-node char
+				      (v+ baseline-cursor
+					  (vec3 (* 9.375 +scale-msdf+ *scale-node* i)
+						0
+						0)))))
+		  ;; Dereference symbol and store as data of node
+		  (setf (data-obj node) sym)
+		  (send-node node nil))
+	    :finally (progn
+		       ;; move to newline
+		       (setf (vx3 baseline-cursor) (vx3 baseline))
+		       (decf (vy3 baseline-cursor) (* +linegap+ *scale-node*))))))
 
 (defun init-conn-rpc-view (&rest deps)
   (declare (ignore deps))

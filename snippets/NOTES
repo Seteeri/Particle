@@ -1120,3 +1120,16 @@ https://www.cliki.net/cl-emacs
 Difference between having source code and then eval'ing it like in EMACS
 versus having those live data objects accessible in the program like in
 Protoform.
+
+
+* REPL Buffer
+* Effectively the terminal
+* Difference: Preserves commands and outputs on newline
+  * At least the operators have this functionality
+  * Would this be an undo in itself?
+* Created arbitrarily
+
+* Layout
+* Render To Texture - render to quad; draw quad
+* Viewport - set viewport params; draw
+* NOTE: wayland windows are memcpy to texture ptr
