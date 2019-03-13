@@ -193,34 +193,3 @@
 ;;   (let ((scratch (make-string 4096)))
 ;;     (loop for read = (read-sequence scratch in)
 ;;        while (plusp read) sum read)))
-
-(defun print-text ()
-  ;; Make ptree version
-
-  ;; 0: string | baseline
-  ;; 1: node,main,r-tree,enqueue | ...
-  
-  (let ((string "HELLO_WORLD!")
-	(baseline (get-origin-from-node-pos *node-ptr-main*)))
-    (loop
-       :for ch :across string
-       :for i :upfrom 0
-       :do (let* ((node (pop *stack-i-nodes*))
-		  (bl baseline)
-		  (i-2 i)
-		  (ch-2 ch)
-		  (pos (v+ bl
-			   (vec3 (* 9.375 +scale-msdf+ *scale-node* i-2)
-				 0
-				 0))))
-	     (sb-concurrency:enqueue (list 'print-text
-  					   (lambda ()
-					     (update-translation-node node pos)
-					     (update-glyph-node node ch-2)
-					     (update-transform-node node)
-					     
-					     (insert-vertex node)
-					     (spatial-trees:insert node *r-tree*)
-					     (send-node node nil)
-					     t))
-				     *queue-tasks-async*)))))
