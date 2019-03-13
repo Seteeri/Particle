@@ -2,29 +2,30 @@
 
 ;; From Solaris Red
 ;; 220  50  47
-(defparameter *color-default-ptr* (make-array (* 4 4) ; or use vec4
-					      :adjustable nil
-					      :fill-pointer nil
-					      :element-type 'single-float
-					      :initial-contents  (list (coerce (/ 181 255) 'single-float)
-								       (coerce (/ 137 255) 'single-float)
-								       (coerce (/ 0   255) 'single-float)
-								       (coerce (/ 255 255) 'single-float)
-								       
-								       (coerce (/ 181 255) 'single-float)
-								       (coerce (/ 137 255) 'single-float)
-								       (coerce (/ 0   255) 'single-float)
-								       (coerce (/ 255 255) 'single-float)
-								       
-								       (coerce (/ 181 255) 'single-float)
-								       (coerce (/ 137 255) 'single-float)
-								       (coerce (/ 0   255) 'single-float)
-								       (coerce (/ 255 255) 'single-float)
-								       
-								       (coerce (/ 181 255) 'single-float)
-								       (coerce (/ 137 255) 'single-float)
-								       (coerce (/ 0   255) 'single-float)
-								       (coerce (/ 255 255) 'single-float))))
+(defparameter *color-default-ptr*
+  (make-array (* 4 4) ; or use vec4
+	      :adjustable nil
+	      :fill-pointer nil
+	      :element-type 'single-float
+	      :initial-contents  (list (coerce (/ 181 255) 'single-float)
+				       (coerce (/ 137 255) 'single-float)
+				       (coerce (/ 0   255) 'single-float)
+				       (coerce (/ 255 255) 'single-float)
+				       
+				       (coerce (/ 181 255) 'single-float)
+				       (coerce (/ 137 255) 'single-float)
+				       (coerce (/ 0   255) 'single-float)
+				       (coerce (/ 255 255) 'single-float)
+				       
+				       (coerce (/ 181 255) 'single-float)
+				       (coerce (/ 137 255) 'single-float)
+				       (coerce (/ 0   255) 'single-float)
+				       (coerce (/ 255 255) 'single-float)
+				       
+				       (coerce (/ 181 255) 'single-float)
+				       (coerce (/ 137 255) 'single-float)
+				       (coerce (/ 0   255) 'single-float)
+				       (coerce (/ 255 255) 'single-float))))
 
 (defun init-node-ptr (graph
 		      verts

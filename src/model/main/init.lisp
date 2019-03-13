@@ -27,24 +27,32 @@
   (send-node *node-ptr-vcs* nil)
   
   ;; Create nodes with objects for special variables
+  ;; Don't link cursor
   (loop
      :with baseline := (get-origin-from-node-pos *node-ptr-main*)
      :with baseline-cursor := (get-origin-from-node-pos *node-ptr-main*)
+     :with node-prev := nil
      :for var :in *vars-special*
      :for sym := (symbol-value var)
-     ;; adjust baseline
      :do (loop
 	    :for char :across (string var)
 	    :for i :upfrom 0
-	    ;; adjust baseline x
 	    :do (let ((node (add-node char
 				      (v+ baseline-cursor
 					  (vec3 (* 9.375 +scale-msdf+ *scale-node* i)
 						0
 						0)))))
+		  ;; Link to previous node
+		  (when node-prev
+		    (insert-edge node-prev node))
+		  (setf node-prev node)
+		  
+		  ;; Set color of nodes to indicate type
+		  
 		  ;; Dereference symbol and store as data of node
 		  (setf (data-obj node) sym)
-		  (send-node node nil))
+		  (send-node node nil)
+		  (add-node-vcs))
 	    :finally (progn
 		       ;; move to newline
 		       (setf (vx3 baseline-cursor) (vx3 baseline))

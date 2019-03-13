@@ -14,6 +14,7 @@
 					  ".png")
 		    :format :png))
 
+;; rename to be more descriptive
 (defun add-node-ascii (char &optional (move-pointer t))
   (let ((node-new (add-node char)))
     
@@ -130,47 +131,6 @@
       ;; (setf (data-obj node) output-eval)
 
       t)))
-
-(defun link (tgt)
-  (cond ((eq tgt :near)
-	 t)
-
-	((eq tgt :end)
-	 t)
-
-	(t
-	 t)))
-
-(defun unlink (&optional (tgt nil))
-  (cond ((eq tgt nil) ; default to unlinking ptr
-	 (unlink-node-ptr))
-
-	;; otherwise unlink tgt node
-	(t
-	 (warn "unlink cond t not implemented"))))
-
-(defun swap-nodes (node-src node-dest)
-  ;; Swap links
-  ;; - option to swap positions?
-  
-  ;; Get preds of src
-  ;; Remove edges
-  ;; Get preds of dest
-  ;; Remove edges
-  ;; Insert edges between src pres and dest
-  ;; Swap positions
-  t)
-
-(defun swap-id-with-node (node-src node-dest)
-  ;; node-src should be chars or string object
-  ;; node-dest should be dest
-  ;;
-  ;; provide inverse operation to produce id from node
-  t)
-
-(defun show-node-ids ()
-  ;; Procedure:
-  t)
 
 (defun move-node-ptr (dir) ; pass seq-event?
   

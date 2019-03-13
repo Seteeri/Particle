@@ -121,13 +121,12 @@
 				       (:module node
 				       		:pathname "node"
 				       		:components ((:file "node")
+							     (:file "pointer")
 							     (:file "link")
 							     (:file "degree")
-							     (:file "methods")
-							     (:file "translation")
-							     (:file "traversal")
-				       			     (:file "pointer")
-							     (:file "shm")
+							     (:file "translate")
+							     (:file "traverse")
+							     (:file "memcpy")
 							     (:module ops
 				       				      :pathname "ops"
 				       				      :components ((:file "callbacks")

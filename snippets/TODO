@@ -357,14 +357,17 @@ MON:
 
 * Load graphs on init:
     
-  t (index)
-  L... Dynamic Variables (non-graph vars; graph vars are under t)
+  * Dynamic Variables
   L... Undo
+  L... Main...
+  
   L... REPL (as needed)
   L... Clipboard (as needed)
-  L... Main (create with command or user press ascii)
+
+  Graphs will be linked but not positioned underneath
 
   * Dynamic variables aka globals [DONE]
+  * Link global nodes into graph
     
  * Color nodes by atom type (8 colors)
    * character (white)
@@ -374,34 +377,38 @@ MON:
    * t/nil
    * functions (red)
    * other (grey)
-    
-  * Render debug info
-    * Frame critical - place in sync such as status updates
-      * Node pool usage
-      * Task counter - numbers not useful so use dashes or something
-        
-* Implement graph/node commands-shortcuts (see visual)
-   * Move:
-     * Unlinked: 
-       * euclidean [DONE]
-       * nearest - same as link nearest (use r-tree to get nearest)
-     * Linked:   binary
 
-   * link/unlink
-     * id
-     * ...nearest
-     * ...start/end of list (of tgt node)
-     
 * Undo?
+  * Add undo node for every operation
   * Create global
   * Create local - per graph
-
+     
 * Draw lines
   * Use quads for lines
+  * Lines are nodes also and thus are in the graph and linked which makes them vertices also
+    * Or could put in separate graph where lines connect lines
+  * Node<->Line<->Node
+
+* Implement graph/node commands-shortcuts (see visual)
+  * Move:
+    * Unlinked:
+      * euclidean [DONE]
+      * nearest - same as link nearest (use r-tree to get nearest)
+    * Linked:   binary
+
+  * link/unlink
+    * id
+    * ...nearest
+    * ...start/end of list (of tgt node)
   
 * Test load/save robustness
   - Implement save...not too difficult if load already implemented
   - Load all lisp files and convert to data
+
+* Render debug info
+  * Frame critical - place in sync such as status updates
+    * Node pool usage
+    * Task counter - numbers not useful so use dashes or something
 
 UI = nodes
 ...map to underlying data, not necessarily 1:1, but user can expose it

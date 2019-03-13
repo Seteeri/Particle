@@ -18,7 +18,7 @@
     
     (execute-queue-tasks-deadline *queue-tasks-async*
 				  time-remain)
-
+    
     ;; Ensure view executes shm on next frame
     ;; view will execute all messages sent to it until message
     (send-serving nil)

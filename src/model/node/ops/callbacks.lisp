@@ -274,7 +274,8 @@
 				 0
 				 0)))
 	     (node (add-node char
-			     baseline)))	
+			     baseline)))
+	(setf (data-obj node) char)
       	(send-node node nil))
 		
       (add-node-vcs)
