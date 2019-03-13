@@ -65,8 +65,8 @@
 			;; create structure for below
 			index-data
 			index-char
-			baseline-start
-			baseline)
+			baseline
+			pen)
   ;; Read data
   ;; Return params for next frame
   (let* ((data (make-string length))
@@ -89,8 +89,8 @@
 								  data-2
 								  index-data
 								  index-char
-								  baseline-start
-								  baseline)))))
+								  baseline
+								  pen)))))
 	(enqueue-task-async task)
 	task))))
 
@@ -101,8 +101,8 @@
 			    ;; create structure for below
 			    index-data
 			    index-char
-			    baseline-start
-			    baseline)
+			    baseline
+			    pen)
 
   ;; pass loop count
   (dotimes (i 1)
@@ -123,8 +123,8 @@
 					  4096
 					  0 ; reset
 					  index-char
-					  baseline-start
-					  baseline))))
+					  baseline
+					  pen))))
       (return-from load-char-from-file))
     
     (let ((char (schar data index-data)))
@@ -136,25 +136,19 @@
 	(remhash 'load-chunk-file *tasks-active*)
 	(remhash 'load-char-from-file *tasks-active*)
 	(return-from load-char-from-file))
-
+      
       ;; calc pos relative to line rather than prev char
-      (let* ((baseline (v+ (if (char-equal char #\Newline)
-			       (progn
-				 (setf (vx3 baseline) (vx3 baseline-start))
-				 (decf (vy3 baseline) (* +linegap+ *scale-node*))
-				 (setf index-char 0))
-			       (progn
-				 baseline))
-			   (vec3 (* 9.375 +scale-msdf+ *scale-node* index-char)
-				 0
-				 0)))
-	     (node (add-node char
-			     baseline)))
-	(setf (data-obj node) char)
-      	(send-node node nil))
-		
-      (add-node-vcs)
-
+      (when (char-equal char #\Newline)
+	(move-pen-newline pen baseline)
+	(setf index-char 0))
+      
+      (make-char-to-node
+       char
+       (v+ pen
+	   (vec3 (* 9.375 +scale-msdf+ *scale-node* index-char)
+		 0
+		 0)))
+    
       (incf index-data)
       (incf index-char)))
 	
@@ -170,8 +164,8 @@
 							     data
 							     index-data
 							     index-char
-							     baseline-start
-							     baseline)))))
+							     baseline
+							     pen)))))
     ;; Must do this here so a subsequent stop task can stop the new task
     (setf (gethash 'load-char-from-file *tasks-active*) task)
     ;; (format t "[load/make...] NEW TASK = ~a~%" task)

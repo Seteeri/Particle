@@ -10,7 +10,8 @@
 
 (defun move-pen-newline (pen baseline)
   (setf (vx3 pen) (vx3 baseline))
-  (decf (vy3 pen) (* +linegap+ *scale-node*)))
+  (decf (vy3 pen) (* +linegap+ *scale-node*))
+  pen)
 
 (defun make-string-to-node (string
 			    pen
