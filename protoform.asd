@@ -127,8 +127,12 @@
 							     (:file "translate")
 							     (:file "traverse")
 							     (:file "memcpy")
-							     (:module ops
-				       				      :pathname "ops"
+							     (:module file
+				       				      :pathname "file"
+				       				      :components ((:file "file")
+										   (:file "character")))
+							     (:module user
+				       				      :pathname "user"
 				       				      :components ((:file "callbacks")
 										   (:file "operators")))))
 				       (:module projview

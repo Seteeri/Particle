@@ -1135,3 +1135,7 @@ Protoform.
 * NOTE: wayland windows are memcpy to texture ptr
 
 https://nullprogram.com/blog/2014/06/29/
+
+Organize functions based on I/O
+node -> node
+text -> node

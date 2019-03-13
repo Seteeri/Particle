@@ -304,17 +304,17 @@
   (register-callback `(,protoform.controller::+xk-shift-r+      (:press :down)
 					  ,protoform.controller::+xk-iso-left-tab+ (:press))
 		     :exclusive
-		     #'print-graph-cb)
+		     #'load-file-cb)
   (register-callback `(,protoform.controller::+xk-shift-l+ (:press :down)
 				     ,protoform.controller::+xk-iso-left-tab+     (:press))
 		     :exclusive
-		     #'print-graph-cb)
+		     #'load-file-cb)
   
   ;; for testing
   (when t
     (register-callback `(,protoform.controller::+xk-f5+ (:press))
 		       :exclusive
-		       #'pause-task-load-char-from-file)    
+		       #'pause-task-load-char-from-file)
     (register-callback `(,protoform.controller::+xk-f6+ (:press))
 		       :exclusive
 		       #'resume-task-load-char-from-file)
