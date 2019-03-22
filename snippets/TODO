@@ -367,27 +367,39 @@ MON:
   Graphs will be linked but not positioned underneath
 
   * Dynamic variables aka globals [DONE]
-  * Link global nodes into graph
+  * Link global nodes into graph [DONE]
     
- * Color nodes by atom type (8 colors)
-   * character (white)
-   * string
-   * numbers
-   * symbols
-   * t/nil
-   * functions (red)
-   * other (grey)
+ * Color nodes by atom type (8 colors + base) [...]
+   * yellow  - atom (other types)
+   * orange  - functions
+   * red     - array
+   * magenta - sequence
+   * violet  - symbol
+   * blue    - t/nil
+   * cyan    - number
+   * green   - string
+   
+   * base    - character
+         
+  * Refactor file loading for multiple concurrent files loading
+    -> Assign time or serial ID to task
+    -> Reuse task ID
 
-* Undo?
-  * Add undo node for every operation
-  * Create global
-  * Create local - per graph
-     
+* Implement locks
+  * Per special variable
+  * Per node [DONE]
+    * ...slot?
+    
 * Draw lines
   * Use quads for lines
   * Lines are nodes also and thus are in the graph and linked which makes them vertices also
     * Or could put in separate graph where lines connect lines
   * Node<->Line<->Node
+
+* Undo?
+  * Add undo node for every operation
+  * Create global
+  * Create local - per graph
 
 * Implement graph/node commands-shortcuts (see visual)
   * Move:
@@ -509,6 +521,8 @@ UNDO - cut copy paste
 ########################################################################
 
 STUFF
+
+* File explorer?
 
 * Controller: Fix broken repeat - due to loop refactor
   -> POSS timer run in dedicated thread

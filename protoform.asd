@@ -13,8 +13,6 @@
 		 #:cl-wayland
 		 #:cl-libinput
 		 #:cl-xkb
-		 #:cl-pango
-		 #:cl-cairo2
 		 #:cl-glfw3
 		 #:3d-vectors
 		 #:3d-matrices
@@ -35,8 +33,15 @@
 		 #:qbase64
 		 #:cl-redis
 		 #:trivial-benchmark)
+	;; #:cl-pango
+    ;; #:cl-cairo2		 
+	;; #:pango-markup    
     ;; #:babel
     ;; #:dlist
+    ;; #:skip-list    
+	;; #:sb-concurrency    
+	;; #:qbase64
+	;; #:cl-redis	
     :serial t
     :around-compile (lambda (next)
                       (proclaim '(optimize

@@ -1139,3 +1139,109 @@ https://nullprogram.com/blog/2014/06/29/
 Organize functions based on I/O
 node -> node
 text -> node
+
+https://mattdesl.svbtle.com/drawing-lines-is-hard
+
+http://www.osenkov.com/diplom/contents/1/4/
+
+https://github.com/sile/taomp-sbcl
+
+http://etodd.io/2016/01/12/poor-mans-threading-architecture/
+
+if our engine is a particle system, how to do lighting?
+
+must move as much code to the compute shader as possible
+
+https://www.pvk.ca/Blog/2013/04/13/starting-to-hack-on-sbcl/
+
+http://web.media.mit.edu/~lieber/Lieberary/GC/Realtime/Realtime.html
+
+epoch
+bbinit
+
+shell = scripting language for C (processes)
+
+########################################################################
+########################################################################
+
+Separate parts become a whole when it is more efficient to do so or
+when the interaction of those separate parts becomes more complex than
+those parts as a whole.
+
+########################################################################
+
+SASOS
+
+in single address space, the language is unified and thus passing data
+is unified. instead of different processes with different formats, 
+functions pass objects around (ostensibly passing symbols).
+
+unix:
+shell process executes C process(es) which communicate through pipes which
+are implemented like a file underneath
+
+lisp:
+lisp image contains objects which communicate through functions
+
+What we want to do is take that pipeline message passing model and build
+on it by using a general purpose language to facilitate it (or build DSL)
+
+We can go further and use DAGs to describe a pipeline that can allow
+for parallelization. in this case, we hook objects including fn's
+(since fn's are 1st class objects in lisp)
+
+Imagine each C process managing memory along with interpreted languages
+with their own GCs versus a single GC managing all the memory and objects.
+
+That includes multiple levels of redundancy increasing complexity and
+chances of bugs.
+
+Does this outweigh the disadvantage of a single point of failure?
+
+It is easier to make a single system more stable than multiple systems
+
+However, this single system must be simpler thus easier to understand
+and modify than multiple systems, which in the case of lisp vs c, yes
+
+http://wiki.c2.com/?SingleAddressSpaceOperatingSystem
+
+https://www.usenix.org/legacy/event/usenix99/full_papers/deller/deller.pdf
+
+https://news.ycombinator.com/item?id=11187072
+http://www.lighterra.com/papers/modernmicroprocessors/
+
+systemd issue is cohesion and coupling - high cohesion and high coupling
+high coupling being bad since indicative of high complexitty
+
+Linux kernel-userspace: low cohesion, low coupling
+
+area = group of nodes or leaf?
+coupling is like number of edges between two given areas
+cohesion is like number of nodes in a given area
+
+the other issue is systemd is more dynamic - able to respond to events
+better like hot-plugging...same is becoming more desirable in code...lisp?
+
+GC STILL AN ISSUE...moves nodes to different memory for static objects..weak refs?
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Message Passing attempt:
+
+passing objects
+
+Thread A:
+LIFO nodes
+
+Thread B:
+consumers nodes
+
+1. B sends A; B waits A - send fn
+2. A recvs B; A sends B - send object copy
+3. B continues
+
+What if multiple consumers?
+-> Each one has to wait
+
+Model thread process data and serializes
+RPC thread memcpys and sends shm tasks to view

@@ -71,7 +71,7 @@
   ;; Return params for next frame
   (let* ((data (make-string length))
 	 (pos (read-sequence data in)))
-    (format t "pos = ~a~%" pos)
+    (fmt-model t "load-chunk-file" "pos = ~a~%" pos)
     (when (plusp pos)
       ;; Enqueue in async so it can create nodes
       ;; When it is done with the chunk, it will request another here
@@ -91,6 +91,9 @@
 								  index-char
 								  baseline
 								  pen)))))
+	;; (sb-concurrency:send-message
+	;;  *mb-model*
+	;;  task)
 	(enqueue-task-async task)
 	task))))
 
@@ -105,7 +108,7 @@
 			    pen)
 
   ;; pass loop count
-  (dotimes (i 1)
+  (dotimes (i 4)
     
     (when (>= index-data (length data))
       ;; Read new chunk
@@ -180,7 +183,7 @@
   (pause-task 'load-char-from-file))
 
 (defun resume-task-load-char-from-file (event)
-  (resume-task-mb 'load-chunk-file)
+  ;; (resume-task-mb 'load-chunk-file)
   (resume-task 'load-char-from-file))
 
 ;; (with-open-file (in filename)

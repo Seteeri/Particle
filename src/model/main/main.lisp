@@ -32,15 +32,27 @@
   (run-ptree-init)
     
   (sb-ext:gc :full t)
-  ;; (room t)
-  ;; (force-output)
 
-  (init-nodes-default)
+  (setf (sb-ext:bytes-consed-between-gcs) (* 2 1024))
   
+  ;; (push #'(lambda ()
+  ;; 	    (let ((time-gc (coerce (/ sb-ext:*gc-run-time* internal-time-units-per-second)
+  ;; 				   'single-float)))
+  ;; 	      (format t
+  ;; 		      "[model] Time GC: ~4$ ms, ~4$ s~%"
+  ;; 		      (* (- time-gc *time-gc-last*) 1000)
+  ;; 		      time-gc)
+  ;; 	      (setf *time-gc-last* time-gc)
+  ;; 	      ;; (sleep 2)
+  ;; 	      t))
+  ;; 	sb-kernel::*after-gc-hooks*)
+
   ;; Init globals
   ;; - Create graphs
   ;; - Create text
-
+  
+  (init-nodes-default)
+  
   (init-threads)
   
   (fmt-model t "main-init" "Finished model initialization~%"))

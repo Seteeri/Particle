@@ -139,8 +139,12 @@
   (gl:use-program (program-msdf *view*))
 
   (update-raster-buffer-bindings)
-
+    
+  ;; (let* ((time (osicat:get-monotonic-time)))
   (gl:clear :color-buffer-bit :depth-buffer-bit)
+  ;; (let* ((time-final (osicat:get-monotonic-time))
+  ;; 	   (time-delta (- time-final time)))
+  ;;   (format t "delta: ~s~%" (* time-delta 1000))))
   
   ;; (%gl:draw-elements :triangles 6 :unsigned-int (null-pointer))
   ;; (%gl:draw-elements-instanced :triangles 6 :unsigned-int (null-pointer) 64)

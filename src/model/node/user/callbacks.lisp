@@ -77,27 +77,27 @@
   (lambda (task)
     (funcall #'move-node-ptr :out)))
 
-(defun translate-node-ptr-left-cb (seq-event)
-  (with-slots (model-matrix)
-      *node-ptr-main*
-    (translate-node-ptr seq-event
-		       (lambda (value-new) ; update fn
-			 (setf (vx3 (translation model-matrix)) value-new)
-			 (send-node *node-ptr-main*))
-		       (vx3 (translation model-matrix)) ; start
-		       (- (* 96 *scale-node*))          ; delta
-		       'move-pointer-x)))
+;; (defun translate-node-ptr-left-cb (seq-event)
+;;   (with-slots (model-matrix)
+;;       *node-ptr-main*
+;;     (translate-node-ptr seq-event
+;; 		       (lambda (value-new) ; update fn
+;; 			 (setf (vx3 (translation model-matrix)) value-new)
+;; 			 (send-node *node-ptr-main*))
+;; 		       (vx3 (translation model-matrix)) ; start
+;; 		       (- (* 96 *scale-node*))          ; delta
+;; 		       'move-pointer-x)))
 
-(defun translate-node-ptr-right-cb (seq-event)
-  (with-slots (model-matrix)
-      *node-ptr-main*
-    (translate-node-ptr seq-event
-		       (lambda (value-new)
-			 (setf (vx3 (translation model-matrix)) value-new)
-			 (send-node *node-ptr-main*))
-		       (vx3 (translation model-matrix))
-		       (* 96 *scale-node*)
-		       'move-pointer-x)))
+;; (defun translate-node-ptr-right-cb (seq-event)
+;;   (with-slots (model-matrix)
+;;       *node-ptr-main*
+;;     (translate-node-ptr seq-event
+;; 		       (lambda (value-new)
+;; 			 (setf (vx3 (translation model-matrix)) value-new)
+;; 			 (send-node *node-ptr-main*))
+;; 		       (vx3 (translation model-matrix))
+;; 		       (* 96 *scale-node*)
+;; 		       'move-pointer-x)))
 
 (defun translate-node-ptr-up-cb (seq-event)
   (with-slots (model-matrix)
@@ -107,7 +107,7 @@
 			 (setf (vy3 (translation model-matrix)) value-new)
 			 (send-node *node-ptr-main*))
 		       (vy3 (translation model-matrix))
-		       (* +linegap+ *scale-node* 4)
+		       (* +linegap+ *scale-node* 8)
 		       'move-pointer-y)))
 
 (defun translate-node-ptr-down-cb (seq-event)
@@ -118,5 +118,5 @@
 			 (setf (vy3 (translation model-matrix)) value-new)
 			 (send-node *node-ptr-main*))
 		       (vy3 (translation model-matrix))
-		       (- (* +linegap+ *scale-node* 4))
+		       (- (* +linegap+ *scale-node* 8))
 		       'move-pointer-y)))

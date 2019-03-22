@@ -9,7 +9,7 @@
   ;; async-deadline = alloted time - sync time
   ;; or min one...always executes at least one task  
   (let* ((time (osicat:get-monotonic-time))
-	 (time-alloted (/ 8 1000))
+	 (time-alloted (/ (* 0.8 (* (/ 1 60))) 1000)) ;(/ 8 1000))
 	 (time-remain time-alloted)) ; 8 ms runtime
     
     (execute-queue-tasks *queue-tasks-sync*)
@@ -22,5 +22,8 @@
     ;; Ensure view executes shm on next frame
     ;; view will execute all messages sent to it until message
     (send-serving nil)
+
+    ;; GC after sending message to view process before recv next message
+    (sb-ext:gc)
     
     t))

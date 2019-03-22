@@ -1,5 +1,7 @@
 (in-package :protoform.model)
 
+(defparameter *time-gc-last* 0.0)
+
 ;; For now, determine these through view - maybe model can request from view?
 ;; GL_MAX_SHADER_STORAGE_BLOCK_SIZE = 134217728 = 134.217728 MBs
 ;; GL_MAX_TEXTURE_BUFFER_SIZE       = 134217728 = 134.217728 MBs
@@ -14,52 +16,64 @@
 				 '*shm-element* *params-element-shm*
 				 '*shm-draw-indirect* *params-draw-indirect-shm*
 				 '*shm-atomic-counter* *params-atomic-counter-shm*))
+;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defparameter *sym-to-shm* nil)
-
-;;;;;;;;;;;;;
-
+;; READ ONLY
 (defparameter *width* nil)
 (defparameter *height* nil)
 (defparameter *inst-max* nil)
 
-(defparameter *queue-tasks-sync* nil)
-(defparameter *queue-tasks-async* nil)
-(defparameter *ht-timing-fn* nil)
+(defparameter *metrics* nil)
+(defparameter *controller* nil)
+
 
 (defparameter *stack-i-nodes* nil)
 (defparameter *r-tree* nil)
+(defparameter *graphs* nil)
+(defparameter *projview* nil)
 
+(defparameter *mutex-sin* nil)
+(defparameter *mutex-rt* nil)
+(defparameter *mutex-graphs* nil)
+
+;; Link to *graphs*
+;; Make graph class
 (defparameter *digraph-main* nil)
 (defparameter *node-ptr-main* nil)
 (defparameter *vertices-main* (cons 0 nil))
 (defparameter *edges-main*(cons 0 nil))
-
 (defparameter *digraph-vcs* nil)
 (defparameter *node-ptr-vcs* nil)
 (defparameter *vertices-vcs* (cons 0 nil))
 (defparameter *edges-vcs* (cons 0 nil))
 
-(defparameter *offset-texel-textures* nil) ; sum of WxH
-(defparameter *offset-bytes-textures* nil) ; sum of bytes
-;; Textures - list of Texture instances wich store tex parameters
-;; Use skip list? -> For now use vector
-;; Hmm, when texture is removed need to recopy all (to "defragment")
-;; (defparameter *textures* (make-array 64 :adjustable t :fill-pointer 0))
-(defparameter *metrics* nil)
+;; Move to task manager inst?
+(defparameter *queue-tasks-sync* nil)
+(defparameter *queue-tasks-async* nil)
+(defparameter *ht-timing-fn* nil)
 
-(defparameter *controller* nil)
+(defparameter *mutex-qts* nil)
+(defparameter *mutex-qta* nil)
+(defparameter *mutex-htf* nil)
 
+;; Move to conn/socket inst?
+;; Don't need locks...
 (defparameter *sock-view* nil)
 (defparameter *buffer-sock-ptr* nil)
 (defparameter *buffer-sock-array* nil)
-(defparameter *projview* nil)
+
+;; Used by pango
+;; (defparameter *offset-texel-textures* nil) ; sum of WxH
+;; (defparameter *offset-bytes-textures* nil) ; sum of bytes
+;; Textures - list of Texture instances wich store tex parameters
+;; Hmm, when texture is removed need to recopy all (to "defragment")
+;; (defparameter *textures* (make-array 64 :adjustable t :fill-pointer 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defparameter *vars-special*
   '(*params-shm*
-    *sym-to-shm*
+
     *width*
     *height*
     *inst-max*

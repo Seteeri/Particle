@@ -51,8 +51,6 @@
 					:element-type '(unsigned-byte 8))
 	*sock-view* (init-sock-client *path-socket-view* :block))
 
-  ;; (init-sym-to-shm)
-
   ;; (format t "~a~%" (with-output-to-string (stream)
   ;; 		     (format stream "(init-view-buffers (")
   ;; 		     (loop
@@ -62,11 +60,6 @@
   
   (send-init-view-buffers)
 
-  ;; (loop 
-  ;;    :for name :being :the :hash-keys :of *sym-to-shm*
-  ;;    :using (hash-value shm)
-  ;;    :do (send-memcpy-shm-to-cache name
-  ;; 				   shm))
   (loop
      :for (sym params) :on *params-shm* :by #'cddr
      :do (send-memcpy-shm-to-cache (second params)
@@ -106,6 +99,9 @@
 	*ht-timing-fn*      (make-hash-table :size 64)))
 
 (defun set-stack-node ()   
+
+  (sb-ext:gc :full t)
+  
   (setf *stack-i-nodes*     (loop ; run in parallel?
   			       :with cursor := (vec3 0 0 0)
   			       :for i :from 0 :below (floor (/ 134217728 4 +size-struct-instance+)) ; buffer size / node struct size

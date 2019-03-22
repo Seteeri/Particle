@@ -67,7 +67,8 @@
 							     :fill-pointer nil
 							     :element-type 'single-float
 							     :initial-contents *color-default-node*))
-   (flags :accessor flags :initarg :flags :initform 1)))
+   (flags :accessor flags :initarg :flags :initform 1)
+   (mutex :accessor mutex :initarg :mutex :initform (sb-thread:make-mutex))))
 
 (defun insert-vertex (vert &optional
 			     (digraph *digraph-main*)

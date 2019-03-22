@@ -12,7 +12,7 @@
    (mat-view    :accessor mat-view   :initarg :mat-view     :initform nil)
    (pos         :accessor pos        :initarg :pos          :initform (vec3 11 -8 10))
    (rot         :accessor rot        :initarg :rot          :initform (vec3 0 0 0))
-   (displace    :accessor displace   :initarg :displace     :initform (vec3 4.0 4.0 4.0))))
+   (displace    :accessor displace   :initarg :displace     :initform (vec3 8.0 8.0 4.0))))
 
 (defun update-mat-proj ()
   (with-slots (width

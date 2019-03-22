@@ -2,13 +2,6 @@
 
 (defparameter *path-socket-view* "/tmp/protoform-view.socket")
 
-;; (defun init-sym-to-shm ()
-;;   (setf *sym-to-shm* (make-hash-table :size (length *params-shm*)))
-;;   (loop
-;;      :for (sym params) :on *params-shm* :by #'cddr
-;;      :do (setf (gethash sym *sym-to-shm*)
-;; 	       (symbol-value sym))))
-
 (defun serve-client ()
   (loop
      (let ((message (recv-message *sock-view*

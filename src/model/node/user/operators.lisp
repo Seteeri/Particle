@@ -149,8 +149,11 @@
 				  (setf (vx3 (translation model-matrix)) value-new)
 				  (send-node *node-ptr-main*))
 				(vx3 (translation model-matrix)) ; start
-				(* 96
+				;; (* 96
+				;;    *scale-node*				
+				(* +linegap+
 				   *scale-node*
+				   8
 				   (cond ((eq dir :in)
 					  -1.0)
 					 ((eq dir :out)

@@ -2,6 +2,7 @@
 
 (defparameter *view* nil)
 (defparameter *time-frame-last* 0)
+(defparameter *time-gc-last* 0.0)
 (defparameter *draw* nil)
 (defparameter *serving* t)
 
@@ -67,20 +68,20 @@
     (clean-up-buffer-objects view)
     
     (gl:delete-vertex-arrays (list boav-main))
-    (format t "[clean-up-view] Deleted vertex array ~a~%" boav-main)
+    (fmt-view t "clean-up-view" "Deleted vertex array ~a~%" boav-main)
 
     (%gl:use-program 0)
     
     (%gl:delete-program program-default)
-    (format t "[clean-up-view] Deleted program ~a~%" program-default)
+    (fmt-view t "clean-up-view" "Deleted program ~a~%" program-default)
     (%gl:delete-program program-compute)
-    (format t "[clean-up-view] Deleted program ~a~%" program-compute)
+    (fmt-view t "clean-up-view" "Deleted program ~a~%" program-compute)
 
     (loop 
        :for fence :across fences
        :do (unless (null-pointer-p fence)
 	     (%gl:delete-sync fence)
-	     (format t "[clean-up-view] Deleted fence ~a~%" fence)))))
+	     (fmt-view t "clean-up-view" "Deleted fence ~a~%" fence)))))
 
 (defun clean-up-buffer-objects (view)
   (dolist (boa (list (bo-projview view)
@@ -222,6 +223,22 @@
 				:fences (make-array 3
 						    :adjustable nil
 						    :initial-element (null-pointer))))
+
+    (sb-ext:gc :full t)
+    
+    (setf (sb-ext:bytes-consed-between-gcs) (* 2 1024))
+
+    ;; (push #'(lambda ()
+    ;; 	      (let ((time-gc (coerce (/ sb-ext:*gc-run-time* internal-time-units-per-second)
+    ;; 				     'single-float)))
+    ;; 		(format t
+    ;; 			"[view] Time GC: ~4$ ms, ~4$ s~%"
+    ;; 			(* (- time-gc *time-gc-last*) 1000)
+    ;; 			time-gc)
+    ;; 		(setf *time-gc-last* time-gc)
+    ;; 		;; (sleep 2)
+    ;; 		t))
+    ;; 	  sb-kernel::*after-gc-hooks*)
     
     (loop 
        (if *draw*
@@ -237,16 +254,24 @@
   (glfw:poll-events)
   (glfw:swap-buffers)
 
-  ;; Send frame
-  (let ((time (osicat:get-monotonic-time)))
-    
-    ;; (format t "View: ~8$ ms~%" (* (- time *time-frame-last*) 1000))
-    ;; (setf *time-frame-last* time)
-    
+  ;; This should be fine as long as memory is not exhausted - exceptional case?
+  ;; Goal: GC during glClear since that's where process blocks on GPU
+  ;; (sb-ext::without-gcing
+  
+  (let ((time-frame (osicat:get-monotonic-time)))
+    ;; (format t
+    ;; 	    "Time frame: ~4$ ms~%"
+    ;; 	    (* (- time-frame *time-frame-last*) 1000))
+    (setf *time-frame-last* time-frame)
+
+    ;; Send frame
     (send-message (sock-client *view*)
     		  (buffer-sock-ptr *view*)
-		  (format nil "(handle-view-sync ~S)" time)))
+		  (format nil "(handle-view-sync ~S)" time-frame)))
 
+  ;; GC before waiting on model process
+  (sb-ext:gc)
+  
   ;; MSG_WAITALL	0x100
   (run-server #x100))
 

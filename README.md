@@ -8,12 +8,12 @@ information as they moved through the computer. What did they look like?
  Ships? Motorcycles? Were the circuits like freeways? I kept dreaming of
   a world I thought I'd never see. And then one day . . .
 
-Protoform is a Common Lisp 3D nodal userland based on DRM-KMS and 
-Open GL ES. It is the implementation of my vision of a more consistent 
+Protoform is a Common Lisp 3D nodal shell based on DRM-KMS and Open GL 
+ES. It is the implementation of my vision of a more consistent 
 programmable UI to replace the desktop/application paradigm - a way to
 map our thoughts into the computer. It integrates concepts from 
-CLIs/shells/REPLs/notebooks, WMs/DEs, and mindmapping into a single 3D 
-interface.
+CLIs/shells/REPLs/notebooks, WMs/DEs, creative coding, and mindmapping 
+into a single 3D interface.
 
 User-aspect Goals:
 
@@ -35,8 +35,8 @@ FOSS ecosystem and infrastructure, thus allowing more seamless adoption,
 rather than taking a more adamant fundamental approach, which would 
 require a high initial investment.
 
-The target audience consists of programmers, developers, system
-administrators, power users, tech-savy users and the like.
+The target audience consists of programmers, developers, power users and
+the like.
 
 ## The Inspiration
 
@@ -52,7 +52,8 @@ administrators, power users, tech-savy users and the like.
       * Elmintation of applications -> commands
       * Redesigned file hierarchies
       * ZUIs as an alternative
-    
+    * Robert Strandh - CLOSOS/LispOS
+        
 * Secondary Inspirations:
     * McCLIM - central concept of "presentation types"
     * Uzbl/Conkeror - numbered links for navigation
@@ -66,7 +67,6 @@ administrators, power users, tech-savy users and the like.
 * Personal Influences:
     * Sir Tim Berners-Lee - WWW
     * Brett Victor - Inventing on Principle
-    * Robert Strandh - CLOSOS
     * Chris Schafmeister - Molecular Metaprogramming
     * Paul Graham, Peter Norvig - ...
     * Zach Bean - quicklisp
@@ -75,11 +75,37 @@ It was designed to address limitations I've personally encountered in
 the quest for a more efficient workflow; the main limitation being, 
 confinement to the desktop/window metaphor and the staticness of widgets.
 
-With the growth of open-source, Wayland, fragmentation of the desktop, 
-Moore's Law, data breaches and privacy issues, and finally AR/VR, I 
-believe this presents an opportunity to redefine the computing 
-environment. Protoform is not an entirely new idea, but a different 
-attempt to build upon the success and failures of those before. 
+The chances of a Linux *desktop* are virtually nil. Existing Windows and
+MacOS desktops are performant enough that there is no compelling reason
+to switch to a Linux desktop for the average user - that market is done
+and settled. The price comparison is a non-issue since any consumer 
+computer will come with the OS already installed. Essentially, the 
+headache of learning a new system and new programs (among other FOSS 
+issues) is not worth it as it provides no significant technological 
+advantage to existing commercial desktops. 
+
+The previous statement with more obvious wording: Windows and MacOS 
+users will not adopt a desktop that functions exactly like their current 
+desktop (see book "Diffusion of Innovations" by Everett Rogers). GNOME,
+KDE, Cinnamon, MATE, Xfce, etc. provide productivity enhancements but 
+at the end of the day, it's just another desktop and thus the same 
+underlying model for interacting with a computer.
+
+**The way for a future FOSS system does not lie with the desktop but with
+the computing needs of tomorrow.**
+
+If the theory that FOSS development grants it advantages over proprietary 
+development, then its innovative nature should allow it to create an 
+even better system; sadly, the wheel keeps being reinvented. I believe 
+current desktops are on-par in terms of functionality with Windows and 
+MacOS, that it is time to move forward.
+
+With the growth of open-source in the last decade, Wayland, 
+fragmentation of the desktop, systemd debate, Moore's Law, data breaches
+and privacy issues, and finally emerging AR/VR technologies, I believe
+this presents an opportunity to redefine the computing environment. 
+Protoform is not an entirely new idea, but a different attempt to build
+upon the success and failures of those before.
 
 There have been numerous implementations and attemps at structured or 
 projectional editors going all the way back to the days of Interlisp-D 
@@ -87,8 +113,9 @@ and to the new projects being crowdfunded. However, several issues
 have yet to be addressed:
 
 * Integration with existing interfaces (the desktop)
-* Homoiconic GUI 
-  * Requires meta-circular evaluator of language implementation + homoiconicity of language design
+* Homoiconic GUI
+  * Requires meta-circular evaluator of language implementation + 
+  homoiconicity of language design
   * The nodes must be able to edit nodes (itself)
   * The editor must be able to edit itself
 
@@ -100,27 +127,6 @@ of Emacs, and its strengths and weaknesses.
   * Single-thread -> Multithreading
 * Software rendering -> OpenGL
 * Help system/manual -> Better discoverability
-
-I imagine - what if there were something like Emacs for the non-programmer
-user? Considering the way technology and computers are becoming 
-increasingly integrated into our everyday lives, the bottleneck to 
-leveraging computing most effectively and driving innovation will be the
-connection between man and machine.
-
-The average user is familiar with GUI widgets, but what if those were 
-completely dynamic and an intrinsic property, similar to how Emacs 
-allows everything to be customized through elisp. Teaching a lay user
-how to program is not a trivial task as it is inherently based upon the 
-user's ability to think, a reflection of the mind if you will (the 
-history and usefulness of VPLs are a good study). Having observed 
-Blender's nodal workflow and Unreal's Blueprint system, I attempted to 
-combine those models of interaction with the analogy of LEGOs, while at 
-the same time allowing for the entire system to remain hackable to 
-programmers to maintain a gradual learning curve.
-
-I do not believe it is about dumbing down programming to make it easier
-to learn, but creating the right tools around programming to drive
-motivation and learning.
 
 [A comment made by lispm, an old time lisper, on the concept of
 a Lisp OS](https://news.ycombinator.com/item?id=15466124):
@@ -172,23 +178,61 @@ a Lisp OS](https://news.ycombinator.com/item?id=15466124):
 >
 > ...But cool is not enough to win in the real world.
 
+I imagine - what if there were something like Emacs for the non-programmer
+user? Considering the way technology and computers are becoming 
+increasingly integrated into our everyday lives, the bottleneck to 
+leveraging computing most effectively and driving innovation will be the
+connection between man and machine.
+
+The average user is familiar with GUI widgets, but what if those were 
+completely dynamic and an intrinsic property, similar to how Emacs 
+allows everything to be customized through elisp. Teaching a lay user
+how to program is not a trivial task as it is inherently based upon the 
+user's ability to think, a reflection of the mind if you will (the 
+history and usefulness of VPLs are a good study). Having observed 
+Blender's nodal workflow and Unreal's Blueprint system, I attempted to 
+combine those models of interaction with the analogy of LEGOs, while at 
+the same time allowing for the entire system to remain hackable to 
+programmers to maintain a gradual learning curve.
+
+I do not believe it is about dumbing down programming to make it easier
+to learn, but creating the right tools around programming to drive
+motivation and learning.
+
 *See writings*
 
 ## The Interface
 
-* Built around task management and version control - DAGs
-  * Non-destructive editing and undo/redo capabilities
-* Non-blocking UI - user always aware of computer status
-* 3D orthographic nodal environment - "turtles all the way down"
+* Top-down approach
+  * First step - build the shell/DE
+  * Second step - integrate the init system
+  * Third step - ???
+* Built around DAGs, as they are a common pattern:
+  * Task management
+  * Version control
+  * Init dependencies
+  * Garbage collection
+* 3D orthographic nodal environment - "turtles all the way down"  
 * Primarily keyboard driven interface
-* Wayland extension provides conventional desktop
+* Non-destructive editing; undo/redo capabilities
+* Non-blocking UI - user always aware of computer status
+* Wayland provides conventional desktop
+* Solarized color theme for default
 
 ## The Architecture
 
+* Focusing on SBCL due to best performance
 * Two process system - model/view
-  * Task manager - designed to run concurrently
-  * Frame balancing - maintains responsive UI through soft deadlines
-* Tiled forward shading engine (Forward+)
+  * Model contains a task manager that spreads tasks across frames
+    * Maintains low-latency through soft deadlines
+  * View's sole purpose is to draw and poll socket for commands
+    * Separate process from model to minimize pressure on GC
+  * Force GC when idle: model GCs after executing frame tasks, while
+    view draws; view GCs after drawing frame, while waiting for model 
+    tasks
+    * See Roadmap for GC plans
+* Rendering engine is essentially a particle system
+  * Plans to pursue tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
   * Compute shaders
   * AZDO Techniques
@@ -200,33 +244,35 @@ a Lisp OS](https://news.ycombinator.com/item?id=15466124):
     * Texture buffers/UBOs/SSBOs -> gl_VertexID+gl_InstanceID
   * Separate shader stages and programmable pipelines
 * R-tree for spatial indexing
-* Nodal interface based upon directed graph
+* Windows, MacOS, BSD support will come later
 
 ## The Roadmap
 
-Official Core (equivalent to OpenGL core)
-1. Node/Text Editor Functionality
-   * Version Control System
-   * Hyperweb
-2. REPL Functionality
-3. Media Functionality
-   * FFMPEG for media - images, video, audio
+I plan on working on a concurrent/incremental GC for SBCL to reduce or
+eliminate the stop-the-world pauses. I'm not very familiar with garbage 
+collectors, however, I am currently studying them... ;)
+
+Core - nodal/repl/undo functionality
+1. Nodes
+2. REPL
+3. Version control system for nodes/objects
 4. Wayland Integration 
-   * Objects represented in 3D
    * Web remains accessible through Wayland/DE -> browser
-5. Widget Toolkit
-6. WebKit Integration
+5. Widget toolkit (nodal-based)   
+   
+Extensions (equivalent to OpenGL ARB...)
+1. Media Functionality
+   * FFMPEG for media - images, video, audio
+   * Integrate GEGL? Image/graphicsmagick? etc...   
+2. WebKit Integration
+   * Build around Webkit like Next
 
-Official Extensions (equivalent to OpenGL ARB...)
-1. Integrate GEGL? Image/graphicsmagick? etc...
-
-User Extensions (equivalent to OpenGL EXT)
+Personal Extensions
 1. Per-object vector motion blur (personal favorite)
 2. Tiled forward rendering (Forward+) including lights
    * Future: Implement clustered -> volumetric forward shading
 
 Future Extensions
-* Native web browser - build around Webkit like Next
 * Integrate EEVEE for rendering
 * Common Lisp to WebAssembly 
   * WebAssembly describes an AST ;)
@@ -240,7 +286,8 @@ Future Extensions
 * Vulkan/WSI (hopefully...)
 
 ```lisp
-    :depends-on (#:osicat
+   :depends-on (#:alexandria
+		 #:osicat
 		 #:cl-drm
 		 #:cl-gbm
 		 #:cl-egl
@@ -248,24 +295,21 @@ Future Extensions
 		 #:cl-wayland
 		 #:cl-libinput
 		 #:cl-xkb
-		 #:cl-pango
-		 #:cl-cairo2
 		 #:cl-glfw3
 		 #:3d-vectors
 		 #:3d-matrices
 		 #:cl-digraph
 		 #:cl-digraph.dot
 		 #:usocket
-		 #:pango-markup
 		 #:bordeaux-threads
 		 #:inferior-shell
 		 #:trivial-timers
 		 #:str
 		 #:easing
 		 #:lparallel
-		 #:skip-list
-		 #:sb-concurrency
-		 #:pack)
+		 #:pack
+		 #:spatial-trees
+		 #:trivial-benchmark)
 ```
 
 ## The Installation
