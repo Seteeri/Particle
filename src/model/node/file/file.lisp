@@ -29,8 +29,6 @@
   ;;     (spatial-trees:insert node *r-tree*)    
   ;;     node))
 
-  ;; symbol can do about 800 chars in 16.7 ms
-
   ;; move opening file handle to load-chunk-file (model thread)?
   ;; should be okay in controller thread for now...
   

@@ -1,12 +1,25 @@
 (in-package :protoform.model)
 
-(defun fmt-model (dst ctx-str ctl-str &rest rest)
-  ;; Add space opt
-  (apply #'format
-	 dst
-	 (str:concat (format nil "[MODEL:~a][~a] " (sb-posix:getpid) ctx-str)
-		     ctl-str)
-	 rest))
+(defun run-model-ptree ()
+  ;; Build frames - aka ptrees
+  ;; 1. Pull tasks until empty
+  ;;    * Set cap or timer...
+  ;; 2. Add to ptree
+  ;; 3. Execute ptree
+  (loop
+     ;; Block on first message
+     ;; Afterwards, poll messages until empty
+     :for msg-first := (sb-concurrency:receive-message *mb-model*)
+     :do (let ((ptree (make-ptree)))
+	   ;; Process msg-first
+	   (loop
+	      :do (multiple-value-bind (msg flag-recv)
+		      (sb-concurrency:receive-message-no-hang *mb-model*)
+		    (unless flag-recv (return))
+		    (format t "Processed msg: ~s~%" msg)))
+	   ;; Exec ptree
+	   ;; (call-ptree 'finish tree)
+	   (format t "~6$ | Frame done~%" (osicat:get-monotonic-time)))))
 
 (defun run-model ()
   (execute-mb-tasks *mb-model*))
@@ -150,3 +163,11 @@
     	      tree)
     
     (call-ptree 'init-conn-rpc-view tree)))
+
+(defun fmt-model (dst ctx-str ctl-str &rest rest)
+  ;; Add space opt
+  (apply #'format
+	 dst
+	 (str:concat (format nil "[MODEL:~a][~a] " (sb-posix:getpid) ctx-str)
+		     ctl-str)
+	 rest))

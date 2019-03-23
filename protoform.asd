@@ -33,15 +33,15 @@
 		 #:qbase64
 		 #:cl-redis
 		 #:trivial-benchmark)
-	;; #:cl-pango
+    ;; #:cl-pango
     ;; #:cl-cairo2		 
-	;; #:pango-markup    
+    ;; #:pango-markup    
     ;; #:babel
     ;; #:dlist
     ;; #:skip-list    
-	;; #:sb-concurrency    
-	;; #:qbase64
-	;; #:cl-redis	
+    ;; #:sb-concurrency    
+    ;; #:qbase64
+    ;; #:cl-redis	
     :serial t
     :around-compile (lambda (next)
                       (proclaim '(optimize

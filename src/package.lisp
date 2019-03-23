@@ -196,5 +196,8 @@
   (:use #:cl
         #:cffi
 	#:protoform.libc
-	#:protoform.conn)
+	#:protoform.conn
+	#:osicat
+	#:lparallel
+	#:trivial-benchmark)
   (:export #:main))

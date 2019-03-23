@@ -385,8 +385,11 @@ MON:
     -> Assign time or serial ID to task
     -> Reuse task ID
 
+* Refactor timer
+  * Use actual timer that inserts task into queue
+
 * Implement locks
-  * Per special variable
+  * Per special variable [DONE]
   * Per node [DONE]
     * ...slot?
     

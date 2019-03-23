@@ -2,7 +2,7 @@
 
 (defun init-threads ()
   (let ((thread-view       (bordeaux-threads:make-thread #'serve-client))
-	(thread-model      (bordeaux-threads:make-thread #'run-model))
+	(thread-model      (bordeaux-threads:make-thread #'run-model-ptree))
 	(thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))
 	(thread-controller (bordeaux-threads:make-thread #'run-controller)))
     (bordeaux-threads:join-thread thread-view)

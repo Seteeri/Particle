@@ -45,26 +45,24 @@
 (defun main (width
 	     height
 	     inst-max)
-  
-  ;; https://askubuntu.com/questions/125062/how-can-i-find-which-desktop-enviroment-i-am-using
 
-  ;; (format t "~S~%" sb-ext:*posix-argv*)
+  ;; https://askubuntu.com/questions/125062/how-can-i-find-which-desktop-enviroment-i-am-using  
+  ;; https://www.emacswiki.org/emacs/StumpWM
+  ;; (format t "~v@{~A~:*~}~%" 64 "-")
+  
+  (format t "arguments: ~a~%" sb-ext:*posix-argv*)
+
+  ;; (run-test)
+  ;; (sb-ext:exit)
   
   (when t
     (fork (lambda () (protoform.view:run-view width height
     					      inst-max
     					      nil))))
   
-  ;; (sleep 2)
-  
   (when t
     (fork (lambda () (protoform.model:init-model width height
     						 inst-max
     						 nil))))
-
-  ;; https://www.emacswiki.org/emacs/StumpWM
-
-  ;; (format t "~v@{~A~:*~}~%" 64 "-")
   
-  ;; Explicitly exit after loading code
   (sb-ext:exit))

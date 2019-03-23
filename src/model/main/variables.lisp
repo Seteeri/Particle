@@ -9,13 +9,14 @@
 ;; Cache/compute will use cs-in
 ;; Step/raster will use vs-in
 
-(defparameter *params-shm* (list '*shm-projview* *params-projview-shm*
-				 '*shm-vertices* *params-vertices-shm*
-				 '*shm-nodes* *params-nodes-shm*
-				 '*shm-texture-glyphs* *params-texture-glyphs-shm*
-				 '*shm-element* *params-element-shm*
-				 '*shm-draw-indirect* *params-draw-indirect-shm*
-				 '*shm-atomic-counter* *params-atomic-counter-shm*))
+(defparameter *params-shm*
+  (list '*shm-projview* *params-projview-shm*
+	'*shm-vertices* *params-vertices-shm*
+	'*shm-nodes* *params-nodes-shm*
+	'*shm-texture-glyphs* *params-texture-glyphs-shm*
+	'*shm-element* *params-element-shm*
+	'*shm-draw-indirect* *params-draw-indirect-shm*
+	'*shm-atomic-counter* *params-atomic-counter-shm*))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; READ ONLY
@@ -94,9 +95,6 @@
     *node-ptr-vcs*
     *vertices-vcs*
     *edges-vcs*
-
-    *offset-texel-textures*
-    *offset-bytes-textures*
     
     *metrics*
 

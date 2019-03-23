@@ -1245,3 +1245,46 @@ What if multiple consumers?
 
 Model thread process data and serializes
 RPC thread memcpys and sends shm tasks to view
+
+Use <mod>+TAB to show node slots for its data type...
+
+actor model is like focusing locks in a few places or minimal places
+
+so each node is an actor since each thread needs to access it...
+
+1. Input
+   1. Send msg to pool
+2. Create node - pull from pool
+   1. Recv msg from input
+   2. Send msg with node
+3. Modify node
+4. Serialize node
+...
+5. Memcpy
+6. Send memcpy
+
+Thread pool will execute mail for each object's mailbox
+- like epoll over bunch of fd's
+
+Sender must notify receiver by placing order in task queue
+Worker will pull from task queue and execute in node space
+
+BUILD TEST MODEL PROGRAM
+
+Threadpool
+Work queue (shared by threadpool with lock)
+N-nodes
+
+Threads work in parallel on different memory segments
+
+It's like a 1,000,000 rich people with 4 servants shared
+The servants have a hub that they get taskings
+They go to the house, do the job, and return
+
+Sometimes a job requires something from another house...
+1. This cannot happen since the servant has everything they need when
+they get the task from the hub
+
+lets say one rich person had a sandwich they wanted to share
+in their home, they would divide it up and then submit each piece to
+the hub with the instructions to give it to specific houses.
