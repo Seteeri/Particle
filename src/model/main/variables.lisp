@@ -28,7 +28,9 @@
 (defparameter *controller* nil)
 
 
+(defparameter *nodes-model* nil)
 (defparameter *stack-i-nodes* nil)
+(defparameter *rtree-model* nil)
 (defparameter *r-tree* nil)
 (defparameter *graphs* nil)
 (defparameter *projview* nil)

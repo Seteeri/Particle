@@ -98,26 +98,35 @@
 	
 	*ht-timing-fn*      (make-hash-table :size 64)))
 
-(defun set-stack-node ()   
+(defun set-nodes-model ()   
+  (setf *nodes-model*
+	(loop ; run in parallel?
+  	   :with cursor := (vec3 0 0 0)
+  	   :for i :from 0 :below (floor (/ 134217728 4 +size-struct-instance+)) ; buffer size / node struct size
+  	   :collect (init-node-msdf cursor
+  				    *scale-node*
+  				    i ; use offset?
+  				    nil
+  				    nil))))
 
-  (sb-ext:gc :full t)
-  
-  (setf *stack-i-nodes*     (loop ; run in parallel?
-  			       :with cursor := (vec3 0 0 0)
-  			       :for i :from 0 :below (floor (/ 134217728 4 +size-struct-instance+)) ; buffer size / node struct size
-  			       :collect (init-node-msdf cursor
-  							*scale-node*
-  							i ; use offset?
-  							nil
-  							nil))
-  	;; *mutex-stack-nodes* (sb-thread:make-mutex)
-	))
+(defun set-nodes-view ()
+  (setf *stack-i-nodes*
+	(loop ; run in parallel?
+  	   :with cursor := (vec3 0 0 0)
+  	   :for i :from 0 :below (floor (/ 134217728 4 +size-struct-instance+)) ; buffer size / node struct size
+  	   :collect (init-node-msdf cursor
+  				    *scale-node*
+  				    i ; use offset?
+  				    nil
+  				    nil))))
 
-(defun set-r-tree ()
-  (setf *r-tree*        (spatial-trees:make-spatial-tree :r
-							 :rectfun #'node-rect)
-	;; *mutex-r-tree*  (sb-thread:make-mutex)
-	))
+(defun set-rtree-model ()
+  (setf *rtree-model* (spatial-trees:make-spatial-tree :r
+						       :rectfun #'node-rect)))
+
+(defun set-rtree-view ()
+  (setf *r-tree* (spatial-trees:make-spatial-tree :r
+						  :rectfun #'node-rect)))
 
 (defun set-shm-projview (projview)
   (setf *shm-projview* (init-shm-projview)))

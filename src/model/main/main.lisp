@@ -103,9 +103,9 @@
 
 (defun run-ptree-init ()
   (let ((tree (make-ptree)))
-    ;;        var(id)             input(args)     fn
 
     ;; Initial variables
+    ;; Read only after init
     (ptree-fn 'projview
 	      '()
 	      #'set-projview
@@ -116,24 +116,36 @@
 	      #'set-controller
 	      tree)
 
+    ;; Read only after init
     (ptree-fn 'metrics
 	      '()
               #'set-metrics
 	      tree)
 
+    ;; sb-concurrency
     (ptree-fn 'cc
 	      '()
               #'set-cc
 	      tree)	
-    
-    (ptree-fn 'r-tree
+
+    (ptree-fn 'rtree-model
 	      '()
-              #'set-r-tree
+              #'set-rtree-model
+	      tree)
+    
+    (ptree-fn 'rtree-view
+	      '()
+              #'set-rtree-view
 	      tree)
 
-    (ptree-fn 'stack-node
+    (ptree-fn 'nodes-model
 	      '()
-              #'set-stack-node
+              #'set-nodes-model
+	      tree)    
+
+    (ptree-fn 'nodes-view
+	      '()
+              #'set-nodes-view
 	      tree)    
     
     ;; Shm functions
@@ -179,8 +191,10 @@
 		controller
 		metrics
 		cc
-		r-tree
-		stack-node
+		rtree-view
+		rtree-model
+		nodes-view
+		nodes-model
 		shm-projview
     		shm-nodes
     		shm-atomic-counter
