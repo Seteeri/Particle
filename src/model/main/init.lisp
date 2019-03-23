@@ -1,14 +1,14 @@
 (in-package :protoform.model)
 
 (defun init-threads ()
-  (let ((thread-view       (bordeaux-threads:make-thread #'serve-client))
-	(thread-model      (bordeaux-threads:make-thread #'run-model-ptree))
-	(thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))
-	(thread-controller (bordeaux-threads:make-thread #'run-controller)))
-    (bordeaux-threads:join-thread thread-view)
-    (bordeaux-threads:join-thread thread-model)
+  (let ((thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))      ; input      -> controller
+	(thread-controller (bordeaux-threads:make-thread #'run-controller))  ; controller -> model
+	(thread-model      (bordeaux-threads:make-thread #'run-model-ptree)) ; model      -> view-rpc
+	(thread-view       (bordeaux-threads:make-thread #'serve-client)))   ; view-rpc   -> view proccess
     (bordeaux-threads:join-thread thread-libinput)
-    (bordeaux-threads:join-thread thread-controller)))
+    (bordeaux-threads:join-thread thread-controller)
+    (bordeaux-threads:join-thread thread-model)
+    (bordeaux-threads:join-thread thread-view)))
 
 (defun init-nodes-default ()
   ;; *mutex-main*    (sb-thread:make-mutex)

@@ -6,20 +6,51 @@
   ;;    * Set cap or timer...
   ;; 2. Add to ptree
   ;; 3. Execute ptree
+
+  ;; Issues
+  ;; - Cannot pause ptree execution -> require modifying ptree...
+  
   (loop
      ;; Block on first message
      ;; Afterwards, poll messages until empty
      :for msg-first := (sb-concurrency:receive-message *mb-model*)
-     :do (let ((ptree (make-ptree)))
-	   ;; Process msg-first
-	   (loop
-	      :do (multiple-value-bind (msg flag-recv)
-		      (sb-concurrency:receive-message-no-hang *mb-model*)
-		    (unless flag-recv (return))
-		    (format t "Processed msg: ~s~%" msg)))
+     :do (let* ((ptree (make-ptree))
+		(ids (poll-and-process ptree)))
+
+	   (push (process-msg msg-first ptree)
+		 ids)
+
+	   (format t "ids: ~a~%" ids)
+	   
+	   ;; Add finish node
+	   (ptree-fn 'finish
+		     ids
+		     (lambda (&rest ids)
+		       (declare (ignore ids)))
+		     ptree)
+       
 	   ;; Exec ptree
-	   ;; (call-ptree 'finish tree)
+	   (call-ptree 'finish ptree)
+	   
 	   (format t "~6$ | Frame done~%" (osicat:get-monotonic-time)))))
+
+(defun poll-and-process (ptree)
+  (let ((ids ()))
+    (loop
+       :do (multiple-value-bind (msg flag-recv)
+	       (sb-concurrency:receive-message-no-hang *mb-model*)
+	     (unless flag-recv (return))
+	     (push (process-msg msg) ids)))
+    ids))
+
+(defun process-msg (msg ptree)
+  (cond ((typep msg 'function)
+	 ;; return final id
+	 (funcall msg ptree))
+	(t ;; ptree node args
+	 (destructuring-bind (id args-in fn-out)
+	     msg
+	   (ptree-fn id args-in fn-out ptree)))))
 
 (defun run-model ()
   (execute-mb-tasks *mb-model*))

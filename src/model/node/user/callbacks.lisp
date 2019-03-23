@@ -63,7 +63,7 @@
 ;;     (funcall #'load-file-to-nodes)))
 (defun load-file-cb (seq-key)
   (sb-concurrency:send-message *mb-model*
-			       #'load-file-to-nodes))
+			       #'load-file-to-nodes-ptree))
 
 ;;;;;;;;
 ;; Anims
