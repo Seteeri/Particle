@@ -18,6 +18,7 @@
 			    size))
 
 (defun sync-gl ()
+  ;; https://stackoverflow.com/questions/12742142/opengl-compute-shader-invocations
   ;; Compute shader performs "incoherent memory accesses":
   ;; - Writes (atomic or otherwise) via Image Load Store
   ;; - Writes (atomic or otherwise) via Shader Storage Buffer Objects
@@ -41,19 +42,24 @@
 	   (wait-duration 0)
 	   (wait-return nil))
       (loop
-	 :do(progn
-	      
-	      (setf wait-return (%gl:client-wait-sync sync wait-flags wait-duration))
+	 (progn
+	   
+	   (setf wait-return
+		 (%gl:client-wait-sync sync
+				       wait-flags
+				       wait-duration))
 
-	      (when (or (eq wait-return :already-signaled-apple) (eq wait-return :condition-satisfied-apple))
-		(return))
-	      (when (eq wait-return :wait-failed-appled)
-		(error "wait-buffer: client-wait-sync returned :wait-failed")
-		(return))
-	      
-	      ;; After the first time, need to start flushing, and wait for a looong time.
-	      (setf wait-flags :sync-flush-commands-bit-apple)
-	      (setf wait-duration #xFFFFFFFFFFFFFFFF))))))
+	   (when (or (eq wait-return :already-signaled-apple)
+		     (eq wait-return :condition-satisfied-apple))
+	     (return))
+	   
+	   (when (eq wait-return :wait-failed-apple)
+	     (error "wait-buffer: client-wait-sync returned :wait-failed")
+	     (return))
+	   
+	   ;; After the first time, need to start flushing, and wait for a looong time.
+	   (setf wait-flags    :sync-flush-commands-bit-apple
+		 wait-duration #xFFFFFFFFFFFFFFFF))))))
 
 (defun wait-buffer-2 (sync)
   (unless (null-pointer-p sync)
@@ -61,7 +67,7 @@
        :for wait-return := (%gl:client-wait-sync sync :sync-flush-commands-bit 1)
        :do (when (or (eq wait-return :already-signaled-apple)
 		     (eq wait-return :condition-satisfied-apple))
-		(return)))))
+	     (return)))))
 
 (defun get-gl-maxes ()
   (loop 

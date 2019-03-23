@@ -24,6 +24,23 @@
     (send-serving nil)
 
     ;; GC after sending message to view process before recv next message
-    (sb-ext:gc)
+    ;; (sb-ext:gc)
     
     t))
+
+(defun handle-view-sync-2 (time-frame)
+
+  (sb-sys:without-gcing
+  
+      ;; execute ptree
+      
+      (send-serving nil)
+    
+    t)
+
+  ;; gc
+  ;; (sb-ext:gc)
+  
+  ;; build ptree
+  
+  t)

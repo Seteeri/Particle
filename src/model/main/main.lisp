@@ -76,8 +76,6 @@
   (run-ptree-init)
     
   (sb-ext:gc :full t)
-
-  (setf (sb-ext:bytes-consed-between-gcs) (* 2 1024))
   
   ;; (push #'(lambda ()
   ;; 	    (let ((time-gc (coerce (/ sb-ext:*gc-run-time* internal-time-units-per-second)
@@ -94,6 +92,8 @@
   ;; Init globals
   ;; - Create graphs
   ;; - Create text
+
+  ;; (setf (sb-ext:bytes-consed-between-gcs) (* 2 1024))
   
   (init-nodes-default)
   

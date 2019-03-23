@@ -32,7 +32,7 @@
 		    size
 		    (size-buffer bo-dest))))
   (when print
-    (fmt-view t "memcpy-shm-to-cache" "~a, ~a bytes~%" name-src size)))
+    (fmt-view t "memcpy-shm-to-cache" "~a, @~a, +~a bytes~%" name-src offset size)))
 
 ;; Can either use this function to cpy between buffers or use GL func
 (defun memcpy-cache-to-step (name-dest
@@ -44,7 +44,7 @@
   ;; (format t "cache-to-step: ~a~%" (get-cache-buffer name-dest))
   (let* ((bo-dest (gethash name-dest (bo-step *view*)))
 	 (ptr-dest (aref (ptrs-buffer bo-dest) ix-dest))
-	 (ptr-src (aref (ptrs-buffer (get-cache-buffer name-dest)) 0)))
+	 (ptr-src (aref (ptrs-buffer (get-cache-buffer name-src)) 0)))
     (memcpy-ptr ptr-dest
 		0
 		ptr-src

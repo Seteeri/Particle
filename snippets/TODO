@@ -381,17 +381,9 @@ MON:
    
    * base    - character
          
-  * Refactor file loading for multiple concurrent files loading
-    -> Assign time or serial ID to task
-    -> Reuse task ID
-
-* Refactor timer
-  * Use actual timer that inserts task into queue
-
-* Implement locks
-  * Per special variable [DONE]
-  * Per node [DONE]
-    * ...slot?
+* Refactor file loading for multiple concurrent files loading
+  -> Assign time or serial ID to task
+  -> Reuse task ID
     
 * Draw lines
   * Use quads for lines
@@ -429,6 +421,9 @@ UI = nodes
 ...map to underlying data, not necessarily 1:1, but user can expose it
 ...pf organizes nodes to match relationships between underlying data
 ...like GC references
+
+* Refactor timer
+  * Use actual timer that inserts task into queue
 
 ########################################################################
 BOOTSTRAP- ability to edit program in itself

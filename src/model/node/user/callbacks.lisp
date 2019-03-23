@@ -56,14 +56,14 @@
 (defun show-node-ids-cb (seq-key)
   (fmt-model t "show-node-ids" "~a~%" seq-key))
 
-;; (defcb-async
-;;     load-file-cb
-;;     'load-file
-;;   (lambda (task)
-;;     (funcall #'load-file-to-nodes)))
-(defun load-file-cb (seq-key)
-  (sb-concurrency:send-message *mb-model*
-			       #'load-file-to-nodes-ptree))
+(defcb-async
+    load-file-cb
+    'load-file
+  (lambda (task)
+    (funcall #'load-file-to-nodes)))
+;; (defun load-file-cb (seq-key)
+;;   (sb-concurrency:send-message *mb-model*
+;; 			       #'load-file-to-nodes-ptree))
 
 ;;;;;;;;
 ;; Anims

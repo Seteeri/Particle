@@ -3,7 +3,7 @@
 (defun init-threads ()
   (let ((thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))      ; input      -> controller
 	(thread-controller (bordeaux-threads:make-thread #'run-controller))  ; controller -> model
-	(thread-model      (bordeaux-threads:make-thread #'run-model-ptree)) ; model      -> view-rpc
+	(thread-model      (bordeaux-threads:make-thread #'run-model)) ; model      -> view-rpc
 	(thread-view       (bordeaux-threads:make-thread #'serve-client)))   ; view-rpc   -> view proccess
     (bordeaux-threads:join-thread thread-libinput)
     (bordeaux-threads:join-thread thread-controller)
@@ -98,9 +98,9 @@
 	
 	*ht-timing-fn*      (make-hash-table :size 64)))
 
-(defun set-nodes-model ()   
+(defun set-nodes-model ()
   (setf *nodes-model*
-	(loop ; run in parallel?
+	(loop
   	   :with cursor := (vec3 0 0 0)
   	   :for i :from 0 :below (floor (/ 134217728 4 +size-struct-instance+)) ; buffer size / node struct size
   	   :collect (init-node-msdf cursor
@@ -111,7 +111,7 @@
 
 (defun set-nodes-view ()
   (setf *stack-i-nodes*
-	(loop ; run in parallel?
+	(loop
   	   :with cursor := (vec3 0 0 0)
   	   :for i :from 0 :below (floor (/ 134217728 4 +size-struct-instance+)) ; buffer size / node struct size
   	   :collect (init-node-msdf cursor

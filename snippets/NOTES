@@ -1288,3 +1288,116 @@ they get the task from the hub
 lets say one rich person had a sandwich they wanted to share
 in their home, they would divide it up and then submit each piece to
 the hub with the instructions to give it to specific houses.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Scheduling Model
+model : exec io -> sync/async
+view  : exec sync/async
+
+Scheduling-Ptree Model
+model : exec io -> sync/async
+view  : exec sync(single ptree)/async(multi ptrees?)
+
+Ptree Model:
+model : build/exec ptree
+view  : execute tasks inc sync, async, memcpy 
+        [in-frame: add time node, exec ptree, sync memcpy, async memcpy (from model)
+         ex-frame: GC, build ptree
+- must not share data between, except globals? ....lock those
+  - add/del nodes requires locking heap
+  - rtree requires locking
+  - individual nodes require locks
+
+NUMA Model: - test scalability
+4 threads each with copy + mailbox
+= 1,000,000,000 nodes * 4 = 4 mil!
+...should be four processes since independent
+
+When one thread modifies one of its nodes, it will send message to all
+to update, similar to CPUs
+
+task are split up among N workers so to process a million nodes would
+do 250k per worker, and then synchronize after
+
+process task
+synch caches
+...
+
+if another task exeuted before sync, data will be incoherent
+
+how would it work for converting a string to nodes?
+
+if len str > 4: 
+break string into 4 pieces
+submit each chunk
+per worker: pop/init node
+per worker: send data to other workers
+per worker: send data to caller
+
+
+for read:
+read from multiple
+
+closer to RAID...
+
+what if we stripe nodes?
+
+thread : indices
+T0: 1, 5, 9,  13 [check prev/next = div 4/2]
+T1: 2, 6, 10, 14 [div 2]
+T2: 3, 7, 11, 15 [check prev/next = div 2/4]
+T3: 4, 8, 12, 16 [div 4]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+T1,other : (Build ptree async)
+T2,back  : (Build ptree sync)
+T3,front : (Exec  ptree sync; GC)
+- cannot share data; should not share data
+  - globals - copy what is needed
+- special variables need locking?
+  - say front removes ptr, back reads ptr - conflict if same time, otherwise accessing dead object
+  - remember building not the same
+- to do deadlines with ptree, must modify it to check time after each
+execution, i.e. each node
+
+Simplest solution right now is build ptree ex-frame and exec ptree 
+in-frame
+- for model/IO thread, lock heap/nodes
+
+Triggers:
+Input device
+Disk IO
+Task
+
+BENCHMARK PTREE VS SEQ
+
+  0.007 seconds of real time
+  0.008437 seconds of total run time (0.004970 user, 0.003467 system)
+  114.29% CPU
+  22,068,894 processor cycles
+  785,216 bytes consed
+
+  0.008 seconds of real time
+  0.010509 seconds of total run time (0.010509 user, 0.000000 system)
+  137.50% CPU
+  25,084,855 processor cycles
+  785,200 bytes consed
+  
+
+  SEQ
+  
+  0.005 seconds of real time
+  0.004805 seconds of total run time (0.004805 user, 0.000000 system)
+  100.00% CPU
+  30 lambdas converted
+  14,340,772 processor cycles
+  571,984 bytes consed
+
+  0.008 seconds of real time
+  0.007788 seconds of total run time (0.004684 user, 0.003104 system)
+  100.00% CPU
+  30 lambdas converted
+  25,608,872 processor cycles
+  574,096 bytes consed

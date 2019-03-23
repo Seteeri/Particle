@@ -76,7 +76,7 @@
        :using (hash-value cache)
        :do (with-slots (buffer flag-copy)
 	       cache
-	     (when (or (/= flag-copy 0)
+	     (when (or (not (zerop flag-copy))
 		       force)
 	       ;; (fmt-view t "update-compute-buffers-ptr"
 	       ;; 		 "~S: ~a, flag ~a~%" name ix-fence flag-copy)
@@ -84,7 +84,8 @@
     				     name
 				     nil
 				     nil) ; no print
-	       (when (or (> flag-copy 0) t)
+	       (when (or (> flag-copy 0)
+			 t)
 		 (decf flag-copy)
 		 ;; (fmt-view t "update-compute-buffers-ptr"
 		 ;; 	   "               flag ~a~%" flag-copy)
@@ -99,7 +100,7 @@
        :using (hash-value cache)
        :do (with-slots (buffer flag-copy)
 	       cache
-	     (when (or (/= flag-copy 0)
+	     (when (or (not (zerop flag-copy))
 		       force)
 	       ;; (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
 	       (copy-buffer (aref (buffers (get-cache-buffer name)) 0)
@@ -116,10 +117,9 @@
 	       ix-fence)
       *view*
     
-    ;; (gl:use-program program-compute)
-    
-    (update-compute-bindings)
+    ;; (update-compute-bindings)
 
+    ;; must copy cache->step buffers in lieu of compute shader
     (update-compute-buffers-ptr)
     
     ;; Set to render all instances
@@ -129,7 +129,7 @@
     t))
 
 (defun run-compute ()
-
+    
   (with-slots (program-compute
 	       bo-cache
 	       bo-step
@@ -138,7 +138,7 @@
       *view*
     
     (gl:use-program program-compute)
-
+    
     ;; Double check output binding is being set - update-compute-buffers
     ;; Ensure these correlate with raster VAO
     (update-compute-bindings)
@@ -158,7 +158,7 @@
     (%gl:dispatch-compute (ceiling (/ inst-max 1792))
 			  1
 			  1)
-
+    
     ;; Ensure compute shader finishes before grabbing values
     (protoform.opengl::sync-gl)
 
@@ -169,4 +169,6 @@
     
     ;; Update indirect primCount with counter
     (setf (mem-aref (aref (ptrs-buffer (gethash "/protoform-draw-indirect" bo-step)) ix-fence) :uint 1)
-	  (mem-aref (aref (ptrs-buffer (gethash "/protoform-atomic-counter" bo-step)) ix-fence) :uint 0))))
+    	  (mem-aref (aref (ptrs-buffer (gethash "/protoform-atomic-counter" bo-step)) ix-fence) :uint 0))
+
+    t))

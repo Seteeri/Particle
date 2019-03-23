@@ -21,11 +21,12 @@
 		       +size-struct-instance+)))
 
 (defun send-memcpy-node (node)
-  (let* ((start (* (index node)
-		   +size-struct-instance+))
-	 (end (+ start +size-struct-instance+)))
+  (let* ((offset (* (index node)
+		    +size-struct-instance+)))
+  (when nil
+    (fmt-model t "send-memcpy-node" "@~a, +~a bytes~%" offset +size-struct-instance+))
   (send-memcpy-shm-to-cache-flag*
-   `((,*shm-nodes* "/protoform-nodes"    ,start ,end)))))
+   `((,*shm-nodes* "/protoform-nodes"    ,offset ,+size-struct-instance+)))))
 
 ;; rename to serialize-node-to-shm
 (defun copy-node-to-shm (node &optional (offset-ptr 0))
@@ -124,3 +125,45 @@
     			   (+ offset-ptr i))
     		 c)))
   (length data))
+
+;;;;;;;;;;;;;;;;;;
+;; TODO: Use macro
+
+(defun send-memcpy-shm-to-cache (name
+				 shm
+				 &optional
+				   (offset 0)
+				   (size-cpy nil))
+  (with-slots (ptr size)
+      shm
+    ;; (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
+    (send-message *sock-view*
+    		  *buffer-sock-ptr*
+		  (format nil "(memcpy-shm-to-cache ~S ~S ~S ~S)" name name offset size-cpy))))
+
+(defun send-set-cache-dirty (name value)
+  (send-message *sock-view*
+    		*buffer-sock-ptr*
+		(format nil "(set-cache-flag-copy ~S ~S)" name value)))
+
+(defun send-memcpy-shm-to-cache-flag* (caches)
+  (send-message *sock-view*
+    		*buffer-sock-ptr*
+		(with-output-to-string (stream)
+		  (format stream "(")
+		  (dolist (cache caches)
+		    (destructuring-bind (shm
+					 name-cache
+					 offset-cache
+					 size-cache)
+			cache
+		      (with-slots (ptr size)
+			  shm
+			;; Pass offsets
+			(format stream "(memcpy-shm-to-cache ~S ~S ~S ~S) "
+				name-cache
+				name-cache
+				offset-cache
+				size-cache)
+			(format stream "(set-cache-flag-copy ~S 3) " name-cache))))
+		  (format stream ")"))))

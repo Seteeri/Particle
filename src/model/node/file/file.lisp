@@ -21,9 +21,6 @@
 		    :external-format :utf-8))
 	    ptree)
 
-  ;; This executes in model thread, however, what if view thread
-  ;; is modifying *node-ptr-main*?
-  ;; Anything involving nodes should be done in view thread...
   (ptree-fn 'lftn-origin
   	    '()
   	    (lambda ()
@@ -161,6 +158,7 @@
     ;; (format t "[load/make...] NEW TASK = ~a~%" task)
     task))
 
+;; Only one of these tasks are running
 (defun stop-task-load-char-from-file (event)
   (stop-task-mb 'load-chunk-file)
   (stop-task 'load-char-from-file))
@@ -190,7 +188,6 @@
   ;; - once:update pointer last (or after each node)
   ;;   - attach ptr
   ;;   - advance ptr
-  
   (when-let ((in (open (make-pathname :directory '(:absolute
 						   "home"
 						   "user"
@@ -206,7 +203,8 @@
 			    :fn-play (lambda (task)
 				       
 				       (setf (gethash 'load-chunk-file *tasks-active*) task)
-				       
+
+				       ;; get origin in load-file-to-nodes, not lambda
     	      			       (funcall #'load-chunk-file
 						in
 						0

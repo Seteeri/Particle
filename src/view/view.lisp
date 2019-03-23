@@ -224,10 +224,6 @@
 						    :adjustable nil
 						    :initial-element (null-pointer))))
 
-    (sb-ext:gc :full t)
-    
-    (setf (sb-ext:bytes-consed-between-gcs) (* 2 1024))
-
     ;; (push #'(lambda ()
     ;; 	      (let ((time-gc (coerce (/ sb-ext:*gc-run-time* internal-time-units-per-second)
     ;; 				     'single-float)))
@@ -239,6 +235,9 @@
     ;; 		;; (sleep 2)
     ;; 		t))
     ;; 	  sb-kernel::*after-gc-hooks*)
+
+    (sb-ext:gc :full t)    
+    ;; (setf (sb-ext:bytes-consed-between-gcs) (* 2 1024))
     
     (loop 
        (if *draw*
@@ -270,16 +269,18 @@
 		  (format nil "(handle-view-sync ~S)" time-frame)))
 
   ;; GC before waiting on model process
-  (sb-ext:gc)
+  ;; (sb-ext:gc)
   
   ;; MSG_WAITALL	0x100
   (run-server #x100))
 
 (defun run-programs-shader ()
-  (with-slots (sync fences ix-fence)
+  (with-slots (sync
+	       fences
+	       ix-fence)
       *view*
 
-    ;; (format t "Render index: ~a~%" ix-fence)
+    ;; (fmt-view t "run-programs-shader" "ix-fence: ~a~%" ix-fence)
     
     ;; Create with-* macro for this
     ;; if sync:
@@ -293,15 +294,17 @@
     	(%gl:delete-sync fence)
     	(setf (aref fences ix-fence) (null-pointer))))
 
-    (if nil
+    ;; Server will do shm->cache
+    
+    (if t
 	(run-compute-bypass)
 	(progn
-	  (update-cache-to-step)
+	  ;; Manually do uniforms/projview
+	  (update-cache-to-step-pv)	  
 	  (run-compute)))
   
     ;; Have run-raster run all programs in a specified order
-    ;; (run-raster-default)
-    (run-raster-msdf)
+    (run-raster)
     
     (when sync
       ;; Create fence, which previous portion will check for
@@ -313,34 +316,6 @@
 
 (defun set-draw (value)
   (setf *draw* value))
-
-(defun update-cache-to-step ()
-
-  (with-slots (program-compute
-	       bo-cache
-	       bo-step
-	       inst-max
-	       ix-fence)
-      *view*
-
-    ;; https://stackoverflow.com/questions/28704818/how-can-i-write-to-a-texture-buffer-object
-    ;; Shader can't copy instance textures due to different image sizes
-    ;; Indices remain the same
-    ;; Exception below is instance
-    (loop 
-       :for name :being :the :hash-keys :of bo-cache
-       :using (hash-value cache)
-       :do (when (not (string= name "/protoform-nodes"))
-	     (with-slots (buffer flag-copy)
-		 cache
-	       (when (/= flag-copy 0)
-		 ;; (fmt-view t "update-cache-to-step" "Cache status: ~a, ~a~%" name flag-copy)
-		 (memcpy-cache-to-step name ix-fence
-    				       name
-				       nil
-				       nil) ; no print
-		 (when (> flag-copy 0)
-		   (decf flag-copy))))))))
 
 (defun calc-opengl-usage ()
 
@@ -418,5 +393,45 @@
 ;; check errno at end?
 ;; handle special forms
 	
+(defun update-cache-to-step ()
+  (with-slots (bo-cache
+	       ix-fence)
+      *view*
+    ;; https://stackoverflow.com/questions/28704818/how-can-i-write-to-a-texture-buffer-object
+    ;; Shader can't copy instance textures due to different image sizes
+    ;; Indices remain the same
+    ;; Exception below is instance
+    (loop 
+       :for name :being :the :hash-keys :of bo-cache
+       :using (hash-value cache)
+       :do ;; (unless (string= name "/protoform-nodes") ;; why???
+       	     (with-slots (buffer flag-copy)
+       		 cache
+       	       (unless (zerop flag-copy)
+       		 (fmt-view t "update-cache-to-step" "Cache status: ~a, ~a~%" name flag-copy)
+       		 (memcpy-cache-to-step name ix-fence
+       				       name
+       				       nil
+       				       nil) ; no print
+       		 (when (> flag-copy 0)
+       		   (decf flag-copy)))))))
 
-
+(defun update-cache-to-step-pv ()
+  (with-slots (bo-cache
+	       ix-fence)
+      *view*
+    ;; https://stackoverflow.com/questions/28704818/how-can-i-write-to-a-texture-buffer-object
+    ;; Shader can't copy instance textures due to different image sizes
+    ;; Indices remain the same
+    ;; Exception below is instance
+    (let ((cache (gethash "/protoform-projview" bo-cache)))
+      (with-slots (buffer flag-copy)
+       	  cache
+       	(unless (zerop flag-copy)
+       	  (fmt-view t "update-cache-to-step" "~a, ~a~%" "/protoform-projview" flag-copy)
+       	  (memcpy-cache-to-step "/protoform-projview" ix-fence
+       				"/protoform-projview"
+       				nil
+       				nil) ; no print
+       	  (when (> flag-copy 0)
+       	    (decf flag-copy)))))))
