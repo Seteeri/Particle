@@ -38,6 +38,56 @@ require a high initial investment.
 The target audience consists of programmers, developers, power users and
 the like.
 
+[A comment made by lispm, an old time lisper, on the concept of
+a Lisp OS](https://news.ycombinator.com/item?id=15466124):
+
+> I expect this will be a fairly controversial comment, so I want to 
+> preface this by saying that I'm a big Lisp fan (just look at my 
+> handle). Lisp is my favorite programming language. I've been using it 
+> for nearly forty years. My first Lisp was P-Lisp on an Apple II in 
+> 1980. And I worked on Symbolics Lisp machines in the 1990s. They were 
+> very cool, but there's a reason they failed: general-purpose computing
+> is infrastructure, and the economics of infrastructure are such that 
+> having a single standard is the most economical solution, even if that
+> standard is sub-optimal. For better or worse, the standard for 
+> general-purpose computing is the C machine.
+>
+> Because it's general-purpose you certainly can run Lisp on a C machine
+> (just as you could run C on a Lisp machine). You can even do this at 
+> the system level. But Lisp will always be at a disadvantage because 
+> the hardware is optimized for C. Because of this, C will always win at
+> the system level because at that level performance matters.
+>
+> But that in and of itself is not the determining factor. The 
+> determining factor is the infrastructure that has grown up around the 
+> C machine in the last few decades. There is an enormous amount of work
+> that has gone into building compilers, network stacks, data 
+> interchange formats, libraries, etc. etc. and they are all optimized 
+> for C. For Lisp to be competitive at the system level, nearly all of 
+> this infrastructure would have to be re-created, and that is not going
+> to happen. Even with the enormous productivity advantages that Lisp 
+> has over C (and they really are enormous) this is not enough to 
+> overcome the economic advantages that C has by virtue of being the 
+> entrenched standard.
+>
+> The way Lisp can still win in today's world is not by trying to 
+> replace C on the system level, but by "embracing and extending" C at 
+> the application level. I use Clozure Common Lisp. It has an 
+> Objective-C bridge, so I can call ObjC functions as if they were Lisp 
+> functions. There is no reason for me to know or care that these 
+> functions are actually written in C (except insofar as I have to be a 
+> little bit careful about memory management when I call C functions 
+> from Lisp) and so using Lisp in this way still gives me a huge lever 
+> that is economically viable even in today's world. I have web servers 
+> in production running in CCL on Linux, and it's a huge win. I can spin
+> up a new web app on AWS in just a few minutes from a standing start. 
+> It's a Lisp machine, but at the application level, not the system 
+> level. My kernel (Linux) and web front end (nginx) are written in C, 
+> but that doesn't impact me at all because they are written by someone 
+> else. I just treat them as black boxes.
+>
+> ...But cool is not enough to win in the real world.
+
 ## The Inspiration
 
 * Primary Inspirations:
@@ -128,56 +178,6 @@ of Emacs, and its strengths and weaknesses.
 * Software rendering -> OpenGL
 * Help system/manual -> Better discoverability
 
-[A comment made by lispm, an old time lisper, on the concept of
-a Lisp OS](https://news.ycombinator.com/item?id=15466124):
-
-> I expect this will be a fairly controversial comment, so I want to 
-> preface this by saying that I'm a big Lisp fan (just look at my 
-> handle). Lisp is my favorite programming language. I've been using it 
-> for nearly forty years. My first Lisp was P-Lisp on an Apple II in 
-> 1980. And I worked on Symbolics Lisp machines in the 1990s. They were 
-> very cool, but there's a reason they failed: general-purpose computing
-> is infrastructure, and the economics of infrastructure are such that 
-> having a single standard is the most economical solution, even if that
-> standard is sub-optimal. For better or worse, the standard for 
-> general-purpose computing is the C machine.
->
-> Because it's general-purpose you certainly can run Lisp on a C machine
-> (just as you could run C on a Lisp machine). You can even do this at 
-> the system level. But Lisp will always be at a disadvantage because 
-> the hardware is optimized for C. Because of this, C will always win at
-> the system level because at that level performance matters.
->
-> But that in and of itself is not the determining factor. The 
-> determining factor is the infrastructure that has grown up around the 
-> C machine in the last few decades. There is an enormous amount of work
-> that has gone into building compilers, network stacks, data 
-> interchange formats, libraries, etc. etc. and they are all optimized 
-> for C. For Lisp to be competitive at the system level, nearly all of 
-> this infrastructure would have to be re-created, and that is not going
-> to happen. Even with the enormous productivity advantages that Lisp 
-> has over C (and they really are enormous) this is not enough to 
-> overcome the economic advantages that C has by virtue of being the 
-> entrenched standard.
->
-> The way Lisp can still win in today's world is not by trying to 
-> replace C on the system level, but by "embracing and extending" C at 
-> the application level. I use Clozure Common Lisp. It has an 
-> Objective-C bridge, so I can call ObjC functions as if they were Lisp 
-> functions. There is no reason for me to know or care that these 
-> functions are actually written in C (except insofar as I have to be a 
-> little bit careful about memory management when I call C functions 
-> from Lisp) and so using Lisp in this way still gives me a huge lever 
-> that is economically viable even in today's world. I have web servers 
-> in production running in CCL on Linux, and it's a huge win. I can spin
-> up a new web app on AWS in just a few minutes from a standing start. 
-> It's a Lisp machine, but at the application level, not the system 
-> level. My kernel (Linux) and web front end (nginx) are written in C, 
-> but that doesn't impact me at all because they are written by someone 
-> else. I just treat them as black boxes.
->
-> ...But cool is not enough to win in the real world.
-
 I imagine - what if there were something like Emacs for the non-programmer
 user? Considering the way technology and computers are becoming 
 increasingly integrated into our everyday lives, the bottleneck to 
@@ -207,11 +207,12 @@ motivation and learning.
   * First step - build the shell/DE
   * Second step - integrate the init system
   * Third step - ???
-* Built around DAGs, as they are a common pattern:
+* Built around DAG  - common pattern across domains:
   * Task management
   * Version control
   * Init dependencies
   * Garbage collection
+  * Gantt charts
 * 3D orthographic nodal environment - "turtles all the way down"  
 * Primarily keyboard driven interface
 * Non-destructive editing; undo/redo capabilities
