@@ -19,7 +19,6 @@
 		 #:cl-digraph
 		 #:cl-digraph.dot
 		 #:usocket
-		 #:pango-markup
 		 #:bordeaux-threads
 		 #:inferior-shell
 		 #:trivial-timers
@@ -31,8 +30,9 @@
 		 #:pack
 		 #:spatial-trees
 		 #:qbase64
-		 #:cl-redis
 		 #:trivial-benchmark)
+    ;; #:cl-redis
+    ;; #:pango-markup
     ;; #:cl-pango
     ;; #:cl-cairo2		 
     ;; #:pango-markup    
@@ -163,11 +163,9 @@
 				       		:components ((:file "manager")
 							     (:file "task")))
 				       (:file "animation")
-				       (:module main
-						:pathname "main"
-						:components ((:file "variables")
-							     (:file "init")
-							     (:file "main")))))
+				       (:file "variables")
+				       (:file "init")
+				       (:file "main")))
 		 (:file "src/protoform")))
 
 #+sbcl
