@@ -139,12 +139,8 @@
 				       (:module rpc
 				       		:pathname "rpc"
 				       		:components ((:file "conn")
-							     (:module local
-				       				      :pathname "local"
-				       				      :components ((:file "view")))
-							     (:module remote
-				       				      :pathname "remote"
-				       				      :components ((:file "send")))))
+						             (:file "recv")
+							     (:file "send")))
 				       (:module task-manager
 				       		:pathname "task-manager"
 				       		:components ((:file "manager")
