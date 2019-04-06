@@ -144,7 +144,8 @@
 				       (:module task-manager
 				       		:pathname "task-manager"
 				       		:components ((:file "manager")
-							     (:file "task")))
+							     (:file "task")
+							     (:file "animation")))
 				       (:module user
 				       		:pathname "user"
 				       		:components ((:module node
@@ -159,7 +160,6 @@
 				       				      :pathname "file"
 				       				      :components ((:file "file")
 										   (:file "character")))))
-				       (:file "animation")
 				       (:file "special")
 				       (:file "init")
 				       (:file "main")))
