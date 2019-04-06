@@ -160,7 +160,7 @@
 				       				      :components ((:file "file")
 										   (:file "character")))))
 				       (:file "animation")
-				       (:file "variables")
+				       (:file "special")
 				       (:file "init")
 				       (:file "main")))
 		 (:file "src/protoform")))
