@@ -53,3 +53,86 @@
   ;; (bordeaux-threads:join-thread thread-1)
   
   (sleep 10))  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#|
+
+(defparameter *mb-in* (sb-concurrency:make-mailbox))
+(defparameter *mb-out* (sb-concurrency:make-mailbox))
+(defparameter *mb-1* (sb-concurrency:make-mailbox))
+(defparameter *mb-2* (sb-concurrency:make-mailbox))
+(defparameter *mb-3* (sb-concurrency:make-mailbox))
+(defparameter *mb-4* (sb-concurrency:make-mailbox))
+
+(defun fn-worker ()
+  (loop
+     :for msg := (sb-concurrency:receive-message *mb-work*)
+     :do (progn
+	   (sb-concurrency:send-message *mb-1* msg)
+	   (sb-concurrency:send-message *mb-2* msg)
+	   (sb-concurrency:send-message *mb-3* msg)
+	   (sb-concurrency:send-message *mb-4* msg)
+	   (sb-concurrency:send-message *mb-output* msg))))
+
+(defun run-test ()
+  
+  ;; Create servants
+  (bordeaux-threads:make-thread
+   (lambda ()
+     (loop
+	:for msg := (sb-concurrency:receive-message *mb-in*)
+	:do (when (not (eq msg 'sync))
+	      (sb-concurrency:send-message *mb-out* msg)))))
+
+  (bordeaux-threads:make-thread
+   (lambda ()
+     (loop
+	:for msg := (sb-concurrency:receive-message *mb-in*)
+	:do (when (not (eq msg 'sync))
+	      (sb-concurrency:send-message *mb-out* msg)))))
+
+  (bordeaux-threads:make-thread
+   (lambda ()
+     (loop
+	:for msg := (sb-concurrency:receive-message *mb-in*)
+	:do (when (not (eq msg 'sync))
+	      (sb-concurrency:send-message *mb-out* msg)))))
+
+  (bordeaux-threads:make-thread
+   (lambda ()
+     (loop
+	:for msg := (sb-concurrency:receive-message *mb-in*)
+	:do (when (not (eq msg 'sync))
+	      (sb-concurrency:send-message *mb-out* msg)))))
+
+  ;; main: send msg
+  ;; worker: recv msg - proccess - send msg to output
+  ;; main: send sync all - share data
+  ;; worker: copy data - send msg out
+  ;; main: recv msg
+  ;; = 4 round trips @ 25*2 microseconds = 200 microsecs = 0.2 ms
+  
+  (let ((t-start (osicat:get-monotonic-time)))
+
+    (dotimes (i 4)
+      (sb-concurrency:send-message *mb-in* (osicat:get-monotonic-time)))
+    (format t "sent in...~%")
+
+    (dotimes (i 4)
+      (format t "recv out: ~a~%" (sb-concurrency:receive-message *mb-out*)))
+
+    ;; each thread must use select on two FD's
+    ;; 1. work
+    ;; 2. personal
+    (sb-concurrency:send-message *mb-1* (osicat:get-monotonic-time))
+    (sb-concurrency:send-message *mb-2* (osicat:get-monotonic-time))
+    (sb-concurrency:send-message *mb-3* (osicat:get-monotonic-time))
+    (sb-concurrency:send-message *mb-4* (osicat:get-monotonic-time))
+
+    (format t "sent sync...~%")
+    
+    (format t "recv  out: ~a~%" (sb-concurrency:receive-message *mb-out*))
+    
+    (format t "time: ~s~%" (- (osicat:get-monotonic-time) t-start))))
+|#
