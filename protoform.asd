@@ -131,15 +131,7 @@
 							     (:file "degree")
 							     (:file "translate")
 							     (:file "traverse")
-							     (:file "memcpy")
-							     (:module file
-				       				      :pathname "file"
-				       				      :components ((:file "file")
-										   (:file "character")))
-							     (:module user
-				       				      :pathname "user"
-				       				      :components ((:file "callbacks")
-										   (:file "operators")))))
+							     (:file "memcpy")))
 				       (:module projview
 				       		:pathname "projview"
 				       		:components ((:file "projview")
@@ -162,6 +154,14 @@
 				       		:pathname "task-manager"
 				       		:components ((:file "manager")
 							     (:file "task")))
+				       (:module user
+				       		:pathname "user"
+				       		:components ((:file "callbacks")
+							     (:file "operators")
+							     (:module file
+				       				      :pathname "file"
+				       				      :components ((:file "file")
+										   (:file "character")))))
 				       (:file "animation")
 				       (:file "variables")
 				       (:file "init")
