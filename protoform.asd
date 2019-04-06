@@ -135,11 +135,7 @@
 				       (:module projview
 				       		:pathname "projview"
 				       		:components ((:file "projview")
-							     (:file "shm")
-							     (:module ops
-				       				      :pathname "ops"
-				       				      :components ((:file "callbacks")
-										   (:file "operators")))))
+							     (:file "shm")))
 				       (:module rpc
 				       		:pathname "rpc"
 				       		:components ((:file "conn")
@@ -156,8 +152,14 @@
 							     (:file "task")))
 				       (:module user
 				       		:pathname "user"
-				       		:components ((:file "callbacks")
-							     (:file "operators")
+				       		:components ((:module node
+				       				      :pathname "node"
+				       				      :components ((:file "callbacks")
+										   (:file "operators")))
+							     (:module projview
+				       				      :pathname "projview"
+				       				      :components ((:file "callbacks")
+										   (:file "operators")))
 							     (:module file
 				       				      :pathname "file"
 				       				      :components ((:file "file")
