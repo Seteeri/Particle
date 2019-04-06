@@ -136,8 +136,8 @@
 				       		:pathname "projview"
 				       		:components ((:file "projview")
 							     (:file "shm")))
-				       (:module rpc
-				       		:pathname "rpc"
+				       (:module server
+				       		:pathname "server"
 				       		:components ((:file "conn")
 						             (:file "recv")
 							     (:file "send")))

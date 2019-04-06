@@ -1294,11 +1294,11 @@ the hub with the instructions to give it to specific houses.
 A task is a group of functions that leads to serialization of a node
 
 Scheduling Model
-model : exec io -> sync/async
+model : exec I/O -> sync/async
 view  : exec sync/async
 
 Scheduling-Ptree Model
-model : exec io -> sync/async
+model : exec I/O -> sync/async
 view  : exec sync(single ptree)/async(multi ptrees?)
 
 Ptree Model:

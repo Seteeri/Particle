@@ -226,12 +226,13 @@ motivation and learning.
 * Two process system - model/view
   * Model contains a task manager that spreads tasks across frames
     * Maintains low-latency through soft deadlines
-  * View's sole purpose is to draw and poll socket for commands
+  * View SRP: draw triangles and poll socket for commands
     * Separate process from model to minimize pressure on GC
-  * Force GC when idle: model GCs after executing frame tasks, while
-    view draws; view GCs after drawing frame, while waiting for model 
-    tasks
+  * Force GC when idle: model process GCs after executing frame tasks, 
+    while view draws; view process GCs after drawing frame, while 
+    waiting for model tasks
     * See Roadmap for GC plans
+  * Avoid GC while in-frame
 * Rendering engine is essentially a particle system
   * Plans to pursue tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
