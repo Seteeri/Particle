@@ -144,8 +144,7 @@
 				       				      :components ((:file "view")))
 							     (:module remote
 				       				      :pathname "remote"
-				       				      :components ((:file "send")
-										   (:file "memcpy")))))
+				       				      :components ((:file "send")))))
 				       (:module task-manager
 				       		:pathname "task-manager"
 				       		:components ((:file "manager")

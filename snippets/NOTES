@@ -1291,6 +1291,8 @@ the hub with the instructions to give it to specific houses.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+A task is a group of functions that leads to serialization of a node
+
 Scheduling Model
 model : exec io -> sync/async
 view  : exec sync/async

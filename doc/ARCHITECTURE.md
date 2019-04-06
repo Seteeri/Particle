@@ -52,7 +52,7 @@ The input-controller-model pass messages between each other through
 lock-free queues (SBCL's mailbox primitive).
 
 The model process (view thread) uses the shared memory to transfer data
-to the render process to place in the OpenGL buffer; thus the shared
+to the render process to memcpy to the OpenGL buffer; thus the shared
 memory are the same size as the OpenGL buffers.
 
 # Render Process
@@ -70,20 +70,17 @@ as much as possible.
 
 ``protoform.lisp`` will fork two processes, then exit:
 * Model
-* View
+* Render
 
 ``model.lisp`` initialization:
 1. Setup lparallel kernel and queues
-2. Run initialization functions in parallel
-   * Shared memory - owned by model so responsible for cleanup
-   * Load glyphs
-   * Libinput
-   * Input callbacks
+2. Initialization data (through ptree)
+   * Shared memory
+     * Owned by model so responsible for cleanup
+   * Glyphs
    * Connect to view (server)
      * View will memcpy initial shm
-3. Run threads
-   * RPC client which handles connection to view
-   * Input dispatcher which polls libinput for events
+3. Initialize threads
 
 ``view.lisp`` initialization:
 1. Setup GLFW window

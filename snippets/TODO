@@ -355,7 +355,7 @@ MON:
          - Create serial ID?
     - Refactor other callbacks [DONE]
 
-* Load graphs on init:
+* Load graphs on init [DONE]
     
   * Dynamic Variables
   L... Undo
@@ -369,7 +369,7 @@ MON:
   * Dynamic variables aka globals [DONE]
   * Link global nodes into graph [DONE]
     
- * Color nodes by atom type (8 colors + base) [...]
+ * Color nodes by atom type (8 colors + base) [later]
    * yellow  - atom (other types)
    * orange  - functions
    * red     - array
@@ -380,10 +380,14 @@ MON:
    * green   - string
    
    * base    - character
-         
-* Refactor file loading for multiple concurrent files loading
-  -> Assign time or serial ID to task
-  -> Reuse task ID
+
+* Misc
+  * Refactor file loading for multiple concurrent files loading
+    -> Assign time or serial ID to task
+    -> Reuse task ID
+  * Rename view -> render
+  * Need to warn if renderer starts falling behind and queue builds up - set threshold
+  * DIAGNOSE: why nodes stop loading?
     
 * Draw lines
   * Use quads for lines

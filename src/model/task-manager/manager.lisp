@@ -92,7 +92,9 @@
 	     (update-timing-fn (id task) time-delta)
 	     (when (> time-elapsed deadline)
 	       ;; (format t "(> ~a ~a)" time-elapsed deadline)
+	       ;; Interrupt!
 	       (return))))
+    ;; Before returning, enqueue new tasks
     (dolist (task-next tasks-next)
       ;; (format t "[dolist...] ~a ~a~%" (id task-next) task-next)
       (enqueue-task-async task-next))))
