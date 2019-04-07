@@ -1,69 +1,43 @@
 (in-package :protoform.render)
 
-(defun init-program-msdf ()
+(defparameter *shad-rast-msdf-vert* (list (merge-pathnames #P"glsl/structs.glsl"
+								(asdf:system-source-directory :protoform))
+					       (merge-pathnames #P"glsl/node.vs.glsl"
+								(asdf:system-source-directory :protoform))))
+
+(defparameter *shad-rast-msdf-frag* (list (merge-pathnames #P"glsl/structs.glsl"
+								(asdf:system-source-directory :protoform))
+					       (merge-pathnames #P"glsl/filter-bilinear.fs.glsl"
+								(asdf:system-source-directory :protoform))
+					       (merge-pathnames #P"glsl/msdf.fs.glsl"
+								(asdf:system-source-directory :protoform))))
+
+(defun init-prog-rast-msdf ()
   (let* ((program (gl:create-program)))
-    (let* ((dir-sys-src (asdf:system-source-directory :protoform))
-	   (shaders-vert (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
-			       (merge-pathnames #P"glsl/node.vs.glsl" dir-sys-src)))
-	   (shaders-frag (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
-			       (merge-pathnames #P"glsl/filter-bilinear.fs.glsl" dir-sys-src)
-			       (merge-pathnames #P"glsl/msdf.fs.glsl" dir-sys-src)))
-	   (log-vert (cad-shader :vertex-shader
+    (let* ((log-vert (cad-shader :vertex-shader
 				 program
-				 shaders-vert))
+				 *shad-rast-msdf-vert*))
 	   (log-frag (cad-shader :fragment-shader
 				 program
-				 shaders-frag)))
+				 *shad-rast-msdf-frag*)))
       (if (> (length log-vert) 0)
-	  (fmt-render "init-program-default" "Shader log: ~%~a~%" log-vert)
-	  (fmt-render "init-program-default" "Compiled and attached vertex shader sucessfully~%"))
+	  (fmt-render "init-prog-rast-msdf" "Shader log: ~%~a~%" log-vert)
+	  (fmt-render "init-prog-rast-msdf" "Compiled and attached vertex shader sucessfully~%"))
       (if (> (length log-frag) 0)
-	  (fmt-render "init-program-default" "Shader log: ~%~a~%" log-frag)
-	  (fmt-render "init-program-default" "Compiled and attached fragment shader sucessfully~%")))
+	  (fmt-render "init-prog-rast-msdf" "Shader log: ~%~a~%" log-frag)
+	  (fmt-render "init-prog-rast-msdf" "Compiled and attached fragment shader sucessfully~%")))
     
     (gl:link-program program)
     
     (let ((log-prog (gl:get-program-info-log program)))
       (if (> (length log-prog) 0)
-	  (fmt-render "init-program-default" "Program log: ~%~a~%" log-prog)
-      	  (fmt-render "init-program-default" "Compiled program sucessfully~%")))
+	  (fmt-render "init-prog-rast-msdf" "Program log: ~%~a~%" log-prog)
+      	  (fmt-render "init-prog-rast-msdf" "Compiled program sucessfully~%")))
     
     program))
 
-(defun init-program-default ()
-  ;; Create defparameters for the paths - or model can pass it
-  (let* ((program (gl:create-program)))
-    (let* ((dir-sys-src (asdf:system-source-directory :protoform))
-	   (shaders-vert (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
-			       (merge-pathnames #P"glsl/node.vs.glsl" dir-sys-src)))
-	   (shaders-frag (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
-			       (merge-pathnames #P"glsl/filter-bilinear.fs.glsl" dir-sys-src)
-			       (merge-pathnames #P"glsl/node.fs.glsl" dir-sys-src)))
-	   (log-vert (cad-shader :vertex-shader
-				 program
-				 shaders-vert))
-	   (log-frag (cad-shader :fragment-shader
-				 program
-				 shaders-frag)))
-      (if (> (length log-vert) 0)
-	  (fmt-render "init-program-default" "Shader log: ~%~a~%" log-vert)
-	  (fmt-render "init-program-default" "Compiled and attached vertex shader sucessfully~%"))
-      (if (> (length log-frag) 0)
-	  (fmt-render "init-program-default" "Shader log: ~%~a~%" log-frag)
-	  (fmt-render "init-program-default" "Compiled and attached fragment shader sucessfully~%")))
-    
-    (gl:link-program program)
-    
-    (let ((log-prog (gl:get-program-info-log program)))
-      (if (> (length log-prog) 0)
-	  (fmt-render "init-program-default" "Program log: ~%~a~%" log-prog)
-      	  (fmt-render "init-program-default" "Compiled program sucessfully~%")))
-    
-    program))
-
-(defun init-buffers-raster-default (params-shm)
+(defun init-buff-rast-msdf (params-shm)
   ;; VAO per program?
-  (gl:use-program (program-default *render*))
   (with-slots (vaos)
       *render*
     ;; Setup vaos/bindings for each step
@@ -71,17 +45,7 @@
     (let ((vao (init-vao)))
       (vector-push vao vaos))))
 
-(defun init-buffers-raster-msdf (params-shm)
-  ;; VAO per program?
-  (gl:use-program (program-msdf *render*))
-  (with-slots (vaos)
-      *render*
-    ;; Setup vaos/bindings for each step
-    ;; 1 bind vao > many bind buffer calls
-    (let ((vao (init-vao)))
-      (vector-push vao vaos))))
-
-(defun update-raster-buffer-bindings ()
+(defun update-rast-buff-bindings ()
   (with-slots (bo-step
 	       vaos
 	       ix-fence)
@@ -113,18 +77,18 @@
 
 ;; Causes flickering probably because bindings aren't being updated
 ;; Binding points created via VAO and glBindBufferBase completely seperate things
-;; (defun update-raster-buffer-bindings-2 ()
+;; (defun update-rast-buff-bindings-2 ()
 ;;   (with-slots (vaos
 ;; 	       ix-fence)
 ;;       *render*
 ;;     ;; Use different pre-setup VAOs instead of individual bindings
 ;;     (gl:bind-vertex-array (aref vaos ix-fence))))
 
-(defun run-raster ()
+(defun run-raster-msdf ()
 
-  (gl:use-program (program-msdf *render*))
+  (gl:use-program (prog-rast-msdf *render*))
 
-  (update-raster-buffer-bindings)
+  (update-rast-buff-bindings)
     
   ;; (let* ((time (osicat:get-monotonic-time)))
 

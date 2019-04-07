@@ -1,6 +1,6 @@
 (in-package :protoform.render)
 
-(defun init-program-compute ()
+(defun init-prog-compute ()
   (let* ((program (gl:create-program)))
     (let* ((dir-sys-src (asdf:system-source-directory :protoform))
 	   (shaders (list (merge-pathnames #P"glsl/structs.glsl" dir-sys-src)
@@ -9,28 +9,25 @@
 				 program
 				 shaders)))
       (if (> (length log-main) 0)
-	  (fmt-render "init-program-compute" "Shader log: ~%~a~%" log-main)
-	  (fmt-render "init-program-compute" "Compiled and attached compute shader sucessfully~%")))
+	  (fmt-render "init-prog-compute" "Shader log: ~%~a~%" log-main)
+	  (fmt-render "init-prog-compute" "Compiled and attached compute shader sucessfully~%")))
     
     (gl:link-program program)
     
     (let ((log-prog (gl:get-program-info-log program)))
       (if (> (length log-prog) 0)
-	  (fmt-render "init-program-compute" "Program log: ~%~a~%" log-prog)
-	  (fmt-render "init-program-compute" "Compiled program successfully~%")))
+	  (fmt-render "init-prog-compute" "Program log: ~%~a~%" log-prog)
+	  (fmt-render "init-prog-compute" "Compiled program successfully~%")))
     
     program))
 
-(defun init-buffers-compute (params-shm)
+(defun init-buff-compute (params-shm)
 
-  (with-slots (program-compute
+  (with-slots (prog-compute
 	       handles-shm
 	       bo-cache
 	       bo-counter)
       *render*
-
-    (gl:use-program program-compute)
-
     ;; These are input bindings/buffers
     ;; Cache need only bound once on init since all single buffered
     (loop 
@@ -41,10 +38,10 @@
 	     ;; Bind if allowed
 	     ;; Single buffered so always index 0
 	     (when (> bl -1)
-	       (fmt-render "init-buffers-compute" "Binding ~a to ~a~%" name bl)
+	       (fmt-render "init-buff-compute" "Binding ~a to ~a~%" name bl)
 	       (update-binding-buffer buffer 0))))))
 
-(defun update-compute-bindings ()
+(defun update-comp-bindings ()
   (with-slots (bo-step
 	       ix-fence)
       *render*
@@ -111,13 +108,13 @@
 
 (defun run-compute-bypass ()
 
-  (with-slots (program-compute
+  (with-slots (prog-compute
 	       bo-step
 	       inst-max
 	       ix-fence)
       *render*
     
-    ;; (update-compute-bindings)
+    ;; (update-comp-bindings)
 
     ;; must copy cache->step buffers in lieu of compute shader
     (update-compute-buffers-ptr)
@@ -130,18 +127,18 @@
 
 (defun run-compute ()
     
-  (with-slots (program-compute
+  (with-slots (prog-compute
 	       bo-cache
 	       bo-step
 	       inst-max
 	       ix-fence)
       *render*
     
-    (gl:use-program program-compute)
+    (gl:use-program prog-compute)
     
     ;; Double check output binding is being set - update-compute-buffers
     ;; Ensure these correlate with raster VAO
-    (update-compute-bindings)
+    (update-comp-bindings)
     
     ;; Reset counter before every dispatch
     (setf (mem-aref (aref (ptrs-buffer (gethash "/protoform-atomic-counter" bo-step)) ix-fence)

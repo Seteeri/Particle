@@ -39,9 +39,8 @@
    
    ;; Programs
    ;; program-* -> array/list
-   (program-default :accessor program-default :initarg :program-default :initform nil)
-   (program-msdf :accessor program-msdf :initarg :program-msdf :initform nil)
-   (program-compute :accessor program-compute :initarg :program-compute :initform nil)
+   (prog-rast-msdf :accessor prog-rast-msdf :initarg :prog-rast-msdf :initform nil)
+   (prog-compute :accessor prog-compute :initarg :prog-compute :initform nil)
       
    ;; VAO
    (vaos :accessor vaos :initarg :vaos :initform (make-array 3 :adjustable nil :fill-pointer 0))
@@ -57,11 +56,12 @@
 
 (defun clean-up-render (view)
   (with-slots (program-default
-	       program-compute
+	       prog-compute
 	       boav-main
 	       boa-uniform-projview
 	       fences)
       view
+    
     (describe view)
 
     ;; do fence/wait first if running
@@ -81,8 +81,8 @@
     
     (%gl:delete-program program-default)
     (fmt-render "clean-up-view" "Deleted program ~a~%" program-default)
-    (%gl:delete-program program-compute)
-    (fmt-render "clean-up-view" "Deleted program ~a~%" program-compute)
+    (%gl:delete-program prog-compute)
+    (fmt-render "clean-up-view" "Deleted program ~a~%" prog-compute)
 
     (loop 
        :for fence :across fences
@@ -114,17 +114,17 @@
     (init-gl-env width height)
     (calc-opengl-usage)
     
-    (setf *render* (make-instance 'render
-				:width width
-				:height height
-				:inst-max inst-max
-				:sock-server (init-sock-server "/tmp/protoform-view.socket" :nonblock)
-				:program-default (init-program-default)
-				:program-msdf (init-program-msdf)
-				:program-compute (init-program-compute)
-				:fences (make-array 3
-						    :adjustable nil
-						    :initial-element (null-pointer))))
+    (setf *render*
+	  (make-instance 'render
+			 :width width
+			 :height height
+			 :inst-max inst-max
+			 :sock-server (init-sock-server "/tmp/protoform-view.socket" :nonblock)
+			 :prog-rast-msdf (init-prog-rast-msdf)
+			 :prog-compute (init-prog-compute)
+			 :fences (make-array 3
+					     :adjustable nil
+					     :initial-element (null-pointer))))
 
     ;; (push #'(lambda ()
     ;; 	      (let ((time-gc (coerce (/ sb-ext:*gc-run-time* internal-time-units-per-second)
@@ -202,7 +202,7 @@
 	  (run-compute)))
   
     ;; Have run-raster run all programs in a specified order
-    (run-raster)
+    (run-raster-msdf)
     
     (when sync
       ;; Create fence, which previous portion will check for

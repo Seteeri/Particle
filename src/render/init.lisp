@@ -80,27 +80,28 @@
 	    
 	    t))))))
 
-(defun init-view-buffers (params-model)
+(defun setup-render (params-model)
 
   ;; (format t "~S~%" params-model)
   
-  (fmt-render "init-view-buffers" "Initializing shm handles~%")
+  (fmt-render "setup-render" "Initializing shm handles~%")
   (init-handles-shm params-model)
 
-  (fmt-render "init-view-buffers" "Initializing buffer object caches~%")
+  (fmt-render "setup-render" "Initializing buffer object caches~%")
   (init-bo-caches params-model)
 
-  (fmt-render "init-view-buffers" "Initializing buffer object steps~%")
+  (fmt-render "setup-render" "Initializing buffer object steps~%")
   (init-bo-step params-model)
 
-  (fmt-render "init-view-buffers" "Initializing shader bindings~%")
+  (fmt-render "setup-render" "Initializing shader bindings~%")
   ;; Shader specific initialization
-  (init-buffers-raster-default params-model)
-  (init-buffers-raster-msdf params-model)
-  (init-buffers-compute params-model)
+  (gl:use-program (prog-rast-msdf *render*))
+  (init-buff-rast-msdf params-model)
+  (gl:use-program (prog-compute *render*))
+  (init-buff-compute params-model)
 
   ;; At this point, shm already has data loaded by model
   ;; so copy to OpenGL buffers
   (memcpy-shm-to-all)
 
-  (fmt-render "init-view-buffers" "Finished initializing shm handles~%"))
+  (fmt-render "setup-render" "Finished initializing shm handles~%"))

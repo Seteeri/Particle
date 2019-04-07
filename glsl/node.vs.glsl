@@ -21,7 +21,7 @@ flat out ivec2 vertexDimsTex;
 flat out vec2 vertexDimsTexOffset;
 out uv_t vertexUV;
 
-out vec3 vBC;
+//out vec3 vBC;
 
 void main()
 {
@@ -40,5 +40,5 @@ void main()
     vertexDimsTexOffset = vec2(float(vertexDimsTex.x-1), 
                                 float(vertexDimsTex.y-1));
                                 
-    vBC = vec3(1.0,1.0,1.0);
+    //vBC = vec3(1.0,1.0,1.0);
 }

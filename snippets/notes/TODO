@@ -4,7 +4,7 @@
 3. For raster, map element and indirect [DONE]
    1. Refactor model *params-shm* to include these and create mmaps
    ** Create mmap for each mapped buffer **
-4. Refactor compute:init-buffers-compute [DONE]
+4. Refactor compute:init-buff-compute [DONE]
    * Redundant name/fn since buffers can be accessed by all shaders
 
 1. Split mapping-base:init-mapping-buffer [DONE]
@@ -33,7 +33,7 @@ Render Unique Nodes
 2. Implement dirty flag for view [DONE]
 
 1. Separate element buffer from projview [DONE]
-2. Refactor init-buffers-compute [DONE]
+2. Refactor init-buff-compute [DONE]
 3. Integrate atomic counter buffer [DONE]
 4. Add buffering option to params [DONE]
 
@@ -382,7 +382,8 @@ MON:
    * base    - character
 
 * Misc
-  * Rename view -> render [DONE]
+  * Rename view -> render and then some... [DONE]
+  * Refactored fmt-* [DONE]
   * Implement exit [DONE]
   * Refactor file loading for multiple concurrent files loading
     -> Assign time or serial ID to task

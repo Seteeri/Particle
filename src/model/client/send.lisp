@@ -4,7 +4,7 @@
   (send-message *sock-view*
 		*buffer-sock-ptr*
 		(with-output-to-string (stream)
-		  (format stream "(init-view-buffers (")
+		  (format stream "(setup-render (")
 		  (loop
 		     :for (name params) :on *params-shm* :by #'cddr
 		     :do (format stream "~S " params))
