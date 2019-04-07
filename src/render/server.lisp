@@ -42,9 +42,4 @@
 		   (apply (symbol-function (find-symbol (string (first message)) :protoform.render))
 			  (cdr message))))))))
 
-(defun set-serving (value)
-  (setf *serving* value))
-
 (defun pass ())
-;; check errno at end?
-;; handle special forms

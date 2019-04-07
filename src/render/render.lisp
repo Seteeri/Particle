@@ -15,6 +15,12 @@
 		     str)
 	 rest))
 
+(defun set-draw (value)
+  (setf *draw* value))
+
+(defun set-serving (value)
+  (setf *serving* value))
+
 (defclass render ()
   ;; Create a base for these 3 slots?
   ((width :accessor width :initarg :width :initform nil)
@@ -48,9 +54,6 @@
    (sync :accessor sync :initarg :sync :initform nil)
    (fences :accessor fences :initarg :fences :initform nil)
    (ix-fence :accessor ix-fence :initarg :ix-fence :initform 0)))
-
-(defun set-draw (value)
-  (setf *draw* value))
 
 (defun clean-up-render (view)
   (with-slots (program-default
