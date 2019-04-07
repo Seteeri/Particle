@@ -6,7 +6,7 @@
 (defparameter *draw* nil)
 (defparameter *serving* t)
 
-(defun fmt-view (dst ctx-str ctl-str &rest rest)
+(defun fmt-render (dst ctx-str ctl-str &rest rest)
   ;; Add space opt
   (apply #'format
 	 dst
@@ -68,20 +68,20 @@
     (clean-up-buffer-objects view)
     
     (gl:delete-vertex-arrays (list boav-main))
-    (fmt-view t "clean-up-view" "Deleted vertex array ~a~%" boav-main)
+    (fmt-render t "clean-up-view" "Deleted vertex array ~a~%" boav-main)
 
     (%gl:use-program 0)
     
     (%gl:delete-program program-default)
-    (fmt-view t "clean-up-view" "Deleted program ~a~%" program-default)
+    (fmt-render t "clean-up-view" "Deleted program ~a~%" program-default)
     (%gl:delete-program program-compute)
-    (fmt-view t "clean-up-view" "Deleted program ~a~%" program-compute)
+    (fmt-render t "clean-up-view" "Deleted program ~a~%" program-compute)
 
     (loop 
        :for fence :across fences
        :do (unless (null-pointer-p fence)
 	     (%gl:delete-sync fence)
-	     (fmt-view t "clean-up-view" "Deleted fence ~a~%" fence)))))
+	     (fmt-render t "clean-up-view" "Deleted fence ~a~%" fence)))))
 
 (defun clean-up-buffer-objects (view)
   (dolist (boa (list (bo-projview view)
@@ -92,10 +92,10 @@
 
 (defun init-gl-env (width height)
   
-  (fmt-view t "init-gl-env" "GL Vendor: ~a~%" (gl:get* :vendor))
-  (fmt-view t "init-gl-env" "GL Renderer: ~a~%" (gl:get* :renderer))
-  (fmt-view t "init-gl-env" "GL Version: ~a~%" (gl:get* :version))
-  (fmt-view t "init-gl-env" "GLSL Version: ~a~%" (gl:get* :shading-language-version))
+  (fmt-render t "init-gl-env" "GL Vendor: ~a~%" (gl:get* :vendor))
+  (fmt-render t "init-gl-env" "GL Renderer: ~a~%" (gl:get* :renderer))
+  (fmt-render t "init-gl-env" "GL Version: ~a~%" (gl:get* :version))
+  (fmt-render t "init-gl-env" "GLSL Version: ~a~%" (gl:get* :shading-language-version))
   
   ;; Get screen dimensions from drm
   (gl:viewport 0 0 width height)
@@ -116,7 +116,7 @@
   
   (loop
      :for pair :in (get-gl-maxes)
-     :do (fmt-view t "init-gl-env" "~a = ~a~%" (first pair) (second pair))))
+     :do (fmt-render t "init-gl-env" "~a = ~a~%" (first pair) (second pair))))
   
 (defun init-bo-step (params-shm)
 
@@ -174,16 +174,16 @@
 
   ;; (format t "~S~%" params-model)
   
-  (fmt-view t "init-view-buffers" "Initializing shm handles~%")
+  (fmt-render t "init-view-buffers" "Initializing shm handles~%")
   (init-handles-shm params-model)
 
-  (fmt-view t "init-view-buffers" "Initializing buffer object caches~%")
+  (fmt-render t "init-view-buffers" "Initializing buffer object caches~%")
   (init-bo-caches params-model)
 
-  (fmt-view t "init-view-buffers" "Initializing buffer object steps~%")
+  (fmt-render t "init-view-buffers" "Initializing buffer object steps~%")
   (init-bo-step params-model)
 
-  (fmt-view t "init-view-buffers" "Initializing shader bindings~%")
+  (fmt-render t "init-view-buffers" "Initializing shader bindings~%")
   ;; Shader specific initialization
   (init-buffers-raster-default params-model)
   (init-buffers-raster-msdf params-model)
@@ -193,7 +193,7 @@
   ;; so copy to OpenGL buffers
   (memcpy-shm-to-all)
 
-  (fmt-view t "init-view-buffers" "Finished initializing shm handles~%"))
+  (fmt-render t "init-view-buffers" "Finished initializing shm handles~%"))
 
 (defun run-render (width
 		   height
@@ -207,7 +207,7 @@
 			  :context-version-major 3
 			  :depth-bits 16)
     (glfw:set-window-size-callback 'update-viewport)
-    (fmt-view t "run-view" "Window Position: ~S~%" (glfw:get-window-position (glfw:get-current-context)))
+    (fmt-render t "run-view" "Window Position: ~S~%" (glfw:get-window-position (glfw:get-current-context)))
     
     (init-gl-env width height)
     (calc-opengl-usage)
@@ -280,7 +280,7 @@
 	       ix-fence)
       *render*
 
-    ;; (fmt-view t "run-programs-shader" "ix-fence: ~a~%" ix-fence)
+    ;; (fmt-render t "run-programs-shader" "ix-fence: ~a~%" ix-fence)
     
     ;; Create with-* macro for this
     ;; if sync:
@@ -361,7 +361,7 @@
 	(multiple-value-bind (sock-accept errno)
 	    (accept4 sock-server :nonblock) ;non block
 	  (when (/= sock-accept -1)
-	    (fmt-view t "main-view" "Accepted connection: ~a~%" sock-accept)
+	    (fmt-render t "main-view" "Accepted connection: ~a~%" sock-accept)
 	    (setf sock-client sock-accept))))))
 
 (defun serve-client (&optional (flags 0))
@@ -374,7 +374,7 @@
 					buffer-sock-ptr
 					flags)))
 	     (when message
-	       ;; (fmt-view t "serve-client" "Message: ~S~%" message)
+	       ;; (fmt-render t "serve-client" "Message: ~S~%" message)
 	       ;; (print (eval message))
 	       ;; (force-output)
 	       
@@ -408,7 +408,7 @@
        	     (with-slots (buffer flag-copy)
        		 cache
        	       (unless (zerop flag-copy)
-       		 (fmt-view t "update-cache-to-step" "Cache status: ~a, ~a~%" name flag-copy)
+       		 (fmt-render t "update-cache-to-step" "Cache status: ~a, ~a~%" name flag-copy)
        		 (memcpy-cache-to-step name ix-fence
        				       name
        				       nil
@@ -428,7 +428,7 @@
       (with-slots (buffer flag-copy)
        	  cache
        	(unless (zerop flag-copy)
-       	  (fmt-view t "update-cache-to-step" "~a, ~a~%" "/protoform-projview" flag-copy)
+       	  (fmt-render t "update-cache-to-step" "~a, ~a~%" "/protoform-projview" flag-copy)
        	  (memcpy-cache-to-step "/protoform-projview" ix-fence
        				"/protoform-projview"
        				nil
