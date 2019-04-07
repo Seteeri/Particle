@@ -48,6 +48,9 @@
    (fences :accessor fences :initarg :fences :initform nil)
    (ix-fence :accessor ix-fence :initarg :ix-fence :initform 0)))
 
+(defun set-draw (value)
+  (setf *draw* value))
+
 (defun clean-up-render (view)
   (with-slots (program-default
 	       program-compute
@@ -89,111 +92,6 @@
 		     (bo-element view)
 		     (bo-texture view)))
     do(clean-up-buffer-object boa)))
-
-(defun init-gl-env (width height)
-  
-  (fmt-render t "init-gl-env" "GL Vendor: ~a~%" (gl:get* :vendor))
-  (fmt-render t "init-gl-env" "GL Renderer: ~a~%" (gl:get* :renderer))
-  (fmt-render t "init-gl-env" "GL Version: ~a~%" (gl:get* :version))
-  (fmt-render t "init-gl-env" "GLSL Version: ~a~%" (gl:get* :shading-language-version))
-  
-  ;; Get screen dimensions from drm
-  (gl:viewport 0 0 width height)
-  
-  (gl:enable :cull-face)
-  (gl:enable :depth-test)
-  (gl:enable :blend)
-  (gl:blend-func :src-alpha :one-minus-src-alpha)
-
-  ;; for testing - semi-transparent
-  ;; (gl:blend-func :one :one-minus-src-alpha)
-  
-  (%gl:clear-color 0.0
-		   (coerce (/ 43 255) 'single-float)
-		   (coerce (/ 54 255) 'single-float)
-		   0.0)
-  (gl:clear :color-buffer-bit :depth-buffer-bit)
-  
-  (loop
-     :for pair :in (get-gl-maxes)
-     :do (fmt-render t "init-gl-env" "~a = ~a~%" (first pair) (second pair))))
-  
-(defun init-bo-step (params-shm)
-
-  (with-slots (width height
-		     boav-main
-		     bo-step
-		     inst-max)
-      *render*
-
-    ;; Notes:
-    ;; * Some buffers have a different bind layout per shader stage
-    ;; * Texture requires setting fmt after and other ops
-    ;; * Set initial data for buffers element and draw-indirect
-    ;; * glMapNamedBuffer is unavailable so
-    ;;   * to persistently map the buffer, it needs to be bound...
-    ;;   * to bind a buffer, requires an appropriate program
-    ;; * What is the behavior when binding a buffer with no program bound?
-    ;;  * Doesn't matter here...
-    
-    (dolist (params params-shm)
-      (destructuring-bind (target
-			   path
-			   size
-			   bind-cs
-			   bind-vs
-			   count-buffer
-			   flag-copy
-			   &rest rest)
-	  params
-	
-	(let ((bo (init-buffer-object target
-    				      path
-    				      size
-    				      (if (> bind-vs -1) bind-vs bind-cs)
-    				      t ; pmap
-    				      :buffering count-buffer)))
-	  (setf (gethash path bo-step)
-		bo)
-
-	  (when (eq target :texture-buffer)
-
-	    ;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
-	    ;; Already active...
-	    (gl:active-texture :texture0)
-	    
-	    (dotimes (i (count-buffers bo))
-	      (update-binding-buffer bo i)
-	      (%gl:tex-buffer :texture-buffer
-			      (first rest) ; rgba8
-			      (aref (buffers bo) i)))
-	    
-	    t))))))
-
-(defun init-view-buffers (params-model)
-
-  ;; (format t "~S~%" params-model)
-  
-  (fmt-render t "init-view-buffers" "Initializing shm handles~%")
-  (init-handles-shm params-model)
-
-  (fmt-render t "init-view-buffers" "Initializing buffer object caches~%")
-  (init-bo-caches params-model)
-
-  (fmt-render t "init-view-buffers" "Initializing buffer object steps~%")
-  (init-bo-step params-model)
-
-  (fmt-render t "init-view-buffers" "Initializing shader bindings~%")
-  ;; Shader specific initialization
-  (init-buffers-raster-default params-model)
-  (init-buffers-raster-msdf params-model)
-  (init-buffers-compute params-model)
-
-  ;; At this point, shm already has data loaded by model
-  ;; so copy to OpenGL buffers
-  (memcpy-shm-to-all)
-
-  (fmt-render t "init-view-buffers" "Finished initializing shm handles~%"))
 
 (defun run-render (width
 		   height
@@ -309,43 +207,6 @@
 
     ; 3 defconstant +fences-max+
     (setf ix-fence (mod (+ ix-fence 1) 3))))
-
-(defun set-draw (value)
-  (setf *draw* value))
-
-(defun calc-opengl-usage ()
-
-  ;; Avg src code file = 512 lines @ 100 graphical chars = 51200
-  (let* ((size-per-char 208)
-	 (buffer-size 134217728)
-	 (inst-mm (floor (/ buffer-size
-			    size-per-char))))
-      
-      ;; State: SHM -> Base -> Rotate Buffers (DRV/CPU/GPU)
-      ;; Process:
-      ;; 1. Memcpy base buffers (add/rem instances) - not used in drawing
-      ;; 2. Compute buffers' (draw flag or cull) - copy from base buffers to draw buffers
-      ;; 3. Queue buffers'' in driver (call draw commands)
-      ;; 4. Runs program using buffers''' in GPU
-      (let ((total-quad (* buffer-size 2 5))) ; n types * n buffers
-	(format t "Total RAM (3x buffer): ~A MB~%" (/ total-quad 1024 1024)))
-      (format t "Max planes @ 134217728 bytes or 134ish megabytes: ~:d~%" inst-mm)
-      (format t "Triangles: ~:d~%" (* inst-mm 2))
-      (format t "Vertices: ~:d~%" (* inst-mm 6))      
-      (format t "~%")
-      (format t "Max glyphs @ 134217728 bytes or 134ish megabytes, (20x56px): ~A ~%" (/ buffer-size 4480))) ; 29,959
-
-  ;; Using overall 1.5 GB with all buffers + SBCL etc.
-  
-  ;; Limits is either instances or textures (unique glyphs) - whichever is smaller
-  ;; 1 char = 20x56 px * = 1120 px^2 * 4 bytes = 4480 bytes
-  ;; 536,870,912 / 4480 = 119,837 chars = 27x this todo
-  ;; Words could be reused:
-  ;; - english - common words
-  ;; - code - keywords, symbols, variable names
-  
-
-  (format t "-------------------~%"))
 	
 (defun update-cache-to-step ()
   (with-slots (bo-cache
@@ -389,3 +250,37 @@
        				nil) ; no print
        	  (when (> flag-copy 0)
        	    (decf flag-copy)))))))
+
+(defun calc-opengl-usage ()
+
+  ;; Avg src code file = 512 lines @ 100 graphical chars = 51200
+  (let* ((size-per-char 208)
+	 (buffer-size 134217728)
+	 (inst-mm (floor (/ buffer-size
+			    size-per-char))))
+      
+      ;; State: SHM -> Base -> Rotate Buffers (DRV/CPU/GPU)
+      ;; Process:
+      ;; 1. Memcpy base buffers (add/rem instances) - not used in drawing
+      ;; 2. Compute buffers' (draw flag or cull) - copy from base buffers to draw buffers
+      ;; 3. Queue buffers'' in driver (call draw commands)
+      ;; 4. Runs program using buffers''' in GPU
+      (let ((total-quad (* buffer-size 2 5))) ; n types * n buffers
+	(format t "Total RAM (3x buffer): ~A MB~%" (/ total-quad 1024 1024)))
+      (format t "Max planes @ 134217728 bytes or 134ish megabytes: ~:d~%" inst-mm)
+      (format t "Triangles: ~:d~%" (* inst-mm 2))
+      (format t "Vertices: ~:d~%" (* inst-mm 6))      
+      (format t "~%")
+      (format t "Max glyphs @ 134217728 bytes or 134ish megabytes, (20x56px): ~A ~%" (/ buffer-size 4480))) ; 29,959
+
+  ;; Using overall 1.5 GB with all buffers + SBCL etc.
+  
+  ;; Limits is either instances or textures (unique glyphs) - whichever is smaller
+  ;; 1 char = 20x56 px * = 1120 px^2 * 4 bytes = 4480 bytes
+  ;; 536,870,912 / 4480 = 119,837 chars = 27x this todo
+  ;; Words could be reused:
+  ;; - english - common words
+  ;; - code - keywords, symbols, variable names
+  
+
+  (format t "-------------------~%"))

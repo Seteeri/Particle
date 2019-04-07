@@ -79,7 +79,8 @@
 				       (:file "connector")))
 		 (:module render
 		 	  :pathname "src/render"
-		 	  :components ((:file "render")
+		 	  :components ((:file "init")
+				       (:file "render")
 				       (:file "cache")
 				       (:file "shm")
 				       (:file "compute")
