@@ -36,7 +36,7 @@
   ;; 			:do (format stream "~S " params))
   ;; 		     (format stream "))")))
   
-  (send-init-view-buffers)
+  (send-setup-render)
 
   (loop
      :for (sym params) :on *params-shm* :by #'cddr

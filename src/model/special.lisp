@@ -27,6 +27,11 @@
 (defparameter *metrics* nil)
 (defparameter *controller* nil)
 
+(defparameter *thread-libinput*   nil)
+(defparameter *thread-controller* nil)
+(defparameter *thread-async*      nil)
+(defparameter *thread-io*         nil)
+(defparameter *thread-socket*     nil)
 
 (defparameter *nodes-model* nil)
 (defparameter *stack-i-nodes* nil)
@@ -81,6 +86,12 @@
     *height*
     *inst-max*
 
+    *thread-libinput*
+    *thread-controller*
+    *thread-async*
+    *thread-io*
+    *thread-socket*
+    
     *queue-tasks-sync*
     *queue-tasks-async*
     *ht-timing-fn*

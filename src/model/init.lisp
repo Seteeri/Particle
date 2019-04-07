@@ -10,16 +10,17 @@
   ;; Integrate controller into async?
   ;;
   ;; For thread-IO and SSDs/NANDs, could use a thread pool
-  (let ((thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))      ; input      -> controller
-	(thread-controller (bordeaux-threads:make-thread #'run-controller))  ; controller -> model
-	(thread-async      (bordeaux-threads:make-thread #'run-async)) ; model      -> view-rpc
-	(thread-io         (bordeaux-threads:make-thread #'run-io))
-	(thread-socket     (bordeaux-threads:make-thread #'serve-socket)))   ; view-rpc   -> view proccess
-    (bordeaux-threads:join-thread thread-libinput)
-    (bordeaux-threads:join-thread thread-controller)
-    (bordeaux-threads:join-thread thread-async)
-    (bordeaux-threads:join-thread thread-io)
-    (bordeaux-threads:join-thread thread-socket)))
+  (setf *thread-libinput*   (bordeaux-threads:make-thread #'poll-fd-li)
+	*thread-controller* (bordeaux-threads:make-thread #'run-controller)
+	*thread-async*      (bordeaux-threads:make-thread #'run-async)
+	*thread-io*         (bordeaux-threads:make-thread #'run-io)
+	*thread-socket*     (bordeaux-threads:make-thread #'serve-socket))
+
+  (bordeaux-threads:join-thread *thread-libinput*)
+  (bordeaux-threads:join-thread *thread-controller*)
+  (bordeaux-threads:join-thread *thread-async*)
+  (bordeaux-threads:join-thread *thread-io*)
+  (bordeaux-threads:join-thread *thread-socket*))
 
 (defun init-nodes-default ()
   ;; *mutex-main*    (sb-thread:make-mutex)
@@ -171,10 +172,36 @@
     (register-callback `(,protoform.controller::+xk-escape+ (:press))
     		       :exclusive
     		       (lambda (seq-key)
-    			 ;; (clean-up-handles-shm)
-    			 (c-shutdown *sock-render*)
-    			 (c-close *sock-render*)
+			 
+			 (send-clean-up-render)
+			 
+			 ;; cleanup mmaps
+			 (dolist (mmap (list *shm-projview*
+					     *shm-vertices*
+					     *shm-nodes*
+					     *shm-texture-glyphs*
+					     *shm-element*
+					     *shm-draw-indirect*
+					     *shm-atomic-counter*))
+			   (clean-up-mmap mmap t))
+
+			 (foreign-free *buffer-sock-ptr*)
+			 
+			 (when *sock-render*
+    			   (c-shutdown *sock-render* +shut-rdwr+)
+    			   (c-close *sock-render*))
+
+			 ;; (end-kernel *kernel*)
+			 ;; kill threads
+			 ;; (ignore-errors
+			 ;;   (bordeaux-threads:destroy-thread *thread-libinput*)
+			 ;;   (bordeaux-threads:destroy-thread *thread-controller*)
+			 ;;   (bordeaux-threads:destroy-thread *thread-async*)
+			 ;;   (bordeaux-threads:destroy-thread *thread-io*)
+			 ;;   (bordeaux-threads:destroy-thread *thread-socket*))
+			 
     			 (fmt-model "handle-escape" "Model process exiting!~%")
+			 (force-output)
     			 (sb-ext:exit))))
   
   (when t

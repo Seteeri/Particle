@@ -165,17 +165,20 @@
     (funcall fn-bind (aref buffers index))))
 
 (defun clean-up-buffer-object (buffer)
-  ;; For each boa: bind->unmap->delete
-  (loop 
-     :for b :across (buffers buffer)
-     :do (progn
-	   ;; (format t "[clean-up-buffer-object] Cleaning ~a: ~a~%" buffer b)
-	   (funcall (fn-bind buffer) b)
-	   (when (mapped-persistent buffer)
-	     (gl:unmap-buffer (target buffer)))
-	   (funcall (fn-bind buffer) 0)))
-  (gl:delete-buffers (buffers buffer))
-  (format t "[clean-up-buffer-object] Cleaned-up ~a~%" buffer))
+  ;; For each boa: bind, unmap, bind zero, delete
+  (with-slots (buffers
+	       fn-bind
+	       mapped-persistent
+	       target)
+      buffer
+    (loop 
+       :for bo :across buffers
+       :do (progn
+	     (funcall fn-bind bo)
+	     (when mapped-persistent
+	       (gl:unmap-buffer target))
+	     (funcall fn-bind 0)))
+    (gl:delete-buffers buffers)))
 
 (defun set-bo-draw-indirect (bo-indirect
 			     count

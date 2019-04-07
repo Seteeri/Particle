@@ -23,8 +23,7 @@
   (sb-ext:gc :full t)
   
   (setf *kernel*        (make-kernel 4)
-	*channel*       (make-channel)
-	*channel-input* (make-channel) ; rename to -controller
+	*channel-input* (make-channel)
 	
 	;; Simply set here since no fn required
 	*width*         width
@@ -56,9 +55,7 @@
   
   (init-nodes-default)
   
-  (init-threads)
-  
-  (fmt-model "main-init" "Finished model initialization~%"))
+  (init-threads))
 
 (defun run-ptree-init ()
   (let ((tree (make-ptree)))

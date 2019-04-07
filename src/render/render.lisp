@@ -51,51 +51,66 @@
    
    ;; Sync
    (sync :accessor sync :initarg :sync :initform nil)
-   (fences :accessor fences :initarg :fences :initform nil)
-   (ix-fence :accessor ix-fence :initarg :ix-fence :initform 0)))
+   (ix-fence :accessor ix-fence :initarg :ix-fence :initform 0)
+   (fences :accessor fences :initarg :fences :initform nil)))
 
-(defun clean-up-render (view)
-  (with-slots (program-default
+(defun clean-up-render ()
+  (with-slots (sock-server
+	       sock-client
+	       buffer-sock-ptr
+	       handles-shm
+	       prog-rast-msdf
 	       prog-compute
-	       boav-main
-	       boa-uniform-projview
+	       vaos
+	       bo-step
+	       bo-cache
 	       fences)
-      view
-    
-    (describe view)
+      *render*
 
-    ;; do fence/wait first if running
-    (%gl:memory-barrier :all-barrier-bits)
-    (let ((sync (%gl:fence-sync :sync-gpu-commands-complete 0)))
-      (wait-buffer sync)
-      (%gl:delete-sync sync))
+    ;; debug info
+    (describe *render*)
+   
+   ;; do fence/wait first if running
+   (%gl:memory-barrier :all-barrier-bits)
+   (let ((sync (%gl:fence-sync :sync-gpu-commands-complete 0)))
+     (wait-buffer sync)
+     (%gl:delete-sync sync))
+   (loop 
+      :for fence :across fences
+      :do (unless (null-pointer-p fence)
+	    (%gl:delete-sync fence)))
     
-    ;; below fn includes mmaps
-    (clean-up-handles-shm view)
-    (clean-up-buffer-objects view)
-    
-    (gl:delete-vertex-arrays (list boav-main))
-    (fmt-render "clean-up-view" "Deleted vertex array ~a~%" boav-main)
-
     (%gl:use-program 0)
-    
-    (%gl:delete-program program-default)
-    (fmt-render "clean-up-view" "Deleted program ~a~%" program-default)
+    (%gl:delete-program prog-rast-msdf)
     (%gl:delete-program prog-compute)
-    (fmt-render "clean-up-view" "Deleted program ~a~%" prog-compute)
+        
+    (gl:delete-vertex-arrays (loop :for v :across vaos :collect v))
 
-    (loop 
-       :for fence :across fences
-       :do (unless (null-pointer-p fence)
-	     (%gl:delete-sync fence)
-	     (fmt-render "clean-up-view" "Deleted fence ~a~%" fence)))))
+    (loop
+       :for name :being :the :hash-keys :of bo-step
+       :using (hash-value bo)
+       :do (clean-up-buffer-object bo))
 
-(defun clean-up-buffer-objects (view)
-  (dolist (boa (list (bo-projview view)
-		     (bo-instance view)
-		     (bo-element view)
-		     (bo-texture view)))
-    do (clean-up-buffer-object boa)))
+    (loop
+       :for name :being :the :hash-keys :of bo-cache
+       :using (hash-value cache)
+       :do (clean-up-buffer-object (buffer cache)))
+    
+    ;; clean up shm
+    (clean-up-handles-shm)
+    
+    ;; clean up server last
+    (when sock-client
+      (c-shutdown sock-client +shut-rdwr+)
+      (c-close sock-client))
+    (when sock-server
+      (c-shutdown sock-server +shut-rdwr+)
+      (c-close sock-server))
+    (foreign-free buffer-sock-ptr))
+
+  (fmt-render "clean-up-render" "Render process exiting!~%")
+  (force-output)
+  (sb-ext:exit))
 
 (defun run-render (width
 		   height
@@ -188,7 +203,7 @@
     (when sync
       (let ((fence (aref fences ix-fence)))
 	;; check for null...
-    	(protoform.opengl::wait-buffer fence)
+    	(wait-buffer fence)
     	(%gl:delete-sync fence)
     	(setf (aref fences ix-fence) (null-pointer))))
 

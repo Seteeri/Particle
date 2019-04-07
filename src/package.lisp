@@ -59,7 +59,7 @@
 	   #:mmap
 	   #:mmap-file
 	   #:ptr
-	   #:cleanup-mmap))
+	   #:clean-up-mmap))
 
 (defpackage #:protoform.opengl
   (:use #:cl
@@ -73,8 +73,8 @@
 	   #:attach-shader
 	   #:delete-shader
 	   #:init-buffer-object
-           #:init-vao
-           #:init-boa-element
+       #:init-vao
+       #:init-boa-element
 	   #:init-buffer-object
 	   #:init-buffer-draw-indirect
 	   #:set-bo-indirect
@@ -86,6 +86,7 @@
 	   #:set-bo-element
 	   #:set-bo-draw-indirect
 	   #:copy-buffer
+	   #:wait-buffer
 	   
 	   #:target
 	   #:binding-layout

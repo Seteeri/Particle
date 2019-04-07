@@ -1,6 +1,6 @@
 (in-package #:protoform.model)
 
-(defun send-init-view-buffers ()
+(defun send-setup-render ()
   (send-message *sock-render*
 		*buffer-sock-ptr*
 		(with-output-to-string (stream)
@@ -20,3 +20,8 @@
   (send-message *sock-render*
 		*buffer-sock-ptr*
 		(format nil "(set-draw ~s)" value)))
+
+(defun send-clean-up-render ()
+  (send-message *sock-render*
+		*buffer-sock-ptr*
+		"(clean-up-render)"))

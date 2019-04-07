@@ -8,7 +8,8 @@
   (run-server))
 
 (defun run-server (&optional (flags 0))
-  (with-slots (sock-server sock-client)
+  (with-slots (sock-server
+	       sock-client)
       *render*
     (if sock-client
 	(progn

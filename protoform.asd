@@ -81,6 +81,7 @@
 		 	  :pathname "src/render"
 		 	  :components ((:file "init")
 				       (:file "render")
+				       (:file "step")
 				       (:file "cache")
 				       (:file "shm")
 				       (:file "compute")

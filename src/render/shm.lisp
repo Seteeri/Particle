@@ -23,16 +23,10 @@
 			     :mmap (init-mmap path
 					      size
 					      nil)))
-	(fmt-render "init-handles-shm" "Set hash for ~S~%" path)))))
+	(fmt-render "init-handles-shm" "Created handle-shm for ~S~%" path)))))
 
 (defun clean-up-handles-shm ()
   (loop 
-     :for key :being :the :hash-keys :of (handles-shm *render*)
-     :using (hash-value value)
-     :do (progn
-	   (let* ((buffer (boa value)))
-	     (clean-up-buffer-object buffer)
-	     (fmt-render "clean-up-handles-shm" "Deleted ~a: ~a~%" key buffer))
-	   (let* ((mmap (mmap value)))
-	     (cleanup-mmap mmap t)
-	     (fmt-render "clean-up-handles-shm" "Deleted ~a~%" mmap)))))
+     :for name :being :the :hash-keys :of (handles-shm *render*)
+     :using (hash-value handle)
+     :do (clean-up-mmap (mmap handle))))
