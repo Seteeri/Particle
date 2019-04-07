@@ -1,6 +1,6 @@
 (in-package :protoform.render)
 
-(defparameter *view* nil)
+(defparameter *render* nil)
 (defparameter *time-frame-last* 0)
 (defparameter *time-gc-last* 0.0)
 (defparameter *draw* nil)
@@ -14,7 +14,7 @@
 		     ctl-str)
 	 rest))
 
-(defclass view ()
+(defclass render ()
   ;; Create a base for these 3 slots?
   ((width :accessor width :initarg :width :initform nil)
    (height :accessor height :initarg :height :initform nil)
@@ -48,7 +48,7 @@
    (fences :accessor fences :initarg :fences :initform nil)
    (ix-fence :accessor ix-fence :initarg :ix-fence :initform 0)))
 
-(defun clean-up-view (view)
+(defun clean-up-render (view)
   (with-slots (program-default
 	       program-compute
 	       boav-main
@@ -124,7 +124,7 @@
 		     boav-main
 		     bo-step
 		     inst-max)
-      *view*
+      *render*
 
     ;; Notes:
     ;; * Some buffers have a different bind layout per shader stage
@@ -195,10 +195,10 @@
 
   (fmt-view t "init-view-buffers" "Finished initializing shm handles~%"))
 
-(defun run-view (width
-		  height
-		  inst-max
-		  path-server)
+(defun run-render (width
+		   height
+		   inst-max
+		   path-server)
     
   (glfw:with-init-window (:title "Protoform"
 			  :width width
@@ -212,7 +212,7 @@
     (init-gl-env width height)
     (calc-opengl-usage)
     
-    (setf *view* (make-instance 'view
+    (setf *render* (make-instance 'render
 				:width width
 				:height height
 				:inst-max inst-max
@@ -264,8 +264,8 @@
     (setf *time-frame-last* time-frame)
 
     ;; Send frame
-    (send-message (sock-client *view*)
-    		  (buffer-sock-ptr *view*)
+    (send-message (sock-client *render*)
+    		  (buffer-sock-ptr *render*)
 		  (format nil "(handle-view-sync ~S)" time-frame)))
 
   ;; GC before waiting on model process
@@ -278,7 +278,7 @@
   (with-slots (sync
 	       fences
 	       ix-fence)
-      *view*
+      *render*
 
     ;; (fmt-view t "run-programs-shader" "ix-fence: ~a~%" ix-fence)
     
@@ -353,7 +353,7 @@
 
 (defun run-server (&optional (flags 0))
   (with-slots (sock-server sock-client)
-      *view*
+      *render*
     (if sock-client
 	(progn
 	  (set-serving t)
@@ -367,7 +367,7 @@
 (defun serve-client (&optional (flags 0))
   (with-slots (sock-client
 	       buffer-sock-ptr)
-      *view*
+      *render*
     (loop
        :while *serving*
        :do (let ((message (recv-message sock-client
@@ -396,7 +396,7 @@
 (defun update-cache-to-step ()
   (with-slots (bo-cache
 	       ix-fence)
-      *view*
+      *render*
     ;; https://stackoverflow.com/questions/28704818/how-can-i-write-to-a-texture-buffer-object
     ;; Shader can't copy instance textures due to different image sizes
     ;; Indices remain the same
@@ -419,7 +419,7 @@
 (defun update-cache-to-step-pv ()
   (with-slots (bo-cache
 	       ix-fence)
-      *view*
+      *render*
     ;; https://stackoverflow.com/questions/28704818/how-can-i-write-to-a-texture-buffer-object
     ;; Shader can't copy instance textures due to different image sizes
     ;; Indices remain the same

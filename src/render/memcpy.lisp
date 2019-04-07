@@ -2,7 +2,7 @@
 
 (defun memcpy-shm-to-all ()
   (with-slots (bo-cache)
-      *view*
+      *render*
     ;; shm -> cache -> step
     ;; model triggers shm->cache
     ;; compute performs cache->step
@@ -23,7 +23,7 @@
   ;; (format t "shm-to-cache: ~a~%" (get-cache-buffer name-dest))
   (let* ((bo-dest (get-cache-buffer name-dest))
 	 (ptr-dest (aref (ptrs-buffer bo-dest) 0)) ; always 0
-	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *view*))))))
+	 (ptr-src (ptr (mmap (gethash name-src (handles-shm *render*))))))
     (memcpy-ptr ptr-dest
 		offset
 		ptr-src
@@ -42,7 +42,7 @@
 			       (size nil)
 			       (print t))
   ;; (format t "cache-to-step: ~a~%" (get-cache-buffer name-dest))
-  (let* ((bo-dest (gethash name-dest (bo-step *view*)))
+  (let* ((bo-dest (gethash name-dest (bo-step *render*)))
 	 (ptr-dest (aref (ptrs-buffer bo-dest) ix-dest))
 	 (ptr-src (aref (ptrs-buffer (get-cache-buffer name-src)) 0)))
     (memcpy-ptr ptr-dest
@@ -60,7 +60,7 @@
 				 name-src
 				 &optional (size nil))
   ;; (format t "cache-to-step-all: ~a~%" (get-cache-buffer shm-nodes))
-  (let* ((bo-dest (gethash name-dest (bo-step *view*)))
+  (let* ((bo-dest (gethash name-dest (bo-step *render*)))
 	 (ptr-src (aref (ptrs-buffer (get-cache-buffer name-dest)) 0))
 	 (size (if size
 		   size

@@ -63,9 +63,9 @@
 
 (defun init-buffers-raster-default (params-shm)
   ;; VAO per program?
-  (gl:use-program (program-default *view*))
+  (gl:use-program (program-default *render*))
   (with-slots (vaos)
-      *view*
+      *render*
     ;; Setup vaos/bindings for each step
     ;; 1 bind vao > many bind buffer calls
     (let ((vao (init-vao)))
@@ -73,9 +73,9 @@
 
 (defun init-buffers-raster-msdf (params-shm)
   ;; VAO per program?
-  (gl:use-program (program-msdf *view*))
+  (gl:use-program (program-msdf *render*))
   (with-slots (vaos)
-      *view*
+      *render*
     ;; Setup vaos/bindings for each step
     ;; 1 bind vao > many bind buffer calls
     (let ((vao (init-vao)))
@@ -85,7 +85,7 @@
   (with-slots (bo-step
 	       vaos
 	       ix-fence)
-      *view*
+      *render*
     ;; Setup vaos/bindings for each step
     ;; 1 bind vao > many bind buffer calls
     (loop 
@@ -100,7 +100,7 @@
 ;; (defun init-buffers-raster (params-shm)
 ;;   (with-slots (bo-step
 ;; 	       vaos)
-;;       *view*
+;;       *render*
 ;;     ;; Setup vaos/bindings for each step
 ;;     ;; 1 bind vao > many bind buffer calls
 ;;     (dotimes (i 3)
@@ -116,13 +116,13 @@
 ;; (defun update-raster-buffer-bindings-2 ()
 ;;   (with-slots (vaos
 ;; 	       ix-fence)
-;;       *view*
+;;       *render*
 ;;     ;; Use different pre-setup VAOs instead of individual bindings
 ;;     (gl:bind-vertex-array (aref vaos ix-fence))))
 
 (defun run-raster ()
 
-  (gl:use-program (program-msdf *view*))
+  (gl:use-program (program-msdf *render*))
 
   (update-raster-buffer-bindings)
     

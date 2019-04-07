@@ -27,7 +27,7 @@
 	       handles-shm
 	       bo-cache
 	       bo-counter)
-      *view*
+      *render*
 
     (gl:use-program program-compute)
 
@@ -47,7 +47,7 @@
 (defun update-compute-bindings ()
   (with-slots (bo-step
 	       ix-fence)
-      *view*
+      *render*
     
     ;; These output bindings/buffers
     ;; Need only be done for those specified in the compute shader
@@ -70,7 +70,7 @@
   ;; check projview here
   (with-slots (bo-cache
 	       ix-fence)
-      *view*
+      *render*
     (loop 
        :for name :being :the :hash-keys :of bo-cache
        :using (hash-value cache)
@@ -94,7 +94,7 @@
 (defun update-compute-buffers-gl (&optional (force nil))
   (with-slots (bo-cache
 	       ix-fence)
-      *view*
+      *render*
     (loop 
        :for name :being :the :hash-keys :of bo-cache
        :using (hash-value cache)
@@ -104,8 +104,8 @@
 		       force)
 	       ;; (fmt-view t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
 	       (copy-buffer (aref (buffers (get-cache-buffer name)) 0)
-			    (aref (buffers (gethash name (bo-step *view*))) ix-fence)
-			    (size-buffer (gethash name (bo-step *view*))))
+			    (aref (buffers (gethash name (bo-step *render*))) ix-fence)
+			    (size-buffer (gethash name (bo-step *render*))))
 	       (when (> flag-copy 0)
 		 (decf flag-copy)))))))
 
@@ -115,7 +115,7 @@
 	       bo-step
 	       inst-max
 	       ix-fence)
-      *view*
+      *render*
     
     ;; (update-compute-bindings)
 
@@ -135,7 +135,7 @@
 	       bo-step
 	       inst-max
 	       ix-fence)
-      *view*
+      *render*
     
     (gl:use-program program-compute)
     

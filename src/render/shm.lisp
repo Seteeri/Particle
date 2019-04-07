@@ -6,7 +6,7 @@
 
 (defun init-handles-shm (params-model)
   (with-slots (handles-shm)
-      *view*
+      *render*
     (dolist (params params-model)
       (destructuring-bind (target
 			   path
@@ -27,7 +27,7 @@
 
 (defun clean-up-handles-shm ()
   (loop 
-     :for key :being :the :hash-keys :of (handles-shm *view*)
+     :for key :being :the :hash-keys :of (handles-shm *render*)
      :using (hash-value value)
      :do (progn
 	   (let* ((buffer (boa value)))

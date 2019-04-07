@@ -13,7 +13,7 @@
 
 (defun init-bo-caches (params-model)
   (with-slots (bo-cache)
-      *view*
+      *render*
     (dolist (params params-model)
       (destructuring-bind (target
 			   path
@@ -35,15 +35,15 @@
 			     :flag-copy flag-copy))))))
 
 (defun get-cache (name)
-  (gethash name (bo-cache *view*)))
+  (gethash name (bo-cache *render*)))
 
 (defun get-cache-buffer (name)
-  (buffer (gethash name (bo-cache *view*))))
+  (buffer (gethash name (bo-cache *render*))))
 
 (defun get-cache-flag-copy (name)
-  (flag-copy (gethash name (bo-cache *view*))))
+  (flag-copy (gethash name (bo-cache *render*))))
 
 (defun set-cache-flag-copy (name value)
   (with-slots (flag-copy)
-      (gethash name (bo-cache *view*))
+      (gethash name (bo-cache *render*))
     (setf flag-copy value)))
