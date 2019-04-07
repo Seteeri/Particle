@@ -59,6 +59,8 @@
 (defparameter *queue-tasks-sync* nil)
 (defparameter *queue-tasks-async* nil)
 (defparameter *ht-timing-fn* nil)
+(defparameter *mb-async* nil)
+(defparameter *mb-io* nil)
 
 (defparameter *mutex-qts* nil)
 (defparameter *mutex-qta* nil)

@@ -69,21 +69,21 @@
 
     ;; debug info
     (describe *render*)
-   
-   ;; do fence/wait first if running
-   (%gl:memory-barrier :all-barrier-bits)
-   (let ((sync (%gl:fence-sync :sync-gpu-commands-complete 0)))
-     (wait-buffer sync)
-     (%gl:delete-sync sync))
-   (loop 
-      :for fence :across fences
-      :do (unless (null-pointer-p fence)
-	    (%gl:delete-sync fence)))
+    
+    ;; do fence/wait first if running
+    (%gl:memory-barrier :all-barrier-bits)
+    (let ((sync (%gl:fence-sync :sync-gpu-commands-complete 0)))
+      (wait-buffer sync)
+      (%gl:delete-sync sync))
+    (loop 
+       :for fence :across fences
+       :do (unless (null-pointer-p fence)
+	     (%gl:delete-sync fence)))
     
     (%gl:use-program 0)
     (%gl:delete-program prog-rast-msdf)
     (%gl:delete-program prog-compute)
-        
+    
     (gl:delete-vertex-arrays (loop :for v :across vaos :collect v))
 
     (loop

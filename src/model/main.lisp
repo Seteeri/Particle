@@ -12,7 +12,7 @@
   (execute-mb-tasks *mb-async*))
 
 (defun run-io ()
-  (loop (sleep 1)))
+  (execute-mb-tasks *mb-io*))
 
 (defun init-model (width height
 		   inst-max
