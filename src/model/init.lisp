@@ -5,15 +5,17 @@
   ;; Can't integrate libinput or view
   ;; * libinput must be dedicated to pull from queue ASAP
   ;; * view must be dedicated to respond immediately to view process or processing time will be lost
-  ;; Integrate controller into model?
+  ;; Integrate controller into async?
   (let ((thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))      ; input      -> controller
 	(thread-controller (bordeaux-threads:make-thread #'run-controller))  ; controller -> model
-	(thread-model      (bordeaux-threads:make-thread #'run-model)) ; model      -> view-rpc
-	(thread-view       (bordeaux-threads:make-thread #'serve-socket)))   ; view-rpc   -> view proccess
+	(thread-async      (bordeaux-threads:make-thread #'run-model)) ; model      -> view-rpc
+	(thread-io         (bordeaux-threads:make-thread (lambda () (loop (sleep 1))))) ; model      -> view-rpc
+	(thread-socket     (bordeaux-threads:make-thread #'serve-socket)))   ; view-rpc   -> view proccess
     (bordeaux-threads:join-thread thread-libinput)
     (bordeaux-threads:join-thread thread-controller)
-    (bordeaux-threads:join-thread thread-model)
-    (bordeaux-threads:join-thread thread-view)))
+    (bordeaux-threads:join-thread thread-async)
+    (bordeaux-threads:join-thread thread-io)
+    (bordeaux-threads:join-thread thread-socket)))
 
 (defun init-nodes-default ()
   ;; *mutex-main*    (sb-thread:make-mutex)
