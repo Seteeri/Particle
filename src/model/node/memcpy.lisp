@@ -137,17 +137,17 @@
   (with-slots (ptr size)
       shm
     ;; (fmt-model "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
-    (send-message *sock-view*
+    (send-message *sock-render*
     		  *buffer-sock-ptr*
 		  (format nil "(memcpy-shm-to-cache ~S ~S ~S ~S)" name name offset size-cpy))))
 
 (defun send-set-cache-dirty (name value)
-  (send-message *sock-view*
+  (send-message *sock-render*
     		*buffer-sock-ptr*
 		(format nil "(set-cache-flag-copy ~S ~S)" name value)))
 
 (defun send-memcpy-shm-to-cache-flag* (caches)
-  (send-message *sock-view*
+  (send-message *sock-render*
     		*buffer-sock-ptr*
 		(with-output-to-string (stream)
 		  (format stream "(")

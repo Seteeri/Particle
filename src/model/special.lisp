@@ -61,7 +61,7 @@
 
 ;; Move to conn/socket inst?
 ;; Don't need locks...
-(defparameter *sock-view* nil)
+(defparameter *sock-render* nil)
 (defparameter *buffer-sock-ptr* nil)
 (defparameter *buffer-sock-array* nil)
 
@@ -102,7 +102,7 @@
 
     *controller*
 
-    *sock-view*
+    *sock-render*
     *buffer-sock-ptr*
     *buffer-sock-array*
     *projview*))

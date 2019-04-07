@@ -172,8 +172,8 @@
     		       :exclusive
     		       (lambda (seq-key)
     			 ;; (clean-up-handles-shm)
-    			 (c-shutdown *sock-view*)
-    			 (c-close *sock-view*)
+    			 (c-shutdown *sock-render*)
+    			 (c-close *sock-render*)
     			 (fmt-model "handle-escape" "Model process exiting!~%")
     			 (sb-ext:exit))))
   

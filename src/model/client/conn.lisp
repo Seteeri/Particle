@@ -4,7 +4,7 @@
 
 (defun serve-socket ()
   (loop
-     (let ((message (recv-message *sock-view*
+     (let ((message (recv-message *sock-render*
 				  *buffer-sock-ptr*)))
        (when message
 	 ;; (fmt-model "serve-client" "Message: ~S~%" message)
@@ -27,7 +27,7 @@
 					:adjustable nil
 					:fill-pointer nil
 					:element-type '(unsigned-byte 8))
-	*sock-view* (init-sock-client *path-socket-view* :block))
+	*sock-render* (init-sock-client *path-socket-view* :block))
 
   ;; (format t "~a~%" (with-output-to-string (stream)
   ;; 		     (format stream "(init-view-buffers (")
