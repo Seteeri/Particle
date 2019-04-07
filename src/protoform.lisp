@@ -56,9 +56,9 @@
   ;; (sb-ext:exit)
   
   (when t
-    (fork (lambda () (protoform.view:run-view width height
-    					      inst-max
-    					      nil))))
+    (fork (lambda () (protoform.render:run-render width height
+    						inst-max
+    						nil))))
   
   (when t
     (fork (lambda () (protoform.model:init-model width height

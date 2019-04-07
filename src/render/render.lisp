@@ -1,4 +1,4 @@
-(in-package :protoform.view)
+(in-package :protoform.render)
 
 (defparameter *view* nil)
 (defparameter *time-frame-last* 0)
@@ -381,9 +381,9 @@
 	       ;; To do multiple check if first is a list
 	       (if (listp (first message))
 		   (dolist (n message)
-		     (apply (symbol-function (find-symbol (string (first n)) :protoform.view))
+		     (apply (symbol-function (find-symbol (string (first n)) :protoform.render))
 			    (cdr n)))
-		   (apply (symbol-function (find-symbol (string (first message)) :protoform.view))
+		   (apply (symbol-function (find-symbol (string (first message)) :protoform.render))
 			  (cdr message))))))))
 
 (defun set-serving (value)

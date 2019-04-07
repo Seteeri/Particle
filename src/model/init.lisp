@@ -2,10 +2,14 @@
 
 (defun init-threads ()
   ;; Can this be integrated into lparallel?
+  ;;
   ;; Can't integrate libinput or view
   ;; * libinput must be dedicated to pull from queue ASAP
   ;; * view must be dedicated to respond immediately to view process or processing time will be lost
+  ;;
   ;; Integrate controller into async?
+  ;;
+  ;; For thread-IO and SSDs/NANDs, could use a thread pool
   (let ((thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))      ; input      -> controller
 	(thread-controller (bordeaux-threads:make-thread #'run-controller))  ; controller -> model
 	(thread-async      (bordeaux-threads:make-thread #'run-async)) ; model      -> view-rpc

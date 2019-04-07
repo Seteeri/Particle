@@ -1,4 +1,4 @@
-(in-package :protoform.view)
+(in-package :protoform.render)
 
 (defclass cache ()
   ((buffer :accessor buffer :initarg :buffer :initform nil)

@@ -1,4 +1,4 @@
-(in-package #:protoform.view)
+(in-package #:protoform.render)
 
 ;; (glfw:def-key-callback quit-on-escape (window key scancode action mod-keys)
 ;;   (declare (ignore window scancode mod-keys))

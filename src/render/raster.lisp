@@ -1,4 +1,4 @@
-(in-package :protoform.view)
+(in-package :protoform.render)
 
 (defun init-program-msdf ()
   (let* ((program (gl:create-program)))

@@ -77,9 +77,9 @@
 				       (:file "plane")
 				       (:file "crtc")
 				       (:file "connector")))
-		 (:module view
-		 	  :pathname "src/view"
-		 	  :components ((:file "view")
+		 (:module render
+		 	  :pathname "src/render"
+		 	  :components ((:file "render")
 				       (:file "cache")
 				       (:file "shm")
 				       (:file "compute")

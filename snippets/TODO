@@ -382,10 +382,12 @@ MON:
    * base    - character
 
 * Misc
+  * Rename view -> render [DONE]
+  * Implement exit [DONE]
   * Refactor file loading for multiple concurrent files loading
     -> Assign time or serial ID to task
     -> Reuse task ID
-  * Rename view -> render
+    -> Use IO thread
   * Need to warn if renderer starts falling behind and queue builds up - set threshold
   * DIAGNOSE: why nodes stop loading?
     

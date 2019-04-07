@@ -1,4 +1,4 @@
-(in-package :protoform.view)
+(in-package :protoform.render)
 
 (defun memcpy-shm-to-all ()
   (with-slots (bo-cache)

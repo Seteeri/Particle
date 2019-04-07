@@ -1,4 +1,4 @@
-(in-package :protoform.view)
+(in-package :protoform.render)
 
 (defclass handle-shm ()
   ((name :accessor name :initarg :name :initform nil)

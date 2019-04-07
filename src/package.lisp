@@ -163,7 +163,7 @@
 	   #:scale-uv
 	   #:uv))
 
-(defpackage #:protoform.view
+(defpackage #:protoform.render
   (:use #:cl
         #:cffi
 	#:protoform.libc
@@ -173,7 +173,7 @@
 	#:3d-vectors
 	#:3d-matrices
 	#:trivial-timers)
-  (:export #:run-view))
+  (:export #:run-render))
 
 (defpackage #:protoform.model
   (:use #:cl
