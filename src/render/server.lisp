@@ -1,7 +1,10 @@
 (in-package :protoform.render)
 
+;; 144 hz
+(defconstant +server-sleep+ (/ 1 144))
+
 (defun run-server-sleep ()
-  (sleep (/ 1 144))
+  (sleep +server-sleep+)
   (run-server))
 
 (defun run-server (&optional (flags 0))
