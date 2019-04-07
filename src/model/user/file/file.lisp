@@ -76,7 +76,7 @@
 								  baseline
 								  pen)))))
 	;; (sb-concurrency:send-message
-	;;  *mb-model*
+	;;  *mb-async*
 	;;  task)
 	(enqueue-task-async task)
 	task))))
@@ -97,7 +97,7 @@
     (when (>= index-data (length data))
       ;; Read new chunk
       (sb-concurrency:send-message
-       *mb-model*
+       *mb-async*
        (make-instance 'task
 		      :id 'load-chunk-file
 		      :fn-play (lambda (task)
@@ -197,7 +197,7 @@
 				      :name "README" :type "md")
 		       :external-format :utf-8)))
 	    (sb-concurrency:send-message
-	     *mb-model*
+	     *mb-async*
 	     (make-instance 'task
 			    :id 'load-chunk-file
 			    :fn-play (lambda (task)

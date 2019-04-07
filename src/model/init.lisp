@@ -68,7 +68,7 @@
 (defun set-cc ()
   (setf *queue-tasks-sync*  (sb-concurrency:make-queue)
 	*queue-tasks-async* (sb-concurrency:make-queue)
-	*mb-model*          (sb-concurrency:make-mailbox)
+	*mb-async*          (sb-concurrency:make-mailbox)
 
 	*tasks-inactive*    (make-hash-table :size 64)
 	*tasks-active*      (make-hash-table :size 64)

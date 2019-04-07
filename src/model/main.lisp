@@ -13,7 +13,7 @@
   (loop
      ;; Block on first message
      ;; Afterwards, poll messages until empty
-     :for msg-first := (sb-concurrency:receive-message *mb-model*)
+     :for msg-first := (sb-concurrency:receive-message *mb-async*)
      :do (let* ((ptree (make-ptree))
 		(ids (poll-and-process ptree)))
 
@@ -38,7 +38,7 @@
   (let ((ids ()))
     (loop
        :do (multiple-value-bind (msg flag-recv)
-	       (sb-concurrency:receive-message-no-hang *mb-model*)
+	       (sb-concurrency:receive-message-no-hang *mb-async*)
 	     (unless flag-recv (return))
 	     (push (process-msg msg) ids)))
     ids))
@@ -53,7 +53,7 @@
 	   (ptree-fn id args-in fn-out ptree)))))
 
 (defun run-async ()
-  (execute-mb-tasks *mb-model*))
+  (execute-mb-tasks *mb-async*))
 
 (defun run-io ()
   (loop (sleep 1)))

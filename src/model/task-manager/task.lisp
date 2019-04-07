@@ -14,22 +14,22 @@
 
 (defun pause-task-mb (id)
   (sb-concurrency:send-message
-   *mb-model*
+   *mb-async*
    (make-task-stop id))
 
   (sb-concurrency:send-message
-   *mb-model*
+   *mb-async*
    (make-task-inactivate id)))
 
 (defun resume-task-mb (id)
   (sb-concurrency:send-message
-   *mb-model*
+   *mb-async*
    (make-task-activate id)))
 
 (defun stop-task-mb (id)
   ;; handle pausing in stop state
   (sb-concurrency:send-message
-   *mb-model*
+   *mb-async*
    (make-task-stop-remove id)))
 
 ;;;;;;;;;;;;;;;;;;;;;
