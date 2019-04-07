@@ -13,14 +13,14 @@
     (if sock-client
 	(progn
 	  (set-serving t)
-	  (serve-client flags))
+	  (serve-socket flags))
 	(multiple-value-bind (sock-accept errno)
 	    (accept4 sock-server :nonblock) ;non block
 	  (when (/= sock-accept -1)
 	    (fmt-render "main-view" "Accepted connection: ~a~%" sock-accept)
 	    (setf sock-client sock-accept))))))
 
-(defun serve-client (&optional (flags 0))
+(defun serve-socket (&optional (flags 0))
   (with-slots (sock-client
 	       buffer-sock-ptr)
       *render*
