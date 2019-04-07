@@ -14,7 +14,7 @@
 	(multiple-value-bind (sock-accept errno)
 	    (accept4 sock-server :nonblock) ;non block
 	  (when (/= sock-accept -1)
-	    (fmt-render t "main-view" "Accepted connection: ~a~%" sock-accept)
+	    (fmt-render "main-view" "Accepted connection: ~a~%" sock-accept)
 	    (setf sock-client sock-accept))))))
 
 (defun serve-client (&optional (flags 0))
@@ -27,7 +27,7 @@
 					buffer-sock-ptr
 					flags)))
 	     (when message
-	       ;; (fmt-render t "serve-client" "Message: ~S~%" message)
+	       ;; (fmt-render "serve-client" "Message: ~S~%" message)
 	       ;; (print (eval message))
 	       ;; (force-output)
 	       

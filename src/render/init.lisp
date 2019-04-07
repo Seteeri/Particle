@@ -2,10 +2,10 @@
 
 (defun init-gl-env (width height)
   
-  (fmt-render t "init-gl-env" "GL Vendor: ~a~%" (gl:get* :vendor))
-  (fmt-render t "init-gl-env" "GL Renderer: ~a~%" (gl:get* :renderer))
-  (fmt-render t "init-gl-env" "GL Version: ~a~%" (gl:get* :version))
-  (fmt-render t "init-gl-env" "GLSL Version: ~a~%" (gl:get* :shading-language-version))
+  (fmt-render "init-gl-env" "GL Vendor: ~a~%" (gl:get* :vendor))
+  (fmt-render "init-gl-env" "GL Renderer: ~a~%" (gl:get* :renderer))
+  (fmt-render "init-gl-env" "GL Version: ~a~%" (gl:get* :version))
+  (fmt-render "init-gl-env" "GLSL Version: ~a~%" (gl:get* :shading-language-version))
   
   ;; Get screen dimensions from drm
   (gl:viewport 0 0 width height)
@@ -26,7 +26,7 @@
   
   (loop
      :for pair :in (get-gl-maxes)
-     :do (fmt-render t "init-gl-env" "~a = ~a~%" (first pair) (second pair))))
+     :do (fmt-render "init-gl-env" "~a = ~a~%" (first pair) (second pair))))
   
 (defun init-bo-step (params-shm)
 
@@ -84,16 +84,16 @@
 
   ;; (format t "~S~%" params-model)
   
-  (fmt-render t "init-view-buffers" "Initializing shm handles~%")
+  (fmt-render "init-view-buffers" "Initializing shm handles~%")
   (init-handles-shm params-model)
 
-  (fmt-render t "init-view-buffers" "Initializing buffer object caches~%")
+  (fmt-render "init-view-buffers" "Initializing buffer object caches~%")
   (init-bo-caches params-model)
 
-  (fmt-render t "init-view-buffers" "Initializing buffer object steps~%")
+  (fmt-render "init-view-buffers" "Initializing buffer object steps~%")
   (init-bo-step params-model)
 
-  (fmt-render t "init-view-buffers" "Initializing shader bindings~%")
+  (fmt-render "init-view-buffers" "Initializing shader bindings~%")
   ;; Shader specific initialization
   (init-buffers-raster-default params-model)
   (init-buffers-raster-msdf params-model)
@@ -103,4 +103,4 @@
   ;; so copy to OpenGL buffers
   (memcpy-shm-to-all)
 
-  (fmt-render t "init-view-buffers" "Finished initializing shm handles~%"))
+  (fmt-render "init-view-buffers" "Finished initializing shm handles~%"))

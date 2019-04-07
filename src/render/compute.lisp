@@ -9,15 +9,15 @@
 				 program
 				 shaders)))
       (if (> (length log-main) 0)
-	  (fmt-render t "init-program-compute" "Shader log: ~%~a~%" log-main)
-	  (fmt-render t "init-program-compute" "Compiled and attached compute shader sucessfully~%")))
+	  (fmt-render "init-program-compute" "Shader log: ~%~a~%" log-main)
+	  (fmt-render "init-program-compute" "Compiled and attached compute shader sucessfully~%")))
     
     (gl:link-program program)
     
     (let ((log-prog (gl:get-program-info-log program)))
       (if (> (length log-prog) 0)
-	  (fmt-render t "init-program-compute" "Program log: ~%~a~%" log-prog)
-	  (fmt-render t "init-program-compute" "Compiled program successfully~%")))
+	  (fmt-render "init-program-compute" "Program log: ~%~a~%" log-prog)
+	  (fmt-render "init-program-compute" "Compiled program successfully~%")))
     
     program))
 
@@ -41,7 +41,7 @@
 	     ;; Bind if allowed
 	     ;; Single buffered so always index 0
 	     (when (> bl -1)
-	       (fmt-render t "init-buffers-compute" "Binding ~a to ~a~%" name bl)
+	       (fmt-render "init-buffers-compute" "Binding ~a to ~a~%" name bl)
 	       (update-binding-buffer buffer 0))))))
 
 (defun update-compute-bindings ()
@@ -78,7 +78,7 @@
 	       cache
 	     (when (or (not (zerop flag-copy))
 		       force)
-	       ;; (fmt-render t "update-compute-buffers-ptr"
+	       ;; (fmt-render "update-compute-buffers-ptr"
 	       ;; 		 "~S: ~a, flag ~a~%" name ix-fence flag-copy)
 	       (memcpy-cache-to-step name ix-fence
     				     name
@@ -87,7 +87,7 @@
 	       (when (or (> flag-copy 0)
 			 t)
 		 (decf flag-copy)
-		 ;; (fmt-render t "update-compute-buffers-ptr"
+		 ;; (fmt-render "update-compute-buffers-ptr"
 		 ;; 	   "               flag ~a~%" flag-copy)
 		 t))))))
 
@@ -102,7 +102,7 @@
 	       cache
 	     (when (or (not (zerop flag-copy))
 		       force)
-	       ;; (fmt-render t "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
+	       ;; (fmt-render "update-compute-buffers" "Cache status: ~a, ~a~%" name flag-copy))
 	       (copy-buffer (aref (buffers (get-cache-buffer name)) 0)
 			    (aref (buffers (gethash name (bo-step *render*))) ix-fence)
 			    (size-buffer (gethash name (bo-step *render*))))
@@ -163,7 +163,7 @@
     (protoform.opengl::sync-gl)
 
     (when nil
-      (fmt-render t "run-compute" "Counter: ~a~%"
+      (fmt-render "run-compute" "Counter: ~a~%"
     		(mem-aref (aref (ptrs-buffer (gethash "/protoform-atomic-counter" bo-step)) ix-fence)
     			  :uint 0)))
     

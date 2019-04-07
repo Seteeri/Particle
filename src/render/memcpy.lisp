@@ -32,7 +32,7 @@
 		    size
 		    (size-buffer bo-dest))))
   (when print
-    (fmt-render t "memcpy-shm-to-cache" "~a, @~a, +~a bytes~%" name-src offset size)))
+    (fmt-render "memcpy-shm-to-cache" "~a, @~a, +~a bytes~%" name-src offset size)))
 
 ;; Can either use this function to cpy between buffers or use GL func
 (defun memcpy-cache-to-step (name-dest
@@ -53,7 +53,7 @@
 		    size
 		    (size-buffer bo-dest))))
   (when print
-    (fmt-render t "memcpy-cache-to-step" "~a, ~a bytes~%" name-src size)))
+    (fmt-render "memcpy-cache-to-step" "~a, ~a bytes~%" name-src size)))
 
 ;; Copy from cache to all step buffers
 (defun memcpy-cache-to-step-all (name-dest

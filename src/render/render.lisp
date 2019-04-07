@@ -6,12 +6,13 @@
 (defparameter *draw* nil)
 (defparameter *serving* t)
 
-(defun fmt-render (dst ctx-str ctl-str &rest rest)
-  ;; Add space opt
+(defun fmt-render (str-ctx
+		   str
+		   &rest rest)
   (apply #'format
-	 dst
-	 (str:concat (format nil "[VIEW:~a][~a] " (sb-posix:getpid) ctx-str)
-		     ctl-str)
+	 t ; default to std-out
+	 (str:concat (format nil "[RENDER:~a][~a] " (sb-posix:getpid) str-ctx)
+		     str)
 	 rest))
 
 (defclass render ()
@@ -71,27 +72,27 @@
     (clean-up-buffer-objects view)
     
     (gl:delete-vertex-arrays (list boav-main))
-    (fmt-render t "clean-up-view" "Deleted vertex array ~a~%" boav-main)
+    (fmt-render "clean-up-view" "Deleted vertex array ~a~%" boav-main)
 
     (%gl:use-program 0)
     
     (%gl:delete-program program-default)
-    (fmt-render t "clean-up-view" "Deleted program ~a~%" program-default)
+    (fmt-render "clean-up-view" "Deleted program ~a~%" program-default)
     (%gl:delete-program program-compute)
-    (fmt-render t "clean-up-view" "Deleted program ~a~%" program-compute)
+    (fmt-render "clean-up-view" "Deleted program ~a~%" program-compute)
 
     (loop 
        :for fence :across fences
        :do (unless (null-pointer-p fence)
 	     (%gl:delete-sync fence)
-	     (fmt-render t "clean-up-view" "Deleted fence ~a~%" fence)))))
+	     (fmt-render "clean-up-view" "Deleted fence ~a~%" fence)))))
 
 (defun clean-up-buffer-objects (view)
   (dolist (boa (list (bo-projview view)
 		     (bo-instance view)
 		     (bo-element view)
 		     (bo-texture view)))
-    do(clean-up-buffer-object boa)))
+    do (clean-up-buffer-object boa)))
 
 (defun run-render (width
 		   height
@@ -105,7 +106,7 @@
 			  :context-version-major 3
 			  :depth-bits 16)
     (glfw:set-window-size-callback 'update-viewport)
-    (fmt-render t "run-view" "Window Position: ~S~%" (glfw:get-window-position (glfw:get-current-context)))
+    (fmt-render "run-view" "Window Position: ~S~%" (glfw:get-window-position (glfw:get-current-context)))
     
     (init-gl-env width height)
     (calc-opengl-usage)
@@ -174,7 +175,7 @@
 	       ix-fence)
       *render*
 
-    ;; (fmt-render t "run-programs-shader" "ix-fence: ~a~%" ix-fence)
+    ;; (fmt-render "run-programs-shader" "ix-fence: ~a~%" ix-fence)
     
     ;; Create with-* macro for this
     ;; if sync:
@@ -223,7 +224,7 @@
        	     (with-slots (buffer flag-copy)
        		 cache
        	       (unless (zerop flag-copy)
-       		 (fmt-render t "update-cache-to-step" "Cache status: ~a, ~a~%" name flag-copy)
+       		 (fmt-render "update-cache-to-step" "Cache status: ~a, ~a~%" name flag-copy)
        		 (memcpy-cache-to-step name ix-fence
        				       name
        				       nil
@@ -243,7 +244,7 @@
       (with-slots (buffer flag-copy)
        	  cache
        	(unless (zerop flag-copy)
-       	  (fmt-render t "update-cache-to-step" "~a, ~a~%" "/protoform-projview" flag-copy)
+       	  (fmt-render "update-cache-to-step" "~a, ~a~%" "/protoform-projview" flag-copy)
        	  (memcpy-cache-to-step "/protoform-projview" ix-fence
        				"/protoform-projview"
        				nil

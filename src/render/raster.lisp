@@ -15,18 +15,18 @@
 				 program
 				 shaders-frag)))
       (if (> (length log-vert) 0)
-	  (fmt-render t "init-program-default" "Shader log: ~%~a~%" log-vert)
-	  (fmt-render t "init-program-default" "Compiled and attached vertex shader sucessfully~%"))
+	  (fmt-render "init-program-default" "Shader log: ~%~a~%" log-vert)
+	  (fmt-render "init-program-default" "Compiled and attached vertex shader sucessfully~%"))
       (if (> (length log-frag) 0)
-	  (fmt-render t "init-program-default" "Shader log: ~%~a~%" log-frag)
-	  (fmt-render t "init-program-default" "Compiled and attached fragment shader sucessfully~%")))
+	  (fmt-render "init-program-default" "Shader log: ~%~a~%" log-frag)
+	  (fmt-render "init-program-default" "Compiled and attached fragment shader sucessfully~%")))
     
     (gl:link-program program)
     
     (let ((log-prog (gl:get-program-info-log program)))
       (if (> (length log-prog) 0)
-	  (fmt-render t "init-program-default" "Program log: ~%~a~%" log-prog)
-      	  (fmt-render t "init-program-default" "Compiled program sucessfully~%")))
+	  (fmt-render "init-program-default" "Program log: ~%~a~%" log-prog)
+      	  (fmt-render "init-program-default" "Compiled program sucessfully~%")))
     
     program))
 
@@ -46,18 +46,18 @@
 				 program
 				 shaders-frag)))
       (if (> (length log-vert) 0)
-	  (fmt-render t "init-program-default" "Shader log: ~%~a~%" log-vert)
-	  (fmt-render t "init-program-default" "Compiled and attached vertex shader sucessfully~%"))
+	  (fmt-render "init-program-default" "Shader log: ~%~a~%" log-vert)
+	  (fmt-render "init-program-default" "Compiled and attached vertex shader sucessfully~%"))
       (if (> (length log-frag) 0)
-	  (fmt-render t "init-program-default" "Shader log: ~%~a~%" log-frag)
-	  (fmt-render t "init-program-default" "Compiled and attached fragment shader sucessfully~%")))
+	  (fmt-render "init-program-default" "Shader log: ~%~a~%" log-frag)
+	  (fmt-render "init-program-default" "Compiled and attached fragment shader sucessfully~%")))
     
     (gl:link-program program)
     
     (let ((log-prog (gl:get-program-info-log program)))
       (if (> (length log-prog) 0)
-	  (fmt-render t "init-program-default" "Program log: ~%~a~%" log-prog)
-      	  (fmt-render t "init-program-default" "Compiled program sucessfully~%")))
+	  (fmt-render "init-program-default" "Program log: ~%~a~%" log-prog)
+      	  (fmt-render "init-program-default" "Compiled program sucessfully~%")))
     
     program))
 
