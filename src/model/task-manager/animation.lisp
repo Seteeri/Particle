@@ -75,7 +75,7 @@
 				      (/ time-elapsed time-duration))
       			     value-delta))))
 	(when nil
-	  (fmt-model t "run-anim" "~a~%" value-new))
+	  (fmt-model "run-anim" "~a~%" value-new))
 	(funcall fn-new
 		 value-new))
             
@@ -83,7 +83,7 @@
       (if (> time-elapsed time-duration)
 	  (progn
 	    (when nil
-	      (fmt-model t "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed))
+	      (fmt-model "run-anim" "Ending anim; elapsed time was ~7$~%" time-elapsed))
 	    nil)
 
 	  (make-instance 'task

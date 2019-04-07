@@ -7,7 +7,7 @@
      (let ((message (recv-message *sock-view*
 				  *buffer-sock-ptr*)))
        (when message
-	 ;; (fmt-model t "serve-client" "Message: ~S~%" message)
+	 ;; (fmt-model "serve-client" "Message: ~S~%" message)
 	 ;; (print (eval message))
 	 ;; (force-output)
 

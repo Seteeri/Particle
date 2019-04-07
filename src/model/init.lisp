@@ -174,7 +174,7 @@
     			 ;; (clean-up-handles-shm)
     			 (c-shutdown *sock-view*)
     			 (c-close *sock-view*)
-    			 (fmt-model t "handle-escape" "Model process exiting!~%")
+    			 (fmt-model "handle-escape" "Model process exiting!~%")
     			 (sb-ext:exit))))
   
   (when t
@@ -294,7 +294,7 @@
   ;; Print hashtable of callbacks
   ;;(when nil
   ;;  (maphash (lambda (key value)
-  ;;		(fmt-model t "register-keyboard..." "Seq-event: ~S = ~S~%" key value))
+  ;;		(fmt-model "register-keyboard..." "Seq-event: ~S = ~S~%" key value))
   ;;	       key-callbacks))
   
   t)

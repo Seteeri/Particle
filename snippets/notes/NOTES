@@ -1102,7 +1102,7 @@ https://www.reddit.com/r/lisp/comments/9q68y8/has_the_gnu_coreutils_ever_been_im
      :do (loop
 	    :for node :across nodes
 	    :do (progn
-		  (fmt-model t "submit-receive-graph" "task: ~a~%" (string node))
+		  (fmt-model "submit-receive-graph" "task: ~a~%" (string node))
 		  (submit-task *channel*
 			       (symbol-function (find-symbol (string node)
 							     :protoform.model))))

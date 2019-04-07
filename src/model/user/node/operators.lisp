@@ -118,9 +118,9 @@
 	 (output-eval (eval data-input))
 	 (output-str  (format nil "~S" output-eval)))
 
-    (fmt-model t "eval-node" "Input Str (to eval): ~S~%" str)
-    (fmt-model t "eval-node" "Output Str (from eval): ~S~%" output-str)
-    (fmt-model t "eval-node" "ID (monotonic time): ~S~%" (osicat:get-monotonic-time))
+    (fmt-model "eval-node" "Input Str (to eval): ~S~%" str)
+    (fmt-model "eval-node" "Output Str (from eval): ~S~%" output-str)
+    (fmt-model "eval-node" "ID (monotonic time): ~S~%" (osicat:get-monotonic-time))
 
     (when create-node-output
 
@@ -185,7 +185,7 @@
 		  (translate-node-to-node *node-ptr-main*
 	     				  node-nxt)
 
-		  (fmt-model t "move-node-ptr" "* -> ~S = ~S~%" node-nxt (data node-nxt))
+		  (fmt-model "move-node-ptr" "* -> ~S = ~S~%" node-nxt (data node-nxt))
 		  
 		  ;; (enqueue-node node-ref)
 		  (send-node *node-ptr-main* nil)))))
@@ -196,7 +196,7 @@
 			   delta
 			   id)
   (when nil
-    (fmt-model t "translate-node-ptr" "~a, ~a -> ~a~%"
+    (fmt-model "translate-node-ptr" "~a, ~a -> ~a~%"
 	       id
 	       start
 	       (+ start delta)))

@@ -2,14 +2,14 @@
 
 (defmacro defcb-sync (name-fn id-fn fn)
   `(defun ,name-fn (seq-key)
-     (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
+     (fmt-model (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
      (enqueue-task-sync (make-instance 'task
 				       :id ,id-fn
 				       :fn-play ,fn))))
 
 (defmacro defcb-async (name-fn id-fn fn)
   `(defun ,name-fn (seq-key)
-     (fmt-model t (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
+     (fmt-model (format nil "~a" (quote ,name-fn)) "~a~%" seq-key)
      (enqueue-task-async (make-instance 'task
 					:id ,id-fn
 					:fn-play ,fn))))
@@ -45,16 +45,16 @@
     (funcall #'eval-node)))
 
 (defun cut-node-cb (seq-key)
-  (fmt-model t "cut-node" "~a~%" seq-key))
+  (fmt-model "cut-node" "~a~%" seq-key))
 
 (defun copy-node-cb (seq-key)
-  (fmt-model t "copy-node" "~a~%" seq-key))
+  (fmt-model "copy-node" "~a~%" seq-key))
 
 (defun paste-node-cb (seq-key)
-  (fmt-model t "paste-node" "~a~%" seq-key))
+  (fmt-model "paste-node" "~a~%" seq-key))
 
 (defun show-node-ids-cb (seq-key)
-  (fmt-model t "show-node-ids" "~a~%" seq-key))
+  (fmt-model "show-node-ids" "~a~%" seq-key))
 
 (defcb-async
     load-file-cb

@@ -7,7 +7,7 @@
 				 delta
 				 id)
   
-  (fmt-model t "animate-translate-camera" "~a -> ~a~%"
+  (fmt-model "animate-translate-camera" "~a -> ~a~%"
 	     start
 	     (+ start
 		delta))
@@ -55,7 +55,7 @@
   (with-slots (scale-ortho)
       *projview*
     
-    (fmt-model t "animate-scale-ortho" "~a -> ~a~%"
+    (fmt-model "animate-scale-ortho" "~a -> ~a~%"
 	       scale-ortho
 	       (+ scale-ortho
 		  delta))

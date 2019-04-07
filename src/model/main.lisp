@@ -1,5 +1,13 @@
 (in-package :protoform.model)
 
+(defun fmt-model (str-ctx str &rest rest)
+  ;; Add space opt
+  (apply #'format
+	 t
+	 (str:concat (format nil "[MODEL:~a][~a] " (sb-posix:getpid) str-ctx)
+		     str)
+	 rest))
+
 (defun run-model-ptree ()
   ;; Build frames - aka ptrees
   ;; 1. Pull tasks until empty
@@ -102,7 +110,7 @@
   
   (init-threads)
   
-  (fmt-model t "main-init" "Finished model initialization~%"))
+  (fmt-model "main-init" "Finished model initialization~%"))
 
 (defun run-ptree-init ()
   (let ((tree (make-ptree)))
@@ -211,11 +219,3 @@
     	      tree)
     
     (call-ptree 'init-conn-rpc-view tree)))
-
-(defun fmt-model (dst ctx-str ctl-str &rest rest)
-  ;; Add space opt
-  (apply #'format
-	 dst
-	 (str:concat (format nil "[MODEL:~a][~a] " (sb-posix:getpid) ctx-str)
-		     ctl-str)
-	 rest))

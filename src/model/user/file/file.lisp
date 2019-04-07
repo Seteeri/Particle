@@ -55,7 +55,7 @@
   ;; Return params for next frame
   (let* ((data (make-string length))
 	 (pos (read-sequence data in)))
-    (fmt-model t "load-chunk-file" "pos = ~a~%" pos)
+    (fmt-model "load-chunk-file" "pos = ~a~%" pos)
     (when (plusp pos)
       ;; Enqueue in async so it can create nodes
       ;; When it is done with the chunk, it will request another here

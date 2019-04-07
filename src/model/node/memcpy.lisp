@@ -24,7 +24,7 @@
   (let* ((offset (* (index node)
 		    +size-struct-instance+)))
   (when nil
-    (fmt-model t "send-memcpy-node" "@~a, +~a bytes~%" offset +size-struct-instance+))
+    (fmt-model "send-memcpy-node" "@~a, +~a bytes~%" offset +size-struct-instance+))
   (send-memcpy-shm-to-cache-flag*
    `((,*shm-nodes* "/protoform-nodes"    ,offset ,+size-struct-instance+)))))
 
@@ -136,7 +136,7 @@
 				   (size-cpy nil))
   (with-slots (ptr size)
       shm
-    ;; (fmt-model t "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
+    ;; (fmt-model "main-model" "(memcpy-shm-to-cache ~S ~S ~S)~%" name name size)
     (send-message *sock-view*
     		  *buffer-sock-ptr*
 		  (format nil "(memcpy-shm-to-cache ~S ~S ~S ~S)" name name offset size-cpy))))
