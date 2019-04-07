@@ -85,7 +85,8 @@
 				       (:file "compute")
 				       (:file "raster")
 				       (:file "memcpy")
-				       (:file "glfw")))
+				       (:file "glfw")
+				       (:file "server")))
 		 (:module controller
 			  :pathname "src/controller"
 			  :components ((:file "keysymdef")
