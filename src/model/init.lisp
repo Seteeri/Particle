@@ -9,7 +9,7 @@
   (let ((thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))      ; input      -> controller
 	(thread-controller (bordeaux-threads:make-thread #'run-controller))  ; controller -> model
 	(thread-model      (bordeaux-threads:make-thread #'run-model)) ; model      -> view-rpc
-	(thread-view       (bordeaux-threads:make-thread #'serve-client)))   ; view-rpc   -> view proccess
+	(thread-view       (bordeaux-threads:make-thread #'serve-socket)))   ; view-rpc   -> view proccess
     (bordeaux-threads:join-thread thread-libinput)
     (bordeaux-threads:join-thread thread-controller)
     (bordeaux-threads:join-thread thread-model)

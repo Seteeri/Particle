@@ -2,7 +2,7 @@
 
 (defparameter *path-socket-view* "/tmp/protoform-view.socket")
 
-(defun serve-client ()
+(defun serve-socket ()
   (loop
      (let ((message (recv-message *sock-view*
 				  *buffer-sock-ptr*)))
