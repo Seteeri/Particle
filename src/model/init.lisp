@@ -8,8 +8,8 @@
   ;; Integrate controller into async?
   (let ((thread-libinput   (bordeaux-threads:make-thread #'poll-fd-li))      ; input      -> controller
 	(thread-controller (bordeaux-threads:make-thread #'run-controller))  ; controller -> model
-	(thread-async      (bordeaux-threads:make-thread #'run-model)) ; model      -> view-rpc
-	(thread-io         (bordeaux-threads:make-thread (lambda () (loop (sleep 1))))) ; model      -> view-rpc
+	(thread-async      (bordeaux-threads:make-thread #'run-async)) ; model      -> view-rpc
+	(thread-io         (bordeaux-threads:make-thread #'run-io))
 	(thread-socket     (bordeaux-threads:make-thread #'serve-socket)))   ; view-rpc   -> view proccess
     (bordeaux-threads:join-thread thread-libinput)
     (bordeaux-threads:join-thread thread-controller)

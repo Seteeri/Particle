@@ -52,8 +52,11 @@
 	     msg
 	   (ptree-fn id args-in fn-out ptree)))))
 
-(defun run-model ()
+(defun run-async ()
   (execute-mb-tasks *mb-model*))
+
+(defun run-io ()
+  (loop (sleep 1)))
 
 (defun init-model (width height
 		   inst-max
