@@ -1,46 +1,41 @@
 (in-package :protoform.model)
 
-(defun load-file-to-nodes-ptree (ptree)
-  ;; Submit tasks to model or add to ptree directly
+(defun load-file-to-nodes ()
 
-  ;; (ptree-fn 'area   '(width height) (lambda (w h) (* w h))       tree)
-  ;; (ptree-fn 'width  '(border)       (lambda (b)   (+ 7 (* 2 b))) tree)
-  ;; (ptree-fn 'height '(border)       (lambda (b)   (+ 5 (* 2 b))) tree)
-  ;; (ptree-fn 'border '()             (lambda ()    1)             tree)
-  
-  (ptree-fn 'lftn-in
-	    '()
-	    (lambda ()
-	      (open (make-pathname :directory '(:absolute
-						"home"
-						"user"
-						"quicklisp"
-						"local-projects"
-						"protoform")
-				   :name "README" :type "md")
-		    :external-format :utf-8))
-	    ptree)
+  ;; PROBLEM:
+  ;; - each char dependent on previous being drawn
+  ;; - order not guaranteed since later char might finish before earlier char
+  ;; SOLUTION:
+  ;; - pp: init-node; calc positions based on char index
+  ;; - insert vertices over all || insert tree over all
+  ;; - once:update pointer last (or after each node)
+  ;;   - attach ptr
+  ;;   - advance ptr
+  (when-let ((in (open (make-pathname :directory '(:absolute
+						   "home"
+						   "user"
+						   "quicklisp"
+						   "local-projects"
+						   "protoform")
+				      :name "README" :type "md")
+		       :external-format :utf-8)))
+	    (sb-concurrency:send-message
+	     *mb-io*
+	     (make-instance 'task
+			    :id 'load-chunk-file
+			    :fn-play (lambda (task)
+				       
+				       (setf (gethash 'load-chunk-file *tasks-active*) task)
 
-  (ptree-fn 'lftn-origin
-  	    '()
-  	    (lambda ()
-	      (get-origin-from-node-pos *node-ptr-main*))
-  	    ptree)
-  
-  (ptree-fn 'lftn-lcf
-	    '(lftn-in lftn-origin)
-	    (lambda (in origin)
-    	      (funcall #'load-chunk-file
-	    	       in
-	    	       0
-	    	       4096
-	    	       0
-	    	       0
-		       origin
-		       origin))
-	    ptree)
-
-  'lftn-lcf)
+				       ;; get origin in load-file-to-nodes, not lambda
+    	      			       (funcall #'load-chunk-file
+						in
+						0
+						4096
+						0
+						0
+						(get-origin-from-node-pos *node-ptr-main*)
+						(get-origin-from-node-pos *node-ptr-main*)))))))
 
 
 (defun load-chunk-file (in
@@ -97,7 +92,7 @@
     (when (>= index-data (length data))
       ;; Read new chunk
       (sb-concurrency:send-message
-       *mb-async*
+       *mb-io*
        (make-instance 'task
 		      :id 'load-chunk-file
 		      :fn-play (lambda (task)
@@ -176,40 +171,44 @@
 ;;     (loop for read = (read-sequence scratch in)
 ;;        while (plusp read) sum read)))
 
+(defun load-file-to-nodes-ptree (ptree)
+  ;; Submit tasks to model or add to ptree directly
 
-(defun load-file-to-nodes ()
+  ;; (ptree-fn 'area   '(width height) (lambda (w h) (* w h))       tree)
+  ;; (ptree-fn 'width  '(border)       (lambda (b)   (+ 7 (* 2 b))) tree)
+  ;; (ptree-fn 'height '(border)       (lambda (b)   (+ 5 (* 2 b))) tree)
+  ;; (ptree-fn 'border '()             (lambda ()    1)             tree)
+  
+  (ptree-fn 'lftn-in
+	    '()
+	    (lambda ()
+	      (open (make-pathname :directory '(:absolute
+						"home"
+						"user"
+						"quicklisp"
+						"local-projects"
+						"protoform")
+				   :name "README" :type "md")
+		    :external-format :utf-8))
+	    ptree)
 
-  ;; PROBLEM:
-  ;; - each char dependent on previous being drawn
-  ;; - order not guaranteed since later char might finish before earlier char
-  ;; SOLUTION:
-  ;; - pp: init-node; calc positions based on char index
-  ;; - insert vertices over all || insert tree over all
-  ;; - once:update pointer last (or after each node)
-  ;;   - attach ptr
-  ;;   - advance ptr
-  (when-let ((in (open (make-pathname :directory '(:absolute
-						   "home"
-						   "user"
-						   "quicklisp"
-						   "local-projects"
-						   "protoform")
-				      :name "README" :type "md")
-		       :external-format :utf-8)))
-	    (sb-concurrency:send-message
-	     *mb-async*
-	     (make-instance 'task
-			    :id 'load-chunk-file
-			    :fn-play (lambda (task)
-				       
-				       (setf (gethash 'load-chunk-file *tasks-active*) task)
+  (ptree-fn 'lftn-origin
+  	    '()
+  	    (lambda ()
+	      (get-origin-from-node-pos *node-ptr-main*))
+  	    ptree)
+  
+  (ptree-fn 'lftn-lcf
+	    '(lftn-in lftn-origin)
+	    (lambda (in origin)
+    	      (funcall #'load-chunk-file
+	    	       in
+	    	       0
+	    	       4096
+	    	       0
+	    	       0
+		       origin
+		       origin))
+	    ptree)
 
-				       ;; get origin in load-file-to-nodes, not lambda
-    	      			       (funcall #'load-chunk-file
-						in
-						0
-						4096
-						0
-						0
-						(get-origin-from-node-pos *node-ptr-main*)
-						(get-origin-from-node-pos *node-ptr-main*)))))))
+  'lftn-lcf)

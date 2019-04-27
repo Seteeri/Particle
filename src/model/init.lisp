@@ -294,29 +294,32 @@
 		     :exclusive
 		     #'eval-node-cb)
   (register-callback `(,protoform.controller::+xk-shift-l+ (:press :down)
-				     ,protoform.controller::+xk-return+  (:press :repeat))
+		       ,protoform.controller::+xk-return+  (:press :repeat))
 		     :exclusive
 		     #'eval-node-cb)
 
   ;; When used with modifiers, need to use iso-left-tab
   (register-callback `(,protoform.controller::+xk-shift-r+      (:press :down)
-					  ,protoform.controller::+xk-iso-left-tab+ (:press))
+		       ,protoform.controller::+xk-iso-left-tab+ (:press))
 		     :exclusive
 		     #'load-file-cb)
   (register-callback `(,protoform.controller::+xk-shift-l+ (:press :down)
-				     ,protoform.controller::+xk-iso-left-tab+     (:press))
+		       ,protoform.controller::+xk-iso-left-tab+     (:press))
 		     :exclusive
 		     #'load-file-cb)
   
   ;; for testing
   (when t
-    (register-callback `(,protoform.controller::+xk-f5+ (:press))
+    (register-callback `(,protoform.controller::+xk-alt-r+ (:press :down)
+			 ,protoform.controller::+xk-1+     (:press))
 		       :exclusive
 		       #'pause-task-load-char-from-file)
-    (register-callback `(,protoform.controller::+xk-f6+ (:press))
+    (register-callback `(,protoform.controller::+xk-alt-r+ (:press :down)
+			 ,protoform.controller::+xk-2+     (:press))
 		       :exclusive
 		       #'resume-task-load-char-from-file)
-    (register-callback `(,protoform.controller::+xk-f7+ (:press))
+    (register-callback `(,protoform.controller::+xk-alt-r+ (:press :down)
+			 ,protoform.controller::+xk-3+     (:press))
 		       :exclusive
 		       #'stop-task-load-char-from-file))
   

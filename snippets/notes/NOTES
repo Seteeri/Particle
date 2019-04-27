@@ -1403,3 +1403,17 @@ BENCHMARK PTREE VS SEQ
   30 lambdas converted
   25,608,872 processor cycles
   574,096 bytes consed
+
+Implement systemd socket activation in lisp to handle multitasking
+
+see notepad
+
+frame:
+sync
+- single ptree - all tasks must complete
+  or multiple tasks
+async
+- multi ptree - must be able to suspend after each task
+  or multiple tasks
+  
+also model async but really for i/o?

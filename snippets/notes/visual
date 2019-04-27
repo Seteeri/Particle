@@ -105,10 +105,10 @@ NOTES:
 
   These are mostly intuitive
 
-  * char   : append to list containing ptr
-  * #\Space  : ...
-  * #\Tab    : ...
-  * #\Enter  : ...
+  * char        : append to list containing ptr
+  * #\Space     : ...
+  * #\Tab       : ...
+  * #\Enter     : ...
   * #\Backspace : remove before ptr
   * #\Delete    : remove after ptr
   
@@ -126,20 +126,22 @@ NOTES:
   * Can chain so <mod> + n t # = (n t #)
   
   ATOMS
-  1. nil/() : <mod>+n / <mod>+.[dot] or <mod>+c[ons] (visually represented by dot)
+  1. nil/() : <mod>+n or <mod>+(/) or <mod>+. or <mod>+c[ons] (visually represented by dot)
   2. t      : <mod>+t
   3. #      : <mod>+# (produce number instead of char; default to char...)
+  4. ptr create/destroy : <mod>+8/7
+     - always master ptr?
   
   LIST
   4. Listify : <mod>+l
     * Take ptr and place in list
     * Doing this when unlinked is same as nil/()
-  5. Unlistify : <mod>+t
+  5. Unlistify : <mod>+y
     * Opposite action of listify is to use first item in list (aka first)
     * Remainder is deleted or remains in list and appended after so
       * (a (b c d)) -> (a b (c d))
       
-  NODES
+  REPL
   6. Eval-nodes-char (enc) : <mod>+e  : eval-nodes-char
     * Eval current form
     * Eval current top-level form
@@ -155,23 +157,21 @@ NOTES:
       * For non-char atoms (char count > 1), remove #\- between nodes
       * Default does not show it so poss use colors to indicate among
       char, strings, numbers and other atoms
-  7.5. Print-node (wnc) : <mod>+p
+  8. Print-node (wnc) : <mod>+p
     * Turn data into chars
-  8. Link/unlink-nodes : <mod>+k/j (takes arg)
-    * allow to create new top-level lists
-    * essentially same functionality as jump (goto etc) if given ID
-    * default unlinks ptr
+  
+  NODES
+  9. Link/Unlink-nodes : <mod>+k/j
+    * Unlinks ptr to current node and links ptr to new node
+  11. Link/Unlink-ptr : ?
+    * Simply links/unlinks ptr from ptee
+  12. Open/Save-nodes : <mod>+o/s
+    * Cmds/ops that take arguments, must type out
+    * cmd links to nodes and opts
+  13. Cut/Copy/Paste
+  14. Delete/Backspace
     
-  9. Open/save-nodes : <mod>+o/s (takes arg)
-  
-  10. Cut
-  11. Copy
-  12. Paste
-  
-  PTR
-  10. Create/destroy-ptr : <mod>+*/&
-  
   HYPERWEB
-  11. Show/hide-ids : <mod>+i
+  16. Show/hide-ids : <mod>+i
   
   

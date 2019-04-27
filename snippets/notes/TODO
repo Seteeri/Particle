@@ -381,28 +381,22 @@ MON:
    
    * base    - character
 
-* Misc
+* Gross refactor
   * Rename view -> render and then some... [DONE]
   * Refactored fmt-* [DONE]
   * Implement exit [DONE]
+
+* Refactor load + Implement save
   * Refactor file loading for multiple concurrent files loading
-    -> Assign time or serial ID to task
+    -> Use IO thread [DONE]
+    -> Assign time or serial ID to task - use list instead of symbol
     -> Reuse task ID
-    -> Use IO thread
-  * Need to warn if renderer starts falling behind and queue builds up - set threshold
-  * DIAGNOSE: why nodes stop loading?
+  * Nodes stop loading...handle better
+    - Current max is 2**16 = 65536
+    - 3 README = ~90k
+  * Implement save...not too difficult if load already implemented
+  * Load all lisp files and convert to data
     
-* Draw lines
-  * Use quads for lines
-  * Lines are nodes also and thus are in the graph and linked which makes them vertices also
-    * Or could put in separate graph where lines connect lines
-  * Node<->Line<->Node
-
-* Undo?
-  * Add undo node for every operation
-  * Create global
-  * Create local - per graph
-
 * Implement graph/node commands-shortcuts (see visual)
   * Move:
     * Unlinked:
@@ -414,16 +408,18 @@ MON:
     * id
     * ...nearest
     * ...start/end of list (of tgt node)
-  
-* Test load/save robustness
-  - Implement save...not too difficult if load already implemented
-  - Load all lisp files and convert to data
 
+* Undo?
+  * Add undo node for every operation
+  * Create global
+  * Create local - per graph
+  
 * Render debug info
   * Frame critical - place in sync such as status updates
     * Node pool usage
     * Task counter - numbers not useful so use dashes or something
-
+  * Need to warn if renderer starts falling behind and queue builds up - set threshold
+  
 UI = nodes
 ...map to underlying data, not necessarily 1:1, but user can expose it
 ...pf organizes nodes to match relationships between underlying data
@@ -435,6 +431,12 @@ UI = nodes
 ########################################################################
 BOOTSTRAP- ability to edit program in itself
 ########################################################################
+
+* Draw lines
+  * Use quads for lines
+  * Lines are nodes also and thus are in the graph and linked which makes them vertices also
+    * Or could put in separate graph where lines connect lines
+  * Node<->Line<->Node
 
 * Draw edges (also nodes) []
     * Implementation: When adding node, add nodes for edge

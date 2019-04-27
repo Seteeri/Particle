@@ -162,7 +162,8 @@
 							     (:module file
 				       				      :pathname "file"
 				       				      :components ((:file "file")
-										   (:file "character")))))
+										   (:file "character")
+										   (:file "callbacks")))))
 				       (:file "special")
 				       (:file "init")
 				       (:file "main")))
