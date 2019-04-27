@@ -389,11 +389,9 @@ MON:
 * Refactor load + Implement save
   * Refactor file loading for multiple concurrent files loading
     -> Use IO thread [DONE]
-    -> Assign time or serial ID to task - use list instead of symbol
+    -> Refactor task ID
+       -> Create structure
     -> Reuse task ID
-  * Nodes stop loading...handle better
-    - Current max is 2**16 = 65536
-    - 3 README = ~90k
   * Implement save...not too difficult if load already implemented
   * Load all lisp files and convert to data
     

@@ -1,5 +1,9 @@
 (in-package #:protoform.model)
 
+(defclass id ()
+  ((name :accessor name :initarg :name)
+   (time :accessor time :initarg :time)))
+
 (defclass task ()
   ;; add frame type - async/async
   ;; add data - merge anim into here...

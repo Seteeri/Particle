@@ -1,5 +1,13 @@
 (in-package :protoform.model)
 
+(defparameter *default-filepath* (make-pathname :directory '(:absolute
+							     "home"
+							     "user"
+							     "quicklisp"
+							     "local-projects"
+							     "protoform")
+						:name "README" :type "md"))
+
 (defun load-file-to-nodes ()
 
   ;; PROBLEM:
@@ -11,18 +19,12 @@
   ;; - once:update pointer last (or after each node)
   ;;   - attach ptr
   ;;   - advance ptr
-  (when-let ((in (open (make-pathname :directory '(:absolute
-						   "home"
-						   "user"
-						   "quicklisp"
-						   "local-projects"
-						   "protoform")
-				      :name "README" :type "md")
+  (when-let ((in (open *default-filepath*
 		       :external-format :utf-8)))
 	    (sb-concurrency:send-message
 	     *mb-io*
 	     (make-instance 'task
-			    :id 'load-chunk-file
+			    :id 'load-chunk-file ;(osicat:get-monotonic-time)
 			    :fn-play (lambda (task)
 				       
 				       (setf (gethash 'load-chunk-file *tasks-active*) task)
@@ -133,7 +135,7 @@
     
       (incf index-data)
       (incf index-char)))
-	
+
   ;; Continue to consume data
   ;; Depends how many chars to create at once
   
