@@ -189,7 +189,8 @@
 	#:3d-vectors
 	#:3d-matrices
 	#:lparallel
-	#:lparallel.queue)
+	#:lparallel.queue
+	#:trivial-timers)
   (:export #:init-model))
 
 
@@ -200,5 +201,6 @@
 	#:protoform.conn
 	#:osicat
 	#:lparallel
-	#:trivial-benchmark)
+	;; #:trivial-benchmark
+	#:trivial-timers)
   (:export #:main))

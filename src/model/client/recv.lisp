@@ -5,7 +5,28 @@
 ;; - if possible, move code to compute shader
 ;;   http://theorangeduck.com/page/avoiding-shader-conditionals
 
+(defun handle-view-sync-prototype (time-frame)
+
+  (when nil
+    (let ((repeat-timer (make-timer (lambda ()
+				      (format t "HERE!!!!!!!!!!!!!!!!!!!!!!~%")))))
+      (schedule-timer repeat-timer
+		      1)))
+  
+  t)
+
 (defun handle-view-sync (time-frame)
+
+  ;; Set timer - either here or view process
+  ;; If tasks does not end before expiration, copy shm...
+  ;; If tasks end before expiration, cancel timer and copy shm
+  ;; Currently, view is at the mercy of model...
+  (when nil
+    (let ((repeat-timer (make-timer (lambda ()
+				      (format t "HERE!!!!!!!!!!!!!!!!!!!!!!~%")))))
+      (schedule-timer repeat-timer
+		      1)))
+  
   ;; async-deadline = alloted time - sync time
   ;; or min one...always executes at least one task  
   (let* ((time (osicat:get-monotonic-time))

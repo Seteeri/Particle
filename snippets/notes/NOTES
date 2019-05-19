@@ -1417,3 +1417,30 @@ async
   or multiple tasks
   
 also model async but really for i/o?
+
+Frame:
+serial or parallel - but serial guarantees parallel not running
+
+difficult to control tasks running in parallel
+must specify which part to stop
+
+###############################
+
+SICL -> could use...
+Clasp -> future potential
+JSCL -> potential?
+Carp (compiles to C) -> poss alternative?
+Stalin Compiler (Scheme) -> adapt?
+ECL ->
+
+BENCHMARKS:
+https://www.reddit.com/r/Common_Lisp/comments/882mz4/clbench_common_lisp_benchmarking_suite/
+https://gitlab.common-lisp.net/ansi-test/cl-bench
+https://common-lisp.net/project/ecl/static/files/misc/benchmarks/2016-05-bench-all.html
+
+attempt to replace GC in simpler LISP implementation before SBCL
+
+If cannot replace ECL GC, maybe AllegroLisp or LispWorks can do RT?
+
+ZERO FRAGMENTATION HEAP -> LINEAR HEAP
+https://library.softwareverify.com/memory-fragmentation-your-worst-nightmare/

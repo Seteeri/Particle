@@ -1,6 +1,8 @@
 Protoform
 =========
 
+### Protoform moving to PicoLisp
+
 [![Alt text](https://img.youtube.com/vi/BemmZaOyzbk/0.jpg)](https://www.youtube.com/watch?v=BemmZaOyzbk)
 
 > The Grid. A digital frontier. I tried to picture clusters of 
@@ -21,7 +23,7 @@ User-aspect Goals:
 (Protoform may be considered a top-down approach rather than a bottom-up 
 approach).
 2. Integrate Wayland by providing the desktop as a node (plane) 
-in 3D space (It is possible to allow windows to exist in 3D space 
+in 3D space (It is possible to allow windows existing in 3D space 
 allowing for convergence, however memcpy performance limits the number 
 of windows...).
 
@@ -188,7 +190,7 @@ The average user is familiar with GUI widgets, but what if those were
 completely dynamic and an intrinsic property, similar to how Emacs 
 allows everything to be customized through elisp. Teaching a lay user
 how to program is not a trivial task as it is inherently based upon the 
-user's ability to think, a reflection of the mind if you will (the 
+user's cognitive ability, a reflection of the mind if you will (the 
 history and usefulness of VPLs are a good study). Having observed 
 Blender's nodal workflow and Unreal's Blueprint system, I attempted to 
 combine those models of interaction with the analogy of LEGOs, while at 
@@ -207,11 +209,12 @@ motivation and learning.
   * First step - build the shell/DE
   * Second step - integrate the init system
   * Third step - ???
-* Built around DAG  - common pattern across domains:
+* Built around DAG/trees  - common pattern across domains:
+  * HTML/DOM
   * Task management
   * Version control
   * Init dependencies
-  * Garbage collection
+  * Garbage collection tracing
   * Gantt charts
 * 3D orthographic nodal environment - "turtles all the way down"  
 * Primarily keyboard driven interface
@@ -228,11 +231,8 @@ motivation and learning.
     * Maintains low-latency through soft deadlines
   * View SRP: draw triangles and poll socket for commands
     * Separate process from model to minimize pressure on GC
-  * Force GC when idle: model process GCs after executing frame tasks, 
-    while view draws; view process GCs after drawing frame, while 
-    waiting for model tasks
-    * See Roadmap for GC plans
-  * Avoid GC while in-frame
+  * GC will have to be rewritten eventually
+    * Similar constraints as Java ZGC
 * Rendering engine is essentially a particle system
   * Plans to pursue tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+

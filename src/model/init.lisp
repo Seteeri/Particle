@@ -1,18 +1,31 @@
 (in-package :protoform.model)
 
 (defun init-threads ()
-  ;; Can this be integrated into lparallel?
-  ;;
-  ;; Can't integrate libinput or view
-  ;; * libinput must be dedicated to pull from queue ASAP
-  ;; * view must be dedicated to respond immediately to view process or processing time will be lost
-  ;;
-  ;; Integrate controller into async?
-  ;;
-  ;; For thread-IO and SSDs/NANDs, could use a thread pool
+  ;; Seems easiest to implement and understand this model
+  
+  ;; Must be dedicated threads:
+  ;; * libinput - pull from queue ASAP
+  ;; * controller - process events regardless of model (maintain responsiveness)
+  ;; -> define two types of events:
+  ;;    * immediate - execute in controller
+  ;;    * normal - execute in model
   (setf *thread-libinput*   (bordeaux-threads:make-thread #'poll-fd-li)
-	*thread-controller* (bordeaux-threads:make-thread #'run-controller)
-	*thread-async*      (bordeaux-threads:make-thread #'run-async)
+	*thread-controller* (bordeaux-threads:make-thread #'run-controller))
+
+  ;; For thread-IO and SSDs/NANDs, could use a thread pool?
+
+  ;; * async - CPU-bound tasks
+  ;; * io - IO-bound tasks
+  ;; * These threads interdependent
+  ;;
+  ;; * socket - responding to socket (exclusive of io - for explicit tasks that would block model)
+  ;; * This is essentially the main thread since all model does is wait on view messages
+
+  ;; Could run these as processes and use DBUS etc?
+  ;; Process require serialization which increases latency so easier to run in same address space
+  ;; to pass objects around
+  
+  (setf	*thread-async*      (bordeaux-threads:make-thread #'run-async)
 	*thread-io*         (bordeaux-threads:make-thread #'run-io)
 	*thread-socket*     (bordeaux-threads:make-thread #'serve-socket))
 
@@ -37,6 +50,10 @@
 
   (send-node *node-ptr-main* nil)
   (send-node *node-ptr-vcs* nil)
+
+  ;; Default nodes:
+  ;; * Special variables (globals)
+  ;;   * Tasks (globals also?)
   
   ;; Create nodes with objects for special variables
   ;; Don't link cursor

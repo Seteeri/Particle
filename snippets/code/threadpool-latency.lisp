@@ -136,3 +136,92 @@
     
     (format t "time: ~s~%" (- (osicat:get-monotonic-time) t-start))))
 |#
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun run-prototype ()
+ 
+  ;; Controller - aka RPC thread
+  ;;
+  ;; * Use sockets for messaging
+  ;; * Use Redis for data...
+  ;;   * Could use Redis for publish/subscribe also
+  (fork (lambda ()
+	  ;; Setup/init server sockets and connect to worker clients
+	  ;;
+	  ;; - For sync, wait until frame time from view, loop over worker sockets to see if ready
+	  ;; - Workers will send ready msg to controller on init and upon task completion	  
+	  ;; - Frame time will trigger work for idle workers
+	  ;; - Controller will skip busy workers
+	  ;; - If anim count known, could batch anims and split across processes to minimize copying data
+	  (loop
+	     :do (progn
+		   ;; Wait on frame time, then...
+		   ;; Loop over workers, find idle, send frame time
+		   ;; * What to do with output/results?
+		   ;;   -> Workers write data to shm: NO - need to sync with view to prevent simultaneous read/write
+		   ;;   -> Workers push data to view socket: YES - need to write view handling
+		   ;;      * Model -> Workers -> View
+		   ;;   -> Workers push data to redis, view pulls: YES - view could delay if workers pushing data too fast to redis
+		   ;; ...
+		   
+		   ;; Workers will read/write/push/pull data from (shared memory or redis)
+		   ;; Shared memory: read, deserialize, process, serialize, write
+		   ;; However, shared memory requires synchornization, whereas redis is single threaded
+		   ;; Redis will have more memcpy but speed may be the same due to shm requireing sync
+		   ;; If we built a server around the shm, it would essentially be recreating redis
+		   ;; We also need the node memory managed separately to alleviate pressure on the GC
+		   
+		   (sleep 0.0167)))))
+  
+  ;; Worker 1...4
+  (fork (lambda ()
+	  ;; Setup/init client socket to controller
+	  ;; Send init ready msg
+	  (loop
+	     :do (progn
+		   (sleep 1)))))
+  
+  ;; (let ((repeat-timer (make-timer (lambda ()
+  ;; 				    (format t "HERE!!!!!!!!!!!!!!!!!!!!!!~%")))))
+  ;;   (schedule-timer repeat-timer
+  ;; 		    1))
+
+  t)
+
+;; Current model (limited concurrency):
+;; - Wait for view
+;; - Run tasks
+;; - Serialize/Send
+
+;; http://highscalability.com/blog/2013/5/13/the-secret-to-10-million-concurrent-connections-the-kernel-i.html
+
+;; Invert the model:
+;; - Use process pools
+;;   - One pool for async and one for sync
+;;     - sync will wait on frame time (block on socket)
+;;       - even if num procs > CPU and all procs received frame time at once,
+;;         it would not matter since execution limited to CPU count.
+;;     - async will keep going
+;;       - should not block on I/O...disk reads should be appropriately chunked or moved to a thread
+;; - For reoccuring animations, reuse process instead of exiting loop
+;;   - Each "task" process can receive codes:
+;;     - time
+;;     - end
+;;     - renew
+;;   - Or set timeout for process to exit if unused
+
+;; Issue is model/data and view boundaries...cannot integrate them
+;; Model/Ctrl <-> Redis/Data(shm) -> View
+;; model push/pull to/from redis
+;; view pulls from redis only
+;; - The limiting factor should be the nodes since easier
+;; to increase throughput by separating/delay communication between
+;; the data and its representation - also maintains responsiveness
+;; - Can use shm for now as long as operations/anims/tasks are not performed
+;; at the same time on the same nodes otherwise undefined results, not necessarily
+;; low-level corruption but more unexpected visual effects
+
+;; If model and data in same process then need locks...
+;; begs the question - which is more efficient? redis IPC vs lock contention
+;; Also with threads, GC shared = GC delay proportional to number of threads

@@ -2,11 +2,10 @@
 
 (defclass id ()
   ((name :accessor name :initarg :name)
-   (time :accessor time :initarg :time)))
+   (time-start :accessor time-start :initarg :time-start)))
 
 (defclass task ()
-  ;; add frame type - async/async
-  ;; add data - merge anim into here...
+  ;; add frame type - async/async - why?
   ((id        :accessor id        :initarg :id        :initform nil)
    (stat      :accessor stat      :initarg :stat      :initform 'play)
    (fn-play   :accessor fn-play   :initarg :fn-play   :initform nil)

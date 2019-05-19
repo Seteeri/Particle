@@ -51,9 +51,6 @@
   ;; (format t "~v@{~A~:*~}~%" 64 "-")
   
   (format t "arguments: ~a~%" sb-ext:*posix-argv*)
-
-  ;; (run-test)
-  ;; (sb-ext:exit)
   
   (when t
     (fork (lambda () (protoform.render:run-render width height
@@ -64,5 +61,5 @@
     (fork (lambda () (protoform.model:init-model width height
     						 inst-max
     						 nil))))
-  
+
   (sb-ext:exit))

@@ -386,13 +386,56 @@ MON:
   * Refactored fmt-* [DONE]
   * Implement exit [DONE]
 
+* Implement userspace pre-emptive multitasking analgous to OS (kernelspace)
+  * OS/kernel does not implement required functionality (would be too specific/restrictive)
+  * Pause/Unpause tasks
+    * Need to specify task -> need visual task manager
+    * Save state in task structure
+  * Scheduler, Process = task
+  * What about cooperative?
+    -> Each task would re-implement control functionality which is the
+       same for every thread
+  * Can't control threads so must breakdown into functions that we can
+    pause in-between - coarse grain
+  * We trade throughput for latency, but what if user wants more
+    throughput? -> Use separate thread
+  * How does Wayland/X draw?
+    * Server tells client when it is ready
+    * Draw process = server; model = client
+  * IMPLEMENT SOFT DEADLINE:
+    * Implement timer to send message (runs in another thread)
+    * if timer expires before: process memcpy, send message
+      * take whatever is available - up to putter to ensure serialized
+      data is coherent as to prevent incomplete serialization
+    * if timer expires after: pass
+      * before setting new timer, see if one exists, if so cancel/replace
+      it
+    * REFACTOR node serialization
+      * Abstract out send-node etc so timer can handle all of them
+    * Animations must be waited on so what to do?
+    * ANIMATIONS:
+      * Skip - drop frames
+      * Delay - catchup resulting in delay
+      * Anims run in parallel so one slow animation would not slow all
+      animations - drop must happen otherwise with delay, one anim would
+      slow all
+      * Camera is special priority? Do first
+  * REFACTOR: To maintain interactivity, controller/input thread must
+  run independently of model
+    * Allow callbacks to execute immediately or later
+  
+* Refactor memory for nodes
+  * Must avoid GC for it - use custom allocator like manardb?
+  * Try different processes instead of threads?
+  * Store in redis?
+  
 * Refactor load + Implement save
   * Refactor file loading for multiple concurrent files loading
     -> Use IO thread [DONE]
     -> Refactor task ID
        -> Create structure
     -> Reuse task ID
-  * Implement save...not too difficult if load already implemented
+  * Implement save...
   * Load all lisp files and convert to data
     
 * Implement graph/node commands-shortcuts (see visual)
