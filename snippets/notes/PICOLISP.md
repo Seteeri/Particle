@@ -118,6 +118,11 @@ Store DAGs as binary trees?
   * How to delete symbol?
 
 * Migrate Protoform to PicoLisp
+  * TODO
+    * Model
+      * Port req libraries to finish model.l
+      * Spawn processes
+    * Render
   * Port dependencies; pull code from rosetta code as baseline
     
      cl-drm - FFI

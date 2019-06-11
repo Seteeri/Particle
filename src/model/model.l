@@ -1,11 +1,8 @@
-(de main () (bye))
-
 #Create and change to namespace model
 (symbols 'model 'pico)
 
-(load "@projview/projview.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/projview/projview.l")
 
-(class +Projview)
 (class +DAG)
 
 (de fmt-model (ctx
@@ -13,35 +10,37 @@
     (println "MODEL" *Pid ctx str))
 
 (de init-model ()
-    
-  #Refactor to launch independent subprocesses from top-level script  
-  (setq *proc-libinput   NIL  #poll-fd-li
-	*proc-controller NIL  #run-controller
-	*proc-async      NIL  #execute-mb-tasks *mb-async
-	*proc-io         NIL  #execute-mb-tasks *mb-io
-	*proc-socket     NIL) #serve-socket
 
+  #Do last
+  #Refactor to launch independent subprocesses from top-level script  
+  (setq *proc-libinput   'poll-fd-li
+	*proc-controller 'run-controller
+	*proc-async      '(execute-mb-tasks *mb-async)
+	*proc-io         '(execute-mb-tasks *mb-io)
+	*proc-socket     'serve-socket)
+	
   (setq *width    (/ 2560 2)
 	*height   1080
-	*inst-max (** 2 19)) #524288
+	*inst-max (** 2 19))
 
-  (setq *projview (new '(+Projview)
-		       *width
-		       *height
-		       'orthographic)))
+  (with (setq *projview (new '(+Projview)))
+	(=: width *width)
+	(=: height *height)
+	(=: type-proj 'orthographic))
   
-  (setq *controller NIL) #(init-controller *queue-tasks-sync #'translate-node-rel)
+  (setq *controller NIL) #(init-controller *queue-tasks-sync #'translate-node-rel))
   
   (setq *metrics NIL) #(init-metrics (merge-pathnames #P"glyphs-msdf/" (asdf:system-source-directory :protoform))  +scale-msdf+)
   
-  (setq *queue-tasks-sync  NIL  #(sb-concurrency:make-queue)
-	*queue-tasks-async NIL  #(sb-concurrency:make-queue)
-	*mb-async          NIL  #(sb-concurrency:make-mailbox)
-	*mb-io             NIL  #(sb-concurrency:make-mailbox)
-	*tasks-inactive    NIL  #(make-hash-table :size 64)
-	*tasks-active      NIL  #(make-hash-table :size 64)
-	*ht-timing-fn      NIL) #(make-hash-table :size 64)
+  (setq *queue-tasks-sync  NIL  #(sb-concurrency:make-queue) -> list
+	*queue-tasks-async NIL  #(sb-concurrency:make-queue) -> list
+	*mb-async          NIL  #(sb-concurrency:make-mailbox) -> list
+	*mb-io             NIL  #(sb-concurrency:make-mailbox) -> list
+	*tasks-inactive    NIL  #(make-hash-table :size 64) -> property list
+	*tasks-active      NIL  #(make-hash-table :size 64) -> property list
+	*ht-timing-fn      NIL) #(make-hash-table :size 64) -> property list
 
+  #Require native calls
   (setq *shm-projview       NIL) #(init-shm-projview)
   (setq *shm-nodes          NIL) #(init-shm-nodes)
   (setq *shm-atomic-counter NIL) #(init-shm-atomic-counter)
@@ -50,11 +49,13 @@
   (setq *shm-draw-indirect  NIL) #(init-shm-draw-indirect)
   (setq *shm-texture-glyphs NIL) #(init-shm-texture-glyphs)
 
+  #Require sockets
   (setq *bs-ptr NIL) #(foreign-alloc :unsigned-char :count 212992)
   (setq *path-socket-view "/tmp/protoform-view.socket")
   (setq *sock-render NIL) #(init-sock-client *path-socket-view :block)
   #(init-conn-rpc-view)
-  
+
+  #Create DAG library 
   #Create graphs = namespaces
   #Create namespace for pico (generate nodes for builtin symbols? -> follow picolisp tradition so yes since they are the same)
   (setq *dag-pico (new '(+DAG)))
@@ -64,6 +65,8 @@
 
   #Update
   #(send-node *np-pico* nil)
+
+  (println "init-model done")
 
   NIL)
 
@@ -78,3 +81,6 @@
   (send-draw t)
   (send-serving nil))
 }#
+
+(symbols 'pico)
+(de main () (model~init-model))
