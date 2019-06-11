@@ -1461,3 +1461,10 @@ Start of frame, cons, store address
 End of frame, modify avail to original address
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; Must be dedicated threads:
+  ;; * libinput - pull from queue ASAP
+  ;; * controller - process events regardless of model (maintain responsiveness)
+  ;; -> define two types of events:
+  ;;    * immediate - execute in controller
+  ;;    * normal - execute in model
