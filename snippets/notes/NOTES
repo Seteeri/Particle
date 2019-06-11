@@ -1444,3 +1444,20 @@ If cannot replace ECL GC, maybe AllegroLisp or LispWorks can do RT?
 
 ZERO FRAGMENTATION HEAP -> LINEAR HEAP
 https://library.softwareverify.com/memory-fragmentation-your-worst-nightmare/
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Expand heap = (gc N>0)
+Shrink heap = (gc 0)
+Heap total size = (heap)
+Heap used size = (heap T)
+Avail ptr = Cons + adr
+
+Heap address (start) = ?
+Avail = ?
+
+Start of frame, cons, store address
+- To find avail, could search memory for pointer
+End of frame, modify avail to original address
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
