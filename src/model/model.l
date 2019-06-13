@@ -27,7 +27,7 @@
     #later...wayland socket -> process/here - process wayland while waiting for drawing?
     #  clients wait on msg from server when to draw
     
-    (setq *width    (*/ 2560 2)
+    (setq *width    (/ 2560 2)
 	  *height   1080
 	  *inst-max (** 2 19))
 
