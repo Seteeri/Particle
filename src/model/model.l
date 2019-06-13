@@ -1,8 +1,8 @@
 (symbols 'model 'pico)
 #Create and change to namespace model
 
-(load "/home/user/quicklisp/local-projects/protoform/src/aux/mathc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/projview/projview.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/mathc.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 
 (class +DAG)
 

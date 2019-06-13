@@ -1,4 +1,4 @@
-(setq PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
+(setq PATH-MATHC "/home/user/quicklisp/local-projects/protoform/src/model/libmathc.so")
 
 
 #learn how to do multiple args
