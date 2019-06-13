@@ -1468,3 +1468,60 @@ End of frame, modify avail to original address
   ;; -> define two types of events:
   ;;    * immediate - execute in controller
   ;;    * normal - execute in model
+  
+https://emersion.fr/blog/2018/wayland-rendering-loop/
+
+convetionnal: hetero ui - hetero data (overlap)
+flip:         homo   ui - hetero data (data/file types)
+
+must provide way to work with all data - open source to start with like OpenDocument
+
+In LISP all data is made of cons cells
+In Protoform all trees(UI) are made of nodes
+Nodes = cons cells
+
+Buttons are a single node
+"Clicking" (state change) is triggered by link/eval (like moving and clicking) 
+  or poss: pre-link+eval = read->eval, post-link+eval = quote->eval
+  this would be like moving over "presses" button
+  
+  [code = str; all just bytes->bits->binary in the end ;)]
+  
+  general tree -> binary tree (diff data encodings, gen tree lowered to cons/binary tree)
+  code         -> data        (diff data encodings, str is lowered to cons/bytes/bits/binary)
+  
+  read  = code -> data
+  print = data -> code
+    
+  quote = data -> code (lets data be code)
+  eval  = code -> data (code is what we understand; data is what computer understands)
+
+idea is ops performed on gen tree can afterwards still convert back to cons
+str is understood by humans and cons/bytes/bits/binary is understood by machines
+- translate both ways is the key to understanding and efficiency/productivity
+gen tree is understood by humans and binary tree is understood by lisp interpreter/eval
+ui/nodes are code and data
+nodes can be transformed to data so that node represents its value (unless quoted)
+
+(setq node 0)
+
+(when <node/data> (exit)) ; triangles = data
+-> 0 (numeral)
+
+vs
+
+(when (node/code) (exit)) ; squares = code
+-> node (symbol/string)
+
+print = tri -> sq
+read = sq -> tri
+
+so node can represent both code and data and user can apply transformers
+
+Link multiple times which cannot be done in binary tree
+node=T
+-> when
+-> if
+-> ...
+
+In lisp code, this would just be a symbol refernced by all

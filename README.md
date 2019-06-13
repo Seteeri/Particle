@@ -1,7 +1,7 @@
 Protoform
 =========
 
-### Protoform moving to PicoLisp
+### Moving to PicoLisp
 
 [![Alt text](https://img.youtube.com/vi/BemmZaOyzbk/0.jpg)](https://www.youtube.com/watch?v=BemmZaOyzbk)
 
@@ -10,159 +10,138 @@ information as they moved through the computer. What did they look like?
  Ships? Motorcycles? Were the circuits like freeways? I kept dreaming of
   a world I thought I'd never see. And then one day . . .
 
-Protoform is a Common Lisp 3D nodal shell based on DRM-KMS and Open GL 
-ES. It is the implementation of my vision of a more consistent 
-programmable UI to replace the desktop/application paradigm - a way to
-map our thoughts into the computer. It integrates concepts from 
-CLIs/shells/REPLs/notebooks, WMs/DEs, creative coding, and mindmapping 
-into a single 3D interface.
+Inspired by:
+* Beast Wars CGI-cartoon (Transformers)
+* Digimon
+* Compiz
+* Blender
+* Tron
+* Emacs
+* Lisp
+
+Protoform is a Lisp 3D nodal shell based on DRM-KMS and Open GL ES. It is the 
+implementation of my vision of a more consistent programmable UI to replace the 
+desktop/application paradigm - a way to map our thoughts into the computer. It 
+integrates concepts from CLIs/shells/REPLs/notebooks, WMs/DEs, creative coding, 
+and mindmapping into a single 3D interface.
 
 User-aspect Goals:
 
-1. Create a Common Lisp userland short of creating a pure Lisp OS/kernel
-(Protoform may be considered a top-down approach rather than a bottom-up 
-approach).
-2. Integrate Wayland by providing the desktop as a node (plane) 
-in 3D space (It is possible to allow windows existing in 3D space 
-allowing for convergence, however memcpy performance limits the number 
-of windows...).
+1. Create a Lisp userland short of creating a pure Lisp OS/kernel (Protoform may
+be considered a top-down approach rather than a bottom-up approach).
 
-It is **not** an attempt to create a visual programming language; it is
-more akin to an IDE. It is designed to edit Lisp code/data, which are 
-effectively binary trees. It makes Lisp code/data first-class objects
-just as conventional windows are. It takes a more pragmatic approach
-to a Lisp environment by building on top of the Unix model to allow 
-integrating Lisp into existing interfaces and leveraging the existing 
-FOSS ecosystem and infrastructure, thus allowing more seamless adoption, 
-rather than taking a more adamant fundamental approach, which would 
-require a high initial investment.
+2. Integrate Wayland by providing the desktop as a node (plane) in 3D space (It
+is possible to allow windows existing in 3D space allowing for convergence, 
+however memcpy performance limits the number of windows...).
 
-The target audience consists of programmers, developers, power users and
-the like.
+It is **not** an attempt to create a visual programming language; it is more 
+akin to an IDE. It is designed to edit Lisp code/data, which are effectively 
+binary trees. It puts Lisp code/data on the same level as conventional windows 
+are. It takes a more pragmatic approach to a Lisp environment by integrating 
+into existing interfaces and leveraging the existing FOSS 
+ecosystem/infrastructure, thus allowing more seamless adoption, rather than 
+taking a more adamant fundamental approach, which would require a high initial 
+investment.
 
-[A comment made by lispm, an old time lisper, on the concept of
-a Lisp OS](https://news.ycombinator.com/item?id=15466124):
-
-> I expect this will be a fairly controversial comment, so I want to 
-> preface this by saying that I'm a big Lisp fan (just look at my 
-> handle). Lisp is my favorite programming language. I've been using it 
-> for nearly forty years. My first Lisp was P-Lisp on an Apple II in 
-> 1980. And I worked on Symbolics Lisp machines in the 1990s. They were 
-> very cool, but there's a reason they failed: general-purpose computing
-> is infrastructure, and the economics of infrastructure are such that 
-> having a single standard is the most economical solution, even if that
-> standard is sub-optimal. For better or worse, the standard for 
-> general-purpose computing is the C machine.
->
-> Because it's general-purpose you certainly can run Lisp on a C machine
-> (just as you could run C on a Lisp machine). You can even do this at 
-> the system level. But Lisp will always be at a disadvantage because 
-> the hardware is optimized for C. Because of this, C will always win at
-> the system level because at that level performance matters.
->
-> But that in and of itself is not the determining factor. The 
-> determining factor is the infrastructure that has grown up around the 
-> C machine in the last few decades. There is an enormous amount of work
-> that has gone into building compilers, network stacks, data 
-> interchange formats, libraries, etc. etc. and they are all optimized 
-> for C. For Lisp to be competitive at the system level, nearly all of 
-> this infrastructure would have to be re-created, and that is not going
-> to happen. Even with the enormous productivity advantages that Lisp 
-> has over C (and they really are enormous) this is not enough to 
-> overcome the economic advantages that C has by virtue of being the 
-> entrenched standard.
->
-> The way Lisp can still win in today's world is not by trying to 
-> replace C on the system level, but by "embracing and extending" C at 
-> the application level. I use Clozure Common Lisp. It has an 
-> Objective-C bridge, so I can call ObjC functions as if they were Lisp 
-> functions. There is no reason for me to know or care that these 
-> functions are actually written in C (except insofar as I have to be a 
-> little bit careful about memory management when I call C functions 
-> from Lisp) and so using Lisp in this way still gives me a huge lever 
-> that is economically viable even in today's world. I have web servers 
-> in production running in CCL on Linux, and it's a huge win. I can spin
-> up a new web app on AWS in just a few minutes from a standing start. 
-> It's a Lisp machine, but at the application level, not the system 
-> level. My kernel (Linux) and web front end (nginx) are written in C, 
-> but that doesn't impact me at all because they are written by someone 
-> else. I just treat them as black boxes.
->
-> ...But cool is not enough to win in the real world.
+The target audience consists of programmers, developers, power users and the 
+like.
 
 ## The Inspiration
 
 * Primary Inspirations:
-    * Compiz - 3D desktop effects
-    * Blender - 3D, multi-domain dataset, flexible UI
-    * Emacs - consistency, extensibility, text and keyboard driven    
-    * The Humane Interface by Jeff Raskin
-      * Elimination of modes
-      * Persistence
-      * Unlimited undo
-      * Incremental search
-      * Elmintation of applications -> commands
-      * Redesigned file hierarchies
-      * ZUIs as an alternative
-    * Robert Strandh - CLOSOS/LispOS
+  * Compiz - 3D desktop effects
+  * Blender - 3D, multi-domain dataset, Python UI
+  * Emacs - consistency, extensibility, text and keyboard driven    
+  * Lisp - the programmable programming language
         
 * Secondary Inspirations:
-    * McCLIM - central concept of "presentation types"
-    * Uzbl/Conkeror - numbered links for navigation
-    * Unreal Blueprints - nodal system
-    * EagleMode - ZUI system
-    * OpenDoc - early proprietary attempt by Apple to create compound documents
-    * LightTable - drafting table metaphor
-    * Minecraft - expressiveness
-    * Xerox Parc - ...
+  * McCLIM - central concept of "presentation types"
+  * Uzbl/Conkeror - numbered links for navigation
+  * Unreal Blueprints - nodal system
+  * EagleMode - ZUI system
+  * OpenDoc - early proprietary attempt by Apple to create compound documents
+  * LightTable - drafting table metaphor
+  * Minecraft - expressiveness
+  * Xerox Parc - ...
+  * Evernote
     
 * Personal Influences:
-    * Sir Tim Berners-Lee - WWW
-    * Brett Victor - Inventing on Principle
-    * Chris Schafmeister - Molecular Metaprogramming
-    * Paul Graham, Peter Norvig - ...
-    * Zach Bean - quicklisp
+  * The Humane Interface by Jeff Raskin
+    * Elimination of modes
+    * Persistence
+    * Unlimited undo
+    * Incremental search
+    * Elmintation of applications -> commands
+    * Redesigned file hierarchies
+    * ZUIs as an alternative
+  * Sir Tim Berners-Lee - WWW
+  * Paul Graham, Peter Norvig - ...
+  * Brett Victor - Inventing on Principle
+  * Chris Schafmeister - Molecular Metaprogramming  
+  * Zach Bean - quicklisp
+  * Robert Strandh - CLOSOS/LispOS
+    
+It was designed to address limitations I've personally encountered in the quest 
+for a more efficient workflow; the main limitation being, confinement to the 
+desktop/window metaphor and the staticness of widgets.
 
-It was designed to address limitations I've personally encountered in
-the quest for a more efficient workflow; the main limitation being, 
-confinement to the desktop/window metaphor and the staticness of widgets.
+The chances of a Linux *desktop* are virtually nil:
 
-The chances of a Linux *desktop* are virtually nil. Existing Windows and
-MacOS desktops are performant enough that there is no compelling reason
-to switch to a Linux desktop for the average user - that market is done
-and settled. The price comparison is a non-issue since any consumer 
-computer will come with the OS already installed. Essentially, the 
-headache of learning a new system and new programs (among other FOSS 
-issues) is not worth it as it provides no significant technological 
-advantage to existing commercial desktops. 
+1. Ecosystem/infrastructure - most popular programs are developed for Windows 
+and MacOS first
 
-The previous statement with more obvious wording: Windows and MacOS 
-users will not adopt a desktop that functions exactly like their current 
-desktop (see book "Diffusion of Innovations" by Everett Rogers). GNOME,
-KDE, Cinnamon, MATE, Xfce, etc. provide productivity enhancements but 
-at the end of the day, it's just another desktop and thus the same 
+2. Mobile computing - desktop segment is less important to the average user as
+computing shifts to mobile devices and the cloud
+
+3. Feature cost - open-source versions may not have feature parity with 
+proprietary solutions, and thus financial cost will not outweight features; not 
+to mention, predictable guranteed support for paid versions, whereas open source
+depends on when developers have time to respond; maybe this can be offset when
+more reliable crowdfunding platforms
+
+4. Learning cost - learning a new system may not be worth it unless it provides
+a significant technological advantage, which again FOSS programs tend to lack
+feature parity compared to their proprietary counterparts; they may have a few 
+significant features but it may or may not be enough.
+
+5. Social cost - programming languages follow trends, and so do programs; FOSS 
+tends to lack marketing or advertising, although social media has alleviated
+some of this
+
+6. Peformance - as long as programs run fast enough on similar platforms, 
+performance is a minor issue
+
+* Vendor lock-in/subscriptions are another possible reason to switch to FOSS (like
+CERN).
+* Privacy issues and data breaches (security) is another possible reason to
+switch, although still not relevant enough for the average user
+
+In other words, Windows and MacOS users will not adopt a desktop and relearn
+a different set of procedures that results in the same functionality that their
+current desktop already provides (see book "Diffusion of Innovations" by 
+Everett Rogers). GNOME, KDE, Cinnamon, MATE, Xfce, etc. have some unique 
+features, but at the end of the day, it's just another desktop and thus the same 
 underlying model for interacting with a computer.
 
-**The way for a future FOSS system does not lie with the desktop but with
-the computing needs of tomorrow.**
+**The way for a future FOSS system does not lie with the desktop but with the 
+computing needs of tomorrow.**
 
-If the theory that FOSS development grants it advantages over proprietary 
-development, then its innovative nature should allow it to create an 
-even better system; sadly, the wheel keeps being reinvented. I believe 
-current desktops are on-par in terms of functionality with Windows and 
-MacOS, that it is time to move forward.
+The question is whether FOSS development provides an advantage over proprietary
+development - possibly we are starting to see the tipping point where large
+companies are releasing internally developed projects to the coummunity, whether
+for reasons of convenience or prestige, or actual altruism.
 
-With the growth of open-source in the last decade, Wayland, 
-fragmentation of the desktop, systemd debate, Moore's Law, data breaches
-and privacy issues, and finally emerging AR/VR technologies, I believe
-this presents an opportunity to redefine the computing environment. 
-Protoform is not an entirely new idea, but a different attempt to build
-upon the success and failures of those before.
+With everything just stated, Wayland, systemd debate, Moore's Law, and finally 
+emerging AR/VR technologies, I believe this presents an opportunity to redefine
+the computing environment. Protoform is not an entirely new idea, but a 
+different attempt to build upon the success and failures of those before.
+
+## The Delta
 
 There have been numerous implementations and attemps at structured or 
-projectional editors going all the way back to the days of Interlisp-D 
-and to the new projects being crowdfunded. However, several issues
-have yet to be addressed:
+projectional editors going all the way back to the days of Interlisp-D and to 
+the new projects being crowdfunded. However, several issues have yet to be 
+addressed:
 
 * Integration with existing interfaces (the desktop)
 * Homoiconic GUI
@@ -171,34 +150,25 @@ have yet to be addressed:
   * The nodes must be able to edit nodes (itself)
   * The editor must be able to edit itself
 
-The initial inspiration came from Blender and later from the robustness
-of Emacs, and its strengths and weaknesses.
+Considering computing technology becoming increasingly integrated into our
+everyday lives, the bottleneck to leveraging computing most effectively and 
+driving innovation will be the connection between man and machine, and just as
+important, managing the information overload occuring today. What good is having
+enormous amounts of information available at your fingertips if you cannot parse
+it?
 
-[**What if we could take Emacs to another level?**](https://www.google.com/search?q=what+can%27t+emacs+do+site:www.reddit.com)
-* Elisp -> Common Lisp
-  * Single-thread -> Multithreading
-* Software rendering -> OpenGL
-* Help system/manual -> Better discoverability
-
-I imagine - what if there were something like Emacs for the non-programmer
-user? Considering the way technology and computers are becoming 
-increasingly integrated into our everyday lives, the bottleneck to 
-leveraging computing most effectively and driving innovation will be the
-connection between man and machine.
-
-The average user is familiar with GUI widgets, but what if those were 
-completely dynamic and an intrinsic property, similar to how Emacs 
-allows everything to be customized through elisp. Teaching a lay user
-how to program is not a trivial task as it is inherently based upon the 
-user's cognitive ability, a reflection of the mind if you will (the 
-history and usefulness of VPLs are a good study). Having observed 
-Blender's nodal workflow and Unreal's Blueprint system, I attempted to 
-combine those models of interaction with the analogy of LEGOs, while at 
-the same time allowing for the entire system to remain hackable to 
+The average user is familiar with GUI widgets, but what if those were completely
+dynamic and an intrinsic property, similar to how Emacs allows everything to be 
+customized through elisp. Teaching a lay user how to program is not a trivial 
+task as it is inherently based upon the user's cognitive ability, a reflection 
+of the mind if you will (the history and usefulness of VPLs are a good study). 
+Having observed Blender's nodal workflow and Unreal's Blueprint system, I am
+attempting to combine those models of interaction with the analogy of LEGOs, 
+while at the same time allowing for the entire system to remain hackable to 
 programmers to maintain a gradual learning curve.
 
-I do not believe it is about dumbing down programming to make it easier
-to learn, but creating the right tools around programming to drive
+I do not believe it is about dumbing down computers and technology to make it 
+easier to learn, but creating the right tools around programming to drive 
 motivation and learning.
 
 *See writings*
@@ -216,6 +186,7 @@ motivation and learning.
   * Init dependencies
   * Garbage collection tracing
   * Gantt charts
+  * Compiler internals
 * 3D orthographic nodal environment - "turtles all the way down"  
 * Primarily keyboard driven interface
 * Non-destructive editing; undo/redo capabilities
@@ -225,14 +196,12 @@ motivation and learning.
 
 ## The Architecture
 
-* Focusing on SBCL due to best performance
+* PicoLisp due to simplicity and expressiveness
 * Two process system - model/view
   * Model contains a task manager that spreads tasks across frames
     * Maintains low-latency through soft deadlines
   * View SRP: draw triangles and poll socket for commands
     * Separate process from model to minimize pressure on GC
-  * GC will have to be rewritten eventually
-    * Similar constraints as Java ZGC
 * Rendering engine is essentially a particle system
   * Plans to pursue tiled forward shading engine (Forward+)
   * OpenGL ES 3.2+
@@ -246,13 +215,9 @@ motivation and learning.
     * Texture buffers/UBOs/SSBOs -> gl_VertexID+gl_InstanceID
   * Separate shader stages and programmable pipelines
 * R-tree for spatial indexing
-* Windows, MacOS, BSD support will come later
+* Windows, MacOS, BSD, WASM support will come later
 
 ## The Roadmap
-
-I plan on working on a concurrent/incremental GC for SBCL to reduce or
-eliminate the stop-the-world pauses. I'm not very familiar with garbage 
-collectors, however, I am currently studying them... ;)
 
 Core - nodal/repl/undo functionality
 1. Nodes
@@ -275,8 +240,7 @@ Personal Extensions
    * Future: Implement clustered -> volumetric forward shading
 
 Future Extensions
-* Integrate EEVEE for rendering
-* Common Lisp to WebAssembly 
+* Lisp to WebAssembly 
   * WebAssembly describes an AST ;)
 * Augmented reality through OpenCV
 * Convergence...
@@ -287,34 +251,10 @@ Future Extensions
 * OpenGL ES 3.2+ (OpenGL 4.3+) (See [Mesamatrix](https://mesamatrix.net/))
 * Vulkan/WSI (hopefully...)
 
-```lisp
-   :depends-on (#:alexandria
-		 #:osicat
-		 #:cl-drm
-		 #:cl-gbm
-		 #:cl-egl
-		 #:cl-opengl
-		 #:cl-wayland
-		 #:cl-libinput
-		 #:cl-xkb
-		 #:cl-glfw3
-		 #:3d-vectors
-		 #:3d-matrices
-		 #:cl-digraph
-		 #:cl-digraph.dot
-		 #:usocket
-		 #:bordeaux-threads
-		 #:inferior-shell
-		 #:trivial-timers
-		 #:str
-		 #:easing
-		 #:lparallel
-		 #:pack
-		 #:spatial-trees
-		 #:trivial-benchmark)
-```
-
 ## The Installation
+
+1. Clone this repo
+2. ...
 
 *Will update when ready...*
 

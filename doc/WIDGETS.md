@@ -2,118 +2,129 @@ Widgets
 ======
 
 All widgets are based on an underlying tree structure and can be broken
-down into nodes.
+down into nodes = push button
 
-**Explain core widgets and corresponding nodal structure**
+They can be linked together to propagate a signal.
 
-Use icons for L,T,B, etc. instead of letters but for now use letters
+Nodes allow widgets to be recomposed.
 
-------
+Can apply ops to pointer or pointee - use quote to apply to ptr?
 
-Labels - cannot modify - check in backspace etc - user can manually change it ofc
-         call it god mode???
+If node = push button && character = node then how do you "push" a character?
+-> Nothing happens - user must define it...where do types come in?
+-> Or it evals it since strings are symbols which have values...default = NIL
 
-[L]-[]...
+Random thought:
+Left Click = 1
+Right Click = 0
+Wheel = (0 to 1)
 
-Text Field/Box
+Maybe store parts in symbol list?
 
-[F]-[]...
+What makes a button different from text is simply the border/shading
 
-[A]-[]...
+Maintain pointer concept
 
-Cycle Button
+Least Astonishment Principle
 
-[B]-[U]-[P]
- |
-[F]-[]...
- |
-[B]-[D]-[N]
+Pointers propagate same signal
 
-Drop-down List - similar to Radio Buttons but condensed; text fields + button
-               - redundant?
+-----------
 
-[B]-[]...
- |
-[D]-[] Label 1
+Text/Labels
+- multiline? -> more visual issue; newline means offset relative to last character
 
-Hide until needed to be seen
-[] Label 2
-[] Label 3
-[] Label 4
+[T] --> [E] --> [X] --> [T] <-- [*]
 
-List Box - same as checkbox essentially
+Cycle Button/Drop-down List/Radio Buttons (single state change)
+- iterate through a list basically
 
-[I]
+single/double linked list
+
+[TXT-1|4] <-- [*]
+|
+[TXT-2|3] <-- [_]
+|
+[TXT-3|2] <-- [_] 
+|
+[TXT-4|1] <-- [_]
+
+(no cycle...since if at start or end, can't go up/dn -> more predictable/consistent behavior)
+
+[UP] = (nth list)
+[DN] = (cdr)
+
+Propagation: [*] --> [TXT-#] 
+                 1/0
+                 
+If list large, use binary tree or skip list
+
+-----------
 
 Combo Box - combo of text field + drop-down/list box
 
 -----------
 
-Push Button - user adds node which will change state
-              repeated adding = repeated pushing which creates a chain - natural undo
-[B]-[]...
+Check Box (mutli state change)
+- duplicate pointers -> double pointers
 
-Radio Button -  user adds node to one of the labels
-[R]
- |
--[] Label 1
- |
--[] Label 2
- | 
--[] Label 3
- | 
--[] Label 4
+              [*]
+                |
+[TXT-1|4] <-- [*]
+|               |
+[TXT-2|3] <-- [*]
+|               |
+[TXT-3|2] <-- [*]
+|               |
+[TXT-4|1] <-- [*]
 
-Check Box - user adds node to any of the labels
-[C]
- |
--[] Label 1
- |
--[] Label 2
- |
--[] Label 3
- |
--[] Label 4
+To unselect, pop item
+
+              [*]
+                |
+[TXT-1|4] <-- [*]
+|               |
+[TXT-2|3]       |
+|               |
+[TXT-3|2] <-- [*]
+|               |
+[TXT-4|1] <-- [*]
 
 ---------
 
-Scrollers
+Scrollers - continuous
 
 Scrollbar
+- dir indicates page movement
 
-[S]----[<>]----[S]
+(obj) -> [*] --> [*] --> [*] -> (obj)
 
-Slider (use preexisting edges to cue user?)
-
-[S]--[1]--[2]--[3]--[4]--[S]
-      |     |    |     |
-     [^]
+Slider -> Discrete -> Cycle Button
+- note the pointers are not linked
+- pointers at ends? or values? ends makes more sense
+  [*]    [*]    [*]    [*]
+  
+[*] --> [1] -- [2] -- [3] -- [4] --> [*]
+         |
+        [*]
 
 Progress Bar
+- similar to scrollbar...continous
 
-[P]--[%%]--[P]
+[*] --> [%%] --> [*]
 
 ------------
 
-Grid View
+Grid/Table/Matrix/Tree?
+- more of display issue since still just a list?
+- or shared links
 
 link right-down
-[G]--[]--[]--[]
-|    |   |   |
-[]->[]--[]--[]
-|    |   |   |
-[]->[]--[]--[]
-|    |   |   |
-[]->[]--[]--[]
-|    |   |   |
-[]->[]--[]--[]
 
-Tree View
-
-[]--[]--[]
-     |
-    []--[]--[]
-     |   |
-    []  []--[]--[]
-     |       |
-    []      []--[]
+[G] --> [_] --> [_] --> [_]
+  |       |       |       |
+[_] --> [_] --> [_] --> [_]
+  |       |       |       |
+[_] --> [_] --> [_] --> [_]
+  |       |       |       |
+[_] --> [_] --> [_] --> [_]

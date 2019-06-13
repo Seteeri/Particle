@@ -23,48 +23,34 @@
     (=: rotation    (if Rot Rot (0 0 0)))
     (=: displace    (if Displace Displace (8 8 4))))
 
+(dm update-mat-proj> ()    
+    (setq mat-proj
+	  (if (= type-proj 'perspective)
+	      (make-matrix-perspective (: width)
+				       (: height))
+	      (make-matrix-ortho (: width)
+				 (: height)
+				 (: scale-ortho)
+				 (: near-ortho)
+				 (: ortho-far)))))
 
-(dm update-mat-proj> (Width
-		      Height
-		      Type-proj
-		      Mat-proj
-		      Scale-ortho
-		      Near-ortho
-		      Ortho-far)
-    
-    (setq mat-proj (if (= type-proj 'perspective)
-		       (make-perspective-vector Width
-						Height)
-		       (make-orthographic-vector Width
-						 Height
-						 Scale-ortho
-						 Near-ortho
-						 Ortho-far))))
-
-
-#Move somewhere
-(de make-perspective-vector (Width
+(de make-matrix-perspective (Width
 			     Height)
-    #Pass adtl arguments
+    #Pass adtl arguments    
+    (mperspective 0.785398 # 45-deg
+		  (/ Width Height)
+		  0.1
+		  100.0))
 
-    #mperspective...
-    (list 45.0
-	  (/ Width Height)
-	  0.1
-	  100.0))
-
-(de make-orthographic-vector (Width
-			      Height
-			      Scale
-			      Near
-			      Far)
-    
-  (let ((Aspect-ratio (/ Width Height))
-	(X       (* Scale 0.5))
-	(Y       (/ (* Scale 0.5 ) Aspect-ratio)))
-    
-    #mortho...
-    (list (- X)
+(de make-matrix-ortho (Width
+		       Height
+		       Scale
+		       Near
+		       Far)
+  (let (Aspect-ratio (/ Width Height)
+	X            (* Scale 0.5)
+	Y            (/ (* Scale 0.5) Aspect-ratio))
+    (mortho (- X)
 	    X
 	    (- Y)
 	    Y
