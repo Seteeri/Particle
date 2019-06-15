@@ -15,6 +15,7 @@
 (setq *mat4-s   (native "@" "malloc" 'N 64))
 (setq *mat4-0   (native "@" "malloc" 'N 64))
 (setq *mat4-1   (native "@" "malloc" 'N 64))
+(setq *mat4-i   (native "@" "malloc" 'N 64))
 
 (de mat4-perspective (Fov-y Aspect Near Far)
     (native PATH-MATHC "mat4_perspective"
@@ -90,21 +91,29 @@
 (de mat4-scaling (V)
     (native PATH-MATHC "mat4_identity"
 	    'N
-	    *mat4-s)   
+	    *mat4-i)
+    (struct *vec3-out (-1.0 (car (nth V 1))
+			    (car (nth V 2))
+			    (car (nth V 2))))
     (native PATH-MATHC "mat4_scaling"
 	    'N
 	    *mat4-s
-	    (struct *vec3-out (-1.0 (nth 1 V) (nth 2 V) (nth 3 V))))
+	    *mat4-i
+	    *vec3-out)
     (struct *mat4-s '(-1.0 . 16)))
 
 (de mat4-translation (V)
     (native PATH-MATHC "mat4_identity"
 	    'N
-	    *mat4-t)    
+	    *mat4-i)
+    (struct *vec3-out (-1.0 (car (nth V 1))
+			    (car (nth V 2))
+			    (car (nth V 2))))
     (native PATH-MATHC "mat4_translation"
 	    'N
 	    *mat4-t
-	    (struct *vec3-out (-1.0 (nth 1 V) (nth 2 V) (nth 3 V))))
+	    *mat4-i
+	    *vec3-out)
     (struct *mat4-t '(-1.0 . 16)))
 
 (de mat4-identity ()

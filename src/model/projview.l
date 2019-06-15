@@ -79,6 +79,11 @@
 	      (mat4-rotation_x Res (vx3 rot))
 	      (mat4-scaling Scale)))
     }#
+
+    (println "HERE")
+    (mat4-scaling    (list 1.0 1.0 1.0))
+
+    (bye)
     
     (=: mat-view (mat4-inverse
 		  (mat4-mul (mat4-translation (: pos))

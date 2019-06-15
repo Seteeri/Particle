@@ -47,7 +47,7 @@
     (print-mat4 (get *projview 'mat-proj))
     (print-mat4-2 (get *projview 'mat-proj))
     
-    #(update-mat-view> *projview)
+    (update-mat-view> *projview)
     
     #(print-mat4 (get *projview 'mat-view))
     
