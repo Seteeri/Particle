@@ -120,6 +120,9 @@ Store DAGs as binary trees?
 * Migrate Protoform to PicoLisp
   * TODO
     * Model
+      * Math library
+        * Use lists...
+        * Statically allocate matrices
       * Port req libraries to finish model.l
       * Spawn processes
     * Render

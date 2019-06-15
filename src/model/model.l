@@ -1,49 +1,73 @@
 (symbols 'model 'pico)
 #Create and change to namespace model
 
+# Set math precision to 4 decimals
+(scl 4)
+
+# Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 
-(class +DAG)
+# C libraries
+(setq PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 
-# Set math precision to 4 decimals
-(scl 4)
+(class +DAG)
 
 (de fmt-model (ctx
 	       str)
     (println "MODEL" *Pid ctx str))
 
+
+#Use sockets, nanomsg later?
+
+#Refactor to launch independent subprocesses from top-level script  
+#(setq *proc-libinput   'poll-fd-li
+#      *proc-controller 'run-controller)
+#async/io/execute-mb-tasks -> process
+#socket/serve-socket -> model responsiblity
+#later...wayland socket -> process/here - process wayland while waiting for drawing?
+#  clients wait on msg from server when to draw
+
 (de init-model ()
-
-    #nng required for a bunch of these
-    #use sockets for now; do later
     
-    #Refactor to launch independent subprocesses from top-level script  
-    (setq *proc-libinput   'poll-fd-li
-	  *proc-controller 'run-controller)
-    
-    #async/io/execute-mb-tasks -> process
-    #socket/serve-socket -> model responsiblity
-    #later...wayland socket -> process/here - process wayland while waiting for drawing?
-    #  clients wait on msg from server when to draw
-    
-    (setq *width    (/ 2560 2)
-	  *height   1080
+    #Set global parameters
+    (setq *width    (*/ 1.0 2560.0 2.0)
+	  *height   1080.0
 	  *inst-max (** 2 19))
-
+    
+    #Setup projview
     (with (setq *projview (new '(+Projview)))
 	  (=: width *width)
 	  (=: height *height)
-	  (=: type-proj 'orthographic))
-    
-    (let (mat (update-mat-proj> *projview)
-	  mat-2 (struct mat '(-1.0 . 16)))
-      (prinl)
-      (println (cut 4 'mat-2))
-      (println (cut 4 'mat-2))
-      (println (cut 4 'mat-2))
-      (println (cut 4 'mat-2)))
+	  (=: type-proj 'orthographic)
+	  (=: fov (native PATH-MATHC "to_radians" -1.0 (cons 45 -1))))
         
+    (update-mat-proj> *projview)
+
+    (when T
+      (let (m (get *projview 'mat-proj))
+	(println "M:" m )
+	(println (format (car (nth m 1)) *Scl)
+		 (format (car (nth m 2)) *Scl)
+		 (format (car (nth m 3)) *Scl)
+		 (format (car (nth m 4)) *Scl))
+	(println (format (car (nth m 5)) *Scl)
+		 (format (car (nth m 6)) *Scl)
+		 (format (car (nth m 7)) *Scl)
+		 (format (car (nth m 8)) *Scl))
+	(println (format (car (nth m 9)) *Scl)
+		 (format (car (nth m 10)) *Scl)
+		 (format (car (nth m 11)) *Scl)
+		 (format (car (nth m 12)) *Scl))
+	(println (format (car (nth m 13)) *Scl)
+		 (format (car (nth m 14)) *Scl)
+		 (format (car (nth m 15)) *Scl)
+		 (format (car (nth m 16)) *Scl))))
+    
+    #(update-mat-view> *projview)
+    
+    #(print-mat4 (get *projview 'mat-view))
+    
     #Simple port
     (setq *controller NIL) #(init-controller *queue-tasks-sync #'translate-node-rel)
 

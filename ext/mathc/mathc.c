@@ -3387,13 +3387,15 @@ mfloat_t *mat4_ortho(mfloat_t *result, mfloat_t l, mfloat_t r, mfloat_t b, mfloa
 	result[13] = -((t + b) / (t - b));
 	result[14] = -((f + n) / (f - n));
 	result[15] = MFLOAT_C(1.0);
-	if (NULL)
+	if (1)
 	{
-		printf("%.4f %.4f %.4f %.4f %.4f %.4f\n\n"
+		printf("//////// MATHC LIBRARY ////////\n"
+		       "%.4f %.4f %.4f %.4f %.4f %.4f:\n"
 			   "%.4f %.4f %.4f %.4f \n"
 			   "%.4f %.4f %.4f %.4f \n"
 			   "%.4f %.4f %.4f %.4f \n"
-			   "%.4f %.4f %.4f %.4f \n",
+			   "%.4f %.4f %.4f %.4f \n"
+			   "//////// MATHC LIBRARY ////////\n",
 			   l, r, b, t, n, f,
 			   result[0],
 			   result[1],
