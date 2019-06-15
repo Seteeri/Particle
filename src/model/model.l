@@ -1,8 +1,8 @@
 (symbols 'model 'pico)
 #Create and change to namespace model
 
-# Set math precision to 4 decimals
-(scl 4)
+# Set math precision to 6 decimals
+(scl 6)
 
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/mathc.l")
@@ -44,25 +44,8 @@
         
     (update-mat-proj> *projview)
 
-    (when T
-      (let (m (get *projview 'mat-proj))
-	(println "M:" m )
-	(println (format (car (nth m 1)) *Scl)
-		 (format (car (nth m 2)) *Scl)
-		 (format (car (nth m 3)) *Scl)
-		 (format (car (nth m 4)) *Scl))
-	(println (format (car (nth m 5)) *Scl)
-		 (format (car (nth m 6)) *Scl)
-		 (format (car (nth m 7)) *Scl)
-		 (format (car (nth m 8)) *Scl))
-	(println (format (car (nth m 9)) *Scl)
-		 (format (car (nth m 10)) *Scl)
-		 (format (car (nth m 11)) *Scl)
-		 (format (car (nth m 12)) *Scl))
-	(println (format (car (nth m 13)) *Scl)
-		 (format (car (nth m 14)) *Scl)
-		 (format (car (nth m 15)) *Scl)
-		 (format (car (nth m 16)) *Scl))))
+    (print-mat4 (get *projview 'mat-proj))
+    (print-mat4-2 (get *projview 'mat-proj))
     
     #(update-mat-view> *projview)
     

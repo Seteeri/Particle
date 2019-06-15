@@ -3390,11 +3390,11 @@ mfloat_t *mat4_ortho(mfloat_t *result, mfloat_t l, mfloat_t r, mfloat_t b, mfloa
 	if (1)
 	{
 		printf("//////// MATHC LIBRARY ////////\n"
-		       "%.4f %.4f %.4f %.4f %.4f %.4f:\n"
-			   "%.4f %.4f %.4f %.4f \n"
-			   "%.4f %.4f %.4f %.4f \n"
-			   "%.4f %.4f %.4f %.4f \n"
-			   "%.4f %.4f %.4f %.4f \n"
+		       "%.6f %.6f %.6f %.6f %.6f %.6f:\n"
+			   "%.6f %.6f %.6f %.6f \n"
+			   "%.6f %.6f %.6f %.6f \n"
+			   "%.6f %.6f %.6f %.6f \n"
+			   "%.6f %.6f %.6f %.6f \n"
 			   "//////// MATHC LIBRARY ////////\n",
 			   l, r, b, t, n, f,
 			   result[0],

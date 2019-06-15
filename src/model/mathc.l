@@ -124,10 +124,26 @@
 	    *mat4-out)
     (struct *mat4-out '(-1.0 . 16)))
 
-(de print-mat4 (M0)
-    (println M0)
-    (let (m (struct M0 '(-1.0 . 16)))
-      (println (cut 4 'm))
-      (println (cut 4 'm))
-      (println (cut 4 'm))
-      (println (cut 4 'm))))
+(de print-mat4 (m)
+    (println (cut 4 'm))
+    (println (cut 4 'm))
+    (println (cut 4 'm))
+    (println (cut 4 'm)))
+
+(de print-mat4-2 (m)
+    (prinl (format (car (nth m 1)) *Scl) " "
+	   (format (car (nth m 2)) *Scl) " "
+	   (format (car (nth m 3)) *Scl) " "
+	   (format (car (nth m 4)) *Scl) " ")
+    (prinl (format (car (nth m 5)) *Scl) " "
+	   (format (car (nth m 6)) *Scl) " "
+	   (format (car (nth m 7)) *Scl) " "
+	   (format (car (nth m 8)) *Scl) " ")
+    (prinl (format (car (nth m 9)) *Scl) " "
+	   (format (car (nth m 10)) *Scl) " "
+	   (format (car (nth m 11)) *Scl) " "
+	   (format (car (nth m 12)) *Scl) " ")
+    (prinl (format (car (nth m 13)) *Scl) " "
+	   (format (car (nth m 14)) *Scl) " "
+	   (format (car (nth m 15)) *Scl) " "
+	   (format (car (nth m 16)) *Scl) " "))
