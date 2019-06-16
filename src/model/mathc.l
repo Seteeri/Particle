@@ -17,6 +17,7 @@
 (setq *mat4-1   (native "@" "malloc" 'N 64))
 (setq *mat4-i   (native "@" "malloc" 'N 64))
 
+#do the below need cons?
 (de mat4-perspective (Fov-y Aspect Near Far)
     (native PATH-MATHC "mat4_perspective"
 	    'N
@@ -25,11 +26,10 @@
 	    (cons Aspect -1.0)
 	    (cons Near -1.0)
 	    (cons Far -1.0))
-    (struct *mat4-out '(-1.0 . 16)))
+    (struct *mat4-out (-1.0 . 16)))
 
 
 (de mat4-ortho (Left Right Bottom Top Near Far)
-    (println Left Right Bottom Top Near Far)
     (native PATH-MATHC "mat4_ortho"
 	    'N
 	    *mat4-out
@@ -39,24 +39,24 @@
 	    (cons Top -1.0)
 	    (cons Near -1.0)
 	    (cons Far -1.0))
-    (struct *mat4-out '(-1.0 . 16)))
+    (struct *mat4-out (-1.0 . 16)))
 
 
 (de mat4-mul (M0 M1)
-    (struct *mat4-0 (-1.0 (nth 1  M0) (nth 2  M0) (nth 3  M0) (nth 4  M0)
-			  (nth 5  M0) (nth 6  M0) (nth 7  M0) (nth 8  M0)
-			  (nth 9  M0) (nth 10 M0) (nth 11 M0) (nth 12 M0)
-			  (nth 13 M0) (nth 14 M0) (nth 15 M0) (nth 16 M0)))
-    (struct *mat4-1 (-1.0 (nth 1  M1) (nth 2  M1) (nth 3  M1) (nth 4  M1)
-			  (nth 5  M1) (nth 6  M1) (nth 7  M1) (nth 8  M1)
-			  (nth 9  M1) (nth 10 M1) (nth 11 M1) (nth 12 M1)
-			  (nth 13 M1) (nth 14 M1) (nth 15 M1) (nth 16 M1)))
+    (struct *mat4-0 'N (list -1.0 (car (nth M0 1))  (car (nth M0 2))  (car (nth M0 3))  (car (nth M0 4))
+			     (car (nth M0 5))  (car (nth M0 6))  (car (nth M0 7))  (car (nth M0 8))
+			     (car (nth M0 9))  (car (nth M0 10)) (car (nth M0 11)) (car (nth M0 12))
+			     (car (nth M0 13)) (car (nth M0 14)) (car (nth M0 15)) (car (nth M0 16))))
+    (struct *mat4-1 'N (list -1.0 (car (nth M1 1))  (car (nth M1 2))  (car (nth M1 3))  (car (nth M1 4))
+			     (car (nth M1 5))  (car (nth M1 6))  (car (nth M1 7))  (car (nth M1 8))
+			     (car (nth M1 9))  (car (nth M1 10)) (car (nth M1 11)) (car (nth M1 12))
+			     (car (nth M1 13)) (car (nth M1 14)) (car (nth M1 15)) (car (nth M1 16))))
     (native PATH-MATHC "mat4_multiply"
 	    'N
 	    *mat4-out
 	    *mat4-0
 	    *mat4-1)
-    (struct *mat4-out '(-1.0 . 16)))
+    (struct *mat4-out (-1.0 . 16)))
 
 (de mat4-rotation-x (F)
     (native PATH-MATHC "mat4_identity"
@@ -65,8 +65,8 @@
     (native PATH-MATHC "mat4_rotation_x"
 	    'N
 	    *mat4-r-x
-	    (cons F -1))
-    (struct *mat4-r-x '(-1.0 . 16)))    
+	    (cons F -1.0))
+    (struct *mat4-r-x (-1.0 . 16)))    
 
 (de mat4-rotation-y (F)
     (native PATH-MATHC "mat4_identity"
@@ -75,8 +75,8 @@
     (native PATH-MATHC "mat4_rotation_y"
 	    'N
 	    *mat4-r-y
-	    (cons F -1))
-    (struct *mat4-r-y '(-1.0 . 16)))    
+	    (cons F -1.0))
+    (struct *mat4-r-y (-1.0 . 16)))    
 
 (de mat4-rotation-z (F)
     (native PATH-MATHC "mat4_identity"
@@ -85,53 +85,66 @@
     (native PATH-MATHC "mat4_rotation_z"
 	    'N
 	    *mat4-r-z
-	    (cons F -1))
-    (struct *mat4-r-z '(-1.0 . 16)))    
+	    (cons F -1.0))
+    (struct *mat4-r-z (-1.0 . 16)))    
 
 (de mat4-scaling (V)
     (native PATH-MATHC "mat4_identity"
 	    'N
 	    *mat4-i)
-    (struct *vec3-out (-1.0 (car (nth V 1))
-			    (car (nth V 2))
-			    (car (nth V 2))))
+    (struct *vec3-out 'N (list -1.0
+			       (car (nth V 1))
+			       (car (nth V 2))
+			       (car (nth V 3))))
     (native PATH-MATHC "mat4_scaling"
 	    'N
 	    *mat4-s
 	    *mat4-i
 	    *vec3-out)
-    (struct *mat4-s '(-1.0 . 16)))
+    (struct *mat4-s (-1.0 . 16)))
 
 (de mat4-translation (V)
     (native PATH-MATHC "mat4_identity"
 	    'N
 	    *mat4-i)
-    (struct *vec3-out (-1.0 (car (nth V 1))
-			    (car (nth V 2))
-			    (car (nth V 2))))
+    (struct *vec3-out 'N (list -1.0
+			       (car (nth V 1))
+			       (car (nth V 2))
+			       (car (nth V 3))))
     (native PATH-MATHC "mat4_translation"
 	    'N
 	    *mat4-t
 	    *mat4-i
 	    *vec3-out)
-    (struct *mat4-t '(-1.0 . 16)))
+    (struct *mat4-t (-1.0 . 16)))
 
 (de mat4-identity ()
     (native PATH-MATHC "mat4_identity"
 	    'N
 	    *mat4-out)
-    (struct *mat4-out '(-1.0 . 16)))
+    (struct *mat4-out (-1.0 . 16)))
 
 (de mat4-inverse (M0)
-    (struct *mat4-0 (-1.0 (nth 1  M0) (nth 2  M0) (nth 3  M0) (nth 4  M0)
-			  (nth 5  M0) (nth 6  M0) (nth 7  M0) (nth 8  M0)
-			  (nth 9  M0) (nth 10 M0) (nth 11 M0) (nth 12 M0)
-			  (nth 13 M0) (nth 14 M0) (nth 15 M0) (nth 16 M0)))
+    (struct *mat4-0 'N (list -1.0 (car (nth M0 1))  (car (nth M0 2))  (car (nth M0 3))  (car (nth M0 4))
+			     (car (nth M0 5))  (car (nth M0 6))  (car (nth M0 7))  (car (nth M0 8))
+			     (car (nth M0 9))  (car (nth M0 10)) (car (nth M0 11)) (car (nth M0 12))
+			     (car (nth M0 13)) (car (nth M0 14)) (car (nth M0 15)) (car (nth M0 16))))
     (native PATH-MATHC "mat4_inverse"
 	    'N
-	    *mat4-0
-	    *mat4-out)
-    (struct *mat4-out '(-1.0 . 16)))
+	    *mat4-out
+	    *mat4-0)
+    (struct *mat4-out (-1.0 . 16)))
+
+(de mat4-transpose (M0)
+    (struct *mat4-0 'N (list -1.0 (car (nth M0 1))  (car (nth M0 2))  (car (nth M0 3))  (car (nth M0 4))
+			     (car (nth M0 5))  (car (nth M0 6))  (car (nth M0 7))  (car (nth M0 8))
+			     (car (nth M0 9))  (car (nth M0 10)) (car (nth M0 11)) (car (nth M0 12))
+			     (car (nth M0 13)) (car (nth M0 14)) (car (nth M0 15)) (car (nth M0 16))))
+    (native PATH-MATHC "mat4_transpose"
+	    'N
+	    *mat4-out
+	    *mat4-0)
+    (struct *mat4-out (-1.0 . 16)))
 
 (de print-mat4 (m)
     (println (cut 4 'm))

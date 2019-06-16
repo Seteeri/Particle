@@ -50,26 +50,26 @@
     				  (space 0)
                                   (speed 3)))
                       (funcall next))
-    :components ((:file "src/package")
+    :components ((:file "src-cl/package")
 		 (:module aux
-			  :pathname "src/aux"
+			  :pathname "src-cl/aux"
 		 	  :components ((:file "matrix-model")
 				       (:file "misc")))
 		 (:module libc
-			  :pathname "src/libc"
+			  :pathname "src-cl/libc"
 		 	  :components ((:file "epoll")
 				       (:file "memory")
 				       (:file "socket")))
 		 (:module opengl
-			  :pathname "src/opengl"
+			  :pathname "src-cl/opengl"
 			  :components ((:file "opengl")
 				       (:file "buffer-object")))
 		 (:module conn
-		 	  :pathname "src/conn"
+		 	  :pathname "src-cl/conn"
 		 	  :components ((:file "client")
 				       (:file "protocol")))
 		 (:module drm
-			  :pathname "src/drm"
+			  :pathname "src-cl/drm"
 			  :components ((:file "gbm")
 				       (:file "egl")
 				       (:file "drm")
@@ -78,7 +78,7 @@
 				       (:file "crtc")
 				       (:file "connector")))
 		 (:module render
-		 	  :pathname "src/render"
+		 	  :pathname "src-cl/render"
 		 	  :components ((:file "init")
 				       (:file "render")
 				       (:file "step")
@@ -90,7 +90,7 @@
 				       (:file "glfw")
 				       (:file "server")))
 		 (:module controller
-			  :pathname "src/controller"
+			  :pathname "src-cl/controller"
 			  :components ((:file "keysymdef")
 				       (:file "controller")
 				       (:file "xkb")
@@ -109,10 +109,10 @@
 				       		:pathname "tablet-tool"
 				       		:components ((:file "tablet-tool")))))
 		 (:module font
-			  :pathname "src/font"
+			  :pathname "src-cl/font"
 			  :components ((:file "metrics")))
 		 (:module model
-			  :pathname "src/model"
+			  :pathname "src-cl/model"
 			  :components ((:module shm
 				       		:pathname "shm"
 				       		:components ((:file "shm")
@@ -167,7 +167,7 @@
 				       (:file "special")
 				       (:file "init")
 				       (:file "main")))
-		 (:file "src/protoform")))
+		 (:file "src-cl/protoform")))
 
 #+sbcl
 (eval-when (:compile-toplevel :load-toplevel :execute)

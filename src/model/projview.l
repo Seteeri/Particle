@@ -33,6 +33,7 @@
 
     (=: position    (if Pos Pos (11.0 -8.0 10.0)))
     (=: rotation    (if Rot Rot (0.0 0.0 0.0)))
+    #scale is (1.0 1.0 1.0)
     (=: displace    (if Displace Displace (8.0 8.0 4.0)))
 
     #call update-mat-proj?
@@ -56,10 +57,7 @@
 		       Height
 		       Scale
 		       Near
-		       Far)
-
-    (println (format (*/ Scale 0.5 1.0) *Scl))
-    
+		       Far)    
     (let (Aspect-ratio (*/ 1.0 Width Height)
 		       X            (*/ Scale 0.5 1.0)
 		       Y            (*/ 1.0 (*/ Scale 0.5 1.0) Aspect-ratio))
@@ -70,24 +68,41 @@
 		  Near
 		  Far)))
 
-(de update-mat-view> ()
+(dm update-mat-view> ()
     
-    #{
-    (minv (m* (mat4-translation Pos)
-	      (mat4-rotation_z Res (vz3 rot))
-	      (mat4-rotation_y Res (vy3 rot))
-	      (mat4-rotation_x Res (vx3 rot))
-	      (mat4-scaling Scale)))
-    }#
+    #https://www.3dgep.com/understanding-the-view-matrix/
+    #V=(T(Rx(RyRz)))^-1
 
-    (println "HERE")
-    (mat4-scaling    (list 1.0 1.0 1.0))
+    #https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/row-major-vs-column-major-vector
+    #COL: P′ = Ry ∗ Rz ∗ T  ∗ P
+    #ROW: P′ = P  ∗ T  ∗ Rz ∗ Ry
 
-    (bye)
+    #Rot always in the middle
+    #Here makes no difference since default rotation is an identity matrix
     
-    (=: mat-view (mat4-inverse
-		  (mat4-mul (mat4-translation (: pos))
-			    (mat4-mul (mat4-rotation-z (nth 3 (: rot)))
-				      (mat4-mul (mat4-rotation-y (nth 2 (: rot)))
-						(mat4-mul (mat4-rotation-x (nth 1 (: rot)))
-							  (mat4-scaling    (: scale)))))))))
+    #This is performing innermost first so:
+    #(INV (((T * Rz) Ry) Rx))
+    (=: mat-view (mat4-inverse (mat4-mul (mat4-rotation-x (car (nth (: rotation) 1)))
+					 (mat4-mul (mat4-rotation-y (car (nth (: rotation) 2)))
+						   (mat4-mul (mat4-rotation-z (car (nth (: rotation) 3)))
+							     (mat4-translation (: position))))))))
+
+    #our translation matrix
+    #(1000000 0 0 0)
+    #(0 1000000 0 0)
+    #(0 0 1000000 0)
+    #(11000000 -8000000 10000000 1000000)
+
+    #transpose above to get below
+    
+    #translation matrix col-order
+    #{1.0 0.0 0.0 11.0
+      0.0 1.0 0.0 -8.0
+      0.0 0.0 1.0 10.0
+      0.0 0.0 0.0  1.0}#
+
+    #view matrix
+    #{1.0 0.0 0.0 -11.0
+      0.0 1.0 0.0   8.0
+      0.0 0.0 1.0 -10.0
+      0.0 0.0 0.0   1.0}#

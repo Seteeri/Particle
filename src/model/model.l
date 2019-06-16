@@ -31,6 +31,7 @@
 (de init-model ()
     
     #Set global parameters
+    #Make dims integers
     (setq *width    (*/ 1.0 2560.0 2.0)
 	  *height   1080.0
 	  *inst-max (** 2 19))
@@ -41,16 +42,10 @@
 	  (=: height *height)
 	  (=: type-proj 'orthographic)
 	  (=: fov (native PATH-MATHC "to_radians" -1.0 (cons 45 -1))))
-        
+    #Simplify these - single function?
     (update-mat-proj> *projview)
-
-    (print-mat4 (get *projview 'mat-proj))
-    (print-mat4-2 (get *projview 'mat-proj))
-    
     (update-mat-view> *projview)
-    
-    #(print-mat4 (get *projview 'mat-view))
-    
+        
     #Simple port
     (setq *controller NIL) #(init-controller *queue-tasks-sync #'translate-node-rel)
 

@@ -1525,3 +1525,29 @@ node=T
 -> ...
 
 In lisp code, this would just be a symbol refernced by all
+
+: (scl 4)             
+-> 4
+
+: (setq P (native "@" "malloc" 'N 16))
+-> 10851136
+
+: P
+-> 10851136
+
+: (struct P 'N (1.0 0.11 0.22))       
+-> 10851136
+
+: (struct P (1.0 . 2))         
+-> (1100 2200)
+
+
+https://stackoverflow.com/questions/17717600/confusion-between-c-and-opengl-matrix-order-row-major-vs-column-major
+
+9.005 Are OpenGL matrices column-major or row-major?
+
+For programming purposes, OpenGL matrices are 16-value arrays with base vectors laid out contiguously in memory. The translation components occupy the 13th, 14th, and 15th elements of the 16-element matrix, where indices are numbered from 1 to 16 as described in section 2.11.2 of the OpenGL 2.1 Specification.
+
+Column-major versus row-major is purely a notational convention. Note that post-multiplying with column-major matrices produces the same result as pre-multiplying with row-major matrices. The OpenGL Specification and the OpenGL Reference Manual both use column-major notation. You can use any notation, as long as it's clearly stated.
+
+Sadly, the use of column-major format in the spec and blue book has resulted in endless confusion in the OpenGL programming community. Column-major notation suggests that matrices are not laid out in memory as a programmer would expect.

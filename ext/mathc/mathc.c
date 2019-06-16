@@ -3058,6 +3058,33 @@ mfloat_t *mat4_translation(mfloat_t *result, mfloat_t *m0, mfloat_t *v0)
 	result[13] = v0[1];
 	result[14] = v0[2];
 	result[15] = m0[15];
+	
+	if (0)
+	{
+		printf("//////// MATHC LIBRARY ////////\n"
+			   "%.6f %.6f %.6f %.6f \n"
+			   "%.6f %.6f %.6f %.6f \n"
+			   "%.6f %.6f %.6f %.6f \n"
+			   "%.6f %.6f %.6f %.6f \n"
+			   "//////// MATHC LIBRARY ////////\n",
+			   result[0],
+			   result[1],
+			   result[2],
+			   result[3],
+			   result[4],
+			   result[5],
+			   result[6],
+			   result[7],
+			   result[8],
+			   result[9],
+			   result[10],
+			   result[11],
+			   result[12],
+			   result[13],
+			   result[14],
+			   result[15]);
+	}	
+	
 	return result;
 }
 
@@ -3387,7 +3414,7 @@ mfloat_t *mat4_ortho(mfloat_t *result, mfloat_t l, mfloat_t r, mfloat_t b, mfloa
 	result[13] = -((t + b) / (t - b));
 	result[14] = -((f + n) / (f - n));
 	result[15] = MFLOAT_C(1.0);
-	if (1)
+	if (0)
 	{
 		printf("//////// MATHC LIBRARY ////////\n"
 		       "%.6f %.6f %.6f %.6f %.6f %.6f:\n"
