@@ -17,6 +17,9 @@
 (setq *mat4-1   (native "@" "malloc" 'N 64))
 (setq *mat4-i   (native "@" "malloc" 'N 64))
 
+(de to-radians (F)
+    (native PATH-MATHC "to_radians" -1.0 (cons F -1.0)))
+
 #do the below need cons?
 (de mat4-perspective (Fov-y Aspect Near Far)
     (native PATH-MATHC "mat4_perspective"

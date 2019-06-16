@@ -79,6 +79,8 @@
 
     #Rot always in the middle
     #Here makes no difference since default rotation is an identity matrix
+
+    #Create macro for below so that the intermediate matrix is reused
     
     #This is performing innermost first so:
     #(INV (((T * Rz) Ry) Rx))

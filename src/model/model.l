@@ -1,66 +1,49 @@
-(symbols 'model 'pico)
 #Create and change to namespace model
+(symbols 'model 'pico)
 
 # Set math precision to 6 decimals
 (scl 6)
 
+# C library paths
+(setq PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
+
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
-
-# C libraries
-(setq PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
-
-(class +DAG)
+(load "/home/user/quicklisp/local-projects/protoform/src/model/dag.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
 
 (de fmt-model (ctx
 	       str)
     (println "MODEL" *Pid ctx str))
 
-
-#Use sockets, nanomsg later?
-
-#Refactor to launch independent subprocesses from top-level script  
-#(setq *proc-libinput   'poll-fd-li
-#      *proc-controller 'run-controller)
-#async/io/execute-mb-tasks -> process
-#socket/serve-socket -> model responsiblity
-#later...wayland socket -> process/here - process wayland while waiting for drawing?
-#  clients wait on msg from server when to draw
-
 (de init-model ()
     
     #Set global parameters
     #Make dims integers
-    (setq *width    (*/ 1.0 2560.0 2.0)
-	  *height   1080.0
-	  *inst-max (** 2 19))
-    
+    (setq *width      (*/ 1.0 2560.0 2.0)
+	  *height     1080.0
+	  *inst-max   (** 2 19)
+	  *scale-glyphs 5.8239365
+	  *adv-glyphs   9.375
+	  *path-glyphs "")
+
     #Setup projview
     (with (setq *projview (new '(+Projview)))
 	  (=: width *width)
 	  (=: height *height)
 	  (=: type-proj 'orthographic)
-	  (=: fov (native PATH-MATHC "to_radians" -1.0 (cons 45 -1))))
+	  (=: fov (to-radians 45)))
     #Simplify these - single function?
     (update-mat-proj> *projview)
     (update-mat-view> *projview)
-        
-    #Simple port
-    (setq *controller NIL) #(init-controller *queue-tasks-sync #'translate-node-rel)
 
-    #Simple port
-    (setq *metrics NIL) #(init-metrics (merge-pathnames #P"glyphs-msdf/" (asdf:system-source-directory :protoform))  +scale-msdf+)
+    #Load here, copy to shm, msg view, view copies to OpenGL buffers
+    (setq *metrics (load-metrics))
 
-    #Use nng
-    (setq *queue-tasks-sync  NIL  #(sb-concurrency:make-queue) -> list
-	  *queue-tasks-async NIL  #(sb-concurrency:make-queue) -> list
-	  *mb-async          NIL  #(sb-concurrency:make-mailbox) -> list
-	  *mb-io             NIL  #(sb-concurrency:make-mailbox) -> list
-	  *tasks-inactive    NIL  #(make-hash-table :size 64) -> list
-	  *tasks-active      NIL  #(make-hash-table :size 64) -> list
-	  *ht-timing-fn      NIL) #(make-hash-table :size 64) -> list
-
+    (println "Bye!")
+    (bye)
+    
     #Require native calls
     (setq *shm-projview       NIL) #(init-shm-projview)
     (setq *shm-nodes          NIL) #(init-shm-nodes)
@@ -71,6 +54,15 @@
     (setq *shm-texture-glyphs NIL) #(init-shm-texture-glyphs)
 
     #Use nng
+    (setq *queue-tasks-sync  NIL  #(sb-concurrency:make-queue) -> list
+	  *queue-tasks-async NIL  #(sb-concurrency:make-queue) -> list
+	  *mb-async          NIL  #(sb-concurrency:make-mailbox) -> list
+	  *mb-io             NIL  #(sb-concurrency:make-mailbox) -> list
+	  *tasks-inactive    NIL  #(make-hash-table :size 64) -> list
+	  *tasks-active      NIL  #(make-hash-table :size 64) -> list
+	  *ht-timing-fn      NIL) #(make-hash-table :size 64) -> list
+    
+    #Use C sockets
     (setq *bs-ptr NIL) #(foreign-alloc :unsigned-char :count 212992)
     (setq *path-socket-view "/tmp/protoform-view.socket")
     (setq *sock-render NIL) #(init-sock-client *path-socket-view :block)
@@ -106,3 +98,15 @@
     (model~init-model)
     (println 'Exiting...)
     (bye))
+
+#Refactor to launch independent subprocesses from top-level script  
+#(setq *proc-libinput   'poll-fd-li
+#      *proc-controller 'run-controller)
+#async/io/execute-mb-tasks -> process
+#socket/serve-socket -> model responsiblity
+#later...wayland socket -> process/here - process wayland while waiting for drawing?
+#  clients wait on msg from server when to draw
+
+#Move to controller process - init and run
+#Here, need only connect to it
+#(setq *controller NIL) #(init-controller *queue-tasks-sync #'translate-node-rel)
