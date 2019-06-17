@@ -26,7 +26,7 @@
 	  *inst-max   (** 2 19)
 	  *scale-glyph 5.8239365
 	  *adv-glyph   9.375
-	  *path-glyphs "")
+	  *path-glyphs "/home/user/quicklisp/local-projects/protoform/src/glyphs/metrics/")
 
     #Setup projview
     (with (setq *projview (new '(+Projview)))

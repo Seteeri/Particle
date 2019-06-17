@@ -32,11 +32,9 @@
 #Scale and advance the same (adv bc monospaced)
 #Merge metrics and data(ppm) into single file
 #Calculate other params and save to file so need not do everytime
-#Create bounds class? -> l b r t
 
 (de load-file-metrics-data (Code)
-    (let (dir-glyphs "/home/user/quicklisp/local-projects/protoform/src/glyphs/metrics/"
-		     path-glyph (pack dir-glyphs Code "-metrics.l"))
+    (let (path-glyph (pack *path-glyphs Code "-metrics.l"))
       ;; (println "Reading " path-glyph " ...")
       (eval (any (in path-glyph (till NIL T))))))
 	 
