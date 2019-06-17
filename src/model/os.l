@@ -2,11 +2,30 @@
 #stat.h -> mod constants
 #fcntl.h -> O_* constants
 
-(de shm-open (NAME OFLAG MODE)
-    (native "@" "shm_open" 'I NAME OFLAG MODE))
+(def 'O-CREAT (oct "0100"))
+(def 'O-RDWR (oct "02"))
+(def 'O-EXCL (oct "0200"))
 
-(de shm-unlink (NAME)
-    (native "@" "shm_unlink" 'I NAME))
+(def 'S-IRUSR (oct "00400"))
+(def 'S-IWUSR (oct "00200"))
+
+(def 'PROT-READ (hex "1"))
+(def 'PROT-WRITE (hex "2"))
+
+(def 'MAP-SHARED (hex "01"))
+(def 'MAP-LOCKED (hex "2000"))
+(def 'MAP-POPULATE (hex "8000"))
+
+#Maybe need wrapper for these?
+#https://stackoverflow.com/questions/21311080/linux-shared-memory-shmget-vs-mmap
+#https://stackoverflow.com/questions/13703079/does-mmap-need-shm-open
+#(de shm-open (NAME OFLAG MODE)
+    (native "@" "shm_open" 'I NAME OFLAG MODE))
+#(de shm-unlink (NAME)
+#    (native "@" "shm_unlink" 'I NAME))
+
+(de memfd-create (NAME FLAGS)
+    (native "@" "memfd_create" 'I NAME FLAGS))
 
 (de mmap (ADDR LENGTH PROT FLAGS FD OFFSET)
     (native "@" "mmap" 'N ADDR LENGTH PROT FLAGS FD OFFSET))
@@ -53,7 +72,7 @@
 
 #unistd
 
-(de close (FD)
+(de c-close (FD)
     (native "@" "close" 'I FD))
 
 

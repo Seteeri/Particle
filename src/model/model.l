@@ -13,6 +13,7 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/dag.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/os.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
 
 (de fmt-model (ctx
 	       str)
@@ -42,15 +43,18 @@
     #Load here, copy to shm, msg view, view copies to OpenGL buffers
     (setq *metrics (load-metrics))
     
-    #Require native calls
+    #Note, mmap is a ptr and shm is a fd
     #GC before setting these so static data is before shm and any new data is after
-    (setq *shm-projview       NIL) #(init-shm-projview)
-    (setq *shm-nodes          NIL) #(init-shm-nodes)
-    (setq *shm-atomic-counter NIL) #(init-shm-atomic-counter)
-    (setq *shm-vertices       NIL) #(init-shm-vertices)
-    (setq *shm-element        NIL) #(init-shm-element)
-    (setq *shm-draw-indirect  NIL) #(init-shm-draw-indirect)
-    (setq *shm-texture-glyphs NIL) #(init-shm-texture-glyphs)
+    (setq *mmap-nodes          (init-mmap-nodes))
+    (println "Bye!!")
+    (bye)
+    
+    (setq *mmap-projview       (init-mmap-projview))
+    (setq *mmap-atomic-counter (init-mmap-atomic-counter))
+    (setq *mmap-vertices       (init-mmap-vertices))
+    (setq *mmap-element        (init-mmap-element))
+    (setq *mmap-draw-indirect  (init-mmap-draw-indirect))
+    (setq *mmap-texture-glyphs (init-mmap-texture-glyphs))
 
     (println "Bye!")
     (bye)

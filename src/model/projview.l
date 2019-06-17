@@ -34,12 +34,10 @@
     (=: position    (if Pos Pos (11.0 -8.0 10.0)))
     (=: rotation    (if Rot Rot (0.0 0.0 0.0)))
     #scale is (1.0 1.0 1.0)
-    (=: displace    (if Displace Displace (8.0 8.0 4.0)))
+    (=: displace    (if Displace Displace (8.0 8.0 4.0))))
+#call update-mat-proj?
 
-    #call update-mat-proj?
     
-    T)
-
 (dm update-mat-proj> ()    
     (=: mat-proj
 	(if (= type-proj 'perspective)
