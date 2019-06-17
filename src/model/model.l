@@ -12,6 +12,7 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/dag.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/os.l")
 
 (de fmt-model (ctx
 	       str)
@@ -40,9 +41,6 @@
 
     #Load here, copy to shm, msg view, view copies to OpenGL buffers
     (setq *metrics (load-metrics))
-
-    (println "Bye!")
-    (bye)
     
     #Require native calls
     #GC before setting these so static data is before shm and any new data is after
@@ -54,6 +52,9 @@
     (setq *shm-draw-indirect  NIL) #(init-shm-draw-indirect)
     (setq *shm-texture-glyphs NIL) #(init-shm-texture-glyphs)
 
+    (println "Bye!")
+    (bye)
+    
     #Use nng
     (setq *queue-tasks-sync  NIL  #(sb-concurrency:make-queue) -> list
 	  *queue-tasks-async NIL  #(sb-concurrency:make-queue) -> list
