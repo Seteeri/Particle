@@ -24,8 +24,8 @@
     (setq *width      (*/ 1.0 2560.0 2.0)
 	  *height     1080.0
 	  *inst-max   (** 2 19)
-	  *scale-glyphs 5.8239365
-	  *adv-glyphs   9.375
+	  *scale-glyph 5.8239365
+	  *adv-glyph   9.375
 	  *path-glyphs "")
 
     #Setup projview
@@ -45,6 +45,7 @@
     (bye)
     
     #Require native calls
+    #GC before setting these so static data is before shm and any new data is after
     (setq *shm-projview       NIL) #(init-shm-projview)
     (setq *shm-nodes          NIL) #(init-shm-nodes)
     (setq *shm-atomic-counter NIL) #(init-shm-atomic-counter)
@@ -99,14 +100,21 @@
     (println 'Exiting...)
     (bye))
 
-#Refactor to launch independent subprocesses from top-level script  
-#(setq *proc-libinput   'poll-fd-li
-#      *proc-controller 'run-controller)
-#async/io/execute-mb-tasks -> process
-#socket/serve-socket -> model responsiblity
-#later...wayland socket -> process/here - process wayland while waiting for drawing?
-#  clients wait on msg from server when to draw
+#Launch from script etc
 
-#Move to controller process - init and run
-#Here, need only connect to it
-#(setq *controller NIL) #(init-controller *queue-tasks-sync #'translate-node-rel)
+#...Libinput proc
+#.....Read events, send to controller
+#...Controller proc
+#.....Recv events, pass to model
+#.....Events can be handled immediately or delayed so Ctrl+Alt+Del not blocked e.g.
+
+#...I/O proc
+#.....Load/cache data in shm until model requests it
+
+#...Model/Wayland proc
+#.....Respond to client events
+#.....Respond to view events - or is view just another client?
+#.......Server will share shm with each client and view
+#.......View will copy into GL buffers
+#.....Coroutines useful for spreading work across frames
+#.......Could also do manually as we have
