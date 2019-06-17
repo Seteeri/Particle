@@ -1,35 +1,35 @@
 #Make class for these so need not destructuring bind
 
 (setq *params-mmap-atomic-counter (list 'atomic-counter-buffer
-					"/protoform-atomic-counter"
+					"protoform-atomic-counter"
 					(* 4 6)  #6 ints/params
 					4 -1
 					'triple
 					0))
 
 (setq *params-mmap-draw-indirect (list 'draw-indirect-buffer
-				       "/protoform-draw-indirect"
+				       "protoform-draw-indirect"
 				       (* 4 6)  #6 ints/params
 				       -1 -1
 				       'triple
 				       0))
 
 (setq *params-mmap-element (list 'element-array-buffer
-				 "/protoform-element"
+				 "protoform-element"
 				 (* 4 6)  #4 bytes/int * 6 ints or indices
 				 -1 -1
 				 'triple
 				 0))
 
 (setq *params-mmap-nodes (list 'shader-storage-buffer
-			       "/protoform-nodes"
+			       "protoform-nodes"
 			       (/ 134217728 4)
 			       2 3
 			       'triple
 			       0))
 
 (setq *params-mmap-projview (list 'uniform-buffer
-				  "/protoform-projview"
+				  "protoform-projview"
 				  (* (+ 16 16) 4)
 				  0 0  #cs-in (cache), vs-in (raster)
 				  'triple
@@ -37,7 +37,7 @@
 
 
 (setq *params-mmap-texture-glyphs (list 'texture-buffer
-					"/protoform-texture-glyphs"
+					"protoform-texture-glyphs"
 					(/ 134217728 4)
 					-1 -1
 					'triple
@@ -45,7 +45,7 @@
 					'rgba8)) #requires fmt type
 
 (setq *params-mmap-vertices (list 'uniform-buffer
-				  "/protoform-vertices"
+				  "protoform-vertices"
 				  (* 16 4)
 				  1 1
 				  'triple
@@ -66,37 +66,32 @@
 	       size
 	       create)
     
-    #(when create
-    #  (shm-unlink path))
-    
-    (let (fd-shm (shm-open path
-		           (if create (| O-CREAT O-RDWR O-EXCL) (| O-RDWR))
-		           (| S-IRUSR S-IWUSR)))
-      
-      (when (= fd-shm -1)
+    (let (fd (memfd-create path 0))
+            
+      (when (= fd -1)
 	#Figure out how to get errno...
-	(quit "(= shm-open -1)"))
+	(quit "(= memfd-create -1)"))
       
       #Configure the size of the shared memory segment - only on create
       (when create
-	(ftruncate fd-shm size))
+	(ftruncate fd size))
       
       #Map shm to address space of process
-      (let (ptr-shm-base (mmap NIL
-			       size
-			       (| PROT-READ PROT-WRITE)
-			       (| MAP-SHARED)
-			       fd-shm
-			       0))
+      (let (ptr (mmap NIL
+	              size
+		      (| PROT-READ PROT-WRITE)
+		      (| MAP-SHARED)
+		      fd-shm
+		      0))
 	
-	(when (= ptr-shm-base 0) #null ptr
+	(when (= ptr 0) #null ptr
 	  (quit "(= mmap -1)"))
 	
-	(new (+Mmap) path fd-shm ptr-shm-base size))))
+	(new (+Mmap) path fd ptr size))))
 
 (de init-shm (Params)
-      (init-mmap (nth Params 2)
-		 (nth Params 3)
+      (init-mmap (car (nth Params 2))
+		 (car (nth Params 3))
 		 T))
 
 (de init-mmap-nodes ()

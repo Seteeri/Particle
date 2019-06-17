@@ -37,13 +37,15 @@
     (let (path-glyph (pack *path-glyphs Code "-metrics.l"))
       ;; (println "Reading " path-glyph " ...")
       (eval (any (in path-glyph (till NIL T))))))
-	 
+
+#CAPITALIZE let syms!
+
 (de load-metrics ()
     (let (metrics ())
       (for Code 255
 	   #Format path name, read file/code, eval data -> list of data
 	   (let (metrics-file (load-file-metrics-data Code)
-	         metrics-glyph (apply 'new '(+Metrics) (nth metrics-file 4) (nth metrics-file 6)))
+                 metrics-glyph (apply 'new T '(+Metrics) (car (nth metrics-file 4)) (car (nth metrics-file 6))))
 	     (when (get 'metrics-glyph 'bounds)
 	       (calc-metrics-bounds metrics-glyph))
 	     (push 'metrics metrics-glyph)))
@@ -59,16 +61,16 @@
     
     #Calculate bounds (pixel and absolute values)
     #l b r t    
-    (=: bounds-texture (list (+ (* (nth (: translate) 1) *scale-glyph) (nth (: bounds) 1))
-			     (+ (* (nth (: translate) 2) *scale-glyph) (nth (: bounds) 2))
-			     (+ (* (nth (: translate) 1) *scale-glyph) (nth (: bounds) 3))
-			     (+ (* (nth (: translate) 2) *scale-glyph) (nth (: bounds) 4))))
+    (=: bounds-texture (list (+ (* (car (nth (: translate) 1)) *scale-glyph) (car (nth (: bounds) 1)))
+			     (+ (* (car (nth (: translate) 2)) *scale-glyph) (car (nth (: bounds) 2)))
+			     (+ (* (car (nth (: translate) 1)) *scale-glyph) (car (nth (: bounds) 3)))
+			     (+ (* (car (nth (: translate) 2)) *scale-glyph) (car (nth (: bounds) 4)))))
     
-    (=: dims-glyph (list (- (nth (: bounds-texture) 3) (nth (: bounds-texture) 1))
-			 (- (nth (: bounds-texture) 4) (nth (: bounds-texture) 2))))
+    (=: dims-glyph (list (- (car (nth (: bounds-texture) 3)) (car (nth (: bounds-texture) 1)))
+			 (- (car (nth (: bounds-texture) 4)) (car (nth (: bounds-texture) 2)))))
     
-    (=: ratio-aspect (/ (nth (: dims-glyph) 1)
-			(nth (: dims-glyph) 2)))
+    (=: ratio-aspect (/ (car (nth (: dims-glyph) 1))
+			(car (nth (: dims-glyph) 2))))
 
     #dims + baseline coords + bounds -> calculate glyph bounds in abs px coords
     #bounds = l b r t = 1 2 3 4
@@ -79,19 +81,19 @@
     #baseline.y - bounds.b
     #baseline.x + bounds.r
     #baseline.y + bounds.t        
-    (=: uv (list (/ (nth (: bounds-texture) 3) 96)
-		 (/ (nth (: bounds-texture) 4) 96)
+    (=: uv (list (/ (car (nth (: bounds-texture) 3)) 96)
+		 (/ (car (nth (: bounds-texture) 4)) 96)
 		 0.0
 		 0.0   #r-t 1,1
-		 (/ (nth (: bounds-texture) 3) 96)
-		 (/ (nth (: bounds-texture) 2) 96)
+		 (/ (car (nth (: bounds-texture) 3)) 96)
+		 (/ (car (nth (: bounds-texture) 2)) 96)
 		 0.0
 		 0.0   #r-b 1,0
-		 (/ (nth (: bounds-texture) 1) 96)
-		 (/ (nth (: bounds-texture) 2) 96)
+		 (/ (car (nth (: bounds-texture) 1)) 96)
+		 (/ (car (nth (: bounds-texture) 2)) 96)
 		 0.0
 		 0.0   #l-b 0,0
-		 (/ (nth (: bounds-texture) 1) 96)
-		 (/ (nth (: bounds-texture) 4) 96)
+		 (/ (car (nth (: bounds-texture) 1)) 96)
+		 (/ (car (nth (: bounds-texture) 4)) 96)
 		 0.0
 		 0.0))) #l-t 0,1

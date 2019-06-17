@@ -16,14 +16,8 @@
 (def 'MAP-LOCKED (hex "2000"))
 (def 'MAP-POPULATE (hex "8000"))
 
-#Maybe need wrapper for these?
 #https://stackoverflow.com/questions/21311080/linux-shared-memory-shmget-vs-mmap
 #https://stackoverflow.com/questions/13703079/does-mmap-need-shm-open
-#(de shm-open (NAME OFLAG MODE)
-    (native "@" "shm_open" 'I NAME OFLAG MODE))
-#(de shm-unlink (NAME)
-#    (native "@" "shm_unlink" 'I NAME))
-
 (de memfd-create (NAME FLAGS)
     (native "@" "memfd_create" 'I NAME FLAGS))
 
