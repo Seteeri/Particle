@@ -1,4 +1,5 @@
 #Make class for these so need not destructuring bind
+#These are here for convenience primarily...
 
 (setq *params-mmap-atomic-counter (list 'atomic-counter-buffer
 					"protoform-atomic-counter"
@@ -102,7 +103,7 @@
 
 
 (de init-mmap-atomic-counter ()
-    (init-shm *shm-atomic-counter))
+    (init-shm *params-atomic-counter))
 
 
 #{

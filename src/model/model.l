@@ -18,7 +18,8 @@
 (scl 6)
 
 # C library paths
-(setq PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
+(def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
+(def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs/metrics/")
 
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/mathc.l")
@@ -40,8 +41,7 @@
 	  *height     1080.0
 	  *inst-max   (** 2 19)
 	  *scale-glyph 5.8239365
-	  *adv-glyph   9.375
-	  *path-glyphs "/home/user/quicklisp/local-projects/protoform/src/glyphs/metrics/")
+	  *adv-glyph   9.375)
 
     #Setup projview
     (with (setq *projview (new '(+Projview)))
@@ -59,11 +59,12 @@
     #Note, mmap is a ptr and shm is a fd
     #GC before setting these so static data is before shm and any new data is after
     (setq *mmap-nodes          (init-mmap-nodes))
+    (setq *mmap-atomic-counter (init-mmap-atomic-counter))
     (println "Bye!!")
     (bye)
     
     (setq *mmap-projview       (init-mmap-projview))
-    (setq *mmap-atomic-counter (init-mmap-atomic-counter))
+
     (setq *mmap-vertices       (init-mmap-vertices))
     (setq *mmap-element        (init-mmap-element))
     (setq *mmap-draw-indirect  (init-mmap-draw-indirect))

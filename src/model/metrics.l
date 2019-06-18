@@ -34,16 +34,16 @@
 #Calculate other params and save to file so need not do everytime
 
 (de load-file-metrics-data (Code)
-    (let (Path-glyph (pack *path-glyphs Code "-metrics.l"))
-      ;; (println "Reading " path-glyph " ...")
+    (let (Path-glyph (pack PATH-GLYPHS Code "-metrics.l"))
+      #(println "Reading " Path-glyph " ...")
       (eval (any (in Path-glyph (till NIL T))))))
 
 (de load-metrics ()
     (let (Metrics ())
       (for Code 255
 	   #Format path name, read file/code, eval data -> list of data
-	   (let (data (load-file-metrics-data Code)
-                 Metrics-glyph (apply 'new T '(+Metrics) (car (nth data 4)) (car (nth data 6))))
+	   (let (Data (load-file-metrics-data Code)
+                 Metrics-glyph (apply 'new T '(+Metrics) (car (nth Data 4)) (car (nth Data 6))))
 	     (when (get 'Metrics-glyph 'bounds)
 	       (calc-metrics-bounds Metrics-glyph))
 	     (push 'Metrics Metrics-glyph)))
