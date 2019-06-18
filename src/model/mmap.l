@@ -62,6 +62,7 @@
     (=: fd   (when FD fd))
     (=: size (when Size Size)))
 
+
 (de init-mmap (Path
 	       Size
 	       Create)
@@ -89,16 +90,20 @@
 	
 	(new (+Mmap) Path Fd Ptr Size))))
 
+
 (de init-shm (Params)
       (init-mmap (car (nth Params 2))
 		 (car (nth Params 3))
 		 T))
 
+
 (de init-mmap-nodes ()
     (init-shm *params-mmap-nodes))
 
+
 (de init-mmap-atomic-counter ()
     (init-shm *shm-atomic-counter))
+
 
 #{
 (de init-mmap-draw-indirect ()

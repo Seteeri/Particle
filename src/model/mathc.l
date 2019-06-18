@@ -17,8 +17,10 @@
 (setq *mat4-1   (native "@" "malloc" 'N 64))
 (setq *mat4-i   (native "@" "malloc" 'N 64))
 
+
 (de to-radians (F)
     (native PATH-MATHC "to_radians" -1.0 (cons F -1.0)))
+
 
 #do the below need cons?
 (de mat4-perspective (Fov-y Aspect Near Far)
@@ -61,6 +63,7 @@
 	    *mat4-1)
     (struct *mat4-out (-1.0 . 16)))
 
+
 (de mat4-rotation-x (F)
     (native PATH-MATHC "mat4_identity"
 	    'N
@@ -70,6 +73,7 @@
 	    *mat4-r-x
 	    (cons F -1.0))
     (struct *mat4-r-x (-1.0 . 16)))    
+
 
 (de mat4-rotation-y (F)
     (native PATH-MATHC "mat4_identity"
@@ -81,6 +85,7 @@
 	    (cons F -1.0))
     (struct *mat4-r-y (-1.0 . 16)))    
 
+
 (de mat4-rotation-z (F)
     (native PATH-MATHC "mat4_identity"
 	    'N
@@ -90,6 +95,7 @@
 	    *mat4-r-z
 	    (cons F -1.0))
     (struct *mat4-r-z (-1.0 . 16)))    
+
 
 (de mat4-scaling (V)
     (native PATH-MATHC "mat4_identity"
@@ -106,6 +112,7 @@
 	    *vec3-out)
     (struct *mat4-s (-1.0 . 16)))
 
+
 (de mat4-translation (V)
     (native PATH-MATHC "mat4_identity"
 	    'N
@@ -121,11 +128,13 @@
 	    *vec3-out)
     (struct *mat4-t (-1.0 . 16)))
 
+
 (de mat4-identity ()
     (native PATH-MATHC "mat4_identity"
 	    'N
 	    *mat4-out)
     (struct *mat4-out (-1.0 . 16)))
+
 
 (de mat4-inverse (M0)
     (struct *mat4-0 'N (list -1.0 (car (nth M0 1))  (car (nth M0 2))  (car (nth M0 3))  (car (nth M0 4))
@@ -138,6 +147,7 @@
 	    *mat4-0)
     (struct *mat4-out (-1.0 . 16)))
 
+
 (de mat4-transpose (M0)
     (struct *mat4-0 'N (list -1.0 (car (nth M0 1))  (car (nth M0 2))  (car (nth M0 3))  (car (nth M0 4))
 			     (car (nth M0 5))  (car (nth M0 6))  (car (nth M0 7))  (car (nth M0 8))
@@ -149,11 +159,13 @@
 	    *mat4-0)
     (struct *mat4-out (-1.0 . 16)))
 
+
 (de print-mat4 (m)
     (println (cut 4 'm))
     (println (cut 4 'm))
     (println (cut 4 'm))
     (println (cut 4 'm)))
+
 
 (de print-mat4-2 (m)
     (prinl (format (car (nth m 1)) *Scl) " "
