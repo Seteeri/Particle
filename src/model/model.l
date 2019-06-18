@@ -1,3 +1,16 @@
+#{
+    Global variables start with an asterisk "*"
+    Global constants may be written all-uppercase
+    Functions and other global symbols start with a lower case letter
+    Locally bound symbols start with an upper case letter
+    Local functions start with an underscore "_"
+    Classes start with a plus-sign "+", where the first letter
+        is in lower case for abstract classes
+        and in upper case for normal classes 
+    Methods end with a right arrow ">"
+    Class variables may be indicated by an upper case letter 
+}#
+
 #Create and change to namespace model
 (symbols 'model 'pico)
 
@@ -15,9 +28,9 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/os.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
 
-(de fmt-model (ctx
-	       str)
-    (println "MODEL" *Pid ctx str))
+(de fmt-model (Ctx
+	       Str)
+    (println "MODEL" *Pid Ctx Ctr))
 
 (de init-model ()
     

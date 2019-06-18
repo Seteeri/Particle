@@ -118,7 +118,8 @@ Store DAGs as binary trees?
   * How to delete symbol?
 
 * Migrate Protoform to PicoLisp
-  * TODO
+    * Fix let
+    * Finish metrics
     * Model
       * Math library
         * Use lists...

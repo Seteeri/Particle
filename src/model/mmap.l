@@ -62,32 +62,32 @@
     (=: fd   (when FD fd))
     (=: size (when Size Size)))
 
-(de init-mmap (path
-	       size
-	       create)
+(de init-mmap (Path
+	       Size
+	       Create)
     
-    (let (fd (memfd-create path 0))
+    (let (Fd (memfd-create Path 0))
             
-      (when (= fd -1)
+      (when (= Fd -1)
 	#Figure out how to get errno...
 	(quit "(= memfd-create -1)"))
       
       #Configure the size of the shared memory segment - only on create
-      (when create
-	(ftruncate fd size))
+      (when Create
+	(ftruncate Fd Size))
       
       #Map shm to address space of process
-      (let (ptr (mmap NIL
-	              size
+      (let (Ptr (mmap NIL
+	              Size
 		      (| PROT-READ PROT-WRITE)
 		      (| MAP-SHARED)
-		      fd-shm
+		      Fd
 		      0))
 	
-	(when (= ptr 0) #null ptr
+	(when (= Ptr 0) #null ptr
 	  (quit "(= mmap -1)"))
 	
-	(new (+Mmap) path fd ptr size))))
+	(new (+Mmap) Path Fd Ptr Size))))
 
 (de init-shm (Params)
       (init-mmap (car (nth Params 2))

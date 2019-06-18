@@ -34,23 +34,21 @@
 #Calculate other params and save to file so need not do everytime
 
 (de load-file-metrics-data (Code)
-    (let (path-glyph (pack *path-glyphs Code "-metrics.l"))
+    (let (Path-glyph (pack *path-glyphs Code "-metrics.l"))
       ;; (println "Reading " path-glyph " ...")
-      (eval (any (in path-glyph (till NIL T))))))
-
-#CAPITALIZE let syms!
+      (eval (any (in Path-glyph (till NIL T))))))
 
 (de load-metrics ()
-    (let (metrics ())
+    (let (Metrics ())
       (for Code 255
 	   #Format path name, read file/code, eval data -> list of data
-	   (let (metrics-file (load-file-metrics-data Code)
-                 metrics-glyph (apply 'new T '(+Metrics) (car (nth metrics-file 4)) (car (nth metrics-file 6))))
-	     (when (get 'metrics-glyph 'bounds)
-	       (calc-metrics-bounds metrics-glyph))
-	     (push 'metrics metrics-glyph)))
-      #(pretty metrics)
-      metrics))
+	   (let (data (load-file-metrics-data Code)
+                 Metrics-glyph (apply 'new T '(+Metrics) (car (nth data 4)) (car (nth data 6))))
+	     (when (get 'Metrics-glyph 'bounds)
+	       (calc-metrics-bounds Metrics-glyph))
+	     (push 'Metrics Metrics-glyph)))
+      #(pretty Metrics)
+      Metrics))
 
 (dm calc-metrics-bounds ()
     #Convert bounds from shape units to pixel units by multiplying by scale
