@@ -69,7 +69,7 @@
 
 #unistd
 
-(de c-close (Fd)
+(de close-fd (Fd)
     (native "@" "close" 'I Fd))
 
 

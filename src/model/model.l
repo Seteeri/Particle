@@ -28,6 +28,7 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/os.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/sock.l")
 
 (de fmt-model (Ctx
 	       Str)
@@ -65,9 +66,8 @@
     (setq *mmap-element        (init-mmap-element))
     (setq *mmap-projview       (init-mmap-projview))
     (setq *mmap-tex-glyphs     (init-mmap-tex-glyphs))
-    (println "Bye!!")
-    (bye)
-    
+
+    #{
     #Use nng
     (setq *queue-tasks-sync  NIL  #(sb-concurrency:make-queue) -> list
 	  *queue-tasks-async NIL  #(sb-concurrency:make-queue) -> list
@@ -76,16 +76,24 @@
 	  *tasks-inactive    NIL  #(make-hash-table :size 64) -> list
 	  *tasks-active      NIL  #(make-hash-table :size 64) -> list
 	  *ht-timing-fn      NIL) #(make-hash-table :size 64) -> list
-    
+    }#
+
+    (println "Bye!!")
+    (bye)    
+	  
     #Use C sockets
     (setq *bs-ptr NIL) #(foreign-alloc :unsigned-char :count 212992)
     (setq *path-socket-view "/tmp/protoform-view.socket")
     (setq *sock-render NIL) #(init-sock-client *path-socket-view :block)
     #(init-conn-rpc-view)
 
-    #Create DAG library 
-    #Create graphs = namespaces
-    #Create namespace for pico (generate nodes for builtin symbols? -> follow picolisp tradition so yes since they are the same)
+    #{
+    ;; Create DAG library 
+    ;; Create graphs = namespaces
+    ;; Create namespace for pico
+    ;; (generate nodes for builtin symbols? -> follow picolisp tradition so yes since they are the same)
+    }#
+    
     (setq *dag-pico (new '(+DAG)))
 
     #Create protoform namespace and symbols
@@ -102,8 +110,7 @@
   (send-setup-render)
   (loop
      :for (sym params) :on *params-shm* :by #'cddr
-     :do (send-memcpy-shm-to-cache (second params)
-				   (symbol-value sym)))
+     :do (send-memcpy-shm-to-cache (second params) (symbol-value sym)))
   (send-draw t)
   (send-serving nil))
 }#
