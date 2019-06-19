@@ -108,3 +108,25 @@
       0.0 1.0 0.0   8.0
       0.0 0.0 1.0 -10.0
       0.0 0.0 0.0   1.0}#
+
+
+(de write-mat-proj-to-shm (Mmap Projview)
+  (write-matrix-to-ptr (get Mmap 'ptr)
+		       (get Projview 'mat-proj)
+		       0))
+
+
+(de write-mat-view-to-shm (Mmap Projview)
+  (write-matrix-to-ptr (get Mmap 'ptr)
+		       (get Projview 'mat-view)
+		       16))
+
+(de write-matrix-to-ptr (Ptr
+			 M
+			 Offset)
+    (struct (+ Ptr Offset) 'N
+	    (list -1.0 (car (nth M 1))  (car (nth M 2))  (car (nth M 3))  (car (nth M 4))
+                       (car (nth M 5))  (car (nth M 6))  (car (nth M 7))  (car (nth M 8))
+	               (car (nth M 9))  (car (nth M 10)) (car (nth M 11)) (car (nth M 12))
+		       (car (nth M 13)) (car (nth M 14)) (car (nth M 15)) (car (nth M 16)))))
+

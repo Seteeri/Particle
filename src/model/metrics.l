@@ -34,7 +34,7 @@
 #Calculate other params and save to file so need not do everytime
 
 (de load-file-metrics-data (Code)
-    (let (Path-glyph (pack PATH-GLYPHS Code "-metrics.l"))
+    (let (Path-glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l"))
       #(println "Reading " Path-glyph " ...")
       (eval (any (in Path-glyph (till NIL T))))))
 

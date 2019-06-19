@@ -19,7 +19,7 @@
 
 # C library paths
 (def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
-(def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs/metrics/")
+(def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/mathc.l")
@@ -60,17 +60,12 @@
     #GC before setting these so static data is before shm and any new data is after
     (setq *mmap-nodes          (init-mmap-nodes))
     (setq *mmap-atomic-counter (init-mmap-atomic-counter))
-    (println "Bye!!")
-    (bye)
-    
-    (setq *mmap-projview       (init-mmap-projview))
-
+    (setq *mmap-draw-indirect  (init-mmap-draw-indirect))
     (setq *mmap-vertices       (init-mmap-vertices))
     (setq *mmap-element        (init-mmap-element))
-    (setq *mmap-draw-indirect  (init-mmap-draw-indirect))
-    (setq *mmap-texture-glyphs (init-mmap-texture-glyphs))
-
-    (println "Bye!")
+    (setq *mmap-projview       (init-mmap-projview))
+    (setq *mmap-tex-glyphs     (init-mmap-tex-glyphs))
+    (println "Bye!!")
     (bye)
     
     #Use nng

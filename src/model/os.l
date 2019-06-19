@@ -9,12 +9,15 @@
 (def 'S-IRUSR (oct "00400"))
 (def 'S-IWUSR (oct "00200"))
 
-(def 'Prot-READ (hex "1"))
-(def 'Prot-WRITE (hex "2"))
+(def 'PROT-READ (hex "1"))
+(def 'PROT-WRITE (hex "2"))
+(def 'PROT-EXEC (hex "4"))
 
 (def 'MAP-SHARED (hex "01"))
 (def 'MAP-LOCKED (hex "2000"))
 (def 'MAP-POPULATE (hex "8000"))
+(def 'MAP-PRIVATE (hex "02"))
+(def 'MAP-ANONYMOUS (hex "20"))
 
 #https://stackoverflow.com/questions/21311080/linux-shared-memory-shmget-vs-mmap
 #https://stackoverflow.com/questions/13703079/does-mmap-need-shm-open
@@ -72,3 +75,9 @@
 
 (de ftruncate (Fd Length)
     (native "@" "ftruncate" 'I Fd Length))
+
+(de write-int-to-bytes (N)
+    (list (& (>> 24 N) (hex "FF"))
+	  (& (>> 16 N) (hex "FF"))
+	  (& (>> 8  N) (hex "FF"))
+	  (&  N        (hex "FF"))))

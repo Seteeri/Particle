@@ -37,13 +37,13 @@
 				  0))
 
 
-(setq *params-mmap-texture-glyphs (list 'texture-buffer
-					"protoform-texture-glyphs"
-					(/ 134217728 4)
-					-1 -1
-					'triple
-					0
-					'rgba8)) #requires fmt type
+(setq *params-mmap-tex-glyphs (list 'texture-buffer
+				    "protoform-texture-glyphs"
+				    (/ 134217728 4)
+				    -1 -1
+				    'triple
+				    0
+				    'rgba8)) #requires fmt type
 
 (setq *params-mmap-vertices (list 'uniform-buffer
 				  "protoform-vertices"
@@ -52,23 +52,25 @@
 				  'triple
 				  0))
 
+
 (class +Mmap)
 
 (dm T (Path
-       Ptr
        FD
+       Ptr
        Size)
     (=: path (when Path path))
+    (=: fd   (when FD FD))    
     (=: ptr  (when Ptr Ptr))
-    (=: fd   (when FD fd))
     (=: size (when Size Size)))
 
 
-(de init-mmap (Path
-	       Size
+(de init-mmap (Params
 	       Create)
     
-    (let (Fd (memfd-create Path 0))
+    (let (Path (car (nth Params 2))
+          Size (car (nth Params 3))
+          Fd   (memfd-create Path 0))
             
       (when (= Fd -1)
 	#Figure out how to get errno...
@@ -85,106 +87,96 @@
 		      (| MAP-SHARED)
 		      Fd
 		      0))
-	
+	 
 	(when (= Ptr 0) #null ptr
 	  (quit "(= mmap -1)"))
-	
-	(new (+Mmap) Path Fd Ptr Size))))
 
-
-(de init-shm (Params)
-      (init-mmap (car (nth Params 2))
-		 (car (nth Params 3))
-		 T))
+	# zero memory?
+	(new '(+Mmap) Path Fd Ptr Size))))
 
 
 (de init-mmap-nodes ()
-    (init-shm *params-mmap-nodes))
+    (init-mmap *params-mmap-nodes T))
 
 
 (de init-mmap-atomic-counter ()
-    (init-shm *params-atomic-counter))
+    (init-mmap *params-mmap-atomic-counter T))
 
 
-#{
 (de init-mmap-draw-indirect ()
-    (let (shm (init-shm *shm-draw-indirect))
-      (with-slots (ptr size)
-	  shm
-	(let ((data (make-array 5
-				:element-type '(unsigned-byte 32)
-				:initial-contents (list 6 *inst-max* 0 0 0))))
-	  (dotimes (i (length data))
-	    (setf (mem-aref ptr ::uint i)
-		  (aref data i)))))
-      shm))
+    (let (Mmap (init-mmap *params-mmap-draw-indirect T)
+	  Ptr (get Mmap 'ptr))
+            
+      #(println "FD" (get Mmap 'fd))
 
+      #Use struct function to write to pointer     
+      (struct Ptr 'N
+	      (6 . 8)
+	      (cons *inst-max 8)
+	      (0 . 8)
+	      (0 . 8)
+	      (0 . 8))
 
-(de init-mmap-element ()
-    (let (shm (init-shm *shm-element))
-      (with-slots (ptr size)
-	  shm
-	(let ((data (make-array 6
-				:element-type '(unsigned-byte 32)
-				:initial-contents (list 0 2 1 0 3 2))))
-	  (dotimes (i (length data))
-	    (setf (mem-aref ptr ::uint i)
-		  (aref data i)))))
-      shm))
-
-
-(de init-mmap-projview ()
-    (let (shm (init-shm *shm-projview))
-      (setf *shm-projview* shm) ; below require this
-      (update-mat-proj)
-      (update-mat-view)
-      (copy-mat-proj-to-shm)
-      (copy-mat-view-to-shm)
-      shm))
-
-
-(de init-mmap-texture-glyphs ()
-
-    ;; Could convert lisp data straight to bytes...
-    ;; Load into textures for now...
-
-    (let (shm (init-shm *shm-texture-glyphs))
-      (with-slots (ptr size)
-	  shm
-	(loop
-	   :for code :from 1 :to 255
-	   :with msdf-glyphs-path := (merge-pathnames #P"src-cl/glyphs/" (asdf:system-source-directory :protoform))
-	   :with i := 0
-	   :for lisp-path := (merge-pathnames (make-pathname :name (format nil "~a-data" (write-to-string code))
-							     :type "lisp")
-					      msdf-glyphs-path)
-	   :do (loop 
-		  :for c :across (read-from-string (read-file-string lisp-path))
-		  :do (progn
-			(setf (mem-aref ptr :unsigned-char i) c)
-			(incf i)))))
-      shm))
+      #(println "Read 6 int32" (struct Ptr '(I . 6)))
+      
+      Mmap))
 
 
 (de init-mmap-vertices ()
-    ;; top right, bottom right, bottom left, top left
+    #{
+    ;;top right, bottom right, bottom left, top left
     ;;
-    ;; 3---0
-    ;; | / |
-    ;; 2---1
+    ;;3---0
+    ;;| / |
+    ;;2---1
     ;;
-    ;; ccw: 0 2 1 0 3 2
-    (let (shm (init-shm '*shm-vertices))
-      (with-slots (ptr size)
-	  shm
-	(let ((data (make-array (* 4 4)
-				:element-type 'single-float
-				:initial-contents (list 1.0  1.0  0.0  1.0
-							1.0  0.0  0.0  1.0
-							0.0  0.0  0.0  1.0
-							0.0  1.0  0.0  1.0))))
-	  (dotimes (i (length data))
-	    (setf (mem-aref ptr :float i)
-		  (aref data i)))))
-      shm))
-}#
+    ;;ccw: 0 2 1 0 3 2
+    }#
+    (let (Mmap (init-mmap *params-mmap-vertices T)
+	  Ptr (get Mmap 'ptr))
+      (struct Ptr 'N (list -1.0  1.0  1.0  0.0  1.0
+			         1.0  0.0  0.0  1.0
+			         0.0  0.0  0.0  1.0
+				 0.0  1.0  0.0  1.0))
+      Mmap))
+
+
+(de init-mmap-element ()
+    (let (Mmap (init-mmap *params-mmap-element T)
+          Ptr (get Mmap 'ptr))
+      (struct Ptr 'N
+	      (0 . 8)
+	      (2 . 8)
+	      (1 . 8)
+	      (0 . 8)
+	      (3 . 8)
+	      (2 . 8))
+      Mmap))
+
+
+(de init-mmap-projview ()
+    (let (Mmap (init-mmap *params-mmap-projview T)
+          Ptr (get Mmap 'ptr))
+      (write-mat-proj-to-shm Mmap *projview)
+      (write-mat-view-to-shm Mmap *projview)
+      Mmap))
+
+
+(de init-mmap-tex-glyphs ()
+    # To load faster, do bulk memcpy or convert to bytes
+    (let (Mmap (init-mmap *params-mmap-tex-glyphs T)
+	  Ptr (get Mmap 'ptr)
+	  Offset 0)     
+      (for Code 255
+	   (let (Path-glyph (pack PATH-GLYPHS "/tex/" Code "-data.l"))
+	     #(println "Reading " Path-glyph " ...")
+	     (any (in Path-glyph (till NIL T)))
+	     (struct (+ Ptr Offset) 'N
+		     (0 . 8)
+		     (2 . 8)
+		     (1 . 8)
+		     (0 . 8)
+		     (3 . 8)
+		     (2 . 8))
+	     (inc 'Offset)))
+      Mmap))
