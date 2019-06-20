@@ -1,5 +1,13 @@
-#Make class for these so need not destructuring bind
-#These are here for convenience primarily...
+#{
+- Make class for these so need not destructuring bind?
+- Should move to files that both model and render can load...
+  - Seperate GL params from MMap params
+- These are determined ahead of time
+- To be completely dynamic:
+  - Free/Alloc GL memory
+  - Free/Alloc mmap/memfd
+  - Technically, all of it can be done dynamically
+}#
 
 (setq *params-mmap-atomic-counter (list 'atomic-counter-buffer
 					"protoform-atomic-counter"
@@ -65,12 +73,11 @@
     (=: size (when Size Size)))
 
 
-(de init-mmap (Params
+(de init-mmap (Path
+	       Size
 	       Create)
     
-    (let (Path (car (nth Params 2))
-          Size (car (nth Params 3))
-          Fd   (memfd-create Path 0))
+    (let (Fd   (memfd-create Path 0))
             
       (when (= Fd -1)
 	#Figure out how to get errno...
@@ -95,27 +102,41 @@
 	(new '(+Mmap) Path Fd Ptr Size))))
 
 
+#{
+(de init-mmap-ipc (P)
+    (init-mmap (car (nth P 2))
+	       (car (nth P 3))
+	       T))
+}#
+
 (de init-mmap-nodes ()
-    (init-mmap *params-mmap-nodes T))
+    (init-mmap (car (nth *params-mmap-nodes 2))
+	       (car (nth *params-mmap-nodes 3))
+	       T))
 
 
 (de init-mmap-atomic-counter ()
-    (init-mmap *params-mmap-atomic-counter T))
+    (init-mmap (car (nth *params-mmap-atomic 2))
+	       (car (nth *params-mmap-counter 3))
+	       T))
 
 
 (de init-mmap-draw-indirect ()
-    (let (Mmap (init-mmap *params-mmap-draw-indirect T)
+    (let (Mmap (init-mmap
+		(car (nth *params-mmap-draw-indirect 2))
+		 (car (nth *params-mmap-draw-indirect 3))
+		 T)
 	  Ptr (get Mmap 'ptr))
             
       #(println "FD" (get Mmap 'fd))
 
       #Use struct function to write to pointer     
       (struct Ptr 'N
-	      (6 . 8)
-	      (cons *inst-max 8)
-	      (0 . 8)
-	      (0 . 8)
-	      (0 . 8))
+	      (6 . 4)
+	      (cons *inst-max 4)
+	      (0 . 4)
+	      (0 . 4)
+	      (0 . 4))
 
       #(println "Read 6 int32" (struct Ptr '(I . 6)))
       
@@ -132,7 +153,10 @@
     ;;
     ;;ccw: 0 2 1 0 3 2
     }#
-    (let (Mmap (init-mmap *params-mmap-vertices T)
+    (let (Mmap (init-mmap
+		(car (nth *params-mmap-vertices 2))
+		 (car (nth *params-mmap-vertices 3))
+		 T)
 	  Ptr (get Mmap 'ptr))
       (struct Ptr 'N (list -1.0  1.0  1.0  0.0  1.0
 			         1.0  0.0  0.0  1.0
@@ -142,20 +166,26 @@
 
 
 (de init-mmap-element ()
-    (let (Mmap (init-mmap *params-mmap-element T)
+    (let (Mmap (init-mmap
+		(car (nth *params-mmap-element 2))
+		 (car (nth *params-mmap-element 3))
+		 T)
           Ptr (get Mmap 'ptr))
       (struct Ptr 'N
-	      (0 . 8)
-	      (2 . 8)
-	      (1 . 8)
-	      (0 . 8)
-	      (3 . 8)
-	      (2 . 8))
+	      (0 . 4)
+	      (2 . 4)
+	      (1 . 4)
+	      (0 . 4)
+	      (3 . 4)
+	      (2 . 4))
       Mmap))
 
 
 (de init-mmap-projview ()
-    (let (Mmap (init-mmap *params-mmap-projview T)
+    (let (Mmap (init-mmap
+		(car (nth *params-mmap-projview 2))
+		 (car (nth *params-mmap-projview 3))
+		 T)
           Ptr (get Mmap 'ptr))
       (write-mat-proj-to-shm Mmap *projview)
       (write-mat-view-to-shm Mmap *projview)
@@ -164,7 +194,10 @@
 
 (de init-mmap-tex-glyphs ()
     # To load faster, do bulk memcpy or convert to bytes
-    (let (Mmap (init-mmap *params-mmap-tex-glyphs T)
+    (let (Mmap (init-mmap
+		(car (nth *params-mmap-tex-glyphs 2))
+		 (car (nth *params-mmap-tex-glyphs 3))
+		 T)
 	  Ptr (get Mmap 'ptr)
 	  Offset 0)     
       (for Code 255
@@ -172,11 +205,11 @@
 	     #(println "Reading " Path-glyph " ...")
 	     (any (in Path-glyph (till NIL T)))
 	     (struct (+ Ptr Offset) 'N
-		     (0 . 8)
-		     (2 . 8)
-		     (1 . 8)
-		     (0 . 8)
-		     (3 . 8)
-		     (2 . 8))
+		     (0 . 4)
+		     (2 . 4)
+		     (1 . 4)
+		     (0 . 4)
+		     (3 . 4)
+		     (2 . 4))
 	     (inc 'Offset)))
       Mmap))

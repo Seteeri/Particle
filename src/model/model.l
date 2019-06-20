@@ -21,6 +21,9 @@
 (def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 (def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 
+# UDS paths
+(def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
+
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
@@ -29,6 +32,7 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/os.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/sock.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/render.l")
 
 (de fmt-model (Ctx
 	       Str)
@@ -44,49 +48,39 @@
 	  *scale-glyph 5.8239365
 	  *adv-glyph   9.375)
 
-    #Setup projview
-    (with (setq *projview (new '(+Projview)))
-	  (=: width *width)
-	  (=: height *height)
-	  (=: type-proj 'orthographic)
-	  (=: fov (to-radians 45)))
-    #Simplify these - single function?
-    (update-mat-proj> *projview)
-    (update-mat-view> *projview)
+    #Testing only
+    (when NIL
+      
+      #Setup projview
+      (with (setq *projview (new '(+Projview)))
+	    (=: width *width)
+	    (=: height *height)
+	    (=: type-proj 'orthographic)
+	    (=: fov (to-radians 45)))
+      #Simplify these - single function?
+      (update-mat-proj> *projview)
+      (update-mat-view> *projview)
 
-    #Load here, copy to shm, msg view, view copies to OpenGL buffers
-    (setq *metrics (load-metrics))
-    
-    #Note, mmap is a ptr and shm is a fd
-    #GC before setting these so static data is before shm and any new data is after
-    (setq *mmap-nodes          (init-mmap-nodes))
-    (setq *mmap-atomic-counter (init-mmap-atomic-counter))
-    (setq *mmap-draw-indirect  (init-mmap-draw-indirect))
-    (setq *mmap-vertices       (init-mmap-vertices))
-    (setq *mmap-element        (init-mmap-element))
-    (setq *mmap-projview       (init-mmap-projview))
-    (setq *mmap-tex-glyphs     (init-mmap-tex-glyphs))
+      #Load here, copy to shm, msg view, view copies to OpenGL buffers
+      (setq *metrics (load-metrics))
+      
+      #Note, mmap is a ptr and shm is a fd
+      #GC before setting these so static data is before shm and any new data is after
+      (setq *mmap-nodes          (init-mmap-nodes))
+      (setq *mmap-atomic-counter (init-mmap-atomic-counter))
+      (setq *mmap-draw-indirect  (init-mmap-draw-indirect))
+      (setq *mmap-vertices       (init-mmap-vertices))
+      (setq *mmap-element        (init-mmap-element))
+      (setq *mmap-projview       (init-mmap-projview))
+      (setq *mmap-tex-glyphs     (init-mmap-tex-glyphs))
 
-    #{
-    #Use nng
-    (setq *queue-tasks-sync  NIL  #(sb-concurrency:make-queue) -> list
-	  *queue-tasks-async NIL  #(sb-concurrency:make-queue) -> list
-	  *mb-async          NIL  #(sb-concurrency:make-mailbox) -> list
-	  *mb-io             NIL  #(sb-concurrency:make-mailbox) -> list
-	  *tasks-inactive    NIL  #(make-hash-table :size 64) -> list
-	  *tasks-active      NIL  #(make-hash-table :size 64) -> list
-	  *ht-timing-fn      NIL) #(make-hash-table :size 64) -> list
-    }#
+      (init-render)
+
+      NIL)
 
     (println "Bye!!")
-    (bye)    
-	  
-    #Use C sockets
-    (setq *bs-ptr NIL) #(foreign-alloc :unsigned-char :count 212992)
-    (setq *path-socket-view "/tmp/protoform-view.socket")
-    (setq *sock-render NIL) #(init-sock-client *path-socket-view :block)
-    #(init-conn-rpc-view)
-
+    (bye) 
+    
     #{
     ;; Create DAG library 
     ;; Create graphs = namespaces
@@ -104,20 +98,29 @@
 
     NIL)
 
-#{
-(de init-conn-rpc-view ()
-  ;; Batch these  
-  (send-setup-render)
-  (loop
-     :for (sym params) :on *params-shm* :by #'cddr
-     :do (send-memcpy-shm-to-cache (second params) (symbol-value sym)))
-  (send-draw t)
-  (send-serving nil))
-}#
+(de run-model ()
+    #After connecting, start processing messages
+    #Render will send frame start and wait for frame end
+    #Up to model to perform time management
+    
+    #{
+    (loop
+       (let (Msg (recv-msg))
+	 (when Msg
+	   (if (lst? (first message))
+	       (for n message
+		    (apply (symbol-function (find-symbol (string (first n)) :protoform.model))
+			   (cdr n)))
+	       (apply (symbol-function (find-symbol (string (first message)) :protoform.model))
+		      (cdr message))))))
+    }#
+    
+    T)
 
 (symbols 'pico)
 (de main ()
     (model~init-model)
+    (model~run-model)
     (println 'Exiting...)
     (bye))
 
@@ -129,7 +132,7 @@
 #.....Recv events, pass to model
 #.....Events can be handled immediately or delayed so Ctrl+Alt+Del not blocked e.g.
 
-#...I/O proc
+#...I/O proc for disk (network also?)
 #.....Load/cache data in shm until model requests it
 
 #...Model/Wayland proc
@@ -139,3 +142,14 @@
 #.......View will copy into GL buffers
 #.....Coroutines useful for spreading work across frames
 #.......Could also do manually as we have
+
+#{
+#Use nng
+(setq *queue-tasks-sync  NIL  #(sb-concurrency:make-queue) -> list
+      *queue-tasks-async NIL  #(sb-concurrency:make-queue) -> list
+      *mb-async          NIL  #(sb-concurrency:make-mailbox) -> list
+      *mb-io             NIL  #(sb-concurrency:make-mailbox) -> list
+      *tasks-inactive    NIL  #(make-hash-table :size 64) -> list
+      *tasks-active      NIL  #(make-hash-table :size 64) -> list
+      *ht-timing-fn      NIL) #(make-hash-table :size 64) -> list
+}#  
