@@ -63,14 +63,11 @@
 	    *adv-glyph   9.375))
           
     #Setup projview
-    (with (setq *projview (new '(+Projview)))
-	  (=: width *width)
-	  (=: height *height)
-	  (=: type-proj 'orthographic)
-	  (=: fov (to-radians 45)))
+    (setq *projview (new '(+Projview) *width *height 'orthographic))
     #Simplify these - single function?
     (update-mat-proj> *projview)
     (update-mat-view> *projview)
+    (show *projview)
 
     #Load here, copy to shm, msg view, view copies to OpenGL buffers
     (when NIL

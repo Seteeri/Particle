@@ -2,8 +2,8 @@
 
 (dm T (Width
        Height
-       Mat-proj
        Type-proj
+       Mat-proj
        Fov
        Near
        Far
@@ -16,12 +16,12 @@
        Displace)
     (=: width       (when Width Width))
     (=: height      (when Height Height))
-    (=: mat-proj    (when Mat-proj Mat-proj))
     (=: type-proj   (when Type-poj Type-proj))
+    (=: mat-proj    (when Mat-proj Mat-proj))
 
     #Move below into perspective and ortho classes
     
-    (=: fov         (if Fov Fov 0.785398)) # 45-deg
+    (=: fov         (if Fov Fov (to-radians 45)))
     (=: near        (if Near Near 0.1))
     (=: far         (if Far Far 100.0))
 	        
