@@ -8,6 +8,7 @@
 (setq *mat4-out (native "@" "malloc" 'N 64))
 (setq *vec3-out (native "@" "malloc" 'N 12))
 
+#Poss use single alloc + offsets
 (setq *mat4-t   (native "@" "malloc" 'N 64))
 (setq *mat4-r-x (native "@" "malloc" 'N 64))
 (setq *mat4-r-y (native "@" "malloc" 'N 64))
@@ -48,14 +49,14 @@
 
 
 (de mat4-mul (M0 M1)
-    (struct *mat4-0 'N (list -1.0 (car (nth M0 1))  (car (nth M0 2))  (car (nth M0 3))  (car (nth M0 4))
-			     (car (nth M0 5))  (car (nth M0 6))  (car (nth M0 7))  (car (nth M0 8))
-			     (car (nth M0 9))  (car (nth M0 10)) (car (nth M0 11)) (car (nth M0 12))
-			     (car (nth M0 13)) (car (nth M0 14)) (car (nth M0 15)) (car (nth M0 16))))
-    (struct *mat4-1 'N (list -1.0 (car (nth M1 1))  (car (nth M1 2))  (car (nth M1 3))  (car (nth M1 4))
-			     (car (nth M1 5))  (car (nth M1 6))  (car (nth M1 7))  (car (nth M1 8))
-			     (car (nth M1 9))  (car (nth M1 10)) (car (nth M1 11)) (car (nth M1 12))
-			     (car (nth M1 13)) (car (nth M1 14)) (car (nth M1 15)) (car (nth M1 16))))
+    (struct *mat4-0 'N (list -1.0 (get M0 1) (get M0 2) (get M0 3) (get M0 4)
+			     (get M0 5) (get M0 6) (get M0 7) (get M0 8)
+			     (get M0 9) (get M0 10) (get M0 11) (get M0 12)
+			     (get M0 13) (get M0 14) (get M0 15) (get M0 16)))
+    (struct *mat4-1 'N (list -1.0 (get M1 1) (get M1 2) (get M1 3) (get M1 4)
+			     (get M1 5) (get M1 6) (get M1 7) (get M1 8)
+			     (get M1 9) (get M1 10) (get M1 11) (get M1 12)
+			     (get M1 13) (get M1 14) (get M1 15) (get M1 16)))
     (native PATH-MATHC "mat4_multiply"
 	    'N
 	    *mat4-out
@@ -137,10 +138,10 @@
 
 
 (de mat4-inverse (M0)
-    (struct *mat4-0 'N (list -1.0 (car (nth M0 1))  (car (nth M0 2))  (car (nth M0 3))  (car (nth M0 4))
-			     (car (nth M0 5))  (car (nth M0 6))  (car (nth M0 7))  (car (nth M0 8))
-			     (car (nth M0 9))  (car (nth M0 10)) (car (nth M0 11)) (car (nth M0 12))
-			     (car (nth M0 13)) (car (nth M0 14)) (car (nth M0 15)) (car (nth M0 16))))
+    (struct *mat4-0 'N (list -1.0 (get M0 1) (get M0 2) (get M0 3) (get M0 4)
+			     (get M0 5) (get M0 6) (get M0 7) (get M0 8)
+			     (get M0 9) (get M0 10) (get M0 11) (get M0 12)
+			     (get M0 13) (get M0 14) (get M0 15) (get M0 16)))
     (native PATH-MATHC "mat4_inverse"
 	    'N
 	    *mat4-out
@@ -149,10 +150,10 @@
 
 
 (de mat4-transpose (M0)
-    (struct *mat4-0 'N (list -1.0 (car (nth M0 1))  (car (nth M0 2))  (car (nth M0 3))  (car (nth M0 4))
-			     (car (nth M0 5))  (car (nth M0 6))  (car (nth M0 7))  (car (nth M0 8))
-			     (car (nth M0 9))  (car (nth M0 10)) (car (nth M0 11)) (car (nth M0 12))
-			     (car (nth M0 13)) (car (nth M0 14)) (car (nth M0 15)) (car (nth M0 16))))
+    (struct *mat4-0 'N (list -1.0 (get M0 1) (get M0 2) (get M0 3) (get M0 4)
+			     (get M0 5) (get M0 6) (get M0 7) (get M0 8)
+			     (get M0 9) (get M0 10) (get M0 11) (get M0 12)
+			     (get M0 13) (get M0 14) (get M0 15) (get M0 16)))
     (native PATH-MATHC "mat4_transpose"
 	    'N
 	    *mat4-out
@@ -167,20 +168,20 @@
     (println (cut 4 'm)))
 
 
-(de print-mat4-2 (m)
-    (prinl (format (car (nth m 1)) *Scl) " "
-	   (format (car (nth m 2)) *Scl) " "
-	   (format (car (nth m 3)) *Scl) " "
-	   (format (car (nth m 4)) *Scl) " ")
-    (prinl (format (car (nth m 5)) *Scl) " "
-	   (format (car (nth m 6)) *Scl) " "
-	   (format (car (nth m 7)) *Scl) " "
-	   (format (car (nth m 8)) *Scl) " ")
-    (prinl (format (car (nth m 9)) *Scl) " "
-	   (format (car (nth m 10)) *Scl) " "
-	   (format (car (nth m 11)) *Scl) " "
-	   (format (car (nth m 12)) *Scl) " ")
-    (prinl (format (car (nth m 13)) *Scl) " "
-	   (format (car (nth m 14)) *Scl) " "
-	   (format (car (nth m 15)) *Scl) " "
-	   (format (car (nth m 16)) *Scl) " "))
+(de print-mat4-2 (M)
+    (prinl (format (get M 1) *Scl) " "
+	   (format (get M 2) *Scl) " "
+	   (format (get M 3) *Scl) " "
+	   (format (get M 4) *Scl) " ")
+    (prinl (format (get M 5) *Scl) " "
+	   (format (get M 6) *Scl) " "
+	   (format (get M 7) *Scl) " "
+	   (format (get M 8) *Scl) " ")
+    (prinl (format (get M 9) *Scl) " "
+	   (format (get M 10) *Scl) " "
+	   (format (get M 11) *Scl) " "
+	   (format (get M 12) *Scl) " ")
+    (prinl (format (get M 13) *Scl) " "
+	   (format (get M 14) *Scl) " "
+	   (format (get M 15) *Scl) " "
+	   (format (get M 16) *Scl) " "))
