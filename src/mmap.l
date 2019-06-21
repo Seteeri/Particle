@@ -1,66 +1,3 @@
-#{
-- Make class for these so need not destructuring bind?
-- Should move to files that both model and render can load...
-  - Seperate GL params from MMap params
-- These are determined ahead of time
-- To be completely dynamic:
-  - Free/Alloc GL memory
-  - Free/Alloc mmap/memfd
-  - Technically, all of it can be done dynamically
-}#
-
-(setq *params-mmap-atomic-counter (list 'atomic-counter-buffer
-					"protoform-atomic-counter"
-					(* 4 6)  #6 ints/params
-					4 -1
-					'triple
-					0))
-
-(setq *params-mmap-draw-indirect (list 'draw-indirect-buffer
-				       "protoform-draw-indirect"
-				       (* 4 6)  #6 ints/params
-				       -1 -1
-				       'triple
-				       0))
-
-(setq *params-mmap-element (list 'element-array-buffer
-				 "protoform-element"
-				 (* 4 6)  #4 bytes/int * 6 ints or indices
-				 -1 -1
-				 'triple
-				 0))
-
-(setq *params-mmap-nodes (list 'shader-storage-buffer
-			       "protoform-nodes"
-			       (/ 134217728 4)
-			       2 3
-			       'triple
-			       0))
-
-(setq *params-mmap-projview (list 'uniform-buffer
-				  "protoform-projview"
-				  (* (+ 16 16) 4)
-				  0 0  #cs-in (cache), vs-in (raster)
-				  'triple
-				  0))
-
-
-(setq *params-mmap-tex-glyphs (list 'texture-buffer
-				    "protoform-texture-glyphs"
-				    (/ 134217728 4)
-				    -1 -1
-				    'triple
-				    0
-				    'rgba8)) #requires fmt type
-
-(setq *params-mmap-vertices (list 'uniform-buffer
-				  "protoform-vertices"
-				  (* 16 4)
-				  1 1
-				  'triple
-				  0))
-
-
 (class +Mmap)
 
 (dm T (Path
@@ -193,7 +130,15 @@
 
 
 (de init-mmap-tex-glyphs ()
-    # To load faster, do bulk memcpy or convert to bytes
+    #{
+    - To load faster, do bulk memcpy or convert to bytes
+    - Possible Configurations:
+      - all ppm, all metrics
+      - per ppm+metrics
+      - per ppm, per metrics (current)
+      - Need separate ppm since data is copied to shm?
+        - Or list of lists with each list starting with the name
+    }#
     (let (Mmap (init-mmap
 		(car (nth *params-mmap-tex-glyphs 2))
 		 (car (nth *params-mmap-tex-glyphs 3))

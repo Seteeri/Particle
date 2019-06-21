@@ -14,34 +14,34 @@
 #Create and change to namespace model
 (symbols 'model 'pico)
 
-# Set math precision to 6 decimals
-(scl 6)
-
 # C library paths
 (def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 (def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
-
 # UDS paths
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
 
+# Set math precision to 6 decimals
+(scl 6)
+
+# Wrapper libraries
+(load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/os.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
 # Lisp libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/model/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/dag.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/os.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/sock.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/render.l")
+#(load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
 
-(de fmt-model (Ctx
-	       Str)
+(de print-model (Ctx
+		 Str)
     (println "MODEL" *Pid Ctx Ctr))
 
 (de init-model ()
     
     #Set global parameters
-    #Make dims integers
+    #Get number of nodes and window size from args instead of file
     (setq *width      (*/ 1.0 2560.0 2.0)
 	  *height     1080.0
 	  *inst-max   (** 2 19)
@@ -64,22 +64,12 @@
       #Load here, copy to shm, msg view, view copies to OpenGL buffers
       (setq *metrics (load-metrics))
       
-      #Note, mmap is a ptr and shm is a fd
       #GC before setting these so static data is before shm and any new data is after
-      (setq *mmap-nodes          (init-mmap-nodes))
-      (setq *mmap-atomic-counter (init-mmap-atomic-counter))
-      (setq *mmap-draw-indirect  (init-mmap-draw-indirect))
-      (setq *mmap-vertices       (init-mmap-vertices))
-      (setq *mmap-element        (init-mmap-element))
-      (setq *mmap-projview       (init-mmap-projview))
-      (setq *mmap-tex-glyphs     (init-mmap-tex-glyphs))
-
+      #Initialize symbols/objects instead
+      
       (init-render)
 
       NIL)
-
-    (println "Bye!!")
-    (bye) 
     
     #{
     ;; Create DAG library 
@@ -87,11 +77,7 @@
     ;; Create namespace for pico
     ;; (generate nodes for builtin symbols? -> follow picolisp tradition so yes since they are the same)
     }#
-    
     (setq *dag-pico (new '(+DAG)))
-
-    #Create protoform namespace and symbols
-    (setq *np-pico NIL) #(init-node-ptr-shm *dag-pico (0 0 0))
 
     #Update
     #(send-node *np-pico* nil)

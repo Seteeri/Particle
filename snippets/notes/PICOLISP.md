@@ -110,20 +110,27 @@ Store DAGs as binary trees?
 * Mailing list:
   * Does the emulator slowdown apply to 32-bit only? Is there speed penalty on x86-64?
   * WASM backend/implementation
-  * RPython implementation
-  * Something like disassemble function?
-  * Image dumping
+  * Something like disassemble function? -> No bytecode
+  * Image dumping -> RD/WR/PR + STR/ANY
     * Default DB provide this?
     * Dump heap and reload heap
   * How to delete symbol?
+  * Struct does not have 'H' for shorts?
 
 * Migrate Protoform to PicoLisp
+  * Remove sending init params mmap -> Render will load on startup
+  * Remove sending init tex -> Render will load on startup
   * Model
     * Math library
-    * Spawn processes
+    * Refactor params into files like glyphs
+    * Task manager
+      * Are tasks coroutines basically???
+    * Epoll
   * Libinput
   * Controller    
   * Render  
+    * Make sure no TCP_NODELAY
+  * Spawn processes -> Test!
   * Wayland
   * Port dependencies; pull code from rosetta code as baseline
     
@@ -150,10 +157,10 @@ Store DAGs as binary trees?
      https://github.com/scoopr/vectorial
      https://sleef.org/
      
-     easing - easy
-     spatial-trees - r-tree
-     lparallel - ptree specifically
-     pack - needed?
+     easing - (with mathc)
+     spatial-trees - r-tree (port this)
+     lparallel - ptree specifically (port this)
+     pack -> use struct
   * Get main working
     * Switch to buffer orphaning
     * Instead of node instances, write to shm directly
@@ -280,9 +287,11 @@ Scenarios
         * avail = avail-start
         * Any data created between those points, will be overwritten
         * For static data, memcpy to next module/frame before ptr reset
+          * Copying GC basically...
       * Almost generational...
-    * Easiest solution is to create func to get and set avail pointer
-      * Avoid ptrs in lisp...manipulate with cell units...
+      * Create heap large enough that GC need not be triggered
+        * Copy to another process while previous GC's
+    -->> Modfy heap function to take a number that will set the avail pointer
     * For now, make heap large enough to prevent GC
       * Can track usage (+/- 1 MB granularity) after every eval
       * Inform user, ask to GC or resize heap
@@ -292,13 +301,15 @@ Scenarios
       * Alloc functions need heap pointer to allocate/link cons cells
   * TODO
     * Remove checks from cons* fn's in GC to disable GC mark/sweep
+      * Maybe have function that swaps pointer functions
+      -> Need it as backup if memory is full
     * Add function to get/set Avail ptr
-      * Need heap ptr?
+      -> Modfy heap function to take a number that will set the avail pointer
     
 * Benchmark/Profile
   * JIT Melee:
     * Python (PyPy)
-    * Ruby
+    * Ruby (Truffle?)
     * Erlang
     * Lisp (PicoLisp)
     * Lua (LuaRaptorJIT)
@@ -310,3 +321,8 @@ Scenarios
 
 DL
 https://www.youtube.com/watch?v=R7EEoWg6Ekk
+
+Write PicoLisp ("A") interpreter in PicoLisp ("B") -> AKA meta-circular interpreter
+Have A do optimizations:
+- AST rewriting
+  - Replace optimized nodes with machine code

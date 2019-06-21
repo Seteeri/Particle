@@ -64,7 +64,9 @@
     #Use nanomsg?
     #Use another serialization protocol? MsgPack, JSON (more readily available)
     #Implement pr/rd in Lisp?
-    
+    #-> PILIO has C implementation - compile to so -> native/struct
+    #-> Or run pilos in process whose sole responsibility is to rd input and pr output
+      
     (when NIL
       
       #Write string to ptr
@@ -86,14 +88,7 @@
     #Send params -> send-memcpy-shm-to-cache
     (send-msg *sock-render
 	      *bs-ptr
-	      (str (list *params-mmap-nodes
-			 *params-mmap-atomic-counter 
-			 *params-mmap-draw-indirect  
-			 *params-mmap-vertices       
-			 *params-mmap-element        
-			 *params-mmap-projview       
-			 *params-mmap-tex-glyphs
-			 '(set-draw T)
+	      (str (list '(set-draw T)
 			 '(set-serving nil)))))
 
 
