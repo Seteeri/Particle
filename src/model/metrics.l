@@ -1,8 +1,8 @@
-(class +Metrics)
-
 #Range
 #Advance
 #Scale
+
+(class +Metrics)
 (dm T (Translate
        Bounds
        Bounds-texture       
@@ -19,7 +19,6 @@
     (=: uv UV))
 
 (class +Bounds)
-
 (dm T (L
        B
        R

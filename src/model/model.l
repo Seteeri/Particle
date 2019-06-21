@@ -32,10 +32,10 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/dag.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/render.l")
 #(load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
 
 
 (de print-model (Ctx
@@ -43,7 +43,29 @@
     (println "MODEL" *Pid Ctx Ctr))
 
 
-(de init-nodes ()
+(de init-verts ()
+    (let Verts ()
+	 (for I *verts-max
+	      (let Vertex (new '(+Vertex) T NIL T)
+		   #(prinl "Created vertex " I " "  Vertex)
+		   (push 'Verts Vertex)))
+	 Verts))
+
+(de init-verts-default ()
+    #{
+    - PicoLisp symbols
+    - Master Pointer
+
+    - Draw all nodes initially? -> Make params random on init
+    }#
+
+    (let Vertex (get *verts 1)
+	 (println Vertex)
+	 (println (view (getl Vertex)))
+	 (bye))
+    
+    #'make-string-to-node
+    
     T)
 
 
@@ -57,7 +79,7 @@
     (let (Argv (argv))
       (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
 	    *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-	    *inst-max   (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "nodes invalid")))
+	    *verts-max   (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
 	    
 	    *scale-glyph 5.8239365
 	    *adv-glyph   9.375))
@@ -67,23 +89,36 @@
     #Simplify these - single function?
     (update-mat-proj> *projview)
     (update-mat-view> *projview)
-    (show *projview)
+
+    #Debug
+    #(show *projview)
+    #(view (getl *projview))
 
     #Load here, copy to shm, msg view, view copies to OpenGL buffers
     (when NIL
       (setq *metrics (load-metrics)))
-    
-    #GC before setting these so static data is before shm and any new data is after
-    #Initialize symbols/objects instead
-    (init-nodes)
-    #{
-    ;; Create DAG library 
-    ;; Create graphs = namespaces
-    ;; Create namespace for pico
-    ;; (generate nodes for builtin symbols? -> follow picolisp tradition so yes since they are the same)
-    }#
-    (setq *dag-pico (new '(+DAG)))
 
+    #{
+    GC beforehand since static data is at the beginning,
+    and allocations afterwards will go right after
+    Nodes won't be deleted so they are considered static data
+    which improves locality
+    
+    Increase heap size to node size
+    208 bytes per node roughly
+    ->Do test run to determine size
+    }#
+    #2**19 = 524288
+    (gc (+ 104 2))
+    (prinl "Heap resized to 104 MB for " *nodes-max " nodes")
+
+    #{
+     - Graphs = namespaces?
+     - Generate nodes for builtin symbols?
+    }#    
+    (setq *verts (init-verts))
+    (init-verts-default)
+    
     #Send node updates also
     (init-render)
     

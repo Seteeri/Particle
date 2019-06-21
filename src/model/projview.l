@@ -1,5 +1,4 @@
 (class +Projview)
-
 (dm T (Width
        Height
        Type-proj
