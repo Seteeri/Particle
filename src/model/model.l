@@ -14,14 +14,17 @@
 #Create and change to namespace model
 (symbols 'model 'pico)
 
+
 # C library paths
 (def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 (def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 # UDS paths
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
 
+
 # Set math precision to 6 decimals
 (scl 6)
+
 
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
@@ -34,15 +37,21 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/render.l")
 #(load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
 
+
 (de print-model (Ctx
 		 Str)
     (println "MODEL" *Pid Ctx Ctr))
 
+
+(de init-nodes ()
+    T)
+
+
 (de init-model ()
 
-    (*/ 1.0 2560.0 2.0)
-    1080.0
-    (** 2 19)
+    #(*/ 1.0 2560.0 2.0)
+    #1080.0
+    #(** 2 19)
     
     #Get number of nodes and window size from args instead of file
     (let (Argv (argv))
@@ -52,30 +61,24 @@
 	    
 	    *scale-glyph 5.8239365
 	    *adv-glyph   9.375))
-    
-    #Testing only
+          
+    #Setup projview
+    (with (setq *projview (new '(+Projview)))
+	  (=: width *width)
+	  (=: height *height)
+	  (=: type-proj 'orthographic)
+	  (=: fov (to-radians 45)))
+    #Simplify these - single function?
+    (update-mat-proj> *projview)
+    (update-mat-view> *projview)
+
+    #Load here, copy to shm, msg view, view copies to OpenGL buffers
     (when NIL
-      
-      #Setup projview
-      (with (setq *projview (new '(+Projview)))
-	    (=: width *width)
-	    (=: height *height)
-	    (=: type-proj 'orthographic)
-	    (=: fov (to-radians 45)))
-      #Simplify these - single function?
-      (update-mat-proj> *projview)
-      (update-mat-view> *projview)
-
-      #Load here, copy to shm, msg view, view copies to OpenGL buffers
-      (setq *metrics (load-metrics))
-      
-      #GC before setting these so static data is before shm and any new data is after
-      #Initialize symbols/objects instead
-      
-      (init-render)
-
-      NIL)
+      (setq *metrics (load-metrics)))
     
+    #GC before setting these so static data is before shm and any new data is after
+    #Initialize symbols/objects instead
+    (init-nodes)
     #{
     ;; Create DAG library 
     ;; Create graphs = namespaces
@@ -84,9 +87,9 @@
     }#
     (setq *dag-pico (new '(+DAG)))
 
-    #Update
-    #(send-node *np-pico* nil)
-
+    #Send node updates also
+    (init-render)
+    
     NIL)
 
 (de run-model ()
