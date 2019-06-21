@@ -39,15 +39,20 @@
     (println "MODEL" *Pid Ctx Ctr))
 
 (de init-model ()
-    
-    #Set global parameters
-    #Get number of nodes and window size from args instead of file
-    (setq *width      (*/ 1.0 2560.0 2.0)
-	  *height     1080.0
-	  *inst-max   (** 2 19)
-	  *scale-glyph 5.8239365
-	  *adv-glyph   9.375)
 
+    (*/ 1.0 2560.0 2.0)
+    1080.0
+    (** 2 19)
+    
+    #Get number of nodes and window size from args instead of file
+    (let (Argv (argv))
+      (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
+	    *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
+	    *inst-max   (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "nodes invalid")))
+	    
+	    *scale-glyph 5.8239365
+	    *adv-glyph   9.375))
+    
     #Testing only
     (when NIL
       
