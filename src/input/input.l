@@ -91,12 +91,12 @@
 
 (de run-input ()
     #Poll events ASAP and enqueue for processing by controller thread
-    (loop
-       #-1 = timeout = block/infinite
-       #0 = return if nothing
-       (when (> (epoll-wait *ep-fd *ep-events 1 -1) 0)
-	 (li-dispatch *context)
-	 (let event
+    (let event
+      (loop
+	 #-1 = timeout = block/infinite
+	 #0 = return if nothing
+	 (when (> (epoll-wait *ep-fd *ep-events 1 -1) 0)
+	   (li-dispatch *context)
 	   (loop
 	      (setq event (li-get-event *context))
 	      (T (= event 0))
