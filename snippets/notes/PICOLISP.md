@@ -119,6 +119,9 @@ Store DAGs as binary trees?
   * Suggestion to docs with more figures of symbols cons trees in diff scenarios
 
 * Migrate Protoform to PicoLisp
+  * Have libinput connect to Model, Controller, Render
+    * User should always have control
+    * Commands can apply to one of those contexts - use bitfield...
   * Fix native calls, ensure backtick before library symbol
   * Prefix constants with lib name
   * Remove sending init params mmap -> Render will load on startup

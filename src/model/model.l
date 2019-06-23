@@ -107,7 +107,7 @@
     }#
     
     (gc (+ 104 2))
-    (prinl "Heap resized to 104 MB for " *verts-max " nodes")
+    (prinl "Heap resized to 106 MB for " *verts-max " nodes")
 
     #{
      - Graphs = namespaces?
