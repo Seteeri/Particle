@@ -1893,3 +1893,35 @@ Alt+Number = Type Num
 
 Shift+Enter/Tab = Read
 Ctrl+Enter/Tab = Eval
+
+################################################################################
+
+[user@skynet protoform]$ Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called close-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called close-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called open-restricted
+Called close-restricted
+Called open-restricted
+Called open-restricted
+Called close-restricted

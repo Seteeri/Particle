@@ -1,3 +1,19 @@
+#{
+typedef union epoll_data {
+void    *ptr;
+int      fd;
+uint32_t u32;
+uint64_t u64;
+} epoll_data_t;
+# 8+4+4+8
+
+struct epoll_event {
+uint32_t     events;    /* Epoll events */
+epoll_data_t data;      /* User data variable */
+};
+# 4+(8+4+4+8)
+}#
+
 (def 'DEVICE-CAP-KEYBOARD 0)
 (def 'DEVICE-CAP-POINTER 1)
 (def 'DEVICE-CAP-TOUCH 2)
@@ -39,7 +55,7 @@
     (native "libinput.so" "libinput_unref" 'N Context))
 
 (de li-path-create-context (Interface User-date)
-    (native "libinput.so" "libinput_path_create_Context" 'N Interface User-date))
+    (native "libinput.so" "libinput_path_create_context" 'N Interface User-date))
 
 (de li-path-add-device (Context Path)
     (native "libinput.so" "libinput_path_add_device" 'N Context Path))

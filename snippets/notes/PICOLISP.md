@@ -119,6 +119,8 @@ Store DAGs as binary trees?
   * Suggestion to docs with more figures of symbols cons trees in diff scenarios
 
 * Migrate Protoform to PicoLisp
+  * Fix native calls, ensure backtick before library symbol
+  * Prefix constants with lib name
   * Remove sending init params mmap -> Render will load on startup
   * Remove sending init tex -> Render will load on startup
   * Model
