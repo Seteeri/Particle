@@ -30,6 +30,7 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/os.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/input.l")
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
@@ -38,34 +39,28 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
 
 
-(de print-model (Ctx
-		 Str)
-    (println "MODEL" *Pid Ctx Ctr))
-
-
 (de init-verts ()
     (let Verts ()
 	 (for I *verts-max
-	      (let Vertex (new '(+Vertex) T NIL T)
+	      (let Vertex (new '(+Vertex) T T T T T)
 		   #(prinl "Created vertex " I " "  Vertex)
 		   (push 'Verts Vertex)))
 	 Verts))
 
 (de init-verts-default ()
     #{
-    - PicoLisp symbols
-    - Master Pointer
+    Traverse all internal/protected symbols
+    - PicoLisp symbols = 300+?
+    - Pointer = cons pair
 
-    - Draw all nodes initially? -> Make params random on init
+    - Track transient symbols
     }#
 
+    #{
     (let Vertex (get *verts 1)
 	 (println Vertex)
-	 (println (view (getl Vertex)))
-	 (bye))
-    
-    #'make-string-to-node
-    
+	 (println (view (getl Vertex))))
+    }#
     T)
 
 
@@ -107,10 +102,12 @@
     Increase heap size to node size
     208 bytes per node roughly
     ->Do test run to determine size
+
+    2**19 = 524288
     }#
-    #2**19 = 524288
+    
     (gc (+ 104 2))
-    (prinl "Heap resized to 104 MB for " *nodes-max " nodes")
+    (prinl "Heap resized to 104 MB for " *verts-max " nodes")
 
     #{
      - Graphs = namespaces?
@@ -120,27 +117,12 @@
     (init-verts-default)
     
     #Send node updates also
-    (init-render)
-    
-    NIL)
+    (init-render))
 
 (de run-model ()
     #After connecting, start processing messages
     #Render will send frame start and wait for frame end
-    #Up to model to perform time management
-    
-    #{
-    (loop
-       (let (Msg (recv-msg))
-	 (when Msg
-	   (if (lst? (first message))
-	       (for n message
-		    (apply (symbol-function (find-symbol (string (first n)) :protoform.model))
-			   (cdr n)))
-	       (apply (symbol-function (find-symbol (string (first message)) :protoform.model))
-		      (cdr message))))))
-    }#
-    
+    #Up to model to perform time management    
     T)
 
 (symbols 'pico)
@@ -168,14 +150,3 @@
 #.......View will copy into GL buffers
 #.....Coroutines useful for spreading work across frames
 #.......Could also do manually as we have
-
-#{
-#Use nng
-(setq *queue-tasks-sync  NIL  #(sb-concurrency:make-queue) -> list
-      *queue-tasks-async NIL  #(sb-concurrency:make-queue) -> list
-      *mb-async          NIL  #(sb-concurrency:make-mailbox) -> list
-      *mb-io             NIL  #(sb-concurrency:make-mailbox) -> list
-      *tasks-inactive    NIL  #(make-hash-table :size 64) -> list
-      *tasks-active      NIL  #(make-hash-table :size 64) -> list
-      *ht-timing-fn      NIL) #(make-hash-table :size 64) -> list
-}#  

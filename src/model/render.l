@@ -112,8 +112,8 @@
 
     #(shutdown *sock-render)
     #(close-fd *sock-render SHUT-RDWR)
-    
-    (bye))
+
+    T)
     
 
     

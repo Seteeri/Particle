@@ -116,6 +116,7 @@ Store DAGs as binary trees?
     * Dump heap and reload heap
   * How to delete symbol?
   * Struct does not have 'H' for shorts?
+  * Suggestion to docs with more figures of symbols cons trees in diff scenarios
 
 * Migrate Protoform to PicoLisp
   * Remove sending init params mmap -> Render will load on startup
@@ -132,22 +133,8 @@ Store DAGs as binary trees?
     * Make sure no TCP_NODELAY
   * Spawn processes -> Test!
   * Wayland
-  * Port dependencies; pull code from rosetta code as baseline
-    
-     cl-drm - FFI
-     cl-gbm - FFI
-     cl-egl - FFI
-     cl-opengl - FFI (lots)
-     cl-xkb - FFI
-     cl-glfw3 - FFI(lots)
-     cl-wayland - FFI (lots)
-     cl-libinput - FFI (lots)
-     usocket - FFI
-     trivial-timers - FFI
-     
-     SDL?
-     nanomsg - IPC; use existing PicoLisp library
-     
+  * Port dependencies; pull code from rosetta code as baseline    
+    * nanomsg - IPC; use existing PicoLisp library
      3d-vectors/3d-matrices - use C, either gcc or so; native?
      https://github.com/recp/cglm [arch linux package]
      https://github.com/felselva/mathc
@@ -156,12 +143,11 @@ Store DAGs as binary trees?
      https://github.com/HandmadeMath/Handmade-Math
      https://github.com/scoopr/vectorial
      https://sleef.org/
-     
      easing - (with mathc)
      spatial-trees - r-tree (port this)
      lparallel - ptree specifically (port this)
-     pack -> use struct
-  * Get main working
+  
+  * Model Main
     * Switch to buffer orphaning
     * Instead of node instances, write to shm directly
       * Static since limited by VRAM
@@ -178,40 +164,11 @@ Store DAGs as binary trees?
       * Optimization: if node has 1 pred, traverse until end or many,
       send all to same worker
         * a->b->c->d,  worker=(a,b,c,d)
-  * Integrate Wayland so we can start bootstrapping from within
+  * Integrate Wayland to bootstrapping
     * Setup tiles for 6 windows = 3 col, 2 row
     * Proof of concept working with eval already
   * Note 32 MB = 8 ms to mark/sweep
     * = 2,000,000 cons cells -> Test this with loop/cons/heap
-
-Current Solution:
-- For now limit to 32 MB, so we can call GC each frame
-  - Lisp environment really to control graphics
-- Track heap size after each eval
-- When heap reaches threshold, prompt user
-  - To calculate size, determine how much data can be processed in n ms
-- Default is to perform GC
-- Alternative is to expand heap
-  - Can expand until run out of memory, at that point force GC or crash
-- Fork+Collect heap
-  - User must do side-effect free operations until
-
-* Overall Strategy
-  * Build prototype in PicoLisp
-  * Port PicoLisp ASM to RPython -> Free JIT!
-    * BIG ISSUE! Python VM is stack-based...
-      * Or not an issue? As long as cons cell can be defined...
-      * Would be interesting to see stack based vs register based
-    * Port miniPicoLisp? 32-bit
-      * Could port to WASM
-    * Port 64-bit C code
-      * Build emulator...see questions
-    * Review Build Your Own Lisp before reading PicoLisp code
-  * Create JIT for PicoLisp
-    * Use C version, optimize, work on JIT
-    * See Emacs JIT, Pixie JIT, CLISP JIT for examples
-    * Register based so use DynASM might work
-  * If support discontinued, compile to C, optimize, start from there
     
 ## GC Strategies
 
@@ -316,6 +273,35 @@ Scenarios
   * Tests
     * Sorting Algorithms
     * String Manipulation
+
+Current Solution:
+- For now limit to 32 MB, so we can call GC each frame
+  - Lisp environment really to control graphics
+- Track heap size after each eval
+- When heap reaches threshold, prompt user
+  - To calculate size, determine how much data can be processed in n ms
+- Default is to perform GC
+- Alternative is to expand heap
+  - Can expand until run out of memory, at that point force GC or crash
+- Fork+Collect heap
+  - User must do side-effect free operations until
+
+* Overall Strategy
+  * Build prototype in PicoLisp
+  * Port PicoLisp ASM to RPython -> Free JIT!
+    * BIG ISSUE! Python VM is stack-based...
+      * Or not an issue? As long as cons cell can be defined...
+      * Would be interesting to see stack based vs register based
+    * Port miniPicoLisp? 32-bit
+      * Could port to WASM
+    * Port 64-bit C code
+      * Build emulator...see questions
+    * Review Build Your Own Lisp before reading PicoLisp code
+  * Create JIT for PicoLisp
+    * Use C version, optimize, work on JIT
+    * See Emacs JIT, Pixie JIT, CLISP JIT for examples
+    * Register based so use DynASM might work
+  * If support discontinued, compile to C, optimize, start from there
 
 ## RESEARCH
 

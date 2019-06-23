@@ -1,11 +1,11 @@
 Traditionally computers have worked by having different applications and
-UIs working on both different and similar data with overlapping 
+UIs working on both different and similar data with overlapping
 operations and functionality. For example, a word processor might include
 some image editing operations, and an image editor might provide the
 ability to rasterize text.
 
 The idea of Protoform is to invert that model so users have a consistent
-interface with less redundancy which is faster to learn. Data today is 
+interface with less redundancy which is faster to learn. Data today is
 not simply numbers and text but much more, and users need an interface
 that can cut across all domains.
 
@@ -47,7 +47,7 @@ threshold
 
 ########################################################################
 
-text   -> raster (texture) 
+text   -> raster (texture)
 raster -> text (OCR)
 
 text     -> waveform (text-to-speech)
@@ -120,17 +120,17 @@ RGBA -> Tesseract (OCR) -> Txt
 * What we want to do, is use that same consistency and extensability
 across multiple domains and to provide those features through allowing
 data transformers.
-* The way Protoform draws, creates two "buffers": the model or data 
-structure, and the view buffer or OpenGL buffer which ultimately is 
+* The way Protoform draws, creates two "buffers": the model or data
+structure, and the view buffer or OpenGL buffer which ultimately is
 RGBA.
 * OpenGL has multiple types of buffers which are initially formatted to
 a specific type:
 * glMapBuffer:
-  * GL_ARRAY_BUFFER, GL_ATOMIC_COUNTER_BUFFER, GL_COPY_READ_BUFFER, 
-  GL_COPY_WRITE_BUFFER, GL_DRAW_INDIRECT_BUFFER, 
-  GL_DISPATCH_INDIRECT_BUFFER, GL_ELEMENT_ARRAY_BUFFER, 
-  GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_QUERY_BUFFER, 
-  GL_SHADER_STORAGE_BUFFER, GL_TEXTURE_BUFFER, 
+  * GL_ARRAY_BUFFER, GL_ATOMIC_COUNTER_BUFFER, GL_COPY_READ_BUFFER,
+  GL_COPY_WRITE_BUFFER, GL_DRAW_INDIRECT_BUFFER,
+  GL_DISPATCH_INDIRECT_BUFFER, GL_ELEMENT_ARRAY_BUFFER,
+  GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_QUERY_BUFFER,
+  GL_SHADER_STORAGE_BUFFER, GL_TEXTURE_BUFFER,
   GL_TRANSFORM_FEEDBACK_BUFFER, or GL_UNIFORM_BUFFER.
 * Framebuffers are different: they are used for rendering output rather
 than inputs and use specialized methods for operations.
@@ -138,12 +138,12 @@ than inputs and use specialized methods for operations.
 exist within the memory of the DE process, so Protoform provides this
 functionality to enable displaying more than just text.
 * Emacs functionality is based around manipulation of the buffer model
-but not the view (GTK widget), which can be considered a limitation or 
+but not the view (GTK widget), which can be considered a limitation or
 advantage.
 * Does the view require data transformers?? In other words, they need to
 be dynamic objects that can be modified from the view. So nodes need to
 be able to edit themselves using nodes.
-* For example, there exists a node. Another node with code can be 
+* For example, there exists a node. Another node with code can be
 attached to it and eval'd. Say, attach a delete transformer, which
 deletes the node from memory.
 * The default startup should have no nodes except for two nodes:
@@ -158,7 +158,7 @@ rendering engine
 Forward... -> Tiled -> Clustered -> Volumetric
 
  Volume Tiled Forward Shading is based on Tiled and Clustered Forward Shading described by Ola Olsson et. al
- 
+
 ########################################################################
 
 ;; Forms:
@@ -209,13 +209,13 @@ Forward... -> Tiled -> Clustered -> Volumetric
 ;; such as for defun, are there any functions that wrap this
 
 ########################################################################
-  
+
 https://stackoverflow.com/questions/24839857/wireframe-shader-issue-with-barycentric-coordinates-when-using-shared-vertices
 https://catlikecoding.com/unity/tutorials/advanced-rendering/flat-and-wireframe-shading
 https://www.reddit.com/r/opengl/comments/3yrv79/simplistic_texture_less_tronlike_3d_with_opengl/
 
 Protoform closest to Blender?
-Except Protoform is optimized to draw maximum number of instances 
+Except Protoform is optimized to draw maximum number of instances
 whereas Blender is designed to draw different types of models
 
 Protoform focused on productivity and efficiency and simplicity
@@ -224,18 +224,18 @@ Protoform focused on productivity and efficiency and simplicity
     * How to represent vertices? They can't be nodes -> infinite recursion
       * Limit nodes to 2D/4 vertices...or n vertices in a circle?
       * Nodes can be seen as vertices
-      * Remember, the underlying data model is a graph where 
-      objects/vertices can be linked through edges so need not only use 
-      planes/nodes, however, we default to them since they're the 
+      * Remember, the underlying data model is a graph where
+      objects/vertices can be linked through edges so need not only use
+      planes/nodes, however, we default to them since they're the
       simplest shape and very efficient to render (next to other OpenGL
-      primitives like triangles/vertices). Many fundamental objects are 
+      primitives like triangles/vertices). Many fundamental objects are
       modeled as quads like windows, pixels, etc. In addition, they are
       the most convenient for drawing text.
         * Alternative route of differentiating objects besides shape is
-        to use colors - how many colors can humans distinguish? 8? 
+        to use colors - how many colors can humans distinguish? 8?
         rainbow colors?
-        
-        
+
+
 IDEA!!!
 
 Assume home environment with gaming router
@@ -300,30 +300,30 @@ Type help after it and it will print info for that node
 nodes as they popup...use augmented reality like pokemon
  - start with basic commands like add/delete nodes, linking nodes, eval,
  swapping nodes, toggling ids
- 
+
  - Use it to introduce concepts for widgets/GUI so users understand
  how they work - or should animations
- 
- What are the most addictive games? 
+
+ What are the most addictive games?
  Fruit ninja, gem stone game, pokemon go?
- 
+
  - People like mice because it has two buttons - easy to use and understand
    - They move/hover/point at an object -> press a button -> something happens
- - Mouse's buttons (functions) act on widgets which are generally 
+ - Mouse's buttons (functions) act on widgets which are generally
  standardized across programs
  - Essentially we want something like that but more powerful
  - Instead of the mouse, we use basic keyboard functions...
- 
+
  How to combine mouse on one hand, and keyboard on the other?
  Mouse is continous whereas keyboard is discrete
- Keyboard can move 1 step whereas mouse can use physical properties 
+ Keyboard can move 1 step whereas mouse can use physical properties
  like velocity/acceleration
- 
+
  22. Should pointer target be predecessor or successor?
     - Successor makes sense since pointer is like an arrow
 
 ########################################################################
-    
+
 Implement NOTEPAD:
 
 Edit:
@@ -367,7 +367,7 @@ n1 n2 n3
 ptr:mode
 
 27. Implement pointer movement
-    * If linked: sequential move 
+    * If linked: sequential move
       * (or spatial move? - use hotkey for global access)
       * Options to show selection: color node, draw on top, link between
       * Move through pred/successors
@@ -393,8 +393,8 @@ ptr:mode
     * On delete, move to next node or previous [DONE]
       * backspace/delete acts the same
       * currently, node links to previous
-      
-      
+
+
 30. Pointer conventionally has modes: insert/replace -> how to reconcile?
     * Pointer is used to select objects
     * Pointer needs to move either over node or between nodes
@@ -405,7 +405,7 @@ ptr:mode
     * Instead of modes, we have pointers, that users can switch
         -> Create an insert ptr and replace ptr
           * User can switch ptrs -> but only one master ptr
-          -> attach pointer to main pointer    
+          -> attach pointer to main pointer
     * To simulate insert/replace: verbose method is to type a command + arg:char, and eval
     * Pointer is an input transformer: input -> data
       - physical key -> char type
@@ -418,8 +418,8 @@ ptr:mode
       - To add commands
         -> SOLUTION: Unlink and create new
       - If out node already, would insert - we need to make a branch
-      - Replace old branch (move to undo)      
-      
+      - Replace old branch (move to undo)
+
 Create 3 pointers by default
 
 DIM XY:
@@ -430,15 +430,15 @@ DIM XY:
 2. Spatial pointer - aka spatial graph - octree
    - only one
    - show this? need not to...
-      
+
 DIM YZ:
 4. Undo pointer - undo graph; another scene graph
    - only one
 
 DIM XZ:
 5. objects...non-char types
-   
-   
+
+
 LISP CODE IS VIEWED AS DATA - LISTS OF STRINGS
 
 https://academia.stackexchange.com/questions/109/is-there-any-efficient-non-linear-note-taking-software
@@ -449,11 +449,11 @@ MOVEMENT:
 2. Euclidean move (discrete steps)
 3. Jump move (jump to node)
   -> Requires IDs
-  
+
 How would user move from main graph to buffers?
 
 F1 : jump to undo - press again to move back
-F1+: jump to buffers - press again to move back 
+F1+: jump to buffers - press again to move back
 
 last selected buffer will be set to default? make explicit for now
 
@@ -465,8 +465,8 @@ QUESTIONS!
 ? Undo global + local (per graph)?
 ? Buffer global + local (per graph)?
    -> Buffer should be global
-   
-Technically, undo encompasses buffer, however, buffer acts like a 
+
+Technically, undo encompasses buffer, however, buffer acts like a
 shortcut to the undo part
 
 users can implement
@@ -475,28 +475,28 @@ users can implement
 
 35.  For backspace, pop before node-ref, instead of pointing node
       - case
-      
+
             a-b-c
                 |
-                *    
-              
+                *
+
             a-c
               |
               *
-             
+
             c
             |
             *
       - or double pointer?
         a-b-c-*
               |
-              *    
+              *
         a-c-*
             |
             *
         c-*
           |
-          *  
+          *
         *
         |
         *
@@ -507,8 +507,8 @@ users can implement
           - user can switch between pointers
           - ptr represents a string/line
             a grouping...selection? essentially equivalent to a c ptr
-            
-            
+
+
 Keyboard bindings -> Pointer -> Object
 
 Currently all keyboard bindings map to same pointer
@@ -525,8 +525,8 @@ A different pointer can have a different set of bindings
      -> Move to newline underneath?
      -> Create separate section per line?
         * auto update positions to prevent overlap
-        
-        
+
+
 ;; Pass starting position, i.e. node-pointer position
 ;; For nodes, index to calculate
 ;; Have to set index serially...
@@ -552,9 +552,9 @@ A different pointer can have a different set of bindings
 
 
    * Diagram:
-      
+
       h-e-l-l-o---w-o-r-l-d-*
-      
+
       h-e-l-l-o---w-o-r-l-d
                   *
 
@@ -577,7 +577,7 @@ A different pointer can have a different set of bindings
                       *
 
       Case B - this would need to be explicitly done
-               use command like "branch" to move "world" 
+               use command like "branch" to move "world"
                to a list
 
                   *-w-o-r-l-d
@@ -604,27 +604,27 @@ A different pointer can have a different set of bindings
 
       Case C - user modifies history; undo will still track changes
                below achieves users intentions
-     
+
                   *-w-o-r-l-d
                   *
       h-e-l-l-o---a
-                  *     
+                  *
 
                   *-w
                   *
       h-e-l-l-o---a-o-r-l-d
-                          *    
+                          *
 
       alternatives - user retypes it; user copies it
 
       Case D - this is implicit - "insert-node"
                this actually behaves like overwrite (insert mode) - usually used to maintain spacing
                use alt+<char> for this?
-      
+
                   w o r l d
                   * * * * *
       h-e-l-l-o---a-b-c-d-e
-                          *      
+                          *
 
       ________________________
 
@@ -633,9 +633,9 @@ A different pointer can have a different set of bindings
                   *
       h-e-l-l-o---u
                   *
-        
+
       undo*----->(* w-o-r-l-d)
-                 /|\   
+                 /|\
                   |
                   *
                  /|\
@@ -644,7 +644,7 @@ A different pointer can have a different set of bindings
                                    /|\
                                     |
                                     *
-                        
+
       * If user wanted to simulate insert, multiple ways:
         - Branch text, link text (del ptr)
         - Cut text/line, insert text, paste text
@@ -654,19 +654,19 @@ A different pointer can have a different set of bindings
                   *
       h-e-l-l-o---u-s-e-r
                         *
-             
+
       Relink "world" by typing command:
 
                   * w-o-r-l-d
-                  *         
+                  *
       h-e-l-l-o---u-s-e-r-\n-l-i-n-k---i-d
                           {               }* -> eval
-      
+
       Eval will unlink newline (input) and link output
-      
+
       h-e-l-l-o---u-s-e-r-w-o-r-l-d
                                   *
-                                  
+
 DALE language
 BONES language
 
@@ -712,9 +712,9 @@ Show slots as edges for objects/structs
            * -> pos -> vec3 [updates if user moves text obj]
            |
            * -> line/string
-           
+
            or put options on left and line on right
-           
+
 ########################################################################
 
 ;; (loop
@@ -732,7 +732,7 @@ Show slots as edges for objects/structs
  	 (sb-ext:timeout (e)
  	   (format t "Lag detected - flush shm queue~%")
        (sleep 0.1))))
-       
+
 Process:
 1. Receive frame
 2. Start timer
@@ -824,7 +824,7 @@ The way Lisp can still win in today's world is not by trying to replace C on the
 
 I don't want to denigrate ChrysaLisp in any way. It's tremendously cool. But cool is not enough to win in the real world.
 
-[UPDATE] ChrysaLisp is actually doing the Right Thing with respect to its GUI by using a C-library (SDL). But it's trying to re-invent the compiler wheel (and the language design wheel) so that it can run on bare metal and "grow up to be a real Lisp machine" some day, and I think that aspect of the project is a fool's errand. There are already many Lisps that can run on bare metal (ECL was specifically designed for that). None of them have succeeding in displacing C, and I believe none ever will because the economic hurdles are insurmountable. 
+[UPDATE] ChrysaLisp is actually doing the Right Thing with respect to its GUI by using a C-library (SDL). But it's trying to re-invent the compiler wheel (and the language design wheel) so that it can run on bare metal and "grow up to be a real Lisp machine" some day, and I think that aspect of the project is a fool's errand. There are already many Lisps that can run on bare metal (ECL was specifically designed for that). None of them have succeeding in displacing C, and I believe none ever will because the economic hurdles are insurmountable.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -862,7 +862,7 @@ backs up
     (setf (ldb (byte 8 8) u) (aref buf 1))
     (setf (ldb (byte 8 0) u) (aref buf 0))
     u))
-    
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 What if we use the source code as a key?
@@ -904,7 +904,7 @@ question is how to transform the data object to printable?
 what about list of functions?
 
 (compile "(list - + * /)") -> (list - + * /)
-(list - + * #'foobar) -> 
+(list - + * #'foobar) ->
 would need to take the data and build string
 
 macros do data -> data ... so is protoform a UI for macros?
@@ -918,10 +918,10 @@ automatically, or more specifically data beyond chars/strings
 
 list 1 2 3 -> [list] [1] [2] [3]
                 sym   n   n   n
- 
+
 list #'+ #'- #'* #'/ -> [list] + - * /
                           sym  f f f f
-                          
+
 so to loop:
 
 - eval prev            <list> <1> <2> <3>
@@ -971,7 +971,7 @@ STORE NODES AND GRAPHS IN REDIS
 * 1 graph per redis instance
 * Ideally, only one SET/GET per frame
   * Use pipelining
-  
+
 MODEL/LISP = graph (code:data aka input:output)
 REDIS/C    = nodes (in redis since shared with view; prevent GC?)
 
@@ -992,7 +992,7 @@ Maybe can tune GC to match current allocation patterns
   ;; 1. Recv
   ;; 2. Deserialize
   ;; 3. Apply to instance
-  
+
   (let ((node (pop *stack-i-nodes*)))
     (benchmark:with-timing (100)
       ;; Serialize+Encode | ~200 nodes per 8 ms
@@ -1005,9 +1005,9 @@ Maybe can tune GC to match current allocation patterns
 	;; Get+Decode | 9 ms
 	(qbase64:decode-string (red:get "foo")))))
 	;; (red:get "foo"))))
-    
+
   (redis:disconnect))
-  
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Need data structure with following properties:
@@ -1063,9 +1063,9 @@ existing?
 https://en.wikipedia.org/wiki/List_of_GNU_Core_Utilities_commands
 
 From
-a consumer perspective, the lower abstractions are becoming virtualized 
-at the convenience of the user, i.e. web browser becoming a platform. 
-However, the increase in data breaches and security issues have not 
+a consumer perspective, the lower abstractions are becoming virtualized
+at the convenience of the user, i.e. web browser becoming a platform.
+However, the increase in data breaches and security issues have not
 completely eroded the OS a key factor.
 
 https://www.reddit.com/r/lisp/comments/9q68y8/has_the_gnu_coreutils_ever_been_implemented_in/
@@ -1075,7 +1075,7 @@ https://www.reddit.com/r/lisp/comments/9q68y8/has_the_gnu_coreutils_ever_been_im
   ;; this needs to be ran again
   ;; TODO: user needs to be able to run the analyzer during runtime
   ;; for code that runs in the main loop (rpc)
-  
+
   (let* ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
 						    :type "lisp")
 				     (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
@@ -1091,8 +1091,8 @@ https://www.reddit.com/r/lisp/comments/9q68y8/has_the_gnu_coreutils_ever_been_im
 		      tasks-new))))
 
     ;; Convert to ptree and execute
-    ;; Build ptree manually    
-    
+    ;; Build ptree manually
+
     ;; TODO: Recurse for more complicated setups, i.e. nested lists
     (submit-receive-graph tasks)))
 
@@ -1173,7 +1173,7 @@ those parts as a whole.
 SASOS
 
 in single address space, the language is unified and thus passing data
-is unified. instead of different processes with different formats, 
+is unified. instead of different processes with different formats,
 functions pass objects around (ostensibly passing symbols).
 
 unix:
@@ -1303,7 +1303,7 @@ view  : exec sync(single ptree)/async(multi ptrees?)
 
 Ptree Model:
 model : build/exec ptree
-view  : execute tasks inc sync, async, memcpy 
+view  : execute tasks inc sync, async, memcpy
         [in-frame: add time node, exec ptree, sync memcpy, async memcpy (from model)
          ex-frame: GC, build ptree
 - must not share data between, except globals? ....lock those
@@ -1330,7 +1330,7 @@ if another task exeuted before sync, data will be incoherent
 
 how would it work for converting a string to nodes?
 
-if len str > 4: 
+if len str > 4:
 break string into 4 pieces
 submit each chunk
 per worker: pop/init node
@@ -1364,7 +1364,7 @@ T3,front : (Exec  ptree sync; GC)
 - to do deadlines with ptree, must modify it to check time after each
 execution, i.e. each node
 
-Simplest solution right now is build ptree ex-frame and exec ptree 
+Simplest solution right now is build ptree ex-frame and exec ptree
 in-frame
 - for model/IO thread, lock heap/nodes
 
@@ -1386,10 +1386,10 @@ BENCHMARK PTREE VS SEQ
   137.50% CPU
   25,084,855 processor cycles
   785,200 bytes consed
-  
+
 
   SEQ
-  
+
   0.005 seconds of real time
   0.004805 seconds of total run time (0.004805 user, 0.000000 system)
   100.00% CPU
@@ -1415,7 +1415,7 @@ sync
 async
 - multi ptree - must be able to suspend after each task
   or multiple tasks
-  
+
 also model async but really for i/o?
 
 Frame:
@@ -1468,7 +1468,7 @@ End of frame, modify avail to original address
   ;; -> define two types of events:
   ;;    * immediate - execute in controller
   ;;    * normal - execute in model
-  
+
 https://emersion.fr/blog/2018/wayland-rendering-loop/
 
 convetionnal: hetero ui - hetero data (overlap)
@@ -1481,18 +1481,18 @@ In Protoform all trees(UI) are made of nodes
 Nodes = cons cells
 
 Buttons are a single node
-"Clicking" (state change) is triggered by link/eval (like moving and clicking) 
+"Clicking" (state change) is triggered by link/eval (like moving and clicking)
   or poss: pre-link+eval = read->eval, post-link+eval = quote->eval
   this would be like moving over "presses" button
-  
+
   [code = str; all just bytes->bits->binary in the end ;)]
-  
+
   general tree -> binary tree (diff data encodings, gen tree lowered to cons/binary tree)
   code         -> data        (diff data encodings, str is lowered to cons/bytes/bits/binary)
-  
+
   read  = code -> data
   print = data -> code
-    
+
   quote = data -> code (lets data be code)
   eval  = code -> data (code is what we understand; data is what computer understands)
 
@@ -1526,7 +1526,7 @@ node=T
 
 In lisp code, this would just be a symbol refernced by all
 
-: (scl 4)             
+: (scl 4)
 -> 4
 
 : (setq P (native "@" "malloc" 'N 16))
@@ -1535,10 +1535,10 @@ In lisp code, this would just be a symbol refernced by all
 : P
 -> 10851136
 
-: (struct P 'N (1.0 0.11 0.22))       
+: (struct P 'N (1.0 0.11 0.22))
 -> 10851136
 
-: (struct P (1.0 . 2))         
+: (struct P (1.0 . 2))
 -> (1100 2200)
 
 
@@ -1559,13 +1559,13 @@ Sadly, the use of column-major format in the spec and blue book has resulted in 
     * Render does no additional processing on nodes, simply does memcpy
     * Memcpy certain amount of bytes per frame
       * Perform benchmark; dependent on computer performance characteristics
-    * If render simple and mostly C calls and development static, write render 
+    * If render simple and mostly C calls and development static, write render
     in C
-    
+
   * No shared memory? -> Later, use to increase performance as needed with memfd_create
     * Model processes nodes, serializes, puts into queue of render
     * Use socket buffer as message queue, for now...
-    
+
   * To do multiple processes working on nodes, split total node capacity across
     processors
     * However, processes will need to synchronize with each other
@@ -1577,7 +1577,7 @@ Sadly, the use of column-major format in the spec and blue book has resulted in 
     * Later, when multiple processes need to work on data and synchronize, use
       PL pool (except use memfd_create instead)
   * On top of nodes, build binary trees - lisp code/data
-      
+
 
 * Implementation
   * Graph = pool
@@ -1587,14 +1587,14 @@ Sadly, the use of column-major format in the spec and blue book has resulted in 
     * Or one database per processor
   * Intermediate file write can be removed if memory used directly
     * Ask on mailing list about this
-    
+
 * If we use PicoLisp infrastructure:
 
   Model
   |_________________________
   |      |       |    |    |
   View-1 View-2  W-1  w-2  w-3
-  
+
 * If we use symbols/classes, then those would represent the GUI parts?
 
 Latency:
@@ -1605,8 +1605,291 @@ heap from app perspective.
 It'll be faster if we back it with memfd
 
 * Model write DB
-  * 
+  *
 * Render read DB
   * Update nodes when idle...
-  
+
 https://www.mail-archive.com/picolisp@software-lab.de/msg08887.html
+
+################################################################################
+
+Areas
+- Have instances of Heap lists
+- When wanting to use another, simply change pointers Heap and Avail
+- GC remains the same
+- But what if object in Heap A points to object in heap B?
+  - Would still work but might be inefficient due to possibly different pages
+  -> Need copying/moving/compacting solution
+
+- Can simulate areas by processes but would have to copy objects over when
+cross references exist - naturally copying/moving/compacting
+  - Proc could broadcast request which any node would satisfy
+  - Gives concurrent/parallel GC for free
+  - Gives compacting for free also - initially copy cost must be paid once upfront
+
+###############################################################################
+
+#{
+Rename Protoform to Particle?
+
+User creates cells and builds up nums, syms, cons', nils'
+
+Everything represented as vertices -> functions are the same on every level
+
+- A vertex represents a cons cell
+- A cons cell is made of two pointers, called car & cdr
+- These two pointers can point to an atom or to another cons cell
+  - Car/Cdr is either pointer or binary
+- An atom is an encoded pointer, which is a number or a symbol/string(UTF-8)
+- Numbers: shortnum fit in single cell (two pointers), bignum consists of multiple cells
+- Symbols: CDR=value, CAR= Nil|Name|PList&Name
+  - If only name and no plist, then CAR would point to cons cell containing name
+  - If bignum, then contains multiple cons cells (list with encoded numbers)
+  - If only plist and no name, then CAR would point to a plist with last cons CDR=Nil
+    which is where name would normally be
+
+* Use adr to get encoded pointer - decode to get ptr or for num data
+  - shift left: NIL = (adr NIL) = 273780<<4 = 4380480
+  - left shift = (>> -4 8786312637524)
+  - (cons NIL NIL) = 72 215 66 0 0 0 0 0 | 72 215 66 0 0 0 0 0
+
+* Given (setq A (cons 'B 'C))
+* Symbol ptr, points to CDR so (sym 'A) = ptr to CDR = ptr of (cons 'B 'C)
+* (adr A) = cons address
+* (adr 'A) = ?
+* quote def: any doQuote(any x) {return cdr(x);}
+* Doing (adr (- adr-sym 8)) = infinite loop
+
+################################################################################
+################################################################################
+
+         +-----+-----+
+         | CAR | CDR |
+         +-----+-----+
+         TAIL     HEAD
+
+Typing characters produces transient symbol characters
+
+"h" "e" "l" "l" "o"
+
+      (   .   )
+            |
+            | (Symbol Ptr)
+            |
+            V
+            
+      +-----+-----+
+      |  |  | VAL |  <- only part displayed, which is below cons
+      +--+--+-----+
+         |     |
+         |-----+
+         V
+      +----------+---------+
+      |'olleh'   |   NIL   |
+      +----------+---------+
+
+      (double check this - 'olleh' might just be CAR of symbol)
+
+Links represent pointers
+- Each char is individual symbol so not linked
+- If chars were in a list, there'd be lines
+
+User can choose to see CAR/CDR/CONS:
+- Atoms
+  - Symbols (CDR:VALUE)
+    - Internal: show name
+      - CDR: NIL (default)
+      - CAR: Name, PL (poss)
+    - Transient: show name
+      - CDR: Ptr to CAR/Symbol
+      - CAR: Name in encoded pointer (> word = cons cells/list)
+    - Anon: show ptr
+      - CDR: NIL
+      - CAR: 0 (number in encoded pointer)
+    - External: Internal
+    - NIL: just another symbol sort of...show NIL/""/()...only defined once
+  - Number: show number cells, shortnum=pointer, large numbers=cons
+    - largest short number is 1,152,921,504,606,846,976
+    - greater than that will be broken into lists
+    - have to use struct to get cells (do later)
+    - how to differentiate numbers vs chars?
+      - either use strings or colors
+      - worry about this later
+- Cons
+  - Pair: show CAR/CDR...for lists it works also recursively
+
+(dasm sym) = draw individual cons cells:
+
+"h" "e" "l" "l" "o" - take "h"
+
+      (default transient symbol)
+      
+              +---------+
+              |         |
+              V         |
+      +-------+-----+   |
+      |  'h'  | PTR |---+
+      +---+---+-----+
+
+Becomes:
+ 
+ h
+ |
+ 12345678|12345678
+
+- Can further convert between integer-binary-hex
+- Contiguous memory (1...N bytes) moves together
+- Pointers are separate sections of contiguous memory linked together
++ (space between numbers < advance so user can differentiate it, like half, but not more otherwise it appears as separate symbol
+
+So with characters, they can be moved independently, but if they are packed
+they move together. Thus if packed and characters need to be moved independently,
+must unpack them
+
+Maybe use graphical circle between CAR-CDR?
+-> That makes the model inconsistent since user will assume its a character
+-> Use color again, like light and dark?
+   - R = CAR|PTR
+   - G = CDR|CAR
+   - B = PTR|CDR
+-> Use color+space
+-> Or show boxes
+
+literal or semantic representation?
+-> literal
+
+################################################################################
+
+         +-----+-----+
+         | CAR | CDR |
+         +-----+-----+
+         TAIL     HEAD
+
+How to show a list (nested cons): (list 1 2 3)
+
+ 1-2-3
+
+ * lines = ptrs
+ * remember, two types of data: atoms and cons
+ * so how can user construct a list easier?
+
+ +-------+-------+   +-------+-------+   +-------+-------+
+ |   1   |   ----+---|   2   |   ----+---+   3   |  NIL  |
+ +-------+-------+   +-------+-------+   +-------+-------+
+
+List of spaces (2x space to see easier): (list " "  " "  " ")
+
+ " "- " "- " "
+
+ * Could show block or outline for spaces
+
+ +-------+-------+   +-------+-------+   +-------+-------+
+ |   1   |   ----+---|   2   |   ----+---+   3   |  NIL  |
+ +-------+-------+   +-------+-------+   +-------+-------+
+
+So essentially, Protoform shows the CAR/head of the cell
+
+################################################################################
+
+Strings = main interface = symbols, so strings = symbols
+Symbols are then composed of cons cells...
+
+Strings -> Cons cells
+        -> Numbers (bignum=cons cells)
+
+Note, characters are stored in short num (1-7 bytes) or big num (8 bytes)
+
+Convert numbers by typing name vs pressing digits?
+-> Numbers faster when sequential but thats less frequent
+  - In that case, easier to write program to produce it
+-> Numbers faster when only typing numbers, but when mixed,
+   typing name faster since fingers remain near home keys
+
+################################################################################
+
+Dasm:
+* symbol -> cons cells
+* shortnum -> pointer (num)
+* bignum -> cons cells
+* cons cells -> pointer/num
+* pointer -> bytes (list of shortnum)
+
+Rasm:
+* bytes -> pointer (given a list of 8 numbers with each num 0-255)
+* pointer -> cons cell (only first two ptrs, even number will convert remaining pairs?)
+* cons cells -> depends on pattern of cons cells
+
+################################################################################
+
+Each vertex has either a texture or a pixel (no texture)
+
+################################################################################
+
+- Default options (for auto pack/glue):
+  - Num: prints bytes? ...(see below)
+  - Char: user explicitly packs etc
+  - Words: auto pack on enter or space (non-graphical characters)
+  - Sentences: auto pack on . + non-graphical character
+  - Paragraphs: auto pack on tab
+
+- Eval=<mod>+Enter, Read=<mod>+Enter to convert code to data)
+
+Internally, nodes are added to a timeline (maintains ref to them so no GC)
+- Question - should users modify timeline directly?
+
+################################################################################
+
+: "X"
+-> "X"
+: 
+: (struct (+ (>> -4 (adr '"X")) 0) '(B . 16))
+-> (130 5 0 0 0 0 0 0 40 203 209 14 180 127 0 0)
+
+-So CAR and CDR are two different pointers
+ ...which is probably two instances of the name then...
+ 
+ Trans symbol
+ - name stored directly in car/left
+ - right changes with value, however, it is not nil
+ - initially it is not the same as name
+   -> name may be contained in another cell
+   
+: 
+: (struct (- (>> -4 (adr "X")) 0) '(B . 16))
+-> (130 5 0 0 0 0 0 0 216 221 163 76 236 127 0 0)
+: 
+: (struct 140652874816984 '(B . 16))        
+-> (216 221 163 76 236 127 0 0 216 221 163 76 236 127 0 0)
+: 
+
+
+: (struct (- (>> -4 (adr (box))) 0) '(B . 16))
+-> (2 0 0 0 0 0 0 0 72 215 66 0 0 0 0 0)
+: (struct (- (>> -4 (adr (box 1))) 0) '(B . 16))
+-> (2 0 0 0 0 0 0 0 18 0 0 0 0 0 0 0)
+: (struct (- (>> -4 (adr (box 0))) 0) '(B . 16))
+-> (2 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0)
+
+Anon Symbol:
+CAR:  0
+CDR: NIL 
+
+Transient Symbol:
+CAR: name (if name > 7 characters, then ptr to cons cell)
+CDR: pointer to CDR of itself (points to symbol)
+
+So CDR points to a cell which points to itself
+
+[name|ptrVAL] ->
+
+How to represent numbers...
+
+
+ASCII = Character
+Number = Character
+
+Alt+ASCII = Type Num
+Alt+Number = Type Num
+
+Shift+Enter/Tab = Read
+Ctrl+Enter/Tab = Eval
