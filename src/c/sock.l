@@ -7,7 +7,7 @@
 (def 'SHUT-WR 1)
 (def 'SHUT-RDWR 2)
 
-(def 'ADDR-LEN 110)
+(def 'SOCKADDR-LEN 110)
 #{
 (defcstruct sockaddr
   (sa-family :ushort)
@@ -64,7 +64,6 @@
       (struct Ptr 'N
 	      (cons Family 2) #1=LOCAL_SOCKET, 2 bytes
 	      (cons Path 108))
-      (println (struct Ptr '(I)))
       Ptr))
 
 #{
@@ -102,7 +101,7 @@
 
       (let (Ret (connect-sockfd Sock
 		                Sockaddr
-				ADDR-LEN))
+				SOCKADDR-LEN))
 	(when (= Ret -1)
 	  (quit "(= connect-sockfd -1)")))
 	
@@ -114,14 +113,16 @@
 (de listen-sock (Path
 		 Nonblock
 		 Backlog)
+
     #Might need to unlink
+    (unlink Path)
     
     (let (Sock (init-socket Nonblock)
 	  Sockaddr (init-sockaddr 1 Path))
       
       (let (Ret (bind-sockfd Sock
 		             Sockaddr
-		             ADDR-LEN))
+		             SOCKADDR-LEN))
 	(when (= Ret -1)
 	  (quit "(= bind-sockfd -1)")))
       
@@ -132,3 +133,26 @@
       (native "@" "free" NIL Sockaddr)
       
       Sock))
+
+(de accept4-sock (Sock Nonblock)
+    #{
+    For nonblocking, will either return a valid fd (> 0)
+    or it will fail and set errno to e-again or e-wouldblock
+    Any other errno indicates failure somewhere else
+    
+    flags=0 - same as accept
+    }#
+    (let (Sockaddr     (native "@" "malloc" 'N 110)    #(init-sockaddr 1 "")
+          Sockaddr-len (native "@" "malloc" 'N 4)) #socklen_t
+	  
+	  (struct Sockaddr-len 'N (cons SOCKADDR-LEN 4))
+	  
+	  (let (Ret (accept-4 Sock
+		      Sockaddr
+		      Sockaddr-len
+		      (if (= Nonblock 'nonblock)
+			  0 #SOCK-NONBLOCK
+			  0)))
+	    
+	    (native "@" "free" NIL Sockaddr)
+	    Ret)))

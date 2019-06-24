@@ -57,22 +57,22 @@
 	  *ep-events   (native "@" "malloc" 'N 12) #1 event
 	  *ep-fd       (epoll-create 1))
 
-    (when NIL
-      (setq *sock-listen (listen-sock PATH-UDS-INPUT 'block)))
-
     (init-devices *context)
     
     #Add FDs to epoll - watch for incomming data
-    (ctl-epoll *ep-fd 
-	       ADD
-	       *fd-li
-	       IN)
-
     (when NIL
       (ctl-epoll *ep-fd 
 		 ADD
+		 *fd-li
+		 IN))
+
+    (when T
+      (setq *sock-listen (listen-sock PATH-UDS-INPUT 'block)))
+      
+      (ctl-epoll *ep-fd 
+		 ADD
 		 *sock-listen
-		 IN)))
+		 IN))
       
 
 (de run-input ()
@@ -100,7 +100,10 @@
 
 
 (de handle-sock-listen ()
-    T)
+    (let (Sock (accept4-sock *sock-listen 'nonblock)
+	       Msg "Hello User")
+      (println "Sock" Sock)
+      (native "@" "write" 'I Sock Msg (+ (length Msg) 0))))
 
 
 (de handle-context ()

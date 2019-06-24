@@ -26,4 +26,7 @@
 
 (de read-short-from-bytes (B1 B2)
       (| (>> -8 B1)
-         B2))
+      B2))
+
+(de unlink-fd (Pathname)
+    (native "@" "unlink" 'I Pathname))
