@@ -28,6 +28,7 @@
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/os.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/input.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
 # Lisp libraries
 
 
@@ -73,9 +74,14 @@
 	  *context   (li-path-create-context *interface NIL)
 	  *ep-events (native "@" "malloc" 'N (+ 4 8 4 4 8))
 	  *ep-fd     (init-epoll (li-get-fd *context)))
-    (init-devices *context))
+    (init-devices *context)
+
+    # Run server
+    
+    T)
 
 
+# Move to input?
 (de make-interface-li ()
     (let (Interface (native "@" "malloc" 'N 16) #libinput-interface struct
           OR (lisp 'handle-open-restricted
@@ -91,7 +97,7 @@
 
 (de run-input ()
     #Poll events ASAP and enqueue for processing by controller thread
-    (let Event Nil
+    (let Event NIL
 	 (println "Running")
 	 (loop
 	    #-1 = timeout = block/infinite
@@ -100,27 +106,19 @@
 	      (li-dispatch *context)
 	      (loop
 		 (setq Event (li-get-event *context))
-		 
-		 (T (= Event 0)
-		    (println "Exit loop"))
-
-		 (println "Send message with event info" Event)
+		 (T (= Event 0))
 
 		 #Copy event info then destroy
-		 (when nil
-		   (let (Type (li-event-get-type Event))
-		     (prinl "Event: " (li-get-event-name Type))))
+		 (let (Type (li-event-get-type Event))
+		   (prinl "Event: " (li-get-event-name Type)))
 		 
-		 #(li-event-destroy Event)
-		 #(li-dispatch *context)
-		 T)))))
+		 (li-event-destroy Event)
+		 (li-dispatch *context))))))
 
 
 (symbols 'pico)
 
-
 (de main ()
     (input~init-input)
     (input~run-input)
-    (println 'Exiting...)
     (bye))

@@ -52,7 +52,7 @@ epoll_data_t data;      /* User data variable */
 
 
 (de li-get-event-name (Type)
-    (case (Type)
+    (case Type
       (0 'NONE)
       (1 'DEVICE-ADDED)
       (2 'DEVICE-REMOVED)
@@ -208,7 +208,7 @@ epoll_data_t data;      /* User data variable */
     (native "libinput.so" "libinput_event_tablet_tool_get_distance" +1.0 Event))
 
 
-(de litablet-tool-has-pressure (Tool)
+(de li-tablet-tool-has-pressure (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_pressure" 'I Tool))
 
 (de li-tablet-tool-has-distance (Tool)
