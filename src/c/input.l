@@ -237,3 +237,16 @@ epoll_data_t data;      /* User data variable */
 
 (de li-event-tablet-tool-get-y-transformed (Touch-event Height)
     (native "libinput.so" "libinput_event_tablet_tool_get_y_transformed" +1.0 Touch-event Height))
+
+
+(de li-make-interface ()
+    (let (Interface (native "@" "malloc" 'N 16) #libinput-interface struct
+          OR (lisp 'handle-open-restricted
+	       '((Path Flags User-data)
+		 (native "@" "open" 'I (struct Path 'S) (struct Flags 'I))))
+	  CR (lisp 'handle-close-restricted
+	       '((Fd User-data)
+		 (native "@" "close" 'I (struct Fd 'I)))))
+      (struct Interface 'N
+	      (cons OR 8)
+	      (cons CR 8))))

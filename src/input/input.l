@@ -50,8 +50,8 @@
 		   (li-path-remove-device Device)))))))
 
 
-(de init-input ()
-    (setq *interface   (make-interface-li)
+(de init-input ()   
+    (setq *interface   (li-make-interface)
 	  *context     (li-path-create-context *interface NIL)
 	  *ep-events   (native "@" "malloc" 'N (+ 4 8 4 4 8))
 	  *ep-fd       (epoll-create 1)
@@ -70,20 +70,6 @@
 	       *sock-listen
 	       IN))
       
-
-# Move to input?
-(de make-interface-li ()
-    (let (Interface (native "@" "malloc" 'N 16) #libinput-interface struct
-          OR (lisp 'handle-open-restricted
-	       '((Path Flags User-data)
-		 (native "@" "open" 'I (struct Path 'S) (struct Flags 'I))))
-	  CR (lisp 'handle-close-restricted
-	       '((Fd User-data)
-		 (native "@" "close" 'I (struct Fd 'I)))))
-      (struct Interface 'N
-	      (cons OR 8)
-	      (cons CR 8))))
-
 
 (de run-input ()
     #Run epoll on sockets
