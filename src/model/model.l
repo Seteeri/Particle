@@ -28,7 +28,10 @@
 
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/os.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/stdio.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/string.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/unistd.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/input.l")
 # Lisp libraries
