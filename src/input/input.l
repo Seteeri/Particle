@@ -27,7 +27,7 @@
 
 
 # Wrapper libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/c/os.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/input.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
 # Lisp libraries
