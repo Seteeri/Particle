@@ -197,7 +197,7 @@
 		      Sockaddr
 		      Sockaddr-len
 		      (if (= Nonblock 'nonblock)
-			  0 #SOCK-NONBLOCK
+			  SOCK-NONBLOCK
 			  0)))
 	    
 	    (native "@" "free" NIL Sockaddr)

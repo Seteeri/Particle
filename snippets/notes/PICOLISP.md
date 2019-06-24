@@ -119,25 +119,32 @@ Store DAGs as binary trees?
   * Suggestion to docs with more figures of symbols cons trees in diff scenarios
 
 * Migrate Protoform to PicoLisp
-  * Have libinput connect to Model, Controller, Render
-    * User should always have control
-    * Commands can apply to one of those contexts - use bitfield...
-  * Fix native calls, ensure backtick before library symbol
-  * Prefix constants with lib name
-  * Remove sending init params mmap -> Render will load on startup
-  * Remove sending init tex -> Render will load on startup
-  * Model
-    * Math library
-    * Refactor params into files like glyphs
-    * Task manager
-      * Are tasks coroutines basically???
-    * Epoll
-  * Libinput
-  * Controller    
-  * Render  
-    * Make sure no TCP_NODELAY
-  * Spawn processes -> Test!
-  * Wayland
+
+  - Input (exec immediately or @model)
+      |
+      V
+    Model
+      |
+      V
+    Render
+
+  * TODO
+    * Implement render process
+    * Implement controller process
+    * Implement Wayland
+  
+  * DONE
+    * Implement input process/server [done]
+    * Implement model process [done]  
+  
+* Refactor/Fix
+
+    * Fix native calls, ensure backtick before library symbol
+    * Prefix constants with lib name
+    * Remove sending init params mmap -> Render will load on startup
+    * Remove sending init tex -> Render will load on startup
+    * Render - make sure no TCP_NODELAY
+  
   * Port dependencies; pull code from rosetta code as baseline    
     * nanomsg - IPC; use existing PicoLisp library
      3d-vectors/3d-matrices - use C, either gcc or so; native?
@@ -169,9 +176,11 @@ Store DAGs as binary trees?
       * Optimization: if node has 1 pred, traverse until end or many,
       send all to same worker
         * a->b->c->d,  worker=(a,b,c,d)
+  
   * Integrate Wayland to bootstrapping
     * Setup tiles for 6 windows = 3 col, 2 row
     * Proof of concept working with eval already
+  
   * Note 32 MB = 8 ms to mark/sweep
     * = 2,000,000 cons cells -> Test this with loop/cons/heap
     

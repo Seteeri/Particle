@@ -36,27 +36,21 @@
 (def 'DEVICES-PATH "/dev/input")
 
 
-(de init-devices (Context)
-    (for File (dir DEVICES-PATH)
-	 (when (and (not (= File "by-id"))
-		    (not (= File "by-path")))
-	   (let (Filepath (pack DEVICES-PATH "/" File)
-			  Device (li-path-add-device Context Filepath))
-	     (unless (= Device 0)
-	       (if (not (or (li-device-has-capability Device
-						      DEVICE-CAP-KEYBOARD)
-			    (li-device-has-capability Device
-						      DEVICE-CAP-POINTER)))
-		   (li-path-remove-device Device)))))))
-
+(de get-rmem-default ()
+    (pipe
+     (call "cat" "/proc/sys/net/core/rmem_default")
+     (read)))
 
 (de init-input ()   
     (setq *interface   (li-make-interface)
 	  *context     (li-path-create-context *interface NIL)
 	  *fd-li       (li-get-fd *context)
 	  *ep-events   (native "@" "malloc" 'N 12) #1 event
-	  *ep-fd       (epoll-create 1))
+	  *ep-fd       (epoll-create 1)
+	  *buf-sz      (get-rmem-default)
+	  *buf-rd      (native "@" "malloc" 'N *buf-sz))
 
+    
     (init-devices *context)
     
     #Add FDs to epoll - watch for incomming data
@@ -73,7 +67,21 @@
 		 ADD
 		 *sock-listen
 		 IN))
-      
+
+
+(de init-devices (Context)
+    (for File (dir DEVICES-PATH)
+	 (when (and (not (= File "by-id"))
+		    (not (= File "by-path")))
+	   (let (Filepath (pack DEVICES-PATH "/" File)
+			  Device (li-path-add-device Context Filepath))
+	     (unless (= Device 0)
+	       (if (not (or (li-device-has-capability Device
+						      DEVICE-CAP-KEYBOARD)
+			    (li-device-has-capability Device
+						      DEVICE-CAP-POINTER)))
+		   (li-path-remove-device Device)))))))
+
 
 (de run-input ()
     #{
@@ -87,23 +95,65 @@
     }#
     
     (println "Running")
-    (loop
-       (when (> (epoll-wait *ep-fd *ep-events 1 -1) 0)
-	 (setq Fd (get (struct *ep-events '(I I)) 2))
-	 (cond 
-	   ((= Fd *sock-listen)
-	    (handle-sock-listen)
-	    T)
-	   ((= Fd *fd-li)
-	    (handle-context)
-	    T)))))
+
+    (let (Events NIL
+	  Fd     NIL)
+      (loop
+	 
+	 (setq num-events (epoll-wait *ep-fd *ep-events 1 500))
+	 
+	 (when (> num-events 0)
+
+	   (setq Events (get (struct *ep-events '(I I)) 1))
+	   (setq Fd (get (struct *ep-events '(I I)) 2))
+	   
+	   #(prinl (usec) " FD: " Fd ", Events: " Events)
+	   
+	   (cond 
+	     ((= Fd *fd-li)
+	      (handle-context))
+	     ((= Fd *sock-listen)
+	      (handle-sock-listen))
+	     (T
+	      (handle-sock-conn Events Fd)))))))
 
 
+(de handle-sock-conn (Events Fd)
+
+    #(when (> (recv Fd *buf-rd *buf-sz 0) 0)
+    #  #(println "RECV: " (struct *buf-rd '(B B B B B B B B)))
+    #  (println "RECV: " (struct *buf-rd 'S)))
+    #(let (bytes-read (native "@" "read" Fd *buf-rd *buf-sz)))
+    
+    (let (bytes-read (recv Fd *buf-rd *buf-sz 0))
+      (if (= bytes-read 0)
+	  #If epoll saying data to read, however recv is 0
+	  #that indicates socket hung-up or errored out
+	  (when (or (= (& Events ERR) ERR) (= (& Events HUP) HUP) (= (& Events RDHUP) RDHUP))
+	    (ctl-epoll *ep-fd 
+		       DEL
+		       Sock
+		       0)    
+	    (shutdown Fd SHUT-RDWR)
+	    (close-filedes Fd)
+	    (prinl "Disconnected sock: " Fd))
+	  (prog
+	      (prinl "Read sock: " bytes-read " bytes" " = " (struct *buf-rd 'S))))))
+
+    
 (de handle-sock-listen ()
-    (let (Sock (accept4-sock *sock-listen 'nonblock)
-	       Msg "Hello User")
-      (println "Sock" Sock)
-      (native "@" "write" 'I Sock Msg (+ (length Msg) 0))))
+    (let (Sock (accept4-sock *sock-listen 'block)
+          Msg "Welcome User")
+      
+      #Add sock to epoll
+      (ctl-epoll *ep-fd 
+		 ADD
+		 Sock
+		 (| IN ERR HUP RDHUP))
+
+      #(native "@" "write" 'I Sock Msg (+ (length Msg) 0))
+      
+      T))
 
 
 (de handle-context ()
