@@ -36,26 +36,6 @@
 (def 'DEVICES-PATH "/dev/input")
 
 
-(de ctl-epoll (Epfd Op Fd Flags)
-    #Possibly use automatic variables, allocated on the stack
-    (let Event (native "@" "malloc" 'N 12)
-	 (struct Event 'N Flags Fd)
-	 (epoll-ctl Epfd
-		    Op
-		    Fd
-		    Event)))
-
-
-(de init-epoll (Fd)
-    #Add libinput Fd to epoll list of FDs
-    (let Ep-fd (epoll-create 1)
-	 (ctl-epoll Ep-fd
-		    ADD
-		    Fd
-		    IN) #x0001
-	 Ep-fd))
-
-
 (de init-devices (Context)
     (for File (dir DEVICES-PATH)
 	 (when (and (not (= File "by-id"))
@@ -71,13 +51,25 @@
 
 
 (de init-input ()
-    (setq *interface (make-interface-li)
-	  *context   (li-path-create-context *interface NIL)
-	  *ep-events (native "@" "malloc" 'N (+ 4 8 4 4 8))
-	  *ep-fd     (init-epoll (li-get-fd *context)))
-    (init-devices *context)
-    (listen-sock PATH-UDS-INPUT 'block))
+    (setq *interface   (make-interface-li)
+	  *context     (li-path-create-context *interface NIL)
+	  *ep-events   (native "@" "malloc" 'N (+ 4 8 4 4 8))
+	  *ep-fd       (epoll-create 1)
+	  *sock-listen (listen-sock PATH-UDS-INPUT 'block))
 
+    (init-devices *context)
+    
+    #Add FDs to epoll - watch for incomming data
+    (ctl-epoll *ep-fd 
+	       ADD
+	       (li-get-fd *context)
+	       IN)
+
+    (ctl-epoll *ep-fd 
+	       ADD
+	       *sock-listen
+	       IN))
+      
 
 # Move to input?
 (de make-interface-li ()
@@ -94,6 +86,11 @@
 
 
 (de run-input ()
+    #Run epoll on sockets
+    T)
+
+
+(de poll-input ()
     #Poll events ASAP and enqueue for processing by controller thread
     (let Event NIL
 	 (println "Running")
