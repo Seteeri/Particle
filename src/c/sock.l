@@ -114,7 +114,53 @@
 		 Nonblock
 		 Backlog)
 
-    #Might need to unlink
+    #{
+    https://gavv.github.io/articles/unix-socket-reuse/
+    
+    A socket file is created by bind(2) call.
+    If the file already exists, EADDRINUSE is returned.
+    
+    Unlike Internet sockets (AF_INET), Unix domain sockets (AF_UNIX) doesn’t have
+    SO_REUSEADDR, at least on Linux and BSD. The only way to reuse a socket file
+    is to remove it with unlink().
+
+    There are two bad approaches to deal with this problem:
+
+    #1
+    
+    We could call unlink() just before bind().
+
+    The problem is that if we run two instances of our process, the second one will silently remove socket used by the first one, instead of reporting a failure.
+
+    Also, there is a race here since the socket can be created by another process between unlink() and bind().
+
+    We could call unlink() when the process exits instead.
+
+    The problem is that if our process crashes, unlink() will not be called and we’ll have a dangling socket.
+
+    #2
+
+    Using a lock file
+
+    One option is to use a lock file in addition to the socket file.
+
+    We’ll use a separate lock file and never call unlink() on it. When a process is going to bind a socket, it first tries to acquire a lock:
+
+    If the lock can’t be acquired, it means that another process is holding the lock now, because kernel guarantees that the lock is released if owner process exits or crashes.
+
+    If the lock is successfully acquired, we can safely unlink() the socket, because we’re the only owner and no race may occur.
+
+    #3
+    Using abstract namespace sockets
+
+    Another option is to use Linux-specific abstract namespace sockets.
+
+    To create an abstract namespace socket, set the first byte in the sun_path field of the sockaddr_un to \0. See unix(7). This socket will not be mapped to the filesystem, so it’s not possible to use filesystem permissions or remove it with unlink().
+
+    The advantage is that such a socket is automatically removed when the process exits, so there is no problem with socket reusing.
+    
+    }#
+    
     (unlink Path)
     
     (let (Sock (init-socket Nonblock)
