@@ -88,27 +88,47 @@
     Sock))
 
 
-(de init-connection (Path
-		     Nonblock)
+(de connect-sock (Path
+		  Nonblock)
     
     (let (Sock (init-socket Nonblock)
 	  Sockaddr (init-sockaddr 1 Path))
       
       #{
-      ;; timeout
-      ;; 0 = return immediately
-      ;; > 0 = wait indefinitely with delay
-      ;;
-      ;; Can connect block?
+      timeout:
+        0 = return immediately
+      > 0 = wait indefinitely with delay
       }#
 
       (let (Ret (connect-sockfd Sock
-		  Sockaddr
-		  ADDR-LEN))
-
+		                Sockaddr
+				ADDR-LEN))
 	(when (= Ret -1)
-	  (quit "(= connect-sockfd -1)"))
+	  (quit "(= connect-sockfd -1)")))
 	
-	(native "@" "free" NIL Sockaddr)
-	
-	Sock)))
+      (native "@" "free" NIL Sockaddr)
+      
+      Sock))
+
+
+(de listen-sock (Path
+		 Nonblock
+		 Backlog)
+    #Might need to unlink
+    
+    (let (Sock (init-socket Nonblock)
+	  Sockaddr (init-sockaddr 1 Path))
+      
+      (let (Ret (bind-sockfd Sock
+		             Sockaddr
+		             ADDR-LEN))
+	(when (= Ret -1)
+	  (quit "(= bind-sockfd -1)")))
+      
+      (let (Ret (listen-sockfd Sock Backlog))
+	(when (= Ret -1)
+	  (quit "(= bind-sockfd -1)")))
+  
+      (native "@" "free" NIL Sockaddr)
+      
+      Sock))

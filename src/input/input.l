@@ -19,6 +19,7 @@
 
 # UDS paths
 (def 'PATH-UDS-MODEL "/tmp/protoform-model.socket")
+(def 'PATH-UDS-INPUT "/tmp/protoform-input.socket")
 
 
 # Set math precision to 6 decimals
@@ -75,9 +76,7 @@
 	  *ep-events (native "@" "malloc" 'N (+ 4 8 4 4 8))
 	  *ep-fd     (init-epoll (li-get-fd *context)))
     (init-devices *context)
-
-    #Run server
-    T)
+    (listen-sock PATH-UDS-INPUT 'block))
 
 
 # Move to input?

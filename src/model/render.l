@@ -68,7 +68,7 @@
     #(setq *bs-ptr (init-mmap "bs-ptr" 212992 T))
     #(setq *bs-ptr (open "*bs-ptr"))
     
-    (setq *sock-render (init-connection PATH-UDS-RENDER 'block))
+    (setq *sock-render (connect-sock PATH-UDS-RENDER 'block))
     
     (send-setup-render)
 
