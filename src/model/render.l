@@ -1,43 +1,5 @@
 
 
-#Poss refactor/move to sock? Hmm, not a struct
-(de init-socket (Nonblock)
-    (let (Sock (socket AF-UNIX
-		 (if (= Nonblock 'nonblock)
-		     (| SOCK-STREAM SOCK-NONBLOCK)
-	             (| SOCK-STREAM))
-		 0))
-    (when (= Sock -1)
-      (quit "(= socket -1)"))
-    Sock))
-
-
-(de init-connection (Path
-		     Nonblock)
-    
-    (let (Sock (init-socket Nonblock)
-	  Sockaddr (init-sockaddr 1 Path))
-      
-      #{
-      ;; timeout
-      ;; 0 = return immediately
-      ;; > 0 = wait indefinitely with delay
-      ;;
-      ;; Can connect block?
-      }#
-
-      (let (Ret (connect-sockfd Sock
-		  Sockaddr
-		  ADDR-LEN))
-
-	(when (= Ret -1)
-	  (quit "(= connect-sockfd -1)"))
-	
-	(native "@" "free" NIL Sockaddr)
-	
-	Sock)))
-
-
 (de send-msg (Sock
 	      Ptr
 	      Msg)
@@ -114,6 +76,3 @@
     #(close-fd *sock-render SHUT-RDWR)
 
     T)
-    
-
-    

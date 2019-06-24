@@ -74,3 +74,41 @@
    (struct P '(B . 110)))
 (struct P '((B . 2) (C . 108)))
 }#
+
+
+#Function for typical scenarios
+(de init-socket (Nonblock)
+    (let (Sock (socket AF-UNIX
+		 (if (= Nonblock 'nonblock)
+		     (| SOCK-STREAM SOCK-NONBLOCK)
+	             (| SOCK-STREAM))
+		 0))
+    (when (= Sock -1)
+      (quit "(= socket -1)"))
+    Sock))
+
+
+(de init-connection (Path
+		     Nonblock)
+    
+    (let (Sock (init-socket Nonblock)
+	  Sockaddr (init-sockaddr 1 Path))
+      
+      #{
+      ;; timeout
+      ;; 0 = return immediately
+      ;; > 0 = wait indefinitely with delay
+      ;;
+      ;; Can connect block?
+      }#
+
+      (let (Ret (connect-sockfd Sock
+		  Sockaddr
+		  ADDR-LEN))
+
+	(when (= Ret -1)
+	  (quit "(= connect-sockfd -1)"))
+	
+	(native "@" "free" NIL Sockaddr)
+	
+	Sock)))

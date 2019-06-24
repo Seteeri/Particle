@@ -76,8 +76,7 @@
 	  *ep-fd     (init-epoll (li-get-fd *context)))
     (init-devices *context)
 
-    # Run server
-    
+    #Run server
     T)
 
 
