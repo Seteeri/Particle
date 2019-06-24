@@ -31,7 +31,7 @@
 }#
 
 #{
-(defcstruct event)
+(defcstruct epoll_event)
 (events :uint32)
 (data (:union data))
 #4+8
@@ -61,7 +61,7 @@
 (de ctl-epoll (Epfd Op Fd Flags)
     #Possibly use automatic variables, allocated on the stack
     (let Event (native "@" "malloc" 'N 12)
-	 (struct Event 'N Flags Fd)
+	 (struct Event 'N (cons Flags 4) (cons Fd 4))
 	 (epoll-ctl Epfd
 		    Op
 		    Fd

@@ -53,48 +53,68 @@
 (de init-input ()   
     (setq *interface   (li-make-interface)
 	  *context     (li-path-create-context *interface NIL)
-	  *ep-events   (native "@" "malloc" 'N (+ 4 8 4 4 8))
-	  *ep-fd       (epoll-create 1)
-	  *sock-listen (listen-sock PATH-UDS-INPUT 'block))
+	  *fd-li       (li-get-fd *context)
+	  *ep-events   (native "@" "malloc" 'N 12) #1 event
+	  *ep-fd       (epoll-create 1))
+
+    (when NIL
+      (setq *sock-listen (listen-sock PATH-UDS-INPUT 'block)))
 
     (init-devices *context)
     
     #Add FDs to epoll - watch for incomming data
     (ctl-epoll *ep-fd 
 	       ADD
-	       (li-get-fd *context)
+	       *fd-li
 	       IN)
 
-    (ctl-epoll *ep-fd 
-	       ADD
-	       *sock-listen
-	       IN))
+    (when NIL
+      (ctl-epoll *ep-fd 
+		 ADD
+		 *sock-listen
+		 IN)))
       
 
 (de run-input ()
-    #Run epoll on sockets
+    #{
+    Poll events ASAP and enqueue for processing by controller thread
+    
+    epoll-wait:
+    * ep-events size should correspond to maxevents
+    * -1 = timeout = block/infinite
+    0 = return if nothing
+    * returns event count
+    }#
+    
+    (println "Running")
+    (loop
+       (when (> (epoll-wait *ep-fd *ep-events 1 -1) 0)
+	 (setq Fd (get (struct *ep-events '(I I)) 2))
+	 (cond 
+	   ((= Fd *sock-listen)
+	    (handle-sock-listen)
+	    T)
+	   ((= Fd *fd-li)
+	    (handle-context)
+	    T)))))
+
+
+(de handle-sock-listen ()
     T)
 
 
-(de poll-input ()
-    #Poll events ASAP and enqueue for processing by controller thread
-    (let Event NIL
-	 (println "Running")
-	 (loop
-	    #-1 = timeout = block/infinite
-	    #0 = return if nothing
-	    (when (> (epoll-wait *ep-fd *ep-events 1 -1) 0)
-	      (li-dispatch *context)
-	      (loop
-		 (setq Event (li-get-event *context))
-		 (T (= Event 0))
-
-		 #Copy event info then destroy
-		 (let (Type (li-event-get-type Event))
-		   (prinl "Event: " (li-get-event-name Type)))
-		 
-		 (li-event-destroy Event)
-		 (li-dispatch *context))))))
+(de handle-context ()
+    (li-dispatch *context)
+    (loop
+       (setq Event (li-get-event *context))
+       (T (= Event 0))
+       
+       #Copy event info then destroy
+       (let (Type (li-event-get-type Event))
+	 (prinl "Event: " (li-get-event-name Type)))
+       
+       (li-event-destroy Event)
+       (li-dispatch *context)))
 
 
 (symbols 'pico)
