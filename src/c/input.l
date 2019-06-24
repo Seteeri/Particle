@@ -51,6 +51,37 @@ epoll_data_t data;      /* User data variable */
 (def 'SWITCH-TOGGLE 900)
 
 
+(de li-get-event-name (Type)
+    (case (Type)
+      (0 'NONE)
+      (1 'DEVICE-ADDED)
+      (2 'DEVICE-REMOVED)
+      (300 'KEYBOARD-KEY)
+      (400 'POINTER-MOTION)
+      (401 'POINTER-MOTION-ABSOLUTE)
+      (402 'POINTER-BUTTON)
+      (403 'POINTER-AXIS)
+      (500 'TOUCH-DOWN)
+      (501 'TOUCH-UP)
+      (502 'TOUCH-MOTION)
+      (503 'TOUCH-CANCEL)
+      (504 'TOUCH-FRAME)
+      (600 'TABLET-TOOL-AXIS)
+      (601 'TABLET-TOOL-PROXIMITY)
+      (602 'TABLET-TOOL-TIP)
+      (603 'TABLET-TOOL-BUTTON)
+      (700 'TABLET-PAD-BUTTON)
+      (701 'TABLET-PAD-RING)
+      (702 'TABLET-PAD-STRIP)
+      (800 'GESTURE-SWIPE-BEGIN)
+      (801 'GESTURE-SWIPE-UPDATE)
+      (802 'GESTURE-SWIPE-END)
+      (803 'GESTURE-PINCH-BEGIN)
+      (804 'GESTURE-PINCH-UPDATE)
+      (805 'GESTURE-PINCH-END)
+      (900 'SWITCH-TOGGLE)))
+
+
 (de li-unref (Context)
     (native "libinput.so" "libinput_unref" 'N Context))
 
@@ -82,7 +113,7 @@ epoll_data_t data;      /* User data variable */
     (native "libinput.so" "libinput_get_event" 'N Context))
 
 (de li-event-get-type (Event)
-    (native "libinput.so" "libinput_event_type" 'I Event))
+    (native "libinput.so" "libinput_event_get_type" 'I Event))
 
 (de li-event-destroy (Event)
     (native "libinput.so" "libinput_event_destroy" NIL Event))

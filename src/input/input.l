@@ -91,20 +91,29 @@
 
 (de run-input ()
     #Poll events ASAP and enqueue for processing by controller thread
-    (let event
-      (loop
-	 #-1 = timeout = block/infinite
-	 #0 = return if nothing
-	 (when (> (epoll-wait *ep-fd *ep-events 1 -1) 0)
-	   (li-dispatch *context)
-	   (loop
-	      (setq event (li-get-event *context))
-	      (T (= event 0))
-	      (println "Send message with event info" event)
-	      #Either copy event info for message and destroy
-	      #Dispatch handler below is for controller
-	      (li-event-destroy event)
-	      (li-dispatch *context))))))
+    (let Event Nil
+	 (println "Running")
+	 (loop
+	    #-1 = timeout = block/infinite
+	    #0 = return if nothing
+	    (when (> (epoll-wait *ep-fd *ep-events 1 -1) 0)
+	      (li-dispatch *context)
+	      (loop
+		 (setq Event (li-get-event *context))
+		 
+		 (T (= Event 0)
+		    (println "Exit loop"))
+
+		 (println "Send message with event info" Event)
+
+		 #Copy event info then destroy
+		 (when nil
+		   (let (Type (li-event-get-type Event))
+		     (prinl "Event: " (li-get-event-name Type))))
+		 
+		 #(li-event-destroy Event)
+		 #(li-dispatch *context)
+		 T)))))
 
 
 (symbols 'pico)
