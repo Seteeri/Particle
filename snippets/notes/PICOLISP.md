@@ -146,6 +146,8 @@ Store DAGs as binary trees?
   
 * Refactor/Fix
 
+    * Refactor namespaces 
+
     * Fix native calls, ensure backtick before library symbol
     * Prefix constants with lib name
     * Remove sending init params mmap -> Render will load on startup

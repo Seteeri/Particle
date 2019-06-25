@@ -40,6 +40,7 @@
 (def '*buf-sz)
 (def '*buf-rd)
 (def '*input)
+(def '*ipc)
 (def '*sock-listen)
 (def '*sock-connections)
 
@@ -65,15 +66,14 @@
 		 ADD
 		 (get *input 'fd-context)
 		 IN))
+
     
-    
-    (when NIL
-      (setq *sock-listen      (listen-sock PATH-UDS-INPUT 'block)
-	    *sock-connections ())
-      
+    (when T
+      (setq *ipc (new '(ipc~+IPC) PATH-UDS-INPUT 'block
+		                  ""            'block))
       (ctl-epoll *ep-fd 
 		 ADD
-		 *sock-listen
+		 (get *ipc 'ipc~listener)
 		 IN)))
 
 
@@ -106,48 +106,10 @@
 	     (cond 
 	       ((= Fd (get *input 'fd-context))
 		(handle-context))
-	       ((= Fd *sock-listen)
-		(handle-sock-listen))
+	       ((= Fd (get *ipc 'ipc~listener))
+		(ipc~handle-sock-listen Events Fd))
 	       (T
-		(handle-sock-conn Events Fd))))))))
-
-
-(de handle-sock-conn (Events Fd)
-
-    #(when (> (recv Fd *buf-rd *buf-sz 0) 0)
-    #  #(println "RECV: " (struct *buf-rd '(B B B B B B B B)))
-    #  (println "RECV: " (struct *buf-rd 'S)))
-    #(let (bytes-read (native "@" "read" Fd *buf-rd *buf-sz)))
-    
-    (let (bytes-read (recv Fd *buf-rd *buf-sz 0))
-      (if (= bytes-read 0)
-	  #If epoll saying data to read, however recv is 0
-	  #that indicates socket hung-up or errored out
-	  (when (or (= (& Events ERR) ERR) (= (& Events HUP) HUP) (= (& Events RDHUP) RDHUP))
-	    (ctl-epoll *ep-fd 
-		       DEL
-		       Sock
-		       0)    
-	    (shutdown Fd SHUT-RDWR)
-	    (close-filedes Fd)
-	    (prinl "Disconnected sock: " Fd))
-	  (prog
-	      (prinl "Read sock: " bytes-read " bytes" " = " (struct *buf-rd 'S))))))
-
-    
-(de handle-sock-listen ()
-    (let (Sock (accept4-sock *sock-listen 'block)
-          Msg "Welcome User")
-      
-      #Add sock to epoll
-      (ctl-epoll *ep-fd 
-		 ADD
-		 Sock
-		 (| IN ERR HUP RDHUP))
-
-      (prinl "Connect sock: " Sock)
-      
-      T))
+		(ipc~handle-sock-conn Events Fd))))))))
 
 
 (de handle-context ()

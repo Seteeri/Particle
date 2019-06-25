@@ -35,8 +35,8 @@ IPC is a pair of sockets
 
 
 (class +IPC)
-(dm T (Path-listener   Nonblock-listener   Fn-listener
-       Path-connection Nonblock-connection Fn-connection)
+(dm T (Path-listener   Nonblock-listener
+       Path-connection Nonblock-connection)
 
     #Setup socket data
 
@@ -49,11 +49,9 @@ IPC is a pair of sockets
 
     (=: nonblock-listener Nonblock-listener)
     (=: listener          (listen-sock Path-listener Nonblock-listener))
-    (=: fn-listener       Fn-listener)
     
     (=: nonblock-connection Nonblock-connection)
-    (=: connection          (when Path-connection (connect-sock Path-connection Nonblock-connection)))
-    (=: fn-connection       Fn-connection))
+    (=: connection          (when Path-connection (connect-sock Path-connection Nonblock-connection))))
 
 
 (dm end-ipc> ()
@@ -65,7 +63,6 @@ IPC is a pair of sockets
     (when (: connection) (end-sock (: listener) (: ep-fd))))
 
 
-#{
 (de handle-sock-conn (Events Fd)
 
     #(when (> (recv Fd *buf-rd *buf-sz 0) 0)
@@ -89,8 +86,8 @@ IPC is a pair of sockets
 	      (prinl "Read sock: " bytes-read " bytes" " = " (struct *buf-rd 'S))))))
 
     
-(de handle-sock-listen ()
-    (let (Sock (accept4-sock *sock-listen 'block)
+(de handle-sock-listen (Events Fd)
+    (let (Sock (accept4-sock Fd 'block)
           Msg "Welcome User")
       
       #Add sock to epoll
@@ -99,7 +96,6 @@ IPC is a pair of sockets
 		 Sock
 		 (| IN ERR HUP RDHUP))
 
-      #(native "@" "write" 'I Sock Msg (+ (length Msg) 0))
-
-      (prinl "Connect sock: " Sock)))
-}#
+      (prinl "Connect sock: " Sock)
+      
+      T))
