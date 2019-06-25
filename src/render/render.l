@@ -27,7 +27,7 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/gl.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/gles.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
 # Lisp libraries
 #...
