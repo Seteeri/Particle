@@ -6,7 +6,6 @@ IPC is a pair of sockets
 
 }#
 
-#Create and change to namespace model
 (symbols 'ipc 'pico)
 
 
@@ -19,7 +18,7 @@ IPC is a pair of sockets
 
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 
 
 (de get-rmem-default ()
@@ -48,10 +47,10 @@ IPC is a pair of sockets
     (=: buf-wr    (native "@" "malloc" 'N *buf-sz))
 
     (=: nonblock-listener Nonblock-listener)
-    (=: listener          (listen-sock Path-listener Nonblock-listener))
+    (=: listener          (socket~listen-sock Path-listener Nonblock-listener))
     
     (=: nonblock-connection Nonblock-connection)
-    (=: connection          (when Path-connection (connect-sock Path-connection Nonblock-connection))))
+    (=: connection          (when Path-connection (socket~connect-sock Path-connection Nonblock-connection))))
 
 
 (dm end-ipc> ()
@@ -59,43 +58,50 @@ IPC is a pair of sockets
     (when (: buf-rd)     (native "@" "free" NIL (: buf-rd)))
     (when (: buf-wr)     (native "@" "free" NIL (: buf-wr)))  
 
-    (when (: listener)   (end-sock (: listener) (: ep-fd)))
-    (when (: connection) (end-sock (: listener) (: ep-fd))))
+    (when (: listener)   (socket~end (: listener) (: ep-fd)))
+    (when (: connection) (socket~end (: listener) (: ep-fd))))
 
 
-(de handle-sock-conn (Events Fd)
+(de handle-sock-conn (Events Fd Ep-fd)
 
     #(when (> (recv Fd *buf-rd *buf-sz 0) 0)
     #  #(println "RECV: " (struct *buf-rd '(B B B B B B B B)))
     #  (println "RECV: " (struct *buf-rd 'S)))
     #(let (bytes-read (native "@" "read" Fd *buf-rd *buf-sz)))
     
-    (let (bytes-read (recv Fd *buf-rd *buf-sz 0))
+    (let (bytes-read (socket~recv Fd *buf-rd *buf-sz 0))
+      
       (if (= bytes-read 0)
+	  
 	  #If epoll saying data to read, however recv is 0
 	  #that indicates socket hung-up or errored out
-	  (when (or (= (& Events ERR) ERR) (= (& Events HUP) HUP) (= (& Events RDHUP) RDHUP))
-	    (ctl-epoll *ep-fd 
+	  (when (or (= (& Events ERR) ERR)
+		    (= (& Events HUP) HUP)
+		    (= (& Events RDHUP) RDHUP))
+	    
+	    (ctl-epoll Ep-fd
 		       DEL
 		       Sock
-		       0)    
-	    (shutdown Fd SHUT-RDWR)
-	    (close-filedes Fd)
+		       0)
+	    (socket~shutdown Fd socket~SHUT-RDWR)
+	    #Use builtin close
+	    (close Fd)
 	    (prinl "Disconnected sock: " Fd))
+	  
 	  (prog
 	      (prinl "Read sock: " bytes-read " bytes" " = " (struct *buf-rd 'S))))))
 
     
-(de handle-sock-listen (Events Fd)
-    (let (Sock (accept4-sock Fd 'block)
+(de handle-sock-listen (Events Fd Ep-fd)
+    (let (Sock (socket~accept-4 Fd 'block)
           Msg "Welcome User")
       
       #Add sock to epoll
-      (ctl-epoll *ep-fd 
+      (ctl-epoll Ep-fd
 		 ADD
 		 Sock
 		 (| IN ERR HUP RDHUP))
 
-      (prinl "Connect sock: " Sock)
+      (prinl "Connect sock: " Sock " with " (| IN ERR HUP RDHUP))
       
       T))

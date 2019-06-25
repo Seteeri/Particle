@@ -1,3 +1,5 @@
+(symbols 'socket 'pico)
+
 (def 'AF-UNIX 1)
 (def 'SOCK-STREAM 1)
 (def 'SOCK-NONBLOCK (oct "04000"))
@@ -31,24 +33,20 @@
 (de accept-sockfd (Sockfd Addr Addr-len)
     (native "@" "accept" 'I Sockfd Addr Addr-len))
 
-(de accept-4 (Sockfd Addr Addr-len Flags)
+(de accept-4-sockfd (Sockfd Addr Addr-len Flags)
     (native "@" "accept4" 'I Sockfd Addr Addr-len Flags))
-
-(de recv (Sockfd Buf Len Flags)
-    (native "@" "recv" 'I Sockfd Buf Len Flags))
 
 (de connect-sockfd (Sockfd Addr Addr-len)
     (native "@" "connect" 'I Sockfd Addr Addr-len))
+
+(de recv (Sockfd Buf Len Flags)
+    (native "@" "recv" 'I Sockfd Buf Len Flags))
 
 (de send-fd (Fd Buf N Flags)
     (native "@" "send" 'I Fd Buf N Flags))
 
 (de shutdown (Socket How)
     (native "@" "shutdown" 'I Socket How))
-
-#See os.l close-fd
-(de close-filedes (Filedes)
-    (native "@" "close" 'I Filedes))
 
 (de unlink (Pathname)
     (native "@" "unlink" 'I Pathname))
@@ -180,7 +178,7 @@
       
       Sock))
 
-(de accept4-sock (Sock Nonblock)
+(de accept-4 (Sock Nonblock)
     #{
     For nonblocking, will either return a valid fd (> 0)
     or it will fail and set errno to e-again or e-wouldblock
@@ -193,7 +191,7 @@
 	  
 	  (struct Sockaddr-len 'N (cons SOCKADDR-LEN 4))
 	  
-	  (let (Ret (accept-4 Sock
+	  (let (Ret (accept-4-sockfd Sock
 		      Sockaddr
 		      Sockaddr-len
 		      (if (= Nonblock 'nonblock)
@@ -204,7 +202,7 @@
 	    Ret)))
 
 
-(de end-sock (Sock Ep-fd)
+(de end (Sock Ep-fd)
     (when Ep-fd
       (ctl-epoll Ep-fd
 		 DEL

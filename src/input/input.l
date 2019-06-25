@@ -29,7 +29,7 @@
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/li.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 
@@ -60,7 +60,7 @@
 	    *buf-rd    (native "@" "malloc" 'N *buf-sz)))
       
     
-    (when T
+    (when NIL
       (setq *input (new '(li~+Li)))
       (ctl-epoll *ep-fd 
 		 ADD
@@ -101,15 +101,15 @@
 	     (setq Events (get Ep-events 1))
 	     (setq Fd     (get Ep-events 2))
 	     
-	     #(prinl (usec) " FD: " Fd ", Events: " Events)
+	     (prinl (usec) " FD: " Fd ", Events: " Events)
 
 	     (cond 
 	       ((= Fd (get *input 'li~fd-context))
 		(handle-context))
 	       ((= Fd (get *ipc 'ipc~listener))
-		(ipc~handle-sock-listen Events Fd))
+		(ipc~handle-sock-listen Events Fd *ep-fd))
 	       (T
-		(ipc~handle-sock-conn Events Fd))))))))
+		(ipc~handle-sock-conn Events Fd *ep-fd))))))))
 
 
 (de handle-context ()
@@ -134,11 +134,7 @@
     (prinl "...Called end-input")
 
     #Clean up sockets
-    (end-sock *sock-listen *ep-fd)
-    (for Sock *sock-connections
-	 (end-sock Sock *ep-fd))
-    (when *buf-rd
-      (native "@" "free" NIL *buf-rd))
+    (ipc~end-ipc *ipc)
 
     #Remove from epoll before end
     (ctl-epoll *ep-fd DEL (get *input 'fd-context) 0)
@@ -148,7 +144,12 @@
     #Clean up epoll
     (when *ep-events
       (native "@" "free" NIL *ep-events))
-    (close-filedes *ep-fd))
+    (close-filedes *ep-fd)
+    #create in ipc
+    #(for Sock *sock-connections
+    #(end-sock Sock *ep-fd))
+    (when *buf-rd
+      (native "@" "free" NIL *buf-rd)))   
 
 
 (de main ()
