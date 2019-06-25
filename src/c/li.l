@@ -1,15 +1,17 @@
-(class +Input)
+(symbols 'li 'pico)
+
+(class +Li)
 (dm T ()
-    (=: interface   (li-make-interface))
-    (=: context     (li-path-create-context (: interface) NIL))
-    (=: fd-context  (li-get-fd (: context)))
-    (li-add-devices (: context)))
+    (=: interface   (make-interface))
+    (=: context     (path-create-context (: interface) NIL))
+    (=: fd-context  (get-fd (: context)))
+    (add-devices (: context)))
 
 
-(dm li-end-input> ()
+(dm end-input> ()
     
     #This implicitly frees context
-    (li-unref (: context))
+    (unref (: context))
     (=: context NIL)
     (=: fd-context NIL)
 
@@ -18,7 +20,7 @@
       (=: interface NIL)))
 
 
-(de li-make-interface ()
+(de make-interface ()
     (let (Interface (native "@" "malloc" 'N 16) #libinput-interface struct
           OR (lisp 'handle-open-restricted
 	       '((Path Flags User-data)
@@ -31,18 +33,18 @@
 	      (cons CR 8))))
 
 
-(de li-add-devices (Context)
+(de add-devices (Context)
     (for File (dir DEVICES-PATH)
 	 (when (and (not (= File "by-id"))
 		    (not (= File "by-path")))
 	   (let (Filepath (pack DEVICES-PATH "/" File)
-                 Device (li-path-add-device Context Filepath))
+			  Device (path-add-device Context Filepath))
 	     (unless (= Device 0)
-	       (if (not (or (li-device-has-capability Device
-						      DEVICE-CAP-KEYBOARD)
-			    (li-device-has-capability Device
-						      DEVICE-CAP-POINTER)))
-		   (li-path-remove-device Device)))))))    
+	       (if (not (or (device-has-capability Device
+						   DEVICE-CAP-KEYBOARD)
+			    (device-has-capability Device
+						   DEVICE-CAP-POINTER)))
+		   (path-remove-device Device)))))))    
 
 
 #{
@@ -102,7 +104,7 @@ epoll_data_t data;      /* User data variable */
 (def 'SWITCH-TOGGLE 900)
 
 
-(de li-get-event-name (Type)
+(de get-event-name (Type)
     (case Type
       (0 'NONE)
       (1 'DEVICE-ADDED)
@@ -133,158 +135,158 @@ epoll_data_t data;      /* User data variable */
       (900 'SWITCH-TOGGLE)))
 
 
-(de li-unref (Context)
+(de unref (Context)
     (native "libinput.so" "libinput_unref" 'N Context))
 
-(de li-path-create-context (Interface User-date)
+(de path-create-context (Interface User-date)
     (native "libinput.so" "libinput_path_create_context" 'N Interface User-date))
 
-(de li-path-add-device (Context Path)
+(de path-add-device (Context Path)
     (native "libinput.so" "libinput_path_add_device" 'N Context Path))
 
-(de li-path-remove-device (Device)
+(de path-remove-device (Device)
     (native "libinput.so" "libinput_path_remove_device" NIL Device))
 
-(de li-get-fd (Context)
+(de get-fd (Context)
     (native "libinput.so" "libinput_get_fd" 'I Context))
 
-(de li-dispatch (Context)
+(de dispatch (Context)
     (native "libinput.so" "libinput_dispatch" 'I Context))
 
-(de li-device-has-capability (Device Capability)
+(de device-has-capability (Device Capability)
     (native "libinput.so" "libinput_device_has_capability" 'I Device Capability))
 
-(de li-device-ref (Device)
+(de device-ref (Device)
     (native "libinput.so" "libinput_device_ref" 'N Device))
 
-(de li-device-unref (Device)
+(de device-unref (Device)
     (native "libinput.so" "libinput_device_unref" 'N Device))
 
-(de li-get-event (Context)
+(de get-event (Context)
     (native "libinput.so" "libinput_get_event" 'N Context))
 
-(de li-event-get-type (Event)
+(de event-get-type (Event)
     (native "libinput.so" "libinput_event_get_type" 'I Event))
 
-(de li-event-destroy (Event)
+(de event-destroy (Event)
     (native "libinput.so" "libinput_event_destroy" NIL Event))
 
 
-(de li-event-get-keyboard-event (Event)
+(de event-get-keyboard-event (Event)
     (native "libinput.so" "libinput_event_get_keyboard_event" 'N Event))
 
-(de li-event-keyboard-get-time (Keyboard-event)
+(de event-keyboard-get-time (Keyboard-event)
     (native "libinput.so" "libinput_event_keyboard_get_time" 'I Keyboard-event))
 
-(de li-event-keyboard-get-time-usec (Keyboard-event)
+(de event-keyboard-get-time-usec (Keyboard-event)
     (native "libinput.so" "libinput_event_keyboard_get_time_usec" 'I Keyboard-event))
 
-(de li-event-keyboard-get-key (Keyboard-event)
+(de event-keyboard-get-key (Keyboard-event)
     (native "libinput.so" "libinput_event_keyboard_get_key" 'I Keyboard-event))
 
-(de li-event-keyboard-get-key-state (Keyboard-event)
+(de event-keyboard-get-key-state (Keyboard-event)
     (native "libinput.so" "libinput_event_keyboard_get_key_state" 'I Keyboard-event))
 
 
-(de li-event-get-pointer-event (Event)
+(de event-get-pointer-event (Event)
     (native "libinput.so" "libinput_event_get_pointer_event" 'N Event))
 
-(de li-event-pointer-get-time (Pointer-event)
+(de event-pointer-get-time (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_time" 'I Pointer-event))
 
-(de li-event-pointer-get-button (Pointer-event)
+(de event-pointer-get-button (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_button" 'I Pointer-event))
 
-(de li-event-pointer-get-button-state (Pointer-event)
+(de event-pointer-get-button-state (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_button_state" 'I Pointer-event))
 
-(de li-event-pointer-get-dx (Pointer-event)
+(de event-pointer-get-dx (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_dx" +1.0 Pointer-event))
 
-(de li-event-pointer-get-dy (Pointer-event)
+(de event-pointer-get-dy (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_dy" +1.0 Pointer-event))
 
-(de li-event-pointer-get-dx-unaccelerated (Pointer-event)
+(de event-pointer-get-dx-unaccelerated (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_dx_unaccelerated" +1.0 Pointer-event))
 
-(de li-event-pointer-get-dy-unaccelerated (Pointer-event)
+(de event-pointer-get-dy-unaccelerated (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_dy_unaccelerated" +1.0 Pointer-event))
 
 
-(de li-event-get-touch-event (Pointer-event)
+(de event-get-touch-event (Pointer-event)
     (native "libinput.so" "libinput_event_get_touch_event" 'N Pointer-event))
 
-(de li-event-touch-get-time (Touch-event)
+(de event-touch-get-time (Touch-event)
     (native "libinput.so" "libinput_event_touch_get_time" 'I Touch-event))
 
-(de li-event-touch-get-time-usec (Touch-event)
+(de event-touch-get-time-usec (Touch-event)
     (native "libinput.so" "libinput_event_touch_get_time_usec" 'N Touch-event))
 
-(de li-event-touch-get-slot get-time (Touch-event)
+(de event-touch-get-slot get-time (Touch-event)
     (native "libinput.so" "libinput_event_touch_get_slot" 'I Touch-event))
 
-(de li-event-touch-get-seat-slot get-time (Touch-event)
+(de event-touch-get-seat-slot get-time (Touch-event)
     (native "libinput.so" "libinput_event_touch_get_seat_slot" 'I Touch-event))
 
-(de li-event-touch-get-x (Touch-event)
+(de event-touch-get-x (Touch-event)
     (native "libinput.so" "libinput_event_touch_get_x" +1.0 Touch-event))
 
-(de li-event-touch-get-y (Touch-event)
+(de event-touch-get-y (Touch-event)
     (native "libinput.so" "libinput_event_touch_get_y" +1.0 Touch-event))
 
-(de li-event-touch-get-x-transformed (Touch-event Width)
+(de event-touch-get-x-transformed (Touch-event Width)
     (native "libinput.so" "libinput_event_touch_get_x_transformed" +1.0 Touch-event Width))
 
-(de li-event-touch-get-y-transformed (Touch-event Width)
+(de event-touch-get-y-transformed (Touch-event Width)
     (native "libinput.so" "libinput_event_touch_get_y_transformed" +1.0 Touch-event Height))
 
 
-(de li-event-get-tablet-tool-event (Tablet-tool-event)
+(de event-get-tablet-tool-event (Tablet-tool-event)
     (native "libinput.so" "libinput_event_get_tablet_tool_event" 'N Tablet-tool-event))
 
-(de li-event-tablet-tool-get-tool (Tablet-tool)
+(de event-tablet-tool-get-tool (Tablet-tool)
     (native "libinput.so" "libinput_event_tablet_tool_get_tool" 'N Tablet-tool))
 
-(de li-event-tablet-tool-get-x (Event)
+(de event-tablet-tool-get-x (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_x" +1.0 Event))
 
-(de li-event-tablet-tool-get-y (Event)
+(de event-tablet-tool-get-y (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_y" +1.0 Event))
 
 
-(de li-event-tablet-tool-get-pressure (Event)
+(de event-tablet-tool-get-pressure (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_pressure" +1.0 Event))
 
-(de li-event-tablet-tool-get-distance (Event)
+(de event-tablet-tool-get-distance (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_distance" +1.0 Event))
 
 
-(de li-tablet-tool-has-pressure (Tool)
+(de tablet-tool-has-pressure (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_pressure" 'I Tool))
 
-(de li-tablet-tool-has-distance (Tool)
+(de tablet-tool-has-distance (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_distance" 'I Tool))
 
-(de li-tablet-tool-has-tilt (Tool)
+(de tablet-tool-has-tilt (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_tilt" 'I Tool))
 
-(de li-tablet-tool-has-rotation (Tool)
+(de tablet-tool-has-rotation (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_rotation" 'I Tool))
  
-(de li-tablet-tool-has-slider (Tool)
+(de tablet-tool-has-slider (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_slider" 'I Tool))
 
-(de li-tablet-tool-has-wheel (Tool)
+(de tablet-tool-has-wheel (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_wheel" 'I Tool))
 
-(de li-tablet-tool-has-button (Tool Code)
+(de tablet-tool-has-button (Tool Code)
     (native "libinput.so" "libinput_tablet_tool_has_button" 'I Tool Code))
 
-(de li-tablet-tool-tip-state (Event)
+(de tablet-tool-tip-state (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_tip_state" 'I Event))
 
-(de li-event-tablet-tool-get-x-transformed (Touch-event Width)
+(de event-tablet-tool-get-x-transformed (Touch-event Width)
     (native "libinput.so" "libinput_event_tablet_tool_get_x_transformed" +1.0 Touch-event Width))
 
-(de li-event-tablet-tool-get-y-transformed (Touch-event Height)
+(de event-tablet-tool-get-y-transformed (Touch-event Height)
     (native "libinput.so" "libinput_event_tablet_tool_get_y_transformed" +1.0 Touch-event Height))

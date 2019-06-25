@@ -28,7 +28,7 @@
 
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/input.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/li.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
@@ -61,10 +61,10 @@
       
     
     (when T
-      (setq *input (new '(+Input)))
+      (setq *input (new '(li~+Li)))
       (ctl-epoll *ep-fd 
 		 ADD
-		 (get *input 'fd-context)
+		 (get *input 'li~fd-context)
 		 IN))
 
     
@@ -104,7 +104,7 @@
 	     #(prinl (usec) " FD: " Fd ", Events: " Events)
 
 	     (cond 
-	       ((= Fd (get *input 'fd-context))
+	       ((= Fd (get *input 'li~fd-context))
 		(handle-context))
 	       ((= Fd (get *ipc 'ipc~listener))
 		(ipc~handle-sock-listen Events Fd))
@@ -116,18 +116,18 @@
 
     (with *input
 
-    (li-dispatch (: context))
+    (li~dispatch (: li~context))
 
     (loop
-       (setq Event (li-get-event (: context)))
+       (setq Event (li~get-event (: li~context)))
        (T (= Event 0))
        
        #Copy event info then destroy
-       (let (Type (li-event-get-type Event))
-	 (prinl "Event: " (li-get-event-name Type)))
+       (let (Type (li~event-get-type Event))
+	 (prinl "Event: " (li~get-event-name Type)))
        
-       (li-event-destroy Event)
-       (li-dispatch (: context)))))
+       (li~event-destroy Event)
+       (li~dispatch (: li~context)))))
 
 
 (de end-input ()
