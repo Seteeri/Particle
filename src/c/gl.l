@@ -2,27 +2,27 @@
 
 
 (de viewport (X Y Width Height)
-    (native "libGL.so" "glViewport" NIL X Y Width Height))
+    (native "libGLESv2.so" "glViewport" NIL X Y Width Height))
 
 
 (de enable (Cap)
-    (native "libGL.so" "glEnable" NIL Cap))
+    (native "libGLESv2.so" "glEnable" NIL Cap))
 
 
 (de disable (Cap)
-    (native "libGL.so" "glDisable" NIL Cap))
+    (native "libGLESv2.so" "glDisable" NIL Cap))
 
 
 (de blend-func (Sfactor Dfactor)
-    (native "libGL.so" "glBlendFunc" NIL Sfactor Dfactor))
+    (native "libGLESv2.so" "glBlendFunc" NIL Sfactor Dfactor))
 
 
 (de clear (Mask)
-    (native "libGL.so" "glClear" NIL Mask))
+    (native "libGLESv2.so" "glClear" NIL Mask))
 
 
 (de clear-color (Red Green Blue Alpha)
-    (native "libGL.so" "glClearColor" NIL
+    (native "libGLESv2.so" "glClearColor" NIL
 	    (cons Red -1.0)
 	    (cons Green -1.0)
 	    (cons Blue -1.0)

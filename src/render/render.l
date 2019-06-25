@@ -27,8 +27,8 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/gl.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
 # Lisp libraries
 #...
 
@@ -62,15 +62,19 @@
 
 (de init-window ()
     (glfw~init-2)
-    
-    (glfw~window-hint glfw~CONTEXT-VERSION-MAJOR 3)
-    (glfw~window-hint glfw~CONTEXT-VERSION-MINOR 3)
-    (glfw~window-hint glfw~OPENGL-FORWARD-COMPAT glfw~TRUE)
-    (glfw~window-hint glfw~OPENGL-PROFILE        glfw~OPENGL-CORE-PROFILE)
 
+    #OpenGL ES only GL binding API that does not depend on GLX
+    #Migrate to Vulkan later...
+    (glfw~window-hint glfw~CONTEXT-VERSION-MAJOR 3)
+    (glfw~window-hint glfw~CONTEXT-VERSION-MINOR 2)
+    (glfw~window-hint glfw~CLIENT-API            glfw~OPENGL-ES-API)
+    (glfw~window-hint glfw~CONTEXT-CREATION-API  glfw~NATIVE-CONTEXT-API)
+    
     (let (Title (native "@" "malloc" 'N 10))
       (struct Title 'N (cons "Protoform" 32))
       (setq *window (glfw~create-window 640 480 Title 0 0))
+      (when (= *window 0)
+	(quit "(= *window 0)"))
       (native "@" "free" NIL Title))
     
     (glfw~make-context-current *window)
@@ -96,9 +100,9 @@
 		      1.0
 		      1.0
 		      0.0)
-      
+
       #(gl~clear (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
-    (native "libOpenGL.so" "glClear" NIL (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
+     (native "libGLESv2.so" "glClear" NIL (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
       
       (glfw~swap-buffers *window)
       (glfw~poll-events))
