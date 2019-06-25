@@ -53,48 +53,7 @@ IPC is a pair of sockets
     
     (=: nonblock-connection Nonblock-connection)
     (=: connection          (when Path-connection (connect-sock Path-connection Nonblock-connection)))
-    (=: fn-connection       Fn-connection)
-
-    
-    #Setup epoll data
-    #Polling can produce max 2 events since we are watching two sockets
-    (=: ep-events   (native "@" "malloc" 'N (* 12 2)))
-    (=: ep-fd       (epoll-create 1))
-
-    #Add FDs
-    (ctl-epoll *ep-fd ADD listener   (| IN ERR HUP RDHUP))
-    (ctl-epoll *ep-fd ADD connection (| IN ERR HUP RDHUP)))
-
-
-(dm poll-ipc> (Timeout)
-    #{
-    Poll events ASAP and enqueue for processing by controller thread
-    
-    epoll-wait:
-    * ep-events size should correspond to maxevents
-    * -1 = timeout = block/infinite
-    0 = return if nothing
-    * returns event count
-    }#
-
-    (let (Events NIL
-	  Fd     NIL)
-      (loop
-	 (setq num-events (epoll-wait (: ep-fd) (: ep-events) 2 Timeout))
-	 
-	 (when (> num-events 0)
-
-	   (let (Ep-events (struct (: ep-events) '(I I)))
-	     (setq Events (get Ep-events 1))
-	     (setq Fd     (get Ep-events 2))
-	     
-	     #(prinl (usec) " FD: " Fd ", Events: " Events)
-	     
-	     (cond 
-	       ((= Fd (: listener))
-		((: fn-listener) Events Fd))
-	       (T
-		((: fn-connection) Events Fd))))))))
+    (=: fn-connection       Fn-connection))
 
 
 (dm end-ipc> ()
@@ -103,10 +62,7 @@ IPC is a pair of sockets
     (when (: buf-wr)     (native "@" "free" NIL (: buf-wr)))  
 
     (when (: listener)   (end-sock (: listener) (: ep-fd)))
-    (when (: connection) (end-sock (: listener) (: ep-fd)))
-
-    (when (: ep-events)  (native "@" "free" NIL (: ep-events)))
-    (when (: ep-fd)      (close-filedes (: ep-fd))))
+    (when (: connection) (end-sock (: listener) (: ep-fd))))
 
 
 #{

@@ -53,7 +53,7 @@
 (de init-input ()
     
     (when T
-      (setq *ep-events (native "@" "malloc" 'N 12) #1 event
+      (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
 	    *ep-fd     (epoll-create 1)
 	    *buf-sz    (get-rmem-default)
 	    *buf-rd    (native "@" "malloc" 'N *buf-sz)))
@@ -77,7 +77,7 @@
 		 IN)))
 
 
-(de run-input ()
+(de run-input (Timeout)
     #{
     Poll events ASAP and enqueue for processing by controller thread
     
@@ -87,29 +87,29 @@
     0 = return if nothing
     * returns event count
     }#
-    
-    (println "Running")
 
+    (prinl "Polling...")
+    
     (let (Events NIL
 	  Fd     NIL)
       (loop
-	 
-	 (setq num-events (epoll-wait *ep-fd *ep-events 1 500))
+	 (setq num-events (epoll-wait *ep-fd *ep-events 2 Timeout))
 	 
 	 (when (> num-events 0)
 
-	   (setq Events (get (struct *ep-events '(I I)) 1))
-	   (setq Fd (get (struct *ep-events '(I I)) 2))
-	   
-	   #(prinl (usec) " FD: " Fd ", Events: " Events)
-	   
-	   (cond 
-	     ((= Fd (get *input 'fd-context))
-	      (handle-context))
-	     ((= Fd *sock-listen)
-	      (handle-sock-listen))
-	     (T
-	      (handle-sock-conn Events Fd)))))))
+	   (let (Ep-events (struct *ep-events '(I I)))
+	     (setq Events (get Ep-events 1))
+	     (setq Fd     (get Ep-events 2))
+	     
+	     #(prinl (usec) " FD: " Fd ", Events: " Events)
+
+	     (cond 
+	       ((= Fd (get *input 'fd-context))
+		(handle-context))
+	       ((= Fd *sock-listen)
+		(handle-sock-listen))
+	       (T
+		(handle-sock-conn Events Fd))))))))
 
 
 (de handle-sock-conn (Events Fd)
@@ -192,5 +192,5 @@
 (de main ()
     #(push '*Bye '(end-input))
     (init-input)
-    (run-input)
+    (run-input -1)
     (bye))
