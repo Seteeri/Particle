@@ -28,6 +28,7 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/gl.l")
 # Lisp libraries
 #...
 
@@ -36,7 +37,6 @@
 
 
 (de init-render ()
-    
     #{
     - Model can modify these during runtime through wire
     - Model will send (memcpy dest size offset)
@@ -49,6 +49,18 @@
     #(setq *mmap-projview       (init-mmap-projview))
     #(setq *mmap-tex-glyphs     (init-mmap-tex-glyphs))
 
+    (init-window)
+
+    (gl~viewport 0 0 640 480)
+
+    (gl~enable gl~CULL-FACE)
+    (gl~enable gl~DEPTH-TEST)
+    (gl~enable gl~BLEND)
+    (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA)
+        
+    T)
+
+(de init-window ()
     (glfw~init-2)
     
     (glfw~window-hint glfw~CONTEXT-VERSION-MAJOR 3)
@@ -79,6 +91,14 @@
     (while (= (glfw~window-should-close *window) 0)
       
       (println (usec))
+
+      (gl~clear-color 1.0
+		      1.0
+		      1.0
+		      0.0)
+      
+      #(gl~clear (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
+    (native "libOpenGL.so" "glClear" NIL (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
       
       (glfw~swap-buffers *window)
       (glfw~poll-events))
