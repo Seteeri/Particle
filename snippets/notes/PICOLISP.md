@@ -133,12 +133,13 @@ Store DAGs as binary trees?
      * Render connects to Model
      * Model  connects to Input
      * None   connects to Render
-     * Abstract out epoll server and instance in each process
+     * Abstract out epoll server and instance in each process [done]
 
   * TODO
-    * Implement render process
-    * Implement controller process
+    * Implement Render
     * Implement Wayland
+    * Implement IPC flow
+    * Implement controller process [later]    
   
   * DONE
     * Implement input process/server [done]
@@ -147,7 +148,9 @@ Store DAGs as binary trees?
 * Refactor/Fix
 
     * Refactor namespaces 
-
+      * posix
+      * mathc
+      
     * Fix native calls, ensure backtick before library symbol
     * Prefix constants with lib name
     * Remove sending init params mmap -> Render will load on startup

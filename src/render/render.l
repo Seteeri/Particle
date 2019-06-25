@@ -25,14 +25,15 @@
 
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/os.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
 # Lisp libraries
 #...
 
-(de print-render (Ctx
-		  Str)
-    (println "RENDER" *Pid Ctx Ctr))
+
+(def '*window)
+
 
 (de init-render ()
     
@@ -47,19 +48,47 @@
     #(setq *mmap-element        (init-mmap-element))
     #(setq *mmap-projview       (init-mmap-projview))
     #(setq *mmap-tex-glyphs     (init-mmap-tex-glyphs))
+
+    (glfw~init-2)
     
-    NIL)
+    (glfw~window-hint glfw~CONTEXT-VERSION-MAJOR 3)
+    (glfw~window-hint glfw~CONTEXT-VERSION-MINOR 3)
+    (glfw~window-hint glfw~OPENGL-FORWARD-COMPAT glfw~TRUE)
+    (glfw~window-hint glfw~OPENGL-PROFILE        glfw~OPENGL-CORE-PROFILE)
+
+    (let (Title (native "@" "malloc" 'N 10))
+      (struct Title 'N (cons "Protoform" 32))
+      (setq *window (glfw~create-window 640 480 Title 0 0))
+      (native "@" "free" NIL Title))
+    
+    (glfw~make-context-current *window)
+    
+    (glfw~set-key-callback *window
+			   (lisp 'key-callback
+				 '((Window Key Scancode Action Mods)
+				   (when (and (= (struct Key 'I)    glfw~KEY-ESCAPE)
+					      (= (struct Action 'I) glfw~PRESS))
+				     (glfw~set-window-should-close (struct Window 'N) glfw~TRUE))))))
+
 
 (de run-render ()
     #After connecting, start processing messages
     #Render will send frame start and wait for frame end
     #Up to model to perform time management
 
-    T)
+    (while (= (glfw~window-should-close *window) 0)
+      
+      (println (usec))
+      
+      (glfw~swap-buffers *window)
+      (glfw~poll-events))
 
-(symbols 'pico)
+    (glfw~destroy-window *window)
+    (glfw~terminate))
+
+
 (de main ()
-    (render~init-render)
-    (render~run-render)
+    (init-render)
+    (run-render)
     (println 'Exiting...)
     (bye))

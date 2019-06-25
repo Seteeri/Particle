@@ -128,10 +128,10 @@
     #Up to model to perform time management    
     T)
 
-(symbols 'pico)
+
 (de main ()
-    (model~init-model)
-    (model~run-model)
+    (init-model)
+    (run-model)
     (println 'Exiting...)
     (bye))
 
