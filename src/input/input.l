@@ -17,7 +17,7 @@
 
 # C library paths
 
-# UDS paths
+# Paths
 (def 'PATH-UDS-MODEL "/tmp/protoform-model.socket")
 (def 'PATH-UDS-INPUT "/tmp/protoform-input.socket")
 
@@ -31,9 +31,17 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/input.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
 # Lisp libraries
+(load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 
 
-(def 'DEVICES-PATH "/dev/input")
+#Globals
+(def '*ep-events)
+(def '*ep-fd)
+(def '*buf-sz)
+(def '*buf-rd)
+(def '*input)
+(def '*sock-listen)
+(def '*sock-connections)
 
 
 (de get-rmem-default ()
@@ -41,46 +49,32 @@
      (call "cat" "/proc/sys/net/core/rmem_default")
      (read)))
 
-(de init-input ()   
-    (setq *interface   (li-make-interface)
-	  *context     (li-path-create-context *interface NIL)
-	  *fd-li       (li-get-fd *context)
-	  *ep-events   (native "@" "malloc" 'N 12) #1 event
-	  *ep-fd       (epoll-create 1)
-	  *buf-sz      (get-rmem-default)
-	  *buf-rd      (native "@" "malloc" 'N *buf-sz))
 
+(de init-input ()
     
-    (init-devices *context)
+    (when T
+      (setq *ep-events (native "@" "malloc" 'N 12) #1 event
+	    *ep-fd     (epoll-create 1)
+	    *buf-sz    (get-rmem-default)
+	    *buf-rd    (native "@" "malloc" 'N *buf-sz)))
+      
     
-    #Add FDs to epoll - watch for incomming data
-    (when NIL
+    (when T
+      (setq *input (new '(+Input)))
       (ctl-epoll *ep-fd 
 		 ADD
-		 *fd-li
+		 (get *input 'fd-context)
 		 IN))
-
-    (when T
-      (setq *sock-listen (listen-sock PATH-UDS-INPUT 'block)))
+    
+    
+    (when NIL
+      (setq *sock-listen      (listen-sock PATH-UDS-INPUT 'block)
+	    *sock-connections ())
       
       (ctl-epoll *ep-fd 
 		 ADD
 		 *sock-listen
-		 IN))
-
-
-(de init-devices (Context)
-    (for File (dir DEVICES-PATH)
-	 (when (and (not (= File "by-id"))
-		    (not (= File "by-path")))
-	   (let (Filepath (pack DEVICES-PATH "/" File)
-			  Device (li-path-add-device Context Filepath))
-	     (unless (= Device 0)
-	       (if (not (or (li-device-has-capability Device
-						      DEVICE-CAP-KEYBOARD)
-			    (li-device-has-capability Device
-						      DEVICE-CAP-POINTER)))
-		   (li-path-remove-device Device)))))))
+		 IN)))
 
 
 (de run-input ()
@@ -110,7 +104,7 @@
 	   #(prinl (usec) " FD: " Fd ", Events: " Events)
 	   
 	   (cond 
-	     ((= Fd *fd-li)
+	     ((= Fd (get *input 'fd-context))
 	      (handle-context))
 	     ((= Fd *sock-listen)
 	      (handle-sock-listen))
@@ -151,15 +145,19 @@
 		 Sock
 		 (| IN ERR HUP RDHUP))
 
-      #(native "@" "write" 'I Sock Msg (+ (length Msg) 0))
+      (prinl "Connect sock: " Sock)
       
       T))
 
 
 (de handle-context ()
-    (li-dispatch *context)
+
+    (with *input
+
+    (li-dispatch (: context))
+
     (loop
-       (setq Event (li-get-event *context))
+       (setq Event (li-get-event (: context)))
        (T (= Event 0))
        
        #Copy event info then destroy
@@ -167,12 +165,32 @@
 	 (prinl "Event: " (li-get-event-name Type)))
        
        (li-event-destroy Event)
-       (li-dispatch *context)))
+       (li-dispatch (: context)))))
 
 
-(symbols 'pico)
+(de end-input ()
+    (prinl "...Called end-input")
+
+    #Clean up sockets
+    (end-sock *sock-listen *ep-fd)
+    (for Sock *sock-connections
+	 (end-sock Sock *ep-fd))
+    (when *buf-rd
+      (native "@" "free" NIL *buf-rd))
+
+    #Remove from epoll before end
+    (ctl-epoll *ep-fd DEL (get *input 'fd-context) 0)
+    #(println +Input li-end-input> *input)
+    (li-end-input> *input)
+    
+    #Clean up epoll
+    (when *ep-events
+      (native "@" "free" NIL *ep-events))
+    (close-filedes *ep-fd))
+
 
 (de main ()
-    (input~init-input)
-    (input~run-input)
+    #(push '*Bye '(end-input))
+    (init-input)
+    (run-input)
     (bye))

@@ -1,3 +1,50 @@
+(class +Input)
+(dm T ()
+    (=: interface   (li-make-interface))
+    (=: context     (li-path-create-context (: interface) NIL))
+    (=: fd-context  (li-get-fd (: context)))
+    (li-add-devices (: context)))
+
+
+(dm li-end-input> ()
+    
+    #This implicitly frees context
+    (li-unref (: context))
+    (=: context NIL)
+    (=: fd-context NIL)
+
+    (when (: interface)
+      (native "@" "free" NIL (: interface))
+      (=: interface NIL)))
+
+
+(de li-make-interface ()
+    (let (Interface (native "@" "malloc" 'N 16) #libinput-interface struct
+          OR (lisp 'handle-open-restricted
+	       '((Path Flags User-data)
+		 (native "@" "open" 'I (struct Path 'S) (struct Flags 'I))))
+	  CR (lisp 'handle-close-restricted
+	       '((Fd User-data)
+		 (native "@" "close" 'I (struct Fd 'I)))))
+      (struct Interface 'N
+	      (cons OR 8)
+	      (cons CR 8))))
+
+
+(de li-add-devices (Context)
+    (for File (dir DEVICES-PATH)
+	 (when (and (not (= File "by-id"))
+		    (not (= File "by-path")))
+	   (let (Filepath (pack DEVICES-PATH "/" File)
+                 Device (li-path-add-device Context Filepath))
+	     (unless (= Device 0)
+	       (if (not (or (li-device-has-capability Device
+						      DEVICE-CAP-KEYBOARD)
+			    (li-device-has-capability Device
+						      DEVICE-CAP-POINTER)))
+		   (li-path-remove-device Device)))))))    
+
+
 #{
 typedef union epoll_data {
 void    *ptr;
@@ -13,6 +60,10 @@ epoll_data_t data;      /* User data variable */
 };
 # 4+(8+4+4+8)
 }#
+
+
+(def 'DEVICES-PATH "/dev/input")
+
 
 (def 'DEVICE-CAP-KEYBOARD 0)
 (def 'DEVICE-CAP-POINTER 1)
@@ -237,16 +288,3 @@ epoll_data_t data;      /* User data variable */
 
 (de li-event-tablet-tool-get-y-transformed (Touch-event Height)
     (native "libinput.so" "libinput_event_tablet_tool_get_y_transformed" +1.0 Touch-event Height))
-
-
-(de li-make-interface ()
-    (let (Interface (native "@" "malloc" 'N 16) #libinput-interface struct
-          OR (lisp 'handle-open-restricted
-	       '((Path Flags User-data)
-		 (native "@" "open" 'I (struct Path 'S) (struct Flags 'I))))
-	  CR (lisp 'handle-close-restricted
-	       '((Fd User-data)
-		 (native "@" "close" 'I (struct Fd 'I)))))
-      (struct Interface 'N
-	      (cons OR 8)
-	      (cons CR 8))))

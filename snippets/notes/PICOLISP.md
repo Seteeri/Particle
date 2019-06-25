@@ -120,6 +120,8 @@ Store DAGs as binary trees?
 
 * Migrate Protoform to PicoLisp
 
+  - Each process needs to run server/client
+    - Can plugin in and eval to any of them
   - Input (exec immediately or @model)
       |
       V
@@ -127,6 +129,11 @@ Store DAGs as binary trees?
       |
       V
     Render
+
+     * Render connects to Model
+     * Model  connects to Input
+     * None   connects to Render
+     * Abstract out epoll server and instance in each process
 
   * TODO
     * Implement render process

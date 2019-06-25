@@ -202,3 +202,13 @@
 	    
 	    (native "@" "free" NIL Sockaddr)
 	    Ret)))
+
+
+(de end-sock (Sock Ep-fd)
+    (when Ep-fd
+      (ctl-epoll Ep-fd
+		 DEL
+		 Sock
+		 0))
+    (shutdown Sock SHUT-RDWR)
+    (close-filedes Sock))

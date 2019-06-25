@@ -1925,3 +1925,27 @@ Called close-restricted
 Called open-restricted
 Called open-restricted
 Called close-restricted
+
+
+################################################################################
+
+Possible Bug!
+
+input.l:
+
+(class +Input)
+(dm T ())
+(dm test> () T)
+
+
+main.l:
+
+(load "input.l")
+
+(def '*input)
+
+(de end-main ()
+  (test> *input))
+
+(de main ()
+    (push '*Bye '(end-main)))
