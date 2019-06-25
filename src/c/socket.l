@@ -202,11 +202,17 @@
 	    Ret)))
 
 
-(de end (Sock Ep-fd)
-    (when Ep-fd
-      (ctl-epoll Ep-fd
-		 DEL
-		 Sock
-		 0))
+(de end (Sock)
     (shutdown Sock SHUT-RDWR)
-    (close-filedes Sock))
+    (close Sock))
+
+(de read-rmem-default ()
+    (pipe
+     (call "cat" "/proc/sys/net/core/rmem_default")
+     (read)))
+
+
+(de read-wmem-default ()
+    (pipe
+     (call "cat" "/proc/sys/net/core/wmem_default")
+     (read)))

@@ -21,18 +21,6 @@ IPC is a pair of sockets
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 
 
-(de get-rmem-default ()
-    (pipe
-     (call "cat" "/proc/sys/net/core/rmem_default")
-     (read)))
-
-
-(de get-wmem-default ()
-    (pipe
-     (call "cat" "/proc/sys/net/core/wmem_default")
-     (read)))
-
-
 (class +IPC)
 (dm T (Path-listener   Nonblock-listener
        Path-connection Nonblock-connection)
@@ -41,9 +29,9 @@ IPC is a pair of sockets
 
     #Only need 1 pair for all sockets
     #Since each buffer can be simultaneously used in an instance
-    (=: sz-buf-rd (get-rmem-default))
+    (=: sz-buf-rd (socket~read-rmem-default))
     (=: buf-rd    (native "@" "malloc" 'N *buf-sz))
-    (=: sz-buf-wr (get-wmem-default))
+    (=: sz-buf-wr (socket~read-wmem-default))
     (=: buf-wr    (native "@" "malloc" 'N *buf-sz))
 
     (=: nonblock-listener Nonblock-listener)
@@ -58,8 +46,8 @@ IPC is a pair of sockets
     (when (: buf-rd)     (native "@" "free" NIL (: buf-rd)))
     (when (: buf-wr)     (native "@" "free" NIL (: buf-wr)))  
 
-    (when (: listener)   (socket~end (: listener) (: ep-fd)))
-    (when (: connection) (socket~end (: listener) (: ep-fd))))
+    (when (: listener)   (socket~end (: listener)))
+    (when (: connection) (socket~end (: listener))))
 
 
 (de handle-sock-conn (Events Fd Ep-fd)
@@ -75,14 +63,14 @@ IPC is a pair of sockets
 	  
 	  #If epoll saying data to read, however recv is 0
 	  #that indicates socket hung-up or errored out
-	  (when (or (= (& Events ERR) ERR)
-		    (= (& Events HUP) HUP)
-		    (= (& Events RDHUP) RDHUP))
+	  (when (or (= (& Events epoll~ERR) epoll~ERR)
+		    (= (& Events epoll~HUP) epoll~HUP)
+		    (= (& Events epoll~RDHUP) epoll~RDHUP))
 	    
-	    (ctl-epoll Ep-fd
-		       DEL
-		       Sock
-		       0)
+	    (epoll~ctl-epfd Ep-fd
+			    epoll~DEL
+			    Sock
+			    0)
 	    (socket~shutdown Fd socket~SHUT-RDWR)
 	    #Use builtin close
 	    (close Fd)
@@ -97,11 +85,11 @@ IPC is a pair of sockets
           Msg "Welcome User")
       
       #Add sock to epoll
-      (ctl-epoll Ep-fd
-		 ADD
-		 Sock
-		 (| IN ERR HUP RDHUP))
+      (epoll~ctl-epfd Ep-fd
+		      epoll~ADD
+		      Sock
+		      (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
 
-      (prinl "Connect sock: " Sock " with " (| IN ERR HUP RDHUP))
+      (prinl "Connect sock: " Sock " with " (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
       
       T))

@@ -1,4 +1,4 @@
-#epoll stuff
+(symbols 'epoll 'pico)
 
 #enum events
 (def 'IN (hex "001"))
@@ -38,32 +38,32 @@
 }#
 
 
-(de epoll-create (Size)
+(de create-size (Size)
     (native "@" "epoll_create" 'I Size))
 
 
-(de epoll-create-1 (Flags)
+(de create-1 (Flags)
     (native "@" "epoll_create1" 'I Flags))
 
 
-(de epoll-ctl (Epfd Op Fd Event)
+(de ctl-epfd-op (Epfd Op Fd Event)
     (native "@" "epoll_ctl" 'I Epfd Op Fd Event))
 
 
-(de epoll-wait (Epfd Event Maxevents Timeout)
+(de wait-epfd (Epfd Event Maxevents Timeout)
     (native "@" "epoll_wait" 'I Epfd Event Maxevents Timeout))
 
 
-(de epoll-pwait (Epfd Event Maxevents Timeout Ss)
+(de pwait (Epfd Event Maxevents Timeout Ss)
     (native "@" "epoll_pwait" 'I Epfd Event Maxevents Timeout Ss))
 
 
-(de ctl-epoll (Epfd Op Fd Flags)
+(de ctl-epfd (Epfd Op Fd Flags)
     #Possibly use automatic variables, allocated on the stack
     (let Event (native "@" "malloc" 'N 12)
 	 (struct Event 'N (cons Flags 4) (cons Fd 4))
-	 (epoll-ctl Epfd
-		    Op
-		    Fd
-		    Event)
+	 (ctl-epfd-op Epfd
+		      Op
+		      Fd
+		      Event)
 	 (native "@" "free" NIL Event)))

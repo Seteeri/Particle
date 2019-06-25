@@ -55,26 +55,26 @@
     
     (when T
       (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
-	    *ep-fd     (epoll-create 1)
-	    *buf-sz    (get-rmem-default)
+	    *ep-fd     (epoll~create-size 1)
+	    *buf-sz    (socket~read-rmem-default)
 	    *buf-rd    (native "@" "malloc" 'N *buf-sz)))
       
     
     (when NIL
       (setq *input (new '(li~+Li)))
-      (ctl-epoll *ep-fd 
-		 ADD
-		 (get *input 'li~fd-context)
-		 IN))
+      (epoll~ctl-epfd *ep-fd
+		      epoll~ADD
+		      (get *input 'li~fd-context)
+		      epoll~IN))
 
     
     (when T
       (setq *ipc (new '(ipc~+IPC) PATH-UDS-INPUT 'block
 		                  ""            'block))
-      (ctl-epoll *ep-fd 
-		 ADD
-		 (get *ipc 'ipc~listener)
-		 IN)))
+      (epoll~ctl-epfd *ep-fd 
+		      epoll~ADD
+		      (get *ipc 'ipc~listener)
+		      epoll~IN)))
 
 
 (de run-input (Timeout)
@@ -93,7 +93,7 @@
     (let (Events NIL
 	  Fd     NIL)
       (loop
-	 (setq num-events (epoll-wait *ep-fd *ep-events 2 Timeout))
+	 (setq num-events (epoll~wait-epfd *ep-fd *ep-events 2 Timeout))
 	 
 	 (when (> num-events 0)
 
@@ -134,17 +134,19 @@
     (prinl "...Called end-input")
 
     #Clean up sockets
+    (epoll~ctl-epfd *ep-fd epoll~DEL (get *ipc 'ipc~listener) 0)
+    (epoll~ctl-epfd *ep-fd epoll~DEL (get *ipc 'ipc~connection) 0)
     (ipc~end-ipc *ipc)
 
     #Remove from epoll before end
-    (ctl-epoll *ep-fd DEL (get *input 'fd-context) 0)
+    (epoll~ctl-epfd *ep-fd epoll~DEL (get *input 'fd-context) 0)
     #(println +Input li-end-input> *input)
     (li-end-input> *input)
     
     #Clean up epoll
     (when *ep-events
       (native "@" "free" NIL *ep-events))
-    (close-filedes *ep-fd)
+    (close *ep-fd)
     #create in ipc
     #(for Sock *sock-connections
     #(end-sock Sock *ep-fd))
