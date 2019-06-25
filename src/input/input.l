@@ -70,10 +70,15 @@
     
     (when T
       (setq *ipc (new '(ipc~+IPC) PATH-UDS-INPUT 'block
-		                  ""            'block))
+		                  PATH-UDS-MODEL 'block))
       (epoll~ctl-epfd *ep-fd 
 		      epoll~ADD
 		      (get *ipc 'ipc~listener)
+		      epoll~IN)
+
+      (epoll~ctl-epfd *ep-fd 
+		      epoll~ADD
+		      (get *ipc 'ipc~connection)
 		      epoll~IN)))
 
 
