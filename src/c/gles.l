@@ -17,7 +17,8 @@
     (native "libGLESv2.so" "glBlendFunc" NIL Sfactor Dfactor))
 
 
-(de clear (Mask)
+#Why does "clear" work?
+(de clear-mask (Mask)
     (native "libGLESv2.so" "glClear" NIL Mask))
 
 

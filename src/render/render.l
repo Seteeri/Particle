@@ -100,9 +100,7 @@
 		      1.0
 		      1.0
 		      0.0)
-
-      #(gl~clear (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
-     (native "libGLESv2.so" "glClear" NIL (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
+      (gl~clear-mask (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
       
       (glfw~swap-buffers *window)
       (glfw~poll-events))

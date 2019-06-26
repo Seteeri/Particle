@@ -136,9 +136,9 @@ Store DAGs as binary trees?
      * Abstract out epoll server and instance in each process [done]
 
   * TODO
-    * Implement Render
-    * Implement Wayland
-    * Implement IPC flow
+    * Implement Render [WIP]
+    * Integrate everything to last working state
+    * Implement Wayland [NXT]
     * Implement controller process [later]    
   
   * DONE
