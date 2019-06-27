@@ -136,6 +136,14 @@
     (native "libGLESv2.so" "glBufferData" Target Size Data Usage))
 
 
+(de active-texture (Texture)
+    (native "libGLESv2.so" "glActiveTexture" NIL Texture))
+
+
+(de tex-buffer (Target Internal-format Buffer)
+    (native "libGLESv2.so" "glTexBuffer" NIL Target Internal-format Buffer))
+
+
 
 
 (mapc '((X) (def (car X) (hex (cadr X))))

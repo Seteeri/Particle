@@ -64,46 +64,33 @@
 
     #Init buffers/resources
     #Glyphs will be loaded during texture buffer object creation
-    #(init-buffer-objects)
+    (init-buffer-objects)
+    #(init-textures-glyph)
 
-    #(new '(gl~+Buffer-Object))
-    #(bye)
+    #{
+    (gl:use-program (prog-rast-msdf *render*))
+    (init-buff-rast-msdf params-model)
+
+    (gl:use-program (prog-compute *render*))
+    (init-buff-compute params-model)
+    }#
+    
+    #Init pipeline
+    #(init-prog-rast)
+    #(init-prog-comp)
+
+    #Use program raster
+
+    #At this point, shm already has data loaded by model
+    #so copy to OpenGL buffers
+    (memcpy-shm-to-all)
+    
+    (bye)
 
     #Should not copy all data every frame - waste
     #Try single buffer + persistent mapping + coherent
     #Disable draw flag for node, before copying data, then enable after
-    
-    #{
-    (defun setup-render (params-model)
-  
-      (fmt-render "setup-render" "Initializing shm handles~%")
-      (init-handles-shm params-model)
 
-      (fmt-render "setup-render" "Initializing buffer object caches~%")
-      (init-bo-caches params-model)
-
-      (fmt-render "setup-render" "Initializing buffer object steps~%")
-      (init-bo-step params-model)
-
-      (fmt-render "setup-render" "Initializing shader bindings~%")
-      ;; Shader specific initialization
-      (gl:use-program (prog-rast-msdf *render*))
-      (init-buff-rast-msdf params-model)
-      (gl:use-program (prog-compute *render*))
-      (init-buff-compute params-model)
-
-      ;; At this point, shm already has data loaded by model
-      ;; so copy to OpenGL buffers
-      (memcpy-shm-to-all)
-
-      (fmt-render "setup-render" "Finished initializing shm handles~%"))
-    }#
-    
-
-    #Init pipeline
-    #(init-prog-rast)
-    #(init-prog-comp)
-    
     T)
 
 (de init-window ()
@@ -160,6 +147,52 @@
 		    epoll~ADD
 		    (get *ipc 'ipc~connection)
 		    epoll~IN))
+
+
+(de init-buffer-objects ()
+    #Get params from file
+
+    #{
+    Notes:
+    * Some buffers have a different bind layout per shader stage
+    * Texture requires setting fmt after and other ops
+    * Set initial data for buffers element and draw-indirect
+    * glMapNamedBuffer is unavailable so
+    * to persistently map the buffer, it needs to be bound...
+    * to bind a buffer, requires an appropriate program
+    * What is the behavior when binding a buffer with no program bound?
+    * Doesn't matter here...
+    }#
+    (for Params Params-shm
+
+	 (target
+	  path
+	  size
+	  bind-cs
+	  bind-vs
+	  count-buffer
+	  flag-copy
+	  &rest rest)
+
+	 (let Buffer (new '(gl~+Buffer-Object
+			    Size
+			    Buffer
+			    Target
+			    (if (> bind-vs -1) bind-vs bind-cs)
+			    T))
+	   
+	      #(setf (gethash path bo-step) Buffer)
+	      
+	      (when (= target 'texture-buffer)
+		
+		;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+		;; Already active...
+		(gl~active-texture 'texture0)
+		
+		(update-binding-buffer Buffer)
+		(gl~tex-buffer 'texture-buffer
+			       (first rest) ; rgba8
+			       Buffer)))))
 
 
 (de run-render ()
