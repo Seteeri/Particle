@@ -18,8 +18,9 @@
 # C library paths
 
 # Paths
-(def 'PATH-UDS-MODEL "/tmp/protoform-model.socket")
-(def 'PATH-UDS-INPUT "/tmp/protoform-input.socket")
+(def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
+(def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
+(def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
 
 
 # Set math precision to 6 decimals

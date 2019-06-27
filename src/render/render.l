@@ -18,6 +18,8 @@
 (def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 (def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 # UDS paths
+(def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
+(def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
 
 # Set math precision to 6 decimals
@@ -27,10 +29,14 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/gles.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/gl/es.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
 # Lisp libraries
 #...
+(load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
+#(load "/home/user/quicklisp/local-projects/protoform/src/render/raster.l")
+#(load "/home/user/quicklisp/local-projects/protoform/src/render/compute.l")
 
 
 (def '*window)
@@ -51,13 +57,53 @@
 
     (init-window)
 
-    (gl~viewport 0 0 640 480)
+    (init-gl)
 
-    (gl~enable gl~CULL-FACE)
-    (gl~enable gl~DEPTH-TEST)
-    (gl~enable gl~BLEND)
-    (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA)
-        
+    (when NIL
+      (init-ipc))
+
+    #Init buffers/resources
+    #Glyphs will be loaded during texture buffer object creation
+    #(init-buffer-objects)
+
+    #(new '(gl~+Buffer-Object))
+    #(bye)
+
+    #Should not copy all data every frame - waste
+    #Try single buffer + persistent mapping + coherent
+    #Disable draw flag for node, before copying data, then enable after
+    
+    #{
+    (defun setup-render (params-model)
+  
+      (fmt-render "setup-render" "Initializing shm handles~%")
+      (init-handles-shm params-model)
+
+      (fmt-render "setup-render" "Initializing buffer object caches~%")
+      (init-bo-caches params-model)
+
+      (fmt-render "setup-render" "Initializing buffer object steps~%")
+      (init-bo-step params-model)
+
+      (fmt-render "setup-render" "Initializing shader bindings~%")
+      ;; Shader specific initialization
+      (gl:use-program (prog-rast-msdf *render*))
+      (init-buff-rast-msdf params-model)
+      (gl:use-program (prog-compute *render*))
+      (init-buff-compute params-model)
+
+      ;; At this point, shm already has data loaded by model
+      ;; so copy to OpenGL buffers
+      (memcpy-shm-to-all)
+
+      (fmt-render "setup-render" "Finished initializing shm handles~%"))
+    }#
+    
+
+    #Init pipeline
+    #(init-prog-rast)
+    #(init-prog-comp)
+    
     T)
 
 (de init-window ()
@@ -87,11 +133,40 @@
 				     (glfw~set-window-should-close (struct Window 'N) glfw~TRUE))))))
 
 
+(de init-gl ()
+    #Get width height from args
+    (gl~viewport 0 0 640 480)
+    (gl~enable gl~CULL-FACE)
+    (gl~enable gl~DEPTH-TEST)
+    (gl~enable gl~BLEND)
+    (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA))
+
+
+(de init-ipc ()
+    (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
+	  *ep-fd     (epoll~create-size 1)
+	  *buf-sz    (socket~read-rmem-default)
+	  *buf-rd    (native "@" "malloc" 'N *buf-sz))
+    
+    (setq *ipc (new '(ipc~+IPC) PATH-UDS-RENDER 'block
+		    PATH-UDS-MODEL 'block))
+    
+    (epoll~ctl-epfd *ep-fd 
+		    epoll~ADD
+		    (get *ipc 'ipc~listener)
+		    epoll~IN)
+    
+    (epoll~ctl-epfd *ep-fd 
+		    epoll~ADD
+		    (get *ipc 'ipc~connection)
+		    epoll~IN))
+
+
 (de run-render ()
     #After connecting, start processing messages
     #Render will send frame start and wait for frame end
     #Up to model to perform time management
-
+    
     (while (= (glfw~window-should-close *window) 0)
       
       (println (usec))

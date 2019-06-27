@@ -137,6 +137,13 @@ Store DAGs as binary trees?
 
   * TODO
     * Implement Render [WIP]
+      * THR - setup-render: glyphs, bos
+        * Port buffer-object to gl-bo
+        * Init GL buffer objects
+        * Load data and glyphs
+        * Init programs...
+      * FRI - prog-rast/prog-comp
+      * SAT - test pipeline
     * Integrate everything to last working state
     * Implement Wayland [NXT]
     * Implement controller process [later]    
@@ -146,6 +153,14 @@ Store DAGs as binary trees?
     * Implement model process [done]  
   
 * Refactor/Fix
+
+    * IPC
+      * IPC can take in list of connections
+      * Pass option to create epoll instance
+      * Pass handler functions in
+
+    * Refactor bindings
+      * Direct C calls use original C name
 
     * Refactor namespaces 
       * posix

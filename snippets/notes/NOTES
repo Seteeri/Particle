@@ -1629,7 +1629,6 @@ cross references exist - naturally copying/moving/compacting
 
 ###############################################################################
 
-#{
 Rename Protoform to Particle?
 
 User creates cells and builds up nums, syms, cons', nils'
@@ -1668,31 +1667,25 @@ Everything represented as vertices -> functions are the same on every level
          +-----+-----+
          TAIL     HEAD
 
-Typing characters produces transient symbol characters
+Typing characters produces transient symbol characters with the CDR being shown
+by default (the value).
 
 "h" "e" "l" "l" "o"
 
-      (   .   )
-            |
-            | (Symbol Ptr)
-            |
-            V
-            
-      +-----+-----+
-      |  |  | VAL |  <- only part displayed, which is below cons
-      +--+--+-----+
-         |     |
-         |-----+
-         V
-      +----------+---------+
-      |'olleh'   |   NIL   |
-      +----------+---------+
-
-      (double check this - 'olleh' might just be CAR of symbol)
+      +-----------------+
+      |                 |
+      V                 |
+      +-------+-----+   |
+      |  'H'  | PTR |---+
+      +---+---+-----+
 
 Links represent pointers
 - Each char is individual symbol so not linked
 - If chars were in a list, there'd be lines
+
+With chars, can move independently since they are different symbols and thus
+different memory blocks. If they are to be moved together, they must be packed
+and vice versa for the opposite.
 
 User can choose to see CAR/CDR/CONS:
 - Atoms
@@ -1706,6 +1699,7 @@ User can choose to see CAR/CDR/CONS:
     - Anon: show ptr
       - CDR: NIL
       - CAR: 0 (number in encoded pointer)
+        - (= (cons 0 NIL) (box)) : same content at different addresses
     - External: Internal
     - NIL: just another symbol sort of...show NIL/""/()...only defined once
   - Number: show number cells, shortnum=pointer, large numbers=cons
@@ -1718,76 +1712,82 @@ User can choose to see CAR/CDR/CONS:
 - Cons
   - Pair: show CAR/CDR...for lists it works also recursively
 
-(dasm sym) = draw individual cons cells:
 
-"h" "e" "l" "l" "o" - take "h"
+Abstract:
 
       (default transient symbol)
-      
-              +---------+
-              |         |
-              V         |
-      +-------+-----+   |
-      |  'h'  | PTR |---+
-      +---+---+-----+
 
-Becomes:
- 
- h
- |
- 12345678|12345678
+      +---------------------+
+      |                     |
+      V                     |
+      +--------+--------+   |
+      |  'H'   |   PTR  |---+
+      +---+----+--------+
 
-- Can further convert between integer-binary-hex
-- Contiguous memory (1...N bytes) moves together
-- Pointers are separate sections of contiguous memory linked together
-+ (space between numbers < advance so user can differentiate it, like half, but not more otherwise it appears as separate symbol
+  * Single cons cell = contiguous memory of 16 bytes = 2 words
+  * Pointers are separate sections of contiguous memory linked together
+  * Poss laterally convert between integer-binary-hex (number formats)
+  * Basically, type can be derived graphically/structurally
+  * Could put CAR/CDR together and color to differentiate (or other method)
 
-So with characters, they can be moved independently, but if they are packed
-they move together. Thus if packed and characters need to be moved independently,
-must unpack them
+EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
 
-Maybe use graphical circle between CAR-CDR?
--> That makes the model inconsistent since user will assume its a character
--> Use color again, like light and dark?
-   - R = CAR|PTR
-   - G = CDR|CAR
-   - B = PTR|CDR
--> Use color+space
--> Or show boxes
+  Quantum View:
 
-literal or semantic representation?
--> literal
+  Raw Binary
 
-################################################################################
 
-         +-----+-----+
-         | CAR | CDR |
-         +-----+-----+
-         TAIL     HEAD
+  Element View:
 
-How to show a list (nested cons): (list 1 2 3)
+  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  NIL
+  |                       |                       |                       |                       |                       |
+  V                       V                       V                       V                       V                       V
+  12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      NIL
+  |         (OPAQUE)      |         |             |         |             |         |             |         |
+  V                       V         V             V         V             V---------+             V         V
+  list                    0         NIL           abc       NIL           "abc"                   0         NIL
 
- 1-2-3
+  * Opaque pointers, such as pointers to built-in functions - no descendants
+  * Ptrs = no descendant
+  * Nums/Syms = descendant
 
- * lines = ptrs
- * remember, two types of data: atoms and cons
- * so how can user construct a list easier?
+  Modifications:
+  * Changing pointer digits will cause descendants to regenerate
+  * Changing symbol values or numbers will cause predecessors to regenerate
+  
+  -> Flip model since we work on symbol names
+  -> User chooses option for top: Atoms, CAR/CDR, Pointers, Binary
 
- +-------+-------+   +-------+-------+   +-------+-------+
- |   1   |   ----+---|   2   |   ----+---+   3   |  NIL  |
- +-------+-------+   +-------+-------+   +-------+-------+
 
-List of spaces (2x space to see easier): (list " "  " "  " ")
+  Composite View (show CAR):
 
- " "- " "- " "
+  12345678  ->  12345678  ->  12345678  ->  12345678  ->  12345678  ->  12345678
+  |             |             |             |             |             |
+  V             V             V             V             V             V
+  list          0             abc           "def"         0             NIL
 
- * Could show block or outline for spaces
+  * Again, an opaque pointer will not have a descendant
+  * Cons will show first part only
 
- +-------+-------+   +-------+-------+   +-------+-------+
- |   1   |   ----+---|   2   |   ----+---+   3   |  NIL  |
- +-------+-------+   +-------+-------+   +-------+-------+
 
-So essentially, Protoform shows the CAR/head of the cell
+  Atomic View:
+
+  list -> 0 -> abc -> "def" -> ${12345678} -> NIL [-> NIL]
+
+
+Numbers vs Pointers:
+
+  12345678  12345678   (cons cell with two opaque pointers)
+
+  12345678  12345678   (cons cell with two numbers)
+  |         |
+  V         V
+  1         2
+
+
+QUESTIONS:
+
+  * How to show spaces?
 
 ################################################################################
 
@@ -1804,20 +1804,6 @@ Convert numbers by typing name vs pressing digits?
   - In that case, easier to write program to produce it
 -> Numbers faster when only typing numbers, but when mixed,
    typing name faster since fingers remain near home keys
-
-################################################################################
-
-Dasm:
-* symbol -> cons cells
-* shortnum -> pointer (num)
-* bignum -> cons cells
-* cons cells -> pointer/num
-* pointer -> bytes (list of shortnum)
-
-Rasm:
-* bytes -> pointer (given a list of 8 numbers with each num 0-255)
-* pointer -> cons cell (only first two ptrs, even number will convert remaining pairs?)
-* cons cells -> depends on pattern of cons cells
 
 ################################################################################
 
@@ -1841,26 +1827,26 @@ Internally, nodes are added to a timeline (maintains ref to them so no GC)
 
 : "X"
 -> "X"
-: 
+:
 : (struct (+ (>> -4 (adr '"X")) 0) '(B . 16))
 -> (130 5 0 0 0 0 0 0 40 203 209 14 180 127 0 0)
 
 -So CAR and CDR are two different pointers
  ...which is probably two instances of the name then...
- 
+
  Trans symbol
  - name stored directly in car/left
  - right changes with value, however, it is not nil
  - initially it is not the same as name
    -> name may be contained in another cell
-   
-: 
+
+:
 : (struct (- (>> -4 (adr "X")) 0) '(B . 16))
 -> (130 5 0 0 0 0 0 0 216 221 163 76 236 127 0 0)
-: 
-: (struct 140652874816984 '(B . 16))        
+:
+: (struct 140652874816984 '(B . 16))
 -> (216 221 163 76 236 127 0 0 216 221 163 76 236 127 0 0)
-: 
+:
 
 
 : (struct (- (>> -4 (adr (box))) 0) '(B . 16))
@@ -1872,7 +1858,7 @@ Internally, nodes are added to a timeline (maintains ref to them so no GC)
 
 Anon Symbol:
 CAR:  0
-CDR: NIL 
+CDR: NIL
 
 Transient Symbol:
 CAR: name (if name > 7 characters, then ptr to cons cell)
@@ -1929,7 +1915,7 @@ Called close-restricted
 
 ################################################################################
 
-Possible Bug!
+Possible Bug! -> More like something I don't understand
 
 input.l:
 

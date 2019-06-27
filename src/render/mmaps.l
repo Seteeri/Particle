@@ -6,7 +6,8 @@
 - To be completely dynamic:
   - Free/Alloc GL memory
   - Free/Alloc mmap/memfd
-  - Technically, all of it can be done dynamically
+- Technically, all of it can be done dynamically
+- Use these as baseline
 }#
 
 (def *params-mmap-atomic-counter (list 'atomic-counter-buffer

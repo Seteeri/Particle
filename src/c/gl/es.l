@@ -1,6 +1,9 @@
 (symbols 'gl 'pico)
 
 
+(load "/home/user/quicklisp/local-projects/protoform/src/c/gl/bo.l")
+
+
 (de viewport (X Y Width Height)
     (native "libGLESv2.so" "glViewport" NIL X Y Width Height))
 
@@ -29,10 +32,115 @@
 	    (cons Blue -1.0)
 	    (cons Alpha -1.0)))
     
+#{
+(de get-num (Args Data)
+    #Args = list
+    #Data = num or symbol
+    (if (num? Data)
+	(apply 'native Args)
+	(prog
+	    (println 'native Args (list 'Data-2 Data))
+	    (apply 'native Args (list 'Data-2 Data))
+	   Data-2)))
+
+
+(de get-boolean-v (Pname Data)
+    (native "libGLESv2.so" "glGetBooleanv" NIL Pname '(Ret (1) . 0))
+    Ret)
+
+
+(de get-boolean-v (Pname Data)
+    (get-num (list "libGLESv2.so" "glGetBooleanv" NIL Pname)
+	     (if Data Data (cons 1 'B))))
+}#
+
+
+(de get-boolean-v (Pname Data)
+    (if Data
+	(native "libGLESv2.so" "glGetBooleanv" NIL Pname Data)
+	(let Data-2 (native "@" "malloc" 'N 2)
+	     (native "libGLESv2.so" "glGetBooleanv" NIL Pname Data-2)
+	     (let Ret (struct Data-2 'B)
+		  (native "@" "free" NIL Data-2)
+		  Ret))))
+
+
+(de get-float-v (Pname Data)
+    (native "libGLESv2.so" "glGetFloatv" NIL Pname Data))
+
+
+(de get-integer-v (Pname Data)
+    (native "libGLESv2.so" "glGetIntegerv" NIL Pname Data))
+
+
+(de get-integer64-v (Pname Data)
+    (native "libGLESv2.so" "glGetInteger64v" NIL Pname Data))
+
+
+(de get-integer-i-v (Target Index Data)
+    (native "libGLESv2.so" "glGetIntegeri_v" NIL Target Index Data))
+
+
+(de get-integer64-i-v (Target Index Data)
+    (native "libGLESv2.so" "glGetInteger64i_v" NIL Target Index Data))
+
+
+(de get-string (Name)
+    (native "libGLESv2.so" "glGetString" 'N Name))
+
+
+(de get-string-i (Name Index)
+    (native "libGLESv2.so" "glGetStringi" 'N Name Index))
+
+#{
+(de gen-buffers (N)
+    (let Buffers (native "@" "malloc" 'N (* 4 N))
+	 (native "libGLESv2.so" "glGenBuffers" NIL N Buffers)
+	 (let Ret (struct Buffers '())
+	      (native "@" "free" NIL Buffers)
+	      Ret)))
+}#
+
+(de gen-buffers (N)
+    #TODO: Use more idiomatic method
+    (native "libGLESv2.so" "glGenBuffers" NIL N (list 'Buffers (cons (* 4 N) 'I N)))
+    Buffers)
+
+
+(de bind-buffer (Target Buffer)
+    (native "libGLESv2.so" "glBindBuffer" NIL Target Buffer))
+
+
+(de bind-texture (Target Texture)
+    (native "libGLESv2.so" "glBindTexture" NIL Target Texture))
+
+
+(de bind-buffer-base (Target Index Buffer)
+    (native "libGLESv2.so" "glBindBufferBase" NIL Target Index Buffer))
+
+
+(de buffer-storage (Target Size Data Flags)
+    (native "libGLESv2.so" "glBufferStorage" NIL Target Size Data Flags))
+
+
+(de unmap-buffer (Target)
+    #Returns GLboolean = 1 byte
+    (native "libGLESv2.so" "glUnmapBuffer" 'B Target))
+
+
+(de map-buffer-range (Target Offset Length Access)
+    (native "libGLESv2.so" "glMapBufferRange" NIL Target Offset Length Access))
+
+
+(de buffer-data (Target Size Data Usage)
+    (native "libGLESv2.so" "glBufferData" Target Size Data Usage))
+
+
+
 
 (mapc '((X) (def (car X) (hex (cadr X))))
       (quote
-
+       
        (DEPTH-BUFFER-BIT                        "0x00000100")
        (STENCIL-BUFFER-BIT                      "0x00000400")
        (COLOR-BUFFER-BIT                        "0x00004000")
