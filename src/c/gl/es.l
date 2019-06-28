@@ -235,7 +235,7 @@ Naming Conventions:
     }#
     (let (Count  (length Paths)
 	  String (native "@" "malloc" 'N (* Count 8))
-	  Length (native "@" "malloc" 'N (* Count 8 4))
+	  Length (native "@" "malloc" 'N (* Count 4))
 	  Ptr-Str String
 	  Ptr-Len Length
 	  Lst-Free ())
