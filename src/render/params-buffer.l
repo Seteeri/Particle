@@ -9,6 +9,7 @@
 
 
 (class +Params-Buffer)
+
 (dm T (Name
        Target
        Size
@@ -17,49 +18,57 @@
        Type-format)
     (=: name Name)
     (=: target Target)
-    (=: size Size)
+    (=: size-b Size)
     (=: index-cs Index-cs)
     (=: index-vs Index-vs)
     (=: type-format Type-format))
 
 
-(def '*params-buffer (list (new '(+Params-Buffer) "atomic-counter"
+#Put initial data
+(def '*params-buffer (list (new '(+Params-Buffer)
+				'atomic-counter
 				gl~ATOMIC-COUNTER-BUFFER
 				(* 4 6)  #6 ints/params
 				4 -1
 				NIL)
 			   
-			   (new '(+Params-Buffer) "draw-indirect"
+			   (new '(+Params-Buffer)
+				'draw-indirect
 				gl~DRAW-INDIRECT-BUFFER
 				(* 4 6)  #6 ints/params
 				-1 -1
 				NIL)
 
-			   (new '(+Params-Buffer) "element"
+			   (new '(+Params-Buffer)
+				'element
 				gl~ELEMENT-ARRAY-BUFFER
 				(* 4 6)  #4 bytes/int * 6 ints or indices
 				-1 -1
 				NIL)
 			   
-			   (new '(+Params-Buffer) "nodes"
+			   (new '(+Params-Buffer)
+				'nodes
 				gl~SHADER-STORAGE-BUFFER
 				(/ 134217728 4)
 				2 3
 				NIL)
 
-			   (new '(+Params-Buffer) "projview"
+			   (new '(+Params-Buffer)
+				'projview
 				gl~UNIFORM-BUFFER
 				(* (+ 16 16) 4)
 				0 0  #cs-in (cache), vs-in (raster)
 				NIL)
 
-			   (new '(+Params-Buffer) "texture-glyphs"
+			   (new '(+Params-Buffer)
+				'texture-glyphs
 				gl~TEXTURE-BUFFER 
 				(/ 134217728 4)
 				-1 -1
 				'rgba8)
 
-			   (new '(+Params-Buffer) "vertices"
+			   (new '(+Params-Buffer)
+				'vertices
 				gl~UNIFORM-BUFFER
 				(* 16 4)
 				1 1

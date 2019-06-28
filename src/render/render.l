@@ -27,7 +27,7 @@
 
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
+#(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/gl/es.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
@@ -43,6 +43,20 @@
 (def '*window)
 (def '*buffer-objects)
 
+(class +Proto)
+(dm T (A B C)
+    (=: a A)
+    (=: b B)
+    (=: c C))
+
+(when NIL
+  (let P (new '(+Proto) 1 2 3)
+       #(show P)
+       (with P
+	     (println (get P 'a))
+	     (println (: a))
+	     (println (: b))
+	     (println (: c)))))
 
 (de init-render ()
     #{
@@ -55,26 +69,27 @@
     - Disable draw flag for node, before copying data, then enable after
     
     }#
-    
-    #(setq *mmap-atomic-counter (init-mmap-atomic-counter))
-    #(setq *mmap-draw-indirect  (init-mmap-draw-indirect))
-    #(setq *mmap-vertices       (init-mmap-vertices))
-    #(setq *mmap-element        (init-mmap-element))
-    #(setq *mmap-projview       (init-mmap-projview))
-    #(setq *mmap-tex-glyphs     (init-mmap-tex-glyphs))
-
-    (init-window)
-
-    (init-gl)
 
     (when NIL
+      (let P (new '(+Proto) 1 2 3)
+	   #(show P)
+	   (with P
+		 (println (get P 'a))
+		 (println (: a))
+		 (println (: b))
+		 (println (: c)))))
+    
+    ############################################################################
+    
+    (init-window)
+    (init-gl)
+    (when NIL
       (init-ipc))
-
+    
     #Init buffers/resources
-    #Glyphs will be loaded during texture buffer object creation
     (init-buffer-objects)
-    #(init-textures-glyph)
-
+    (init-tex-glyphs (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr))
+    
     #{
     (gl:use-program (prog-rast-msdf *render*))
     (init-buff-rast-msdf params-model)
@@ -96,8 +111,6 @@
     #
     #Or wait until socket handling?
     
-    (bye)
-
     T)
 
 
@@ -134,7 +147,12 @@
     (gl~enable gl~CULL-FACE)
     (gl~enable gl~DEPTH-TEST)
     (gl~enable gl~BLEND)
-    (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA))
+    (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA)
+
+    #Get some function pointers
+    (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage"))
+
+    T)
 
 
 (de init-ipc ()
@@ -170,32 +188,58 @@
     }#
     
     (for Params *params-buffer
-
+	 
 	 (with Params
 	       
 	       (let (Buffer (new '(gl~+Buffer-Object)
-				   (: size)
+				   (: size-b)
 				   (: target)
 				   (if (> (: index-vs) -1)
 				       (: index-vs)
 				       (: index-cs))
-				  T))
+				   T))
 		 
 		 #Use symbol properties
 		 (put '*buffer-objects (: name) Buffer)
-
+		 
 		 #Poss more idiomatic way to do this?
-		 (when (= target gl~TEXTURE-BUFFER)
+		 (when (= (: target) gl~TEXTURE-BUFFER)
 		   
 		   #texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
 		   #already active?
 		   (gl~active-texture gl~TEXTURE0)
 		   
-		   (bind> Buffer)
+		   (gl~bind-b> Buffer)
 		   
 		   (gl~tex-buffer gl~TEXTURE-BUFFER
 				  gl~RGBA8
 				  (: buffer)))))))
+
+
+(de init-tex-glyphs (Ptr)
+    #{
+    * To load faster, do bulk memcpy or convert to bytes
+    * Possible Configurations:
+      * all ppm, all metrics
+      * per ppm+metrics
+      * per ppm, per metrics (current)
+      * Need separate ppm since data is copied to shm?
+      * Or list of lists with each list starting with the name
+   }#
+
+   (let Offset 0
+	(for Code 255
+	     (let (Path-glyph (pack PATH-GLYPHS "/tex/" Code "-data.l"))
+	       #(println "Reading " Path-glyph " ...")
+	       (any (in Path-glyph (till NIL T)))
+	       (struct (+ Ptr Offset) 'N
+		       (0 . 4)
+		       (2 . 4)
+		       (1 . 4)
+		       (0 . 4)
+		       (3 . 4)
+		       (2 . 4))
+	       (inc 'Offset)))))
 
 
 (de run-render ()

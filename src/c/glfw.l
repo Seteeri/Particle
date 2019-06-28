@@ -45,6 +45,10 @@
     (native "libglfw.so" "glfwTerminate"))
 
 
+(de get-proc-address (Procname)
+    (native "libglfw.so" "glfwGetProcAddress" 'N Procname))
+
+
 (def 'TRUE                        1)
 (def 'FALSE                       0)
 (def 'RELEASE                     0)

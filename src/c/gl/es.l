@@ -3,6 +3,8 @@
 
 (load "/home/user/quicklisp/local-projects/protoform/src/c/gl/bo.l")
 
+(def '*glBufferStorage 0)
+
 
 (de viewport (X Y Width Height)
     (native "libGLESv2.so" "glViewport" NIL X Y Width Height))
@@ -120,7 +122,7 @@
 
 
 (de buffer-storage (Target Size Data Flags)
-    (native "libGLESv2.so" "glBufferStorage" NIL Target Size Data Flags))
+    (native "libGLESv2.so" *glBufferStorage NIL Target Size Data Flags))
 
 
 (de unmap-buffer (Target)
@@ -129,7 +131,7 @@
 
 
 (de map-buffer-range (Target Offset Length Access)
-    (native "libGLESv2.so" "glMapBufferRange" NIL Target Offset Length Access))
+    (native "libGLESv2.so" "glMapBufferRange" 'N Target Offset Length Access))
 
 
 (de buffer-data (Target Size Data Usage)
