@@ -6,19 +6,16 @@
 
 (class +Buffer-Object)
 (dm T (Size
-       Buffer
        Target
        Index
-       Fn-bind       
        Mapped-persistent
-
        Usage #dynamic-draw or stream-draw
        Data) pointer
 
-    (=: size   Size)
     (=: buffer (car (gen-buffers 1)))
-    (=: target Target)
 
+    (=: size   Size)
+    (=: target Target)
     (=: index   Index)
     (=: bind (make-bind Target Index))
     (=: mapped-persistent Mapped-persistent)
@@ -26,10 +23,10 @@
     ((: bind) (: buffer))
     
     (if mapped-persistent
-	(map-buffer-range Target
-			  0
-			  Size
-			  (if Data Data 0))
+	(map-buffer-range-2 Target
+			    0
+			    Size
+			    (if Data Data 0))
 	(buffer-data Target
 		     Size
 		     (if Data Data 0)
@@ -39,7 +36,7 @@
 
 
 (de make-bind (Target
-		  Binding-layout)
+	       Binding-layout)
     (cond ((or (= Target 'draw-indirect-buffer)
 	       (= Target 'element-array-buffer))
 	   '((Buffer)
@@ -55,11 +52,14 @@
 			       Binding-layout
 			       Buffer)))))
 
+(dm bind> (Buffer)
+    ((: bind) (: buffer)))
 
-(de map-buffer-range (Target
-		      Offset
-		      Size
-		      Data)
+
+(de map-buffer-range-2 (Target
+		        Offset
+		        Size
+		        Data)
     #Makes buffer immutable compared to calling glBufferData
     #This is required for mapping
     (buffer-storage Target

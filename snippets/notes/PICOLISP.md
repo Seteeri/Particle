@@ -138,8 +138,8 @@ Store DAGs as binary trees?
   * TODO
     * Implement Render [WIP]
       * THR - setup-render: glyphs, bos
-        * Port buffer-object to gl-bo
-        * Init GL buffer objects
+        * Port buffer-object to gl-bo [Done]
+        * Init GL buffer objects [WIP]
         * Load data and glyphs
         * Init programs...
       * FRI - prog-rast/prog-comp

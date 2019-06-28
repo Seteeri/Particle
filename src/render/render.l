@@ -35,11 +35,13 @@
 # Lisp libraries
 #...
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/render/params-buffer.l")
 #(load "/home/user/quicklisp/local-projects/protoform/src/render/raster.l")
 #(load "/home/user/quicklisp/local-projects/protoform/src/render/compute.l")
 
 
 (def '*window)
+(def '*buffer-objects)
 
 
 (de init-render ()
@@ -47,7 +49,13 @@
     - Model can modify these during runtime through wire
     - Model will send (memcpy dest size offset)
     - Render will look up symbol/Mmap, get ptr, memcpy
+
+    - Should not copy all data every frame - waste
+    - Try single buffer + persistent mapping + coherent
+    - Disable draw flag for node, before copying data, then enable after
+    
     }#
+    
     #(setq *mmap-atomic-counter (init-mmap-atomic-counter))
     #(setq *mmap-draw-indirect  (init-mmap-draw-indirect))
     #(setq *mmap-vertices       (init-mmap-vertices))
@@ -83,15 +91,15 @@
 
     #At this point, shm already has data loaded by model
     #so copy to OpenGL buffers
-    (memcpy-shm-to-all)
+    #
+    #(memcpy-shm-to-all)
+    #
+    #Or wait until socket handling?
     
     (bye)
 
-    #Should not copy all data every frame - waste
-    #Try single buffer + persistent mapping + coherent
-    #Disable draw flag for node, before copying data, then enable after
-
     T)
+
 
 (de init-window ()
     (glfw~init-2)
@@ -150,49 +158,45 @@
 
 
 (de init-buffer-objects ()
-    #Get params from file
 
     #{
-    Notes:
     * Some buffers have a different bind layout per shader stage
     * Texture requires setting fmt after and other ops
     * Set initial data for buffers element and draw-indirect
-    * glMapNamedBuffer is unavailable so
-    * to persistently map the buffer, it needs to be bound...
+    * glMapNamedBuffer is unavailable so to persistently map the buffer, it needs to be bound...
     * to bind a buffer, requires an appropriate program
     * What is the behavior when binding a buffer with no program bound?
     * Doesn't matter here...
     }#
-    (for Params Params-shm
+    
+    (for Params *params-buffer
 
-	 (target
-	  path
-	  size
-	  bind-cs
-	  bind-vs
-	  count-buffer
-	  flag-copy
-	  &rest rest)
+	 (with Params
+	       
+	       (let (Buffer (new '(gl~+Buffer-Object)
+				   (: size)
+				   (: target)
+				   (if (> (: index-vs) -1)
+				       (: index-vs)
+				       (: index-cs))
+				  T))
+		 
+		 #Use symbol properties
+		 (put '*buffer-objects (: name) Buffer)
 
-	 (let Buffer (new '(gl~+Buffer-Object
-			    Size
-			    Buffer
-			    Target
-			    (if (> bind-vs -1) bind-vs bind-cs)
-			    T))
-	   
-	      #(setf (gethash path bo-step) Buffer)
-	      
-	      (when (= target 'texture-buffer)
-		
-		;; texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
-		;; Already active...
-		(gl~active-texture 'texture0)
-		
-		(update-binding-buffer Buffer)
-		(gl~tex-buffer 'texture-buffer
-			       (first rest) ; rgba8
-			       Buffer)))))
+		 
+		 #Poss more idiomatic way to do this?
+		 (when (= target 'texture-buffer)
+		   
+		   #texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+		   #already active?
+		   (gl~active-texture 'texture0)
+		   
+		   (bind> Buffer)
+		   
+		   (gl~tex-buffer 'texture-buffer
+				  'rgba8
+				  (: buffer)))))))
 
 
 (de run-render ()

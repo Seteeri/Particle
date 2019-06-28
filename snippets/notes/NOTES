@@ -1935,3 +1935,16 @@ main.l:
 
 (de main ()
     (push '*Bye '(end-main)))
+
+
+https://news.ycombinator.com/item?id=9981874
+
+JIT inspired by
+- Pixie
+- El Compilador
+- Stalin
+- SELF
+- LuaJIT
+
+
+https://en.wikipedia.org/wiki/Self-organizing_list
