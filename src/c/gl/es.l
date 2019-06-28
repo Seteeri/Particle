@@ -1,3 +1,17 @@
+#{
+
+Naming Conventions:
+
+* gl{fn-name-wo-gl-prefix} = original function call
+
+* {fn-name-wo-gl-prefix} = direct wrapper
+
+* {fn-name-wo-gl-prefix}-2 = extended wrapper
+
+* {fn-name-wo-gl-prefix}-{first-arg} = name conflict
+
+}#
+
 (symbols 'gl 'pico)
 
 
@@ -146,6 +160,137 @@
     (native "libGLESv2.so" "glTexBuffer" NIL Target Internal-format Buffer))
 
 
+(de create-program ()
+    (native "libGLESv2.so" "glCreateProgram" 'I))
+
+
+(de delete-program (Program)
+    (native "libGLESv2.so" "glDeleteProgram" NIL Program))
+
+
+(de use-program (Program)
+    (native "libGLESv2.so" "glUseProgram" NIL Program))
+
+
+(de link-program (Program)
+    (native "libGLESv2.so" "glLinkProgram" NIL Program))
+
+
+(de get-program-iv (Program Pname Params)
+    #TODO: Need not use list for struct
+    (native "libGLESv2.so" "glGetProgramiv" NIL Program Pname (list 'Params (cons 4 'I 1)))
+    (car Params))
+
+
+(de get-info-log (Max-Length Fn Target)
+    (when (> Max-Length 0)
+      (let (Info-Log   (native "@" "malloc" 'N (+ Max-Length 1))
+	    Length     (native "@" "malloc" 'N 4))
+	(native "libGLESv2.so" Fn NIL Target Max-Length Length Info-Log)
+	#Length does not include null char
+	(when (> (car (struct Length '(I))) 0)
+	  #String is already null-terminated
+	  (let (Ret (struct Info-Log 'S))
+	    (native "@" "free" NIL Length)
+	    (native "@" "free" NIL Info-Log)
+	    Ret)))))
+
+
+(de get-program-info-log-2 (Program)
+    (get-info-log (get-program-iv Program INFO-LOG-LENGTH)
+		  "glGetProgramInfoLog"
+		  Program))
+
+
+(de create-shader (Shader-type)
+    (native "libGLESv2.so" "glCreateShader" 'I Shader-type))
+
+
+(de compile-shader (Shader)
+    (native "libGLESv2.so" "glCompileShader" NIL Shader))
+
+
+(de get-shader-iv (Shader Pname Params)
+    #TODO: Need not use list for struct
+    (native "libGLESv2.so" "glGetShaderiv" NIL Shader Pname (list 'Params (cons 4 'I 1)))
+    (car Params))
+
+
+(de get-shader-info-log-2 (Shader)
+    (get-info-log (get-shader-iv Shader INFO-LOG-LENGTH)
+		  "glGetShaderInfoLog"
+		  Shader))
+
+
+(de attach-shader (Program Shader)
+    (native "libGLESv2.so" "glAttachShader" NIL Program Shader))
+
+
+(de shader-source-2 (Shader Paths)
+    #{
+    * Read paths into string arrays:
+    count = number in array
+    string = array of strs
+    length = array of corresponding str len
+    }#
+    (let (Count  (length Paths)
+	  String (native "@" "malloc" 'N (* Count 8))
+	  Length (native "@" "malloc" 'N (* Count 8 4))
+	  Ptr-Str String
+	  Ptr-Len Length
+	  Lst-Free ())
+
+      (for Path Paths
+	   
+	   #Get file size from stat then allocate
+	   #Poss to use mmap to minimize intermittent allocation
+
+	   (let (Sz-f    (stat-size Path)
+		 Buf     (native "@" "malloc" 'N (+ Sz-f 1)) # + null character
+		 File    (native "@" "fopen" 'I Path "rb"))
+	     
+	     (native "@" "fread"  NIL Buf Sz-f 1 File)
+	     (native "@" "fclose" NIL File)
+	     # Null terminate after reading
+	     (struct (+ Buf Sz-f) 'N (cons 0 1))
+	     
+	     #Set String ptr to point to Buffer
+	     (struct Ptr-Str 'N (cons Buf 8))
+
+	     #Set Buffer Length ptr (w/o null char)
+	     (struct Ptr-Len 'N (cons Sz-f 4))
+	     
+	     #Push ptrs to lst-free
+	     (push 'Lst-Free Buf)
+
+	     #(prinl "shader-source-2 | fread " Path " " Sz-f " bytes")
+	     (inc 'Ptr-Str 8)
+	     (inc 'Ptr-Len 4)))
+
+      #(prinl "CALL glShaderSource")
+
+      #TODO: Fix using Length
+      (native "libGLESv2.so" "glShaderSource" NIL Shader Count String Length)
+
+      #(prinl "DONE glShaderSource")
+      
+      #Free memory
+      (for Ptr Lst-Free
+	   (native "@" "free" NIL Ptr))
+      (native "@" "free" NIL String)
+      (native "@" "free" NIL Length)))
+
+
+(de stat-size (Path)
+    (pipe
+     (call "stat" "--format" "\"%s\"" Path)
+     (format (read))))
+
+
+(de delete-shader (Shader)
+    (native "libGLESv2.so" "glDeleteShader" NIL Shader))
+
+
 
 
 (mapc '((X) (def (car X) (hex (cadr X))))
@@ -163,19 +308,20 @@
        (UNIFORM-BUFFER                          "8A11")
        (TEXTURE0                                "84C0")
        (RGBA8                                   "8058")
+       (INFO-LOG-LENGTH                         "8B84")
        
        (FALSE                                   "0000")
        (TRUE                                    "0001")
        (POINTS                                  "0000")
        (LINES                                   "0001")
-       (LINE_LOOP                               "0002")
-       (LINE_STRIP                              "0003")
+       (LINE-LOOP                               "0002")
+       (LINE-STRIP                              "0003")
        (TRIANGLES                               "0004")
-       (TRIANGLE_STRIP                          "0005")
-       (TRIANGLE_FAN                            "0006")
+       (TRIANGLE-STRIP                          "0005")
+       (TRIANGLE-FAN                            "0006")
        (QUADS                                   "0007")
        (PATCHES                                 "000E")
-       (DEPTH_BUFFER_BIT                        "0100")
+       (DEPTH-BUFFER-BIT                        "0100")
        (ZERO                                    "0000")
        (NONE                                    "0000")
        (ONE                                     "0001")
@@ -186,37 +332,37 @@
        (NOTEQUAL                                "0205")
        (GEQUAL                                  "0206")
        (ALWAYS                                  "0207")
-       (SRC_COLOR                               "0300")
-       (ONE_MINUS_SRC_COLOR                     "0301")
-       (SRC_ALPHA                               "0302")
-       (ONE_MINUS_SRC_ALPHA                     "0303")
-       (DST_ALPHA                               "0304")
-       (ONE_MINUS_DST_ALPHA                     "0305")
-       (DST_COLOR                               "0306")
-       (ONE_MINUS_DST_COLOR                     "0307")
-       (SRC_ALPHA_SATURATE                      "0308")
-       (SRC_ALPHA                               "0302")
-       (ONE_MINUS_SRC_ALPHA                     "0303")
-       (STENCIL_BUFFER_BIT                      "0400")
+       (SRC-COLOR                               "0300")
+       (ONE-MINUS-SRC-COLOR                     "0301")
+       (SRC-ALPHA                               "0302")
+       (ONE-MINUS-SRC-ALPHA                     "0303")
+       (DST-ALPHA                               "0304")
+       (ONE-MINUS-DST-ALPHA                     "0305")
+       (DST-COLOR                               "0306")
+       (ONE-MINUS-DST-COLOR                     "0307")
+       (SRC-ALPHA-SATURATE                      "0308")
+       (SRC-ALPHA                               "0302")
+       (ONE-MINUS-SRC-ALPHA                     "0303")
+       (STENCIL-BUFFER-BIT                      "0400")
        (FRONT                                   "0404")
        (BACK                                    "0405")
-       (FRONT_AND_BACK                          "0408")
+       (FRONT-AND-BACK                          "0408")
        (CW                                      "0900")
        (CCW                                     "0901")
-       (DEPTH_TEST                              "0B71")
-       (CULL_FACE                               "0B44")
-       (FRONT_FACE                              "0B46")
+       (DEPTH-TEST                              "0B71")
+       (CULL-FACE                               "0B44")
+       (FRONT-FACE                              "0B46")
        (BLEND                                   "0BE2")
-       (UNPACK_ROW_LENGTH                       "0CF2")
-       (UNPACK_ALIGNMENT                        "0CF5")
-       (TEXTURE_2D                              "0DE1")
-       (UNSIGNED_BYTE                           "1401")
+       (UNPACK-ROW-LENGTH                       "0CF2")
+       (UNPACK-ALIGNMENT                        "0CF5")
+       (TEXTURE-2D                              "0DE1")
+       (UNSIGNED-BYTE                           "1401")
        (SHORT                                   "1402")
-       (UNSIGNED_SHORT                          "1403")
+       (UNSIGNED-SHORT                          "1403")
        (INT                                     "1404")
-       (UNSIGNED_INT                            "1405")
+       (UNSIGNED-INT                            "1405")
        (FLOAT                                   "1406")
-       (DEPTH_COMPONENT                         "1902")
+       (DEPTH-COMPONENT                         "1902")
        (RED                                     "1903")
        (GREEN                                   "1904")
        (BLUE                                    "1905")
@@ -228,77 +374,77 @@
        (FILL                                    "1B02")
        (NEAREST                                 "2600")
        (LINEAR                                  "2601")
-       (NEAREST_MIPMAP_NEAREST                  "2700")
-       (LINEAR_MIPMAP_NEAREST                   "2701")
-       (NEAREST_MIPMAP_LINEAR                   "2702")
-       (LINEAR_MIPMAP_LINEAR                    "2703")
-       (TEXTURE_MAG_FILTER                      "2800")
-       (TEXTURE_MIN_FILTER                      "2801")
-       (TEXTURE_WRAP_S                          "2802")
-       (TEXTURE_WRAP_T                          "2803")
+       (NEAREST-MIPMAP-NEAREST                  "2700")
+       (LINEAR-MIPMAP-NEAREST                   "2701")
+       (NEAREST-MIPMAP-LINEAR                   "2702")
+       (LINEAR-MIPMAP-LINEAR                    "2703")
+       (TEXTURE-MAG-FILTER                      "2800")
+       (TEXTURE-MIN-FILTER                      "2801")
+       (TEXTURE-WRAP-S                          "2802")
+       (TEXTURE-WRAP-T                          "2803")
        (REPEAT                                  "2901")
-       (COLOR_BUFFER_BIT                        "4000")
+       (COLOR-BUFFER-BIT                        "4000")
        (RGB8                                    "8051")
        (RGBA8                                   "8058")
-       (TEXTURE_3D                              "806F")
-       (TEXTURE_WRAP_R                          "8072")
+       (TEXTURE-3D                              "806F")
+       (TEXTURE-WRAP-R                          "8072")
        (BGR                                     "80E0")
        (BGRA                                    "80E1")
-       (CLAMP_TO_EDGE                           "812F")
-       (TEXTURE_BASE_LEVEL                      "813C")
-       (TEXTURE_MAX_LEVEL                       "813D")
+       (CLAMP-TO-EDGE                           "812F")
+       (TEXTURE-BASE-LEVEL                      "813C")
+       (TEXTURE-MAX-LEVEL                       "813D")
        (R8                                      "8229")
-       (INTERNALFORMAT_PREFERRED                "8270")
-       (COMPRESSED_RGB_S3TC_DXT1_EXT            "83F0")
-       (COMPRESSED_RGBA_S3TC_DXT1_EXT           "83F1")
-       (COMPRESSED_RGBA_S3TC_DXT3_EXT           "83F2")
-       (COMPRESSED_RGBA_S3TC_DXT5_EXT           "83F3")
+       (INTERNALFORMAT-PREFERRED                "8270")
+       (COMPRESSED-RGB-S3TC-DXT1-EXT            "83F0")
+       (COMPRESSED-RGBA-S3TC-DXT1-EXT           "83F1")
+       (COMPRESSED-RGBA-S3TC-DXT3-EXT           "83F2")
+       (COMPRESSED-RGBA-S3TC-DXT5-EXT           "83F3")
        (TEXTURE0                                "84C0")
-       (ACTIVE_TEXTURE                          "84E0")
-       (TEXTURE_CUBE_MAP                        "8513")
-       (TEXTURE_CUBE_MAP_POSITIVE_X             "8515")
-       (BUFFER_SIZE                             "8764")
-       (DRAW_BUFFER0                            "8825")
-       (ARRAY_BUFFER                            "8892")
-       (ELEMENT_ARRAY_BUFFER                    "8893")
-       (READ_ONLY                               "88B8")
-       (WRITE_ONLY                              "88B9")
-       (READ_WRITE                              "88BA")
-       (STREAM_DRAW                             "88E0")
-       (STREAM_READ                             "88E1")
-       (STREAM_COPY                             "88E2")
-       (STATIC_DRAW                             "88E4")
-       (STATIC_READ                             "88E5")
-       (STATIC_COPY                             "88E6")
-       (DYNAMIC_DRAW                            "88E8")
-       (DYNAMIC_READ                            "88E9")
-       (DYNAMIC_COPY                            "88EA")
-       (UNIFORM_BUFFER                          "8A11")
-       (FRAGMENT_SHADER                         "8B30")
-       (VERTEX_SHADER                           "8B31")
-       (TEXTURE_2D_ARRAY                        "8C1A")
-       (READ_FRAMEBUFFER                        "8CA8")
-       (DRAW_FRAMEBUFFER                        "8CA9")
-       (DEPTH_COMPONENT32F                      "8CAC")
-       (FRAMEBUFFER_COMPLETE                    "8CD5")       
-       (COLOR_ATTACHMENT0                       "8CE0")
+       (ACTIVE-TEXTURE                          "84E0")
+       (TEXTURE-CUBE-MAP                        "8513")
+       (TEXTURE-CUBE-MAP-POSITIVE-X             "8515")
+       (BUFFER-SIZE                             "8764")
+       (DRAW-BUFFER0                            "8825")
+       (ARRAY-BUFFER                            "8892")
+       (ELEMENT-ARRAY-BUFFER                    "8893")
+       (READ-ONLY                               "88B8")
+       (WRITE-ONLY                              "88B9")
+       (READ-WRITE                              "88BA")
+       (STREAM-DRAW                             "88E0")
+       (STREAM-READ                             "88E1")
+       (STREAM-COPY                             "88E2")
+       (STATIC-DRAW                             "88E4")
+       (STATIC-READ                             "88E5")
+       (STATIC-COPY                             "88E6")
+       (DYNAMIC-DRAW                            "88E8")
+       (DYNAMIC-READ                            "88E9")
+       (DYNAMIC-COPY                            "88EA")
+       (UNIFORM-BUFFER                          "8A11")
+       (FRAGMENT-SHADER                         "8B30")
+       (VERTEX-SHADER                           "8B31")
+       (TEXTURE-2D-ARRAY                        "8C1A")
+       (READ-FRAMEBUFFER                        "8CA8")
+       (DRAW-FRAMEBUFFER                        "8CA9")
+       (DEPTH-COMPONENT32F                      "8CAC")
+       (FRAMEBUFFER-COMPLETE                    "8CD5")       
+       (COLOR-ATTACHMENT0                       "8CE0")
        (FRAMEBUFFER                             "8D40")
        (RENDERBUFFER                            "8D41")
-       (GEOMETRY_SHADER                         "8DD9")
-       (COMPILE_STATUS                          "8B81")
-       (LINK_STATUS                             "8B82")
-       (PATCH_VERTICES                          "8E72")
-       (TESS_EVALUATION_SHADER                  "8E87")
-       (TESS_CONTROL_SHADER                     "8E88")
-       (SYNC_GPU_COMMANDS_COMPLETE              "9117")
-       (COMPUTE_SHADER                          "91B9")
-       (MAP_READ_BIT                            "0001")
-       (MAP_WRITE_BIT                           "0002")
-       (MAP_INVALIDATE_RANGE_BIT                "0004")
-       (MAP_INVALIDATE_BUFFER_BIT               "0008")
-       (MAP_FLUSH_EXPLICIT_BIT                  "0010")
-       (MAP_UNSYNCHRONIZED_BIT                  "0020")
-       (MAP_PERSISTENT_BIT                      "0040")
-       (MAP_COHERENT_BIT                        "0080")
-       (DYNAMIC_STORAGE_BIT                     "0100")
-       (CLIENT_STORAGE_BIT                      "0200")))
+       (GEOMETRY-SHADER                         "8DD9")
+       (COMPILE-STATUS                          "8B81")
+       (LINK-STATUS                             "8B82")
+       (PATCH-VERTICES                          "8E72")
+       (TESS-EVALUATION-SHADER                  "8E87")
+       (TESS-CONTROL-SHADER                     "8E88")
+       (SYNC-GPU-COMMANDS-COMPLETE              "9117")
+       (COMPUTE-SHADER                          "91B9")
+       (MAP-READ-BIT                            "0001")
+       (MAP-WRITE-BIT                           "0002")
+       (MAP-INVALIDATE-RANGE-BIT                "0004")
+       (MAP-INVALIDATE-BUFFER-BIT               "0008")
+       (MAP-FLUSH-EXPLICIT-BIT                  "0010")
+       (MAP-UNSYNCHRONIZED-BIT                  "0020")
+       (MAP-PERSISTENT-BIT                      "0040")
+       (MAP-COHERENT-BIT                        "0080")
+       (DYNAMIC-STORAGE-BIT                     "0100")
+       (CLIENT-STORAGE-BIT                      "0200")))

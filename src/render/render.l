@@ -21,13 +21,22 @@
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
 (def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
+#Shader paths
+(def '*path-structs-shader "/home/user/quicklisp/local-projects/protoform/glsl/structs.glsl")
+(def '*paths-rast-vert-shader (list *path-structs-shader
+				    "/home/user/quicklisp/local-projects/protoform/glsl/node.vs.glsl"))
+(def '*paths-rast-frag-shader (list *path-structs-shader
+				     "/home/user/quicklisp/local-projects/protoform/glsl/filter-bilinear.fs.glsl"
+				     "/home/user/quicklisp/local-projects/protoform/glsl/msdf.fs.glsl"))
+
 
 # Set math precision to 6 decimals
 (scl 6)
 
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
-#(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
+#(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/stat.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/gl/es.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
@@ -36,27 +45,13 @@
 #...
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/render/params-buffer.l")
-#(load "/home/user/quicklisp/local-projects/protoform/src/render/raster.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/render/raster.l")
 #(load "/home/user/quicklisp/local-projects/protoform/src/render/compute.l")
 
 
 (def '*window)
 (def '*buffer-objects)
 
-(class +Proto)
-(dm T (A B C)
-    (=: a A)
-    (=: b B)
-    (=: c C))
-
-(when NIL
-  (let P (new '(+Proto) 1 2 3)
-       #(show P)
-       (with P
-	     (println (get P 'a))
-	     (println (: a))
-	     (println (: b))
-	     (println (: c)))))
 
 (de init-render ()
     #{
@@ -88,8 +83,12 @@
     
     #Init buffers/resources
     (init-buffer-objects)
-    (init-tex-glyphs (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr))
-    
+    #(init-tex-glyphs (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr))
+        
+    #Init pipeline
+    (init-prog-rast)
+    #(init-prog-comp)
+
     #{
     (gl:use-program (prog-rast-msdf *render*))
     (init-buff-rast-msdf params-model)
@@ -98,10 +97,6 @@
     (init-buff-compute params-model)
     }#
     
-    #Init pipeline
-    #(init-prog-rast)
-    #(init-prog-comp)
-
     #Use program raster
 
     #At this point, shm already has data loaded by model
