@@ -184,18 +184,17 @@
 		 #Use symbol properties
 		 (put '*buffer-objects (: name) Buffer)
 
-		 
 		 #Poss more idiomatic way to do this?
-		 (when (= target 'texture-buffer)
+		 (when (= target gl~TEXTURE-BUFFER)
 		   
 		   #texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
 		   #already active?
-		   (gl~active-texture 'texture0)
+		   (gl~active-texture gl~TEXTURE0)
 		   
 		   (bind> Buffer)
 		   
-		   (gl~tex-buffer 'texture-buffer
-				  'rgba8
+		   (gl~tex-buffer gl~TEXTURE-BUFFER
+				  gl~RGBA8
 				  (: buffer)))))))
 
 

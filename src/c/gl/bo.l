@@ -37,15 +37,15 @@
 
 (de make-bind (Target
 	       Binding-layout)
-    (cond ((or (= Target 'draw-indirect-buffer)
-	       (= Target 'element-array-buffer))
+    (cond ((or (= Target DRAW-INDIRECT-BUFFER)
+	       (= Target ELEMENT-ARRAY-BUFFER))
 	   '((Buffer)
 	     (bind-buffer Target Buffer)))
-	  ((= Target 'texture-buffer)
+	  ((= Target TEXTURE-BUFFER)
 	   '((Buffer)
 	     # Are both needed?
 	     (bind-texture Target Buffer)
-	     (bind-buffer  Target  Buffer)))
+	     (bind-buffer  Target Buffer)))
 	  (T
 	   '((Buffer)
 	     (bind-buffer-base Target

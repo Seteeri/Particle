@@ -149,9 +149,18 @@
 (mapc '((X) (def (car X) (hex (cadr X))))
       (quote
        
-       (DEPTH-BUFFER-BIT                        "0x00000100")
-       (STENCIL-BUFFER-BIT                      "0x00000400")
-       (COLOR-BUFFER-BIT                        "0x00004000")
+       (DEPTH-BUFFER-BIT                        "00000100")
+       (STENCIL-BUFFER-BIT                      "00000400")
+       (COLOR-BUFFER-BIT                        "00004000")
+       (ATOMIC-COUNTER-BUFFER                   "92C0")
+       (DRAW-INDIRECT-BUFFER                    "8F3F")
+       (ELEMENT-ARRAY-BUFFER                    "8893")
+       (SHADER-STORAGE-BUFFER                   "90D2")
+       (UNIFORM-BUFFER                          "8A11")
+       (TEXTURE-BUFFER                          "8C2A")
+       (UNIFORM-BUFFER                          "8A11")
+       (TEXTURE0                                "84C0")
+       (RGBA8                                   "8058")
        
        (FALSE                                   "0000")
        (TRUE                                    "0001")
