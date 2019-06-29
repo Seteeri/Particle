@@ -23,11 +23,16 @@
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
 #Shader paths
 (def '*path-structs-shader "/home/user/quicklisp/local-projects/protoform/glsl/structs.glsl")
-(def '*paths-rast-vert-shader (list *path-structs-shader
-				    "/home/user/quicklisp/local-projects/protoform/glsl/node.vs.glsl"))
-(def '*paths-rast-frag-shader (list *path-structs-shader
-				     "/home/user/quicklisp/local-projects/protoform/glsl/filter-bilinear.fs.glsl"
-				     "/home/user/quicklisp/local-projects/protoform/glsl/msdf.fs.glsl"))
+(def '*paths-rast-vert-shader
+    (list *path-structs-shader
+	  "/home/user/quicklisp/local-projects/protoform/glsl/node.vs.glsl"))
+(def '*paths-rast-frag-shader
+    (list *path-structs-shader
+	  "/home/user/quicklisp/local-projects/protoform/glsl/filter-bilinear.fs.glsl"
+	  "/home/user/quicklisp/local-projects/protoform/glsl/msdf.fs.glsl"))
+(def '*paths-comp-shader
+    (list *path-structs-shader
+	  "/home/user/quicklisp/local-projects/protoform/glsl/node.cs.glsl"))
 
 
 # Set math precision to 6 decimals
@@ -64,16 +69,7 @@
     - Disable draw flag for node, before copying data, then enable after
     
     }#
-
-    (when NIL
-      (let P (new '(+Proto) 1 2 3)
-	   #(show P)
-	   (with P
-		 (println (get P 'a))
-		 (println (: a))
-		 (println (: b))
-		 (println (: c)))))
-    
+  
     ############################################################################
     
     (init-window)
@@ -81,13 +77,10 @@
     (when NIL
       (init-ipc))
     
-    #Init buffers/resources
+    #Init buffers -> programs
     (init-buffer-objects)
-    #(init-tex-glyphs (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr))
-        
-    #Init pipeline
-    (init-prog-rast)
-    #(init-prog-comp)
+    #(init-tex-glyphs (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr))        
+    (init-progs)
 
     #{
     (gl:use-program (prog-rast-msdf *render*))
@@ -235,6 +228,12 @@
 		       (3 . 4)
 		       (2 . 4))
 	       (inc 'Offset)))))
+
+
+(de init-progs ()
+    (gl~init-prog-rast *paths-rast-vert-shader
+		       *paths-rast-frag-shader)
+    (gl~init-prog-comp *paths-comp-shader))
 
 
 (de run-render ()

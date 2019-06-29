@@ -16,6 +16,9 @@ Naming Conventions:
 
 
 (load "/home/user/quicklisp/local-projects/protoform/src/c/gl/bo.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/gl/shad.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/gl/prog.l")
+
 
 (def '*glBufferStorage 0)
 
