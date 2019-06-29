@@ -130,18 +130,15 @@
 	  *buf-sz    (socket~read-rmem-default)
 	  *buf-rd    (native "@" "malloc" 'N *buf-sz))
 
+    
     (setq *ipc (new '(ipc~+IPC)
 		    PATH-UDS-MODEL 'ipc~block
 		    ""             'ipc~block))
 
-    (epoll~ctl-epfd *ep-fd 
-		    epoll~ADD
-		    (get *ipc 'ipc~listener)
-		    epoll~IN)
     
     (epoll~ctl-epfd *ep-fd 
 		    epoll~ADD
-		    (get *ipc 'ipc~connection)
+		    (get *ipc 'ipc~listener)
 		    epoll~IN))
 
 

@@ -85,10 +85,7 @@
     #Change flags with a vec4
     #(init-comp)
 
-    (when NIL
-      (init-ipc))
-    
-    T)
+    (init-ipc))
 
 
 (de init-window ()
@@ -137,14 +134,12 @@
 	  *ep-fd     (epoll~create-size 1)
 	  *buf-sz    (socket~read-rmem-default)
 	  *buf-rd    (native "@" "malloc" 'N *buf-sz))
+
     
-    (setq *ipc (new '(ipc~+IPC) PATH-UDS-RENDER 'block
-		    PATH-UDS-MODEL 'block))
-    
-    (epoll~ctl-epfd *ep-fd 
-		    epoll~ADD
-		    (get *ipc 'ipc~listener)
-		    epoll~IN)
+    #PATH-UDS-RENDER 'block
+    (setq *ipc (new '(ipc~+IPC) ""             'ipc~block
+		                PATH-UDS-MODEL 'ipc~block))
+
     
     (epoll~ctl-epfd *ep-fd 
 		    epoll~ADD
