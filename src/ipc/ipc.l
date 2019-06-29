@@ -52,7 +52,7 @@ Pass in outgoing handler functions:
 
     (=: nonblock-listener Nonblock-listener)
     (=: listener          (when Path-listener (socket~listen-sock Path-listener Nonblock-listener)))
-    (=: clients           ())
+    (=: clients           NIL)
     
     #Poss to have multiple connections to different server
     #Diff between incoming connections and outgoing connections
@@ -102,10 +102,12 @@ Pass in outgoing handler functions:
 
       #Read for ID
       (when (> (handle-sock-conn> This Events Sock NIL) 0)
-	(println "RAW" (struct (: buf-rd) '(B . 16)))
-	(println "ID" (struct (: buf-rd) 'S)))
-      
-      (push (:: clients) Sock)
+	(let (ID (struct (: buf-rd) 'S))
+	  (println "ID" ID)
+	  #Push in property list
+	  (put (: clients) ID Sock)
+	  #(println (getl (: clients)))
+	  NIL))
       
       (epoll~ctl-epfd Ep-fd
 		      epoll~ADD

@@ -79,9 +79,7 @@
 		                  PATH-UDS-MODEL 'ipc~block))
 
       #Send ID
-      (ipc~send-msg> *ipc "0")
-
-      (bye)
+      (ipc~send-msg> *ipc "INPUT")
       
       (epoll~ctl-epfd *ep-fd 
 		      epoll~ADD
