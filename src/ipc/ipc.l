@@ -56,7 +56,12 @@ Pass in outgoing handler functions:
     #Diff between incoming connections and outgoing connections
 
     (=: nonblock-connection Nonblock-connection)
-    (=: connection          (when Path-connection (socket~connect-sock Path-connection Nonblock-connection))))
+    (=: connection NIL)
+    (when Path-connection
+      (while (not (: connection))
+	(=: connection          (socket~connect-sock Path-connection Nonblock-connection))
+	#~1/144 seconds
+	(wait 7))))
 
 
 (dm end-ipc> ()
