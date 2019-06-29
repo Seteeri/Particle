@@ -21,6 +21,20 @@ IPC is a pair of sockets
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 
 
+#{
+
+Pass in incomming handler functions:
+* In
+* Err
+
+Pass in outgoing handler functions:
+* In
+* Err
+* Poss specify address to address specific types
+
+}#
+
+
 (class +IPC)
 (dm T (Path-listener   Nonblock-listener
        Path-connection Nonblock-connection)
@@ -36,7 +50,11 @@ IPC is a pair of sockets
 
     (=: nonblock-listener Nonblock-listener)
     (=: listener          (socket~listen-sock Path-listener Nonblock-listener))
+    (=: clients           ())
     
+    #Poss to have multiple connections to different server
+    #Diff between incoming connections and outgoing connections
+
     (=: nonblock-connection Nonblock-connection)
     (=: connection          (when Path-connection (socket~connect-sock Path-connection Nonblock-connection))))
 
@@ -45,12 +63,30 @@ IPC is a pair of sockets
 
     (when (: buf-rd)     (native "@" "free" NIL (: buf-rd)))
     (when (: buf-wr)     (native "@" "free" NIL (: buf-wr)))  
-
+    
     (when (: listener)   (socket~end (: listener)))
+    (for Client (: clients)
+	 (socket~end Client))
+    
     (when (: connection) (socket~end (: listener))))
 
+    
+(dm handle-sock-listen> (Events Fd Ep-fd)
+    (let (Sock (socket~accept-4 Fd 'block))
 
-(de handle-sock-conn (Events Fd Ep-fd)
+      (push (:: clients) Sock)
+      
+      (epoll~ctl-epfd Ep-fd
+		      epoll~ADD
+		      Sock
+		      (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
+
+      (prinl "Connect sock: " Sock " with " (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
+      
+      T))
+
+
+(dm handle-sock-conn> (Events Fd Ep-fd)
 
     #(when (> (recv Fd *buf-rd *buf-sz 0) 0)
     #  #(println "RECV: " (struct *buf-rd '(B B B B B B B B)))
@@ -66,30 +102,18 @@ IPC is a pair of sockets
 	  (when (or (= (& Events epoll~ERR) epoll~ERR)
 		    (= (& Events epoll~HUP) epoll~HUP)
 		    (= (& Events epoll~RDHUP) epoll~RDHUP))
+
+	    (del Fd (:: clients))
 	    
 	    (epoll~ctl-epfd Ep-fd
 			    epoll~DEL
 			    Sock
 			    0)
+
 	    (socket~shutdown Fd socket~SHUT-RDWR)
-	    #Use builtin close
 	    (close Fd)
+	    
 	    (prinl "Disconnected sock: " Fd))
 	  
 	  (prog
 	      (prinl "Read sock: " bytes-read " bytes" " = " (struct *buf-rd 'S))))))
-
-    
-(de handle-sock-listen (Events Fd Ep-fd)
-    (let (Sock (socket~accept-4 Fd 'block)
-          Msg "Welcome User")
-      
-      #Add sock to epoll
-      (epoll~ctl-epfd Ep-fd
-		      epoll~ADD
-		      Sock
-		      (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
-
-      (prinl "Connect sock: " Sock " with " (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
-      
-      T))

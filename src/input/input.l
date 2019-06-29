@@ -61,7 +61,7 @@
 	    *buf-rd    (native "@" "malloc" 'N *buf-sz)))
       
     
-    (when NIL
+    (when T
       (setq *input (new '(li~+Li)))
       (epoll~ctl-epfd *ep-fd
 		      epoll~ADD
@@ -107,33 +107,80 @@
 	     (setq Events (get Ep-events 1))
 	     (setq Fd     (get Ep-events 2))
 	     
-	     (prinl (usec) " FD: " Fd ", Events: " Events)
+	     #(prinl (usec) " FD: " Fd ", Events: " Events)
 
 	     (cond 
 	       ((= Fd (get *input 'li~fd-context))
 		(handle-context))
 	       ((= Fd (get *ipc 'ipc~listener))
-		(ipc~handle-sock-listen Events Fd *ep-fd))
+		(ipc~handle-sock-listen> *ipc Events Fd *ep-fd))
 	       (T
-		(ipc~handle-sock-conn Events Fd *ep-fd))))))))
+		(ipc~handle-sock-conn> *ipc Events Fd *ep-fd))))))))
 
 
 (de handle-context ()
 
     (with *input
 
-    (li~dispatch (: li~context))
+	  (li~dispatch (: li~context))
+	  
+	  (loop
+	     (setq Event (li~get-event (: li~context)))
+	     (T (= Event 0))
+	     	     
+	     (let (Type (li~event-get-type Event))
+	       (prinl "Event: " (li~get-event-name Type)))
 
-    (loop
-       (setq Event (li~get-event (: li~context)))
-       (T (= Event 0))
-       
-       #Copy event info then destroy
-       (let (Type (li~event-get-type Event))
-	 (prinl "Event: " (li~get-event-name Type)))
-       
-       (li~event-destroy Event)
-       (li~dispatch (: li~context)))))
+	     #Copy event info to Lisp
+	     #(send-msg (get *ipc 'ipc~connection))
+	     
+	     (li~event-destroy Event)
+	     (li~dispatch (: li~context)))))
+
+
+(de send-msg (Sock
+	      Ptr
+	      Msg)
+    #{
+    Serialize symbols
+    - val  -> get value
+    - getl -> get property list
+    
+    Either pass binary using pr/rd
+    Or UTF-8 string through prin/any/str
+    
+    : (out "x" (pr (list 1 2 3)))
+    -> (1 2 3)
+    
+    : (hd "x")
+    00000000  01 04 02 04 04 04 06 03                          ........
+    
+    : (in "x" (rd))
+    -> (1 2 3)
+    
+    }#
+    
+    #Use above?
+    #Use nanomsg?
+    #Use another serialization protocol? MsgPack, JSON (more readily available)
+    #Implement pr/rd in Lisp?
+    #-> PILIO has C implementation - compile to so -> native/struct
+    #-> Or run pilos in process whose sole responsibility is to rd input and pr output
+      
+    (when NIL
+      
+      #Write string to ptr
+      (struct Ptr 'N Msg)
+      (println (struct Ptr 'S))
+      
+      #Send it - copy from ptr to sock
+      (send-fd Sock
+	       Ptr
+	       4096
+	       0))
+
+    #Write directly to socket so need not copy to ptr
+    (native "@" "write" 'I Sock Msg (+ (length Msg) 0)))
 
 
 (de end-input ()
@@ -147,7 +194,7 @@
     #Remove from epoll before end
     (epoll~ctl-epfd *ep-fd epoll~DEL (get *input 'fd-context) 0)
     #(println +Input li-end-input> *input)
-    (li-end-input> *input)
+    (li~end-input> *input)
     
     #Clean up epoll
     (when *ep-events
