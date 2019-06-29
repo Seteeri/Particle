@@ -12,7 +12,7 @@
     
     (when T
       (unless (fork)
-	(exec "pil" "render/render.l" "-render~main")))
+	(exec "pil" "render/render.l" "-render~main" "1920" "1080" (format (** 2 19)))))
     
     #(wait 1000000)
     (println "Forked processes"))

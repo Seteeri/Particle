@@ -147,7 +147,7 @@
     #Render will send frame start and wait for frame end
     #Up to model to perform time management
 
-    (prinl "Starting epoll...")
+    (prinl (usec) " | run-model | Starting epoll...")
     
     (let (Events NIL
 	  Fd     NIL)

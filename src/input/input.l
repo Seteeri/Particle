@@ -96,7 +96,7 @@
     * returns event count
     }#
 
-    (prinl (usec) " | input | Starting epoll...")
+    (prinl (usec) " | run-input | Starting epoll...")
     
     (let (Events NIL
 	  Fd     NIL)
