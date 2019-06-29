@@ -169,6 +169,41 @@
     (glfw~terminate))
 
 
+(de run-input (Timeout)
+    #{
+    Poll events ASAP and enqueue for processing by controller thread
+    
+    epoll-wait:
+    * ep-events size should correspond to maxevents
+    * -1 = timeout = block/infinite
+    0 = return if nothing
+    * returns event count
+    }#
+
+    (prinl (usec) " | input | Starting epoll...")
+    
+    (let (Events NIL
+	  Fd     NIL)
+      (loop
+	 (setq num-events (epoll~wait-epfd *ep-fd *ep-events 2 Timeout))
+	 
+	 (when (> num-events 0)
+
+	   (let (Ep-events (struct *ep-events '(I I)))
+	     (setq Events (get Ep-events 1))
+	     (setq Fd     (get Ep-events 2))
+	     
+	     #(prinl (usec) " FD: " Fd ", Events: " Events)
+
+	     (cond
+	       ((= Fd (get *input 'li~fd-context))
+		(handle-context))
+	       ((= Fd (get *ipc 'ipc~listener))
+		(ipc~handle-sock-listen> *ipc Events Fd *ep-fd))
+	       (T
+		(ipc~handle-sock-conn> *ipc Events Fd *ep-fd))))))))
+
+
 (de main ()
     (init-render)
     (run-render)

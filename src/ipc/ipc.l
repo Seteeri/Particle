@@ -120,5 +120,5 @@ Pass in outgoing handler functions:
 	    
 	    (prinl "Disconnected sock: " Fd))
 	  
-	  (prog
-	      (prinl "Read sock: " bytes-read " bytes" " = " (struct *buf-rd 'S))))))
+	  (when NIL
+	      (prinl (usec) " | handle-sock-conn | Client=" Fd ", " "Bytes-Read=:" bytes-read)))))

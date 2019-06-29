@@ -167,35 +167,7 @@
 	       ((= Fd (get *ipc 'ipc~listener))
 		(ipc~handle-sock-listen> *ipc Events Fd *ep-fd))
 	       (T
-		(handle-sock-conn *ipc Events Fd *ep-fd))))))))
-
-
-(de handle-sock-conn (Ipc Events Fd Ep-fd)
-    
-    (let (bytes-read (socket~recv Fd *buf-rd *buf-sz 0))
-      
-      (if (= bytes-read 0)
-	  
-	  #If epoll saying data to read, however recv is 0
-	  #that indicates socket hung-up or errored out
-	  (when (or (= (& Events epoll~ERR) epoll~ERR)
-		    (= (& Events epoll~HUP) epoll~HUP)
-		    (= (& Events epoll~RDHUP) epoll~RDHUP))
-
-	    (del Fd (get Ipc 'ipc~clients))
-	    
-	    (epoll~ctl-epfd Ep-fd
-			    epoll~DEL
-			    Sock
-			    0)
-	    
-	    (socket~shutdown Fd socket~SHUT-RDWR)
-	    (close Fd)
-	    
-	    (prinl "Disconnected sock: " Fd))
-	  
-	  (when NIL
-	    (prinl (usec) " | handle-sock-conn | Client=" Fd ", " "Bytes-Read=:" bytes-read)))))
+		(ipc~handle-sock-conn> *ipc Events Fd *ep-fd))))))))
 
 
 (de main ()
