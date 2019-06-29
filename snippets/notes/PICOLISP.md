@@ -145,13 +145,26 @@ Store DAGs as binary trees?
       * FRI - prog-rast/prog-comp [Done]
       * SAT - test pipeline [Done]
     * Integrate everything to last working state [WIP]
-      * Refactor li into subfolders
-      * Socket change block/nonblock to T/NIL for convenience
-      * Fix socket retry loop
-      * Ensure defs are defined for globals
+      * Refactor
+        * Refactor li into subfolders
+        * Socket change block/nonblock to T/NIL for convenience
+        * Fix socket retry loop
+        * Ensure defs are defined for globals
       * Implement socket handling for model/render
         * Render needs to process model requests
-        * Model needs to process render requests      
+          * Remember, render will simply memcopy
+            * Protocol: (fn src dest sz offset)
+          * It will read, eval, memcpy, GC
+          * Check heap size every frame, warn if large...
+            * Or after every message, if it starts to reach capacity, GC, resize
+              do next free
+        * Model needs to process render requests
+          * When client connects, needs to send message to model
+            * Block on read
+          * Model will register this as its name
+            * If name exists, append or replace
+          * Input needs to trigger model -> implement controller soon
+          
     * Implement Wayland [NXT]
     * Implement controller process [later]    
   

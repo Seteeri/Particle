@@ -78,6 +78,10 @@
       (setq *ipc (new '(ipc~+IPC) ""             'ipc~block
 		                  PATH-UDS-MODEL 'ipc~block))
 
+      #Send ID
+      (ipc~send-msg> *ipc "0")
+
+      (bye)
       
       (epoll~ctl-epfd *ep-fd 
 		      epoll~ADD
@@ -214,7 +218,7 @@
     #Clean up sockets
     (epoll~ctl-epfd *ep-fd epoll~DEL (get *ipc 'ipc~listener) 0)
     (epoll~ctl-epfd *ep-fd epoll~DEL (get *ipc 'ipc~connection) 0)
-    (ipc~end-ipc *ipc)
+    (ipc~end-ipc> *ipc)
 
     #Remove from epoll before end
     (epoll~ctl-epfd *ep-fd epoll~DEL (get *input 'fd-context) 0)

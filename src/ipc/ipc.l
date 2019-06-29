@@ -46,9 +46,9 @@ Pass in outgoing handler functions:
     #Only need 1 pair for all sockets
     #Since each buffer can be simultaneously used in an instance
     (=: sz-buf-rd (socket~read-rmem-default))
-    (=: buf-rd    (native "@" "malloc" 'N *buf-sz))
+    (=: buf-rd    (native "@" "malloc" 'N (: sz-buf-rd)))
     (=: sz-buf-wr (socket~read-wmem-default))
-    (=: buf-wr    (native "@" "malloc" 'N *buf-sz))
+    (=: buf-wr    (native "@" "malloc" 'N (: sz-buf-rd)))
 
     (=: nonblock-listener Nonblock-listener)
     (=: listener          (when Path-listener (socket~listen-sock Path-listener Nonblock-listener)))
@@ -79,10 +79,32 @@ Pass in outgoing handler functions:
     
     (when (: connection) (socket~end (: listener))))
 
+
+(dm send-msg> (Msg) #pass length?
+
+    (let (Length (length Msg))
+      
+      (when (> Length 4096)
+	(println "WARNING! Message will be truncated by " (- Length 4096) " bytes")
+	(setq Length 4096))
     
+      (struct (: buf-wr) 'N (cons Msg Length))
+      
+      #Send it - copy from ptr to sock
+      (socket~send-fd (: connection)
+	       (: buf-wr)
+	       Length
+	       0)))
+
+
 (dm handle-sock-listen> (Events Fd Ep-fd)
     (let (Sock (socket~accept-4 Fd 'block))
 
+      #Read for ID
+      (when (> (handle-sock-conn> This Events Sock NIL) 0)
+	(println "RAW" (struct (: buf-rd) '(B . 16)))
+	(println "ID" (struct (: buf-rd) 'S)))
+      
       (push (:: clients) Sock)
       
       (epoll~ctl-epfd Ep-fd
@@ -101,8 +123,12 @@ Pass in outgoing handler functions:
     #  (println "RECV: " (struct *buf-rd 'S)))
     #(let (bytes-read (native "@" "read" Fd *buf-rd *buf-sz)))
     
-    (let (bytes-read (socket~recv Fd *buf-rd *buf-sz 0))
+    (let (bytes-read (socket~recv Fd (: buf-rd) (: buf-sz) 0))
       
+      #If blocking and recv called, it will block
+      #If not blocking and recv called, will return 0
+      #Default is blocking...
+
       (if (= bytes-read 0)
 	  
 	  #If epoll saying data to read, however recv is 0
@@ -113,16 +139,21 @@ Pass in outgoing handler functions:
 
 	    (del Fd (:: clients))
 	    
-	    (epoll~ctl-epfd Ep-fd
-			    epoll~DEL
-			    Sock
-			    0)
+            (when Ep-fd
+	      (epoll~ctl-epfd Ep-fd
+	                      epoll~DEL
+			      Sock
+			      0))
 
 	    (socket~shutdown Fd socket~SHUT-RDWR)
 	    (close Fd)
 
             (when (: debug-ipc)	    
-	      (prinl (usec) " | handle-sock-conn | Disconnected sock=" Fd)))
+	      (prinl (usec) " | handle-sock-conn | Disconnected sock=" Fd))
+
+            bytes-read)
 	  
-	  (when (: debug-ipc)
-	      (prinl (usec) " | handle-sock-conn | Client=" Fd ", " "Bytes-Read=:" bytes-read)))))
+          (prog
+            (when (: debug-ipc)
+	      (prinl (usec) " | handle-sock-conn | Client=" Fd ", " "Bytes-Read=:" bytes-read))
+            bytes-read))))
