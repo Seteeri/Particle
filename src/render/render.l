@@ -171,11 +171,27 @@
       (glfw~swap-buffers *window)
 
       (glfw~poll-events)
+      (send-msg (get *ipc 'ipc~connection) (get *ipc 'ipc~buf-wr) "0")
       (epoll-wait 0)
       T)
 
     (glfw~destroy-window *window)
     (glfw~terminate))
+
+
+(de send-msg (Sock
+	      Ptr
+	      Msg)
+            
+      #Write string to ptr
+      (struct Ptr 'N Msg)
+      #(println (struct Ptr 'S))
+      
+      #Send it - copy from ptr to sock
+      (socket~send-fd Sock
+	       Ptr
+	       4096
+	       0))
 
 
 (de epoll-wait (Timeout)
