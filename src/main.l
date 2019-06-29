@@ -4,11 +4,11 @@
 
     (when T
       (unless (fork)
-	(exec "pil" "model/model.l" "-model~main" "1" "1" "1")))
+	(exec "pil" "model/model.l" "-model~main" "1920" "1080" "1")))
     
-    (when NIL
+    (when T
       (unless (fork)
-	(exec "pil" "input/input.l" "-input~main")))
+	(exec "pil" "input/input.l" "-input~main" "1920" "1080")))
     
     (when NIL
       (unless (fork)

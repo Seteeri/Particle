@@ -147,9 +147,6 @@
     #Render will send frame start and wait for frame end
     #Up to model to perform time management
 
-    #(prinl "run-model | " "Going to sleep...")
-    #(wait 1000000)
-
     (prinl "Starting epoll...")
     
     (let (Events NIL
@@ -197,8 +194,8 @@
 	    
 	    (prinl "Disconnected sock: " Fd))
 	  
-	  (prog
-	      (prinl (usec) " | handle-sock-conn | Client=" Fd ", " "Bytes-Read=:" bytes-read)))))
+	  (when NIL
+	    (prinl (usec) " | handle-sock-conn | Client=" Fd ", " "Bytes-Read=:" bytes-read)))))
 
 
 (de main ()

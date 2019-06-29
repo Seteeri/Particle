@@ -66,7 +66,10 @@ epoll_data_t data;      /* User data variable */
 
 (def 'DEVICES-PATH "/dev/input")
 
+#ENUMS
+https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c012d8f6d7656fb795dc7bdf9d6551
 
+#DEVICES
 (def 'DEVICE-CAP-KEYBOARD 0)
 (def 'DEVICE-CAP-POINTER 1)
 (def 'DEVICE-CAP-TOUCH 2)
@@ -74,7 +77,7 @@ epoll_data_t data;      /* User data variable */
 (def 'DEVICE-CAP-TABLET-PAD 4)
 (def 'DEVICE-CAP-GESTURE 5)
 
-# TYPES
+#EVENT TYPES
 (def 'NONE 0)
 (def 'DEVICE-ADDED 1)
 (def 'DEVICE-REMOVED 2)
@@ -103,8 +106,7 @@ epoll_data_t data;      /* User data variable */
 (def 'GESTURE-PINCH-END 805)
 (def 'SWITCH-TOGGLE 900)
 
-
-(de get-event-name (Type)
+(de get-event-type-name (Type)
     (case Type
       (0 'NONE)
       (1 'DEVICE-ADDED)
@@ -133,6 +135,32 @@ epoll_data_t data;      /* User data variable */
       (804 'GESTURE-PINCH-UPDATE)
       (805 'GESTURE-PINCH-END)
       (900 'SWITCH-TOGGLE)))
+
+#POINTER AXIS SOURCE
+(def 'POINTER-AXIS-SOURCE-WHEEL      1)
+(def 'POINTER-AXIS-SOURCE-FINGER     2)	
+(def 'POINTER-AXIS-SOURCE-CONTINUOUS 3)	
+(def 'POINTER-AXIS-SOURCE-WHEEL-TILT 4)
+
+(de get-pointer-axis-source-name (Source)
+    (case Source
+      (1 'POINTER-AXIS-SOURCE-WHEEL)
+      (2 'POINTER-AXIS-SOURCE-FINGER)	
+      (3 'POINTER-AXIS-SOURCE-CONTINUOUS)	
+      (4 'POINTER-AXIS-SOURCE-WHEEL-TILT)))
+
+
+#POINTER AXIS
+(def 'POINTER-AXIS-SCROLL-VERTICAL 0)
+(def 'POINTER-AXIS-SCROLL-HORIZONTAL 1)
+
+
+(de get-pointer-axis-name (Axis)
+    (case Axis
+      (0 'POINTER-AXIS-SCROLL-VERTICAL)
+      (1 'POINTER-AXIS-SCROLL-HORIZONTAL)))
+
+
 
 
 (de unref (Context)
@@ -185,7 +213,14 @@ epoll_data_t data;      /* User data variable */
     (native "libinput.so" "libinput_event_keyboard_get_key" 'I Keyboard-event))
 
 (de event-keyboard-get-key-state (Keyboard-event)
+    #Return symbol (enum)
     (native "libinput.so" "libinput_event_keyboard_get_key_state" 'I Keyboard-event))
+
+(de event-keyboard-get-base-event (Event)
+    (native "libinput.so" "libinput_event_keyboard_get_base_event" 'N Event))
+
+(de event-keyboard-get-seat-key-count (Event)
+    (native "libinput.so" "libinput_event_keyboard_get_seat_key_count" 'I Event))
 
 
 (de event-get-pointer-event (Event)
@@ -193,6 +228,9 @@ epoll_data_t data;      /* User data variable */
 
 (de event-pointer-get-time (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_time" 'I Pointer-event))
+
+(de event-pointer-get-time-usec (Pointer-event)
+    (native "libinput.so" "libinput_event_pointer_get_time_usec" 'I Pointer-event))
 
 (de event-pointer-get-button (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_button" 'I Pointer-event))
@@ -211,6 +249,22 @@ epoll_data_t data;      /* User data variable */
 
 (de event-pointer-get-dy-unaccelerated (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_dy_unaccelerated" +1.0 Pointer-event))
+
+(de event-pointer-get-seat-button-count (Pointer-event)
+    (native "libinput.so" "libinput_event_pointer_get_seat_button_count" 'I Pointer-event))
+
+(de event-pointer-has-axis (Event Axis)
+    (native "libinput.so" "libinput_event_pointer_has_axis" 'I Event Axis))
+
+(de event-pointer-get-axis-source (Event)
+    #ENUM
+    (native "libinput.so" "libinput_event_pointer_get_axis_source" 'I Event))
+
+(de event-pointer-get-axis-value (Event Axis)
+    (native "libinput.so" "libinput_event_pointer_get_axis_value" '+1.0 Event Axis))
+
+(de event-pointer-get-axis-value-discrete (Event Axis)
+    (native "libinput.so" "libinput_event_pointer_get_axis_value_discrete" +1.0 Event Axis))
 
 
 (de event-get-touch-event (Pointer-event)

@@ -142,9 +142,10 @@ Store DAGs as binary trees?
         * Init GL buffer objects [Done]
         * Load data and glyphs [Done]
         * Init programs [Done]
-      * FRI - prog-rast/prog-comp
-      * SAT - test pipeline
-    * Integrate everything to last working state
+      * FRI - prog-rast/prog-comp [Done]
+      * SAT - test pipeline [Done]
+    * Integrate everything to last working state [WIP]
+      * Refactor li into subfolders
     * Implement Wayland [NXT]
     * Implement controller process [later]    
   

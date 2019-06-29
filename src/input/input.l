@@ -53,6 +53,10 @@
 
 
 (de init-input ()
+
+    (let (Argv (argv))
+      (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
+	    *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
     
     (when T
       (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
@@ -92,7 +96,7 @@
     * returns event count
     }#
 
-    (prinl "Epolling...")
+    (prinl (usec) " | input | Starting epoll...")
     
     (let (Events NIL
 	  Fd     NIL)
@@ -126,9 +130,6 @@
 	     (setq Event (li~get-event (: li~context)))
 	     (T (= Event 0))
 	     	     
-	     (let (Type (li~event-get-type Event))
-	       (prinl "Event: " (li~get-event-name Type)))
-
 	     #Copy event info to Lisp
 	     #Send to all clients
 	     (send-event (get *ipc 'ipc~connection)
@@ -142,16 +143,69 @@
 (de send-event (Sock
 		Ptr
 		Event)
+    (let (Type (li~event-get-type Event)
+	  Name-Type (li~get-event-type-name Type))     
+      #Align with model
+      #(prinl (usec) " | handle-context   | Event: " Type "=" Name-Type)
     
-    #Write string to ptr
-    (struct Ptr 'N "Hello")
-    #(println (struct Ptr 'S))
-    
-    #Send it - copy from ptr to sock
-    (socket~send-fd Sock
-		    Ptr
-		    5
-		    0))
+      (let (Msg (cond ((= Type li~KEYBOARD-KEY)
+		       (glue " " (list (format (li~event-keyboard-get-time Event))
+				       (format (li~event-keyboard-get-time-usec Event))
+				       (format (li~event-keyboard-get-key Event))
+				       (format (li~event-keyboard-get-key-state Event))
+				       (format (li~event-keyboard-get-seat-key-count Event)))))
+		      
+		      ((= Type li~POINTER-MOTION)
+		       (glue " " (list (format (li~event-pointer-get-time Event))
+				       (format (li~event-pointer-get-time-usec Event))
+				       (format (li~event-pointer-get-dx Event) *Scl)
+				       (format (li~event-pointer-get-dy Event) *Scl)
+				       (format (li~event-pointer-get-dx-unaccelerated Event) *Scl)
+				       (format (li~event-pointer-get-dy-unaccelerated Event) *Scl))))
+
+		      ((= Type li~POINTER-MOTION-ABSOLUTE)
+		       (glue " " (list (format (li~event-pointer-get-time Event))
+				       (format (li~event-pointer-get-time-usec Event))
+				       (format (li~event-pointer-get-absolute-x Event) *Scl)
+				       (format (li~event-pointer-get-absolute-y Event) *Scl)
+				       (format (li~event-pointer-get-absolute-x-transformed Event *width) *Scl)
+				       (format (li~event-pointer-get-absolute-y-transformed Event *height) *Scl))))
+
+		      ((= Type li~POINTER-BUTTON)
+		       (glue " " (list (format (li~event-pointer-get-time Event))
+				       (format (li~event-pointer-get-time-usec Event))
+				       (format (li~event-pointer-get-button Event))
+				       (format (li~event-pointer-get-button-state Event))
+				       (format (li~event-pointer-get-seat-button-count Event)))))
+
+		      ((= Type li~POINTER-AXIS)
+		       (glue " " (list (format (li~event-pointer-get-time Event))
+				       (format (li~event-pointer-get-time-usec Event))
+				       (format (li~event-pointer-has-axis Event Axis))
+				       (li~get-pointer-axis-source-name (li~event-pointer-get-axis-source Event))
+				       (when (= (li~event-pointer-has-axis Event Axis) 1)
+					 (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
+					 (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-VERTICAL) *Scl)
+					 (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
+					 (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL) *Scl)))))
+		      
+		      (T
+		       "")))
+
+
+	(setq Msg (glue " " (list Name-Type Msg)))
+	(println Msg)
+	
+	(struct Ptr 'N Msg)
+	#(println (struct Ptr 'S))
+
+	# Null terminate...or does struct do this already?
+        (struct (+ Ptr (length Msg)) 'N (cons 0 1))
+	
+	(socket~send-fd Sock
+			Ptr
+			(+ (length Msg) 1)
+			0))))
 
 
 (de end-input ()
