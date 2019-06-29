@@ -102,11 +102,17 @@ Pass in outgoing handler functions:
 
       #Read for ID
       (when (> (handle-sock-conn> This Events Client NIL) 0)
+
+	#How to handle name conflicts?
+	#-> Disconnect client
+	
 	(let (ID (struct (: buf-rd) 'S))
+	  
 	  #(println "ID" ID)
-	  #Push in property list
-	  (put (: clients) ID Client)
 	  #(println (getl (: clients)))
+
+	  #Map fd to name
+	  (put (: clients) Client ID)
 
 	  (epoll~ctl-epfd Ep-fd
 			  epoll~ADD

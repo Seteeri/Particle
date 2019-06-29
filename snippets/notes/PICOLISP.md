@@ -150,6 +150,7 @@ Store DAGs as binary trees?
         * Socket change block/nonblock to T/NIL for convenience
         * Fix socket retry loop
         * Ensure defs are defined for globals
+        * Server, handle name conflicts -> disconnect
       * Implement socket handling for model/render
         * Render needs to process model requests
           * Remember, render will simply memcopy
@@ -159,14 +160,12 @@ Store DAGs as binary trees?
             * Or after every message, if it starts to reach capacity, GC, resize
               do next free
         * Model needs to process render requests
-          * When client connects, needs to send message to model
-            * Block on read
-          * Model will register this as its name
-            * If name exists, append or replace
           * Input needs to trigger model -> implement controller soon
         * TODO
-          * Model sends nodes
-          * Render loop will process requests
+          * Model  -> sends serialized nodes
+            * Use input to trigger this
+          * Render -> loop will memcpy node data
+            * We basically perform operations until gc is triggered or time limit
           * DRAW!
           
     * Implement Wayland [NXT]
