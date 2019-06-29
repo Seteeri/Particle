@@ -80,8 +80,9 @@ Pass in outgoing handler functions:
     (when (: connection) (socket~end (: listener))))
 
 
-(dm send-msg> (Msg) #pass length?
-
+(dm send-msg> (Msg)
+    #Pass length?
+    
     (let (Length (length Msg))
       
       (when (> Length 4096)
@@ -90,7 +91,6 @@ Pass in outgoing handler functions:
     
       (struct (: buf-wr) 'N (cons Msg Length))
       
-      #Send it - copy from ptr to sock
       (socket~send-fd (: connection)
 	       (: buf-wr)
 	       Length
@@ -98,24 +98,23 @@ Pass in outgoing handler functions:
 
 
 (dm handle-sock-listen> (Events Fd Ep-fd)
-    (let (Sock (socket~accept-4 Fd 'block))
+    (let (Client (socket~accept-4 Fd 'block))
 
       #Read for ID
-      (when (> (handle-sock-conn> This Events Sock NIL) 0)
+      (when (> (handle-sock-conn> This Events Client NIL) 0)
 	(let (ID (struct (: buf-rd) 'S))
-	  (println "ID" ID)
+	  #(println "ID" ID)
 	  #Push in property list
-	  (put (: clients) ID Sock)
+	  (put (: clients) ID Client)
 	  #(println (getl (: clients)))
-	  NIL))
-      
-      (epoll~ctl-epfd Ep-fd
-		      epoll~ADD
-		      Sock
-		      (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
 
-      (when (: debug-ipc)
-        (prinl (usec) " | handle-sock-listen | Accepted sock: " Sock))))
+	  (epoll~ctl-epfd Ep-fd
+			  epoll~ADD
+			  Client
+			  (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
+
+	  (when (: debug-ipc)
+	    (prinl (usec) " | handle-sock-listen | Accepted Client=" Sock ", ID=" ID))))))
 
 
 (dm handle-sock-conn> (Events Fd Ep-fd)

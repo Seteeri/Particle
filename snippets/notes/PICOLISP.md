@@ -136,7 +136,7 @@ Store DAGs as binary trees?
      * Abstract out epoll server and instance in each process [done]
 
   * TODO
-    * Implement Render [WIP]
+    * Implement Render [Done-ish...]
       * THR - setup-render: glyphs, bos
         * Port buffer-object to gl-bo [Done]
         * Init GL buffer objects [Done]
@@ -164,6 +164,10 @@ Store DAGs as binary trees?
           * Model will register this as its name
             * If name exists, append or replace
           * Input needs to trigger model -> implement controller soon
+        * TODO
+          * Model sends nodes
+          * Render loop will process requests
+          * DRAW!
           
     * Implement Wayland [NXT]
     * Implement controller process [later]    
@@ -188,8 +192,6 @@ Store DAGs as binary trees?
       
     * Fix native calls, ensure backtick before library symbol
     * Prefix constants with lib name
-    * Remove sending init params mmap -> Render will load on startup
-    * Remove sending init tex -> Render will load on startup
     * Render - make sure no TCP_NODELAY
   
   * Port dependencies; pull code from rosetta code as baseline    
