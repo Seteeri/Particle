@@ -94,7 +94,7 @@
     * returns event count
     }#
 
-    (prinl "Polling...")
+    (prinl "Epolling...")
     
     (let (Events NIL
 	  Fd     NIL)

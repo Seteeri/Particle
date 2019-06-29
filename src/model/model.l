@@ -15,15 +15,16 @@
 (symbols 'model 'pico)
 
 
+# Set math precision to 6 decimals
+(scl 6)
+
+
 # C library paths
 (def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 (def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 # UDS paths
+(def 'PATH-UDS-MODEL "/tmp/protoform-model.socket")
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
-
-
-# Set math precision to 6 decimals
-(scl 6)
 
 
 # Wrapper libraries
@@ -32,14 +33,15 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/posix/stdio.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/posix/string.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/posix/unistd.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/sock.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/input.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/render.l")
 #(load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 
 
 (de init-verts ()
@@ -118,15 +120,60 @@
     }#    
     (setq *verts (init-verts))
     (init-verts-default)
+
+    (init-ipc))
+
+
+(de init-ipc ()
+    (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
+	  *ep-fd     (epoll~create-size 1)
+	  *buf-sz    (socket~read-rmem-default)
+	  *buf-rd    (native "@" "malloc" 'N *buf-sz))
+
+    (setq *ipc (new '(ipc~+IPC)
+		    PATH-UDS-MODEL 'ipc~block
+		    ""             'ipc~block))
+
+    (epoll~ctl-epfd *ep-fd 
+		    epoll~ADD
+		    (get *ipc 'ipc~listener)
+		    epoll~IN)
     
-    #Send node updates also
-    (init-render))
+    (epoll~ctl-epfd *ep-fd 
+		    epoll~ADD
+		    (get *ipc 'ipc~connection)
+		    epoll~IN))
+
 
 (de run-model ()
     #After connecting, start processing messages
     #Render will send frame start and wait for frame end
-    #Up to model to perform time management    
-    T)
+    #Up to model to perform time management
+
+    #(prinl "run-model | " "Going to sleep...")
+    #(wait 1000000)
+    
+    (let (Events NIL
+	  Fd     NIL)
+      (loop
+
+	 (prinl "Epolling...")
+	 
+	 (setq num-events (epoll~wait-epfd *ep-fd *ep-events 2 -1))
+	 
+	 (when (> num-events 0)
+
+	   (let (Ep-events (struct *ep-events '(I I)))
+	     (setq Events (get Ep-events 1))
+	     (setq Fd     (get Ep-events 2))
+	     
+	     (prinl (usec) " FD: " Fd ", Events: " Events)
+
+	     (cond 
+	       ((= Fd (get *ipc 'ipc~listener))
+		(ipc~handle-sock-listen Events Fd *ep-fd))
+	       (T
+		(ipc~handle-sock-conn Events Fd *ep-fd))))))))
 
 
 (de main ()

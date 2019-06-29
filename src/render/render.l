@@ -60,6 +60,7 @@
 (def '*prog-comp)
 (def '*vao)
 
+
 (de init-render ()
     #{
     - Model can modify these during runtime through wire
@@ -72,29 +73,20 @@
     
     }#
   
-    ############################################################################
-
     #Init context
     (init-window)
     (init-gl)
-    (when NIL
-      (init-ipc))
 
     #Init OpenGL programs
     (init-rast)
 
     #Don't need yet...
     #To disable drawing an object, use 0.0 (float) that is multiplied in vertex shader
+    #Change flags with a vec4
     #(init-comp)
 
-    (bye)
-    
-    #At this point, shm already has data loaded by model
-    #so copy to OpenGL buffers
-    #
-    #(memcpy-shm-to-all)
-    #
-    #Or wait until socket handling?
+    (when NIL
+      (init-ipc))
     
     T)
 

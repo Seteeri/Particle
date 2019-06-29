@@ -1948,3 +1948,20 @@ JIT inspired by
 
 
 https://en.wikipedia.org/wiki/Self-organizing_list
+
+
+Launch:
+* libinput
+* model
+* render
+
+libinput connects to model
+model connects to render
+
+* make model the server
+* libinput and render connect
+
+libinput is one of many
+view is one of many
+but only one data
+
