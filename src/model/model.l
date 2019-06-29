@@ -152,12 +152,12 @@
 
     #(prinl "run-model | " "Going to sleep...")
     #(wait 1000000)
+
+    (prinl "Starting epoll...")
     
     (let (Events NIL
 	  Fd     NIL)
       (loop
-
-	 (prinl "Epolling...")
 	 
 	 (setq num-events (epoll~wait-epfd *ep-fd *ep-events 2 -1))
 	 
@@ -167,7 +167,7 @@
 	     (setq Events (get Ep-events 1))
 	     (setq Fd     (get Ep-events 2))
 	     
-	     (prinl (usec) " FD: " Fd ", Events: " Events)
+	     #(prinl (usec) " FD: " Fd ", Events: " Events)
 
 	     (cond 
 	       ((= Fd (get *ipc 'ipc~listener))
@@ -201,7 +201,7 @@
 	    (prinl "Disconnected sock: " Fd))
 	  
 	  (prog
-	      (prinl "Read sock: " bytes-read " bytes" " = " (struct *buf-rd 'S))))))
+	      (prinl (usec) " | handle-sock-conn | Client=" Fd ", " "Bytes-Read=:" bytes-read)))))
 
 
 (de main ()

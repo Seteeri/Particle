@@ -49,7 +49,7 @@ Pass in outgoing handler functions:
     (=: buf-wr    (native "@" "malloc" 'N *buf-sz))
 
     (=: nonblock-listener Nonblock-listener)
-    (=: listener          (socket~listen-sock Path-listener Nonblock-listener))
+    (=: listener          (when Path-listener (socket~listen-sock Path-listener Nonblock-listener)))
     (=: clients           ())
     
     #Poss to have multiple connections to different server

@@ -70,7 +70,8 @@
 
     
     (when T
-      (setq *ipc (new '(ipc~+IPC) PATH-UDS-INPUT 'block
+      #PATH-UDS-INPUT 'block
+      (setq *ipc (new '(ipc~+IPC) ""             'block
 		                  PATH-UDS-MODEL 'block))
       (epoll~ctl-epfd *ep-fd 
 		      epoll~ADD
@@ -109,7 +110,7 @@
 	     
 	     #(prinl (usec) " FD: " Fd ", Events: " Events)
 
-	     (cond 
+	     (cond
 	       ((= Fd (get *input 'li~fd-context))
 		(handle-context))
 	       ((= Fd (get *ipc 'ipc~listener))
@@ -132,55 +133,28 @@
 	       (prinl "Event: " (li~get-event-name Type)))
 
 	     #Copy event info to Lisp
-	     #(send-msg (get *ipc 'ipc~connection))
+	     #Send to all clients
+	     (send-event (get *ipc 'ipc~connection)
+			 (get *ipc 'ipc~buf-wr)
+			 Event)
 	     
 	     (li~event-destroy Event)
 	     (li~dispatch (: li~context)))))
 
 
-(de send-msg (Sock
-	      Ptr
-	      Msg)
-    #{
-    Serialize symbols
-    - val  -> get value
-    - getl -> get property list
+(de send-event (Sock
+		Ptr
+		Event)
     
-    Either pass binary using pr/rd
-    Or UTF-8 string through prin/any/str
+    #Write string to ptr
+    (struct Ptr 'N "Hello")
+    #(println (struct Ptr 'S))
     
-    : (out "x" (pr (list 1 2 3)))
-    -> (1 2 3)
-    
-    : (hd "x")
-    00000000  01 04 02 04 04 04 06 03                          ........
-    
-    : (in "x" (rd))
-    -> (1 2 3)
-    
-    }#
-    
-    #Use above?
-    #Use nanomsg?
-    #Use another serialization protocol? MsgPack, JSON (more readily available)
-    #Implement pr/rd in Lisp?
-    #-> PILIO has C implementation - compile to so -> native/struct
-    #-> Or run pilos in process whose sole responsibility is to rd input and pr output
-      
-    (when NIL
-      
-      #Write string to ptr
-      (struct Ptr 'N Msg)
-      (println (struct Ptr 'S))
-      
-      #Send it - copy from ptr to sock
-      (send-fd Sock
-	       Ptr
-	       4096
-	       0))
-
-    #Write directly to socket so need not copy to ptr
-    (native "@" "write" 'I Sock Msg (+ (length Msg) 0)))
+    #Send it - copy from ptr to sock
+    (socket~send-fd Sock
+		    Ptr
+		    5
+		    0))
 
 
 (de end-input ()
