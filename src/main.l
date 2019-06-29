@@ -2,15 +2,15 @@
 
 (de main ()
 
-    (when T
+    (when NIL
       (unless (fork)
 	(exec "pil" "model/model.l" "-model~main" "1920" "1080" "1")))
     
-    (when T
+    (when NIL
       (unless (fork)
 	(exec "pil" "input/input.l" "-input~main" "1920" "1080")))
     
-    (when NIL
+    (when T
       (unless (fork)
 	(exec "pil" "render/render.l" "-render~main")))
     

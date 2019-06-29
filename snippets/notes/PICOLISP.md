@@ -146,6 +146,7 @@ Store DAGs as binary trees?
       * SAT - test pipeline [Done]
     * Integrate everything to last working state [WIP]
       * Refactor li into subfolders
+      * Socket change block/nonblock to T/NIL for convenience
     * Implement Wayland [NXT]
     * Implement controller process [later]    
   

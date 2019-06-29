@@ -137,14 +137,14 @@
 
     
     #PATH-UDS-RENDER 'block
-    (setq *ipc (new '(ipc~+IPC) ""             'ipc~block
-		                PATH-UDS-MODEL 'ipc~block))
-
-    
-    (epoll~ctl-epfd *ep-fd 
-		    epoll~ADD
-		    (get *ipc 'ipc~connection)
-		    epoll~IN))
+    (when NIL
+      (setq *ipc (new '(ipc~+IPC) ""             'ipc~nonblock
+		      PATH-UDS-MODEL 'ipc~nonblock))
+      
+      (epoll~ctl-epfd *ep-fd 
+		      epoll~ADD
+		      (get *ipc 'ipc~connection)
+		      epoll~IN)))
 
 
 (de run-render ()
@@ -155,7 +155,7 @@
     (while (= (glfw~window-should-close *window) 0)
       
       (println (usec))
-
+      
       (gl~clear-color 1.0
 		      1.0
 		      1.0
@@ -163,13 +163,16 @@
       (gl~clear-mask (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
       
       (glfw~swap-buffers *window)
-      (glfw~poll-events))
+
+      (glfw~poll-events)
+      (epoll-wait 0)
+      T)
 
     (glfw~destroy-window *window)
     (glfw~terminate))
 
 
-(de run-input (Timeout)
+(de epoll-wait (Timeout)
     #{
     Poll events ASAP and enqueue for processing by controller thread
     
@@ -180,14 +183,13 @@
     * returns event count
     }#
 
-    (prinl (usec) " | input | Starting epoll...")
+    #(prinl (usec) " | input | Starting epoll...")
     
-    (let (Events NIL
-	  Fd     NIL)
-      (loop
-	 (setq num-events (epoll~wait-epfd *ep-fd *ep-events 2 Timeout))
+    (let (Events     NIL
+	  Fd         NIL
+          Num-Events (epoll~wait-epfd *ep-fd *ep-events 2 Timeout))
 	 
-	 (when (> num-events 0)
+	 (for I Num-Events
 
 	   (let (Ep-events (struct *ep-events '(I I)))
 	     (setq Events (get Ep-events 1))
@@ -196,12 +198,10 @@
 	     #(prinl (usec) " FD: " Fd ", Events: " Events)
 
 	     (cond
-	       ((= Fd (get *input 'li~fd-context))
-		(handle-context))
 	       ((= Fd (get *ipc 'ipc~listener))
 		(ipc~handle-sock-listen> *ipc Events Fd *ep-fd))
 	       (T
-		(ipc~handle-sock-conn> *ipc Events Fd *ep-fd))))))))
+		(ipc~handle-sock-conn> *ipc Events Fd *ep-fd)))))))
 
 
 (de main ()
