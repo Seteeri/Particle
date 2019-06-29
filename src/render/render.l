@@ -56,7 +56,9 @@
 
 (def '*window)
 (def '*buffer-objects)
-
+(def '*prog-rast)
+(def '*prog-comp)
+(def '*vao)
 
 (de init-render ()
     #{
@@ -82,13 +84,14 @@
     #(init-tex-glyphs (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr))        
     (init-progs)
 
-    #{
-    (gl:use-program (prog-rast-msdf *render*))
-    (init-buff-rast-msdf params-model)
+    (gl~use-program *prog-rast)
+    (setq *vao (car (gl~gen-vertex-arrays 1)))
+    (gl~bind-vertex-array *vao)
 
-    (gl:use-program (prog-compute *render*))
-    (init-buff-compute params-model)
-    }#
+    (bye)
+
+    #(gl:use-program (prog-compute *render*))
+    #(init-buff-compute params-model)
     
     #Use program raster
 
@@ -231,9 +234,9 @@
 
 
 (de init-progs ()
-    (gl~init-prog-rast *paths-rast-vert-shader
-		       *paths-rast-frag-shader)
-    (gl~init-prog-comp *paths-comp-shader))
+    (setq *prog-rast (gl~init-prog-rast *paths-rast-vert-shader
+					*paths-rast-frag-shader))
+    (setq *prog-comp (gl~init-prog-comp *paths-comp-shader)))
 
 
 (de run-render ()

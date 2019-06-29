@@ -294,7 +294,14 @@ Naming Conventions:
     (native "libGLESv2.so" "glDeleteShader" NIL Shader))
 
 
+(de gen-vertex-arrays (N)
+    (native "libGLESv2.so" "glGenVertexArrays" NIL N (list 'Arrays (cons (* 4 N) 'I N)))
+    Arrays)
 
+
+(de bind-vertex-array (Array)
+    (native "libGLESv2.so" "glBindVertexArray" NIL Array))
+    
 
 (mapc '((X) (def (car X) (hex (cadr X))))
       (quote

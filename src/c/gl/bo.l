@@ -1,6 +1,3 @@
-#(symbols 'gl 'pico)
-
-
 (class +Buffer-Object)
 (dm T (Size
        Target
