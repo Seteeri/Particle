@@ -39,6 +39,8 @@ Pass in outgoing handler functions:
 (dm T (Path-listener   Nonblock-listener
        Path-connection Nonblock-connection)
 
+    (=: debug-ipc T)
+
     #Setup socket data
 
     #Only need 1 pair for all sockets
@@ -61,7 +63,9 @@ Pass in outgoing handler functions:
       (while (not (: connection))
 	(=: connection          (socket~connect-sock Path-connection Nonblock-connection))
 	#~1/144 seconds
-	(wait 7))))
+	(wait 7))
+      (when (: debug-ipc)
+	(prinl (usec) " | T | Connected sock: " (: connection)))))
 
 
 (dm end-ipc> ()
@@ -86,9 +90,8 @@ Pass in outgoing handler functions:
 		      Sock
 		      (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
 
-      (prinl "Connect sock: " Sock " with " (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
-      
-      T))
+      (when (: debug-ipc)
+        (prinl (usec) " | handle-sock-listen | Accepted sock: " Sock))))
 
 
 (dm handle-sock-conn> (Events Fd Ep-fd)
@@ -117,8 +120,9 @@ Pass in outgoing handler functions:
 
 	    (socket~shutdown Fd socket~SHUT-RDWR)
 	    (close Fd)
-	    
-	    (prinl "Disconnected sock: " Fd))
+
+            (when (: debug-ipc)	    
+	      (prinl (usec) " | handle-sock-conn | Disconnected sock=" Fd)))
 	  
-	  (when NIL
+	  (when (: debug-ipc)
 	      (prinl (usec) " | handle-sock-conn | Client=" Fd ", " "Bytes-Read=:" bytes-read)))))

@@ -81,7 +81,7 @@
 	             (| SOCK-STREAM))
 		 0))
     (when (= Sock -1)
-      (quit "(= socket -1)"))
+      "(= socket -1)")
     Sock))
 
 
@@ -101,7 +101,7 @@
 		                Sockaddr
 				SOCKADDR-LEN))
 	(when (= Ret -1)
-	  (quit "(= connect-sockfd -1)")))
+	  "(= connect-sockfd -1)"))
 	
       (native "@" "free" NIL Sockaddr)
       
@@ -168,11 +168,11 @@
 		             Sockaddr
 		             SOCKADDR-LEN))
 	(when (= Ret -1)
-	  (quit "(= bind-sockfd -1)")))
+	  "(= bind-sockfd -1)"))
       
       (let (Ret (listen-sockfd Sock Backlog))
 	(when (= Ret -1)
-	  (quit "(= bind-sockfd -1)")))
+	  "(= bind-sockfd -1)"))
   
       (native "@" "free" NIL Sockaddr)
       

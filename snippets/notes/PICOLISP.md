@@ -147,9 +147,11 @@ Store DAGs as binary trees?
     * Integrate everything to last working state [WIP]
       * Refactor li into subfolders
       * Socket change block/nonblock to T/NIL for convenience
+      * Fix socket retry loop
       * Ensure defs are defined for globals
-      * Render needs to process model requests
-      * Model needs to process render requests
+      * Implement socket handling for model/render
+        * Render needs to process model requests
+        * Model needs to process render requests      
     * Implement Wayland [NXT]
     * Implement controller process [later]    
   

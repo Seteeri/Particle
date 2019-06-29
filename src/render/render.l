@@ -143,7 +143,7 @@
 
     
     #PATH-UDS-RENDER 'block
-    (when NIL
+    (when T
       (setq *ipc (new '(ipc~+IPC) ""             'ipc~nonblock
 		      PATH-UDS-MODEL 'ipc~nonblock))
       
@@ -160,7 +160,7 @@
     
     (while (= (glfw~window-should-close *window) 0)
       
-      (println (usec))
+      #(println (usec))
       
       (gl~clear-color 1.0
 		      1.0

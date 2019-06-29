@@ -2,9 +2,11 @@
 
 (de main ()
 
-    (when NIL
+    (when T
       (unless (fork)
-	(exec "pil" "model/model.l" "-model~main" "1920" "1080" "1")))
+	(exec "pil" "model/model.l" "-model~main" "1920" "1080" (format (** 2 19)))))
+
+    (wait 3000)
     
     (when NIL
       (unless (fork)
