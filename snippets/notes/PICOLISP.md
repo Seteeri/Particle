@@ -148,9 +148,12 @@ Store DAGs as binary trees?
       * Refactor
         * Refactor li into subfolders
         * Socket change block/nonblock to T/NIL for convenience
-        * Fix socket retry loop
         * Ensure defs are defined for globals
-        * Server, handle name conflicts -> disconnect
+      * IPC
+        -> Send messages with length first [Done]
+        -> Server, handle name conflicts -> disconnect
+        -> Pass epoll FD to IPC
+        -> Fix socket retry loop        
       * Implement socket handling for model/render
         * Render needs to process model requests
           * Remember, render will simply memcopy
@@ -168,8 +171,8 @@ Store DAGs as binary trees?
             * We basically perform operations until gc is triggered or time limit
           * DRAW!
           
-    * Implement Wayland [NXT]
-    * Implement controller process [later]    
+    * Implement Wayland [Tuesday...or Wednesday?]
+    * Implement controller process [later]
   
   * DONE
     * Implement input process/server [done]

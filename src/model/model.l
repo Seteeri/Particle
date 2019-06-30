@@ -132,6 +132,7 @@
 
     
     (setq *ipc (new '(ipc~+IPC)
+		    *ep-fd
 		    PATH-UDS-MODEL 'ipc~block
 		    ""             'ipc~block))
 
@@ -163,11 +164,36 @@
 	     
 	     #(prinl (usec) " FD: " Fd ", Events: " Events)
 
-	     (cond 
-	       ((= Fd (get *ipc 'ipc~listener))
-		(ipc~handle-sock-listen> *ipc Events Fd *ep-fd))
-	       (T # get name
-		(ipc~handle-sock-conn> *ipc Events Fd *ep-fd))))))))
+	     (if (= Fd (get *ipc 'ipc~listener))
+		 
+		 (ipc~accept-sock> *ipc Events Fd)
+
+		 (recv-conn-input Events Fd)))))))
+
+#{
+		 #Make IPC method for this
+		 (let (ID (get (get *ipc 'ipc~clients) Fd))
+
+
+		   
+		   (cond ((= ID "INPUT")
+			  (recv-conn-input Events Fd))
+			 
+			 ((= ID "RENDER")
+			  (recv-conn-render Events Fd))
+			 
+			 (T
+			  #print warning
+			  (ipc~recv-sock> *ipc Events Fd 4096))))))))))
+}#
+
+
+(de recv-conn-input (Events Fd)
+    (ipc~recv-msg> *ipc Events Fd))
+
+
+(de recv-conn-render (Events Fd)
+    (prinl "Msg: " (ipc~recv-msg> *ipc Events Fd)))
 
 
 (de main ()
@@ -176,7 +202,6 @@
     (println 'Exiting...)
     (bye))
 
-#Launch from script etc
 
 #...Libinput proc
 #.....Read events, send to controller

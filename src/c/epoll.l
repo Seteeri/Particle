@@ -37,6 +37,9 @@
 #4+8
 }#
 
+#For convenience
+(def 'EPOLL-BAD (| IN ERR HUP RDHUP))
+
 
 (de create-size (Size)
     (native "@" "epoll_create" 'I Size))
@@ -67,3 +70,4 @@
 		      Fd
 		      Event)
 	 (native "@" "free" NIL Event)))
+

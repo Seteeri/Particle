@@ -36,11 +36,13 @@ Pass in outgoing handler functions:
 
 
 (class +IPC)
-(dm T (Path-listener   Nonblock-listener
+(dm T (Fd-Epoll
+       Path-listener   Nonblock-listener
        Path-connection Nonblock-connection)
 
     (=: debug-ipc T)
 
+    (=: fd-epoll Fd-Epoll)
     #Setup socket data
 
     #Only need 1 pair for all sockets
@@ -80,87 +82,147 @@ Pass in outgoing handler functions:
     (when (: connection) (socket~end (: listener))))
 
 
+#Rename to accept
+(dm accept-sock> (Events Fd)
+    (let Client (socket~accept-4 Fd 'block)
+
+	 (when (: debug-ipc)
+	   (prinl (usec) " | accept-sock> | Accepted Client=" Client))
+	 
+	 #Read for ID - this will block
+	 (let ID (recv-msg> This Events Client)
+
+	      (prinl (usec) " | accept-sock> | ID=" ID)
+	      
+	      #Disconnect client if name conflict
+	      (if (assoc Client (: clients))
+
+		  (prog
+		      (prinl "WARNING! ID=" ID " exists; disconnecting client=" Client)
+		     (disconnect-sock Client))
+		  
+		  (prog
+		      (push1 (:: clients) (cons Client ID))
+
+		     #Poss store ID into epoll-data so need not look up
+		     (epoll~ctl-epfd (: fd-epoll)
+				     epoll~ADD
+				     Client
+				     epoll~BAD)
+
+		     (when (: debug-ipc)
+		       (prinl (usec) " | accept-sock> | Registered Client=" Client ", ID=" ID)))))
+
+    Client))
+
+
+(dm recv-sock> (Events Fd Buf-Sz)
+    #{
+    * This is designed for blocking sockets...
+    * If no-data and blocking     -> recv will block
+    * If no-data and non-blocking -> recv will return -1 and set errno to EAGAIN or EWOULDBLOCK
+    * EOF will return 0 on shutdown
+    * ERR/HUP will return 0 also
+    }#
+
+    #For Buf-Sz: pass T to recv full length, else pass length
+    (let Bytes-Read (socket~recv Fd
+				 (: buf-rd)
+				 (if (=T Buf-Sz)
+				     (: sz-buf-rd)
+				     Buf-Sz)
+				 0)
+
+	 #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
+	 
+	 (if (=0 Bytes-Read)
+	     
+	     (when (or (= (& Events epoll~ERR)   epoll~ERR)
+		       (= (& Events epoll~HUP)   epoll~HUP)
+		       (= (& Events epoll~RDHUP) epoll~RDHUP))
+
+	       #Make clean up fns for these or this entire block incl. above
+	       (del (assoc Fd (: clients)) (:: clients))
+	       (println (: clients))
+	       
+	       (epoll~ctl-epfd (: fd-ep)
+			       epoll~DEL
+			       Sock
+			       0)
+	       (disconnect-sock Fd)
+
+	       (prinl (usec) " | recv-sock | Disconnected sock=" Fd)
+
+	       Bytes-Read)
+	     
+	     (prog
+		 (when NIL #(: debug-ipc)
+		       (prinl (usec) " | recv-sock | Client=" Fd ", " "Bytes-Read=:" bytes-read))
+	      Bytes-Read))))
+
+
 (dm send-msg> (Msg)
-    #Pass length?
+
+    #Send length as int
+    #Send payload
+
+    #Handle errors here like recv-msg/sock
+    #Pass Fd in
     
-    (let (Length (length Msg))
-      
-      (when (> Length 4096)
-	(println "WARNING! Message will be truncated by " (- Length 4096) " bytes")
-	(setq Length 4096))
+    (let Length (length Msg)
+	 
+	 (when (> Length (: sz-buf-rd))
+	   (println "WARNING! Message will be truncated by " (- Length (: sz-buf-rd)) " bytes")
+	   (setq Length (: sz-buf-rd)))
+
+	 (struct (: buf-wr) 'N (cons Length 4))
+
+	 #(println "send-msg" (struct (: buf-wr) '(B B B B B B B B)))
+	 
+	 (socket~send-fd (: connection)
+			 (: buf-wr)
+			 4
+			 0)
+
+	 (struct (: buf-wr) 'N (cons Msg Length))
+	 (struct (+ (: buf-wr) Length) 'N (cons 0 1))
+	 
+	 (socket~send-fd (: connection)
+			 (: buf-wr)
+			 Length
+			 0)))
+
+
+(de wr-str-to-ptr (Str Ptr)
+    (struct Ptr 'N (cons Msg Length))
+    (struct (+ Ptr Length) 'N (cons 0 1)))
+
+
+(dm recv-msg> (Events Fd)
+
+    #Recv length as int
+    #Recv payload
     
-      (struct (: buf-wr) 'N (cons Msg Length))
-      
-      (socket~send-fd (: connection)
-	       (: buf-wr)
-	       Length
-	       0)))
+    (let Bytes-Read-Len (recv-sock> This Events Fd 4)
+
+	 #(prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len)
+	 
+	 (when (= Bytes-Read-Len 4)
+	   
+	   (let Length (car (struct (: buf-rd) '(I)))
+
+		#(prinl (usec) " | recv-msg> |   Length-Msg=" Length)
+		
+		(let Bytes-Read-Msg (recv-sock> This Events Fd Length)
+
+		     #Validate Length?
+		     
+		     (when (= Bytes-Read-Msg Length)
+
+		       #(prinl (usec) " | recv-msg> | Msg=" Msg)
+		       (pack (struct (: buf-rd) (cons 'C Length)))))))))
 
 
-(dm handle-sock-listen> (Events Fd Ep-fd)
-    (let (Client (socket~accept-4 Fd 'block))
-
-      #Read for ID
-      (when (> (handle-sock-conn> This Events Client NIL) 0)
-
-	#How to handle name conflicts?
-	#-> Disconnect client
-	
-	(let (ID (struct (: buf-rd) 'S))
-	  
-	  #(println "ID" ID)
-	  #(println (getl (: clients)))
-
-	  #Map fd to name
-	  (put (: clients) Client ID)
-
-	  (epoll~ctl-epfd Ep-fd
-			  epoll~ADD
-			  Client
-			  (| epoll~IN epoll~ERR epoll~HUP epoll~RDHUP))
-
-	  (when (: debug-ipc)
-	    (prinl (usec) " | handle-sock-listen | Accepted Client=" Sock ", ID=" ID))))))
-
-
-(dm handle-sock-conn> (Events Fd Ep-fd)
-
-    #(when (> (recv Fd *buf-rd *buf-sz 0) 0)
-    #  #(println "RECV: " (struct *buf-rd '(B B B B B B B B)))
-    #  (println "RECV: " (struct *buf-rd 'S)))
-    #(let (bytes-read (native "@" "read" Fd *buf-rd *buf-sz)))
-    
-    (let (bytes-read (socket~recv Fd (: buf-rd) (: buf-sz) 0))
-      
-      #If blocking and recv called, it will block
-      #If not blocking and recv called, will return 0
-      #Default is blocking...
-
-      (if (= bytes-read 0)
-	  
-	  #If epoll saying data to read, however recv is 0
-	  #that indicates socket hung-up or errored out
-	  (when (or (= (& Events epoll~ERR) epoll~ERR)
-		    (= (& Events epoll~HUP) epoll~HUP)
-		    (= (& Events epoll~RDHUP) epoll~RDHUP))
-
-	    (del Fd (:: clients))
-	    
-            (when Ep-fd
-	      (epoll~ctl-epfd Ep-fd
-	                      epoll~DEL
-			      Sock
-			      0))
-
-	    (socket~shutdown Fd socket~SHUT-RDWR)
-	    (close Fd)
-
-            (when (: debug-ipc)	    
-	      (prinl (usec) " | handle-sock-conn | Disconnected sock=" Fd))
-
-            bytes-read)
-	  
-          (prog
-            (when (: debug-ipc)
-	      (prinl (usec) " | handle-sock-conn | Client=" Fd ", " "Bytes-Read=:" bytes-read))
-            bytes-read))))
+(de disconnect-sock (Sock)
+    (socket~shutdown Sock socket~SHUT-RDWR)
+    (close Sock))

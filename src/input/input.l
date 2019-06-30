@@ -75,7 +75,8 @@
     
     (when T
       #PATH-UDS-INPUT 'block
-      (setq *ipc (new '(ipc~+IPC) ""             'ipc~block
+      (setq *ipc (new '(ipc~+IPC) *ep-fd
+		                  ""             'ipc~block
 		                  PATH-UDS-MODEL 'ipc~block))
 
       #Send ID
@@ -113,13 +114,16 @@
 	     
 	     #(prinl (usec) " FD: " Fd ", Events: " Events)
 
-	     (cond
-	       ((= Fd (get *input 'li~fd-context))
-		(handle-context))
-	       ((= Fd (get *ipc 'ipc~listener))
-		(ipc~handle-sock-listen> *ipc Events Fd *ep-fd))
-	       (T
-		(ipc~handle-sock-conn> *ipc Events Fd *ep-fd))))))))
+	     (cond ((= Fd (get *input 'li~fd-context))
+		    (handle-context)
+		    T)
+		   
+		   ((= Fd (get *ipc 'ipc~listener))
+		    #should not receive any data except errors
+		    (ipc~accept-sock> *ipc Events Fd))
+		   
+		   (T
+		    (ipc~recv-msg> *ipc Events Fd))))))))
 
 
 (de handle-context ()
@@ -187,27 +191,18 @@
 				       (li~get-pointer-axis-source-name (li~event-pointer-get-axis-source Event))
 				       (when (= (li~event-pointer-has-axis Event Axis) 1)
 					 (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
-					 (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-VERTICAL) *Scl)
+					 (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)
 					 (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
-					 (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL) *Scl)))))
+					 (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)))))
 		      
 		      (T
 		       "")))
 
 
 	(setq Msg (glue " " (list Name-Type Msg)))
-	(println Msg)
-	
-	(struct Ptr 'N Msg)
-	#(println (struct Ptr 'S))
+	#(println Msg)
 
-	# Null terminate...or does struct do this already?
-        (struct (+ Ptr (length Msg)) 'N (cons 0 1))
-	
-	(socket~send-fd Sock
-			Ptr
-			(+ (length Msg) 1)
-			0))))
+	(ipc~send-msg> *ipc Msg))))
 
 
 (de end-input ()
