@@ -149,61 +149,61 @@
 (de send-event (Sock
 		Ptr
 		Event)
+    
     (let (Type (li~event-get-type Event)
-	  Name-Type (li~get-event-type-name Type))     
-      #Align with model
+	  Name-Type (li~get-event-type-name Type))
+
       #(prinl (usec) " | handle-context   | Event: " Type "=" Name-Type)
     
-      (let (Msg (cond ((= Type li~KEYBOARD-KEY)
-		       (glue " " (list (format (li~event-keyboard-get-time Event))
-				       (format (li~event-keyboard-get-time-usec Event))
-				       (format (li~event-keyboard-get-key Event))
-				       (format (li~event-keyboard-get-key-state Event))
-				       (format (li~event-keyboard-get-seat-key-count Event)))))
-		      
-		      ((= Type li~POINTER-MOTION)
-		       (glue " " (list (format (li~event-pointer-get-time Event))
-				       (format (li~event-pointer-get-time-usec Event))
-				       (format (li~event-pointer-get-dx Event) *Scl)
-				       (format (li~event-pointer-get-dy Event) *Scl)
-				       (format (li~event-pointer-get-dx-unaccelerated Event) *Scl)
-				       (format (li~event-pointer-get-dy-unaccelerated Event) *Scl))))
-
-		      ((= Type li~POINTER-MOTION-ABSOLUTE)
-		       (glue " " (list (format (li~event-pointer-get-time Event))
-				       (format (li~event-pointer-get-time-usec Event))
-				       (format (li~event-pointer-get-absolute-x Event) *Scl)
-				       (format (li~event-pointer-get-absolute-y Event) *Scl)
-				       (format (li~event-pointer-get-absolute-x-transformed Event *width) *Scl)
-				       (format (li~event-pointer-get-absolute-y-transformed Event *height) *Scl))))
-
-		      ((= Type li~POINTER-BUTTON)
-		       (glue " " (list (format (li~event-pointer-get-time Event))
-				       (format (li~event-pointer-get-time-usec Event))
-				       (format (li~event-pointer-get-button Event))
-				       (format (li~event-pointer-get-button-state Event))
-				       (format (li~event-pointer-get-seat-button-count Event)))))
-
-		      ((= Type li~POINTER-AXIS)
-		       (glue " " (list (format (li~event-pointer-get-time Event))
-				       (format (li~event-pointer-get-time-usec Event))
-				       (format (li~event-pointer-has-axis Event Axis))
-				       (li~get-pointer-axis-source-name (li~event-pointer-get-axis-source Event))
-				       (when (= (li~event-pointer-has-axis Event Axis) 1)
-					 (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
-					 (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)
-					 (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
-					 (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)))))
-		      
-		      (T
-		       "")))
-
-
-	(setq Msg (glue " " (list Name-Type Msg)))
-	#(println Msg)
-
+      (let Msg (glue " " (make (link Name-Type)
+			       (link (build-ev-lst-str Event Type))))
+		  
+	(println Msg)
 	(ipc~send-msg> *ipc Msg))))
 
+      
+(de build-ev-lst-str (Event Type)
+    (cond ((= Type li~KEYBOARD-KEY)
+	   (glue " " (list (format (li~event-keyboard-get-time Event))
+			   (format (li~event-keyboard-get-time-usec Event))
+			   (format (li~event-keyboard-get-key Event))
+			   (format (li~event-keyboard-get-key-state Event))
+			   (format (li~event-keyboard-get-seat-key-count Event)))))
+	  
+	  ((= Type li~POINTER-MOTION)
+	   (glue " " (list (format (li~event-pointer-get-time Event))
+			   (format (li~event-pointer-get-time-usec Event))
+			   (format (li~event-pointer-get-dx Event) *Scl)
+			   (format (li~event-pointer-get-dy Event) *Scl)
+			   (format (li~event-pointer-get-dx-unaccelerated Event) *Scl)
+			   (format (li~event-pointer-get-dy-unaccelerated Event) *Scl))))
+	  
+	  ((= Type li~POINTER-MOTION-ABSOLUTE)
+	   (glue " " (list (format (li~event-pointer-get-time Event))
+			   (format (li~event-pointer-get-time-usec Event))
+			   (format (li~event-pointer-get-absolute-x Event) *Scl)
+			   (format (li~event-pointer-get-absolute-y Event) *Scl)
+			   (format (li~event-pointer-get-absolute-x-transformed Event *width) *Scl)
+			   (format (li~event-pointer-get-absolute-y-transformed Event *height) *Scl))))
+
+	  ((= Type li~POINTER-BUTTON)
+	   (glue " " (list (format (li~event-pointer-get-time Event))
+			   (format (li~event-pointer-get-time-usec Event))
+			   (format (li~event-pointer-get-button Event))
+			   (format (li~event-pointer-get-button-state Event))
+			   (format (li~event-pointer-get-seat-button-count Event)))))
+	  
+	  ((= Type li~POINTER-AXIS)
+	   (glue " " (list (format (li~event-pointer-get-time Event))
+			   (format (li~event-pointer-get-time-usec Event))
+			   (format (li~event-pointer-has-axis Event Axis))
+			   (li~get-pointer-axis-source-name (li~event-pointer-get-axis-source Event))
+			   (when (= (li~event-pointer-has-axis Event Axis) 1)
+			     (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
+			     (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)
+			     (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
+			     (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)))))))
+      
 
 (de end-input ()
     (prinl "...Called end-input")
