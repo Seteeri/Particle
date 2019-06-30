@@ -151,9 +151,9 @@ Store DAGs as binary trees?
         * Ensure defs are defined for globals
       * IPC
         -> Send messages with length first [Done]
-        -> Server, handle name conflicts -> disconnect
-        -> Pass epoll FD to IPC
-        -> Fix socket retry loop        
+        -> Server, handle name conflicts -> disconnect [Done]
+        -> Pass epoll FD to IPC [Done]
+        -> Fix socket retry loop [???]  
       * Implement socket handling for model/render
         * Render needs to process model requests
           * Remember, render will simply memcopy

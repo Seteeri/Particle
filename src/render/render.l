@@ -1,14 +1,14 @@
 #{
-    Global variables start with an asterisk "*"
-    Global constants may be written all-uppercase
-    Functions and other global symbols start with a lower case letter
-    Locally bound symbols start with an upper case letter
-    Local functions start with an underscore "_"
-    Classes start with a plus-sign "+", where the first letter
-        is in lower case for abstract classes
-        and in upper case for normal classes 
-    Methods end with a right arrow ">"
-    Class variables may be indicated by an upper case letter 
+Global variables start with an asterisk "*"
+Global constants may be written all-uppercase
+Functions and other global symbols start with a lower case letter
+Locally bound symbols start with an upper case letter
+Local functions start with an underscore "_"
+Classes start with a plus-sign "+", where the first letter
+is in lower case for abstract classes
+and in upper case for normal classes 
+Methods end with a right arrow ">"
+Class variables may be indicated by an upper case letter 
 }#
 
 #Create and change to namespace model
@@ -144,15 +144,17 @@
     
     #PATH-UDS-RENDER 'block
     (when T
-      (setq *ipc (new '(ipc~+IPC) ""             'ipc~nonblock
-		      PATH-UDS-MODEL 'ipc~nonblock))
+      (setq *ipc (new '(ipc~+IPC)
+		      *ep-fd
+		      ""             'ipc~block
+		      PATH-UDS-MODEL 'ipc~block))
 
       (ipc~send-msg> *ipc "RENDER")
       
       (epoll~ctl-epfd *ep-fd 
 		      epoll~ADD
 		      (get *ipc 'ipc~connection)
-		      epoll~IN)))
+		      epoll~BAD)))
 
 
 (de run-render ()
@@ -168,7 +170,7 @@
 		      1.0
 		      1.0
 		      0.0)
-      (gl~clear-mask (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
+      (gl~clear-mask CLEAR-MASK)
       
       (glfw~swap-buffers *window)
 
@@ -195,10 +197,10 @@
     #(prinl (usec) " | input | Starting epoll...")
     
     (let (Events     NIL
-	  Fd         NIL
+          Fd         NIL
           Num-Events (epoll~wait-epfd *ep-fd *ep-events 2 Timeout))
-	 
-	 (for I Num-Events
+      
+      (for I Num-Events
 
 	   (let (Ep-events (struct *ep-events '(I I)))
 	     (setq Events (get Ep-events 1))
@@ -208,9 +210,16 @@
 
 	     (cond
 	       ((= Fd (get *ipc 'ipc~listener))
-		(ipc~handle-sock-listen> *ipc Events Fd *ep-fd))
+		(ipc~accept-sock> *ipc Events Fd))
 	       (T
-		(ipc~handle-sock-conn> *ipc Events Fd *ep-fd)))))))
+                (recv-conn-model Events Fd)))))))
+
+
+(de recv-conn-model (Events Fd)
+    (let Msg (ipc~recv-msg> *ipc Events Fd)
+	 (prinl (usec) " | recv-conn-model | Msg: " Msg)
+	 #(eval (any Msg))
+	 T))
 
 
 (de main ()
@@ -218,3 +227,6 @@
     (run-render)
     (println 'Exiting...)
     (bye))
+
+
+(def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))

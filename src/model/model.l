@@ -168,13 +168,8 @@
 		 
 		 (ipc~accept-sock> *ipc Events Fd)
 
-		 (recv-conn-input Events Fd)))))))
-
-#{
 		 #Make IPC method for this
-		 (let (ID (get (get *ipc 'ipc~clients) Fd))
-
-
+		 (let (ID (cdr (assoc Fd (get *ipc 'ipc~clients))))
 		   
 		   (cond ((= ID "INPUT")
 			  (recv-conn-input Events Fd))
@@ -185,15 +180,16 @@
 			 (T
 			  #print warning
 			  (ipc~recv-sock> *ipc Events Fd 4096))))))))))
-}#
 
 
 (de recv-conn-input (Events Fd)
-    (ipc~recv-msg> *ipc Events Fd))
+    (prinl "MSG: " (ipc~recv-msg> *ipc Events Fd)))
 
 
 (de recv-conn-render (Events Fd)
-    (prinl "Msg: " (ipc~recv-msg> *ipc Events Fd)))
+    (let Msg (ipc~recv-msg> *ipc Events Fd)
+	 (prinl (usec) " | recv-conn-render | Msg: " Msg)
+	 (ipc~send-msg> *ipc Msg Fd)))
 
 
 (de main ()

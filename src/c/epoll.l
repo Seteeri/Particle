@@ -38,7 +38,7 @@
 }#
 
 #For convenience
-(def 'EPOLL-BAD (| IN ERR HUP RDHUP))
+(def 'BAD (| IN ERR HUP RDHUP))
 
 
 (de create-size (Size)

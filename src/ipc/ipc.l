@@ -143,7 +143,7 @@ Pass in outgoing handler functions:
 
 	       #Make clean up fns for these or this entire block incl. above
 	       (del (assoc Fd (: clients)) (:: clients))
-	       (println (: clients))
+	       #(println (: clients))
 	       
 	       (epoll~ctl-epfd (: fd-ep)
 			       epoll~DEL
@@ -161,7 +161,7 @@ Pass in outgoing handler functions:
 	      Bytes-Read))))
 
 
-(dm send-msg> (Msg)
+(dm send-msg> (Msg Sock)
 
     #Send length as int
     #Send payload
@@ -179,7 +179,7 @@ Pass in outgoing handler functions:
 
 	 #(println "send-msg" (struct (: buf-wr) '(B B B B B B B B)))
 	 
-	 (socket~send-fd (: connection)
+	 (socket~send-fd (if Sock Sock (: connection))
 			 (: buf-wr)
 			 4
 			 0)
@@ -187,7 +187,7 @@ Pass in outgoing handler functions:
 	 (struct (: buf-wr) 'N (cons Msg Length))
 	 (struct (+ (: buf-wr) Length) 'N (cons 0 1))
 	 
-	 (socket~send-fd (: connection)
+	 (socket~send-fd (if Sock Sock (: connection))
 			 (: buf-wr)
 			 Length
 			 0)))
@@ -198,7 +198,7 @@ Pass in outgoing handler functions:
     (struct (+ Ptr Length) 'N (cons 0 1)))
 
 
-(dm recv-msg> (Events Fd)
+(dm recv-msg> (Events Fd) #Rename Fd -> Sock
 
     #Recv length as int
     #Recv payload
