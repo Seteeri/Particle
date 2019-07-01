@@ -2,7 +2,7 @@
 (dm T (Size
        Target
        Index
-       Mapped-persistent
+       Mapped-P
        Usage
        Data)
     #Usage = dynamic-draw or stream-draw
@@ -13,14 +13,14 @@
     (=: size-b   Size)
     (=: target Target)
     (=: index-b   Index)
-    (=: mapped-persistent Mapped-persistent)
+    (=: mapped-p Mapped-P)
     (=: bind-b (make-bind Target Index))
     
     (bind-b> This)
     
     (=: ptr 0)
     
-    (if Mapped-persistent
+    (if Mapped-P
 	(=: ptr (map-buffer-range-2 Target
 				    0
 				    Size

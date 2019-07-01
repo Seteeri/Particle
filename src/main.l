@@ -2,19 +2,25 @@
 
 (de main ()
 
-    (when T
-      (unless (fork)
-	(exec "pil" "model/model.l" "-model~main" "1920" "1080" (format (** 2 19)))))
+    #2**19
 
-    (wait 2000)
+    (let (Width  (format (/ 1920 2))
+	  Height (format (/ 1080 2))
+	  Verts  (format (** 2 4)))
     
-    (when NIL
-      (unless (fork)
-	(exec "pil" "input/input.l" "-input~main" "1920" "1080")))
-    
-    (when NIL
-      (unless (fork)
-	(exec "pil" "render/render.l" "-render~main" "1920" "1080" (format (** 2 19)))))
+      (when T
+	(unless (fork)
+	  (exec "pil" "model/model.l" "-model~main" Width Height Verts)))
+
+      (wait 2000)
+      
+      (when NIL
+	(unless (fork)
+	  (exec "pil" "input/input.l" "-input~main" Width Height)))
+      
+      (when T
+	(unless (fork)
+	  (exec "pil" "render/render.l" "-render~main" Width Height Verts))))
     
     #(wait 1000000)
     (println "Forked processes"))

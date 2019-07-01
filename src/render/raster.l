@@ -1,13 +1,18 @@
 (de init-rast ()
+    
+    (setq *prog-rast (gl~init-prog-rast *paths-rast-vert-shader *paths-rast-frag-shader))    
+    (gl~use-program *prog-rast)
+
+    (setq *vao (car (gl~gen-vertex-arrays 1)))
+    (gl~bind-vertex-array *vao)
 
     (init-buffs-rast)
-    #(init-tex-glyphs (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr))        
 
-    (setq *prog-rast (gl~init-prog-rast *paths-rast-vert-shader *paths-rast-frag-shader))
-    
-    (gl~use-program *prog-rast)
-    (setq *vao (car (gl~gen-vertex-arrays 1)))
-    (gl~bind-vertex-array *vao))
+    #Load default buffer data
+    #(init-tex-glyphs)
+    (init-di)
+    (init-verts)
+    (init-el))    
 
 
 (de init-buffs-rast ()
@@ -40,20 +45,19 @@
 		 #Poss more idiomatic way to do this?
 		 (when (= (: target) gl~TEXTURE-BUFFER)
 		   
-		   #texturei max - GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
-		   #already active?
+		   #Already active by default?
 		   (gl~active-texture gl~TEXTURE0)
-		   
+
 		   (gl~bind-b> Buffer)
 		   
 		   (gl~tex-buffer gl~TEXTURE-BUFFER
 				  gl~RGBA8
-				  (: buffer)))))))
+				  (get Buffer 'gl~buffer)))))))
 
 
-(de init-tex-glyphs (Ptr)
+(de init-tex-glyphs ()
     #{
-    * To load faster, do bulk memcpy or convert to bytes
+    * To load faster, do bulk memcpy or convert to binary (bytes)
     * Possible Configurations:
       * all ppm, all metrics
       * per ppm+metrics
@@ -61,18 +65,49 @@
       * Need separate ppm since data is copied to shm?
       * Or list of lists with each list starting with the name
    }#
-
-   (let Offset 0
+   (let (Ptr (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr)
+	 Off 0)
 	(for Code 255
-	     (let (Path-glyph (pack PATH-GLYPHS "/tex/" Code "-data.l"))
-	       #(println "Reading " Path-glyph " ...")
-	       (any (in Path-glyph (till NIL T)))
-	       (struct (+ Ptr Offset) 'N
-		       (0 . 4)
-		       (2 . 4)
-		       (1 . 4)
-		       (0 . 4)
-		       (3 . 4)
-		       (2 . 4))
-	       (inc 'Offset)))))
+	     (let Path-Glyph (pack PATH-GLYPHS "/tex/" Code "-data.l")
+		  (println "Reading " Path-Glyph " ...")
+		  #More idiomatic way to do this...
+		  (let Data (any (in Path-Glyph (till NIL T)))
+		       (for B Data
+			    (struct (+ Ptr Off) 'N (cons B 1))
+			    (inc 'Off)))))))
 
+
+(de init-di ()
+    (struct (get (get '*buffer-objects 'draw-indirect) 'gl~ptr) 'N
+	    (6 . 4)
+	    (cons *verts-max 4)
+	    (0 . 4)
+	    (0 . 4)
+	    (0 . 4)))
+
+
+(de init-verts ()
+    #{
+    ;;top right, bottom right, bottom left, top left
+    ;;
+    ;;3---0
+    ;;| / |
+    ;;2---1
+    ;;
+    ;;ccw: 0 2 1 0 3 2
+    }#
+    (struct (get (get '*buffer-objects 'vertices) 'gl~ptr) 'N
+	    (list -1.0  1.0  1.0  0.0  1.0
+		        1.0  0.0  0.0  1.0
+		        0.0  0.0  0.0  1.0
+		        0.0  1.0  0.0  1.0)))
+
+
+(de init-el ()
+    (struct (get (get '*buffer-objects 'element) 'gl~ptr) 'N
+	    (0 . 4)
+	    (2 . 4)
+	    (1 . 4)
+	    (0 . 4)
+	    (3 . 4)
+	    (2 . 4)))

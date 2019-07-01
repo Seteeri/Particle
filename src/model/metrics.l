@@ -34,7 +34,8 @@
 
 (de load-file-metrics-data (Code)
     (let (Path-glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l"))
-      #(println "Reading " Path-glyph " ...")
+      #(prinl "Loading " Path-glyph " ...")
+      (prinl (usec) " | MODEL | load-file-metrics-data | " Code "-metrics.l ...")
       (eval (any (in Path-glyph (till NIL T))))))
 
 (de load-metrics ()

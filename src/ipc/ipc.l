@@ -82,6 +82,25 @@ Pass in outgoing handler functions:
     (when (: connection) (socket~end (: listener))))
 
 
+(de disconnect-sock (Sock)
+    (socket~shutdown Sock socket~SHUT-RDWR)
+    (close Sock))
+
+
+(dm disconnect-client> (Sock)
+
+    (prinl (usec) " | disconnect-client> | Sock=" Sock)
+    
+    (del (assoc Sock (: clients)) (:: clients))
+    
+    (epoll~ctl-epfd (: fd-ep)
+		    epoll~DEL
+		    Sock
+		    0)
+    
+    (disconnect-sock Sock))
+
+
 #Rename to accept
 (dm accept-sock> (Events Fd)
     (let Client (socket~accept-4 Fd 'block)
@@ -116,7 +135,33 @@ Pass in outgoing handler functions:
     Client))
 
 
-(dm recv-sock> (Events Fd Buf-Sz)
+(dm send-bytes> (Events Fd Buf Sz)
+    #{
+    * With blocking sockets, will block until space available (all data is buffered)
+    * If msg too long, send will fail and no data will be buffered
+    }#    
+    
+    (let Bytes-Sent (socket~send-fd Fd
+				    (if (num? Buf) #ptr
+					Buf
+					(: buf-wr))
+				    (if (num? Sz)
+					Sz
+					(: sz-buf-wr))
+				    0)
+	 
+	 (if (= -1 Bytes-Sent)
+	     (when (or (= (& Events epoll~ERR)   epoll~ERR)
+		       (= (& Events epoll~HUP)   epoll~HUP)
+		       (= (& Events epoll~RDHUP) epoll~RDHUP))
+	       (disconnect-client> This Fd))
+	     
+	     (when NIL #(: debug-ipc)
+		   (prinl (usec) " | send-bytes> | Client=" Fd ", " "Bytes-Sent=:" Bytes-Sent)))
+	 Bytes-Sent))
+
+
+(dm recv-bytes> (Events Fd Buf Sz)
     #{
     * This is designed for blocking sockets...
     * If no-data and blocking     -> recv will block
@@ -127,38 +172,26 @@ Pass in outgoing handler functions:
 
     #For Buf-Sz: pass T to recv full length, else pass length
     (let Bytes-Read (socket~recv Fd
-				 (: buf-rd)
-				 (if (=T Buf-Sz)
-				     (: sz-buf-rd)
-				     Buf-Sz)
+				 (if (num? Buf) #ptr
+				     Buf
+				     (: buf-rd))
+				 (if (num? Sz)
+				     Sz
+				     (: sz-buf-rd))
 				 0)
 
 	 #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
 	 
 	 (if (=0 Bytes-Read)
-	     
 	     (when (or (= (& Events epoll~ERR)   epoll~ERR)
 		       (= (& Events epoll~HUP)   epoll~HUP)
 		       (= (& Events epoll~RDHUP) epoll~RDHUP))
-
-	       #Make clean up fns for these or this entire block incl. above
-	       (del (assoc Fd (: clients)) (:: clients))
-	       #(println (: clients))
-	       
-	       (epoll~ctl-epfd (: fd-ep)
-			       epoll~DEL
-			       Sock
-			       0)
-	       (disconnect-sock Fd)
-
-	       (prinl (usec) " | recv-sock | Disconnected sock=" Fd)
-
-	       Bytes-Read)
+	       (disconnect-client> This Fd))
 	     
-	     (prog
-		 (when NIL #(: debug-ipc)
-		       (prinl (usec) " | recv-sock | Client=" Fd ", " "Bytes-Read=:" bytes-read))
-	      Bytes-Read))))
+	     (when NIL #(: debug-ipc)
+		   (prinl (usec) " | recv-sock> | Client=" Fd ", " "Bytes-Read=:" Bytes-Read)))
+	 
+	 Bytes-Read))
 
 
 (dm send-msg> (Msg Sock)
@@ -193,17 +226,12 @@ Pass in outgoing handler functions:
 			 0)))
 
 
-(de wr-str-to-ptr (Str Ptr)
-    (struct Ptr 'N (cons Msg Length))
-    (struct (+ Ptr Length) 'N (cons 0 1)))
-
-
 (dm recv-msg> (Events Fd) #Rename Fd -> Sock
 
     #Recv length as int
     #Recv payload
     
-    (let Bytes-Read-Len (recv-sock> This Events Fd 4)
+    (let Bytes-Read-Len (recv-bytes> This Events Fd NIL 4)
 
 	 #(prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len)
 	 
@@ -213,7 +241,7 @@ Pass in outgoing handler functions:
 
 		#(prinl (usec) " | recv-msg> |   Length-Msg=" Length)
 		
-		(let Bytes-Read-Msg (recv-sock> This Events Fd Length)
+		(let Bytes-Read-Msg (recv-bytes> This Events Fd NIL Length)
 
 		     #Validate Length?
 		     
@@ -221,8 +249,3 @@ Pass in outgoing handler functions:
 
 		       #(prinl (usec) " | recv-msg> | Msg=" Msg)
 		       (pack (struct (: buf-rd) (cons 'C Length)))))))))
-
-
-(de disconnect-sock (Sock)
-    (socket~shutdown Sock socket~SHUT-RDWR)
-    (close Sock))

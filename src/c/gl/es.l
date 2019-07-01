@@ -301,7 +301,11 @@ Naming Conventions:
 
 (de bind-vertex-array (Array)
     (native "libGLESv2.so" "glBindVertexArray" NIL Array))
-    
+
+
+(de draw-elements-indirect (Mode Type Indirect)
+    (native "libGLESv2.so" "glDrawElementsIndirect" NIL Mode Type Indirect))
+
 
 (mapc '((X) (def (car X) (hex (cadr X))))
       (quote

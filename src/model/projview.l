@@ -32,14 +32,16 @@
 
     (=: position    (if Pos Pos (11.0 -8.0 10.0)))
     (=: rotation    (if Rot Rot (0.0 0.0 0.0)))
-    #scale is (1.0 1.0 1.0)
-    (=: displace    (if Displace Displace (8.0 8.0 4.0))))
-#call update-mat-proj?
+    (=: displace    (if Displace Displace (8.0 8.0 4.0)))
+
+    #scale is (1.0 1.0 1.0)...
+    
+    (=: ptr         (native "@" "malloc" 'N 128)))
 
     
-(dm update-mat-proj> ()    
+(dm update-mat-proj> ()
     (=: mat-proj
-	(if (= type-proj 'perspective)
+	(if (= (: type-proj) 'perspective)
 	    (mat4-perspective (: fov)
 			      (*/ 1.0 (: width) (: height))
 			      (: near)
@@ -55,7 +57,7 @@
 		       Height
 		       Scale
 		       Near
-		       Far)    
+		       Far)
     (let (Aspect-ratio (*/ 1.0 Width Height)
 		       X            (*/ Scale 0.5 1.0)
 		       Y            (*/ 1.0 (*/ Scale 0.5 1.0) Aspect-ratio))
@@ -88,26 +90,6 @@
 						   (mat4-mul (mat4-rotation-z (car (nth (: rotation) 3)))
 							     (mat4-translation (: position))))))))
 
-    #our translation matrix
-    #(1000000 0 0 0)
-    #(0 1000000 0 0)
-    #(0 0 1000000 0)
-    #(11000000 -8000000 10000000 1000000)
-
-    #transpose above to get below
-    
-    #translation matrix col-order
-    #{1.0 0.0 0.0 11.0
-      0.0 1.0 0.0 -8.0
-      0.0 0.0 1.0 10.0
-      0.0 0.0 0.0  1.0}#
-
-    #view matrix
-    #{1.0 0.0 0.0 -11.0
-      0.0 1.0 0.0   8.0
-      0.0 0.0 1.0 -10.0
-      0.0 0.0 0.0   1.0}#
-
 
 (de write-mat-proj-to-shm (Mmap Projview)
   (write-matrix-to-ptr (get Mmap 'ptr)
@@ -120,12 +102,56 @@
 		       (get Projview 'mat-view)
 		       16))
 
+
 (de write-matrix-to-ptr (Ptr
 			 M
 			 Offset)
     (struct (+ Ptr Offset) 'N
-	    (list -1.0 (car (nth M 1))  (car (nth M 2))  (car (nth M 3))  (car (nth M 4))
-                       (car (nth M 5))  (car (nth M 6))  (car (nth M 7))  (car (nth M 8))
-	               (car (nth M 9))  (car (nth M 10)) (car (nth M 11)) (car (nth M 12))
-		       (car (nth M 13)) (car (nth M 14)) (car (nth M 15)) (car (nth M 16)))))
+	    (list -1.0 (get M 1)  (get M 2)  (get M 3)  (get M 4)
+                       (get M 5)  (get M 6)  (get M 7)  (get M 8)
+	               (get M 9)  (get M 10) (get M 11) (get M 12)
+		       (get M 13) (get M 14) (get M 15) (get M 16))))
 
+
+################################################################################
+
+
+(de serialize-mat-to-ptr (M Ptr)
+    (struct Ptr 'N
+	    (list -1.0 (get M 1)  (get M 2)  (get M 3)  (get M 4)
+                       (get M 5)  (get M 6)  (get M 7)  (get M 8)
+	               (get M 9)  (get M 10) (get M 11) (get M 12)
+		       (get M 13) (get M 14) (get M 15) (get M 16)))
+    Ptr)
+
+
+(dm serialize-proj-to-lst> ()
+    #Return list of bytes
+    (serialize-mat-to-ptr (: mat-proj) (: ptr))
+    (struct (: ptr) '(B . 64)))
+
+
+(dm serialize-view-to-lst> ()
+    #Return list of bytes
+    (serialize-mat-to-ptr (: mat-view) (: ptr))
+    (struct (: ptr) '(B . 64)))
+
+
+(dm serialize-proj-to-str> ()
+    (pack "("
+	  (glue " " (let L NIL
+			 (for N (serialize-proj-to-lst> This)
+			      (push 'L (format N)))
+			 (flip 'L)
+			 L))
+	  ")"))
+
+
+(dm serialize-view-to-str> ()
+    (pack "("
+	  (glue " " (let L NIL
+			 (for N (serialize-view-to-lst> This)
+			      (push 'L (format N)))
+			 (flip 'L)
+			 L))
+	  ")"))

@@ -47,10 +47,15 @@
 (de init-verts ()
     (let Verts ()
 	 (for I *verts-max
-	      (let Vertex (new '(+Vertex) T T T T T)
+	      (let Vertex (new '(+Vertex)
+			       88
+			       (mat4-identity)
+			       (mat4-identity)
+			       (mat4-identity))
 		   #(prinl "Created vertex " I " "  Vertex)
 		   (push 'Verts Vertex)))
 	 Verts))
+
 
 (de init-verts-default ()
     #{
@@ -59,12 +64,6 @@
     - Pointer = cons pair
 
     - Track transient symbols
-    }#
-
-    #{
-    (let Vertex (get *verts 1)
-	 (println Vertex)
-	 (println (view (getl Vertex))))
     }#
     T)
 
@@ -90,12 +89,27 @@
     (update-mat-proj> *projview)
     (update-mat-view> *projview)
 
+    #{
+    Note: These are transposed before writing
+    PROJ
+    (0.041666668 0.0          0.0          -0.0
+     0.0         0.074074075  0.0          -0.0
+     0.0         0.0         -0.0039138943 -1.0039139
+     0.0         0.0          0.0           1.0)
+    
+    VIEW
+    (1.0 0.0 0.0 -11.0
+     0.0 1.0 0.0   8.0
+     0.0 0.0 1.0 -10.0
+     0.0 0.0 0.0   1.0)
+    }#
+        
     #Debug
     #(show *projview)
     #(view (getl *projview))
 
     #Load here, copy to shm, msg view, view copies to OpenGL buffers
-    (when NIL
+    (when T
       (setq *metrics (load-metrics)))
 
     #{
@@ -112,15 +126,17 @@
     }#
     
     (gc (+ 104 2))
-    (prinl "Heap resized to 106 MB for " *verts-max " nodes")
+    (prinl (usec) " | MODEL | init-model | Heap resized to 106 MB for " *verts-max " nodes")
 
     #{
      - Graphs = namespaces?
      - Generate nodes for builtin symbols?
     }#    
     (setq *verts (init-verts))
-    (init-verts-default)
 
+    #Setup render-queue
+    (setq *queue-render)
+    
     (init-ipc))
 
 
@@ -158,38 +174,101 @@
 	 
 	 (when (> num-events 0)
 
-	   (let (Ep-events (struct *ep-events '(I I)))
-	     (setq Events (get Ep-events 1))
-	     (setq Fd     (get Ep-events 2))
-	     
-	     #(prinl (usec) " FD: " Fd ", Events: " Events)
+	   (let Ep-events (struct *ep-events '(I I))
+		
+		(setq Events (get Ep-events 1))
+		(setq Fd     (get Ep-events 2))
+		
+		#(prinl (usec) " FD: " Fd ", Events: " Events)
 
-	     (if (= Fd (get *ipc 'ipc~listener))
-		 
-		 (ipc~accept-sock> *ipc Events Fd)
+		(if (= Fd (get *ipc 'ipc~listener))
+		    
+		    (ipc~accept-sock> *ipc Events Fd)
 
-		 #Make IPC method for this
-		 (let (ID (cdr (assoc Fd (get *ipc 'ipc~clients))))
-		   
-		   (cond ((= ID "INPUT")
-			  (recv-conn-input Events Fd))
+		    #Make IPC method for this
+		    (let ID (cdr (assoc Fd (get *ipc 'ipc~clients)))
 			 
-			 ((= ID "RENDER")
-			  (recv-conn-render Events Fd))
-			 
-			 (T
-			  #print warning
-			  (ipc~recv-sock> *ipc Events Fd 4096))))))))))
+			 (cond ((= ID "INPUT")
+				(recv-conn-input Events Fd))
+			       
+			       ((= ID "RENDER")
+				(recv-conn-render Events Fd))
+			       
+			       (T
+				#print warning
+				(ipc~recv-sock> *ipc Events Fd 4096))))))))))
 
 
 (de recv-conn-input (Events Fd)
-    (prinl "MSG: " (ipc~recv-msg> *ipc Events Fd)))
+    (let Msg (ipc~recv-msg> *ipc Events Fd)
+	 #(prinl (usec) " | MODEL  | recv-conn-input | " Msg)
+	 #Dispatch handlers to perform work on data	 
 
+	 #{
+	 #Loop until queue empty
+	 (let Item (pop '*queue-render)
+	      (loop
+		 (T (not Item))
+		 }#	 
 
+	 (queue '*queue-render T)))
+
+	 
 (de recv-conn-render (Events Fd)
     (let Msg (ipc~recv-msg> *ipc Events Fd)
-	 (prinl (usec) " | recv-conn-render | Msg: " Msg)
-	 (ipc~send-msg> *ipc Msg Fd)))
+	 #(prinl (usec) " | MODEL  | recv-conn-render | " Msg)
+
+	 #Frame event received
+	 #recv-conn-input previously performed work on data so now forward queue
+	 #
+	 #Can send msgs one by one or batch
+
+	 #Send memcpy code then data to be copied
+	 (when NIL
+	   (ipc~send-msg> *ipc "(memcpy projview NIL 64 0)" Fd)
+	   (ipc~send-bytes> *ipc
+			    Events
+			    Fd
+			    (with *projview (serialize-mat-to-ptr (: mat-proj) (: ptr)))
+			    64))
+
+	 (when T
+	   (with *projview
+		 (=: position (place 1 (: position) (- (get (: position) 1) 0.1))))
+	   (update-mat-view> *projview)
+	   
+	   (ipc~send-msg> *ipc "(memcpy projview NIL 128 0)" Fd)
+	   (ipc~send-bytes> *ipc
+			    Events
+			    Fd
+			    (with *projview (serialize-mat-to-ptr (: mat-proj) (: ptr)))
+			    64)
+	   (ipc~send-bytes> *ipc
+			    Events
+			    Fd
+			    (with *projview (serialize-mat-to-ptr (: mat-view) (: ptr)))
+			    64))
+	 
+	 (when NIL
+	   (serialize-proj-to-str> *projview))
+	 (when NIL
+	   (serialize-view-to-str> *projview))
+	 
+	 #TEST: Serialize first node on any event
+	 (let Vert (get *verts 1)
+	      #(prinl (usec) " | MODEL | recv-conn-render | " Vert)
+	      #(view (getl Vert))
+
+	      #TODO: Pass raw bytes -> faster
+	      #Returns list of bytes/nums -> encode as string
+	      (let Data (serialize-to-str> Vert)
+
+		   (prinl (usec) " | MODEL | recv-conn-render | Data...")
+		   
+		   #TODO: Put Fd before Msg
+		   (when NIL
+		     (ipc~send-msg> *ipc Data Fd))
+		   T))))
 
 
 (de main ()

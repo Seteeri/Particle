@@ -29,7 +29,7 @@
 				'atomic-counter
 				gl~ATOMIC-COUNTER-BUFFER
 				(* 4 6)  #6 ints/params
-				4 -1
+				4 -1 #-1 means same as cs
 				NIL)
 			   
 			   (new '(+Params-Buffer)
@@ -45,14 +45,14 @@
 				(* 4 6)  #4 bytes/int * 6 ints or indices
 				-1 -1
 				NIL)
-			   
-			   (new '(+Params-Buffer)
-				'nodes
-				gl~SHADER-STORAGE-BUFFER
-				(/ 134217728 4)
-				2 3
-				NIL)
 
+			   (new '(+Params-Buffer)
+				'texture-glyphs
+				gl~TEXTURE-BUFFER 
+				(/ 134217728 4)
+				-1 -1
+				'rgba8)
+			   
 			   (new '(+Params-Buffer)
 				'projview
 				gl~UNIFORM-BUFFER
@@ -61,15 +61,15 @@
 				NIL)
 
 			   (new '(+Params-Buffer)
-				'texture-glyphs
-				gl~TEXTURE-BUFFER 
-				(/ 134217728 4)
-				-1 -1
-				'rgba8)
-
-			   (new '(+Params-Buffer)
 				'vertices
 				gl~UNIFORM-BUFFER
 				(* 16 4)
 				1 1
+				NIL)
+
+			   (new '(+Params-Buffer)
+				'nodes
+				gl~SHADER-STORAGE-BUFFER
+				(/ 134217728 4)
+				3 3
 				NIL)))

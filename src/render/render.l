@@ -42,6 +42,7 @@ Class variables may be indicated by an upper case letter
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
 #(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/stat.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/string.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/gl/es.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
@@ -77,7 +78,7 @@ Class variables may be indicated by an upper case letter
     (let (Argv (argv))
       (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
 	    *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-	    *verts-max   (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
+	    *verts-max  (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
     
     #Init context
     (init-window)
@@ -104,14 +105,19 @@ Class variables may be indicated by an upper case letter
     (glfw~window-hint glfw~CLIENT-API            glfw~OPENGL-ES-API)
     (glfw~window-hint glfw~CONTEXT-CREATION-API  glfw~NATIVE-CONTEXT-API)
     
-    (let (Title (native "@" "malloc" 'N 10))
-      (struct Title 'N (cons "Protoform" 32))
-      (setq *window (glfw~create-window 640 480 Title 0 0))
+    (let (Title (native "@" "malloc" 'N 16))
+      (struct Title 'N (cons "Protoform" 16))
+      (setq *window (glfw~create-window *width *height Title 0 0))
       (when (= *window 0)
 	(quit "(= *window 0)"))
       (native "@" "free" NIL Title))
     
     (glfw~make-context-current *window)
+    
+    (glfw~set-window-size-callback *window
+				   (lisp 'window-callback
+					 '((Window Width Height)
+					   (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))))
     
     (glfw~set-key-callback *window
 			   (lisp 'key-callback
@@ -122,16 +128,16 @@ Class variables may be indicated by an upper case letter
 
 
 (de init-gl ()
-    #Get width height from args
-    (gl~viewport 0 0 640 480)
+    (gl~viewport 0 0 *width *height)
+    
     (gl~enable gl~CULL-FACE)
     (gl~enable gl~DEPTH-TEST)
-    (gl~enable gl~BLEND)
-    (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA)
+    #(gl~enable gl~BLEND)
+    #(gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA)
 
     #Get some function pointers
     (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage"))
-
+    
     T)
 
 
@@ -140,9 +146,8 @@ Class variables may be indicated by an upper case letter
 	  *ep-fd     (epoll~create-size 1)
 	  *buf-sz    (socket~read-rmem-default)
 	  *buf-rd    (native "@" "malloc" 'N *buf-sz))
-
     
-    #PATH-UDS-RENDER 'block
+    
     (when T
       (setq *ipc (new '(ipc~+IPC)
 		      *ep-fd
@@ -161,23 +166,33 @@ Class variables may be indicated by an upper case letter
     #After connecting, start processing messages
     #Render will send frame start and wait for frame end
     #Up to model to perform time management
+
+    #####
+    #TEST
+
+    (load-test-params)
+    
+    #(gl~use-program *prog-rast)
+    #Bound with program
+    #(gl~bind-vertex-array *vao)
     
     (while (= (glfw~window-should-close *window) 0)
       
-      #(println (usec))
-      
-      (gl~clear-color 1.0
-		      1.0
-		      1.0
+      (gl~clear-color 0.0
+		      0.16862745098 
+		      0.211764705882
 		      0.0)
       (gl~clear-mask CLEAR-MASK)
       
+      (gl~draw-elements-indirect gl~TRIANGLES
+                                 gl~UNSIGNED-INT
+                                 0)
+            
       (glfw~swap-buffers *window)
 
       (glfw~poll-events)
       (ipc~send-msg> *ipc (format (usec)))
-      (epoll-wait 0)
-      T)
+      (epoll-wait 0))
 
     (glfw~destroy-window *window)
     (glfw~terminate))
@@ -217,8 +232,28 @@ Class variables may be indicated by an upper case letter
 
 (de recv-conn-model (Events Fd)
     (let Msg (ipc~recv-msg> *ipc Events Fd)
-	 (prinl (usec) " | recv-conn-model | Msg: " Msg)
-	 #(eval (any Msg))
+	 (prinl (usec) " | RENDER | recv-conn-model  | Msg...")
+
+	 #Convert to list of bytes
+	 #Write to node buffer
+	 
+	 #Use struct to convert bytes to lisp objects
+
+	 #(mc dst src sz)
+	 (let (Data (any Msg)
+	       Dst  (get Data 2)
+	       Src  (get Data 3)
+	       Sz   (get Data 4))
+	   (ipc~recv-bytes> *ipc Events Fd NIL Sz)
+	   (println Data Dst Src Sz)
+	   (when T
+	     (let (Ptr-Gl (get (get '*buffer-objects 'projview) 'gl~ptr)
+		   Ptr-Buf (get *ipc 'ipc~buf-rd))
+	       (memcpy Ptr-Gl Ptr-Buf Sz)))
+	   (when NIL
+	     (println Data)
+	     (println (struct (get *ipc 'ipc~buf-rd) '(B . 64)))))
+	 
 	 T))
 
 
@@ -229,4 +264,47 @@ Class variables may be indicated by an upper case letter
     (bye))
 
 
+################################################################################
+
 (def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
+
+(de load-test-params ()    
+    #Write projview
+    (let (I 0
+	    Ptr (get (get '*buffer-objects 'projview) 'gl~ptr))
+      (for B *data-proj
+	   (struct (+ Ptr I) 'N (cons B 1))
+	   (inc 'I)))
+    (let (I 64
+	    Ptr (get (get '*buffer-objects 'projview) 'gl~ptr))
+      (for B *data-view
+	   (struct (+ Ptr I) 'N (cons B 1))
+	   (inc 'I)))
+
+      #(println (struct Ptr '(B . 128)))
+    
+    #Write test node
+    (let (I 0
+	    Ptr (get (get '*buffer-objects 'nodes) 'gl~ptr))
+      (for B *data-node
+	   (struct (+ Ptr I) 'N (cons B 1))
+	   (inc 'I))))
+
+(def '*data-node (list 143 7 180 62 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 119 42 178 62 0 0 0 0 0 0 0 0 0
+		       0 0 0 0 0 0 0 111 18 3 60 0 0 0 0 152 242 44 61 86 98 183 61 0 0 0 0 0 0 128
+		       63 182 181 53 63 138 137 9 63 0 0 0 0 0 0 128 63 182 181 53 63 138 137 9 63 0
+		       0 0 0 0 0 128 63 182 181 53 63 138 137 9 63 0 0 0 0 0 0 128 63 182 181 53 63
+		       138 137 9 63 0 0 0 0 0 0 128 63 117 154 58 63 40 255 57 63 0 0 0 0 0 0 0 0
+		       117 154 58 63 176 1 140 62 0 0 0 0 0 0 0 0 20 203 138 62 176 1 140 62 0 0 0 0
+		       0 0 0 0 20 203 138 62 40 255 57 63 0 0 0 0 0 0 0 0 0 196 5 0 96 0 0 0 96 0 0
+		       0 1 0 0 0))
+
+
+(def '*data-proj (list 171 170 42 61 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+                       136 69 74 61 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+                       32 64 128 187 0 0 0 0 0 0 0 128 0 0 0 128 64 128 128 191 0 0 128 63))
+
+
+(def '*data-view (list 0 0 128 63 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+                       128 63 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+                       128 63 0 0 0 0 0 0 48 193 0 0 0 65 0 0 32 193 0 0 128 63))

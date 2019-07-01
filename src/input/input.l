@@ -158,7 +158,7 @@
       (let Msg (glue " " (make (link Name-Type)
 			       (link (build-ev-lst-str Event Type))))
 		  
-	(println Msg)
+	#(println Msg)
 	(ipc~send-msg> *ipc Msg))))
 
       

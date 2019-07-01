@@ -29,6 +29,10 @@
     (native "libglfw.so" "glfwPollEvents"))
 
 
+(de set-window-size-callback (Window Cbfun)
+    (native "libglfw.so" "glfwSetWindowSizeCallback" 'N Window Cbfun))
+
+
 (de set-key-callback (Window Cbfun)
     (native "libglfw.so" "glfwSetKeyCallback" 'N Window Cbfun))
 

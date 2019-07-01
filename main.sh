@@ -7,5 +7,5 @@
 
 sudo pkill -f sbcl
 sudo pkill -f sbcl
-sbcl --eval "(protoform:main (/ 2560 2) 1080 (expt 2 19))"
+sbcl --eval "(protoform:main (/ 1920 2) (/ 1080 2) (expt 2 3))"
 #sbcl --eval "(protoform:main (/ 2560 1) 1080 (expt 2 16))"

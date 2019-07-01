@@ -3,6 +3,8 @@
 
 #load vs new
 
+#TODO: Change these to def
+
 #Static allocate these upfront and reuse
 (setq *mat4-in  (native "@" "malloc" 'N 64))
 (setq *mat4-out (native "@" "malloc" 'N 64))
@@ -24,27 +26,25 @@
 
 
 #do the below need cons?
-(de mat4-perspective (Fov-y Aspect Near Far)
-    (native PATH-MATHC "mat4_perspective"
-	    'N
+(de mat4-perspective (Fov-Y A N F)
+    (native PATH-MATHC "mat4_perspective" 'N
 	    *mat4-out
-	    (cons Fov-y -1.0)
-	    (cons Aspect -1.0)
-	    (cons Near -1.0)
-	    (cons Far -1.0))
+	    (cons Fov-Y -1.0)
+	    (cons A     -1.0)
+	    (cons N     -1.0)
+	    (cons F     -1.0))
     (struct *mat4-out (-1.0 . 16)))
 
 
-(de mat4-ortho (Left Right Bottom Top Near Far)
-    (native PATH-MATHC "mat4_ortho"
-	    'N
+(de mat4-ortho (L R B T N F)
+    (native PATH-MATHC "mat4_ortho" 'N
 	    *mat4-out
-	    (cons Left -1.0)
-	    (cons Right -1.0)
-	    (cons Bottom -1.0)
-	    (cons Top -1.0)
-	    (cons Near -1.0)
-	    (cons Far -1.0))
+	    (cons L -1.0)
+	    (cons R -1.0)
+	    (cons B -1.0)
+	    (cons T -1.0)
+	    (cons N -1.0)
+	    (cons F -1.0))
     (struct *mat4-out (-1.0 . 16)))
 
 
@@ -57,8 +57,7 @@
 			     (get M1 5) (get M1 6) (get M1 7) (get M1 8)
 			     (get M1 9) (get M1 10) (get M1 11) (get M1 12)
 			     (get M1 13) (get M1 14) (get M1 15) (get M1 16)))
-    (native PATH-MATHC "mat4_multiply"
-	    'N
+    (native PATH-MATHC "mat4_multiply" 'N
 	    *mat4-out
 	    *mat4-0
 	    *mat4-1)
@@ -66,48 +65,40 @@
 
 
 (de mat4-rotation-x (F)
-    (native PATH-MATHC "mat4_identity"
-	    'N
+    (native PATH-MATHC "mat4_identity" 'N
 	    *mat4-r-x)
-    (native PATH-MATHC "mat4_rotation_x"
-	    'N
+    (native PATH-MATHC "mat4_rotation_x" 'N
 	    *mat4-r-x
 	    (cons F -1.0))
     (struct *mat4-r-x (-1.0 . 16)))    
 
 
 (de mat4-rotation-y (F)
-    (native PATH-MATHC "mat4_identity"
-	    'N
+    (native PATH-MATHC "mat4_identity" 'N
 	    *mat4-r-y)
-    (native PATH-MATHC "mat4_rotation_y"
-	    'N
+    (native PATH-MATHC "mat4_rotation_y" 'N
 	    *mat4-r-y
 	    (cons F -1.0))
     (struct *mat4-r-y (-1.0 . 16)))    
 
 
 (de mat4-rotation-z (F)
-    (native PATH-MATHC "mat4_identity"
-	    'N
+    (native PATH-MATHC "mat4_identity" 'N
 	    *mat4-r-z)
-    (native PATH-MATHC "mat4_rotation_z"
-	    'N
+    (native PATH-MATHC "mat4_rotation_z" 'N
 	    *mat4-r-z
 	    (cons F -1.0))
     (struct *mat4-r-z (-1.0 . 16)))    
 
 
 (de mat4-scaling (V)
-    (native PATH-MATHC "mat4_identity"
-	    'N
+    (native PATH-MATHC "mat4_identity" 'N
 	    *mat4-i)
     (struct *vec3-out 'N (list -1.0
 			       (car (nth V 1))
 			       (car (nth V 2))
 			       (car (nth V 3))))
-    (native PATH-MATHC "mat4_scaling"
-	    'N
+    (native PATH-MATHC "mat4_scaling" 'N
 	    *mat4-s
 	    *mat4-i
 	    *vec3-out)
@@ -115,15 +106,13 @@
 
 
 (de mat4-translation (V)
-    (native PATH-MATHC "mat4_identity"
-	    'N
+    (native PATH-MATHC "mat4_identity" 'N
 	    *mat4-i)
     (struct *vec3-out 'N (list -1.0
 			       (car (nth V 1))
 			       (car (nth V 2))
 			       (car (nth V 3))))
-    (native PATH-MATHC "mat4_translation"
-	    'N
+    (native PATH-MATHC "mat4_translation" 'N
 	    *mat4-t
 	    *mat4-i
 	    *vec3-out)
@@ -131,8 +120,7 @@
 
 
 (de mat4-identity ()
-    (native PATH-MATHC "mat4_identity"
-	    'N
+    (native PATH-MATHC "mat4_identity" 'N
 	    *mat4-out)
     (struct *mat4-out (-1.0 . 16)))
 
@@ -142,8 +130,7 @@
 			     (get M0 5) (get M0 6) (get M0 7) (get M0 8)
 			     (get M0 9) (get M0 10) (get M0 11) (get M0 12)
 			     (get M0 13) (get M0 14) (get M0 15) (get M0 16)))
-    (native PATH-MATHC "mat4_inverse"
-	    'N
+    (native PATH-MATHC "mat4_inverse" 'N
 	    *mat4-out
 	    *mat4-0)
     (struct *mat4-out (-1.0 . 16)))
@@ -154,8 +141,7 @@
 			     (get M0 5) (get M0 6) (get M0 7) (get M0 8)
 			     (get M0 9) (get M0 10) (get M0 11) (get M0 12)
 			     (get M0 13) (get M0 14) (get M0 15) (get M0 16)))
-    (native PATH-MATHC "mat4_transpose"
-	    'N
+    (native PATH-MATHC "mat4_transpose" 'N
 	    *mat4-out
 	    *mat4-0)
     (struct *mat4-out (-1.0 . 16)))
@@ -168,6 +154,7 @@
     (println (cut 4 'm)))
 
 
+#Fixed
 (de print-mat4-2 (M)
     (prinl (format (get M 1) *Scl) " "
 	   (format (get M 2) *Scl) " "
@@ -185,3 +172,23 @@
 	   (format (get M 14) *Scl) " "
 	   (format (get M 15) *Scl) " "
 	   (format (get M 16) *Scl) " "))
+
+#Floats
+(de print-mat4-3 (N)
+    (let M (mat4-transpose N)
+	 (prinl (format (get M 1) *Scl) " "
+		(format (get M 2) *Scl) " "
+		(format (get M 3) *Scl) " "
+		(format (get M 4) *Scl) " ")
+	 (prinl (format (get M 5) *Scl) " "
+		(format (get M 6) *Scl) " "
+		(format (get M 7) *Scl) " "
+		(format (get M 8) *Scl) " ")
+	 (prinl (format (get M 9) *Scl) " "
+		(format (get M 10) *Scl) " "
+		(format (get M 11) *Scl) " "
+		(format (get M 12) *Scl) " ")
+	 (prinl (format (get M 13) *Scl) " "
+		(format (get M 14) *Scl) " "
+		(format (get M 15) *Scl) " "
+		(format (get M 16) *Scl) " ")))

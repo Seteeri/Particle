@@ -122,63 +122,45 @@ Store DAGs as binary trees?
 
   - Each process needs to run server/client
     - Can plugin in and eval to any of them
-  - Input (exec immediately or @model)
-      |
-      V
-    Model
-      |
-      V
-    Render
-
-     * Render connects to Model
-     * Model  connects to Input
-     * None   connects to Render
-     * Abstract out epoll server and instance in each process [done]
 
   * TODO
-    * Implement Render [Done-ish...]
-      * THR - setup-render: glyphs, bos
-        * Port buffer-object to gl-bo [Done]
-        * Init GL buffer objects [Done]
-        * Load data and glyphs [Done]
-        * Init programs [Done]
-      * FRI - prog-rast/prog-comp [Done]
-      * SAT - test pipeline [Done]
     * Integrate everything to last working state [WIP]
-      * Refactor
-        * Refactor li into subfolders
-        * Socket change block/nonblock to T/NIL for convenience
-        * Ensure defs are defined for globals
       * IPC
         -> Send messages with length first [Done]
         -> Server, handle name conflicts -> disconnect [Done]
         -> Pass epoll FD to IPC [Done]
-        -> Fix socket retry loop [???]  
-      * Implement socket handling for model/render
-        * Render needs to process model requests
-          * Remember, render will simply memcopy
-            * Protocol: (fn src dest sz offset)
-          * It will read, eval, memcpy, GC
-          * Check heap size every frame, warn if large...
-            * Or after every message, if it starts to reach capacity, GC, resize
-              do next free
-        * Model needs to process render requests
-          * Input needs to trigger model -> implement controller soon
-        * TODO
-          * Model  -> sends serialized nodes
-            * Use input to trigger this
-          * Render -> loop will memcpy node data
-            * We basically perform operations until gc is triggered or time limit
-          * DRAW!
+        -> Pass name to constructor and use name for both server/client [?]
+        -> Fix socket retry loop [???]
+
+        * Check heap size every frame, warn if large...
+          * Or after every message, if it starts to reach capacity, GC, resize
+            do next free
+            
+        * PIPELINE
+        * Integrate model into render process
+        * Refactor serialization [WIP]
+          * Be able to send raw bytes
+          * Model always sends raw bytes that Render should not have to decode
+          since it is only copying memory from socket to GL buffer
+          * This problem didn't exist in Protoform...
+          * Send src dest sz - could encode ints for src/dest/sz
+          * Write: ReadLen->ReadPayload->Read = (mc src dest sz)
+            * If that function called, then read size from socket
+        * Model  -> sends serialized nodes
+          * Use input to trigger this
+        * Render -> loop will memcpy node data
+          * We basically perform operations until gc is triggered or time limit
+        * DRAW!
           
     * Implement Wayland [Tuesday...or Wednesday?]
     * Implement controller process [later]
-  
-  * DONE
-    * Implement input process/server [done]
-    * Implement model process [done]  
+
   
 * Refactor/Fix
+
+   * Refactor li into subfolders
+   * Socket change block/nonblock to T/NIL for convenience
+   * Ensure defs are defined for globals
 
     * IPC
       * IPC can take in list of connections
