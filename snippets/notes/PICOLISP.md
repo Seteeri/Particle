@@ -125,7 +125,7 @@ Store DAGs as binary trees?
 
   * TODO
     * Integrate everything to last working state [WIP]
-      * IPC
+        IPC:
         -> Send messages with length first [Done]
         -> Server, handle name conflicts -> disconnect [Done]
         -> Pass epoll FD to IPC [Done]
@@ -136,23 +136,61 @@ Store DAGs as binary trees?
           * Or after every message, if it starts to reach capacity, GC, resize
             do next free
             
-        * PIPELINE
+        PIPELINE:
         * Integrate model into render process
         * Refactor serialization [WIP]
-          * Be able to send raw bytes
-          * Model always sends raw bytes that Render should not have to decode
-          since it is only copying memory from socket to GL buffer
-          * This problem didn't exist in Protoform...
-          * Send src dest sz - could encode ints for src/dest/sz
-          * Write: ReadLen->ReadPayload->Read = (mc src dest sz)
-            * If that function called, then read size from socket
+          * Be able to send raw bytes [Done]
+          * (mc src dest sz)+bytes [Done]
+        * Synchronize Render with Model
+          * Render must wait for Model - otherwise anims may skip frames
+        * Double buffer render
+          * GPU might be rendering while we are waiting
+        * Test vertex serialization
+          * Move vertices to separate process to reduce pressure on GC
+          * Model can push/pull from it...or model holds data and controller processes it?
+        * Add task manager to spread work across frames
+          * Sync tasks - eg animations
+            * Lots of animations will simply slow frame rate instead of dropping frames
+          * Async tasks
+            * Runs in another process
+            * When task complete, will send to controller for sync 
+        * Add graph/vertex operations
+     
+        FLOW:
+        Input --> Ctrl --> Async  <--> Model
+                       --> Sync?  <-->
+                       --> Render 
+                       
+          
+        PROCESS:
         * Model  -> sends serialized nodes
           * Use input to trigger this
         * Render -> loop will memcpy node data
           * We basically perform operations until gc is triggered or time limit
         * DRAW!
-          
+  
+    * Model Main
+      * Switch to buffer orphaning?
+        * Cache memory in render
+        * Spread across frames
+    * DAG System
+      * Input/Worker, Output, Worker, Worker
+      * Input loop: BFS->task, recv sock, send sock
+        * If worker not available, block
+      * Output will set/get data for workers
+        * If integrating this functionality with input:
+          * wait on sock for worker
+            * if msg ready: traverse node (yield), send task
+            * if msg get: find data, send data
+            * if msg set: recv data, set data
+      * Optimization: if node has 1 pred, traverse until end or many,
+      send all to same worker
+        * a->b->c->d,  worker=(a,b,c,d)
+
     * Implement Wayland [Tuesday...or Wednesday?]
+      * Setup tiles for 6 windows = 3 col, 2 row
+      * Proof of concept working with eval already
+      
     * Implement controller process [later]
 
   
@@ -191,29 +229,7 @@ Store DAGs as binary trees?
      easing - (with mathc)
      spatial-trees - r-tree (port this)
      lparallel - ptree specifically (port this)
-  
-  * Model Main
-    * Switch to buffer orphaning
-    * Instead of node instances, write to shm directly
-      * Static since limited by VRAM
-    * DAG System
-      * Input/Worker, Output, Worker, Worker
-      * Input loop: BFS->task, recv sock, send sock
-        * If worker not available, block
-      * Output will set/get data for workers
-        * If integrating this functionality with input:
-          * wait on sock for worker
-            * if msg ready: traverse node (yield), send task
-            * if msg get: find data, send data
-            * if msg set: recv data, set data
-      * Optimization: if node has 1 pred, traverse until end or many,
-      send all to same worker
-        * a->b->c->d,  worker=(a,b,c,d)
-  
-  * Integrate Wayland to bootstrapping
-    * Setup tiles for 6 windows = 3 col, 2 row
-    * Proof of concept working with eval already
-  
+    
   * Note 32 MB = 8 ms to mark/sweep
     * = 2,000,000 cons cells -> Test this with loop/cons/heap
     

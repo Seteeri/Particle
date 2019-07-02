@@ -1965,3 +1965,8 @@ libinput is one of many
 view is one of many
 but only one data
 
+OpenGL::
+
+* Triple/NoSync roughly similar to Double/NoSync
+
+https://www.bfilipek.com/2015/01/persistent-mapped-buffers-benchmark.html

@@ -223,20 +223,12 @@
 	 #
 	 #Can send msgs one by one or batch
 
-	 #Send memcpy code then data to be copied
-	 (when NIL
-	   (ipc~send-msg> *ipc "(memcpy projview NIL 64 0)" Fd)
-	   (ipc~send-bytes> *ipc
-			    Events
-			    Fd
-			    (with *projview (serialize-mat-to-ptr (: mat-proj) (: ptr)))
-			    64))
-
 	 (when T
 	   (with *projview
 		 (=: position (place 1 (: position) (- (get (: position) 1) 0.1))))
 	   (update-mat-view> *projview)
-	   
+
+	   #Send memcpy code then data to be copied
 	   (ipc~send-msg> *ipc "(memcpy projview NIL 128 0)" Fd)
 	   (ipc~send-bytes> *ipc
 			    Events
@@ -248,11 +240,6 @@
 			    Fd
 			    (with *projview (serialize-mat-to-ptr (: mat-view) (: ptr)))
 			    64))
-	 
-	 (when NIL
-	   (serialize-proj-to-str> *projview))
-	 (when NIL
-	   (serialize-view-to-str> *projview))
 	 
 	 #TEST: Serialize first node on any event
 	 (let Vert (get *verts 1)

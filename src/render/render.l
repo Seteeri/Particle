@@ -60,6 +60,7 @@ Class variables may be indicated by an upper case letter
 (def '*prog-rast)
 (def '*prog-comp)
 (def '*vao)
+(def '*fence)
 
 
 (de init-render ()
@@ -177,6 +178,11 @@ Class variables may be indicated by an upper case letter
     #(gl~bind-vertex-array *vao)
     
     (while (= (glfw~window-should-close *window) 0)
+
+      #Wait fence
+      (when *fence
+	(gl~client-wait *fence)
+	(gl~delete-sync *fence))
       
       (gl~clear-color 0.0
 		      0.16862745098 
@@ -187,7 +193,10 @@ Class variables may be indicated by an upper case letter
       (gl~draw-elements-indirect gl~TRIANGLES
                                  gl~UNSIGNED-INT
                                  0)
-            
+
+      #Issue fence
+      (setq *fence (gl~fence-sync gl~SYNC-GPU-COMMANDS-COMPLETE 0))
+      
       (glfw~swap-buffers *window)
 
       (glfw~poll-events)

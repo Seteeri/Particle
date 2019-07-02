@@ -307,6 +307,35 @@ Naming Conventions:
     (native "libGLESv2.so" "glDrawElementsIndirect" NIL Mode Type Indirect))
 
 
+(de fence-sync (Condition Flags)
+    (native "libGLESv2.so" "glFenceSync" 'N Condition Flags))
+
+
+(de delete-sync (Sync)
+    (native "libGLESv2.so" "glDeleteSync" NIL Sync))
+
+
+(de client-wait-sync (Sync Flags Timeout)
+    (native "libGLESv2.so" "glClientWaitSync" 'I Sync Flags Timeout))
+
+
+(de client-wait (Sync)
+  #Check first, then flush only if necessary
+  (let (Flags 0
+	Timeout 0
+	Return NIL)
+    (loop
+       (setq Return (client-wait-sync Sync Flags Timeout))
+
+       #Return when this is satisfied
+       #WAIT-FAILED also?
+       (T (or (= Return ALREADY-SIGNALED)
+	      (= Return CONDITION-SATISFIED)))
+       
+       (setq Flags   SYNC-FLUSH-COMMANDS-BIT)
+       (setq Timeout TIMEOUT-IGNORED))))
+
+
 (mapc '((X) (def (car X) (hex (cadr X))))
       (quote
        
@@ -323,6 +352,19 @@ Naming Conventions:
        (TEXTURE0                                "84C0")
        (RGBA8                                   "8058")
        (INFO-LOG-LENGTH                         "8B84")
+       (SYNC-CONDITION                 "9113")
+       (SYNC-STATUS                    "9114")
+       (SYNC-FLAGS                     "9115")
+       (SYNC-FENCE                     "9116")
+       (SYNC-GPU-COMMANDS-COMPLETE     "9117")
+       (UNSIGNALED                     "9118")
+       (SIGNALED                       "9119")
+       (ALREADY-SIGNALED               "911A")
+       (TIMEOUT-EXPIRED                "911B")
+       (CONDITION-SATISFIED            "911C")
+       (WAIT-FAILED                    "911D")
+       (TIMEOUT-IGNORED                "FFFFFFFFFFFFFFFFull")
+       (SYNC-FLUSH-COMMANDS-BIT        "00000001")
        
        (FALSE                                   "0000")
        (TRUE                                    "0001")
