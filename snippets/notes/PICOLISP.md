@@ -141,10 +141,10 @@ Store DAGs as binary trees?
         * Refactor serialization [WIP]
           * Be able to send raw bytes [Done]
           * (mc src dest sz)+bytes [Done]
-        * Synchronize Render with Model
+        * Synchronize Render with Model [Done]
           * Render must wait for Model - otherwise anims may skip frames
-        * Double buffer render
-          * GPU might be rendering while we are waiting
+          * Double buffer render
+            * GPU might be rendering while we are waiting
         * Test vertex serialization
           * Move vertices to separate process to reduce pressure on GC
           * Model can push/pull from it...or model holds data and controller processes it?
@@ -155,13 +155,7 @@ Store DAGs as binary trees?
             * Runs in another process
             * When task complete, will send to controller for sync 
         * Add graph/vertex operations
-     
-        FLOW:
-        Input --> Ctrl --> Async  <--> Model
-                       --> Sync?  <-->
-                       --> Render 
-                       
-          
+               
         PROCESS:
         * Model  -> sends serialized nodes
           * Use input to trigger this

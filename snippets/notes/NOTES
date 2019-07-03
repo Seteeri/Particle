@@ -1970,3 +1970,100 @@ OpenGL::
 * Triple/NoSync roughly similar to Double/NoSync
 
 https://www.bfilipek.com/2015/01/persistent-mapped-buffers-benchmark.html
+
+LAYOUT 1
+========
+
+I/O       CPU         I/O
+Input --> Ctrl 1 <--> Model, Render 
+      --> Ctrl 2 <--> Model, Render 
+      --> Ctrl 3 <--> Model, Render 
+      --> Ctrl N <--> Model, Render
+
+INPUT:  GOOD
+CTRL:   ????
+MODEL:  ????
+RENDER: ????
+
+Memcpy Trail
+* Ctrl/Serialize, Ctrl/Socket -> Render/GL
+
+* Input epolls for events and forwards them
+  * Input not just physically attached devices/peripherals
+  * Poss network I/O
+
+* Ctrl
+  * Applies functions to data
+  * Pulls from Model/Update cache
+  * Cache to reduce necessary copies and decrease latency
+  * Pushes to Model & Render
+  
+* Model epolls for memcpy
+  * Recvs data from Ctrl and updates memory
+  * Broadcast updates
+    -> Poss decentralize?
+  * Use Redis or some other mechanism/library
+    
+* Render epolls for memcpy
+  * Pushes frame time to Ctrls -> Triggers anim frame generation
+  * After pushing frame, Render can either wait or continue
+
+* Supports at least quad-core...seems like a waste to have input/model/render on
+own proc
+  * Poss assign to same process at the expense of latency to increase bandwith
+
+LAYOUT 2
+========
+
+Input --> Model <--> Render
+
+*DOES NOT SCALE!
+*Ties input handling and frame handling together
+
+* Model will respond to events through epoll
+  * Input handlers write directly to render socket/queue
+    * If buffer becomes full, must block recv events until render catches up
+    * Input can initialize anim events
+  * Frame handlers write to render socket/queue
+    * This triggers animation frames to be produced
+    * UDS can be implemented to drop animation frames
+    * One socket per animation
+      * Grouping
+* Render will try recv on TCP and recv UDS
+  * UDS - one datagram per socket; must process all sockets
+  * TCP - iterate through sockets until empty or time limit
+  * Memcpy speed is relatively constant which can be used to approximate the
+  number of bytes that can be copied per frame = ~192 mb/16.7ms
+    * IPC overhead like syscalls to recv/send will be an issue
+
+##################
+
+Animation Example:
+* Ctrl: 
+  * Loop #0: Recv event->Handle event->Write Render socket
+* Render (pre-draw):
+  * Loop #1: Send time->Read sock
+  * Loop #2: Send time->Read sock
+  * Loop #3: Send time->Read sock
+  
+"When a new packet is received for a UDP socket that has a full receive buffer, 
+the new packet is dropped, even when it would be preferrable to drop the 
+older (buffered) packets."
+
+* Assume UDP sized for 1 frame
+  * UDP buffer size can be increased to accomodate additional frames to get latest N frames
+* If render handler sends TCP then render must recv from socket until last data
+* Also render, must pull all events first before executing memcpy
+* Between Loop #1/2/3, if render gets frame 1 on frame 3 time, then it will still
+get frame 1 time, then possibly frame 4 will be loaded next, resulting in the
+middle frames being not drawn (dropped).
+* Frames can be delayed or dropped
+  * Per task
+  * If delayed animation will appear too fast or slow...?
+    -> Users don't like delayed typing which is annoying
+    -> Why? Disorients users as to whats going on - defies expectations
+       -> Least Astonishment Principle
+* Render only draws so even if the data is not displayed, it still exists and
+can be rendered anytime.
+
+https://stackoverflow.com/questions/2963898/faster-alternative-to-memcpy

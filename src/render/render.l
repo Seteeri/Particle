@@ -6,9 +6,9 @@ Locally bound symbols start with an upper case letter
 Local functions start with an underscore "_"
 Classes start with a plus-sign "+", where the first letter
 is in lower case for abstract classes
-and in upper case for normal classes 
+and in upper case for normal classes
 Methods end with a right arrow ">"
-Class variables may be indicated by an upper case letter 
+Class variables may be indicated by an upper case letter
 }#
 
 #Create and change to namespace model
@@ -25,14 +25,14 @@ Class variables may be indicated by an upper case letter
 (def '*path-structs-shader "/home/user/quicklisp/local-projects/protoform/glsl/structs.glsl")
 (def '*paths-rast-vert-shader
     (list *path-structs-shader
-	  "/home/user/quicklisp/local-projects/protoform/glsl/node.vs.glsl"))
+          "/home/user/quicklisp/local-projects/protoform/glsl/node.vs.glsl"))
 (def '*paths-rast-frag-shader
     (list *path-structs-shader
-	  "/home/user/quicklisp/local-projects/protoform/glsl/filter-bilinear.fs.glsl"
-	  "/home/user/quicklisp/local-projects/protoform/glsl/msdf.fs.glsl"))
+          "/home/user/quicklisp/local-projects/protoform/glsl/filter-bilinear.fs.glsl"
+          "/home/user/quicklisp/local-projects/protoform/glsl/msdf.fs.glsl"))
 (def '*paths-comp-shader
     (list *path-structs-shader
-	  "/home/user/quicklisp/local-projects/protoform/glsl/node.cs.glsl"))
+          "/home/user/quicklisp/local-projects/protoform/glsl/node.cs.glsl"))
 
 
 # Set math precision to 6 decimals
@@ -72,15 +72,15 @@ Class variables may be indicated by an upper case letter
     - Should not copy all data every frame - waste
     - Try single buffer + persistent mapping + coherent
     - Disable draw flag for node, before copying data, then enable after
-    
+
     }#
 
     #Get number of nodes and window size from args instead of file
     (let (Argv (argv))
       (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-	    *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-	    *verts-max  (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
-    
+            *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
+            *verts-max  (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
+
     #Init context
     (init-window)
     (init-gl)
@@ -105,32 +105,32 @@ Class variables may be indicated by an upper case letter
     (glfw~window-hint glfw~CONTEXT-VERSION-MINOR 2)
     (glfw~window-hint glfw~CLIENT-API            glfw~OPENGL-ES-API)
     (glfw~window-hint glfw~CONTEXT-CREATION-API  glfw~NATIVE-CONTEXT-API)
-    
+
     (let (Title (native "@" "malloc" 'N 16))
       (struct Title 'N (cons "Protoform" 16))
       (setq *window (glfw~create-window *width *height Title 0 0))
       (when (= *window 0)
-	(quit "(= *window 0)"))
+        (quit "(= *window 0)"))
       (native "@" "free" NIL Title))
-    
+
     (glfw~make-context-current *window)
-    
+
     (glfw~set-window-size-callback *window
-				   (lisp 'window-callback
-					 '((Window Width Height)
-					   (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))))
-    
+                                   (lisp 'window-callback
+                                         '((Window Width Height)
+                                           (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))))
+
     (glfw~set-key-callback *window
-			   (lisp 'key-callback
-				 '((Window Key Scancode Action Mods)
-				   (when (and (= (struct Key 'I)    glfw~KEY-ESCAPE)
-					      (= (struct Action 'I) glfw~PRESS))
-				     (glfw~set-window-should-close (struct Window 'N) glfw~TRUE))))))
+                           (lisp 'key-callback
+                                 '((Window Key Scancode Action Mods)
+                                   (when (and (= (struct Key 'I)    glfw~KEY-ESCAPE)
+                                              (= (struct Action 'I) glfw~PRESS))
+                                     (glfw~set-window-should-close (struct Window 'N) glfw~TRUE))))))
 
 
 (de init-gl ()
     (gl~viewport 0 0 *width *height)
-    
+
     (gl~enable gl~CULL-FACE)
     (gl~enable gl~DEPTH-TEST)
     #(gl~enable gl~BLEND)
@@ -138,30 +138,20 @@ Class variables may be indicated by an upper case letter
 
     #Get some function pointers
     (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage"))
-    
+
     T)
 
 
 (de init-ipc ()
-    (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
-	  *ep-fd     (epoll~create-size 1)
-	  *buf-sz    (socket~read-rmem-default)
-	  *buf-rd    (native "@" "malloc" 'N *buf-sz))
-    
-    
+    (setq *ep-events (native "@" "malloc" 'N (* 12 4)) #1 event
+          *ep-fd     (epoll~create-size 1)
+          *buf-sz    (socket~read-rmem-default)
+          *buf-rd    (native "@" "malloc" 'N *buf-sz))
+
     (when T
       (setq *ipc (new '(ipc~+IPC)
-		      *ep-fd
-		      ""             'ipc~block
-		      PATH-UDS-MODEL 'ipc~block))
-
-      (ipc~send-msg> *ipc "RENDER")
-      
-      (epoll~ctl-epfd *ep-fd 
-		      epoll~ADD
-		      (get *ipc 'ipc~connection)
-		      epoll~BAD)))
-
+                      *ep-fd
+                      PATH-UDS-RENDER 'ipc~block))))
 
 (de run-render ()
     #After connecting, start processing messages
@@ -172,36 +162,42 @@ Class variables may be indicated by an upper case letter
     #TEST
 
     (load-test-params)
-    
+
     #(gl~use-program *prog-rast)
     #Bound with program
     #(gl~bind-vertex-array *vao)
-    
+
+    (prinl (usec) " | render | Starting draw loop...")
+
     (while (= (glfw~window-should-close *window) 0)
 
       #Wait fence
       (when *fence
-	(gl~client-wait *fence)
-	(gl~delete-sync *fence))
-      
+        (gl~client-wait *fence)
+        (gl~delete-sync *fence))
+
       (gl~clear-color 0.0
-		      0.16862745098 
-		      0.211764705882
-		      0.0)
+                      0.16862745098
+                      0.211764705882
+                      0.0)
       (gl~clear-mask CLEAR-MASK)
-      
+
       (gl~draw-elements-indirect gl~TRIANGLES
                                  gl~UNSIGNED-INT
                                  0)
 
       #Issue fence
       (setq *fence (gl~fence-sync gl~SYNC-GPU-COMMANDS-COMPLETE 0))
-      
+
       (glfw~swap-buffers *window)
 
       (glfw~poll-events)
-      (ipc~send-msg> *ipc (format (usec)))
-      (epoll-wait 0))
+
+      #Render will send frame, read specified amount of msgs or until EOF/NIL
+      (ipc~send-clients-msg> *ipc (format (usec)))
+      (epoll-wait 0)
+
+      T)
 
     (glfw~destroy-window *window)
     (glfw~terminate))
@@ -210,7 +206,7 @@ Class variables may be indicated by an upper case letter
 (de epoll-wait (Timeout)
     #{
     Poll events ASAP and enqueue for processing by controller thread
-    
+
     epoll-wait:
     * ep-events size should correspond to maxevents
     * -1 = timeout = block/infinite
@@ -218,52 +214,48 @@ Class variables may be indicated by an upper case letter
     * returns event count
     }#
 
-    #(prinl (usec) " | input | Starting epoll...")
-    
+    #(prinl (usec) " | render | Epolling...")
+
     (let (Events     NIL
           Fd         NIL
-          Num-Events (epoll~wait-epfd *ep-fd *ep-events 2 Timeout))
-      
-      (for I Num-Events
-
-	   (let (Ep-events (struct *ep-events '(I I)))
-	     (setq Events (get Ep-events 1))
-	     (setq Fd     (get Ep-events 2))
-	     
-	     #(prinl (usec) " FD: " Fd ", Events: " Events)
-
-	     (cond
-	       ((= Fd (get *ipc 'ipc~listener))
-		(ipc~accept-sock> *ipc Events Fd))
-	       (T
-                (recv-conn-model Events Fd)))))))
+          Num-Events 0)
+       (for I (epoll~wait-epfd *ep-fd *ep-events 4 Timeout)
+         (let (Ep-Events (struct *ep-events '(I I)))
+           (setq Events (get Ep-Events 1))
+           (setq Fd     (get Ep-Events 2))
+           #(prinl (usec) " FD: " Fd ", Events: " Events)
+           (cond
+             ((= Fd (get *ipc 'ipc~listener))
+              (ipc~accept-sock> *ipc Events Fd))
+             (T
+              (recv-conn-model Events Fd)))))))
 
 
 (de recv-conn-model (Events Fd)
     (let Msg (ipc~recv-msg> *ipc Events Fd)
-	 (prinl (usec) " | RENDER | recv-conn-model  | Msg...")
+         (prinl (usec) " | RENDER | recv-conn-model  | Msg...")
 
-	 #Convert to list of bytes
-	 #Write to node buffer
-	 
-	 #Use struct to convert bytes to lisp objects
+         #Convert to list of bytes
+         #Write to node buffer
 
-	 #(mc dst src sz)
-	 (let (Data (any Msg)
-	       Dst  (get Data 2)
-	       Src  (get Data 3)
-	       Sz   (get Data 4))
-	   (ipc~recv-bytes> *ipc Events Fd NIL Sz)
-	   (println Data Dst Src Sz)
-	   (when T
-	     (let (Ptr-Gl (get (get '*buffer-objects 'projview) 'gl~ptr)
-		   Ptr-Buf (get *ipc 'ipc~buf-rd))
-	       (memcpy Ptr-Gl Ptr-Buf Sz)))
-	   (when NIL
-	     (println Data)
-	     (println (struct (get *ipc 'ipc~buf-rd) '(B . 64)))))
-	 
-	 T))
+         #Use struct to convert bytes to lisp objects
+
+         #(mc dst src sz)
+         (let (Data (any Msg)
+               Dst  (get Data 2)
+               Src  (get Data 3)
+               Sz   (get Data 4))
+           (ipc~recv-bytes> *ipc Events Fd NIL Sz)
+           (println Data Dst Src Sz)
+           (when T
+             (let (Ptr-Gl (get (get '*buffer-objects 'projview) 'gl~ptr)
+                   Ptr-Buf (get *ipc 'ipc~buf-rd))
+               (memcpy Ptr-Gl Ptr-Buf Sz)))
+           (when NIL
+             (println Data)
+             (println (struct (get *ipc 'ipc~buf-rd) '(B . 64)))))
+
+         T))
 
 
 (de main ()
@@ -277,43 +269,43 @@ Class variables may be indicated by an upper case letter
 
 (def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
 
-(de load-test-params ()    
+(de load-test-params ()
     #Write projview
     (let (I 0
-	    Ptr (get (get '*buffer-objects 'projview) 'gl~ptr))
+            Ptr (get (get '*buffer-objects 'projview) 'gl~ptr))
       (for B *data-proj
-	   (struct (+ Ptr I) 'N (cons B 1))
-	   (inc 'I)))
+           (struct (+ Ptr I) 'N (cons B 1))
+           (inc 'I)))
     (let (I 64
-	    Ptr (get (get '*buffer-objects 'projview) 'gl~ptr))
+            Ptr (get (get '*buffer-objects 'projview) 'gl~ptr))
       (for B *data-view
-	   (struct (+ Ptr I) 'N (cons B 1))
-	   (inc 'I)))
+           (struct (+ Ptr I) 'N (cons B 1))
+           (inc 'I)))
 
       #(println (struct Ptr '(B . 128)))
-    
+
     #Write test node
     (let (I 0
-	    Ptr (get (get '*buffer-objects 'nodes) 'gl~ptr))
+            Ptr (get (get '*buffer-objects 'nodes) 'gl~ptr))
       (for B *data-node
-	   (struct (+ Ptr I) 'N (cons B 1))
-	   (inc 'I))))
+           (struct (+ Ptr I) 'N (cons B 1))
+           (inc 'I))))
 
 (def '*data-node (list 143 7 180 62 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 119 42 178 62 0 0 0 0 0 0 0 0 0
-		       0 0 0 0 0 0 0 111 18 3 60 0 0 0 0 152 242 44 61 86 98 183 61 0 0 0 0 0 0 128
-		       63 182 181 53 63 138 137 9 63 0 0 0 0 0 0 128 63 182 181 53 63 138 137 9 63 0
-		       0 0 0 0 0 128 63 182 181 53 63 138 137 9 63 0 0 0 0 0 0 128 63 182 181 53 63
-		       138 137 9 63 0 0 0 0 0 0 128 63 117 154 58 63 40 255 57 63 0 0 0 0 0 0 0 0
-		       117 154 58 63 176 1 140 62 0 0 0 0 0 0 0 0 20 203 138 62 176 1 140 62 0 0 0 0
-		       0 0 0 0 20 203 138 62 40 255 57 63 0 0 0 0 0 0 0 0 0 196 5 0 96 0 0 0 96 0 0
-		       0 1 0 0 0))
+                       0 0 0 0 0 0 0 111 18 3 60 0 0 0 0 152 242 44 61 86 98 183 61 0 0 0 0 0 0 128
+                       63 182 181 53 63 138 137 9 63 0 0 0 0 0 0 128 63 182 181 53 63 138 137 9 63 0
+                       0 0 0 0 0 128 63 182 181 53 63 138 137 9 63 0 0 0 0 0 0 128 63 182 181 53 63
+                       138 137 9 63 0 0 0 0 0 0 128 63 117 154 58 63 40 255 57 63 0 0 0 0 0 0 0 0
+                       117 154 58 63 176 1 140 62 0 0 0 0 0 0 0 0 20 203 138 62 176 1 140 62 0 0 0 0
+                       0 0 0 0 20 203 138 62 40 255 57 63 0 0 0 0 0 0 0 0 0 196 5 0 96 0 0 0 96 0 0
+                       0 1 0 0 0))
 
 
-(def '*data-proj (list 171 170 42 61 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-                       136 69 74 61 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+(def '*data-proj (list 171 170 42 61 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                       136 69 74 61 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
                        32 64 128 187 0 0 0 0 0 0 0 128 0 0 0 128 64 128 128 191 0 0 128 63))
 
 
-(def '*data-view (list 0 0 128 63 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-                       128 63 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+(def '*data-view (list 0 0 128 63 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                       128 63 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
                        128 63 0 0 0 0 0 0 48 193 0 0 0 65 0 0 32 193 0 0 128 63))

@@ -56,36 +56,26 @@
 
     (let (Argv (argv))
       (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-	    *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
+            *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
     
     (when T
-      (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
-	    *ep-fd     (epoll~create-size 1)
-	    *buf-sz    (socket~read-rmem-default)
-	    *buf-rd    (native "@" "malloc" 'N *buf-sz)))
+      (setq *ep-events (native "@" "malloc" 'N (* 12 4)) #1 event
+            *ep-fd     (epoll~create-size 1)
+            *buf-sz    (socket~read-rmem-default)
+            *buf-rd    (native "@" "malloc" 'N *buf-sz)))
       
     
     (when T
       (setq *input (new '(li~+Li)))
       (epoll~ctl-epfd *ep-fd
-		      epoll~ADD
-		      (get *input 'li~fd-context)
-		      epoll~IN))
-
+                      epoll~ADD
+                      (get *input 'li~fd-context)
+                      epoll~IN))
     
     (when T
-      #PATH-UDS-INPUT 'block
-      (setq *ipc (new '(ipc~+IPC) *ep-fd
-		                  ""             'ipc~block
-		                  PATH-UDS-MODEL 'ipc~block))
-
-      #Send ID
-      (ipc~send-msg> *ipc "INPUT")
-      
-      (epoll~ctl-epfd *ep-fd 
-		      epoll~ADD
-		      (get *ipc 'ipc~connection)
-		      epoll~IN)))
+      (setq *ipc (new '(ipc~+IPC) 
+                      *ep-fd
+                      PATH-UDS-INPUT 'ipc~block))))
 
 
 (de run-input (Timeout)
@@ -101,108 +91,103 @@
 
     (prinl (usec) " | run-input | Starting epoll...")
     
-    (let (Events NIL
-	  Fd     NIL)
+    (let (Events     NIL
+          Fd         NIL
+          Num-Events 0)
       (loop
-	 (setq num-events (epoll~wait-epfd *ep-fd *ep-events 2 Timeout))
-	 
-	 (when (> num-events 0)
+         (setq Num-Events (epoll~wait-epfd *ep-fd *ep-events 4 Timeout))         
+         (for I Num-Events
+           (let (Ep-Events (struct *ep-events '(I I)))
+             (setq Events (get Ep-Events 1))
+             (setq Fd     (get Ep-Events 2))
+             
+             #(prinl (usec) " FD: " Fd ", Events: " Events)
+             #(prinl (get *ipc 'ipc~listener))
 
-	   (let (Ep-events (struct *ep-events '(I I)))
-	     (setq Events (get Ep-events 1))
-	     (setq Fd     (get Ep-events 2))
-	     
-	     #(prinl (usec) " FD: " Fd ", Events: " Events)
-
-	     (cond ((= Fd (get *input 'li~fd-context))
-		    (handle-context)
-		    T)
-		   
-		   ((= Fd (get *ipc 'ipc~listener))
-		    #should not receive any data except errors
-		    (ipc~accept-sock> *ipc Events Fd))
-		   
-		   (T
-		    (ipc~recv-msg> *ipc Events Fd))))))))
+             (cond ((= Fd (get *input 'li~fd-context))
+                    (handle-context)
+                    T)
+                   
+                   ((= Fd (get *ipc 'ipc~listener))
+                    (ipc~accept-sock> *ipc Events Fd))
+                   
+                   (T
+                    # Should not recv msgs?
+                    (ipc~recv-msg> *ipc Events Fd))))))))
 
 
 (de handle-context ()
 
     (with *input
 
-	  (li~dispatch (: li~context))
-	  
-	  (loop
-	     (setq Event (li~get-event (: li~context)))
-	     (T (= Event 0))
-	     	     
-	     #Copy event info to Lisp
-	     #Send to all clients
-	     (send-event (get *ipc 'ipc~connection)
-			 (get *ipc 'ipc~buf-wr)
-			 Event)
-	     
-	     (li~event-destroy Event)
-	     (li~dispatch (: li~context)))))
+          (li~dispatch (: li~context))
+          
+          (loop
+             (setq Event (li~get-event (: li~context)))
+             (T (= Event 0))
+                     
+             (send-event Event)
+             
+             (li~event-destroy Event)
+             (li~dispatch (: li~context)))))
 
 
-(de send-event (Sock
-		Ptr
-		Event)
+(de send-event (Event)
     
     (let (Type (li~event-get-type Event)
-	  Name-Type (li~get-event-type-name Type))
+          Name-Type (li~get-event-type-name Type))
 
       #(prinl (usec) " | handle-context   | Event: " Type "=" Name-Type)
     
       (let Msg (glue " " (make (link Name-Type)
-			       (link (build-ev-lst-str Event Type))))
-		  
-	#(println Msg)
-	(ipc~send-msg> *ipc Msg))))
+                               (link (build-ev-lst-str Event Type))))
+                  
+        #(println Msg)
+
+        (ipc~send-clients-msg> *ipc Msg))))
 
       
 (de build-ev-lst-str (Event Type)
     (cond ((= Type li~KEYBOARD-KEY)
-	   (glue " " (list (format (li~event-keyboard-get-time Event))
-			   (format (li~event-keyboard-get-time-usec Event))
-			   (format (li~event-keyboard-get-key Event))
-			   (format (li~event-keyboard-get-key-state Event))
-			   (format (li~event-keyboard-get-seat-key-count Event)))))
-	  
-	  ((= Type li~POINTER-MOTION)
-	   (glue " " (list (format (li~event-pointer-get-time Event))
-			   (format (li~event-pointer-get-time-usec Event))
-			   (format (li~event-pointer-get-dx Event) *Scl)
-			   (format (li~event-pointer-get-dy Event) *Scl)
-			   (format (li~event-pointer-get-dx-unaccelerated Event) *Scl)
-			   (format (li~event-pointer-get-dy-unaccelerated Event) *Scl))))
-	  
-	  ((= Type li~POINTER-MOTION-ABSOLUTE)
-	   (glue " " (list (format (li~event-pointer-get-time Event))
-			   (format (li~event-pointer-get-time-usec Event))
-			   (format (li~event-pointer-get-absolute-x Event) *Scl)
-			   (format (li~event-pointer-get-absolute-y Event) *Scl)
-			   (format (li~event-pointer-get-absolute-x-transformed Event *width) *Scl)
-			   (format (li~event-pointer-get-absolute-y-transformed Event *height) *Scl))))
+           (glue " " (list (format (li~event-keyboard-get-time Event))
+                           (format (li~event-keyboard-get-time-usec Event))
+                           (format (li~event-keyboard-get-key Event))
+                           (format (li~event-keyboard-get-key-state Event))
+                           (format (li~event-keyboard-get-seat-key-count Event)))))
+          
+          ((= Type li~POINTER-MOTION)
+           (glue " " (list (format (li~event-pointer-get-time Event))
+                           (format (li~event-pointer-get-time-usec Event))
+                           (format (li~event-pointer-get-dx Event) *Scl)
+                           (format (li~event-pointer-get-dy Event) *Scl)
+                           (format (li~event-pointer-get-dx-unaccelerated Event) *Scl)
+                           (format (li~event-pointer-get-dy-unaccelerated Event) *Scl))))
+          
+          ((= Type li~POINTER-MOTION-ABSOLUTE)
+           (glue " " (list (format (li~event-pointer-get-time Event))
+                           (format (li~event-pointer-get-time-usec Event))
+                           (format (li~event-pointer-get-absolute-x Event) *Scl)
+                           (format (li~event-pointer-get-absolute-y Event) *Scl)
+                           (format (li~event-pointer-get-absolute-x-transformed Event *width) *Scl)
+                           (format (li~event-pointer-get-absolute-y-transformed Event *height) *Scl))))
 
-	  ((= Type li~POINTER-BUTTON)
-	   (glue " " (list (format (li~event-pointer-get-time Event))
-			   (format (li~event-pointer-get-time-usec Event))
-			   (format (li~event-pointer-get-button Event))
-			   (format (li~event-pointer-get-button-state Event))
-			   (format (li~event-pointer-get-seat-button-count Event)))))
-	  
-	  ((= Type li~POINTER-AXIS)
-	   (glue " " (list (format (li~event-pointer-get-time Event))
-			   (format (li~event-pointer-get-time-usec Event))
-			   (format (li~event-pointer-has-axis Event Axis))
-			   (li~get-pointer-axis-source-name (li~event-pointer-get-axis-source Event))
-			   (when (= (li~event-pointer-has-axis Event Axis) 1)
-			     (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
-			     (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)
-			     (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
-			     (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)))))))
+          ((= Type li~POINTER-BUTTON)
+           (glue " " (list (format (li~event-pointer-get-time Event))
+                           (format (li~event-pointer-get-time-usec Event))
+                           (format (li~event-pointer-get-button Event))
+                           (format (li~event-pointer-get-button-state Event))
+                           (format (li~event-pointer-get-seat-button-count Event)))))
+          
+          ((= Type li~POINTER-AXIS)
+           (glue " " (list (format (li~event-pointer-get-time Event))
+                           (format (li~event-pointer-get-time-usec Event))
+                           (format (li~event-pointer-has-axis Event Axis))
+                           (li~get-pointer-axis-source-name (li~event-pointer-get-axis-source Event))
+                           (when (= (li~event-pointer-has-axis Event Axis) 1)
+                             (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
+                             (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)
+                             (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
+                             (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)))))))
       
 
 (de end-input ()

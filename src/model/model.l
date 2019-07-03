@@ -23,7 +23,8 @@
 (def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 (def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 # UDS paths
-(def 'PATH-UDS-MODEL "/tmp/protoform-model.socket")
+(def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
+(def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
 
 
@@ -38,7 +39,7 @@
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/render.l")
+#(load "/home/user/quicklisp/local-projects/protoform/src/model/conn.l")
 #(load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
@@ -46,15 +47,15 @@
 
 (de init-verts ()
     (let Verts ()
-	 (for I *verts-max
-	      (let Vertex (new '(+Vertex)
-			       88
-			       (mat4-identity)
-			       (mat4-identity)
-			       (mat4-identity))
-		   #(prinl "Created vertex " I " "  Vertex)
-		   (push 'Verts Vertex)))
-	 Verts))
+         (for I *verts-max
+              (let Vertex (new '(+Vertex)
+                               88
+                               (mat4-identity)
+                               (mat4-identity)
+                               (mat4-identity))
+                   #(prinl "Created vertex " I " "  Vertex)
+                   (push 'Verts Vertex)))
+         Verts))
 
 
 (de init-verts-default ()
@@ -77,11 +78,11 @@
     #Get number of nodes and window size from args instead of file
     (let (Argv (argv))
       (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-	    *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-	    *verts-max   (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
-	    
-	    *scale-glyph 5.8239365
-	    *adv-glyph   9.375))
+            *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
+            *verts-max   (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
+            
+            *scale-glyph 5.8239365
+            *adv-glyph   9.375))
           
     #Setup projview
     (setq *projview (new '(+Projview) *width *height 'orthographic))
@@ -141,22 +142,14 @@
 
 
 (de init-ipc ()
-    (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
-	  *ep-fd     (epoll~create-size 1)
-	  *buf-sz    (socket~read-rmem-default)
-	  *buf-rd    (native "@" "malloc" 'N *buf-sz))
+    (setq *ep-events (native "@" "malloc" 'N (* 12 4)) #1 event
+          *ep-fd     (epoll~create-size 1)
+          *buf-sz    (socket~read-rmem-default)
+          *buf-rd    (native "@" "malloc" 'N *buf-sz))
 
-    
     (setq *ipc (new '(ipc~+IPC)
-		    *ep-fd
-		    PATH-UDS-MODEL 'ipc~block
-		    ""             'ipc~block))
-
-    
-    (epoll~ctl-epfd *ep-fd 
-		    epoll~ADD
-		    (get *ipc 'ipc~listener)
-		    epoll~IN))
+                    *ep-fd
+                    PATH-UDS-MODEL 'ipc~block)))
 
 
 (de run-model ()
@@ -166,96 +159,93 @@
 
     (prinl (usec) " | run-model | Starting epoll...")
     
-    (let (Events NIL
-	  Fd     NIL)
+    (let (Events     NIL
+          Fd         NIL
+          Num-Events 0)
       (loop
-	 
-	 (setq num-events (epoll~wait-epfd *ep-fd *ep-events 2 -1))
-	 
-	 (when (> num-events 0)
+         (setq Num-Events (epoll~wait-epfd *ep-fd *ep-events 4 Timeout))         
+         (for I Num-Events
+           (let (Ep-Events (struct *ep-events '(I I)))
+             (setq Events (get Ep-Events 1))
+             (setq Fd     (get Ep-Events 2))
+                
+                #(prinl (usec) " FD: " Fd ", Events: " Events)
 
-	   (let Ep-events (struct *ep-events '(I I))
-		
-		(setq Events (get Ep-events 1))
-		(setq Fd     (get Ep-events 2))
-		
-		#(prinl (usec) " FD: " Fd ", Events: " Events)
+                (if (= Fd (get *ipc 'ipc~listener))
+                    
+                    (ipc~accept-sock> *ipc Events Fd)
 
-		(if (= Fd (get *ipc 'ipc~listener))
-		    
-		    (ipc~accept-sock> *ipc Events Fd)
-
-		    #Make IPC method for this
-		    (let ID (cdr (assoc Fd (get *ipc 'ipc~clients)))
-			 
-			 (cond ((= ID "INPUT")
-				(recv-conn-input Events Fd))
-			       
-			       ((= ID "RENDER")
-				(recv-conn-render Events Fd))
-			       
-			       (T
-				#print warning
-				(ipc~recv-sock> *ipc Events Fd 4096))))))))))
+                    #Make IPC method for this
+                    (let ID (cdr (assoc Fd (get *ipc 'ipc~clients)))
+                         
+                         (cond ((= ID "INPUT")
+                                (recv-conn-input Events Fd))
+                               
+                               ((= ID "RENDER")
+                                (recv-conn-render Events Fd))
+                               
+                               (T
+                                #print warning
+                                (ipc~recv-sock> *ipc Events Fd 4096))))))))))
 
 
 (de recv-conn-input (Events Fd)
     (let Msg (ipc~recv-msg> *ipc Events Fd)
-	 #(prinl (usec) " | MODEL  | recv-conn-input | " Msg)
-	 #Dispatch handlers to perform work on data	 
+         #(prinl (usec) " | MODEL  | recv-conn-input | " Msg)
+         #Dispatch handlers to perform work on data      
 
-	 #{
-	 #Loop until queue empty
-	 (let Item (pop '*queue-render)
-	      (loop
-		 (T (not Item))
-		 }#	 
+         #{
+         #Loop until queue empty
+         (let Item (pop '*queue-render)
+              (loop
+                 (T (not Item))
+                 }#      
 
-	 (queue '*queue-render T)))
+         (queue '*queue-render T)))
 
-	 
+         
 (de recv-conn-render (Events Fd)
     (let Msg (ipc~recv-msg> *ipc Events Fd)
-	 #(prinl (usec) " | MODEL  | recv-conn-render | " Msg)
+         #(prinl (usec) " | MODEL  | recv-conn-render | " Msg)
 
-	 #Frame event received
-	 #recv-conn-input previously performed work on data so now forward queue
-	 #
-	 #Can send msgs one by one or batch
+         #Frame event received
+         #recv-conn-input previously performed work on data so now forward queue
+         #
+         #Can send msgs one by one or batch
 
-	 (when T
-	   (with *projview
-		 (=: position (place 1 (: position) (- (get (: position) 1) 0.1))))
-	   (update-mat-view> *projview)
+         (when T
+           (with *projview
+                 (=: position (place 1 (: position) (- (get (: position) 1) 0.1))))
+           (update-mat-view> *projview)
 
-	   #Send memcpy code then data to be copied
-	   (ipc~send-msg> *ipc "(memcpy projview NIL 128 0)" Fd)
-	   (ipc~send-bytes> *ipc
-			    Events
-			    Fd
-			    (with *projview (serialize-mat-to-ptr (: mat-proj) (: ptr)))
-			    64)
-	   (ipc~send-bytes> *ipc
-			    Events
-			    Fd
-			    (with *projview (serialize-mat-to-ptr (: mat-view) (: ptr)))
-			    64))
-	 
-	 #TEST: Serialize first node on any event
-	 (let Vert (get *verts 1)
-	      #(prinl (usec) " | MODEL | recv-conn-render | " Vert)
-	      #(view (getl Vert))
+           #Send memcpy code then data to be copied
+           (ipc~send-msg> *ipc "(memcpy projview NIL 128 0)" Fd)
+           (ipc~send-bytes> *ipc
+                            Events
+                            Fd
+                            (with *projview (serialize-mat-to-ptr (: mat-proj) (: ptr)))
+                            64)
+           (ipc~send-bytes> *ipc
+                            Events
+                            Fd
+                            (with *projview (serialize-mat-to-ptr (: mat-view) (: ptr)))
+                            64))
+         
+         #TEST: Serialize first node on any event
+         (let Vert (get *verts 1)
+              #(prinl (usec) " | MODEL | recv-conn-render | " Vert)
+              #(view (getl Vert))
 
-	      #TODO: Pass raw bytes -> faster
-	      #Returns list of bytes/nums -> encode as string
-	      (let Data (serialize-to-str> Vert)
+              #TODO: Pass raw bytes -> faster
+              #Returns list of bytes/nums -> encode as string
+              (let Data (serialize-to-str> Vert)
 
-		   (prinl (usec) " | MODEL | recv-conn-render | Data...")
-		   
-		   #TODO: Put Fd before Msg
-		   (when NIL
-		     (ipc~send-msg> *ipc Data Fd))
-		   T))))
+                   (prinl (usec) " | MODEL | recv-conn-render | Data...")
+                   
+                   #TODO: Put Fd before Msg
+                   (when NIL
+                     (ipc~send-msg> *ipc Data Fd))
+                   T))))
 
 
 (de main ()
@@ -263,21 +253,3 @@
     (run-model)
     (println 'Exiting...)
     (bye))
-
-
-#...Libinput proc
-#.....Read events, send to controller
-#...Controller proc
-#.....Recv events, pass to model
-#.....Events can be handled immediately or delayed so Ctrl+Alt+Del not blocked e.g.
-
-#...I/O proc for disk (network also?)
-#.....Load/cache data in shm until model requests it
-
-#...Model/Wayland proc
-#.....Respond to client events
-#.....Respond to view events - or is view just another client?
-#.......Server will share shm with each client and view
-#.......View will copy into GL buffers
-#.....Coroutines useful for spreading work across frames
-#.......Could also do manually as we have

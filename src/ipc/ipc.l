@@ -32,13 +32,20 @@ Pass in outgoing handler functions:
 * Err
 * Poss specify address to address specific types
 
+Pass in lists:
+* Server: (list (path, nonblock) ...)
+* Clients: (list (path, nonblock) ...)
+
+For dispatch, get function pointer from struct event data
+
+Handle bad accept sock
 }#
 
 
 (class +IPC)
 (dm T (Fd-Epoll
        Path-listener   Nonblock-listener
-       Path-connection Nonblock-connection)
+       Conns)
 
     (=: debug-ipc T)
 
@@ -53,32 +60,50 @@ Pass in outgoing handler functions:
     (=: buf-wr    (native "@" "malloc" 'N (: sz-buf-rd)))
 
     (=: nonblock-listener Nonblock-listener)
-    (=: listener          (when Path-listener (socket~listen-sock Path-listener Nonblock-listener)))
+    (=: listener NIL)
+    (when Path-listener
+      (=: listener          (socket~listen-sock Path-listener 
+                                                Nonblock-listener 
+                                                64))
+      (epoll~ctl-epfd Fd-Epoll 
+                      epoll~ADD
+                      (: listener)
+                      epoll~BAD))
     (=: clients           NIL)
-    
+
     #Poss to have multiple connections to different server
     #Diff between incoming connections and outgoing connections
 
-    (=: nonblock-connection Nonblock-connection)
-    (=: connection NIL)
-    (when Path-connection
-      (while (not (: connection))
-	(=: connection          (socket~connect-sock Path-connection Nonblock-connection))
-	#~1/144 seconds
-	(wait 7))
-      (when (: debug-ipc)
-	(prinl (usec) " | T | Connected sock: " (: connection)))))
+    (=: conns NIL)
+    
+    # TODO: Add retry
+    (for Conn Conns
+        (let (Path     (get Conn 1)
+              Nonblock (get Conn 2)
+              Handler  (get Conn 3)
+              ID       (get Conn 4)
+              Sock     (socket~connect-sock Path Nonblock))
+          (send-msg> This ID Sock)
+          (epoll~ctl-epfd Fd-Epoll
+                          epoll~ADD
+                          Sock
+                          epoll~BAD)
+          # Make class for this?
+          (push1 (:: conns) (cons Sock (list Path Handler ID)))
+          (when (: debug-ipc)
+            (prinl (usec) " | T | Connected sock: " Sock " to " Path))))
+    T)
 
 
 (dm end-ipc> ()
 
     (when (: buf-rd)     (native "@" "free" NIL (: buf-rd)))
-    (when (: buf-wr)     (native "@" "free" NIL (: buf-wr)))  
-    
+    (when (: buf-wr)     (native "@" "free" NIL (: buf-wr)))
+
     (when (: listener)   (socket~end (: listener)))
     (for Client (: clients)
-	 (socket~end Client))
-    
+         (socket~end Client))
+
     (when (: connection) (socket~end (: listener))))
 
 
@@ -90,47 +115,49 @@ Pass in outgoing handler functions:
 (dm disconnect-client> (Sock)
 
     (prinl (usec) " | disconnect-client> | Sock=" Sock)
-    
+
     (del (assoc Sock (: clients)) (:: clients))
-    
+
     (epoll~ctl-epfd (: fd-ep)
-		    epoll~DEL
-		    Sock
-		    0)
-    
+                    epoll~DEL
+                    Sock
+                    0)
+
     (disconnect-sock Sock))
 
 
-#Rename to accept
 (dm accept-sock> (Events Fd)
     (let Client (socket~accept-4 Fd 'block)
 
-	 (when (: debug-ipc)
-	   (prinl (usec) " | accept-sock> | Accepted Client=" Client))
-	 
-	 #Read for ID - this will block
-	 (let ID (recv-msg> This Events Client)
+         #(when (: debug-ipc)
+         #  (prinl (usec) " | accept-sock> | Accepted Client=" Client))
 
-	      (prinl (usec) " | accept-sock> | ID=" ID)
-	      
-	      #Disconnect client if name conflict
-	      (if (assoc Client (: clients))
+        (when (= -1 Client)
+          (prinl "(= -1 Client)"))
 
-		  (prog
-		      (prinl "WARNING! ID=" ID " exists; disconnecting client=" Client)
-		     (disconnect-sock Client))
-		  
-		  (prog
-		      (push1 (:: clients) (cons Client ID))
+         #Read for ID - this will block
+         (let ID (recv-msg> This Events Client)
 
-		     #Poss store ID into epoll-data so need not look up
-		     (epoll~ctl-epfd (: fd-epoll)
-				     epoll~ADD
-				     Client
-				     epoll~BAD)
+              #(prinl (usec) " | accept-sock> | ID=" ID)
 
-		     (when (: debug-ipc)
-		       (prinl (usec) " | accept-sock> | Registered Client=" Client ", ID=" ID)))))
+              #Disconnect client if name conflict
+              (if (assoc Client (: clients))
+
+                  (prog
+                      (prinl "WARNING! ID=" ID " exists; disconnecting client=" Client)
+                     (disconnect-sock Client))
+
+                  (prog
+                      (push1 (:: clients) (cons Client ID))
+
+                     #Poss store ID into epoll-data so need not look up
+                     (epoll~ctl-epfd (: fd-epoll)
+                                     epoll~ADD
+                                     Client
+                                     epoll~BAD)
+
+                     (when (: debug-ipc)
+                       (prinl (usec) " | accept-sock> | Registered Client=" Client ", ID=" ID)))))
 
     Client))
 
@@ -139,26 +166,26 @@ Pass in outgoing handler functions:
     #{
     * With blocking sockets, will block until space available (all data is buffered)
     * If msg too long, send will fail and no data will be buffered
-    }#    
-    
+    }#
+
     (let Bytes-Sent (socket~send-fd Fd
-				    (if (num? Buf) #ptr
-					Buf
-					(: buf-wr))
-				    (if (num? Sz)
-					Sz
-					(: sz-buf-wr))
-				    0)
-	 
-	 (if (= -1 Bytes-Sent)
-	     (when (or (= (& Events epoll~ERR)   epoll~ERR)
-		       (= (& Events epoll~HUP)   epoll~HUP)
-		       (= (& Events epoll~RDHUP) epoll~RDHUP))
-	       (disconnect-client> This Fd))
-	     
-	     (when NIL #(: debug-ipc)
-		   (prinl (usec) " | send-bytes> | Client=" Fd ", " "Bytes-Sent=:" Bytes-Sent)))
-	 Bytes-Sent))
+                                    (if (num? Buf) #ptr
+                                        Buf
+                                        (: buf-wr))
+                                    (if (num? Sz)
+                                        Sz
+                                        (: sz-buf-wr))
+                                    0)
+
+         (if (= -1 Bytes-Sent)
+             (when (or (= (& Events epoll~ERR)   epoll~ERR)
+                       (= (& Events epoll~HUP)   epoll~HUP)
+                       (= (& Events epoll~RDHUP) epoll~RDHUP))
+               (disconnect-client> This Fd))
+
+             (when NIL #(: debug-ipc)
+                   (prinl (usec) " | send-bytes> | Client=" Fd ", " "Bytes-Sent=:" Bytes-Sent)))
+         Bytes-Sent))
 
 
 (dm recv-bytes> (Events Fd Buf Sz)
@@ -172,26 +199,26 @@ Pass in outgoing handler functions:
 
     #For Buf-Sz: pass T to recv full length, else pass length
     (let Bytes-Read (socket~recv Fd
-				 (if (num? Buf) #ptr
-				     Buf
-				     (: buf-rd))
-				 (if (num? Sz)
-				     Sz
-				     (: sz-buf-rd))
-				 0)
+                                 (if (num? Buf) #ptr
+                                     Buf
+                                     (: buf-rd))
+                                 (if (num? Sz)
+                                     Sz
+                                     (: sz-buf-rd))
+                                 0)
 
-	 #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
-	 
-	 (if (=0 Bytes-Read)
-	     (when (or (= (& Events epoll~ERR)   epoll~ERR)
-		       (= (& Events epoll~HUP)   epoll~HUP)
-		       (= (& Events epoll~RDHUP) epoll~RDHUP))
-	       (disconnect-client> This Fd))
-	     
-	     (when NIL #(: debug-ipc)
-		   (prinl (usec) " | recv-sock> | Client=" Fd ", " "Bytes-Read=:" Bytes-Read)))
-	 
-	 Bytes-Read))
+         #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
+
+         (if (=0 Bytes-Read)
+             (when (or (= (& Events epoll~ERR)   epoll~ERR)
+                       (= (& Events epoll~HUP)   epoll~HUP)
+                       (= (& Events epoll~RDHUP) epoll~RDHUP))
+               (disconnect-client> This Fd))
+
+             (when NIL #(: debug-ipc)
+                   (prinl (usec) " | recv-sock> | Client=" Fd ", " "Bytes-Read=:" Bytes-Read)))
+
+         Bytes-Read))
 
 
 (dm send-msg> (Msg Sock)
@@ -201,51 +228,65 @@ Pass in outgoing handler functions:
 
     #Handle errors here like recv-msg/sock
     #Pass Fd in
-    
+
     (let Length (length Msg)
-	 
-	 (when (> Length (: sz-buf-rd))
-	   (println "WARNING! Message will be truncated by " (- Length (: sz-buf-rd)) " bytes")
-	   (setq Length (: sz-buf-rd)))
 
-	 (struct (: buf-wr) 'N (cons Length 4))
+         (when (> Length (: sz-buf-rd))
+           (println "WARNING! Message will be truncated by " (- Length (: sz-buf-rd)) " bytes")
+           (setq Length (: sz-buf-rd)))
 
-	 #(println "send-msg" (struct (: buf-wr) '(B B B B B B B B)))
-	 
-	 (socket~send-fd (if Sock Sock (: connection))
-			 (: buf-wr)
-			 4
-			 0)
+         (struct (: buf-wr) 'N (cons Length 4))
 
-	 (struct (: buf-wr) 'N (cons Msg Length))
-	 (struct (+ (: buf-wr) Length) 'N (cons 0 1))
-	 
-	 (socket~send-fd (if Sock Sock (: connection))
-			 (: buf-wr)
-			 Length
-			 0)))
+         #(println "send-msg" (struct (: buf-wr) '(B B B B B B B B)))
+
+         (socket~send-fd Sock
+                         (: buf-wr)
+                         4
+                         0)
+
+         (struct (: buf-wr) 'N (cons Msg Length))
+         (struct (+ (: buf-wr) Length) 'N (cons 0 1))
+
+         (socket~send-fd Sock
+                         (: buf-wr)
+                         Length
+                         0)))
 
 
 (dm recv-msg> (Events Fd) #Rename Fd -> Sock
 
     #Recv length as int
     #Recv payload
-    
+
     (let Bytes-Read-Len (recv-bytes> This Events Fd NIL 4)
 
-	 #(prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len)
-	 
-	 (when (= Bytes-Read-Len 4)
-	   
-	   (let Length (car (struct (: buf-rd) '(I)))
+         #(prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len)
 
-		#(prinl (usec) " | recv-msg> |   Length-Msg=" Length)
-		
-		(let Bytes-Read-Msg (recv-bytes> This Events Fd NIL Length)
+         (when (= Bytes-Read-Len 4)
 
-		     #Validate Length?
-		     
-		     (when (= Bytes-Read-Msg Length)
+           (let Length (car (struct (: buf-rd) '(I)))
 
-		       #(prinl (usec) " | recv-msg> | Msg=" Msg)
-		       (pack (struct (: buf-rd) (cons 'C Length)))))))))
+                #(prinl (usec) " | recv-msg> |   Length-Msg=" Length)
+
+                (let Bytes-Read-Msg (recv-bytes> This Events Fd NIL Length)
+
+                     #Validate Length?
+
+                     (when (= Bytes-Read-Msg Length)
+
+                       #(prinl (usec) " | recv-msg> | Msg=" Msg)
+                       (pack (struct (: buf-rd) (cons 'C Length)))))))))
+
+
+(dm send-clients-msg> (Msg)
+  #For now, meant for servers but poss pass in conns instead of clients
+  (for Client (: clients)
+    (send-msg> This Msg (car Client))))
+
+
+(dm dispatch-handler-conn> (Fd Events)
+  (let (Value   (cdr (assoc Fd (: conns)))
+        Path    (get Value 1)
+        Handler (get Value 2)
+        ID      (get Value 3))
+    (Handler Fd Events)))
