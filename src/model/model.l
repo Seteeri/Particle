@@ -138,7 +138,8 @@
 
 
 (de init-ipc ()
-    (setq *ep-events (epoll~make-event 4)
+    (setq *ep-cnt    4
+          *ep-events (epoll~make-event *ep-cnt)
           *ep-fd     (epoll~create-size 1))
 
     (setq *ipc (new '(ipc~+IPC)
@@ -154,12 +155,13 @@
     (prinl (usec) " | run-model | Starting epoll...")
 
     (let (Events     NIL
-          Fd         NIL
-          Num-Events 0)
+          Fd         NIL)
       (loop
-         (setq Num-Events (epoll~wait-epfd *ep-fd *ep-events 4 Timeout))
-         (for I Num-Events
-           (let (Ep-Events (struct *ep-events '(I I)))
+         (for I (epoll~wait-epfd *ep-fd 
+                                 *ep-events 
+                                 *ep-cnt
+                                 Timeout)
+           (let Ep-Events (epoll~get-event *ep-events I)
              (setq Events (get Ep-Events 1))
              (setq Fd     (get Ep-Events 2))
                 #(prinl (usec) " FD: " Fd ", Events: " Events)

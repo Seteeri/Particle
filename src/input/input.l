@@ -58,11 +58,9 @@
       (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
             *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
 
-    (when T
-      (setq *ep-events (epoll~make-event 4)
-            *ep-fd     (epoll~create-size 1)
-            *buf-sz    (socket~read-rmem-default)
-            *buf-rd    (native "@" "malloc" 'N *buf-sz)))
+    (setq *ep-cnt    4
+          *ep-events (epoll~make-event *ep-cnt)
+          *ep-fd     (epoll~create-size 1))
 
 
     (when T
@@ -92,12 +90,13 @@
     (prinl (usec) " | run-input | Starting epoll...")
 
     (let (Events     NIL
-          Fd         NIL
-          Num-Events 0)
+          Fd         NIL)
       (loop
-         (setq Num-Events (epoll~wait-epfd *ep-fd *ep-events 4 Timeout))
-         (for I Num-Events
-           (let (Ep-Events (struct *ep-events '(I I)))
+         (for I (epoll~wait-epfd *ep-fd 
+                                 *ep-events 
+                                 *ep-cnt
+                                 Timeout)
+           (let Ep-Events (epoll~get-event *ep-events I)
              (setq Events (get Ep-Events 1))
              (setq Fd     (get Ep-Events 2))
 

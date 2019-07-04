@@ -40,6 +40,8 @@
 #For convenience
 (def 'BAD (| IN ERR HUP RDHUP))
 
+(def 'SIZE-EVENT 12)
+
 (de make-event (N)
   (native "@" "malloc" 'N (* 12 N)))
 
@@ -74,3 +76,6 @@
 		      Event)
 	 (native "@" "free" NIL Event)))
 
+
+(de get-event (Events N)
+  (struct (+ Events (* (- N 1) SIZE-EVENT)) '(I I)))
