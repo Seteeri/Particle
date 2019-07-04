@@ -74,22 +74,26 @@ Handle bad accept sock
     #Poss to have multiple connections to different server
     #Diff between incoming connections and outgoing connections
 
-    (=: conns NIL)
+    (=: conns    NIL)
+    (=: conns-id NIL)
     
     # TODO: Add retry
     (for Conn Conns
         (let (Path     (get Conn 1)
               Nonblock (get Conn 2)
               Handler  (get Conn 3)
-              ID       (get Conn 4)
+              ID-S     (get Conn 4)
+              ID-C     (get Conn 5)
               Sock     (socket~connect-sock Path Nonblock))
-          (send-msg> This ID Sock)
+          (send-msg> This ID-C Sock)
           (epoll~ctl-epfd Fd-Epoll
                           epoll~ADD
                           Sock
                           epoll~BAD)
           # Make class for this?
-          (push1 (:: conns) (cons Sock (list Path Handler ID)))
+          # Better way to do this?
+          (push1 (:: conns)    (cons Sock (list ID-S Handler)))
+          (push1 (:: conns-id) (cons ID-S (list Sock Handler)))
           (when (: debug-ipc)
             (prinl (usec) " | T | Connected sock: " Sock " to " Path))))
     T)
@@ -126,8 +130,8 @@ Handle bad accept sock
     (disconnect-sock Sock))
 
 
-(dm accept-sock> (Events Fd)
-    (let Client (socket~accept-4 Fd 'block)
+(dm accept-sock> (Events Sock)
+    (let Client (socket~accept-4 Sock 'block)
 
          #(when (: debug-ipc)
          #  (prinl (usec) " | accept-sock> | Accepted Client=" Client))
@@ -162,13 +166,13 @@ Handle bad accept sock
     Client))
 
 
-(dm send-bytes> (Events Fd Buf Sz)
+(dm send-bytes> (Events Sock Buf Sz)
     #{
     * With blocking sockets, will block until space available (all data is buffered)
     * If msg too long, send will fail and no data will be buffered
     }#
 
-    (let Bytes-Sent (socket~send-fd Fd
+    (let Bytes-Sent (socket~send-fd Sock
                                     (if (num? Buf) #ptr
                                         Buf
                                         (: buf-wr))
@@ -180,15 +184,16 @@ Handle bad accept sock
          (if (= -1 Bytes-Sent)
              (when (or (= (& Events epoll~ERR)   epoll~ERR)
                        (= (& Events epoll~HUP)   epoll~HUP)
-                       (= (& Events epoll~RDHUP) epoll~RDHUP))
-               (disconnect-client> This Fd))
+                       (= (& Events epoll~RDHUP) epoll~RDHUP)
+                       (= Events T))
+               (disconnect-client> This Sock))
 
              (when NIL #(: debug-ipc)
-                   (prinl (usec) " | send-bytes> | Client=" Fd ", " "Bytes-Sent=:" Bytes-Sent)))
+                   (prinl (usec) " | send-bytes> | Sock=" Sock ", " "Bytes-Sent=:" Bytes-Sent)))
          Bytes-Sent))
 
 
-(dm recv-bytes> (Events Fd Buf Sz)
+(dm recv-bytes> (Events Sock Buf Sz)
     #{
     * This is designed for blocking sockets...
     * If no-data and blocking     -> recv will block
@@ -198,7 +203,7 @@ Handle bad accept sock
     }#
 
     #For Buf-Sz: pass T to recv full length, else pass length
-    (let Bytes-Read (socket~recv Fd
+    (let Bytes-Read (socket~recv Sock
                                  (if (num? Buf) #ptr
                                      Buf
                                      (: buf-rd))
@@ -212,11 +217,12 @@ Handle bad accept sock
          (if (=0 Bytes-Read)
              (when (or (= (& Events epoll~ERR)   epoll~ERR)
                        (= (& Events epoll~HUP)   epoll~HUP)
-                       (= (& Events epoll~RDHUP) epoll~RDHUP))
-               (disconnect-client> This Fd))
+                       (= (& Events epoll~RDHUP) epoll~RDHUP)
+                       (= Events T))
+               (disconnect-client> This Sock))
 
              (when NIL #(: debug-ipc)
-                   (prinl (usec) " | recv-sock> | Client=" Fd ", " "Bytes-Read=:" Bytes-Read)))
+                   (prinl (usec) " | recv-bytes> | Sock=" Sock ", " "Bytes-Read=:" Bytes-Read)))
 
          Bytes-Read))
 
@@ -227,7 +233,7 @@ Handle bad accept sock
     #Send payload
 
     #Handle errors here like recv-msg/sock
-    #Pass Fd in
+    #Pass Sock in
 
     (let Length (length Msg)
 
@@ -253,12 +259,12 @@ Handle bad accept sock
                          0)))
 
 
-(dm recv-msg> (Events Fd) #Rename Fd -> Sock
+(dm recv-msg> (Events Sock)
 
     #Recv length as int
     #Recv payload
 
-    (let Bytes-Read-Len (recv-bytes> This Events Fd NIL 4)
+    (let Bytes-Read-Len (recv-bytes> This Events Sock NIL 4)
 
          #(prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len)
 
@@ -268,7 +274,7 @@ Handle bad accept sock
 
                 #(prinl (usec) " | recv-msg> |   Length-Msg=" Length)
 
-                (let Bytes-Read-Msg (recv-bytes> This Events Fd NIL Length)
+                (let Bytes-Read-Msg (recv-bytes> This Events Sock NIL Length)
 
                      #Validate Length?
 
@@ -284,9 +290,12 @@ Handle bad accept sock
     (send-msg> This Msg (car Client))))
 
 
-(dm dispatch-handler-conn> (Fd Events)
-  (let (Value   (cdr (assoc Fd (: conns)))
-        Path    (get Value 1)
-        Handler (get Value 2)
-        ID      (get Value 3))
-    (Handler Fd Events)))
+(dm dispatch-handler-conn> (Sock Events)
+  (let (Value   (cdr (assoc Sock (: conns)))
+        ID      (get Value 1)
+        Handler (get Value 2))
+    (Handler Sock Events)))
+
+    
+(dm get-fd> (ID-S)
+  (get (cdr (assoc ID-S (: conns-id))) 1))

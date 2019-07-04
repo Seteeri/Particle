@@ -207,7 +207,7 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
     (native "libinput.so" "libinput_event_keyboard_get_time" 'I Keyboard-event))
 
 (de event-keyboard-get-time-usec (Keyboard-event)
-    (native "libinput.so" "libinput_event_keyboard_get_time_usec" 'I Keyboard-event))
+    (native "libinput.so" "libinput_event_keyboard_get_time_usec" 'N Keyboard-event))
 
 (de event-keyboard-get-key (Keyboard-event)
     (native "libinput.so" "libinput_event_keyboard_get_key" 'I Keyboard-event))
@@ -230,7 +230,7 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
     (native "libinput.so" "libinput_event_pointer_get_time" 'I Pointer-event))
 
 (de event-pointer-get-time-usec (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_time_usec" 'I Pointer-event))
+    (native "libinput.so" "libinput_event_pointer_get_time_usec" 'N Pointer-event))
 
 (de event-pointer-get-button (Pointer-event)
     (native "libinput.so" "libinput_event_pointer_get_button" 'I Pointer-event))

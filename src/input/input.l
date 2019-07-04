@@ -139,8 +139,10 @@
 
       #(prinl (usec) " | handle-context   | Event: " Type "=" Name-Type)
     
-      (let Msg (glue " " (make (link Name-Type)
-                               (link (build-ev-lst-str Event Type))))
+      (let Msg (glue " " (make (link "(")
+                               (link Name-Type)
+                               (link (build-ev-lst-str Event Type))
+                               (link ")")))
                   
         #(println Msg)
 

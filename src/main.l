@@ -3,11 +3,14 @@ DATAFLOW:
 Servers: Input, Model, Render
 Client: Ctrl
 
-I/O       CPU         I/O
-Input --> Ctrl 1 <--> Model, Render
-      --> Ctrl 2 <-->
-      --> Ctrl 3 <-->
-      --> Ctrl N <-->
+          Model
+            ^
+            |
+            V
+Input --> Ctrl 1...N
+            |
+            V
+          Render
 
 Memcpy Trail
 * Ctrl/Serialize, Ctrl/Socket -> Render/GL
@@ -15,6 +18,8 @@ Memcpy Trail
 * Input epolls for events and forwards them
   * Input not just physically attached devices/peripherals
   * Poss network I/O
+  * Also connects to render and model?
+    -> If ctrl goes down
 
 * Ctrl
   * Applies functions to data
@@ -30,6 +35,9 @@ Memcpy Trail
   * Broadcast updates
     -> Poss decentralize?
   * Poss use Redis or some other mechanism/library
+  * Instead of pushing to model push to other nodes...P2P
+    * All nodes would maintain entire copy of nodes?
+    * Poss GC to clear unused nodes...or create custom mechanism to implement pruning
 
 * Render epolls for memcpy
   * Pushes frame time to Ctrls -> Triggers anim frame generation
@@ -61,7 +69,7 @@ own proc
         (unless (fork)
           (exec "pil" "input/input.l" "-input~main" Width Height Verts)))
 
-      (wait 3000)
+      (wait 1500)
 
       (when T
         # These processes are dedicated a CPU each

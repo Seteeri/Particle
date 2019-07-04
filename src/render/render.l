@@ -160,13 +160,13 @@ Class variables may be indicated by an upper case letter
 
     #####
     #TEST
-
-    (load-test-params)
-
+    #(load-test-params)
     #(gl~use-program *prog-rast)
     #Bound with program
     #(gl~bind-vertex-array *vao)
-
+    
+    (test-vert)
+    
     (prinl (usec) " | render | Starting draw loop...")
 
     (while (= (glfw~window-should-close *window) 0)
@@ -193,8 +193,9 @@ Class variables may be indicated by an upper case letter
 
       (glfw~poll-events)
 
-      #Render will send frame, read specified amount of msgs or until EOF/NIL
+      # Broadcast frame time
       (ipc~send-clients-msg> *ipc (format (usec)))
+      # Read msgs within timelimit or until EOF/NIL
       (epoll-wait 0)
 
       T)
@@ -228,34 +229,23 @@ Class variables may be indicated by an upper case letter
              ((= Fd (get *ipc 'ipc~listener))
               (ipc~accept-sock> *ipc Events Fd))
              (T
-              (recv-conn-model Events Fd)))))))
+              (recv-conn-ctrl Events Fd)))))))
 
 
-(de recv-conn-model (Events Fd)
-    (let Msg (ipc~recv-msg> *ipc Events Fd)
-         (prinl (usec) " | RENDER | recv-conn-model  | Msg...")
-
-         #Convert to list of bytes
-         #Write to node buffer
-
-         #Use struct to convert bytes to lisp objects
-
-         #(mc dst src sz)
-         (let (Data (any Msg)
-               Dst  (get Data 2)
-               Src  (get Data 3)
-               Sz   (get Data 4))
-           (ipc~recv-bytes> *ipc Events Fd NIL Sz)
-           (println Data Dst Src Sz)
-           (when T
-             (let (Ptr-Gl (get (get '*buffer-objects 'projview) 'gl~ptr)
-                   Ptr-Buf (get *ipc 'ipc~buf-rd))
-               (memcpy Ptr-Gl Ptr-Buf Sz)))
-           (when NIL
-             (println Data)
-             (println (struct (get *ipc 'ipc~buf-rd) '(B . 64)))))
-
-         T))
+(de recv-conn-ctrl (Events Fd)
+  (let Msg (ipc~recv-msg> *ipc Events Fd)
+    (prinl (usec) " | RENDER | recv-conn-ctrl  | Msg...")
+    
+    #(mc dst src sz)
+    (let (Data (any Msg)
+          Dst  (get Data 2)
+          Src  (get Data 3)
+          Sz   (get Data 4))
+      (ipc~recv-bytes> *ipc Events Fd NIL Sz)
+      #(println "recv-conn-ctrl" (struct (get *ipc 'ipc~buf-rd) '(B . 128)))
+      (let (Ptr-Gl  (get (get '*buffer-objects 'projview) 'gl~ptr)
+            Ptr-Buf (get *ipc 'ipc~buf-rd))
+        (memcpy Ptr-Gl Ptr-Buf Sz)))))
 
 
 (de main ()
@@ -269,7 +259,7 @@ Class variables may be indicated by an upper case letter
 
 (def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
 
-(de load-test-params ()
+(de test-projview ()
     #Write projview
     (let (I 0
             Ptr (get (get '*buffer-objects 'projview) 'gl~ptr))
@@ -280,10 +270,9 @@ Class variables may be indicated by an upper case letter
             Ptr (get (get '*buffer-objects 'projview) 'gl~ptr))
       (for B *data-view
            (struct (+ Ptr I) 'N (cons B 1))
-           (inc 'I)))
+           (inc 'I))))
 
-      #(println (struct Ptr '(B . 128)))
-
+(de test-vert ()
     #Write test node
     (let (I 0
             Ptr (get (get '*buffer-objects 'nodes) 'gl~ptr))

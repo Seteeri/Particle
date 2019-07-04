@@ -145,15 +145,12 @@ Store DAGs as binary trees?
           * Render must wait for Model - otherwise anims may skip frames
           * Double buffer render
             * GPU might be rendering while we are waiting
-        * Test vertex serialization
+        * Test vertex serialization [Done]
           * Move vertices to separate process to reduce pressure on GC
           * Model can push/pull from it...or model holds data and controller processes it?
-        * Add task manager to spread work across frames
-          * Sync tasks - eg animations
-            * Lots of animations will simply slow frame rate instead of dropping frames
-          * Async tasks
-            * Runs in another process
-            * When task complete, will send to controller for sync 
+        * Add task manager to spread work across frames [Later] 
+        * Test input handling
+          * Right key will move node +X
         * Add graph/vertex operations
                
         PROCESS:

@@ -18,13 +18,13 @@
     (=: type-proj   (when Type-poj Type-proj))
     (=: mat-proj    (when Mat-proj Mat-proj))
 
-    #Move below into perspective and ortho classes
+    # Move below into perspective and ortho classes
     
     (=: fov         (if Fov Fov (to-radians 45)))
     (=: near        (if Near Near 0.1))
     (=: far         (if Far Far 100.0))
 	        
-    (=: scale-ortho (if Scale-ortho Scale-ortho 48.0))
+    (=: scale-ortho (if Scale-ortho Scale-ortho 32.0))
     (=: near-ortho  (if Near-ortho Near-ortho 1.0))
     (=: ortho-far   (if Ortho-far Ortho-far 512.0))
 

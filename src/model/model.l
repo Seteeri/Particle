@@ -6,9 +6,9 @@
     Local functions start with an underscore "_"
     Classes start with a plus-sign "+", where the first letter
         is in lower case for abstract classes
-        and in upper case for normal classes 
+        and in upper case for normal classes
     Methods end with a right arrow ">"
-    Class variables may be indicated by an upper case letter 
+    Class variables may be indicated by an upper case letter
 }#
 
 #Create and change to namespace model
@@ -74,16 +74,16 @@
     #(*/ 1.0 2560.0 2.0)
     #1080.0
     #(** 2 19)
-    
+
     #Get number of nodes and window size from args instead of file
     (let (Argv (argv))
       (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
             *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
             *verts-max   (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
-            
+
             *scale-glyph 5.8239365
             *adv-glyph   9.375))
-          
+
     #Setup projview
     (setq *projview (new '(+Projview) *width *height 'orthographic))
     #Simplify these - single function?
@@ -97,14 +97,14 @@
      0.0         0.074074075  0.0          -0.0
      0.0         0.0         -0.0039138943 -1.0039139
      0.0         0.0          0.0           1.0)
-    
+
     VIEW
     (1.0 0.0 0.0 -11.0
      0.0 1.0 0.0   8.0
      0.0 0.0 1.0 -10.0
      0.0 0.0 0.0   1.0)
     }#
-        
+
     #Debug
     #(show *projview)
     #(view (getl *projview))
@@ -118,25 +118,22 @@
     and allocations afterwards will go right after
     Nodes won't be deleted so they are considered static data
     which improves locality
-    
+
     Increase heap size to node size
     208 bytes per node roughly
     ->Do test run to determine size
 
     2**19 = 524288
     }#
-    
+
     (gc (+ 104 2))
     (prinl (usec) " | MODEL | init-model | Heap resized to 106 MB for " *verts-max " nodes")
 
     #{
      - Graphs = namespaces?
      - Generate nodes for builtin symbols?
-    }#    
+    }#
     (setq *verts (init-verts))
-
-    #Setup render-queue
-    (setq *queue-render)
     
     (init-ipc))
 
@@ -158,94 +155,27 @@
     #Up to model to perform time management
 
     (prinl (usec) " | run-model | Starting epoll...")
-    
+
     (let (Events     NIL
           Fd         NIL
           Num-Events 0)
       (loop
-         (setq Num-Events (epoll~wait-epfd *ep-fd *ep-events 4 Timeout))         
+         (setq Num-Events (epoll~wait-epfd *ep-fd *ep-events 4 Timeout))
          (for I Num-Events
            (let (Ep-Events (struct *ep-events '(I I)))
              (setq Events (get Ep-Events 1))
              (setq Fd     (get Ep-Events 2))
-                
                 #(prinl (usec) " FD: " Fd ", Events: " Events)
-
                 (if (= Fd (get *ipc 'ipc~listener))
-                    
                     (ipc~accept-sock> *ipc Events Fd)
-
-                    #Make IPC method for this
-                    (let ID (cdr (assoc Fd (get *ipc 'ipc~clients)))
-                         
-                         (cond ((= ID "INPUT")
-                                (recv-conn-input Events Fd))
-                               
-                               ((= ID "RENDER")
-                                (recv-conn-render Events Fd))
-                               
-                               (T
-                                #print warning
-                                (ipc~recv-sock> *ipc Events Fd 4096))))))))))
+                    (recv-conn-ctrl Fd Events)))))))
 
 
-(de recv-conn-input (Events Fd)
-    (let Msg (ipc~recv-msg> *ipc Events Fd)
-         #(prinl (usec) " | MODEL  | recv-conn-input | " Msg)
-         #Dispatch handlers to perform work on data      
-
-         #{
-         #Loop until queue empty
-         (let Item (pop '*queue-render)
-              (loop
-                 (T (not Item))
-                 }#      
-
-         (queue '*queue-render T)))
-
-         
-(de recv-conn-render (Events Fd)
-    (let Msg (ipc~recv-msg> *ipc Events Fd)
-         #(prinl (usec) " | MODEL  | recv-conn-render | " Msg)
-
-         #Frame event received
-         #recv-conn-input previously performed work on data so now forward queue
-         #
-         #Can send msgs one by one or batch
-
-         (when T
-           (with *projview
-                 (=: position (place 1 (: position) (- (get (: position) 1) 0.1))))
-           (update-mat-view> *projview)
-
-           #Send memcpy code then data to be copied
-           (ipc~send-msg> *ipc "(memcpy projview NIL 128 0)" Fd)
-           (ipc~send-bytes> *ipc
-                            Events
-                            Fd
-                            (with *projview (serialize-mat-to-ptr (: mat-proj) (: ptr)))
-                            64)
-           (ipc~send-bytes> *ipc
-                            Events
-                            Fd
-                            (with *projview (serialize-mat-to-ptr (: mat-view) (: ptr)))
-                            64))
-         
-         #TEST: Serialize first node on any event
-         (let Vert (get *verts 1)
-              #(prinl (usec) " | MODEL | recv-conn-render | " Vert)
-              #(view (getl Vert))
-
-              #TODO: Pass raw bytes -> faster
-              #Returns list of bytes/nums -> encode as string
-              (let Data (serialize-to-str> Vert)
-
-                   (prinl (usec) " | MODEL | recv-conn-render | Data...")
-                   
-                   #TODO: Put Fd before Msg
-                   (when NIL
-                     (ipc~send-msg> *ipc Data Fd))
-                   T))))
+(de recv-conn-ctrl (Fd Events)
+  (let Msg (ipc~recv-msg> *ipc Events Fd)
+    (prinl (usec) " | MODEL  | recv-conn-ctrl | " Msg)
+    (when (= Msg "(get-pvm)")
+      (send-pvm Fd))))
 
 
 (de main ()
@@ -253,3 +183,37 @@
     (run-model)
     (println 'Exiting...)
     (bye))
+
+################################################################################
+
+# Move to conn
+
+(de send-pvm (Sock)
+  (with *projview 
+
+    #(print-mat4-3 (: mat-proj))
+    #(prinl)
+    #(print-mat4-3 (: mat-view))
+
+    (serialize-mat-to-ptr (: mat-proj) (: ptr))
+    (serialize-mat-to-ptr (: mat-view) (+ (: ptr) 64))
+    
+    #(println "recv-conn-ctrl" (struct (: ptr) '(B . 128)))
+    
+    (ipc~send-bytes> *ipc
+                     T # Handle any error
+                     Sock
+                     (: ptr)
+                     128)))
+                     
+                     
+#{
+    (let Vert (get *verts 1)
+
+      # TODO: Pass raw bytes -> faster
+      # Returns list of bytes/nums -> encode as string
+      (let Data (serialize-to-ptr> Vert)
+
+        (when NIL
+          (ipc~send-msg> *ipc Data Fd))))
+}#
