@@ -9,7 +9,7 @@
     (init-buffs-rast)
 
     #Load default buffer data
-    #(init-tex-glyphs)
+    (when TEST-GLYPH (init-tex-glyphs))
     (init-di)
     (init-verts)
     (init-el))    
@@ -66,15 +66,15 @@
       * Or list of lists with each list starting with the name
    }#
    (let (Ptr (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr)
-	 Off 0)
-	(for Code 255
-	     (let Path-Glyph (pack PATH-GLYPHS "/tex/" Code "-data.l")
-		  (println "Reading " Path-Glyph " ...")
-		  #More idiomatic way to do this...
-		  (let Data (any (in Path-Glyph (till NIL T)))
-		       (for B Data
-			    (struct (+ Ptr Off) 'N (cons B 1))
-			    (inc 'Off)))))))
+         Off 0)
+        (for Code 255
+             (let Path-Glyph (pack PATH-GLYPHS "/tex/" Code "-data.l")
+                  (prinl (usec) " | RENDER | init-tex-glyphs | " Code "-data.l ...")
+                  #More idiomatic way to do this...
+                  (let Data (any (in Path-Glyph (till NIL T)))
+                       (for B Data
+                      (struct (+ Ptr Off) 'N (cons B 1))
+                      (inc 'Off)))))))
 
 
 (de init-di ()

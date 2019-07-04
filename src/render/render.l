@@ -66,6 +66,8 @@ Class variables may be indicated by an upper case letter
 (def '*vao)
 (def '*fence)
 
+(def 'TEST-GLYPH NIL)
+
 
 (de init-render ()
     #{
@@ -137,8 +139,9 @@ Class variables may be indicated by an upper case letter
 
     (gl~enable gl~CULL-FACE)
     (gl~enable gl~DEPTH-TEST)
-    #(gl~enable gl~BLEND)
-    #(gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA)
+    (when TEST-GLYPH
+      (gl~enable gl~BLEND)
+      (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA))
 
     #Get some function pointers
     (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage"))
@@ -166,11 +169,11 @@ Class variables may be indicated by an upper case letter
     #(load-test-params)
     #(gl~use-program *prog-rast)
     #Bound with program
-    #(gl~bind-vertex-array *vao)
+    (gl~bind-vertex-array *vao)
     
     (test-vert)
     
-    (prinl (usec) " | render | Starting draw loop...")
+    (prinl (usec) " | RENDER | Starting draw loop...")
 
     (while (= (glfw~window-should-close *window) 0)
 
