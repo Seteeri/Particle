@@ -106,9 +106,11 @@ Handle bad accept sock
 
     (when (: listener)   (socket~end (: listener)))
     (for Client (: clients)
-         (socket~end Client))
+      (socket~end (car Client)))
 
-    (when (: connection) (socket~end (: listener))))
+    (when (: conns) 
+      (for Conn (: conns)
+        (socket~end (car Conn)))))
 
 
 (de disconnect-sock (Sock)
@@ -130,7 +132,7 @@ Handle bad accept sock
     (disconnect-sock Sock))
 
 
-(dm accept-sock> (Events Sock)
+(dm accept-sock> (Sock Events)
     (let Client (socket~accept-4 Sock 'block)
 
          #(when (: debug-ipc)
@@ -140,7 +142,7 @@ Handle bad accept sock
           (prinl "(= -1 Client)"))
 
          #Read for ID - this will block
-         (let ID (recv-msg> This Events Client)
+         (let ID (recv-msg> This Client Events)
 
               #(prinl (usec) " | accept-sock> | ID=" ID)
 
@@ -166,7 +168,7 @@ Handle bad accept sock
     Client))
 
 
-(dm send-bytes> (Events Sock Buf Sz)
+(dm send-bytes> (Sock Events Buf Sz)
     #{
     * With blocking sockets, will block until space available (all data is buffered)
     * If msg too long, send will fail and no data will be buffered
@@ -184,47 +186,12 @@ Handle bad accept sock
          (if (= -1 Bytes-Sent)
              (when (or (= (& Events epoll~ERR)   epoll~ERR)
                        (= (& Events epoll~HUP)   epoll~HUP)
-                       (= (& Events epoll~RDHUP) epoll~RDHUP)
-                       (= Events T))
+                       (= (& Events epoll~RDHUP) epoll~RDHUP))
                (disconnect-client> This Sock))
 
              (when NIL #(: debug-ipc)
                    (prinl (usec) " | send-bytes> | Sock=" Sock ", " "Bytes-Sent=:" Bytes-Sent)))
          Bytes-Sent))
-
-
-(dm recv-bytes> (Events Sock Buf Sz)
-    #{
-    * This is designed for blocking sockets...
-    * If no-data and blocking     -> recv will block
-    * If no-data and non-blocking -> recv will return -1 and set errno to EAGAIN or EWOULDBLOCK
-    * EOF will return 0 on shutdown
-    * ERR/HUP will return 0 also
-    }#
-
-    #For Buf-Sz: pass T to recv full length, else pass length
-    (let Bytes-Read (socket~recv Sock
-                                 (if (num? Buf) #ptr
-                                     Buf
-                                     (: buf-rd))
-                                 (if (num? Sz)
-                                     Sz
-                                     (: sz-buf-rd))
-                                 0)
-
-         #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
-
-         (if (=0 Bytes-Read)
-             (when (or (= (& Events epoll~ERR)   epoll~ERR)
-                       (= (& Events epoll~HUP)   epoll~HUP)
-                       (= (& Events epoll~RDHUP) epoll~RDHUP)
-                       (= Events T))
-               (disconnect-client> This Sock))
-
-             (when NIL #(: debug-ipc)
-                   (prinl (usec) " | recv-bytes> | Sock=" Sock ", " "Bytes-Read=:" Bytes-Read)))
-
-         Bytes-Read))
 
 
 (dm send-msg> (Msg Sock)
@@ -259,28 +226,62 @@ Handle bad accept sock
                          0)))
 
 
-(dm recv-msg> (Events Sock)
+(dm recv-bytes> (Sock Events Buf Sz)
+    #{
+    * This is designed for blocking sockets...
+    * If no-data and blocking     -> recv will block
+    * If no-data and non-blocking -> recv will return -1 and set errno to EAGAIN or EWOULDBLOCK
+    * EOF will return 0 on shutdown
+    * ERR/HUP will return 0 also
+    }#
+
+    #For Buf-Sz: pass T to recv full length, else pass length
+    (let Bytes-Read (socket~recv Sock
+                                 (if (num? Buf) #ptr
+                                     Buf
+                                     (: buf-rd))
+                                 (if (num? Sz)
+                                     Sz
+                                     (: sz-buf-rd))
+                                 0)
+
+         #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
+
+         (if (=0 Bytes-Read)
+             (when (or (= (& Events epoll~ERR)   epoll~ERR)
+                       (= (& Events epoll~HUP)   epoll~HUP)
+                       (= (& Events epoll~RDHUP) epoll~RDHUP))
+               (disconnect-client> This Sock))
+
+             (when NIL #(: debug-ipc)
+                   (prinl (usec) " | recv-bytes> | Sock=" Sock ", " "Bytes-Read=:" Bytes-Read)))
+
+         Bytes-Read))
+         
+         
+(dm recv-msg> (Sock Events)
 
     #Recv length as int
     #Recv payload
 
-    (let Bytes-Read-Len (recv-bytes> This Events Sock NIL 4)
+    (let Bytes-Read-Len (recv-bytes> This Sock Events NIL 4)
 
          #(prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len)
 
+         # TODO: Need to handle for other value, i.e. print message
          (when (= Bytes-Read-Len 4)
 
            (let Length (car (struct (: buf-rd) '(I)))
 
                 #(prinl (usec) " | recv-msg> |   Length-Msg=" Length)
 
-                (let Bytes-Read-Msg (recv-bytes> This Events Sock NIL Length)
+                (let Bytes-Read-Msg (recv-bytes> This Sock Events NIL Length)
 
                      #Validate Length?
 
                      (when (= Bytes-Read-Msg Length)
 
-                       #(prinl (usec) " | recv-msg> | Msg=" Msg)
+                       #(prinl (usec) " | recv-msg> | Bytes-Read-Msg=" Bytes-Read-Msg)
                        (pack (struct (: buf-rd) (cons 'C Length)))))))))
 
 

@@ -6,9 +6,9 @@
     Local functions start with an underscore "_"
     Classes start with a plus-sign "+", where the first letter
         is in lower case for abstract classes
-        and in upper case for normal classes 
+        and in upper case for normal classes
     Methods end with a right arrow ">"
-    Class variables may be indicated by an upper case letter 
+    Class variables may be indicated by an upper case letter
 }#
 
 #Create and change to namespace model
@@ -57,23 +57,23 @@
     (let (Argv (argv))
       (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
             *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
-    
+
     (when T
       (setq *ep-events (native "@" "malloc" 'N (* 12 4)) #1 event
             *ep-fd     (epoll~create-size 1)
             *buf-sz    (socket~read-rmem-default)
             *buf-rd    (native "@" "malloc" 'N *buf-sz)))
-      
-    
+
+
     (when T
       (setq *input (new '(li~+Li)))
       (epoll~ctl-epfd *ep-fd
                       epoll~ADD
                       (get *input 'li~fd-context)
                       epoll~IN))
-    
+
     (when T
-      (setq *ipc (new '(ipc~+IPC) 
+      (setq *ipc (new '(ipc~+IPC)
                       *ep-fd
                       PATH-UDS-INPUT 'ipc~block))))
 
@@ -81,7 +81,7 @@
 (de run-input (Timeout)
     #{
     Poll events ASAP and enqueue for processing by controller thread
-    
+
     epoll-wait:
     * ep-events size should correspond to maxevents
     * -1 = timeout = block/infinite
@@ -90,30 +90,30 @@
     }#
 
     (prinl (usec) " | run-input | Starting epoll...")
-    
+
     (let (Events     NIL
           Fd         NIL
           Num-Events 0)
       (loop
-         (setq Num-Events (epoll~wait-epfd *ep-fd *ep-events 4 Timeout))         
+         (setq Num-Events (epoll~wait-epfd *ep-fd *ep-events 4 Timeout))
          (for I Num-Events
            (let (Ep-Events (struct *ep-events '(I I)))
              (setq Events (get Ep-Events 1))
              (setq Fd     (get Ep-Events 2))
-             
+
              #(prinl (usec) " FD: " Fd ", Events: " Events)
              #(prinl (get *ipc 'ipc~listener))
 
              (cond ((= Fd (get *input 'li~fd-context))
                     (handle-context)
                     T)
-                   
+
                    ((= Fd (get *ipc 'ipc~listener))
-                    (ipc~accept-sock> *ipc Events Fd))
-                   
+                    (ipc~accept-sock> *ipc Fd Events))
+
                    (T
                     # Should not recv msgs?
-                    (ipc~recv-msg> *ipc Events Fd))))))))
+                    (ipc~recv-msg> *ipc Fd Events))))))))
 
 
 (de handle-context ()
@@ -121,34 +121,34 @@
     (with *input
 
           (li~dispatch (: li~context))
-          
+
           (loop
              (setq Event (li~get-event (: li~context)))
              (T (= Event 0))
-                     
+
              (send-event Event)
-             
+
              (li~event-destroy Event)
              (li~dispatch (: li~context)))))
 
 
 (de send-event (Event)
-    
+
     (let (Type (li~event-get-type Event)
           Name-Type (li~get-event-type-name Type))
 
       #(prinl (usec) " | handle-context   | Event: " Type "=" Name-Type)
-    
-      (let Msg (glue " " (make (link "(")
-                               (link Name-Type)
-                               (link (build-ev-lst-str Event Type))
-                               (link ")")))
-                  
+
+      (let Msg (pack "("
+                     (glue " " (make (link Name-Type)
+                                     (link (build-ev-lst-str Event Type))))
+                     ")")
+
         #(println Msg)
 
         (ipc~send-clients-msg> *ipc Msg))))
 
-      
+
 (de build-ev-lst-str (Event Type)
     (cond ((= Type li~KEYBOARD-KEY)
            (glue " " (list (format (li~event-keyboard-get-time Event))
@@ -156,7 +156,7 @@
                            (format (li~event-keyboard-get-key Event))
                            (format (li~event-keyboard-get-key-state Event))
                            (format (li~event-keyboard-get-seat-key-count Event)))))
-          
+
           ((= Type li~POINTER-MOTION)
            (glue " " (list (format (li~event-pointer-get-time Event))
                            (format (li~event-pointer-get-time-usec Event))
@@ -164,7 +164,7 @@
                            (format (li~event-pointer-get-dy Event) *Scl)
                            (format (li~event-pointer-get-dx-unaccelerated Event) *Scl)
                            (format (li~event-pointer-get-dy-unaccelerated Event) *Scl))))
-          
+
           ((= Type li~POINTER-MOTION-ABSOLUTE)
            (glue " " (list (format (li~event-pointer-get-time Event))
                            (format (li~event-pointer-get-time-usec Event))
@@ -179,7 +179,7 @@
                            (format (li~event-pointer-get-button Event))
                            (format (li~event-pointer-get-button-state Event))
                            (format (li~event-pointer-get-seat-button-count Event)))))
-          
+
           ((= Type li~POINTER-AXIS)
            (glue " " (list (format (li~event-pointer-get-time Event))
                            (format (li~event-pointer-get-time-usec Event))
@@ -190,7 +190,7 @@
                              (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)
                              (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
                              (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)))))))
-      
+
 
 (de end-input ()
     (prinl "...Called end-input")
@@ -204,7 +204,7 @@
     (epoll~ctl-epfd *ep-fd epoll~DEL (get *input 'fd-context) 0)
     #(println +Input li-end-input> *input)
     (li~end-input> *input)
-    
+
     #Clean up epoll
     (when *ep-events
       (native "@" "free" NIL *ep-events))
@@ -213,7 +213,7 @@
     #(for Sock *sock-connections
     #(end-sock Sock *ep-fd))
     (when *buf-rd
-      (native "@" "free" NIL *buf-rd)))   
+      (native "@" "free" NIL *buf-rd)))
 
 
 (de main ()

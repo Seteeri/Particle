@@ -37,12 +37,11 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 # Lisp libraries
+(load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
-#(load "/home/user/quicklisp/local-projects/protoform/src/model/conn.l")
-#(load "/home/user/quicklisp/local-projects/protoform/src/model/mmap.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/conn.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 
 
 (de init-verts ()
@@ -140,9 +139,7 @@
 
 (de init-ipc ()
     (setq *ep-events (native "@" "malloc" 'N (* 12 4)) #1 event
-          *ep-fd     (epoll~create-size 1)
-          *buf-sz    (socket~read-rmem-default)
-          *buf-rd    (native "@" "malloc" 'N *buf-sz))
+          *ep-fd     (epoll~create-size 1))
 
     (setq *ipc (new '(ipc~+IPC)
                     *ep-fd
@@ -167,15 +164,16 @@
              (setq Fd     (get Ep-Events 2))
                 #(prinl (usec) " FD: " Fd ", Events: " Events)
                 (if (= Fd (get *ipc 'ipc~listener))
-                    (ipc~accept-sock> *ipc Events Fd)
+                    (ipc~accept-sock> *ipc Fd Events)
                     (recv-conn-ctrl Fd Events)))))))
 
 
-(de recv-conn-ctrl (Fd Events)
-  (let Msg (ipc~recv-msg> *ipc Events Fd)
+(de recv-conn-ctrl (Sock Events)
+  (let (Msg (ipc~recv-msg> *ipc Sock Events)
+        Data (any Msg))
     (prinl (usec) " | MODEL  | recv-conn-ctrl | " Msg)
     (when (= Msg "(get-pvm)")
-      (send-pvm Fd))))
+      (send-pvm Sock))))
 
 
 (de main ()
@@ -183,37 +181,3 @@
     (run-model)
     (println 'Exiting...)
     (bye))
-
-################################################################################
-
-# Move to conn
-
-(de send-pvm (Sock)
-  (with *projview 
-
-    #(print-mat4-3 (: mat-proj))
-    #(prinl)
-    #(print-mat4-3 (: mat-view))
-
-    (serialize-mat-to-ptr (: mat-proj) (: ptr))
-    (serialize-mat-to-ptr (: mat-view) (+ (: ptr) 64))
-    
-    #(println "recv-conn-ctrl" (struct (: ptr) '(B . 128)))
-    
-    (ipc~send-bytes> *ipc
-                     T # Handle any error
-                     Sock
-                     (: ptr)
-                     128)))
-                     
-                     
-#{
-    (let Vert (get *verts 1)
-
-      # TODO: Pass raw bytes -> faster
-      # Returns list of bytes/nums -> encode as string
-      (let Data (serialize-to-ptr> Vert)
-
-        (when NIL
-          (ipc~send-msg> *ipc Data Fd))))
-}#

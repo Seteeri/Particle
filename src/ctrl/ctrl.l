@@ -33,11 +33,12 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/ctrl/ipc.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/ctrl/conn.l")
 
 
 #Globals
 (def '*ep-events)
+(def '*cam) # TEMP
 
 
 (de init-ctrl ()
@@ -48,9 +49,7 @@
             *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
     (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
-          *ep-fd     (epoll~create-size 1)
-          *buf-sz    (socket~read-rmem-default)
-          *buf-rd    (native "@" "malloc" 'N *buf-sz))
+          *ep-fd     (epoll~create-size 1))
 
     (let ID-C (pack "CTRL-" *Pid)
       (setq *ipc (new '(ipc~+IPC)
@@ -94,24 +93,25 @@
              (ipc~dispatch-handler-conn> *ipc Fd Events))))))
 
 
-(def '*cam)
 (de handle-input (Sock Events)
-  (let (Msg (ipc~recv-msg> *ipc Events Sock)
+  (let (Msg (ipc~recv-msg> *ipc Sock Events)
         Data (any Msg)
         Name (get Data 1))
     (when (= Name 'KEYBOARD-KEY)
-      (prinl (usec) " | CTRL  | handle-input | " Msg)
-      (handle-keyboard Sock Data))))
+      (prin (usec) " | CTRL  | handle-input | ")
+      (print Data)
+      (prinl)
+      (handle-keyboard Sock Events Data))))
       
 
 (de handle-model (Sock Events)
-  (let Msg (ipc~recv-msg> *ipc Events Sock)
+  (let Msg (ipc~recv-msg> *ipc Sock Events)
     (when NIL
       (prinl Msg))))
 
 
 (de handle-render (Sock Events)
-  (let Msg (ipc~recv-msg> *ipc Events Sock)
+  (let Msg (ipc~recv-msg> *ipc Sock Events)
     (when NIL
       (prinl Msg))))
 
@@ -120,35 +120,3 @@
     (init-ctrl)
     (run-ctrl -1)
     (bye))
-
-
-################################################################################
-
-
-(de handle-keyboard (Sock Data)
-  (let (Key   (get Data 4)
-        State (get Data 5))
-    (cond ((and (= Key 106) (= State 1)) # Move camera right
-           (move-cam Sock 29 -1.0))
-          ((and (= Key 105) (= State 1)) # Move camera left
-           (move-cam Sock 29 1.0))
-          ((and (= Key 103) (= State 1)) # Move camera up
-           (move-cam Sock 30 -1.0))
-          ((and (= Key 108) (= State 1)) # Move camera dn
-           (move-cam Sock 30 1.0)))))
-
-                         
-(de move-cam (Sock Cnt Delta)
-   # Pull data from model
-   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-         Sock-Render (ipc~get-fd> *ipc "RENDER")
-         Cam         (if *cam *cam (read-pvm Sock-Model)))
-      #(println Cam)
-      # Modify position
-     (let Cam-New (place Cnt Cam (+ (get Cam Cnt) Delta))
-       # Push data to model
-       #(write-pvm Cam Sock-Model)
-       # Push update to render
-       (write-pvm Cam-New Sock-Render)
-       (prinl (usec))
-       (setq *cam Cam-New))))
