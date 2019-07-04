@@ -59,7 +59,7 @@
             *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
 
     (when T
-      (setq *ep-events (native "@" "malloc" 'N (* 12 4)) #1 event
+      (setq *ep-events (epoll~make-event 4)
             *ep-fd     (epoll~create-size 1)
             *buf-sz    (socket~read-rmem-default)
             *buf-rd    (native "@" "malloc" 'N *buf-sz)))

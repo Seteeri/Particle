@@ -40,6 +40,9 @@
 #For convenience
 (def 'BAD (| IN ERR HUP RDHUP))
 
+(de make-event (N)
+  (native "@" "malloc" 'N (* 12 N)))
+
 
 (de create-size (Size)
     (native "@" "epoll_create" 'I Size))

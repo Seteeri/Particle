@@ -48,7 +48,7 @@
             *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
             *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
-    (setq *ep-events (native "@" "malloc" 'N (* 12 2)) #1 event
+    (setq *ep-events (epoll~make-event 2)
           *ep-fd     (epoll~create-size 1))
 
     (let ID-C (pack "CTRL-" *Pid)

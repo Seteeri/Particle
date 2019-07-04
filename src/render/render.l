@@ -147,7 +147,7 @@ Class variables may be indicated by an upper case letter
 
 
 (de init-ipc ()
-    (setq *ep-events (native "@" "malloc" 'N (* 12 4)) #1 event
+    (setq *ep-events (epoll~make-event 4)
           *ep-fd     (epoll~create-size 1))
 
     (when T
