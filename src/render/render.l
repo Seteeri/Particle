@@ -222,6 +222,7 @@ Class variables may be indicated by an upper case letter
 
     (let (Events     NIL
           Fd         NIL)
+       # No infinite loop here
        (for I (epoll~wait-epfd *ep-fd 
                                *ep-events 
                                *ep-cnt
@@ -239,7 +240,7 @@ Class variables may be indicated by an upper case letter
   (let (Msg  (ipc~recv-msg> *ipc Sock Events)
         Data (any Msg))
     #(prinl (usec) " | RENDER | recv-conn-ctrl  | Msg...")
-    (when (= (get Data 1) "memcpy")
+    (when (= (get Data 1) "mc")
       (handle-memcpy Sock Events Data))))
 
 

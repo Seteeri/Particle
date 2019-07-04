@@ -9,7 +9,7 @@
 
 (de write-pvm (Pvm Sock Events)
   # Serialize pvm
-  (ipc~send-msg> *ipc "(memcpy projview NIL 128 0)" Sock)
+  (ipc~send-msg> *ipc "(mc projview NIL 128 0)" Sock)
   (struct (get *ipc 'ipc~buf-wr) 'N (cons -1.0 Pvm))
   #(println "write-pvm" (struct (get *ipc 'ipc~buf-wr) '(B . 128)))  
   (ipc~send-bytes> *ipc
