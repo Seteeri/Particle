@@ -38,8 +38,7 @@ Based on texture...poss move to render?
 
 (de load-file-metrics-data (Code)
     (let (Path-glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l"))
-      #(prinl "Loading " Path-glyph " ...")
-      (prinl (usec) " | MODEL | load-file-metrics-data | " Code "-metrics.l ...")
+      #(prinl (usec) " | MODEL | load-file-metrics-data | " Code "-metrics.l ...")
       (eval (any (in Path-glyph (till NIL T))))))
 
 (de load-metrics ()

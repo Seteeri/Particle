@@ -86,38 +86,43 @@
 
 
 (de connect-sock (Path
-		  Nonblock)
-    
-    (let (Sock (init-socket Nonblock)
-	  Sockaddr (init-sockaddr 1 Path))
-      
-      #{
-      timeout:
-        0 = return immediately
-      > 0 = wait indefinitely with delay
-      }#
+                  Nonblock
+                  Retry)
 
-      (let (Ret (connect-sockfd Sock
-		                Sockaddr
-				SOCKADDR-LEN))
-	(when (= Ret -1)
-	  "(= connect-sockfd -1)"))
-	
-      (native "@" "free" NIL Sockaddr)
-      
-      Sock))
+  (let (Sock     (init-socket Nonblock)
+        Sockaddr (init-sockaddr 1 Path))
+
+    #{
+    Retry:
+    >N= Delay
+    <0 = Once
+    }#
+
+    (if (> Retry 0)
+        (until (= 0 (connect-sockfd Sock
+                                    Sockaddr
+                                    SOCKADDR-LEN))
+          (wait Retry))
+        (when (= -1 (connect-sockfd Sock
+                                    Sockaddr
+                                    SOCKADDR-LEN))
+          (close Sock)
+          (setq Sock NIL)))
+
+    (native "@" "free" NIL Sockaddr)
+    Sock))
 
 
 (de listen-sock (Path
-		 Nonblock
-		 Backlog)
+                 Nonblock
+                 Backlog)
 
     #{
     https://gavv.github.io/articles/unix-socket-reuse/
-    
+
     A socket file is created by bind(2) call.
     If the file already exists, EADDRINUSE is returned.
-    
+
     Unlike Internet sockets (AF_INET), Unix domain sockets (AF_UNIX) doesn’t have
     SO_REUSEADDR, at least on Linux and BSD. The only way to reuse a socket file
     is to remove it with unlink().
@@ -125,7 +130,7 @@
     There are two bad approaches to deal with this problem:
 
     #1
-    
+
     We could call unlink() just before bind().
 
     The problem is that if we run two instances of our process, the second one will silently remove socket used by the first one, instead of reporting a failure.
@@ -156,26 +161,26 @@
     To create an abstract namespace socket, set the first byte in the sun_path field of the sockaddr_un to \0. See unix(7). This socket will not be mapped to the filesystem, so it’s not possible to use filesystem permissions or remove it with unlink().
 
     The advantage is that such a socket is automatically removed when the process exits, so there is no problem with socket reusing.
-    
+
     }#
-    
+
     (unlink Path)
-    
+
     (let (Sock (init-socket Nonblock)
 	  Sockaddr (init-sockaddr 1 Path))
-      
+
       (let (Ret (bind-sockfd Sock
 		             Sockaddr
 		             SOCKADDR-LEN))
 	(when (= Ret -1)
 	  "(= bind-sockfd -1)"))
-      
+
       (let (Ret (listen-sockfd Sock Backlog))
 	(when (= Ret -1)
 	  "(= bind-sockfd -1)"))
-  
+
       (native "@" "free" NIL Sockaddr)
-      
+
       Sock))
 
 (de accept-4 (Sock Nonblock)
@@ -183,21 +188,21 @@
     For nonblocking, will either return a valid fd (> 0)
     or it will fail and set errno to e-again or e-wouldblock
     Any other errno indicates failure somewhere else
-    
+
     flags=0 - same as accept
     }#
     (let (Sockaddr     (native "@" "malloc" 'N 110)    #(init-sockaddr 1 "")
           Sockaddr-len (native "@" "malloc" 'N 4)) #socklen_t
-	  
+
 	  (struct Sockaddr-len 'N (cons SOCKADDR-LEN 4))
-	  
+
 	  (let (Ret (accept-4-sockfd Sock
 		      Sockaddr
 		      Sockaddr-len
 		      (if (= Nonblock 'nonblock)
 			  SOCK-NONBLOCK
 			  0)))
-	    
+
 	    (native "@" "free" NIL Sockaddr)
 	    Ret)))
 

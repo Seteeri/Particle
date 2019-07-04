@@ -84,7 +84,7 @@ Handle bad accept sock
               Handler  (get Conn 3)
               ID-S     (get Conn 4)
               ID-C     (get Conn 5)
-              Sock     (socket~connect-sock Path Nonblock))
+              Sock     (socket~connect-sock Path Nonblock 7)) # Retry 7 ms or 144 FPS
           (send-msg> This ID-C Sock)
           (epoll~ctl-epfd Fd-Epoll
                           epoll~ADD
@@ -247,6 +247,7 @@ Handle bad accept sock
 
          #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
 
+         # Handle -1
          (if (=0 Bytes-Read)
              (when (or (= (& Events epoll~ERR)   epoll~ERR)
                        (= (& Events epoll~HUP)   epoll~HUP)

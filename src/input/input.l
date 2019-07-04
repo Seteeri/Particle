@@ -62,18 +62,15 @@
           *ep-events (epoll~make-event *ep-cnt)
           *ep-fd     (epoll~create-size 1))
 
+    (setq *ipc (new '(ipc~+IPC)
+                    *ep-fd
+                    PATH-UDS-INPUT 'ipc~block))
 
-    (when T
-      (setq *input (new '(li~+Li)))
-      (epoll~ctl-epfd *ep-fd
-                      epoll~ADD
-                      (get *input 'li~fd-context)
-                      epoll~IN))
-
-    (when T
-      (setq *ipc (new '(ipc~+IPC)
-                      *ep-fd
-                      PATH-UDS-INPUT 'ipc~block))))
+    (setq *input (new '(li~+Li)))
+    (epoll~ctl-epfd *ep-fd
+                    epoll~ADD
+                    (get *input 'li~fd-context)
+                    epoll~IN))
 
 
 (de run-input (Timeout)

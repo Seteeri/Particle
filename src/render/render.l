@@ -87,6 +87,8 @@ Class variables may be indicated by an upper case letter
             *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
             *verts-max  (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
+    (init-ipc)
+
     #Init context
     (init-window)
     (init-gl)
@@ -98,8 +100,8 @@ Class variables may be indicated by an upper case letter
     #To disable drawing an object, use 0.0 (float) that is multiplied in vertex shader
     #Change flags with a vec4
     #(init-comp)
-
-    (init-ipc))
+    
+    T)
 
 
 (de init-window ()
@@ -154,10 +156,9 @@ Class variables may be indicated by an upper case letter
           *ep-events (epoll~make-event *ep-cnt)
           *ep-fd     (epoll~create-size 1))
 
-    (when T
-      (setq *ipc (new '(ipc~+IPC)
-                      *ep-fd
-                      PATH-UDS-RENDER 'ipc~block))))
+    (setq *ipc (new '(ipc~+IPC)
+                    *ep-fd
+                    PATH-UDS-RENDER 'ipc~block)))
 
 (de run-render ()
     #After connecting, start processing messages

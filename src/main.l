@@ -69,9 +69,6 @@ own proc
         (unless (fork)
           (exec "pil" "input/input.l" "-input~main" Width Height Verts)))
 
-      (wait 1500)
-      #(wait 4000)
-
       (when T
         # These processes are dedicated a CPU each
         (for I 1

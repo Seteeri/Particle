@@ -4,7 +4,7 @@
   (let Bytes-Recv (ipc~recv-bytes> *ipc Sock Events T 128)
     (if (= Bytes-Recv 128)
       (struct (get *ipc 'ipc~buf-rd) '(-1.0 . 32))
-      (println "(= Bytes-Recv 128)"))))
+      (println "(not (= Bytes-Recv 128))" Bytes-Recv))))
 
 
 (de write-pvm (Pvm Sock Events)
@@ -47,5 +47,5 @@
        #(write-pvm Cam Sock-Model Events)
        # Push update to render
        (write-pvm Cam-New Sock-Render Events)
-       (prinl (usec))
+       #(prinl (usec))
        (setq *cam Cam-New))))

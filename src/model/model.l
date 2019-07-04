@@ -83,6 +83,8 @@
             *scale-glyph 5.8239365
             *adv-glyph   9.375))
 
+    (init-ipc)
+
     #Setup projview
     (setq *projview (new '(+Projview) *width *height 'orthographic))
     #Simplify these - single function?
@@ -132,9 +134,7 @@
      - Graphs = namespaces?
      - Generate nodes for builtin symbols?
     }#
-    (setq *verts (init-verts))
-    
-    (init-ipc))
+    (setq *verts (init-verts)))
 
 
 (de init-ipc ()
