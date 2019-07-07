@@ -55,8 +55,8 @@
 (de init-input ()
 
     (let (Argv (argv))
-      (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-            *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
+      (setq *width  (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
+            *height (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
 
     (setq *ep-cnt    4
           *ep-events (epoll~make-event *ep-cnt)
@@ -142,6 +142,7 @@
 
         #(println Msg)
 
+        # Workers will send messages to input when they are ready
         (ipc~send-clients-msg> *ipc Msg))))
 
 

@@ -24,13 +24,13 @@
     (=: near        (if Near Near 0.1))
     (=: far         (if Far Far 100.0))
 	        
-    (=: scale-ortho (if Scale-ortho Scale-ortho 32.0))
+    (=: scale-ortho (if Scale-ortho Scale-ortho 12.0))
     (=: near-ortho  (if Near-ortho Near-ortho 1.0))
     (=: ortho-far   (if Ortho-far Ortho-far 512.0))
 
     (=: mat-view    (when Mat-view Mat-view))
 
-    (=: position    (if Pos Pos (11.0 -8.0 10.0)))
+    (=: position    (if Pos Pos (0.0 0.0 10.0)))
     (=: rotation    (if Rot Rot (0.0 0.0 0.0)))
     (=: displace    (if Displace Displace (8.0 8.0 4.0)))
 

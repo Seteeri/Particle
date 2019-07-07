@@ -44,16 +44,23 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
 
 
+# Globals
+(def '*sca-vert 0.008)
+(def '*sca-glyph 5.8239365) # MSDF/tex parameter
+(def '*adv-glyph 9.375)       # MSDF/tex parameter  
+
+
 (de init-verts ()
     (let Verts ()
          (for I *verts-max
-              (let Vertex (new '(+Vertex)
-                               88
-                               (mat4-identity)
-                               (mat4-identity)
-                               (mat4-identity))
-                   #(prinl "Created vertex " I " "  Vertex)
-                   (push 'Verts Vertex)))
+              (let Vert (new '(+Vertex)
+                             42 # *
+                             *color-vert-default
+                             (list 0.0 0.0 0.0) # pos
+                             (list 0.0 0.0 0.0) # rot=0, sca=global scale
+                             (list *sca-vert *sca-vert *sca-vert))
+                   #(prinl "Created vertex " I " "  Vert)
+                   (push 'Verts Vert)))
          Verts))
 
 
@@ -76,12 +83,9 @@
 
     #Get number of nodes and window size from args instead of file
     (let (Argv (argv))
-      (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-            *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-            *verts-max   (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
-
-            *scale-glyph 5.8239365
-            *adv-glyph   9.375))
+      (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
+            *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
+            *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
     (init-ipc)
 
@@ -91,21 +95,6 @@
     (update-mat-proj> *projview)
     (update-mat-view> *projview)
 
-    #{
-    Note: These are transposed before writing
-    PROJ
-    (0.041666668 0.0          0.0          -0.0
-     0.0         0.074074075  0.0          -0.0
-     0.0         0.0         -0.0039138943 -1.0039139
-     0.0         0.0          0.0           1.0)
-
-    VIEW
-    (1.0 0.0 0.0 -11.0
-     0.0 1.0 0.0   8.0
-     0.0 0.0 1.0 -10.0
-     0.0 0.0 0.0   1.0)
-    }#
-
     #Debug
     #(show *projview)
     #(view (getl *projview))
@@ -113,6 +102,8 @@
     #Load here, copy to shm, msg view, view copies to OpenGL buffers
     (when T
       (setq *metrics (load-metrics)))
+    #(let Metrics (get *metrics 42)
+    #  (println (view (getl Metrics))))
 
     #{
     GC beforehand since static data is at the beginning,
@@ -172,10 +163,15 @@
 
 (de recv-conn-ctrl (Sock Events)
   (let (Msg (ipc~recv-msg> *ipc Sock Events)
-        Data (any Msg))
+        Data (any Msg)
+        Name-Fn (get Data 1))
     (prinl (usec) " | MODEL  | recv-conn-ctrl | " Msg)
-    (when (= Msg "(get-pvm)")
-      (send-pvm Sock))))
+    (cond ((= Name-Fn "get-pvm")
+           (send-pvm Sock))
+          ((= Name-Fn "get-vert")
+           (send-vert Sock (get Data 2)))
+          (T
+           (prinl (usec) " | MODEL  | recv-conn-ctrl | UNKNOWN REQUEST! " Msg)))))
 
 
 (de main ()

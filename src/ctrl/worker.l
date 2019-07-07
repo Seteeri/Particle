@@ -16,7 +16,7 @@
 
 
 # C library paths
-(def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
+
 # Paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
 (def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
@@ -28,7 +28,6 @@
 
 
 # Wrapper libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/li.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
@@ -48,13 +47,8 @@
     (let (Argv (argv))
       (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
             *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-            *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
-
-    # Fork workers
-    (when NIL
-      (for I 2
-        (unless (fork)
-          (exec "pil" "ctrl/ctrl.l" "-ctrl~main" Width Height Verts))))
+            *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
+            *i-proc    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "i invalid")))))
 
     (setq *ep-cnt    3
           *ep-events (epoll~make-event *ep-cnt)
@@ -67,18 +61,23 @@
                  (list (list PATH-UDS-MODEL  'ipc~block handle-model  "MODEL"  ID-C)
                        (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT"  ID-C)
                        (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER" ID-C)))))
-
+                       
     # Pull PVM from Model -> Send PVM and nodes to Render
     (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
           Sock-Render (ipc~get-fd> *ipc "RENDER")
           Cam         (read-pvm  Sock-Model epoll~BAD)
           Vert        (read-vert Sock-Model epoll~BAD 1))
-      
       (write-pvm  Cam  Sock-Render epoll~BAD)
-      (write-vert Vert 1 Sock-Render epoll~BAD)
+      (println Vert)
       
-      #(println Vert)
-      #(bye)
+      #{
+      For default ptr vert see:
+      (setf *node-ptr-main* (init-node-ptr-shm *digraph-main*
+                                               *vertices-main*
+                                               (vec3 0 0 0))      
+      }#
+      
+      #(write-vert Vert Sock-Render)
       T))
 
 
@@ -112,8 +111,10 @@
   (let (Msg (ipc~recv-msg> *ipc Sock Events)
         Data (any Msg)
         Name (get Data 1))
-    #(prinl (usec) " | CTRL   | handle-input | ")        
     (when (= Name 'KEYBOARD-KEY)
+      (prin (usec) " | CTRL   | handle-input | ")
+      #(print Data)
+      #(prinl)
       (handle-keyboard Sock Events Data))))
       
 

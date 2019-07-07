@@ -69,7 +69,7 @@
          Off 0)
         (for Code 255
              (let Path-Glyph (pack PATH-GLYPHS "/tex/" Code "-data.l")
-                  (prinl (usec) " | RENDER | init-tex-glyphs | " Code "-data.l ...")
+                  #(prinl (usec) " | RENDER | init-tex-glyphs | " Code "-data.l...")
                   #More idiomatic way to do this...
                   (let Data (any (in Path-Glyph (till NIL T)))
                        (for B Data

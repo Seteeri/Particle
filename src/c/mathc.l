@@ -95,9 +95,9 @@
     (native PATH-MATHC "mat4_identity" 'N
 	    *mat4-i)
     (struct *vec3-out 'N (list -1.0
-			       (car (nth V 1))
-			       (car (nth V 2))
-			       (car (nth V 3))))
+			       (get V 1)
+			       (get V 2)
+			       (get V 3)))
     (native PATH-MATHC "mat4_scaling" 'N
 	    *mat4-s
 	    *mat4-i
@@ -109,9 +109,9 @@
     (native PATH-MATHC "mat4_identity" 'N
 	    *mat4-i)
     (struct *vec3-out 'N (list -1.0
-			       (car (nth V 1))
-			       (car (nth V 2))
-			       (car (nth V 3))))
+			       (get V 1)
+			       (get V 2)
+			       (get V 3)))
     (native PATH-MATHC "mat4_translation" 'N
 	    *mat4-t
 	    *mat4-i
@@ -154,7 +154,7 @@
     (println (cut 4 'm)))
 
 
-#Fixed
+#Normal
 (de print-mat4-2 (M)
     (prinl (format (get M 1) *Scl) " "
 	   (format (get M 2) *Scl) " "
@@ -173,7 +173,7 @@
 	   (format (get M 15) *Scl) " "
 	   (format (get M 16) *Scl) " "))
 
-#Floats
+#Transposed
 (de print-mat4-3 (N)
     (let M (mat4-transpose N)
 	 (prinl (format (get M 1) *Scl) " "

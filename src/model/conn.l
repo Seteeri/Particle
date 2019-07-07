@@ -12,18 +12,14 @@
     
     (ipc~send-bytes> *ipc
                      Sock
-                     T # Handle any error
+                     epoll~BAD
                      (: ptr)
                      128)))
-                     
-                     
-#{
-    (let Vert (get *verts 1)
 
-      # TODO: Pass raw bytes -> faster
-      # Returns list of bytes/nums -> encode as string
-      (let Data (serialize-to-ptr> Vert)
 
-        (when NIL
-          (ipc~send-msg> *ipc Data Fd))))
-}#
+(de send-vert (Sock Cnt)
+  (ipc~send-bytes> *ipc
+                   Sock
+                   epoll~BAD
+                   (serialize-to-ptr> (get *verts Cnt))
+                   208))

@@ -8,11 +8,11 @@
 	  	               Program
 	  		       Paths-Frag))
       (if Log-Vert
-	  (prinl "init-prog-rast | " "Vert Shader Log: " Log-Vert)
-	  (prinl "init-prog-rast | " "Compiled and attached vertex shader sucessfully"))
+          (prinl (usec) " | RENDER | init-prog-rast | Vert Shader Log: " Log-Vert)
+          (prinl (usec) " | RENDER | init-prog-rast | Compiled and attached vertex shader sucessfully"))
       (if Log-Frag
-	  (prinl "init-prog-rast | " "Frag Shader Log: " Log-Vert)
-	  (prinl "init-prog-rast | " "Compiled and attached fragment shader sucessfully")))
+          (prinl (usec) " | RENDER | init-prog-rast | Frag Shader Log: " Log-Vert)
+          (prinl (usec) " | RENDER | init-prog-rast | Compiled and attached fragment shader sucessfully")))
   
     (link-program Program)
     (query-program-info-log Program)
@@ -25,8 +25,8 @@
                                Program
 		               Paths))
       (if Log-Comp
-	  (prinl "init-prog-rast | " "Comp Shader Log: " Log-Comp)
-	  (prinl "init-prog-rast | " "Compiled and attached compute shader sucessfully")))
+        (prinl (usec) " | RENDER | init-prog-rast | " "Comp Shader Log: " Log-Comp)
+        (prinl (usec) " | RENDER | init-prog-rast | " "Compiled and attached compute shader sucessfully")))
   
     (link-program Program)
     (query-program-info-log Program)
@@ -36,5 +36,5 @@
 (de query-program-info-log (Program)
     (let (Log-Prog (get-program-info-log-2 Program))
       (if Log-Prog
-	  (prinl "init-prog-rast | " "Program Log: " Log-Prog)
-	  (prinl "init-prog-rast | " "Compiled program sucessfully"))))
+          (prinl (usec) " | RENDER | init-prog-rast | " "Program Log: " Log-Prog)
+          (prinl (usec) " | RENDER | init-prog-rast | " "Compiled program sucessfully"))))

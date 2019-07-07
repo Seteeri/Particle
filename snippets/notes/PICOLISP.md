@@ -149,16 +149,17 @@ Store DAGs as binary trees?
           * Move vertices to separate process to reduce pressure on GC
           * Model can push/pull from it...or model holds data and controller processes it?
         * Add task manager to spread work across frames [Later] 
-        * Test input handling
+        * Test input handling [Done]
           * Right key will move node +X
-        * Add graph/vertex operations
-               
-        PROCESS:
-        * Model  -> sends serialized nodes
-          * Use input to trigger this
-        * Render -> loop will memcpy node data
-          * We basically perform operations until gc is triggered or time limit
-        * DRAW!
+        * Test vertex serialization
+          * Get vertex drawing working - currently Render can copy to memory
+          but serialized data is based on uninitialized node
+          -> Create diagrams for metrics calculations so easier to understand/visualize
+          -> Define mathc path in top level or in wrapper?
+        * Implement model updating (deserialization)
+        * Test vertices
+        * Test multiple controllers with multiple vertices mutating simultaneously
+        * Implement event dispatching/event handling
   
     * Model Main
       * Switch to buffer orphaning?

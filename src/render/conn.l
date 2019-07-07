@@ -40,14 +40,30 @@
            (inc 'I))))
 
 
+################################################################################
+
+
 (de handle-memcpy (Sock Events Data)
-  #(mc dst src sz)
+  #(mc Dst Src Sz) + data
   (let (Data (any Msg)
         Dst  (get Data 2)
         Src  (get Data 3)
         Sz   (get Data 4))
     (ipc~recv-bytes> *ipc Sock Events NIL Sz)
-    #(println "recv-conn-ctrl" (struct (get *ipc 'ipc~buf-rd) '(B . 128)))
+    #(println (usec) " | handle-memcpy | " (struct (get *ipc 'ipc~buf-rd) '(B . 128)))
     (let (Ptr-Gl  (get (get '*buffer-objects 'projview) 'gl~ptr)
           Ptr-Buf (get *ipc 'ipc~buf-rd))
       (memcpy Ptr-Gl Ptr-Buf Sz))))
+
+
+(de handle-write-vert (Sock Events Data)
+  #(write-vert Cnt) + data
+  (let (Data (any Msg)
+        Cnt  (get Data 2))
+    (ipc~recv-bytes> *ipc Sock Events NIL 208)
+    #(println (usec) " | handle-write-vert | " (struct (get *ipc 'ipc~buf-rd) '(B . 208)))
+    #(println (usec) " | handle-write-vert | " (struct (get *ipc 'ipc~buf-rd) '((-1.0 . 16) (-1.0 . 16) (-1.0 . 16) (I . 4))))
+    (let (Off     (* (- Cnt 1) 208)
+          Ptr-Gl  (+ (get (get '*buffer-objects 'nodes) 'gl~ptr) Off)
+          Ptr-Buf (get *ipc 'ipc~buf-rd))
+      (memcpy Ptr-Gl Ptr-Buf 208))))

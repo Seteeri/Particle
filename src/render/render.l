@@ -66,7 +66,7 @@ Class variables may be indicated by an upper case letter
 (def '*vao)
 (def '*fence)
 
-(def 'TEST-GLYPH NIL)
+(def 'TEST-GLYPH T)
 
 
 (de init-render ()
@@ -83,9 +83,9 @@ Class variables may be indicated by an upper case letter
 
     #Get number of nodes and window size from args instead of file
     (let (Argv (argv))
-      (setq *width      (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-            *height     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-            *verts-max  (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
+      (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
+            *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
+            *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
     (init-ipc)
 
@@ -170,12 +170,14 @@ Class variables may be indicated by an upper case letter
     #(load-test-params)
     #(gl~use-program *prog-rast)
     #Bound with program
-    (gl~bind-vertex-array *vao)
+    #(gl~bind-vertex-array *vao)
     
     (test-vert)
     
     (prinl (usec) " | RENDER | Starting draw loop...")
 
+    # Draws only on event?
+    # With Wayland, clients will send damage events...
     (while (= (glfw~window-should-close *window) 0)
 
       #Wait fence
@@ -241,12 +243,24 @@ Class variables may be indicated by an upper case letter
 
 
 (de recv-conn-ctrl (Sock Events)
+  #{
+  Problem: When sending memcpy + data, data is read on memcpy msg event, however
+  epoll will still generate read event which may result in no data available
+  
+  Solution: Ignore Msg=NIL or use edge triggering for epoll
+  }#
   (let (Msg  (ipc~recv-msg> *ipc Sock Events)
-        Data (any Msg))
-    #(prinl (usec) " | RENDER | recv-conn-ctrl  | Msg...")
-    (when (= (get Data 1) "mc")
-      (handle-memcpy Sock Events Data))))
-
+        Data (any Msg)
+        Name-Fn (get Data 1))
+    #(prinl (usec) " | RENDER | recv-conn-ctrl  | Msg..." (length Msg))
+    (cond ((= Name-Fn "mc")
+           (handle-memcpy Sock Events Data))
+          ((= Name-Fn "write-vert")
+           (handle-write-vert Sock Events Data))
+          (T
+           (if (=0 (length Msg))
+               T #(prinl (usec) " | RENDER | recv-conn-ctrl | BLANK MSG!")
+               (prinl (usec) " | RENDER | recv-conn-ctrl | UNKNOWN REQUEST! " Msg))))))
 
 (de main ()
     (init-render)

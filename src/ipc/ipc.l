@@ -194,7 +194,7 @@ Handle bad accept sock
          Bytes-Sent))
 
 
-(dm send-msg> (Msg Sock)
+(dm send-msg> (Msg Sock Debug)
 
     #Send length as int
     #Send payload
@@ -203,6 +203,8 @@ Handle bad accept sock
     #Pass Sock in
 
     (let Length (length Msg)
+
+         (when Debug (prinl (usec) " | send-msg> | Msg=" Msg))
 
          (when (> Length (: sz-buf-rd))
            (println "WARNING! Message will be truncated by " (- Length (: sz-buf-rd)) " bytes")
@@ -260,21 +262,21 @@ Handle bad accept sock
          Bytes-Read))
          
          
-(dm recv-msg> (Sock Events)
+(dm recv-msg> (Sock Events Debug)
 
     #Recv length as int
     #Recv payload
 
     (let Bytes-Read-Len (recv-bytes> This Sock Events NIL 4)
 
-         #(prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len)
+         (when Debug (prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len))
 
          # TODO: Need to handle for other value, i.e. print message
          (when (= Bytes-Read-Len 4)
 
            (let Length (car (struct (: buf-rd) '(I)))
 
-                #(prinl (usec) " | recv-msg> |   Length-Msg=" Length)
+                (when Debug (prinl (usec) " | recv-msg> |   Length-Msg=" Length))
 
                 (let Bytes-Read-Msg (recv-bytes> This Sock Events NIL Length)
 
@@ -282,7 +284,7 @@ Handle bad accept sock
 
                      (when (= Bytes-Read-Msg Length)
 
-                       #(prinl (usec) " | recv-msg> | Bytes-Read-Msg=" Bytes-Read-Msg)
+                       (when Debug (prinl (usec) " | recv-msg> | Bytes-Read-Msg=" Bytes-Read-Msg))
                        (pack (struct (: buf-rd) (cons 'C Length)))))))))
 
 

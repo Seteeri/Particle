@@ -3,14 +3,15 @@ DATAFLOW:
 Servers: Input, Model, Render
 Client: Ctrl
 
-          Model
-            ^
-            |
-            V
-Input --> Ctrl 1...N
-            |
-            V
-          Render
+          Model <---+
+                    |
+                    |
+                    V
+Input --> Ctrl -> Worker N
+           ^       ^
+           |       |
+           V       |
+         Render <--+
 
 Memcpy Trail
 * Ctrl/Serialize, Ctrl/Socket -> Render/GL
@@ -52,8 +53,8 @@ own proc
 
     #2**19
 
-    (let (Width  (format (/ 1920 2))
-          Height (format (/ 1080 2))
+    (let (Width  (format (/ 1920 1))
+          Height (format (/ 1080 1))
           Verts  (format (** 2 4)))
 
       (when T
@@ -70,10 +71,8 @@ own proc
           (exec "pil" "input/input.l" "-input~main" Width Height Verts)))
 
       (when T
-        # These processes are dedicated a CPU each
-        (for I 1
-          (unless (fork)
-            (exec "pil" "ctrl/ctrl.l" "-ctrl~main" Width Height Verts))))
+        (unless (fork)
+          (exec "pil" "ctrl/ctrl.l" "-ctrl~main" Width Height Verts)))
 
       T)
 
