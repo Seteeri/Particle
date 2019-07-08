@@ -149,23 +149,43 @@ Store DAGs as binary trees?
           * Move vertices to separate process to reduce pressure on GC
           * Model can push/pull from it...or model holds data and controller processes it?
         * Add task manager to spread work across frames [Later] 
-        * Test input handling [Done]
-          * Right key will move node +X
-        * Test vertex serialization
-          * Get vertex drawing working - currently Render can copy to memory
-          but serialized data is based on uninitialized node
+        * Test projview + input handling [Done]
+          * Use directional keys to move camera
+        * Test vertex serialization [Done]
           -> Create diagrams for metrics calculations so easier to understand/visualize
           -> Define mathc path in top level or in wrapper?
-        * Implement model updating (deserialization)
-        * Test vertices
-        * Test multiple controllers with multiple vertices mutating simultaneously
-        * Implement event dispatching/event handling
+        * Refactor out init parse args [Mon]
+        * Refactor IPC connection management [Mon]
+          * Remove direct epoll usage in process - isolate in IPC
+            * Add epoll method to reuse across processes
+            * Move epoll data to IPC
+          * Refactor IPC init
+            * Pass in list of server pairs
+            * Integrate server sockets into conns
+            * Simplify ID/FD lookup
+          * Dispatch on both server and outgoing sockets
+        * Implement workers [Mon/Tues]
+          * Ctrl connects input/render/model? and spawns workers
+            * Handles synchronous mode (delay)
+          * Workers only connect to ctrl/render/model
+            * Recvs work from ctrl
+            * Recvs frame from render and sends data to render (async mode/drop)
+            * Gets data from model and sends data to model (updates/sync)
+        * Test multiple controllers with multiple vertices mutating simultaneously [Mon/Tues]
+        * Implement event dispatching/event handling [Tues/Wed]
+        * SHM?
+          * Both render/ctrl/workers mmap segment
+          * Ctrl sends (mc dst src sz off) to Render
+          * Instead of reading data after, it will read from mem
+          * Will synchronize by having ctrl wait for render to cpy and send msg
+          * Issue is how to synchronize many workers
   
-    * Model Main
-      * Switch to buffer orphaning?
-        * Cache memory in render
-        * Spread across frames
-    * DAG System
+    * Implement Wayland [Weekend]
+      * Setup tiles for 6 windows = 3 col, 2 row
+      * Proof of concept working with eval already
+      
+    * DAG System [Later]
+      * Create ptree system
       * Input/Worker, Output, Worker, Worker
       * Input loop: BFS->task, recv sock, send sock
         * If worker not available, block
@@ -178,12 +198,6 @@ Store DAGs as binary trees?
       * Optimization: if node has 1 pred, traverse until end or many,
       send all to same worker
         * a->b->c->d,  worker=(a,b,c,d)
-
-    * Implement Wayland [Tuesday...or Wednesday?]
-      * Setup tiles for 6 windows = 3 col, 2 row
-      * Proof of concept working with eval already
-      
-    * Implement controller process [later]
 
   
 * Refactor/Fix

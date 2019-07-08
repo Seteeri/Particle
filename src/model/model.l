@@ -11,7 +11,7 @@
     Class variables may be indicated by an upper case letter
 }#
 
-#Create and change to namespace model
+
 (symbols 'model 'pico)
 
 
@@ -51,131 +51,120 @@
 
 
 (de init-verts ()
-    (let Verts ()
-         (for I *verts-max
-              (let Vert (new '(+Vertex)
-                             42 # *
-                             *color-vert-default
-                             (list 0.0 0.0 0.0) # pos
-                             (list 0.0 0.0 0.0) # rot=0, sca=global scale
-                             (list *sca-vert *sca-vert *sca-vert))
-                   #(prinl "Created vertex " I " "  Vert)
-                   (push 'Verts Vert)))
-         Verts))
+
+  (let Verts ()
+  
+       (for I *verts-max
+       
+            (let Vert (new '(+Vertex)
+                           42 # *
+                           *color-vert-default
+                           (list 0.0 0.0 0.0) # pos
+                           (list 0.0 0.0 0.0) # rot=0, sca=global scale
+                           (list *sca-vert *sca-vert *sca-vert))
+                           
+                 #(prinl "Created vertex " I " "  Vert)
+                 (push 'Verts Vert)))
+                 
+       Verts))
 
 
 (de init-verts-default ()
-    #{
-    Traverse all internal/protected symbols
-    - PicoLisp symbols = 300+?
-    - Pointer = cons pair
+  #{
+  Traverse all internal/protected symbols
+  - PicoLisp symbols = 300+?
+  - Pointer = cons pair
 
-    - Track transient symbols
-    }#
-    T)
+  - Track transient symbols
+  }#
+  T)
 
 
 (de init-model ()
 
-    #(*/ 1.0 2560.0 2.0)
-    #1080.0
-    #(** 2 19)
+  #(*/ 1.0 2560.0 2.0)
+  #1080.0
+  #(** 2 19)
 
-    #Get number of nodes and window size from args instead of file
-    (let (Argv (argv))
-      (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-            *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-            *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
+  #Get number of nodes and window size from args instead of file
+  (let (Argv (argv))
+  
+    (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
+          *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
+          *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
-    (init-ipc)
+  (init-ipc)
 
-    #Setup projview
-    (setq *projview (new '(+Projview) *width *height 'orthographic))
-    #Simplify these - single function?
-    (update-mat-proj> *projview)
-    (update-mat-view> *projview)
+  #Setup projview
+  (setq *projview (new '(+Projview) *width *height 'orthographic))
+  #Simplify these - single function?
+  (update-mat-proj> *projview)
+  (update-mat-view> *projview)
 
-    #Debug
-    #(show *projview)
-    #(view (getl *projview))
+  #Debug
+  #(show *projview)
+  #(view (getl *projview))
 
-    #Load here, copy to shm, msg view, view copies to OpenGL buffers
-    (when T
-      (setq *metrics (load-metrics)))
-    #(let Metrics (get *metrics 42)
-    #  (println (view (getl Metrics))))
+  #Load here, copy to shm, msg view, view copies to OpenGL buffers
+  (when T
+    (setq *metrics (load-metrics)))
+  #(let Metrics (get *metrics 42)
+  #  (println (view (getl Metrics))))
 
-    #{
-    GC beforehand since static data is at the beginning,
-    and allocations afterwards will go right after
-    Nodes won't be deleted so they are considered static data
-    which improves locality
+  #{
+  GC beforehand since static data is at the beginning,
+  and allocations afterwards will go right after
+  Nodes won't be deleted so they are considered static data
+  which improves locality
 
-    Increase heap size to node size
-    208 bytes per node roughly
-    ->Do test run to determine size
+  Increase heap size to node size
+  208 bytes per node roughly
+  ->Do test run to determine size
 
-    2**19 = 524288
-    }#
+  2**19 = 524288
+  }#
 
-    (gc (+ 104 2))
-    (prinl (usec) " | MODEL | init-model | Heap resized to 106 MB for " *verts-max " nodes")
+  (gc (+ 104 2))
+  (prinl (usec) " | MODEL | init-model | Heap resized to 106 MB for " *verts-max " nodes")
 
-    #{
-     - Graphs = namespaces?
-     - Generate nodes for builtin symbols?
-    }#
-    (setq *verts (init-verts)))
+  #{
+   - Graphs = namespaces?
+   - Generate nodes for builtin symbols?
+  }#
+  (setq *verts (init-verts)))
 
 
 (de init-ipc ()
-    (setq *ep-cnt    4
-          *ep-events (epoll~make-event *ep-cnt)
-          *ep-fd     (epoll~create-size 1))
-
-    (setq *ipc (new '(ipc~+IPC)
-                    *ep-fd
-                    PATH-UDS-MODEL 'ipc~block)))
+  (setq *ipc (new '(ipc~+IPC) PATH-UDS-MODEL 'ipc~block recv-conn-ctrl)))
 
 
-(de run-model ()
-    #After connecting, start processing messages
-    #Render will send frame start and wait for frame end
-    #Up to model to perform time management
+(de run-model (Timeout)
 
-    (prinl (usec) " | run-model | Starting epoll...")
-
-    (let (Events     NIL
-          Fd         NIL)
-      (loop
-         (for I (epoll~wait-epfd *ep-fd 
-                                 *ep-events 
-                                 *ep-cnt
-                                 Timeout)
-           (let Ep-Events (epoll~get-event *ep-events I)
-             (setq Events (get Ep-Events 1))
-             (setq Fd     (get Ep-Events 2))
-                #(prinl (usec) " FD: " Fd ", Events: " Events)
-                (if (= Fd (get *ipc 'ipc~listener))
-                    (ipc~accept-sock> *ipc Fd Events)
-                    (recv-conn-ctrl Fd Events)))))))
+  (prinl (usec) " | run-model | Starting epoll...")
+  (loop (ipc~poll> *ipc Timeout)))
 
 
 (de recv-conn-ctrl (Sock Events)
+
   (let (Msg (ipc~recv-msg> *ipc Sock Events)
         Data (any Msg)
         Name-Fn (get Data 1))
+
     (prinl (usec) " | MODEL  | recv-conn-ctrl | " Msg)
+
     (cond ((= Name-Fn "get-pvm")
            (send-pvm Sock))
+
           ((= Name-Fn "get-vert")
            (send-vert Sock (get Data 2)))
+
           (T
            (prinl (usec) " | MODEL  | recv-conn-ctrl | UNKNOWN REQUEST! " Msg)))))
 
 
 (de main ()
-    (init-model)
-    (run-model)
-    (println 'Exiting...)
-    (bye))
+
+  (init-model)
+  (run-model -1)
+  (println 'Exiting...)
+  (bye))

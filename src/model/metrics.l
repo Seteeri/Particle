@@ -21,53 +21,55 @@ Quotient of N and D = (*/ 1.0 N D)
        B
        R
        T)
-    (=: l L)
-    (=: b B)
-    (=: r R)
-    (=: t T))
+  (=: l L)
+  (=: b B)
+  (=: r R)
+  (=: t T))
 
 (class +Metrics)
 (dm T (Translate
        Bounds)
-    (=: translate Translate)
-    (=: bounds Bounds)
-    (=: bounds-tex NIL)
-    (=: dims NIL)
-    (=: ratio-aspect NIL)
-    (=: uv NIL))
+  (=: translate Translate)
+  (=: bounds Bounds)
+  (=: bounds-tex NIL)
+  (=: dims NIL)
+  (=: ratio-aspect NIL)
+  (=: uv NIL))
 
 
 #Scale and advance the same (adv bc monospaced)
 #Merge metrics and data(ppm) into single file
 #Calculate other params and save to file so need not do everytime
 
-(de load-file-metrics-data (Code)
-    (let (Path-Glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l"))
-      #(prinl (usec) " | MODEL | load-file-metrics-data | " Code "-metrics.l ...")
-      (eval (any (in Path-Glyph (till NIL T))))))
 
-#{
-(when (= Code 42)
-            (println Data)
-            (prinl (format (get (get Data 4) 1) *Scl) " " (format (get (get Data 4) 2) *Scl))
-            (println (get Metrics-Glyph 'translate))
-            (println (view (getl Metrics-Glyph))))
-}#
+(de load-file-metrics-data (Code)
+
+  (let (Path-Glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l"))
+  
+    #(prinl (usec) " | MODEL | load-file-metrics-data | " Code "-metrics.l ...")
+    (eval (any (in Path-Glyph (till NIL T))))))
 
 
 (de load-metrics ()
+
     (let (Metrics ())
+
       (for Code 255
+
         #Format path name, read file/code, eval data -> list of data
         (let (Data          (load-file-metrics-data Code)
               Metrics-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
+
           (when (get Metrics-Glyph 'bounds)
             (calc-metrics> Metrics-Glyph))
+
           (push 'Metrics Metrics-Glyph)))
+
       (reverse Metrics)))
 
 
 (dm calc-metrics> ()
+
     #Convert bounds from shape units to pixel units by multiplying by scale
     (=: bounds (let L NIL
                 (for X (: bounds)

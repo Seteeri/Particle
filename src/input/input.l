@@ -11,7 +11,7 @@
     Class variables may be indicated by an upper case letter
 }#
 
-#Create and change to namespace model
+
 (symbols 'input 'pico)
 
 
@@ -47,106 +47,71 @@
 
 
 (de get-rmem-default ()
-    (pipe
-     (call "cat" "/proc/sys/net/core/rmem_default")
-     (read)))
+  (pipe
+   (call "cat" "/proc/sys/net/core/rmem_default")
+   (read)))
 
 
 (de init-input ()
 
-    (let (Argv (argv))
-      (setq *width  (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-            *height (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
+  (let (Argv (argv))
 
-    (setq *ep-cnt    4
-          *ep-events (epoll~make-event *ep-cnt)
-          *ep-fd     (epoll~create-size 1))
+    (setq *width  (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
+          *height (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
 
-    (setq *ipc (new '(ipc~+IPC)
-                    *ep-fd
-                    PATH-UDS-INPUT 'ipc~block))
+  (setq *ipc (new '(ipc~+IPC)
+                  PATH-UDS-INPUT 'ipc~block handle-client))
 
-    (setq *input (new '(li~+Li)))
-    (epoll~ctl-epfd *ep-fd
-                    epoll~ADD
-                    (get *input 'li~fd-context)
-                    epoll~IN))
+  (setq *input (new '(li~+Li)))  
+  (ipc~add-conn> *ipc (get *input 'li~fd-context) "LI" handle-fd-li))
 
 
 (de run-input (Timeout)
-    #{
-    Poll events ASAP and enqueue for processing by controller thread
 
-    epoll-wait:
-    * ep-events size should correspond to maxevents
-    * -1 = timeout = block/infinite
-    0 = return if nothing
-    * returns event count
-    }#
+  (prinl (usec) " | run-input | Starting epoll...")
+  (loop (ipc~poll> *ipc Timeout)))
+  
 
-    (prinl (usec) " | run-input | Starting epoll...")
+(de handle-client (Sock Events))
 
-    (let (Events     NIL
-          Fd         NIL)
-      (loop
-         (for I (epoll~wait-epfd *ep-fd 
-                                 *ep-events 
-                                 *ep-cnt
-                                 Timeout)
-           (let Ep-Events (epoll~get-event *ep-events I)
-             (setq Events (get Ep-Events 1))
-             (setq Fd     (get Ep-Events 2))
+  
+(de handle-fd-li ()
 
-             #(prinl (usec) " FD: " Fd ", Events: " Events)
-             #(prinl (get *ipc 'ipc~listener))
+  (with *input
 
-             (cond ((= Fd (get *input 'li~fd-context))
-                    (handle-context)
-                    T)
+    (li~dispatch (: li~context))
 
-                   ((= Fd (get *ipc 'ipc~listener))
-                    (ipc~accept-sock> *ipc Fd Events))
+    (loop
+    
+       (setq Event (li~get-event (: li~context)))
+       (T (= Event 0))
 
-                   (T
-                    # Should not recv msgs?
-                    (ipc~recv-msg> *ipc Fd Events))))))))
+       (send-event Event)
 
-
-(de handle-context ()
-
-    (with *input
-
-          (li~dispatch (: li~context))
-
-          (loop
-             (setq Event (li~get-event (: li~context)))
-             (T (= Event 0))
-
-             (send-event Event)
-
-             (li~event-destroy Event)
-             (li~dispatch (: li~context)))))
+       (li~event-destroy Event)
+       (li~dispatch (: li~context)))))
 
 
 (de send-event (Event)
 
-    (let (Type (li~event-get-type Event)
-          Name-Type (li~get-event-type-name Type))
+  (let (Type (li~event-get-type Event)
+        Name-Type (li~get-event-type-name Type))
 
-      #(prinl (usec) " | handle-context   | Event: " Type "=" Name-Type)
+    #(prinl (usec) " | handle-context   | Event: " Type "=" Name-Type)
 
-      (let Msg (pack "("
-                     (glue " " (make (link Name-Type)
-                                     (link (build-ev-lst-str Event Type))))
-                     ")")
+    (let Msg (pack "("
+                   (glue " " (make (link Name-Type)
+                                   (link (build-ev-lst-str Event Type))))
+                   ")")
 
-        #(println Msg)
+      #(println Msg)
 
-        # Workers will send messages to input when they are ready
-        (ipc~send-clients-msg> *ipc Msg))))
+      # Workers will send messages to input when they are ready
+      (ipc~send-clients-msg> *ipc Msg))))
 
 
 (de build-ev-lst-str (Event Type)
+
     (cond ((= Type li~KEYBOARD-KEY)
            (glue " " (list (format (li~event-keyboard-get-time Event))
                            (format (li~event-keyboard-get-time-usec Event))
@@ -190,6 +155,7 @@
 
 
 (de end-input ()
+
     (prinl "...Called end-input")
 
     #Clean up sockets
@@ -214,6 +180,7 @@
 
 
 (de main ()
+
     #(push '*Bye '(end-input))
     (init-input)
     (run-input -1)

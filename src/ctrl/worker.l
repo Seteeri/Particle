@@ -11,7 +11,7 @@
     Class variables may be indicated by an upper case letter
 }#
 
-#Create and change to namespace model
+
 (symbols 'ctrl 'pico)
 
 
@@ -42,95 +42,60 @@
 (def '*vert) # TEMP
 
 
-(de init-ctrl ()
+(de init-worker ()
 
     (let (Argv (argv))
+
       (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
             *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
             *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
             *i-proc    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "i invalid")))))
 
-    (setq *ep-cnt    3
-          *ep-events (epoll~make-event *ep-cnt)
-          *ep-fd     (epoll~create-size 1))
+    (let ID-C (pack "WORKER-" *Pid)
 
-    (let ID-C (pack "CTRL-" *Pid)
       (setq *ipc (new '(ipc~+IPC)
-                 *ep-fd
-                 ""             'ipc~block
-                 (list (list PATH-UDS-MODEL  'ipc~block handle-model  "MODEL"  ID-C)
-                       (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT"  ID-C)
-                       (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER" ID-C)))))
-                       
-    # Pull PVM from Model -> Send PVM and nodes to Render
-    (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-          Sock-Render (ipc~get-fd> *ipc "RENDER")
-          Cam         (read-pvm  Sock-Model epoll~BAD)
-          Vert        (read-vert Sock-Model epoll~BAD 1))
-      (write-pvm  Cam  Sock-Render epoll~BAD)
-      (println Vert)
-      
-      #{
-      For default ptr vert see:
-      (setf *node-ptr-main* (init-node-ptr-shm *digraph-main*
-                                               *vertices-main*
-                                               (vec3 0 0 0))      
-      }#
-      
-      #(write-vert Vert Sock-Render)
-      T))
+                 ""             'ipc~block handle-client
+                 (list (list PATH-UDS-MODEL   'ipc~block handle-model   "MODEL"   ID-C)
+                       (list PATH-UDS-CONTROL 'ipc~block handle-control "CONTROL" ID-C)
+                       (list PATH-UDS-RENDER  'ipc~block handle-render  "RENDER"  ID-C))))))
 
 
-(de run-ctrl (Timeout)
-    #{
-    Poll events ASAP and enqueue for processing by controller thread
-
-    epoll-wait:
-    * ep-events size should correspond to maxevents
-    * -1 = timeout = block
-    0 = return if nothing
-    * returns event count
-    }#
-
-    (prinl (usec) " | run-ctrl | Starting epoll...")
-
-    (let (Events     NIL
-          Fd         NIL)
-      (loop
-         (for I (epoll~wait-epfd *ep-fd 
-                                 *ep-events 
-                                 *ep-cnt
-                                 Timeout)
-           (let Ep-Events (epoll~get-event *ep-events I)
-             (setq Events (get Ep-Events 1))
-             (setq Fd     (get Ep-Events 2))
-             (ipc~dispatch-handler-conn> *ipc Fd Events))))))
+(de handle-client (Sock Events))
 
 
-(de handle-input (Sock Events)
+(de run-worker (Timeout)
+
+  (prinl (usec) " | run-ctrl | Starting epoll...")
+  (loop (ipc~poll> *ipc Timeout)))
+
+
+(de handle-control (Sock Events)
+
   (let (Msg (ipc~recv-msg> *ipc Sock Events)
-        Data (any Msg)
-        Name (get Data 1))
-    (when (= Name 'KEYBOARD-KEY)
-      (prin (usec) " | CTRL   | handle-input | ")
-      #(print Data)
-      #(prinl)
-      (handle-keyboard Sock Events Data))))
+        Data (any Msg))
+
+    (when NIL
+      (prinl Msg))))
       
 
 (de handle-model (Sock Events)
+
   (let Msg (ipc~recv-msg> *ipc Sock Events)
+
     (when NIL
       (prinl Msg))))
 
 
 (de handle-render (Sock Events)
+
   (let Msg (ipc~recv-msg> *ipc Sock Events)
+
     (when NIL
       (prinl Msg))))
 
 
 (de main ()
-    (init-ctrl)
-    (run-ctrl -1)
-    (bye))
+
+  (init-worker)
+  (run-worker -1)
+  (bye))

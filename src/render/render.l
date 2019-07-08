@@ -11,8 +11,11 @@ Methods end with a right arrow ">"
 Class variables may be indicated by an upper case letter
 }#
 
-#Create and change to namespace model
+
 (symbols 'render 'pico)
+
+# Set math precision to 6 decimals
+(scl 6)
 
 # C library paths
 (def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
@@ -34,9 +37,6 @@ Class variables may be indicated by an upper case letter
     (list *path-structs-shader
           "/home/user/quicklisp/local-projects/protoform/glsl/node.cs.glsl"))
 
-
-# Set math precision to 6 decimals
-(scl 6)
 
 # Wrapper libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
@@ -70,176 +70,135 @@ Class variables may be indicated by an upper case letter
 
 
 (de init-render ()
-    #{
-    - Model can modify these during runtime through wire
-    - Model will send (memcpy dest size offset)
-    - Render will look up symbol/Mmap, get ptr, memcpy
+  #{
+  - Model can modify these during runtime through wire
+  - Model will send (memcpy dest size offset)
+  - Render will look up symbol/Mmap, get ptr, memcpy
 
-    - Should not copy all data every frame - waste
-    - Try single buffer + persistent mapping + coherent
-    - Disable draw flag for node, before copying data, then enable after
+  - Should not copy all data every frame - waste
+  - Try single buffer + persistent mapping + coherent
+  - Disable draw flag for node, before copying data, then enable after
 
-    }#
+  }#
 
-    #Get number of nodes and window size from args instead of file
-    (let (Argv (argv))
-      (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-            *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-            *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
+  #Get number of nodes and window size from args instead of file
+  (let (Argv (argv))
+    (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
+          *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
+          *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
-    (init-ipc)
+  (init-ipc)
 
-    #Init context
-    (init-window)
-    (init-gl)
+  #Init context
+  (init-window)
+  (init-gl)
 
-    #Init OpenGL programs
-    (init-rast)
+  #Init OpenGL programs
+  (init-rast)
 
-    #Don't need yet...
-    #To disable drawing an object, use 0.0 (float) that is multiplied in vertex shader
-    #Change flags with a vec4
-    #(init-comp)
-    
-    T)
+  #Don't need yet...
+  #To disable drawing an object, use 0.0 (float) that is multiplied in vertex shader
+  #Change flags with a vec4
+  #(init-comp)
+  
+  T)
 
 
 (de init-window ()
-    (glfw~init-2)
+  (glfw~init-2)
 
-    #OpenGL ES only GL binding API that does not depend on GLX
-    #Migrate to Vulkan later...
-    (glfw~window-hint glfw~CONTEXT-VERSION-MAJOR 3)
-    (glfw~window-hint glfw~CONTEXT-VERSION-MINOR 2)
-    (glfw~window-hint glfw~CLIENT-API            glfw~OPENGL-ES-API)
-    (glfw~window-hint glfw~CONTEXT-CREATION-API  glfw~NATIVE-CONTEXT-API)
+  #OpenGL ES only GL binding API that does not depend on GLX
+  #Migrate to Vulkan later...
+  (glfw~window-hint glfw~CONTEXT-VERSION-MAJOR 3)
+  (glfw~window-hint glfw~CONTEXT-VERSION-MINOR 2)
+  (glfw~window-hint glfw~CLIENT-API            glfw~OPENGL-ES-API)
+  (glfw~window-hint glfw~CONTEXT-CREATION-API  glfw~NATIVE-CONTEXT-API)
 
-    (let (Title (native "@" "malloc" 'N 16))
-      (struct Title 'N (cons "Protoform" 16))
-      (setq *window (glfw~create-window *width *height Title 0 0))
-      (when (= *window 0)
-        (quit "(= *window 0)"))
-      (native "@" "free" NIL Title))
+  (let (Title (native "@" "malloc" 'N 16))
+    (struct Title 'N (cons "Protoform" 16))
+    (setq *window (glfw~create-window *width *height Title 0 0))
+    (when (= *window 0)
+      (quit "(= *window 0)"))
+    (native "@" "free" NIL Title))
 
-    (glfw~make-context-current *window)
+  (glfw~make-context-current *window)
 
-    (glfw~set-window-size-callback *window
-                                   (lisp 'window-callback
-                                         '((Window Width Height)
-                                           (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))))
+  (glfw~set-window-size-callback *window
+                                 (lisp 'window-callback
+                                       '((Window Width Height)
+                                         (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))))
 
-    (glfw~set-key-callback *window
-                           (lisp 'key-callback
-                                 '((Window Key Scancode Action Mods)
-                                   (when (and (= (struct Key 'I)    glfw~KEY-ESCAPE)
-                                              (= (struct Action 'I) glfw~PRESS))
-                                     (glfw~set-window-should-close (struct Window 'N) glfw~TRUE))))))
+  (glfw~set-key-callback *window
+                         (lisp 'key-callback
+                               '((Window Key Scancode Action Mods)
+                                 (when (and (= (struct Key 'I)    glfw~KEY-ESCAPE)
+                                            (= (struct Action 'I) glfw~PRESS))
+                                   (glfw~set-window-should-close (struct Window 'N) glfw~TRUE))))))
 
 
 (de init-gl ()
-    (gl~viewport 0 0 *width *height)
+  (gl~viewport 0 0 *width *height)
 
-    (gl~enable gl~CULL-FACE)
-    (gl~enable gl~DEPTH-TEST)
-    (when TEST-GLYPH
-      (gl~enable gl~BLEND)
-      (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA))
+  (gl~enable gl~CULL-FACE)
+  (gl~enable gl~DEPTH-TEST)
+  (when TEST-GLYPH
+    (gl~enable gl~BLEND)
+    (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA))
 
-    #Get some function pointers
-    (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage"))
+  #Get some function pointers
+  (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage"))
 
-    T)
+  T)
 
 
 (de init-ipc ()
-    (setq *ep-cnt    4
-          *ep-events (epoll~make-event *ep-cnt)
-          *ep-fd     (epoll~create-size 1))
 
-    (setq *ipc (new '(ipc~+IPC)
-                    *ep-fd
-                    PATH-UDS-RENDER 'ipc~block)))
+  (setq *ipc (new '(ipc~+IPC)
+                  PATH-UDS-RENDER 'ipc~block recv-conn-ctrl)))
+
 
 (de run-render ()
-    #After connecting, start processing messages
-    #Render will send frame start and wait for frame end
-    #Up to model to perform time management
+  #(gl~use-program *prog-rast)
+  #(gl~bind-vertex-array *vao)
+  
+  (prinl (usec) " | RENDER | Starting draw loop...")
 
-    #####
-    #TEST
-    #(load-test-params)
-    #(gl~use-program *prog-rast)
-    #Bound with program
-    #(gl~bind-vertex-array *vao)
-    
-    (test-vert)
-    
-    (prinl (usec) " | RENDER | Starting draw loop...")
+  # Draws only on event?
+  # With Wayland, clients will send damage events...
+  
+  (while (= (glfw~window-should-close *window) 0)
 
-    # Draws only on event?
-    # With Wayland, clients will send damage events...
-    (while (= (glfw~window-should-close *window) 0)
+    (when *fence
+      (gl~client-wait *fence)
+      (gl~delete-sync *fence))
 
-      #Wait fence
-      (when *fence
-        (gl~client-wait *fence)
-        (gl~delete-sync *fence))
+    (gl~clear-color 0.0
+                    0.16862745098
+                    0.211764705882
+                    0.0)
+    (gl~clear-mask CLEAR-MASK)
 
-      (gl~clear-color 0.0
-                      0.16862745098
-                      0.211764705882
-                      0.0)
-      (gl~clear-mask CLEAR-MASK)
+    (gl~draw-elements-indirect gl~TRIANGLES
+                               gl~UNSIGNED-INT
+                               0)
 
-      (gl~draw-elements-indirect gl~TRIANGLES
-                                 gl~UNSIGNED-INT
-                                 0)
+    (setq *fence (gl~fence-sync gl~SYNC-GPU-COMMANDS-COMPLETE 0))
 
-      #Issue fence
-      (setq *fence (gl~fence-sync gl~SYNC-GPU-COMMANDS-COMPLETE 0))
+    (glfw~swap-buffers *window)
 
-      (glfw~swap-buffers *window)
+    # Start next frame...
 
-      (glfw~poll-events)
+    (glfw~poll-events)
 
-      # Broadcast frame time
-      (ipc~send-clients-msg> *ipc (format (usec)))
-      # Read msgs within timelimit or until EOF/NIL
-      (epoll-wait 0)
+    # Broadcast frame time
+    (ipc~send-clients-msg> *ipc (format (usec)))
+    # Read msgs within timelimit (use epoll timeout=16ms) or until EOF/NIL msg
+    (ipc~poll> *ipc 0)
 
-      T)
+    T)
 
-    (glfw~destroy-window *window)
-    (glfw~terminate))
-
-
-(de epoll-wait (Timeout)
-    #{
-    Poll events ASAP and enqueue for processing by controller thread
-
-    epoll-wait:
-    * ep-events size should correspond to maxevents
-    * -1 = timeout = block/infinite
-    0 = return if nothing
-    * returns event count
-    }#
-
-    #(prinl (usec) " | render | Epolling...")
-
-    (let (Events     NIL
-          Fd         NIL)
-       # No infinite loop here
-       (for I (epoll~wait-epfd *ep-fd 
-                               *ep-events 
-                               *ep-cnt
-                               Timeout)
-         (let Ep-Events (epoll~get-event *ep-events I)
-           (setq Events (get Ep-Events 1))
-           (setq Fd     (get Ep-Events 2))
-           #(prinl (usec) " FD: " Fd ", Events: " Events)
-           (if (= Fd (get *ipc 'ipc~listener))
-               (ipc~accept-sock> *ipc Fd Events))
-               (recv-conn-ctrl Fd Events)))))
+  (glfw~destroy-window *window)
+  (glfw~terminate))
 
 
 (de recv-conn-ctrl (Sock Events)
@@ -249,21 +208,27 @@ Class variables may be indicated by an upper case letter
   
   Solution: Ignore Msg=NIL or use edge triggering for epoll
   }#
+  
   (let (Msg  (ipc~recv-msg> *ipc Sock Events)
         Data (any Msg)
         Name-Fn (get Data 1))
+  
     #(prinl (usec) " | RENDER | recv-conn-ctrl  | Msg..." (length Msg))
+  
     (cond ((= Name-Fn "mc")
            (handle-memcpy Sock Events Data))
+  
           ((= Name-Fn "write-vert")
            (handle-write-vert Sock Events Data))
+  
           (T
            (if (=0 (length Msg))
                T #(prinl (usec) " | RENDER | recv-conn-ctrl | BLANK MSG!")
                (prinl (usec) " | RENDER | recv-conn-ctrl | UNKNOWN REQUEST! " Msg))))))
 
+
 (de main ()
-    (init-render)
-    (run-render)
-    (println 'Exiting...)
-    (bye))
+  (init-render)
+  (run-render)
+  (println 'Exiting...)
+  (bye))

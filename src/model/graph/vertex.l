@@ -14,24 +14,24 @@
        Rota
        Sca)
        
-    (=: char Char)
-    (=: off-texel (* (- (: char) 1) (get *dims-tex-node 1) (get *dims-tex-node 2)))
-    (=: rgba RGBA)
-    
-    # Either keep these here or move to model matrix...
-    (=: pos Pos)
-    (=: rota Rota)
-    (=: sca Sca)
-    (=: mm (mat4-identity))
-        
-    (=: uv NIL)
-    
-    #Reuse this, also use as cache for optimization
-    #Or maintain lispy list of bytes?
-    (=: ptr (native "@" "malloc" 'N 208))
-        
-    (update-glyph> This Char)
-    (update-model-matrix> This))
+  (=: char NIL)
+  (=: off-texel NIL)
+  (=: rgba RGBA)
+  
+  # Either keep these here or move to model matrix...
+  (=: pos Pos)
+  (=: rota Rota)
+  (=: sca Sca)
+  (=: mm (mat4-identity))
+      
+  (=: uv NIL)
+  
+  #Reuse this, also use as cache for optimization
+  #Or maintain lispy list of bytes?
+  (=: ptr (native "@" "malloc" 'N 208))
+      
+  (update-glyph> This Char)
+  (update-model-matrix> This))
 
 
 (dm update-glyph> (Char)
@@ -43,7 +43,8 @@
   (=: char Char)
   (=: off-texel (* (- (: char) 1) (get *dims-tex-node 1) (get *dims-tex-node 2)))
 
-  (let Metrics (get *metrics (: char))    
+  (let Metrics (get *metrics (: char))   
+   
     (=: uv (get Metrics 'uv))
     (=: pos (calc-pos-metrics Metrics (: pos)))
     (=: sca (calc-sca-metrics Metrics))))
@@ -51,7 +52,9 @@
 
 # Move to Metrics?
 (de calc-pos-metrics (Metrics Pos)
+
   (let Bounds (get Metrics 'bounds)
+
     (list (+ (get Pos 1) (*/ (get Bounds 1) *sca-vert 1.0))
           (+ (get Pos 2) (*/ (get Bounds 2) *sca-vert 1.0))
           1.0)))
@@ -59,13 +62,16 @@
                   
 # Move to Metrics?
 (de calc-sca-metrics (Metrics Sca)
+
   (let Dims (get Metrics 'dims)
+
     (list (*/ (get Dims 1) *sca-vert 1.0)
           (*/ (get Dims 2) *sca-vert 1.0)
           1.0)))
 
 
 (dm update-model-matrix> ()
+
   (=: mm (mat4-mul (mat4-scaling (: sca))
                    (mat4-mul (mat4-rotation-x (get (: rota) 1))
                              (mat4-mul (mat4-rotation-y (get (: rota) 2))
@@ -73,9 +79,10 @@
                                                  (mat4-translation (: pos))))))))
          
 
-
 (dm serialize-to-ptr> ()
+
   (let Off (: ptr)     
+
     (write-matrix-to-ptr       Off     (: mm)   0)
     (write-matrix-to-ptr (inc 'Off 64) (: rgba) 0)
     (write-matrix-to-ptr (inc 'Off 64) (: uv)   0)
@@ -88,23 +95,17 @@
 
 
 (dm serialize-to-lst> ()
-    #{
-    off-texel-texture = (* (- Char-or-Code 1) 96 96)
-    uv = metrics
-    rgba = floats
-    mm = floats
-    }#
 
-    (serialize-to-ptr> This)
-
-    (struct (: ptr) '(B . 208)))
+  (serialize-to-ptr> This)
+  (struct (: ptr) '(B . 208)))
 
 
 (dm serialize-to-str> ()
-    (pack "("
-	  (glue " " (let L NIL
-			 (for N (serialize-to-lst> This)
-			      (push 'L (format N)))
-			 (flip 'L)
-			 L))
-	  ")"))
+
+  (pack "("
+        (glue " " (let L NIL
+           (for N (serialize-to-lst> This)
+                (push 'L (format N)))
+           (flip 'L)
+           L))
+        ")"))
