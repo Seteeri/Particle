@@ -59,17 +59,24 @@ Handle bad accept sock
   (=: nonblock-listener Nonblock-listener)
   (=: handler-listener Handler-Listener)
   (=: clients NIL)
-  (when Path-listener
   
-    (=: listener (socket~listen-sock Path-listener 
-                                     Nonblock-listener 
-                                     64))
-    (epoll~ctl-epfd (: fd-ep)
-                    epoll~ADD
-                    (: listener)
-                    epoll~BAD))
+  (when Path-listener
+    (init-listener> This))
+  
+  (init-conns> This Conns))
 
-  # Connections stuff
+
+(dm init-listener> ()
+  (=: listener (socket~listen-sock Path-listener 
+                                   Nonblock-listener 
+                                   64))
+  (epoll~ctl-epfd (: fd-ep)
+                  epoll~ADD
+                  (: listener)
+                  epoll~BAD))
+
+
+(dm init-conns> (Conns)
   (for Conn Conns
       
       (let (Path     (get Conn 1)
@@ -80,23 +87,25 @@ Handle bad accept sock
             Sock     (socket~connect-sock Path Nonblock *ms-retry))
         
         (send-msg> This ID-C Sock)
-                
-        # Make class for this? -> Connection
-        #
-        # Poss simplify this?
-        # FD -> Name
-        # Name -> FD
-        #
-        # Choose one to map handler to instead of doubling up
-        
+                        
         (add-conn> This Sock ID-S Handler)
                 
         (when (: debug-ipc)
-          (prinl (usec) " | T | Connected sock: " Sock " to " Path))))
-  T)
+          (prinl (usec) " | T | Connected sock: " Sock " to " Path)))))
 
 
 (dm add-conn> (Sock ID-S Handler)
+  #{
+  # Make class for this? -> Connection
+  #
+  # Poss simplify this?
+  # FD -> Name
+  # Name -> FD
+  #
+  # Choose one to map handler to instead of doubling up
+  # FD : epoll data
+  }#
+  
   (epoll~ctl-epfd (: fd-ep)
                   epoll~ADD
                   Sock

@@ -156,14 +156,14 @@ Store DAGs as binary trees?
           -> Define mathc path in top level or in wrapper?
         * Refactor out init parse args [Mon]
         * Refactor IPC connection management [Mon]
-          * Remove direct epoll usage in process - isolate in IPC
-            * Add epoll method to reuse across processes
-            * Move epoll data to IPC
-          * Refactor IPC init
-            * Pass in list of server pairs
-            * Integrate server sockets into conns
-            * Simplify ID/FD lookup
-          * Dispatch on both server and outgoing sockets
+          * Remove direct epoll usage in process - isolate in IPC [Done]
+            * Add epoll method to reuse across processes [Done]
+            * Move epoll data to IPC [Done]
+          * Refactor IPC init [Done]
+            * Pass in list of server pairs [No]
+            * Integrate server sockets into conns [Done]
+            * Simplify ID/FD lookup [???]
+          * Dispatch on both server and outgoing sockets [Done]
         * Implement workers [Mon/Tues]
           * Ctrl connects input/render/model? and spawns workers
             * Handles synchronous mode (delay)
