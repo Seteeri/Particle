@@ -62,6 +62,8 @@
          
 (de read-src (Src Sock Sz Off)
 
+  # Currently unused, but can be used to retrieve data from GL buffers
+
   (cond ((= Src "projview")
          T)
    

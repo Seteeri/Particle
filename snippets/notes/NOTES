@@ -1162,3 +1162,143 @@ The lisp's cons, as a underlying primitive that builds lists, even though a bit 
 So, in general, when you just deal with simple lists, the cumbersomeness of using {cons, car, cdr, caardr, …} for list doesn't really surface. Further, the cons is fundamentally rooted in the language. It's not something that can be easily changed except creating a new language. When there is a specific need in a application, there is a haphazard collection of functions that deal with lists at a higher level.
 
 KIND OF LIKE POINTERS, EH?
+
+################################################################################
+
+PTR = INPUT/EVAL
+
+########################
+
+STRING/SYM FUNCTIONALITY
+
+Primitives:
+* Create strings: ASCII keys
+* Join/link strings: pack, glue, make/link (better for lists)
+
+* Destroy strings: Backspace/Delete
+  * Backspace removes object back of ptr
+  * Delete removes object front of ptr
+* Split strings:
+
+* Format -> Str : Num
+* Intern -> Str/T-Sym, : I-Sym
+* Name   -> I-Sym : Str/T-Sym
+
+* Sym - takes printed rep of object and turns into I-Sym; reverse of any
+* Str - build string from list
+
+STR CMD (ASCII KEY)
+* If ptr=NIL: create free tsym/atom - all nodes already exist so they will not be GC
+* If ptr=CAR: replace str; move ptr?
+* If ptr=CDR: append str; move ptr to next CDR
+
+# When rendered, draw reverse?
+
+("a")
+  |
+  *
+
+("b" "a")
+  |
+  *
+
+("c" "b" "a")
+  |
+  *
+
+# User presses shortcut to pack/glue -> use list as argument to pack - new list produced
+* Three eval methods: 
+  Shift: Save both (def) - ignore NIL return?
+
+Pack:
+-> ("cba")
+
+Glue-P: car used as glue, cdr as list
+-> ("bca")
+
+# User moves pointer back to original list, continues typing (or user goes to new list)
+
+("f" "e" "d" "c" "b" a")
+
+# Pack again
+
+("fedcba") or ("fed" "cba")
+
+First is expected behavior so how to create the second result?
+-> Create new list by detaching pointer or command
+-> Type chars, pack
+-> Join lists
+
+("cba")
+
+("fed")
+
+Also can do
+
+(make (link ("cba"))
+      (link ("fed"))
+
+##################
+
+LIST FUNCTIONALITY
+
+Primitives:
+* Create list
+* Destroy list
+* Join/link lists
+
+* Free = master list or timeline
+
+LIST CMD
+* To create new list, Ctrl/Alt+Char? -> Holding ctrl while typing chars = nested lists
+  (a (b (c)))
+  Or alternating:
+  (a (b c (d e (f))))
+  * Alternative is to explicitly create a list each time which is clumsier:
+    -> Ctrl+L, A, Ctr+L, B, Ctrl+L, C, ...
+* Need command to destroy current list and move to top list, to reverse previous example
+  * Remember directional key layout...
+  
+* ptr=CAR -> Yes, Create new list with atom
+  -> Points to object
+* ptr=CDR -> No, Create new list after
+  -> Points to space after or between (nearest object)
+ 
+##################
+
+EVAL FUNCTIONALITY
+
+How to type functions, args, eval?
+
+(add (a b) (pack a b))
+
+User types/packs:
+("f" "o" "o")
+
+Then uses eval command or types it all out and performs eval on the string
+
+(e,v,a,l)
+
+-> pack
+
+(eval)
+
+-> link list
+
+(eval (foo))
+
+-> do eval
+
+
+
+User types add: 
+
+("a" "d" "d"
+
+#################
+
+NUM FUNCTIONALITY
+
+Use <mod>+NUM to produce a number
+
+Can create option for this...since it is fundamental

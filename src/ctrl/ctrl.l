@@ -82,9 +82,9 @@
 (de handle-worker (Sock)
 
   (let (Msg (ipc~recv-msg> *ipc Sock)
-        Data (any Msg)
-        
-    T)))
+        Data (any Msg))
+    
+    (prinl (usec) " | CTRL   | handle-input | " Msg)))
     
 
 (de run-ctrl (Timeout)

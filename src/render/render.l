@@ -201,6 +201,9 @@ Class variables may be indicated by an upper case letter
     # Track amount of memcpy; break after so many bytes
     (ipc~poll> *ipc 16)
 
+    # Force gc
+    (gc)
+    
     T)
 
   (glfw~destroy-window *window)

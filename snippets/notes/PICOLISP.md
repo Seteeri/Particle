@@ -110,28 +110,90 @@ Store DAGs as binary trees?
        * Integrate server sockets into conns [Done]
        * Simplify ID/FD lookup [???]
      * Dispatch on both server and outgoing sockets [Done]
-   * Implement workers [WIP]
+   * Implement workers [Done]
      * Ctrl connects input/render/model?
        * Handles synchronous mode (delay)
      * Workers only connect to ctrl/render/model
        * Recvs work from ctrl
        * Recvs frame from render and sends data to render (async mode/drop)
        * Gets data from model and sends data to model (updates/sync)
-   * Test multiple controllers with multiple vertices mutating simultaneously [WIP]
+   * Test multiple controllers with multiple vertices mutating simultaneously [Done]
      * N process will move N vert x dist
+
+   * Ctrl need not connect to model/render
+     * Pvm should be setup by a worker
+     * Ctrl should tell a worker to do pvm
+       * Self-initiated event
+     * Worker should send msg to ctrl indicating status  
+       
+
+   * Implement Worker cache coherence/sync [Wed]
+     * Workers represent CPUs with cache and Model represents main memory
+     * Ctrl/worker sends to render, then sends update to model
+       * P2P method?
+         * Worker broadcasts to peers and Model
+           * Is Model needed? Contains initial data...
+           * What if worker needs data that no one has...and how does it decide 
+           who will satisfy the request...or it creates it and caches it
+         * If one worker is slow, then it won't get updates until later
+     * Model broadcasts (minus sender ofc)
+     * Workers will sync cache - poll until no messages
+       * Workers can sync independently
+       * Can also explicitly sync cache specific or all
+       * Worker A - cache 1/2, fn-1 used node-1
+       * Worker B - cache 1/2, fn-1 used node-2, fn-2 uses node-1
+         * Worker B does not know Worker A modified it and believes its cache is valid
+           * Problem is if you have 4 workers working on the same data
+           * Model will broadcast each update
+           * Each worker may have a different copy in its cache
+           * It is valid for user to run multiple tasks on the same data, however
+           the result is undefined/arbitrary.
+           * Example, task 1 - update colors, task 2 - update positions
+             * Must update only part that changed otherwise they will clobber
+             each other's data resulting in either only colors or positions updated
+             exclusively
+         * As long as sync is performed before hand
+           * If required function data known AOT, then batch pull to minimize I/O
+     * Should workers register for updates (like Wayland) so workers that don't
+       * Model can keep track of which process has which vertex
+         * On broadcast, Model can check and decide whether to skip
+         have the data in their cache only get relevant messages?
+     * Move most recently used data to the front of binary tree
+     * For projview, currently only sending the matrix -> create fn to send entire structure
+     * Example: To randomly color all nodes, would split among N processes
+       * Each process would fetch a chunk of nodes
+
+   * Optimize GL struct
+     * 3 programs to render 3 vertex types
+       * Pixel (RGBA/no-texture)
+       * Arbitrary Texture
+       * Text
+     * Reduce struct with removing excessive UV allocation
+     * Reduce struct to 128 bytes with uniform UV
+     * Options for max-chars/min-size
+       * Uniform UV (more likely)
+         * Move UVs to uniform buffer object
+       * Uniform rotation (more likely)
+       * Uniform scaling (less likely)
+       * Uniform rgba (less likely)
+     * Min struct size = Vec4(X, Y, Z), Short/Texel-Offset, Short/Glyph-Index = 16 bytes
+       * + glyph-index, can be derived from texel-offset but seems unecessary work
+       * @ 1 GB/16 Bytes = 67 108 864 chars
+         * For 208 Bytes = 5 162 220 chars
+       * Position can be calculated from a single point + offset
+         * Reduce size to 8 bytes
+   
    * Implement event dispatching/event handling in ctrl [Tues/Wed]
-   * SHM?
-     * Both render/ctrl/workers mmap segment
-     * Ctrl sends (mc dst src sz off) to Render
-     * Instead of reading data after, it will read from mem
-     * Will synchronize by having ctrl wait for render to cpy and send msg
-     * Issue is how to synchronize many workers
+     * Use assoc list
+     * Store combinations as keys
+   * Implement string/atom/list, eval functionality
 
-* RECORD DEMO?
+   * RECORD DEMO?
 
-* Implement Wayland [Weekend]
- * Setup tiles for 6 windows = 3 col, 2 row
- * Proof of concept working with eval already
+   * Implement Wayland [Weekend]
+     * Setup tiles for 6 windows = 3 col, 2 row
+     * Proof of concept working with eval already
+ 
  
 * DAG/Ptree System [Later]
  * Build on top of Lisp visualization!!!

@@ -51,15 +51,18 @@
   (let ID-C (pack "WORKER-" *Pid)
 
     (setq *ipc (new '(ipc~+IPC)
-               "" 'ipc~block handle-client
+               (pack "/tmp/protoform-worker-" *i-proc ".socket") 'ipc~block handle-client
                (list (list PATH-UDS-MODEL   'ipc~block handle-model   "MODEL"   ID-C)
                      (list PATH-UDS-CONTROL 'ipc~block handle-control "CONTROL" ID-C)
                      (list PATH-UDS-RENDER  'ipc~block handle-render  "RENDER"  ID-C)))))
                      
   # Pull PVM from Model -> Send PVM and nodes to Render
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
+        Sock-Ctrl   (ipc~get-fd> *ipc "CONTROL")
         Sock-Render (ipc~get-fd> *ipc "RENDER")
         Vert        (ipc~read-vert> *ipc Sock-Model *i-proc))
+
+    (ipc~send-msg> *ipc Sock-Ctrl "Ready")
 
     (ipc~write-vert> *ipc Vert *i-proc Sock-Render)
     (setq *vert Vert)))
@@ -94,18 +97,27 @@
 (de handle-render (Sock)
 
   (let Msg (ipc~recv-msg> *ipc Sock)
-      
-    # Modify position
-   (let (Cnt   (if (= *i-proc 1) 13 14)
-         Delta -0.01
+
+   # Modify position
+   (let (Cnt   (case *i-proc
+                  (1 13)
+                  (2 13)
+                  (3 14)
+                  (4 14))
+         Delta     (case *i-proc
+                    (1 -0.01)
+                    (2 0.01)
+                    (3 -0.01)
+                    (4 0.01))
          Mm (get *vert 1)
          Mm-New (place Cnt Mm (+ (get Mm Cnt) Delta))
          Vert-New (place 1 *vert Mm-New))
-     
-     #(println Vert-New)
-          
+               
      # Push update to render
      (ipc~write-vert> *ipc Vert-New *i-proc Sock)
+     
+     # Push update to model
+      
      
      (setq *vert Vert-New))
 

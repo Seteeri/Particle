@@ -1,17 +1,15 @@
 #{
 DATAFLOW:
-Servers: Input, Model, Render
-Client: Ctrl
 
-          Model <---+
-                    |
-                    |
-                    V
-Input --> Ctrl -> Worker N
-           ^       ^
-           |       |
-           V       |
-         Render <--+
+      Model <---+
+                |
+                |
+                V
+Input/Ctrl -> Worker N
+        ^       ^
+        |       |
+        V       |
+      Render <--+
 
 Memcpy Trail
 * Ctrl/Serialize, Ctrl/Socket -> Render/GL
@@ -49,6 +47,17 @@ own proc
   * Poss assign to same process at the expense of latency to increase bandwith
 }#
 
+
+(def '*proc-render)
+(def '*proc-model)
+(def '*proc-input)
+(def '*proc-ctrl)
+(def '*proc-work-1)
+(def '*proc-work-2)
+(def '*proc-work-3)
+(def '*proc-work-4)
+
+
 (de main ()
 
     #2**19
@@ -59,27 +68,39 @@ own proc
 
       (when T
         # Takes the longest to start so run first
-        (unless (fork)
+        (unless (setq *proc-render (fork))
           (exec "pil" "render/render.l" "-render~main" Width Height Verts)))
 
       (when T
-        (unless (fork)
+        (unless (setq *proc-model (fork))
           (exec "pil" "model/model.l" "-model~main" Width Height Verts)))
 
       (when T
-        (unless (fork)
+        (unless (setq *proc-input (fork))
           (exec "pil" "input/input.l" "-input~main" Width Height Verts)))
 
       (when T
-        (unless (fork)
+        (unless (setq *proc-ctrl (fork))
           (exec "pil" "ctrl/ctrl.l" "-ctrl~main" Width Height Verts)))
 
       (when T
-        (for I 2
-          (unless (fork)
-            (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts I))))
+          (unless (setq *proc-work-1 (fork))
+            (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts 1))
+          (unless (setq *proc-work-2 (fork))
+            (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts 2)))
 
-      T)
+      # Use taskset to assign processes here
 
-    #(wait 1000000)
-    (println "Forked processes"))
+      (println *proc-render *proc-model *proc-input *proc-ctrl *proc-work-1 *proc-work-2)
+                  
+      (prinl (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read)))
+      
+      (prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))
+      
+      (prinl (pipe (call "taskset" "-pc" "2" (format *proc-model)) (read)))
+      (prinl (pipe (call "taskset" "-pc" "2" (format *proc-ctrl)) (read)))
+      (prinl (pipe (call "taskset" "-pc" "2" (format *proc-input)) (read)))
+            
+      (prinl (pipe (call "taskset" "-pc" "3" (format *proc-render)) (read)))
+      
+      T))
