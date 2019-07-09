@@ -64,17 +64,12 @@
                      (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER" ID-C)))))
 
                      
-  (when T
-    # Pull PVM from Model -> Send PVM and nodes to Render
-    (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-          Sock-Render (ipc~get-fd> *ipc "RENDER")
-          Cam         (read-pvm  Sock-Model))
-          #Vert        (read-vert Sock-Model 1))
+  # Pull PVM from Model -> Send PVM and nodes to Render
+  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
+        Sock-Render (ipc~get-fd> *ipc "RENDER")
+        Cam         (read-pvm  Sock-Model))
 
-      (write-pvm  Cam  Sock-Render)
-      #(write-vert Vert 1 Sock-Render)
-
-      T)))
+    (write-pvm  Cam  Sock-Render)))
 
 
 (de handle-worker (Sock)

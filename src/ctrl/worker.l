@@ -59,15 +59,11 @@
   # Pull PVM from Model -> Send PVM and nodes to Render
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Cam         (read-pvm  Sock-Model)
         Vert        (read-vert Sock-Model *i-proc))
 
-    (write-pvm  Cam  Sock-Render)
-    (write-vert Vert *i-proc Sock-Render)
+    (write-vert Vert *i-proc Sock-Render)    
+    (setq *vert Vert)))
     
-    (setq *vert Vert)
-    
-    T))
 
 (de handle-client (Sock))
 
