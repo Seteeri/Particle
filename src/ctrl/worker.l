@@ -59,9 +59,9 @@
   # Pull PVM from Model -> Send PVM and nodes to Render
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Vert        (read-vert Sock-Model *i-proc))
+        Vert        (ipc~read-vert> *ipc Sock-Model *i-proc))
 
-    (write-vert Vert *i-proc Sock-Render)    
+    (ipc~write-vert> *ipc Vert *i-proc Sock-Render)
     (setq *vert Vert)))
     
 
@@ -105,7 +105,7 @@
      #(println Vert-New)
           
      # Push update to render
-     (write-vert Vert-New *i-proc Sock)
+     (ipc~write-vert> *ipc Vert-New *i-proc Sock)
      
      (setq *vert Vert-New))
 

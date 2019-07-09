@@ -1,15 +1,3 @@
-(symbols 'ipc 'pico)
-
-
-# Set math precision to 6 decimals
-(scl 6)
-
-
-# Wrapper libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
-
-
 #{
 Poss replace entire class with nng
 
@@ -21,13 +9,31 @@ custom struct
 Handle bad accept sock
 }#
 
+(symbols 'ipc 'pico)
+
+
+# Set math precision to 6 decimals
+(scl 6)
+
 
 (def '*ms-retry 7) # 7 ms or 144 FPS
 
 
+# Wrapper libraries
+(load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
+
+
+# Must define class before loading file with methods
 (class +IPC)
+
+
+(load "/home/user/quicklisp/local-projects/protoform/src/ipc/prot.l")
+
+
 (dm T (Path-listener Nonblock-listener Handler-Listener
-       Conns)
+       Conns
+       Fn-Mc-Rd Fn-Mc-Wr)
 
   (=: debug-ipc T)
 
@@ -63,7 +69,10 @@ Handle bad accept sock
   (=: conns    NIL)
   (=: conns-id NIL)
   
-  (init-conns> This Conns))
+  (init-conns> This Conns)
+  
+  (=: fn-mc-rd Fn-Mc-Rd)
+  (=: fn-mc-wr Fn-Mc-Wr))
 
 
 (dm init-listener> ()
@@ -130,7 +139,7 @@ Handle bad accept sock
 (de disconnect-sock (Sock)
 
   (socket~shutdown Sock socket~SHUT-RDWR)
-  (close Sock))
+  (native "@" "close" NIL Sock))
 
 
 (dm disconnect-client> (Sock)
@@ -205,6 +214,7 @@ Handle bad accept sock
        Bytes-Sent))
 
 
+# Make Sock before Msg
 (dm send-msg> (Msg Sock Debug)
   #{
   * Send length as int, then send payload right after
@@ -220,6 +230,7 @@ Handle bad accept sock
 
     (struct (: buf-wr) 'N (cons Length 4))
 
+    # Print on error
     (send-bytes> This Sock (: buf-wr) 4)
     
     (struct    (: buf-wr)         'N (cons Msg Length))

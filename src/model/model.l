@@ -135,7 +135,11 @@
 
 
 (de init-ipc ()
-  (setq *ipc (new '(ipc~+IPC) PATH-UDS-MODEL 'ipc~block recv-conn-ctrl)))
+  (setq *ipc (new '(ipc~+IPC) 
+                  PATH-UDS-MODEL 'ipc~block recv-conn
+                  NIL
+                  read-src
+                  write-dst)))
 
 
 (de run-model (Timeout)
@@ -144,19 +148,27 @@
   (loop (ipc~poll> *ipc Timeout)))
 
 
-(de recv-conn-ctrl (Sock)
-
+(de recv-conn (Sock)
+  #{
+  
+  If model recv'd memcpy, write data and broadcast update
+  
+  (memcpy dst src sz off)
+  
+  If src NIL: read bytes after msg
+  If dst NIL: send bytes back
+  
+  }#
+  
   (let (Msg (ipc~recv-msg> *ipc Sock)
         Data (any Msg)
         Name-Fn (get Data 1))
 
-    (prinl (usec) " | MODEL  | recv-conn-ctrl | " Msg)
+    (prinl (usec) " | MODEL  | recv-conn | " Msg)
 
-    (cond ((= Name-Fn "get-pvm")
-           (send-pvm Sock))
-
-          ((= Name-Fn "get-vert")
-           (send-vert Sock (get Data 2)))
+    # For now, assume memcpy
+    (cond ((= Name-Fn "mc")
+           (ipc~handle-memcpy> *ipc Sock Data))
 
           (T
            (prinl (usec) " | MODEL  | recv-conn-ctrl | UNKNOWN REQUEST! " Msg)))))

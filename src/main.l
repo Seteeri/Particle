@@ -53,8 +53,8 @@ own proc
 
     #2**19
 
-    (let (Width  (format (/ 1920 1))
-          Height (format (/ 1080 1))
+    (let (Width  (format (/ 1920 2))
+          Height (format (/ 1080 2))
           Verts  (format (** 2 4)))
 
       (when T

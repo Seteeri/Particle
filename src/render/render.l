@@ -152,9 +152,11 @@ Class variables may be indicated by an upper case letter
 
 
 (de init-ipc ()
-
   (setq *ipc (new '(ipc~+IPC)
-                  PATH-UDS-RENDER 'ipc~block recv-conn-ctrl)))
+                  PATH-UDS-RENDER 'ipc~block recv-conn
+                  NIL
+                  read-src
+                  write-dst)))         
 
 
 (de run-render ()
@@ -205,7 +207,7 @@ Class variables may be indicated by an upper case letter
   (glfw~terminate))
 
 
-(de recv-conn-ctrl (Sock Events)
+(de recv-conn (Sock Events)
   #{
   Problem: When sending memcpy + data, data is read on memcpy msg event, however
   epoll will still generate read event which may result in no data available
@@ -217,19 +219,15 @@ Class variables may be indicated by an upper case letter
         Data (any Msg)
         Name-Fn (get Data 1))
   
-    #(prinl (usec) " | RENDER | recv-conn-ctrl  | Msg..." (length Msg))
+    #(prinl (usec) " | RENDER | recv-conn  | " Msg)
   
+    # For now, assume memcpy
     (cond ((= Name-Fn "mc")
-           (handle-memcpy Sock Events Data))
-  
-          ((= Name-Fn "write-vert")
-           (handle-write-vert Sock Events Data))
-  
-          (T
-           (if (=0 (length Msg))
-               T #(prinl (usec) " | RENDER | recv-conn-ctrl | BLANK MSG!")
-               (prinl (usec) " | RENDER | recv-conn-ctrl | UNKNOWN REQUEST! " Msg))))))
+           (ipc~handle-memcpy> *ipc Sock Data))
 
+          (T
+           (prinl (usec) " | RENDER  | recv-conn-ctrl | UNKNOWN REQUEST! " Msg)))))
+  
 
 (de main ()
   (init-render)
