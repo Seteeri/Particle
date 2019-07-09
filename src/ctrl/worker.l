@@ -59,17 +59,17 @@
   # Pull PVM from Model -> Send PVM and nodes to Render
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Cam         (read-pvm  Sock-Model epoll~BAD)
-        Vert        (read-vert Sock-Model epoll~BAD *i-proc))
+        Cam         (read-pvm  Sock-Model)
+        Vert        (read-vert Sock-Model *i-proc))
 
-    (write-pvm  Cam  Sock-Render epoll~BAD)
-    (write-vert Vert *i-proc Sock-Render epoll~BAD)
+    (write-pvm  Cam  Sock-Render)
+    (write-vert Vert *i-proc Sock-Render)
     
     (setq *vert Vert)
     
     T))
 
-(de handle-client (Sock Events))
+(de handle-client (Sock))
 
 
 (de run-worker (Timeout)
@@ -78,26 +78,26 @@
   (loop (ipc~poll> *ipc Timeout)))
 
 
-(de handle-control (Sock Events)
+(de handle-control (Sock)
 
-  (let (Msg (ipc~recv-msg> *ipc Sock Events)
+  (let (Msg (ipc~recv-msg> *ipc Sock)
         Data (any Msg))
 
     (when NIL
       (prinl Msg))))
       
 
-(de handle-model (Sock Events)
+(de handle-model (Sock)
 
-  (let Msg (ipc~recv-msg> *ipc Sock Events)
+  (let Msg (ipc~recv-msg> *ipc Sock)
 
     (when NIL
       (prinl Msg))))
 
 
-(de handle-render (Sock Events)
+(de handle-render (Sock)
 
-  (let Msg (ipc~recv-msg> *ipc Sock Events)
+  (let Msg (ipc~recv-msg> *ipc Sock)
       
     # Modify position
    (let (Cnt   (if (= *i-proc 1) 13 14)
@@ -109,7 +109,7 @@
      #(println Vert-New)
           
      # Push update to render
-     (write-vert Vert-New *i-proc Sock epoll~BAD)
+     (write-vert Vert-New *i-proc Sock)
      
      (setq *vert Vert-New))
 

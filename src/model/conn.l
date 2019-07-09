@@ -12,7 +12,6 @@
     
     (ipc~send-bytes> *ipc
                      Sock
-                     epoll~BAD
                      (: ptr)
                      128)))
 
@@ -20,6 +19,5 @@
 (de send-vert (Sock Cnt)
   (ipc~send-bytes> *ipc
                    Sock
-                   epoll~BAD
                    (serialize-to-ptr> (get *verts Cnt))
                    208))

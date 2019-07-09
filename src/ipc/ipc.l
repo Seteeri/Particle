@@ -144,7 +144,7 @@ Handle bad accept sock
   (disconnect-sock Sock))
 
 
-(dm accept-sock> (Sock Events)
+(dm accept-sock> (Sock)
 
   (let Client (socket~accept-4 Sock 'block)
 
@@ -155,7 +155,7 @@ Handle bad accept sock
       (prinl "(= -1 Client)"))
 
      #Read for ID - this will block
-     (let ID (recv-msg> This Client Events)
+     (let ID (recv-msg> This Client)
 
           #(prinl (usec) " | accept-sock> | ID=" ID)
 
@@ -182,7 +182,7 @@ Handle bad accept sock
   Client))
 
 
-(dm send-bytes> (Sock Events Buf Sz)
+(dm send-bytes> (Sock Buf Sz)
     #{
     * With blocking sockets, will block until space available (all data is buffered)
     * If msg too long, send will fail and no data will be buffered
@@ -195,10 +195,9 @@ Handle bad accept sock
 
        (if (= -1 Bytes-Sent)
        
-           (when (or (= (& Events epoll~ERR)   epoll~ERR)
-                     (= (& Events epoll~HUP)   epoll~HUP)
-                     (= (& Events epoll~RDHUP) epoll~RDHUP))
-             (disconnect-client> This Sock))
+           # Poss check for (= (& Events epoll~ERR) epoll~ERR) and so on...
+           # For now, assume error and disconnect
+           (disconnect-client> This Sock)
 
            (when NIL #(: debug-ipc)
                  (prinl (usec) " | send-bytes> | Sock=" Sock ", " "Bytes-Sent=:" Bytes-Sent)))
@@ -221,15 +220,15 @@ Handle bad accept sock
 
     (struct (: buf-wr) 'N (cons Length 4))
 
-    (send-bytes> This Sock epoll~BAD (: buf-wr) 4)
+    (send-bytes> This Sock (: buf-wr) 4)
     
     (struct    (: buf-wr)         'N (cons Msg Length))
     (struct (+ (: buf-wr) Length) 'N (cons 0 1))
 
-    (send-bytes> This Sock epoll~BAD (: buf-wr) Length)))
+    (send-bytes> This Sock (: buf-wr) Length)))
 
 
-(dm recv-bytes> (Sock Events Buf Sz)
+(dm recv-bytes> (Sock Buf Sz)
   #{
   * This is designed for blocking sockets...
   * If no-data and blocking     -> recv will block
@@ -249,10 +248,9 @@ Handle bad accept sock
      # Handle -1
      (if (=0 Bytes-Read)
      
-         (when (or (= (& Events epoll~ERR)   epoll~ERR)
-                   (= (& Events epoll~HUP)   epoll~HUP)
-                   (= (& Events epoll~RDHUP) epoll~RDHUP))
-           (disconnect-client> This Sock))
+         # Poss check for (= (& Events epoll~ERR) epoll~ERR) and so on...
+         # For now, assume error and disconnect
+         (disconnect-client> This Sock)
 
          (when NIL #(: debug-ipc)
                (prinl (usec) " | recv-bytes> | Sock=" Sock ", " "Bytes-Read=:" Bytes-Read)))
@@ -260,12 +258,12 @@ Handle bad accept sock
      Bytes-Read))
          
          
-(dm recv-msg> (Sock Events Debug)
+(dm recv-msg> (Sock Debug)
   #{
   * Recv length as int, then recv payload
   }#
 
-  (let Bytes-Read-Len (recv-bytes> This Sock Events NIL 4)
+  (let Bytes-Read-Len (recv-bytes> This Sock NIL 4)
 
      (when Debug (prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len))
 
@@ -276,7 +274,7 @@ Handle bad accept sock
 
           (when Debug (prinl (usec) " | recv-msg> |   Length-Msg=" Length))
 
-          (let Bytes-Read-Msg (recv-bytes> This Sock Events NIL Length)
+          (let Bytes-Read-Msg (recv-bytes> This Sock NIL Length)
 
              #Validate Length?
 
@@ -293,12 +291,12 @@ Handle bad accept sock
     (send-msg> This Msg (car Client))))
 
 
-(dm dispatch-handler-conn> (Sock Events)
+(dm dispatch-handler-conn> (Sock)
 
   (let (Value   (cdr (assoc Sock (: conns)))
         Handler (get Value 2))
 
-    (Handler Sock Events)))
+    (Handler Sock)))
 
     
 (dm get-fd> (ID-S)
@@ -320,9 +318,8 @@ Handle bad accept sock
                          Timeout)
                          
    (let (Ep-Events (epoll~get-event (: evs-ep) I)
-         Evs       (get Ep-Events 1)
-         Fd        (get Ep-Events 2))
+         Fd        (get Ep-Events 2)) # Evs = 1
 
      (if (= Fd (: listener))
-         (accept-sock> This Fd Evs)
-         (dispatch-handler-conn> This Fd Evs)))))
+         (accept-sock> This Fd)
+         (dispatch-handler-conn> This Fd)))))

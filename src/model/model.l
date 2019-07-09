@@ -144,9 +144,9 @@
   (loop (ipc~poll> *ipc Timeout)))
 
 
-(de recv-conn-ctrl (Sock Events)
+(de recv-conn-ctrl (Sock)
 
-  (let (Msg (ipc~recv-msg> *ipc Sock Events)
+  (let (Msg (ipc~recv-msg> *ipc Sock)
         Data (any Msg)
         Name-Fn (get Data 1))
 

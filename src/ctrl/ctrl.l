@@ -68,18 +68,18 @@
     # Pull PVM from Model -> Send PVM and nodes to Render
     (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
           Sock-Render (ipc~get-fd> *ipc "RENDER")
-          Cam         (read-pvm  Sock-Model epoll~BAD))
-          #Vert        (read-vert Sock-Model epoll~BAD 1))
+          Cam         (read-pvm  Sock-Model))
+          #Vert        (read-vert Sock-Model 1))
 
-      (write-pvm  Cam  Sock-Render epoll~BAD)
-      #(write-vert Vert 1 Sock-Render epoll~BAD)
+      (write-pvm  Cam  Sock-Render)
+      #(write-vert Vert 1 Sock-Render)
 
       T)))
 
 
-(de handle-worker (Sock Events)
+(de handle-worker (Sock)
 
-  (let (Msg (ipc~recv-msg> *ipc Sock Events)
+  (let (Msg (ipc~recv-msg> *ipc Sock)
         Data (any Msg)
         
     T)))
@@ -91,9 +91,9 @@
   (loop (ipc~poll> *ipc Timeout)))
 
 
-(de handle-input (Sock Events)
+(de handle-input (Sock)
 
-  (let (Msg (ipc~recv-msg> *ipc Sock Events)
+  (let (Msg (ipc~recv-msg> *ipc Sock)
         Data (any Msg)
         Name (get Data 1))
     #(prinl (usec) " | CTRL   | handle-input | ")
@@ -101,19 +101,19 @@
     # Send to next ready request in buffer (sent from worker)
 
     (when (= Name 'KEYBOARD-KEY)
-      (handle-keyboard Sock Events Data))))
+      (handle-keyboard Sock Data))))
 
 
-(de handle-model (Sock Events)
+(de handle-model (Sock)
 
-  (let Msg (ipc~recv-msg> *ipc Sock Events)
+  (let Msg (ipc~recv-msg> *ipc Sock)
     (when NIL
       (prinl Msg))))
 
 
-(de handle-render (Sock Events)
+(de handle-render (Sock)
 
-  (let Msg (ipc~recv-msg> *ipc Sock Events)
+  (let Msg (ipc~recv-msg> *ipc Sock)
     (when NIL
       (prinl Msg))))
 
