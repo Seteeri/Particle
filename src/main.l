@@ -53,8 +53,8 @@ own proc
 
     #2**19
 
-    (let (Width  (format (/ 1920 2))
-          Height (format (/ 1080 2))
+    (let (Width  (format (/ 1920 1))
+          Height (format (/ 1080 1))
           Verts  (format (** 2 4)))
 
       (when T
@@ -73,6 +73,11 @@ own proc
       (when T
         (unless (fork)
           (exec "pil" "ctrl/ctrl.l" "-ctrl~main" Width Height Verts)))
+
+      (when T
+        (for I 2
+          (unless (fork)
+            (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts I))))
 
       T)
 

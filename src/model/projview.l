@@ -24,7 +24,7 @@
     (=: near        (if Near Near 0.1))
     (=: far         (if Far Far 100.0))
 	        
-    (=: scale-ortho (if Scale-ortho Scale-ortho 12.0))
+    (=: scale-ortho (if Scale-ortho Scale-ortho 16.0))
     (=: near-ortho  (if Near-ortho Near-ortho 1.0))
     (=: ortho-far   (if Ortho-far Ortho-far 512.0))
 

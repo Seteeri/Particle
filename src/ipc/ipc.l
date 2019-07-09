@@ -51,9 +51,6 @@ Handle bad accept sock
   # * Maintain list of initiated connections
   # * Create method for loop - returns conns/conns-id
   
-  (=: conns    NIL)
-  (=: conns-id NIL)
-
   # Listener stuff
   (=: listener NIL)
   (=: nonblock-listener Nonblock-listener)
@@ -62,6 +59,9 @@ Handle bad accept sock
   
   (when Path-listener
     (init-listener> This))
+  
+  (=: conns    NIL)
+  (=: conns-id NIL)
   
   (init-conns> This Conns))
 
@@ -86,6 +86,7 @@ Handle bad accept sock
             ID-C     (get Conn 5)
             Sock     (socket~connect-sock Path Nonblock *ms-retry))
         
+        # Only outgoing sockets send ID
         (send-msg> This ID-C Sock)
                         
         (add-conn> This Sock ID-S Handler)
@@ -97,13 +98,6 @@ Handle bad accept sock
 (dm add-conn> (Sock ID-S Handler)
   #{
   # Make class for this? -> Connection
-  #
-  # Poss simplify this?
-  # FD -> Name
-  # Name -> FD
-  #
-  # Choose one to map handler to instead of doubling up
-  # FD : epoll data
   }#
   
   (epoll~ctl-epfd (: fd-ep)
@@ -111,6 +105,10 @@ Handle bad accept sock
                   Sock
                   epoll~BAD)        
   
+  #SIMPLIFY:
+  #(push1 (:: conns)    (cons Sock (list ID-S Handler)))
+  #(push1 (:: conns-id) (cons ID-S Sock))
+
   (push1 (:: conns)    (cons Sock (list ID-S Handler)))
   (push1 (:: conns-id) (cons ID-S (list Sock Handler))))
 
@@ -215,28 +213,20 @@ Handle bad accept sock
   
   (let Length (length Msg)
 
-     (when Debug (prinl (usec) " | send-msg> | Msg=" Msg))
+    (when Debug (prinl (usec) " | send-msg> | Msg=" Msg))
 
-     (when (> Length (: sz-buf-rd))
-       (println "WARNING! Message will be truncated by " (- Length (: sz-buf-rd)) " bytes")
-       (setq Length (: sz-buf-rd)))
+    (when (> Length (: sz-buf-rd))
+      (println "WARNING! Message will be truncated by " (- Length (: sz-buf-rd)) " bytes")
+      (setq Length (: sz-buf-rd)))
 
-     (struct (: buf-wr) 'N (cons Length 4))
+    (struct (: buf-wr) 'N (cons Length 4))
 
-     #(println "send-msg" (struct (: buf-wr) '(B B B B B B B B)))
+    (send-bytes> This Sock epoll~BAD (: buf-wr) 4)
+    
+    (struct    (: buf-wr)         'N (cons Msg Length))
+    (struct (+ (: buf-wr) Length) 'N (cons 0 1))
 
-     (socket~send-fd Sock
-                     (: buf-wr)
-                     4
-                     0)
-
-     (struct    (: buf-wr)         'N (cons Msg Length))
-     (struct (+ (: buf-wr) Length) 'N (cons 0 1))
-
-     (socket~send-fd Sock
-                     (: buf-wr)
-                     Length
-                     0)))
+    (send-bytes> This Sock epoll~BAD (: buf-wr) Length)))
 
 
 (dm recv-bytes> (Sock Events Buf Sz)

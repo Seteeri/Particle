@@ -12,14 +12,14 @@
 }#
 
 
-(symbols 'ctrl 'pico)
+(symbols 'worker 'pico)
 
 
 # C library paths
 
 # Paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
-(def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
+(def 'PATH-UDS-CONTROL  "/tmp/protoform-control.socket")
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
 
 
@@ -36,36 +36,45 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/ctrl/conn.l")
 
 
-#Globals
-(def '*ep-events)
-(def '*cam) # TEMP
-(def '*vert) # TEMP
+(def '*vert)
 
 
 (de init-worker ()
 
-    (let (Argv (argv))
+  (let (Argv (argv))
 
-      (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-            *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-            *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
-            *i-proc    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "i invalid")))))
+    (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
+          *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
+          *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
+          *i-proc    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "i invalid")))))
 
-    (let ID-C (pack "WORKER-" *Pid)
+  (let ID-C (pack "WORKER-" *Pid)
 
-      (setq *ipc (new '(ipc~+IPC)
-                 ""             'ipc~block handle-client
-                 (list (list PATH-UDS-MODEL   'ipc~block handle-model   "MODEL"   ID-C)
-                       (list PATH-UDS-CONTROL 'ipc~block handle-control "CONTROL" ID-C)
-                       (list PATH-UDS-RENDER  'ipc~block handle-render  "RENDER"  ID-C))))))
+    (setq *ipc (new '(ipc~+IPC)
+               "" 'ipc~block handle-client
+               (list (list PATH-UDS-MODEL   'ipc~block handle-model   "MODEL"   ID-C)
+                     (list PATH-UDS-CONTROL 'ipc~block handle-control "CONTROL" ID-C)
+                     (list PATH-UDS-RENDER  'ipc~block handle-render  "RENDER"  ID-C)))))
+                     
+  # Pull PVM from Model -> Send PVM and nodes to Render
+  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
+        Sock-Render (ipc~get-fd> *ipc "RENDER")
+        Cam         (read-pvm  Sock-Model epoll~BAD)
+        Vert        (read-vert Sock-Model epoll~BAD *i-proc))
 
+    (write-pvm  Cam  Sock-Render epoll~BAD)
+    (write-vert Vert *i-proc Sock-Render epoll~BAD)
+    
+    (setq *vert Vert)
+    
+    T))
 
 (de handle-client (Sock Events))
 
 
 (de run-worker (Timeout)
 
-  (prinl (usec) " | run-ctrl | Starting epoll...")
+  (prinl (usec) " | run-worker | Starting epoll...")
   (loop (ipc~poll> *ipc Timeout)))
 
 
@@ -89,6 +98,20 @@
 (de handle-render (Sock Events)
 
   (let Msg (ipc~recv-msg> *ipc Sock Events)
+      
+    # Modify position
+   (let (Cnt   (if (= *i-proc 1) 13 14)
+         Delta -0.01
+         Mm (get *vert 1)
+         Mm-New (place Cnt Mm (+ (get Mm Cnt) Delta))
+         Vert-New (place 1 *vert Mm-New))
+     
+     #(println Vert-New)
+          
+     # Push update to render
+     (write-vert Vert-New *i-proc Sock epoll~BAD)
+     
+     (setq *vert Vert-New))
 
     (when NIL
       (prinl Msg))))

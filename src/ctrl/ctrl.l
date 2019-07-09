@@ -58,7 +58,7 @@
   (let ID-C (pack "CTRL-" *Pid)
   
     (setq *ipc (new '(ipc~+IPC)
-               PATH-UDS-CONTROL            'ipc~block handle-client
+               PATH-UDS-CONTROL            'ipc~block handle-worker
                (list (list PATH-UDS-MODEL  'ipc~block handle-model  "MODEL"  ID-C)
                      (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT"  ID-C)
                      (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER" ID-C)))))
@@ -68,19 +68,22 @@
     # Pull PVM from Model -> Send PVM and nodes to Render
     (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
           Sock-Render (ipc~get-fd> *ipc "RENDER")
-          Cam         (read-pvm  Sock-Model epoll~BAD)
-          Vert        (read-vert Sock-Model epoll~BAD 1))
+          Cam         (read-pvm  Sock-Model epoll~BAD))
+          #Vert        (read-vert Sock-Model epoll~BAD 1))
 
       (write-pvm  Cam  Sock-Render epoll~BAD)
-      (write-vert Vert 1 Sock-Render epoll~BAD)
-      
-      #(println Vert)
-      #(bye)
+      #(write-vert Vert 1 Sock-Render epoll~BAD)
+
       T)))
 
 
-(de handle-client (Sock Events))
+(de handle-worker (Sock Events)
 
+  (let (Msg (ipc~recv-msg> *ipc Sock Events)
+        Data (any Msg)
+        
+    T)))
+    
 
 (de run-ctrl (Timeout)
 

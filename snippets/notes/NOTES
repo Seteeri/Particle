@@ -9,43 +9,26 @@ interface with less redundancy which is faster to learn. Data today is
 not simply numbers and text but much more, and users need an interface
 that can cut across all domains.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+################################################################################
 
-buffer for glyphs - number, size etc
+Generate glyphs for builtin symbols?
+- However, if any changes made to glyphs, it would have to be generated and tex
+uploaded while running
 
-buffer for text - arbitrary size like max RAM
-- Planes use UV->texel
-- Not all text is necessarily visible in the viewport at once
-- Pango would render directly into this buffer
-
-Separate update thread:
-- Run pango to generate text pixels
-- Apply msdf to pixels
-- Write to mapped bufffer pointer
-
-As user types or when text is loaded, it is automatically segmented into
-tiles/buckets/bins etc
-
-This results in planes of different dimensions so need to add scale per
-instance
-
-TOO MUCH MEM! - Dependent upon number of unique segments which does not
-necessarily equal words
-
-Optimizations for specific cases (by most commonly used words):
-* Programming - keywords, symbols, variables etc - easy
-* Prose - difficult
+Could do the same for prose - common english words
+https://en.wikipedia.org/wiki/Most_common_words_in_English
+- Or analyze this dynamically as user types
 
 --------
 
 For images, load entire image as a texture and then break into tiles
 as user works on it, 2,4,8,16,32,64 etc
 
-Make this a smart process - release tile if user moves to another tile
+Make smart process - release tile if user moves to another tile
 after a certain amount of time or learn users behavior to calculate the
 threshold
 
-########################################################################
+################################################################################
 
 text   -> raster (texture)
 raster -> text (OCR)
@@ -58,201 +41,24 @@ waveform -> raster (texture)
 
 waveform/spectrogram/bitmap
 
-Transform model different from transform view!
-Both can be done at the same time!
-at the same time!
-
-At the top it's all pixels, and at the bottom it's all ones and zeros.
-Only the middle needs distinguishing.
-
-Transform abstract model like numbers to strings or vice versa
-C data types or LISP data types
-
-People think in terms of domain-specific concepts.
-People can understand mathematical functions.
-
 UNREAL BLUEPRINTS
 - Cannot create new nodes with nodes - but we can!
 
 https://news.ycombinator.com/item?id=14482988
 
-########################################################################
-
-EMACS Model:
-
-Bytes -> Txt -> Pango/Cairo -> DE (Wayland/OpenGL)
-
-* Cairo 2D vector graphics
-* Cairo does not use OpenGL for drawing; rather software rasterizing
-* However, it can output to an OpenGL-based surface
-* Cairo is a 2D drawing API and OpenGL is a 3D drawing API
-* OpenGL backend exists (cairo-gl) for drawing but limited functionality
-
-
-Protoform Model:
-
-Bytes -> Txt  -> Pango/Cairo -> Protoform/OpenGL
-
-Bytes -> Txt* -> Pango/Cairo -> OpenGL Buffer Object (RGBA) | *(char encoding, e.g. UTF-8)
-Bytes -> SVG  -> Pango/Cairo -> OpenGL Buffer Object (RGBA)
-Bytes -> RGBA ->     ...     -> OpenGL Buffer Object (RGBA)
-
-DE -> RGBA...
-
-Critique:
-
-* Pango/Cairo can be viewed as a data transformer: bytes -> Pixels (RGBA)
-* For raster, pixels are straight-forward, however SVG needs conversion
-* Txt -> SVG is ostensibly an image transformer, but bytes underneath
-* Transformer is moving between two domains: model -> view
-* Transformer needs both INTERop and INTRAop functionality
-* Technically, same function jand input, but different output
-
-Bytes -> Txt  -> Pango/Cairo -> Protoform/OpenGL
-          |
-Bytes -> RGBA  -> Pango/Cairo -> Protoform/OpenGL
-
-Txt -> Pango/Cairo -> RGBA
-RGBA -> Tesseract (OCR) -> Txt
-
-* EMACS limits domain to text being viewed solely through GTK textarea
-* The frame/window concept is tied to textarea
-* What we want to do, is use that same consistency and extensability
-across multiple domains and to provide those features through allowing
-data transformers.
-* The way Protoform draws, creates two "buffers": the model or data
-structure, and the view buffer or OpenGL buffer which ultimately is
-RGBA.
-* OpenGL has multiple types of buffers which are initially formatted to
-a specific type:
-* glMapBuffer:
-  * GL_ARRAY_BUFFER, GL_ATOMIC_COUNTER_BUFFER, GL_COPY_READ_BUFFER,
-  GL_COPY_WRITE_BUFFER, GL_DRAW_INDIRECT_BUFFER,
-  GL_DISPATCH_INDIRECT_BUFFER, GL_ELEMENT_ARRAY_BUFFER,
-  GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_QUERY_BUFFER,
-  GL_SHADER_STORAGE_BUFFER, GL_TEXTURE_BUFFER,
-  GL_TRANSFORM_FEEDBACK_BUFFER, or GL_UNIFORM_BUFFER.
-* Framebuffers are different: they are used for rendering output rather
-than inputs and use specialized methods for operations.
-* In Emacs, these OpenGL/output buffers cannot be accessed since they
-exist within the memory of the DE process, so Protoform provides this
-functionality to enable displaying more than just text.
-* Emacs functionality is based around manipulation of the buffer model
-but not the view (GTK widget), which can be considered a limitation or
-advantage.
-* Does the view require data transformers?? In other words, they need to
-be dynamic objects that can be modified from the view. So nodes need to
-be able to edit themselves using nodes.
-* For example, there exists a node. Another node with code can be
-attached to it and eval'd. Say, attach a delete transformer, which
-deletes the node from memory.
-* The default startup should have no nodes except for two nodes:
-the OpenGL context, and attached to that node, the default framebuffer.
-* A process can have multiple contexts, which represents a viewable
-surface. Current context is thread-local so possibly  one context/thread
-
-########################################################################
-
-rendering engine
+################################################################################
 
 Forward... -> Tiled -> Clustered -> Volumetric
 
- Volume Tiled Forward Shading is based on Tiled and Clustered Forward Shading described by Ola Olsson et. al
+See Volume Tiled Forward Shading is based on Tiled and Clustered Forward Shading described by Ola Olsson et. al
 
-########################################################################
-
-;; Forms:
-;; 1. Self-eval
-;; 2. Symbols
-;; 3. Lists
-;;    1. Special forms
-;;    2. Macros
-;;    3. Func calls
-
-;; Valid Forms:
-;; * An atom
-;; * An empty or non-list
-;; * Any list that has a symbol as its first element
-
-;; For functions, create a node
-;; For functions/symbols - create successor node
-;; - declare whether functions will called or control statement controls evaluation
-;; Works with simple code...
-;; To build function list, find all defuns
-;; Need to scan all files first
-;; Don't need all functions, just the ones that can parallelize
-;; - or our defuns or explicit ones
-;; Final DAG will help visualize fn-symbol dependencies
-;; - e.g. symbols with multiple fn successors mean they share that data
-;;   and threading would require locks
-
-;; top down from root
-;; node = root
-;; do fn
-;;   submit task for node
-;;   if node has successors:
-;;     submit task for each node
-;;     wait for results
-;;     recurse and call this fn on each node
-
-;; sym -> fn -> sym -> fn -> sym -> ...
-;; maintain this pattern
-;; fn inputs not only include arguments but any symbols read
-;; fn ouputs not only include return symbols but any variables written to
-;; it is ambigious whether a symbol is read/written
-
-;; input is expected reads
-;; output is expected writes
-;; reads and writes would be on both predecessors and successors
-
-;; only works with code where certain guarantees can be made
-;; such as for defun, are there any functions that wrap this
-
-########################################################################
+################################################################################
 
 https://stackoverflow.com/questions/24839857/wireframe-shader-issue-with-barycentric-coordinates-when-using-shared-vertices
 https://catlikecoding.com/unity/tutorials/advanced-rendering/flat-and-wireframe-shading
 https://www.reddit.com/r/opengl/comments/3yrv79/simplistic_texture_less_tronlike_3d_with_opengl/
 
-Protoform closest to Blender?
-Except Protoform is optimized to draw maximum number of instances
-whereas Blender is designed to draw different types of models
-
-Protoform focused on productivity and efficiency and simplicity
-
-17. Vertices
-    * How to represent vertices? They can't be nodes -> infinite recursion
-      * Limit nodes to 2D/4 vertices...or n vertices in a circle?
-      * Nodes can be seen as vertices
-      * Remember, the underlying data model is a graph where
-      objects/vertices can be linked through edges so need not only use
-      planes/nodes, however, we default to them since they're the
-      simplest shape and very efficient to render (next to other OpenGL
-      primitives like triangles/vertices). Many fundamental objects are
-      modeled as quads like windows, pixels, etc. In addition, they are
-      the most convenient for drawing text.
-        * Alternative route of differentiating objects besides shape is
-        to use colors - how many colors can humans distinguish? 8?
-        rainbow colors?
-
-
-IDEA!!!
-
-Assume home environment with gaming router
-- Similar to Apple HomeKit
-
-Model process - run as dedicated server
-View - any client such as laptop, desktop, mobile
-
-View just needs to have the same program version
-
-View same object on multiple devices
-Transfer objects between devices
-- Create a drop portal where stuff popups up
-
-CAN WE REVOLUTIONIZE THE SMART HOME! (AND/OR OFFICE)
-
-########################################################################
+################################################################################
 
 First engine is called Maximum Instancing Engine -> "Maxstance Engine"
 - Maximum instances
@@ -265,26 +71,7 @@ First engine is called Maximum Instancing Engine -> "Maxstance Engine"
 
 Use EVVEE for more lighting-based renderings...
 
-Anyhow, limitations to engine is limitations to instancing
-
-########################################################################
-
-:RULES:
-- Two types of nodes: vertices and edges [binary system ;)]
-  - Node is a linkable object (thus not simply called an object)
-- Vertices
-  - use arbitrary textures
-  - can only link to edges
-    - ostensibly the user selects two vertices but automatically done
-- Edges
-  - use arrow textures only
-  - +property - pred or succ -> determines orientation
-  - can only link to vertices
-  - typically not textured for optimization purposes
-
-**If abstraction is broken, all hell breaks loose!**
-
-########################################################################
+################################################################################
 
 How to Design Help System
 
@@ -322,7 +109,7 @@ nodes as they popup...use augmented reality like pokemon
  22. Should pointer target be predecessor or successor?
     - Successor makes sense since pointer is like an arrow
 
-########################################################################
+################################################################################
 
 Implement NOTEPAD:
 
@@ -343,7 +130,7 @@ Options: TODO
 * Line Numbers - yes
 * Auto Indent - yes
 
-########################################################################
+################################################################################
 
 Never liked the idea of the cursor being inbetween chars...
 WHAT IS IT SELECTING???
@@ -354,202 +141,13 @@ Archy: Quasimode + type command [MIN KEYBINDINGS/MIN MODES]
 
 US: Type command -> Eval
 
-;;;;;;;;;;;;;;;;;;;;;;;;
-
-EMACS: modes tied to buffer
-PF: modes tied to pointer/cursor
-
-EMACS:
-b1:m1 b2:m2 b3:m3 ....
-
-PF:
-n1 n2 n3
-ptr:mode
-
-27. Implement pointer movement
-    * If linked: sequential move
-      * (or spatial move? - use hotkey for global access)
-      * Options to show selection: color node, draw on top, link between
-      * Move through pred/successors
-        - up/down only works for binary trees since never more than 4 edges
-        - paragraphs/lines are binary trees?
-          -> the fox jumped over the fence \n
-             _|_                            |
-             \|/                            |
-             and then chased the rabbit....\n
-          OR
-          -> the fox jumped over the fence \n - pt \n, dn:start, up:end
-                                         |
-               /------------------------/      (first line has ptr-*-* instead of \n-*-*
-              *-----------------------------*   \n-*----------*
-             /                              |       L_ start   L_ end
-             and then chased the rabbit... \n
-        - newline is like .
-          -> (a b c (d e)) = a-b-c-(  .nil)
-                                     -d-e
-    * If unlinked, move arbitrarily [DONE]
-      * BUT...how to go from unlinked to link?
-        - Need nearest node -> need spatial graph
-    * On delete, move to next node or previous [DONE]
-      * backspace/delete acts the same
-      * currently, node links to previous
-
-
-30. Pointer conventionally has modes: insert/replace -> how to reconcile?
-    * Pointer is used to select objects
-    * Pointer needs to move either over node or between nodes
-      -> Not a solution
-    * Does anyone actually used insert?
-    * Expectation is if node is linked to a node, it will be added after
-      at least for char objects
-    * Instead of modes, we have pointers, that users can switch
-        -> Create an insert ptr and replace ptr
-          * User can switch ptrs -> but only one master ptr
-          -> attach pointer to main pointer
-    * To simulate insert/replace: verbose method is to type a command + arg:char, and eval
-    * Pointer is an input transformer: input -> data
-      - physical key -> char type
-      - default: new + tgt link out
-      - replace: new + tgt replace
-      - other types possible??? but what are the most basic?
-    * Use -> for append
-    * Use * for replace/swap
-    -> SOLUTION: If at end, insert out (append); if in middle, replace - expected behavior
-      - To add commands
-        -> SOLUTION: Unlink and create new
-      - If out node already, would insert - we need to make a branch
-      - Replace old branch (move to undo)
-
-Create 3 pointers by default
-
-DIM XY:
-0. Main pointer - spatial/semantic/logical graph
-1. Clipboard pointer  - cut/copy/paste objects
-   - can create multiples of these
-   - another scene graph
-2. Spatial pointer - aka spatial graph - octree
-   - only one
-   - show this? need not to...
-
-DIM YZ:
-4. Undo pointer - undo graph; another scene graph
-   - only one
-
-DIM XZ:
-5. objects...non-char types
-
-
-LISP CODE IS VIEWED AS DATA - LISTS OF STRINGS
-
 https://academia.stackexchange.com/questions/109/is-there-any-efficient-non-linear-note-taking-software
-
 
 MOVEMENT:
 1. Link move (semantic move)
 2. Euclidean move (discrete steps)
 3. Jump move (jump to node)
   -> Requires IDs
-
-How would user move from main graph to buffers?
-
-F1 : jump to undo - press again to move back
-F1+: jump to buffers - press again to move back
-
-last selected buffer will be set to default? make explicit for now
-
-question is which do they need more of?
-
-When user enters new text, old text is moved (char-by-char) to undo graph...
-
-QUESTIONS!
-? Undo global + local (per graph)?
-? Buffer global + local (per graph)?
-   -> Buffer should be global
-
-Technically, undo encompasses buffer, however, buffer acts like a
-shortcut to the undo part
-
-users can implement
-1. Different types of nodes (data to data transformers)
-2. Different types of pointers  (input to data transformers)
-
-35.  For backspace, pop before node-ref, instead of pointing node
-      - case
-
-            a-b-c
-                |
-                *
-
-            a-c
-              |
-              *
-
-            c
-            |
-            *
-      - or double pointer?
-        a-b-c-*
-              |
-              *
-        a-c-*
-            |
-            *
-        c-*
-          |
-          *
-        *
-        |
-        *
-        - https://stackoverflow.com/questions/5580761/why-use-double-pointer-or-why-use-pointers-to-pointers
-        - might be more intuitive...!!!
-        - so to create a string/line/sentence -> create a pointer
-          - master pointer, then secondary pointers
-          - user can switch between pointers
-          - ptr represents a string/line
-            a grouping...selection? essentially equivalent to a c ptr
-
-
-Keyboard bindings -> Pointer -> Object
-
-Currently all keyboard bindings map to same pointer
-Imagine
-a: ptr-a
-b: ptr-b
-
-Thus is ptr-a is selected, any key press results in #\a node
-
-A different pointer can have a different set of bindings
-
-   * Where to place old text???
-     -> Move before line - can collapse
-     -> Move to newline underneath?
-     -> Create separate section per line?
-        * auto update positions to prevent overlap
-
-
-;; Pass starting position, i.e. node-pointer position
-;; For nodes, index to calculate
-;; Have to set index serially...
-;; - faster way would be to use spatial relationship to calculate index
-;;   -> only works when nodes are sequentially positioned
-;;   -> radial would be better
-;;
-
-;; pos = start + (advance * index)
-;; adjust-pos by bounds
-
-;; 	(digraph:mapc-vertices (lambda (vert)
-;; 				 (sb-concurrency:enqueue
-;; 				  (list nil
-;; 					(make-symbol (format nil "node-~a~%" (index vert)))
-;; 					'()
-;; 					(lambda ()
-;; 					  (format t "~S~%" (translation (model-matrix vert)))
-;; 					  ;; (funcall #'randomize-color-node vert)
-;; 					  ))
-;; 				  *queue-tasks-sync*))
-;; 			       *digraph-main*))
-
 
    * Diagram:
 
@@ -666,149 +264,15 @@ A different pointer can have a different set of bindings
 
       h-e-l-l-o---u-s-e-r-w-o-r-l-d
                                   *
-
-DALE language
-BONES language
-
-*
-
-a
-*
-
-a - b
-    *
-
-a - b - c
-        *
-
-
-(RE)DO:
-add-node-ascii ptr->a ptr
-add-node-ascii a->b
-add-node-ascii b->c
-
-UNDO:
-rem-node-ascii c b
-rem-node-ascii b a
-rem-node-ascii a ptr
-
 https://softwareengineering.stackexchange.com/questions/224146/how-has-an-increase-in-the-complexity-of-systems-affected-successive-generations/224152
 
-Moreover, let's not forget what we're actually trying to optimize for, which is value produced for a given cost. Programmers are way more expensive than machines. Anything we do that makes programmers produce working, correct, robust, fully-featured programs faster and cheaper leads to the creation of more value in the world.
+Moreover, let's not forget what we're actually trying to optimize for, which is 
+value produced for a given cost. Programmers are way more expensive than 
+machines. Anything we do that makes programmers produce working, correct, 
+robust, fully-featured programs faster and cheaper leads to the creation of 
+more value in the world.
 
-########################################################################
-
-Need to create TEXT object to manage lines
-- Text object can be replaced by a pointer
-
-User evals new/create/make-page
-
-Show slots as edges for objects/structs
-- By default hidden for node, xkb, controller, projview, animation, metrics
-  - add slot option?
-
-#<TEXT> -> * -> width-line -> #
-           |
-           * -> pos -> vec3 [updates if user moves text obj]
-           |
-           * -> line/string
-
-           or put options on left and line on right
-
-########################################################################
-
-;; (loop
-;;    :do (handler-case
-;; 	   (sb-ext:with-timeout 1
-;; 	     (sleep 2))
-;; 	 (sb-ext:timeout (e)
-;; 	   (format t "Lag detected~%"))))
-
- (loop
-    :do (handler-case
- 	   (sb-ext:with-timeout (/ 1 60)
-         (let ((r (+ 0 (random 0.017)))) (sleep r))
- 	     (format t "Ahead of schedule - flush shm queue~%"))
- 	 (sb-ext:timeout (e)
- 	   (format t "Lag detected - flush shm queue~%")
-       (sleep 0.1))))
-
-Process:
-1. Receive frame
-2. Start timer
-3. On finish early or late: copy shm
-4. If finish late: copy whatever shm
-   - enqueue is atomic
-5. Return frame
-
-
-Model waits for message
-View sends message after draw
-Model executes tasks
-Model sends message, and waits again...
-
-Problem is model has to wait until draw to start next op
-
--> Must figure out how to operate on nodes without locks...
-
-Add/remove nodes relies on graph which has to be locked
-Modifying node slots relies on per-node lock
-
-Instead of digraph, rewrite graph using lock free skip list
-
-Digraph uses hashtable of nodes : (preds . succs)
-
-https://stackoverflow.com/questions/14338732/is-it-possible-to-implement-lock-free-map-in-c
-
-Do per node lock, remove edge or insert edge will have to lock both
-
-OR
-
-Implement lock free concurrent skip list and use as dictionary
-- queue number of node is the key
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-* sync - must finish same frame; will block rasterizer
-- thread pool
-- use for status information
-- these functions are assumed to finish in sufficient time so just
-have async run independent of frame...no wait shm has to be sync'd
-  - async can block sync
-- remember, views checks messages to see if it needs to copy shm
-  once model sends message, cannot do shm ops until next message (or make this explicit)
-  -> MAKE MODEL RECEIVE MESSAGE FROM VIEW WHEN SHM DONE
-* async - can finish any frame
-- thread pool
-- run independent of view frame message; inserts into shm
-  -> PROBLEM! sync/async share data which requires locks/sync...
-  - user must make ensure no overlapping ops...
-- when async done, insert shm which will only be done in sync
-
-Placing data in redis adds additional steps
-view: [send redis + wait + recv redis/decode str->base64] + memcpy
-      vs
-      [] + memcpy
-model: encode base64->str
-
-would inc latency by several ms
-
-model encodes, redis writes->reads, view decodes->writes
-
-can detect conflict if nodes are known
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-Create task class
-Place task instances in queue
-Execute in parallel
-
-Async tasks can execute without any deadlines
-Sync tasks must finish within the time frame
-- Should this be a soft guarantee??
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+################################################################################
 
 https://news.ycombinator.com/item?id=15466124
 
@@ -824,18 +288,15 @@ The way Lisp can still win in today's world is not by trying to replace C on the
 
 I don't want to denigrate ChrysaLisp in any way. It's tremendously cool. But cool is not enough to win in the real world.
 
-[UPDATE] ChrysaLisp is actually doing the Right Thing with respect to its GUI by using a C-library (SDL). But it's trying to re-invent the compiler wheel (and the language design wheel) so that it can run on bare metal and "grow up to be a real Lisp machine" some day, and I think that aspect of the project is a fool's errand. There are already many Lisps that can run on bare metal (ECL was specifically designed for that). None of them have succeeding in displacing C, and I believe none ever will because the economic hurdles are insurmountable.
+[UPDATE] ChrysaLisp is actually doing the Right Thing with respect to its GUI by
+ using a C-library (SDL). But it's trying to re-invent the compiler wheel (and 
+ the language design wheel) so that it can run on bare metal and "grow up to be 
+ a real Lisp machine" some day, and I think that aspect of the project is a 
+ fool's errand. There are already many Lisps that can run on bare metal (ECL was
+  specifically designed for that). None of them have succeeding in displacing C, 
+  and I believe none ever will because the economic hurdles are insurmountable.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-possible to have
-
-1 controller - nCPU models - 1 view
-
-if we check each node for dirty, could same redundant memcpy if queue
-backs up
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+################################################################################
 
 (defun read-64 (buf)
   (let ((u 0))
@@ -863,177 +324,7 @@ backs up
     (setf (ldb (byte 8 0) u) (aref buf 0))
     u))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-What if we use the source code as a key?
-
-source code -> object data
-
-OR since lisp has two name spaces, one for value/var and one for funcs
-
-name -> source code, object data
-
-add-two-numbers -> "(defun add-two-numbers (a b) (+ a b))"
-add-two-numbers -> #'ADD-TWO-NUMBERS
-
-1 -> "1", 1
-
-would need to manage entire state...map entire state onto a graph
-
-or is the source code the serialized state?
-
-IMAGE--------------|-REDIS
-"add-two-numbers" -> "(defun add-two-numbers (a b) (+ a b))"
-
-(compile value) -> #'ADD-TWO-NUMBERS
-CODE -> DATA
-
-#'ADD-TWO-NUMBERS -> "(defun add-two-numbers (a b) (+ a b))"
-
-(decompile #'add-two-numbers) -> "..." [lookup in table]
-DATA -> CODE
-
-
-(compile "(list 1 2 3)") -> *list*
-
-*list* -> "(list 1 2 3)"
-
-what if modify list so it's (list 4 5 6)
-then source needs to change to "(list 4 5 6)"
-question is how to transform the data object to printable?
-what about list of functions?
-
-(compile "(list - + * /)") -> (list - + * /)
-(list - + * #'foobar) ->
-would need to take the data and build string
-
-macros do data -> data ... so is protoform a UI for macros?
-
-NEED TO HANDLE TOP LEVEL FORMS MANUALLY
-
-########################################################################
-
-In protoform, all code entered is transformed into data/atoms
-automatically, or more specifically data beyond chars/strings
-
-list 1 2 3 -> [list] [1] [2] [3]
-                sym   n   n   n
-
-list #'+ #'- #'* #'/ -> [list] + - * /
-                          sym  f f f f
-
-so to loop:
-
-- eval prev            <list> <1> <2> <3>
-- type:                  |
-<loop> <:for> <x> <:in> <*> <:collect> <x>
-- eval it
-  - need not read, build list, input to eval
-- returns list *itself* NOT list *symbol*
-  <list>
-- essentially just transforming data like a macro
-
-- type <#\1>
-- how to get number object? <1>
-- use #'parse-integer or #'read...
-- options: alt+# or default to number
-
-########################################################################
-
-How do ASCII keys map to REPL forms?
-
-Pressing a key = inputting a form (func), evaluating it
-
-So frame is essentially executing top level forms for the repl
-
-So controller is pushing forms to be executed by model
-
-...animations are self perpetuating forms since they push themselves
-into the queue again
-
-Represent REPLs as graphs? Is this what we're doing
-
-And then whatever form is evaluated, we link the input (code) to the
-output (data)
-- we can use a hash table or redis
-- can use one redis instance (database) per graph?
-
-model: serialize, send redis
-view:  recv redis, deserialize
-
-redis module shm?
-
-STORE NODES AND GRAPHS IN REDIS
-* Follow cl-digraph hash table - node : edges
-* Spread nodes through redis instances
-  * n cpus = n redis insts
-  * each redis inst = n nodes / n cpus
-* 1 graph per redis instance
-* Ideally, only one SET/GET per frame
-  * Use pipelining
-
-MODEL/LISP = graph (code:data aka input:output)
-REDIS/C    = nodes (in redis since shared with view; prevent GC?)
-
-TEST splitting nodes into 4 groups and looping through in parallel
-vs 1 group 1 cpu
-
-Maybe can tune GC to match current allocation patterns
-
-(defun test-redis ()
-  (sb-ext:gc :full t)
-  (redis:connect)
-
-  ;; Timer #1
-  ;; 1. Serialize
-  ;; 2. Send
-  ;;
-  ;; Timer #2
-  ;; 1. Recv
-  ;; 2. Deserialize
-  ;; 3. Apply to instance
-
-  (let ((node (pop *stack-i-nodes*)))
-    (benchmark:with-timing (100)
-      ;; Serialize+Encode | ~200 nodes per 8 ms
-      ;; ...+Set    | ~180 nodes per 8 ms
-      (red:set "foo" (qbase64:encode-bytes (serialize-node node))))
-
-    (let ((str (red:get "foo")))
-      (benchmark:with-timing (100)
-	;; Decode     | 0.000003 sec = 0.003 ms or 3/1000 of ms
-	;; Get+Decode | 9 ms
-	(qbase64:decode-string (red:get "foo")))))
-	;; (red:get "foo"))))
-
-  (redis:disconnect))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-Need data structure with following properties:
-* Maintain order
-* O(log n) or better lookup
-* O(1) insert/delete (ends)
-
-1. playing...
-
-2. playing...add to cancel list
-
-3. playing [cancels]...
-
-4. ...
-
-;;;;;;
-
-1. anim-0...
-input triggers anim - could modify anim to restart instead...
-2. anim-0...+[cancel list]...+[anim-1]
-
-3. anim-0(cancels)...anim-1
-
-4. ...
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+################################################################################
 
 http://www.cs.cmu.edu/afs/cs/academic/class/15210-f15/www/tapp.html#ch:multithreading
 
@@ -1045,21 +336,6 @@ Keys to Achieving Parallelism
 Should a task that readds itself create a new task instance or reuse
 existing?
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (defparameter *array* (make-array 1000000
-;; 				  :element-type '(UNSIGNED-BYTE 8)
-;; 				  :adjustable nil
-;; 				  :fill-pointer nil
-;; 				  :initial-contents (loop :for i :from 0 :below 1000000 :collect 0)))
-;; (time (progn (qbase64:encode-bytes *array*) t))
-
-;; (handler-case
-;; 	(progn
-;; 	  t
-;;   (lparallel.ptree:ptree-redefinition-error (c)
-;; 	t)
-
 https://en.wikipedia.org/wiki/List_of_GNU_Core_Utilities_commands
 
 From
@@ -1069,45 +345,6 @@ However, the increase in data breaches and security issues have not
 completely eroded the OS a key factor.
 
 https://www.reddit.com/r/lisp/comments/9q68y8/has_the_gnu_coreutils_ever_been_implemented_in/
-
-(defun run-graph-dep ()
-  ;; If user modifies, any related functionality during runtime
-  ;; this needs to be ran again
-  ;; TODO: user needs to be able to run the analyzer during runtime
-  ;; for code that runs in the main loop (rpc)
-
-  (let* ((path-lisp (merge-pathnames (make-pathname :name "deps-model"
-						    :type "lisp")
-				     (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
-	 (path-tasks (merge-pathnames (make-pathname :name "tasks-model"
-						     :type "lisp")
-				      (merge-pathnames #P"src/model/" (asdf:system-source-directory :protoform))))
-	 (tasks (if (probe-file path-tasks) ; If tasks exist, load it else generate it
-		    (read-from-string (read-file-string path-tasks))
-		    (multiple-value-bind (digraph root tasks-new)
-			(analyze-file path-lisp
-				      path-tasks
-				      :init-conn-rpc-view)
-		      tasks-new))))
-
-    ;; Convert to ptree and execute
-    ;; Build ptree manually
-
-    ;; TODO: Recurse for more complicated setups, i.e. nested lists
-    (submit-receive-graph tasks)))
-
-(defun submit-receive-graph (tasks)
-  (loop
-     :for nodes :across tasks
-     :do (loop
-	    :for node :across nodes
-	    :do (progn
-		  (fmt-model "submit-receive-graph" "task: ~a~%" (string node))
-		  (submit-task *channel*
-			       (symbol-function (find-symbol (string node)
-							     :protoform.model))))
-	    :finally (dotimes (i (length nodes))
-		       (receive-result *channel*)))))
 
 https://www.reddit.com/r/lisp/comments/1fj0qf/lisp_vs_haskell/
 
@@ -1120,19 +357,6 @@ https://www.cliki.net/cl-emacs
 Difference between having source code and then eval'ing it like in EMACS
 versus having those live data objects accessible in the program like in
 Protoform.
-
-
-* REPL Buffer
-* Effectively the terminal
-* Difference: Preserves commands and outputs on newline
-  * At least the operators have this functionality
-  * Would this be an undo in itself?
-* Created arbitrarily
-
-* Layout
-* Render To Texture - render to quad; draw quad
-* Viewport - set viewport params; draw
-* NOTE: wayland windows are memcpy to texture ptr
 
 https://nullprogram.com/blog/2014/06/29/
 
@@ -1161,7 +385,6 @@ bbinit
 
 shell = scripting language for C (processes)
 
-########################################################################
 ########################################################################
 
 Separate parts become a whole when it is more efficient to do so or
@@ -1224,228 +447,10 @@ better like hot-plugging...same is becoming more desirable in code...lisp?
 
 GC STILL AN ISSUE...moves nodes to different memory for static objects..weak refs?
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-Message Passing attempt:
-
-passing objects
-
-Thread A:
-LIFO nodes
-
-Thread B:
-consumers nodes
-
-1. B sends A; B waits A - send fn
-2. A recvs B; A sends B - send object copy
-3. B continues
-
-What if multiple consumers?
--> Each one has to wait
-
-Model thread process data and serializes
-RPC thread memcpys and sends shm tasks to view
-
-Use <mod>+TAB to show node slots for its data type...
-
-actor model is like focusing locks in a few places or minimal places
-
-so each node is an actor since each thread needs to access it...
-
-1. Input
-   1. Send msg to pool
-2. Create node - pull from pool
-   1. Recv msg from input
-   2. Send msg with node
-3. Modify node
-4. Serialize node
-...
-5. Memcpy
-6. Send memcpy
-
-Thread pool will execute mail for each object's mailbox
-- like epoll over bunch of fd's
-
-Sender must notify receiver by placing order in task queue
-Worker will pull from task queue and execute in node space
-
-BUILD TEST MODEL PROGRAM
-
-Threadpool
-Work queue (shared by threadpool with lock)
-N-nodes
-
-Threads work in parallel on different memory segments
-
-It's like a 1,000,000 rich people with 4 servants shared
-The servants have a hub that they get taskings
-They go to the house, do the job, and return
-
-Sometimes a job requires something from another house...
-1. This cannot happen since the servant has everything they need when
-they get the task from the hub
-
-lets say one rich person had a sandwich they wanted to share
-in their home, they would divide it up and then submit each piece to
-the hub with the instructions to give it to specific houses.
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-A task is a group of functions that leads to serialization of a node
-
-Scheduling Model
-model : exec I/O -> sync/async
-view  : exec sync/async
-
-Scheduling-Ptree Model
-model : exec I/O -> sync/async
-view  : exec sync(single ptree)/async(multi ptrees?)
-
-Ptree Model:
-model : build/exec ptree
-view  : execute tasks inc sync, async, memcpy
-        [in-frame: add time node, exec ptree, sync memcpy, async memcpy (from model)
-         ex-frame: GC, build ptree
-- must not share data between, except globals? ....lock those
-  - add/del nodes requires locking heap
-  - rtree requires locking
-  - individual nodes require locks
-
-NUMA Model: - test scalability
-4 threads each with copy + mailbox
-= 1,000,000,000 nodes * 4 = 4 mil!
-...should be four processes since independent
-
-When one thread modifies one of its nodes, it will send message to all
-to update, similar to CPUs
-
-task are split up among N workers so to process a million nodes would
-do 250k per worker, and then synchronize after
-
-process task
-synch caches
-...
-
-if another task exeuted before sync, data will be incoherent
-
-how would it work for converting a string to nodes?
-
-if len str > 4:
-break string into 4 pieces
-submit each chunk
-per worker: pop/init node
-per worker: send data to other workers
-per worker: send data to caller
-
-
-for read:
-read from multiple
-
-closer to RAID...
-
-what if we stripe nodes?
-
-thread : indices
-T0: 1, 5, 9,  13 [check prev/next = div 4/2]
-T1: 2, 6, 10, 14 [div 2]
-T2: 3, 7, 11, 15 [check prev/next = div 2/4]
-T3: 4, 8, 12, 16 [div 4]
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-T1,other : (Build ptree async)
-T2,back  : (Build ptree sync)
-T3,front : (Exec  ptree sync; GC)
-- cannot share data; should not share data
-  - globals - copy what is needed
-- special variables need locking?
-  - say front removes ptr, back reads ptr - conflict if same time, otherwise accessing dead object
-  - remember building not the same
-- to do deadlines with ptree, must modify it to check time after each
-execution, i.e. each node
-
-Simplest solution right now is build ptree ex-frame and exec ptree
-in-frame
-- for model/IO thread, lock heap/nodes
-
-Triggers:
-Input device
-Disk IO
-Task
-
-BENCHMARK PTREE VS SEQ
-
-  0.007 seconds of real time
-  0.008437 seconds of total run time (0.004970 user, 0.003467 system)
-  114.29% CPU
-  22,068,894 processor cycles
-  785,216 bytes consed
-
-  0.008 seconds of real time
-  0.010509 seconds of total run time (0.010509 user, 0.000000 system)
-  137.50% CPU
-  25,084,855 processor cycles
-  785,200 bytes consed
-
-
-  SEQ
-
-  0.005 seconds of real time
-  0.004805 seconds of total run time (0.004805 user, 0.000000 system)
-  100.00% CPU
-  30 lambdas converted
-  14,340,772 processor cycles
-  571,984 bytes consed
-
-  0.008 seconds of real time
-  0.007788 seconds of total run time (0.004684 user, 0.003104 system)
-  100.00% CPU
-  30 lambdas converted
-  25,608,872 processor cycles
-  574,096 bytes consed
-
-Implement systemd socket activation in lisp to handle multitasking
-
-see notepad
-
-frame:
-sync
-- single ptree - all tasks must complete
-  or multiple tasks
-async
-- multi ptree - must be able to suspend after each task
-  or multiple tasks
-
-also model async but really for i/o?
-
-Frame:
-serial or parallel - but serial guarantees parallel not running
-
-difficult to control tasks running in parallel
-must specify which part to stop
-
-###############################
-
-SICL -> could use...
-Clasp -> future potential
-JSCL -> potential?
-Carp (compiles to C) -> poss alternative?
-Stalin Compiler (Scheme) -> adapt?
-ECL ->
-
-BENCHMARKS:
-https://www.reddit.com/r/Common_Lisp/comments/882mz4/clbench_common_lisp_benchmarking_suite/
-https://gitlab.common-lisp.net/ansi-test/cl-bench
-https://common-lisp.net/project/ecl/static/files/misc/benchmarks/2016-05-bench-all.html
-
-attempt to replace GC in simpler LISP implementation before SBCL
-
-If cannot replace ECL GC, maybe AllegroLisp or LispWorks can do RT?
-
 ZERO FRAGMENTATION HEAP -> LINEAR HEAP
 https://library.softwareverify.com/memory-fragmentation-your-worst-nightmare/
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+################################################################################
 
 Expand heap = (gc N>0)
 Shrink heap = (gc 0)
@@ -1460,14 +465,7 @@ Start of frame, cons, store address
 - To find avail, could search memory for pointer
 End of frame, modify avail to original address
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-  ;; Must be dedicated threads:
-  ;; * libinput - pull from queue ASAP
-  ;; * controller - process events regardless of model (maintain responsiveness)
-  ;; -> define two types of events:
-  ;;    * immediate - execute in controller
-  ;;    * normal - execute in model
+################################################################################
 
 https://emersion.fr/blog/2018/wayland-rendering-loop/
 
@@ -2117,3 +1115,50 @@ To create an abstract namespace socket, set the first byte in the sun_path field
 The advantage is that such a socket is automatically removed when the process exits, so there is no problem with socket reusing.
 
 }#
+
+
+################################################################################
+
+https://datenwolf.net/bl20110930-0001/
+
+My dream graphics system was completely abstract. Creating a window didn't involve selecting visual formats, framebuffer configurations. It was just "a window". Only when actual content is involved I want to tell the rendering subsystem, which color space I use. Ideally all applications worked in a contact color space (e.g. CIE XYZ or Lab), but sending images in some arbitrary color space, together with color profile information. Fonts/Glyphs would be rendered by some layer close to the hardware, to carefully adjust the rasterizing to the output devices properties. And last but not least the whole system should be distributed. Being able to "push" some window from one machine's display, to another machine's (and this action triggering a process migration) would be pinnacle. Imagine you begin writing an email on your smartphone, but you realize you'd prefer using a "usable" keyboard. Instead of saving a draft, closing the mail editor on the phone, transferring the draft to the PC, opening it, editing it there. Imaging you'd simply hold your smartphone besides your PC's monitor a NFC (near field communication) system in phone and monitor detects the relative position, and flick the email editor over to the PC allowing you to continue your edit there. Now imagine that this happens absolutely transparent to the programs involved, that this is something managed by the operating system.
+
+Wayland/X11 - uses window buffer/handles
+Emacs - uses text buffer
+
+Particle - uses cons cell (buffer)
+
+http://blog.rongarret.info/2015/05/why-lisp.html
+http://blog.rongarret.info/2006/10/top-ten-geek-business-myths.html
+
+Every atom generated is a vertex and lists are represented by edges.
+-> For strings, need to traverse name cell
+-> For symbols, need to traverse property list and name
+-> For numbers, traverse for bignums
+
+http://xahlee.info/UnixResource_dir/writ/lisp_problems.html
+
+Confusing
+Lisp's irregular syntax are practically confusing. For example, the difference between (list 1 2 3), '(1 2 3), (quote (1 2 3)) is a frequently asked question. The use of ` , ,@ are esoteric. If all these semantics use the regular syntactical form (f args), then much confusion will be reduced and people will understand and use these features better. For example:
+
+(a . b) ; bad
+
+(. a b) ; good
+'(1 2 3) ; bad
+
+(' 1 2 3) ; good
+; or
+(list-literal 1 2 3) ; good
+(setq myListXY `(,@ myListX ,@ myListY)) ; bad
+
+(setq myListXY (` (,@ myListX) (,@ myListY))) ; good
+; or
+(setq myListXY (eval-parts (splice myListX) (splice myListY))) ; good
+
+
+Deep Nesting is Rare
+The lisp's cons, as a underlying primitive that builds lists, even though a bit cumbersome, but works just fine when data structure used is simple. Even today, with all the Perl, Python, PHP, JavaScript etc langs that deal with lists, vast majority of list usage is just simple flat list, sometimes 2 level of nesting (list of list, list of hash, hash of list). 3 levels of nesting is seldom used, unless it is 3D matrices used mostly in computer graphics or linear algebra applications. Greater than 3 level is rarely seen. Systematic manipulation and exploitation of nested list, such as mapping to leafs, to particular level, transposition by permutation on level, or list structure pattern matching in today's functional langs, etc is hardly ever to be seen. (These are common idioms in so-called array languages. For example, APL, MATLAB, Mathematica.)
+
+So, in general, when you just deal with simple lists, the cumbersomeness of using {cons, car, cdr, caardr, …} for list doesn't really surface. Further, the cons is fundamentally rooted in the language. It's not something that can be easily changed except creating a new language. When there is a specific need in a application, there is a haphazard collection of functions that deal with lists at a higher level.
+
+KIND OF LIKE POINTERS, EH?
