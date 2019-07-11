@@ -39,7 +39,7 @@ Handle bad accept sock
 
   # Ideally, ep-cnt = number of connections to avoid excessive epoll-wait calls
   (=: fd-ep  (epoll~create-size 1))
-  (=: cnt-ep  64)
+  (=: cnt-ep  16)
   (=: evs-ep (epoll~make-event (: cnt-ep)))
 
   # Start simple - 1 pair for all sockets
@@ -278,21 +278,21 @@ Handle bad accept sock
 
      (when Debug (prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len))
 
-     # TODO: Need to handle for other value, i.e. print message
-     (when (= Bytes-Read-Len 4)
+     # Read/block until 4 bytes recv'd
+     (while (< Bytes-Read-Len 4)
+        (recv-bytes> This Sock ((: buf-rd) + Bytes-Read-Len) (- 4 Bytes-Read-Len)))
 
-       (let Length (car (struct (: buf-rd) '(I)))
+     (let Length (car (struct (: buf-rd) '(I)))
 
-          (when Debug (prinl (usec) " | recv-msg> |   Length-Msg=" Length))
+        (when Debug (prinl (usec) " | recv-msg> |   Length-Msg=" Length))
 
-          (let Bytes-Read-Msg (recv-bytes> This Sock NIL Length)
+        (let Bytes-Read-Msg (recv-bytes> This Sock NIL Length)
 
-             #Validate Length?
-
-             (when (= Bytes-Read-Msg Length)
-             
-               (when Debug (prinl (usec) " | recv-msg> | Bytes-Read-Msg=" Bytes-Read-Msg))
-               (pack (struct (: buf-rd) (cons 'C Length)))))))))
+          (while (< Bytes-Read-Msg Length)
+             (recv-bytes> This Sock ((: buf-rd) + Bytes-Read-Msg) (- Length Bytes-Read-Msg)))
+           
+          (when Debug (prinl (usec) " | recv-msg> | Bytes-Read-Msg=" Bytes-Read-Msg))
+          (pack (struct (: buf-rd) (cons 'C Length)))))))
 
 
 (dm send-clients-msg> (Msg)

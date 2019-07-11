@@ -43,7 +43,7 @@
 (def 'SIZE-EVENT 12)
 
 (de make-event (Cnt)
-  (native "@" "malloc" 'N (* 12 Cnt)))
+  (native "@" "calloc" 'N 1 (* 12 Cnt)))
 
 
 (de create-size (Size)
@@ -68,7 +68,7 @@
 
 (de ctl-epfd (Epfd Op Fd Flags)
   #Possibly use automatic variables, allocated on the stack
-  (let Event (native "@" "malloc" 'N 12)
+  (let Event (native "@" "calloc" 'N 1 12)
     (struct Event 'N (cons Flags 4) (cons Fd 4))
     (ctl-epfd-op Epfd
                  Op

@@ -219,12 +219,16 @@ Class variables may be indicated by an upper case letter
   Solution: Ignore Msg=NIL or use edge triggering for epoll
   }#
   
+  # Must flush socket - aka read up to recv len until empty
+  
+  
+  
   (let (Msg  (ipc~recv-msg> *ipc Sock Events)
         Data (any Msg)
         Name-Fn (get Data 1))
   
     #(prinl (usec) " | RENDER | recv-conn  | " Msg)
-  
+    
     # For now, assume memcpy
     (cond ((= Name-Fn "mc")
            (ipc~handle-memcpy> *ipc Sock Data))
@@ -232,6 +236,31 @@ Class variables may be indicated by an upper case letter
           (T
            (prinl (usec) " | RENDER  | recv-conn | UNKNOWN REQUEST! " Msg)))))
   
+
+#{
+(dm flush-msgs> (Sock Buf Sz)
+
+  #For Buf-Sz: pass T to recv full length, else pass length
+  (let Bytes-Read (socket~recv Sock
+                               (if (num? Buf) Buf (: buf-rd))
+                               (if (num? Sz)  Sz  (: sz-buf-rd))
+                               0)
+
+     #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
+
+     # Handle -1
+     (if (=0 Bytes-Read)
+     
+         # Poss check for (= (& Events epoll~ERR) epoll~ERR) and so on...
+         # For now, assume error and disconnect
+         (disconnect-client> This Sock)
+
+         # Read msgs until len
+         T)
+
+     Bytes-Read))  
+}#
+
 
 (de main ()
   (init-render)
