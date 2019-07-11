@@ -42,40 +42,40 @@
 
 (def 'SIZE-EVENT 12)
 
-(de make-event (N)
-  (native "@" "malloc" 'N (* 12 N)))
+(de make-event (Cnt)
+  (native "@" "malloc" 'N (* 12 Cnt)))
 
 
 (de create-size (Size)
-    (native "@" "epoll_create" 'I Size))
+  (native "@" "epoll_create" 'I Size))
 
 
 (de create-1 (Flags)
-    (native "@" "epoll_create1" 'I Flags))
+  (native "@" "epoll_create1" 'I Flags))
 
 
 (de ctl-epfd-op (Epfd Op Fd Event)
-    (native "@" "epoll_ctl" 'I Epfd Op Fd Event))
+  (native "@" "epoll_ctl" 'I Epfd Op Fd Event))
 
 
-(de wait-epfd (Epfd Event Maxevents Timeout)
-    (native "@" "epoll_wait" 'I Epfd Event Maxevents Timeout))
+(de wait-epfd (Epfd Events Maxevents Timeout)
+  (native "@" "epoll_wait" 'I Epfd Events Maxevents Timeout))
 
 
 (de pwait (Epfd Event Maxevents Timeout Ss)
-    (native "@" "epoll_pwait" 'I Epfd Event Maxevents Timeout Ss))
+  (native "@" "epoll_pwait" 'I Epfd Event Maxevents Timeout Ss))
 
 
 (de ctl-epfd (Epfd Op Fd Flags)
-    #Possibly use automatic variables, allocated on the stack
-    (let Event (native "@" "malloc" 'N 12)
-	 (struct Event 'N (cons Flags 4) (cons Fd 4))
-	 (ctl-epfd-op Epfd
-		      Op
-		      Fd
-		      Event)
-	 (native "@" "free" NIL Event)))
+  #Possibly use automatic variables, allocated on the stack
+  (let Event (native "@" "malloc" 'N 12)
+    (struct Event 'N (cons Flags 4) (cons Fd 4))
+    (ctl-epfd-op Epfd
+                 Op
+                 Fd
+                 Event)
+    (native "@" "free" NIL Event)))
 
 
-(de get-event (Events N)
-  (struct (+ Events (* (- N 1) SIZE-EVENT)) '(I I)))
+(de get-event (Events Cnt)
+  (struct (+ Events (* (- Cnt 1) SIZE-EVENT)) '(I I)))

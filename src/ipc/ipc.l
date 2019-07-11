@@ -39,8 +39,8 @@ Handle bad accept sock
 
   # Ideally, ep-cnt = number of connections to avoid excessive epoll-wait calls
   (=: fd-ep  (epoll~create-size 1))
-  (=: cnt-ep  4)
-  (=: evs-ep (epoll~make-event (: ep-cnt)))
+  (=: cnt-ep  64)
+  (=: evs-ep (epoll~make-event (: cnt-ep)))
 
   # Start simple - 1 pair for all sockets
   # Later, could do per connection and use as cache...
@@ -322,15 +322,20 @@ Handle bad accept sock
      0 = return if nothing
   * returns event count
   }#
-            
- (for I (epoll~wait-epfd (: fd-ep)
-                         (: evs-ep)
-                         (: cnt-ep)
-                         Timeout)
-                         
-   (let (Ep-Events (epoll~get-event (: evs-ep) I)
-         Fd        (get Ep-Events 2)) # Evs = 1
+           
+  (let Cnt (epoll~wait-epfd (: fd-ep)
+                            (: evs-ep)
+                            (: cnt-ep)
+                            Timeout)
+    (for I Cnt
+                            
+      (let (Ep-Events (epoll~get-event (: evs-ep) I)
+            Fd        (get Ep-Events 2)) # Evs = 1
 
-     (if (= Fd (: listener))
-         (accept-sock> This Fd)
-         (dispatch-handler-conn> This Fd)))))
+        #(println Cnt Ep-Events)
+
+        (if (= Fd (: listener))
+            (accept-sock> This Fd)
+            (dispatch-handler-conn> This Fd))))
+           
+    Cnt))

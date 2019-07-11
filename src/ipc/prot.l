@@ -88,3 +88,21 @@
                Sock
                T
                208))
+               
+
+# Higher level functions
+
+
+(dm update-pvm> ()
+  (write-pvm> This 
+              (read-pvm> This (get-fd> This "MODEL"))
+              (get-fd> This "RENDER")))
+       
+       
+(dm update-vert> (Cnt)
+  (write-vert> This 
+               (read-vert> This (get-fd> This "MODEL") Cnt)
+               Cnt
+               (get-fd> This "RENDER")))
+
+               

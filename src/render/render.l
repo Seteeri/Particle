@@ -194,15 +194,16 @@ Class variables may be indicated by an upper case letter
 
     # Broadcast frame time
     # Must handle if send fails, i.e. clients slow - in this case, ignore
+    
     (ipc~send-clients-msg> *ipc (format (usec)))
     
-    # Read msgs within timelimit or until EOF/NIL msg
-    # This will timeout after ~16 ms
+    # Read all msgs in queue (up to 64) at this point
     # Track amount of memcpy; break after so many bytes
-    (ipc~poll> *ipc 16)
+    
+    (ipc~poll> *ipc 0)
 
     # Force gc
-    (gc)
+    #(gc)
     
     T)
 
@@ -229,7 +230,7 @@ Class variables may be indicated by an upper case letter
            (ipc~handle-memcpy> *ipc Sock Data))
 
           (T
-           (prinl (usec) " | RENDER  | recv-conn-ctrl | UNKNOWN REQUEST! " Msg)))))
+           (prinl (usec) " | RENDER  | recv-conn | UNKNOWN REQUEST! " Msg)))))
   
 
 (de main ()

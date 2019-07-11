@@ -16,7 +16,6 @@
    (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
          Sock-Render (ipc~get-fd> *ipc "RENDER")
          Cam         (if *cam *cam (ipc~read-pvm> *ipc Sock-Model)))
-      #(println Cam)
 
       # Modify position
      (let Cam-New (place Cnt Cam (+ (get Cam Cnt) Delta))
@@ -25,8 +24,8 @@
        #(write-pvm Cam Sock-Model)
 
        # Push update to render
+       #(prinl "SENDING CAM...")
        (ipc~write-pvm> *ipc Cam-New Sock-Render)
-
-       #(prinl (usec))
-
+       #(prinl "SENT CAM...")
+       
        (setq *cam Cam-New))))

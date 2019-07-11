@@ -56,16 +56,9 @@
                      (list PATH-UDS-CONTROL 'ipc~block handle-ctrl   "CONTROL" ID-C)
                      (list PATH-UDS-RENDER  'ipc~block handle-render "RENDER"  ID-C)))))
                      
-  # Make globals for these
-  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-        Sock-Ctrl   (ipc~get-fd> *ipc "CONTROL")
-        Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Vert        (ipc~read-vert> *ipc Sock-Model *i-proc))
-
-    (ipc~send-msg> *ipc Sock-Ctrl "Ready")
-
-    (ipc~write-vert> *ipc Vert *i-proc Sock-Render)
-    (setq *vert Vert)))
+  (ipc~send-msg> *ipc "RDY" (ipc~get-fd> *ipc "CONTROL"))
+      
+  (setq *vert (ipc~read-vert> *ipc (ipc~get-fd> *ipc "MODEL") *i-proc)))
     
 
 (de handle-client (Sock))
@@ -80,12 +73,31 @@
 (de handle-ctrl (Sock)
 
   (let (Msg (ipc~recv-msg> *ipc Sock)
-        Data (any Msg))
+        Data (any Msg)
+        Name (get Data 1))
 
-    # Got a task
-
-    (when T
-      (prinl Msg))))
+    (cond ((= Name 'KEYBOARD-KEY)
+           (handle-keyboard Sock Data))
+           
+          ((= Name "update-vert")
+           #(prinl (usec) " | " *Pid " | " Msg)
+           (ipc~update-vert> *ipc *i-proc)
+           T)
+           
+          ((= Name "update-pvm")
+           #(prinl (usec) " | " *Pid " | " Msg)
+           (ipc~update-pvm> *ipc)
+           T)
+           
+          (T
+           T))
+               
+    # Send ready when complete
+    (ipc~send-msg> *ipc "RDY" Sock)
+    
+    #(prinl (usec) " | " *Pid " | " Msg)
+    
+    T))
       
 
 (de handle-model (Sock)
@@ -100,6 +112,8 @@
 
   (let Msg (ipc~recv-msg> *ipc Sock)
 
+   (when T
+   
    # Modify position
    (let (Cnt   (case *i-proc
                   (1 13)
@@ -119,9 +133,10 @@
      (ipc~write-vert> *ipc Vert-New *i-proc Sock)
      
      # Push update to model
-      
      
      (setq *vert Vert-New))
+
+    )
 
     (when NIL
       (prinl Msg))))

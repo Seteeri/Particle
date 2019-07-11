@@ -39,9 +39,8 @@
 
 
 #Globals
-(def '*ep-events)
-(def '*cam) # TEMP
-(def '*vert) # TEMP
+(def '*q-worker)
+(def '*q-msg)
 
 
 (de init-ctrl ()
@@ -65,28 +64,41 @@
 
   # Create queue
   # Push below msgs into queue for workers to resolve
-                     
+  #
   # Pull PVM from Model -> Send PVM and nodes to Render
-  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-        Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Cam         (ipc~read-pvm> *ipc Sock-Model))
+  (queue '*q-msg "(update-vert 1)")
+  (queue '*q-msg "(update-vert 2)")
+  (queue '*q-msg "(update-pvm)")
+  
+    
+  (when NIL
+    (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
+          Sock-Render (ipc~get-fd> *ipc "RENDER")
+          Cam         (ipc~read-pvm> *ipc Sock-Model))
 
-    (when NIL # Testing
-      (ipc~write-vert> *ipc (ipc~read-vert> *ipc Sock-Model 1)
-                  1
-                  Sock-Render))
-                
-    (ipc~write-pvm> *ipc Cam Sock-Render)
-        
-    T))
+      (when NIL # Testing
+        (ipc~write-vert> *ipc (ipc~read-vert> *ipc Sock-Model 1)
+                    1
+                    Sock-Render))
+                  
+      (ipc~write-pvm> *ipc Cam Sock-Render))))
 
 
 (de handle-worker (Sock)
 
   (let (Msg (ipc~recv-msg> *ipc Sock)
         Data (any Msg))
-            
-    (prinl (usec) " | CTRL   | handle-input | " Msg)))
+    
+    # Poss handle finish messages also
+    
+    (let Msg (pop '*q-msg)
+      (if Msg
+        (ipc~send-msg> *ipc Msg Sock)
+        (queue '*q-worker Sock)))
+        
+    #(prinl (usec) " | CTRL   | handle-ctrl | " Msg)
+    
+    T))
     
 
 (de run-ctrl (Timeout)
@@ -98,24 +110,21 @@
 (de handle-input (Sock)
 
   (let (Msg (ipc~recv-msg> *ipc Sock)
-        Data (any Msg)
-        Name (get Data 1))
+        Data (any Msg))
     #(prinl (usec) " | CTRL   | handle-input | ")
-
-    # When event arrives, handle event, try to get worker from queue, send task
-    # * handle-worker will get ready messages and push worker IDs to worker FIFO
-    # * if no worker available, put in FIFO task queue
-
-    # Ctrl will figure out what task maps to what input event, then dispatch
-    # that task to a worker
-    # Ctrl keeps track of events which are serial in nature
     
-    # Integrate input since even if we pull events, they are processed serially
-    # Could execute tasks in parallel if they are from different devices
-    # however...
+    # If worker available
+    #    If event-queue: send event-queue
+    #    Else event-new: send event-new
     
-    (when (= Name 'KEYBOARD-KEY)
-      (handle-keyboard Sock Data))))
+    (when T
+      (let Worker (pop '*q-worker)
+        (if Worker
+          (let Msg-Q (pop '*q-msg)
+            (if Msg-Q
+              (ipc~send-msg> *ipc Msg-Q Worker)
+              (ipc~send-msg> *ipc Msg   Worker)))
+          (queue '*q-msg Msg))))))
 
 
 (de handle-model (Sock)

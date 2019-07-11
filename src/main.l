@@ -85,19 +85,19 @@ own proc
 
       (when T
           (unless (setq *proc-work-1 (fork))
-            (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts 1))
-          (unless (setq *proc-work-2 (fork))
-            (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts 2)))
+            (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts 1)))
+          #(unless (setq *proc-work-2 (fork))
+          #  (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts 2)))
 
       # Use taskset to assign processes here
 
       (println *proc-render *proc-model *proc-input *proc-ctrl *proc-work-1 *proc-work-2)
                   
       (prinl (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read)))
+      #(prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))
       
-      (prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))
+      (prinl (pipe (call "taskset" "-pc" "1" (format *proc-model)) (read)))
       
-      (prinl (pipe (call "taskset" "-pc" "2" (format *proc-model)) (read)))
       (prinl (pipe (call "taskset" "-pc" "2" (format *proc-ctrl))  (read)))
       (prinl (pipe (call "taskset" "-pc" "2" (format *proc-input)) (read)))
 
