@@ -1,15 +1,15 @@
 #{
 DATAFLOW:
 
-      Model <---+
-                |
-                |
-                V
-Input/Ctrl -> Worker N
-        ^       ^
-        |       |
-        V       |
-      Render <--+
+      Model <----+
+        ^        |
+        |        |
+        |        V
+Input/Ctrl --> Worker N
+        |        ^
+        |        |
+        V        |
+      Render <---+
 
 Memcpy Trail
 * Ctrl/Serialize, Ctrl/Socket -> Render/GL
@@ -98,9 +98,10 @@ own proc
       (prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))
       
       (prinl (pipe (call "taskset" "-pc" "2" (format *proc-model)) (read)))
-      (prinl (pipe (call "taskset" "-pc" "2" (format *proc-ctrl)) (read)))
+      (prinl (pipe (call "taskset" "-pc" "2" (format *proc-ctrl))  (read)))
       (prinl (pipe (call "taskset" "-pc" "2" (format *proc-input)) (read)))
-            
+
+      # Poss push all of CPU 2 to 3 with render?
       (prinl (pipe (call "taskset" "-pc" "3" (format *proc-render)) (read)))
       
       T))

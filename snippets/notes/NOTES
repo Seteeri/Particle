@@ -1167,6 +1167,12 @@ KIND OF LIKE POINTERS, EH?
 
 PTR = INPUT/EVAL
 
+Note, when a symbol or cons cell is created, it is recursively drawn
+
+A symbol, property list, value, name are all drawn
+For symbols, a "draw" property is attached which contains the gl parameters
+This property itself is also drawn in OpenGL
+
 ########################
 
 STRING/SYM FUNCTIONALITY
@@ -1302,3 +1308,9 @@ NUM FUNCTIONALITY
 Use <mod>+NUM to produce a number
 
 Can create option for this...since it is fundamental
+
+
+In README, go over how we invert the process model and how the current model
+has much redundancy and overhead and wasting resources
+
+[![Alt text](https://img.youtube.com/vi/BemmZaOyzbk/0.jpg)](https://www.youtube.com/watch?v=BemmZaOyzbk)

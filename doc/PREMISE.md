@@ -193,3 +193,99 @@ however, there are only so many capable bricks and the only way to create new
 bricks is to go into the source code to implement one. This requires an
 understanding of the C language and the internals of the game engine. Other 
 major issues with scripting languages include performance and interoperability.
+
+
+### The Inspiration
+
+It was designed to address limitations I've personally encountered in the quest 
+for a more efficient workflow; the main limitation being, confinement to the 
+desktop/window metaphor and the staticness of widgets.
+
+The chances of a Linux *desktop* are virtually nil:
+
+1. Ecosystem/infrastructure - most popular programs are developed for Windows 
+and MacOS first
+
+2. Mobile computing - desktop segment is less important to the average user as
+computing shifts to mobile devices and the cloud
+
+3. Feature cost - open-source versions may not have feature parity with 
+proprietary solutions, and thus financial cost will not outweight features; not 
+to mention, predictable guranteed support for paid versions, whereas open source
+depends on when developers have time to respond; maybe this can be offset when
+more reliable crowdfunding platforms
+
+4. Learning cost - learning a new system may not be worth it unless it provides
+a significant technological advantage, which again FOSS programs tend to lack
+feature parity compared to their proprietary counterparts; they may have a few 
+significant features but it may or may not be enough.
+
+5. Social cost - programming languages follow trends, and so do programs; FOSS 
+tends to lack marketing or advertising, although social media has alleviated
+some of this
+
+6. Peformance - as long as programs run fast enough on similar platforms, 
+performance is a minor issue
+
+* Vendor lock-in/subscriptions are another possible reason to switch to FOSS (like
+CERN).
+* Privacy issues and data breaches (security) is another possible reason to
+switch, although still not relevant enough for the average user
+
+In other words, Windows and MacOS users will not adopt a desktop and relearn
+a different set of procedures that results in the same functionality that their
+current desktop already provides (see book "Diffusion of Innovations" by 
+Everett Rogers). GNOME, KDE, Cinnamon, MATE, Xfce, etc. have some unique 
+features, but at the end of the day, it's just another desktop and thus the same 
+underlying model for interacting with a computer.
+
+**The way for a future FOSS system does not lie with the desktop but with the 
+computing needs of tomorrow.**
+
+The question is whether FOSS development provides an advantage over proprietary
+development - possibly we are starting to see the tipping point where large
+companies are releasing internally developed projects to the coummunity, whether
+for reasons of convenience or prestige, or actual altruism.
+
+With everything just stated, Wayland, systemd debate, Moore's Law, and finally 
+emerging AR/VR technologies, I believe this presents an opportunity to redefine
+the computing environment. Particle is not an entirely new idea, but a 
+different attempt to build upon the success and failures of those before.
+
+## The Delta
+
+There have been numerous implementations and attemps at structured or 
+projectional editors going all the way back to the days of Interlisp-D and to 
+the new projects being crowdfunded. However, several issues have yet to be 
+addressed:
+
+* Integration with existing interfaces (the desktop)
+* Homoiconic GUI
+  * Requires meta-circular evaluator of language implementation + 
+  homoiconicity of language design
+  * The nodes must be able to edit nodes (itself)
+  * The editor must be able to edit itself
+
+Considering computing technology becoming increasingly integrated into our
+everyday lives, the bottleneck to leveraging computing most effectively and 
+driving innovation will be the connection between man and machine, and just as
+important, managing the information overload occuring today. What good is having
+enormous amounts of information available at your fingertips if you cannot parse
+it?
+
+The average user is familiar with GUI widgets, but what if those were completely
+dynamic and an intrinsic property, similar to how Emacs allows everything to be 
+customized through elisp. Teaching a lay user how to program is not a trivial 
+task as it is inherently based upon the user's cognitive ability, a reflection 
+of the mind if you will (the history and usefulness of VPLs are a good study). 
+Having observed Blender's nodal workflow and Unreal's Blueprint system, I am
+attempting to combine those models of interaction with the analogy of LEGOs, 
+while at the same time allowing for the entire system to remain hackable to 
+programmers to maintain a gradual learning curve.
+
+I do not believe it is about dumbing down computers and technology to make it 
+easier to learn, but creating the right tools around programming to drive 
+motivation and learning.
+
+*See writings*
+

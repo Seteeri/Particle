@@ -52,11 +52,11 @@
 
     (setq *ipc (new '(ipc~+IPC)
                (pack "/tmp/protoform-worker-" *i-proc ".socket") 'ipc~block handle-client
-               (list (list PATH-UDS-MODEL   'ipc~block handle-model   "MODEL"   ID-C)
-                     (list PATH-UDS-CONTROL 'ipc~block handle-control "CONTROL" ID-C)
-                     (list PATH-UDS-RENDER  'ipc~block handle-render  "RENDER"  ID-C)))))
+               (list (list PATH-UDS-MODEL   'ipc~block handle-model  "MODEL"   ID-C)
+                     (list PATH-UDS-CONTROL 'ipc~block handle-ctrl   "CONTROL" ID-C)
+                     (list PATH-UDS-RENDER  'ipc~block handle-render "RENDER"  ID-C)))))
                      
-  # Pull PVM from Model -> Send PVM and nodes to Render
+  # Make globals for these
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Ctrl   (ipc~get-fd> *ipc "CONTROL")
         Sock-Render (ipc~get-fd> *ipc "RENDER")
@@ -77,12 +77,14 @@
   (loop (ipc~poll> *ipc Timeout)))
 
 
-(de handle-control (Sock)
+(de handle-ctrl (Sock)
 
   (let (Msg (ipc~recv-msg> *ipc Sock)
         Data (any Msg))
 
-    (when NIL
+    # Got a task
+
+    (when T
       (prinl Msg))))
       
 

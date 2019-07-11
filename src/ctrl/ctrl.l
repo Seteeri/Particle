@@ -63,6 +63,8 @@
                      (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT"  ID-C)
                      (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER" ID-C)))))
 
+  # Create queue
+  # Push below msgs into queue for workers to resolve
                      
   # Pull PVM from Model -> Send PVM and nodes to Render
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
@@ -83,7 +85,7 @@
 
   (let (Msg (ipc~recv-msg> *ipc Sock)
         Data (any Msg))
-    
+            
     (prinl (usec) " | CTRL   | handle-input | " Msg)))
     
 
@@ -100,8 +102,18 @@
         Name (get Data 1))
     #(prinl (usec) " | CTRL   | handle-input | ")
 
-    # Send to next ready request in buffer (sent from worker)
+    # When event arrives, handle event, try to get worker from queue, send task
+    # * handle-worker will get ready messages and push worker IDs to worker FIFO
+    # * if no worker available, put in FIFO task queue
 
+    # Ctrl will figure out what task maps to what input event, then dispatch
+    # that task to a worker
+    # Ctrl keeps track of events which are serial in nature
+    
+    # Integrate input since even if we pull events, they are processed serially
+    # Could execute tasks in parallel if they are from different devices
+    # however...
+    
     (when (= Name 'KEYBOARD-KEY)
       (handle-keyboard Sock Data))))
 
