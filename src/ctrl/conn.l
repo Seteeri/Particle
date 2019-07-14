@@ -18,9 +18,9 @@
 
      (with *projview
 
-      (=: position (list (+ (get (: position) 1) (get Move 1))
-                         (+ (get (: position) 2) (get Move 2))
-                         10.0))
+      (=: pos (list (+ (get (: pos) 1) (get Move 1))
+                    (+ (get (: pos) 2) (get Move 2))
+                    10.0))
 
       (update-mat-view> *projview)     
       

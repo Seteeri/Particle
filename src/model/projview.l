@@ -30,9 +30,8 @@
 
     (=: mat-view    (when Mat-view Mat-view))
 
-    (=: position    (if Pos Pos (0.0 0.0 10.0)))
-    (=: rotation    (if Rot Rot (0.0 0.0 0.0)))
-    (=: displace    (if Displace Displace (8.0 8.0 4.0)))
+    (=: pos    (if Pos Pos (0.0 0.0 10.0)))
+    (=: rot    (if Rot Rot (0.0 0.0 0.0)))
 
     #scale is (1.0 1.0 1.0)...
     
@@ -53,14 +52,13 @@
                      (: near-ortho)
                      (: ortho-far))
           (cons -1.0 (: mat-view))
-          (cons -1.0 (: position))
-          (cons -1.0 (: rotation))
-          (cons -1.0 (: displace))))
+          (cons -1.0 (: pos))
+          (cons -1.0 (: rot))))
           
 
 (dm deserialize-from-ptr> (Ptr)
   (let ((Width Height Type-Proj Mat-Proj Fov Near Far Scale-Ortho Near-Ortho
-         Ortho-Far Mat-View Position Rotation Displace)
+         Ortho-Far Mat-View Pos Rot Displace)
         (struct Ptr
                 '((I . 1)
                   (I . 1)
@@ -73,7 +71,6 @@
                   (-1.0 . 1)
                   (-1.0 . 1)
                   (-1.0 . 16)
-                  (-1.0 . 3)
                   (-1.0 . 3)
                   (-1.0 . 3))))
                                     
@@ -88,9 +85,8 @@
     (=: near-ortho (car Near-Ortho))
     (=: ortho-far (car Ortho-Far))
     (=: mat-view Mat-View)
-    (=: position Position)
-    (=: rotation Rotation)
-    (=: displace Displace)))
+    (=: pos Pos)
+    (=: rot Rot)))
 
     
 (dm update-mat-proj> ()
@@ -134,10 +130,10 @@
     
     #This is performing innermost first so:
     #(INV (((T * Rz) Ry) Rx))
-    (=: mat-view (mat4-inverse (mat4-mul (mat4-rotation-x (car (nth (: rotation) 1)))
-           (mat4-mul (mat4-rotation-y (car (nth (: rotation) 2)))
-               (mat4-mul (mat4-rotation-z (car (nth (: rotation) 3)))
-                   (mat4-translation (: position))))))))
+    (=: mat-view (mat4-inverse (mat4-mul (mat4-rotation-x (car (nth (: rot) 1)))
+           (mat4-mul (mat4-rotation-y (car (nth (: rot) 2)))
+               (mat4-mul (mat4-rotation-z (car (nth (: rot) 3)))
+                   (mat4-translation (: pos))))))))
 
 
 (dm serialize-mat-proj-to-ptr> (Ptr)
