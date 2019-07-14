@@ -128,6 +128,7 @@ Store DAGs as binary trees?
        * Update procs
      * Model needs to write data
      * Implement message flushing
+     * Shorten projview translation names
      
      * Tasks uses DAG/ptrees [Later]
        * Built on top of cons cells...

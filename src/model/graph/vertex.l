@@ -98,6 +98,45 @@
                              (cons 96 4) #y-sz
                              (cons 0 4) #flag
                              )))
+
+
+(dm serialize-to-ptr-2> (Ptr)
+
+  (struct Ptr 'N 
+          (char (: char))
+          ((: off-texel) 4)
+          (cons -1.0 (: rgba))
+          (cons -1.0 (: pos))
+          (cons -1.0 (: rota))
+          (cons -1.0 (: sca))
+          (cons -1.0 (: mm))
+          (cons -1.0 (: uv))))
+
+
+(dm deserialize-from-ptr> (Ptr)
+
+  (let ((Char Off-Texel Rgba Pos Rota Sca Mm Uv)
+        (struct Ptr 
+                '((C . 1)
+                  (I . 1)
+                  (-1.0 . 16)
+                  (-1.0 . 16)
+                  (-1.0 . 16)
+                  (-1.0 . 16)
+                  (-1.0 . 16)
+                  (-1.0 . 16))))
+    
+    (=: char Char)
+    (=: off-texel Off-Texel)
+
+    (=: rgba Rgba)
+    
+    (=: pos  Pos)
+    (=: rota Rota)
+    (=: sca  Sca)
+    
+    (=: mm Mm)
+    (=: uv Uv)))
         
         
 ################################################################################
