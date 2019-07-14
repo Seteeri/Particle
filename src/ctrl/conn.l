@@ -22,12 +22,17 @@
                          (+ (get (: position) 2) (get Move 2))
                          10.0))
 
-      (update-mat-view> *projview)
-
-      # Push to model also
-
+      (update-mat-view> *projview)     
+      
       (req-send-obj *ipc
                     Sock-Render
+                    *projview
+                    128
+                    0)
+                    
+      # Push to model also
+      (req-send-obj *ipc
+                    Sock-Model
                     *projview
                     128
                     0))))
@@ -37,8 +42,8 @@
   # Better to write all strings/bytes to buf-wr, then send in one go
 
   (send-msg Ipc
-           (fmt-msg-send> Obj Off-Obj)
-           Sock)
+            (fmt-msg-send> Obj Off-Obj)
+            Sock)
                  
   (send-obj Ipc Sock Obj Sz-Obj Off-Obj))
   
@@ -47,8 +52,8 @@
   # Either pass in object or instance new one
 
   (send-msg Ipc
-           (fmt-msg-recv> Obj Off-Obj)
-           Sock)
+            (fmt-msg-recv> Obj Off-Obj)
+            Sock)
 
   (recv-obj Ipc Sock Obj Sz-Obj Off-Obj))
 

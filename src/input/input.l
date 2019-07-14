@@ -102,7 +102,7 @@
       #(println Msg)
 
       # Workers will send messages to input when they are ready
-      (send-clients-msg *ipc Msg))))
+      (send-msg-clients *ipc Msg))))
 
 
 (de build-ev-lst-str (Event Type)

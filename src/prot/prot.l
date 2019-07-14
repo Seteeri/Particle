@@ -102,21 +102,15 @@ Protocol should only call methods on Ipc and Objects passed to it
         (setq Length (: ipc~sz-buf-rd)))
 
       (struct (: ipc~buf-wr) 'N (cons Length 4))
-
-      # Print on error
       (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) 4)
       
-      (struct    (: ipc~buf-wr)         'N (cons Msg Length) (cons 0 1))
-
+      (struct (: ipc~buf-wr) 'N (cons Msg Length) (cons 0 1))
       (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) Length))))
 
 
-(de send-clients-msg (Ipc Msg)
-  #For now, meant for servers but poss pass in conns instead of clients
-    
+(de send-msg-clients (Ipc Msg)    
   (for Client (get Ipc 'ipc~clients)
     (send-msg Ipc Msg (car Client))))
-
 
 
 ################################################################################

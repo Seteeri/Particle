@@ -91,74 +91,17 @@
 							     (mat4-translation (: position))))))))
 
 
-(de write-mat-proj-to-shm (Mmap Projview)
-  (write-matrix-to-ptr (get Mmap 'ptr)
-		       (get Projview 'mat-proj)
-		       0))
+(dm serialize-mat-proj-to-ptr> (Ptr)
+  (serialize-mat-to-ptr (: mat-proj) Ptr))
 
 
-(de write-mat-view-to-shm (Mmap Projview)
-  (write-matrix-to-ptr (get Mmap 'ptr)
-		       (get Projview 'mat-view)
-		       16))
+(dm serialize-mat-view-to-ptr> (Ptr)
+  (serialize-mat-to-ptr (: mat-view) Ptr))
 
 
-(de write-matrix-to-ptr (Ptr
-			 M
-			 Offset)
-    (struct (+ Ptr Offset) 'N
-	    (list -1.0 (get M 1)  (get M 2)  (get M 3)  (get M 4)
-                       (get M 5)  (get M 6)  (get M 7)  (get M 8)
-	               (get M 9)  (get M 10) (get M 11) (get M 12)
-		       (get M 13) (get M 14) (get M 15) (get M 16))))
-
-
-################################################################################
-
-# Same as above
 (de serialize-mat-to-ptr (M Ptr)
-    (struct Ptr 'N
-	    (list -1.0 (get M 1)  (get M 2)  (get M 3)  (get M 4)
-                       (get M 5)  (get M 6)  (get M 7)  (get M 8)
-	               (get M 9)  (get M 10) (get M 11) (get M 12)
-		       (get M 13) (get M 14) (get M 15) (get M 16)))
-    Ptr)
-
-
-(dm serialize-proj-to-lst> ()
-    #Return list of bytes
-    (serialize-mat-to-ptr (: mat-proj) (: ptr))
-    (struct (: ptr) '(B . 64)))
-
-
-(dm serialize-view-to-lst> ()
-    #Return list of bytes
-    (serialize-mat-to-ptr (: mat-view) (: ptr))
-    (struct (: ptr) '(B . 64)))
-
-
-(dm serialize-proj-to-str> ()
-    (pack "("
-	  (glue " " (let L NIL
-			 (for N (serialize-proj-to-lst> This)
-			      (push 'L (format N)))
-			 (flip 'L)
-			 L))
-	  ")"))
-
-
-(dm serialize-view-to-str> ()
-    (pack "("
-	  (glue " " (let L NIL
-			 (for N (serialize-view-to-lst> This)
-			      (push 'L (format N)))
-			 (flip 'L)
-			 L))
-	  ")"))
-
-
-################################################################################
-
+  (struct (+ Ptr Offset) 'N (cons -1.0 M)))
+                 
 
 (dm cpy-to-ptr> (Ptr)
   (serialize-mat-to-ptr (: mat-proj) Ptr)

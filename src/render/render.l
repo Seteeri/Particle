@@ -196,7 +196,7 @@ Class variables may be indicated by an upper case letter
     # Broadcast frame time
     # Must handle if send fails, i.e. clients slow - in this case, ignore
 
-    (send-clients-msg *ipc (format (usec)))
+    (send-msg-clients *ipc (format (usec)))
 
     # Read all msgs in queue (up to 64) at this point
     # Track amount of memcpy; break after so many bytes

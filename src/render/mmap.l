@@ -119,14 +119,13 @@
 
 
 (de init-mmap-projview ()
-    (let (Mmap (init-mmap
-		(car (nth *params-mmap-projview 2))
-		 (car (nth *params-mmap-projview 3))
-		 T)
-          Ptr (get Mmap 'ptr))
-      (write-mat-proj-to-shm Mmap *projview)
-      (write-mat-view-to-shm Mmap *projview)
-      Mmap))
+  (let (Mmap (init-mmap (car (nth *params-mmap-projview 2))
+                        (car (nth *params-mmap-projview 3))
+                        T)
+        Ptr (get Mmap 'ptr))
+    (serialize-mat-proj-to-ptr> *projview (get Mmap 'ptr))
+    (serialize-mat-view-to-ptr> *projview (+ (get Mmap 'ptr) 16))
+    Mmap))
 
 
 (de init-mmap-tex-glyphs ()

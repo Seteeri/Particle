@@ -7,6 +7,10 @@
                                 0.5137255 0.5803922 0.60784316 1.0))
 
 
+# Reuse across all vertices for txfer
+(def '*ptr-vert (native "@" "malloc" 'N 208))
+
+
 (class +Vertex)
 (dm T (Char       #Use to get offset, if char then data is char also
        RGBA
@@ -25,10 +29,7 @@
   (=: mm (mat4-identity))
       
   (=: uv NIL)
-  
-  #Reuse across all vertices for txfer
-  (=: ptr (native "@" "malloc" 'N 208))
-      
+        
   (update-glyph> This Char)
   (update-model-matrix> This))
 
@@ -102,23 +103,6 @@
                              (cons 96 4) #y-sz
                              (cons 0 4) #flag
                              )))
-
-
-(dm serialize-to-lst> ()
-
-  (serialize-to-ptr> This)
-  (struct (: ptr) '(B . 208)))
-
-
-(dm serialize-to-str> ()
-
-  (pack "("
-        (glue " " (let L NIL
-           (for N (serialize-to-lst> This)
-                (push 'L (format N)))
-           (flip 'L)
-           L))
-        ")"))
         
         
 ################################################################################
@@ -142,9 +126,9 @@
     (println Mm Rgba Uv Off-Texel Sz-X Sz-Y Flag)
     
     (=: char 42)
-    (=: pos (list 0.0 0.0 0.0))
+    (=: pos  (list 0.0 0.0 0.0))
     (=: rota (list 0.0 0.0 0.0))
-    (=: sca (list 1.0 1.0 1.0))
+    (=: sca  (list 1.0 1.0 1.0))
     
     (=: mm Mm)
     (=: rgba Rgba)

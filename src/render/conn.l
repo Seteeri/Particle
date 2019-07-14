@@ -65,7 +65,7 @@
 
 (de write-dst (Dst Sock Sz Off)
 
-  # Call prot~rep-send-obj
+  # Call recv-obj
 
   (ipc~recv-bytes> *ipc Sock NIL Sz)
 
@@ -86,7 +86,7 @@
 
 (de read-src (Src Sock Sz Off)
 
-  # Currently unused, but can be used to retrieve data from GL buffers
+  # Unused; retrieve data from GL buffers
 
   (cond ((= Src "projview")
          (prinl (usec) " | read-src | projview not implemented!"))

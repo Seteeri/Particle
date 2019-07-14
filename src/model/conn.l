@@ -21,6 +21,8 @@
 
 (de write-dst (Dst Sock Sz Off)
 
+  # Call recv-obj
+
   (ipc~recv-bytes> *ipc Sock NIL Sz)
 
   (cond ((= Dst "projview")

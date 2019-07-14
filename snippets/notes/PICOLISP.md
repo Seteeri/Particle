@@ -121,22 +121,16 @@ Store DAGs as binary trees?
      * N process will move N vert x dist
 
    * Refactor IPC - weird lag with camera update and pointer update at same time
+     * Abstract common functionality among worker/model/render conns [Done]   
      * Implement message flushing
-     * Abstract common functionality among worker/model/render conns
+     * Model needs to write data
+     * Serialize entire object for all
 
-   * Ctrl need not connect to model/render
-     * Pvm should be setup by a worker
-     * Ctrl should tell worker to do pvm
-     * Ctrl maintains task queue
-       * Input events, trigger putting tasks on queue
-       * Worker ready events, trigger pulling tasks from queue
-     * Tasks uses DAG/ptrees
+     * Tasks uses DAG/ptrees [Later]
        * Built on top of cons cells...
        * To make task wait for another task, it needs a task ID
        * If dependency graph used, need a way to continously modify it
        * When a DAG is executed, store the output of the entire graph
-
-     * Create work queue for each worker
      * Tasks can be submitted as parallel or serial (waits for current task to complete)
        * ?For parallel tasks, can cache results, so that if after one of the data
          is modified while the task was running, it can run it again up to the point
