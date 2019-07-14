@@ -1,68 +1,5 @@
 (symbols 'li 'pico)
 
-(class +Li)
-(dm T ()
-    (=: interface   (make-interface))
-    (=: context     (path-create-context (: interface) NIL))
-    (=: fd-context  (get-fd (: context)))
-    (add-devices (: context)))
-
-
-(dm end-input> ()
-    
-    #This implicitly frees context
-    (unref (: context))
-    (=: context NIL)
-    (=: fd-context NIL)
-
-    (when (: interface)
-      (native "@" "free" NIL (: interface))
-      (=: interface NIL)))
-
-
-(de make-interface ()
-    (let (Interface (native "@" "malloc" 'N 16) #libinput-interface struct
-          OR (lisp 'handle-open-restricted
-	       '((Path Flags User-data)
-		 (native "@" "open" 'I (struct Path 'S) (struct Flags 'I))))
-	  CR (lisp 'handle-close-restricted
-	       '((Fd User-data)
-		 (native "@" "close" 'I (struct Fd 'I)))))
-      (struct Interface 'N
-	      (cons OR 8)
-	      (cons CR 8))))
-
-
-(de add-devices (Context)
-    (for File (dir DEVICES-PATH)
-	 (when (and (not (= File "by-id"))
-		    (not (= File "by-path")))
-	   (let (Filepath (pack DEVICES-PATH "/" File)
-			  Device (path-add-device Context Filepath))
-	     (unless (= Device 0)
-	       (if (not (or (device-has-capability Device
-						   DEVICE-CAP-KEYBOARD)
-			    (device-has-capability Device
-						   DEVICE-CAP-POINTER)))
-		   (path-remove-device Device)))))))    
-
-
-#{
-typedef union epoll_data {
-void    *ptr;
-int      fd;
-uint32_t u32;
-uint64_t u64;
-} epoll_data_t;
-# 8+4+4+8
-
-struct epoll_event {
-uint32_t     events;    /* Epoll events */
-epoll_data_t data;      /* User data variable */
-};
-# 4+(8+4+4+8)
-}#
-
 
 (def 'DEVICES-PATH "/dev/input")
 
@@ -107,34 +44,34 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (def 'SWITCH-TOGGLE 900)
 
 (de get-event-type-name (Type)
-    (case Type
-      (0 'NONE)
-      (1 'DEVICE-ADDED)
-      (2 'DEVICE-REMOVED)
-      (300 'KEYBOARD-KEY)
-      (400 'POINTER-MOTION)
-      (401 'POINTER-MOTION-ABSOLUTE)
-      (402 'POINTER-BUTTON)
-      (403 'POINTER-AXIS)
-      (500 'TOUCH-DOWN)
-      (501 'TOUCH-UP)
-      (502 'TOUCH-MOTION)
-      (503 'TOUCH-CANCEL)
-      (504 'TOUCH-FRAME)
-      (600 'TABLET-TOOL-AXIS)
-      (601 'TABLET-TOOL-PROXIMITY)
-      (602 'TABLET-TOOL-TIP)
-      (603 'TABLET-TOOL-BUTTON)
-      (700 'TABLET-PAD-BUTTON)
-      (701 'TABLET-PAD-RING)
-      (702 'TABLET-PAD-STRIP)
-      (800 'GESTURE-SWIPE-BEGIN)
-      (801 'GESTURE-SWIPE-UPDATE)
-      (802 'GESTURE-SWIPE-END)
-      (803 'GESTURE-PINCH-BEGIN)
-      (804 'GESTURE-PINCH-UPDATE)
-      (805 'GESTURE-PINCH-END)
-      (900 'SWITCH-TOGGLE)))
+  (case Type
+    (0 'NONE)
+    (1 'DEVICE-ADDED)
+    (2 'DEVICE-REMOVED)
+    (300 'KEYBOARD-KEY)
+    (400 'POINTER-MOTION)
+    (401 'POINTER-MOTION-ABSOLUTE)
+    (402 'POINTER-BUTTON)
+    (403 'POINTER-AXIS)
+    (500 'TOUCH-DOWN)
+    (501 'TOUCH-UP)
+    (502 'TOUCH-MOTION)
+    (503 'TOUCH-CANCEL)
+    (504 'TOUCH-FRAME)
+    (600 'TABLET-TOOL-AXIS)
+    (601 'TABLET-TOOL-PROXIMITY)
+    (602 'TABLET-TOOL-TIP)
+    (603 'TABLET-TOOL-BUTTON)
+    (700 'TABLET-PAD-BUTTON)
+    (701 'TABLET-PAD-RING)
+    (702 'TABLET-PAD-STRIP)
+    (800 'GESTURE-SWIPE-BEGIN)
+    (801 'GESTURE-SWIPE-UPDATE)
+    (802 'GESTURE-SWIPE-END)
+    (803 'GESTURE-PINCH-BEGIN)
+    (804 'GESTURE-PINCH-UPDATE)
+    (805 'GESTURE-PINCH-END)
+    (900 'SWITCH-TOGGLE)))
 
 #POINTER AXIS SOURCE
 (def 'POINTER-AXIS-SOURCE-WHEEL      1)
@@ -143,11 +80,11 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (def 'POINTER-AXIS-SOURCE-WHEEL-TILT 4)
 
 (de get-pointer-axis-source-name (Source)
-    (case Source
-      (1 'POINTER-AXIS-SOURCE-WHEEL)
-      (2 'POINTER-AXIS-SOURCE-FINGER)	
-      (3 'POINTER-AXIS-SOURCE-CONTINUOUS)	
-      (4 'POINTER-AXIS-SOURCE-WHEEL-TILT)))
+  (case Source
+    (1 'POINTER-AXIS-SOURCE-WHEEL)
+    (2 'POINTER-AXIS-SOURCE-FINGER)	
+    (3 'POINTER-AXIS-SOURCE-CONTINUOUS)	
+    (4 'POINTER-AXIS-SOURCE-WHEEL-TILT)))
 
 
 #POINTER AXIS
@@ -156,9 +93,62 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 
 
 (de get-pointer-axis-name (Axis)
-    (case Axis
-      (0 'POINTER-AXIS-SCROLL-VERTICAL)
-      (1 'POINTER-AXIS-SCROLL-HORIZONTAL)))
+  (case Axis
+    (0 'POINTER-AXIS-SCROLL-VERTICAL)
+    (1 'POINTER-AXIS-SCROLL-HORIZONTAL)))
+
+
+(class +Li)
+(dm T ()
+  (=: interface   (make-interface))
+  (=: context     (path-create-context (: interface) NIL))
+  (=: fd-context  (get-fd (: context)))
+  (add-devices (: context)))
+
+
+(dm end-input> ()
+  
+  #This implicitly frees context
+  (unref (: context))
+  (=: context NIL)
+  (=: fd-context NIL)
+
+  (when (: interface)
+    (native "@" "free" NIL (: interface))
+    (=: interface NIL)))
+
+
+(de make-interface ()
+
+  (let (Interface (native "@" "malloc" 'N 16) #libinput-interface struct
+        OR (lisp 'handle-open-restricted
+                 '((Path Flags User-data)
+                   (native "@" "open" 'I (struct Path 'S) (struct Flags 'I))))
+        CR (lisp 'handle-close-restricted
+                 '((Fd User-data)
+                   (native "@" "close" 'I (struct Fd 'I)))))
+                   
+    (struct Interface 'N
+                      (cons OR 8)
+                      (cons CR 8))))
+
+
+(de add-devices (Context)
+
+  (for File (dir DEVICES-PATH)
+
+	 (when (and (not (= File "by-id"))
+		          (not (= File "by-path")))
+              
+	   (let (Filepath (pack DEVICES-PATH "/" File)
+           Dev (path-add-device Context Filepath))
+           
+	     (unless (= Dev 0)
+	       (if (not (or (device-has-capability Dev
+                                             DEVICE-CAP-KEYBOARD)
+                      (device-has-capability Dev
+                                             DEVICE-CAP-POINTER)))
+            (path-remove-device Dev)))))))
 
 
 
@@ -172,8 +162,8 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (de path-add-device (Context Path)
     (native "libinput.so" "libinput_path_add_device" 'N Context Path))
 
-(de path-remove-device (Device)
-    (native "libinput.so" "libinput_path_remove_device" NIL Device))
+(de path-remove-device (Dev)
+    (native "libinput.so" "libinput_path_remove_device" NIL Dev))
 
 (de get-fd (Context)
     (native "libinput.so" "libinput_get_fd" 'I Context))
@@ -181,14 +171,14 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (de dispatch (Context)
     (native "libinput.so" "libinput_dispatch" 'I Context))
 
-(de device-has-capability (Device Capability)
-    (native "libinput.so" "libinput_device_has_capability" 'I Device Capability))
+(de device-has-capability (Dev Capability)
+    (native "libinput.so" "libinput_device_has_capability" 'I Dev Capability))
 
-(de device-ref (Device)
-    (native "libinput.so" "libinput_device_ref" 'N Device))
+(de device-ref (Dev)
+    (native "libinput.so" "libinput_device_ref" 'N Dev))
 
-(de device-unref (Device)
-    (native "libinput.so" "libinput_device_unref" 'N Device))
+(de device-unref (Dev)
+    (native "libinput.so" "libinput_device_unref" 'N Dev))
 
 (de get-event (Context)
     (native "libinput.so" "libinput_get_event" 'N Context))
@@ -200,147 +190,147 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
     (native "libinput.so" "libinput_event_destroy" NIL Event))
 
 
-(de event-get-keyboard-event (Event)
+(de get-kb-event (Event)
     (native "libinput.so" "libinput_event_get_keyboard_event" 'N Event))
 
-(de event-keyboard-get-time (Keyboard-event)
-    (native "libinput.so" "libinput_event_keyboard_get_time" 'I Keyboard-event))
+(de kb-get-time (Kb-Event)
+    (native "libinput.so" "libinput_event_keyboard_get_time" 'I Kb-Event))
 
-(de event-keyboard-get-time-usec (Keyboard-event)
-    (native "libinput.so" "libinput_event_keyboard_get_time_usec" 'N Keyboard-event))
+(de kb-get-time-usec (Kb-Event)
+    (native "libinput.so" "libinput_event_keyboard_get_time_usec" 'N Kb-Event))
 
-(de event-keyboard-get-key (Keyboard-event)
-    (native "libinput.so" "libinput_event_keyboard_get_key" 'I Keyboard-event))
+(de kb-get-key (Kb-Event)
+    (native "libinput.so" "libinput_event_keyboard_get_key" 'I Kb-Event))
 
-(de event-keyboard-get-key-state (Keyboard-event)
+(de kb-get-key-state (Kb-Event)
     #Return symbol (enum)
-    (native "libinput.so" "libinput_event_keyboard_get_key_state" 'I Keyboard-event))
+    (native "libinput.so" "libinput_event_keyboard_get_key_state" 'I Kb-Event))
 
-(de event-keyboard-get-base-event (Event)
+(de kb-get-base-event (Event)
     (native "libinput.so" "libinput_event_keyboard_get_base_event" 'N Event))
 
-(de event-keyboard-get-seat-key-count (Event)
+(de kb-get-seat-key-count (Event)
     (native "libinput.so" "libinput_event_keyboard_get_seat_key_count" 'I Event))
 
 
-(de event-get-pointer-event (Event)
+(de get-ptr-event (Event)
     (native "libinput.so" "libinput_event_get_pointer_event" 'N Event))
 
-(de event-pointer-get-time (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_time" 'I Pointer-event))
+(de ptr-get-time (Ptr-Event)
+    (native "libinput.so" "libinput_event_pointer_get_time" 'I Ptr-Event))
 
-(de event-pointer-get-time-usec (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_time_usec" 'N Pointer-event))
+(de ptr-get-time-usec (Ptr-Event)
+    (native "libinput.so" "libinput_event_pointer_get_time_usec" 'N Ptr-Event))
 
-(de event-pointer-get-button (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_button" 'I Pointer-event))
+(de ptr-get-button (Ptr-Event)
+    (native "libinput.so" "libinput_event_pointer_get_button" 'I Ptr-Event))
 
-(de event-pointer-get-button-state (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_button_state" 'I Pointer-event))
+(de ptr-get-button-state (Ptr-Event)
+    (native "libinput.so" "libinput_event_pointer_get_button_state" 'I Ptr-Event))
 
-(de event-pointer-get-dx (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_dx" +1.0 Pointer-event))
+(de ptr-get-dx (Ptr-Event)
+    (native "libinput.so" "libinput_event_pointer_get_dx" +1.0 Ptr-Event))
 
-(de event-pointer-get-dy (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_dy" +1.0 Pointer-event))
+(de ptr-get-dy (Ptr-Event)
+    (native "libinput.so" "libinput_event_pointer_get_dy" +1.0 Ptr-Event))
 
-(de event-pointer-get-dx-unaccelerated (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_dx_unaccelerated" +1.0 Pointer-event))
+(de ptr-get-dx-unaccelerated (Ptr-Event)
+    (native "libinput.so" "libinput_event_pointer_get_dx_unaccelerated" +1.0 Ptr-Event))
 
-(de event-pointer-get-dy-unaccelerated (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_dy_unaccelerated" +1.0 Pointer-event))
+(de ptr-get-dy-unaccelerated (Ptr-Event)
+    (native "libinput.so" "libinput_event_pointer_get_dy_unaccelerated" +1.0 Ptr-Event))
 
-(de event-pointer-get-seat-button-count (Pointer-event)
-    (native "libinput.so" "libinput_event_pointer_get_seat_button_count" 'I Pointer-event))
+(de ptr-get-seat-button-count (Ptr-Event)
+    (native "libinput.so" "libinput_event_pointer_get_seat_button_count" 'I Ptr-Event))
 
-(de event-pointer-has-axis (Event Axis)
+(de ptr-has-axis (Event Axis)
     (native "libinput.so" "libinput_event_pointer_has_axis" 'I Event Axis))
 
-(de event-pointer-get-axis-source (Event)
+(de ptr-get-axis-source (Event)
     #ENUM
     (native "libinput.so" "libinput_event_pointer_get_axis_source" 'I Event))
 
-(de event-pointer-get-axis-value (Event Axis)
+(de ptr-get-axis-value (Event Axis)
     (native "libinput.so" "libinput_event_pointer_get_axis_value" '+1.0 Event Axis))
 
-(de event-pointer-get-axis-value-discrete (Event Axis)
+(de ptr-get-axis-value-discrete (Event Axis)
     (native "libinput.so" "libinput_event_pointer_get_axis_value_discrete" +1.0 Event Axis))
 
 
-(de event-get-touch-event (Pointer-event)
-    (native "libinput.so" "libinput_event_get_touch_event" 'N Pointer-event))
+(de get-tch-event (Ptr-Event)
+    (native "libinput.so" "libinput_event_get_touch_event" 'N Ptr-Event))
 
-(de event-touch-get-time (Touch-Event)
-    (native "libinput.so" "libinput_event_touch_get_time" 'I Touch-Event))
+(de tch-get-time (Tch-Event)
+    (native "libinput.so" "libinput_event_touch_get_time" 'I Tch-Event))
 
-(de event-touch-get-time-usec (Touch-Event)
-    (native "libinput.so" "libinput_event_touch_get_time_usec" 'N Touch-Event))
+(de tch-get-time-usec (Tch-Event)
+    (native "libinput.so" "libinput_event_touch_get_time_usec" 'N Tch-Event))
 
-(de event-touch-get-slot get-time (Touch-Event)
-    (native "libinput.so" "libinput_event_touch_get_slot" 'I Touch-Event))
+(de tch-get-slot get-time (Tch-Event)
+    (native "libinput.so" "libinput_event_touch_get_slot" 'I Tch-Event))
 
-(de event-touch-get-seat-slot get-time (Touch-Event)
-    (native "libinput.so" "libinput_event_touch_get_seat_slot" 'I Touch-Event))
+(de tch-get-seat-slot get-time (Tch-Event)
+    (native "libinput.so" "libinput_event_touch_get_seat_slot" 'I Tch-Event))
 
-(de event-touch-get-x (Touch-Event)
-    (native "libinput.so" "libinput_event_touch_get_x" +1.0 Touch-Event))
+(de tch-get-x (Tch-Event)
+    (native "libinput.so" "libinput_event_touch_get_x" +1.0 Tch-Event))
 
-(de event-touch-get-y (Touch-Event)
-    (native "libinput.so" "libinput_event_touch_get_y" +1.0 Touch-Event))
+(de tch-get-y (Tch-Event)
+    (native "libinput.so" "libinput_event_touch_get_y" +1.0 Tch-Event))
 
-(de event-touch-get-x-transformed (Touch-Event Width)
-    (native "libinput.so" "libinput_event_touch_get_x_transformed" +1.0 Touch-Event Width))
+(de tch-get-x-transformed (Tch-Event Width)
+    (native "libinput.so" "libinput_event_touch_get_x_transformed" +1.0 Tch-Event Width))
 
-(de event-touch-get-y-transformed (Touch-Event Width)
-    (native "libinput.so" "libinput_event_touch_get_y_transformed" +1.0 Touch-Event Height))
+(de tch-get-y-transformed (Tch-Event Width)
+    (native "libinput.so" "libinput_event_touch_get_y_transformed" +1.0 Tch-Event Height))
 
 
-(de event-get-tablet-tool-event (Tablet-tool-event)
+(de get-tool-event (Tablet-tool-event)
     (native "libinput.so" "libinput_event_get_tablet_tool_event" 'N Tablet-tool-event))
 
-(de event-tablet-tool-get-tool (Tablet-tool)
+(de tt-get-tool (Tablet-tool)
     (native "libinput.so" "libinput_event_tablet_tool_get_tool" 'N Tablet-tool))
 
-(de event-tablet-tool-get-x (Event)
+(de tt-get-x (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_x" +1.0 Event))
 
-(de event-tablet-tool-get-y (Event)
+(de tt-get-y (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_y" +1.0 Event))
 
 
-(de event-tablet-tool-get-pressure (Event)
+(de tt-get-pressure (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_pressure" +1.0 Event))
 
-(de event-tablet-tool-get-distance (Event)
+(de tt-get-distance (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_distance" +1.0 Event))
 
 
-(de tablet-tool-has-pressure (Tool)
+(de tool-has-pressure (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_pressure" 'I Tool))
 
-(de tablet-tool-has-distance (Tool)
+(de tool-has-distance (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_distance" 'I Tool))
 
-(de tablet-tool-has-tilt (Tool)
+(de tool-has-tilt (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_tilt" 'I Tool))
 
-(de tablet-tool-has-rotation (Tool)
+(de tool-has-rotation (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_rotation" 'I Tool))
  
-(de tablet-tool-has-slider (Tool)
+(de tool-has-slider (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_slider" 'I Tool))
 
-(de tablet-tool-has-wheel (Tool)
+(de tool-has-wheel (Tool)
     (native "libinput.so" "libinput_tablet_tool_has_wheel" 'I Tool))
 
-(de tablet-tool-has-button (Tool Code)
+(de tool-has-button (Tool Code)
     (native "libinput.so" "libinput_tablet_tool_has_button" 'I Tool Code))
 
-(de tablet-tool-tip-state (Event)
+(de tt-get-tip-state (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_tip_state" 'I Event))
 
-(de event-tablet-tool-get-x-transformed (Touch-Event Width)
-    (native "libinput.so" "libinput_event_tablet_tool_get_x_transformed" +1.0 Touch-Event Width))
+(de tt-get-x-transformed (Tch-Event Width)
+    (native "libinput.so" "libinput_event_tablet_tool_get_x_transformed" +1.0 Tch-Event Width))
 
-(de event-tablet-tool-get-y-transformed (Touch-Event Height)
-    (native "libinput.so" "libinput_event_tablet_tool_get_y_transformed" +1.0 Touch-Event Height))
+(de tt-get-y-transformed (Tch-Event Height)
+    (native "libinput.so" "libinput_event_tablet_tool_get_y_transformed" +1.0 Tch-Event Height))

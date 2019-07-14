@@ -50,9 +50,6 @@
           *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
-  # REFACTOR:
-  # (ID-S PATH BLOCK HANDLE)
-  # (ID-S PATH BLOCK HANDLE ID-C)
   (let ID-C (pack "CTRL-" *Pid)
   
     (setq *ipc (new '(ipc~+IPC)
@@ -61,13 +58,9 @@
                      (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT"))))
 
     (reg-conns *ipc ID-C))
-
-  # Create queue
-  # Push below msgs into queue for workers to resolve
   
   # Update-vert will tell worker to update from model, push to render
-  (queue '*q-msg "(update-vert 1)")
-  
+  (queue '*q-msg "(update-vert 1)")  
   (queue '*q-msg "(update-pvm)")
   
   T)
@@ -106,14 +99,13 @@
     #    If event-queue: send event-queue
     #    Else event-new: send event-new
     
-    (when T
-      (let Worker (pop '*q-worker)
-        (if Worker
-          (let Msg-Q (pop '*q-msg)
-            (if Msg-Q
-              (send-msg *ipc Msg-Q Worker)
-              (send-msg *ipc Msg   Worker)))
-          (queue '*q-msg Msg))))))
+    (let Worker (pop '*q-worker)
+      (if Worker
+        (let Msg-Q (pop '*q-msg)
+          (if Msg-Q
+            (send-msg *ipc Msg-Q Worker)
+            (send-msg *ipc Msg   Worker)))
+        (queue '*q-msg Msg)))))
 
 
 (de handle-model (Sock)
