@@ -96,12 +96,13 @@
   (init-ipc)
 
   #Setup projview
-  (setq *projview (new '(+Projview) *width *height 'orthographic))
-  #Simplify these - single function?
+  (setq *projview (new '(+Projview) *width *height 'o))
   (update-mat-proj> *projview)
   (update-mat-view> *projview)
 
-  #Debug
+  #(serialize-to-ptr> *projview (get *projview 'ptr))
+  #(deserialize-from-ptr> *projview (get *projview 'ptr))
+  
   #(show *projview)
   #(view (getl *projview))
 

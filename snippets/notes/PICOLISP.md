@@ -121,11 +121,14 @@ Store DAGs as binary trees?
      * N process will move N vert x dist
 
    * Refactor IPC - weird lag with camera update and pointer update at same time
-     * Abstract common functionality among worker/model/render conns [Done]   
-     * Implement message flushing
-     * Model needs to write data
+     * Abstract common functionality among worker/model/render conns [Done]        
      * Serialize entire object for all
-
+       * Test projview
+       * Test vertex
+       * Update procs
+     * Model needs to write data
+     * Implement message flushing
+     
      * Tasks uses DAG/ptrees [Later]
        * Built on top of cons cells...
        * To make task wait for another task, it needs a task ID
@@ -137,7 +140,7 @@ Store DAGs as binary trees?
          the data was modified?
        * Otherwise, have to lock data while it is being used
 
-   * Optimize GL struct
+   * Optimize GL struct [Later]
      * 3 programs to render 3 vertex types
        * Pixel (RGBA/no-texture)
        * Arbitrary Texture

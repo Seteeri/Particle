@@ -80,12 +80,7 @@
          
 
 (de serialize-mat-to-ptr (M Ptr)
-    (struct Ptr 'N
-	    (list -1.0 (get M 1)  (get M 2)  (get M 3)  (get M 4)
-                       (get M 5)  (get M 6)  (get M 7)  (get M 8)
-	               (get M 9)  (get M 10) (get M 11) (get M 12)
-		       (get M 13) (get M 14) (get M 15) (get M 16)))
-    Ptr)
+  (struct Ptr 'N (cons -1.0 M)))
 
 
 (dm serialize-to-ptr> (Ptr)
