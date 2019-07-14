@@ -39,33 +39,57 @@
            (struct (+ Ptr I) 'N (cons B 1))
            (inc 'I))))
 
-################################################################################           
-           
+################################################################################
+
+
+(de handle-memcpy (Sock Data)
+
+  #(mc Dst Src Sz) + data
+  (let (Dst  (get Data 2)
+        Src  (get Data 3)
+        Sz   (get Data 4)
+        Off  (get Data 5))
+
+    (cond ((and Dst (not Src)) # Write bytes to ..., recv from socket
+           (write-dst Dst Sock Sz Off))
+
+          ((and (not Dst) Src) # Read bytes from ..., send on socket
+           (read-src Src Sock Sz Off))
+
+          ((and Dst Src)
+           (prinl (usec) " | handle-memcpy | Ptr to ptr memcpy not implemented!"))
+
+          (T
+           (prinl (usec) " | handle-memcpy | Invalid Dst Src parameters!")))))
+
+
 (de write-dst (Dst Sock Sz Off)
 
+  # Call prot~rep-send-obj
+
   (ipc~recv-bytes> *ipc Sock NIL Sz)
-  
+
   (cond ((= Dst "projview")
          #(println (usec) " | write-dst projview | " (struct (get *ipc 'ipc~buf-rd) '(B . 128)))
          (let (Ptr-Gl  (get (get '*buffer-objects 'projview) 'gl~ptr)
                Ptr-Buf (get *ipc 'ipc~buf-rd))
            (memcpy Ptr-Gl Ptr-Buf Sz)))
-   
-        ((= Dst "nodes")        
+
+        ((= Dst "nodes")
          # Off = bytes
          #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '(B . 208)))
-         #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '((-1.0 . 16) (-1.0 . 16) (-1.0 . 16) (I . 4))))         
+         #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '((-1.0 . 16) (-1.0 . 16) (-1.0 . 16) (I . 4))))
          (let (Ptr-Gl  (+ (get (get '*buffer-objects 'nodes) 'gl~ptr) Off)
                Ptr-Buf (get *ipc 'ipc~buf-rd))
            (memcpy Ptr-Gl Ptr-Buf 208)))))
-         
-         
+
+
 (de read-src (Src Sock Sz Off)
 
   # Currently unused, but can be used to retrieve data from GL buffers
 
   (cond ((= Src "projview")
-         T)
-   
+         (prinl (usec) " | read-src | projview not implemented!"))
+
         ((= Src "nodes")
-         T)))
+         (prinl (usec) " | read-src | nodes not implemented!"))))

@@ -1,3 +1,5 @@
+(def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
+
 #learn how to do multiple args
 #(de native-mc (...) (native PATH-MATHC "mat4_perspective" NIL ...))
 

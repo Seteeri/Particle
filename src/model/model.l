@@ -20,7 +20,6 @@
 
 
 # C library paths
-(def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 (def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 # UDS paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
@@ -42,30 +41,31 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/conn.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
 
 
 # Globals
 (def '*sca-vert 0.008)
 (def '*sca-glyph 5.8239365) # MSDF/tex parameter
-(def '*adv-glyph 9.375)       # MSDF/tex parameter  
+(def '*adv-glyph 9.375)       # MSDF/tex parameter
 
 
 (de init-verts ()
 
   (let Verts ()
-  
+
        (for I *verts-max
-       
+
             (let Vert (new '(+Vertex)
                            42 # *
                            *color-vert-default
                            (list 0.0 0.0 0.0) # pos
                            (list 0.0 0.0 0.0) # rot=0, sca=global scale
                            (list *sca-vert *sca-vert *sca-vert))
-                           
+
                  #(prinl "Created vertex " I " "  Vert)
                  (push 'Verts Vert)))
-                 
+
        Verts))
 
 
@@ -88,7 +88,7 @@
 
   #Get number of nodes and window size from args instead of file
   (let (Argv (argv))
-  
+
     (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
           *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
@@ -124,8 +124,8 @@
   2**19 = 524288
   }#
 
-  (gc (+ 104 2))
-  (prinl (usec) " | MODEL | init-model | Heap resized to 106 MB for " *verts-max " nodes")
+  #(gc (+ 104 2))
+  #(prinl (usec) " | MODEL | init-model | Heap resized to 106 MB for " *verts-max " nodes")
 
   #{
    - Graphs = namespaces?
@@ -135,11 +135,9 @@
 
 
 (de init-ipc ()
-  (setq *ipc (new '(ipc~+IPC) 
-                  PATH-UDS-MODEL 'ipc~block recv-conn
-                  NIL
-                  read-src
-                  write-dst)))
+  (setq *ipc (new '(ipc~+IPC)
+                  PATH-UDS-MODEL 'ipc~block recv-conn accept-client
+                  NIL)))
 
 
 (de run-model (Timeout)
@@ -150,17 +148,17 @@
 
 (de recv-conn (Sock)
   #{
-  
+
   If model recv'd memcpy, write data and broadcast update
-  
+
   (memcpy dst src sz off)
-  
+
   If src NIL: read bytes after msg
   If dst NIL: send bytes back
-  
+
   }#
-  
-  (let (Msg (ipc~recv-msg> *ipc Sock)
+
+  (let (Msg (recv-msg *ipc Sock)
         Data (any Msg)
         Name-Fn (get Data 1))
 
@@ -168,10 +166,12 @@
 
     # For now, assume memcpy
     (cond ((= Name-Fn "mc")
-           (ipc~handle-memcpy> *ipc Sock Data))
+           (handle-memcpy Sock Data))
 
           (T
-           (prinl (usec) " | MODEL  | recv-conn-ctrl | UNKNOWN REQUEST! " Msg)))))
+           (prinl (usec) " | MODEL  | recv-conn-ctrl | UNKNOWN REQUEST! " Msg)))
+              
+   T))
 
 
 (de main ()

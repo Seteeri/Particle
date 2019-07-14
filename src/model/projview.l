@@ -24,7 +24,7 @@
     (=: near        (if Near Near 0.1))
     (=: far         (if Far Far 100.0))
 	        
-    (=: scale-ortho (if Scale-ortho Scale-ortho 16.0))
+    (=: scale-ortho (if Scale-ortho Scale-ortho 32.0))
     (=: near-ortho  (if Near-ortho Near-ortho 1.0))
     (=: ortho-far   (if Ortho-far Ortho-far 512.0))
 
@@ -115,7 +115,7 @@
 
 ################################################################################
 
-
+# Same as above
 (de serialize-mat-to-ptr (M Ptr)
     (struct Ptr 'N
 	    (list -1.0 (get M 1)  (get M 2)  (get M 3)  (get M 4)
@@ -155,3 +155,27 @@
 			 (flip 'L)
 			 L))
 	  ")"))
+
+
+################################################################################
+
+
+(dm cpy-to-ptr> (Ptr)
+  (serialize-mat-to-ptr (: mat-proj) Ptr)
+  (serialize-mat-to-ptr (: mat-view) (+ Ptr 64))
+  128)
+
+
+(dm cpy-to-obj> (Ptr)
+  (=: mat-proj (struct    Ptr     '(-1.0 . 16)))
+  (=: mat-view (struct (+ Ptr 64) '(-1.0 . 16))))
+
+
+(dm fmt-msg-send> (Off)
+  (pack "(mc projview NIL 128 " Off ")"))  
+  
+  
+(dm fmt-msg-recv> (Off)
+  (pack "(mc NIL projview 128 " Off ")"))
+  
+               

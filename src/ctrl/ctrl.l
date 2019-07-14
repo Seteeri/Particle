@@ -15,8 +15,6 @@
 (symbols 'ctrl 'pico)
 
 
-# C library paths
-(def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 # Paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
 (def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
@@ -36,6 +34,7 @@
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/ctrl/conn.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
 
 
 #Globals
@@ -57,43 +56,33 @@
   (let ID-C (pack "CTRL-" *Pid)
   
     (setq *ipc (new '(ipc~+IPC)
-               PATH-UDS-CONTROL            'ipc~block handle-worker
-               (list (list PATH-UDS-MODEL  'ipc~block handle-model  "MODEL"  ID-C)
-                     (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT"  ID-C)
-                     (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER" ID-C)))))
+               PATH-UDS-CONTROL            'ipc~block handle-worker accept-client
+               (list (list PATH-UDS-MODEL  'ipc~block handle-model  "MODEL")
+                     (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT"))))
+
+    (reg-conns *ipc ID-C))
 
   # Create queue
   # Push below msgs into queue for workers to resolve
-  #
-  # Pull PVM from Model -> Send PVM and nodes to Render
+  
+  # Update-vert will tell worker to update from model, push to render
   (queue '*q-msg "(update-vert 1)")
-  (queue '*q-msg "(update-vert 2)")
+  
   (queue '*q-msg "(update-pvm)")
   
-    
-  (when NIL
-    (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-          Sock-Render (ipc~get-fd> *ipc "RENDER")
-          Cam         (ipc~read-pvm> *ipc Sock-Model))
-
-      (when NIL # Testing
-        (ipc~write-vert> *ipc (ipc~read-vert> *ipc Sock-Model 1)
-                    1
-                    Sock-Render))
-                  
-      (ipc~write-pvm> *ipc Cam Sock-Render))))
+  T)
 
 
 (de handle-worker (Sock)
 
-  (let (Msg (ipc~recv-msg> *ipc Sock)
+  (let (Msg (recv-msg *ipc Sock)
         Data (any Msg))
     
     # Poss handle finish messages also
     
     (let Msg (pop '*q-msg)
       (if Msg
-        (ipc~send-msg> *ipc Msg Sock)
+        (send-msg *ipc Msg Sock)
         (queue '*q-worker Sock)))
         
     #(prinl (usec) " | CTRL   | handle-ctrl | " Msg)
@@ -109,7 +98,7 @@
 
 (de handle-input (Sock)
 
-  (let (Msg (ipc~recv-msg> *ipc Sock)
+  (let (Msg (recv-msg *ipc Sock)
         Data (any Msg))
     #(prinl (usec) " | CTRL   | handle-input | ")
     
@@ -122,21 +111,21 @@
         (if Worker
           (let Msg-Q (pop '*q-msg)
             (if Msg-Q
-              (ipc~send-msg> *ipc Msg-Q Worker)
-              (ipc~send-msg> *ipc Msg   Worker)))
+              (send-msg *ipc Msg-Q Worker)
+              (send-msg *ipc Msg   Worker)))
           (queue '*q-msg Msg))))))
 
 
 (de handle-model (Sock)
 
-  (let Msg (ipc~recv-msg> *ipc Sock)
+  (let Msg (recv-msg *ipc Sock)
     (when NIL
       (prinl Msg))))
 
 
 (de handle-render (Sock)
 
-  (let Msg (ipc~recv-msg> *ipc Sock)
+  (let Msg (recv-msg *ipc Sock)
     (when NIL
       (prinl Msg))))
 

@@ -28,12 +28,8 @@ Handle bad accept sock
 (class +IPC)
 
 
-(load "/home/user/quicklisp/local-projects/protoform/src/ipc/prot.l")
-
-
-(dm T (Path-listener Nonblock-listener Handler-Listener
-       Conns
-       Fn-Mc-Rd Fn-Mc-Wr)
+(dm T (Path-listener Nonblock-listener Handler-Listener Handler-Accept
+       Conns)
 
   (=: debug-ipc T)
 
@@ -61,6 +57,7 @@ Handle bad accept sock
   (=: listener NIL)
   (=: nonblock-listener Nonblock-listener)
   (=: handler-listener Handler-Listener)
+  (=: handler-accept Handler-Accept)
   (=: clients NIL)
   
   (when Path-listener
@@ -69,10 +66,7 @@ Handle bad accept sock
   (=: conns    NIL)
   (=: conns-id NIL)
   
-  (init-conns> This Conns)
-  
-  (=: fn-mc-rd Fn-Mc-Rd)
-  (=: fn-mc-wr Fn-Mc-Wr))
+  (init-conns> This Conns))
 
 
 (dm init-listener> ()
@@ -92,11 +86,10 @@ Handle bad accept sock
             Nonblock (get Conn 2)
             Handler  (get Conn 3)
             ID-S     (get Conn 4)
-            ID-C     (get Conn 5)
             Sock     (socket~connect-sock Path Nonblock *ms-retry))
         
         # Only outgoing sockets send ID
-        (send-msg> This ID-C Sock)
+        #(send-msg This ID-C Sock)
                         
         (add-conn> This Sock ID-S Handler)
                 
@@ -131,7 +124,7 @@ Handle bad accept sock
   (for Client (: clients)
     (socket~end (car Client)))
 
-  (when (: conns) 
+  (when (: conns)
     (for Conn (: conns)
       (socket~end (car Conn)))))
 
@@ -163,32 +156,7 @@ Handle bad accept sock
     (when (= -1 Client)
       (prinl "(= -1 Client)"))
 
-     #Read for ID - this will block
-     (let ID (recv-msg> This Client)
-
-          #(prinl (usec) " | accept-sock> | ID=" ID)
-
-          #Disconnect client if name conflict
-          (if (assoc Client (: clients))
-
-              (prog
-                 
-                 (prinl "WARNING! ID=" ID " exists; disconnecting client=" Client)
-                 
-                 (disconnect-sock Client))
-
-              (prog
-              
-                 # Note, client IDs use {ID}-{PID} and outgoing conns use ID-S
-                 (add-conn> This Client ID (: handler-listener))
-                                                  
-                 # Add to client list also
-                 (push1 (:: clients) (cons Client (list ID (: handler-listener))))
-
-                 (when (: debug-ipc)
-                   (prinl (usec) " | accept-sock> | Registered Client=" Client ", ID=" ID)))))
-
-  Client))
+    ((: handler-accept) This Sock Client)))
 
 
 (dm send-bytes> (Sock Buf Sz)
@@ -212,31 +180,6 @@ Handle bad accept sock
                  (prinl (usec) " | send-bytes> | Sock=" Sock ", " "Bytes-Sent=:" Bytes-Sent)))
                  
        Bytes-Sent))
-
-
-# Make Sock before Msg
-(dm send-msg> (Msg Sock Debug)
-  #{
-  * Send length as int, then send payload right after
-  }#
-  
-  (let Length (length Msg)
-
-    (when Debug (prinl (usec) " | send-msg> | Msg=" Msg))
-
-    (when (> Length (: sz-buf-rd))
-      (println "WARNING! Message will be truncated by " (- Length (: sz-buf-rd)) " bytes")
-      (setq Length (: sz-buf-rd)))
-
-    (struct (: buf-wr) 'N (cons Length 4))
-
-    # Print on error
-    (send-bytes> This Sock (: buf-wr) 4)
-    
-    (struct    (: buf-wr)         'N (cons Msg Length))
-    (struct (+ (: buf-wr) Length) 'N (cons 0 1))
-
-    (send-bytes> This Sock (: buf-wr) Length)))
 
 
 (dm recv-bytes> (Sock Buf Sz)
@@ -268,39 +211,6 @@ Handle bad accept sock
 
      Bytes-Read))
          
-         
-(dm recv-msg> (Sock Debug)
-  #{
-  * Recv length as int, then recv payload
-  }#
-
-  (let Bytes-Read-Len (recv-bytes> This Sock NIL 4)
-
-     (when Debug (prinl (usec) " | recv-msg> | Bytes-Read-Len=" Bytes-Read-Len))
-
-     # Read/block until 4 bytes recv'd
-     (while (< Bytes-Read-Len 4)
-        (recv-bytes> This Sock ((: buf-rd) + Bytes-Read-Len) (- 4 Bytes-Read-Len)))
-
-     (let Length (car (struct (: buf-rd) '(I)))
-
-        (when Debug (prinl (usec) " | recv-msg> |   Length-Msg=" Length))
-
-        (let Bytes-Read-Msg (recv-bytes> This Sock NIL Length)
-
-          (while (< Bytes-Read-Msg Length)
-             (recv-bytes> This Sock ((: buf-rd) + Bytes-Read-Msg) (- Length Bytes-Read-Msg)))
-           
-          (when Debug (prinl (usec) " | recv-msg> | Bytes-Read-Msg=" Bytes-Read-Msg))
-          (pack (struct (: buf-rd) (cons 'C Length)))))))
-
-
-(dm send-clients-msg> (Msg)
-  #For now, meant for servers but poss pass in conns instead of clients
-  
-  (for Client (: clients)
-    (send-msg> This Msg (car Client))))
-
 
 (dm dispatch-handler-conn> (Sock)
 
@@ -332,7 +242,7 @@ Handle bad accept sock
       (let (Ep-Events (epoll~get-event (: evs-ep) I)
             Fd        (get Ep-Events 2)) # Evs = 1
 
-        #(println Cnt Ep-Events)
+        #(prinl "ipc~poll> " Fd)
 
         (if (= Fd (: listener))
             (accept-sock> This Fd)

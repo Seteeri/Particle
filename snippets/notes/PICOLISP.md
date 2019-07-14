@@ -120,6 +120,10 @@ Store DAGs as binary trees?
    * Test multiple controllers with multiple vertices mutating simultaneously [Done]
      * N process will move N vert x dist
 
+   * Refactor IPC - weird lag with camera update and pointer update at same time
+     * Implement message flushing
+     * Abstract common functionality among worker/model/render conns
+
    * Ctrl need not connect to model/render
      * Pvm should be setup by a worker
      * Ctrl should tell worker to do pvm
@@ -138,57 +142,6 @@ Store DAGs as binary trees?
          is modified while the task was running, it can run it again up to the point
          the data was modified?
        * Otherwise, have to lock data while it is being used
-
-   * Implement Worker cache coherence/sync [Wed]
-     * Workers represent CPUs with cache and Model represents main memory
-     * Ctrl/worker sends to render, then sends update to model
-     * Model broadcasts (minus sender ofc)
-       * Copies one socket to many sockets
-     * Workers will sync cache - poll until no messages
-       * Workers can sync independently
-       * However, workers must sync after every function
-         * Alternate read from ctrl/render and read from model
-       * Can also explicitly sync cache specific or all
-         * Sync will be sent to all workers
-         * Then wait on response from all workers
-       * Worker A - cache 1/2, fn-1 used node-1
-       * Worker B - cache 1/2, fn-1 used node-2, fn-2 uses node-1
-         * What if B in middle of fn-2 and does not get the update on node-1
-         until after fn-2 is done???
-           * Solution is to pull req data from model before fn
-           * If worker A fn-1 running before worker B starts fn-2,
-             Worker B would have to block until A is done
-         * Worker B does not know Worker A modified it and believes its cache is valid
-         * Example, task 1 - update colors, task 2 - update positions
-           * Need not serialize entire object, only relevant cells
-         * As long as sync is performed before hand
-           * If required function data known AOT, then batch pull to minimize I/O
-       * What if data waiting to be updated in worker B and has already been uploaded to model by worker A,
-       is updated by that worker B and overwritten in both model/render?
-         -> The work A did is lost and never seen
-         -> Question is whether the trigger for that task expected there to be
-         possible conflict
-         -> Makes sense? Instead of waiting for last operation to complete, just
-         perform a new operation - either run serially or in parallel
-         * Serial must wait for all workers to sync, and then runs
-           * Send sync object, wait for return msg
-     * Model can keep track of which process has which vertex
-       * On broadcast, Model can check and decide whether to skip
-         have the data in their cache only get relevant messages?
-       * Might not be relevant since possible at some point, all workers will have
-       complete cache of all data
-     * Move most recently used data to the front of binary tree
-     * For projview, currently only sending the matrix -> create fn to send entire structure
-       * Ex: (get attr attr attr ...)
-       * Would allow updating only specific members etc.
-     * Example: To randomly color all nodes, would split among N processes
-       * Each process would fetch a chunk of nodes
-  * P2P method?
-    * Worker broadcasts to peers and Model
-      * Is Model needed? Contains initial data...
-      * What if worker needs data that no one has...and how does it decide 
-      who will satisfy the request...or it creates it and caches it
-    * If one worker is slow, then it won't get updates until later
 
    * Optimize GL struct
      * 3 programs to render 3 vertex types

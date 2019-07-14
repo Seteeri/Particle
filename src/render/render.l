@@ -18,7 +18,6 @@ Class variables may be indicated by an upper case letter
 (scl 6)
 
 # C library paths
-(def 'PATH-MATHC "/home/user/quicklisp/local-projects/protoform/ext/mathc/libmathc.so")
 (def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 # UDS paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
@@ -54,6 +53,7 @@ Class variables may be indicated by an upper case letter
 (load "/home/user/quicklisp/local-projects/protoform/src/render/raster.l")
 #(load "/home/user/quicklisp/local-projects/protoform/src/render/compute.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/render/conn.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
 
 
 (def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
@@ -100,7 +100,7 @@ Class variables may be indicated by an upper case letter
   #To disable drawing an object, use 0.0 (float) that is multiplied in vertex shader
   #Change flags with a vec4
   #(init-comp)
-  
+
   T)
 
 
@@ -153,21 +153,22 @@ Class variables may be indicated by an upper case letter
 
 (de init-ipc ()
   (setq *ipc (new '(ipc~+IPC)
-                  PATH-UDS-RENDER 'ipc~block recv-conn
-                  NIL
-                  read-src
-                  write-dst)))         
+                  PATH-UDS-RENDER 'ipc~block recv-conn accept-client
+                  NIL)))
 
 
 (de run-render ()
   #(gl~use-program *prog-rast)
   #(gl~bind-vertex-array *vao)
-  
+
   (prinl (usec) " | RENDER | Starting draw loop...")
 
   # Draws only on event?
   # With Wayland, clients will send damage events...
-  
+  (when NIL
+    (test-projview)
+    (test-vert))
+
   (while (= (glfw~window-should-close *window) 0)
 
     (when *fence
@@ -194,17 +195,17 @@ Class variables may be indicated by an upper case letter
 
     # Broadcast frame time
     # Must handle if send fails, i.e. clients slow - in this case, ignore
-    
-    (ipc~send-clients-msg> *ipc (format (usec)))
-    
+
+    (send-clients-msg *ipc (format (usec)))
+
     # Read all msgs in queue (up to 64) at this point
     # Track amount of memcpy; break after so many bytes
-    
+
     (ipc~poll> *ipc 0)
 
     # Force gc
     #(gc)
-    
+
     T)
 
   (glfw~destroy-window *window)
@@ -215,27 +216,23 @@ Class variables may be indicated by an upper case letter
   #{
   Problem: When sending memcpy + data, data is read on memcpy msg event, however
   epoll will still generate read event which may result in no data available
-  
+
   Solution: Ignore Msg=NIL or use edge triggering for epoll
   }#
-  
+
   # Must flush socket - aka read up to recv len until empty
-  
-  
-  
-  (let (Msg  (ipc~recv-msg> *ipc Sock Events)
+
+  (let (Msg  (recv-msg *ipc Sock Events)
         Data (any Msg)
         Name-Fn (get Data 1))
-  
-    #(prinl (usec) " | RENDER | recv-conn  | " Msg)
-    
+
     # For now, assume memcpy
     (cond ((= Name-Fn "mc")
-           (ipc~handle-memcpy> *ipc Sock Data))
+           (handle-memcpy Sock Data))
 
           (T
            (prinl (usec) " | RENDER  | recv-conn | UNKNOWN REQUEST! " Msg)))))
-  
+
 
 #{
 (dm flush-msgs> (Sock Buf Sz)
@@ -250,7 +247,7 @@ Class variables may be indicated by an upper case letter
 
      # Handle -1
      (if (=0 Bytes-Read)
-     
+
          # Poss check for (= (& Events epoll~ERR) epoll~ERR) and so on...
          # For now, assume error and disconnect
          (disconnect-client> This Sock)
@@ -258,7 +255,7 @@ Class variables may be indicated by an upper case letter
          # Read msgs until len
          T)
 
-     Bytes-Read))  
+     Bytes-Read))
 }#
 
 

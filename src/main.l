@@ -91,17 +91,17 @@ own proc
 
       # Use taskset to assign processes here
 
-      (println *proc-render *proc-model *proc-input *proc-ctrl *proc-work-1 *proc-work-2)
+      (println *proc-render *proc-model *proc-input *proc-ctrl *proc-work-1)
                   
-      (prinl (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read)))
+      (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read))
       #(prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))
       
-      (prinl (pipe (call "taskset" "-pc" "1" (format *proc-model)) (read)))
+      (pipe (call "taskset" "-pc" "1" (format *proc-model)) (read))
       
-      (prinl (pipe (call "taskset" "-pc" "2" (format *proc-ctrl))  (read)))
-      (prinl (pipe (call "taskset" "-pc" "2" (format *proc-input)) (read)))
+      (pipe (call "taskset" "-pc" "2" (format *proc-ctrl))  (read))
+      (pipe (call "taskset" "-pc" "2" (format *proc-input)) (read))
 
       # Poss push all of CPU 2 to 3 with render?
-      (prinl (pipe (call "taskset" "-pc" "3" (format *proc-render)) (read)))
+      (pipe (call "taskset" "-pc" "3" (format *proc-render)) (read))
       
       T))

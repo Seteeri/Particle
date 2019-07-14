@@ -26,8 +26,7 @@
       
   (=: uv NIL)
   
-  #Reuse this, also use as cache for optimization
-  #Or maintain lispy list of bytes?
+  #Reuse across all vertices for txfer
   (=: ptr (native "@" "malloc" 'N 208))
       
   (update-glyph> This Char)
@@ -79,19 +78,30 @@
                                                  (mat4-translation (: pos))))))))
          
 
-(dm serialize-to-ptr> ()
+(de serialize-mat-to-ptr (M Ptr)
+    (struct Ptr 'N
+	    (list -1.0 (get M 1)  (get M 2)  (get M 3)  (get M 4)
+                       (get M 5)  (get M 6)  (get M 7)  (get M 8)
+	               (get M 9)  (get M 10) (get M 11) (get M 12)
+		       (get M 13) (get M 14) (get M 15) (get M 16)))
+    Ptr)
 
-  (let Off (: ptr)     
 
-    (write-matrix-to-ptr       Off     (: mm)   0)
-    (write-matrix-to-ptr (inc 'Off 64) (: rgba) 0)
-    (write-matrix-to-ptr (inc 'Off 64) (: uv)   0)
+(dm serialize-to-ptr> (Ptr)
+
+  (let Off Ptr
+
+    (serialize-mat-to-ptr (: mm)   Off)
+    
+    (serialize-mat-to-ptr (: rgba) (inc 'Off 64))
+    
+    (serialize-mat-to-ptr (: uv)   (inc 'Off 64))
+    
     (struct (inc 'Off 64) 'N (cons (: off-texel) 4)
                              (cons 96 4) #x-sz
                              (cons 96 4) #y-sz
                              (cons 0 4) #flag
-                             ))
-  (: ptr))
+                             )))
 
 
 (dm serialize-to-lst> ()
@@ -109,3 +119,43 @@
            (flip 'L)
            L))
         ")"))
+        
+        
+################################################################################
+
+(de get-vert-off (Cnt)
+  (* (- Cnt 1) 208))
+
+
+(dm cpy-to-ptr> (Ptr)
+  (serialize-to-ptr> This Ptr)
+  208)
+
+
+(dm cpy-to-obj> (Ptr)
+  # Refactor to method
+  (let ((Mm Rgba Uv (Off-Texel Sz-X Sz-Y Flag))
+        (struct Ptr '((-1.0 . 16) (-1.0 . 16) (-1.0 . 16) (I . 4))))
+
+    (prinl "IMPLEMENT CPY TO OBJ FOR VERTEX!")
+
+    (println Mm Rgba Uv Off-Texel Sz-X Sz-Y Flag)
+    
+    (=: char 42)
+    (=: pos (list 0.0 0.0 0.0))
+    (=: rota (list 0.0 0.0 0.0))
+    (=: sca (list 1.0 1.0 1.0))
+    
+    (=: mm Mm)
+    (=: rgba Rgba)
+    (=: uv Uv)
+    (=: off-texel Off-Texel)))
+
+
+(dm fmt-msg-send> (Off)
+  (pack "(mc nodes NIL 208 " Off ")"))
+  
+  
+(dm fmt-msg-recv> (Off)
+  (pack "(mc NIL nodes 208 " Off ")"))
+  

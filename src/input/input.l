@@ -33,17 +33,12 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
 
 
 #Globals
-(def '*ep-events)
-(def '*ep-fd)
-(def '*buf-sz)
-(def '*buf-rd)
 (def '*input)
 (def '*ipc)
-(def '*sock-listen)
-(def '*sock-connections)
 
 
 (de get-rmem-default ()
@@ -60,7 +55,7 @@
           *height (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
 
   (setq *ipc (new '(ipc~+IPC)
-                  PATH-UDS-INPUT 'ipc~block handle-client))
+                  PATH-UDS-INPUT 'ipc~block handle-client accept-client))
 
   (setq *input (new '(li~+Li)))  
   (ipc~add-conn> *ipc (get *input 'li~fd-context) "LI" handle-fd-li))
@@ -107,7 +102,7 @@
       #(println Msg)
 
       # Workers will send messages to input when they are ready
-      (ipc~send-clients-msg> *ipc Msg))))
+      (send-clients-msg *ipc Msg))))
 
 
 (de build-ev-lst-str (Event Type)
