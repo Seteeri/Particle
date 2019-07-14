@@ -270,29 +270,29 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (de event-get-touch-event (Pointer-event)
     (native "libinput.so" "libinput_event_get_touch_event" 'N Pointer-event))
 
-(de event-touch-get-time (Touch-event)
-    (native "libinput.so" "libinput_event_touch_get_time" 'I Touch-event))
+(de event-touch-get-time (Touch-Event)
+    (native "libinput.so" "libinput_event_touch_get_time" 'I Touch-Event))
 
-(de event-touch-get-time-usec (Touch-event)
-    (native "libinput.so" "libinput_event_touch_get_time_usec" 'N Touch-event))
+(de event-touch-get-time-usec (Touch-Event)
+    (native "libinput.so" "libinput_event_touch_get_time_usec" 'N Touch-Event))
 
-(de event-touch-get-slot get-time (Touch-event)
-    (native "libinput.so" "libinput_event_touch_get_slot" 'I Touch-event))
+(de event-touch-get-slot get-time (Touch-Event)
+    (native "libinput.so" "libinput_event_touch_get_slot" 'I Touch-Event))
 
-(de event-touch-get-seat-slot get-time (Touch-event)
-    (native "libinput.so" "libinput_event_touch_get_seat_slot" 'I Touch-event))
+(de event-touch-get-seat-slot get-time (Touch-Event)
+    (native "libinput.so" "libinput_event_touch_get_seat_slot" 'I Touch-Event))
 
-(de event-touch-get-x (Touch-event)
-    (native "libinput.so" "libinput_event_touch_get_x" +1.0 Touch-event))
+(de event-touch-get-x (Touch-Event)
+    (native "libinput.so" "libinput_event_touch_get_x" +1.0 Touch-Event))
 
-(de event-touch-get-y (Touch-event)
-    (native "libinput.so" "libinput_event_touch_get_y" +1.0 Touch-event))
+(de event-touch-get-y (Touch-Event)
+    (native "libinput.so" "libinput_event_touch_get_y" +1.0 Touch-Event))
 
-(de event-touch-get-x-transformed (Touch-event Width)
-    (native "libinput.so" "libinput_event_touch_get_x_transformed" +1.0 Touch-event Width))
+(de event-touch-get-x-transformed (Touch-Event Width)
+    (native "libinput.so" "libinput_event_touch_get_x_transformed" +1.0 Touch-Event Width))
 
-(de event-touch-get-y-transformed (Touch-event Width)
-    (native "libinput.so" "libinput_event_touch_get_y_transformed" +1.0 Touch-event Height))
+(de event-touch-get-y-transformed (Touch-Event Width)
+    (native "libinput.so" "libinput_event_touch_get_y_transformed" +1.0 Touch-Event Height))
 
 
 (de event-get-tablet-tool-event (Tablet-tool-event)
@@ -339,8 +339,8 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (de tablet-tool-tip-state (Event)
     (native "libinput.so" "libinput_event_tablet_tool_get_tip_state" 'I Event))
 
-(de event-tablet-tool-get-x-transformed (Touch-event Width)
-    (native "libinput.so" "libinput_event_tablet_tool_get_x_transformed" +1.0 Touch-event Width))
+(de event-tablet-tool-get-x-transformed (Touch-Event Width)
+    (native "libinput.so" "libinput_event_tablet_tool_get_x_transformed" +1.0 Touch-Event Width))
 
-(de event-tablet-tool-get-y-transformed (Touch-event Height)
-    (native "libinput.so" "libinput_event_tablet_tool_get_y_transformed" +1.0 Touch-event Height))
+(de event-tablet-tool-get-y-transformed (Touch-Event Height)
+    (native "libinput.so" "libinput_event_tablet_tool_get_y_transformed" +1.0 Touch-Event Height))

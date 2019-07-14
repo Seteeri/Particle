@@ -120,15 +120,41 @@ Store DAGs as binary trees?
    * Test multiple controllers with multiple vertices mutating simultaneously [Done]
      * N process will move N vert x dist
 
-   * Refactor IPC - weird lag with camera update and pointer update at same time
-     * Abstract common functionality among worker/model/render conns [Done]        
+   * Refactor IPC [Tues]
+     * Abstract common functionality among worker/model/render conns     
      * Serialize entire object for all
        * Test projview
        * Test vertex
        * Update procs
      * Model needs to write data
      * Implement message flushing
+       * Lag with camera update and pointer update at same time
      * Shorten projview translation names
+        
+   * Implement event dispatching/event handling in ctrl [Tues/Wed]
+     * Use assoc list
+     * Store combinations as keys
+   * Implement string/atom/list, eval functionality
+
+   * RECORD DEMO?
+
+   * Implement Wayland [Weekend]
+     * Setup tiles for 6 windows = 3 col, 2 row
+     * Proof of concept working with eval already
+ 
+ 
+* Refactor/Fix
+
+   * Refactor li into subfolders
+   * Socket change block/nonblock to T/NIL for convenience
+   * Ensure defs are defined for globals
+
+   * Refactor bindings
+     * Direct C calls use original C name
+
+   * Refactor namespaces 
+     * posix
+     * mathc
      
      * Tasks uses DAG/ptrees [Later]
        * Built on top of cons cells...
@@ -159,32 +185,7 @@ Store DAGs as binary trees?
        * @ 1 GB/16 Bytes = 67 108 864 chars
          * For 208 Bytes = 5 162 220 chars
        * Position can be calculated from a single point + offset
-         * Reduce size to 8 bytes
-   
-   * Implement event dispatching/event handling in ctrl [Tues/Wed]
-     * Use assoc list
-     * Store combinations as keys
-   * Implement string/atom/list, eval functionality
-
-   * RECORD DEMO?
-
-   * Implement Wayland [Weekend]
-     * Setup tiles for 6 windows = 3 col, 2 row
-     * Proof of concept working with eval already
- 
- 
-* Refactor/Fix
-
-   * Refactor li into subfolders
-   * Socket change block/nonblock to T/NIL for convenience
-   * Ensure defs are defined for globals
-
-   * Refactor bindings
-     * Direct C calls use original C name
-
-   * Refactor namespaces 
-     * posix
-     * mathc
+         * Reduce size to 8 bytes     
         
   * Port dependencies; pull code from rosetta code as baseline    
     * nanomsg - IPC; use existing PicoLisp library

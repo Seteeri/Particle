@@ -57,7 +57,7 @@
   (setq *ipc (new '(ipc~+IPC)
                   PATH-UDS-INPUT 'ipc~block handle-client accept-client))
 
-  (setq *input (new '(li~+Li)))  
+  (setq *input (new '(li~+Li)))
   (ipc~add-conn> *ipc (get *input 'li~fd-context) "LI" handle-fd-li))
 
 
@@ -65,11 +65,11 @@
 
   (prinl (usec) " | run-input | Starting epoll...")
   (loop (ipc~poll> *ipc Timeout)))
-  
+
 
 (de handle-client (Sock Events))
 
-  
+
 (de handle-fd-li ()
 
   (with *input
@@ -77,7 +77,7 @@
     (li~dispatch (: li~context))
 
     (loop
-    
+
        (setq Event (li~get-event (: li~context)))
        (T (= Event 0))
 
@@ -99,7 +99,7 @@
                                    (link (build-ev-lst-str Event Type))))
                    ")")
 
-      #(println Msg)
+      (println Msg)
 
       # Workers will send messages to input when they are ready
       (send-msg-clients *ipc Msg))))
@@ -146,8 +146,22 @@
                              (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
                              (format (li~event-pointer-get-axis-value Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)
                              (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-HORIZONTAL) *Scl)
-                             (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)))))))
+                             (format (li~event-pointer-get-axis-value-discrete Event li~POINTER-AXIS-SCROLL-VERTICAL)   *Scl)))))
 
+          ((or (= Type li~TOUCH-UP)
+               (= Type li~TOUCH-CANCEL)
+               (= Type li~TOUCH-FRAME))
+           (glue " " (list (format (li~event-touch-get-time Event))
+                           (format (li~event-touch-get-time-usec Event)))))
+
+          ((or (= Type li~TOUCH-DOWN)
+               (= Type li~TOUCH-MOTION))
+           (glue " " (list (format (li~event-touch-get-time Event))
+                           (format (li~event-touch-get-time-usec Event))
+                           (format (li~event-touch-get-x Event) *Scl)
+                           (format (li~event-touch-get-y Event) *Scl)
+                           (format (li~event-touch-get-x-transformed Event *width) *Scl)
+                           (format (li~event-touch-get-y-transformed Event *height) *Scl))))))
 
 (de end-input ()
 
