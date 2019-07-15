@@ -1,3 +1,6 @@
+(def 'SZ-PV (+ 9 64 24 64 12 12))
+
+
 (class +Projview)
 (dm T (Width
        Height
@@ -151,7 +154,7 @@
 (dm cpy-to-ptr> (Ptr)
   (serialize-mat-to-ptr (: mat-proj) Ptr)
   (serialize-mat-to-ptr (: mat-view) (+ Ptr 64))
-  128)
+  SZ-PV)
 
 
 (dm cpy-to-obj> (Ptr)

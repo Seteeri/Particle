@@ -32,14 +32,14 @@
       (req-send-obj *ipc
                     Sock-Render
                     *projview
-                    128
+                    SZ-PV
                     0)
                     
       # Push to model also
       (req-send-obj *ipc
                     Sock-Model
                     *projview
-                    128
+                    SZ-PV
                     0))))
 
 
@@ -75,5 +75,5 @@
   (req-send-obj Ipc
                 (ipc~get-fd> Ipc "RENDER")
                 Projview
-                128
+                SZ-PV
                 0))

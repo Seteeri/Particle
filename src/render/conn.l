@@ -70,7 +70,7 @@
   (ipc~recv-bytes> *ipc Sock NIL Sz)
 
   (cond ((= Dst "projview")
-         #(println (usec) " | write-dst projview | " (struct (get *ipc 'ipc~buf-rd) '(B . 128)))
+         #(println (usec) " | write-dst projview | " (struct (get *ipc 'ipc~buf-rd) '((B . 64) (B . 64))))
          (let (Ptr-Gl  (get (get '*buffer-objects 'projview) 'gl~ptr)
                Ptr-Buf (get *ipc 'ipc~buf-rd))
            (memcpy Ptr-Gl Ptr-Buf Sz)))

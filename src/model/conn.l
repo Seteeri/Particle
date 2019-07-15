@@ -36,7 +36,7 @@
 
   # Return serialized bytes on socket
   (cond ((= Src "projview")
-         (send-obj *ipc Sock *projview 128))
+         (send-obj *ipc Sock *projview SZ-PV))
 
         ((= Src "nodes")
          (send-obj *ipc Sock (get *verts (+ (/ Off 208) 1)) 208))))

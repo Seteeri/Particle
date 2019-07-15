@@ -79,7 +79,7 @@
   (setq *projview (req-recv-obj *ipc 
                                 (ipc~get-fd> *ipc "MODEL")
                                 (new '(+Projview))
-                                128
+                                SZ-PV
                                 0))
   
   T)
