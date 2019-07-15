@@ -169,10 +169,10 @@
 
 
 (dm fmt-msg-send> (Off)
-  (pack "(mc projview NIL 128 " Off ")"))  
+  (pack "(mc projview NIL " SZ-PV " " Off ")"))  
   
   
 (dm fmt-msg-recv> (Off)
-  (pack "(mc NIL projview 128 " Off ")"))
+  (pack "(mc NIL projview " SZ-PV " " Off ")"))
   
                

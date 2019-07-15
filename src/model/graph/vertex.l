@@ -156,8 +156,7 @@
         (struct Ptr '((-1.0 . 16) (-1.0 . 16) (-1.0 . 16) (I . 4))))
 
     (prinl "IMPLEMENT CPY TO OBJ FOR VERTEX!")
-
-    (println Mm Rgba Uv Off-Texel Sz-X Sz-Y Flag)
+    #(println Mm Rgba Uv Off-Texel Sz-X Sz-Y Flag)
     
     (=: char 42)
     (=: pos  (list 0.0 0.0 0.0))
