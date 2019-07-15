@@ -7,43 +7,46 @@
                                 0.5137255 0.5803922 0.60784316 1.0))
 
 
+(def 'SZ-VERT (+ 1 12 12 12 64 64 64 4))
+
+
 # Reuse across all vertices for txfer
-(def '*ptr-vert (native "@" "malloc" 'N 208))
+(def '*ptr-vert (native "@" "malloc" 'N SZ-VERT))
 
 
 (class +Vertex)
-(dm T (Char       #Use to get offset, if char then data is char also
+(dm T (Chr       #Use to get offset, if char then data is char also
        RGBA
        Pos
        Rota
        Sca)
        
-  (=: char NIL)
-  (=: off-texel NIL)
-  (=: rgba RGBA)
+  (=: chr NIL)
   
   # Either keep these here or move to model matrix...
   (=: pos Pos)
   (=: rota Rota)
   (=: sca Sca)
   (=: mm (mat4-identity))
-      
+  
+  (=: rgba RGBA)      
   (=: uv NIL)
-        
-  (update-glyph> This Char)
+  (=: off-texel NIL)
+          
+  (update-glyph> This Chr)
   (update-model-matrix> This))
 
 
-(dm update-glyph> (Char)
+(dm update-glyph> (Chr)
   #{
   translation = baseline (get-origin-from-node-pos *node-ptr-main*)
   Create diagrams for metrics calculations so easier to understand/visualize
   }#
   
-  (=: char Char)
-  (=: off-texel (* (- (: char) 1) (get *dims-tex-node 1) (get *dims-tex-node 2)))
+  (=: chr (char Chr))
+  (=: off-texel (* (- (: chr) 1) (get *dims-tex-node 1) (get *dims-tex-node 2)))
 
-  (let Metrics (get *metrics (: char))   
+  (let Metrics (get *metrics (: chr))
    
     (=: uv (get Metrics 'uv))
     (=: pos (calc-pos-metrics Metrics (: pos)))
@@ -84,95 +87,62 @@
 
 
 (dm serialize-to-ptr> (Ptr)
-
-  (let Off Ptr
-
-    (serialize-mat-to-ptr (: mm)   Off)
-    
-    (serialize-mat-to-ptr (: rgba) (inc 'Off 64))
-    
-    (serialize-mat-to-ptr (: uv)   (inc 'Off 64))
-    
-    (struct (inc 'Off 64) 'N (cons (: off-texel) 4)
-                             (cons 96 4) #x-sz
-                             (cons 96 4) #y-sz
-                             (cons 0 4) #flag
-                             )))
-
-
-(dm serialize-to-ptr-2> (Ptr)
-
   (struct Ptr 'N 
-          (char (: char))
-          ((: off-texel) 4)
-          (cons -1.0 (: rgba))
+          (: chr)
           (cons -1.0 (: pos))
           (cons -1.0 (: rota))
           (cons -1.0 (: sca))
           (cons -1.0 (: mm))
-          (cons -1.0 (: uv))))
+          (cons -1.0 (: rgba))          
+          (cons -1.0 (: uv))
+          (cons (: off-texel) 4)))
 
 
 (dm deserialize-fm-ptr> (Ptr)
 
-  (let ((Char Off-Texel Rgba Pos Rota Sca Mm Uv)
+  (let ((Chr Pos Rota Sca Mm Rgba Uv Off-Texel)
         (struct Ptr 
-                '((C . 1)
-                  (I . 1)
+                '((B . 1)
+                  (-1.0 . 3)
+                  (-1.0 . 3)
+                  (-1.0 . 3)
                   (-1.0 . 16)
                   (-1.0 . 16)
                   (-1.0 . 16)
-                  (-1.0 . 16)
-                  (-1.0 . 16)
-                  (-1.0 . 16))))
+                  (I . 1))))
     
-    (=: char Char)
-    (=: off-texel Off-Texel)
-
-    (=: rgba Rgba)
-    
+    (=: chr (car Chr))
+        
     (=: pos  Pos)
     (=: rota Rota)
     (=: sca  Sca)
-    
     (=: mm Mm)
-    (=: uv Uv)))
+    
+    (=: rgba Rgba)
+    
+    (=: uv Uv)
+    (=: off-texel (car Off-Texel))))
         
         
 ################################################################################
 
 (de get-vert-off (Cnt)
-  (* (- Cnt 1) 208))
+  (* (- Cnt 1) 208)) # use gl size
 
 
 (dm cpy-to-ptr> (Ptr)
   (serialize-to-ptr> This Ptr)
-  208)
+  SZ-VERT)
 
 
 (dm cpy-to-obj> (Ptr)
-  # Call deserialize-fm-ptr
-  (let ((Mm Rgba Uv (Off-Texel Sz-X Sz-Y Flag))
-        (struct Ptr '((-1.0 . 16) (-1.0 . 16) (-1.0 . 16) (I . 4))))
-
-    (prinl "IMPLEMENT CPY TO OBJ FOR VERTEX!")
-    #(println Mm Rgba Uv Off-Texel Sz-X Sz-Y Flag)
-    
-    (=: char 42)
-    (=: pos  (list 0.0 0.0 0.0))
-    (=: rota (list 0.0 0.0 0.0))
-    (=: sca  (list 1.0 1.0 1.0))
-    
-    (=: mm Mm)
-    (=: rgba Rgba)
-    (=: uv Uv)
-    (=: off-texel Off-Texel)))
+  (deserialize-fm-ptr> This Ptr))
 
 
 (dm fmt-msg-send> (Off)
-  (pack "(mc nodes NIL 208 " Off ")"))
+  (pack "(mc nodes NIL " SZ-VERT " " Off ")"))
   
   
 (dm fmt-msg-recv> (Off)
-  (pack "(mc NIL nodes 208 " Off ")"))
+  (pack "(mc NIL nodes " SZ-VERT " " Off ")"))
   

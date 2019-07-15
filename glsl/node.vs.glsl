@@ -35,8 +35,9 @@ void main()
     vertexUV.v = 1.0 - instances_out[gl_InstanceID].uvs[gl_VertexID].v;
     
     vertexOffsetTex = instances_out[gl_InstanceID].w_flags[0];
-    vertexDimsTex = ivec2(instances_out[gl_InstanceID].w_flags[1],
-                          instances_out[gl_InstanceID].w_flags[2]);
+    vertexDimsTex = ivec2(96, 96);
+    //vertexDimsTex = ivec2(instances_out[gl_InstanceID].w_flags[1],
+    //                      instances_out[gl_InstanceID].w_flags[2]);
     vertexDimsTexOffset = vec2(float(vertexDimsTex.x-1), 
                                 float(vertexDimsTex.y-1));
                                 

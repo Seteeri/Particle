@@ -151,21 +151,13 @@
   (struct Ptr 'N (cons -1.0 M)))
                  
 
-(dm cpy-to-ptr> (Ptr)
-  #(serialize-mat-to-ptr (: mat-proj) Ptr)
-  #(serialize-mat-to-ptr (: mat-view) (+ Ptr 64))
-  
+(dm cpy-to-ptr> (Ptr)  
   (serialize-to-ptr> This Ptr)
-  
   SZ-PV)
 
 
-(dm cpy-to-obj> (Ptr)
-  #(=: mat-proj (struct    Ptr     '(-1.0 . 16)))
-  #(=: mat-view (struct (+ Ptr 64) '(-1.0 . 16))))
-  
+(dm cpy-to-obj> (Ptr)  
   (deserialize-fm-ptr> This Ptr))
-  
 
 
 (dm fmt-msg-send> (Off)

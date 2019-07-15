@@ -177,7 +177,7 @@ Handle bad accept sock
            (disconnect-client> This Sock)
 
            (when NIL #(: debug-ipc)
-                 (prinl (usec) " | send-bytes> | Sock=" Sock ", " "Bytes-Sent=:" Bytes-Sent)))
+             (prinl (usec) " | send-bytes> | Sock=" Sock ", " "Bytes-Sent=:" Bytes-Sent)))
                  
        Bytes-Sent))
 

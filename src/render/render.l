@@ -166,7 +166,7 @@ Class variables may be indicated by an upper case letter
   # Draws only on event?
   # With Wayland, clients will send damage events...
   (when NIL
-    (test-projview)
+    #(test-projview)
     (test-vert))
 
   (while (= (glfw~window-should-close *window) 0)
@@ -225,6 +225,8 @@ Class variables may be indicated by an upper case letter
   (let (Msg  (recv-msg *ipc Sock Events)
         Data (any Msg)
         Name-Fn (get Data 1))
+
+    (prinl (usec) " | RENDER  | recv-conn | " Msg)
 
     # For now, assume memcpy
     (cond ((= Name-Fn "mc")

@@ -57,7 +57,7 @@
        (for I *verts-max
 
             (let Vert (new '(+Vertex)
-                           42 # *
+                           "*"
                            *color-vert-default
                            (list 0.0 0.0 0.0) # pos
                            (list 0.0 0.0 0.0) # rot=0, sca=global scale
@@ -102,7 +102,6 @@
 
   #(serialize-to-ptr> *projview (get *projview 'ptr))
   #(deserialize-fm-ptr> *projview (get *projview 'ptr))
-  
   #(show *projview)
   #(view (getl *projview))
 
@@ -171,7 +170,7 @@
 
           (T
            (prinl (usec) " | MODEL  | recv-conn-ctrl | UNKNOWN REQUEST! " Msg)))
-              
+                   
    T))
 
 

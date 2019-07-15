@@ -49,7 +49,7 @@
   (send-msg Ipc
             (fmt-msg-send> Obj Off-Obj)
             Sock)
-                 
+
   (send-obj Ipc Sock Obj Sz-Obj Off-Obj))
   
 
@@ -67,7 +67,7 @@
   (req-send-obj Ipc
                 (ipc~get-fd> Ipc "RENDER") # Pass string and auto look up?
                 Vert
-                208
+                SZ-VERT
                 Off))
 
 

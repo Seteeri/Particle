@@ -65,16 +65,14 @@
                       
   (send-msg *ipc "RDY" (ipc~get-fd> *ipc "CONTROL"))
       
-  #(setq *vert (read-vert *ipc (ipc~get-fd> *ipc "MODEL") *i-proc))
-
   (setq *off-vert (get-vert-off *i-proc))  
   (setq *vert (req-recv-obj *ipc 
                             (ipc~get-fd> *ipc "MODEL")
                             (new '(+Vertex))
-                            208
+                            SZ-VERT
                             *off-vert))
 
-  #(println "*vert: " *vert)
+  #(println "*vert: " (getl *vert))
 
   (setq *projview (req-recv-obj *ipc 
                                 (ipc~get-fd> *ipc "MODEL")

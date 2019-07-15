@@ -39,5 +39,5 @@
          (send-obj *ipc Sock *projview SZ-PV))
 
         ((= Src "nodes")
-         (send-obj *ipc Sock (get *verts (+ (/ Off 208) 1)) 208))))
+         (send-obj *ipc Sock (get *verts (+ (/ Off 208) 1)) SZ-VERT))))
     

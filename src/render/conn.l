@@ -70,19 +70,33 @@
   (ipc~recv-bytes> *ipc Sock NIL Sz)
 
   (cond ((= Dst "projview")
-         #(println (usec) " | write-dst projview | " (struct (get *ipc 'ipc~buf-rd) '((B . 64) (B . 64))))         
+         #(println (usec) " | write-dst projview | " (struct (get *ipc 'ipc~buf-rd) '((B . 64) (B . 64))))
          (let (Ptr-Gl  (get (get '*buffer-objects 'projview) 'gl~ptr)
                Ptr-Buf (get *ipc 'ipc~buf-rd))
            (memcpy Ptr-Gl (+ Ptr-Buf 9) 64)
            (memcpy (+ Ptr-Gl 64) (+ Ptr-Buf 9 64 24) 64)))
 
         ((= Dst "nodes")
-         # Off = bytes
-         #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '(B . 208)))
-         #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '((-1.0 . 16) (-1.0 . 16) (-1.0 . 16) (I . 4))))
+         #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '(B . 233)))
+                  
          (let (Ptr-Gl  (+ (get (get '*buffer-objects 'nodes) 'gl~ptr) Off)
                Ptr-Buf (get *ipc 'ipc~buf-rd))
-           (memcpy Ptr-Gl Ptr-Buf 208)))))
+           
+           (when NIL
+             (println (struct Ptr-Buf
+                              '((C . 1)
+                                (-1.0 . 3)
+                                (-1.0 . 3)
+                                (-1.0 . 3)
+                                (-1.0 . 16)
+                                (-1.0 . 16)
+                                (-1.0 . 16)
+                                (I . 1))))
+             (println (usec) " | write-dst nodes | " (struct (+ Ptr-Buf 37) '((-1.0 . 16) (-1.0 . 16) (-1.0 . 16) (I . 1)))))
+           
+           (memcpy Ptr-Gl (+ Ptr-Buf 37) (+ 64 64 64 4))
+           
+           T))))
 
 
 (de read-src (Src Sock Sz Off)
