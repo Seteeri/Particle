@@ -56,7 +56,7 @@
           (cons -1.0 (: rot))))
           
 
-(dm deserialize-from-ptr> (Ptr)
+(dm deserialize-fm-ptr> (Ptr)
   (let ((Width Height Type-Proj Mat-Proj Fov Near Far Scale-Ortho Near-Ortho
          Ortho-Far Mat-View Pos Rot Displace)
         (struct Ptr

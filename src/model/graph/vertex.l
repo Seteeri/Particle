@@ -113,7 +113,7 @@
           (cons -1.0 (: uv))))
 
 
-(dm deserialize-from-ptr> (Ptr)
+(dm deserialize-fm-ptr> (Ptr)
 
   (let ((Char Off-Texel Rgba Pos Rota Sca Mm Uv)
         (struct Ptr 
@@ -151,7 +151,7 @@
 
 
 (dm cpy-to-obj> (Ptr)
-  # Refactor to method
+  # Call deserialize-fm-ptr
   (let ((Mm Rgba Uv (Off-Texel Sz-X Sz-Y Flag))
         (struct Ptr '((-1.0 . 16) (-1.0 . 16) (-1.0 . 16) (I . 4))))
 

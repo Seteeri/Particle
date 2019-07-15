@@ -101,7 +101,7 @@
   (update-mat-view> *projview)
 
   #(serialize-to-ptr> *projview (get *projview 'ptr))
-  #(deserialize-from-ptr> *projview (get *projview 'ptr))
+  #(deserialize-fm-ptr> *projview (get *projview 'ptr))
   
   #(show *projview)
   #(view (getl *projview))

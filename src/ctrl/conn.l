@@ -24,6 +24,11 @@
 
       (update-mat-view> *projview)     
       
+      # Either send relevant data or send entire data
+      # -> Minimize render processing time
+      
+      # Pass list of socks so need only serialize once
+      
       (req-send-obj *ipc
                     Sock-Render
                     *projview

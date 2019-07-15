@@ -126,22 +126,23 @@ Store DAGs as binary trees?
        * Test projview
        * Test vertex
        * Update procs
+       -> Need not serialize everything - add ability to serialize only certain members [Later]
      * Model needs to write data
      * Implement message flushing
        * Lag with camera update and pointer update at same time
-     * Shorten projview translation names
         
    * Implement event dispatching/event handling in ctrl [Tues/Wed]
      * Use assoc list
      * Store combinations as keys
-   * Implement string/atom/list, eval functionality
-
-   * RECORD DEMO?
-
-   * Implement Wayland [Weekend]
+   
+   * Implement Wayland [Wed/Thurs]
      * Setup tiles for 6 windows = 3 col, 2 row
      * Proof of concept working with eval already
- 
+   
+   * Implement string/atom/list, eval functionality [Fri...Sun]
+   
+   * RECORD DEMO? 
+   
  
 * Refactor/Fix
 
