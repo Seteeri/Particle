@@ -47,7 +47,7 @@
         Ptr  (get Msg 2)
         Name-Fn (get Data 1))
 
-    (println (usec) " | RENDER  | process-msg | " Msg)
+    #(println (usec) " | RENDER  | process-msg | " Msg)
 
     # For now, assume memcpy
     (cond ((= Name-Fn "mc")

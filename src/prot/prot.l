@@ -61,7 +61,7 @@ Protocol should only call methods on Ipc and Objects passed to it
      (when Debug (prinl (usec) " | recv-msg | Bytes-Read-Len=" Bytes-Read-Len))
 
      (when (< Bytes-Read-Len 4)
-       (prinl (usec) " | recv-msg | (< 4 Bytes-Read-Len=" Bytes-Read-Len) ")")
+       (prinl (usec) " | recv-msg | < 4 Bytes-Read-Len=" Bytes-Read-Len) ")")
 
      # Read/block until 4 bytes recv'd
      #(while (< Bytes-Read-Len 4)
@@ -76,7 +76,7 @@ Protocol should only call methods on Ipc and Objects passed to it
           (let Bytes-Read-Msg (ipc~recv-bytes> Ipc Sock NIL Length)
 
             (when (< Bytes-Read-Msg Length)
-               (prinl (usec) " | recv-msg | Bytes-Read-Msg=" Bytes-Read-Msg))
+               (prinl (usec) " | recv-msg | < Bytes-Read-Msg=" Bytes-Read-Msg " " Length))
             
             #(while (< Bytes-Read-Msg Length)
             #   (recv-bytes> Ipc Sock ((: buf-rd) + Bytes-Read-Msg) (- Length Bytes-Read-Msg)))

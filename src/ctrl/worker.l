@@ -135,32 +135,31 @@
 
   (let Msg (recv-msg *ipc Sock)
 
-   (when NIL
+   (when T
    
-     # Modify position
-     (let (Cnt   (case *i-proc
-                    (1 13)
-                    (2 13)
-                    (3 14)
-                    (4 14))
-           Delta     (case *i-proc
-                      (1 -0.01)
-                      (2 0.01)
-                      (3 -0.01)
-                      (4 0.01))
-           Mm (get *vert 1)
-           Mm-New (place Cnt Mm (+ (get Mm Cnt) Delta))
-           Vert-New (place 1 *vert Mm-New))
-                 
-       # Push update to render
-       (ipc~write-vert> *ipc Vert-New *i-proc Sock)
-       
-       # Push update to model
-       
-       (setq *vert Vert-New)))
+     # Pull data from model
+     (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
+           Sock-Render (ipc~get-fd> *ipc "RENDER"))
 
-    (when NIL
-      (prinl Msg))))
+       (with *vert
+
+        (=: pos (list (+ (get (: pos) 1) 0.01)
+                      (+ (get (: pos) 2) 0.0)
+                      0.0))
+        (update-model-matrix> *vert)
+                
+        (req-send-obj *ipc
+                      Sock-Render
+                      *vert
+                      SZ-VERT
+                      *off-vert)
+
+        # Push to model also
+        (req-send-obj *ipc
+                      Sock-Model
+                      *vert
+                      SZ-VERT
+                      *off-vert))))))
 
 
 (de main ()

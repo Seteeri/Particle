@@ -158,20 +158,20 @@
 
   }#
 
+  #(flush-msgs *ipc Sock process-msg)
+
   (let (Msg (recv-msg *ipc Sock)
         Data (any Msg)
         Name-Fn (get Data 1))
 
-    (prinl (usec) " | MODEL  | recv-conn | " Msg)
+    #(prinl (usec) " | MODEL  | recv-conn | " Msg)
 
     # For now, assume memcpy
     (cond ((= Name-Fn "mc")
            (handle-memcpy Sock Data))
 
           (T
-           (prinl (usec) " | MODEL  | recv-conn-ctrl | UNKNOWN REQUEST! " Msg)))
-                   
-   T))
+           (prinl (usec) " | MODEL  | recv-conn | UNKNOWN REQUEST! " Msg)))))
 
 
 (de main ()

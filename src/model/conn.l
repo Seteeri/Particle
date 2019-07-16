@@ -1,3 +1,18 @@
+(de process-msg (Ipc Sock Msg)
+  (let (Data (get Msg 1)
+        Ptr  (get Msg 2)
+        Name-Fn (get Data 1))
+
+    #(println (usec) " | MODEL  | process-msg | " Msg)
+
+    # For now, assume memcpy
+    (cond ((= Name-Fn "mc")
+           (handle-memcpy Sock Data Ptr))
+
+          (T
+           (prinl (usec) " | MODEL  | process-msg | UNKNOWN REQUEST! " Msg)))))
+
+
 (de handle-memcpy (Sock Data)
 
   #(mc Dst Src Sz) + data
@@ -13,10 +28,10 @@
            (read-src Src Sock Sz Off))
            
           ((and Dst Src)
-           (prinl (usec) " | handle-memcpy | Ptr to ptr memcpy not implemented!"))
+           (prinl (usec) " | MODEL | handle-memcpy | Ptr to ptr memcpy not implemented!"))
            
           (T
-           (prinl (usec) " | handle-memcpy | Invalid Dst Src parameters!")))))
+           (prinl (usec) " | MODEL | handle-memcpy | Invalid Dst Src parameters!")))))
 
 
 (de write-dst (Dst Sock Sz Off)
@@ -25,7 +40,7 @@
          (recv-obj *ipc Sock *projview SZ-PV))
    
         ((= Dst "nodes")
-         (recv-obj *ipc Sock (get *verts (+ (/ Off 208) 1)) SZ-PV))))
+         (recv-obj *ipc Sock (get *verts (+ (/ Off 208) 1)) SZ-VERT))))
 
 
 (de read-src (Src Sock Sz Off)
@@ -37,3 +52,4 @@
         ((= Src "nodes")
          (send-obj *ipc Sock (get *verts (+ (/ Off 208) 1)) SZ-VERT))))
     
+
