@@ -21,15 +21,11 @@
 
 (de write-dst (Dst Sock Sz Off)
 
-  # Call recv-obj
-
-  (ipc~recv-bytes> *ipc Sock NIL Sz)
-
   (cond ((= Dst "projview")
-         (prinl (usec) " | write-dst | projview not implemented!"))
+         (recv-obj *ipc Sock *projview SZ-PV))
    
         ((= Dst "nodes")
-         (prinl (usec) " | write-dst | nodes not implemented!"))))
+         (recv-obj *ipc Sock (get *verts (+ (/ Off 208) 1)) SZ-PV))))
 
 
 (de read-src (Src Sock Sz Off)

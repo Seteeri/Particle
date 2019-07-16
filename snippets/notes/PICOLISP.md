@@ -121,14 +121,14 @@ Store DAGs as binary trees?
      * N process will move N vert x dist
 
    * Refactor IPC [Tues]
-     * Abstract common functionality among worker/model/render conns     
-     * Serialize entire object for all
+     * Abstract common functionality among worker/model/render conns [Done]
+     * Serialize entire object for all [Done]
        * Test projview
        * Test vertex
        * Update procs
-       -> Need not serialize everything - add ability to serialize only certain members [Later]
-     * Model needs to write data
-     * Implement message flushing
+     -> Need not serialize everything - add ability to serialize only certain members [Later]
+     * Model needs to write data [Tues]
+     * Implement message flushing [Tues]
        * Lag with camera update and pointer update at same time
         
    * Implement event dispatching/event handling in ctrl [Tues/Wed]
