@@ -61,7 +61,7 @@ Protocol should only call methods on Ipc and Objects passed to it
      (when Debug (prinl (usec) " | recv-msg | Bytes-Read-Len=" Bytes-Read-Len))
 
      (when (< Bytes-Read-Len 4)
-       (prinl (usec) " | recv-msg | Bytes-Read-Len=" Bytes-Read-Len))
+       (prinl (usec) " | recv-msg | (< 4 Bytes-Read-Len=" Bytes-Read-Len) ")")
 
      # Read/block until 4 bytes recv'd
      #(while (< Bytes-Read-Len 4)
@@ -111,6 +111,63 @@ Protocol should only call methods on Ipc and Objects passed to it
 (de send-msg-clients (Ipc Msg)    
   (for Client (get Ipc 'ipc~clients)
     (send-msg Ipc Msg (car Client))))
+
+
+(de flush-msgs (Ipc Sock Fn-Proc)
+
+  # Either use yield or pass fn
+
+  (for Msg (read-msgs Ipc Sock)
+    (Fn-Proc Ipc Sock Msg)))
+
+
+(de read-msgs (Ipc Sock)
+
+  # Recv buffer limit on sock
+  
+  (let Bytes-Read-Len (ipc~recv-bytes> Ipc Sock T T)
+
+    #(prinl (usec) " | read-msgs | Bytes-Read-Len=" Bytes-Read-Len)
+
+    # Should always be at least 1 byte since this is called when data available
+    (when (< Bytes-Read-Len 4)
+      (prinl (usec) " | read-msgs | (< 4 Bytes-Read-Len=" Bytes-Read-Len ")"))
+
+     (let (Ptr (get Ipc 'ipc~buf-rd)
+           Bytes-Proc 0
+           Msgs ())
+
+       (while (< Bytes-Proc Bytes-Read-Len)
+          
+          # Return msg and entire msg length (offset to next msg)
+          (let Data (parse-msg Ptr)
+            (push 'Msgs (get Data 1))
+            (inc 'Bytes-Proc (get Data 2))
+            (inc 'Ptr (get Data 2))))
+
+        Msgs)))
+
+
+(de parse-msg (Ptr)
+  # TODO: Refactor this with recv-msg into single function which takes a ptr
+
+  (let Length (car (struct Ptr '(I)))
+
+    (let (Msg (pack (struct (+ Ptr 4) (cons 'C Length)))
+          Data (any Msg)
+          Name-Fn (get Data 1)
+          Ret NIL)
+
+      #(prinl (usec) " | parse-msg | Msg=" Msg)
+
+      (if (= Name-Fn "mc")
+          
+          (setq Ret (list (list Data (+ Ptr 4 Length))
+                          (+ 4 Length (get Data 4))))
+            
+          (prinl (usec) " | parse-msg | UNKNOWN REQUEST! " Msg))
+          
+      Ret)))
 
 
 ################################################################################

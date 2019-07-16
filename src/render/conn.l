@@ -42,7 +42,22 @@
 ################################################################################
 
 
-(de handle-memcpy (Sock Data)
+(de process-msg (Ipc Sock Msg)
+  (let (Data (get Msg 1)
+        Ptr  (get Msg 2)
+        Name-Fn (get Data 1))
+
+    (println (usec) " | RENDER  | process-msg | " Msg)
+
+    # For now, assume memcpy
+    (cond ((= Name-Fn "mc")
+           (handle-memcpy Sock Data Ptr))
+
+          (T
+           (prinl (usec) " | RENDER  | process-msg | UNKNOWN REQUEST! " Msg)))))
+
+
+(de handle-memcpy (Sock Data Ptr)
 
   #(mc Dst Src Sz) + data
   (let (Dst  (get Data 2)
@@ -51,7 +66,7 @@
         Off  (get Data 5))
 
     (cond ((and Dst (not Src)) # Write bytes to ..., recv from socket
-           (write-dst Dst Sock Sz Off))
+           (write-dst Ptr Dst Sock Sz Off))
 
           ((and (not Dst) Src) # Read bytes from ..., send on socket
            (read-src Src Sock Sz Off))
@@ -63,16 +78,12 @@
            (prinl (usec) " | handle-memcpy | Invalid Dst Src parameters!")))))
 
 
-(de write-dst (Dst Sock Sz Off)
-
-  # Call recv-obj
-
-  (ipc~recv-bytes> *ipc Sock NIL Sz)
+(de write-dst (Ptr Dst Sock Sz Off)
 
   (cond ((= Dst "projview")
          #(println (usec) " | write-dst projview | " (struct (get *ipc 'ipc~buf-rd) '((B . 64) (B . 64))))
          (let (Ptr-Gl  (get (get '*buffer-objects 'projview) 'gl~ptr)
-               Ptr-Buf (get *ipc 'ipc~buf-rd))
+               Ptr-Buf Ptr)
            (memcpy Ptr-Gl (+ Ptr-Buf 9) 64)
            (memcpy (+ Ptr-Gl 64) (+ Ptr-Buf 9 64 24) 64)))
 
@@ -80,7 +91,7 @@
          #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '(B . 233)))
                   
          (let (Ptr-Gl  (+ (get (get '*buffer-objects 'nodes) 'gl~ptr) Off)
-               Ptr-Buf (get *ipc 'ipc~buf-rd))
+               Ptr-Buf Ptr)
            
            (when NIL
              (println (struct Ptr-Buf
@@ -108,3 +119,5 @@
 
         ((= Src "nodes")
          (prinl (usec) " | read-src | nodes not implemented!"))))
+         
+         
