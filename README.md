@@ -52,9 +52,8 @@ momentum, but again, using an existing OS makes more sense to start with. It
 begs the question as to how useful a Lisp at the OS level would be (past Lisp 
 Machines may provide an answer...).
 
-The target audience consists of programmers, developers, power users and the 
-like, particularly any task involving organizing, fusing and understanding 
-multiple streams of information or data.
+The target audience consists of programmers, power users and the like, 
+particularly intelligence analysis.
 
 
 ## The Inspiration

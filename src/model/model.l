@@ -38,9 +38,9 @@
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/metrics/metrics.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/conn.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/vertex.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
 
 

@@ -1202,3 +1202,6 @@ Do size -A ./picolisp
 Get .data offset
 Or use NIL
 Look in base.s to get offset
+
+
+https://linux.slashdot.org/story/19/05/15/1523252/why-linux-on-desktop-failed-a-discussion-with-mark-shuttleworth?sdsrc=popbyskidbtmprev

@@ -323,7 +323,7 @@ EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
     +...                               +...
 
 
-  * Is the cons cell the visua  lization of the vertex?
+  * Is the cons cell the visualization of the vertex?
 
   * CAR-CDR = quad spaced
   * Vert dist = quad spaced

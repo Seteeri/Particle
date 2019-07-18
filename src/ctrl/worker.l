@@ -38,8 +38,8 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/ctrl/conn.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/vertex.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/metrics/metrics.l")
 
 
 # Globals
