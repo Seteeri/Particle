@@ -20,10 +20,17 @@
        Pos
        Rota
        Sca)
-       
+  
+  # ch po ro sc mm rg uv ot
+
+  #(=: data NIL)
+
   (=: chr NIL)
   
+  # POSS:
   # Either keep these here or move to model matrix...
+  # Instead of storing pos/rot/sca, directly modify mm
+  # - Downside is mm must be calculated repeatedly
   (=: pos Pos)
   (=: rota Rota)
   (=: sca Sca)

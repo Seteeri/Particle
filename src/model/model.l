@@ -63,21 +63,11 @@
                            (list 0.0 0.0 0.0) # rot=0, sca=global scale
                            (list *sca-vert *sca-vert *sca-vert))
 
-                 #(prinl "Created vertex " I " "  Vert)
                  (push 'Verts Vert)))
 
+       (prinl "Created " *verts-max " vertices ")
+
        Verts))
-
-
-(de init-verts-default ()
-  #{
-  Traverse all internal/protected symbols
-  - PicoLisp symbols = 300+?
-  - Pointer = cons pair
-
-  - Track transient symbols
-  }#
-  T)
 
 
 (de init-model ()

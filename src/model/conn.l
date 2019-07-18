@@ -36,6 +36,8 @@
 
 (de write-dst (Dst Sock Sz Off)
 
+  # Send updates also?
+
   (cond ((= Dst "projview")
          (recv-obj *ipc Sock *projview SZ-PV))
    

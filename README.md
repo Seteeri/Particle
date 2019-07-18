@@ -7,40 +7,55 @@ information as they moved through the computer. What did they look like?
   a world I thought I'd never see. And then one day . . .
 
 Inspired by:
-* Beast Wars CGI-cartoon (Transformers)
+* Transformers (Beast Wars)
 * Digimon
+* Reboot
 * Compiz
 * Blender
 * Tron
 * Emacs
 * Lisp
 
-Particle is a Lisp 3D nodal shell based on DRM-KMS and Open GL ES. It is the 
-implementation of my vision of a more consistent programmable UI to replace the 
-desktop/application paradigm - a way to map our thoughts into the computer. It 
-integrates concepts from CLIs/shells/REPLs/notebooks, WMs/DEs, creative coding, 
-and mindmapping into a single 3D interface.
+Particle is a 3D Lisp structure/projectional editor. It is the implementation of my vision 
+of a programmable UI to replace the desktop paradigm - a way to map our thoughts
+into the computer. It integrates concepts from CLIs, shells, REPLs, notebooks, 
+WMs/DEs, creative coding, and mindmapping into a single interface.
 
-User-aspect Goals:
+My personal dream would be to have a consistent computing experience between
+a desktop/workstation, laptop/tablet and smartphone/PDA where information or
+objects can easily flow between devices, i.e. convergence.
 
-1. Create a Lisp userland short of creating a pure Lisp OS/kernel (Particle may
-be considered a top-down approach rather than a bottom-up approach).
+Particle maximizes the following principles:
 
-2. Integrate Wayland by providing the desktop as a node (plane) in 3D space (It
-is possible to allow windows existing in 3D space allowing for convergence, 
-however memcpy performance limits the number of windows...).
+* Programmability
+* Expressivity
+* Dynamism
+* Simplicity/Minimalism
 
-It is **not** an attempt to create a visual programming language; it is more 
-akin to an IDE. It is designed to edit Lisp code/data, which are effectively 
-binary trees. It puts Lisp code/data on the same level as conventional windows 
-are. It takes a more pragmatic approach to a Lisp environment by integrating 
-into existing interfaces and leveraging the existing FOSS 
-ecosystem/infrastructure, thus allowing more seamless adoption, rather than 
-taking a more adamant fundamental approach, which would require a high initial 
-investment.
+These principles are shared with the underlying programming language (PicoLisp)
+and OS (FreeBSD) to create a consistent harmonious system.
+
+Particle provides the following interfaces for the user:
+
+* A Lispy userland based on cons cells
+  * Top-down approach rather than a bottom-up approach
+* Backwards compatibility with the conventional desktop (X11)
+
+Future plans include building the userland upon FreeBSD, although development is
+currently occuring on Linux also. 
+
+Another route to consider is PilOS; however, there would be many hurdles to
+overcome including writing drivers, which would not be feasible nor likely to be
+completed in a timely manner. Initially, specific hardware or a SOC with 
+adequate performance could be targeted to provide a starting point to gain 
+momentum, but again, using an existing OS makes more sense to start with. It
+begs the question as to how useful a Lisp at the OS level would be (past Lisp 
+Machines may provide an answer...).
 
 The target audience consists of programmers, developers, power users and the 
-like.
+like, particularly any task involving organizing, fusing and understanding 
+multiple streams of information or data.
+
 
 ## The Inspiration
 

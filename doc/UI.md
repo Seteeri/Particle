@@ -4,15 +4,15 @@ User-interface
 The interface is based on a directed graph (acyclic?)
 
 There are 3 basic objects:
-1. Vertices - data nodes - the data itself; represents the various lisp 
+1. Vertices - data nodes - the data itself; represents the various lisp
 data types
 2. Edges - essentially scaled nodes at its core; solely used for visual
-purposes; minimal user interaction; edges must still be represented as 
+purposes; minimal user interaction; edges must still be represented as
 distinct objects for consistency
 3. Pointers (type of vertex) - used for selection and acts as the 3D
 cursor; can have unlimited number
 
-In the underlying code, they are all represented as nodes. The node 
+In the underlying code, they are all represented as nodes. The node
 contains all the required parameters for drawing as well as the data
 it represents.
 
@@ -20,7 +20,7 @@ it represents.
 
 A pointer node is as the name states - it points to a node. However, it
 is a node like any other node and thus can be operated on likewise. All
-nodal functions have an option to ignore the pointer which is set to t 
+nodal functions have an option to ignore the pointer which is set to t
 by default.
 
 The keyboard can only manipulate one pointer, however, that pointer
@@ -50,18 +50,18 @@ to filter.
 
 ## Data Nodes
 
-These include any lisp data types including function objects, numbers 
+These include any lisp data types including function objects, numbers
 etc. ASCII keys produce char nodes. To produce a string
 node, user must convert a linear segment of nodes using the predefined
-function, and then the string can be read as data using the read 
+function, and then the string can be read as data using the read
 function. Numbers must also be converted to be used as numbers since
 they are considered ASCII keys and thus pressing 1 on the keyboard will
-produce a char type instead of a number type 
+produce a char type instead of a number type
 (consider an option for this?).
 
 ## ID Nodes
 
-All nodes are given a string ID (or symbol?). These are nodes that are 
+All nodes are given a string ID (or symbol?). These are nodes that are
 attached to whatever node they are identifying. They can be reattached
 to another node to change its ID. A single node can have multiple IDs
 which all reference it.
@@ -152,7 +152,7 @@ Selections are performed through pointer + primitive ops
     * Universal - apply to all/future
     * Global - apply to all/present
     * Local - apply to single
-      
+
 * Escape = exit
 * Meta = toggle Wayland
 * ASCII/Enter/Tab = create child node of selected node with char
@@ -172,7 +172,7 @@ Selections are performed through pointer + primitive ops
     * +Shift = Z?
       - use to move between layers?
     * +Shift+Alt = ?
-    * +Shift+Alt+Ctrl = ? 
+    * +Shift+Alt+Ctrl = ?
   * Camera - ctrl:
     * Ctrl = XY (nearest node)
       - follow pointer
@@ -191,3 +191,260 @@ Selections are performed through pointer + primitive ops
   2. Teleport the node
   3. Move/push other nodes out
   4. Show on another dimension
+
+################################################################################
+
+User creates cells and builds up nums, syms, cons', nils'
+
+Everything represented as vertices -> functions are the same on every level
+
+- A vertex represents a cons cell
+- A cons cell is made of two pointers, called car & cdr
+- These two pointers can point to an atom or to another cons cell
+  - Car/Cdr is either pointer or binary
+- An atom is an encoded pointer, which is a number or a symbol/string(UTF-8)
+- Numbers: shortnum fit in single cell (two pointers), bignum consists of multiple cells
+- Symbols: CDR=value, CAR= Nil|Name|PList&Name
+  - If only name and no plist, then CAR would point to cons cell containing name
+  - If bignum, then contains multiple cons cells (list with encoded numbers)
+  - If only plist and no name, then CAR would point to a plist with last cons CDR=Nil
+    which is where name would normally be
+
+* Use adr to get encoded pointer - decode to get ptr or for num data
+  - shift left: NIL = (adr NIL) = 273780<<4 = 4380480
+  - left shift = (>> -4 8786312637524)
+  - (cons NIL NIL) = 72 215 66 0 0 0 0 0 | 72 215 66 0 0 0 0 0
+
+* Given (setq A (cons 'B 'C))
+* Symbol ptr, points to CDR so (sym 'A) = ptr to CDR = ptr of (cons 'B 'C)
+* (adr A) = cons address
+* (adr 'A) = ?
+* quote def: any doQuote(any x) {return cdr(x);}
+* Doing (adr (- adr-sym 8)) = infinite loop
+
+         +-----+-----+
+         | CAR | CDR |
+         +-----+-----+
+         TAIL     HEAD
+
+Typing characters produces transient symbol characters with the CDR being shown
+by default (the value).
+
+"h" "e" "l" "l" "o"
+
+      +-----------------+
+      |                 |
+      V                 |
+      +-------+-----+   |
+      |  'H'  | PTR |---+
+      +---+---+-----+
+
+Links represent pointers
+- Each char is individual symbol so not linked
+- If chars were in a list, there'd be lines
+
+With chars, can move independently since they are different symbols and thus
+different memory blocks. If they are to be moved together, they must be packed
+and vice versa for the opposite.
+
+User can choose to see CAR/CDR/CONS:
+- Atoms
+  - Symbols (CDR:VALUE)
+    - Internal: show name
+      - CAR: Name, PL (poss)
+      - CDR: NIL or VAL
+    - Transient: show name (VAL is symbol itself)
+      - CAR: Name in encoded pointer (> word = cons cells/list)
+      - CDR: Ptr to CAR/Symbol
+      - Anon: show ptr
+        - CAR: 0 (NUM as encoded pointer)
+          - (= (cons 0 NIL) (box))  -> struct eq, returns NIL but actually same
+          - (== (cons 0 NIL) (box)) -> ptr eq, NIL
+        - CDR: NIL
+    - External: Internal
+    - NIL: just another symbol sort of...show NIL/""/()...only defined once
+  - Number: show number cells, shortnum=pointer, large numbers=cons
+    - largest short number is 1,152,921,504,606,846,976
+    - greater than that will be broken into lists
+    - have to use struct to get cells (do later)
+    - how to differentiate numbers vs chars?
+      - either use strings or colors
+      - worry about this later
+- Cons
+  - Pair: show CAR/CDR...for lists it works also recursively
+
+
+Abstract:
+
+      (default transient symbol)
+
+      +---------------------+
+      |                     |
+      V                     |
+      +--------+--------+   |
+      |  'H'   |   PTR  |---+
+      +---+----+--------+
+
+  * Single cons cell = contiguous memory of 16 bytes = 2 words
+  * Pointers are separate sections of contiguous memory linked together
+  * Poss laterally convert between integer-binary-hex (number formats)
+  * Basically, type can be derived graphically/structurally
+  * Could put CAR/CDR together and color to differentiate (or other method)
+
+EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
+
+  Quantum View:
+
+  Raw Binary
+
+
+  Element View:
+
+  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  NIL
+  |                       |                       |                       |                       |                       |
+  V                       V                       V                       V                       V                       V
+  12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      NIL
+  |         (OPAQUE)      |         |             |         |             |         |             |         |
+  V                       V         V             V         V             V---------+             V         V
+  list                    0         NIL           abc       NIL           "abc"                   0         NIL
+
+  I-SYM/FN                NUM                     I-SYM                   T-SYM                   A-SYM                   NIL
+
+
+              0                     'a'
+              |                     |
+              |                     |
+       12345789  12345678    12345678<-87654321
+                 |      |              |
+       +---------+      +--------------+
+       |                               |
+  [PL][.]                         [PL][.]
+    |                                  |
+    +...                               +...
+
+
+  * Is the cons cell the visua  lization of the vertex?
+
+  * CAR-CDR = quad spaced
+  * Vert dist = quad spaced
+  * Note, Vertex is a symbol whose value is the actual symbol
+  * Above pointers cannot be moved individually and will move together
+    * 1/2 move with pointers since they are directly based on it
+    * So cons cells can move independently of each other
+      * Above: if 1/2 were cons cells instead, they could move independently
+      of root cons
+  * Due to above, CAR and descendants will share vertex data, likewise for CDR
+    * Only up until next cons
+  * One cons cell has 16 bytes so store (3*8)+(3*8)=24+24 verts
+    * Max ptr dec. val is max val of 60-bit pointer
+    * < 48 verts for hex
+    * 60 verts for binary/bits
+  * Axiom
+    * Drawn vertex data will render using the data shown, since it would lead
+    to infinite recursion to create vertex data for vertex data ad inf.
+    * Technically to change single vertex data, create vertex data for it...
+  * Internal Procedure:
+    * Create cons cell
+    * There is global pointer, attach cons cell to global pointer to prevent GC
+    * Draw cons cell
+      * Get CAR/CDR encoded pointers
+      * Use 48 vertices for cons cell pointers
+        * Adtl vertices depending on type of data
+    * Traverse root cons cell
+      * Draw edges for decoded pointers
+    * Draw all
+  * To modify vertex data:
+    * Show first level of vertex data
+    * Modifying vertex data will modify cons cell
+    * To modify the vertex data, must create new cons cell/vertex data for said vertex data
+
+  Vertex Obj/Symbol:
+
+      'h'                   'i'
+       |                     |
+  [PL][.]                   ...
+    |
+    +--[][NIL]
+       |
+       [...][GL]
+       |
+       ...
+
+  * Each of the cons cells above is a vertex
+    -> Inf recursion
+    -> Vertex is lowest level - AKA the interface
+       -> Simple to understand
+       -> If data's rep has multiple ASCII keys, any char can be operated on
+    -> Use transformers to produce another Vertex of a different type
+       * Ex: show pointers
+    -> Possible to edit Vertex itself by editing the class
+
+  * ASCII key = anonymous symbol or object symbol
+    * Vertex symbol will store A as one of the following in its VAL:
+      * Encode A as a  number (CTRL/ALT)
+      * Encode A as ptr to transient symbol (default)
+    * POSS: Use mod key to build string
+      * Hold CTRL/ALT, type alphas, release -> 'hi' instead of 'h' 'i'
+      * Hold CTRL/ALT, type nums, release -> 123 instead of 1 2 3
+    * Types are encoded in pointers to the cons cell
+      * So a cons cell can have any data in it however, how it is addressed
+      determines its type
+      * This is why (= (cons 0 NIL) (box)) -> NIL
+      * Ptr to cons has 0 offset
+      * Ptr to box has 8 offset
+
+  * Opaque pointers, such as pointers to built-in functions - no descendants
+  * Ptrs = no descendant
+  * Nums/Syms = descendant
+
+  Modifications:
+  * Changing pointer digits will cause descendants to regenerate
+  * Changing symbol values or numbers will cause predecessors to regenerate
+
+  -> Flip model since we work on symbol names
+  -> User chooses option for top: Atoms, CAR/CDR, Pointers, Binary
+
+
+  Composite View (show CAR):
+
+  12345678  ->  12345678  ->  12345678  ->  12345678  ->  12345678  ->  12345678
+  |             |             |             |             |             |
+  V             V             V             V             V             V
+  list          0             abc           "def"         0             NIL
+
+  * Again, an opaque pointer will not have a descendant
+  * Cons will show first part only
+
+
+  Atomic View:
+
+  list -> 0 -> abc -> "def" -> ${12345678} -> NIL [-> NIL]
+
+
+Numbers vs Pointers:
+
+  12345678  12345678   (cons cell with two opaque pointers)
+
+  12345678  12345678   (cons cell with two numbers)
+  |         |
+  V         V
+  1         2
+
+
+QUESTIONS:
+
+  * How to show spaces?
+
+Strings = main interface = symbols, so strings = symbols
+Symbols are then composed of cons cells...
+
+Strings -> Cons cells
+        -> Numbers (bignum=cons cells)
+
+Note, characters are stored in short num (1-7 bytes) or big num (8 bytes)
+
+Convert numbers by typing name vs pressing digits?
+-> Numbers faster when sequential but thats less frequent
+  - In that case, easier to write program to produce it
+-> Numbers faster when only typing numbers, but when mixed,
+   typing name faster since fingers remain near home keys

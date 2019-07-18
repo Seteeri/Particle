@@ -120,28 +120,37 @@ Store DAGs as binary trees?
    * Test multiple controllers with multiple vertices mutating simultaneously [Done]
      * N process will move N vert x dist
 
-   * Refactor IPC [Tues]
+   * Refactor IPC [Done]
      * Abstract common functionality among worker/model/render conns [Done]
      * Serialize entire object for all [Done]
        -> Need not serialize everything - add ability to serialize only certain members [Later]
      * Model needs to write data [Done]
+       * To sync, worker can pull every update or have model push updates out
      * Implement message flushing [Done]
        * Lag with camera update and pointer update at same time
-        
-   * Implement event dispatching/event handling in ctrl [Tues/Wed]
+              
+   * Implement string/atom/list, eval functionality [Wed...]
+     * ASCII key creates a string with vertex in property list
+      
+   * Refactor
+   
+   * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
+     * Store in Ctrl or Worker?
+       * Or store in model and worker pulls from model
+         -> Cache would eventually result in a copy per worker
      * Use assoc list
-     * Store combinations as keys
+     * Store combinations as keys      
    
    * Implement Wayland [Wed/Thurs]
      * Setup tiles for 6 windows = 3 col, 2 row
-     * Proof of concept working with eval already
-   
-   * Implement string/atom/list, eval functionality [Fri...Sun]
+     * Proof of concept working with eval already   
    
    * RECORD DEMO? 
    
  
 * Refactor/Fix
+
+   * https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml
 
    * Refactor li into subfolders
    * Socket change block/nonblock to T/NIL for convenience
@@ -357,4 +366,5 @@ Have A do optimizations:
   * How to delete symbol?
   * Struct does not have 'H' for shorts?
   * Suggestion to docs with more figures of symbols cons trees in diff scenarios
+  * (= (cons 0 NIL) (box)) returns NIL when it should be true
   

@@ -21,6 +21,7 @@
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
 (def 'PATH-UDS-CONTROL  "/tmp/protoform-control.socket")
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
+(def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 
 
 # Set math precision to 6 decimals
@@ -38,9 +39,17 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/graph/vertex.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/metrics.l")
+
+
+# Globals
+(def '*sca-vert 0.008)
+(def '*sca-glyph 5.8239365) # MSDF/tex parameter
+(def '*adv-glyph 9.375)       # MSDF/tex parameter
 
 
 (def '*vert)
+(def '*verts)
 
 
 (de init-worker ()
@@ -52,6 +61,8 @@
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
           *i-proc    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "i invalid")))))
 
+  (setq *metrics (load-metrics))
+  
   (let ID-C (pack "WORKER-" *Pid)
 
     (setq *ipc (new '(ipc~+IPC)
@@ -65,7 +76,7 @@
                       
   (send-msg *ipc "RDY" (ipc~get-fd> *ipc "CONTROL"))
       
-  (setq *off-vert (get-vert-off *i-proc))  
+  (setq *off-vert (get-vert-off *i-proc))
   (setq *vert (req-recv-obj *ipc 
                             (ipc~get-fd> *ipc "MODEL")
                             (new '(+Vertex))
@@ -111,6 +122,8 @@
            (prinl (usec) " | WORKER/" *Pid " | " Msg)
            (update-pvm *ipc *projview)
            T)
+          
+          # Handle recv updates from model
            
           (T
            T))
@@ -135,7 +148,7 @@
 
   (let Msg (recv-msg *ipc Sock)
 
-   (when T
+   (when NIL
    
      # Pull data from model
      (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
@@ -143,10 +156,12 @@
 
        (with *vert
 
-        (=: pos (list (+ (get (: pos) 1) 0.01)
+        (=: pos (list (+ (get (: pos) 1) 0.05)
                       (+ (get (: pos) 2) 0.0)
                       0.0))
         (update-model-matrix> *vert)
+                
+        # Below calls are reserializing
                 
         (req-send-obj *ipc
                       Sock-Render
@@ -155,11 +170,12 @@
                       *off-vert)
 
         # Push to model also
-        (req-send-obj *ipc
-                      Sock-Model
-                      *vert
-                      SZ-VERT
-                      *off-vert))))))
+        (when NIL
+          (req-send-obj *ipc
+                        Sock-Model
+                        *vert
+                        SZ-VERT
+                        *off-vert)))))))
 
 
 (de main ()
