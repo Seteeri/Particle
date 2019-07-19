@@ -5,22 +5,20 @@
 
 #load vs new
 
-#TODO: Change these to def
-
 #Static allocate these upfront and reuse
-(setq *mat4-in  (native "@" "malloc" 'N 64))
-(setq *mat4-out (native "@" "malloc" 'N 64))
-(setq *vec3-out (native "@" "malloc" 'N 12))
+(def '*mat4-in  (native "@" "malloc" 'N 64))
+(def '*mat4-out (native "@" "malloc" 'N 64))
+(def '*vec3-out (native "@" "malloc" 'N 12))
 
 #Poss use single alloc + offsets
-(setq *mat4-t   (native "@" "malloc" 'N 64))
-(setq *mat4-r-x (native "@" "malloc" 'N 64))
-(setq *mat4-r-y (native "@" "malloc" 'N 64))
-(setq *mat4-r-z (native "@" "malloc" 'N 64))
-(setq *mat4-s   (native "@" "malloc" 'N 64))
-(setq *mat4-0   (native "@" "malloc" 'N 64))
-(setq *mat4-1   (native "@" "malloc" 'N 64))
-(setq *mat4-i   (native "@" "malloc" 'N 64))
+(def '*mat4-t   (native "@" "malloc" 'N 64))
+(def '*mat4-r-x (native "@" "malloc" 'N 64))
+(def '*mat4-r-y (native "@" "malloc" 'N 64))
+(def '*mat4-r-z (native "@" "malloc" 'N 64))
+(def '*mat4-s   (native "@" "malloc" 'N 64))
+(def '*mat4-0   (native "@" "malloc" 'N 64))
+(def '*mat4-1   (native "@" "malloc" 'N 64))
+(def '*mat4-i   (native "@" "malloc" 'N 64))
 
 
 (de to-radians (F)

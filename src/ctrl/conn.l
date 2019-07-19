@@ -23,9 +23,9 @@
 (de handle-a (Key)
 
   # Create vertex; data = char
-  (let (Data "a"
+  (let (Data (cons)
         I 1
-        Sock (ipc~get-fd> *ipc "MODEL")
+        Sock-Model (ipc~get-fd> *ipc "MODEL")
         X 0.0
         Off (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
 
@@ -35,7 +35,7 @@
     (for N (chop (format (adr Data)))
       (let (Off-Vert (get-vert-off I)
             Vert (req-recv-obj *ipc
-                               Sock
+                               Sock-Model
                                (new '(+Vertex))
                                SZ-VERT
                                Off-Vert))
@@ -52,6 +52,12 @@
         (update-model-matrix> Vert)
         
         (update-vert *ipc Vert Off-Vert)
+ 
+        (req-send-obj *ipc
+                      Sock-Model
+                      Vert
+                      SZ-VERT
+                      Off-Vert)
  
         (when NIL
           (with Vert 

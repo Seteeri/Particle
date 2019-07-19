@@ -1207,3 +1207,12 @@ Look in base.s to get offset
 https://linux.slashdot.org/story/19/05/15/1523252/why-linux-on-desktop-failed-a-discussion-with-mark-shuttleworth?sdsrc=popbyskidbtmprev
 
 #(println (format (get (: dims) 1) *Scl) (format (*/ *adv-glyph Sca-Glyph 1.0) *Scl))
+
+
+LIST:
+CAR=ATOM
+CDR=CONS
+
+ATOM:
+CAR=<>
+CDR=<>
