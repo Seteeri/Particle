@@ -39,9 +39,10 @@
   (=: rgba RGBA)      
   (=: uv NIL)
   (=: off-texel NIL)
-          
-  (update-glyph> This Chr)
-  (update-model-matrix> This))
+  
+  (when Chr
+    (update-glyph> This Chr)
+    (update-model-matrix> This)))
 
 
 (dm update-glyph> (Chr)
@@ -54,39 +55,19 @@
   (=: off-texel (* (- (: chr) 1) (get *dims-tex-node 1) (get *dims-tex-node 2)))
 
   (let Metrics (get *metrics (: chr))
-   
+      
     (=: uv (get Metrics 'uv))
-    (=: pos (calc-pos-metrics Metrics (: pos)))
-    (=: sca (calc-sca-metrics Metrics))))
-
-
-# Move to Metrics?
-(de calc-pos-metrics (Metrics Pos)
-
-  (let Bounds (get Metrics 'bounds)
-
-    (list (+ (get Pos 1) (*/ (get Bounds 1) *sca-vert 1.0))
-          (+ (get Pos 2) (*/ (get Bounds 2) *sca-vert 1.0))
-          1.0)))
-
-                  
-# Move to Metrics?
-(de calc-sca-metrics (Metrics Sca)
-
-  (let Dims (get Metrics 'dims)
-
-    (list (*/ (get Dims 1) *sca-vert 1.0)
-          (*/ (get Dims 2) *sca-vert 1.0)
-          1.0)))
-
-
+    (=: pos (get-pos> Metrics (: pos) *sca-vert))
+    (=: sca (get-sca> Metrics *sca-vert))))
+        
+         
 (dm update-model-matrix> ()
 
-  (=: mm (mat4-mul (mat4-scaling (: sca))
-                   (mat4-mul (mat4-rotation-x (get (: rota) 1))
+  (=: mm (mat4-mul (mat4-translation (: pos))
+                   (mat4-mul (mat4-rotation-z (get (: rota) 3))
                              (mat4-mul (mat4-rotation-y (get (: rota) 2))
-                                       (mat4-mul (mat4-rotation-z (get (: rota) 3))
-                                                 (mat4-translation (: pos))))))))
+                                       (mat4-mul (mat4-rotation-x (get (: rota) 1))
+                                                 (mat4-scaling (: sca))))))))
          
 
 (de serialize-mat-to-ptr (M Ptr)

@@ -50,7 +50,7 @@ Quotient of N and D = (*/ 1.0 N D)
     (eval (any (in Path-Glyph (till NIL T))))))
 
 
-(de load-metrics ()
+(de load-metrics (Sca-Glyph)
 
     (let (Metrics ())
 
@@ -61,43 +61,46 @@ Quotient of N and D = (*/ 1.0 N D)
               Metrics-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
 
           (when (get Metrics-Glyph 'bounds)
-            (calc-metrics> Metrics-Glyph))
+            (calc-metrics> Metrics-Glyph Sca-Glyph))
 
           (push 'Metrics Metrics-Glyph)))
 
       (reverse Metrics)))
 
 
-(dm calc-metrics> ()
+(dm calc-metrics> (Sca-Glyph)
 
-    #Convert bounds from shape units to pixel units by multiplying by scale
-    (=: bounds (let L NIL
-                (for X (: bounds)
-                 (push 'L (*/ X *sca-glyph 1.0)))
-                (reverse L)))
+    # Convert bounds from shape units to pixel units by multiplying by scale
+    # Bounds is relative to origin so neg values possible
+    (=: bounds (list (*/ (get (: bounds) 1) Sca-Glyph 1.0)
+                     (*/ (get (: bounds) 2) Sca-Glyph 1.0)
+                     (*/ (get (: bounds) 3) Sca-Glyph 1.0)
+                     (*/ (get (: bounds) 4) Sca-Glyph 1.0)))
     
-    #Calculate bounds (pixel and absolute values)
-    #l b r t    
-    (=: bounds-tex (list (+ (*/ (get (: translate) 1) *sca-glyph 1.0) (get (: bounds) 1))
-                         (+ (*/ (get (: translate) 2) *sca-glyph 1.0) (get (: bounds) 2))
-                         (+ (*/ (get (: translate) 1) *sca-glyph 1.0) (get (: bounds) 3))
-                         (+ (*/ (get (: translate) 2) *sca-glyph 1.0) (get (: bounds) 4))))
+    # Calculate bounding box for glyph (for drawing the texture)
+    # l b r t    
+    # First, get the origin which may have been moved to create enough space
+    # for distance field, then add bounds
+    (=: bounds-tex (list (+ (*/ (get (: translate) 1) Sca-Glyph 1.0) (get (: bounds) 1))
+                         (+ (*/ (get (: translate) 2) Sca-Glyph 1.0) (get (: bounds) 2))
+                         (+ (*/ (get (: translate) 1) Sca-Glyph 1.0) (get (: bounds) 3))
+                         (+ (*/ (get (: translate) 2) Sca-Glyph 1.0) (get (: bounds) 4))))
     
+    # Dims of bbox
     (=: dims (list (- (get (: bounds-tex) 3) (get (: bounds-tex) 1))
                    (- (get (: bounds-tex) 4) (get (: bounds-tex) 2))))
-    
+        
+    # AR of bbox
     (=: ratio-aspect (/ (get (: dims) 1)
                         (get (: dims) 2)))
 
-    #dims + baseline coords + bounds -> calculate glyph bounds in abs px coords
-    #bounds = l b r t = 1 2 3 4
-    #origin (0,0) is considered bottom left corner so (1,1) is top right corner
+    # l b r t = 1 2 3 4
+    # origin (0,0) is considered bottom left corner so (1,1) is top right corner
     #
-    #bounds-abs:
-    #baseline.x - bounds.l
-    #baseline.y - bounds.b
-    #baseline.x + bounds.r
-    #baseline.y + bounds.t        
+    # baseline.x - bounds.l
+    # baseline.y - bounds.b
+    # baseline.x + bounds.r
+    # baseline.y + bounds.t        
     (=: uv (list (*/ 1.0 (get (: bounds-tex) 3) 96.0)
                  (*/ 1.0 (get (: bounds-tex) 4) 96.0)
                  0.0
@@ -114,3 +117,37 @@ Quotient of N and D = (*/ 1.0 N D)
                  (*/ 1.0 (get (: bounds-tex) 4) 96.0)
                  0.0
                  0.0))) #l-t 0,1
+
+
+(dm get-pos> (Pos Sca)
+  # Glyph has been cropped to its bbox so adjust vertex by bounds
+  # For example, 'g' hangs below baseline, its bottom bounds is negative so
+  # adding to the y pos will shift it downward moving it into proper pos
+  #
+  # Thus baseline can be derived by substracting the glyph bounds from the pos
+  
+  (list (+ (get Pos 1) (*/ (get (: bounds) 1) Sca 1.0))
+        (+ (get Pos 2) (*/ (get (: bounds) 2) Sca 1.0))
+        0.0))
+
+
+(dm get-origin> (Pos)
+  #{
+  # Derive origin from Vertex position
+  # get-baseline should have been applied
+  }#
+  
+  (list (+ (get Pos 1) (- (*/ (get (: bounds) 0) Sca 1.0)))
+        (+ (get Pos 2) (- (*/ (get (: bounds) 1) Sca 1.0)))
+        0.0))
+
+
+(dm get-sca> (Sca)
+  # Dims already scaled by sca-glyph
+  
+  #(println (format (*/ (get (: dims) 1) Sca 1.0) *Scl) 
+  #         (format (*/ (*/ *adv-glyph *sca-glyph 1.0) Sca 1.0) *Scl))
+  
+  (list (*/ (get (: dims) 1) Sca 1.0)
+        (*/ (get (: dims) 2) Sca 1.0)
+        0.0))

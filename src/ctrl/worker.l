@@ -43,8 +43,8 @@
 
 
 # Globals
-(def '*sca-vert 0.008)
-(def '*sca-glyph 5.8239365) # MSDF/tex parameter
+(def '*sca-vert (*/ 1.0 1.0 96.0))
+(def '*sca-glyph 5.8239365)   # MSDF/tex parameter
 (def '*adv-glyph 9.375)       # MSDF/tex parameter
 
 
@@ -61,7 +61,7 @@
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
           *i-proc    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "i invalid")))))
 
-  (setq *metrics (load-metrics))
+  (setq *metrics (load-metrics *sca-glyph))
   
   (let ID-C (pack "WORKER-" *Pid)
 
@@ -75,9 +75,9 @@
     (reg-conns *ipc ID-C))                     
                       
   (send-msg *ipc "RDY" (ipc~get-fd> *ipc "CONTROL"))
-      
+
   (setq *off-vert (get-vert-off *i-proc))
-  (setq *vert (req-recv-obj *ipc 
+  (setq *vert (req-recv-obj *ipc
                             (ipc~get-fd> *ipc "MODEL")
                             (new '(+Vertex))
                             SZ-VERT

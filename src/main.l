@@ -61,6 +61,13 @@ own proc
 (de main ()
 
     #2**19
+    
+    #{
+    Pass:
+    (def '*sca-vert 0.008)
+    (def '*sca-glyph 5.8239365) # MSDF/tex parameter
+    (def '*adv-glyph 9.375)       # MSDF/tex parameter
+    }#
 
     (let (Width  (format (/ 1920 2))
           Height (format (/ 1080 2))

@@ -126,6 +126,8 @@ Class variables may be indicated by an upper case letter
   (glfw~set-window-size-callback *window
                                  (lisp 'window-callback
                                        '((Window Width Height)
+                                         #(println "window-size-callback: " (struct Width 'I) (struct Height 'I))
+                                         # Must update projmatrix also
                                          (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))))
 
   (glfw~set-key-callback *window
@@ -144,6 +146,7 @@ Class variables may be indicated by an upper case letter
   (when TEST-GLYPH
     (gl~enable gl~BLEND)
     (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA))
+    #(gl~blend-func gl~ONE gl~ONE-MINUS-SRC-ALPHA))
 
   #Get some function pointers
   (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage"))

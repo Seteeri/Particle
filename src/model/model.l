@@ -45,7 +45,7 @@
 
 
 # Globals
-(def '*sca-vert 0.008)
+(def '*sca-vert (*/ 1.0 1.0 96.0))
 (def '*sca-glyph 5.8239365) # MSDF/tex parameter
 (def '*adv-glyph 9.375)       # MSDF/tex parameter
 
@@ -97,7 +97,7 @@
 
   #Load here, copy to shm, msg view, view copies to OpenGL buffers
   (when T
-    (setq *metrics (load-metrics)))
+    (setq *metrics (load-metrics *sca-glyph)))
   #(let Metrics (get *metrics 42)
   #  (println (view (getl Metrics))))
 
