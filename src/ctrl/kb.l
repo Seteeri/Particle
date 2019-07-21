@@ -15,9 +15,9 @@
   
   (let (Keycode (+ (get Data 4) 8)
         State   (get Data 5)
-        Keysym (get-one-sym> *xkb Keycode)
-        Name (xkb~keysym-get-name Keysym)
-        Utf-8 (get-utf8> *xkb Keycode))
+        Keysym  (get-one-sym> *xkb Keycode)
+        Name    (xkb~keysym-get-name Keysym)
+        Utf-8   (get-utf8> *xkb Keycode))
       
     
     (prinl "Code/Sym/Name/Utf-8/State: " Keycode " " Keysym " " Name " " Utf-8 " " State)
@@ -57,35 +57,37 @@
                      0.0)))
 
 
-(de handle-ascii (Key)
+(de handle-ascii (Keysym)
 
-  (let (Data (cons)
-        Prtcl (new '(+Particle) Data ()))
+  (when (< Keysym 255)
 
-    #(make-verts "SYM-T")
-    #(draw-verts Verts)
+    (let (Data (cons)
+          Prtcl (new '(+Particle) Data ()))
 
-    (when NIL
-      (print (>> -4 (adr Data)))
-      (prinl)
-      (prin "  ")
-      (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
-      (prin " | ")
-      (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
-      (prinl))
+      #(make-verts "SYM-T")
+      #(draw-verts Verts)
 
-    (draw-str "SYM-T")
+      (when NIL
+        (print (>> -4 (adr Data)))
+        (prinl)
+        (prin "  ")
+        (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
+        (prin " | ")
+        (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
+        (prinl))
 
-    # Produce verts+edges for rep
-    # Push verts into particle
-    # Push prtcl into timeline
-    # - Timeline is in namespace
+      (draw-str (xkb~keysym-get-name Keysym))
 
-    # Selecting any vertex will return the particle data
-    # Quoting the vertex will return the vertex itself...
-    # MAKE PARTICLE CONS CELL WHERE CAR=VERTS CDR=DATA
+      # Produce verts+edges for rep
+      # Push verts into particle
+      # Push prtcl into timeline
+      # - Timeline is in namespace
 
-    (nl-pen)))
+      # Selecting any vertex will return the particle data
+      # Quoting the vertex will return the vertex itself...
+      # MAKE PARTICLE CONS CELL WHERE CAR=VERTS CDR=DATA
+
+      (nl-pen))))
 
 
 (de draw-str (Str)
