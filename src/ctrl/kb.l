@@ -11,44 +11,36 @@
   Keycodes lie in the inclusive range [8,255]. 
   }#
   
+  # https://gitlab.freedesktop.org/wayland/weston/blob/master/libweston/input.c#L1993  
+  
   (let (Keycode (+ (get Data 4) 8)
-        State   (get Data 5))
-
-    (let (Keysym (get-one-sym> *xkb Keycode)
-          Name (xkb~keysym-get-name Keysym)
-          Utf-8 (get-utf8> *xkb Keycode))
-      (prinl "Code/Sym/Name/Utf-8/State: " Keycode " " Keysym " " Name " " Utf-8 " " State))
+        State   (get Data 5)
+        Keysym (get-one-sym> *xkb Keycode)
+        Name (xkb~keysym-get-name Keysym)
+        Utf-8 (get-utf8> *xkb Keycode))
+      
+    
+    (prinl "Code/Sym/Name/Utf-8/State: " Keycode " " Keysym " " Name " " Utf-8 " " State)
 
     # Returns update mask
     (update-key> *xkb Keycode State)
 
-    # https://gitlab.freedesktop.org/wayland/weston/blob/master/libweston/input.c#L1993
-
     # Handle repeat keys
     # (not (xkb~key-repeats> *xkb Keycode))
 
-    (when (= State 1)
+    # Normally, dispatched handler would be called
 
-      (cond ((= Keycode 106)
-             # Move camera right
-             (move-cam Sock 1 '(1.0 0.0)))
-            ((= Keycode 105)
-             # Move camera left
-             (move-cam Sock 1 '(-1.0 0.0)))
-            ((= Keycode 103)
-             # Move camera up
-             (move-cam Sock 2 '(0.0 1.0)))
-            ((= Keycode 108)
-             # Move camera dn
-             (move-cam Sock 2 '(0.0 -1.0)))
+    (when (= State xkb~KEY-DOWN)
 
-            ((= Keycode 104) # pg-up
-             (zoom-cam Sock -3.0))
-            ((= Keycode 109) # pg-dn
-             (zoom-cam Sock 3.0))
+      (cond ((= Keysym ksd~Right) (move-cam Sock 1 '(1.0 0.0)))
+            ((= Keysym ksd~Left)  (move-cam Sock 1 '(-1.0 0.0)))
+            ((= Keysym ksd~Up)    (move-cam Sock 2 '(0.0 1.0)))
+            ((= Keysym ksd~Down)  (move-cam Sock 2 '(0.0 -1.0)))
 
-            (T
-             (handle-ascii Keycode))))))
+            ((= Keysym ksd~Prior) (zoom-cam Sock -3.0))
+            ((= Keysym ksd~Next)  (zoom-cam Sock 3.0))
+
+            (T                    (handle-ascii Keycode))))))
 
 
 (de adv-pen ()
