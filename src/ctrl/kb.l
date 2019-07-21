@@ -40,7 +40,7 @@
             ((= Keysym ksd~Prior) (zoom-cam Sock -3.0))
             ((= Keysym ksd~Next)  (zoom-cam Sock 3.0))
 
-            (T                    (handle-ascii Keycode))))))
+            (T                    (handle-ascii Keysym))))))
 
 
 (de adv-pen ()
@@ -59,7 +59,7 @@
 
 (de handle-ascii (Keysym)
 
-  (when (< Keysym 255)
+  (when (and (>= Keysym 32) (<= Keysym 255))
 
     (let (Data (cons)
           Prtcl (new '(+Particle) Data ()))
@@ -75,8 +75,8 @@
         (prin " | ")
         (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
         (prinl))
-
-      (draw-str (xkb~keysym-get-name Keysym))
+                
+      (draw-str (if (= Keysym ksd~space) " " (xkb~keysym-get-name Keysym)))
 
       # Produce verts+edges for rep
       # Push verts into particle
@@ -87,7 +87,9 @@
       # Quoting the vertex will return the vertex itself...
       # MAKE PARTICLE CONS CELL WHERE CAR=VERTS CDR=DATA
 
-      (nl-pen))))
+      #(nl-pen)
+      
+      )))
 
 
 (de draw-str (Str)
