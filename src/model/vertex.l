@@ -20,10 +20,6 @@
        Pos
        Rota
        Sca)
-  
-  # ch po ro sc mm rg uv ot
-
-  #(=: data NIL)
 
   (=: chr NIL)
   

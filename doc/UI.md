@@ -552,3 +552,29 @@ Convert numbers by typing name vs pressing digits?
   - In that case, easier to write program to produce it
 -> Numbers faster when only typing numbers, but when mixed,
    typing name faster since fingers remain near home keys
+
+NUM   = ALT/CTRL + NUM   
+I-SYM = WHILE ALT/CTRL -> TYPE STRING
+T-SYM = ASCII | WHILE ALT/CTRL -> TYPE STRING
+A-SYM = ALT/CTRL + ?
+NIL   = I-SYM: "NIL" | ALT/CTRL + N/L
+
+Esc = 1
+Backspace = 14
+Tab = 15
+Q = 16
+A = 30
+Z = 44
+Space = 57
+CAPS = 58
+Win = 125
+LShift = 42
+RShift = 54
+LCtrl = 29
+RCtrl = 97
+LAlt = 56
+RAlt = 100
+~/` = 41
+# = # + 1 (1=2)
+F1 = 59
+F2 = 60

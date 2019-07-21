@@ -31,34 +31,68 @@
              (handle-ascii Key))))))
    
 
-(de handle-ascii-2 (Key)
+(de handle-ascii (Key)
 
-  (let (Data (cons Key "ABC")
-        Ptrs (struct (>> -4 (adr Data)) '((B . 8) (B . 8)))
+  # (struct (>> -4 (adr Data)) '((B . 8) (B . 8)))
+
+  (let (Data "ABC"
         Prtcl (new '(+Particle) Data ()))
-        
-    (println Ptrs)
-        
-    (draw-bytes (get Ptrs 1))
-    (draw-bytes (get Ptrs 2))
+                
+    (draw-str "ABC")
 
     # Produce verts+edges for rep
     # Push verts into particle
     # Push prtcl into timeline
     # - Timeline is in namespace
-    
+        
     (setq *pen-v (list 0.0
-                       (- (get *pen-v 2) (+ *Off *Off))
+                       (- (get *pen-v 2) (+ *adv-vert *adv-vert))
                        0.0))))
 
 
-(de handle-ascii (Key)
+(de draw-str (Str)
+
+  (let (Sock-Model (ipc~get-fd> *ipc "MODEL"))
+          
+    (for C (chop Str)
+    
+      (let (Off-Vert (get *verts *cnt-v)
+            Off      (car Off-Vert)
+            Vert     (cdr Off-Vert))
+
+        # Set baseline
+        (with Vert
+          (=: pos (list (get *pen-v 1) (get *pen-v 2) 0.0)))
+                  
+        (update-glyph> Vert C)
+         
+        (setq *pen-v (list (+ (get *pen-v 1) *adv-vert)
+                           (get *pen-v 2)
+                           0.0))
+                                 
+        (update-model-matrix> Vert)
+        
+        (render-vert *ipc Vert Off)
+ 
+        (req-send-obj *ipc
+                      Sock-Model
+                      Vert
+                      SZ-VERT
+                      Off)
+
+        (inc '*cnt-v 1)))))
+
+                             
+################################################################################
+
+
+(de handle-ascii-ptr (Key)
 
   (let (Data (cons Key "ABC")
         Ptrs (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
         
     (println Ptrs)
-        
+
     (draw-bytes (get Ptrs 1))
     (draw-bytes (get Ptrs 2))
     
@@ -117,6 +151,12 @@
                              
                              T))))
 
+
+################################################################################
+
+
+# Handlers
+# Do not belong in projview - put in projview in kb subfolder
 
 (de move-cam (Sock Cnt Move)
 
