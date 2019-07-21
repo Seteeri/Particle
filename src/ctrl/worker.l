@@ -40,6 +40,7 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/li.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/xkbcommon.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/ksd.l")
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")

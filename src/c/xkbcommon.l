@@ -78,13 +78,13 @@ const char * 	options
 
 (de state-serialize-mods (State Components)
   (native "libxkbcommon.so" "xkb_state_serialize_mods" 'I State Components))
-  
-  
-(de state-update-mask (State Depressed-Mods Latched-Mods Locked-Mods 
+
+
+(de state-update-mask (State Depressed-Mods Latched-Mods Locked-Mods
                        Depressed-Layout Latched-Layout Locked-Layout)
-  (native "libxkbcommon.so" "xkb_state_update_mask" 'I State Depressed-Mods Latched-Mods Locked-Mods 
+  (native "libxkbcommon.so" "xkb_state_update_mask" 'I State Depressed-Mods Latched-Mods Locked-Mods
                                                        Depressed-Layout Latched-Layout Locked-Layout))
-                                                       
-                                                       
+
+
 (de state-serialize-layout (State Components)
-  (native "libxkbcommon.so" "xkb_state_serialize_layout" 'I State Components))                                                       
+  (native "libxkbcommon.so" "xkb_state_serialize_layout" 'I State Components))
