@@ -132,6 +132,8 @@ Store DAGs as binary trees?
    * Implement string/atom/list, eval functionality
      * Implmenet drawing [Done]
      * Implement interface/controls
+       * Implement xkb
+       * Move xkb to ctrl; put event handlers in worker
      * Implement operators
 
    * Refactor

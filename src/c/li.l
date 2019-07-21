@@ -1,3 +1,5 @@
+# RENAME FILE TO LIBINPUT
+
 (symbols 'li 'pico)
 
 

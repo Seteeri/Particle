@@ -3,32 +3,52 @@
 
 
 (de handle-keyboard (Sock Data)
+  
+  #{
+  https://www.x.org/releases/X11R7.7/doc/xproto/x11protocol.html#Keyboards
+  
+  A KEYCODE represents a physical (or logical) key. 
+  Keycodes lie in the inclusive range [8,255]. 
+  }#
+  
+  (let (Keycode (+ (get Data 4) 8)
+        State   (get Data 5))
 
-  (let (Key   (get Data 4)
-        State (get Data 5))
+    (let (Keysym (get-one-sym> *xkb Keycode)
+          Name (xkb~keysym-get-name Keysym)
+          Utf-8 (get-utf8> *xkb Keycode))
+      (prinl "Code/Sym/Name/Utf-8/State: " Keycode " " Keysym " " Name " " Utf-8 " " State))
+
+    # Returns update mask
+    (update-key> *xkb Keycode State)
+
+    # https://gitlab.freedesktop.org/wayland/weston/blob/master/libweston/input.c#L1993
+
+    # Handle repeat keys
+    # (not (xkb~key-repeats> *xkb Keycode))
 
     (when (= State 1)
 
-      (cond ((= Key 106)
+      (cond ((= Keycode 106)
              # Move camera right
              (move-cam Sock 1 '(1.0 0.0)))
-            ((= Key 105)
+            ((= Keycode 105)
              # Move camera left
              (move-cam Sock 1 '(-1.0 0.0)))
-            ((= Key 103)
+            ((= Keycode 103)
              # Move camera up
              (move-cam Sock 2 '(0.0 1.0)))
-            ((= Key 108)
+            ((= Keycode 108)
              # Move camera dn
              (move-cam Sock 2 '(0.0 -1.0)))
 
-            ((= Key 104) # pg-up
+            ((= Keycode 104) # pg-up
              (zoom-cam Sock -3.0))
-            ((= Key 109) # pg-dn
+            ((= Keycode 109) # pg-dn
              (zoom-cam Sock 3.0))
 
             (T
-             (handle-ascii Key))))))
+             (handle-ascii Keycode))))))
 
 
 (de adv-pen ()
@@ -53,13 +73,14 @@
     #(make-verts "SYM-T")
     #(draw-verts Verts)
 
-    (print (>> -4 (adr Data)))
-    (prinl)
-    (prin "  ")
-    (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
-    (prin " | ")
-    (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
-    (prinl)
+    (when NIL
+      (print (>> -4 (adr Data)))
+      (prinl)
+      (prin "  ")
+      (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
+      (prin " | ")
+      (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
+      (prinl))
 
     (draw-str "SYM-T")
 

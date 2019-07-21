@@ -31,6 +31,7 @@
 
 # Globals
 (def '*verts)
+(def '*xkb)
 
 
 # Wrapper libraries
@@ -38,14 +39,16 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/li.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/c/xkbcommon.l")
 # Lisp libraries
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/ctrl/conn.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/metrics/metrics.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/particle.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/vertex.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/ctrl/conn.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/ctrl/xkb.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/ctrl/kb.l")
 
 
@@ -91,8 +94,10 @@
                                 SZ-PV
                                 0))
   
-  T)
+  (setq *xkb (new '(+Xkb)))
     
+  T)
+
 
 (de handle-client (Sock))
 
