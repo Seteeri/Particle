@@ -112,14 +112,14 @@
            (handle-keyboard Sock Data)
            T)
            
-          ((= Name "update-vert")
+          ((= Name "render-vert")
            (prinl (usec) " | WORKER/" *Pid " | " Msg)
-           (update-vert *ipc (cdr (get *verts 1)) (car (get *verts 1)))
+           (render-vert *ipc (cdr (get *verts (get Data 2))) (car (get *verts (get Data 2))))
            T)
            
-          ((= Name "update-pvm")
+          ((= Name "render-pvm")
            (prinl (usec) " | WORKER/" *Pid " | " Msg)
-           (update-pvm *ipc *projview)
+           (render-pvm *ipc *projview)
            T)
           
           # Handle recv updates from model

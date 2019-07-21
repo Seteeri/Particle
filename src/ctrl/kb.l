@@ -99,7 +99,7 @@
                                      
             (update-model-matrix> Vert)
             
-            (update-vert *ipc Vert Off)
+            (render-vert *ipc Vert Off)
      
             (req-send-obj *ipc
                           Sock-Model

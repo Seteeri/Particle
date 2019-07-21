@@ -18,7 +18,7 @@
   (recv-obj Ipc Sock Obj Sz-Obj Off-Obj))
 
 
-(de update-vert (Ipc Vert Off)
+(de render-vert (Ipc Vert Off)
   (req-send-obj Ipc
                 (ipc~get-fd> Ipc "RENDER") # Pass string and auto look up?
                 Vert
@@ -26,7 +26,7 @@
                 Off))
 
 
-(de update-pvm (Ipc Projview)
+(de render-pvm (Ipc Projview)
   (req-send-obj Ipc
                 (ipc~get-fd> Ipc "RENDER")
                 Projview

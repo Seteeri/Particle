@@ -59,9 +59,8 @@
 
     (reg-conns *ipc ID-C))
   
-  # Update-vert will tell worker to update from model, push to render
-  (queue '*q-msg "(update-vert 1)")  
-  (queue '*q-msg "(update-pvm)")
+  (queue '*q-msg "(render-vert 1)")  
+  (queue '*q-msg "(render-pvm)")
   
   T)
 
