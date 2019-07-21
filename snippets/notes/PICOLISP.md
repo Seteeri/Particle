@@ -130,8 +130,9 @@ Store DAGs as binary trees?
        * Lag with camera update and pointer update at same time
 
    * Implement string/atom/list, eval functionality
-     * Figure out drawing
-     * Figure out modifying
+     * Implmenet drawing [Done]
+     * Implement interface/controls
+     * Implement operators
 
    * Refactor
 

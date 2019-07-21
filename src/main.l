@@ -69,8 +69,8 @@ own proc
     (def '*adv-glyph 9.375)       # MSDF/tex parameter
     }#
 
-    (let (Width  (format (/ 1600 1))
-          Height (format (/ 900 1))
+    (let (Width  (format (/ 2560 2))
+          Height (format (/ 1080 2))
           Verts  (format (** 2 12)))
 
       (when T

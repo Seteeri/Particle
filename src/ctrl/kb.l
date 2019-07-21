@@ -6,9 +6,9 @@
 
   (let (Key   (get Data 4)
         State (get Data 5))
-        
+
     (when (= State 1)
-    
+
       (cond ((= Key 106)
              # Move camera right
              (move-cam Sock 1 '(1.0 0.0)))
@@ -23,39 +23,64 @@
              (move-cam Sock 2 '(0.0 -1.0)))
 
             ((= Key 104) # pg-up
-             (zoom-cam Sock -3.0))             
+             (zoom-cam Sock -3.0))
             ((= Key 109) # pg-dn
              (zoom-cam Sock 3.0))
-  
+
             (T
              (handle-ascii Key))))))
-   
+
+
+(de adv-pen ()
+
+  (setq *pen-v (list (+ (get *pen-v 1) *adv-vert)
+                     (get *pen-v 2)
+                     0.0)))
+
+                     
+(de nl-pen ()
+
+  (setq *pen-v (list 0.0
+                     (- (get *pen-v 2) (+ *adv-vert *adv-vert))
+                     0.0)))
+
 
 (de handle-ascii (Key)
 
-  # (struct (>> -4 (adr Data)) '((B . 8) (B . 8)))
-
-  (let (Data "ABC"
+  (let (Data (cons)
         Prtcl (new '(+Particle) Data ()))
-                
-    (draw-str "ABC")
+
+    #(make-verts "SYM-T")
+    #(draw-verts Verts)
+
+    (print (>> -4 (adr Data)))
+    (prinl)
+    (prin "  ")
+    (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
+    (prin " | ")
+    (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
+    (prinl)
+
+    (draw-str "SYM-T")
 
     # Produce verts+edges for rep
     # Push verts into particle
     # Push prtcl into timeline
     # - Timeline is in namespace
-        
-    (setq *pen-v (list 0.0
-                       (- (get *pen-v 2) (+ *adv-vert *adv-vert))
-                       0.0))))
+
+    # Selecting any vertex will return the particle data
+    # Quoting the vertex will return the vertex itself...
+    # MAKE PARTICLE CONS CELL WHERE CAR=VERTS CDR=DATA
+
+    (nl-pen)))
 
 
 (de draw-str (Str)
 
   (let (Sock-Model (ipc~get-fd> *ipc "MODEL"))
-          
+
     (for C (chop Str)
-    
+
       (let (Off-Vert (get *verts *cnt-v)
             Off      (car Off-Vert)
             Vert     (cdr Off-Vert))
@@ -63,17 +88,15 @@
         # Set baseline
         (with Vert
           (=: pos (list (get *pen-v 1) (get *pen-v 2) 0.0)))
-                  
+
         (update-glyph> Vert C)
-         
-        (setq *pen-v (list (+ (get *pen-v 1) *adv-vert)
-                           (get *pen-v 2)
-                           0.0))
-                                 
+
+        (adv-pen)
+
         (update-model-matrix> Vert)
-        
+
         (render-vert *ipc Vert Off)
- 
+
         (req-send-obj *ipc
                       Sock-Model
                       Vert
@@ -82,74 +105,53 @@
 
         (inc '*cnt-v 1)))))
 
-                             
-################################################################################
-
-
-(de handle-ascii-ptr (Key)
-
-  (let (Data (cons Key "ABC")
-        Ptrs (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
-        
-    (println Ptrs)
-
-    (draw-bytes (get Ptrs 1))
-    (draw-bytes (get Ptrs 2))
-    
-    (setq *pen-v (list 0.0
-                       (- (get *pen-v 2) (+ *adv-vert *adv-vert))
-                       0.0))))
-
 
 (de draw-bytes (Bytes)
-  # Bytes is list of numbers
 
-  # Create vertex; data = char
-  (let (Sock-Model (ipc~get-fd> *ipc "MODEL"))
-    
-    (for Byte Bytes
-    
-      (let Str (format Byte)
-      
-        (for N (chop Str)
-        
-          (let (Off-Vert (get *verts *cnt-v)
-                Off (car Off-Vert)
-                Vert (cdr Off-Vert))
+  (for Byte Bytes
+  
+    (draw-num Byte)))
 
-            # Reset vertex
-            # Pos = baseline = X,0,0
-            (with Vert
-              (=: pos (list (get *pen-v 1) (get *pen-v 2) 0.0)))
-             
-            #(with Vert
-            #  (println Vert (: pos)))
-             
-            (update-glyph> Vert N)
-             
-            (setq *pen-v (list (+ (get *pen-v 1) *adv-vert)
-                               (get *pen-v 2)
-                               0.0))
-                                     
-            (update-model-matrix> Vert)
-            
-            (render-vert *ipc Vert Off)
-     
-            (req-send-obj *ipc
-                          Sock-Model
-                          Vert
-                          SZ-VERT
-                          Off)
 
-            (inc '*cnt-v 1)))
-            
-          # Inc byte spacing depending on length
-          (when T
-            (setq *pen-v (list (+ (get *pen-v 1) (* *adv-vert (- 4 (length Str))))
-                               (get *pen-v 2)
-                               0.0)))
-                             
-                             T))))
+(de draw-num (Num)
+
+  (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
+        Str (format Num))
+
+    (for N (chop Str)
+
+      (let (Off-Vert (get *verts *cnt-v)
+            Off (car Off-Vert)
+            Vert (cdr Off-Vert))
+
+        # Reset vertex
+        # Pos = baseline = X,0,0
+        (with Vert
+          (=: pos (list (get *pen-v 1) (get *pen-v 2) 0.0)))
+
+        (update-glyph> Vert N)
+
+        (adv-pen)
+
+        (update-model-matrix> Vert)
+
+        (render-vert *ipc Vert Off)
+
+        (req-send-obj *ipc
+                      Sock-Model
+                      Vert
+                      SZ-VERT
+                      Off)
+
+        (inc '*cnt-v 1)))
+
+      # Inc byte spacing depending on length
+      (when T
+        (setq *pen-v (list (+ (get *pen-v 1) (* *adv-vert (- 4 (length Str))))
+                           (get *pen-v 2)
+                           0.0)))
+
+                         T))
 
 
 ################################################################################

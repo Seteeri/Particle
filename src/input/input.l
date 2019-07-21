@@ -99,8 +99,8 @@
                                    (link (build-ev-lst-str Event Type))))
                    ")")
 
-      (when (= Type li~KEYBOARD-KEY)
-        (println Msg))
+      #(when (= Type li~KEYBOARD-KEY)
+      #  (println Msg))
 
       # Workers will send messages to input when they are ready
       (send-msg-clients *ipc Msg))))
