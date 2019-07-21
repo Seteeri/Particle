@@ -291,6 +291,105 @@ Abstract:
   * Basically, type can be derived graphically/structurally
   * Could put CAR/CDR together and color to differentiate (or other method)
 
+* Cons cell has two ptrs
+  * = 16 bytes = 128-bits
+* Ptr is interpreted: num, sym/cons, or cons
+  * Num can be enc ptr or list of cons cells where CAR is enc ptr
+* The interpretation is generally what the user modifies
+  * Mod # -> Ptr changes, Mod Ptr -> # changes
+
+(list 1 2) = (cons 1 (cons 2 NIL))
+
+.
+|   |
+PTR PTR
+|    |
+1    .
+     |   |
+     PTR PTR
+     |   |
+     2   NIL
+
+* Move cons (.) will move PTR with it but not the value if value=cons
+
+PTR . PTR
+|       |
+1       2
+
+Draw the Heap:
+* Create 3 particles for every byte (0-255)
+  * One cell = 16*3 = 48 particles
+* GL index = (* Heap index (+ 208 48))
+
+* Want user to work on particles which is an arbitrary unit of information
+* Particles can represent a cons cell down to a single bit
+* Particle has a ptr and corresponding val
+  * Val can be another ptr
+
+( ((1 2 3 4 5 6 7 8) 1)
+  ((1 2 3 4 5 6 7 8) 2) )
+
+Cons
+  CAR
+    251-252-253-254-255-256-257-258 
+    1                              
+  CDR
+    251-252-253-254-255-256-257-258
+    2
+
+Tecnically VAL need not exist if user modifies raw ptrs
+
+Cons
+  CAR
+    2  0 0 0 0 0 0 0
+  CDR
+    18 0 0 0 0 0 0 0
+    
+Figure out how to represent bytes, then how to represent its val or interpretation
+
+So 123 etc is each a particle with its own vertex data
+Ofc 123 can also be hex or oct or bin
+
+* Say above is (cons 0 1) -> ((2 0 0 0 0 0 0 0) (18 0 0 0 0 0 0 0))
+* If modify a byte, number will change
+* Create 3 slots for each number
+* If user wants to modify entire ptr at once:
+  * Create cons with numbers and use cpy function
+  * Or use a pointer
+
+. -> CAR -> 2000000 -> VAL
+  -> CDR -> 1800000 -> VAL
+  
+Bytes connect to following byte; double space between bytes to delimit
+
+Create vertex syms/cons for the target cons cell bytes?
+- Toggle on quote: on vertex data to modify vertex data
+  * This will change the particles to vertex data of vertex data
+- Toggle off quote:
+  * This will change particles back to og vertex data with updated view
+  * Old vertex data will be GC'd
+
+Cons: ( ((2__) (0__) (0__) (0__) (0__) (0__) (0__) (0__))
+        ((18_) (0__) (0__) (0__) (0__) (0__) (0__) (0__)) )
+
+With Value:
+
+Cons: ( ( ((2__) (0__) (0__) (0__) (0__) (0__) (0__) (0__))
+          VAL-CAR)
+        ( ((2__) (0__) (0__) (0__) (0__) (0__) (0__) (0__))
+          VAL-CAR)
+          
+LATTER makes more sense
+
+>>>> (48+2)*208
+9984 bytes = 9.75 kb per cons cell
+So 1 GB VRAM can draw 107,546 particles
+
+Ptr bytes are connected but spacing implies their connection
+Edges are only used for pointers
+
+#################################################
+
 EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
 
   Quantum View:
@@ -304,12 +403,54 @@ EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
   |                       |                       |                       |                       |                       |
   V                       V                       V                       V                       V                       V
   12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      NIL
-  |         (OPAQUE)      |         |             |         |             |         |             |         |
+  |                |      |         |             |         |             |         |             |         |
   V                       V         V             V         V             V---------+             V         V
   list                    0         NIL           abc       NIL           "abc"                   0         NIL
 
   I-SYM/FN                NUM                     I-SYM                   T-SYM                   A-SYM                   NIL
 
+
+              0         0
+              |         |
+              |         |
+       12345789  12345678
+       ||||||||  ||||||||
+       |
+  [PL][.]
+    |
+    + pos
+    + rot
+    + sca
+    + mm
+    + rgba
+    + uv
+    + off-texel
+    |
+    CAR/CDR (name)
+
+  * Struct data exists for all the above
+  * The problem is representing the vertex data as symbols leads to inf rec.
+  * Solution
+    -> There is none
+    -> Can edit but cannot show
+
+  * CAR-CDR = quad spaced
+  * Vert dist = quad spaced
+  * Note, Vertex is a symbol whose value is the actual symbol
+  * Above pointers cannot be moved individually and will move together
+    * 1/2 move with pointers since they are directly based on it
+    * So cons cells can move independently of each other
+      * Above: if 1/2 were cons cells instead, they could move independently
+      of root cons
+  * To modify vertex data:
+    * Show first level of vertex data
+    * Modifying vertex data will modify cons cell
+    * To modify the vertex data, must create new cons cell/vertex data for said vertex data
+  * Need quote operator!! or is it a mode
+    * (quote particle) -> produce vertex data for particle
+    * (quote (quote particle)) -> produce vertex data for vertex data
+
+  Vertex Obj/Symbol:
 
               0                     'a'
               |                     |
@@ -322,43 +463,6 @@ EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
     |                                  |
     +...                               +...
 
-
-  * Is the cons cell the visualization of the vertex?
-
-  * CAR-CDR = quad spaced
-  * Vert dist = quad spaced
-  * Note, Vertex is a symbol whose value is the actual symbol
-  * Above pointers cannot be moved individually and will move together
-    * 1/2 move with pointers since they are directly based on it
-    * So cons cells can move independently of each other
-      * Above: if 1/2 were cons cells instead, they could move independently
-      of root cons
-  * Due to above, CAR and descendants will share vertex data, likewise for CDR
-    * Only up until next cons
-  * One cons cell has 16 bytes so store (3*8)+(3*8)=24+24 verts
-    * Max ptr dec. val is max val of 60-bit pointer
-    * < 48 verts for hex
-    * 60 verts for binary/bits
-  * Axiom
-    * Drawn vertex data will render using the data shown, since it would lead
-    to infinite recursion to create vertex data for vertex data ad inf.
-    * Technically to change single vertex data, create vertex data for it...
-  * Internal Procedure:
-    * Create cons cell
-    * There is global pointer, attach cons cell to global pointer to prevent GC
-    * Draw cons cell
-      * Get CAR/CDR encoded pointers
-      * Use 48 vertices for cons cell pointers
-        * Adtl vertices depending on type of data
-    * Traverse root cons cell
-      * Draw edges for decoded pointers
-    * Draw all
-  * To modify vertex data:
-    * Show first level of vertex data
-    * Modifying vertex data will modify cons cell
-    * To modify the vertex data, must create new cons cell/vertex data for said vertex data
-
-  Vertex Obj/Symbol:
 
       'h'                   'i'
        |                     |

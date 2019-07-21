@@ -34,7 +34,7 @@ Tentative Ideas:
 ## Why
 
 Initially, Common Lisp was used but more control was needed over the GC. I
-Modifying SBCL's GC was one possiblity, but would require a significant 
+Modifying SBCL's GC was one possiblity, but would require a significant
 investment in understanding the codebase and the runtime/compiler implementation
 
 This also lead to the realization of the definition of a Lisp. In Lisp, there
@@ -61,7 +61,7 @@ C/ASM: pointers/memory addresses
 
 LISP: s-expressions = two pointers/memory addresses
 
-Thus it only makes sense that the GUI is made of s-expressions = lists = binary trees - 
+Thus it only makes sense that the GUI is made of s-expressions = lists = binary trees -
 this is the definition of Protoform.
 
 *Note to self: research relationship between binary trees, general trees,
@@ -82,7 +82,7 @@ Store DAGs as binary trees?
    * Check heap size every frame, warn if large...
      * Or after every message, if it starts to reach capacity, GC, resize
        do next free
-       
+
    PIPELINE:
    * Refactor serialization [WIP]
      * Be able to send raw bytes [Done]
@@ -94,7 +94,7 @@ Store DAGs as binary trees?
    * Test vertex serialization [Done]
      * Move vertices to separate process to reduce pressure on GC
      * Model can push/pull from it...or model holds data and controller processes it?
-   * Add task manager to spread work across frames [Later] 
+   * Add task manager to spread work across frames [Later]
    * Test projview + input handling [Done]
      * Use directional keys to move camera
    * Test vertex serialization [Done]
@@ -128,26 +128,27 @@ Store DAGs as binary trees?
        * To sync, worker can pull every update or have model push updates out
      * Implement message flushing [Done]
        * Lag with camera update and pointer update at same time
-              
-   * Implement string/atom/list, eval functionality [Wed...]
-     * ASCII key creates a string with vertex in property list
-      
+
+   * Implement string/atom/list, eval functionality
+     * Figure out drawing
+     * Figure out modifying
+
    * Refactor
-   
+
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
      * Store in Ctrl or Worker?
        * Or store in model and worker pulls from model
          -> Cache would eventually result in a copy per worker
      * Use assoc list
-     * Store combinations as keys      
-   
+     * Store combinations as keys
+
    * Implement Wayland [Wed/Thurs]
      * Setup tiles for 6 windows = 3 col, 2 row
-     * Proof of concept working with eval already   
-   
-   * RECORD DEMO? 
-   
- 
+     * Proof of concept working with eval already
+
+   * RECORD DEMO?
+
+
 * Refactor/Fix
 
    * https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml
@@ -159,10 +160,10 @@ Store DAGs as binary trees?
    * Refactor bindings
      * Direct C calls use original C name
 
-   * Refactor namespaces 
+   * Refactor namespaces
      * posix
      * mathc
-     
+
      * Tasks uses DAG/ptrees [Later]
        * Built on top of cons cells...
        * To make task wait for another task, it needs a task ID
@@ -176,25 +177,21 @@ Store DAGs as binary trees?
 
    * Optimize GL struct [Later]
      * 3 programs to render 3 vertex types
+       * Glyphs
+         - Index/uniform UVs (-64 bytes)
+         - Index/uniform RGBAs?
+         - Also scaling/rotation
+         - Pass Vec3s; calc matrices on GPU
        * Pixel (RGBA/no-texture)
        * Arbitrary Texture
-       * Text
-     * Reduce struct with removing excessive UV allocation
-     * Reduce struct to 128 bytes with uniform UV
-     * Options for max-chars/min-size
-       * Uniform UV (more likely)
-         * Move UVs to uniform buffer object
-       * Uniform rotation (more likely)
-       * Uniform scaling (less likely)
-       * Uniform rgba (less likely)
      * Min struct size = Vec4(X, Y, Z), Short/Texel-Offset, Short/Glyph-Index = 16 bytes
        * + glyph-index, can be derived from texel-offset but seems unecessary work
        * @ 1 GB/16 Bytes = 67 108 864 chars
          * For 208 Bytes = 5 162 220 chars
        * Position can be calculated from a single point + offset
-         * Reduce size to 8 bytes     
-        
-  * Port dependencies; pull code from rosetta code as baseline    
+         * Reduce size to 8 bytes
+
+  * Port dependencies; pull code from rosetta code as baseline
     * nanomsg - IPC; use existing PicoLisp library
      3d-vectors/3d-matrices - use C, either gcc or so; native?
      https://github.com/recp/cglm [arch linux package]
@@ -207,10 +204,10 @@ Store DAGs as binary trees?
      easing - (with mathc)
      spatial-trees - r-tree (port this)
      lparallel - ptree specifically (port this)
-    
+
   * Note 32 MB = 8 ms to mark/sweep
     * = 2,000,000 cons cells -> Test this with loop/cons/heap
-    
+
 ## GC Strategies
 
 Three primary algorithms:
@@ -226,8 +223,8 @@ Three primary algorithms:
 Mark/sweep is faster when low mortality/high liveliness since less
 sweeping is done.
 
-Stop/copy is faster when high mortality/low liveliness due to copying 
-all live objects. 
+Stop/copy is faster when high mortality/low liveliness due to copying
+all live objects.
 
 Mark/sweep uses less space than stop/copy since stop/copy always
 reserves half of the space.
@@ -258,7 +255,7 @@ Scenarios
 
 * Side effects involving resources, such as I/O, are an issue
   * Need custom syntax/fn to specify function is not pure
- 
+
 * Fork + Mark/Sweep
  * Fork on GC
    * Needs size of heap so mem capacity limited to half of total ram
@@ -303,7 +300,7 @@ Scenarios
       -> Need it as backup if memory is full
     * Add function to get/set Avail ptr
       -> Modfy heap function to take a number that will set the avail pointer
-    
+
 * Benchmark/Profile
   * JIT Melee:
     * Python (PyPy)
@@ -355,7 +352,7 @@ Write PicoLisp ("A") interpreter in PicoLisp ("B") -> AKA meta-circular interpre
 Have A do optimizations:
 - AST rewriting
   - Replace optimized nodes with machine code
-  
+
 * Mailing list:
   * Does the emulator slowdown apply to 32-bit only? Is there speed penalty on x86-64?
   * WASM backend/implementation
@@ -367,4 +364,3 @@ Have A do optimizations:
   * Struct does not have 'H' for shorts?
   * Suggestion to docs with more figures of symbols cons trees in diff scenarios
   * (= (cons 0 NIL) (box)) returns NIL when it should be true
-  

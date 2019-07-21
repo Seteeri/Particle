@@ -1,3 +1,15 @@
+VENN DIAGRAM CIRCLES
+
+* BSD
+* Blender
+* Emacs
+* Evernote
+* Elementary OS
+* Arcane
+* Interlisp-D
+
+################################################################################
+
 Traditionally computers have worked by having different applications and
 UIs working on both different and similar data with overlapping
 operations and functionality. For example, a word processor might include
@@ -266,10 +278,10 @@ MOVEMENT:
                                   *
 https://softwareengineering.stackexchange.com/questions/224146/how-has-an-increase-in-the-complexity-of-systems-affected-successive-generations/224152
 
-Moreover, let's not forget what we're actually trying to optimize for, which is 
-value produced for a given cost. Programmers are way more expensive than 
-machines. Anything we do that makes programmers produce working, correct, 
-robust, fully-featured programs faster and cheaper leads to the creation of 
+Moreover, let's not forget what we're actually trying to optimize for, which is
+value produced for a given cost. Programmers are way more expensive than
+machines. Anything we do that makes programmers produce working, correct,
+robust, fully-featured programs faster and cheaper leads to the creation of
 more value in the world.
 
 ################################################################################
@@ -289,11 +301,11 @@ The way Lisp can still win in today's world is not by trying to replace C on the
 I don't want to denigrate ChrysaLisp in any way. It's tremendously cool. But cool is not enough to win in the real world.
 
 [UPDATE] ChrysaLisp is actually doing the Right Thing with respect to its GUI by
- using a C-library (SDL). But it's trying to re-invent the compiler wheel (and 
- the language design wheel) so that it can run on bare metal and "grow up to be 
- a real Lisp machine" some day, and I think that aspect of the project is a 
+ using a C-library (SDL). But it's trying to re-invent the compiler wheel (and
+ the language design wheel) so that it can run on bare metal and "grow up to be
+ a real Lisp machine" some day, and I think that aspect of the project is a
  fool's errand. There are already many Lisps that can run on bare metal (ECL was
-  specifically designed for that). None of them have succeeding in displacing C, 
+  specifically designed for that). None of them have succeeding in displacing C,
   and I believe none ever will because the economic hurdles are insurmountable.
 
 ################################################################################
@@ -795,9 +807,9 @@ LAYOUT 1
 ========
 
 I/O       CPU         I/O
-Input --> Ctrl 1 <--> Model, Render 
-      --> Ctrl 2 <--> Model, Render 
-      --> Ctrl 3 <--> Model, Render 
+Input --> Ctrl 1 <--> Model, Render
+      --> Ctrl 2 <--> Model, Render
+      --> Ctrl 3 <--> Model, Render
       --> Ctrl N <--> Model, Render
 
 INPUT:  GOOD
@@ -817,13 +829,13 @@ Memcpy Trail
   * Pulls from Model/Update cache
   * Cache to reduce necessary copies and decrease latency
   * Pushes to Model & Render
-  
+
 * Model epolls for memcpy
   * Recvs data from Ctrl and updates memory
   * Broadcast updates
     -> Poss decentralize?
   * Use Redis or some other mechanism/library
-    
+
 * Render epolls for memcpy
   * Pushes frame time to Ctrls -> Triggers anim frame generation
   * After pushing frame, Render can either wait or continue
@@ -859,15 +871,15 @@ Input --> Model <--> Render
 ##################
 
 Animation Example:
-* Ctrl: 
+* Ctrl:
   * Loop #0: Recv event->Handle event->Write Render socket
 * Render (pre-draw):
   * Loop #1: Send time->Read sock
   * Loop #2: Send time->Read sock
   * Loop #3: Send time->Read sock
-  
-"When a new packet is received for a UDP socket that has a full receive buffer, 
-the new packet is dropped, even when it would be preferrable to drop the 
+
+"When a new packet is received for a UDP socket that has a full receive buffer,
+the new packet is dropped, even when it would be preferrable to drop the
 older (buffered) packets."
 
 * Assume UDP sized for 1 frame
@@ -1035,7 +1047,7 @@ STR CMD (ASCII KEY)
   *
 
 # User presses shortcut to pack/glue -> use list as argument to pack - new list produced
-* Three eval methods: 
+* Three eval methods:
   Shift: Save both (def) - ignore NIL return?
 
 Pack:
@@ -1086,12 +1098,12 @@ LIST CMD
     -> Ctrl+L, A, Ctr+L, B, Ctrl+L, C, ...
 * Need command to destroy current list and move to top list, to reverse previous example
   * Remember directional key layout...
-  
+
 * ptr=CAR -> Yes, Create new list with atom
   -> Points to object
 * ptr=CDR -> No, Create new list after
   -> Points to space after or between (nearest object)
- 
+
 ##################
 
 EVAL FUNCTIONALITY
@@ -1119,7 +1131,7 @@ Then uses eval command or types it all out and performs eval on the string
 
 
 
-User types add: 
+User types add:
 
 ("a" "d" "d"
 
@@ -1138,8 +1150,8 @@ has much redundancy and overhead and wasting resources
 [![Alt text](https://img.youtube.com/vi/BemmZaOyzbk/0.jpg)](https://www.youtube.com/watch?v=BemmZaOyzbk)
 
 
-################################################################################  
-  
+################################################################################
+
    * Implement Worker cache coherence/sync [Later] -> Work as intended without coherence
      * Workers represent CPUs with cache and Model represents main memory
      * Ctrl/worker sends to render, then sends update to model
@@ -1187,12 +1199,12 @@ has much redundancy and overhead and wasting resources
   * P2P method?
     * Worker broadcasts to peers and Model
       * Is Model needed? Contains initial data...
-      * What if worker needs data that no one has...and how does it decide 
+      * What if worker needs data that no one has...and how does it decide
       who will satisfy the request...or it creates it and caches it
-    * If one worker is slow, then it won't get updates until later      
-    
-    
-https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml    
+    * If one worker is slow, then it won't get updates until later
+
+
+https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml
 
 
 AVAIL PTR
@@ -1216,3 +1228,27 @@ CDR=CONS
 ATOM:
 CAR=<>
 CDR=<>
+
+NEED QUOTE OPERATOR
+- NO QUOTE IS NORMAL
+- QUOTE WILL EDIT THE REP
+
+https://www.phoronix.com/forums/forum/phoronix/latest-phoronix-articles/1114417-wayland-s-weston-lands-a-pipewire-plug-in-as-new-remote-desktop-streaming-option/page3
+
+Wayland and X11 are two very different things and remote desktop is one area where Wayland will always still benefit from a protocol such as X11. For example the best Wayland can do is a slow VNC type approach of sending across a complete raster image (albeit compressed) which requires a lot of bandwidth. An intelligent protocol sends across instructions such as "draw line between x and y". This is how X11 works.
+
+Windows and RDP has even X11 beaten and is thus far ahead of VNC and Wayland when it comes to performance. This is because rather than simply sending drawing instructions, it is aware of widgets and so can send much higher level instructions such as "refresh window", "draw button here", etc.
+
+In short... The *NIX desktop (*NOT Wayland*) needs to up its game if it plans on ever competing in the enterprise with remote desktop solutions again. This needs to be done from the widget toolkit (such as Qt or GTK+), not the underlying platform and certainly not a compositor. Something like this:
+
+Unfortunately due to a very immature Wayland, the Linux desktop is now extremely behind and is at risk of re-entering the "hobbiest / toy" market.
+
+
+################################################################################
+
+
+Vertices: a b c
+
+Particle: symbol that contains both vertices and data
+
+Data: "abc"

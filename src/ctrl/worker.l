@@ -40,6 +40,7 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/vertex.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/metrics/metrics.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/ctrl/kb.l")
 
 
 # Globals
