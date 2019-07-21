@@ -18,19 +18,18 @@
 (scl 6)
 
 # Paths
-(def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
-(def 'PATH-UDS-CONTROL  "/tmp/protoform-control.socket")
-(def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
-(def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
+(def 'PATH-UDS-MODEL   "/tmp/protoform-model.socket")
+(def 'PATH-UDS-CONTROL "/tmp/protoform-control.socket")
+(def 'PATH-UDS-RENDER  "/tmp/protoform-render.socket")
+(def 'PATH-GLYPHS      "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 
 # Constants
-(def '*sca-vert (*/ 1.0 1.0 96.0))
+(def '*sca-vert  (*/ 1.0 1.0 96.0))
 (def '*sca-glyph 5.8239365)   # MSDF/tex parameter
 (def '*adv-glyph 9.375)       # MSDF/tex parameter
-(def '*adv-vert (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
+(def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
 
 # Globals
-(def '*vert)
 (def '*verts)
 
 
@@ -72,13 +71,6 @@
     (reg-conns *ipc ID-C))                     
                       
   (send-msg *ipc "RDY" (ipc~get-fd> *ipc "CONTROL"))
-
-  (setq *off-vert (get-vert-off *i-proc))
-  (setq *vert (req-recv-obj *ipc
-                            (ipc~get-fd> *ipc "MODEL")
-                            (new '(+Vertex))
-                            SZ-VERT
-                            *off-vert))
 
   (for N *verts-max
     (let Off (get-vert-off N)
@@ -122,7 +114,7 @@
            
           ((= Name "update-vert")
            (prinl (usec) " | WORKER/" *Pid " | " Msg)
-           (update-vert *ipc *vert *off-vert)
+           (update-vert *ipc (cdr (get *verts 1)) (car (get *verts 1)))
            T)
            
           ((= Name "update-pvm")
