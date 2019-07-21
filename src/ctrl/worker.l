@@ -42,9 +42,10 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/ctrl/conn.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/metrics/metrics.l")
+(load "/home/user/quicklisp/local-projects/protoform/src/model/particle.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/model/vertex.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/metrics/metrics.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/ctrl/kb.l")
 
 

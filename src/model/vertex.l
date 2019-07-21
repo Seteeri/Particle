@@ -14,15 +14,6 @@
 (def '*ptr-vert (native "@" "malloc" 'N SZ-VERT))
 
 
-# Really the controller?
-(class +Particle)
-(dm T (Data
-       Verts)
-  
-  (=: data Data)
-  (=: verts Verts))
-
-
 (class +Vertex)
 (dm T (Chr       #Use to get offset, if char then data is char also
        RGBA
