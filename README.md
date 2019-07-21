@@ -16,7 +16,7 @@ Inspired by:
 * Emacs
 * Lisp
 
-Particle is a 3D Lisp structure/projectional REPL. It is the implementation of my vision 
+Particle is a 3D Lisp structured/projectional REPL. It is the implementation of my vision 
 of a programmable UI to replace the desktop paradigm - a way to map our thoughts
 into the computer. It integrates concepts from CLIs, shells, REPLs, notebooks, 
 WMs/DEs, creative coding, and mindmapping into a single interface.

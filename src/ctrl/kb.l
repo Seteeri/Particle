@@ -1,7 +1,14 @@
+(def '*pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
+(def '*cnt-v 2)
+
+
 (de handle-keyboard (Sock Data)
+
   (let (Key   (get Data 4)
         State (get Data 5))
+        
     (when (= State 1)
+    
       (cond ((= Key 106)
              # Move camera right
              (move-cam Sock 1 '(1.0 0.0)))
@@ -16,8 +23,7 @@
              (move-cam Sock 2 '(0.0 -1.0)))
 
             ((= Key 104) # pg-up
-             (zoom-cam Sock -3.0))
-             
+             (zoom-cam Sock -3.0))             
             ((= Key 109) # pg-dn
              (zoom-cam Sock 3.0))
   
@@ -25,32 +31,39 @@
              (handle-ascii Key))))))
    
 
-(def '*pen-v (list 0.0 0.0 0.0))
-(def '*cnt-v 1)
+(de handle-ascii-2 (Key)
+
+  (let (Data (cons Key "ABC")
+        Ptrs (struct (>> -4 (adr Data)) '((B . 8) (B . 8)))
+        Prtcl (new '(+Particle) Data ()))
+        
+    (println Ptrs)
+        
+    (draw-bytes (get Ptrs 1))
+    (draw-bytes (get Ptrs 2))
+
+    # Produce verts+edges for rep
+    # Push verts into particle
+    # Push prtcl into timeline
+    # - Timeline is in namespace
+    
+    (setq *pen-v (list 0.0
+                       (- (get *pen-v 2) (+ *Off *Off))
+                       0.0))))
 
 
 (de handle-ascii (Key)
 
   (let (Data (cons Key "ABC")
-        Ptrs (struct (>> -4 (adr Data)) '((B . 8) (B . 8)))
-        Off (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
+        Ptrs (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
         
     (println Ptrs)
         
     (draw-bytes (get Ptrs 1))
     (draw-bytes (get Ptrs 2))
     
-    # For each ptr-vert, push into list and store in sym prop-list 'verts
-    # [PL][VAL], VAL="a" etc.
-    # [PL][VAL], VAL="abc" etc., there would be three verts in pl 'verts
-    # Then push sym into master list or timeline
-    
-    # Produce vertices for representation/val (decoded pointer)
-    
-    # Link all together
-    
     (setq *pen-v (list 0.0
-                       (- (get *pen-v 2) (+ Off Off))
+                       (- (get *pen-v 2) (+ *adv-vert *adv-vert))
                        0.0))))
 
 
@@ -58,8 +71,7 @@
   # Bytes is list of numbers
 
   # Create vertex; data = char
-  (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
-        Off (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
+  (let (Sock-Model (ipc~get-fd> *ipc "MODEL"))
     
     (for Byte Bytes
     
@@ -67,12 +79,9 @@
       
         (for N (chop Str)
         
-          (let (Off-Vert (get-vert-off *cnt-v)
-                Vert (req-recv-obj *ipc
-                                   Sock-Model
-                                   (new '(+Vertex))
-                                   SZ-VERT
-                                   Off-Vert))
+          (let (Off-Vert (get *verts *cnt-v)
+                Off (car Off-Vert)
+                Vert (cdr Off-Vert))
 
             # Reset vertex
             # Pos = baseline = X,0,0
@@ -84,25 +93,25 @@
              
             (update-glyph> Vert N)
              
-            (setq *pen-v (list (+ (get *pen-v 1) Off)
+            (setq *pen-v (list (+ (get *pen-v 1) *adv-vert)
                                (get *pen-v 2)
                                0.0))
                                      
             (update-model-matrix> Vert)
             
-            (update-vert *ipc Vert Off-Vert)
+            (update-vert *ipc Vert Off)
      
             (req-send-obj *ipc
                           Sock-Model
                           Vert
                           SZ-VERT
-                          Off-Vert)
+                          Off)
 
             (inc '*cnt-v 1)))
             
           # Inc byte spacing depending on length
           (when T
-            (setq *pen-v (list (+ (get *pen-v 1) (* Off (- 4 (length Str))))
+            (setq *pen-v (list (+ (get *pen-v 1) (* *adv-vert (- 4 (length Str))))
                                (get *pen-v 2)
                                0.0)))
                              

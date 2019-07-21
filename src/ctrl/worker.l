@@ -14,8 +14,8 @@
 
 (symbols 'worker 'pico)
 
-
-# C library paths
+# Set math precision to 6 decimals
+(scl 6)
 
 # Paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
@@ -23,9 +23,15 @@
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
 (def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
 
+# Constants
+(def '*sca-vert (*/ 1.0 1.0 96.0))
+(def '*sca-glyph 5.8239365)   # MSDF/tex parameter
+(def '*adv-glyph 9.375)       # MSDF/tex parameter
+(def '*adv-vert (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
 
-# Set math precision to 6 decimals
-(scl 6)
+# Globals
+(def '*vert)
+(def '*verts)
 
 
 # Wrapper libraries
@@ -41,16 +47,6 @@
 (load "/home/user/quicklisp/local-projects/protoform/src/model/vertex.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/metrics/metrics.l")
 (load "/home/user/quicklisp/local-projects/protoform/src/ctrl/kb.l")
-
-
-# Globals
-(def '*sca-vert (*/ 1.0 1.0 96.0))
-(def '*sca-glyph 5.8239365)   # MSDF/tex parameter
-(def '*adv-glyph 9.375)       # MSDF/tex parameter
-
-
-(def '*vert)
-(def '*verts)
 
 
 (de init-worker ()
@@ -83,6 +79,16 @@
                             (new '(+Vertex))
                             SZ-VERT
                             *off-vert))
+
+  (for N *verts-max
+    (let Off (get-vert-off N)
+      (push '*verts (cons Off
+                          (req-recv-obj *ipc
+                                        (ipc~get-fd> *ipc "MODEL")
+                                        (new '(+Vertex))
+                                        SZ-VERT
+                                        Off)))))
+  (setq '*verts (reverse *verts))
 
   #(println "*vert: " (getl *vert))
 
