@@ -1,6 +1,6 @@
 (def '*pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
 (def '*cnt-v 2)
-
+(def '*timer (timerfd~create 1 0))
 
 (de handle-keyboard (Sock Data)
   
@@ -26,21 +26,39 @@
     (update-key> *xkb Keycode State)
 
     # Handle repeat keys
-    # (not (xkb~key-repeats> *xkb Keycode))
+    (when (= (key-repeats> *xkb Keycode) 1)
+      (update-timer Keysym State))
 
-    # Normally, dispatched handler would be called
+    (dispatch-handlers Keycode State Keysym)))
+    
 
-    (when (= State xkb~KEY-DOWN)
+(de update-timer (Keysym State)
 
-      (cond ((= Keysym ksd~Right) (move-cam Sock 1 '(1.0 0.0)))
-            ((= Keysym ksd~Left)  (move-cam Sock 1 '(-1.0 0.0)))
-            ((= Keysym ksd~Up)    (move-cam Sock 2 '(0.0 1.0)))
-            ((= Keysym ksd~Down)  (move-cam Sock 2 '(0.0 -1.0)))
+  (if (= State 1)
+  
+    (prog
+      # Remove timer if exists
+      # Update timer
+      T)
+  
+    (prog
+      # Remove timer if same key
+      T)))
 
-            ((= Keysym ksd~Prior) (zoom-cam Sock -3.0))
-            ((= Keysym ksd~Next)  (zoom-cam Sock 3.0))
+    
+(de dispatch-handlers (Keycode State Keysym)
 
-            (T                    (handle-ascii Keysym Keycode))))))
+  (when (= State xkb~KEY-DOWN)
+
+    (cond ((= Keysym ksd~Right) (move-cam 1 '(1.0 0.0)))
+          ((= Keysym ksd~Left)  (move-cam 1 '(-1.0 0.0)))
+          ((= Keysym ksd~Up)    (move-cam 2 '(0.0 1.0)))
+          ((= Keysym ksd~Down)  (move-cam 2 '(0.0 -1.0)))
+
+          ((= Keysym ksd~Prior) (zoom-cam -3.0))
+          ((= Keysym ksd~Next)  (zoom-cam 3.0))
+
+          (T                    (handle-ascii Keysym Keycode)))))
 
 
 (de adv-pen (Cnt)
@@ -186,7 +204,7 @@
 # Handlers
 # Do not belong in projview - put in projview in kb subfolder
 
-(de move-cam (Sock Cnt Move)
+(de move-cam (Cnt Move)
 
    (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
          Sock-Render (ipc~get-fd> *ipc "RENDER"))
@@ -218,7 +236,7 @@
                     0))))
 
 
-(de zoom-cam (Sock Delta)
+(de zoom-cam (Delta)
 
    (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
          Sock-Render (ipc~get-fd> *ipc "RENDER"))
