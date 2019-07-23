@@ -388,6 +388,20 @@ So 1 GB VRAM can draw 107,546 particles
 Ptr bytes are connected but spacing implies their connection
 Edges are only used for pointers
 
+Particles = one space
+CAR/CDR = two spaces
+Cons = four spaces (all axis)
+
+VIEWS:
+Cell view
+List view
+
+NUM   = ALT/CTRL + NUM   
+I-SYM = WHILE ALT/CTRL -> TYPE STRING
+T-SYM = ASCII | WHILE ALT/CTRL -> TYPE STRING
+A-SYM = ALT/CTRL + ?
+NIL   = I-SYM: "NIL" | ALT/CTRL + N/L
+
 #################################################
 
 EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
@@ -399,15 +413,14 @@ EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
 
   Element View:
 
-  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  NIL
-  |                       |                       |                       |                       |                       |
-  V                       V                       V                       V                       V                       V
-  12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      NIL
-  |                |      |         |             |         |             |         |             |         |
-  V                       V         V             V         V             V---------+             V         V
-  list                    0         NIL           abc       NIL           "abc"                   0         NIL
+  12345678  87654321    12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  NIL
+  |                     |                       |                       |                       |                       |
+  V                     V                       V                       V                       V                       V
+  12345678  87654321    12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      NIL
+  V                     V         V             V         V             V---------+             V         V
+  list                  0         NIL           abc       NIL           "abc"                   0         NIL
 
-  I-SYM/FN                NUM                     I-SYM                   T-SYM                   A-SYM                   NIL
+  I-SYM/FN              NUM                     I-SYM                   T-SYM                   A-SYM                   NIL
 
 
               0         0
@@ -552,12 +565,6 @@ Convert numbers by typing name vs pressing digits?
   - In that case, easier to write program to produce it
 -> Numbers faster when only typing numbers, but when mixed,
    typing name faster since fingers remain near home keys
-
-NUM   = ALT/CTRL + NUM   
-I-SYM = WHILE ALT/CTRL -> TYPE STRING
-T-SYM = ASCII | WHILE ALT/CTRL -> TYPE STRING
-A-SYM = ALT/CTRL + ?
-NIL   = I-SYM: "NIL" | ALT/CTRL + N/L
 
 Esc = 1
 Backspace = 14

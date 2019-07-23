@@ -45,12 +45,12 @@ Future plans include building the userland upon FreeBSD, although development is
 currently occuring on Linux also. 
 
 Another route to consider is PilOS; however, there would be many hurdles to
-overcome including writing drivers, which would not be feasible nor likely to be
-completed in a timely manner. Initially, specific hardware or a SOC with 
-adequate performance could be targeted to provide a starting point to gain 
-momentum, but again, using an existing OS makes more sense to start with. It
-begs the question as to how useful a Lisp at the OS level would be (past Lisp 
-Machines may provide an answer...).
+overcome including writing a compatibility layer like LinuxKPI to reuse linux
+drivers. Initially, specific hardware or a SOC with adequate performance could 
+be targeted to provide a starting point to gain momentum, but again, using an 
+existing OS makes more sense to start with. It begs the question as to how 
+useful a Lisp at the OS level would be (past Lisp Machines may provide an 
+answer...).
 
 The target audience consists of programmers, power users and the like, 
 particularly intelligence analysis.

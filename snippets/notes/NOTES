@@ -1290,3 +1290,9 @@ Having said this, I must say that I do not see a use-case.
 
 PicoLisp starts blindingly fast by 'loadi'ng source files. And for persistence
 we use the database (i.e. external symbols).            
+
+################################################################################
+
+http://blog.rongarret.info/2006/10/top-ten-geek-business-myths.html
+
+https://unix.stackexchange.com/questions/364641/mapping-scancodes-to-keycodes

@@ -114,7 +114,7 @@
 
 (symbols 'ksd 'pico)
 
-(local) (space at e t)
+(local) (space at e t Tab)
 
 (def 'VoidSymbol (hex "ffffff")) # Void symbol
 

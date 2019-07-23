@@ -20,7 +20,7 @@
         Utf-8   (get-utf8> *xkb Keycode))
       
     
-    (prinl "Code/Sym/Name/Utf-8/State: " Keycode " " Keysym " " Name " " Utf-8 " " State)
+    #(prinl "Code/Sym/Name/Utf-8/State: " Keycode " " Keysym " " Name " " Utf-8 " " State)
 
     # Returns update mask
     (update-key> *xkb Keycode State)
@@ -40,12 +40,12 @@
             ((= Keysym ksd~Prior) (zoom-cam Sock -3.0))
             ((= Keysym ksd~Next)  (zoom-cam Sock 3.0))
 
-            (T                    (handle-ascii Keysym))))))
+            (T                    (handle-ascii Keysym Keycode))))))
 
 
-(de adv-pen ()
+(de adv-pen (Cnt)
 
-  (setq *pen-v (list (+ (get *pen-v 1) *adv-vert)
+  (setq *pen-v (list (+ (get *pen-v 1) (*/ *adv-vert Cnt 1.0))
                      (get *pen-v 2)
                      0.0)))
 
@@ -57,7 +57,19 @@
                      0.0)))
 
 
-(de handle-ascii (Keysym)
+(de handle-ascii (Keysym Keycode)
+
+  # Next try to draw a symbol or class
+
+  # To draw any cons cell:
+  # Check CAR/CDR
+  # - If cons cell, call draw fn or put in list (which will create another particle)
+  # - If encoded num or str, add verts to current particle
+  
+  # Kb handlers will call this function
+  # However, the result of eval is drawn
+  # ...REDL read, eval, draw/render/rasterize, loop
+  # So pressing ASCII equivalent to executing eval
 
   (when (and (>= Keysym 32) (<= Keysym 255))
 
@@ -76,20 +88,17 @@
         (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
         (prinl))
                 
-      (draw-str (if (= Keysym ksd~space) " " (xkb~keysym-get-name Keysym)))
+      (draw-str (if (= Keysym ksd~space) " " (char Keysym)))
 
       # Produce verts+edges for rep
       # Push verts into particle
       # Push prtcl into timeline
       # - Timeline is in namespace
-
-      # Selecting any vertex will return the particle data
-      # Quoting the vertex will return the vertex itself...
-      # MAKE PARTICLE CONS CELL WHERE CAR=VERTS CDR=DATA
-
-      #(nl-pen)
+        
+      T))
       
-      )))
+  (cond ((= Keysym ksd~Return) (nl-pen))
+        ((= Keysym ksd~Tab)    (adv-pen 2.0))))
 
 
 (de draw-str (Str)
@@ -108,7 +117,7 @@
 
         (update-glyph> Vert C)
 
-        (adv-pen)
+        (adv-pen 1.0)
 
         (update-model-matrix> Vert)
 
@@ -148,7 +157,7 @@
 
         (update-glyph> Vert N)
 
-        (adv-pen)
+        (adv-pen 1.0)
 
         (update-model-matrix> Vert)
 
