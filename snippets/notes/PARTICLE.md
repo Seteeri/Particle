@@ -137,7 +137,13 @@ Store DAGs as binary trees?
      * Implement operators
 
    * Refactor
-
+     * Move xkb to ctrl and pass events to worker
+     * Implement proper exit
+     * Rename to ctl-epfd -> ctl
+     * Have input send modified KEYCODE (+8)
+     * Respond to window resizing
+     * Use let for deconstructing-bind and let/when     
+     
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
      * Store in Ctrl or Worker?
        * Or store in model and worker pulls from model
@@ -153,22 +159,24 @@ Store DAGs as binary trees?
 
 
 * Refactor/Fix
+   
+   * Refactor IPC and epoll handling
+   * Make epoll event like timerfd
 
-   * Make epoll event
-   * Rename to ctl-epfd -> ctl
+   * Instead of recompiling shaders constantly
+     * https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml
 
-   * https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml
-
-   * Refactor li into subfolders
    * Socket change block/nonblock to T/NIL for convenience
+
    * Ensure defs are defined for globals
 
    * Refactor bindings
+     * Refactor li into subfolders
      * Direct C calls use original C name
 
    * Refactor namespaces
      * posix
-     * mathc
+     * mathc and more...
 
      * Tasks uses DAG/ptrees [Later]
        * Built on top of cons cells...
@@ -214,99 +222,6 @@ Store DAGs as binary trees?
   * Note 32 MB = 8 ms to mark/sweep
     * = 2,000,000 cons cells -> Test this with loop/cons/heap
 
-## GC Strategies
-
-Three primary algorithms:
-* Mark...
-  * Sweep
-  * Region
-  * Compact
-* Stop/Copy (scavenging) - Cheney semi-space
-* Noncopying Implicit Collection - Baker
-  * Has advantages of both Mark + Stop/Copy
-  * Main weakness is fragmentation...but not an issue for PicoLisp?
-
-Mark/sweep is faster when low mortality/high liveliness since less
-sweeping is done.
-
-Stop/copy is faster when high mortality/low liveliness due to copying
-all live objects.
-
-Mark/sweep uses less space than stop/copy since stop/copy always
-reserves half of the space.
-
-Larger objects favor mark/sweep than stop/copying.
-
-Stop/copy defragments by compacting data through copying.
-
-Stop/copy running time proportional to amount of live objects, not the
-size of the heap.
-
-Stop/copy provides better worst-case space bounds than noncopying.
-
-In PicoLisp, since everything is a cons cell, the GC can be optimized
-around that, which favors stop/copy.
-
-https://www.quora.com/Which-type-of-garbage-collection-mechanism-is-more-efficient-mark-sweep-or-stop-copy
-https://www.hboehm.info/gc/complexity.html
-
-Give user option:
-- Expand heap
-  - Can only expand until run out of memory
-- Collect heap
-- Fork+Collect heap
-  - User must do side-effect free operations until
-
-Scenarios
-
-* Side effects involving resources, such as I/O, are an issue
-  * Need custom syntax/fn to specify function is not pure
-
-* Fork + Mark/Sweep
- * Fork on GC
-   * Needs size of heap so mem capacity limited to half of total ram
-   * Speed depends on heap size
-   * Twin procs would amortize deltas at the expense of space vs fork
- * Mark-Sweep
- * Replay eval
- * Switch process
- * Misc
-   * To maximize CPU throughput, do parallel mark/sweep/compact
-     * Each heap/1 MB chunk
-   * Partition heap into N CPU segments, join after all done
-
-* Short Term (feasibility/suitablility, greatest->least):
-  * GC not feasible/suitable -> Need semi-auto memory management
-    * Per-frame Allocation
-      * Runtime
-        * Init/manage heap
-        * Provide allocation functions - pointer bumping
-          * Some allocations have to be automatic
-      * On frame start:
-        * avail-start = cons (or avail cons)
-      * At frame end:
-        * avail = avail-start
-        * Any data created between those points, will be overwritten
-        * For static data, memcpy to next module/frame before ptr reset
-          * Copying GC basically...
-      * Almost generational...
-      * Create heap large enough that GC need not be triggered
-        * Copy to another process while previous GC's
-    -->> Modfy heap function to take a number that will set the avail pointer
-    * For now, make heap large enough to prevent GC
-      * Can track usage (+/- 1 MB granularity) after every eval
-      * Inform user, ask to GC or resize heap
-    * Hooks
-      * Runtime allocates enough for default/protected symbols
-        * Namespaces are like areas?
-      * Alloc functions need heap pointer to allocate/link cons cells
-  * TODO
-    * Remove checks from cons* fn's in GC to disable GC mark/sweep
-      * Maybe have function that swaps pointer functions
-      -> Need it as backup if memory is full
-    * Add function to get/set Avail ptr
-      -> Modfy heap function to take a number that will set the avail pointer
-
 * Benchmark/Profile
   * JIT Melee:
     * Python (PyPy)
@@ -317,18 +232,6 @@ Scenarios
   * Tests
     * Sorting Algorithms
     * String Manipulation
-
-Current Solution:
-- For now limit to 32 MB, so we can call GC each frame
-  - Lisp environment really to control graphics
-- Track heap size after each eval
-- When heap reaches threshold, prompt user
-  - To calculate size, determine how much data can be processed in n ms
-- Default is to perform GC
-- Alternative is to expand heap
-  - Can expand until run out of memory, at that point force GC or crash
-- Fork+Collect heap
-  - User must do side-effect free operations until
 
 * Overall Strategy
   * Build prototype in PicoLisp
@@ -346,18 +249,6 @@ Current Solution:
     * See Emacs JIT, Pixie JIT, CLISP JIT for examples
     * Register based so use DynASM might work
   * If support discontinued, compile to C, optimize, start from there
-
-## RESEARCH
-
-DL
-https://www.youtube.com/watch?v=R7EEoWg6Ekk
-
-https://academia.stackexchange.com/questions/109/is-there-any-efficient-non-linear-note-taking-software
-
-Write PicoLisp ("A") interpreter in PicoLisp ("B") -> AKA meta-circular interpreter
-Have A do optimizations:
-- AST rewriting
-  - Replace optimized nodes with machine code
 
 * Mailing list:
   * Does the emulator slowdown apply to 32-bit only? Is there speed penalty on x86-64?

@@ -1296,3 +1296,109 @@ we use the database (i.e. external symbols).
 http://blog.rongarret.info/2006/10/top-ten-geek-business-myths.html
 
 https://unix.stackexchange.com/questions/364641/mapping-scancodes-to-keycodes
+
+## GC Strategies
+
+Three primary algorithms:
+* Mark...
+  * Sweep
+  * Region
+  * Compact
+* Stop/Copy (scavenging) - Cheney semi-space
+* Noncopying Implicit Collection - Baker
+  * Has advantages of both Mark + Stop/Copy
+  * Main weakness is fragmentation...but not an issue for PicoLisp?
+
+Mark/sweep is faster when low mortality/high liveliness since less
+sweeping is done.
+
+Stop/copy is faster when high mortality/low liveliness due to copying
+all live objects.
+
+Mark/sweep uses less space than stop/copy since stop/copy always
+reserves half of the space.
+
+Larger objects favor mark/sweep than stop/copying.
+
+Stop/copy defragments by compacting data through copying.
+
+Stop/copy running time proportional to amount of live objects, not the
+size of the heap.
+
+Stop/copy provides better worst-case space bounds than noncopying.
+
+In PicoLisp, since everything is a cons cell, the GC can be optimized
+around that, which favors stop/copy.
+
+https://www.quora.com/Which-type-of-garbage-collection-mechanism-is-more-efficient-mark-sweep-or-stop-copy
+https://www.hboehm.info/gc/complexity.html
+
+Give user option:
+- Expand heap
+  - Can only expand until run out of memory
+- Collect heap
+- Fork+Collect heap
+  - User must do side-effect free operations until
+
+Scenarios
+
+* Side effects involving resources, such as I/O, are an issue
+  * Need custom syntax/fn to specify function is not pure
+
+* Fork + Mark/Sweep
+ * Fork on GC
+   * Needs size of heap so mem capacity limited to half of total ram
+   * Speed depends on heap size
+   * Twin procs would amortize deltas at the expense of space vs fork
+ * Mark-Sweep
+ * Replay eval
+ * Switch process
+ * Misc
+   * To maximize CPU throughput, do parallel mark/sweep/compact
+     * Each heap/1 MB chunk
+   * Partition heap into N CPU segments, join after all done
+
+* Short Term (feasibility/suitablility, greatest->least):
+  * GC not feasible/suitable -> Need semi-auto memory management
+    * Per-frame Allocation
+      * Runtime
+        * Init/manage heap
+        * Provide allocation functions - pointer bumping
+          * Some allocations have to be automatic
+      * On frame start:
+        * avail-start = cons (or avail cons)
+      * At frame end:
+        * avail = avail-start
+        * Any data created between those points, will be overwritten
+        * For static data, memcpy to next module/frame before ptr reset
+          * Copying GC basically...
+      * Almost generational...
+      * Create heap large enough that GC need not be triggered
+        * Copy to another process while previous GC's
+    -->> Modfy heap function to take a number that will set the avail pointer
+    * For now, make heap large enough to prevent GC
+      * Can track usage (+/- 1 MB granularity) after every eval
+      * Inform user, ask to GC or resize heap
+    * Hooks
+      * Runtime allocates enough for default/protected symbols
+        * Namespaces are like areas?
+      * Alloc functions need heap pointer to allocate/link cons cells
+  * TODO
+    * Remove checks from cons* fn's in GC to disable GC mark/sweep
+      * Maybe have function that swaps pointer functions
+      -> Need it as backup if memory is full
+    * Add function to get/set Avail ptr
+      -> Modfy heap function to take a number that will set the avail pointer
+
+
+## RESEARCH
+
+DL
+https://www.youtube.com/watch?v=R7EEoWg6Ekk
+
+https://academia.stackexchange.com/questions/109/is-there-any-efficient-non-linear-note-taking-software
+
+Write PicoLisp ("A") interpreter in PicoLisp ("B") -> AKA meta-circular interpreter
+Have A do optimizations:
+- AST rewriting
+  - Replace optimized nodes with machine code

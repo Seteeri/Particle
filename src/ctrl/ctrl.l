@@ -14,6 +14,9 @@
 
 (symbols 'ctrl 'pico)
 
+# Set math precision to 6 decimals
+(scl 6)
+
 
 # Paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
@@ -22,24 +25,28 @@
 (def 'PATH-UDS-CONTROL "/tmp/protoform-control.socket")
 
 
-# Set math precision to 6 decimals
-(scl 6)
-
+#Globals
+(def '*q-worker)
+(def '*q-msg)
+(def '*xkb)
+(def '*timerfd)
+(def '*delay-rep 400) # ms
+(def '*delay-int 40)  # ms
+  
 
 # Wrapper libraries
 (load "/home/user/Git/particle/src/c/mathc.l")
 (load "/home/user/Git/particle/src/c/epoll.l")
 (load "/home/user/Git/particle/src/c/li.l")
 (load "/home/user/Git/particle/src/c/socket.l")
+(load "/home/user/Git/particle/src/c/xkbcommon.l")
+(load "/home/user/Git/particle/src/c/timerfd.l")
+(load "/home/user/Git/particle/src/c/ksd.l")
 # Lisp libraries
 (load "/home/user/Git/particle/src/ipc/ipc.l")
-(load "/home/user/Git/particle/src/ctrl/conn.l")
 (load "/home/user/Git/particle/src/prot/prot.l")
-
-
-#Globals
-(def '*q-worker)
-(def '*q-msg)
+(load "/home/user/Git/particle/src/ctrl/conn.l")
+(load "/home/user/Git/particle/src/ctrl/xkb.l")
 
 
 (de init-ctrl ()
@@ -50,17 +57,26 @@
           *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
+
   (let ID-C (pack "CTRL-" *Pid)
   
     (setq *ipc (new '(ipc~+IPC)
                PATH-UDS-CONTROL            'ipc~block handle-worker accept-client
-               (list (list PATH-UDS-MODEL  'ipc~block handle-model  "MODEL")
+               (list (list PATH-UDS-MODEL  'ipc~block '((Sock) (recv-msg *ipc Sock))  "MODEL")
                      (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT"))))
 
     (reg-conns *ipc ID-C))
   
   (queue '*q-msg "(render-vert 1)")  
   (queue '*q-msg "(render-pvm)")
+
+  
+  (setq *xkb (new '(+Xkb)))
+
+
+  (setq *timerfd (new '(timerfd~+Timerfd)))  
+  (println "Add timerfd to epoll:" (get *timerfd 'timerfd~fd) (get *ipc 'ipc~fd-ep))
+  (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN)
   
   T)
 
@@ -90,35 +106,107 @@
 
 (de handle-input (Sock)
 
+  # Currently assuming kb events only
+
   (let (Msg (recv-msg *ipc Sock)
-        Data (any Msg))
-    #(prinl (usec) " | CTRL   | handle-input | ")
+        Data (any Msg)
+        Name (get Data 1))
+    #(prinl (usec) " | CTRL   | handle-input | " Data)
+        
+    (when (= Name 'KEYBOARD-KEY)
+
+      (update-xkb Data)
+
+      (dispatch-msg (format-msg-ev Data)))))
+
+
+(de format-msg-ev (Data)
+  (let Keycode (+ (get Data 4) 8)
+    (pack "(" 
+          (glue " "
+                (list (name (get Data 1))
+                      (format (get Data 2))
+                      (format (get Data 3))
+                      (format Keycode)
+                      (format (get Data 5))
+                      (format (get Data 6))
+                      (format (get-one-sym> *xkb Keycode))))
+          ")")))
+
+
+(de dispatch-msg (Msg)
+
+  # If worker available
+  #    If event-queue: send event-queue
+  #    Else event-new: send event-new    
+
+  (let Worker (pop '*q-worker)
+    (if Worker
+      (let Msg-Q (pop '*q-msg)
+        (if Msg-Q
+          (send-msg *ipc Msg-Q Worker)
+          (send-msg *ipc Msg   Worker)))
+      (queue '*q-msg Msg))))
+
+
+(de handle-timer (Sock)
+  # Returns an unsigned 8-byte integer (uint64_t) 
+  # containing the number of expirations that have occurred.
+  
+  # Must call read, not recv
+  (with *ipc
+    (when (n0 (native "@" "read" 'I Sock (: ipc~buf-rd) 8))
+      (handle-key-rep (get *timerfd 'timerfd~data))
+      (prinl (usec) " | Expired timer! Events=" (struct (: ipc~buf-rd) '(N . 1))))))
+
+
+(de handle-key-rep (Key)
+  # Send event to a worker else queue it
+  # car = code, cdr = sym
+  (dispatch-msg (pack "(KEYBOARD-KEY 0 0 " (format (car Key)) " 2 2 " (format (cdr Key)) ")")))
+
+
+(de update-xkb (Data)
+  
+  #{
+  https://www.x.org/releases/X11R7.7/doc/xproto/x11protocol.html#Keyboards
+  
+  A KEYCODE represents a physical (or logical) key. 
+  Keycodes lie in the inclusive range [8,255]. 
+  }#
+  
+  # https://gitlab.freedesktop.org/wayland/weston/blob/master/libweston/input.c#L1993  
+  
+  (let (Keycode (+ (get Data 4) 8)
+        State   (get Data 5)
+        Keysym  (get-one-sym> *xkb Keycode)
+        Name    (xkb~keysym-get-name Keysym)
+        Utf-8   (get-utf8> *xkb Keycode))
+      
+    #(prinl "Code/Sym/Name/Utf-8/State: " Keycode " " Keysym " " Name " " Utf-8 " " State)
+
+    # Returns update mask
+    (update-key> *xkb Keycode State)
+
+    (when (= (key-repeats> *xkb Keycode) xkb~KEY-DOWN)
+      (update-timer Keycode Keysym State))))
     
-    # If worker available
-    #    If event-queue: send event-queue
-    #    Else event-new: send event-new
-    
-    (let Worker (pop '*q-worker)
-      (if Worker
-        (let Msg-Q (pop '*q-msg)
-          (if Msg-Q
-            (send-msg *ipc Msg-Q Worker)
-            (send-msg *ipc Msg   Worker)))
-        (queue '*q-msg Msg)))))
 
+(de update-timer (Keycode Keysym State)
 
-(de handle-model (Sock)
-
-  (let Msg (recv-msg *ipc Sock)
-    (when NIL
-      (prinl Msg))))
-
-
-(de handle-render (Sock)
-
-  (let Msg (recv-msg *ipc Sock)
-    (when NIL
-      (prinl Msg))))
+  (if (= State xkb~KEY-DOWN)
+        
+    # interval, delay/expiration-initial
+    (let (Spec (list 0 (* *delay-int 1000000) 0 (* *delay-rep 1000000)))
+      #(println "Arm timer!" Keycode Spec)
+      (put *timerfd 'timerfd~data (cons Keycode Keysym))
+      (when (= (timerfd~set-time> *timerfd Spec) -1)
+        (println "errno: " (errno))
+        (quit "timerfd~set-time failed")))
+  
+    (when (= Keycode (car (get *timerfd 'timerfd~data)))
+      #(println "Disarm timer!" Keycode)
+      (timerfd~disarm> *timerfd))))
 
 
 (de main ()

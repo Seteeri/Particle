@@ -31,8 +31,6 @@
 
 # Globals
 (def '*metrics)
-(def '*xkb)
-(def '*timerfd)
 (def '*verts)
 
 
@@ -41,9 +39,8 @@
 (load "/home/user/Git/particle/src/c/epoll.l")
 (load "/home/user/Git/particle/src/c/li.l")
 (load "/home/user/Git/particle/src/c/socket.l")
-(load "/home/user/Git/particle/src/c/xkbcommon.l")
 (load "/home/user/Git/particle/src/c/ksd.l")
-(load "/home/user/Git/particle/src/c/timerfd.l")
+(load "/home/user/Git/particle/src/c/xkbcommon.l")
 # Lisp libraries
 (load "/home/user/Git/particle/src/ipc/ipc.l")
 (load "/home/user/Git/particle/src/prot/prot.l")
@@ -52,7 +49,6 @@
 (load "/home/user/Git/particle/src/model/projview.l")
 (load "/home/user/Git/particle/src/model/vertex.l")
 (load "/home/user/Git/particle/src/ctrl/conn.l")
-(load "/home/user/Git/particle/src/ctrl/xkb.l")
 (load "/home/user/Git/particle/src/ctrl/kb.l")
 
 
@@ -95,16 +91,7 @@
                                 (ipc~get-fd> *ipc "MODEL")
                                 (new '(+Projview))
                                 SZ-PV
-                                0))
-  
-  (setq *xkb (new '(+Xkb)))
-  
-  # Pull epoll-fd out of IPC
-  (setq *timerfd (new '(timerfd~+Timerfd)))
-  
-  (println "Add timerfd to epoll:" (get *timerfd 'timerfd~fd) (get *ipc 'ipc~fd-ep))
-  
-  (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN))
+                                0)))
 
 
 (de handle-client (Sock))
@@ -123,7 +110,8 @@
         Name (get Data 1))
 
     (cond ((= Name 'KEYBOARD-KEY)
-           (handle-keyboard Sock Data)
+           (prinl (usec) " | WORKER/" *Pid " | " Msg)
+           (handle-kb Data)
            T)
            
           ((= Name "render-vert")
