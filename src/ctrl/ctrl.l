@@ -63,22 +63,27 @@
     (setq *ipc (new '(ipc~+IPC)
                PATH-UDS-CONTROL            'ipc~block handle-worker accept-client
                (list (list PATH-UDS-MODEL  'ipc~block '((Sock) (recv-msg *ipc Sock))  "MODEL")
-                     (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT"))))
+                     (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT")
+                     (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER"))))
 
     (reg-conns *ipc ID-C))
   
   (queue '*q-msg "(render-vert 1)")  
   (queue '*q-msg "(render-pvm)")
-
   
   (setq *xkb (new '(+Xkb)))
 
-
   (setq *timerfd (new '(timerfd~+Timerfd)))  
   (println "Add timerfd to epoll:" (get *timerfd 'timerfd~fd) (get *ipc 'ipc~fd-ep))
-  (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN)
-  
-  T)
+  (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN))
+
+
+(de handle-render (Sock)
+  # Render will send window resize events
+  # Ctrl will send window resize event to workers
+  (let (Msg (recv-msg *ipc Sock)
+        Data (any Msg))  
+    T))
 
 
 (de handle-worker (Sock)

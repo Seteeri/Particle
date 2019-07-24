@@ -11,8 +11,6 @@
         State   (get Data 5)
         Keysym  (get Data 7))
 
-    (println Keycode Keysym)
-
     # 2 = repeat
     (when (or (= State xkb~KEY-DOWN) (= State 2))
 

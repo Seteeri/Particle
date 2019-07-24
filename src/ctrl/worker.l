@@ -110,7 +110,7 @@
         Name (get Data 1))
 
     (cond ((= Name 'KEYBOARD-KEY)
-           (prinl (usec) " | WORKER/" *Pid " | " Msg)
+           #(prinl (usec) " | WORKER/" *Pid " | " Msg)
            (handle-kb Data)
            T)
            

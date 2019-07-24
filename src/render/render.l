@@ -114,28 +114,31 @@ Class variables may be indicated by an upper case letter
   (glfw~window-hint glfw~CLIENT-API            glfw~OPENGL-ES-API)
   (glfw~window-hint glfw~CONTEXT-CREATION-API  glfw~NATIVE-CONTEXT-API)
 
-  (let (Title (native "@" "malloc" 'N 16))
+  (let Title (native "@" "malloc" 'N 16)
     (struct Title 'N (cons "Particle" 16))
     (setq *window (glfw~create-window *width *height Title 0 0))
-    (when (= *window 0)
-      (quit "(= *window 0)"))
+    (when (=0 *window) (quit "(= *window 0)"))
     (native "@" "free" NIL Title))
 
   (glfw~make-context-current *window)
 
   (glfw~set-window-size-callback *window
-                                 (lisp 'window-callback
-                                       '((Window Width Height)
-                                         #(println "window-size-callback: " (struct Width 'I) (struct Height 'I))
-                                         # Must update projmatrix also
-                                         (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))))
+                                 (lisp 'window-callback handle-window-size))
 
   (glfw~set-key-callback *window
-                         (lisp 'key-callback
-                               '((Window Key Scancode Action Mods)
-                                 (when (and (= (struct Key 'I)    glfw~KEY-ESCAPE)
-                                            (= (struct Action 'I) glfw~PRESS))
-                                   (glfw~set-window-should-close (struct Window 'N) glfw~TRUE))))))
+                         (lisp 'key-callback handle-key)))
+
+
+(de handle-window-size (Window Width Height)
+  #(println "window-size-callback: " (struct Width 'I) (struct Height 'I))
+  # Must update projmatrix also
+  (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))
+  
+  
+(de handle-key (Window Key Scancode Action Mods)
+  (when (and (= (struct Key    'I) glfw~KEY-ESCAPE)
+             (= (struct Action 'I) glfw~PRESS))
+    (glfw~set-window-should-close (struct Window 'N) glfw~TRUE)))
 
 
 (de init-gl ()
