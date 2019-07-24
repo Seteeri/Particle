@@ -63,7 +63,7 @@
 
   (setq *metrics (load-metrics *sca-glyph))
   
-  (let ID-C (pack "WORKER-" *Pid)
+  (let ID-C (pack "WORKER-" *i-proc)
 
     (setq *ipc (new '(ipc~+IPC)
                      (pack "/tmp/protoform-worker-" *i-proc ".socket") 'ipc~block handle-client accept-client

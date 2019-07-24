@@ -79,10 +79,16 @@
 
 
 (de handle-render (Sock)
+  # Currently, render sends frame time which is not used...
+  
   # Render will send window resize events
   # Ctrl will send window resize event to workers
   (let (Msg (recv-msg *ipc Sock)
-        Data (any Msg))  
+        Data (any Msg))
+  
+        (when (not (num? Data))
+          (println "CTRL RECV MSG FROM RENDER" Data))
+        
     T))
 
 

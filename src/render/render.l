@@ -37,6 +37,15 @@ Class variables may be indicated by an upper case letter
           "/home/user/Git/particle/glsl/node.cs.glsl"))
 
 
+(def '*window)
+(def '*buffer-objects)
+(def '*prog-rast)
+(def '*prog-comp)
+(def '*vao)
+(def '*fence)
+(def 'TEST-GLYPH T)
+
+
 # Wrapper libraries
 (load "/home/user/Git/particle/src/c/mathc.l")
 (load "/home/user/Git/particle/src/c/posix/mman.l")
@@ -56,17 +65,8 @@ Class variables may be indicated by an upper case letter
 (load "/home/user/Git/particle/src/prot/prot.l")
 
 
+# MOVE TO GL
 (def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
-
-
-(def '*window)
-(def '*buffer-objects)
-(def '*prog-rast)
-(def '*prog-comp)
-(def '*vao)
-(def '*fence)
-
-(def 'TEST-GLYPH T)
 
 
 (de init-render ()
@@ -130,8 +130,10 @@ Class variables may be indicated by an upper case letter
 
 
 (de handle-window-size (Window Width Height)
-  #(println "window-size-callback: " (struct Width 'I) (struct Height 'I))
   # Must update projmatrix also
+  #(ipc~send-msg> *ipc Msg Sock)
+  (println (get *ipc 'ipc~clients))
+  #(println (get (cdr (assoc "CTRL" (get *ipc 'ipc~clients))) 1))
   (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))
   
   
