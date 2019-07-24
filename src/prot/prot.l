@@ -160,10 +160,11 @@ Protocol should only call methods on Ipc and Objects passed to it
 
       #(prinl (usec) " | parse-msg | Msg=" Msg)
 
+      # This is render specific -> move to render/conn
       (if (= Name-Fn "mc")
           
           (setq Ret (list (list Data (+ Ptr 4 Length))
-                          (+ 4 Length (get Data 4))))
+                                (+ 4 Length (get Data 4))))
             
           (prinl (usec) " | parse-msg | UNKNOWN REQUEST! " Msg))
           

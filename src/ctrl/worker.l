@@ -121,7 +121,7 @@
            
           ((= Name "render-pvm")
            (prinl (usec) " | WORKER/" *Pid " | " Msg)
-           (render-pvm *ipc *projview)
+           (render-pvm *ipc *projview (get Data 2) (get Data 3))
            T)
           
           # Handle recv updates from model

@@ -69,7 +69,7 @@
     (reg-conns *ipc ID-C))
   
   (queue '*q-msg "(render-vert 1)")  
-  (queue '*q-msg "(render-pvm)")
+  (queue '*q-msg (pack "(render-pvm " *width " " *height " T)"))
   
   (setq *xkb (new '(+Xkb)))
 
@@ -87,10 +87,9 @@
         Data (any Msg))
   
         (when (not (num? Data))
-          T)
-          #(queue '*q-msg "(render-pvm width height)"))
-        
-    T))
+          (dispatch-msg (pack "(render-pvm " (get Data 2) " " (get Data 3) ")")))
+                
+        T))
 
 
 (de handle-worker (Sock)

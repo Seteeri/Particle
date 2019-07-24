@@ -139,12 +139,15 @@ Store DAGs as binary trees?
    * Refactor
      * Move xkb to ctrl and pass events to worker [Done]
      * Respond to window resizing [Done]
+     * Refactor flush-msgs and use across all processes
+       * FIX UNKNOWN REQUEST
      * Implement proper exit
-     * Rename to ctl-epfd -> ctl
+       * Render send exit key also
      * IPC
        * Fix protocol IPC
        * Refactor IPC clients
        * Fix removing clients/conns
+     * Rename to ctl-epfd -> ctl       
      * Use let for deconstructing-bind and let/when     
      * Have input send modified KEYCODE (+8)     
      

@@ -1,3 +1,5 @@
+# Split into handlers and requests
+
 (de req-send-obj (Ipc Sock Obj Sz-Obj Off-Obj)
   # Better to write all strings/bytes to buf-wr, then send in one go
 
@@ -18,17 +20,55 @@
   (recv-obj Ipc Sock Obj Sz-Obj Off-Obj))
 
 
+(de req-draw (Ipc Sock)
+  # Async
+  
+  (send-msg Ipc
+            "(draw)"
+            Sock))
+  
+  
+################################################################################
+
+
 (de render-vert (Ipc Vert Off)
-  (req-send-obj Ipc
-                (ipc~get-fd> Ipc "RENDER") # Pass string and auto look up?
-                Vert
-                SZ-VERT
-                Off))
+  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
+        Sock-Render (ipc~get-fd> *ipc "RENDER"))
+    (req-send-obj Ipc
+                  Sock-Render
+                  Vert
+                  SZ-VERT
+                  Off)
+    (req-send-obj Ipc
+                  Sock-Model
+                  Vert
+                  SZ-VERT
+                  Off)))             
 
 
-(de render-pvm (Ipc Projview)
-  (req-send-obj Ipc
-                (ipc~get-fd> Ipc "RENDER")
-                Projview
-                SZ-PV
-                0))
+(de render-pvm (Ipc Projview Width Height)
+  # Update and send
+  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
+        Sock-Render (ipc~get-fd> *ipc "RENDER"))
+
+    (with *projview
+      (=: width  Width)
+      (=: height Height)
+      (update-mat-proj> *projview))
+
+    # Either send relevant data or send entire data
+    # -> Minimize render processing time
+
+    # Pass list of socks so need only serialize once
+    
+    (req-send-obj Ipc
+                  Sock-Render
+                  Projview
+                  SZ-PV
+                  0)
+
+    (req-send-obj Ipc
+                  Sock-Model
+                  Projview
+                  SZ-PV
+                  0)))

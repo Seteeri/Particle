@@ -152,6 +152,7 @@ Class variables may be indicated by an upper case letter
 (de handle-key (Window Key Scancode Action Mods)
   (when (and (= Key glfw~KEY-ESCAPE)
              (= Action glfw~PRESS))
+    # Send also to ctrl
     (glfw~set-window-should-close Window glfw~TRUE)))
 
 
