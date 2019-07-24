@@ -49,7 +49,7 @@
 (load "/home/user/Git/particle/src/model/projview.l")
 (load "/home/user/Git/particle/src/model/vertex.l")
 (load "/home/user/Git/particle/src/ctrl/conn.l")
-(load "/home/user/Git/particle/src/ctrl/kb.l")
+(load "/home/user/Git/particle/src/ctrl/worker/kb.l")
 
 
 (de init-worker ()
@@ -153,30 +153,32 @@
    
      # Pull data from model
      (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-           Sock-Render (ipc~get-fd> *ipc "RENDER"))
+           Sock-Render (ipc~get-fd> *ipc "RENDER")
+           Off-Vert (get *verts 1)
+           Off      (car Off-Vert)
+           Vert     (cdr Off-Vert))
 
-       (with *vert
-
-        (=: pos (list (+ (get (: pos) 1) 0.05)
-                      (+ (get (: pos) 2) 0.0)
-                      0.0))
-        (update-model-matrix> *vert)
+        (with Vert
+          (=: pos (list (+ (get (: pos) 1) 0.05)
+                        (+ (get (: pos) 2) 0.0)
+                        0.0))
+          (update-model-matrix> Vert))
                 
         # Below calls are reserializing
                 
         (req-send-obj *ipc
                       Sock-Render
-                      *vert
+                      Vert
                       SZ-VERT
-                      *off-vert)
+                      Off)
 
         # Push to model also
         (when NIL
           (req-send-obj *ipc
                         Sock-Model
-                        *vert
+                        Vert
                         SZ-VERT
-                        *off-vert)))))))
+                        Off))))))
 
 
 (de main ()

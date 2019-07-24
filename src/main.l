@@ -92,9 +92,9 @@ own proc
 
       (when T
           (unless (setq *proc-work-1 (fork))
-            (exec "pil" "src/ctrl/worker.l" "-worker~main" Width Height Verts 1)))
+            (exec "pil" "src/ctrl/worker/worker.l" "-worker~main" Width Height Verts 1)))
           #(unless (setq *proc-work-2 (fork))
-          #  (exec "pil" "src/ctrl/worker.l" "-worker~main" Width Height Verts 2)))
+          #  (exec "pil" "src/ctrl/worker/worker.l" "-worker~main" Width Height Verts 2)))
 
       # Use taskset to assign processes here
 

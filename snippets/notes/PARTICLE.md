@@ -129,13 +129,6 @@ Store DAGs as binary trees?
      * Implement message flushing [Done]
        * Lag with camera update and pointer update at same time
 
-   * Implement string/atom/list, eval functionality
-     * Implmenet drawing [Done]
-     * Implement interface/controls
-       * Move xkb to ctrl; put event handlers in worker
-       * Implement proper exit
-     * Implement operators
-
    * Refactor
      * Move xkb to ctrl and pass events to worker [Done]
      * Respond to window resizing [Done]
@@ -150,6 +143,13 @@ Store DAGs as binary trees?
      * Rename to ctl-epfd -> ctl       
      * Use let for deconstructing-bind and let/when     
      * Have input send modified KEYCODE (+8)     
+
+   * Implement string/atom/list, eval functionality
+     * Implmenet drawing [Done]
+     * Implement interface/controls
+       * Move xkb to ctrl; put event handlers in worker
+       * Implement proper exit
+     * Implement operators
      
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
      * Store in Ctrl or Worker?
