@@ -21,7 +21,7 @@
 (def 'PATH-UDS-MODEL   "/tmp/protoform-model.socket")
 (def 'PATH-UDS-CONTROL "/tmp/protoform-control.socket")
 (def 'PATH-UDS-RENDER  "/tmp/protoform-render.socket")
-(def 'PATH-GLYPHS      "/home/user/quicklisp/local-projects/protoform/src/glyphs")
+(def 'PATH-GLYPHS      "/home/user/Git/particle/src/glyphs")
 
 # Constants
 (def '*sca-vert  (*/ 1.0 1.0 96.0))
@@ -30,28 +30,30 @@
 (def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
 
 # Globals
-(def '*verts)
+(def '*metrics)
 (def '*xkb)
+(def '*timerfd)
+(def '*verts)
 
 
 # Wrapper libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/li.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/xkbcommon.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/ksd.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/timerfd.l")
+(load "/home/user/Git/particle/src/c/mathc.l")
+(load "/home/user/Git/particle/src/c/epoll.l")
+(load "/home/user/Git/particle/src/c/li.l")
+(load "/home/user/Git/particle/src/c/socket.l")
+(load "/home/user/Git/particle/src/c/xkbcommon.l")
+(load "/home/user/Git/particle/src/c/ksd.l")
+(load "/home/user/Git/particle/src/c/timerfd.l")
 # Lisp libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/metrics/metrics.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/particle.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/projview.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/model/vertex.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/ctrl/conn.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/ctrl/xkb.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/ctrl/kb.l")
+(load "/home/user/Git/particle/src/ipc/ipc.l")
+(load "/home/user/Git/particle/src/prot/prot.l")
+(load "/home/user/Git/particle/src/metrics/metrics.l")
+(load "/home/user/Git/particle/src/model/particle.l")
+(load "/home/user/Git/particle/src/model/projview.l")
+(load "/home/user/Git/particle/src/model/vertex.l")
+(load "/home/user/Git/particle/src/ctrl/conn.l")
+(load "/home/user/Git/particle/src/ctrl/xkb.l")
+(load "/home/user/Git/particle/src/ctrl/kb.l")
 
 
 (de init-worker ()
@@ -87,7 +89,6 @@
                                         SZ-VERT
                                         Off)))))
   (setq '*verts (reverse *verts))
-
   #(println "*vert: " (getl *vert))
 
   (setq *projview (req-recv-obj *ipc 
@@ -97,8 +98,13 @@
                                 0))
   
   (setq *xkb (new '(+Xkb)))
-    
-  T)
+  
+  # Pull epoll-fd out of IPC
+  (setq *timerfd (new '(timerfd~+Timerfd)))
+  
+  (println "Add timerfd to epoll:" (get *timerfd 'timerfd~fd) (get *ipc 'ipc~fd-ep))
+  
+  (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN))
 
 
 (de handle-client (Sock))

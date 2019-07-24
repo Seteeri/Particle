@@ -66,6 +66,7 @@
   (native "@" "epoll_pwait" 'I Epfd Event Maxevents Timeout Ss))
 
 
+# Remove epfd
 (de ctl-epfd (Epfd Op Fd Flags)
   #Possibly use automatic variables, allocated on the stack
   (let Event (native "@" "calloc" 'N 1 12)

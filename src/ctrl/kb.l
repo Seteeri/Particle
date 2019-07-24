@@ -1,6 +1,6 @@
 (def '*pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
 (def '*cnt-v 2)
-(def '*timer (timerfd~create 1 0))
+
 
 (de handle-keyboard (Sock Data)
   
@@ -31,19 +31,43 @@
 
     (dispatch-handlers Keycode State Keysym)))
     
+    
+(de handle-timer (Sock)
+  # Returns an unsigned 8-byte integer (uint64_t) 
+  # containing the number of expirations that have occurred.
+  
+  # Must call read, not recv
+  (with *ipc
+    (when (n0 (native "@" "read" 'I Sock (: ipc~buf-rd) 8))
+      (let Data (get *timerfd 'timerfd~data)
+        (handle-key-rep (car Data) (cdr Data)))
+      (prinl (usec) " | Expired timer! Events=" (struct (: ipc~buf-rd) '(N . 1))))))
+
+
+(de handle-key-rep (Keysym Keycode)
+  (dispatch-handlers Keycode 1 Keysym))
+
 
 (de update-timer (Keysym State)
 
+  # :repeat-delay :initform 400
+  # :repeat-interval :initform 40
+  # 50 ms = 50,000,000 ns
+
   (if (= State 1)
+        
+    # interval, delay/expiration-initial
+    (let (Spec (list 0 (* 40 1000000) 0 (* 400 1000000)))
+      (println "Arm timer!" Spec)
+      (put *timerfd 'timerfd~data (cons Keysym Keycode))
+      (when (= (timerfd~set-time> *timerfd Spec) -1)
+        (println "errno: " (errno))
+        (quit "timerfd~set-time failed")))
   
     (prog
-      # Remove timer if exists
-      # Update timer
-      T)
-  
-    (prog
-      # Remove timer if same key
-      T)))
+      (when (= Keysym (car (get *timerfd 'timerfd~data)))
+        (println "Disarm timer!" Keysym)
+        (timerfd~disarm> *timerfd)))))
 
     
 (de dispatch-handlers (Keycode State Keysym)

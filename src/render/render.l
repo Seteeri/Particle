@@ -18,42 +18,42 @@ Class variables may be indicated by an upper case letter
 (scl 6)
 
 # C library paths
-(def 'PATH-GLYPHS "/home/user/quicklisp/local-projects/protoform/src/glyphs")
+(def 'PATH-GLYPHS "/home/user/Git/particle/src/glyphs")
 # UDS paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
 (def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
 #Shader paths
-(def '*path-structs-shader "/home/user/quicklisp/local-projects/protoform/glsl/structs.glsl")
+(def '*path-structs-shader "/home/user/Git/particle/glsl/structs.glsl")
 (def '*paths-rast-vert-shader
     (list *path-structs-shader
-          "/home/user/quicklisp/local-projects/protoform/glsl/node.vs.glsl"))
+          "/home/user/Git/particle/glsl/node.vs.glsl"))
 (def '*paths-rast-frag-shader
     (list *path-structs-shader
-          "/home/user/quicklisp/local-projects/protoform/glsl/filter-bilinear.fs.glsl"
-          "/home/user/quicklisp/local-projects/protoform/glsl/msdf.fs.glsl"))
+          "/home/user/Git/particle/glsl/filter-bilinear.fs.glsl"
+          "/home/user/Git/particle/glsl/msdf.fs.glsl"))
 (def '*paths-comp-shader
     (list *path-structs-shader
-          "/home/user/quicklisp/local-projects/protoform/glsl/node.cs.glsl"))
+          "/home/user/Git/particle/glsl/node.cs.glsl"))
 
 
 # Wrapper libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/c/mathc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/mman.l")
-#(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/stat.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/posix/string.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/gl/es.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/glfw.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
+(load "/home/user/Git/particle/src/c/mathc.l")
+(load "/home/user/Git/particle/src/c/posix/mman.l")
+#(load "/home/user/Git/particle/src/c/posix/stat.l")
+(load "/home/user/Git/particle/src/c/posix/string.l")
+(load "/home/user/Git/particle/src/c/socket.l")
+(load "/home/user/Git/particle/src/c/gl/es.l")
+(load "/home/user/Git/particle/src/c/glfw.l")
+(load "/home/user/Git/particle/src/c/epoll.l")
 # Lisp libraries
 #...
-(load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/render/params-buffer.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/render/raster.l")
-#(load "/home/user/quicklisp/local-projects/protoform/src/render/compute.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/render/conn.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
+(load "/home/user/Git/particle/src/ipc/ipc.l")
+(load "/home/user/Git/particle/src/render/params-buffer.l")
+(load "/home/user/Git/particle/src/render/raster.l")
+#(load "/home/user/Git/particle/src/render/compute.l")
+(load "/home/user/Git/particle/src/render/conn.l")
+(load "/home/user/Git/particle/src/prot/prot.l")
 
 
 (def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
@@ -115,7 +115,7 @@ Class variables may be indicated by an upper case letter
   (glfw~window-hint glfw~CONTEXT-CREATION-API  glfw~NATIVE-CONTEXT-API)
 
   (let (Title (native "@" "malloc" 'N 16))
-    (struct Title 'N (cons "Protoform" 16))
+    (struct Title 'N (cons "Particle" 16))
     (setq *window (glfw~create-window *width *height Title 0 0))
     (when (= *window 0)
       (quit "(= *window 0)"))

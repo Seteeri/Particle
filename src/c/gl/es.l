@@ -15,9 +15,9 @@ Naming Conventions:
 (symbols 'gl 'pico)
 
 
-(load "/home/user/quicklisp/local-projects/protoform/src/c/gl/bo.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/gl/shad.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/gl/prog.l")
+(load "/home/user/Git/particle/src/c/gl/bo.l")
+(load "/home/user/Git/particle/src/c/gl/shad.l")
+(load "/home/user/Git/particle/src/c/gl/prog.l")
 
 
 (def '*glBufferStorage 0)

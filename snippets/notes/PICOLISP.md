@@ -154,6 +154,9 @@ Store DAGs as binary trees?
 
 * Refactor/Fix
 
+   * Make epoll event
+   * Rename to ctl-epfd -> ctl
+
    * https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml
 
    * Refactor li into subfolders

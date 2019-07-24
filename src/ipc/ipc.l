@@ -20,8 +20,8 @@ Handle bad accept sock
 
 
 # Wrapper libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
+(load "/home/user/Git/particle/src/c/epoll.l")
+(load "/home/user/Git/particle/src/c/socket.l")
 
 
 # Must define class before loading file with methods
@@ -97,7 +97,7 @@ Handle bad accept sock
           (prinl (usec) " | T | Connected sock: " Sock " to " Path)))))
 
 
-(dm add-conn> (Sock ID-S Handler)
+(dm add-conn> (Sock ID-S Handler Flags)
   #{
   # Make class for this? -> Connection
   }#
@@ -105,7 +105,7 @@ Handle bad accept sock
   (epoll~ctl-epfd (: fd-ep)
                   epoll~ADD
                   Sock
-                  epoll~BAD)        
+                  (if Flags Flags epoll~BAD))
   
   #SIMPLIFY:
   #(push1 (:: conns)    (cons Sock (list ID-S Handler)))
@@ -242,7 +242,7 @@ Handle bad accept sock
       (let (Ep-Events (epoll~get-event (: evs-ep) I)
             Fd        (get Ep-Events 2)) # Evs = 1
 
-        #(prinl "ipc~poll> " Fd)
+        #(prinl *Pid "ipc~poll> " Fd)
 
         (if (= Fd (: listener))
             (accept-sock> This Fd)

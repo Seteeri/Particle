@@ -28,12 +28,12 @@
 
 
 # Wrapper libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/c/epoll.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/li.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/c/socket.l")
+(load "/home/user/Git/particle/src/c/epoll.l")
+(load "/home/user/Git/particle/src/c/li.l")
+(load "/home/user/Git/particle/src/c/socket.l")
 # Lisp libraries
-(load "/home/user/quicklisp/local-projects/protoform/src/ipc/ipc.l")
-(load "/home/user/quicklisp/local-projects/protoform/src/prot/prot.l")
+(load "/home/user/Git/particle/src/ipc/ipc.l")
+(load "/home/user/Git/particle/src/prot/prot.l")
 
 
 #Globals

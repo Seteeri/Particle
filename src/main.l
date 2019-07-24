@@ -76,25 +76,25 @@ own proc
       (when T
         # Takes the longest to start so run first
         (unless (setq *proc-render (fork))
-          (exec "pil" "render/render.l" "-render~main" Width Height Verts)))
+          (exec "pil" "src/render/render.l" "-render~main" Width Height Verts)))
 
       (when T
         (unless (setq *proc-model (fork))
-          (exec "pil" "model/model.l" "-model~main" Width Height Verts)))
+          (exec "pil" "src/model/model.l" "-model~main" Width Height Verts)))
 
       (when T
         (unless (setq *proc-input (fork))
-          (exec "pil" "input/input.l" "-input~main" Width Height Verts)))
+          (exec "pil" "src/input/input.l" "-input~main" Width Height Verts)))
 
       (when T
         (unless (setq *proc-ctrl (fork))
-          (exec "pil" "ctrl/ctrl.l" "-ctrl~main" Width Height Verts)))
+          (exec "pil" "src/ctrl/ctrl.l" "-ctrl~main" Width Height Verts)))
 
       (when T
           (unless (setq *proc-work-1 (fork))
-            (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts 1)))
+            (exec "pil" "src/ctrl/worker.l" "-worker~main" Width Height Verts 1)))
           #(unless (setq *proc-work-2 (fork))
-          #  (exec "pil" "ctrl/worker.l" "-worker~main" Width Height Verts 2)))
+          #  (exec "pil" "src/ctrl/worker.l" "-worker~main" Width Height Verts 2)))
 
       # Use taskset to assign processes here
 
