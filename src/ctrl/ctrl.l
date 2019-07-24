@@ -87,7 +87,8 @@
         Data (any Msg))
   
         (when (not (num? Data))
-          (println "CTRL RECV MSG FROM RENDER" Data))
+          T)
+          #(queue '*q-msg "(render-pvm width height)"))
         
     T))
 

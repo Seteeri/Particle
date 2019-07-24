@@ -133,22 +133,26 @@ Class variables may be indicated by an upper case letter
 
 (de handle-window-size (Window Width Height)
   # Must update projmatrix also
-  #(ipc~send-msg> *ipc Msg Sock)
-  
+
   # Add interface/refactor IPC
   (for Client (get *ipc 'ipc~clients)
     (let (Sock (car Client)
           ID (get (cdr Client) 1))
       (when (= ID "CTRL")
-        (println "FOUND CLIENT"))))
-        
-  (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))
+        (send-msg *ipc
+                   (pack "(window-size " Width " " Height ")")
+                   Sock))))
+
+  (gl~viewport 0 0 Width Height)
+  
+  (setq *width Width)
+  (setq *height Height))
   
   
 (de handle-key (Window Key Scancode Action Mods)
-  (when (and (= (struct Key    'I) glfw~KEY-ESCAPE)
-             (= (struct Action 'I) glfw~PRESS))
-    (glfw~set-window-should-close (struct Window 'N) glfw~TRUE)))
+  (when (and (= Key glfw~KEY-ESCAPE)
+             (= Action glfw~PRESS))
+    (glfw~set-window-should-close Window glfw~TRUE)))
 
 
 (de init-gl ()

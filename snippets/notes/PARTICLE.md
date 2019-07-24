@@ -141,8 +141,10 @@ Store DAGs as binary trees?
      * Respond to window resizing [Done]
      * Implement proper exit
      * Rename to ctl-epfd -> ctl
-     * Fix protocol IPC
-     * Refactor IPC clients
+     * IPC
+       * Fix protocol IPC
+       * Refactor IPC clients
+       * Fix removing clients/conns
      * Use let for deconstructing-bind and let/when     
      * Have input send modified KEYCODE (+8)     
      
