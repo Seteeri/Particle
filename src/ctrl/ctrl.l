@@ -58,7 +58,7 @@
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
 
-  (let ID-C (pack "CTRL-" *Pid)
+  (let ID-C (pack "CTRL")
   
     (setq *ipc (new '(ipc~+IPC)
                PATH-UDS-CONTROL            'ipc~block handle-worker accept-client
