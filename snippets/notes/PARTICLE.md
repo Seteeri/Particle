@@ -137,12 +137,14 @@ Store DAGs as binary trees?
      * Implement operators
 
    * Refactor
-     * Move xkb to ctrl and pass events to worker
+     * Move xkb to ctrl and pass events to worker [Done]
+     * Respond to window resizing [Done]
      * Implement proper exit
      * Rename to ctl-epfd -> ctl
-     * Have input send modified KEYCODE (+8)
-     * Respond to window resizing
+     * Fix protocol IPC
+     * Refactor IPC clients
      * Use let for deconstructing-bind and let/when     
+     * Have input send modified KEYCODE (+8)     
      
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
      * Store in Ctrl or Worker?

@@ -87,7 +87,9 @@ Class variables may be indicated by an upper case letter
           *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
-  (init-ipc)
+  (setq *ipc (new '(ipc~+IPC)
+                    PATH-UDS-RENDER 'ipc~block recv-conn accept-client
+                    NIL))
 
   #Init context
   (init-window)
@@ -132,8 +134,14 @@ Class variables may be indicated by an upper case letter
 (de handle-window-size (Window Width Height)
   # Must update projmatrix also
   #(ipc~send-msg> *ipc Msg Sock)
-  (println (get *ipc 'ipc~clients))
-  #(println (get (cdr (assoc "CTRL" (get *ipc 'ipc~clients))) 1))
+  
+  # Add interface/refactor IPC
+  (for Client (get *ipc 'ipc~clients)
+    (let (Sock (car Client)
+          ID (get (cdr Client) 1))
+      (when (= ID "CTRL")
+        (println "FOUND CLIENT"))))
+        
   (gl~viewport 0 0 (struct Width 'I) (struct Height 'I)))
   
   
@@ -157,12 +165,6 @@ Class variables may be indicated by an upper case letter
   (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage"))
 
   T)
-
-
-(de init-ipc ()
-  (setq *ipc (new '(ipc~+IPC)
-                  PATH-UDS-RENDER 'ipc~block recv-conn accept-client
-                  NIL)))
 
 
 (de run-render ()

@@ -22,7 +22,7 @@ Protocol should only call methods on Ipc and Objects passed to it
     #Disconnect client if name conflict
     (if (assoc Client (get Ipc 'ipc~clients))
         (disconnect-sock Client ID)
-        (add-client Client ID))))
+        (add-client Ipc Client ID))))
 
 
 (de disconnect-sock (Client ID)
@@ -30,7 +30,7 @@ Protocol should only call methods on Ipc and Objects passed to it
   (ipc~disconnect-sock Client))
 
 
-(de add-client (Client ID)
+(de add-client (Ipc Client ID)
   (with Ipc
     # Note, client IDs use {ID}-{PID} and outgoing conns use ID-S
     (ipc~add-conn> Ipc Client ID (: ipc~handler-listener))
@@ -38,7 +38,7 @@ Protocol should only call methods on Ipc and Objects passed to it
     # Add to client list also
     (push1 (:: ipc~clients) (cons Client (list ID (: ipc~handler-listener))))
 
-    (when (: debug-ipc)
+    (when (or (: debug-ipc) T)
       (prinl (usec) " | accept-client | Registered Client=" Client ", ID=" ID))))
     
 
