@@ -209,7 +209,7 @@ Class variables may be indicated by an upper case letter
                     0.16862745098
                     0.211764705882
                     0.0)
-    (gl~clear-mask CLEAR-MASK)
+    (gl~clear CLEAR-MASK)
 
     (gl~draw-elements-indirect gl~TRIANGLES
                                gl~UNSIGNED-INT

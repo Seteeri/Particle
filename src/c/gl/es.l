@@ -14,6 +14,7 @@ Naming Conventions:
 
 (symbols 'gl 'pico)
 
+(local) (clear)
 
 (load "/home/user/Git/particle/src/c/gl/bo.l")
 (load "/home/user/Git/particle/src/c/gl/shad.l")
@@ -40,7 +41,7 @@ Naming Conventions:
 
 
 #Why does "clear" not work?
-(de clear-mask (Mask)
+(de clear (Mask)
     (native "libGLESv2.so" "glClear" NIL Mask))
 
 
