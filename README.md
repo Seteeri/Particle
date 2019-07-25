@@ -146,6 +146,13 @@ Personal Extensions
 2. Power mode
 
 Future Ideas
+* Native Library Ports:
+  * Commonly used *open* image/video/audio formats
+    * BMP, GIF, JPEG/2000, PNG, WebP
+    * FLAC, MP3, Vorbis, Opus
+    * Theora, Dirac
+    * Ogg, MKV, WebM
+    * glTF, COLLADA, OpenGEX
 * Tiled forward rendering (Forward+)
   * Clustered -> volumetric forward shading
 * Augmented reality through OpenCV
