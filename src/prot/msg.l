@@ -2,18 +2,18 @@
 
 
 # Make Sock before Msg
-(de send-msg (Ipc Sock Msg)
+(de send-msg (Ipc Sock Body Bin)
   #{
-  * Send length as int, then send body after
+  * Send len-msg, len-bin, msg, bin
   }#
 
-  (let Len (length Msg)
+  (let Len (length Body)
 
     # Check Len does not exceed size of int?
 
     (when (send-msg-len Ipc Sock Len)
 
-      (send-msg-body Ipc Sock Len Msg))))
+      (send-msg-body Ipc Sock Len Body))))
           
 
 (de send-msg-len (Ipc Sock Len)
