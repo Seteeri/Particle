@@ -38,11 +38,13 @@
 # Lisp libraries
 (load "/home/user/Git/particle/src/misc.l")
 (load "/home/user/Git/particle/src/ipc/ipc.l")
+(load "/home/user/Git/particle/src/prot/conn.l")
+(load "/home/user/Git/particle/src/prot/msg.l")
+(load "/home/user/Git/particle/src/prot/obj.l")
 (load "/home/user/Git/particle/src/model/projview.l")
 (load "/home/user/Git/particle/src/metrics/metrics.l")
 (load "/home/user/Git/particle/src/model/conn.l")
 (load "/home/user/Git/particle/src/model/vertex.l")
-(load "/home/user/Git/particle/src/prot/prot.l")
 
 
 # Globals

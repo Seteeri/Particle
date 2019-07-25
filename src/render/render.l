@@ -58,11 +58,13 @@ Class variables may be indicated by an upper case letter
 # Lisp libraries
 (load "/home/user/Git/particle/src/misc.l")
 (load "/home/user/Git/particle/src/ipc/ipc.l")
+(load "/home/user/Git/particle/src/prot/conn.l")
+(load "/home/user/Git/particle/src/prot/msg.l")
+(load "/home/user/Git/particle/src/prot/obj.l")
 (load "/home/user/Git/particle/src/render/params-buffer.l")
 (load "/home/user/Git/particle/src/render/raster.l")
 #(load "/home/user/Git/particle/src/render/compute.l")
 (load "/home/user/Git/particle/src/render/conn.l")
-(load "/home/user/Git/particle/src/prot/prot.l")
 
 
 # MOVE TO GL
