@@ -57,6 +57,21 @@
         (print-info "send-msg-body" "Failed to send")))))
 
 
+(de send-msg-bin (Ipc Sock Len Bin)
+
+  (with Ipc
+  
+    (native "@" "memcpy" (: ipc~buf-wr) Bin Len)
+    
+    (let Bytes-Sent (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) Len)
+
+      (if Bytes-Sent
+
+        Bytes-Sent
+
+        (print-info "send-msg-bin" "Failed to send")))))
+
+
 (de send-msg-clients (Ipc Msg)
   (for Client (get Ipc 'ipc~clients)
     (send-msg Ipc (car Client) Msg)))
