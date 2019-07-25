@@ -85,10 +85,7 @@ Handle bad accept sock
 
   (for Conn Conns
       
-      (let (Path     (get Conn 1)
-            Nonblock (get Conn 2)
-            Handler  (get Conn 3)
-            ID-S     (get Conn 4)
+      (let ((Path Nonblock Handler ID-S) Conn
             Sock     (socket~connect-sock Path Nonblock *ms-retry))
                                 
         (add-conn> This Sock ID-S Handler)
