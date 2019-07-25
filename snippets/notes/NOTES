@@ -1268,18 +1268,18 @@ all symbols (omitting circular structures which otherwise would cause a hang):
       (for "S" (all)
          (unless (circ? (val "S"))
             (pp "S") ) ) )
-            
-            
+
+
 On Wed, May 03, 2017 at 09:18:22PM +0200, Alexander Burger wrote:
 > On Wed, May 03, 2017 at 10:24:59AM -0800, Christopher Howard wrote:
 > > Just out of curiosity: does PicoLisp have some mechanism for dumping the
 > > process image (or some equivalent effect) so you can save a PicoLisp
 > > process in a certain state and restart it there.
-> 
-> Not completely I think. What comes close would be pretty-printing the values 
+>
+> Not completely I think. What comes close would be pretty-printing the values
 > of
 > all symbols (omitting circular structures which otherwise would cause a hang):
-> 
+>
 >    (out "save.l"
 >       (for "S" (all)
 >          (unless (circ? (val "S"))
@@ -1289,7 +1289,7 @@ On Wed, May 03, 2017 at 09:18:22PM +0200, Alexander Burger wrote:
 Having said this, I must say that I do not see a use-case.
 
 PicoLisp starts blindingly fast by 'loadi'ng source files. And for persistence
-we use the database (i.e. external symbols).            
+we use the database (i.e. external symbols).
 
 ################################################################################
 

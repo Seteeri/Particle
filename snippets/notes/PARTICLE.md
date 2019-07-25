@@ -133,11 +133,11 @@ Store DAGs as binary trees?
      * Move xkb to ctrl and pass events to worker [Done]
      * Respond to window resizing [Done]
      * Implement proper exit [Done]
-       * Render send exit key also     
-       
+       * Render send exit key also
+
    * Refactor protocol
      * Do Sz-Msg Sz-Bin Bin-Msg Bin-Bin
-       
+
    * Refactor IPC
      * Make epoll event like timerfd
      * Refactor flush-msgs and use across all processes
@@ -153,7 +153,7 @@ Store DAGs as binary trees?
      * Implement interface/controls
        * Move xkb to ctrl; put event handlers in worker
      * Implement operators
-     
+
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
      * Store in Ctrl or Worker?
        * Or store in model and worker pulls from model
@@ -170,10 +170,10 @@ Store DAGs as binary trees?
 
 * Refactor/Fix
 
-   * Use let for deconstructing-bind and let/when     
-   * Have input send modified KEYCODE (+8)     
+   * Use let for deconstructing-bind and let/when
+   * Have input send modified KEYCODE (+8)
      * Or leave this to ctrl...
-   
+
    * Refactor IPC and epoll handling
 
    * Instead of recompiling shaders constantly

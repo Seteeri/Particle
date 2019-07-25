@@ -8,6 +8,8 @@
 (def 'SHUT-RD 0)
 (def 'SHUT-WR 1)
 (def 'SHUT-RDWR 2)
+(def 'MSG-WAITALL (hex "100"))
+
 
 (def 'SOCKADDR-LEN 110)
 #{
