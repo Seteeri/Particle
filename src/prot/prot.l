@@ -58,29 +58,15 @@ Protocol should only call methods on Ipc and Objects passed to it
 
   (let Bytes-Read-Len (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
 
-     (when (< Bytes-Read-Len 4)
-       (prinl (usec) " | recv-msg | < 4 Bytes-Read-Len=" Bytes-Read-Len) ")")
-
-     # Read/block until 4 bytes recv'd
-     #(while (< Bytes-Read-Len 4)
-     #   (recv-bytes> Ipc Sock ((: buf-rd) + Bytes-Read-Len) (- 4 Bytes-Read-Len)))
+    (when (< Bytes-Read-Len 4)
+      (prinl (usec) " | recv-msg | < 4 Bytes-Read-Len=" Bytes-Read-Len) ")")
 
     (with Ipc
 
-       (let Length (car (struct (: ipc~buf-rd) '(I)))
+      (let (Length (car (struct (: ipc~buf-rd) '(I)))
+            Bytes-Read-Msg (ipc~recv-bytes> Ipc Sock T Length 'socket~MSG-WAITALL))
 
-          (when Debug (prinl (usec) " | recv-msg |   Length-Msg=" Length))
-
-          (let Bytes-Read-Msg (ipc~recv-bytes> Ipc Sock T Length 'socket~MSG-WAITALL)
-
-            (when (< Bytes-Read-Msg Length)
-               (prinl (usec) " | recv-msg | < Bytes-Read-Msg=" Bytes-Read-Msg " " Length))
-            
-            #(while (< Bytes-Read-Msg Length)
-            #   (recv-bytes> Ipc Sock ((: buf-rd) + Bytes-Read-Msg) (- Length Bytes-Read-Msg)))
-             
-            (when Debug (prinl (usec) " | recv-msg | Bytes-Read-Msg=" Bytes-Read-Msg))
-            (pack (struct (: ipc~buf-rd) (cons 'C Length))))))))
+        (pack (struct (: ipc~buf-rd) (cons 'C Length)))))))
 
 
 # Make Sock before Msg

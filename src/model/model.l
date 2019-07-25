@@ -36,6 +36,7 @@
 (load "/home/user/Git/particle/src/c/epoll.l")
 (load "/home/user/Git/particle/src/c/socket.l")
 # Lisp libraries
+(load "/home/user/Git/particle/src/misc.l")
 (load "/home/user/Git/particle/src/ipc/ipc.l")
 (load "/home/user/Git/particle/src/model/projview.l")
 (load "/home/user/Git/particle/src/metrics/metrics.l")

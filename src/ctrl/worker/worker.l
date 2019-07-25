@@ -42,6 +42,7 @@
 (load "/home/user/Git/particle/src/c/ksd.l")
 (load "/home/user/Git/particle/src/c/xkbcommon.l")
 # Lisp libraries
+(load "/home/user/Git/particle/src/misc.l")
 (load "/home/user/Git/particle/src/ipc/ipc.l")
 (load "/home/user/Git/particle/src/prot/prot.l")
 (load "/home/user/Git/particle/src/metrics/metrics.l")

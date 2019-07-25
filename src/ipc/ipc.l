@@ -20,6 +20,7 @@ Handle bad accept sock
 
 
 # Wrapper libraries
+(load "/home/user/Git/particle/src/misc.l")
 (load "/home/user/Git/particle/src/c/epoll.l")
 (load "/home/user/Git/particle/src/c/socket.l")
 
@@ -188,27 +189,23 @@ Handle bad accept sock
   * If no-data and non-blocking -> recv will return -1 and set errno to EAGAIN or EWOULDBLOCK
   * EOF will return 0 on shutdown
   * ERR/HUP will return 0 also
+  
+  * Return num or NIL
   }#
 
-  #For Buf-Sz: pass T to recv full length, else pass length
   (let Bytes-Read (socket~recv Sock
                                (if (num? Buf) Buf (: buf-rd))
                                (if (num? Sz)  Sz  (: sz-buf-rd))
                                (if (num? Flags) Flags 0))
-
-     #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
-
-     # Handle -1
-     (if (=0 Bytes-Read)
+     (case Bytes-Read
      
-         # Poss check for (= (& Events epoll~ERR) epoll~ERR) and so on...
-         # For now, assume error and disconnect
-         (disconnect-client> This Sock)
-
-         (when NIL #(: debug-ipc)
-               (prinl (usec) " | recv-bytes> | Sock=" Sock ", " "Bytes-Read=:" Bytes-Read)))
-
-     Bytes-Read))
+        # Orderly shutdown
+        (0  (disconnect-client> This Sock) NIL)
+        
+        # Error
+        (-1 (disconnect-client> This Sock) NIL)
+        
+        (T  Bytes-Read))))
          
 
 (dm dispatch-handler-conn> (Sock)

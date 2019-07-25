@@ -56,7 +56,7 @@ Class variables may be indicated by an upper case letter
 (load "/home/user/Git/particle/src/c/glfw.l")
 (load "/home/user/Git/particle/src/c/epoll.l")
 # Lisp libraries
-#...
+(load "/home/user/Git/particle/src/misc.l")
 (load "/home/user/Git/particle/src/ipc/ipc.l")
 (load "/home/user/Git/particle/src/render/params-buffer.l")
 (load "/home/user/Git/particle/src/render/raster.l")
