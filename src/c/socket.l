@@ -146,18 +146,19 @@
     }#
     
     (let (Sockaddr     (native "@" "malloc" 'N 110)    #(init-sockaddr 1 "")
-          Sockaddr-len (native "@" "malloc" 'N 4)) #socklen_t
+          Sockaddr-Len (native "@" "malloc" 'N 4)) #socklen_t
 
-      (struct Sockaddr-len 'N (cons SOCKADDR-LEN 4))
+      (struct Sockaddr-Len 'N (cons SOCKADDR-LEN 4))
 
       (let (Ret (accept-4-sockfd Sock
                                  Sockaddr
-                                 Sockaddr-len
+                                 Sockaddr-Len
                                  (if (= Nonblock 'nonblock)
                                       SOCK-NONBLOCK
                                       0)))
 
         (native "@" "free" NIL Sockaddr)
+        (native "@" "free" NIL Sockaddr-Len)
         
         Ret)))
 
