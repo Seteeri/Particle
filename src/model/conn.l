@@ -16,10 +16,7 @@
 (de handle-memcpy (Sock Data)
 
   #(mc Dst Src Sz) + data
-  (let (Dst  (get Data 2)
-        Src  (get Data 3)
-        Sz   (get Data 4)
-        Off  (get Data 5))
+  (let ((Dst Src Sz Off) (cdr Data))
     
     (cond ((and Dst (not Src)) # Recv sock; cpy to ptr
            (write-dst Dst Sock Sz Off))

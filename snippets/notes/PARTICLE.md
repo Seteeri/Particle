@@ -140,6 +140,8 @@ Store DAGs as binary trees?
      * Improve printing msgs using Pid [Done]
      * Do Sz-Msg Sz-Bin Bin-Msg Bin-Bin [Done]    
      * Refactor flush-msgs and use across all processes [Done]
+
+   * Refactor IPC
      * Refactor IPC clients
      * Fix removing clients/conns
      * Make epoll event like timerfd
@@ -179,8 +181,6 @@ Store DAGs as binary trees?
 
    * Socket change block/nonblock to T/NIL for convenience
 
-   * Ensure defs are defined for globals
-
    * Refactor bindings
      * Refactor li into subfolders
      * Direct C calls use original C name
@@ -189,16 +189,16 @@ Store DAGs as binary trees?
      * posix
      * mathc and more...
 
-     * Tasks uses DAG/ptrees [Later]
-       * Built on top of cons cells...
-       * To make task wait for another task, it needs a task ID
-       * If dependency graph used, need a way to continously modify it
-       * When a DAG is executed, store the output of the entire graph
-     * Tasks can be submitted as parallel or serial (waits for current task to complete)
-       * ?For parallel tasks, can cache results, so that if after one of the data
-         is modified while the task was running, it can run it again up to the point
-         the data was modified?
-       * Otherwise, have to lock data while it is being used
+   * Tasks uses DAG/ptrees [Later]
+     * Built on top of cons cells...
+     * To make task wait for another task, it needs a task ID
+     * If dependency graph used, need a way to continously modify it
+     * When a DAG is executed, store the output of the entire graph
+   * Tasks can be submitted as parallel or serial (waits for current task to complete)
+     * ?For parallel tasks, can cache results, so that if after one of the data
+       is modified while the task was running, it can run it again up to the point
+       the data was modified?
+     * Otherwise, have to lock data while it is being used
 
    * Optimize GL struct [Later]
      * 3 programs to render 3 vertex types
