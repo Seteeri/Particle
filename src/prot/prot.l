@@ -49,27 +49,44 @@ Protocol should only call methods on Ipc and Objects passed to it
       (send-msg Ipc ID-C (car Conn)))))
 
 
-(de recv-msg (Ipc Sock Debug)
+(de recv-msg (Ipc Sock)
   #{
   * Recv length as int, then recv payload
   }#
 
-  # Always returns 4 or NIL
-  (let Bytes-Read-Len (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
+  (let Length (recv-msg-len Ipc Sock)
 
-    (if Bytes-Read-Len
+    (when Length
 
-      (with Ipc
-        (let (Length (car (struct (: ipc~buf-rd) '(I)))
-              Bytes-Read-Msg (ipc~recv-bytes> Ipc Sock T Length 'socket~MSG-WAITALL))
+      (recv-msg-body Ipc Sock Length))))
 
-          (if Bytes-Read-Msg
 
-            (pack (struct (: ipc~buf-rd) (cons 'C Length)))
+(de recv-msg-len (Ipc Sock)
 
-            (print-info "recv-msg" (pack "(< Bytes-Read-Msg=" Bytes-Read-Len " 4)")))))
+  (with Ipc
 
-      (print-info "recv-msg" (pack "(not (= Bytes-Read-Len=" Bytes-Read-Len " 4))")))))
+    # Always returns 4 or NIL
+    (let Bytes-Read (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
+
+      (if Bytes-Read
+
+        Bytes-Read
+
+        (print-info "recv-msg-len" (pack "(not (= Bytes-Read=" Bytes-Read " 4))"))))))
+
+
+(de recv-msg-body (Ipc Sock Length)
+
+  (with Ipc
+  
+    (let (Length (car (struct (: ipc~buf-rd) '(I)))
+          Bytes-Read (ipc~recv-bytes> Ipc Sock T Length 'socket~MSG-WAITALL))
+
+      (if Bytes-Read
+
+        (pack (struct (: ipc~buf-rd) (cons 'C Length)))
+
+        (print-info "recv-msg-body" (pack "(not (= Bytes-Read=" Bytes-Read " " Length "))"))))))
 
 
 # Make Sock before Msg
