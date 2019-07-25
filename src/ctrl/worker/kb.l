@@ -85,7 +85,7 @@
 
 (de draw-str (Str)
 
-  (let (Sock-Model (ipc~get-fd> *ipc "MODEL"))
+  (let Sock-Model (ipc~get-fd> *ipc "MODEL")
 
     (for C (chop Str)
 
