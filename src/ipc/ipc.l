@@ -158,7 +158,7 @@ Handle bad accept sock
     ((: handler-accept) This Sock Client)))
 
 
-(dm send-bytes> (Sock Buf Sz)
+(dm send-bytes> (Sock Buf Sz Flags)
     #{
     * With blocking sockets, will block until space available (all data is buffered)
     * If msg too long, send will fail and no data will be buffered
@@ -181,7 +181,7 @@ Handle bad accept sock
        Bytes-Sent))
 
 
-(dm recv-bytes> (Sock Buf Sz)
+(dm recv-bytes> (Sock Buf Sz Flags)
   #{
   * This is designed for blocking sockets...
   * If no-data and blocking     -> recv will block
