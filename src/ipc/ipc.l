@@ -167,7 +167,7 @@ Handle bad accept sock
     (let Bytes-Sent (socket~send-fd Sock
                                     (if (num? Buf) Buf (: buf-wr))
                                     (if (num? Sz)  Sz  (: sz-buf-wr))
-                                    0)
+                                    (if (num? Flags) Flags 0))
 
        (if (= -1 Bytes-Sent)
        
@@ -194,7 +194,7 @@ Handle bad accept sock
   (let Bytes-Read (socket~recv Sock
                                (if (num? Buf) Buf (: buf-rd))
                                (if (num? Sz)  Sz  (: sz-buf-rd))
-                               0)
+                               (if (num? Flags) Flags 0))
 
      #(println "recv-sock" (struct (: buf-rd) '(B B B B B B B B)))
 

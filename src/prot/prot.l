@@ -54,11 +54,9 @@ Protocol should only call methods on Ipc and Objects passed to it
   * Recv length as int, then recv payload
   }#
 
-  # Use MSG_WAITALL
+  # Use socket~MSG-WAITALL
 
-  (let Bytes-Read-Len (ipc~recv-bytes> Ipc Sock NIL 4)
-
-     (when Debug (prinl (usec) " | recv-msg | Bytes-Read-Len=" Bytes-Read-Len))
+  (let Bytes-Read-Len (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
 
      (when (< Bytes-Read-Len 4)
        (prinl (usec) " | recv-msg | < 4 Bytes-Read-Len=" Bytes-Read-Len) ")")
@@ -73,7 +71,7 @@ Protocol should only call methods on Ipc and Objects passed to it
 
           (when Debug (prinl (usec) " | recv-msg |   Length-Msg=" Length))
 
-          (let Bytes-Read-Msg (ipc~recv-bytes> Ipc Sock NIL Length)
+          (let Bytes-Read-Msg (ipc~recv-bytes> Ipc Sock T Length 'socket~MSG-WAITALL)
 
             (when (< Bytes-Read-Msg Length)
                (prinl (usec) " | recv-msg | < Bytes-Read-Msg=" Bytes-Read-Msg " " Length))

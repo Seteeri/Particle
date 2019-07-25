@@ -135,18 +135,15 @@ Store DAGs as binary trees?
      * Implement proper exit [Done]
        * Render send exit key also
 
-   * Refactor protocol
-     * Do Sz-Msg Sz-Bin Bin-Msg Bin-Bin
-
    * Refactor IPC
+     * Do Sz-Msg Sz-Bin Bin-Msg Bin-Bin
+     * Improve msg handling robustness when bytes-read is incorrect/invalid     
      * Make epoll event like timerfd
      * Refactor flush-msgs and use across all processes
-     * Improve msg handling robustness when bytes-read is incorrect/invalid
      * Improve printing msgs using Pid
-     * IPC
-       * Fix protocol IPC
-       * Refactor IPC clients
-       * Fix removing clients/conns
+     * Refactor IPC clients
+     * Fix removing clients/conns
+     * Debug system
 
    * Implement string/atom/list, eval functionality
      * Implmenet drawing [Done]
