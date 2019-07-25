@@ -73,7 +73,7 @@ Handle bad accept sock
   (=: listener (socket~listen-sock Path-listener 
                                    Nonblock-listener 
                                    64))
-  (epoll~ctl-epfd (: fd-ep)
+  (epoll~ctl (: fd-ep)
                   epoll~ADD
                   (: listener)
                   epoll~BAD))
@@ -102,7 +102,7 @@ Handle bad accept sock
   # Make class for this? -> Connection
   }#
   
-  (epoll~ctl-epfd (: fd-ep)
+  (epoll~ctl (: fd-ep)
                   epoll~ADD
                   Sock
                   (if Flags Flags epoll~BAD))
@@ -138,7 +138,7 @@ Handle bad accept sock
 
   (prinl (usec) " | disconnect-client> | Sock=" Sock)
   (del (assoc Sock (: clients)) (:: clients))
-  (epoll~ctl-epfd (: fd-ep)
+  (epoll~ctl (: fd-ep)
                   epoll~DEL
                   Sock
                   0)

@@ -135,12 +135,13 @@ Store DAGs as binary trees?
      * Implement proper exit [Done]
        * Render send exit key also     
      * Refactor flush-msgs and use across all processes
-       * FIX UNKNOWN REQUEST
+     * Improve msg handling robustness when bytes-read is incorrect/invalid
+     * Improve printing msgs using Pid
      * IPC
        * Fix protocol IPC
        * Refactor IPC clients
        * Fix removing clients/conns
-     * Rename to ctl-epfd -> ctl       
+     * Rename to ctl -> ctl       
      * Use let for deconstructing-bind and let/when     
      * Have input send modified KEYCODE (+8)     
 

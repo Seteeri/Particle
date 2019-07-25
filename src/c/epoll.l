@@ -1,5 +1,7 @@
 (symbols 'epoll 'pico)
 
+(local) (ctl)
+
 #enum events
 (def 'IN (hex "001"))
 (def 'PRI (hex "002"))
@@ -54,7 +56,7 @@
   (native "@" "epoll_create1" 'I Flags))
 
 
-(de ctl-epfd-op (Epfd Op Fd Event)
+(de ctl-op (Epfd Op Fd Event)
   (native "@" "epoll_ctl" 'I Epfd Op Fd Event))
 
 
@@ -66,12 +68,11 @@
   (native "@" "epoll_pwait" 'I Epfd Event Maxevents Timeout Ss))
 
 
-# Remove epfd
-(de ctl-epfd (Epfd Op Fd Flags)
+(de ctl (Epfd Op Fd Flags)
   #Possibly use automatic variables, allocated on the stack
   (let Event (native "@" "calloc" 'N 1 12)
     (struct Event 'N (cons Flags 4) (cons Fd 4))
-    (ctl-epfd-op Epfd
+    (ctl-op Epfd
                  Op
                  Fd
                  Event)
