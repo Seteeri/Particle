@@ -56,8 +56,13 @@
   (native "@" "epoll_create1" 'I Flags))
 
 
-(de ctl-epfd (Epfd Op Fd Event)
-  (native "@" "epoll_ctl" 'I Epfd Op Fd Event))
+(de ctl (Epfd Op Fd Flags)
+  #Possibly use automatic variables, allocated on the stack
+  (let Event (native "@" "calloc" 'N 1 12)
+    (struct Event 'N (cons Flags 4) (cons Fd 4))
+    (let Ret (native "@" "epoll_ctl" 'I Epfd Op Fd Event)
+      (native "@" "free" NIL Event)
+      Ret)))
 
 
 (de wait-epfd (Epfd Events Maxevents Timeout)
@@ -66,17 +71,6 @@
 
 (de pwait (Epfd Event Maxevents Timeout Ss)
   (native "@" "epoll_pwait" 'I Epfd Event Maxevents Timeout Ss))
-
-
-(de ctl (Epfd Op Fd Flags)
-  #Possibly use automatic variables, allocated on the stack
-  (let Event (native "@" "calloc" 'N 1 12)
-    (struct Event 'N (cons Flags 4) (cons Fd 4))
-    (ctl-epfd Epfd
-                 Op
-                 Fd
-                 Event)
-    (native "@" "free" NIL Event)))
 
 
 (de get-event (Events Cnt)
