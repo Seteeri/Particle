@@ -34,7 +34,7 @@ Handle bad accept sock
   (=: debug-ipc T)
 
   # Ideally, ep-cnt = number of connections to avoid excessive epoll-wait calls
-  (=: fd-ep  (epoll~create-size 1))
+  (=: fd-ep  (epoll~create 1))
   (=: cnt-ep  16)
   (=: evs-ep (epoll~make-event (: cnt-ep)))
 

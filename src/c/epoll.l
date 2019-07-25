@@ -1,6 +1,6 @@
 (symbols 'epoll 'pico)
 
-(local) (ctl)
+(local) (create ctl)
 
 #enum events
 (def 'IN (hex "001"))
@@ -48,7 +48,7 @@
   (native "@" "calloc" 'N 1 (* 12 Cnt)))
 
 
-(de create-size (Size)
+(de create (Size)
   (native "@" "epoll_create" 'I Size))
 
 
