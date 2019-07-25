@@ -100,6 +100,9 @@
     (send-msg Ipc Msg (car Conn))))
 
 
+# FLUSH
+
+
 (de flush-msgs (Ipc Sock Fn-Proc)
 
   # Either use yield or pass fn
