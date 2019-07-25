@@ -54,19 +54,22 @@ Protocol should only call methods on Ipc and Objects passed to it
   * Recv length as int, then recv payload
   }#
 
-  # Use socket~MSG-WAITALL
-
+  # Always returns 4 or NIL
   (let Bytes-Read-Len (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
 
-    (when (< Bytes-Read-Len 4)
-      (prinl (usec) " | recv-msg | < 4 Bytes-Read-Len=" Bytes-Read-Len) ")")
-
-    (with Ipc
-
-      (let (Length (car (struct (: ipc~buf-rd) '(I)))
-            Bytes-Read-Msg (ipc~recv-bytes> Ipc Sock T Length 'socket~MSG-WAITALL))
-
-        (pack (struct (: ipc~buf-rd) (cons 'C Length)))))))
+    (if Bytes-Read-Len
+      
+      (with Ipc
+        (let (Length (car (struct (: ipc~buf-rd) '(I)))
+              Bytes-Read-Msg (ipc~recv-bytes> Ipc Sock T Length 'socket~MSG-WAITALL))
+              
+          (if Bytes-Read-Msg
+              
+            (pack (struct (: ipc~buf-rd) (cons 'C Length)))
+            
+            (print-info "recv-msg" (pack "(< Bytes-Read-Msg=" Bytes-Read-Len " 4)")))))
+      
+      (print-info "recv-msg" (pack "(< Bytes-Read-Len=" Bytes-Read-Len " 4)")))))
 
 
 # Make Sock before Msg

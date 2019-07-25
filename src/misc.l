@@ -1,2 +1,2 @@
-(de print-info (Msg)
-  (prinl "[" (usec) "]" "[" *pid "]" " " Msg))
+(de print-info (Name-Fn Msg)
+  (prinl "[" (usec) "]" "[" *pid "]" "[" Name-Fn "]" " " Msg))
