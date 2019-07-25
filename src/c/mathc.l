@@ -156,39 +156,39 @@
 
 #Normal
 (de print-mat4-2 (M)
-    (prinl (format (get M 1) *Scl) " "
-	   (format (get M 2) *Scl) " "
-	   (format (get M 3) *Scl) " "
-	   (format (get M 4) *Scl) " ")
-    (prinl (format (get M 5) *Scl) " "
-	   (format (get M 6) *Scl) " "
-	   (format (get M 7) *Scl) " "
-	   (format (get M 8) *Scl) " ")
-    (prinl (format (get M 9) *Scl) " "
-	   (format (get M 10) *Scl) " "
-	   (format (get M 11) *Scl) " "
-	   (format (get M 12) *Scl) " ")
-    (prinl (format (get M 13) *Scl) " "
-	   (format (get M 14) *Scl) " "
-	   (format (get M 15) *Scl) " "
-	   (format (get M 16) *Scl) " "))
+  (prinl (format (get M 1) *Scl) " "
+         (format (get M 2) *Scl) " "
+         (format (get M 3) *Scl) " "
+         (format (get M 4) *Scl) " ")
+  (prinl (format (get M 5) *Scl) " "
+         (format (get M 6) *Scl) " "
+         (format (get M 7) *Scl) " "
+         (format (get M 8) *Scl) " ")
+  (prinl (format (get M 9) *Scl) " "
+         (format (get M 10) *Scl) " "
+         (format (get M 11) *Scl) " "
+         (format (get M 12) *Scl) " ")
+  (prinl (format (get M 13) *Scl) " "
+         (format (get M 14) *Scl) " "
+         (format (get M 15) *Scl) " "
+         (format (get M 16) *Scl) " "))
 
 #Transposed
 (de print-mat4-3 (N)
-    (let M (mat4-transpose N)
-	 (prinl (format (get M 1) *Scl) " "
-		(format (get M 2) *Scl) " "
-		(format (get M 3) *Scl) " "
-		(format (get M 4) *Scl) " ")
-	 (prinl (format (get M 5) *Scl) " "
-		(format (get M 6) *Scl) " "
-		(format (get M 7) *Scl) " "
-		(format (get M 8) *Scl) " ")
-	 (prinl (format (get M 9) *Scl) " "
-		(format (get M 10) *Scl) " "
-		(format (get M 11) *Scl) " "
-		(format (get M 12) *Scl) " ")
-	 (prinl (format (get M 13) *Scl) " "
-		(format (get M 14) *Scl) " "
-		(format (get M 15) *Scl) " "
-		(format (get M 16) *Scl) " ")))
+  (let M (mat4-transpose N)
+     (prinl (format (get M 1) *Scl) " "
+            (format (get M 2) *Scl) " "
+            (format (get M 3) *Scl) " "
+            (format (get M 4) *Scl) " ")
+     (prinl (format (get M 5) *Scl) " "
+            (format (get M 6) *Scl) " "
+            (format (get M 7) *Scl) " "
+            (format (get M 8) *Scl) " ")
+     (prinl (format (get M 9) *Scl) " "
+            (format (get M 10) *Scl) " "
+            (format (get M 11) *Scl) " "
+            (format (get M 12) *Scl) " ")
+     (prinl (format (get M 13) *Scl) " "
+            (format (get M 14) *Scl) " "
+            (format (get M 15) *Scl) " "
+            (format (get M 16) *Scl) " ")))

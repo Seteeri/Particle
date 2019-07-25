@@ -61,7 +61,7 @@
   (sun-path :char :count 108)
   }#
 
-  (let (Ptr (native "@" "malloc" 'N (+ 2 108)))
+  (let Ptr (native "@" "malloc" 'N (+ 2 108))
 
     (struct Ptr 'N
       (cons Family 2) #1=LOCAL_SOCKET, 2 bytes
@@ -72,11 +72,11 @@
 
 #Function for typical scenarios
 (de init-socket (Nonblock)
-  (let (Sock (socket AF-UNIX
-                     (if (= Nonblock 'nonblock)
-                         (| SOCK-STREAM SOCK-NONBLOCK)
-                         (| SOCK-STREAM))
-                      0))
+  (let Sock (socket AF-UNIX
+                    (if (= Nonblock 'nonblock)
+                        (| SOCK-STREAM SOCK-NONBLOCK)
+                        (| SOCK-STREAM))
+                     0)
     (when (= Sock -1) "(= socket -1)")
   Sock))
 
@@ -122,13 +122,13 @@
   (let (Sock     (init-socket Nonblock)
         Sockaddr (init-sockaddr 1 Path))
 
-    (let (Ret (bind-sockfd Sock
-               Sockaddr
-               SOCKADDR-LEN))
+    (let Ret (bind-sockfd Sock
+                          Sockaddr
+                          SOCKADDR-LEN)
                
       (when (= Ret -1) "(= bind-sockfd -1)"))
 
-    (let (Ret (listen-sockfd Sock Backlog))
+    (let Ret (listen-sockfd Sock Backlog)
       (when (= Ret -1) "(= bind-sockfd -1)"))
 
     (native "@" "free" NIL Sockaddr)
@@ -150,12 +150,12 @@
 
       (struct Sockaddr-Len 'N (cons SOCKADDR-LEN 4))
 
-      (let (Ret (accept-4-sockfd Sock
-                                 Sockaddr
-                                 Sockaddr-Len
-                                 (if (= Nonblock 'nonblock)
-                                      SOCK-NONBLOCK
-                                      0)))
+      (let Ret (accept-4-sockfd Sock
+                                Sockaddr
+                                Sockaddr-Len
+                                (if (= Nonblock 'nonblock)
+                                    SOCK-NONBLOCK
+                                    0))
 
         (native "@" "free" NIL Sockaddr)
         (native "@" "free" NIL Sockaddr-Len)
