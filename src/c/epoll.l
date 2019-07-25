@@ -56,7 +56,7 @@
   (native "@" "epoll_create1" 'I Flags))
 
 
-(de ctl-op (Epfd Op Fd Event)
+(de ctl-epfd (Epfd Op Fd Event)
   (native "@" "epoll_ctl" 'I Epfd Op Fd Event))
 
 
@@ -72,7 +72,7 @@
   #Possibly use automatic variables, allocated on the stack
   (let Event (native "@" "calloc" 'N 1 12)
     (struct Event 'N (cons Flags 4) (cons Fd 4))
-    (ctl-op Epfd
+    (ctl-epfd Epfd
                  Op
                  Fd
                  Event)
