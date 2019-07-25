@@ -233,7 +233,7 @@
   (if (= State xkb~KEY-DOWN)
 
     # interval, delay/expiration-initial
-    (let (Spec (list 0 (* *delay-int 1000000) 0 (* *delay-rep 1000000)))
+    (let Spec (list 0 (* *delay-int 1000000) 0 (* *delay-rep 1000000))
       #(println "Arm timer!" Keycode Spec)
       (put *timerfd 'timerfd~data (cons Keycode Keysym))
       (when (= (timerfd~set-time> *timerfd Spec) -1)
