@@ -232,7 +232,7 @@ Handle bad accept sock
   * returns event count
   }#
            
-  (let Cnt (epoll~wait-epfd (: fd-ep)
+  (let Cnt (epoll~wait (: fd-ep)
                             (: evs-ep)
                             (: cnt-ep)
                             Timeout)

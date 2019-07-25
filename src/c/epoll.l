@@ -1,6 +1,6 @@
 (symbols 'epoll 'pico)
 
-(local) (create ctl)
+(local) (create ctl wait)
 
 #enum events
 (def 'IN (hex "001"))
@@ -65,7 +65,7 @@
       Ret)))
 
 
-(de wait-epfd (Epfd Events Maxevents Timeout)
+(de wait (Epfd Events Maxevents Timeout)
   (native "@" "epoll_wait" 'I Epfd Events Maxevents Timeout))
 
 
