@@ -18,13 +18,13 @@
   (with Ipc
 
     # Always returns 4 or NIL
-    (let Bytes-Read (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
+    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
 
-      (if Bytes-Read
+      (if Bytes-Recv
 
-        Bytes-Read
+        Bytes-Recv
 
-        (print-info "recv-msg-len" (pack "(not (= Bytes-Read=" Bytes-Read " 4))"))))))
+        (print-info "recv-msg-len" (pack "(not (= Bytes-Recv=" Bytes-Recv " 4))"))))))
 
 
 (de recv-msg-body (Ipc Sock Len)
@@ -32,13 +32,13 @@
   (with Ipc
   
     (let (Len (car (struct (: ipc~buf-rd) '(I)))
-          Bytes-Read (ipc~recv-bytes> Ipc Sock T Len 'socket~MSG-WAITALL))
+          Bytes-Recv (ipc~recv-bytes> Ipc Sock T Len 'socket~MSG-WAITALL))
 
-      (if Bytes-Read
+      (if Bytes-Recv
 
         (pack (struct (: ipc~buf-rd) (cons 'C Len)))
 
-        (print-info "recv-msg-body" (pack "(not (= Bytes-Read=" Bytes-Read " " Len "))"))))))
+        (print-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))"))))))
 
 
 # SEND
