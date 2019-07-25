@@ -124,11 +124,12 @@
            (render-pvm *ipc *projview (get Data 2) (get Data 3))
            T)
           
-          ((= Name "bye")
+          ((= Data "bye")
            # Send bye to ctrl which will send to all workers/render/model
            (send-msg *ipc "bye" Sock)
            (ipc~disconnect-sock Sock)
-           (ipc~end-ipc> *ipc)
+           (ipc~end> *ipc)
+           (println "Worker says bye!")
            (bye))
                      
           (T

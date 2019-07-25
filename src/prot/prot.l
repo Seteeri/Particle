@@ -113,6 +113,11 @@ Protocol should only call methods on Ipc and Objects passed to it
     (send-msg Ipc Msg (car Client))))
 
 
+(de send-msg-conns (Ipc Msg)    
+  (for Conn (get Ipc 'ipc~conns)
+    (send-msg Ipc Msg (car Conn))))
+
+
 (de flush-msgs (Ipc Sock Fn-Proc)
 
   # Either use yield or pass fn

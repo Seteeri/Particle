@@ -163,7 +163,7 @@
 (de end (Sock)
 
     (shutdown Sock SHUT-RDWR)
-    (close Sock))
+    (native "@" "close" NIL Sock))
 
 
 (de read-rmem-default ()

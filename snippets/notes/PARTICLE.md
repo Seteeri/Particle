@@ -132,7 +132,7 @@ Store DAGs as binary trees?
    * Refactor
      * Move xkb to ctrl and pass events to worker [Done]
      * Respond to window resizing [Done]
-     * Implement proper exit
+     * Implement proper exit [Done]
        * Render send exit key also     
      * Refactor flush-msgs and use across all processes
        * FIX UNKNOWN REQUEST

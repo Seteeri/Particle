@@ -158,6 +158,12 @@
     (cond ((= Name-Fn "mc")
            (handle-memcpy Sock Data))
 
+          ((= Data "bye")
+           (ipc~disconnect-sock Sock)
+           (ipc~end> *ipc)
+           (println "Model says bye!")
+           (bye))
+
           (T
            (prinl (usec) " | MODEL  | recv-conn | UNKNOWN REQUEST! " Msg)))))
 

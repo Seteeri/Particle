@@ -32,7 +32,7 @@
 (def '*timerfd)
 (def '*delay-rep 400) # ms
 (def '*delay-int 40)  # ms
-  
+
 
 # Wrapper libraries
 (load "/home/user/Git/particle/src/c/mathc.l")
@@ -52,14 +52,14 @@
 (de init-ctrl ()
 
   (let (Argv (argv))
-  
+
     (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
           *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
 
   (let ID-C (pack "CTRL")
-  
+
     (setq *ipc (new '(ipc~+IPC)
                PATH-UDS-CONTROL            'ipc~block handle-worker accept-client
                (list (list PATH-UDS-MODEL  'ipc~block '((Sock) (recv-msg *ipc Sock))  "MODEL")
@@ -67,29 +67,37 @@
                      (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER"))))
 
     (reg-conns *ipc ID-C))
-  
-  (queue '*q-msg "(render-vert 1)")  
-  (queue '*q-msg (pack "(render-pvm " *width " " *height " T)"))
-  
+
+  (queue '*q-msg "(render-vert 1)")
+  (queue '*q-msg (pack "(render-pvm " *width " " *height ")"))
+
   (setq *xkb (new '(+Xkb)))
 
-  (setq *timerfd (new '(timerfd~+Timerfd)))  
+  (setq *timerfd (new '(timerfd~+Timerfd)))
   (println "Add timerfd to epoll:" (get *timerfd 'timerfd~fd) (get *ipc 'ipc~fd-ep))
   (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN))
 
 
 (de handle-render (Sock)
   # Currently, render sends frame time which is not used...
-  
+
   # Render will send window resize events
   # Ctrl will send window resize event to workers
   (let (Msg (recv-msg *ipc Sock)
         Data (any Msg))
-  
-        (when (not (num? Data))
+
+      (if (lst? Data)
+
+        (when (= (get Data 1) "window-size")
           (dispatch-msg (pack "(render-pvm " (get Data 2) " " (get Data 3) ")")))
-                
-        T))
+          
+        (when (= Data "bye")
+          # Send to all conns
+          (send-msg-conns *ipc "bye")
+          (ipc~disconnect-sock Sock)
+          (ipc~end> *ipc)
+          (println "Ctrl says bye!")
+          (bye)))))
 
 
 (de handle-worker (Sock)
@@ -97,27 +105,29 @@
   (let (Msg (recv-msg *ipc Sock)
         Data (any Msg)
         Name (name Data))
-    
+
     # Handle other messages
-    (cond ((= Name "rdy")    
+    (cond ((= Name "rdy")
            (let Msg (pop '*q-msg)
              (if Msg
                (send-msg *ipc Msg Sock)
                (queue '*q-worker Sock))))
-               
+
           ((= Name "bye")
-            # Send to all workers
+           # Send to all conns
+           (send-msg-conns *ipc "bue")
            (ipc~disconnect-sock Sock)
-           (ipc~end-ipc> *ipc)
+           (ipc~end> *ipc)
+           (println "Ctrl says bye!")
            (bye))
-           
+
           (T
-           (prinl (usec) " | CTRL  | handle-worker | UNKNOWN REQUEST! " Msg)))           
-        
+           (prinl (usec) " | CTRL  | handle-worker | UNKNOWN REQUEST! " Msg)))
+
     #(prinl (usec) " | CTRL   | handle-worker | " Msg)
-    
+
     T))
-    
+
 
 (de run-ctrl (Timeout)
 
@@ -133,7 +143,7 @@
         Data (any Msg)
         Name (get Data 1))
     #(prinl (usec) " | CTRL   | handle-input | " Data)
-        
+
     (when (= Name 'KEYBOARD-KEY)
 
       (update-xkb Data)
@@ -143,7 +153,7 @@
 
 (de format-msg-ev (Data)
   (let Keycode (+ (get Data 4) 8)
-    (pack "(" 
+    (pack "("
           (glue " "
                 (list (name (get Data 1))
                       (format (get Data 2))
@@ -159,7 +169,7 @@
 
   # If worker available
   #    If event-queue: send event-queue
-  #    Else event-new: send event-new    
+  #    Else event-new: send event-new
 
   (let Worker (pop '*q-worker)
     (if Worker
@@ -171,9 +181,9 @@
 
 
 (de handle-timer (Sock)
-  # Returns an unsigned 8-byte integer (uint64_t) 
+  # Returns an unsigned 8-byte integer (uint64_t)
   # containing the number of expirations that have occurred.
-  
+
   # Must call read, not recv
   (with *ipc
     (when (n0 (native "@" "read" 'I Sock (: ipc~buf-rd) 8))
@@ -188,22 +198,22 @@
 
 
 (de update-xkb (Data)
-  
+
   #{
   https://www.x.org/releases/X11R7.7/doc/xproto/x11protocol.html#Keyboards
-  
-  A KEYCODE represents a physical (or logical) key. 
-  Keycodes lie in the inclusive range [8,255]. 
+
+  A KEYCODE represents a physical (or logical) key.
+  Keycodes lie in the inclusive range [8,255].
   }#
-  
-  # https://gitlab.freedesktop.org/wayland/weston/blob/master/libweston/input.c#L1993  
-  
+
+  # https://gitlab.freedesktop.org/wayland/weston/blob/master/libweston/input.c#L1993
+
   (let (Keycode (+ (get Data 4) 8)
         State   (get Data 5)
         Keysym  (get-one-sym> *xkb Keycode)
         Name    (xkb~keysym-get-name Keysym)
         Utf-8   (get-utf8> *xkb Keycode))
-      
+
     #(prinl "Code/Sym/Name/Utf-8/State: " Keycode " " Keysym " " Name " " Utf-8 " " State)
 
     # Returns update mask
@@ -211,12 +221,12 @@
 
     (when (= (key-repeats> *xkb Keycode) xkb~KEY-DOWN)
       (update-timer Keycode Keysym State))))
-    
+
 
 (de update-timer (Keycode Keysym State)
 
   (if (= State xkb~KEY-DOWN)
-        
+
     # interval, delay/expiration-initial
     (let (Spec (list 0 (* *delay-int 1000000) 0 (* *delay-rep 1000000)))
       #(println "Arm timer!" Keycode Spec)
@@ -224,7 +234,7 @@
       (when (= (timerfd~set-time> *timerfd Spec) -1)
         (println "errno: " (errno))
         (quit "timerfd~set-time failed")))
-  
+
     (when (= Keycode (car (get *timerfd 'timerfd~data)))
       #(println "Disarm timer!" Keycode)
       (timerfd~disarm> *timerfd))))

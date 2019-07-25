@@ -67,7 +67,15 @@
   (loop (ipc~poll> *ipc Timeout)))
 
 
-(de handle-client (Sock Events))
+(de handle-client (Sock)
+  (let (Msg (recv-msg *ipc Sock)
+        Data (any Msg))
+    (when (= Data "bye")
+      (send-msg-conns *ipc "bye")
+      (ipc~disconnect-sock Sock)
+      (end)
+      (println "Input says bye!")
+      (bye))))
 
 
 (de handle-fd-li ()
@@ -164,29 +172,9 @@
                            (format (li~tch-get-x-transformed Event *width) *Scl)
                            (format (li~tch-get-y-transformed Event *height) *Scl))))))
 
-(de end-input ()
-
-    (prinl "...Called end-input")
-
-    #Clean up sockets
-    (epoll~ctl-epfd *ep-fd epoll~DEL (get *ipc 'ipc~listener) 0)
-    (epoll~ctl-epfd *ep-fd epoll~DEL (get *ipc 'ipc~connection) 0)
-    (ipc~end-ipc> *ipc)
-
-    #Remove from epoll before end
-    (epoll~ctl-epfd *ep-fd epoll~DEL (get *input 'fd-context) 0)
-    #(println +Input li-end-input> *input)
-    (li~end-input> *input)
-
-    #Clean up epoll
-    (when *ep-events
-      (native "@" "free" NIL *ep-events))
-    (close *ep-fd)
-    #create in ipc
-    #(for Sock *sock-connections
-    #(end-sock Sock *ep-fd))
-    (when *buf-rd
-      (native "@" "free" NIL *buf-rd)))
+(de end ()
+  (ipc~end> *ipc)
+  (li~end> *input))
 
 
 (de main ()

@@ -115,11 +115,12 @@ Handle bad accept sock
   (push1 (:: conns-id) (cons ID-S (list Sock Handler))))
 
 
-(dm end-ipc> ()
+(dm end> ()
 
-  (when (: buf-rd)     (native "@" "free" NIL (: buf-rd)))
-  (when (: buf-wr)     (native "@" "free" NIL (: buf-wr)))
-
+  (native "@" "free" NIL (: buf-rd))
+  (native "@" "free" NIL (: buf-wr))
+  (native "@" "free" NIL (: evs-ep))
+  
   (when (: listener)   (socket~end (: listener)))
   (for Client (: clients)
     (socket~end (car Client)))
@@ -130,9 +131,7 @@ Handle bad accept sock
 
 
 (de disconnect-sock (Sock)
-
-  (socket~shutdown Sock socket~SHUT-RDWR)
-  (native "@" "close" NIL Sock))
+  (socket~end Sock))
 
 
 (dm disconnect-client> (Sock)

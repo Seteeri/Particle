@@ -108,7 +108,7 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
   (add-devices (: context)))
 
 
-(dm end-input> ()
+(dm end> ()
   
   #This implicitly frees context
   (unref (: context))

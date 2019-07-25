@@ -125,10 +125,10 @@ Class variables may be indicated by an upper case letter
   (glfw~make-context-current *window)
 
   (glfw~set-window-size-callback *window
-                                 (lisp 'window-callback handle-window-size)))
+                                 (lisp 'window-callback handle-window-size))
 
-  #(glfw~set-key-callback *window
-  #                       (lisp 'key-callback handle-key))
+  (glfw~set-key-callback *window
+                         (lisp 'key-callback handle-key)))
 
 
 (de handle-window-size (Window Width Height)
@@ -153,6 +153,18 @@ Class variables may be indicated by an upper case letter
   (when (and (= Key glfw~KEY-ESCAPE)
              (= Action glfw~PRESS))
     # Send also to ctrl
+    (for Client (get *ipc 'ipc~clients)
+      (let (Sock (car Client)
+            ID (get (cdr Client) 1))
+        (when (= ID "CTRL")
+          (send-msg *ipc
+                     (pack "bye")
+                     Sock))))
+ 
+    (ipc~end> *ipc)
+    (println "Render says bye!")
+    (bye)
+                       
     (glfw~set-window-should-close Window glfw~TRUE)))
 
 
