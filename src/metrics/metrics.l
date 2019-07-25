@@ -44,7 +44,7 @@ Quotient of N and D = (*/ 1.0 N D)
 
 (de load-file-metrics-data (Code)
 
-  (let (Path-Glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l"))
+  (let Path-Glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l")
   
     #(prinl (usec) " | MODEL | load-file-metrics-data | " Code "-metrics.l ...")
     (eval (any (in Path-Glyph (till NIL T))))))
@@ -52,7 +52,7 @@ Quotient of N and D = (*/ 1.0 N D)
 
 (de load-metrics (Sca-Glyph)
 
-    (let (Metrics ())
+    (let Metrics ()
 
       (for Code 255
 
