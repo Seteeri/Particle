@@ -58,7 +58,7 @@
           *height (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
 
   (setq *ipc (new '(ipc~+IPC)
-                  PATH-UDS-INPUT 'ipc~block handle-client accept-client))
+                  PATH-UDS-INPUT T handle-client accept-client))
 
   (setq *input (new '(li~+Li)))
   (ipc~add-conn> *ipc (get *input 'li~fd-context) "LI" handle-fd-li))

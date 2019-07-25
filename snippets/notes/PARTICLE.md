@@ -170,11 +170,12 @@ Store DAGs as binary trees?
 
    * Remove print msgs from gl
 
-   * Use let for deconstructing-bind and let/when
+   * Use let for deconstructing-bind and let/when [Done]
+   
    * Have input send modified KEYCODE (+8)
      * Or leave this to ctrl...
 
-   * Refactor IPC and epoll handling
+   * Refactor IPC and epoll handling [Done]
 
    * Instead of recompiling shaders constantly
      * https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml

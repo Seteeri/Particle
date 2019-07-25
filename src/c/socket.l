@@ -71,21 +71,19 @@
 
 
 #Function for typical scenarios
-(de init-socket (Nonblock)
+(de init-socket (Block)
   (let Sock (socket AF-UNIX
-                    (if (= Nonblock 'nonblock)
-                        (| SOCK-STREAM SOCK-NONBLOCK)
-                        (| SOCK-STREAM))
+                    (if Block (| SOCK-STREAM) (| SOCK-STREAM SOCK-NONBLOCK))
                      0)
     (when (= Sock -1) "(= socket -1)")
   Sock))
 
 
 (de connect-sock (Path
-                  Nonblock
+                  Block
                   Retry)
 
-  (let (Sock     (init-socket Nonblock)
+  (let (Sock     (init-socket Block)
         Sockaddr (init-sockaddr 1 Path))
 
     #{
@@ -113,13 +111,13 @@
 
 
 (de listen-sock (Path
-                 Nonblock
+                 Block
                  Backlog)
 
   # See notes about unlink
   (unlink Path)
 
-  (let (Sock     (init-socket Nonblock)
+  (let (Sock     (init-socket Block)
         Sockaddr (init-sockaddr 1 Path))
 
     (let Ret (bind-sockfd Sock
@@ -136,7 +134,7 @@
     Sock))
 
 
-(de accept-4 (Sock Nonblock)
+(de accept-4 (Sock Block)
     #{
     For nonblocking, will either return a valid fd (> 0)
     or it will fail and set errno to e-again or e-wouldblock
@@ -153,9 +151,7 @@
       (let Ret (accept-4-sockfd Sock
                                 Sockaddr
                                 Sockaddr-Len
-                                (if (= Nonblock 'nonblock)
-                                    SOCK-NONBLOCK
-                                    0))
+                                (if Block 0 SOCK-NONBLOCK))
 
         (native "@" "free" NIL Sockaddr)
         (native "@" "free" NIL Sockaddr-Len)

@@ -93,7 +93,7 @@ Class variables may be indicated by an upper case letter
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
   (setq *ipc (new '(ipc~+IPC)
-                    PATH-UDS-RENDER 'ipc~block recv-conn accept-client
+                    PATH-UDS-RENDER T recv-conn accept-client
                     NIL))
 
   #Init context

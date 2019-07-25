@@ -66,10 +66,10 @@
   (let ID-C (pack "CTRL")
 
     (setq *ipc (new '(ipc~+IPC)
-               PATH-UDS-CONTROL            'ipc~block handle-worker accept-client
-               (list (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT")
-                     (list PATH-UDS-MODEL  'ipc~block '((Sock) (recv-msg *ipc Sock))  "MODEL")
-                     (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER"))))
+               PATH-UDS-CONTROL            T handle-worker accept-client
+               (list (list PATH-UDS-INPUT  T handle-input  "INPUT")
+                     (list PATH-UDS-MODEL  T '((Sock) (recv-msg *ipc Sock))  "MODEL")
+                     (list PATH-UDS-RENDER T handle-render "RENDER"))))
 
     (reg-conns *ipc ID-C))
 

@@ -131,7 +131,7 @@
 
 (de init-ipc ()
   (setq *ipc (new '(ipc~+IPC)
-                  PATH-UDS-MODEL 'ipc~block recv-conn accept-client
+                  PATH-UDS-MODEL T recv-conn accept-client
                   NIL)))
 
 

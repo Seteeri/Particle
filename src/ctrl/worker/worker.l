@@ -73,9 +73,9 @@
 
     (setq *ipc (new '(ipc~+IPC)
                      (pack "/tmp/particle-worker-" *i-proc ".socket") 'ipc~block handle-client accept-client
-                     (list (list PATH-UDS-MODEL   'ipc~block handle-model  "MODEL")
-                           (list PATH-UDS-CONTROL 'ipc~block handle-ctrl   "CONTROL")
-                           (list PATH-UDS-RENDER  'ipc~block handle-render "RENDER")
+                     (list (list PATH-UDS-MODEL   T handle-model  "MODEL")
+                           (list PATH-UDS-CONTROL T handle-ctrl   "CONTROL")
+                           (list PATH-UDS-RENDER  T handle-render "RENDER")
                            )))
                      
     (reg-conns *ipc ID-C))                     
