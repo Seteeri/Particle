@@ -59,9 +59,9 @@
       (when (> Len (: ipc~sz-buf-rd))
         (print-info "send-msg" (pack "Msg length exceeds " (: ipc~sz-buf-rd) " by " (- Len Len-Max) " bytes"))))
 
-    (send-msg-len Ipc Sock Len)
+    (when (send-msg-len Ipc Sock Len)
 
-    (send-msg-body Ipc Sock Len Msg)))
+      (send-msg-body Ipc Sock Len Msg))))
           
 
 (de send-msg-len (Ipc Sock Len)
@@ -72,7 +72,9 @@
 
     (let Bytes-Sent (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) 4)
 
-      (unless Bytes-Sent
+      (if Bytes-Sent
+
+        Bytes-Sent
 
         (print-info "send-msg-len" "Failed to send")))))
 
@@ -85,7 +87,9 @@
     
     (let Bytes-Sent (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) Len)
 
-      (unless Bytes-Sent
+      (if Bytes-Sent
+
+        Bytes-Sent
 
         (print-info "send-msg-body" "Failed to send")))))
 
