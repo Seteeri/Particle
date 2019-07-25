@@ -46,4 +46,4 @@ Protocol should only call methods on Ipc and Objects passed to it
   (with Ipc
     (for Conn (: ipc~conns)
       #(println (usec) " | reg-conns | " (car Conn))
-      (send-msg Ipc ID-C (car Conn)))))
+      (send-msg Ipc (car Conn) ID-C))))

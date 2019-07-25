@@ -90,7 +90,7 @@ Handle bad accept sock
             Sock     (socket~connect-sock Path Nonblock *ms-retry))
         
         # Only outgoing sockets send ID
-        #(send-msg This ID-C Sock)
+        #(send-msg This Sock ID-C)
                         
         (add-conn> This Sock ID-S Handler)
                 

@@ -2,7 +2,7 @@
 
 
 # Make Sock before Msg
-(de send-msg (Ipc Msg Sock Debug)
+(de send-msg (Ipc Sock Msg)
   #{
   * Send length as int, then send body after
   }#
@@ -53,12 +53,12 @@
 
 (de send-msg-clients (Ipc Msg)
   (for Client (get Ipc 'ipc~clients)
-    (send-msg Ipc Msg (car Client))))
+    (send-msg Ipc (car Client) Msg)))
 
 
 (de send-msg-conns (Ipc Msg)
   (for Conn (get Ipc 'ipc~conns)
-    (send-msg Ipc Msg (car Conn))))
+    (send-msg Ipc (car Conn) Msg)))
 
 
 # FLUSH

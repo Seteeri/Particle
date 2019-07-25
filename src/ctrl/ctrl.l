@@ -116,7 +116,7 @@
     (cond ((= Name "rdy")
            (let Msg (pop '*q-msg)
              (if Msg
-               (send-msg *ipc Msg Sock)
+               (send-msg *ipc Sock Msg)
                (queue '*q-worker Sock))))
 
           ((= Name "bye")
@@ -181,8 +181,8 @@
     (if Worker
       (let Msg-Q (pop '*q-msg)
         (if Msg-Q
-          (send-msg *ipc Msg-Q Worker)
-          (send-msg *ipc Msg   Worker)))
+          (send-msg *ipc Worker Msg-Q)
+          (send-msg *ipc Worker Msg)))
       (queue '*q-msg Msg))))
 
 

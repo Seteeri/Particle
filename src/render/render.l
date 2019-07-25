@@ -145,8 +145,8 @@ Class variables may be indicated by an upper case letter
           ID (get (cdr Client) 1))
       (when (= ID "CTRL")
         (send-msg *ipc
-                   (pack "(window-size " Width " " Height ")")
-                   Sock))))
+                  Sock
+                  (pack "(window-size " Width " " Height ")")))))
 
   (gl~viewport 0 0 Width Height)
   
@@ -163,8 +163,8 @@ Class variables may be indicated by an upper case letter
             ID (get (cdr Client) 1))
         (when (= ID "CTRL")
           (send-msg *ipc
-                     (pack "bye")
-                     Sock))))
+                    Sock
+                    (pack "bye")))))
  
     # Cleanup GL?
     (glfw~destroy-window *window)

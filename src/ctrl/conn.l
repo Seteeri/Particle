@@ -4,8 +4,8 @@
   # Better to write all strings/bytes to buf-wr, then send in one go
 
   (send-msg Ipc
-            (fmt-msg-send> Obj Off-Obj)
-            Sock)
+            Sock
+            (fmt-msg-send> Obj Off-Obj))
 
   (send-obj Ipc Sock Obj Sz-Obj Off-Obj))
 
@@ -14,19 +14,11 @@
   # Either pass in object or instance new one
 
   (send-msg Ipc
-            (fmt-msg-recv> Obj Off-Obj)
-            Sock)
+            Sock
+            (fmt-msg-recv> Obj Off-Obj))
 
   (recv-obj Ipc Sock Obj Sz-Obj Off-Obj))
-
-
-(de req-draw (Ipc Sock)
-  # Async
-  
-  (send-msg Ipc
-            "(draw)"
-            Sock))
-  
+ 
   
 ################################################################################
 

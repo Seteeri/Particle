@@ -80,7 +80,7 @@
                      
     (reg-conns *ipc ID-C))                     
                       
-  (send-msg *ipc "rdy" (ipc~get-fd> *ipc "CONTROL"))
+  (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "rdy")
 
   (for N *verts-max
     (let Off (get-vert-off N)
@@ -132,7 +132,7 @@
           
           ((= Data "bye")
            # Send bye to ctrl which will send to all workers/render/model
-           (send-msg *ipc "bye" Sock)
+           (send-msg *ipc Sock "bye")
            (ipc~disconnect-sock Sock)
            (ipc~end> *ipc)
            (println "Worker says bye!")
@@ -142,7 +142,7 @@
            T))
                
     # Send ready when complete
-    (send-msg *ipc "rdy" Sock)
+    (send-msg *ipc Sock "rdy")
     
     #(prinl (usec) " | WORKER/" *Pid " | Worker ready")
     
