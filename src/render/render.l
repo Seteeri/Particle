@@ -23,9 +23,9 @@ Class variables may be indicated by an upper case letter
 # C library paths
 (def 'PATH-GLYPHS "/home/user/Git/particle/src/glyphs")
 # UDS paths
-(def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
-(def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
-(def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
+(def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
+(def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
+(def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
 #Shader paths
 (def '*path-structs-shader "/home/user/Git/particle/glsl/structs.glsl")
 (def '*paths-rast-vert-shader

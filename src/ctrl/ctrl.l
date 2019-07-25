@@ -21,10 +21,10 @@
 (def 'NAME-PID "CTRL")
 
 # Paths
-(def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
-(def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
-(def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
-(def 'PATH-UDS-CONTROL "/tmp/protoform-control.socket")
+(def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
+(def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
+(def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
+(def 'PATH-UDS-CONTROL "/tmp/particle-control.socket")
 
 
 #Globals

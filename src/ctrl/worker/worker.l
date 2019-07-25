@@ -21,9 +21,9 @@
 (def 'NAME-PID "WORKER")
 
 # Paths
-(def 'PATH-UDS-MODEL   "/tmp/protoform-model.socket")
-(def 'PATH-UDS-CONTROL "/tmp/protoform-control.socket")
-(def 'PATH-UDS-RENDER  "/tmp/protoform-render.socket")
+(def 'PATH-UDS-MODEL   "/tmp/particle-model.socket")
+(def 'PATH-UDS-CONTROL "/tmp/particle-control.socket")
+(def 'PATH-UDS-RENDER  "/tmp/particle-render.socket")
 (def 'PATH-GLYPHS      "/home/user/Git/particle/src/glyphs")
 
 # Constants
@@ -72,7 +72,7 @@
   (let ID-C (pack "WORKER-" *i-proc)
 
     (setq *ipc (new '(ipc~+IPC)
-                     (pack "/tmp/protoform-worker-" *i-proc ".socket") 'ipc~block handle-client accept-client
+                     (pack "/tmp/particle-worker-" *i-proc ".socket") 'ipc~block handle-client accept-client
                      (list (list PATH-UDS-MODEL   'ipc~block handle-model  "MODEL")
                            (list PATH-UDS-CONTROL 'ipc~block handle-ctrl   "CONTROL")
                            (list PATH-UDS-RENDER  'ipc~block handle-render "RENDER")
