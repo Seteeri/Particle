@@ -20,19 +20,19 @@ struct stat {
 }#
 
 (de stat-2 (Path)
-    (let (Buf (native "@" "malloc" 'N 144))
+    (let Buf (native "@" "malloc" 'N 144)
       (native "@" "stat" 'I Path Buf)
       #Convert before free
       (native "@" "free" Buf)))
 
 (de fstat-2 (Fd)
-    (let (Buf (native "@" "malloc" 'N 144))
+    (let Buf (native "@" "malloc" 'N 144)
       (native "@" "stat" 'I Fd Buf)
       #Convert before free
       (native "@" "free" Buf)))
 
 (de lstat-2 (Path)
-    (let (Buf (native "@" "malloc" 'N 144))
+    (let Buf (native "@" "malloc" 'N 144)
       (native "@" "stat" 'I Path Buf)
       #Convert before free
       (native "@" "free" Buf)))
