@@ -160,26 +160,24 @@ Handle bad accept sock
 
 
 (dm send-bytes> (Sock Buf Sz Flags)
-    #{
-    * With blocking sockets, will block until space available (all data is buffered)
-    * If msg too long, send will fail and no data will be buffered
-    }#
+  #{
+  * With blocking sockets, will block until space available (all data is buffered)
+  * If msg too long, send will fail and no data will be buffered
+  }#
 
-    (let Bytes-Sent (socket~send-fd Sock
-                                    (if (num? Buf) Buf (: buf-wr))
-                                    (if (num? Sz)  Sz  (: sz-buf-wr))
-                                    (if (num? Flags) Flags 0))
-
-       (if (= -1 Bytes-Sent)
-       
-           # Poss check for (= (& Events epoll~ERR) epoll~ERR) and so on...
-           # For now, assume error and disconnect
-           (disconnect-client> This Sock)
-
-           (when NIL #(: debug-ipc)
-             (prinl (usec) " | send-bytes> | Sock=" Sock ", " "Bytes-Sent=:" Bytes-Sent)))
-                 
-       Bytes-Sent))
+  (let Bytes-Sent (socket~send-fd Sock
+                                  (if (num? Buf) Buf (: buf-wr))
+                                  (if (num? Sz)  Sz  (: sz-buf-wr))
+                                  (if (num? Flags) Flags 0))
+     (case Bytes-Sent
+     
+        # Orderly shutdown
+        (0  (disconnect-client> This Sock) NIL)
+        
+        # Error
+        (-1 (disconnect-client> This Sock) NIL)
+        
+        (T  Bytes-Sent))))
 
 
 (dm recv-bytes> (Sock Buf Sz Flags)
