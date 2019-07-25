@@ -71,16 +71,18 @@ Handle bad accept sock
 
 
 (dm init-listener> ()
+
   (=: listener (socket~listen-sock Path-listener 
                                    Nonblock-listener 
                                    64))
   (epoll~ctl (: fd-ep)
-                  epoll~ADD
-                  (: listener)
-                  epoll~BAD))
+             epoll~ADD
+             (: listener)
+             epoll~BAD))
 
 
 (dm init-conns> (Conns)
+
   (for Conn Conns
       
       (let (Path     (get Conn 1)
@@ -88,14 +90,10 @@ Handle bad accept sock
             Handler  (get Conn 3)
             ID-S     (get Conn 4)
             Sock     (socket~connect-sock Path Nonblock *ms-retry))
-        
-        # Only outgoing sockets send ID
-        #(send-msg This Sock ID-C)
-                        
+                                
         (add-conn> This Sock ID-S Handler)
-                
-        (when (: debug-ipc)
-          (prinl (usec) " | T | Connected sock: " Sock " to " Path)))))
+
+        (print-info "init-conns>" (pack "Sock=" Sock " connected to " Path)))))
 
 
 (dm add-conn> (Sock ID-S Handler Flags)
@@ -104,11 +102,11 @@ Handle bad accept sock
   }#
   
   (epoll~ctl (: fd-ep)
-                  epoll~ADD
-                  Sock
-                  (if Flags Flags epoll~BAD))
+             epoll~ADD
+             Sock
+             (if Flags Flags epoll~BAD))
   
-  #SIMPLIFY:
+  # SIMPLIFY:
   #(push1 (:: conns)    (cons Sock (list ID-S Handler)))
   #(push1 (:: conns-id) (cons ID-S Sock))
 
@@ -150,11 +148,8 @@ Handle bad accept sock
 
   (let Client (socket~accept-4 Sock 'block)
 
-     #(when (: debug-ipc)
-     #  (prinl (usec) " | accept-sock> | Accepted Client=" Client))
-
-    (when (= -1 Client)
-      (prinl "(= -1 Client)"))
+    (when (<= Client 0)
+      (print-info "ipc~accept-sock" (pack "Client=" Client)))
 
     ((: handler-accept) This Sock Client)))
 
@@ -172,10 +167,10 @@ Handle bad accept sock
      (case Bytes-Sent
      
         # Orderly shutdown
-        (0  (disconnect-client> This Sock) NIL)
+        (0  (nil (print-info "send-bytes>" (pack "ERRNO: " (errno) " " Sock)) (disconnect-client> This Sock)))
         
         # Error
-        (-1 (disconnect-client> This Sock) NIL)
+        (-1 (nil (print-info "send-bytes>" (pack "ERRNO: " (errno) " " Sock)) (disconnect-client> This Sock)))
         
         (T  Bytes-Sent))))
 
@@ -192,16 +187,17 @@ Handle bad accept sock
   }#
 
   (let Bytes-Read (socket~recv Sock
-                               (if (num? Buf) Buf (: buf-rd))
-                               (if (num? Sz)  Sz  (: sz-buf-rd))
+                               (if (num? Buf)   Buf (: buf-rd))
+                               (if (num? Sz)    Sz  (: sz-buf-rd))
                                (if (num? Flags) Flags 0))
+                               
      (case Bytes-Read
      
         # Orderly shutdown
-        (0  (disconnect-client> This Sock) NIL)
+        (0  (nil (print-info "recv-bytes>" (pack "ERRNO: " (errno) " " Sock)) (disconnect-client> This Sock)))
         
         # Error
-        (-1 (disconnect-client> This Sock) NIL)
+        (-1 (nil (print-info "recv-bytes>" (pack "ERRNO: " (errno) " " Sock)) (disconnect-client> This Sock)))
         
         (T  Bytes-Read))))
          
@@ -236,7 +232,7 @@ Handle bad accept sock
       (let (Ep-Events (epoll~get-event (: evs-ep) I)
             Fd        (get Ep-Events 2)) # Evs = 1
 
-        #(prinl *Pid "ipc~poll> " Fd)
+        #(prinl *Pid " ipc~poll> " Fd " " (: listener))
 
         (if (= Fd (: listener))
             (accept-sock> This Fd)

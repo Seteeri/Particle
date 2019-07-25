@@ -1,13 +1,16 @@
 # Split into handlers and requests
 
 (de req-send-obj (Ipc Sock Obj Sz-Obj Off-Obj)
-  # Better to write all strings/bytes to buf-wr, then send in one go
 
   (send-msg Ipc
             Sock
-            (fmt-msg-send> Obj Off-Obj))
+            (fmt-msg-send> Obj Off-Obj)
+            *ptr-vert
+            (serialize-to-ptr> Obj *ptr-vert))
 
-  (send-obj Ipc Sock Obj Sz-Obj Off-Obj))
+  #(println (usec) " | req-send-obj | " (struct *ptr-vert '(B . 233)))
+
+  T)
 
 
 (de req-recv-obj (Ipc Sock Obj Sz-Obj Off-Obj)
@@ -18,24 +21,28 @@
             (fmt-msg-recv> Obj Off-Obj))
 
   (recv-obj Ipc Sock Obj Sz-Obj Off-Obj))
- 
-  
+
+
 ################################################################################
 
 
 (de render-vert (Ipc Vert Off)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
+
+    (print-info "render-vert" "Sending vert...")
+
     (req-send-obj Ipc
                   Sock-Render
                   Vert
                   SZ-VERT
                   Off)
+
     (req-send-obj Ipc
                   Sock-Model
                   Vert
                   SZ-VERT
-                  Off)))             
+                  Off)))
 
 
 (de render-pvm (Ipc Projview Width Height)
@@ -52,7 +59,9 @@
     # -> Minimize render processing time
 
     # Pass list of socks so need only serialize once
-    
+
+    (print-info "render-vert" "Sending pvm...")
+
     (req-send-obj Ipc
                   Sock-Render
                   Projview

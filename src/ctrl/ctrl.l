@@ -63,13 +63,12 @@
           *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
           *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
-
   (let ID-C (pack "CTRL")
 
     (setq *ipc (new '(ipc~+IPC)
                PATH-UDS-CONTROL            'ipc~block handle-worker accept-client
-               (list (list PATH-UDS-MODEL  'ipc~block '((Sock) (recv-msg *ipc Sock))  "MODEL")
-                     (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT")
+               (list (list PATH-UDS-INPUT  'ipc~block handle-input  "INPUT")
+                     (list PATH-UDS-MODEL  'ipc~block '((Sock) (recv-msg *ipc Sock))  "MODEL")
                      (list PATH-UDS-RENDER 'ipc~block handle-render "RENDER"))))
 
     (reg-conns *ipc ID-C))
@@ -80,7 +79,7 @@
   (setq *xkb (new '(+Xkb)))
 
   (setq *timerfd (new '(timerfd~+Timerfd)))
-  (println "Add timerfd to epoll:" (get *timerfd 'timerfd~fd) (get *ipc 'ipc~fd-ep))
+  (print-info "init-ctrl" (pack "Add timerfd to epoll: " (get *timerfd 'timerfd~fd) " " (get *ipc 'ipc~fd-ep)))
   (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN))
 
 
@@ -137,7 +136,7 @@
 
 (de run-ctrl (Timeout)
 
-  (prinl (usec) " | run-ctrl | Starting epoll...")
+  (print-info "run-ctrl" "Starting epoll...")
   (loop (ipc~poll> *ipc Timeout)))
 
 
@@ -194,7 +193,7 @@
   (with *ipc
     (when (n0 (native "@" "read" 'I Sock (: ipc~buf-rd) 8))
       (handle-key-rep (get *timerfd 'timerfd~data))
-      (prinl (usec) " | Expired timer! Events=" (struct (: ipc~buf-rd) '(N . 1))))))
+      (print-info "handle-timer" (pack "Events=" (struct (: ipc~buf-rd) '(N . 1)))))))
 
 
 (de handle-key-rep (Key)

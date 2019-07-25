@@ -56,7 +56,8 @@
                      (: ortho-far))
           (cons -1.0 (: mat-view))
           (cons -1.0 (: pos))
-          (cons -1.0 (: rot))))
+          (cons -1.0 (: rot)))
+  SZ-PV)
           
 
 (dm deserialize-fm-ptr> (Ptr)

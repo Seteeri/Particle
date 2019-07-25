@@ -97,6 +97,7 @@ own proc
       # Use taskset to assign processes here
 
       (prinl "Render: " *proc-render)
+      (prinl "Model: " *proc-model)
       (prinl "Input: " *proc-input)
       (prinl "Ctrl: " *proc-ctrl)
       (prinl "Worker: " *proc-work-1)

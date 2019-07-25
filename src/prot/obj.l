@@ -1,3 +1,5 @@
+# These functions read/write objs to socket
+
 (de recv-obj (Ipc Sock Obj Sz-Obj Off-Obj)
   # In Model/Render: recv object on socket, and deserialize to obj or cpy ptr
 

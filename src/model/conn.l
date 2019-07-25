@@ -38,6 +38,8 @@
 
   # Send updates also?
 
+  #(print-info "write-dst" Dst)
+
   (cond ((= Dst "projview")
          (recv-obj *ipc Sock *projview SZ-PV))
    
@@ -47,8 +49,10 @@
 
 (de read-src (Src Sock Sz Off)
 
+  #(print-info "read-src" Src)
+
   # Return serialized bytes on socket
-  (cond ((= Src "projview")
+  (cond ((= Src "projview")  
          (send-obj *ipc Sock *projview SZ-PV))
 
         ((= Src "nodes")

@@ -79,7 +79,8 @@
           (cons -1.0 (: mm))
           (cons -1.0 (: rgba))          
           (cons -1.0 (: uv))
-          (cons (: off-texel) 4)))
+          (cons (: off-texel) 4))
+  SZ-VERT)
 
 
 (dm deserialize-fm-ptr> (Ptr)

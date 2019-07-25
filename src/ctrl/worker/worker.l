@@ -105,7 +105,7 @@
 
 (de run-worker (Timeout)
 
-  (prinl (usec) " | run-worker | Starting epoll...")
+  (print-info "run-worker" "Starting epoll...")
   (loop (ipc~poll> *ipc Timeout)))
 
 
@@ -116,17 +116,14 @@
         Name (get Data 1))
 
     (cond ((= Name 'KEYBOARD-KEY)
-           #(prinl (usec) " | WORKER/" *Pid " | " Msg)
            (handle-kb Data)
            T)
            
           ((= Name "render-vert")
-           (prinl (usec) " | WORKER/" *Pid " | " Msg)
            (render-vert *ipc (cdr (get *verts (get Data 2))) (car (get *verts (get Data 2))))
            T)
            
           ((= Name "render-pvm")
-           (prinl (usec) " | WORKER/" *Pid " | " Msg)
            (render-pvm *ipc *projview (get Data 2) (get Data 3))
            T)
           

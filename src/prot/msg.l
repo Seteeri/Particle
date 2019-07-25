@@ -10,7 +10,7 @@
 
   # Check Len does not exceed size of int?
 
-  (let Len (length Body)
+  (let Len (+ (length Body) 1)
 
     (when (send-msg-len Ipc Sock Len)
 
@@ -18,13 +18,13 @@
 
         (send-msg-len Ipc Sock Sz-Bin)
 
-        (send-msg-len Ipc Sock 0)
+        (send-msg-len Ipc Sock 0))
 
       (send-msg-body Ipc Sock Len Body)
-
+      
       (when Bin
 
-          (send-msg-bin Ipc Sock Sz-Bin Bin))))))
+        (send-msg-bin Ipc Sock Sz-Bin Bin)))))
           
 
 (de send-msg-len (Ipc Sock Len)
@@ -57,13 +57,13 @@
         (print-info "send-msg-body" "Failed to send")))))
 
 
-(de send-msg-bin (Ipc Sock Len Bin)
+(de send-msg-bin (Ipc Sock Sz Bin)
 
   (with Ipc
-  
-    (native "@" "memcpy" (: ipc~buf-wr) Bin Len)
+
+    (native "@" "memcpy" NIL (: ipc~buf-wr) Bin Sz)
     
-    (let Bytes-Sent (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) Len)
+    (let Bytes-Sent (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) Sz)
 
       (if Bytes-Sent
 
@@ -89,98 +89,95 @@
 
   # Either use yield or pass fn
 
-  (for Msg (read-msgs Ipc Sock)
-    (Fn-Proc Ipc Sock Msg)))
+  # Recv all data on sock (buffer limit)
+  
+  (let Bytes-Read (ipc~recv-bytes> Ipc Sock T T 0)
+
+    (if (< Bytes-Read 4)
+
+      (print-info "read-msgs" (pack "Bytes-Read-Len=" Bytes-Read-Len))
+
+      (let (Ptr (get Ipc 'ipc~buf-rd)
+            End (+ Ptr Bytes-Read))
+        (proc-msgs Ipc Sock Ptr End Fn-Proc)))))
 
 
-(de read-msgs (Ipc Sock)
+(de proc-msgs (Ipc Sock Ptr End Fn)
 
-  # Recv buffer limit on sock
+  # Pass Msg, Sz-Bin, Bin(ptr)
 
-  (let Bytes-Read-Len (ipc~recv-bytes> Ipc Sock T T)
+  (while (< Ptr End)
 
-    #(prinl (usec) " | read-msgs | Bytes-Read-Len=" Bytes-Read-Len)
+    (let ((Len-Msg Sz-Bin) (struct Ptr '(I I)))
+    
+      (inc 'Ptr (+ 4 4))
 
-    # Should always be at least 1 byte since this is called when data available
-    (when (< Bytes-Read-Len 4)
-      (prinl (usec) " | read-msgs | (< 4 Bytes-Read-Len=" Bytes-Read-Len ")"))
+      (let (Msg (pack (struct Ptr (cons 'C Len-Msg)))
+            Data (any Msg))
 
-     (let (Ptr (get Ipc 'ipc~buf-rd)
-           Bytes-Proc 0
-           Msgs ())
+        (inc 'Ptr Len-Msg)
 
-       (while (< Bytes-Proc Bytes-Read-Len)
+        (Fn Ipc Sock Data Sz-Bin Ptr))
 
-          # Return msg and entire msg length (offset to next msg)
-          (let Data (parse-msg Ptr)
-            (push 'Msgs (get Data 1))
-            (inc 'Bytes-Proc (get Data 2))
-            (inc 'Ptr (get Data 2))))
-
-        Msgs)))
-
-
-(de parse-msg (Ptr)
-  # TODO: Refactor this with recv-msg into single function which takes a ptr
-
-  (let Len (car (struct Ptr '(I)))
-
-    (let (Msg (pack (struct (+ Ptr 4) (cons 'C Len)))
-          Data (any Msg)
-          Name-Fn (get Data 1)
-          Ret NIL)
-
-      #(prinl (usec) " | parse-msg | Msg=" Msg)
-
-      # This is render specific -> move to render/conn
-      (if (= Name-Fn "mc")
-
-          (setq Ret (list (list Data (+ Ptr 4 Len))
-                                (+ 4 Len (get Data 4))))
-
-          (prinl (usec) " | parse-msg | UNKNOWN REQUEST! " Msg))
-
-      Ret)))
+      (inc 'Ptr Sz-Bin))))
 
 
 # RECV
 
 
-(de recv-msg (Ipc Sock)
+(de recv-msg (Ipc Sock Bin)
   #{
   * Recv length as int, then recv payload
   }#
 
-  (let Len (recv-msg-len Ipc Sock)
+  (let (Len-Msg (recv-msg-len Ipc Sock)
+        Sz-Bin  (recv-msg-len Ipc Sock))
 
-    (when Len
+    (when (and Len-Msg Sz-Bin)
 
-      (recv-msg-body Ipc Sock Len))))
+      (let Body (recv-msg-body Ipc Sock Len-Msg)
+
+        (if Bin
+
+          (cons Body 
+                (when (and Bin Sz-Bin)
+                  (recv-msg-bin Ipc Sock Sz-Bin)))
+
+          Body)))))
 
 
 (de recv-msg-len (Ipc Sock)
 
   (with Ipc
 
-    # Always returns 4 or NIL
-    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
+    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T 4 socket~MSG-WAITALL)
 
       (if Bytes-Recv
 
-        Bytes-Recv
+        (car (struct (: ipc~buf-rd) '(I)))
 
-        (print-info "recv-msg-len" (pack "(not (= Bytes-Recv=" Bytes-Recv " 4))"))))))
+        (print-info "recv-msg-len" (pack "Bytes-Recv=" Bytes-Recv))))))
 
 
 (de recv-msg-body (Ipc Sock Len)
 
   (with Ipc
   
-    (let (Len (car (struct (: ipc~buf-rd) '(I)))
-          Bytes-Recv (ipc~recv-bytes> Ipc Sock T Len 'socket~MSG-WAITALL))
+    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T Len socket~MSG-WAITALL)
 
       (if Bytes-Recv
 
         (pack (struct (: ipc~buf-rd) (cons 'C Len)))
 
-        (print-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))"))))))      
+        (print-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))"))))))
+
+
+(de recv-msg-bin (Ipc Sock Sz Bin)
+
+  (with Ipc
+  
+    (let (Bytes-Recv (ipc~recv-bytes> Ipc Sock Bin Sz socket~MSG-WAITALL))
+
+      (unless Bytes-Recv
+
+        (print-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))"))))))

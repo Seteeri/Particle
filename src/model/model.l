@@ -70,7 +70,7 @@
 
                  (push 'Verts Vert)))
 
-       (prinl "Created " *verts-max " vertices ")
+       (print-info "init-verts" (pack "Created " *verts-max " vertices "))
 
        Verts))
 
@@ -137,7 +137,7 @@
 
 (de run-model (Timeout)
 
-  (prinl (usec) " | run-model | Starting epoll...")
+  (print-info "run-model" "Starting epoll...")
   (loop (ipc~poll> *ipc Timeout)))
 
 
@@ -157,7 +157,7 @@
         Data (any Msg)
         Name-Fn (get Data 1))
 
-    #(prinl (usec) " | MODEL  | recv-conn | " Msg)
+    #(print-info "recv-conn" Msg)
 
     # For now, assume memcpy
     (cond ((= Name-Fn "mc")

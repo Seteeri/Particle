@@ -14,10 +14,12 @@ Protocol should only call methods on Ipc and Objects passed to it
 
 (de accept-client (Ipc Sock Client)
 
+  #(print-info "accept-client" (pack "Wait for ID from " Client))
+
   #Read for ID - this will block
   (let ID (recv-msg Ipc Client)
 
-    #(prinl (usec) " | accept-client | ID=" ID)
+    (print-info "accept-client" (pack "Sock= " Client ", ID= " ID))
 
     #Disconnect client if name conflict
     (if (assoc Client (get Ipc 'ipc~clients))
@@ -38,12 +40,15 @@ Protocol should only call methods on Ipc and Objects passed to it
     # Add to client list also
     (push1 (:: ipc~clients) (cons Client (list ID (: ipc~handler-listener))))
 
-    (when (or (: debug-ipc) T)
-      (prinl (usec) " | accept-client | Registered Client=" Client ", ID=" ID))))
+    (print-info "add-client" (pack "Sock= " Sock ", ID= " ID))))
 
 
 (de reg-conns (Ipc ID-C)
+
   (with Ipc
+  
     (for Conn (: ipc~conns)
-      #(println (usec) " | reg-conns | " (car Conn))
+    
+      (print-info "reg-conns" (pack ID-C " sent to " (car Conn)))
+      
       (send-msg Ipc (car Conn) ID-C))))

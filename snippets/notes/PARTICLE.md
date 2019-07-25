@@ -138,12 +138,11 @@ Store DAGs as binary trees?
    * Refactor IPC
      * Improve msg handling robustness when bytes-read is incorrect/invalid [Done]
      * Improve printing msgs using Pid [Done]
-     * Do Sz-Msg Sz-Bin Bin-Msg Bin-Bin     
-     * Refactor flush-msgs and use across all processes
+     * Do Sz-Msg Sz-Bin Bin-Msg Bin-Bin [Done]    
+     * Refactor flush-msgs and use across all processes [Done]
      * Refactor IPC clients
      * Fix removing clients/conns
-     * Debug system
-     * Make epoll event like timerfd     
+     * Make epoll event like timerfd
 
    * Implement string/atom/list, eval functionality
      * Implmenet drawing [Done]
@@ -166,6 +165,8 @@ Store DAGs as binary trees?
 
 
 * Refactor/Fix
+
+   * Remove print msgs from gl
 
    * Use let for deconstructing-bind and let/when
    * Have input send modified KEYCODE (+8)

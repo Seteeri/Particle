@@ -39,19 +39,18 @@
            (struct (+ Ptr I) 'N (cons B 1))
            (inc 'I))))
 
+
 ################################################################################
 
 
-(de process-msg (Ipc Sock Msg)
-  (let (Data (get Msg 1)
-        Ptr  (get Msg 2)
-        Name-Fn (get Data 1))
+(de process-msg (Ipc Sock Data Sz-Bin Bin)
+
+  (let (Name-Fn (get Data 1))
 
     #(println (usec) " | RENDER  | process-msg | " Msg)
 
-    # For now, assume memcpy
     (cond ((= Name-Fn "mc")
-           (handle-memcpy Sock Data Ptr))
+           (handle-memcpy Sock Data Bin))
 
           (T
            (prinl (usec) " | RENDER  | process-msg | UNKNOWN REQUEST! " Msg)))))
@@ -89,7 +88,7 @@
 
         ((= Dst "nodes")
          #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '(B . 233)))
-                  
+
          (let (Ptr-Gl  (+ (get (get '*buffer-objects 'nodes) 'gl~ptr) Off)
                Ptr-Buf Ptr)
                                    

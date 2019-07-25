@@ -129,14 +129,17 @@ Class variables may be indicated by an upper case letter
 
   (glfw~make-context-current *window)
 
-  (glfw~set-window-size-callback *window
-                                 (lisp 'window-callback handle-window-size))
+  (glfw~set-framebuffer-size-callback *window
+                                      (lisp 'framebuffer-callback handle-framebuffer-size))
+
+  #(glfw~set-window-size-callback *window
+  #                               (lisp 'window-callback handle-window-size))
 
   (glfw~set-key-callback *window
                          (lisp 'key-callback handle-key)))
 
 
-(de handle-window-size (Window Width Height)
+(de handle-framebuffer-size (Window Width Height)
   # Must update projmatrix also
 
   # Add interface/refactor IPC
@@ -152,6 +155,13 @@ Class variables may be indicated by an upper case letter
   
   (setq *width Width)
   (setq *height Height))
+
+
+(de handle-window-size (Window Width Height)
+  # Must update projmatrix also  
+  #(setq *width Width)
+  #(setq *height Height)
+  T)
   
   
 (de handle-key (Window Key Scancode Action Mods)
@@ -196,7 +206,7 @@ Class variables may be indicated by an upper case letter
   #(gl~use-program *prog-rast)
   #(gl~bind-vertex-array *vao)
 
-  (prinl (usec) " | RENDER | Starting draw loop...")
+  (print-info "run-render" "Starting draw loop...")
 
   # Draws only on event?
   # With Wayland, clients will send damage events...
