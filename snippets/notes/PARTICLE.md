@@ -134,6 +134,12 @@ Store DAGs as binary trees?
      * Respond to window resizing [Done]
      * Implement proper exit [Done]
        * Render send exit key also     
+       
+   * Refactor protocol
+     * Do Sz-Msg Sz-Bin Bin-Msg Bin-Bin
+       
+   * Refactor IPC
+     * Make epoll event like timerfd
      * Refactor flush-msgs and use across all processes
      * Improve msg handling robustness when bytes-read is incorrect/invalid
      * Improve printing msgs using Pid
@@ -141,15 +147,11 @@ Store DAGs as binary trees?
        * Fix protocol IPC
        * Refactor IPC clients
        * Fix removing clients/conns
-     * Rename to ctl -> ctl       
-     * Use let for deconstructing-bind and let/when     
-     * Have input send modified KEYCODE (+8)     
 
    * Implement string/atom/list, eval functionality
      * Implmenet drawing [Done]
      * Implement interface/controls
        * Move xkb to ctrl; put event handlers in worker
-       * Implement proper exit
      * Implement operators
      
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
@@ -167,9 +169,12 @@ Store DAGs as binary trees?
 
 
 * Refactor/Fix
+
+   * Use let for deconstructing-bind and let/when     
+   * Have input send modified KEYCODE (+8)     
+     * Or leave this to ctrl...
    
    * Refactor IPC and epoll handling
-   * Make epoll event like timerfd
 
    * Instead of recompiling shaders constantly
      * https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml

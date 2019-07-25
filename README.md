@@ -33,7 +33,7 @@ Particle maximizes the following principles:
 * Simplicity/Minimalism
 
 These principles are shared with the underlying programming language (PicoLisp)
-and OS (FreeBSD) to create a consistent harmonious system.
+and OS (BSD) to create a consistent harmonious system.
 
 Particle provides the following interfaces for the user:
 
@@ -41,16 +41,14 @@ Particle provides the following interfaces for the user:
   * Top-down approach rather than a bottom-up approach
 * Backwards compatibility with the conventional desktop (X11)
 
-Future plans include building the userland upon FreeBSD, although development is
-currently occuring on Linux also. 
+Future plans include building the userland upon Dragonfly BSD, although 
+current development is occuring on Arch Linux/Sway.
 
-Another route to consider is PilOS; however, there would be many hurdles to
+PilOS provides a minimal starting point; however, there would be many hurdles to
 overcome including writing a compatibility layer like LinuxKPI to reuse linux
 drivers. Initially, specific hardware or a SOC with adequate performance could 
-be targeted to provide a starting point to gain momentum, but again, using an 
-existing OS makes more sense to start with. It begs the question as to how 
-useful a Lisp at the OS level would be (past Lisp Machines may provide an 
-answer...).
+be targeted to provide a suitable base. It begs the question as to how useful a 
+Lisp at the OS level would be (past Lisp Machines may provide an answer...).
 
 The target audience consists of programmers, power users and the like, 
 particularly intelligence analysis.
@@ -60,20 +58,17 @@ particularly intelligence analysis.
 
 * Primary Inspirations:
   * Compiz - 3D desktop effects
-  * Blender - 3D, multi-domain dataset, Python UI
+  * Blender - 3D editor, extensible UI, keyboard driven
   * Emacs - consistency, extensibility, text and keyboard driven    
   * Lisp - the programmable programming language
-        
+  * Evernote - Stepan Pachikov wanted to remember everything
+  
 * Secondary Inspirations:
   * McCLIM - central concept of "presentation types"
   * Uzbl/Conkeror - numbered links for navigation
   * Unreal Blueprints - nodal system
   * EagleMode - ZUI system
-  * OpenDoc - early proprietary attempt by Apple to create compound documents
-  * LightTable - drafting table metaphor
-  * Minecraft - expressiveness
-  * Xerox Parc - ...
-  * Evernote
+  * Xerox Parc - not much more to say...
     
 * Personal Influences:
   * The Humane Interface by Jeff Raskin
@@ -81,22 +76,23 @@ particularly intelligence analysis.
     * Persistence
     * Unlimited undo
     * Incremental search
-    * Elmintation of applications -> commands
+    * Elimintation of applications -> commands
     * Redesigned file hierarchies
-    * ZUIs as an alternative
+    * ZUIs
+  * Douglas Engelbart - "The Mother of All Demos"
   * Sir Tim Berners-Lee - WWW
-  * Paul Graham, Peter Norvig - ...
+  * Paul Graham, Peter Norvig
   * Brett Victor - Inventing on Principle
-  * Chris Schafmeister - Molecular Metaprogramming  
   * Zach Bean - quicklisp
   * Robert Strandh - CLOSOS/LispOS
+  * Chris Schafmeister - Molecular Metaprogramming  
 
 ## The Interface
 
 * Top-down approach
-  * First step - build the shell/DE
-  * Second step - integrate the init system
-  * Third step - ???
+  * First step - UI/REPL/DE/WM
+  * Second step - init integration
+  * Third step - kernel integration
 * Built around DAG/trees  - common pattern across domains:
   * HTML/DOM
   * Task management
@@ -114,54 +110,49 @@ particularly intelligence analysis.
 
 ## The Architecture
 
-* PicoLisp due to simplicity and expressiveness
-* Two process system - model/view
-  * Model contains a task manager that spreads tasks across frames
-    * Maintains low-latency through soft deadlines
-  * View SRP: draw triangles and poll socket for commands
-    * Separate process from model to minimize pressure on GC
+* Focused on Wayland and modern OpenGL ES 3.2+ (Vulkan)
+* PicoLisp due to simplicity, expressiveness and consistency
+* Multi process system
+  * Components: Controller, Workers, Model, Render
+  * IPC through message passing
+  * Multiple workers increases stability/robustness
 * Rendering engine is essentially a particle system
-  * Plans to pursue tiled forward shading engine (Forward+)
-  * OpenGL ES 3.2+
   * Compute shaders
   * AZDO Techniques
     * Persistent mapping
     * Instanced drawing
     * Indirect drawing
-      * Multi-indirect (not yet implemented in OpenGL ES API)
   * Fully programmable vertex pulling
     * Texture buffers/UBOs/SSBOs -> gl_VertexID+gl_InstanceID
-  * Separate shader stages and programmable pipelines
 * R-tree for spatial indexing
-* Windows, MacOS, BSD, WASM support will come later
 
 ## The Roadmap
 
-Core
-1. Vertices/Cells
+Interactive Core
+1. REPL
 2. Wayland Integration 
    * Web remains accessible through Wayland/DE -> browser
 3. Widget toolkit (vertex-based)
    
-Extensions
+Desktop Functionality
 1. Media Functionality
    * FFMPEG for media - images, video, audio
-   * Integrate GEGL? Image/graphicsmagick? etc...   
+   * Integrate GEGL? Image/graphicsmagick? etc...
 2. WebKit Integration
    * Build around Webkit like Next
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
-2. Tiled forward rendering (Forward+) including lights
-   * Future: Implement clustered -> volumetric forward shading
+2. Power mode
 
 Future Ideas
+* Tiled forward rendering (Forward+)
+  * Clustered -> volumetric forward shading
 * Augmented reality through OpenCV
 * Convergence...
 
 ## The Requirements
 
-* Atomic modesetting/nuclear pagefliping
 * OpenGL ES 3.2+ (OpenGL 4.3+) (See [Mesamatrix](https://mesamatrix.net/))
 * Vulkan/WSI (hopefully...)
 
@@ -171,3 +162,7 @@ Future Ideas
 2. ...
 
 *Will update when ready...*
+
+## The License
+
+Permissively licensed
