@@ -137,13 +137,13 @@ Handle bad accept sock
 
 (dm disconnect-client> (Sock)
 
-  (prinl (usec) " | disconnect-client> | Sock=" Sock)
+  (print-info "disconnect-client" (pack "Sock=" Sock))
   (del (assoc Sock (: clients)) (:: clients))
   (epoll~ctl (: fd-ep)
                   epoll~DEL
                   Sock
                   0)
-  (disconnect-sock Sock))
+  (socket~end Sock))
 
 
 (dm accept-sock> (Sock)
