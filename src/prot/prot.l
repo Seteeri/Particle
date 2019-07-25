@@ -54,11 +54,11 @@ Protocol should only call methods on Ipc and Objects passed to it
   * Recv length as int, then recv payload
   }#
 
-  (let Length (recv-msg-len Ipc Sock)
+  (let Len (recv-msg-len Ipc Sock)
 
-    (when Length
+    (when Len
 
-      (recv-msg-body Ipc Sock Length))))
+      (recv-msg-body Ipc Sock Len))))
 
 
 (de recv-msg-len (Ipc Sock)
@@ -75,18 +75,18 @@ Protocol should only call methods on Ipc and Objects passed to it
         (print-info "recv-msg-len" (pack "(not (= Bytes-Read=" Bytes-Read " 4))"))))))
 
 
-(de recv-msg-body (Ipc Sock Length)
+(de recv-msg-body (Ipc Sock Len)
 
   (with Ipc
   
-    (let (Length (car (struct (: ipc~buf-rd) '(I)))
-          Bytes-Read (ipc~recv-bytes> Ipc Sock T Length 'socket~MSG-WAITALL))
+    (let (Len (car (struct (: ipc~buf-rd) '(I)))
+          Bytes-Read (ipc~recv-bytes> Ipc Sock T Len 'socket~MSG-WAITALL))
 
       (if Bytes-Read
 
-        (pack (struct (: ipc~buf-rd) (cons 'C Length)))
+        (pack (struct (: ipc~buf-rd) (cons 'C Len)))
 
-        (print-info "recv-msg-body" (pack "(not (= Bytes-Read=" Bytes-Read " " Length "))"))))))
+        (print-info "recv-msg-body" (pack "(not (= Bytes-Read=" Bytes-Read " " Len "))"))))))
 
 
 # Make Sock before Msg
@@ -95,25 +95,25 @@ Protocol should only call methods on Ipc and Objects passed to it
   * Send length as int, then send body after
   }#
 
-  (let Length (length Msg)
+  (let Len (length Msg)
 
-    # Check Length does not exceed size of int?
+    # Check Len does not exceed size of int?
 
     # Make fn of Ipc?
     (with Ipc
-      (when (> Length (: ipc~sz-buf-rd))
-        (print-info "send-msg" (pack "Msg length exceeds " (: ipc~sz-buf-rd) " by " (- Length Length-Max) " bytes"))))
+      (when (> Len (: ipc~sz-buf-rd))
+        (print-info "send-msg" (pack "Msg length exceeds " (: ipc~sz-buf-rd) " by " (- Len Len-Max) " bytes"))))
 
-    (send-msg-len Ipc Sock Length)
+    (send-msg-len Ipc Sock Len)
 
-    (send-msg-body Ipc Sock Length Msg)))
+    (send-msg-body Ipc Sock Len Msg)))
           
 
-(de send-msg-len (Ipc Sock Length)
+(de send-msg-len (Ipc Sock Len)
 
   (with Ipc
 
-    (struct (: ipc~buf-wr) 'N (cons Length 4))
+    (struct (: ipc~buf-wr) 'N (cons Len 4))
 
     (let Bytes-Sent (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) 4)
 
@@ -122,13 +122,13 @@ Protocol should only call methods on Ipc and Objects passed to it
         (print-info "send-msg-len" "Failed to send")))))
 
 
-(de send-msg-body (Ipc Sock Length Body)
+(de send-msg-body (Ipc Sock Len Body)
 
   (with Ipc
   
-    (struct (: ipc~buf-wr) 'N (cons Body Length) (cons 0 1))
+    (struct (: ipc~buf-wr) 'N (cons Body Len) (cons 0 1))
     
-    (let Bytes-Sent (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) Length)
+    (let Bytes-Sent (ipc~send-bytes> Ipc Sock (: ipc~buf-wr) Len)
 
       (unless Bytes-Sent
 
@@ -183,9 +183,9 @@ Protocol should only call methods on Ipc and Objects passed to it
 (de parse-msg (Ptr)
   # TODO: Refactor this with recv-msg into single function which takes a ptr
 
-  (let Length (car (struct Ptr '(I)))
+  (let Len (car (struct Ptr '(I)))
 
-    (let (Msg (pack (struct (+ Ptr 4) (cons 'C Length)))
+    (let (Msg (pack (struct (+ Ptr 4) (cons 'C Len)))
           Data (any Msg)
           Name-Fn (get Data 1)
           Ret NIL)
@@ -195,8 +195,8 @@ Protocol should only call methods on Ipc and Objects passed to it
       # This is render specific -> move to render/conn
       (if (= Name-Fn "mc")
 
-          (setq Ret (list (list Data (+ Ptr 4 Length))
-                                (+ 4 Length (get Data 4))))
+          (setq Ret (list (list Data (+ Ptr 4 Len))
+                                (+ 4 Len (get Data 4))))
 
           (prinl (usec) " | parse-msg | UNKNOWN REQUEST! " Msg))
 
@@ -223,9 +223,9 @@ Protocol should only call methods on Ipc and Objects passed to it
 (de send-obj (Ipc Sock Obj Sz-Obj Off-Obj)
   # In Model/Render: serialize object or copy ptr, and send on socket
 
-  (let Length (cpy-to-ptr> Obj (get Ipc 'ipc~buf-wr))
+  (let Len (cpy-to-ptr> Obj (get Ipc 'ipc~buf-wr))
 
     (ipc~send-bytes> Ipc
                      Sock
                      T # buf-wr
-                     Length)))
+                     Len)))
