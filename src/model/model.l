@@ -19,6 +19,8 @@
 (scl 6)
 
 
+(def 'NAME-PID "MODEL")
+
 # C library paths
 (def 'PATH-GLYPHS "/home/user/Git/particle/src/glyphs")
 # UDS paths

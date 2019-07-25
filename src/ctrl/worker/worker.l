@@ -17,6 +17,9 @@
 # Set math precision to 6 decimals
 (scl 6)
 
+
+(def 'NAME-PID "WORKER")
+
 # Paths
 (def 'PATH-UDS-MODEL   "/tmp/protoform-model.socket")
 (def 'PATH-UDS-CONTROL "/tmp/protoform-control.socket")

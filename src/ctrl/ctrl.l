@@ -18,6 +18,8 @@
 (scl 6)
 
 
+(def 'NAME-PID "CTRL")
+
 # Paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
 (def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")

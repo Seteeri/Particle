@@ -15,16 +15,16 @@
 (symbols 'input 'pico)
 
 
-# C library paths
+# Set math precision to 6 decimals
+(scl 6)
+
+
+(def 'NAME-PID "INPUT")
 
 # Paths
 (def 'PATH-UDS-MODEL  "/tmp/protoform-model.socket")
 (def 'PATH-UDS-INPUT  "/tmp/protoform-input.socket")
 (def 'PATH-UDS-RENDER "/tmp/protoform-render.socket")
-
-
-# Set math precision to 6 decimals
-(scl 6)
 
 
 # Wrapper libraries

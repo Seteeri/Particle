@@ -17,6 +17,9 @@ Class variables may be indicated by an upper case letter
 # Set math precision to 6 decimals
 (scl 6)
 
+
+(def 'NAME-PID "RENDER")
+
 # C library paths
 (def 'PATH-GLYPHS "/home/user/Git/particle/src/glyphs")
 # UDS paths
