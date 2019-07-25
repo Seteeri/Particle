@@ -161,6 +161,9 @@ Class variables may be indicated by an upper case letter
                      (pack "bye")
                      Sock))))
  
+    # Cleanup GL?
+    (glfw~destroy-window *window)
+    (glfw~terminate)
     (ipc~end> *ipc)
     (println "Render says bye!")
     (bye)
