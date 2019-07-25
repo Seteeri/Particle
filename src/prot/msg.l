@@ -1,46 +1,3 @@
-# RECV
-
-
-(de recv-msg (Ipc Sock)
-  #{
-  * Recv length as int, then recv payload
-  }#
-
-  (let Len (recv-msg-len Ipc Sock)
-
-    (when Len
-
-      (recv-msg-body Ipc Sock Len))))
-
-
-(de recv-msg-len (Ipc Sock)
-
-  (with Ipc
-
-    # Always returns 4 or NIL
-    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
-
-      (if Bytes-Recv
-
-        Bytes-Recv
-
-        (print-info "recv-msg-len" (pack "(not (= Bytes-Recv=" Bytes-Recv " 4))"))))))
-
-
-(de recv-msg-body (Ipc Sock Len)
-
-  (with Ipc
-  
-    (let (Len (car (struct (: ipc~buf-rd) '(I)))
-          Bytes-Recv (ipc~recv-bytes> Ipc Sock T Len 'socket~MSG-WAITALL))
-
-      (if Bytes-Recv
-
-        (pack (struct (: ipc~buf-rd) (cons 'C Len)))
-
-        (print-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))"))))))
-
-
 # SEND
 
 
@@ -163,3 +120,46 @@
           (prinl (usec) " | parse-msg | UNKNOWN REQUEST! " Msg))
 
       Ret)))
+
+
+# RECV
+
+
+(de recv-msg (Ipc Sock)
+  #{
+  * Recv length as int, then recv payload
+  }#
+
+  (let Len (recv-msg-len Ipc Sock)
+
+    (when Len
+
+      (recv-msg-body Ipc Sock Len))))
+
+
+(de recv-msg-len (Ipc Sock)
+
+  (with Ipc
+
+    # Always returns 4 or NIL
+    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T 4 'socket~MSG-WAITALL)
+
+      (if Bytes-Recv
+
+        Bytes-Recv
+
+        (print-info "recv-msg-len" (pack "(not (= Bytes-Recv=" Bytes-Recv " 4))"))))))
+
+
+(de recv-msg-body (Ipc Sock Len)
+
+  (with Ipc
+  
+    (let (Len (car (struct (: ipc~buf-rd) '(I)))
+          Bytes-Recv (ipc~recv-bytes> Ipc Sock T Len 'socket~MSG-WAITALL))
+
+      (if Bytes-Recv
+
+        (pack (struct (: ipc~buf-rd) (cons 'C Len)))
+
+        (print-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))"))))))      
