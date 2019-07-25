@@ -2,18 +2,29 @@
 
 
 # Make Sock before Msg
-(de send-msg (Ipc Sock Body Bin)
+(de send-msg (Ipc Sock Body Bin Sz-Bin)
   #{
   * Send len-msg, len-bin, msg, bin
+  * Later could use single call by writing all data to ptr then call send
   }#
+
+  # Check Len does not exceed size of int?
 
   (let Len (length Body)
 
-    # Check Len does not exceed size of int?
-
     (when (send-msg-len Ipc Sock Len)
 
-      (send-msg-body Ipc Sock Len Body))))
+      (if Bin
+
+        (send-msg-len Ipc Sock Sz-Bin)
+
+        (send-msg-len Ipc Sock 0)
+
+      (send-msg-body Ipc Sock Len Body)
+
+      (when Bin
+
+          (send-msg-bin Ipc Sock Sz-Bin Bin))))))
           
 
 (de send-msg-len (Ipc Sock Len)
