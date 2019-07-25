@@ -57,7 +57,7 @@
 
 (de init-ctrl ()
 
-  (let (Argv (argv))
+  (let Argv (argv)
 
     (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
           *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
