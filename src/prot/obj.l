@@ -1,15 +1,12 @@
 (de recv-obj (Ipc Sock Obj Sz-Obj Off-Obj)
   # In Model/Render: recv object on socket, and deserialize to obj or cpy ptr
 
-  (ipc~recv-bytes> Ipc
-                   Sock
-                   T  # buf-rd
-                   Sz-Obj)
+  (when (ipc~recv-bytes> Ipc Sock T Sz-Obj)
 
-  # Rename to paste
-  (cpy-to-obj> Obj (get Ipc 'ipc~buf-rd))
+    # Rename to paste
+    (cpy-to-obj> Obj (get Ipc 'ipc~buf-rd)))
 
-  Obj)
+    Obj)
 
 
 (de send-obj (Ipc Sock Obj Sz-Obj Off-Obj)
