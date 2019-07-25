@@ -148,8 +148,6 @@
 
   }#
 
-  #(flush-msgs *ipc Sock process-msg)
-
   (let (Msg (recv-msg *ipc Sock)
         Data (any Msg)
         Name-Fn (get Data 1))

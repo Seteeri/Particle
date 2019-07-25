@@ -98,7 +98,10 @@ own proc
 
       # Use taskset to assign processes here
 
-      (println *proc-render *proc-model *proc-input *proc-ctrl *proc-work-1)
+      (prinl "Render: " *proc-render)
+      (prinl "Input: " *proc-input)
+      (prinl "Ctrl: " *proc-ctrl)
+      (prinl "Worker: " *proc-work-1)
                   
       (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read))
       #(prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))

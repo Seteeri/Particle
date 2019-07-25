@@ -125,10 +125,10 @@ Class variables may be indicated by an upper case letter
   (glfw~make-context-current *window)
 
   (glfw~set-window-size-callback *window
-                                 (lisp 'window-callback handle-window-size))
+                                 (lisp 'window-callback handle-window-size)))
 
-  (glfw~set-key-callback *window
-                         (lisp 'key-callback handle-key)))
+  #(glfw~set-key-callback *window
+  #                       (lisp 'key-callback handle-key))
 
 
 (de handle-window-size (Window Width Height)

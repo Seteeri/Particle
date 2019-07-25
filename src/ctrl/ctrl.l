@@ -95,16 +95,26 @@
 (de handle-worker (Sock)
 
   (let (Msg (recv-msg *ipc Sock)
-        Data (any Msg))
+        Data (any Msg)
+        Name (name Data))
     
-    # Poss handle finish messages also
-    
-    (let Msg (pop '*q-msg)
-      (if Msg
-        (send-msg *ipc Msg Sock)
-        (queue '*q-worker Sock)))
+    # Handle other messages
+    (cond ((= Name "rdy")    
+           (let Msg (pop '*q-msg)
+             (if Msg
+               (send-msg *ipc Msg Sock)
+               (queue '*q-worker Sock))))
+               
+          ((= Name "bye")
+            # Send to all workers
+           (ipc~disconnect-sock Sock)
+           (ipc~end-ipc> *ipc)
+           (bye))
+           
+          (T
+           (prinl (usec) " | CTRL  | handle-worker | UNKNOWN REQUEST! " Msg)))           
         
-    #(prinl (usec) " | CTRL   | handle-ctrl | " Msg)
+    #(prinl (usec) " | CTRL   | handle-worker | " Msg)
     
     T))
     

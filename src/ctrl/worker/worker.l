@@ -74,7 +74,7 @@
                      
     (reg-conns *ipc ID-C))                     
                       
-  (send-msg *ipc "RDY" (ipc~get-fd> *ipc "CONTROL"))
+  (send-msg *ipc "rdy" (ipc~get-fd> *ipc "CONTROL"))
 
   (for N *verts-max
     (let Off (get-vert-off N)
@@ -124,15 +124,20 @@
            (render-pvm *ipc *projview (get Data 2) (get Data 3))
            T)
           
-          # Handle recv updates from model
-           
+          ((= Name "bye")
+           # Send bye to ctrl which will send to all workers/render/model
+           (send-msg *ipc "bye" Sock)
+           (ipc~disconnect-sock Sock)
+           (ipc~end-ipc> *ipc)
+           (bye))
+                     
           (T
            T))
                
     # Send ready when complete
-    (send-msg *ipc "RDY" Sock)
+    (send-msg *ipc "rdy" Sock)
     
-    #(prinl (usec) " | WORKER/" *Pid " | Worker RDY")
+    #(prinl (usec) " | WORKER/" *Pid " | Worker ready")
     
     T))
       
@@ -140,6 +145,8 @@
 (de handle-model (Sock)
 
   (let Msg (recv-msg *ipc Sock)
+
+    # Handle recv updates from model
 
     (when NIL
       (prinl Msg))))
