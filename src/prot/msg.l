@@ -11,11 +11,6 @@
 
     # Check Len does not exceed size of int?
 
-    # Make fn of Ipc?
-    (with Ipc
-      (when (> Len (: ipc~sz-buf-rd))
-        (print-info "send-msg" (pack "Msg length exceeds " (: ipc~sz-buf-rd) " by " (- Len Len-Max) " bytes"))))
-
     (when (send-msg-len Ipc Sock Len)
 
       (send-msg-body Ipc Sock Len Msg))))
