@@ -25,28 +25,28 @@ Naming Conventions:
 
 
 (de viewport (X Y Width Height)
-    (native "libGLESv2.so" "glViewport" NIL X Y Width Height))
+  (native "libGLESv2.so" "glViewport" NIL X Y Width Height))
 
 
 (de enable (Cap)
-    (native "libGLESv2.so" "glEnable" NIL Cap))
+  (native "libGLESv2.so" "glEnable" NIL Cap))
 
 
 (de disable (Cap)
-    (native "libGLESv2.so" "glDisable" NIL Cap))
+  (native "libGLESv2.so" "glDisable" NIL Cap))
 
 
 (de blend-func (Sfactor Dfactor)
-    (native "libGLESv2.so" "glBlendFunc" NIL Sfactor Dfactor))
+  (native "libGLESv2.so" "glBlendFunc" NIL Sfactor Dfactor))
 
 
 #Why does "clear" not work?
 (de clear (Mask)
-    (native "libGLESv2.so" "glClear" NIL Mask))
+  (native "libGLESv2.so" "glClear" NIL Mask))
 
 
 (de clear-color (Red Green Blue Alpha)
-    (native "libGLESv2.so" "glClearColor" NIL
+  (native "libGLESv2.so" "glClearColor" NIL
 	    (cons Red -1.0)
 	    (cons Green -1.0)
 	    (cons Blue -1.0)
@@ -65,7 +65,7 @@ Naming Conventions:
 
 
 (de get-boolean-v (Pname Data)
-    (native "libGLESv2.so" "glGetBooleanv" NIL Pname '(Ret (1) . 0))
+  (native "libGLESv2.so" "glGetBooleanv" NIL Pname '(Ret (1) . 0))
     Ret)
 
 
@@ -76,265 +76,261 @@ Naming Conventions:
 
 
 (de get-boolean-v (Pname Data)
-    (if Data
-	(native "libGLESv2.so" "glGetBooleanv" NIL Pname Data)
-	(let Data-2 (native "@" "malloc" 'N 2)
-	     (native "libGLESv2.so" "glGetBooleanv" NIL Pname Data-2)
-	     (let Ret (struct Data-2 'B)
-		  (native "@" "free" NIL Data-2)
-		  Ret))))
+  (if Data
+    (native "libGLESv2.so" "glGetBooleanv" NIL Pname Data)
+    (let Data-2 (native "@" "malloc" 'N 2)
+      (native "libGLESv2.so" "glGetBooleanv" NIL Pname Data-2)
+      (let Ret (struct Data-2 'B)
+        (native "@" "free" NIL Data-2)
+        Ret))))
 
 
 (de get-float-v (Pname Data)
-    (native "libGLESv2.so" "glGetFloatv" NIL Pname Data))
+  (native "libGLESv2.so" "glGetFloatv" NIL Pname Data))
 
 
 (de get-integer-v (Pname Data)
-    (native "libGLESv2.so" "glGetIntegerv" NIL Pname Data))
+  (native "libGLESv2.so" "glGetIntegerv" NIL Pname Data))
 
 
 (de get-integer64-v (Pname Data)
-    (native "libGLESv2.so" "glGetInteger64v" NIL Pname Data))
+  (native "libGLESv2.so" "glGetInteger64v" NIL Pname Data))
 
 
 (de get-integer-i-v (Target Index Data)
-    (native "libGLESv2.so" "glGetIntegeri_v" NIL Target Index Data))
+  (native "libGLESv2.so" "glGetIntegeri_v" NIL Target Index Data))
 
 
 (de get-integer64-i-v (Target Index Data)
-    (native "libGLESv2.so" "glGetInteger64i_v" NIL Target Index Data))
+  (native "libGLESv2.so" "glGetInteger64i_v" NIL Target Index Data))
 
 
 (de get-string (Name)
-    (native "libGLESv2.so" "glGetString" 'N Name))
+  (native "libGLESv2.so" "glGetString" 'N Name))
 
 
 (de get-string-i (Name Index)
-    (native "libGLESv2.so" "glGetStringi" 'N Name Index))
+  (native "libGLESv2.so" "glGetStringi" 'N Name Index))
 
 #{
 (de gen-buffers (N)
     (let Buffers (native "@" "malloc" 'N (* 4 N))
 	 (native "libGLESv2.so" "glGenBuffers" NIL N Buffers)
 	 (let Ret (struct Buffers '())
-	      (native "@" "free" NIL Buffers)
+	    (native "@" "free" NIL Buffers)
 	      Ret)))
 }#
 
 (de gen-buffers (N)
     #TODO: Use more idiomatic method
-    (native "libGLESv2.so" "glGenBuffers" NIL N (list 'Buffers (cons (* 4 N) 'I N)))
+  (native "libGLESv2.so" "glGenBuffers" NIL N (list 'Buffers (cons (* 4 N) 'I N)))
     Buffers)
 
 
 (de bind-buffer (Target Buffer)
-    (native "libGLESv2.so" "glBindBuffer" NIL Target Buffer))
+  (native "libGLESv2.so" "glBindBuffer" NIL Target Buffer))
 
 
 (de bind-texture (Target Texture)
-    (native "libGLESv2.so" "glBindTexture" NIL Target Texture))
+  (native "libGLESv2.so" "glBindTexture" NIL Target Texture))
 
 
 (de bind-buffer-base (Target Index Buffer)
-    (native "libGLESv2.so" "glBindBufferBase" NIL Target Index Buffer))
+  (native "libGLESv2.so" "glBindBufferBase" NIL Target Index Buffer))
 
 
 (de buffer-storage (Target Size Data Flags)
-    (native "libGLESv2.so" *glBufferStorage NIL Target Size Data Flags))
+  (native "libGLESv2.so" *glBufferStorage NIL Target Size Data Flags))
 
 
 (de unmap-buffer (Target)
-    #Returns GLboolean = 1 byte
-    (native "libGLESv2.so" "glUnmapBuffer" 'B Target))
+  #Returns GLboolean = 1 byte
+  (native "libGLESv2.so" "glUnmapBuffer" 'B Target))
 
 
 (de map-buffer-range (Target Offset Length Access)
-    (native "libGLESv2.so" "glMapBufferRange" 'N Target Offset Length Access))
+  (native "libGLESv2.so" "glMapBufferRange" 'N Target Offset Length Access))
 
 
 (de buffer-data (Target Size Data Usage)
-    (native "libGLESv2.so" "glBufferData" Target Size Data Usage))
+  (native "libGLESv2.so" "glBufferData" Target Size Data Usage))
 
 
 (de active-texture (Texture)
-    (native "libGLESv2.so" "glActiveTexture" NIL Texture))
+  (native "libGLESv2.so" "glActiveTexture" NIL Texture))
 
 
 (de tex-buffer (Target Internal-format Buffer)
-    (native "libGLESv2.so" "glTexBuffer" NIL Target Internal-format Buffer))
+  (native "libGLESv2.so" "glTexBuffer" NIL Target Internal-format Buffer))
 
 
 (de create-program ()
-    (native "libGLESv2.so" "glCreateProgram" 'I))
+  (native "libGLESv2.so" "glCreateProgram" 'I))
 
 
 (de delete-program (Program)
-    (native "libGLESv2.so" "glDeleteProgram" NIL Program))
+  (native "libGLESv2.so" "glDeleteProgram" NIL Program))
 
 
 (de use-program (Program)
-    (native "libGLESv2.so" "glUseProgram" NIL Program))
+  (native "libGLESv2.so" "glUseProgram" NIL Program))
 
 
 (de link-program (Program)
-    (native "libGLESv2.so" "glLinkProgram" NIL Program))
+  (native "libGLESv2.so" "glLinkProgram" NIL Program))
 
 
 (de get-program-iv (Program Pname Params)
-    #TODO: Need not use list for struct
-    (native "libGLESv2.so" "glGetProgramiv" NIL Program Pname (list 'Params (cons 4 'I 1)))
+  #TODO: Need not use list for struct
+  (native "libGLESv2.so" "glGetProgramiv" NIL Program Pname (list 'Params (cons 4 'I 1)))
     (car Params))
 
 
 (de get-info-log (Max-Length Fn Target)
-    (when (> Max-Length 0)
-      (let (Info-Log   (native "@" "malloc" 'N (+ Max-Length 1))
-	    Length     (native "@" "malloc" 'N 4))
-	(native "libGLESv2.so" Fn NIL Target Max-Length Length Info-Log)
-	#Length does not include null char
-	(when (> (car (struct Length '(I))) 0)
-	  #String is already null-terminated
-	  (let (Ret (struct Info-Log 'S))
-	    (native "@" "free" NIL Length)
-	    (native "@" "free" NIL Info-Log)
-	    Ret)))))
+  (when (> Max-Length 0)
+    (let (Info-Log   (native "@" "malloc" 'N (+ Max-Length 1))
+          Length   (native "@" "malloc" 'N 4))
+      (native "libGLESv2.so" Fn NIL Target Max-Length Length Info-Log)
+      #Length does not include null char
+      (when (> (car (struct Length '(I))) 0)
+        #String is already null-terminated
+        (let Ret (struct Info-Log 'S)
+          (native "@" "free" NIL Length)
+          (native "@" "free" NIL Info-Log)
+          Ret)))))
 
 
 (de get-program-info-log-2 (Program)
-    (get-info-log (get-program-iv Program INFO-LOG-LENGTH)
-		  "glGetProgramInfoLog"
-		  Program))
+  (get-info-log (get-program-iv Program INFO-LOG-LENGTH)
+    "glGetProgramInfoLog"
+    Program))
 
 
 (de create-shader (Shader-type)
-    (native "libGLESv2.so" "glCreateShader" 'I Shader-type))
+  (native "libGLESv2.so" "glCreateShader" 'I Shader-type))
 
 
 (de compile-shader (Shader)
-    (native "libGLESv2.so" "glCompileShader" NIL Shader))
+  (native "libGLESv2.so" "glCompileShader" NIL Shader))
 
 
 (de get-shader-iv (Shader Pname Params)
-    #TODO: Need not use list for struct
-    (native "libGLESv2.so" "glGetShaderiv" NIL Shader Pname (list 'Params (cons 4 'I 1)))
+  #TODO: Need not use list for struct
+  (native "libGLESv2.so" "glGetShaderiv" NIL Shader Pname (list 'Params (cons 4 'I 1)))
     (car Params))
 
 
 (de get-shader-info-log-2 (Shader)
-    (get-info-log (get-shader-iv Shader INFO-LOG-LENGTH)
-		  "glGetShaderInfoLog"
-		  Shader))
+  (get-info-log (get-shader-iv Shader INFO-LOG-LENGTH)
+                "glGetShaderInfoLog"
+                Shader))
 
 
 (de attach-shader (Program Shader)
-    (native "libGLESv2.so" "glAttachShader" NIL Program Shader))
+  (native "libGLESv2.so" "glAttachShader" NIL Program Shader))
 
 
 (de shader-source-2 (Shader Paths)
-    #{
-    * Read paths into string arrays:
-    count = number in array
-    string = array of strs
-    length = array of corresponding str len
-    }#
-    (let (Count  (length Paths)
-	  String (native "@" "malloc" 'N (* Count 8))
-	  Length (native "@" "malloc" 'N (* Count 4))
-	  Ptr-Str String
-	  Ptr-Len Length
-	  Lst-Free ())
+  #{
+  * Read paths into string arrays:
+  count = number in array
+  string = array of strs
+  length = array of corresponding str len
+  }#
+  (let (Count  (length Paths)
+        String (native "@" "malloc" 'N (* Count 8))
+        Length (native "@" "malloc" 'N (* Count 4))
+        Ptr-Str String
+        Ptr-Len Length
+        Lst-Free ())
 
-      (for Path Paths
-	   
-	   #Get file size from stat then allocate
-	   #Poss to use mmap to minimize intermittent allocation
+    (for Path Paths
+   
+       #Get file size from stat then allocate
+       #Poss to use mmap to minimize intermittent allocation
 
-	   (let (Sz-f    (stat-size Path)
-		 Buf     (native "@" "malloc" 'N (+ Sz-f 1)) # + null character
-		 File    (native "@" "fopen" 'I Path "rb"))
-	     
-	     (native "@" "fread"  NIL Buf Sz-f 1 File)
-	     (native "@" "fclose" NIL File)
-	     # Null terminate after reading
-	     (struct (+ Buf Sz-f) 'N (cons 0 1))
-	     
-	     #Set String ptr to point to Buffer
-	     (struct Ptr-Str 'N (cons Buf 8))
+       (let (Sz-f    (stat-size Path)
+             Buf   (native "@" "malloc" 'N (+ Sz-f 1)) # + null character
+             File  (native "@" "fopen" 'I Path "rb"))
+               
+             (native "@" "fread"  NIL Buf Sz-f 1 File)
+             (native "@" "fclose" NIL File)
+             # Null terminate after reading
+             (struct (+ Buf Sz-f) 'N (cons 0 1))
+             
+             #Set String ptr to point to Buffer
+             (struct Ptr-Str 'N (cons Buf 8))
 
-	     #Set Buffer Length ptr (w/o null char)
-	     (struct Ptr-Len 'N (cons Sz-f 4))
-	     
-	     #Push ptrs to lst-free
-	     (push 'Lst-Free Buf)
+             #Set Buffer Length ptr (w/o null char)
+             (struct Ptr-Len 'N (cons Sz-f 4))
+             
+             #Push ptrs to lst-free
+             (push 'Lst-Free Buf)
 
-	     #(prinl "shader-source-2 | fread " Path " " Sz-f " bytes")
-	     (inc 'Ptr-Str 8)
-	     (inc 'Ptr-Len 4)))
+             #(prinl "shader-source-2 | fread " Path " " Sz-f " bytes")
+             (inc 'Ptr-Str 8)
+             (inc 'Ptr-Len 4)))
 
-      #(prinl "CALL glShaderSource")
-
-      #TODO: Fix using Length
-      (native "libGLESv2.so" "glShaderSource" NIL Shader Count String Length)
-
-      #(prinl "DONE glShaderSource")
+     #TODO: Fix using Length
+     (native "libGLESv2.so" "glShaderSource" NIL Shader Count String Length)
       
-      #Free memory
-      (for Ptr Lst-Free
-	   (native "@" "free" NIL Ptr))
-      (native "@" "free" NIL String)
-      (native "@" "free" NIL Length)))
+    #Free memory
+    (for Ptr Lst-Free
+      (native "@" "free" NIL Ptr))
+      
+    (native "@" "free" NIL String)
+    (native "@" "free" NIL Length)))
 
 
 (de stat-size (Path)
-    (pipe
-     (call "stat" "--format" "\"%s\"" Path)
-     (format (read))))
+  (pipe (call "stat" "--format" "\"%s\"" Path)
+        (format (read))))
 
 
 (de delete-shader (Shader)
-    (native "libGLESv2.so" "glDeleteShader" NIL Shader))
+  (native "libGLESv2.so" "glDeleteShader" NIL Shader))
 
 
 (de gen-vertex-arrays (N)
-    (native "libGLESv2.so" "glGenVertexArrays" NIL N (list 'Arrays (cons (* 4 N) 'I N)))
+  (native "libGLESv2.so" "glGenVertexArrays" NIL N (list 'Arrays (cons (* 4 N) 'I N)))
     Arrays)
 
 
 (de bind-vertex-array (Array)
-    (native "libGLESv2.so" "glBindVertexArray" NIL Array))
+  (native "libGLESv2.so" "glBindVertexArray" NIL Array))
 
 
 (de draw-elements-indirect (Mode Type Indirect)
-    (native "libGLESv2.so" "glDrawElementsIndirect" NIL Mode Type Indirect))
+  (native "libGLESv2.so" "glDrawElementsIndirect" NIL Mode Type Indirect))
 
 
 (de fence-sync (Condition Flags)
-    (native "libGLESv2.so" "glFenceSync" 'N Condition Flags))
+  (native "libGLESv2.so" "glFenceSync" 'N Condition Flags))
 
 
 (de delete-sync (Sync)
-    (native "libGLESv2.so" "glDeleteSync" NIL Sync))
+  (native "libGLESv2.so" "glDeleteSync" NIL Sync))
 
 
 (de client-wait-sync (Sync Flags Timeout)
-    (native "libGLESv2.so" "glClientWaitSync" 'I Sync Flags Timeout))
+  (native "libGLESv2.so" "glClientWaitSync" 'I Sync Flags Timeout))
 
 
 (de client-wait (Sync)
   #Check first, then flush only if necessary
   (let (Flags 0
-	Timeout 0
-	Return NIL)
-    (loop
-       (setq Return (client-wait-sync Sync Flags Timeout))
+        Timeout 0
+        Return NIL)
+          (loop
+             (setq Return (client-wait-sync Sync Flags Timeout))
 
-       #Return when this is satisfied
-       #WAIT-FAILED also?
-       (T (or (= Return ALREADY-SIGNALED)
-	      (= Return CONDITION-SATISFIED)))
-       
-       (setq Flags   SYNC-FLUSH-COMMANDS-BIT)
-       (setq Timeout TIMEOUT-IGNORED))))
+             #Return when this is satisfied
+             #WAIT-FAILED also?
+             (T (or (= Return ALREADY-SIGNALED)
+              (= Return CONDITION-SATISFIED)))
+             
+             (setq Flags   SYNC-FLUSH-COMMANDS-BIT)
+             (setq Timeout TIMEOUT-IGNORED))))
 
 
 (mapc '((X) (def (car X) (hex (cadr X))))
