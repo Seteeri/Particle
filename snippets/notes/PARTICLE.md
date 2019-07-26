@@ -142,20 +142,17 @@ Store DAGs as binary trees?
      * Refactor flush-msgs and use across all processes [Done]
 
    * Refactor IPC
+     * Make epoll event like timerfd
      * Refactor IPC clients
      * Fix removing clients/conns
-     * Make epoll event like timerfd
 
    * Implement string/atom/list, eval functionality
      * Implmenet drawing [Done]
      * Implement interface/controls
-       * Move xkb to ctrl; put event handlers in worker
+       * Move xkb to ctrl; put event handlers in worker [Done]
      * Implement operators
 
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
-     * Store in Ctrl or Worker?
-       * Or store in model and worker pulls from model
-         -> Cache would eventually result in a copy per worker
      * Use assoc list
      * Store combinations as keys
 
@@ -167,28 +164,30 @@ Store DAGs as binary trees?
 
 
 * Refactor/Fix
-
-   * Remove print msgs from gl
-
-   * Use let for deconstructing-bind and let/when [Done]
    
    * Have input send modified KEYCODE (+8)
      * Or leave this to ctrl...
 
-   * Refactor IPC and epoll handling [Done]
-
    * Instead of recompiling shaders constantly
      * https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml
 
-   * Socket change block/nonblock to T/NIL for convenience
-
-   * Refactor bindings
-     * Refactor li into subfolders
-     * Direct C calls use original C name
+   * C wrappers
+     * Use c-<fn> for native wrappers
+     * Use <fn-lisp> for lispy wrappers
 
    * Refactor namespaces
      * posix
      * mathc and more...
+
+   * Refactor li into subfolders [?]
+
+   * Remove print msgs from gl
+
+   * Use let for deconstructing-bind and let/when [Done]
+
+   * Refactor IPC and epoll handling [Done]
+
+   * Socket change block/nonblock to T/NIL for convenience [Done]
 
    * Tasks uses DAG/ptrees [Later]
      * Built on top of cons cells...

@@ -1,29 +1,51 @@
 Particle
 ========
 
+*Image to Be Inserted*
+
 > The Grid. A digital frontier. I tried to picture clusters of
 information as they moved through the computer. What did they look like?
  Ships? Motorcycles? Were the circuits like freeways? I kept dreaming of
   a world I thought I'd never see. And then one day . . .
 
 Inspired by:
-* Transformers (Beast Wars)
-* Digimon
-* Reboot
+
+* Transformers (Beast Wars), Digimon, Reboot
 * Compiz
 * Blender
 * Tron
 * Emacs
 * Lisp
 
-Particle is a 3D Lisp structured/projectional REPL. It is the implementation of my vision
-of a programmable UI to replace the desktop paradigm - a way to map our thoughts
-into the computer. It integrates concepts from CLIs, shells, REPLs, notebooks,
-WMs/DEs, creative coding, and mindmapping into a single interface.
+Particle is a 3D Lisp structured/projectional REPL. It is the implementation of
+my vision of a programmable UI to replace the desktop paradigm - a way to map
+our thoughts into the computer. It integrates concepts from CLIs, shells, REPLs,
+notebooks, WMs/DEs, creative coding, and mindmapping into a single interface.
+
+The target audience consists of programmers, power users and the like, and
+"busy" people.
+
+Ultimately, the goal of Particle is to create a Lispy userspace, while still
+maintaining backwards compatibility with the conventional desktop (Wayland) and
+the C world. This should reduce fragmentation and encourage growth by providing
+a stable base through a programming language just as C has cemented its place in
+the OS/kernel world, or how Apple uses Objective-C/Swift in its userland (I like
+to imagine if MacOS had been open-source, the computing world might be very
+different today...).
+
+Systemd has effectively rewritten the Linux userland, which depending on your
+interpretation, now provides a unified userland, which may be deemed most
+appropriate for servers and sysadmins. However, I believe for the desktop user
+and developers, it does not provide an appropriate interface, as it still relies
+on C and shell scripts through ini files, which is essentially a scripting
+analogue to C and a way to manage C processes/programs.
 
 My personal dream would be to have a consistent computing experience between
 a desktop/workstation, laptop/tablet and smartphone/PDA where information or
-objects can easily flow between devices, i.e. convergence.
+objects can easily flow between devices, i.e. convergence. This is one step
+towards that.
+
+## The Principles
 
 Particle maximizes the following principles:
 
@@ -35,12 +57,6 @@ Particle maximizes the following principles:
 These principles are shared with the underlying programming language (PicoLisp)
 and OS (BSD) to create a consistent harmonious system.
 
-Particle provides the following interfaces for the user:
-
-* A Lispy userland based on cons cells
-  * Top-down approach rather than a bottom-up approach
-* Backwards compatibility with the conventional desktop (X11)
-
 Future plans include building the userland upon Dragonfly BSD, although
 current development is occuring on Arch Linux/Sway.
 
@@ -49,10 +65,6 @@ overcome including writing a compatibility layer like LinuxKPI to reuse linux
 drivers. Initially, specific hardware or a SOC with adequate performance could
 be targeted to provide a suitable base. It begs the question as to how useful a
 Lisp at the OS level would be (past Lisp Machines may provide an answer...).
-
-The target audience consists of programmers, power users and the like,
-particularly intelligence analysis.
-
 
 ## The Inspiration
 
@@ -89,10 +101,6 @@ particularly intelligence analysis.
 
 ## The Interface
 
-* Top-down approach
-  * First step - UI/REPL/DE/WM
-  * Second step - init integration
-  * Third step - kernel integration
 * Built around DAG/trees  - common pattern across domains:
   * HTML/DOM
   * Task management
@@ -128,35 +136,36 @@ particularly intelligence analysis.
 
 ## The Roadmap
 
-Interactive Core
-1. REPL
+1. Interactive Core (REPL)
 2. Wayland Integration
-   * Web remains accessible through Wayland/DE -> browser
-3. Widget toolkit (vertex-based)
-
-Desktop Functionality
-1. Media Functionality
-   * FFMPEG for media - images, video, audio
-   * Integrate GEGL? Image/graphicsmagick? etc...
-2. WebKit Integration
-   * Build around Webkit like Next
+   * Web remains accessible through Wayland/DE -> Browser
+3. Widget Toolkit (Vertex-based)
+4. Desktop Functionality
+   1. Media
+      * FFMPEG for media - images, video, audio
+      * Integrate GEGL? Image/graphicsmagick? etc...
+   2. WebKit Integration
+      * Build around Webkit like Next
+5. Port Userspace Tools/Libraries
+   1. Media - FFmpeg huge so focus on commonly used *open* image/video/audio formats
+      * BMP, GIF, JPEG/2000, PNG, WebP
+      * FLAC, MP3, Vorbis, Opus
+      * Theora, Dirac
+      * Ogg, MKV, WebM
+      * glTF, COLLADA
+   2. Toybox (Toolchain)
+6. JIT - last piece of the puzzle but also the most laborious
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
 2. Power mode
 
 Future Ideas
-* Native Library Ports:
-  * Commonly used *open* image/video/audio formats
-    * BMP, GIF, JPEG/2000, PNG, WebP
-    * FLAC, MP3, Vorbis, Opus
-    * Theora, Dirac
-    * Ogg, MKV, WebM
-    * glTF, COLLADA, OpenGEX
 * Tiled forward rendering (Forward+)
   * Clustered -> volumetric forward shading
 * Augmented reality through OpenCV
 * Convergence...
+* PilOS bootloader...
 
 ## The Requirements
 
