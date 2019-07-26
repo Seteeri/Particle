@@ -156,6 +156,8 @@ Store DAGs as binary trees?
      * Use assoc list
      * Store combinations as keys
 
+   * Implement DRM backend
+
    * Implement Wayland [Wed/Thurs]
      * Setup tiles for 6 windows = 3 col, 2 row
      * Proof of concept working with eval already
