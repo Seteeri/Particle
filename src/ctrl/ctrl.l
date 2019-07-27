@@ -79,7 +79,6 @@
   (setq *xkb (new '(+Xkb)))
 
   (setq *timerfd (new '(timerfd~+Timerfd)))
-  (print-info "init-ctrl" (pack "Add timerfd to epoll: " (get *timerfd 'timerfd~fd) " " (get *ipc 'ipc~fd-ep)))
   (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN))
 
 

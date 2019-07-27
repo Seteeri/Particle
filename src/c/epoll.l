@@ -1,6 +1,6 @@
 (symbols 'epoll 'pico)
 
-(local) (create ctl wait)
+(local) (create ctl wait fd)
 
 #enum events
 (def 'IN (hex "001"))
@@ -42,10 +42,11 @@
 #For convenience
 (def 'BAD (| IN ERR HUP RDHUP))
 
-(def 'SIZE-EVENT 12)
+(def 'SZ-EVENT 12)
+
 
 (de make-event (Cnt)
-  (native "@" "calloc" 'N 1 (* 12 Cnt)))
+  (native "@" "malloc" 'N (* 12 Cnt)))
 
 
 (de create (Size)
@@ -74,4 +75,26 @@
 
 
 (de get-event (Events Cnt)
-  (struct (+ Events (* (- Cnt 1) SIZE-EVENT)) '(I I)))
+  (struct (+ Events (* (- Cnt 1) SZ-EVENT)) '(I I)))
+
+
+(class +Epoll)
+(dm T (Evs-Max)
+  (=: fd (create 1))
+  (=: evs-max Evs-Max)
+  (=: evs (make-event (: evs-max))))
+
+(dm end> ()
+  (native "@" "free" NIL (: evs)))
+
+(dm ctl> (Op Fd Flags)
+  (ctl (: fd) Op Fd Flags))
+
+(dm wait> (Timeout)
+  (wait (: fd) (: evs) (: evs-max) Timeout))
+
+(dm get-events> (Cnt)
+  (let Evs ()
+    (for I Cnt
+      (push 'Evs (get (get-event (: evs) I) 2)))
+    (reverse Evs)))

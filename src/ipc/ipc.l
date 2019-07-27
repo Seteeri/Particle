@@ -34,10 +34,8 @@ Handle bad accept sock
 
   (=: debug-ipc T)
 
-  # Ideally, ep-cnt = number of connections to avoid excessive epoll-wait calls
-  (=: fd-ep  (epoll~create 1))
-  (=: cnt-ep  16)
-  (=: evs-ep (epoll~make-event (: cnt-ep)))
+  # Ideally, cnt = number of connections to avoid excessive epoll-wait calls
+  (=: ep (new '(epoll~+Epoll) 16))
 
   # Start simple - 1 pair for all sockets
   # Later, could do per connection and use as cache...
@@ -75,10 +73,10 @@ Handle bad accept sock
   (=: listener (socket~listen-sock Path-listener 
                                    Nonblock-listener 
                                    64))
-  (epoll~ctl (: fd-ep)
-             epoll~ADD
-             (: listener)
-             epoll~BAD))
+  (epoll~ctl> (: ep)
+              epoll~ADD
+              (: listener)
+              epoll~BAD))
 
 
 (dm init-conns> (Conns)
@@ -98,10 +96,10 @@ Handle bad accept sock
   # Make class for this? -> Connection
   }#
   
-  (epoll~ctl (: fd-ep)
-             epoll~ADD
-             Sock
-             (if Flags Flags epoll~BAD))
+  (epoll~ctl> (: ep)
+              epoll~ADD
+              Sock
+              (if Flags Flags epoll~BAD))
   
   # SIMPLIFY:
   #(push1 (:: conns)    (cons Sock (list ID-S Handler)))
@@ -115,7 +113,8 @@ Handle bad accept sock
 
   (native "@" "free" NIL (: buf-rd))
   (native "@" "free" NIL (: buf-wr))
-  (native "@" "free" NIL (: evs-ep))
+
+  (end> (: ep))
   
   (when (: listener)   (socket~end (: listener)))
   (for Client (: clients)
@@ -134,10 +133,10 @@ Handle bad accept sock
 
   (print-info "disconnect-client" (pack "Sock=" Sock))
   (del (assoc Sock (: clients)) (:: clients))
-  (epoll~ctl (: fd-ep)
-                  epoll~DEL
-                  Sock
-                  0)
+  (epoll~ctl> (: ep)
+              epoll~DEL
+              Sock
+              0)
   (socket~end Sock))
 
 
@@ -220,19 +219,12 @@ Handle bad accept sock
   * returns event count
   }#
            
-  (let Cnt (epoll~wait (: fd-ep)
-                            (: evs-ep)
-                            (: cnt-ep)
-                            Timeout)
-    (for I Cnt
-                            
-      (let (Ep-Events (epoll~get-event (: evs-ep) I)
-            Fd        (get Ep-Events 2)) # Evs = 1
+  (let Cnt (epoll~wait> (: ep) Timeout)
 
-        #(prinl *Pid " ipc~poll> " Fd " " (: listener))
+    (for Fd (epoll~get-events> (: ep) Cnt)
 
-        (if (= Fd (: listener))
-            (accept-sock> This Fd)
-            (dispatch-handler-conn> This Fd))))
-           
+      (if (= Fd (: listener))
+          (accept-sock> This Fd)
+          (dispatch-handler-conn> This Fd)))
+
     Cnt))
