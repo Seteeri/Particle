@@ -39,9 +39,9 @@ Handle bad accept sock
 
   # Start simple - 1 pair for all sockets
   # Later, could do per connection and use as cache...
-  (=: sz-buf-rd (socket~read-rmem-default))
+  (=: sz-buf-rd (sock~read-rmem-default))
   (=: buf-rd    (native "@" "malloc" 'N (: sz-buf-rd)))
-  (=: sz-buf-wr (socket~read-wmem-default))
+  (=: sz-buf-wr (sock~read-wmem-default))
   (=: buf-wr    (native "@" "malloc" 'N (: sz-buf-rd)))
 
   # REFACTOR/TODO:
@@ -70,9 +70,9 @@ Handle bad accept sock
 
 (dm init-listener> ()
 
-  (=: listener (socket~listen-sock Path-listener 
-                                   Nonblock-listener 
-                                   64))
+  (=: listener (sock~listen Path-listener 
+                            Nonblock-listener 
+                            64))
   (epoll~ctl> (: ep)
               epoll~ADD
               (: listener)
@@ -84,7 +84,7 @@ Handle bad accept sock
   (for Conn Conns
       
       (let ((Path Nonblock Handler ID-S) Conn
-            Sock     (socket~connect-sock Path Nonblock *ms-retry))
+            Sock                         (sock~connect-sock Path Nonblock *ms-retry))
                                 
         (add-conn> This Sock ID-S Handler)
 
@@ -114,19 +114,19 @@ Handle bad accept sock
   (native "@" "free" NIL (: buf-rd))
   (native "@" "free" NIL (: buf-wr))
 
-  (end> (: ep))
+  (epoll~end> (: ep))
   
-  (when (: listener)   (socket~end (: listener)))
+  (when (: listener)   (sock~end (: listener)))
   (for Client (: clients)
-    (socket~end (car Client)))
+    (sock~end (car Client)))
 
   (when (: conns)
     (for Conn (: conns)
-      (socket~end (car Conn)))))
+      (sock~end (car Conn)))))
 
 
 (de disconnect-sock (Sock)
-  (socket~end Sock))
+  (sock~end Sock))
 
 
 (dm disconnect-client> (Sock)
@@ -137,12 +137,12 @@ Handle bad accept sock
               epoll~DEL
               Sock
               0)
-  (socket~end Sock))
+  (sock~end Sock))
 
 
 (dm accept-sock> (Sock)
 
-  (let Client (socket~accept-4 Sock 'block)
+  (let Client (sock~accept Sock 'block)
 
     (when (<= Client 0)
       (print-info "ipc~accept-sock" (pack "Client=" Client)))
@@ -156,10 +156,10 @@ Handle bad accept sock
   * If msg too long, send will fail and no data will be buffered
   }#
 
-  (let Bytes-Sent (socket~send-fd Sock
-                                  (if (num? Buf) Buf (: buf-wr))
-                                  (if (num? Sz)  Sz  (: sz-buf-wr))
-                                  (if (num? Flags) Flags 0))
+  (let Bytes-Sent (sock~send Sock
+                             (if (num? Buf) Buf (: buf-wr))
+                             (if (num? Sz)  Sz  (: sz-buf-wr))
+                             (if (num? Flags) Flags 0))
      (case Bytes-Sent
      
         # Orderly shutdown
@@ -182,10 +182,10 @@ Handle bad accept sock
   * Return num or NIL
   }#
 
-  (let Bytes-Read (socket~recv Sock
-                               (if (num? Buf)   Buf (: buf-rd))
-                               (if (num? Sz)    Sz  (: sz-buf-rd))
-                               (if (num? Flags) Flags 0))
+  (let Bytes-Read (sock~recv Sock
+                             (if (num? Buf)   Buf (: buf-rd))
+                             (if (num? Sz)    Sz  (: sz-buf-rd))
+                             (if (num? Flags) Flags 0))
                                
      (case Bytes-Read
      

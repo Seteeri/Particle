@@ -1,4 +1,6 @@
-(symbols 'socket 'pico)
+(symbols 'sock 'pico)
+
+(local) (bind listen accept connect send)
 
 (def 'AF-UNIX 1)
 (def 'SOCK-STREAM 1)
@@ -25,26 +27,26 @@
 (de socket (Domain Type Protocol)
     (native "@" "socket" 'I Domain Type Protocol))
 
-(de bind-sockfd (Sockfd Addr Addr-len)
+(de bind (Sockfd Addr Addr-len)
     #(addr (:pointer sockaddr)) ; sockaddr_t
     (native "@" "bind" 'I Sockfd Addr Addr-len))
 
-(de listen-sockfd (Sockfd Backlog)
-    (native "@" "listen" 'I Sockfd Backlog))
+#(de listen (Sockfd Backlog)
+#    (native "@" "listen" 'I Sockfd Backlog))
 
-(de accept-sockfd (Sockfd Addr Addr-len)
-    (native "@" "accept" 'I Sockfd Addr Addr-len))
+#(de accept (Sockfd Addr Addr-len)
+#    (native "@" "accept" 'I Sockfd Addr Addr-len))
 
-(de accept-4-sockfd (Sockfd Addr Addr-len Flags)
+(de accept-4 (Sockfd Addr Addr-len Flags)
     (native "@" "accept4" 'I Sockfd Addr Addr-len Flags))
 
-(de connect-sockfd (Sockfd Addr Addr-len)
+(de connect (Sockfd Addr Addr-len)
     (native "@" "connect" 'I Sockfd Addr Addr-len))
 
 (de recv (Sockfd Buf Len Flags)
     (native "@" "recv" 'I Sockfd Buf Len Flags))
 
-(de send-fd (Fd Buf N Flags)
+(de send (Fd Buf N Flags)
     (native "@" "send" 'I Fd Buf N Flags))
 
 (de shutdown (Socket How)
@@ -94,15 +96,15 @@
 
     (if (> Retry 0)
     
-        (until (= 0 (connect-sockfd Sock
-                                    Sockaddr
-                                    SOCKADDR-LEN))
+        (until (= 0 (connect Sock
+                             Sockaddr
+                             SOCKADDR-LEN))
           (wait Retry))
           
-        (when (= -1 (connect-sockfd Sock
-                                    Sockaddr
-                                    SOCKADDR-LEN))
-          (close Sock)
+        (when (= -1 (connect Sock
+                             Sockaddr
+                             SOCKADDR-LEN))
+          (native "@" "close" NIL Sock)
           (setq Sock NIL)))
 
     (native "@" "free" NIL Sockaddr)
@@ -110,9 +112,9 @@
     Sock))
 
 
-(de listen-sock (Path
-                 Block
-                 Backlog)
+(de listen (Path
+            Block
+            Backlog)
 
   # See notes about unlink
   (unlink Path)
@@ -120,21 +122,21 @@
   (let (Sock     (init-socket Block)
         Sockaddr (init-sockaddr 1 Path))
 
-    (let Ret (bind-sockfd Sock
-                          Sockaddr
-                          SOCKADDR-LEN)
+    (let Ret (bind Sock
+                   Sockaddr
+                   SOCKADDR-LEN)
                
-      (when (= Ret -1) "(= bind-sockfd -1)"))
+      (when (= Ret -1) "(= bind -1)"))
 
-    (let Ret (listen-sockfd Sock Backlog)
-      (when (= Ret -1) "(= bind-sockfd -1)"))
+    (let Ret (native "@" "listen" 'I Sock Backlog)
+      (when (= Ret -1) "(= bind -1)"))
 
     (native "@" "free" NIL Sockaddr)
 
     Sock))
 
 
-(de accept-4 (Sock Block)
+(de accept (Sock Block)
     #{
     For nonblocking, will either return a valid fd (> 0)
     or it will fail and set errno to e-again or e-wouldblock
@@ -143,15 +145,15 @@
     flags=0 - same as accept
     }#
     
-    (let (Sockaddr     (native "@" "malloc" 'N 110)    #(init-sockaddr 1 "")
-          Sockaddr-Len (native "@" "malloc" 'N 4)) #socklen_t
+    (let (Sockaddr     (native "@" "malloc" 'N 110)
+          Sockaddr-Len (native "@" "malloc" 'N 4))  #socklen_t
 
       (struct Sockaddr-Len 'N (cons SOCKADDR-LEN 4))
 
-      (let Ret (accept-4-sockfd Sock
-                                Sockaddr
-                                Sockaddr-Len
-                                (if Block 0 SOCK-NONBLOCK))
+      (let Ret (accept-4 Sock
+                         Sockaddr
+                         Sockaddr-Len
+                         (if Block 0 SOCK-NONBLOCK))
 
         (native "@" "free" NIL Sockaddr)
         (native "@" "free" NIL Sockaddr-Len)

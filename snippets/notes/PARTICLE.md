@@ -142,7 +142,7 @@ Store DAGs as binary trees?
      * Refactor flush-msgs and use across all processes [Done]
 
    * Refactor IPC
-     * Make epoll event like timerfd
+     * Make epoll event like timerfd [Done]
      * Refactor IPC clients
      * Fix removing clients/conns
 

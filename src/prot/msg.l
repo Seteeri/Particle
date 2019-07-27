@@ -150,7 +150,7 @@
 
   (with Ipc
 
-    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T 4 socket~MSG-WAITALL)
+    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T 4 sock~MSG-WAITALL)
 
       (if Bytes-Recv
 
@@ -163,7 +163,7 @@
 
   (with Ipc
   
-    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T Len socket~MSG-WAITALL)
+    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T Len sock~MSG-WAITALL)
 
       (if Bytes-Recv
 
@@ -176,7 +176,7 @@
 
   (with Ipc
   
-    (let (Bytes-Recv (ipc~recv-bytes> Ipc Sock Bin Sz socket~MSG-WAITALL))
+    (let (Bytes-Recv (ipc~recv-bytes> Ipc Sock Bin Sz sock~MSG-WAITALL))
 
       (unless Bytes-Recv
 

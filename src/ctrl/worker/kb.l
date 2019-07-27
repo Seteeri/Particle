@@ -19,8 +19,8 @@
             ((= Keysym ksd~Up)    (move-cam 2 '(0.0 1.0)))
             ((= Keysym ksd~Down)  (move-cam 2 '(0.0 -1.0)))
 
-            ((= Keysym ksd~Prior) (zoom-cam -3.0))
-            ((= Keysym ksd~Next)  (zoom-cam 3.0))
+            ((= Keysym ksd~Prior) (zoom-cam -0.5))
+            ((= Keysym ksd~Next)  (zoom-cam 0.5))
 
             (T                    (handle-ascii Keysym))))))
 
