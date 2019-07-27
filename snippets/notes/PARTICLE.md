@@ -129,24 +129,24 @@ Store DAGs as binary trees?
      * Implement message flushing [Done]
        * Lag with camera update and pointer update at same time
 
-   * Refactor
+   * Refactor [Done]
      * Move xkb to ctrl and pass events to worker [Done]
      * Respond to window resizing [Done]
      * Implement proper exit [Done]
        * Render send exit key also
 
-   * Refactor IPC
+   * Refactor IPC [Done]
      * Improve msg handling robustness when bytes-read is incorrect/invalid [Done]
      * Improve printing msgs using Pid [Done]
      * Do Sz-Msg Sz-Bin Bin-Msg Bin-Bin [Done]    
      * Refactor flush-msgs and use across all processes [Done]
 
-   * Refactor IPC
+   * Refactor IPC [Done]
      * Make epoll event like timerfd [Done]
-     * Refactor IPC clients
-     * Fix removing clients/conns
+     * Refactor IPC clients [Later]
+     * Fix removing clients/conns [???]
 
-   * Implement string/atom/list, eval functionality
+   * Implement string/atom/list, eval functionality [WIP]
      * Implmenet drawing [Done]
      * Implement interface/controls
        * Move xkb to ctrl; put event handlers in worker [Done]

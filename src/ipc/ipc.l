@@ -101,10 +101,7 @@ Handle bad accept sock
               Sock
               (if Flags Flags epoll~BAD))
   
-  # SIMPLIFY:
-  #(push1 (:: conns)    (cons Sock (list ID-S Handler)))
-  #(push1 (:: conns-id) (cons ID-S Sock))
-
+  # Push into same list?
   (push1 (:: conns)    (cons Sock (list ID-S Handler)))
   (push1 (:: conns-id) (cons ID-S (list Sock Handler))))
 
