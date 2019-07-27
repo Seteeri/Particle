@@ -154,7 +154,7 @@
 
       (if Bytes-Recv
 
-        (car (struct (: ipc~buf-rd) '(I)))
+        (struct (: ipc~buf-rd) 'I)
 
         (print-info "recv-msg-len" (pack "Bytes-Recv=" Bytes-Recv))))))
 
