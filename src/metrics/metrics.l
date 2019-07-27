@@ -52,20 +52,20 @@ Quotient of N and D = (*/ 1.0 N D)
 
 (de load-metrics (Sca-Glyph)
 
-    (let Metrics ()
+  (let Metrics ()
 
-      (for Code 255
+    (for Code 255
 
-        #Format path name, read file/code, eval data -> list of data
-        (let (Data          (load-file-metrics-data Code)
-              Metrics-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
+      #Format path name, read file/code, eval data -> list of data
+      (let (Data          (load-file-metrics-data Code)
+            Metrics-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
 
-          (when (get Metrics-Glyph 'bounds)
-            (calc-metrics> Metrics-Glyph Sca-Glyph))
+        (when (get Metrics-Glyph 'bounds)
+          (calc-metrics> Metrics-Glyph Sca-Glyph))
 
-          (push 'Metrics Metrics-Glyph)))
+        (push 'Metrics Metrics-Glyph)))
 
-      (reverse Metrics)))
+    (reverse Metrics)))
 
 
 (dm calc-metrics> (Sca-Glyph)
