@@ -30,7 +30,7 @@
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
 
-    (print-info "render-vert" "Sending vert...")
+    (print-info "render-vert" (pack "Sending vert @ " Off))
 
     (req-send-obj Ipc
                   Sock-Render
