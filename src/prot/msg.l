@@ -112,7 +112,7 @@
     
       (inc 'Ptr (+ 4 4))
 
-      (let (Msg  (struct Ptr 'S)
+      (let (Msg  (pack (struct Ptr (cons 'C Len-Msg)))
             Data (any Msg))
 
         (inc 'Ptr Len-Msg)
@@ -167,7 +167,7 @@
 
       (if Bytes-Recv
 
-        (struct (: ipc~buf-rd) 'S)
+        (pack (struct (: ipc~buf-rd) (cons 'C Len)))
 
         (print-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))"))))))
 
