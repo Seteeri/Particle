@@ -171,6 +171,11 @@ Store DAGs as binary trees?
 
 * Refactor/Fix
 
+   * Move xkb class into wrapper
+   * CTRL MUST SEND MSGS TO ALL CLIENTS
+     * Maintain queue per client
+     * Add to all clients
+
    * Is crashing due to window resizing? or msg 'C vs 'S...
    
    * Have input send modified KEYCODE (+8)

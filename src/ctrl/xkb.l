@@ -1,3 +1,5 @@
+# https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
+
 (class +Xkb)
 (dm T ()
 
@@ -17,7 +19,10 @@
 
   (=: keymap  (xkb~keymap-new-from-names (: context) 0 xkb~KEYMAP-COMPILE-NO-FLAGS))
 
-  (=: state   (xkb~state-new (: keymap))))
+  (=: state   (xkb~state-new (: keymap)))
+
+  # https://github.com/wayland-project/weston/blob/master/libweston/input.c
+  )
 
 
 (dm unref> ()
@@ -31,8 +36,3 @@
 (dm key-repeats>      (Keycode)             (xkb~keymap-key-repeats     (: keymap) Keycode))
 (dm serialize-mods>   (Components)          (xkb~state-serialize-mods   (: state) Components))
 (dm serialize-layout> (Components)          (xkb~state-serialize-layout (: state) Components))
-
-#(serialize-mods> *xkb 'xkb~STATE-MODS-DEPRESSED) # depressed-mods
-#(serialize-mods> *xkb 'xkb~STATE-MODS-LATCHED) # latched-mods
-#(serialize-mods> *xkb 'xkb~STATE-MODS-LOCKED) # locked-mods
-#(serialize-layout> *xkb 'xkb~STATE-LAYOUT-EFFECTIVE) # mods-group

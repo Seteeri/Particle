@@ -143,7 +143,7 @@
 
   # Currently assuming kb events only
 
-  (let (Msg (recv-msg *ipc Sock)
+  (let (Msg  (recv-msg *ipc Sock)
         Data (any Msg)
         Name (get Data 1))
     #(prinl (usec) " | CTRL   | handle-input | " Data)
@@ -156,17 +156,15 @@
 
 
 (de format-msg-ev (Data)
-  (let Keycode (+ (get Data 4) 8)
-    (pack "("
-          (glue " "
-                (list (name (get Data 1))
-                      (format (get Data 2))
-                      (format (get Data 3))
-                      (format Keycode)
-                      (format (get Data 5))
-                      (format (get Data 6))
-                      (format (get-one-sym> *xkb Keycode))))
-          ")")))
+  (pack "("
+        (glue " "
+              (list (name (get Data 1))
+                    (format (get Data 2))
+                    (format (get Data 3))
+                    (format (get Data 4))
+                    (format (get Data 5))
+                    (format (get Data 6))))
+        ")"))
 
 
 (de dispatch-msg (Msg)
@@ -191,14 +189,11 @@
   # Must call read, not recv
   (with *ipc
     (when (n0 (native "@" "read" 'I Sock (: ipc~buf-rd) 8))
-      (handle-key-rep (get *timerfd 'timerfd~data))
-      (print-info "handle-timer" (pack "Events=" (struct (: ipc~buf-rd) '(N . 1)))))))
-
-
-(de handle-key-rep (Key)
-  # Send event to a worker else queue it
-  # car = code, cdr = sym
-  (dispatch-msg (pack "(KEYBOARD-KEY 0 0 " (format (car Key)) " 2 2 " (format (cdr Key)) ")")))
+      (let (Keycode (get *timerfd 'timerfd~data)
+            Msg (pack "(KEYBOARD-KEY 0 0 " (format Keycode) " 2 2)"))
+        (dispatch-msg Msg))
+        #(print-info "handle-timer" (pack "Keycode=" Keycode " Events=" (struct (: ipc~buf-rd) '(N . 1))))
+        T)))
 
 
 (de update-xkb (Data)
@@ -212,7 +207,8 @@
 
   # https://gitlab.freedesktop.org/wayland/weston/blob/master/libweston/input.c#L1993
 
-  (let (Keycode (+ (get Data 4) 8)
+  (let (Keyed   (get Data 4)
+        Keycode (+ Keyed 8)
         State   (get Data 5)
         Keysym  (get-one-sym> *xkb Keycode)
         Name    (xkb~keysym-get-name Keysym)
@@ -223,23 +219,38 @@
     # Returns update mask
     (update-key> *xkb Keycode State)
 
+    (println Data Keysym)
+
+    #{
+    (println
+    (serialize-mods> *xkb xkb~STATE-MODS-DEPRESSED)
+    (serialize-mods> *xkb xkb~STATE-MODS-LATCHED)
+    (serialize-mods> *xkb xkb~STATE-MODS-LOCKED)
+    (serialize-layout> *xkb xkb~STATE-LAYOUT-DEPRESSED)
+    (serialize-layout> *xkb xkb~STATE-LAYOUT-LATCHED)
+    (serialize-layout> *xkb xkb~STATE-LAYOUT-LOCKED)
+    (serialize-layout> *xkb xkb~STATE-LAYOUT-EFFECTIVE))
+    }#
+    
     (when (= (key-repeats> *xkb Keycode) xkb~KEY-DOWN)
-      (update-timer Keycode Keysym State))))
+      # Pass key evdev since worker will +8 to match passthrough events from
+      # libinput
+      (update-timer Keyed State))))
 
 
-(de update-timer (Keycode Keysym State)
+(de update-timer (Keycode State)
 
   (if (= State xkb~KEY-DOWN)
 
     # interval, delay/expiration-initial
     (let Spec (list 0 (* *delay-int 1000000) 0 (* *delay-rep 1000000))
       #(println "Arm timer!" Keycode Spec)
-      (put *timerfd 'timerfd~data (cons Keycode Keysym))
+      (put *timerfd 'timerfd~data Keycode)
       (when (= (timerfd~set-time> *timerfd Spec) -1)
         (println "errno: " (errno))
         (quit "timerfd~set-time failed")))
 
-    (when (= Keycode (car (get *timerfd 'timerfd~data)))
+    (when (= Keycode (get *timerfd 'timerfd~data))
       #(println "Disarm timer!" Keycode)
       (timerfd~disarm> *timerfd))))
 

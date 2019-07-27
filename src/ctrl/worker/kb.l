@@ -1,17 +1,32 @@
 (def '*pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
 (def '*cnt-v 2)
 
-   
-(de handle-kb (Data)
+(def 'KEY-REPEAT 2)
 
-  # Create xkb here also
+(de handle-kb (Data)    
 
-  (let (Keycode (get Data 4)
+  (let (Keycode (+ (get Data 4) 8)
         State   (get Data 5)
-        Keysym  (get Data 7))
+        Keysym  (get-one-sym> *xkb Keycode)  # or Data 7
+        Name    (xkb~keysym-get-name Keysym)
+        Utf-8   (get-utf8> *xkb Keycode))
 
-    # 2 = repeat
-    (when (or (= State xkb~KEY-DOWN) (= State 2))
+    (update-key> *xkb Keycode State)
+
+    (println Data Keysym)
+
+    #{
+    changed = xkb_state_update_mask(state,
+                                    event->depressed_mods,
+                                    event->latched_mods,
+                                    event->locked_mods,
+                                    event->depressed_layout,
+                                    event->latched_layout,
+                                    event->locked_layout);
+    }#
+    
+    (when (or (= State xkb~KEY-DOWN)
+              (= State KEY-REPEAT))
 
       (cond ((= Keysym ksd~Right) (move-cam 1 '(1.0 0.0)))
             ((= Keysym ksd~Left)  (move-cam 1 '(-1.0 0.0)))
