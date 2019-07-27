@@ -23,7 +23,7 @@ SYMS:
           Create chars until snip command
           Snip command can produce a string or internal symbol
             Tr = (pack chrs)
-            In = (name (pack chrs))
+            In = (intern (pack chrs))
           Then use no snip command to use individual chars which is less common pattern
   I-SYM = See T-Sym
           Or (intern "")

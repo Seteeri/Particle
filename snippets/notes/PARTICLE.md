@@ -149,7 +149,11 @@ Store DAGs as binary trees?
    * Implement string/atom/list, eval functionality [WIP]
      * Implmenet drawing [Done]
      * Implement interface/controls
-       * Move xkb to ctrl; put event handlers in worker [Done]
+       * Pack (Chr->Str)
+       * Intern (Str->I-Sym)
+       * Name (I-Sym->T-Sym)
+       * Format (Chr->Num)
+       * ALT+NUM to produce numbers
      * Implement operators
 
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
@@ -166,6 +170,8 @@ Store DAGs as binary trees?
 
 
 * Refactor/Fix
+
+   * Is crashing due to window resizing? or msg 'C vs 'S...
    
    * Have input send modified KEYCODE (+8)
      * Or leave this to ctrl...

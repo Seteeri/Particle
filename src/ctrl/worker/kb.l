@@ -4,8 +4,7 @@
    
 (de handle-kb (Data)
 
-  # Worker should not have xkb dependency
-  # Need to get keysym and keycode
+  # Create xkb here also
 
   (let (Keycode (get Data 4)
         State   (get Data 5)

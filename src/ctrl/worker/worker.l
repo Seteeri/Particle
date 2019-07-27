@@ -35,6 +35,7 @@
 # Globals
 (def '*metrics)
 (def '*verts)
+(def '*xkb)
 
 
 # Wrapper libraries
@@ -56,6 +57,7 @@
 (load "/home/user/Git/particle/src/model/vertex.l")
 (load "/home/user/Git/particle/src/ctrl/conn.l")
 (load "/home/user/Git/particle/src/ctrl/worker/kb.l")
+(load "/home/user/Git/particle/src/ctrl/xkb.l")
 
 
 (de init-worker ()
@@ -97,7 +99,9 @@
                                 (ipc~get-fd> *ipc "MODEL")
                                 (new '(+Projview))
                                 SZ-PV
-                                0)))
+                                0))
+
+  (setq *xkb (new '(+Xkb))))
 
 
 (de handle-client (Sock))
