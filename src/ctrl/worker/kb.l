@@ -12,11 +12,27 @@
         Utf-8   (get-utf8> *xkb Keycode))
 
     (update-key> *xkb Keycode State)
+
+    # Dispatch bindings
+
+    #{
+      T-Sym
+      Pack   (Chr->Str)
+      Chop   (Str->Chr)
+      
+      Intern (T-Sym->I-Sym)
+      Name   (I-Sym->T-Sym)
+      Format (T-Sym<->Num)
+      ALT+NUM -> numbers
+    }#
+
     
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
+      
+      (cond ((= Keysym ksd~End)   (pack-chars))
 
-      (cond ((= Keysym ksd~Right) (move-cam 1 '(1.0 0.0)))
+            ((= Keysym ksd~Right) (move-cam 1 '(1.0 0.0)))
             ((= Keysym ksd~Left)  (move-cam 1 '(-1.0 0.0)))
             ((= Keysym ksd~Up)    (move-cam 2 '(0.0 1.0)))
             ((= Keysym ksd~Down)  (move-cam 2 '(0.0 -1.0)))
@@ -41,6 +57,45 @@
                      0.0)))
 
 
+(de pack-chars ()
+
+  # Build list of chars
+  # Add double-quotes
+  
+  (let (Chars  ()
+        Verts  ()
+        Quotes (draw-str "\"\""))
+
+    # Push start quote
+    (push 'Chars (get Quotes 1))
+    (push 'Verts (get Quotes 1))
+        
+    # Pop off timeline
+    (for P *timeline
+      (push 'Chars (get P 'data))
+      (push 'Verts (get P 'verts)))
+
+    # Push end quote
+    (push 'Chars (get Quotes 2))
+    (push 'Verts (get Quotes 2))
+
+    # Create particle
+    (new '(+Particle) (pack Chars) Verts)
+
+    # Reposition
+
+    # Push into timeline
+
+    # Set marker
+
+    (println (pack Chars))
+
+    T))
+    
+
+################################################################################
+
+
 (de handle-ascii (Keysym)
 
   # Next try to draw a symbol or class
@@ -57,11 +112,15 @@
 
   (when (and (>= Keysym 32) (<= Keysym 255))
 
-    (let (Data (cons)
-          Prtcl (new '(+Particle) Data ()))
+    # For strings either use quotations or put additional spacing between symbols
+    # Problem is spaces are invisible
+    # (draw-str (pack "\"" Data "\""))
+    
+    (let (Data  (if (= Keysym ksd~space) " " (char Keysym))
+          Verts (draw-str Data)
+          Prt   (new '(+Particle) Data Verts))
 
-      #(make-verts "SYM-T")
-      #(draw-verts Verts)
+      (push '*timeline Prt)
 
       (when NIL
         (print (>> -4 (adr Data)))
@@ -72,13 +131,8 @@
         (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
         (prinl))
 
-      (draw-str (if (= Keysym ksd~space) " " (char Keysym)))
-
-      # Produce verts+edges for rep
-      # Push verts into particle
       # Push prtcl into timeline
-      # - Timeline is in namespace
-        
+      # - Timeline is in namespace        
       T))
       
   (cond ((= Keysym ksd~Return) (nl-pen))
@@ -87,7 +141,8 @@
 
 (de draw-str (Str)
 
-  (let Sock-Model (ipc~get-fd> *ipc "MODEL")
+  (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
+        Verts ())
 
     (for C (chop Str)
 
@@ -113,7 +168,11 @@
                       SZ-VERT
                       Off)
 
-        (inc '*cnt-v 1)))))
+        (inc '*cnt-v 1)
+
+        (push 'Verts Vert)))
+
+      (reverse Verts)))
 
 
 (de draw-bytes (Bytes)
@@ -131,8 +190,8 @@
     (for N (chop Str)
 
       (let (Off-Vert (get *verts *cnt-v)
-            Off (car Off-Vert)
-            Vert (cdr Off-Vert))
+            Off      (car Off-Vert)
+            Vert     (cdr Off-Vert))
 
         # Reset vertex
         # Pos = baseline = X,0,0
