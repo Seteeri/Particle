@@ -28,9 +28,10 @@
 ################################################################################
 
 
-(de render-vert (Ipc Vert Off)
+(de render-vert (Ipc Vert)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-        Sock-Render (ipc~get-fd> *ipc "RENDER"))
+        Sock-Render (ipc~get-fd> *ipc "RENDER")
+        Off (get Vert 'off))
 
     (print-info "render-vert" (pack "Sending vert @ " Off))
 

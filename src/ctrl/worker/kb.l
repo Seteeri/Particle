@@ -150,9 +150,8 @@
 
     (for C (chop Str)
 
-      (let (Off-Vert (get *verts *cnt-v)
-            Off      (car Off-Vert)
-            Vert     (cdr Off-Vert))
+      (let (Vert     (get *verts *cnt-v)
+            Off      (get Vert 'off))
 
         # Set baseline
         (with Vert
@@ -193,9 +192,8 @@
 
     (for N (chop Str)
 
-      (let (Off-Vert (get *verts *cnt-v)
-            Off      (car Off-Vert)
-            Vert     (cdr Off-Vert))
+      (let (Vert     (get *verts *cnt-v)
+            Off      (get Vert 'off))
 
         # Reset vertex
         # Pos = baseline = X,0,0

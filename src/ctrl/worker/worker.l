@@ -86,12 +86,11 @@
 
   (for N *verts-max
     (let Off (get-vert-off N)
-      (push '*verts (cons Off
-                          (req-recv-obj *ipc
-                                        (ipc~get-fd> *ipc "MODEL")
-                                        (new '(+Vertex))
-                                        SZ-VERT
-                                        Off)))
+      (push '*verts (req-recv-obj *ipc
+                                  (ipc~get-fd> *ipc "MODEL")
+                                  (new '(+Vertex))
+                                  SZ-VERT
+                                  Off))
       # Use flip instead of reverse
       (setq *verts (flip *verts))))
       
@@ -124,7 +123,7 @@
            T)
            
           ((= Name "render-vert")
-           (render-vert *ipc (cdr (get *verts (get Data 2))) (car (get *verts (get Data 2))))
+           (render-vert *ipc (get *verts (get Data 2)))
            T)
            
           ((= Name "render-pvm")
@@ -169,9 +168,8 @@
      # Pull data from model
      (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
            Sock-Render (ipc~get-fd> *ipc "RENDER")
-           Off-Vert (get *verts 1)
-           Off      (car Off-Vert)
-           Vert     (cdr Off-Vert))
+           Vert     (get *verts 1)
+           Off      (get Vert off))
 
         (with Vert
           (=: pos (list (+ (get (: pos) 1) 0.05)
