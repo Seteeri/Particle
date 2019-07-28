@@ -214,23 +214,7 @@
         Name    (xkb~keysym-get-name Keysym)
         Utf-8   (get-utf8> *xkb Keycode))
 
-    #(prinl "Code/Sym/Name/Utf-8/State: " Keycode " " Keysym " " Name " " Utf-8 " " State)
-
-    # Returns update mask
     (update-key> *xkb Keycode State)
-
-    (println Data Keysym)
-
-    #{
-    (println
-    (serialize-mods> *xkb xkb~STATE-MODS-DEPRESSED)
-    (serialize-mods> *xkb xkb~STATE-MODS-LATCHED)
-    (serialize-mods> *xkb xkb~STATE-MODS-LOCKED)
-    (serialize-layout> *xkb xkb~STATE-LAYOUT-DEPRESSED)
-    (serialize-layout> *xkb xkb~STATE-LAYOUT-LATCHED)
-    (serialize-layout> *xkb xkb~STATE-LAYOUT-LOCKED)
-    (serialize-layout> *xkb xkb~STATE-LAYOUT-EFFECTIVE))
-    }#
     
     (when (= (key-repeats> *xkb Keycode) xkb~KEY-DOWN)
       # Pass key evdev since worker will +8 to match passthrough events from

@@ -36,3 +36,14 @@
 (dm key-repeats>      (Keycode)             (xkb~keymap-key-repeats     (: keymap) Keycode))
 (dm serialize-mods>   (Components)          (xkb~state-serialize-mods   (: state) Components))
 (dm serialize-layout> (Components)          (xkb~state-serialize-layout (: state) Components))
+
+#{
+(println
+(serialize-mods> *xkb xkb~STATE-MODS-DEPRESSED)
+(serialize-mods> *xkb xkb~STATE-MODS-LATCHED)
+(serialize-mods> *xkb xkb~STATE-MODS-LOCKED)
+(serialize-layout> *xkb xkb~STATE-LAYOUT-DEPRESSED)
+(serialize-layout> *xkb xkb~STATE-LAYOUT-LATCHED)
+(serialize-layout> *xkb xkb~STATE-LAYOUT-LOCKED)
+(serialize-layout> *xkb xkb~STATE-LAYOUT-EFFECTIVE))
+}#

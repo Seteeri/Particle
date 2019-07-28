@@ -12,18 +12,6 @@
         Utf-8   (get-utf8> *xkb Keycode))
 
     (update-key> *xkb Keycode State)
-
-    (println Data Keysym)
-
-    #{
-    changed = xkb_state_update_mask(state,
-                                    event->depressed_mods,
-                                    event->latched_mods,
-                                    event->locked_mods,
-                                    event->depressed_layout,
-                                    event->latched_layout,
-                                    event->locked_layout);
-    }#
     
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
