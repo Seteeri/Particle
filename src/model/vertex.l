@@ -7,19 +7,23 @@
                                 0.5137255 0.5803922 0.60784316 1.0))
 
 
-(def 'SZ-VERT (+ 1 12 12 12 64 64 64 4))
-
+(def 'SZ-VERT (+ 8 1 12 12 12 64 64 64 4))
+(def 'SZ-GL-VERT 208)
 
 # Reuse across all vertices for txfer
 (def '*ptr-vert (native "@" "malloc" 'N SZ-VERT))
 
 
 (class +Vertex)
-(dm T (Chr       #Use to get offset, if char then data is char also
+(dm T (Off
+       Chr       #Use to get offset, if char then data is char also
        RGBA
        Pos
        Rota
        Sca)
+
+  # Offset into render gl buffer
+  (=: off Off)
 
   (=: chr NIL)
   
@@ -71,7 +75,8 @@
 
 
 (dm serialize-to-ptr> (Ptr)
-  (struct Ptr 'N 
+  (struct Ptr 'N
+          (cons (: off) 8)
           (: chr)
           (cons -1.0 (: pos))
           (cons -1.0 (: rota))
@@ -85,9 +90,10 @@
 
 (dm deserialize-fm-ptr> (Ptr)
 
-  (let ((Chr Pos Rota Sca Mm Rgba Uv Off-Texel)
+  (let ((Off Chr Pos Rota Sca Mm Rgba Uv Off-Texel)
         (struct Ptr 
-                '((B . 1)
+                '((N . 1)
+                  (B . 1)
                   (-1.0 . 3)
                   (-1.0 . 3)
                   (-1.0 . 3)
@@ -95,6 +101,8 @@
                   (-1.0 . 16)
                   (-1.0 . 16)
                   (I . 1))))
+
+    (=: off Off)
     
     (=: chr (car Chr))
         
@@ -113,7 +121,7 @@
 
 
 (de get-vert-off (Cnt)
-  (* (- Cnt 1) 208)) # use gl size
+  (* (- Cnt 1) SZ-GL-VERT)) # use gl size
 
 
 (dm cpy-to-ptr> (Ptr)

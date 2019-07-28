@@ -149,6 +149,7 @@ Store DAGs as binary trees?
    * Implement string/atom/list, eval functionality [WIP]
      * Implmenet drawing [Done]
      * Implement interface/controls
+       * Refactor Vertex to store offset into ptr
        * Pack (Chr->Str)
        * Intern (Str->I-Sym)
        * Name (I-Sym->T-Sym)

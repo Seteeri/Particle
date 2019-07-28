@@ -19,11 +19,14 @@
       T-Sym
       Pack   (Chr->Str)
       Chop   (Str->Chr)
+      Cut    ...
       
       Intern (T-Sym->I-Sym)
       Name   (I-Sym->T-Sym)
       Format (T-Sym<->Num)
       ALT+NUM -> numbers
+
+      Backspace/Del
     }#
 
     
@@ -61,6 +64,8 @@
 
   # Build list of chars
   # Add double-quotes
+
+  # Also set marker
   
   (let (Chars  ()
         Verts  ()
@@ -83,10 +88,9 @@
     (new '(+Particle) (pack Chars) Verts)
 
     # Reposition
+    #(for Vert Verts)
 
     # Push into timeline
-
-    # Set marker
 
     (println (pack Chars))
 

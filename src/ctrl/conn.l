@@ -1,5 +1,7 @@
 # Split into handlers and requests
 
+# Create specific ones for vert/projview
+
 (de req-send-obj (Ipc Sock Obj Sz-Obj Off-Obj)
 
   (send-msg Ipc

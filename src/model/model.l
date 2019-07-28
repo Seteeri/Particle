@@ -62,7 +62,8 @@
        (for I *verts-max
 
             (let Vert (new '(+Vertex)
-                           "*"
+                           (get-vert-off I)
+                           "@"
                            *color-vert-default
                            (list 0.0 0.0 0.0) # pos
                            (list 0.0 0.0 0.0) # rot=0, sca=global scale

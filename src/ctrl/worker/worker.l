@@ -91,7 +91,10 @@
                                         (ipc~get-fd> *ipc "MODEL")
                                         (new '(+Vertex))
                                         SZ-VERT
-                                        Off)))))
+                                        Off)))
+      # Use flip instead of reverse
+      (flip '*verts)))
+      
   (setq '*verts (reverse *verts))
   #(println "*vert: " (getl *vert))
 

@@ -84,14 +84,15 @@
            (memcpy (+ Ptr-Gl 64) (+ Ptr-Buf 9 64 24) 64)))
 
         ((= Dst "nodes")
-         #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '(B . 233)))
+         #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '(B . 241)))
 
          (let (Ptr-Gl  (+ (get (get '*buffer-objects 'nodes) 'gl~ptr) Off)
                Ptr-Buf Ptr)
                                    
            (when NIL
              (println (struct Ptr-Buf
-                              '((C . 1)
+                              '((N . 1)
+                                (C . 1)
                                 (-1.0 . 3)
                                 (-1.0 . 3)
                                 (-1.0 . 3)
@@ -101,7 +102,7 @@
                                 (I . 1))))
              (println (usec) " | write-dst nodes | " (struct (+ Ptr-Buf 1) '((-1.0 . 3) (-1.0 . 3) (-1.0 . 3)))))
             
-           (memcpy Ptr-Gl (+ Ptr-Buf 37) (+ 64 64 64 4))
+           (memcpy Ptr-Gl (+ Ptr-Buf 45) (+ 64 64 64 4))
            
            T))))
 
