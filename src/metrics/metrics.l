@@ -65,7 +65,7 @@ Quotient of N and D = (*/ 1.0 N D)
 
         (push 'Metrics Metrics-Glyph)))
 
-    (reverse Metrics)))
+    (flip Metrics)))
 
 
 (dm calc-metrics> (Sca-Glyph)

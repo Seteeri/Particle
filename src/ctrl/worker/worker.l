@@ -93,11 +93,8 @@
                                         SZ-VERT
                                         Off)))
       # Use flip instead of reverse
-      (flip '*verts)))
+      (setq *verts (flip *verts))))
       
-  (setq '*verts (reverse *verts))
-  #(println "*vert: " (getl *vert))
-
   (setq *projview (req-recv-obj *ipc 
                                 (ipc~get-fd> *ipc "MODEL")
                                 (new '(+Projview))

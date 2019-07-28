@@ -176,7 +176,7 @@
 
         (push 'Verts Vert)))
 
-      (reverse Verts)))
+      (flip Verts)))
 
 
 (de draw-bytes (Bytes)

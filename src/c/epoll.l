@@ -97,4 +97,4 @@
   (let Evs ()
     (for I Cnt
       (push 'Evs (get (get-event (: evs) I) 2)))
-    (reverse Evs)))
+    (flip Evs)))
