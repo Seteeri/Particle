@@ -75,14 +75,9 @@
                    Vert)))
 
 
-(de render-pv (Ipc Projview Width Height)
+(de render-pv (Ipc Width Height)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
-
-    (with *projview
-      (=: width  Width)
-      (=: height Height)
-      (update-mat-proj> *projview))
 
     # Pass list of socks so need only serialize once
 
@@ -90,11 +85,11 @@
 
     (req-send-pv Ipc
                  Sock-Render
-                 Projview)
+                 *projview)
 
     (req-send-pv Ipc
                  Sock-Model
-                 Projview)))
+                 *projview)))
 
 
 
@@ -122,3 +117,10 @@
     (req-send-pv Ipc
                  Sock-Model
                  Pv)))
+
+
+(de calc-pv (Width Height)
+  (with *projview
+    (=: width  Width)
+    (=: height Height)
+    (update-mat-proj> *projview)))

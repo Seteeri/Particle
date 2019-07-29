@@ -123,16 +123,16 @@
         Name (get Data 1))
 
     (cond ((= Name 'KEYBOARD-KEY)
-           (handle-kb Data)
-           T)
+           (handle-kb Data))
 
           ((= Name "render-ptr")
-           (render-vert *ipc *vert-ptr)
-           T)
+           (render-vert *ipc *vert-ptr))
+
+          ((= Name "calc-pv")
+           (calc-pv (get Data 2) (get Data 3)))
 
           ((= Name "render-pv")
-           (render-pv *ipc *projview (get Data 2) (get Data 3))
-           T)
+           (render-pv *ipc))
 
           ((= Data "bye")
            # Send bye to ctrl which will send to all workers/render/model
