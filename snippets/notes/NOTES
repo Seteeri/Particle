@@ -1402,3 +1402,9 @@ Write PicoLisp ("A") interpreter in PicoLisp ("B") -> AKA meta-circular interpre
 Have A do optimizations:
 - AST rewriting
   - Replace optimized nodes with machine code
+
+http://doc.rix.si/cce/cce.html
+
+Biggest emacs issues:
+1. Concurrency - operations/fns locking up interactiveness
+2. C Core

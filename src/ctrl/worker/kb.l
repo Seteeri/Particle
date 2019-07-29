@@ -65,36 +65,42 @@
   # Build list of chars
   # Add double-quotes
 
-  # Also set marker
+  # Also set marker before and after
   
   (let (Chars  ()
         Verts  ()
         Quotes (draw-str "\"\""))
 
+    # For quotes, pull verts directly then set to avoid uneccessary work
+    # Refactor draw-str then use those fns
+
     # Push start quote
     (push 'Chars (get Quotes 1))
     (push 'Verts (get Quotes 1))
         
-    # Pop off timeline
-    (for P *timeline
-      (push 'Chars (get P 'data))
-      (push 'Verts (get P 'verts)))
+    # Pop particles off timeline - ignore ptr
+    (for Prt *timeline
+      (push 'Chars (get Prt 'data))
+      (push 'Verts (get Prt 'verts)))
 
     # Push end quote
     (push 'Chars (get Quotes 2))
     (push 'Verts (get Quotes 2))
 
-    # Create particle
-    (new '(+Particle) (pack Chars) Verts)
-
     # Reposition
+    # 2 possible methods:
+    # 1. Set position for each
+    # 2. Set chr for each
     #(for Vert Verts)
 
-    # Push into timeline
+    # Create particle
+    (let (Data (pack Chars)
+          Prt (new '(+Particle) Data Verts))
 
-    (println (pack Chars))
+      # Push into timeline
+      (push *timeline Prt)
 
-    T))
+      (println (pack Chars)))))
     
 
 ################################################################################
@@ -150,7 +156,7 @@
 
     (for C (chop Str)
 
-      (let (Vert     (get *verts *cnt-v)
+      (let (Vert     (pop '*verts)
             Off      (get Vert 'off))
 
         # Set baseline
@@ -192,7 +198,7 @@
 
     (for N (chop Str)
 
-      (let (Vert     (get *verts *cnt-v)
+      (let (Vert     (pop '*verts)
             Off      (get Vert 'off))
 
         # Reset vertex

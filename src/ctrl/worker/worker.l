@@ -37,6 +37,8 @@
 (def '*verts)
 (def '*xkb)
 (def '*timeline)
+(def '*vert-ptr)
+
 
 # Wrapper libraries
 (load "/home/user/Git/particle/src/c/mathc.l")
@@ -70,7 +72,7 @@
           *i-proc    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "i invalid")))))
 
   (setq *metrics (load-metrics *sca-glyph))
-  
+
   (let ID-C (pack "WORKER-" *i-proc)
 
     (setq *ipc (new '(ipc~+IPC)
@@ -79,28 +81,30 @@
                            (list PATH-UDS-CONTROL T handle-ctrl   "CONTROL")
                            (list PATH-UDS-RENDER  T handle-render "RENDER")
                            )))
-                     
-    (reg-conns *ipc ID-C))                     
-                      
+
+    (reg-conns *ipc ID-C))
+
   (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "rdy")
 
-  (for N *verts-max
-    (let Off (get-vert-off N)
-      (push '*verts (req-recv-obj *ipc
-                                  (ipc~get-fd> *ipc "MODEL")
-                                  (new '(+Vertex))
-                                  SZ-VERT
-                                  Off))
-      # Use flip instead of reverse
-      (setq *verts (flip *verts))))
-      
-  (setq *projview (req-recv-obj *ipc 
+  (setq *projview (req-recv-obj *ipc
                                 (ipc~get-fd> *ipc "MODEL")
                                 (new '(+Projview))
                                 SZ-PV
                                 0))
 
-  (setq *xkb (new '(+Xkb))))
+  (setq *xkb (new '(+Xkb)))
+
+  (for N *verts-max
+    (push '*verts (req-recv-obj *ipc
+                                (ipc~get-fd> *ipc "MODEL")
+                                (new '(+Vertex))
+                                SZ-VERT
+                                (get-vert-off N)))
+    # Use flip instead of reverse
+    (setq *verts (flip *verts)))
+
+  # Designate vertex 1 as ptr
+  (setq *vert-ptr (pop '*verts)))
 
 
 (de handle-client (Sock))
@@ -121,15 +125,15 @@
     (cond ((= Name 'KEYBOARD-KEY)
            (handle-kb Data)
            T)
-           
-          ((= Name "render-vert")
-           (render-vert *ipc (get *verts (get Data 2)))
+
+          ((= Name "render-ptr")
+           (render-vert *ipc *vert-ptr)
            T)
-           
+
           ((= Name "render-pvm")
            (render-pvm *ipc *projview (get Data 2) (get Data 3))
            T)
-          
+
           ((= Data "bye")
            # Send bye to ctrl which will send to all workers/render/model
            (send-msg *ipc Sock "bye")
@@ -137,17 +141,17 @@
            (ipc~end> *ipc)
            (println "Worker says bye!")
            (bye))
-                     
+
           (T
            T))
-               
+
     # Send ready when complete
     (send-msg *ipc Sock "rdy")
-    
+
     #(prinl (usec) " | WORKER/" *Pid " | Worker ready")
-    
+
     T))
-      
+
 
 (de handle-model (Sock)
 
@@ -164,7 +168,7 @@
   (let Msg (recv-msg *ipc Sock)
 
    (when NIL
-   
+
      # Pull data from model
      (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
            Sock-Render (ipc~get-fd> *ipc "RENDER")
@@ -176,9 +180,9 @@
                         (+ (get (: pos) 2) 0.0)
                         0.0))
           (update-model-matrix> Vert))
-                
+
         # Below calls are reserializing
-                
+
         (req-send-obj *ipc
                       Sock-Render
                       Vert

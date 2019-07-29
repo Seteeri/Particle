@@ -148,14 +148,21 @@ Store DAGs as binary trees?
 
    * Implement string/atom/list, eval functionality [WIP]
      * Implmenet drawing [Done]
-     * Implement interface/controls
-       * Refactor Vertex to store offset into ptr
-       * Pack (Chr->Str)
-       * Intern (Str->I-Sym)
-       * Name (I-Sym->T-Sym)
-       * Format (Chr->Num)
-       * ALT+NUM to produce numbers
-     * Implement operators
+     * Implement interface
+       * Create particle for pointer
+       * Create vertex/projview wrappers for send-req-obj
+       * Atoms
+         * Pack (Chr->Str)
+         * Intern (Str->I-Sym)
+         * Quote/Sym/Any (I-Sym->T-Sym or get sym name)
+           * (= (sym 'a) (any 'a) 'a "a") -> T
+         * Format (Chr->Num)
+         * ALT+NUM to produce numbers
+       * Lists
+         * Cons - create cons from two objects @ ptr
+       * Eval
+         * Test functions on data
+         * Only need pack and backspace/delete (pop off/GC)
 
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
      * Use assoc list

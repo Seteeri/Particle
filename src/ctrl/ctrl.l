@@ -73,7 +73,7 @@
 
     (reg-conns *ipc ID-C))
 
-  (queue '*q-msg "(render-vert 1)")
+  (queue '*q-msg "(render-ptr 1)")
   (queue '*q-msg (pack "(render-pvm " *width " " *height ")"))
 
   (setq *xkb (new '(+Xkb)))
