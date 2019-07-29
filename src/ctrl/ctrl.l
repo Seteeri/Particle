@@ -50,7 +50,7 @@
 (load "/home/user/Git/particle/src/prot/conn.l")
 (load "/home/user/Git/particle/src/prot/msg.l")
 (load "/home/user/Git/particle/src/prot/obj.l")
-(load "/home/user/Git/particle/src/ctrl/conn.l")
+#(load "/home/user/Git/particle/src/ctrl/conn.l")
 (load "/home/user/Git/particle/src/ctrl/xkb.l")
 
 
