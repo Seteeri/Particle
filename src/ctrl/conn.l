@@ -99,3 +99,30 @@
     (req-send-pv Ipc
                  Sock-Model
                  Projview)))
+
+
+
+(de update-vert (Ipc Vert)
+  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
+        Sock-Render (ipc~get-fd> *ipc "RENDER"))
+        
+    (req-send-vert Ipc
+                   Sock-Render
+                   Vert)
+
+    (req-send-vert Ipc
+                   Sock-Model
+                   Vert)))
+
+
+(de update-pv (Ipc Pv)
+  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
+        Sock-Render (ipc~get-fd> *ipc "RENDER"))
+        
+    (req-send-pv Ipc
+                 Sock-Render
+                 Pv)
+
+    (req-send-pv Ipc
+                 Sock-Model
+                 Pv)))
