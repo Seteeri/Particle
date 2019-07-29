@@ -130,8 +130,7 @@
 
     (for C (chop Str)
 
-      (let (Vert     (pop '*verts)
-            Off      (get Vert 'off-gl))
+      (let Vert (pop '*verts)
 
         # Set baseline
         (with Vert
@@ -141,11 +140,7 @@
 
         (update-model-matrix> Vert)
 
-        (cmd-render-vert *ipc Vert Off)
-
-        (req-send-vert *ipc
-                       Sock-Model
-                       Vert)
+        (cmd-update-vert *ipc Vert)
 
         (adv-pen 1.0)
 
@@ -171,8 +166,7 @@
 
     (for N (chop Str)
 
-      (let (Vert     (pop '*verts)
-            Off      (get Vert 'off-gl))
+      (let Vert (pop '*verts)
 
         # Reset vertex
         # Pos = baseline = X,0,0
@@ -185,11 +179,7 @@
 
         (update-model-matrix> Vert)
 
-        (cmd-render-vert *ipc Vert Off)
-
-        (req-send-vert *ipc
-                       Sock-Model
-                       Vert)
+        (cmd-update-vert *ipc Vert)
 
         (inc '*cnt-v 1)))
 

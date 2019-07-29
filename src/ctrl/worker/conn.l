@@ -62,8 +62,7 @@
 
 
 (de cmd-render-vert (Ipc Vert)
-  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-        Sock-Render (ipc~get-fd> *ipc "RENDER"))
+  (let (Sock-Render (ipc~get-fd> *ipc "RENDER"))
 
     (print-info "render-vert" (pack "Sending vert @ " (get Vert 'off-gl)))
 
@@ -77,8 +76,7 @@
 
 
 (de cmd-render-pv (Ipc Width Height)
-  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-        Sock-Render (ipc~get-fd> *ipc "RENDER"))
+  (let (Sock-Render (ipc~get-fd> *ipc "RENDER"))
 
     # Pass list of socks so need only serialize once
 
@@ -94,7 +92,7 @@
 
 
 
-(de update-vert (Ipc Vert)
+(de cmd-update-vert (Ipc Vert)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
         
@@ -107,24 +105,21 @@
                    Vert)))
 
 
-(de cmd-calc-pv (Width Height)
-  (with *projview
-    (=: width  Width)
-    (=: height Height)
-    (update-mat-proj> *projview)))
-
-
-######################
-
-
-(de update-pv (Ipc Pv)
+(de cmd-update-pv (Ipc)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
         
     (req-send-pv Ipc
                  Sock-Render
-                 Pv)
+                 *projview)
 
     (req-send-pv Ipc
                  Sock-Model
-                 Pv)))    
+                 *projview)))
+                 
+
+(de cmd-calc-pv (Width Height)
+  (with *projview
+    (=: width  Width)
+    (=: height Height)
+    (update-mat-proj> *projview)))

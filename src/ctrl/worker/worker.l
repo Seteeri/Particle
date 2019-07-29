@@ -125,14 +125,14 @@
     (cond ((= Name 'KEYBOARD-KEY)
            (cmd-kb Data))
 
-          ((= Name "render-ptr")
-           (cmd-render-vert *ipc *vert-ptr))
+          ((= Name "update-vert")
+           (cmd-update-vert *ipc *vert-ptr))
 
           ((= Name "calc-pv")
            (cmd-calc-pv (get Data 2) (get Data 3)))
 
-          ((= Name "render-pv")
-           (cmd-render-pv *ipc))
+          ((= Name "update-pv")
+           (cmd-update-pv *ipc))
 
           ((= Data "bye")
            # Send bye to ctrl which will send to all workers/render/model

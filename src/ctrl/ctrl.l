@@ -73,9 +73,9 @@
 
     (reg-conns *ipc ID-C))
 
-  (queue '*q-msg "(render-ptr 1)")
+  (queue '*q-msg "(update-vert 1)")
   (queue '*q-msg (pack "(calc-pv " *width " " *height ")"))
-  (queue '*q-msg (pack "(render-pv)"))
+  (queue '*q-msg (pack "(update-pv)"))
 
   (setq *xkb (new '(+Xkb)))
 
@@ -95,7 +95,7 @@
 
         (when (= (get Data 1) "window-size")
           (dispatch-msg (pack "(calc-pv " (get Data 2) " " (get Data 3) ")"))
-          (dispatch-msg (pack "(render-pv)")))
+          (dispatch-msg (pack "(update-pv)")))
           
         (when (= Data "bye")
           # Send to all conns
