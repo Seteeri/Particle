@@ -15,7 +15,7 @@
 
     # Dispatch bindings
 
-    (println Data Keysym State)
+    (print-info "handle-kb" (pack (str Data) " " Keysym))
 
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
@@ -40,7 +40,7 @@
 
 (de cmd-pack ()
 
-  (println "CMD-PACK")
+  (print-info "cmd-pack")
 
   # Build list of chars
   # Add double-quotes
@@ -51,15 +51,13 @@
         Verts  ()  #(list Quote-Start)
         Chars  ()) #(list "\""))
 
-    # Pop particles off timeline - ignore ptr
-    (for Prt *timeline
-      (push 'Chars (get Prt 'data))
-      # Assumes Verts is list of 1 item
-      (push 'Verts (car (get Prt 'verts))))
-
-    # Push end quote
-    #(push 'Chars "\"")
-    #(push 'Verts (pop '*verts))
+    # Pop particles off timeline - ignore ptr (ptr not in timeline)
+    (let Prt NIL
+      (while (setq Prt (pop '*timeline))
+        (push 'Chars (get Prt 'data))
+        # Assumes Verts is list of 1 item
+        (for Vert (get Prt 'verts)
+          (push 'Verts Vert))))
 
     # Reposition
     # 2 possible methods:
@@ -78,7 +76,7 @@
 
 (de cmd-del (Dir)
 
-  (println "CMD-DEL")
+  (print-info "cmd-del")
 
   # Currently, render will attempt to render all verts (*max-verts)
   # -> Send cmd to render to adjust max
@@ -102,11 +100,10 @@
         Prt         (pop '*timeline)
         Verts       (get Prt 'verts))
 
-    (println (get Prt 'data))
+    (println (get Prt 'data) (length Verts))
 
     (for Vert Verts
       (let Msg (pack "(zv " (get Vert 'off-gl) '")")
-        (println Vert Msg)
         (send-msg *ipc Sock-Render Msg))
       (push '*verts Vert)
       # For now, push pen back
@@ -155,7 +152,8 @@
   # ...REDL read, eval, draw/render/rasterize, loop
   # So pressing ASCII equivalent to executing eval
 
-  (when (and (>= Keysym 32) (<= Keysym 255))
+  (when (and (>= Keysym 32)
+             (<= Keysym 255))
 
     # For strings either use quotations or put additional spacing between symbols
     # Problem is spaces are invisible
