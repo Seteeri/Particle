@@ -71,12 +71,9 @@
     (let (Data (pack Chars)
           Prt (new '(+Particle) Data Verts))
 
-      (println (getl Prt))
-
-      # Push into timeline
       (push '*timeline Prt)
 
-      (println (pack Chars)))))
+      (println Data))))
 
 
 (de cmd-del (Dir)
@@ -127,10 +124,11 @@
 
 
 (de adv-pen (Cnt)
-
-  (setq *pen-v (list (+ (get *pen-v 1) (*/ *adv-vert Cnt 1.0))
-                     (get *pen-v 2)
-                     0.0)))
+  (let Pos (list (+ (get *pen-v 1) (*/ *adv-vert Cnt 1.0))
+                (get *pen-v 2)
+                0.0)
+    (setq *pen-v Pos)
+    (print-info "adv-pen" (pack (format (get Pos 1) *Scl) " " (format (get Pos 2) *Scl)))))
 
 
 (de nl-pen ()
