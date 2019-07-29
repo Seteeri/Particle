@@ -1,15 +1,28 @@
-(de build-string ()
+(de read-string ()
   (let (Verts  ()
-        Chars  ())
+        Data  ())
+    # Pop particles off timeline - ignore ptr (ptr not in timeline)
+    (for Prt *timeline
+      (push 'Data (get Prt 'data))
+      # Assumes Verts is list of 1 item
+      (for Vert (get Prt 'verts)
+        (push 'Verts Vert)))
+
+    (list Verts Data)))
+    
+
+(de pop-string ()
+  (let (Verts  ()
+        Data  ())
     # Pop particles off timeline - ignore ptr (ptr not in timeline)
     (let Prt NIL
       (while (setq Prt (pop '*timeline))
-        (push 'Chars (get Prt 'data))
+        (push 'Data (get Prt 'data))
         # Assumes Verts is list of 1 item
         (for Vert (get Prt 'verts)
           (push 'Verts Vert))))
 
-    (list Verts Chars)))
+    (list Verts Data)))
 
 
 (de cmd-pack ()
@@ -21,7 +34,7 @@
 
   # Also set marker before and after
 
-  (let ((Verts Chars) (build-string))
+  (let ((Verts Chars) (pop-string))
 
     # Reposition
     # 2 possible methods:
@@ -76,9 +89,19 @@
 
 (de cmd-eval ()
 
+  (println "cmd-eval")
+
   # Build string from ptr-prev to ptr
 
-  (println "CMD-EVAL"))
+  # 2 versions:
+  # 1. (eval (read (pack Data)))
+  # 2. (eval (read chars))
+
+  (let ((Verts Data) (read-string)
+        Str (pack Data)
+        Any (any Str))
+    (println Str Any)
+    (println (eval Any))))
 
 
 (de cmd-char (Keysym)
