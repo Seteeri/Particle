@@ -179,6 +179,8 @@ Store DAGs as binary trees?
 
 * Refactor/Fix
 
+  * Check link status
+
    * Move xkb class into wrapper
    * CTRL MUST SEND MSGS TO ALL CLIENTS
      * Maintain queue per client

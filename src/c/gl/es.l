@@ -364,7 +364,7 @@ Naming Conventions:
     # (print-info "read-and-load-prog" (pack Sz-f " " (car (struct Buf '(I . 1)))))
 
     # If it fails, use build-and-write-prog
-    (if (query-program-info-log Program)
+    (if (query-program-info-log Program) # or check link status
       (prog
         (println "read-and-load-prog" (pack "Failed to load program: " Path-Bin))
         (delete-program Program)

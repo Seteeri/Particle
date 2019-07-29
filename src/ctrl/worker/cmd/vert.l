@@ -1,3 +1,17 @@
+(de build-string ()
+  (let (Verts  ()
+        Chars  ())
+    # Pop particles off timeline - ignore ptr (ptr not in timeline)
+    (let Prt NIL
+      (while (setq Prt (pop '*timeline))
+        (push 'Chars (get Prt 'data))
+        # Assumes Verts is list of 1 item
+        (for Vert (get Prt 'verts)
+          (push 'Verts Vert))))
+
+    (list Verts Chars)))
+
+
 (de cmd-pack ()
 
   (print-info "cmd-pack")
@@ -7,9 +21,7 @@
 
   # Also set marker before and after
 
-  (let (           #Quote-Start (pop '*verts)
-        Verts  ()  #(list Quote-Start)
-        Chars  ()) #(list "\""))
+  (let ((Verts Chars) (build-string))
 
     # Pop particles off timeline - ignore ptr (ptr not in timeline)
     (let Prt NIL
