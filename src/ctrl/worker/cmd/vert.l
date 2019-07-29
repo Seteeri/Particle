@@ -141,7 +141,7 @@
 
         (update-model-matrix> Vert)
 
-        (render-vert *ipc Vert Off)
+        (cmd-render-vert *ipc Vert Off)
 
         (req-send-vert *ipc
                        Sock-Model
@@ -185,7 +185,7 @@
 
         (update-model-matrix> Vert)
 
-        (render-vert *ipc Vert Off)
+        (cmd-render-vert *ipc Vert Off)
 
         (req-send-vert *ipc
                        Sock-Model

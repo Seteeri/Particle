@@ -59,7 +59,7 @@
 (load "/home/user/Git/particle/src/model/vertex.l")
 (load "/home/user/Git/particle/src/ctrl/conn.l")
 (load "/home/user/Git/particle/src/ctrl/xkb.l")
-(load "/home/user/Git/particle/src/ctrl/worker/kb.l")
+(load "/home/user/Git/particle/src/ctrl/worker/cmd/kb.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/vert.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/pen.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/cam.l")
@@ -123,16 +123,16 @@
         Name (get Data 1))
 
     (cond ((= Name 'KEYBOARD-KEY)
-           (handle-kb Data))
+           (cmd-kb Data))
 
           ((= Name "render-ptr")
-           (render-vert *ipc *vert-ptr))
+           (cmd-render-vert *ipc *vert-ptr))
 
           ((= Name "calc-pv")
-           (calc-pv (get Data 2) (get Data 3)))
+           (cmd-calc-pv (get Data 2) (get Data 3)))
 
           ((= Name "render-pv")
-           (render-pv *ipc))
+           (cmd-render-pv *ipc))
 
           ((= Data "bye")
            # Send bye to ctrl which will send to all workers/render/model

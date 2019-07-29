@@ -1,4 +1,5 @@
-# Split into handlers and requests
+# Requests are sent
+# Cmds are recieved
 
 ##############################################
   
@@ -60,7 +61,7 @@
 ################################################################################
 
 
-(de render-vert (Ipc Vert)
+(de cmd-render-vert (Ipc Vert)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
 
@@ -75,7 +76,7 @@
                    Vert)))
 
 
-(de render-pv (Ipc Width Height)
+(de cmd-render-pv (Ipc Width Height)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
 
@@ -106,6 +107,16 @@
                    Vert)))
 
 
+(de cmd-calc-pv (Width Height)
+  (with *projview
+    (=: width  Width)
+    (=: height Height)
+    (update-mat-proj> *projview)))
+
+
+######################
+
+
 (de update-pv (Ipc Pv)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
@@ -116,11 +127,4 @@
 
     (req-send-pv Ipc
                  Sock-Model
-                 Pv)))
-
-
-(de calc-pv (Width Height)
-  (with *projview
-    (=: width  Width)
-    (=: height Height)
-    (update-mat-proj> *projview)))
+                 Pv)))    

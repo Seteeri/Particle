@@ -3,7 +3,7 @@
 
 (def 'KEY-REPEAT 2)
 
-(de handle-kb (Data)
+(de cmd-kb (Data)
 
   (let (Keycode (+ (get Data 4) 8)
         State   (get Data 5)
