@@ -171,17 +171,25 @@ Store DAGs as binary trees?
      * Then test symbols
        * Symbols that already exist - get existing
 
+   * Add disassemble functionality
+
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
      * Use assoc list
      * Store combinations as keys
 
-   * Add disassemble functionality
-
-   * Implement Wayland [Wed/Thurs]
+   * Implement Wayland - BASIC! [Wed/Thurs]
      * Setup tiles for 6 windows = 3 col, 2 row
      * Proof of concept working with eval already
 
-   * PRE-RELEASE
+   * File browser - most basic functionality
+     * Can use existing commands: dir, dirname, cd, info, path
+
+   * Basic animations
+     * Easing functions
+     * Fades
+     * Use compute shader on large amount
+
+   * PRE-RELEASE - SEPT 1
      * CLEAN UP
      * RECORD DEMO
      * ANNOUNCE ON MAILING LIST, LATER REDDIT

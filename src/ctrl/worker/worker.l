@@ -175,9 +175,13 @@
            Vert        *vert-ptr)
 
         (with Vert
-          (=: pos (list (+ (get (: pos) 1) 0.05)
-                        (+ (get (: pos) 2) 0.0)
-                        0.0))
+          (when NIL
+            (=: pos (list (+ (get (: pos) 1) 0.05)
+                          (+ (get (: pos) 2) 0.0)
+                          0.0)))
+          (=: rota (list 0.0
+                        0.0
+                        (+ (get (: rota) 3) 0.017)))
           (update-model-matrix> Vert))
 
         (cmd-update-vert *ipc Vert)))))
