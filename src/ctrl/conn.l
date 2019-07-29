@@ -1,6 +1,7 @@
 # Split into handlers and requests
 
-# Create specific ones for vert/projview
+##############################################
+  
 
 (de req-send-obj (Ipc Sock Obj Sz-Obj Off-Obj)
 
@@ -8,11 +9,7 @@
             Sock
             (fmt-msg-send> Obj Off-Obj)
             *ptr-vert
-            (serialize-to-ptr> Obj *ptr-vert))
-
-  #(println (usec) " | req-send-obj | " (struct *ptr-vert '(B . 233)))
-
-  T)
+            (serialize-to-ptr> Obj *ptr-vert)))
 
 
 (de req-recv-obj (Ipc Sock Obj Sz-Obj Off-Obj)
@@ -28,24 +25,54 @@
 ################################################################################
 
 
+(de req-send-vert (Ipc Sock Obj)
+  (req-send-obj Ipc
+                Sock
+                Obj
+                SZ-VERT
+                (get Obj 'off-gl)))
+
+
+(de req-recv-vert (Ipc Sock Obj Cnt)
+  (req-recv-obj Ipc
+                Sock
+                (if Obj Obj (new '(+Vertex)))
+                SZ-VERT
+                (get-vert-off Cnt)))
+
+
+(de req-send-pv (Ipc Sock Obj)
+  (req-send-obj Ipc
+                Sock
+                Obj
+                SZ-PV
+                0))
+
+
+(de req-recv-pv (Ipc Sock Obj)
+  (req-recv-obj Ipc
+                Sock
+                (if Obj Obj (new '(+Projview)))
+                SZ-PV
+                0))
+
+
+################################################################################
+
+
 (de render-vert (Ipc Vert)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-        Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Off (get Vert 'off-gl))
+        Sock-Render (ipc~get-fd> *ipc "RENDER"))
 
-    (print-info "render-vert" (pack "Sending vert @ " Off))
+    (print-info "render-vert" (pack "Sending vert @ " (get Vert 'off-gl)))
 
-    (req-send-obj Ipc
-                  Sock-Render
-                  Vert
-                  SZ-VERT
-                  Off)
+    (req-send-vert Ipc
+                   Sock-Render
+                   Vert)
 
-    (req-send-obj Ipc
-                  Sock-Model
-                  Vert
-                  SZ-VERT
-                  Off)))
+    (req-send-vert Ipc
+                   Sock-Model
+                   Vert)))
 
 
 (de render-pvm (Ipc Projview Width Height)
@@ -65,14 +92,10 @@
 
     #(print-info "render-vert" "Sending pvm...")
 
-    (req-send-obj Ipc
-                  Sock-Render
-                  Projview
-                  SZ-PV
-                  0)
+    (req-send-pv Ipc
+                 Sock-Render
+                 Projview)
 
-    (req-send-obj Ipc
-                  Sock-Model
-                  Projview
-                  SZ-PV
-                  0)))
+    (req-send-pv Ipc
+                 Sock-Model
+                 Projview)))

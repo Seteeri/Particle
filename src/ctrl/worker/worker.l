@@ -86,24 +86,19 @@
 
   (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "rdy")
 
-  (setq *projview (req-recv-obj *ipc
-                                (ipc~get-fd> *ipc "MODEL")
-                                (new '(+Projview))
-                                SZ-PV
-                                0))
+  (setq *projview (req-recv-pv *ipc
+                               (ipc~get-fd> *ipc "MODEL")
+                               NIL))
 
   (setq *xkb (new '(+Xkb)))
 
   (let Sock-Model (ipc~get-fd> *ipc "MODEL")
     (for N *verts-max
-      (let Vert (req-recv-obj *ipc
-                              Sock-Model
-                              (new '(+Vertex))
-                              SZ-VERT
-                              (get-vert-off N))
+      (let Vert (req-recv-vert *ipc
+                               Sock-Model
+                               NIL
+                               N)
         (push '*verts Vert))))
-
-  #(setq *verts (flip *verts))
 
   # Designate vertex 1 as ptr
   (setq *vert-ptr (pop '*verts)))
