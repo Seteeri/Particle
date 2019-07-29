@@ -94,14 +94,16 @@
 
   (setq *xkb (new '(+Xkb)))
 
-  (for N *verts-max
-    (push '*verts (req-recv-obj *ipc
-                                (ipc~get-fd> *ipc "MODEL")
-                                (new '(+Vertex))
-                                SZ-VERT
-                                (get-vert-off N)))
-    # Use flip instead of reverse
-    (setq *verts (flip *verts)))
+  (let Sock-Model (ipc~get-fd> *ipc "MODEL")
+    (for N *verts-max
+      (let Vert (req-recv-obj *ipc
+                              Sock-Model
+                              (new '(+Vertex))
+                              SZ-VERT
+                              (get-vert-off N))
+        (push '*verts Vert))))
+
+  #(setq *verts (flip *verts))
 
   # Designate vertex 1 as ptr
   (setq *vert-ptr (pop '*verts)))

@@ -3,7 +3,7 @@
 
 (def 'KEY-REPEAT 2)
 
-(de handle-kb (Data)    
+(de handle-kb (Data)
 
   (let (Keycode (+ (get Data 4) 8)
         State   (get Data 5)
@@ -15,30 +15,22 @@
 
     # Dispatch bindings
 
-    #{
-      T-Sym
-      Pack   (Chr->Str)
-      Chop   (Str->Chr)
-      Cut    ...
-      
-      Intern (T-Sym->I-Sym)
-      Name   (I-Sym->T-Sym)
-      Format (T-Sym<->Num)
-      ALT+NUM -> numbers
+    (println Data Keysym State)
 
-      Backspace/Del
-    }#
-
-    
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
-      
-      (cond ((= Keysym ksd~End)   (pack-chars))
 
-            ((= Keysym ksd~Right) (move-cam 1 '(1.0 0.0)))
-            ((= Keysym ksd~Left)  (move-cam 1 '(-1.0 0.0)))
-            ((= Keysym ksd~Up)    (move-cam 2 '(0.0 1.0)))
-            ((= Keysym ksd~Down)  (move-cam 2 '(0.0 -1.0)))
+      (cond ((= Keysym ksd~End)       (cmd-pack))
+            ((= Keysym ksd~Home)      (cmd-eval))
+            ((= Keysym ksd~BackSpace) (cmd-del))
+            ((= Keysym ksd~Delete)    (cmd-del))
+
+            # HJKL
+
+            ((= Keysym ksd~Right) (move-cam 1 '(1.0   0.0)))
+            ((= Keysym ksd~Left)  (move-cam 1 '(-1.0  0.0)))
+            ((= Keysym ksd~Up)    (move-cam 2 '(0.0   1.0)))
+            ((= Keysym ksd~Down)  (move-cam 2 '(0.0  -1.0)))
 
             ((= Keysym ksd~Prior) (zoom-cam -0.5))
             ((= Keysym ksd~Next)  (zoom-cam 0.5))
@@ -52,7 +44,7 @@
                      (get *pen-v 2)
                      0.0)))
 
-                     
+
 (de nl-pen ()
 
   (setq *pen-v (list 0.0
@@ -60,13 +52,15 @@
                      0.0)))
 
 
-(de pack-chars ()
+(de cmd-pack ()
+
+  (println "CMD-PACK")
 
   # Build list of chars
   # Add double-quotes
 
   # Also set marker before and after
-  
+
   (let (Chars  ()
         Verts  ()
         Quotes (draw-str "\"\""))
@@ -77,7 +71,7 @@
     # Push start quote
     (push 'Chars (get Quotes 1))
     (push 'Verts (get Quotes 1))
-        
+
     # Pop particles off timeline - ignore ptr
     (for Prt *timeline
       (push 'Chars (get Prt 'data))
@@ -101,7 +95,30 @@
       (push *timeline Prt)
 
       (println (pack Chars)))))
-    
+
+
+(de cmd-del (Dir)
+
+  (println "CMD-DEL")
+
+  # Pop from timeline/ptr
+  (println (get (pop '*timeline) 'data))
+
+  # Currently, render will attempt to render all verts (*max-verts)
+  # -> Send cmd to render to adjust max
+  # - instanceCount is number of instances from beginning of array
+  # *verts is LIFO, thus will always keep instances pack from beginning of array
+  # -> Maintain vert cnt, instanceCount = size - used
+
+  T)
+
+
+(de cmd-eval ()
+
+  # Build string from ptr-prev to ptr
+
+  (println "CMD-EVAL"))
+
 
 ################################################################################
 
@@ -114,7 +131,7 @@
   # Check CAR/CDR
   # - If cons cell, call draw fn or put in list (which will create another particle)
   # - If encoded num or str, add verts to current particle
-  
+
   # Kb handlers will call this function
   # However, the result of eval is drawn
   # ...REDL read, eval, draw/render/rasterize, loop
@@ -125,7 +142,7 @@
     # For strings either use quotations or put additional spacing between symbols
     # Problem is spaces are invisible
     # (draw-str (pack "\"" Data "\""))
-    
+
     (let (Data  (if (= Keysym ksd~space) " " (char Keysym))
           Verts (draw-str Data)
           Prt   (new '(+Particle) Data Verts))
@@ -140,11 +157,9 @@
         (prin " | ")
         (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
         (prinl))
-
-      # Push prtcl into timeline
-      # - Timeline is in namespace        
+        
       T))
-      
+
   (cond ((= Keysym ksd~Return) (nl-pen))
         ((= Keysym ksd~Tab)    (adv-pen 2.0))))
 
@@ -187,7 +202,7 @@
 (de draw-bytes (Bytes)
 
   (for Byte Bytes
-  
+
     (draw-num Byte)))
 
 

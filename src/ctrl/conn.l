@@ -63,7 +63,7 @@
 
     # Pass list of socks so need only serialize once
 
-    (print-info "render-vert" "Sending pvm...")
+    #(print-info "render-vert" "Sending pvm...")
 
     (req-send-obj Ipc
                   Sock-Render
