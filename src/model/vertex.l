@@ -15,7 +15,7 @@
 
 
 (class +Vertex)
-(dm T (Off
+(dm T (Off-Gl
        Chr       #Use to get offset, if char then data is char also
        RGBA
        Pos
@@ -23,7 +23,7 @@
        Sca)
 
   # Offset into render gl buffer
-  (=: off Off)
+  (=: off-gl Off-Gl)
 
   (=: chr NIL)
   
@@ -76,7 +76,7 @@
 
 (dm serialize-to-ptr> (Ptr)
   (struct Ptr 'N
-          (cons (: off) 8)
+          (cons (: off-gl) 8)
           (: chr)
           (cons -1.0 (: pos))
           (cons -1.0 (: rota))
@@ -90,7 +90,7 @@
 
 (dm deserialize-fm-ptr> (Ptr)
 
-  (let ((Off Chr Pos Rota Sca Mm Rgba Uv Off-Texel)
+  (let ((Off-Gl Chr Pos Rota Sca Mm Rgba Uv Off-Texel)
         (struct Ptr 
                 '((N . 1)
                   (B . 1)
@@ -102,7 +102,7 @@
                   (-1.0 . 16)
                   (I . 1))))
 
-    (=: off Off)
+    (=: off-gl Off-Gl)
     
     (=: chr (car Chr))
         

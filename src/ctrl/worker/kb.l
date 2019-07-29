@@ -47,18 +47,19 @@
 
   # Also set marker before and after
 
-  (let (Quote-Start (pop '*verts)
-        Verts  (list Quote-Start)
-        Chars  (list "\""))
+  (let (           #Quote-Start (pop '*verts)
+        Verts  ()  #(list Quote-Start)
+        Chars  ()) #(list "\""))
 
     # Pop particles off timeline - ignore ptr
     (for Prt *timeline
       (push 'Chars (get Prt 'data))
-      (push 'Verts (get Prt 'verts)))
+      # Assumes Verts is list of 1 item
+      (push 'Verts (car (get Prt 'verts))))
 
     # Push end quote
-    (push 'Chars "\"")
-    (push 'Verts (pop '*verts))
+    #(push 'Chars "\"")
+    #(push 'Verts (pop '*verts))
 
     # Reposition
     # 2 possible methods:
@@ -70,8 +71,10 @@
     (let (Data (pack Chars)
           Prt (new '(+Particle) Data Verts))
 
+      (println (getl Prt))
+
       # Push into timeline
-      (push *timeline Prt)
+      (push '*timeline Prt)
 
       (println (pack Chars)))))
 
@@ -97,7 +100,6 @@
   # 1. Pop Prt from timeline/ptr
   # 2. For Verts: send zero-vert cmd to render
   # 3. For Verts: push Verts
-  # Zero obj to maintain consistency?
 
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
         Prt         (pop '*timeline)
@@ -106,11 +108,12 @@
     (println (get Prt 'data))
 
     (for Vert Verts
-      (send-msg *ipc Sock-Render (pack "(zv " (get Vert 'off) '")"))
-      (push '*verts Vert)))
-
-  # For now, push pen back
-  (adv-pen -1.0))
+      (let Msg (pack "(zv " (get Vert 'off-gl) '")")
+        (println Vert Msg)
+        (send-msg *ipc Sock-Render Msg))
+      (push '*verts Vert)
+      # For now, push pen back
+      (adv-pen -1.0))))
 
 
 (de cmd-eval ()
@@ -189,15 +192,13 @@
     (for C (chop Str)
 
       (let (Vert     (pop '*verts)
-            Off      (get Vert 'off))
+            Off      (get Vert 'off-gl))
 
         # Set baseline
         (with Vert
           (=: pos (list (get *pen-v 1) (get *pen-v 2) 0.0)))
 
         (update-glyph> Vert C)
-
-        (adv-pen 1.0)
 
         (update-model-matrix> Vert)
 
@@ -208,6 +209,8 @@
                       Vert
                       SZ-VERT
                       Off)
+
+        (adv-pen 1.0)
 
         (inc '*cnt-v 1)
 
@@ -223,6 +226,7 @@
     (draw-num Byte)))
 
 
+# Refactor this into draw-char
 (de draw-num (Num)
 
   (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
@@ -231,7 +235,7 @@
     (for N (chop Str)
 
       (let (Vert     (pop '*verts)
-            Off      (get Vert 'off))
+            Off      (get Vert 'off-gl))
 
         # Reset vertex
         # Pos = baseline = X,0,0
