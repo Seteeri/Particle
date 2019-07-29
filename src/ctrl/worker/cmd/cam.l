@@ -16,18 +16,14 @@
 
       # Pass list of socks so need only serialize once
 
-      (req-send-obj *ipc
+      (req-send-pv *ipc
                     Sock-Render
-                    *projview
-                    SZ-PV
-                    0)
+                    *projview)
 
       # Push to model also
       (req-send-obj *ipc
                     Sock-Model
-                    *projview
-                    SZ-PV
-                    0))))
+                    *projview))))
 
 
 (de cmd-zoom-cam (Delta)
@@ -41,15 +37,11 @@
 
       (update-mat-proj> *projview)
 
-      (req-send-obj *ipc
+      (req-send-pv *ipc
                     Sock-Render
-                    *projview
-                    SZ-PV
-                    0)
+                    *projview)
 
       # Push to model also
       (req-send-obj *ipc
                     Sock-Model
-                    *projview
-                    SZ-PV
-                    0))))
+                    *projview))))

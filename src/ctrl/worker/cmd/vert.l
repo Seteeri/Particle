@@ -143,11 +143,9 @@
 
         (render-vert *ipc Vert Off)
 
-        (req-send-obj *ipc
-                      Sock-Model
-                      Vert
-                      SZ-VERT
-                      Off)
+        (req-send-vert *ipc
+                       Sock-Model
+                       Vert)
 
         (adv-pen 1.0)
 
@@ -189,11 +187,9 @@
 
         (render-vert *ipc Vert Off)
 
-        (req-send-obj *ipc
-                      Sock-Model
-                      Vert
-                      SZ-VERT
-                      Off)
+        (req-send-vert *ipc
+                       Sock-Model
+                       Vert)
 
         (inc '*cnt-v 1)))
 
