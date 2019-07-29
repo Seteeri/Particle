@@ -82,46 +82,6 @@
     (send-msg Ipc (car Conn) Msg)))
 
 
-# FLUSH
-
-
-(de flush-msgs (Ipc Sock Fn-Proc)
-
-  # Either use yield or pass fn
-
-  # Recv all data on sock (buffer limit)
-  
-  (let Bytes-Read (ipc~recv-bytes> Ipc Sock T T 0)
-
-    (if (< Bytes-Read 4)
-
-      (print-info "read-msgs" (pack "Bytes-Read-Len=" Bytes-Read-Len))
-
-      (let (Ptr (get Ipc 'ipc~buf-rd)
-            End (+ Ptr Bytes-Read))
-        (proc-msgs Ipc Sock Ptr End Fn-Proc)))))
-
-
-(de proc-msgs (Ipc Sock Ptr End Fn)
-
-  # Pass Msg, Sz-Bin, Bin(ptr)
-
-  (while (< Ptr End)
-
-    (let ((Len-Msg Sz-Bin) (struct Ptr '(I I)))
-    
-      (inc 'Ptr (+ 4 4))
-
-      (let (Msg  (pack (struct Ptr (cons 'C Len-Msg)))
-            Data (any Msg))
-
-        (inc 'Ptr Len-Msg)
-
-        (Fn Ipc Sock Data Sz-Bin Ptr))
-
-      (inc 'Ptr Sz-Bin))))
-
-
 # RECV
 
 
@@ -181,3 +141,43 @@
       (unless Bytes-Recv
 
         (print-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))"))))))
+
+
+# FLUSH
+
+
+(de flush-msgs (Ipc Sock Fn-Proc)
+
+  # Either use yield or pass fn
+
+  # Recv all data on sock (buffer limit)
+  
+  (let Bytes-Read (ipc~recv-bytes> Ipc Sock T T 0)
+
+    (if (< Bytes-Read 4)
+
+      (print-info "read-msgs" (pack "Bytes-Read-Len=" Bytes-Read-Len))
+
+      (let (Ptr (get Ipc 'ipc~buf-rd)
+            End (+ Ptr Bytes-Read))
+        (proc-msgs Ipc Sock Ptr End Fn-Proc)))))
+
+
+(de proc-msgs (Ipc Sock Ptr End Fn)
+
+  # Pass Msg, Sz-Bin, Bin(ptr)
+
+  (while (< Ptr End)
+
+    (let ((Len-Msg Sz-Bin) (struct Ptr '(I I)))
+    
+      (inc 'Ptr (+ 4 4))
+
+      (let (Msg  (pack (struct Ptr (cons 'C Len-Msg)))
+            Data (any Msg))
+
+        (inc 'Ptr Len-Msg)
+
+        (Fn Ipc Sock Data Sz-Bin Ptr))
+
+      (inc 'Ptr Sz-Bin))))        

@@ -52,8 +52,17 @@
     (cond ((= Name-Fn "mc")
            (handle-memcpy Sock Data Bin))
 
+          ((= Name-Fn "zv")
+           (handle-memset Sock Data))
+           
           (T
            (prinl (usec) " | RENDER  | process-msg | UNKNOWN REQUEST! " Msg)))))
+
+
+(de handle-memset (Sock Data)
+  (let (Off     (get Data 2)
+        Ptr-Gl  (+ (get (get '*buffer-objects 'nodes) 'gl~ptr) Off))
+    (native "@" "memset" NIL Ptr-Gl 0 208)))
 
 
 (de handle-memcpy (Sock Data Ptr)

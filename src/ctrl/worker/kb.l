@@ -27,29 +27,15 @@
 
             # HJKL
 
-            ((= Keysym ksd~Right) (move-cam 1 '(1.0   0.0)))
-            ((= Keysym ksd~Left)  (move-cam 1 '(-1.0  0.0)))
-            ((= Keysym ksd~Up)    (move-cam 2 '(0.0   1.0)))
-            ((= Keysym ksd~Down)  (move-cam 2 '(0.0  -1.0)))
+            ((= Keysym ksd~Right) (cmd-move-cam 1 '(1.0   0.0)))
+            ((= Keysym ksd~Left)  (cmd-move-cam 1 '(-1.0  0.0)))
+            ((= Keysym ksd~Up)    (cmd-move-cam 2 '(0.0   1.0)))
+            ((= Keysym ksd~Down)  (cmd-move-cam 2 '(0.0  -1.0)))
 
-            ((= Keysym ksd~Prior) (zoom-cam -0.5))
-            ((= Keysym ksd~Next)  (zoom-cam 0.5))
+            ((= Keysym ksd~Prior) (cmd-zoom-cam -0.5))
+            ((= Keysym ksd~Next)  (cmd-zoom-cam 0.5))
 
             (T                    (handle-ascii Keysym))))))
-
-
-(de adv-pen (Cnt)
-
-  (setq *pen-v (list (+ (get *pen-v 1) (*/ *adv-vert Cnt 1.0))
-                     (get *pen-v 2)
-                     0.0)))
-
-
-(de nl-pen ()
-
-  (setq *pen-v (list 0.0
-                     (- (get *pen-v 2) (+ *adv-vert *adv-vert))
-                     0.0)))
 
 
 (de cmd-pack ()
@@ -94,16 +80,30 @@
 
   (println "CMD-DEL")
 
-  # Pop from timeline/ptr
-  (println (get (pop '*timeline) 'data))
-
   # Currently, render will attempt to render all verts (*max-verts)
   # -> Send cmd to render to adjust max
   # - instanceCount is number of instances from beginning of array
   # *verts is LIFO, thus will always keep instances pack from beginning of array
   # -> Maintain vert cnt, instanceCount = size - used
+  #
+  # However, if del from arbitrary point then must zero it and instanceCount
+  # remains the same
+  # After del, vert returns to queue, and next vert will reuse it
+  #
+  # Makes most sense to simply zero vert, and not worry about instanceCount as
+  # frag will be discarded
 
-  T)
+  # Send zero-vert cmd to render
+  # Zero obj to maintain consistency?
+
+  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
+        Prt         (pop '*timeline)
+        Verts       (get Prt 'verts))
+
+    (println (get Prt 'data))
+
+    (for Vert Verts
+      (send-msg *ipc Sock-Render (pack "(zv " (get Vert 'off) '")")))))
 
 
 (de cmd-eval ()
@@ -111,6 +111,23 @@
   # Build string from ptr-prev to ptr
 
   (println "CMD-EVAL"))
+
+
+################################################################################
+
+
+(de adv-pen (Cnt)
+
+  (setq *pen-v (list (+ (get *pen-v 1) (*/ *adv-vert Cnt 1.0))
+                     (get *pen-v 2)
+                     0.0)))
+
+
+(de nl-pen ()
+
+  (setq *pen-v (list 0.0
+                     (- (get *pen-v 2) (+ *adv-vert *adv-vert))
+                     0.0)))
 
 
 ################################################################################
@@ -245,7 +262,7 @@
 # Handlers
 # Do not belong in projview - put in projview in kb subfolder
 
-(de move-cam (Cnt Move)
+(de cmd-move-cam (Cnt Move)
 
    (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
          Sock-Render (ipc~get-fd> *ipc "RENDER"))
@@ -277,7 +294,7 @@
                     0))))
 
 
-(de zoom-cam (Delta)
+(de cmd-zoom-cam (Delta)
 
    (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
          Sock-Render (ipc~get-fd> *ipc "RENDER"))
