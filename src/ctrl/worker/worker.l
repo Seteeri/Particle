@@ -58,8 +58,11 @@
 (load "/home/user/Git/particle/src/model/projview.l")
 (load "/home/user/Git/particle/src/model/vertex.l")
 (load "/home/user/Git/particle/src/ctrl/conn.l")
-(load "/home/user/Git/particle/src/ctrl/worker/kb.l")
 (load "/home/user/Git/particle/src/ctrl/xkb.l")
+(load "/home/user/Git/particle/src/ctrl/worker/kb.l")
+(load "/home/user/Git/particle/src/ctrl/worker/cmd/vert.l")
+(load "/home/user/Git/particle/src/ctrl/worker/cmd/pen.l")
+(load "/home/user/Git/particle/src/ctrl/worker/cmd/cam.l")
 
 
 (de init-worker ()
