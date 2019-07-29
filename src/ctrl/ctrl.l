@@ -74,7 +74,7 @@
     (reg-conns *ipc ID-C))
 
   (queue '*q-msg "(render-ptr 1)")
-  (queue '*q-msg (pack "(render-pvm " *width " " *height ")"))
+  (queue '*q-msg (pack "(render-pv " *width " " *height ")"))
 
   (setq *xkb (new '(+Xkb)))
 
@@ -93,7 +93,7 @@
       (if (lst? Data)
 
         (when (= (get Data 1) "window-size")
-          (dispatch-msg (pack "(render-pvm " (get Data 2) " " (get Data 3) ")")))
+          (dispatch-msg (pack "(render-pv " (get Data 2) " " (get Data 3) ")")))
           
         (when (= Data "bye")
           # Send to all conns

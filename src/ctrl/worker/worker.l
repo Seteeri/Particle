@@ -130,8 +130,8 @@
            (render-vert *ipc *vert-ptr)
            T)
 
-          ((= Name "render-pvm")
-           (render-pvm *ipc *projview (get Data 2) (get Data 3))
+          ((= Name "render-pv")
+           (render-pv *ipc *projview (get Data 2) (get Data 3))
            T)
 
           ((= Data "bye")

@@ -75,8 +75,7 @@
                    Vert)))
 
 
-(de render-pvm (Ipc Projview Width Height)
-  # Update and send
+(de render-pv (Ipc Projview Width Height)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
 
@@ -84,9 +83,6 @@
       (=: width  Width)
       (=: height Height)
       (update-mat-proj> *projview))
-
-    # Either send relevant data or send entire data
-    # -> Minimize render processing time
 
     # Pass list of socks so need only serialize once
 
