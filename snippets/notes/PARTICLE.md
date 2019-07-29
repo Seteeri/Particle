@@ -147,39 +147,51 @@ Store DAGs as binary trees?
      * Fix removing clients/conns [???]
 
    * Implement string/atom/list, eval functionality [WIP]
-     * Implmenet drawing [Done]
-     * Implement interface
+     * Implement drawing [Done]
+     * Implement interface [Tues]
        * Create particle for pointer
-       * Create vertex/projview wrappers for send-req-obj
        * Atoms
          * Pack (Chr->Str)
          * Intern (Str->I-Sym)
          * Quote/Sym/Any (I-Sym->T-Sym or get sym name)
            * (= (sym 'a) (any 'a) 'a "a") -> T
-         * Format (Chr->Num)
-         * ALT+NUM to produce numbers
+         * ALT+NUM to produce numbers and NUM to produce chars and Format to convert
        * Lists
          * Cons - create cons from two objects @ ptr
        * Eval
          * Test functions on data
          * Only need pack and backspace/delete (pop off/GC)
+       * Timeline
+         * Undo
+         * Redo
+         * If undo occurs and there is CDR, branch
+
+   * Load source code
+     * Turn into strings
+     * Then test symbols
+       * Symbols that already exist - get existing
 
    * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
      * Use assoc list
      * Store combinations as keys
 
-   * Implement DRM backend
+   * Add disassemble functionality
 
    * Implement Wayland [Wed/Thurs]
      * Setup tiles for 6 windows = 3 col, 2 row
      * Proof of concept working with eval already
 
-   * RECORD DEMO?
+   * PRE-RELEASE
+     * CLEAN UP
+     * RECORD DEMO
+     * ANNOUNCE ON MAILING LIST, LATER REDDIT
+
+   * Implement DRM backend
 
 
 * Refactor/Fix
 
-  * Check link status
+   * Check link status
 
    * Move xkb class into wrapper
    * CTRL MUST SEND MSGS TO ALL CLIENTS

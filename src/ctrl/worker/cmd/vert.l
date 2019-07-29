@@ -4,7 +4,6 @@
     # Pop particles off timeline - ignore ptr (ptr not in timeline)
     (for Prt *timeline
       (push 'Data (get Prt 'data))
-      # Assumes Verts is list of 1 item
       (for Vert (get Prt 'verts)
         (push 'Verts Vert)))
 
@@ -18,7 +17,6 @@
     (let Prt NIL
       (while (setq Prt (pop '*timeline))
         (push 'Data (get Prt 'data))
-        # Assumes Verts is list of 1 item
         (for Vert (get Prt 'verts)
           (push 'Verts Vert))))
 
@@ -97,11 +95,22 @@
   # 1. (eval (read (pack Data)))
   # 2. (eval (read chars))
 
+  # Also, either modify input data/string
+
   (let ((Verts Data) (read-string)
         Str (pack Data)
         Any (any Str))
-    (println Str Any)
-    (println (eval Any))))
+
+      (println Data Str Any)
+
+      # Create Particle for output
+      
+      # So far, been creating particles for strs
+      # Will have to create particles depending on type:
+      # String, Sym, Num, Cons
+      # sym? num? pair? flg? atom box? ext? lst?
+
+      (eval Any)))
 
 
 (de cmd-char (Keysym)

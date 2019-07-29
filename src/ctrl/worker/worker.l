@@ -167,13 +167,12 @@
 
   (let Msg (recv-msg *ipc Sock)
 
-   (when NIL
+   (when T
 
      # Pull data from model
      (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
            Sock-Render (ipc~get-fd> *ipc "RENDER")
-           Vert     (get *verts 1)
-           Off      (get Vert off))
+           Vert        *vert-ptr)
 
         (with Vert
           (=: pos (list (+ (get (: pos) 1) 0.05)
@@ -181,22 +180,7 @@
                         0.0))
           (update-model-matrix> Vert))
 
-        # Below calls are reserializing
-
-        (req-send-obj *ipc
-                      Sock-Render
-                      Vert
-                      SZ-VERT
-                      Off)
-
-        # Push to model also
-        (when NIL
-          (req-send-obj *ipc
-                        Sock-Model
-                        Vert
-                        SZ-VERT
-                        Off))))))
-
+        (cmd-update-vert *ipc Vert)))))
 
 (de main ()
 
