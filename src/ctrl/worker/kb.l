@@ -93,7 +93,10 @@
   # Makes most sense to simply zero vert, and not worry about instanceCount as
   # frag will be discarded
 
-  # Send zero-vert cmd to render
+  # Process:
+  # 1. Pop Prt from timeline/ptr
+  # 2. For Verts: send zero-vert cmd to render
+  # 3. For Verts: push Verts
   # Zero obj to maintain consistency?
 
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
@@ -103,7 +106,11 @@
     (println (get Prt 'data))
 
     (for Vert Verts
-      (send-msg *ipc Sock-Render (pack "(zv " (get Vert 'off) '")")))))
+      (send-msg *ipc Sock-Render (pack "(zv " (get Vert 'off) '")"))
+      (push '*verts Vert)))
+
+  # For now, push pen back
+  (adv-pen -1.0))
 
 
 (de cmd-eval ()
