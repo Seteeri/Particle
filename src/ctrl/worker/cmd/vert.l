@@ -23,14 +23,6 @@
 
   (let ((Verts Chars) (build-string))
 
-    # Pop particles off timeline - ignore ptr (ptr not in timeline)
-    (let Prt NIL
-      (while (setq Prt (pop '*timeline))
-        (push 'Chars (get Prt 'data))
-        # Assumes Verts is list of 1 item
-        (for Vert (get Prt 'verts)
-          (push 'Verts Vert))))
-
     # Reposition
     # 2 possible methods:
     # 1. Set position for each
