@@ -61,16 +61,9 @@
 
   # Also set marker before and after
 
-  (let (Chars  ()
-        Verts  ()
-        Quotes (draw-str "\"\""))
-
-    # For quotes, pull verts directly then set to avoid uneccessary work
-    # Refactor draw-str then use those fns
-
-    # Push start quote
-    (push 'Chars (get Quotes 1))
-    (push 'Verts (get Quotes 1))
+  (let (Quote-Start (pop '*verts)
+        Verts  (list Quote-Start)
+        Chars  (list "\""))
 
     # Pop particles off timeline - ignore ptr
     (for Prt *timeline
@@ -78,8 +71,8 @@
       (push 'Verts (get Prt 'verts)))
 
     # Push end quote
-    (push 'Chars (get Quotes 2))
-    (push 'Verts (get Quotes 2))
+    (push 'Chars "\"")
+    (push 'Verts (pop '*verts))
 
     # Reposition
     # 2 possible methods:
