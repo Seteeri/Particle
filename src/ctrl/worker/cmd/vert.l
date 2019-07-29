@@ -125,8 +125,7 @@
 
 (de draw-str (Str)
 
-  (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
-        Verts ())
+  (let Verts ()
 
     (for C (chop Str)
 
@@ -161,8 +160,7 @@
 # Refactor this into draw-char
 (de draw-num (Num)
 
-  (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
-        Str (format Num))
+  (let Str (format Num)
 
     (for N (chop Str)
 
