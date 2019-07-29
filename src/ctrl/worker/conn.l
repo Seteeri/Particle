@@ -3,24 +3,32 @@
 
 ##############################################
   
-
 (de req-send-obj (Ipc Sock Obj Sz-Obj Off-Obj)
 
-  (send-msg Ipc
-            Sock
-            (fmt-msg-send> Obj Off-Obj)
-            *ptr-vert
-            (serialize-to-ptr> Obj *ptr-vert)))
+  (let Msg (fmt-msg-send> Obj Off-Obj)
+    
+    (send-msg Ipc
+              Sock
+              Msg
+              *ptr-vert
+              (serialize-to-ptr> Obj *ptr-vert))))
 
 
 (de req-recv-obj (Ipc Sock Obj Sz-Obj Off-Obj)
   # Either pass in object or instance new one
 
-  (send-msg Ipc
-            Sock
-            (fmt-msg-recv> Obj Off-Obj))
+  (let Msg (fmt-msg-recv> Obj Off-Obj)
 
-  (recv-obj Ipc Sock Obj Sz-Obj Off-Obj))
+    #(prinl-info "req-recv-obj" Msg)
+
+    (send-msg Ipc
+              Sock
+              Msg))
+
+  (recv-obj Ipc
+            Sock
+            Obj
+            Sz-Obj))
 
 
 ################################################################################
@@ -63,39 +71,23 @@
 
 (de cmd-render-vert (Ipc Vert)
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER"))
-
-    (print-info "render-vert" (pack "Sending vert @ " (get Vert 'off-gl)))
-
+    #(prinl-info "render-vert" (pack "Sending vert @ " (get Vert 'off-gl)))
     (req-send-vert Ipc
                    Sock-Render
-                   Vert)
-
-    (req-send-vert Ipc
-                   Sock-Model
                    Vert)))
 
 
 (de cmd-render-pv (Ipc Width Height)
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER"))
-
-    # Pass list of socks so need only serialize once
-
-    #(print-info "render-vert" "Sending pvm...")
-
     (req-send-pv Ipc
                  Sock-Render
-                 *projview)
-
-    (req-send-pv Ipc
-                 Sock-Model
                  *projview)))
-
 
 
 (de cmd-update-vert (Ipc Vert)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
-        
+
     (req-send-vert Ipc
                    Sock-Render
                    Vert)

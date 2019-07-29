@@ -5,7 +5,7 @@
                 (get *pen-v 2)
                 0.0)
     (setq *pen-v Pos)
-    (print-info "adv-pen" (pack (format (get Pos 1) *Scl) " " (format (get Pos 2) *Scl)))))
+    (prinl-info "adv-pen" (pack (format (get Pos 1) *Scl) " " (format (get Pos 2) *Scl)))))
 
 
 (de nl-pen ()

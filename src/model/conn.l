@@ -1,58 +1,60 @@
-(de process-msg (Ipc Sock Msg)
-  (let (Data (get Msg 1)
-        Ptr  (get Msg 2)
-        Name-Fn (get Data 1))
+(de process-msg (Ipc Sock Data Sz-Bin Bin)
 
-    #(println (usec) " | MODEL  | process-msg | " Msg)
+  (prinl-info "process-msg/MODEL" (str Data))
+
+  (let Name-Fn (get Data 1)
 
     # For now, assume memcpy
     (cond ((= Name-Fn "mc")
-           (handle-memcpy Sock Data Ptr))
+           (handle-memcpy Sock Data Bin))
+
+          ((= Data "bye")
+           (ipc~disconnect-sock Sock)
+           (ipc~end> *ipc)
+           (println "Model says bye!")
+           (bye))
 
           (T
-           (prinl (usec) " | MODEL  | process-msg | UNKNOWN REQUEST! " Msg)))))
+           (prinl-info "MODEL/process-msg" (pack "UNKNOWN REQUEST! " Data))))))
 
 
-(de handle-memcpy (Sock Data)
+(de handle-memcpy (Sock Data Ptr)
+
+  #(println "handle-memcpy" Data)
 
   #(mc Dst Src Sz) + data
   (let ((Dst Src Sz Off) (cdr Data))
-    
-    (cond ((and Dst (not Src)) # Recv sock; cpy to ptr
-           (write-dst Dst Sock Sz Off))
 
-          ((and (not Dst) Src) # Cpy ptr; send on sock
+    (cond ((and Dst (not Src)) # Write bytes to ..., recv from socket
+           (write-dst Ptr Dst Sock Sz Off))
+
+          ((and (not Dst) Src) # Read bytes from ..., send on socket
            (read-src Src Sock Sz Off))
-           
+
           ((and Dst Src)
-           (prinl (usec) " | MODEL | handle-memcpy | Ptr to ptr memcpy not implemented!"))
-           
+           (prinl-info "handle-memcpy" "Ptr to ptr memcpy not implemented!"))
+
           (T
-           (prinl (usec) " | MODEL | handle-memcpy | Invalid Dst Src parameters!")))))
+           (prinl-info "handle-memcpy" "Invalid Dst Src parameters!")))))
 
 
-(de write-dst (Dst Sock Sz Off)
+(de write-dst (Ptr Dst Sock Sz Off)
 
-  # Send updates also?
-
-  #(print-info "write-dst" Dst)
+  #(println "write-dst" Ptr Dst Sock Sz Off)
 
   (cond ((= Dst "projview")
-         (recv-obj *ipc Sock *projview SZ-PV))
+         (cpy-to-obj> *projview Ptr))
    
         ((= Dst "nodes")
-         (recv-obj *ipc Sock (get *verts (+ (/ Off 208) 1)) SZ-VERT))))
+         (cpy-to-obj> (get *verts (get-vert-ix Off)) Ptr))))
 
 
 (de read-src (Src Sock Sz Off)
 
-  #(print-info "read-src" Src)
-
-  # Return serialized bytes on socket
+  #(println "read-src" Src Sock Sz Off)
+  
   (cond ((= Src "projview")  
          (send-obj *ipc Sock *projview SZ-PV))
 
         ((= Src "nodes")
-         (send-obj *ipc Sock (get *verts (+ (/ Off 208) 1)) SZ-VERT))))
-    
-
+         (send-obj *ipc Sock (get *verts (get-vert-ix Off)) SZ-VERT))))

@@ -361,7 +361,7 @@ Naming Conventions:
 
     (native "@" "free" NIL Buf)
 
-    # (print-info "read-and-load-prog" (pack Sz-f " " (car (struct Buf '(I . 1)))))
+    # (prinl-info "read-and-load-prog" (pack Sz-f " " (car (struct Buf '(I . 1)))))
 
     # If it fails, use build-and-write-prog
     (if (query-program-info-log Program) # or check link status
@@ -392,7 +392,7 @@ Naming Conventions:
 
       (native "@" "sync")
 
-      #(print-info "build-and-write-prog" (pack "Saved " (+ 4 Bufsize) " bytes to " Path-Bin))
+      #(prinl-info "build-and-write-prog" (pack "Saved " (+ 4 Bufsize) " bytes to " Path-Bin))
       
       (native "@" "free" NIL Iv)
       (native "@" "free" NIL Binary-Format)

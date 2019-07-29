@@ -74,6 +74,7 @@
     (reg-conns *ipc ID-C))
 
   (queue '*q-msg "(update-vert 1)")
+  
   (queue '*q-msg (pack "(calc-pv " *width " " *height ")"))
   (queue '*q-msg (pack "(update-pv)"))
 
@@ -137,7 +138,7 @@
 
 (de run-ctrl (Timeout)
 
-  (print-info "run-ctrl" "Starting epoll...")
+  (prinl-info "run-ctrl" "Starting epoll...")
   (loop (ipc~poll> *ipc Timeout)))
 
 
@@ -194,7 +195,7 @@
       (let (Keycode (get *timerfd 'timerfd~data)
             Msg (pack "(KEYBOARD-KEY 0 0 " (format Keycode) " 2 2)"))
         (dispatch-msg Msg))
-        #(print-info "handle-timer" (pack "Keycode=" Keycode " Events=" (struct (: ipc~buf-rd) '(N . 1))))
+        #(prinl-info "handle-timer" (pack "Keycode=" Keycode " Events=" (struct (: ipc~buf-rd) '(N . 1))))
         T)))
 
 

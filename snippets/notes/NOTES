@@ -1408,3 +1408,18 @@ http://doc.rix.si/cce/cce.html
 Biggest emacs issues:
 1. Concurrency - operations/fns locking up interactiveness
 2. C Core
+
+Javascript Engines
+1. QuickJS
+2. ducktape
+3. Jsish
+
+https://news.ycombinator.com/item?id=20411154
+
+################################################################################
+
+We can create screens...but make them nodes also
+
+https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/
+
+Should write down cases and use as tutorials/examples

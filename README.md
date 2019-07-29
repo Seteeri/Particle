@@ -55,7 +55,7 @@ Particle maximizes the following principles:
 * Simplicity/Minimalism
 
 These principles are shared with the underlying programming language (PicoLisp)
-and OS (BSD) to create a consistent harmonious system.
+and OS (BSD) to create a consistent *understandable* system.
 
 Future plans include building the userland upon Dragonfly BSD, although
 current development is occuring on Arch Linux/Sway.
@@ -76,11 +76,11 @@ Lisp at the OS level would be (past Lisp Machines may provide an answer...).
   * Evernote - Stepan Pachikov wanted to remember everything
 
 * Secondary Inspirations:
-  * McCLIM - central concept of "presentation types"
+  * McCLIM - "presentations" - (Convergent evolution I suppose ;))
   * Uzbl/Conkeror - numbered links for navigation
   * Unreal Blueprints - nodal system
   * EagleMode - ZUI system
-  * Xerox Parc - not much more to say...
+  * Xerox PARC - pioneered many modern computing elements and paradigms
 
 * Personal Influences:
   * The Humane Interface by Jeff Raskin
@@ -136,17 +136,21 @@ Lisp at the OS level would be (past Lisp Machines may provide an answer...).
 
 ## The Roadmap
 
+Core:
 1. Interactive Core (REPL)
 2. Wayland Integration
-   * Web remains accessible through Wayland/DE -> Browser
 3. Widget Toolkit (Vertex-based)
 4. Desktop Functionality
    1. Media
       * FFMPEG for media - images, video, audio
       * Integrate GEGL? Image/graphicsmagick? etc...
-   2. WebKit Integration
-      * Build around Webkit like Next
-5. Port Userspace Tools/Libraries
+
+Lispify:
+5. Native Web Browser
+   * Web remains accessible through Wayland/DE
+   * WebKit Integration - Hmm, port to Lisp?
+   * JavaScript Engines - Embed QuickJS, Ducktape or Jsish
+6. Port Userspace Tools/Libraries
    1. Media - FFmpeg huge so focus on commonly used *open* image/video/audio formats
       * BMP, GIF, JPEG/2000, PNG, WebP
       * FLAC, MP3, Vorbis, Opus
@@ -154,7 +158,7 @@ Lisp at the OS level would be (past Lisp Machines may provide an answer...).
       * Ogg, MKV, WebM
       * glTF, COLLADA
    2. Toybox (Toolchain)
-6. JIT - last piece of the puzzle but also the most laborious
+7. JIT - last piece of the puzzle but also the most laborious
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)

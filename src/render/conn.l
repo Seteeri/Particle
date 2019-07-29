@@ -45,9 +45,9 @@
 
 (de process-msg (Ipc Sock Data Sz-Bin Bin)
 
-  (let (Name-Fn (get Data 1))
+  #(prinl-info "process-msg/RENDER" (str Data))
 
-    #(println (usec) " | RENDER  | process-msg | " Msg)
+  (let (Name-Fn (get Data 1))
 
     (cond ((= Name-Fn "mc")
            (handle-memcpy Sock Data Bin))
@@ -56,7 +56,7 @@
            (handle-memset Sock Data))
            
           (T
-           (prinl (usec) " | RENDER  | process-msg | UNKNOWN REQUEST! " Msg)))))
+           (prinl-info "process-msg" (pack "UNKNOWN REQUEST! " Msg))))))
 
 
 (de handle-memset (Sock Data)

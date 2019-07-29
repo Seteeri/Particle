@@ -39,6 +39,10 @@ ALT+TAB?
   
 Unused: ESC, TAB, CAPS, META, etc.
 
+Use arrows to move around, if obj cut off, pan to it
+
+################################################################################
+
 - A vertex represents a cons cell
 - A cons cell is made of two pointers, called car & cdr
 - These two pointers can point to an atom or to another cons cell

@@ -10,16 +10,21 @@ Protocol should only call methods on Ipc and Objects passed to it
 # dst = NIL -> send back on socket
 # sz  = NIL -> read all
 }#
+#{
+(memcpy dst src sz off)
+If src NIL: read bytes after msg
+If dst NIL: send bytes back
+}#
 
 
 (de accept-client (Ipc Sock Client)
 
-  #(print-info "accept-client" (pack "Wait for ID from " Client))
+  #(prinl-info "accept-client" (pack "Wait for ID from " Client))
 
   #Read for ID - this will block
   (let ID (recv-msg Ipc Client)
 
-    (print-info "accept-client" (pack "Sock= " Client ", ID= " ID))
+    (prinl-info "accept-client" (pack "Sock=" Client ", ID= " ID))
 
     #Disconnect client if name conflict
     (if (assoc Client (get Ipc 'ipc~clients))
@@ -40,7 +45,7 @@ Protocol should only call methods on Ipc and Objects passed to it
     # Add to client list also
     (push1 (:: ipc~clients) (cons Client (list ID (: ipc~handler-listener))))
 
-    (print-info "add-client" (pack "Sock= " Sock ", ID= " ID))))
+    (prinl-info "add-client" (pack "Sock=" Sock ", ID= " ID))))
 
 
 (de reg-conns (Ipc ID-C)
@@ -49,6 +54,6 @@ Protocol should only call methods on Ipc and Objects passed to it
   
     (for Conn (: ipc~conns)
     
-      (print-info "reg-conns" (pack ID-C " sent to " (car Conn)))
+      (prinl-info "reg-conns" (pack ID-C " sent to " (car Conn)))
       
       (send-msg Ipc (car Conn) ID-C))))

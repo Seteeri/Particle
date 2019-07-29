@@ -10,7 +10,11 @@
 (def 'SHUT-RD 0)
 (def 'SHUT-WR 1)
 (def 'SHUT-RDWR 2)
-(def 'MSG-WAITALL (hex "100"))
+
+(def 'MSG-OOB      (hex "01"))   # process out-of-band data
+(def 'MSG-PEEK     (hex "02"))   # peek at incoming message
+(def 'MSG-DONTWAIT (hex "40"))
+(def 'MSG-WAITALL  (hex "100"))
 
 
 (def 'SOCKADDR-LEN 110)
@@ -95,12 +99,12 @@
     }#
 
     (if (> Retry 0)
-    
+
         (until (= 0 (connect Sock
                              Sockaddr
                              SOCKADDR-LEN))
           (wait Retry))
-          
+
         (when (= -1 (connect Sock
                              Sockaddr
                              SOCKADDR-LEN))
@@ -108,7 +112,7 @@
           (setq Sock NIL)))
 
     (native "@" "free" NIL Sockaddr)
-    
+
     Sock))
 
 
@@ -125,7 +129,7 @@
     (let Ret (bind Sock
                    Sockaddr
                    SOCKADDR-LEN)
-               
+
       (when (= Ret -1) "(= bind -1)"))
 
     (let Ret (native "@" "listen" 'I Sock Backlog)
@@ -144,7 +148,7 @@
 
     flags=0 - same as accept
     }#
-    
+
     (let (Sockaddr     (native "@" "malloc" 'N 110)
           Sockaddr-Len (native "@" "malloc" 'N 4))  #socklen_t
 
@@ -157,7 +161,7 @@
 
         (native "@" "free" NIL Sockaddr)
         (native "@" "free" NIL Sockaddr-Len)
-        
+
         Ret)))
 
 

@@ -39,6 +39,7 @@
 (load "/home/user/Git/particle/src/c/socket.l")
 # Lisp libraries
 (load "/home/user/Git/particle/src/misc.l")
+(load "/home/user/Git/particle/src/dlst.l")
 (load "/home/user/Git/particle/src/ipc/ipc.l")
 (load "/home/user/Git/particle/src/prot/conn.l")
 (load "/home/user/Git/particle/src/prot/msg.l")
@@ -57,23 +58,27 @@
 
 (de init-verts ()
 
+  (prinl-info "init-verts" (pack "Making " *verts-max " verts..."))
+
   (let Verts ()
 
-       (for I *verts-max
+     (for I *verts-max
 
-            (let Vert (new '(+Vertex)
-                           (get-vert-off I)
-                           "@"
-                           *color-vert-default
-                           (list 0.0 0.0 0.0) # pos
-                           (list 0.0 0.0 0.0) # rot=0, sca=global scale
-                           (list *sca-vert *sca-vert *sca-vert))
+        (let Vert (new '(+Vertex)
+                       (get-vert-off I)
+                       "@"
+                       *color-vert-default
+                       (list 0.0 0.0 0.0) # pos
+                       (list 0.0 0.0 0.0) # rot=0, sca=global scale
+                       (list *sca-vert *sca-vert *sca-vert))
 
-                 (push 'Verts Vert)))
+           (push 'Verts Vert))
 
-       (print-info "init-verts" (pack "Created " *verts-max " vertices "))
+        (prin-info "init-verts" (pack "Creating vertex " I " of " *verts-max "\r"))
+        (flush)
+        )
 
-       Verts))
+     Verts))
 
 
 (de init-model ()
@@ -118,15 +123,12 @@
   ->Do test run to determine size
 
   2**19 = 524288
-  }#
 
-  #(gc (+ 104 2))
-  #(prinl (usec) " | MODEL | init-model | Heap resized to 106 MB for " *verts-max " nodes")
-
-  #{
    - Graphs = namespaces?
    - Generate nodes for builtin symbols?
   }#
+
+  (gc (* (+ 104 2) 4))
   (setq *verts (init-verts)))
 
 
@@ -138,40 +140,14 @@
 
 (de run-model (Timeout)
 
-  (print-info "run-model" "Starting epoll...")
-  (loop (ipc~poll> *ipc Timeout)))
+  (prinl-info "run-model" "Starting epoll...")
+  (loop
+    (ipc~poll> *ipc Timeout)))
 
 
 (de recv-conn (Sock)
-  #{
-
-  If model recv'd memcpy, write data and broadcast update
-
-  (memcpy dst src sz off)
-
-  If src NIL: read bytes after msg
-  If dst NIL: send bytes back
-
-  }#
-
-  (let (Msg (recv-msg *ipc Sock)
-        Data (any Msg)
-        Name-Fn (get Data 1))
-
-    #(print-info "recv-conn" Msg)
-
-    # For now, assume memcpy
-    (cond ((= Name-Fn "mc")
-           (handle-memcpy Sock Data))
-
-          ((= Data "bye")
-           (ipc~disconnect-sock Sock)
-           (ipc~end> *ipc)
-           (println "Model says bye!")
-           (bye))
-
-          (T
-           (prinl (usec) " | MODEL  | recv-conn | UNKNOWN REQUEST! " Msg)))))
+  (co (format Sock)
+    (flush-msgs-2 *ipc Sock process-msg)))
 
 
 (de main ()

@@ -146,91 +146,154 @@ Store DAGs as binary trees?
      * Refactor IPC clients [Later]
      * Fix removing clients/conns [???]
 
-   * Implement string/atom/list, eval functionality [WIP]
-     * Implement drawing [Done]
-     * Implement interface [Tues]
-       * Create particle for pointer
-       * Atoms
-         * Pack (Chr->Str)
-         * Intern (Str->I-Sym)
-         * Quote/Sym/Any (I-Sym->T-Sym or get sym name)
-           * (= (sym 'a) (any 'a) 'a "a") -> T
-         * ALT+NUM to produce numbers and NUM to produce chars and Format to convert
-       * Lists
-         * Cons - create cons from two objects @ ptr
-       * Eval
-         * Test functions on data
-         * Only need pack and backspace/delete (pop off/GC)
-       * Timeline
-         * Undo
-         * Redo
-         * If undo occurs and there is CDR, branch
+   * Implement flushing for other processes [Doneish]
+     * Use doubly linked list
+     * On EPOLLIN, append new data to tail
+     * Read as many as msgs from head until insufficient data
+
+   * Replace serialization with pr/rd/wr
+     * Use pr/rd/wr/bytes
+       * (call 'mkfifo "a" "b") + (open "a"/"b"...) + (in/out "a"...)
+         * /proc/sys/fs/pipe-max-size
+         * Main -> Pipe -> Socket -> Socket -> Pipe -> Main
+           * 6 copies total
+         * Sender
+           * Use lisp to pr data to pipe
+           * Use C to open named pipe fd and read into socket
+         * Recver
+           * Use C to open named pipe fd and write from socket
+           * Use lisp rd to get objects
+       * Later use plio as library
+     * Format - create sep msgs for model/render : objcpy/memcpy
+       * sz-msg, sz-sexpr bin-sexpr sz-dat bin-dat
+       * Worker/Model: Obj - Obj
+         * Serialize to obj (sexpr:msg + dat)
+           * Lisp object
+       * Worker/Render: Obj - Ptr
+         * Serialize to ptr (sexpr:msg + dat)
+           * C struct
+         * Write bytes from list to gl ptr through for+bytes
+           * Memcpy is must faster
+     * Optimizations
+       * Batch commands up to buffer size [?]
+         * Write to socket all at once
+         * Ensure render serves at least one message from each process
+         * Start tracking memcpy performance (bytes/millisecond)     
+       * If modifying large numbers of objects, particularly numerical calcs,
+         use compute shader, else use lisp functions, or C lib
+         * Eventually this would be the bottleneck
+       * Send deltas only instead of entire object
+       * Use LZO or LZ4 data compression
+
+   * Implement string/atom/list, eval functionality [Fri+]
+     * Create particle for pointer
+     * Atoms
+       * Pack (Chr->Str)
+       * Intern (Str->I-Sym)
+       * Quote/Sym/Any (I-Sym->T-Sym or get sym name)
+         * (= (sym 'a) (any 'a) 'a "a") -> T
+       * ALT+NUM to produce numbers and NUM to produce chars and Format to convert
+     * Lists
+       * Cons - create cons from two objects @ ptr
+     * Eval
+       * Test functions on data
+       * Only need pack and backspace/delete (pop off/GC)
+     * Timeline
+       * Undo
+       * Redo
+       * If undo occurs and there is CDR, branch
+       * Dumping the heap - make external symbols?
 
    * Load source code
      * Turn into strings
      * Then test symbols
        * Symbols that already exist - get existing
 
-   * Add disassemble functionality
-
-   * Implement event dispatching/event handling in ctrl [Tues/Wed/Later?]
+   * Implement bindings in worker
      * Use assoc list
      * Store combinations as keys
 
-   * Implement Wayland - BASIC! [Wed/Thurs]
-     * Setup tiles for 6 windows = 3 col, 2 row
-     * Proof of concept working with eval already
+   * Test compute shaders
+     * Rotate all vertices
+     * Could use shader then pull data back?
+       * Syncing becomes an issue -> at that point, keep transforms on GPU side
+       * Vertex data simply contains an offset to the struct
 
    * File browser - most basic functionality
      * Can use existing commands: dir, dirname, cd, info, path
+
+   * Implement Wayland - BASIC! [Thurs/Fri]
+     * Setup tiles for 6 windows = 3 col, 2 row
+     * Proof of concept working with eval already
+
+   * Show commands
+     * Add disassemble functionality
+     * Render frame time?
+     
+   * Test multiple workers
+     * Need data sync on model side to broadcast updates
+
+   * PRE-RELEASE - REPL - SEPT 1
+     * CLEAN UP
+     * RECORD DEMO
+     * ANNOUNCE ON MAILING LIST, LATER REDDIT
+
+   POST DEMO:
+
+  https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
+
+   * Implement framebuffers
+     * Render to target
+     * Allows us to create screens/viewports
+     * Create viewport from current view
+
+   * Write docs
 
    * Basic animations
      * Easing functions
      * Fades
      * Use compute shader on large amount
+       * For demo max verts
 
-   * PRE-RELEASE - SEPT 1
-     * CLEAN UP
-     * RECORD DEMO
-     * ANNOUNCE ON MAILING LIST, LATER REDDIT
+   * Use touch to modify lists
+     * Ability to pull items out
+     * Requires spatial index, unproject
+       * Port r-tree from CL   
+
+   * Screenshot
+     * glReadPixels
 
    * Implement DRM backend
 
 
-* Refactor/Fix
+* Unscheduled Stuff
 
-   * Check link status
+  * Send will block if full, what to do?
+    -> Sender must block to maintain ordering
+       - except maybe if sending to render?
+    -> For now, print message...
+   
+  * CTRL MUST SEND MSGS TO ALL CLIENTS
+    * Maintain queue per client
+    * Add to all clients
 
-   * Move xkb class into wrapper
-   * CTRL MUST SEND MSGS TO ALL CLIENTS
-     * Maintain queue per client
-     * Add to all clients
+  * C wrappers
+       * Move xkb class into wrapper
+       * Use c-<fn> for native wrappers
+       * Use <fn-lisp> for lispy wrappers
+       * Check link status
+       * Refactor namespaces
+         * posix
+         * mathc and more...
+       * Refactor li into subfolders [?]
+       * Remove print msgs from gl
+
+
+   * Try proportional fonts with kerning
+     * Change blend mode?
 
    * Is crashing due to window resizing? or msg 'C vs 'S...
-   
-   * Have input send modified KEYCODE (+8)
-     * Or leave this to ctrl...
-
-   * Instead of recompiling shaders constantly
-     * https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glGetProgramBinary.xhtml
-
-   * C wrappers
-     * Use c-<fn> for native wrappers
-     * Use <fn-lisp> for lispy wrappers
-
-   * Refactor namespaces
-     * posix
-     * mathc and more...
-
-   * Refactor li into subfolders [?]
-
-   * Remove print msgs from gl
-
-   * Use let for deconstructing-bind and let/when [Done]
-
-   * Refactor IPC and epoll handling [Done]
-
-   * Socket change block/nonblock to T/NIL for convenience [Done]
+     -> Seems to have fixed it
 
    * Tasks uses DAG/ptrees [Later]
      * Built on top of cons cells...

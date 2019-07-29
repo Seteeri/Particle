@@ -25,7 +25,7 @@
 
 (de cmd-pack ()
 
-  (print-info "cmd-pack")
+  (prinl-info "cmd-pack")
 
   # Build list of chars
   # Add double-quotes
@@ -51,7 +51,7 @@
 
 (de cmd-del (Dir)
 
-  (print-info "cmd-del")
+  (prinl-info "cmd-del")
 
   # Currently, render will attempt to render all verts (*max-verts)
   # -> Send cmd to render to adjust max

@@ -95,12 +95,48 @@
 
   (setq *xkb (new '(+Xkb)))
 
-  (let Sock-Model (ipc~get-fd> *ipc "MODEL")
-    (for N *verts-max
+  (gc (* (+ 104 2) 4))
+  (prinl-info "init-worker" (pack "Pulling " *verts-max " verts..."))
+  
+  (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
+        Cnt-X 0
+        Pos-X 0.0
+        Pos-Y 0.0)
+
+    (seed (in "/dev/urandom" (rd 64)))
+        
+    (for I *verts-max
+
+      #(prinl-info "init-workers" (pack "Request/Render vertex " I " of " *verts-max))
+      
       (let Vert (req-recv-vert *ipc
                                Sock-Model
                                NIL
-                               N)
+                               I)
+
+        (with Vert
+          
+          (=: pos  (list Pos-X Pos-Y 0.0))
+          (when NIL
+            (=: rota (list 0.0   0.0   (rand 0.0 6.283185307179586)))
+            (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
+                           (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
+                           (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
+                           (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
+
+        #(update-glyph> Vert (char (rand 33 126)))
+        (update-model-matrix> Vert)
+
+        # FIX - use update...
+        (cmd-render-vert *ipc Vert)
+
+        (inc 'Pos-X *adv-vert)
+        (when (= (inc 'Cnt-X) 280)
+          (setq Cnt-X 0)
+          (setq Pos-X 0.0)
+          (dec 'Pos-Y (+ *adv-vert *adv-vert))
+          (println Pos-Y))
+
         (push '*verts Vert))))
 
   # Designate vertex 1 as ptr
@@ -112,7 +148,7 @@
 
 (de run-worker (Timeout)
 
-  (print-info "run-worker" "Starting epoll...")
+  (prinl-info "run-worker" "Starting epoll...")
   (loop (ipc~poll> *ipc Timeout)))
 
 
@@ -169,7 +205,6 @@
 
    (when T
 
-     # Pull data from model
      (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
            Sock-Render (ipc~get-fd> *ipc "RENDER")
            Vert        *vert-ptr)
@@ -180,11 +215,13 @@
                           (+ (get (: pos) 2) 0.0)
                           0.0)))
           (=: rota (list 0.0
-                        0.0
-                        (+ (get (: rota) 3) 0.017)))
+                         0.0
+                         (+ (get (: rota) 3) 0.017)))
           (update-model-matrix> Vert))
 
-        (cmd-update-vert *ipc Vert)))))
+        # FIX - use update...
+        (cmd-render-vert *ipc Vert)))))
+
 
 (de main ()
 

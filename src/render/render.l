@@ -60,6 +60,7 @@ Class variables may be indicated by an upper case letter
 (load "/home/user/Git/particle/src/c/epoll.l")
 # Lisp libraries
 (load "/home/user/Git/particle/src/misc.l")
+(load "/home/user/Git/particle/src/dlst.l")
 (load "/home/user/Git/particle/src/ipc/ipc.l")
 (load "/home/user/Git/particle/src/prot/conn.l")
 (load "/home/user/Git/particle/src/prot/msg.l")
@@ -206,7 +207,7 @@ Class variables may be indicated by an upper case letter
   #(gl~use-program *prog-rast)
   #(gl~bind-vertex-array *vao)
 
-  (print-info "run-render" "Starting draw loop...")
+  (prinl-info "run-render" "Starting draw loop...")
 
   # Draws only on event?
   # With Wayland, clients will send damage events...
@@ -240,11 +241,9 @@ Class variables may be indicated by an upper case letter
 
     # Broadcast frame time
     # Must handle if send fails, i.e. clients slow - in this case, ignore
-
+    #
+    # Poss only send if clients are ready
     (send-msg-clients *ipc (format (usec)))
-
-    # Read all msgs in queue (up to 64) at this point
-    # Track amount of memcpy; break after so many bytes
 
     (ipc~poll> *ipc 0)
 
@@ -257,18 +256,9 @@ Class variables may be indicated by an upper case letter
   (glfw~terminate))
 
 
-(de recv-conn (Sock Events)
-  #{
-  Problem: When sending memcpy + data, data is read on memcpy msg event, however
-  epoll will still generate read event which may result in no data available
-
-  Solution: Ignore Msg=NIL or use edge triggering for epoll
-  }#
-
-  # Must flush socket - aka read up to recv len until empty
-  
-  (flush-msgs *ipc Sock process-msg))
-
+(de recv-conn (Sock)
+  (co (format Sock)
+    (flush-msgs-2 *ipc Sock process-msg)))
 
 
 (de main ()

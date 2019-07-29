@@ -15,7 +15,7 @@
 
     # Dispatch bindings
 
-    (print-info "cmd-kb" (pack (str Data) " " Keysym))
+    (prinl-info "cmd-kb" (pack (str Data) " " Keysym))
 
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
@@ -27,10 +27,10 @@
 
             # HJKL
 
-            ((= Keysym ksd~Right) (cmd-move-cam 1 '(1.0   0.0)))
-            ((= Keysym ksd~Left)  (cmd-move-cam 1 '(-1.0  0.0)))
-            ((= Keysym ksd~Up)    (cmd-move-cam 2 '(0.0   1.0)))
-            ((= Keysym ksd~Down)  (cmd-move-cam 2 '(0.0  -1.0)))
+            ((= Keysym ksd~Right) (cmd-move-cam 1 '(0.25   0.0)))
+            ((= Keysym ksd~Left)  (cmd-move-cam 1 '(-0.25  0.0)))
+            ((= Keysym ksd~Up)    (cmd-move-cam 2 '(0.0    0.25)))
+            ((= Keysym ksd~Down)  (cmd-move-cam 2 '(0.0   -0.25)))
 
             ((= Keysym ksd~Prior) (cmd-zoom-cam -0.5))
             ((= Keysym ksd~Next)  (cmd-zoom-cam 0.5))

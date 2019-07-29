@@ -66,7 +66,7 @@
 
 (de run-input (Timeout)
 
-  (print-info "run-input" "Starting epoll...")
+  (prinl-info "run-input" "Starting epoll...")
   (loop (ipc~poll> *ipc Timeout)))
 
 

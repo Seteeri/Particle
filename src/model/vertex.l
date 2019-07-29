@@ -119,6 +119,8 @@
         
 ################################################################################
 
+(de get-vert-ix (Off)
+  (+ (/ Off SZ-GL-VERT) 1))
 
 (de get-vert-off (Cnt)
   (* (- Cnt 1) SZ-GL-VERT)) # use gl size
