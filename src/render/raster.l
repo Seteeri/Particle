@@ -1,6 +1,18 @@
 (de init-rast ()
+
+  # Try to load file, if not, compile/save
+
+  # If file exists: load it
+  # else:
+
+  (setq *prog-rast (if (info "prog-rast.bin")
+                       (gl~read-and-load-prog *paths-rast-vert-shader
+                                              *paths-rast-frag-shader
+                                              "prog-rast.bin")
+                       (gl~build-and-write-prog *paths-rast-vert-shader
+                                                *paths-rast-frag-shader
+                                                "prog-rast.bin")))
     
-  (setq *prog-rast (gl~init-prog-rast *paths-rast-vert-shader *paths-rast-frag-shader))    
   (gl~use-program *prog-rast)
 
   (setq *vao (car (gl~gen-vertex-arrays 1)))
@@ -12,7 +24,7 @@
   (when TEST-GLYPH (init-tex-glyphs))
   (init-di)
   (init-verts)
-  (init-el))    
+  (init-el))
 
 
 (de init-buffs-rast ()

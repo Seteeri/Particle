@@ -40,7 +40,6 @@ Naming Conventions:
   (native "libGLESv2.so" "glBlendFunc" NIL Sfactor Dfactor))
 
 
-#Why does "clear" not work?
 (de clear (Mask)
   (native "libGLESv2.so" "glClear" NIL Mask))
 
@@ -249,7 +248,7 @@ Naming Conventions:
        #Get file size from stat then allocate
        #Poss to use mmap to minimize intermittent allocation
 
-       (let (Sz-f    (stat-size Path)
+       (let (Sz-f  (stat-size Path)
              Buf   (native "@" "malloc" 'N (+ Sz-f 1)) # + null character
              File  (native "@" "fopen" 'I Path "rb"))
                
@@ -333,6 +332,75 @@ Naming Conventions:
              (setq Timeout TIMEOUT-IGNORED))))
 
 
+(de get-program-iv (Program Pname Params)
+  (native "libGLESv2.so" "glGetProgramiv" NIL Program Pname Params))
+
+
+(de get-program-binary (Program Bufsize Length Binary-Format Binary)
+  (native "libGLESv2.so" "glGetProgramBinary" NIL Program Bufsize Length Binary-Format Binary))
+
+
+(de program-binary (Program Binary-Format Binary Length)
+  (native "libGLESv2.so" "glProgramBinary" NIL Program Binary-Format Binary Length))
+
+
+(de read-and-load-prog (Paths-Vert Paths-Frag Path-Bin)
+
+  (let (Program (create-program)
+        Sz-f  (stat-size Path-Bin)
+        Buf   (native "@" "malloc" 'N (+ Sz-f 1))
+        File  (native "@" "fopen" 'I "prog-rast.bin" "rb"))
+        
+    (native "@" "fread"  NIL Buf 1 Sz-f File)
+    (native "@" "fclose" NIL File)
+
+    (program-binary Program
+                    (car (struct Buf '(I . 1)))
+                    (+ Buf 4)
+                    (- Sz-f 4))
+
+    (native "@" "free" NIL Buf)
+
+    # (print-info "read-and-load-prog" (pack Sz-f " " (car (struct Buf '(I . 1)))))
+
+    # If it fails, use build-and-write-prog
+    (if (query-program-info-log Program)
+      (prog
+        (println "read-and-load-prog" (pack "Failed to load program: " Path-Bin))
+        (delete-program Program)
+        (build-and-write-prog Paths-Vert Paths-Frag Path-Bin))
+      Program)))
+  
+
+(de build-and-write-prog (Paths-Vert Paths-Frag Path-Bin)
+  
+  (let (Program (init-prog-rast Paths-Vert Paths-Frag)
+        Iv (native "@" "malloc" 'N 4))
+  
+    (get-program-iv Program PROGRAM-BINARY-LENGTH Iv)
+    
+    (let (Bufsize (car (struct Iv '(I . 1)))
+          Binary-Format (native "@" "malloc" 'N 4)
+          Binary (native "@" "malloc" 'N Bufsize))
+          
+      (get-program-binary Program Bufsize 0 Binary-Format Binary)
+
+      (let File (native "@" "fopen" 'I Path-Bin "wb")
+        (native "@" "fwrite"  NIL Binary-Format 1 4       File)
+        (native "@" "fwrite"  NIL Binary        1 Bufsize File)
+        (native "@" "fclose" NIL File))
+
+      (native "@" "sync")
+
+      #(print-info "build-and-write-prog" (pack "Saved " (+ 4 Bufsize) " bytes to " Path-Bin))
+      
+      (native "@" "free" NIL Iv)
+      (native "@" "free" NIL Binary-Format)
+      (native "@" "free" NIL Binary))
+
+    Program))
+
+
 (mapc '((X) (def (car X) (hex (cadr X))))
       (quote
        
@@ -349,19 +417,23 @@ Naming Conventions:
        (TEXTURE0                                "84C0")
        (RGBA8                                   "8058")
        (INFO-LOG-LENGTH                         "8B84")
-       (SYNC-CONDITION                 "9113")
-       (SYNC-STATUS                    "9114")
-       (SYNC-FLAGS                     "9115")
-       (SYNC-FENCE                     "9116")
-       (SYNC-GPU-COMMANDS-COMPLETE     "9117")
-       (UNSIGNALED                     "9118")
-       (SIGNALED                       "9119")
-       (ALREADY-SIGNALED               "911A")
-       (TIMEOUT-EXPIRED                "911B")
-       (CONDITION-SATISFIED            "911C")
-       (WAIT-FAILED                    "911D")
-       (TIMEOUT-IGNORED                "FFFFFFFFFFFFFFFFull")
-       (SYNC-FLUSH-COMMANDS-BIT        "00000001")
+       (SYNC-CONDITION                          "9113")
+       (SYNC-STATUS                             "9114")
+       (SYNC-FLAGS                              "9115")
+       (SYNC-FENCE                              "9116")
+       (SYNC-GPU-COMMANDS-COMPLETE              "9117")
+       (UNSIGNALED                              "9118")
+       (SIGNALED                                "9119")
+       (ALREADY-SIGNALED                        "911A")
+       (TIMEOUT-EXPIRED                         "911B")
+       (CONDITION-SATISFIED                     "911C")
+       (WAIT-FAILED                             "911D")
+       (TIMEOUT-IGNORED                         "FFFFFFFFFFFFFFFFull")
+       (SYNC-FLUSH-COMMANDS-BIT                 "00000001")
+       (PROGRAM-BINARY-RETRIEVABLE-HINT         "8257")
+       (PROGRAM-BINARY-LENGTH                   "8741")
+       (NUM-PROGRAM-BINARY-FORMATS              "87FE")
+       (PROGRAM-BINARY-FORMATS                  "87FF")
        
        (FALSE                                   "0000")
        (TRUE                                    "0001")

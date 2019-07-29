@@ -1,5 +1,5 @@
 (de init-prog-rast (Paths-Vert
-		    Paths-Frag)
+                    Paths-Frag)
   (let Program (create-program)
     (let (Log-Vert (cad-shader VERTEX-SHADER
                                Program
@@ -34,7 +34,7 @@
 
   
 (de query-program-info-log (Program)
-    (let Log-Prog (get-program-info-log-2 Program)
-      (if Log-Prog
-          (prinl "[" (usec) "]" "[][init-prog-rast] Program Log: " Log-Prog)
-          (prinl "[" (usec) "]" "[][init-prog-rast] Compiled program sucessfully"))))
+  (let Log-Prog (get-program-info-log-2 Program)
+    (if Log-Prog
+        (prinl "[" (usec) "]" "[][init-prog-rast] Program Log: " Log-Prog)
+        (prinl "[" (usec) "]" "[][init-prog-rast] Compiled program sucessfully"))))
