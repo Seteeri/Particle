@@ -36,5 +36,5 @@
 (de query-program-info-log (Program)
   (let Log-Prog (get-program-info-log-2 Program)
     (if Log-Prog
-        (prinl "[" (usec) "]" "[][init-prog-rast] Program Log: " Log-Prog)
-        (prinl "[" (usec) "]" "[][init-prog-rast] Compiled program sucessfully"))))
+        (t (prinl "[" (usec) "]" "[][init-prog-rast] Program Log: " Log-Prog))
+        (nil (prinl "[" (usec) "]" "[][init-prog-rast] Compiled program sucessfully")))))
