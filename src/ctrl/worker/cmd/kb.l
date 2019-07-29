@@ -15,7 +15,7 @@
 
     # Dispatch bindings
 
-    (print-info "handle-kb" (pack (str Data) " " Keysym))
+    (print-info "cmd-kb" (pack (str Data) " " Keysym))
 
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
