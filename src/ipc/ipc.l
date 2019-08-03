@@ -160,6 +160,7 @@ Handle bad accept sock
                              (if (num? Buf) Buf (: buf-wr))
                              (if (num? Sz)  Sz  (: sz-buf-wr))
                              (if (num? Flags) Flags 0))
+                             
      (case Bytes-Sent
      
         # Orderly shutdown
@@ -167,7 +168,8 @@ Handle bad accept sock
         
         # Error
         (-1 (nil (prinl-info "send-bytes>" (pack "ERRNO: " (errno) " " Sock)) (disconnect-client> This Sock)))
-        
+
+        # Poss Byte-Sent != Sz
         (T  Bytes-Sent))))
 
 

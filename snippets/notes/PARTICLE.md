@@ -135,57 +135,26 @@ Store DAGs as binary trees?
      * Implement proper exit [Done]
        * Render send exit key also
 
-   * Refactor IPC [Done]
-     * Improve msg handling robustness when bytes-read is incorrect/invalid [Done]
-     * Improve printing msgs using Pid [Done]
-     * Do Sz-Msg Sz-Bin Bin-Msg Bin-Bin [Done]    
-     * Refactor flush-msgs and use across all processes [Done]
-
-   * Refactor IPC [Done]
+   * Refactor IPC [Sat/Sun]
      * Make epoll event like timerfd [Done]
-     * Refactor IPC clients [Later]
-     * Fix removing clients/conns [???]
+     * Rewrite flush-msgs [Done]
+       * Use doubly linked list
+       * On EPOLLIN, append new data to tail
+       * Read as many as msgs from head until insufficient data
+     * Optimize transmission
+       * Use single header
+       * Re-use head list     
+       * Add ability to push/pull range and/or batch
+         * For initial loading, could use fork or read default values from file
+     * Fix error handling so send-msg returns num or NIL/0 and loop gives up
+       * Returns to polling
+     * Ensure all data sent; warn and block
+       * If blocked, then render or model is lagging
+     * Render should only send msg if client rdy otherwise send will block
+       * Worker can choose to have late msgs dropped - send function to render
+     * Start tracking memcpy performance (bytes/millisecond)
 
-   * Implement flushing for other processes [Doneish]
-     * Use doubly linked list
-     * On EPOLLIN, append new data to tail
-     * Read as many as msgs from head until insufficient data
-
-   * Replace serialization with pr/rd/wr
-     * Use pr/rd/wr/bytes
-       * (call 'mkfifo "a" "b") + (open "a"/"b"...) + (in/out "a"...)
-         * /proc/sys/fs/pipe-max-size
-         * Main -> Pipe -> Socket -> Socket -> Pipe -> Main
-           * 6 copies total
-         * Sender
-           * Use lisp to pr data to pipe
-           * Use C to open named pipe fd and read into socket
-         * Recver
-           * Use C to open named pipe fd and write from socket
-           * Use lisp rd to get objects
-       * Later use plio as library
-     * Format - create sep msgs for model/render : objcpy/memcpy
-       * sz-msg, sz-sexpr bin-sexpr sz-dat bin-dat
-       * Worker/Model: Obj - Obj
-         * Serialize to obj (sexpr:msg + dat)
-           * Lisp object
-       * Worker/Render: Obj - Ptr
-         * Serialize to ptr (sexpr:msg + dat)
-           * C struct
-         * Write bytes from list to gl ptr through for+bytes
-           * Memcpy is must faster
-     * Optimizations
-       * Batch commands up to buffer size [?]
-         * Write to socket all at once
-         * Ensure render serves at least one message from each process
-         * Start tracking memcpy performance (bytes/millisecond)     
-       * If modifying large numbers of objects, particularly numerical calcs,
-         use compute shader, else use lisp functions, or C lib
-         * Eventually this would be the bottleneck
-       * Send deltas only instead of entire object
-       * Use LZO or LZ4 data compression
-
-   * Implement string/atom/list, eval functionality [Fri+]
+   * Implement string/atom/list, eval functionality [Sun]
      * Create particle for pointer
      * Atoms
        * Pack (Chr->Str)
@@ -268,11 +237,36 @@ Store DAGs as binary trees?
 
 * Unscheduled Stuff
 
-  * Send will block if full, what to do?
-    -> Sender must block to maintain ordering
-       - except maybe if sending to render?
-    -> For now, print message...
-   
+   * Replace serialization with pr/rd/wr [Later]
+     * Use pr/rd/wr/bytes
+       * (call 'mkfifo "a" "b") + (open "a"/"b"...) + (in/out "a"...)
+         * /proc/sys/fs/pipe-max-size
+         * Main -> Pipe -> Socket -> Socket -> Pipe -> Main
+           * 6 copies total
+         * Sender
+           * Use lisp to pr data to pipe
+           * Use C to open named pipe fd and read into socket
+         * Recver
+           * Use C to open named pipe fd and write from socket
+           * Use lisp rd to get objects
+       * Later use plio as library
+     * Format - create sep msgs for model/render : objcpy/memcpy
+       * sz-msg, sz-sexpr bin-sexpr sz-dat bin-dat
+       * Worker/Model: Obj - Obj
+         * Serialize to obj (sexpr:msg + dat)
+           * Lisp object
+       * Worker/Render: Obj - Ptr
+         * Serialize to ptr (sexpr:msg + dat)
+           * C struct
+         * Write bytes from list to gl ptr through for+bytes
+           * Memcpy is must faster
+     * Optimizations
+       * If modifying large numbers of objects, particularly numerical calcs,
+         use compute shader, else use lisp functions, or C lib
+         * Eventually this would be the bottleneck
+       * Send deltas only instead of entire object
+       * Use LZO or LZ4 data compression
+          
   * CTRL MUST SEND MSGS TO ALL CLIENTS
     * Maintain queue per client
     * Add to all clients

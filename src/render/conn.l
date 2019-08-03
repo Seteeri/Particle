@@ -94,6 +94,7 @@
 
         ((= Dst "nodes")
          #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '(B . 241)))
+         #(prinl-info "write-dst" (pack "Off=" Off))
 
          (let (Ptr-Gl  (+ (get (get '*buffer-objects 'nodes) 'gl~ptr) Off)
                Ptr-Buf Ptr)

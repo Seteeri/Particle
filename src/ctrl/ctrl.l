@@ -109,7 +109,7 @@
 
 (de handle-worker (Sock)
 
-  (let (Msg (recv-msg *ipc Sock)
+  (let (Msg  (recv-msg *ipc Sock)
         Data (any Msg)
         Name (name Data))
 
@@ -122,14 +122,14 @@
 
           ((= Name "bye")
            # Send to all conns
-           (send-msg-conns *ipc "bue")
+           (send-msg-conns *ipc "bye")
            (ipc~disconnect-sock Sock)
            (ipc~end> *ipc)
            (println "Ctrl says bye!")
            (bye))
 
           (T
-           (prinl (usec) " | CTRL  | handle-worker | UNKNOWN REQUEST! " Msg)))
+           (prinl-info "handle-worker" (pack "UNKNOWN REQUEST: " (str Msg)))))
 
     #(prinl (usec) " | CTRL   | handle-worker | " Msg)
 

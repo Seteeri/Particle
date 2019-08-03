@@ -1,6 +1,6 @@
 (de process-msg (Ipc Sock Data Sz-Bin Bin)
 
-  (prinl-info "process-msg/MODEL" (str Data))
+  #(prinl-info "process-msg/MODEL" (str Data))
 
   (let Name-Fn (get Data 1)
 

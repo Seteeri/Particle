@@ -77,7 +77,7 @@
                    Vert)))
 
 
-(de cmd-render-pv (Ipc Width Height)
+(de cmd-render-pv (Ipc)
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER"))
     (req-send-pv Ipc
                  Sock-Render

@@ -92,8 +92,12 @@
   (setq *projview (req-recv-pv *ipc
                                (ipc~get-fd> *ipc "MODEL")
                                NIL))
+  (cmd-render-pv *ipc)
 
   (setq *xkb (new '(+Xkb)))
+
+  # Most efficient way to pull this much data is to batch it or send rx will
+  # minimize the IPC bottleneck
 
   (gc (* (+ 104 2) 4))
   (prinl-info "init-worker" (pack "Pulling " *verts-max " verts..."))
@@ -106,8 +110,6 @@
     (seed (in "/dev/urandom" (rd 64)))
         
     (for I *verts-max
-
-      #(prinl-info "init-workers" (pack "Request/Render vertex " I " of " *verts-max))
       
       (let Vert (req-recv-vert *ipc
                                Sock-Model
@@ -117,27 +119,33 @@
         (with Vert
           
           (=: pos  (list Pos-X Pos-Y 0.0))
-          (when NIL
+          (when T
             (=: rota (list 0.0   0.0   (rand 0.0 6.283185307179586)))
             (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
                            (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
                            (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
                            (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
 
-        #(update-glyph> Vert (char (rand 33 126)))
+        (update-glyph> Vert (char (rand 33 126)))
         (update-model-matrix> Vert)
 
         # FIX - use update...
         (cmd-render-vert *ipc Vert)
 
         (inc 'Pos-X *adv-vert)
-        (when (= (inc 'Cnt-X) 280)
+        (when (= (inc 'Cnt-X) 1024)
+          #(prin-info "init-worker" (pack "Request/Render vertex " I " of " *verts-max "\r"))
           (setq Cnt-X 0)
           (setq Pos-X 0.0)
           (dec 'Pos-Y (+ *adv-vert *adv-vert))
-          (println Pos-Y))
+          #(println "POS-Y: " Pos-Y)
+          T)
+
+        #(prinl-info "init-worker" (pack "Pulled " I))
 
         (push '*verts Vert))))
+
+  (prinl-info "init-worker" "Done pulling verts")
 
   # Designate vertex 1 as ptr
   (setq *vert-ptr (pop '*verts)))
@@ -203,7 +211,7 @@
 
   (let Msg (recv-msg *ipc Sock)
 
-   (when T
+   (when NIL
 
      (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
            Sock-Render (ipc~get-fd> *ipc "RENDER")

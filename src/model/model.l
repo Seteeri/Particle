@@ -74,9 +74,11 @@
 
            (push 'Verts Vert))
 
-        (prin-info "init-verts" (pack "Creating vertex " I " of " *verts-max "\r"))
-        (flush)
+        #(prin-info "init-verts" (pack "Creating vertex " I " of " *verts-max "\r"))
+        #(flush)
         )
+
+    (prinl-info "init-verts" "Finish making verts")
 
      Verts))
 
