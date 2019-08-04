@@ -49,7 +49,7 @@ If dst NIL: send bytes back
 
   (with Ipc
     (del (assoc Sock (: clients)) (:: clients))
-    (let ID (get 1 (cdr (assoc Sock (: conns))))
+    (let ID (get (cdr (assoc Sock (: conns))) 1)
       (del (assoc ID (: conns-id)) (:: conns-id)))
     (del (assoc Sock (: conns)) (:: conns)))
   
@@ -66,7 +66,7 @@ If dst NIL: send bytes back
   (prinl-info "disconn-conn" (pack "Sock=" Sock))
 
   (with Ipc
-    (let ID (get 1 (cdr (assoc Sock (: conns))))
+    (let ID (get (cdr (assoc Sock (: conns))) 1)
       (del (assoc ID (: conns-id)) (:: conns-id)))
     (del (assoc Sock (: conns)) (:: conns)))
   
