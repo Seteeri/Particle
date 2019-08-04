@@ -32,7 +32,7 @@
             ((= Keysym ksd~Up)    (cmd-move-cam 2 '(0.0    0.25)))
             ((= Keysym ksd~Down)  (cmd-move-cam 2 '(0.0   -0.25)))
 
-            ((= Keysym ksd~Prior) (cmd-zoom-cam -0.5))
-            ((= Keysym ksd~Next)  (cmd-zoom-cam 0.5))
+            ((= Keysym ksd~Prior) (cmd-zoom-cam -0.3))
+            ((= Keysym ksd~Next)  (cmd-zoom-cam 0.3))
 
             (T                    (cmd-char Keysym))))))

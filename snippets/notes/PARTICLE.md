@@ -72,18 +72,10 @@ Store DAGs as binary trees?
 
 ## TODO
 
-   IPC:
-   -> Send messages with length first [Done]
-   -> Server, handle name conflicts -> disconnect [Done]
-   -> Pass epoll FD to IPC [Done]
-   -> Pass name to constructor and use name for both server/client [?]
-   -> Fix socket retry loop [???]
-
    * Check heap size every frame, warn if large...
      * Or after every message, if it starts to reach capacity, GC, resize
        do next free
 
-   PIPELINE:
    * Refactor serialization [WIP]
      * Be able to send raw bytes [Done]
      * (mc src dest sz)+bytes [Done]
@@ -119,37 +111,34 @@ Store DAGs as binary trees?
        * Gets data from model and sends data to model (updates/sync)
    * Test multiple controllers with multiple vertices mutating simultaneously [Done]
      * N process will move N vert x dist
-
-   * Refactor IPC [Done]
-     * Abstract common functionality among worker/model/render conns [Done]
-     * Serialize entire object for all [Done]
-       -> Need not serialize everything - add ability to serialize only certain members [Later]
-     * Model needs to write data [Done]
-       * To sync, worker can pull every update or have model push updates out
-     * Implement message flushing [Done]
-       * Lag with camera update and pointer update at same time
-
    * Refactor [Done]
      * Move xkb to ctrl and pass events to worker [Done]
      * Respond to window resizing [Done]
      * Implement proper exit [Done]
        * Render send exit key also
 
-   * Refactor IPC [Sat/Sun]
+   * Rewrite IPC
+     * Abstract common functionality among worker/model/render conns [Done]
+     * Serialize entire object for all [Done]
+     * Model needs to write data [Done]
      * Make epoll event like timerfd [Done]
      * Rewrite flush-msgs [Done]
        * Use doubly linked list
        * On EPOLLIN, append new data to tail
        * Read as many as msgs from head until insufficient data
      * Optimize transmission
-       * Use single header
-       * Re-use head list     
-       * Add ability to push/pull range and/or batch
-         * For initial loading, could use fork or read default values from file
-     * Fix error handling so send-msg returns num or NIL/0 and loop gives up
-       * Returns to polling
-     * Ensure all data sent; warn and block
+       * Use single header [Done...necessary?]
+         * Must refactor flush?
+       * Re-use head list
+     * Fix data sending integrity; warn and block [Sun]
+       * Add loop to send until empty - add to ipc
        * If blocked, then render or model is lagging
+     * Fix caller error handling for send/recv msg [Sun]
+       * If looping, do "while (setq msg (recv-msg))"
+     * Add ability to push/pull range and/or batch [Sun]
+       * Rx: pass adtl args
+       * Batch: process msgs as list
+       * For initial loading, could use fork or read default values from file
      * Render should only send msg if client rdy otherwise send will block
        * Worker can choose to have late msgs dropped - send function to render
      * Start tracking memcpy performance (bytes/millisecond)
@@ -189,7 +178,10 @@ Store DAGs as binary trees?
        * Vertex data simply contains an offset to the struct
 
    * File browser - most basic functionality
-     * Can use existing commands: dir, dirname, cd, info, path
+     * Wrap call
+     * Use OS commands: dir, dirname, cd, info, path
+     * Functionality must exist for manipulating output
+       * Create file objects?
 
    * Implement Wayland - BASIC! [Thurs/Fri]
      * Setup tiles for 6 windows = 3 col, 2 row
@@ -265,6 +257,8 @@ Store DAGs as binary trees?
          use compute shader, else use lisp functions, or C lib
          * Eventually this would be the bottleneck
        * Send deltas only instead of entire object
+         -> Need not serialize everything - add ability to serialize only certain members
+         * Must define protocol/msg
        * Use LZO or LZ4 data compression
           
   * CTRL MUST SEND MSGS TO ALL CLIENTS

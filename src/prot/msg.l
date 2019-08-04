@@ -179,29 +179,30 @@
           #(prinl-info "flush-msgs-2" (pack "Head= " (str Head)))
 
           # Parse Head
-          (let (Sz-Bin  (read-int-from-bytes Head)          #cut 4 'Head
-                Len-Msg (read-int-from-bytes (nth Head 5))
-                Len-Msg-2 (read-int-from-bytes (nth Head 9)))
+          (let (Sz-Bin    (read-int-from-bytes Head)
+                Len-Sexpr (read-int-from-bytes (nth Head 5))
+                Len-Msg   (read-int-from-bytes (nth Head 9)))
 
-            #(prinl-info "flush-msgs-2" (pack "Sz-Bin=" Sz-Bin ", Len-Msg=" Len-Msg))
+            #(prinl-info "flush-msgs-2" (pack "Sz-Bin=" Sz-Bin ", Len-Sexpr=" Len-Sexpr))
 
             # Parse Msg
-            (if (not (>= (get *dlst 'len) (+ Len-Msg Sz-Bin)))
+            (if (not (>= (get *dlst 'len) (+ Len-Sexpr Sz-Bin)))
 
               (prog
                 # Push head back
                 (for B Head (ins-frs *dlst (new '(+Node-Dlst) B)))
                 (setq Cont NIL))
 
-              (let (Str  (rem-frs-n-d-c *dlst Len-Msg)
+              (let (Str  (rem-frs-n-d-c *dlst Len-Sexpr)
                     Msg  (pack (flip (cdr Str)))
                     Data (any Msg))
 
                     # Parse Bin
                     (if (=0 Sz-Bin)
+
                       (Fn-Proc Ipc Sock Data Sz-Bin *buf-flush)
+
                       (prog
-                        # Bin is backwards?
                         (for I Sz-Bin
                           (byte (+ *buf-flush (- I 1))
                                 (get (rem-frs *dlst) 'dat)))

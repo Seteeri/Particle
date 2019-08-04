@@ -119,14 +119,15 @@
         (with Vert
           
           (=: pos  (list Pos-X Pos-Y 0.0))
-          (when T
+          (when NIL
             (=: rota (list 0.0   0.0   (rand 0.0 6.283185307179586)))
             (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
                            (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
                            (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
                            (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
 
-        (update-glyph> Vert (char (rand 33 126)))
+        #(update-glyph> Vert (char (rand 33 126)))
+        
         (update-model-matrix> Vert)
 
         # FIX - use update...
