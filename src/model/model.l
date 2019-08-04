@@ -12,9 +12,6 @@
 }#
 
 
-(symbols 'model 'pico)
-
-
 # Set math precision to 6 decimals
 (scl 6)
 
@@ -61,24 +58,25 @@
   (prinl-info "init-verts" (pack "Making " *verts-max " verts..."))
 
   (let Verts ()
+    (for I *verts-max
+      (let Vert (new '(+Vertex)
+                     (get-vert-off I)
+                     "@"
+                     *color-vert-default
+                     (list 0.0 0.0 0.0) # pos
+                     (list 0.0 0.0 0.0) # rot=0, sca=global scale
+                     (list *sca-vert *sca-vert *sca-vert))
+        (push 'Verts Vert)))
 
-     (for I *verts-max
-
-        (let Vert (new '(+Vertex)
-                       (get-vert-off I)
-                       "@"
-                       *color-vert-default
-                       (list 0.0 0.0 0.0) # pos
-                       (list 0.0 0.0 0.0) # rot=0, sca=global scale
-                       (list *sca-vert *sca-vert *sca-vert))
-
-           (push 'Verts Vert))
-
-        #(prin-info "init-verts" (pack "Creating vertex " I " of " *verts-max "\r"))
-        #(flush)
-        )
+    (setq Verts (flip Verts))
 
     (prinl-info "init-verts" "Finish making verts")
+
+    (unless (info "verts.bin")
+      (out "verts.bin"
+        (for Vert Verts
+          (pr (val Vert) (getl Vert))))
+      (prinl-info "init-verts" "Wrote verts.bin"))
 
      Verts))
 
@@ -130,7 +128,7 @@
    - Generate nodes for builtin symbols?
   }#
 
-  (gc (* (+ 104 2) 4))
+  (gc 256)
   (setq *verts (init-verts)))
 
 

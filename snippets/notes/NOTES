@@ -1423,3 +1423,43 @@ We can create screens...but make them nodes also
 https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/
 
 Should write down cases and use as tutorials/examples
+
+################################################################################
+
+https://www.mail-archive.com/picolisp@software-lab.de/msg07287.html
+
+> (list (box) (box) (box))
+> ...
+> ($177760526373112 $177760526373114 $177760526373116)
+
+
+> Where each memory location is two more than the previous. I am wondering
+
+Yes. BTW, these are actually cell addresses, not bytes. The values have to be
+multiplied by 16 to get the physical addresses. And the value is printed in
+octal representation.
+
+Two cell are created for each symbol here, one for the symbol itself and one for
+the list being built.
+
+
+> if this behavior is guaranteed to always be the case, the implication
+
+The observed offset of two is not guaranteed. Cells are picked sequentially from
+the heap in the beginning, but from the Avail list after garbage collection, and
+are not predictable.
+
+
+> being one could have random access to any cell provided he knew the
+> address of the first cell.
+
+Correct. There is even a function for that, 'adr':
+
+   : (box)
+   -> $377166006651
+
+   : (adr @)
+   -> -34256457129
+
+   : (oct @)
+   -> "-377166006651"

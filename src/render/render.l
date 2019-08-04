@@ -12,8 +12,6 @@ Class variables may be indicated by an upper case letter
 }#
 
 
-(symbols 'render 'pico)
-
 # Set math precision to 6 decimals
 (scl 6)
 

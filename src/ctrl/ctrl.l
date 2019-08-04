@@ -12,8 +12,6 @@
 }#
 
 
-(symbols 'ctrl 'pico)
-
 # Set math precision to 6 decimals
 (scl 6)
 

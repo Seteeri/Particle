@@ -12,8 +12,6 @@
 }#
 
 
-(symbols 'worker 'pico)
-
 # Set math precision to 6 decimals
 (scl 6)
 
@@ -96,10 +94,31 @@
 
   (setq *xkb (new '(+Xkb)))
 
-  # Most efficient way to pull this much data is to batch it or send rx will
-  # minimize the IPC bottleneck
 
-  (gc (* (+ 104 2) 4))
+  (gc 256)
+
+  (in "verts.bin"
+    (let (A NIL
+          B NIL
+          C 0
+          Vert NIL)
+      (while (and (setq Cls (rd)) (setq Propls (rd)) (< C *verts-max))
+        (putl (setq Vert (box Cls)) Propls)
+        (inc 'C)
+        (push '*verts Vert))))
+  
+  # Designate vertex 1 as ptr
+  (setq *vert-ptr (pop '*verts))
+
+  (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
+
+  (prinl-info "init-worker" "Starting epoll...")
+  (loop (ipc~poll> *ipc -1)))
+  
+  
+
+(de pull-verts ()
+
   (prinl-info "init-worker" (pack "Pulling " *verts-max " verts..."))
   
   (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
@@ -116,50 +135,41 @@
                                NIL
                                I)
 
-        (with Vert
+        (when NIL
+
+          (with Vert
+            
+            (=: pos  (list Pos-X Pos-Y 0.0))
+            (when NIL
+              (=: rota (list 0.0   0.0   (rand 0.0 6.283185307179586)))
+              (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
+                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
+                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
+                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
+
+          #(update-glyph> Vert (char (rand 33 126)))
           
-          (=: pos  (list Pos-X Pos-Y 0.0))
-          (when NIL
-            (=: rota (list 0.0   0.0   (rand 0.0 6.283185307179586)))
-            (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
-                           (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
-                           (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
-                           (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
+          (update-model-matrix> Vert)
 
-        #(update-glyph> Vert (char (rand 33 126)))
-        
-        (update-model-matrix> Vert)
+          # FIX - use update...
+          (cmd-render-vert *ipc Vert)
 
-        # FIX - use update...
-        (cmd-render-vert *ipc Vert)
-
-        (inc 'Pos-X *adv-vert)
-        (when (= (inc 'Cnt-X) 1024)
-          #(prin-info "init-worker" (pack "Request/Render vertex " I " of " *verts-max "\r"))
-          (setq Cnt-X 0)
-          (setq Pos-X 0.0)
-          (dec 'Pos-Y (+ *adv-vert *adv-vert))
-          #(println "POS-Y: " Pos-Y)
-          T)
-
-        #(prinl-info "init-worker" (pack "Pulled " I))
+          (inc 'Pos-X *adv-vert)
+          (when (= (inc 'Cnt-X) 256)
+            #(prin-info "init-worker" (pack "Request/Render vertex " I " of " *verts-max "\r"))
+            (setq Cnt-X 0)
+            (setq Pos-X 0.0)
+            (dec 'Pos-Y (+ *adv-vert *adv-vert))
+            #(println "POS-Y: " Pos-Y)
+            T))
 
         (push '*verts Vert))))
 
-  (prinl-info "init-worker" "Done pulling verts")
-
-  # Designate vertex 1 as ptr
-  (setq *vert-ptr (pop '*verts)))
+  (prinl-info "init-worker" "Done pulling verts"))
 
 
 # Unused currentyl
 (de handle-client (Sock))
-
-
-(de run-worker (Timeout)
-
-  (prinl-info "run-worker" "Starting epoll...")
-  (loop (ipc~poll> *ipc Timeout)))
 
 
 (de handle-ctrl (Sock)
@@ -248,8 +258,4 @@
         (cmd-render-vert *ipc Vert)))))
 
 
-(de main ()
-
-  (init-worker)
-  (run-worker -1)
-  (bye))
+(de main () (init-worker))

@@ -8,6 +8,9 @@
     (cond ((= Name-Fn "mc")
            (handle-memcpy Sock Data Bin))
 
+          # mcr
+          # Copy a range to the socket
+
           ((= Data "bye")
            (ipc~disconn-sock Sock)
            (ipc~end> *ipc)

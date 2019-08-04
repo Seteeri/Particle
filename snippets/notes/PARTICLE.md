@@ -135,14 +135,19 @@ Store DAGs as binary trees?
        * Add loop to send until empty - add to ipc
        * If blocked, then render or model is lagging
      * Add ability to push/pull range and/or batch [Sun]
-       * Batch: process msgs as list     
+       * Batch: process msgs as list [Done]     
        * Rx: pass adtl args
+         * Add handlers to processes
        * For initial loading, could use fork or read default values from file
      * Render should only send msg if client rdy otherwise send will block
        * Worker can choose to have late msgs dropped - send function to render
      * Start tracking memcpy performance (bytes/millisecond)
 
-   * Implement string/atom/list, eval functionality [Sun]
+   * Loading [Done]
+     * Have model save symbols to file
+     * Worker will then load file
+
+   * Implement string/atom/list, eval functionality [Mon...]
      * Create particle for pointer
      * Atoms
        * Pack (Chr->Str)

@@ -6,6 +6,8 @@
 (de req-send-obj (Ipc Sock Obj Sz-Obj Off-Obj)
 
   (let Msg (fmt-msg-send> Obj Off-Obj)
+
+    #(prinl-info "req-send-obj" Msg)
     
     (send-msg Ipc
               Sock
