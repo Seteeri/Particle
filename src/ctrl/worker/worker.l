@@ -152,6 +152,7 @@
   (setq *vert-ptr (pop '*verts)))
 
 
+# Unused currentyl
 (de handle-client (Sock))
 
 
@@ -166,6 +167,11 @@
   (let (Msg (recv-msg *ipc Sock)
         Data (any Msg)
         Name (get Data 1))
+
+    # recv-msg will return data or NIL
+    # This means sending NIL will disconnect the client, like EOF
+    (unless Msg
+      (disconn-conn *ipc Sock))
 
     (cond ((= Name 'KEYBOARD-KEY)
            (cmd-kb Data))
@@ -182,7 +188,7 @@
           ((= Data "bye")
            # Send bye to ctrl which will send to all workers/render/model
            (send-msg *ipc Sock "bye")
-           (ipc~disconnect-sock Sock)
+           (ipc~disconn-sock Sock)
            (ipc~end> *ipc)
            (println "Worker says bye!")
            (bye))
@@ -204,6 +210,11 @@
 
     # Handle recv updates from model
 
+    # recv-msg will return data or NIL
+    # This means sending NIL will disconnect the client, like EOF
+    (unless Msg
+      (disconn-conn *ipc Sock))
+
     (when NIL
       (prinl Msg))))
 
@@ -211,6 +222,11 @@
 (de handle-render (Sock)
 
   (let Msg (recv-msg *ipc Sock)
+
+    # recv-msg will return data or NIL
+    # This means sending NIL will disconnect the client, like EOF
+    (unless Msg
+      (disconn-conn *ipc Sock))
 
    (when NIL
 

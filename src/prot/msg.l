@@ -145,20 +145,19 @@
      (get Bytes 4)))
 
 
-(de flush-msgs-2 (Ipc Sock Fn-Proc)
+(de flush-msgs (Ipc Sock)
 
-  # Alternative is two have two buffers that we swap
-  # But length is limited
-  # Doubly linked list is more dynamic/simpler?
-
-  #(prinl)
-  #(prinl-info "flush-msgs-2" "#### START FLUSH ####")
   #(prinl-info "flush-msgs-2" (pack "*dlst.len=" (get *dlst 'len)))
 
   (let Bytes-Read (ipc~recv-bytes> Ipc Sock T T 0)
-    (for B (struct (get Ipc 'ipc~buf-rd) (cons 'B Bytes-Read))
-      (let Node (new '(+Node-Dlst) B)
-        (ins-las *dlst Node))))
+    (when Bytes-Read
+      (for B (struct (get Ipc 'ipc~buf-rd) (cons 'B Bytes-Read))
+        (let Node (new '(+Node-Dlst) B)
+          (ins-las *dlst Node))))
+    Bytes-Read))
+
+
+(de parse-msgs (Ipc Sock Fn-Proc)
 
   #(prinl-info "flush-msgs-2" (pack "*dlst.len=" (get *dlst 'len)))
 

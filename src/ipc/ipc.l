@@ -66,7 +66,7 @@ Handle bad accept sock
   (=: conns-id NIL)
   
   (init-conns> This Conns))
-
+  
 
 (dm init-listener> ()
 
@@ -94,21 +94,6 @@ Handle bad accept sock
         (prinl-info "init-conns>" (pack "Sock=" Sock " connected to " Path))))))
 
 
-(dm add-conn> (Sock ID-S Handler Flags)
-  #{
-  # Make class for this? -> Connection
-  }#
-  
-  (epoll~ctl> (: ep)
-              epoll~ADD
-              Sock
-              (if Flags Flags epoll~BAD))
-  
-  # Push into same list?
-  (push1 (:: conns)    (cons Sock (list ID-S Handler)))
-  (push1 (:: conns-id) (cons ID-S (list Sock Handler))))
-
-
 (dm end> ()
 
   (native "@" "free" NIL (: buf-rd))
@@ -125,29 +110,23 @@ Handle bad accept sock
       (sock~end (car Conn)))))
 
 
-(de disconnect-sock (Sock)
-  (sock~end Sock))
+(dm add-conn> (Sock ID-S Handler Flags)
 
-
-(dm disconnect-client> (Sock)
-
-  (prinl-info "disconnect-client" (pack "Sock=" Sock))
-  (del (assoc Sock (: clients)) (:: clients))
   (epoll~ctl> (: ep)
-              epoll~DEL
+              epoll~ADD
               Sock
-              0)
+              epoll~BAD)
+  
+  # Push into same list?
+  (push1 (:: conns)    (cons Sock (list ID-S Handler)))
+  (push1 (:: conns-id) (cons ID-S (list Sock Handler))))
+
+
+(de disconn-sock (Sock)
   (sock~end Sock))
 
 
-(dm accept-sock> (Sock)
-
-  (let Client (sock~accept Sock 'block)
-
-    (when (<= Client 0)
-      (prinl-info "ipc~accept-sock" (pack "Client=" Client)))
-
-    ((: handler-accept) This Sock Client)))
+(dm accept-sock> (Sock) ((: handler-accept) This Sock (sock~accept Sock 'block)))
 
 
 (dm send-bytes> (Sock Buf Sz Flags)
@@ -164,10 +143,10 @@ Handle bad accept sock
      (case Bytes-Sent
      
         # Orderly shutdown
-        (0  (nil (prinl-info "send-bytes>" (pack "ERRNO: " (errno) " " Sock)) (disconnect-client> This Sock)))
+        (0  (nil (prinl-info "send-bytes>" (pack "ERRNO=" (errno) ", Sock=" Sock))))
         
         # Error
-        (-1 (nil (prinl-info "send-bytes>" (pack "ERRNO: " (errno) " " Sock)) (disconnect-client> This Sock)))
+        (-1 (nil (prinl-info "send-bytes>" (pack "ERRNO=" (errno) ", Sock=" Sock))))
 
         # Poss Byte-Sent != Sz
         (T  Bytes-Sent))))
@@ -192,34 +171,13 @@ Handle bad accept sock
      (case Bytes-Read
      
         # Orderly shutdown
-        (0  (nil (prinl-info "recv-bytes>" (pack "ERRNO: " (errno) " " Sock)) (disconnect-client> This Sock)))
+        (0  (nil (prinl-info "send-bytes>" (pack "ERRNO=" (errno) ", Sock=" Sock))))
         
         # Error
-        (-1 (nil (prinl-info "recv-bytes>" (pack "ERRNO: " (errno) " " Sock)) (disconnect-client> This Sock)))
+        (-1 (nil (prinl-info "send-bytes>" (pack "ERRNO=" (errno) ", Sock=" Sock))))
         
         (T  Bytes-Read))))
 
-
-(dm recv-bytes-2> (Sock Buf Sz Flags)
-  #{
-  * This is designed for NON-blocking sockets...
-  }#
-
-  (let Bytes-Read (sock~recv Sock
-                             (if (num? Buf)   Buf (: buf-rd))
-                             (if (num? Sz)    Sz  (: sz-buf-rd))
-                             (if (num? Flags) Flags 0))
-                               
-     (case Bytes-Read
-     
-        # Error or orderly shutdown
-        (0  (nil (prinl-info "recv-bytes-2>" (pack "ERRNO: " (errno) " " Sock))))
-        
-        # EAGAIN or EWOULDBLOCK
-        (-1 (nil (when (not (= (errno) 11) (disconnect-client> This Sock)))))
-        
-        (T  Bytes-Read))))
-         
 
 (dm dispatch-handler-conn> (Sock)
 

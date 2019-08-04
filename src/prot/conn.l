@@ -28,13 +28,8 @@ If dst NIL: send bytes back
 
     #Disconnect client if name conflict
     (if (assoc Client (get Ipc 'ipc~clients))
-        (disconnect-sock Client ID)
+        (ipc~disconn-sock Client ID)
         (add-client Ipc Client ID))))
-
-
-(de disconnect-sock (Client ID)
-  (prinl "WARNING! ID=" ID " exists; disconnecting client=" Client)
-  (ipc~disconnect-sock Client))
 
 
 (de add-client (Ipc Client ID)
@@ -46,6 +41,41 @@ If dst NIL: send bytes back
     (push1 (:: ipc~clients) (cons Client (list ID (: ipc~handler-listener))))
 
     (prinl-info "add-client" (pack "Sock=" Sock ", ID= " ID))))
+
+
+(de disconn-client (Ipc Sock)
+
+  (prinl-info "disconn-client" (pack "Sock=" Sock))
+
+  (with Ipc
+    (del (assoc Sock (: clients)) (:: clients))
+    (let ID (get 1 (cdr (assoc Sock (: conns))))
+      (del (assoc ID (: conns-id)) (:: conns-id)))
+    (del (assoc Sock (: conns)) (:: conns)))
+  
+  (epoll~ctl> (: ep)
+              epoll~DEL
+              Sock
+              0)
+              
+  (ipc~disconn-sock Sock))
+
+
+(de disconn-conn (Ipc Sock)
+
+  (prinl-info "disconn-conn" (pack "Sock=" Sock))
+
+  (with Ipc
+    (let ID (get 1 (cdr (assoc Sock (: conns))))
+      (del (assoc ID (: conns-id)) (:: conns-id)))
+    (del (assoc Sock (: conns)) (:: conns)))
+  
+  (epoll~ctl> (: ep)
+              epoll~DEL
+              Sock
+              0)
+              
+  (ipc~disconn-sock Sock))
 
 
 (de reg-conns (Ipc ID-C)

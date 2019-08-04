@@ -15,7 +15,7 @@
 
     # Dispatch bindings
 
-    (prinl-info "cmd-kb" (pack (str Data) " " Keysym))
+    #(prinl-info "cmd-kb" (pack (str Data) " " Keysym))
 
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))

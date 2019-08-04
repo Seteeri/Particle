@@ -9,7 +9,7 @@
            (handle-memcpy Sock Data Bin))
 
           ((= Data "bye")
-           (ipc~disconnect-sock Sock)
+           (ipc~disconn-sock Sock)
            (ipc~end> *ipc)
            (println "Model says bye!")
            (bye))

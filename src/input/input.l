@@ -71,11 +71,18 @@
 
 
 (de handle-client (Sock)
+
   (let (Msg (recv-msg *ipc Sock)
         Data (any Msg))
+
+    # recv-msg will return data or NIL
+    # This means sending NIL will disconnect the client, like EOF
+    (unless Msg
+      (disconn-client *ipc Sock))
+
     (when (= Data "bye")
       (send-msg-conns *ipc "bye")
-      (ipc~disconnect-sock Sock)
+      (ipc~disconn-sock Sock)
       (end)
       (println "Input says bye!")
       (bye))))

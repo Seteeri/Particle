@@ -148,8 +148,9 @@
 
 
 (de recv-conn (Sock)
-  (co (format Sock)
-    (flush-msgs-2 *ipc Sock process-msg)))
+  (unless (flush-msgs *ipc Sock)
+    (disconn-client *ipc Sock))
+  (parse-msgs *ipc Sock process-msg))
 
 
 (de main ()

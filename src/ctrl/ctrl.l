@@ -84,27 +84,10 @@
   (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN))
 
 
-(de handle-render (Sock)
-  # Currently, render sends frame time which is not used...
+(de run-ctrl (Timeout)
 
-  # Render will send window resize events
-  # Ctrl will send window resize event to workers
-  (let (Msg (recv-msg *ipc Sock)
-        Data (any Msg))
-
-      (if (lst? Data)
-
-        (when (= (get Data 1) "window-size")
-          (dispatch-msg (pack "(calc-pv " (get Data 2) " " (get Data 3) ")"))
-          (dispatch-msg (pack "(update-pv)")))
-          
-        (when (= Data "bye")
-          # Send to all conns
-          (send-msg-conns *ipc "bye")
-          (ipc~disconnect-sock Sock)
-          (ipc~end> *ipc)
-          (println "Ctrl says bye!")
-          (bye)))))
+  (prinl-info "run-ctrl" "Starting epoll...")
+  (loop (ipc~poll> *ipc Timeout)))
 
 
 (de handle-worker (Sock)
@@ -112,6 +95,11 @@
   (let (Msg  (recv-msg *ipc Sock)
         Data (any Msg)
         Name (name Data))
+
+    # recv-msg will return data or NIL
+    # This means sending NIL will disconnect the client, like EOF
+    (unless Msg
+      (disconn-client *ipc Sock))
 
     # Handle other messages
     (cond ((= Name "rdy")
@@ -123,7 +111,7 @@
           ((= Name "bye")
            # Send to all conns
            (send-msg-conns *ipc "bye")
-           (ipc~disconnect-sock Sock)
+           (ipc~disconn-sock Sock)
            (ipc~end> *ipc)
            (println "Ctrl says bye!")
            (bye))
@@ -136,10 +124,32 @@
     T))
 
 
-(de run-ctrl (Timeout)
+(de handle-render (Sock)
+  # Currently, render sends frame time which is not used...
 
-  (prinl-info "run-ctrl" "Starting epoll...")
-  (loop (ipc~poll> *ipc Timeout)))
+  # Render will send window resize events
+  # Ctrl will send window resize event to workers
+  (let (Msg (recv-msg *ipc Sock)
+        Data (any Msg))
+
+    # recv-msg will return data or NIL
+    # This means sending NIL will disconnect the client, like EOF
+    (unless Msg
+      (disconn-conn *ipc Sock))
+
+    (if (lst? Data)
+
+      (when (= (get Data 1) "window-size")
+        (dispatch-msg (pack "(calc-pv " (get Data 2) " " (get Data 3) ")"))
+        (dispatch-msg (pack "(update-pv)")))
+        
+      (when (= Data "bye")
+        # Send to all conns
+        (send-msg-conns *ipc "bye")
+        (ipc~disconn-sock Sock)
+        (ipc~end> *ipc)
+        (println "Ctrl says bye!")
+        (bye)))))
 
 
 (de handle-input (Sock)
@@ -149,7 +159,11 @@
   (let (Msg  (recv-msg *ipc Sock)
         Data (any Msg)
         Name (get Data 1))
-    #(prinl (usec) " | CTRL   | handle-input | " Data)
+
+    # recv-msg will return data or NIL
+    # This means sending NIL will disconnect the client, like EOF
+    (unless Msg
+      (disconn-client *ipc Sock))
 
     (when (= Name 'KEYBOARD-KEY)
 
@@ -179,9 +193,11 @@
   (let Worker (pop '*q-worker)
     (if Worker
       (let Msg-Q (pop '*q-msg)
+           Sent NIL
         (if Msg-Q
-          (send-msg *ipc Worker Msg-Q)
-          (send-msg *ipc Worker Msg)))
+          (setq Sent (send-msg *ipc Worker Msg-Q))
+          (setq Sent (send-msg *ipc Worker Msg)))
+        (unless Sent (disconn-conn *ipc Worker)))
       (queue '*q-msg Msg))))
 
 

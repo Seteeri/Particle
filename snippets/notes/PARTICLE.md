@@ -126,15 +126,14 @@ Store DAGs as binary trees?
        * Use doubly linked list
        * On EPOLLIN, append new data to tail
        * Read as many as msgs from head until insufficient data
-     * Optimize transmission
-       * Use single header [Done...necessary?]
-         * Must refactor flush?
-       * Re-use head list
+     * Use single header [Done...necessary?]
+       * Must refactor flush?
+     * Re-use head list [Skip]
+     * Fix caller error handling for send/recv msg [Sun]
+       * If looping, do "while (setq msg (recv-msg))"
      * Fix data sending integrity; warn and block [Sun]
        * Add loop to send until empty - add to ipc
        * If blocked, then render or model is lagging
-     * Fix caller error handling for send/recv msg [Sun]
-       * If looping, do "while (setq msg (recv-msg))"
      * Add ability to push/pull range and/or batch [Sun]
        * Rx: pass adtl args
        * Batch: process msgs as list
