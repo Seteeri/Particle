@@ -1,17 +1,36 @@
 (de send-msgs (Ipc Sock Msgs)
 
   #{
-    Msgs are in the following format:
+    Msgs are a list
+    
     ( (Sexpr1 Bin1)
       (Sexpr2 Bin2)
       (Sexpr3 Bin3)
       ...)
 
+    However, they are written back to back (and the list not directly written)
+
     Try to format all into the pointer, and then return unsent msgs or do
     send all
   }#
 
-  T)
+  (let Len-Sock 0
+
+    # Ensure it will fit
+    # Conservative estimate could be half
+  
+    (for Msg Msgs
+      (let ((Sexpr Bin Sz-Bin) Msg)
+        (inc Len-Sock (write-msg Ipc Sexpr Bin Sz-Bin))))
+
+    (let (Len-Sock (write-msg Ipc Sexpr Bin Sz-Bin)
+          Bytes-Sent (ipc~send-bytes> Ipc Sock T Len-Sock))
+
+      (if Bytes-Sent
+
+        Bytes-Sent
+
+        (nil (prinl-info "send-msg-len" (pack "Failed to send" " " (if Bytes-Sent Bytes-Sent NIL))))))))
 
 
 (de write-msg (Ipc Sexpr Bin Sz-Bin)
