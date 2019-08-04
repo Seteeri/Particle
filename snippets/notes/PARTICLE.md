@@ -129,14 +129,14 @@ Store DAGs as binary trees?
      * Use single header [Done...necessary?]
        * Must refactor flush?
      * Re-use head list [Skip]
-     * Fix caller error handling for send/recv msg [Sun]
+     * Fix caller error handling for send/recv msg [Done]
        * If looping, do "while (setq msg (recv-msg))"
-     * Fix data sending integrity; warn and block [Sun]
+     * Fix data sending integrity; warn and block [Done]
        * Add loop to send until empty - add to ipc
        * If blocked, then render or model is lagging
      * Add ability to push/pull range and/or batch [Sun]
+       * Batch: process msgs as list     
        * Rx: pass adtl args
-       * Batch: process msgs as list
        * For initial loading, could use fork or read default values from file
      * Render should only send msg if client rdy otherwise send will block
        * Worker can choose to have late msgs dropped - send function to render

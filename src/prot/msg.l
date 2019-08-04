@@ -1,16 +1,20 @@
-# SEND-MSG
-# Send single msg
+(de send-msgs (Ipc Sock Msgs)
+
+  #{
+    Msgs are in the following format:
+    ( (Sexpr1 Bin1)
+      (Sexpr2 Bin2)
+      (Sexpr3 Bin3)
+      ...)
+
+    Try to format all into the pointer, and then return unsent msgs or do
+    send all
+  }#
+
+  T)
 
 
-(de send-msg (Ipc Sock Sexpr Bin Sz-Bin)
-
-  # Write, in order:
-  # - Len-Msg   (Int)
-  # - Len-Sexpr (Int)
-  # - Sz-Bin   (Int)
-  # - Sexpr     (Utf-8)
-  # - Bin       (Bytes)
-
+(de write-msg (Ipc Sexpr Bin Sz-Bin)
   (let (Bin    (if Bin Bin 0)
         Sz-Bin (if Sz-Bin Sz-Bin 0)
         Len-Sexpr (+ (length Sexpr) 1)
@@ -30,17 +34,25 @@
         (native "@" "memcpy" NIL
         (+ (: ipc~buf-wr) 4 4 4 Len-Sexpr) Bin Sz-Bin)))
 
-    #(prinl-info "send-msg" "SEND")
-    #(println Len-Sock Len-Sexpr Sz-Bin Sexpr Bin)
-    #(println (struct (: ipc~buf-wr) (cons 'B Len-Sock))))
+    Len-Sock))
 
-    (let Bytes-Sent (ipc~send-bytes> Ipc Sock T Len-Sock)
 
-      (if Bytes-Sent
+# SEND-MSG
+# Send single msg
 
-        Bytes-Sent
 
-        (nil (prinl-info "send-msg-len" (pack "Failed to send" " " (if Bytes-Sent Bytes-Sent NIL))))))))
+(de send-msg (Ipc Sock Sexpr Bin Sz-Bin)
+
+  # Could do this unblocked; if delayed, then server is lagging and could warn
+
+  (let (Len-Sock (write-msg Ipc Sexpr Bin Sz-Bin)
+        Bytes-Sent (ipc~send-bytes> Ipc Sock T Len-Sock))
+
+    (if Bytes-Sent
+
+      Bytes-Sent
+
+      (nil (prinl-info "send-msg-len" (pack "Failed to send" " " (if Bytes-Sent Bytes-Sent NIL)))))))
 
 
 (de send-msg-clients (Ipc Msg)
