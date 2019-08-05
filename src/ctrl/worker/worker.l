@@ -61,6 +61,7 @@
 (load "/home/user/Git/particle/src/model/vertex.l")
 (load "/home/user/Git/particle/src/ctrl/xkb.l")
 (load "/home/user/Git/particle/src/ctrl/worker/conn.l")
+(load "/home/user/Git/particle/src/ctrl/worker/draw.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/kb.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/vert.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/pen.l")
