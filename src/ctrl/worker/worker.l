@@ -158,6 +158,9 @@
   (bind-keys (list (cons ksd~Prior     KEY-REPEAT)) cmd-zoom-cam-in)
   (bind-keys (list (cons ksd~Next      KEY-REPEAT)) cmd-zoom-cam-out)
 
+  # Enter = Linefeed
+  (bind-keys (list (cons ksd~Return xkb~KEY-DOWN)) cmd-char)
+  (bind-keys (list (cons ksd~Return KEY-REPEAT)) cmd-char)
   
   (for (K 32 (<= K 255) (inc K))
     (bind-keys (list (cons K xkb~KEY-DOWN)) cmd-char)
