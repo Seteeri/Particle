@@ -29,6 +29,7 @@
 (def '*sca-glyph 5.8239365)   # MSDF/tex parameter
 (def '*adv-glyph 9.375)       # MSDF/tex parameter
 (def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
+(def 'KEY-REPEAT 2)
 
 # Globals
 (def '*metrics)
@@ -36,6 +37,8 @@
 (def '*xkb)
 (def '*timeline)
 (def '*vert-ptr)
+(def '*pen-v)
+(def '*cnt-v)
 
 
 # Wrapper libraries
@@ -106,11 +109,14 @@
         (putl (setq Vert (box Cls)) Propls)
         (inc 'C)
         (push '*verts Vert))))
+
+  (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
   
   # Designate vertex 1 as ptr
   (setq *vert-ptr (pop '*verts))
 
-  (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
+  (setq '*pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
+  (setq '*cnt-v 2)
 
   (prinl-info "init-worker" "Starting epoll...")
   (loop (ipc~poll> *ipc -1)))

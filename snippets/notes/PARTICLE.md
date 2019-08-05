@@ -147,6 +147,15 @@ Store DAGs as binary trees?
      * Have model save symbols to file
      * Worker will then load file
 
+   * Implement bindings in worker
+     * Use assoc list
+     * Store combinations as keys
+
+   * Create default environment
+     * Draw pico namespace
+     * Draw pico symbols
+     * Draw timeline
+
    * Implement string/atom/list, eval functionality [Mon...]
      * Create particle for pointer
      * Atoms
@@ -170,10 +179,6 @@ Store DAGs as binary trees?
      * Turn into strings
      * Then test symbols
        * Symbols that already exist - get existing
-
-   * Implement bindings in worker
-     * Use assoc list
-     * Store combinations as keys
 
    * Test compute shaders
      * Rotate all vertices

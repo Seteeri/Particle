@@ -1,8 +1,3 @@
-(def '*pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
-(def '*cnt-v 2)
-
-(def 'KEY-REPEAT 2)
-
 (de cmd-kb (Data)
 
   (let (Keycode (+ (get Data 4) 8)
@@ -36,3 +31,17 @@
             ((= Keysym ksd~Next)  (cmd-zoom-cam 0.3))
 
             (T                    (cmd-char Keysym))))))
+
+
+(de bind-keys (Keys Fn)
+  #{
+
+    For each key pressed, check bindings
+
+    bind-keys((Ctrl X), Fn)
+
+    Add to assoc list
+
+  }#
+
+  T)
