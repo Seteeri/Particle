@@ -1,3 +1,45 @@
+(de cmd-char (Keysym)
+
+  # Next try to draw a symbol or class
+
+  # To draw any cons cell:
+  # Check CAR/CDR
+  # - If cons cell, call draw fn or put in list (which will create another particle)
+  # - If encoded num or str, add verts to current particle
+
+  # Kb handlers will call this function
+  # However, the result of eval is drawn
+  # ...REDL read, eval, draw/render/rasterize, loop
+  # So pressing ASCII equivalent to executing eval
+
+  (when (and (>= Keysym 32)
+             (<= Keysym 255))
+
+    # For strings either use quotations or put additional spacing between symbols
+    # Problem is spaces are invisible
+    # (draw-str (pack "\"" Data "\""))
+
+    (let (Data  (if (= Keysym ksd~space) " " (char Keysym))
+          Verts (draw-str Data)
+          Prt   (new '(+Particle) Data Verts))
+
+      (push '*timeline Prt)
+
+      (when NIL
+        (print (>> -4 (adr Data)))
+        (prinl)
+        (prin "  ")
+        (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
+        (prin " | ")
+        (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
+        (prinl))
+        
+      T))
+
+  (cond ((= Keysym ksd~Return) (nl-pen))
+        ((= Keysym ksd~Tab)    (adv-pen 2.0))))
+        
+
 (de cmd-pack ()
 
   (prinl-info "cmd-pack")
@@ -88,46 +130,3 @@
       # sym? num? pair? flg? atom box? ext? lst?
 
       (eval Any)))
-
-
-(de cmd-char (Keysym)
-
-  # Next try to draw a symbol or class
-
-  # To draw any cons cell:
-  # Check CAR/CDR
-  # - If cons cell, call draw fn or put in list (which will create another particle)
-  # - If encoded num or str, add verts to current particle
-
-  # Kb handlers will call this function
-  # However, the result of eval is drawn
-  # ...REDL read, eval, draw/render/rasterize, loop
-  # So pressing ASCII equivalent to executing eval
-
-  (when (and (>= Keysym 32)
-             (<= Keysym 255))
-
-    # For strings either use quotations or put additional spacing between symbols
-    # Problem is spaces are invisible
-    # (draw-str (pack "\"" Data "\""))
-
-    (let (Data  (if (= Keysym ksd~space) " " (char Keysym))
-          Verts (draw-str Data)
-          Prt   (new '(+Particle) Data Verts))
-
-      (push '*timeline Prt)
-
-      (when NIL
-        (print (>> -4 (adr Data)))
-        (prinl)
-        (prin "  ")
-        (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
-        (prin " | ")
-        (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
-        (prinl))
-        
-      T))
-
-  (cond ((= Keysym ksd~Return) (nl-pen))
-        ((= Keysym ksd~Tab)    (adv-pen 2.0))))
-        
