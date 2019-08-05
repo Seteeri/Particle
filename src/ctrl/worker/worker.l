@@ -130,7 +130,23 @@
 
   (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
                    (cons ksd~x         xkb~KEY-DOWN))
-             '((Keysym) (println "CTRL-X")))
+             '((Keysym) (println "Ctrl-x: CUT")))
+
+  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
+                   (cons ksd~c         xkb~KEY-DOWN))
+             '((Keysym) (println "Ctrl-c: COPY")))
+
+  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
+                   (cons ksd~v         xkb~KEY-DOWN))
+             '((Keysym) (println "Ctrl-v: PASTE")))
+
+  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
+                   (cons ksd~z         xkb~KEY-DOWN))
+             '((Keysym) (println "Ctrl-a: REDO")))
+
+  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
+                   (cons ksd~z         xkb~KEY-DOWN))
+             '((Keysym) (println "Ctrl-z: UNDO")))
 
   (bind-keys (list (cons ksd~End       xkb~KEY-DOWN)) cmd-pack)
   (bind-keys (list (cons ksd~Home      xkb~KEY-DOWN)) cmd-eval)

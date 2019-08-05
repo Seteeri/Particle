@@ -158,7 +158,7 @@ Store DAGs as binary trees?
          * (= (sym 'a) (any 'a) 'a "a") -> T
        * ALT+NUM to produce numbers and NUM to produce chars and Format to convert
      * Lists
-       * Cons - create cons from two objects @ ptr
+       * Cons - create cons from last two objects from timeline
      * Eval
        * Test functions on data
        * Only need pack and backspace/delete (pop off/GC)
