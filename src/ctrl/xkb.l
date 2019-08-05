@@ -1,4 +1,5 @@
 # https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
+# https://github.com/wayland-project/weston/blob/master/libweston/input.c
 
 (class +Xkb)
 (dm T ()
@@ -21,12 +22,7 @@
 
   (=: state   (xkb~state-new (: keymap)))
 
-  (=: states  ())
-
-  (=: foobar "BLAH")
-
-  # https://github.com/wayland-project/weston/blob/master/libweston/input.c
-  )
+  (=: states  ()))
 
 
 (dm unref> ()
