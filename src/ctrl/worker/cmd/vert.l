@@ -12,29 +12,26 @@
   # ...REDL read, eval, draw/render/rasterize, loop
   # So pressing ASCII equivalent to executing eval
 
-  (when (and (>= Keysym 32)
-             (<= Keysym 255))
+  # For strings either use quotations or put additional spacing between symbols
+  # Problem is spaces are invisible
+  # (draw-str (pack "\"" Data "\""))
 
-    # For strings either use quotations or put additional spacing between symbols
-    # Problem is spaces are invisible
-    # (draw-str (pack "\"" Data "\""))
+  (let (Data  (if (= Keysym ksd~space) " " (char Keysym))
+        Verts (draw-str Data)
+        Prt   (new '(+Particle) Data Verts))
 
-    (let (Data  (if (= Keysym ksd~space) " " (char Keysym))
-          Verts (draw-str Data)
-          Prt   (new '(+Particle) Data Verts))
+    (push '*timeline Prt)
 
-      (push '*timeline Prt)
-
-      (when NIL
-        (print (>> -4 (adr Data)))
-        (prinl)
-        (prin "  ")
-        (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
-        (prin " | ")
-        (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
-        (prinl))
-        
-      T))
+    (when NIL
+      (print (>> -4 (adr Data)))
+      (prinl)
+      (prin "  ")
+      (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
+      (prin " | ")
+      (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
+      (prinl))
+      
+    T)
 
   (cond ((= Keysym ksd~Return) (nl-pen))
         ((= Keysym ksd~Tab)    (adv-pen 2.0))))
