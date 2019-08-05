@@ -127,3 +127,12 @@
       # sym? num? pair? flg? atom box? ext? lst?
 
       (eval Any)))
+
+
+(de cmd-intern ()
+
+  (let ((Verts Data) (read-string)
+        Str (pack Data)
+
+    # Draw obj
+    (intern Str))))
