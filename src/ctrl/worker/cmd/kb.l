@@ -5,43 +5,79 @@
         Keysym  (get-one-sym> *xkb Keycode)  # or Data 7
         Name    (xkb~keysym-get-name Keysym)
         Utf-8   (get-utf8> *xkb Keycode))
-
-    (update-key> *xkb Keycode State)
-
-    # Dispatch bindings
-
     #(prinl-info "cmd-kb" (pack (str Data) " " Keysym))
 
-    (when (or (= State xkb~KEY-DOWN)
-              (= State KEY-REPEAT))
+    # Update states
+    (update-key> *xkb Keycode State)
+    
+    # Note this returns the actual cell
+    (with *xkb
+      (let State-Xkb (assoc Keysym (: states))
+        (when State-Xkb
+          (del State-Xkb (:: states)))
+        (push (:: states) (cons Keysym State))))
 
-      (cond ((= Keysym ksd~End)       (cmd-pack))
-            ((= Keysym ksd~Home)      (cmd-eval))
-            ((= Keysym ksd~BackSpace) (cmd-del))
-            ((= Keysym ksd~Delete)    (cmd-del))
+    # Check bindings and dispatch handlers
 
-            # HJKL
+    # Find map
+    (let Map (assoc (cons Keysym State) *binds)
 
-            ((= Keysym ksd~Right) (cmd-move-cam 1 '(0.25   0.0)))
-            ((= Keysym ksd~Left)  (cmd-move-cam 1 '(-0.25  0.0)))
-            ((= Keysym ksd~Up)    (cmd-move-cam 2 '(0.0    0.25)))
-            ((= Keysym ksd~Down)  (cmd-move-cam 2 '(0.0   -0.25)))
+      # CAR = key
+      (when Map
 
-            ((= Keysym ksd~Prior) (cmd-zoom-cam -0.3))
-            ((= Keysym ksd~Next)  (cmd-zoom-cam 0.3))
+        # Check each key
+        (let (Dispatch T
+              Chord (car (cdr Map))
+              Fn    (cdr (cdr Map)))
 
-            (T                    (cmd-char Keysym))))))
+          (with *xkb
 
+            (for KeyState Chord
 
-(de bind-keys (Keys Fn)
+              (let (Ks    (car KeyState)
+                    State (cdr KeyState)
+                    State-Ks (cdr (assoc Ks (: states))))
+
+                # No entry means key has not been pressed
+                (when (not State-Ks) (setq State-Ks 0))
+
+                (when (not (= State-Ks State))
+                  (setq Dispatch NIL)))))
+
+          (when Dispatch (Fn Keysym)))))))
+          
+
+(de bind-keys (Map Fn)
+
   #{
 
-    For each key pressed, check bindings
+    Bind Ctrl + X
 
-    bind-keys((Ctrl X), Fn)
+    Press Ctrl
+          -> Check Ctrl events
+          X
+          -> Check X events
+          Y
+          -> Check Y events
 
-    Add to assoc list
+    Must add backwards
 
+    X must come after Ctrl
+          
   }#
 
-  T)
+  #{
+    ((ksd~Control-L . xkb~KEY-DOWN)
+     (ksd~x         . xkb~KEY-DOWN))
+
+     (X 1) : ( ((Ctrl-L State) ...) Fn)
+  }#
+
+  # Get last key and put remainder
+  (let Map-Flipped (flip Map)
+    (push '*binds
+          (cons (car Map-Flipped)
+                (cons (cdr Map-Flipped)
+                      Fn)))))
+
+

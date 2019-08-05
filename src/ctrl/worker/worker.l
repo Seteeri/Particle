@@ -35,6 +35,7 @@
 (def '*metrics)
 (def '*verts)
 (def '*xkb)
+(def '*binds)
 (def '*timeline)
 (def '*vert-ptr)
 (def '*pen-v)
@@ -111,31 +112,71 @@
         (push '*verts Vert))))
 
   (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
-  
+
   # Designate vertex 1 as ptr
   (setq *vert-ptr (pop '*verts))
 
-  (setq '*pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
-  (setq '*cnt-v 2)
+  (setq *pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
+  (setq *cnt-v 2)
+
+  (add-key-bindings)
 
   (prinl-info "init-worker" "Starting epoll...")
   (loop (ipc~poll> *ipc -1)))
+
+
+(de add-key-bindings ()
+
+  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
+                   (cons ksd~x         xkb~KEY-DOWN))
+             '((Keysym) (println "CTRL-X")))
+
+  (bind-keys (list (cons ksd~End       xkb~KEY-DOWN)) cmd-pack)
+  (bind-keys (list (cons ksd~Home      xkb~KEY-DOWN)) cmd-eval)
+  (bind-keys (list (cons ksd~BackSpace xkb~KEY-DOWN)) cmd-del)
+  (bind-keys (list (cons ksd~Delete    xkb~KEY-DOWN)) cmd-del)
+
+  (bind-keys (list (cons ksd~Right     xkb~KEY-DOWN)) cmd-move-cam-px)
+  (bind-keys (list (cons ksd~Left      xkb~KEY-DOWN)) cmd-move-cam-mx)
+  (bind-keys (list (cons ksd~Up        xkb~KEY-DOWN)) cmd-move-cam-py)
+  (bind-keys (list (cons ksd~Down      xkb~KEY-DOWN)) cmd-move-cam-my)
+
+  (bind-keys (list (cons ksd~Prior     xkb~KEY-DOWN)) cmd-zoom-cam-in)
+  (bind-keys (list (cons ksd~Next      xkb~KEY-DOWN)) cmd-zoom-cam-out)
   
+
+  (bind-keys (list (cons ksd~End       KEY-REPEAT)) cmd-pack)
+  (bind-keys (list (cons ksd~Home      KEY-REPEAT)) cmd-eval)
+  (bind-keys (list (cons ksd~BackSpace KEY-REPEAT)) cmd-del)
+  (bind-keys (list (cons ksd~Delete    KEY-REPEAT)) cmd-del)
+
+  (bind-keys (list (cons ksd~Right     KEY-REPEAT)) cmd-move-cam-px)
+  (bind-keys (list (cons ksd~Left      KEY-REPEAT)) cmd-move-cam-mx)
+  (bind-keys (list (cons ksd~Up        KEY-REPEAT)) cmd-move-cam-py)
+  (bind-keys (list (cons ksd~Down      KEY-REPEAT)) cmd-move-cam-my)
+
+  (bind-keys (list (cons ksd~Prior     KEY-REPEAT)) cmd-zoom-cam-in)
+  (bind-keys (list (cons ksd~Next      KEY-REPEAT)) cmd-zoom-cam-out)
+
   
+  (for (K 32 (<= K 255) (inc K))
+    (bind-keys (list (cons K xkb~KEY-DOWN)) cmd-char)
+    (bind-keys (list (cons K KEY-REPEAT)) cmd-char)))
+
 
 (de pull-verts ()
 
   (prinl-info "init-worker" (pack "Pulling " *verts-max " verts..."))
-  
+
   (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
         Cnt-X 0
         Pos-X 0.0
         Pos-Y 0.0)
 
     (seed (in "/dev/urandom" (rd 64)))
-        
+
     (for I *verts-max
-      
+
       (let Vert (req-recv-vert *ipc
                                Sock-Model
                                NIL
@@ -144,17 +185,17 @@
         (when NIL
 
           (with Vert
-            
+
             (=: pos  (list Pos-X Pos-Y 0.0))
             (when NIL
               (=: rota (list 0.0   0.0   (rand 0.0 6.283185307179586)))
-              (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
-                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
-                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0 
+              (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
+                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
+                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
                              (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
 
           #(update-glyph> Vert (char (rand 33 126)))
-          
+
           (update-model-matrix> Vert)
 
           # FIX - use update...

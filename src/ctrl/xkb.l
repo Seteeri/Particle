@@ -21,6 +21,10 @@
 
   (=: state   (xkb~state-new (: keymap)))
 
+  (=: states  ())
+
+  (=: foobar "BLAH")
+
   # https://github.com/wayland-project/weston/blob/master/libweston/input.c
   )
 

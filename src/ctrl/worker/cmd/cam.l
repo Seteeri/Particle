@@ -16,6 +16,12 @@
     (cmd-update-pv *ipc))
 
 
+(de cmd-move-cam-px (Keysym) (cmd-move-cam 1 '(0.25   0.0)))
+(de cmd-move-cam-mx (Keysym) (cmd-move-cam 1 '(-0.25  0.0)))
+(de cmd-move-cam-py (Keysym) (cmd-move-cam 2 '(0.0    0.25)))
+(de cmd-move-cam-my (Keysym) (cmd-move-cam 2 '(0.0   -0.25)))
+
+
 (de cmd-zoom-cam (Delta)
 
   (with *projview
@@ -25,3 +31,7 @@
   (update-mat-proj> *projview)
 
   (cmd-update-pv *ipc))
+
+
+(de cmd-zoom-cam-in  (Keysym) (cmd-zoom-cam -0.3))
+(de cmd-zoom-cam-out (Keysym) (cmd-zoom-cam  0.3))
