@@ -71,18 +71,20 @@
   # 2. For Verts: send zero-vert cmd to render
   # 3. For Verts: push Verts
 
-  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Prt         (pop '*timeline)
-        Verts       (get Prt 'verts))
+  (let Prt (pop '*timeline)
+    (when Prt
 
-    (println (get Prt 'data) (length Verts))
+      (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
+            Verts (get Prt 'verts))
 
-    (for Vert Verts
-      (let Msg (pack "(zv " (get Vert 'off-gl) '")")
-        (send-msg *ipc Sock-Render Msg))
-      (push '*verts Vert)
-      # For now, push pen back
-      (adv-pen -1.0))))
+        #(println (get Prt 'data) Verts (length Verts))
+
+        (for Vert Verts
+          (let Msg (pack "(zv " (get Vert 'off-gl) '")")
+            (send-msg *ipc Sock-Render Msg))
+          (push '*verts Vert)
+          # For now, push pen back
+          (adv-pen -1.0))))))
 
 
 (de cmd-eval ()

@@ -71,7 +71,7 @@ own proc
 
     (let (Width  (format (/ 2560 2))
           Height (format (/ 1080 2))
-          Verts  (format (** 2 14))) #15
+          Verts  (format (** 2 14))) # 16384
 
       (when T
         # Takes the longest to start so run first

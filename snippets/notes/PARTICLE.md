@@ -147,21 +147,14 @@ Store DAGs as binary trees?
      * Have model save symbols to file
      * Worker will then load file
 
-   * Implement bindings in worker
-     * Use assoc list
-     * Store combinations as keys
-
-   * Create default environment
-     * Draw pico namespace
-     * Draw pico symbols
-     * Draw timeline
+   * Implement bindings in worker [Done]
 
    * Implement string/atom/list, eval functionality [Mon...]
      * Create particle for pointer
      * Atoms
        * Pack (Chr->Str)
        * Intern (Str->I-Sym)
-       * Quote/Sym/Any (I-Sym->T-Sym or get sym name)
+       * Name+Quote or Sym+Quote (I-Sym->T-Sym or get sym name)
          * (= (sym 'a) (any 'a) 'a "a") -> T
        * ALT+NUM to produce numbers and NUM to produce chars and Format to convert
      * Lists
@@ -174,6 +167,12 @@ Store DAGs as binary trees?
        * Redo
        * If undo occurs and there is CDR, branch
        * Dumping the heap - make external symbols?
+
+   * Create default environment
+      * Draw pico namespace
+      * Draw pico symbols
+      * Draw timeline
+      * Draw lists downward
 
    * Load source code
      * Turn into strings
