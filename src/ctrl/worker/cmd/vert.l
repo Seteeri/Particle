@@ -1,38 +1,17 @@
 (de cmd-char (Keysym)
 
-  # Next try to draw a symbol or class
-
-  # To draw any cons cell:
-  # Check CAR/CDR
-  # - If cons cell, call draw fn or put in list (which will create another particle)
-  # - If encoded num or str, add verts to current particle
-
-  # Kb handlers will call this function
-  # However, the result of eval is drawn
-  # ...REDL read, eval, draw/render/rasterize, loop
-  # So pressing ASCII equivalent to executing eval
-
   # For strings either use quotations or put additional spacing between symbols
   # Problem is spaces are invisible
   # (draw-str (pack "\"" Data "\""))
 
-  (let (Data  (if (= Keysym ksd~space) " " (char Keysym))
-        Verts (draw-str Data)
+  (let (Data  (cond ((= Keysym ksd~space) " ")
+                    ((= Keysym ksd~Return) (char 10))
+                    (T (char Keysym)))
+        Verts (draw-str Data (get-color-type Data))
         Prt   (new '(+Particle) Data Verts))
 
-    (push '*timeline Prt)
-
-    (when NIL
-      (print (>> -4 (adr Data)))
-      (prinl)
-      (prin "  ")
-      (print (struct (>> -4 (adr Data)) '((B . 8) (B . 8))))
-      (prin " | ")
-      (print (struct (>> -4 (adr Data)) '((N . 1) (N . 1))))
-      (prinl))
+    (push '*timeline Prt))
       
-    T)
-
   (cond ((= Keysym ksd~Return) (nl-pen))
         ((= Keysym ksd~Tab)    (adv-pen 2.0))))
         
@@ -85,6 +64,8 @@
   # 2. For Verts: send zero-vert cmd to render
   # 3. For Verts: push Verts
 
+  # Note, this does not necessarily delete all the vertices as it dels PARTICLES
+
   (let Prt (pop '*timeline)
     (when Prt
 
@@ -115,18 +96,26 @@
 
   (let ((Verts Data) (read-string)
         Str (pack Data)
-        Any (any Str))
+        Any (any Str)
+        Res (eval Any)
+        Col (get-color-type Res))
 
-      (println Data Str Any)
+      #(println Data Str Any)
 
+      # Traverse cons
+      #
       # Create Particle for output
-      
-      # So far, been creating particles for strs
-      # Will have to create particles depending on type:
-      # String, Sym, Num, Cons
-      # sym? num? pair? flg? atom box? ext? lst?
+      #
+      # Color depending on type
 
-      (eval Any)))
+      (nl-pen)
+
+      (println Res)
+
+      (push '*timeline (new '(+Particle)
+                            Res
+                            (draw-str (format (adr Res))
+                                      Col)))))
 
 
 (de cmd-intern ()
