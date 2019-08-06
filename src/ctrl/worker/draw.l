@@ -81,7 +81,9 @@
     # Inc byte spacing depending on length
     (setq *pen-v (list (+ (get *pen-v 1) (* *adv-vert (- 4 (length Str))))
                        (get *pen-v 2)
-                       0.0))))
+                       0.0))
+
+    (flip Verts)))
 
 
 (de draw-glyph (Char Col)
