@@ -64,71 +64,45 @@
   (let Verts ()
 
     (for C (chop Str)
+      (push 'Verts (draw-glyph C Col))
+      (adv-pen 1.0))
 
-      (let Vert (pop '*verts)
-
-        # Set baseline
-        (with Vert
-          (=: pos (list (get *pen-v 1) (get *pen-v 2) 0.0))
-          (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
-                         (get Col 1) (get Col 2) (get Col 3) 1.0
-                         (get Col 1) (get Col 2) (get Col 3) 1.0
-                         (get Col 1) (get Col 2) (get Col 3) 1.0)))
-
-        (update-glyph> Vert C)
-
-        (update-model-matrix> Vert)
-
-        (cmd-update-vert *ipc Vert)
-
-        (adv-pen 1.0)
-
-        (inc '*cnt-v)
-
-        (push 'Verts Vert)))
-
-      (flip Verts)))
+    (flip Verts)))
 
 
-(de draw-bytes (Bytes)
-
-  (for Byte Bytes
-
-    (draw-num Byte)))
-
-
-# Refactor this into draw-char
 (de draw-num (Num Col)
 
-  (let Str (format Num)
+  (let Verts ()
 
-    (for N (chop Str)
+    (for N (chop (format Num))
+      (push 'Verts (draw-glyph C Col))
+      (adv-pen 1.0))
 
-      (let Vert (pop '*verts)
+    # Inc byte spacing depending on length
+    (setq *pen-v (list (+ (get *pen-v 1) (* *adv-vert (- 4 (length Str))))
+                       (get *pen-v 2)
+                       0.0))))
 
-        # Reset vertex
-        # Pos = baseline = X,0,0
-        (with Vert
-          (=: pos (list (get *pen-v 1) (get *pen-v 2) 0.0))
-          (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
-                         (get Col 1) (get Col 2) (get Col 3) 1.0
-                         (get Col 1) (get Col 2) (get Col 3) 1.0
-                         (get Col 1) (get Col 2) (get Col 3) 1.0)))
 
-        (update-glyph> Vert N)
+(de draw-glyph (Char Col)
 
-        (adv-pen 1.0)
+  (let Vert (pop '*verts)
 
-        (update-model-matrix> Vert)
+    # Reset vertex
+    # Pos = baseline = X,0,0
+    (with Vert
+      (=: pos (list (get *pen-v 1) (get *pen-v 2) 0.0))
+      (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
+                     (get Col 1) (get Col 2) (get Col 3) 1.0
+                     (get Col 1) (get Col 2) (get Col 3) 1.0
+                     (get Col 1) (get Col 2) (get Col 3) 1.0)))
 
-        (cmd-update-vert *ipc Vert)
+    (update-glyph> Vert Char)
 
-        (inc '*cnt-v 1)))
+    (update-model-matrix> Vert)
 
-      # Inc byte spacing depending on length
-      (when T
-        (setq *pen-v (list (+ (get *pen-v 1) (* *adv-vert (- 4 (length Str))))
-                           (get *pen-v 2)
-                           0.0)))
+    (cmd-update-vert *ipc Vert)
 
-                         T))
+    (inc '*cnt-v 1)
+
+    Vert))
