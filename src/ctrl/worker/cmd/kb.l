@@ -20,9 +20,6 @@
 
     # Check bindings and dispatch handlers
 
-    # Find mods
-    # Add to list based on time: Earlier -> Later
-
     # Poss user remaps kb so another key produces a diff keysym so this would
     # be invalid
 
@@ -61,9 +58,7 @@
             (when (= (cdr (assoc ksd~Super-R (: states))) xkb~KEY-DOWN)
               (push 'Mods ksd~Super-R))))
 
-        # TODO:
-        # - Sort key times
-        # - Handle repeat events
+        # TODO: Sort key times
 
         (push 'Mods Keysym)
         (setq Mods (flip Mods))
