@@ -170,8 +170,10 @@ Store DAGs as binary trees?
            * Either through modifier or pointer structure
        * Dumping the heap - make external symbols?
 
-   * Bindings
+   * Bindings [Done]
      * Ensure mods not pressed also
+     * Sort time
+     * Repeat keys
 
    * Create default environment
       * Draw frame time, heaps, etc.

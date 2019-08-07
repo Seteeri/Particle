@@ -128,64 +128,50 @@
 
 (de add-key-bindings ()
 
-  (bind-keys (list (cons ksd~Control-R xkb~KEY-DOWN)
-                   (cons ksd~Return    xkb~KEY-DOWN))
+  (bind-keys (list ksd~Control-R ksd~Return)
+             T
              cmd-intern)
 
-  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
-                   (cons ksd~x         xkb~KEY-DOWN))
+  (bind-keys (list ksd~Control-L ksd~x)
+             T
              '((Keysym) (println "Ctrl-x: CUT")))
 
-  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
-                   (cons ksd~c         xkb~KEY-DOWN))
+  (bind-keys (list ksd~Control-L ksd~c)
+             T
              '((Keysym) (println "Ctrl-c: COPY")))
 
-  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
-                   (cons ksd~v         xkb~KEY-DOWN))
+  (bind-keys (list ksd~Control-L ksd~v)
+             T
              '((Keysym) (println "Ctrl-v: PASTE")))
 
-  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
-                   (cons ksd~z         xkb~KEY-DOWN))
+  (bind-keys (list ksd~Control-L ksd~z)
+             T
              '((Keysym) (println "Ctrl-a: REDO")))
 
-  (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
-                   (cons ksd~z         xkb~KEY-DOWN))
+  (bind-keys (list ksd~Control-L ksd~z)
+             T
              '((Keysym) (println "Ctrl-z: UNDO")))
 
-  (bind-keys (list (cons ksd~End       xkb~KEY-DOWN)) cmd-pack)
-  (bind-keys (list (cons ksd~Home      xkb~KEY-DOWN)) cmd-eval)
-  (bind-keys (list (cons ksd~BackSpace xkb~KEY-DOWN)) cmd-del)
-  (bind-keys (list (cons ksd~Delete    xkb~KEY-DOWN)) cmd-del)
+  (bind-keys (list ksd~End      ) T cmd-pack)
+  (bind-keys (list ksd~Home     ) T cmd-eval)
+  (bind-keys (list ksd~BackSpace) T cmd-del)
+  (bind-keys (list ksd~Delete   ) T cmd-del)
 
-  (bind-keys (list (cons ksd~Right     xkb~KEY-DOWN)) cmd-move-cam-px)
-  (bind-keys (list (cons ksd~Left      xkb~KEY-DOWN)) cmd-move-cam-mx)
-  (bind-keys (list (cons ksd~Up        xkb~KEY-DOWN)) cmd-move-cam-py)
-  (bind-keys (list (cons ksd~Down      xkb~KEY-DOWN)) cmd-move-cam-my)
+  (bind-keys (list ksd~Right    ) T cmd-move-cam-px)
+  (bind-keys (list ksd~Left     ) T cmd-move-cam-mx)
+  (bind-keys (list ksd~Up       ) T cmd-move-cam-py)
+  (bind-keys (list ksd~Down     ) T cmd-move-cam-my)
 
-  (bind-keys (list (cons ksd~Prior     xkb~KEY-DOWN)) cmd-zoom-cam-in)
-  (bind-keys (list (cons ksd~Next      xkb~KEY-DOWN)) cmd-zoom-cam-out)
-  
-
-  (bind-keys (list (cons ksd~End       KEY-REPEAT)) cmd-pack)
-  (bind-keys (list (cons ksd~Home      KEY-REPEAT)) cmd-eval)
-  (bind-keys (list (cons ksd~BackSpace KEY-REPEAT)) cmd-del)
-  (bind-keys (list (cons ksd~Delete    KEY-REPEAT)) cmd-del)
-
-  (bind-keys (list (cons ksd~Right     KEY-REPEAT)) cmd-move-cam-px)
-  (bind-keys (list (cons ksd~Left      KEY-REPEAT)) cmd-move-cam-mx)
-  (bind-keys (list (cons ksd~Up        KEY-REPEAT)) cmd-move-cam-py)
-  (bind-keys (list (cons ksd~Down      KEY-REPEAT)) cmd-move-cam-my)
-
-  (bind-keys (list (cons ksd~Prior     KEY-REPEAT)) cmd-zoom-cam-in)
-  (bind-keys (list (cons ksd~Next      KEY-REPEAT)) cmd-zoom-cam-out)
+  (bind-keys (list ksd~Prior    ) T cmd-zoom-cam-in)
+  (bind-keys (list ksd~Next     ) T cmd-zoom-cam-out)
 
   # Enter = Linefeed
-  (bind-keys (list (cons ksd~Return xkb~KEY-DOWN)) cmd-char)
-  (bind-keys (list (cons ksd~Return KEY-REPEAT)) cmd-char)
+  (bind-keys (list ksd~Return) T cmd-char)
   
   (for (K 32 (<= K 255) (inc K))
-    (bind-keys (list (cons K xkb~KEY-DOWN)) cmd-char)
-    (bind-keys (list (cons K KEY-REPEAT)) cmd-char)))
+    (bind-keys (list K) T cmd-char)
+    (bind-keys (list ksd~Shift-L K) T cmd-char)
+    (bind-keys (list ksd~Shift-R K) T cmd-char)))
 
 
 (de pull-verts ()

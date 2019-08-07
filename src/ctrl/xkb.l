@@ -38,6 +38,13 @@
 (dm serialize-layout> (Components)          (xkb~state-serialize-layout (: state) Components))
 (dm state-mod-name-is-active> (Name Type) (xkb~state-mod-name-is-active (: state) Name Type))
 
+(dm is-shift-active> () (state-mod-name-is-active> This xkb~MOD-NAME-SHIFT xkb~STATE-MODS-EFFECTIVE))
+(dm is-caps-active>  () (state-mod-name-is-active> This xkb~MOD-NAME-CAPS  xkb~STATE-MODS-EFFECTIVE))
+(dm is-ctrl-active>  () (state-mod-name-is-active> This xkb~MOD-NAME-CTRL  xkb~STATE-MODS-EFFECTIVE))
+(dm is-alt-active>   () (state-mod-name-is-active> This xkb~MOD-NAME-ALT   xkb~STATE-MODS-EFFECTIVE))
+(dm is-num-active>   () (state-mod-name-is-active> This xkb~MOD-NAME-NUM   xkb~STATE-MODS-EFFECTIVE))
+(dm is-logo-active>  () (state-mod-name-is-active> This xkb~MOD-NAME-LOGO  xkb~STATE-MODS-EFFECTIVE))
+
 #{
 (println
 (serialize-mods> *xkb xkb~STATE-MODS-DEPRESSED)

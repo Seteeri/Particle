@@ -1463,3 +1463,24 @@ Correct. There is even a function for that, 'adr':
 
    : (oct @)
    -> "-377166006651"
+
+
+  #{
+
+      1. (X) . (()   Fn))
+      2. (X) . (Ctrl Fn))
+
+      Problem! -> 1 is always found first so 2 never executes
+
+      Bitmask?
+
+      1. (X) . ( (()   Fn)
+                 (Ctrl Fn)
+                 (Alt Fn)
+                 (Shift Fn) )
+
+      Hold Ctrl, Press X
+
+      1. assoc ctrl -> no exist
+      2. assoc x    -> list exist, assoc x list, check times
+  }#   
