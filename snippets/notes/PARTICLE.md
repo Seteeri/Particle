@@ -151,7 +151,7 @@ Store DAGs as binary trees?
 
    * Implement string/atom/list, eval functionality [Mon...]
      * Create particle for pointer
-     * Eval
+     * Eval [Done]
        * Test functions on data (syms)
          * Define colors for non-str types aka nums, box, isyms
      * Atoms
@@ -169,6 +169,9 @@ Store DAGs as binary trees?
          * Modify Ctrl-Z if this behavior is not wanted
            * Either through modifier or pointer structure
        * Dumping the heap - make external symbols?
+
+   * Bindings
+     * Ensure mods not pressed also
 
    * Create default environment
       * Draw frame time, heaps, etc.

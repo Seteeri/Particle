@@ -5,11 +5,12 @@
         Keysym  (get-one-sym> *xkb Keycode)  # or Data 7
         Name    (xkb~keysym-get-name Keysym)
         Utf-8   (get-utf8> *xkb Keycode))
-    #(prinl-info "cmd-kb" (pack (str Data) " " Keysym))
+
+    (prinl-info "cmd-kb" (pack (str Data) " " Keysym))
 
     # Update states
     (update-key> *xkb Keycode State)
-    
+
     # Note this returns the actual cell
     (with *xkb
       (let State-Xkb (assoc Keysym (: states))
@@ -44,8 +45,11 @@
                 (when (not (= State-Ks State))
                   (setq Dispatch NIL)))))
 
-          (when Dispatch (Fn Keysym)))))))
-          
+          (when Dispatch
+            #(prinl-info "cmd-kb")
+            #(println (car Map))
+            (Fn Keysym)))))))
+
 
 (de bind-keys (Map Fn)
 
@@ -63,7 +67,7 @@
     Must add backwards
 
     X must come after Ctrl
-          
+
   }#
 
   #{

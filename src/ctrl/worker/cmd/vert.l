@@ -86,42 +86,52 @@
 
   (println "cmd-eval")
 
-  # Build string from ptr-prev to ptr
+  # Build string from ptr-prev to last newline
 
-  # 2 versions:
-  # 1. (eval (read (pack Data)))
-  # 2. (eval (read chars))
+  # Build string from a range...
 
-  # Also, either modify input data/string
+  # Also what to do if objects are not strs?
+  # Eval verts->data (build list from verts)
+  # Eval verts->strings->data (build string from verts)
+  #
+  # -> Do pack->any->push
+  # Else use must do this manually
 
-  (let ((Verts Data) (read-string)
+  # Read-string will flatten data/verts
+  #
+  # (1 "1") (2 "2") (3 "3")
+  # (1 2 3)
+  # pack (1 2 3) -> "123"
+
+  (let ((Verts Data) (read-string 3)
         Str (pack Data)
         Any (any Str)
         Res (eval Any)
         Col (get-color-type Res))
 
-      #(println Data Str Any)
+      #(prinl Str " " "Res: " Res)
 
-      # Traverse cons
-      #
-      # Create Particle for output
-      #
-      # Color depending on type
+      (println Data)
+      (println Verts)
 
       (nl-pen)
 
-      (println Res)
-
       (push '*timeline (new '(+Particle)
                             Res
-                            (draw-str (format (adr Res))
+                            (draw-str (if (num? Res) (format Res) (format (adr Res)))
                                       Col)))))
 
 
-(de cmd-intern ()
+(de cmd-intern (Keysym)
 
   (let ((Verts Data) (read-string)
         Str (pack Data)
+        Res (intern Str)
+        Col (get-color-type Res))
 
-    # Draw obj
-    (intern Str))))
+   (nl-pen)
+
+   (push '*timeline (new '(+Particle)
+                         Res
+                         (draw-str (format (adr Res))
+                                   Col)))))

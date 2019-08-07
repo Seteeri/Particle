@@ -27,18 +27,20 @@
 (de get-color-type (Any)
   # Simplify to num, sym, str/sym and pair
   # Diff pair vs lst? Lst ret T, Pair returns Any
-  (cond ((num? Any) *col-violet)
-        ((str? Any) *col-blue)
-        ((sym? Any) *col-cyan)
-        ((pair Any) *col-green)
+  
+  (cond ((num? Any) (prinl "NUM") *col-violet)
+        ((str? Any) (prinl "STR") *col-blue)
+        ((sym? Any) (prinl "SYM") *col-cyan)
+        ((pair Any) (prinl "PAIR") *col-green)
         ((box? Any) (println "BOX TYPE: IMPLEMENT COLOR!") (bye))))
 
                   
-(de read-string ()
+(de read-string (End)
+  # Do not include N
   (let (Verts  ()
         Data  ())
-    # Pop particles off timeline - ignore ptr (ptr not in timeline)
     (for Prt *timeline
+      (T (= Data End))
       (push 'Data (get Prt 'data))
       (for Vert (get Prt 'verts)
         (push 'Verts Vert)))

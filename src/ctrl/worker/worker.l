@@ -128,6 +128,10 @@
 
 (de add-key-bindings ()
 
+  (bind-keys (list (cons ksd~Control-R xkb~KEY-DOWN)
+                   (cons ksd~Return    xkb~KEY-DOWN))
+             cmd-intern)
+
   (bind-keys (list (cons ksd~Control-L xkb~KEY-DOWN)
                    (cons ksd~x         xkb~KEY-DOWN))
              '((Keysym) (println "Ctrl-x: CUT")))
