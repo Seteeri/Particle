@@ -36,6 +36,7 @@
 (dm key-repeats>      (Keycode)             (xkb~keymap-key-repeats     (: keymap) Keycode))
 (dm serialize-mods>   (Components)          (xkb~state-serialize-mods   (: state) Components))
 (dm serialize-layout> (Components)          (xkb~state-serialize-layout (: state) Components))
+(dm state-mod-name-is-active> (Name Type) (xkb~state-mod-name-is-active (: state) Name Type))
 
 #{
 (println

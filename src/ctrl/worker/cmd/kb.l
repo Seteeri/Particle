@@ -10,7 +10,7 @@
 
     # Update states
     (update-key> *xkb Keycode State)
-
+    
     # Note this returns the actual cell
     (with *xkb
       (let State-Xkb (assoc Keysym (: states))
@@ -55,26 +55,22 @@
 
   #{
 
-    Bind Ctrl + X
+      1. (X) . (()   Fn))
+      2. (X) . (Ctrl Fn))
 
-    Press Ctrl
-          -> Check Ctrl events
-          X
-          -> Check X events
-          Y
-          -> Check Y events
+      Problem! -> 1 is always found first so 2 never executes
 
-    Must add backwards
+      Bitmask?
 
-    X must come after Ctrl
+      1. (X) . ( (()   Fn)
+                 (Ctrl Fn)
+                 (Alt Fn)
+                 (Shift Fn) )
 
-  }#
+      Hold Ctrl, Press X
 
-  #{
-    ((ksd~Control-L . xkb~KEY-DOWN)
-     (ksd~x         . xkb~KEY-DOWN))
-
-     (X 1) : ( ((Ctrl-L State) ...) Fn)
+      1. assoc ctrl -> no exist
+      2. assoc x    -> list exist, assoc x list, check times
   }#
 
   # Get last key and put remainder

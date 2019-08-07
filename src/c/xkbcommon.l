@@ -27,6 +27,17 @@
 (def 'STATE-LEDS             (>> -8 1))
 
 
+(def 'MOD-NAME-SHIFT  (struct (native "@" "malloc" 'N 6)  'N (cons "Shift" 1)))
+(def 'MOD-NAME-CAPS   (struct (native "@" "malloc" 'N 5)  'N (cons "Lock" 1)))
+(def 'MOD-NAME-CTRL   (struct (native "@" "malloc" 'N 8)  'N (cons "Control" 1)))
+(def 'MOD-NAME-ALT    (struct (native "@" "malloc" 'N 5)  'N (cons "Mod1" 1)))
+(def 'MOD-NAME-NUM    (struct (native "@" "malloc" 'N 5)  'N (cons "Mod2" 1)))
+(def 'MOD-NAME-LOGO   (struct (native "@" "malloc" 'N 5)  'N (cons "Mod4" 1)))
+(def 'LED-NAME-CAPS   (struct (native "@" "malloc" 'N 10) 'N (cons "Caps Lock" 1)))
+(def 'LED-NAME-NUM    (struct (native "@" "malloc" 'N 9)  'N (cons "Num Lock" 1)))
+(def 'LED-NAME-SCROLL (struct (native "@" "malloc" 'N 12) 'N (cons "Scroll Lock" 1)))
+
+
 #{
 const char * 	rules
 const char * 	model
@@ -88,3 +99,7 @@ const char * 	options
 
 (de state-serialize-layout (State Components)
   (native "libxkbcommon.so" "xkb_state_serialize_layout" 'I State Components))
+
+
+(de state-mod-name-is-active (State Name Type)
+  (native "libxkbcommon.so" "xkb_state_mod_name_is_active" 'I State Name Type))
