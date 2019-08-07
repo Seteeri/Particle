@@ -1,3 +1,10 @@
+Systemd has effectively rewritten the Linux userland, which depending on your
+interpretation, now provides a unified userland, which may be deemed most
+appropriate for servers and sysadmins. However, I believe for the desktop user
+and developers, it does not provide an appropriate interface, as it still relies
+on C and shell scripts through ini files, which is essentially a scripting
+analogue to C and a way to manage C processes/programs.
+
 VENN DIAGRAM CIRCLES
 
 * BSD

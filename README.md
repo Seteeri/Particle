@@ -33,13 +33,6 @@ the OS/kernel world, or how Apple uses Objective-C/Swift in its userland (I like
 to imagine if MacOS had been open-source, the computing world might be very
 different today...).
 
-Systemd has effectively rewritten the Linux userland, which depending on your
-interpretation, now provides a unified userland, which may be deemed most
-appropriate for servers and sysadmins. However, I believe for the desktop user
-and developers, it does not provide an appropriate interface, as it still relies
-on C and shell scripts through ini files, which is essentially a scripting
-analogue to C and a way to manage C processes/programs.
-
 My personal dream would be to have a consistent computing experience between
 a desktop/workstation, laptop/tablet and smartphone/PDA where information or
 objects can easily flow between devices, i.e. convergence. This is one step
