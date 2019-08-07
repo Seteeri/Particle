@@ -147,14 +147,17 @@ Store DAGs as binary trees?
      * Have model save symbols to file
      * Worker will then load file
 
-   * Implement bindings in worker [Done]
+   * Bindings [Done]
+     * Ensure mods not pressed also
+     * Sort time
+     * Repeat keys
 
    * Implement string/atom/list, eval functionality [Mon...]
      * Create particle for pointer
      * Eval [Done]
        * Test functions on data (syms)
          * Define colors for non-str types aka nums, box, isyms
-     * Atoms
+     * Atoms [wIP]
        * Pack (Chr->Str)
        * Intern (Str->I-Sym)
        * Name+Quote or Sym+Quote (I-Sym->T-Sym or get sym name)
@@ -162,22 +165,19 @@ Store DAGs as binary trees?
        * ALT+NUM to produce numbers and NUM to produce chars and Format to convert
      * Lists
        * Cons - create cons from last two objects from timeline
-     * Timeline
-       * Undo
-       * Redo
-       * If undo occurs and there is CDR, branch
-         * Modify Ctrl-Z if this behavior is not wanted
-           * Either through modifier or pointer structure
-       * Dumping the heap - make external symbols?
 
-   * Bindings [Done]
-     * Ensure mods not pressed also
-     * Sort time
-     * Repeat keys
+   * Timeline
+     * Undo
+     * Redo
+     * If undo occurs and there is CDR, branch
+       * Modify Ctrl-Z if this behavior is not wanted
+         * Either through modifier or pointer structure
+     * Dumping the heap - make external symbols?
 
    * Create default environment
       * Draw frame time, heaps, etc.
       * Draw procs -> pico ns -> symbols, timeline
+        * Draw bindings
       * Draw lists downward
 
    * Load source code

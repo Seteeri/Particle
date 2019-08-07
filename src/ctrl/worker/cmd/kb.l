@@ -68,9 +68,11 @@
 
           (when Map
 
-            (let Fn    (cdr (cdr Map))
+            (let (Rep (car (cdr Map))
+                  Fn  (cdr (cdr Map)))
 
-              (Fn Keysym))))))))
+              (unless (and (= State KEY-REPEAT) (not Rep))
+                (Fn Keysym)))))))))
 
 
 (de bind-keys (Keys Rep Fn)

@@ -103,7 +103,7 @@
   # (1 2 3)
   # pack (1 2 3) -> "123"
 
-  (let ((Verts Data) (read-string 3)
+  (let ((Verts Data) (read-string-end 3)
         Str (pack Data)
         Any (any Str)
         Res (eval Any)
@@ -128,6 +128,8 @@
         Str (pack Data)
         Res (intern Str)
         Col (get-color-type Res))
+
+   (println Data Str Res)
 
    (nl-pen)
 
