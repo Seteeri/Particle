@@ -1,4 +1,4 @@
-(de cmd-char (Keysym)
+(de cmd-make-char (Keysym)
 
   # For strings either use quotations or put additional spacing between symbols
   # Problem is spaces are invisible
@@ -11,10 +11,10 @@
         Prt   (new '(+Particle) Data Verts))
 
     (push '*timeline Prt))
-      
+
   (cond ((= Keysym ksd~Return) (nl-pen))
         ((= Keysym ksd~Tab)    (adv-pen 2.0))))
-        
+
 
 (de cmd-pack ()
 
@@ -129,7 +129,7 @@
         Res (intern Str)
         Col (get-color-type Res))
 
-   (println Data Str Res)
+   #(println Data Str Res)
 
    (nl-pen)
 
@@ -137,3 +137,12 @@
                          Res
                          (draw-str (format (adr Res))
                                    Col)))))
+
+
+(de cmd-make-num (Keysym)
+
+  (let (Data  (format (char Keysym))
+        Verts (draw-str Data (get-color-type Data))
+        Prt   (new '(+Particle) Data Verts))
+
+    (push '*timeline Prt)))

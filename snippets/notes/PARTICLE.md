@@ -152,19 +152,32 @@ Store DAGs as binary trees?
      * Sort time
      * Repeat keys
 
-   * Implement string/atom/list, eval functionality [Mon...]
+   * Atoms: Implement string/atom/list, eval functionality [Mon...]
      * Create particle for pointer
      * Eval [Done]
        * Test functions on data (syms)
          * Define colors for non-str types aka nums, box, isyms
      * Atoms [wIP]
-       * Pack (Chr->Str)
-       * Intern (Str->I-Sym)
-       * Name+Quote or Sym+Quote (I-Sym->T-Sym or get sym name)
-         * (= (sym 'a) (any 'a) 'a "a") -> T
-       * ALT+NUM to produce numbers and NUM to produce chars and Format to convert
+       * Syms
+         * Pack (Chr->Str)
+         * Intern (Str->I-Sym)
+           * To enter symbol, hold key, type, release.
+           * Chars will be displayed and upon release, replaced and converted
+         * Name+Quote or Sym+Quote (I-Sym->T-Sym or get sym name)
+           * (= (sym 'a) (any 'a) 'a "a") -> T
+       * Nums
+         * ALT+NUM to produce numbers
+         * NUM to produce chars and Format to convert
      * Lists
        * Cons - create cons from last two objects from timeline
+
+   * Lists/Molecules: Pointer Ctrl
+     * Transforms
+       * Move items
+         * Test touch input; need unproject       
+     * List Manipulation
+       * Select items
+       * Add/remove items to list
 
    * Timeline
      * Undo

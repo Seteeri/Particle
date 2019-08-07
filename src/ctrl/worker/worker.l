@@ -166,12 +166,17 @@
   (bind-keys (list ksd~Next     ) T cmd-zoom-cam-out)
 
   # Enter = Linefeed
-  (bind-keys (list ksd~Return) T cmd-char)
+  (bind-keys (list ksd~Return) T cmd-make-char)
   
   (for (K 32 (<= K 255) (inc K))
-    (bind-keys (list K) T cmd-char)
-    (bind-keys (list ksd~Shift-L K) T cmd-char)
-    (bind-keys (list ksd~Shift-R K) T cmd-char)))
+    (bind-keys (list K)             T cmd-make-char)
+    (bind-keys (list ksd~Shift-L K) T cmd-make-char)
+    (bind-keys (list ksd~Shift-R K) T cmd-make-char))
+
+  # ALT+NUM
+  (for (K ksd~d0 (<= K ksd~d9) (inc K))
+    (bind-keys (list ksd~Alt-L K) T cmd-make-num)
+    (bind-keys (list ksd~Alt-R K) T cmd-make-num)))
 
 
 (de pull-verts ()
@@ -295,7 +300,7 @@
     (unless Msg
       (disconn-conn *ipc Sock))
 
-   (when NIL
+   (when T
 
      (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
            Sock-Render (ipc~get-fd> *ipc "RENDER")
