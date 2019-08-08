@@ -180,9 +180,9 @@
   (bind-keys (list ksd~Delete   ) T cmd-del)
 
   (bind-keys (list ksd~Right    ) T cmd-move-cam-px)
-  (bind-keys (list ksd~Left     ) T cmd-move-cam-mx)
+  (bind-keys (list ksd~Left     ) T cmd-move-cam-nx)
   (bind-keys (list ksd~Up       ) T cmd-move-cam-py)
-  (bind-keys (list ksd~Down     ) T cmd-move-cam-my)
+  (bind-keys (list ksd~Down     ) T cmd-move-cam-ny)
 
   (bind-keys (list ksd~Prior    ) T cmd-zoom-cam-in)
   (bind-keys (list ksd~Next     ) T cmd-zoom-cam-out)

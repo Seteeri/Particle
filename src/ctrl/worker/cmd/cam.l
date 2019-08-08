@@ -17,9 +17,9 @@
 
 
 (de cmd-move-cam-px (Keysym) (cmd-move-cam 1 '(0.25   0.0)))
-(de cmd-move-cam-mx (Keysym) (cmd-move-cam 1 '(-0.25  0.0)))
+(de cmd-move-cam-nx (Keysym) (cmd-move-cam 1 '(-0.25  0.0)))
 (de cmd-move-cam-py (Keysym) (cmd-move-cam 2 '(0.0    0.25)))
-(de cmd-move-cam-my (Keysym) (cmd-move-cam 2 '(0.0   -0.25)))
+(de cmd-move-cam-ny (Keysym) (cmd-move-cam 2 '(0.0   -0.25)))
 
 
 (de cmd-zoom-cam (Delta)

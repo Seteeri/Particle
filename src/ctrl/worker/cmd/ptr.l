@@ -17,6 +17,6 @@
 
 
 (de cmd-move-ptr-px (Keysym) (cmd-move-ptr 1 '(0.25   0.0)))
-(de cmd-move-ptr-mx (Keysym) (cmd-move-ptr 1 '(-0.25  0.0)))
+(de cmd-move-ptr-nx (Keysym) (cmd-move-ptr 1 '(-0.25  0.0)))
 (de cmd-move-ptr-py (Keysym) (cmd-move-ptr 2 '(0.0    0.25)))
-(de cmd-move-ptr-my (Keysym) (cmd-move-ptr 2 '(0.0   -0.25)))
+(de cmd-move-ptr-ny (Keysym) (cmd-move-ptr 2 '(0.0   -0.25)))
