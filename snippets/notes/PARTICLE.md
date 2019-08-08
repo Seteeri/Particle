@@ -154,6 +154,9 @@ Store DAGs as binary trees?
 
    * Atoms: Implement string/atom/list, eval functionality [Mon...]
      * Create particle for pointer
+       * Pointer is a cons cell
+         * If CDR is a  list, becomes a list
+         * If CDR is an atom, becomes an atom
      * Eval [Done]
        * Test functions on data (syms)
          * Define colors for non-str types aka nums, box, isyms
@@ -173,12 +176,6 @@ Store DAGs as binary trees?
          * ALT+NUM to produce numbers
          * NUM to produce chars
          * Format to convert between str<->num [Fn]
-     * Lists
-       * Cons - create cons from last two objects from timeline
-       * Pop
-       * Push
-       * Cut
-       * Append
 
    * Option to rotate eval timeline
 
