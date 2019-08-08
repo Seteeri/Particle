@@ -65,6 +65,7 @@
 (load "/home/user/Git/particle/src/ctrl/worker/draw.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/vert.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/cam.l")
+(load "/home/user/Git/particle/src/ctrl/worker/cmd/ptr.l")
 
 
 (de init-worker ()
@@ -131,18 +132,28 @@
 
   # CMDS:
   #
-  # CTRL+TAB, ALT+TAB, ESC, CAPS (mod caps)
+  # CTRL/ALT/SHIFT+TAB, CTRL/ALT/SHIFT+ESC, CAPS
   # - CAPS = SNIP?
   #
+  # Identity:
   # Make-Char = ASCII
   # Make-Num = ALT+NUM
   # Make-Int-Sym = ASCII-PACK-INTERN
   # Make-Trans-Sym = ASCII-PACK/SNIP
   # Make-Cons = SHIFT+ENTER
+  #
+  # Identity:
   # Del/Rem = DEL/BACKSPACE
   # Eval = CTRL+ENTER
+  # Cut:   move ptr->buffer(Stack/LIFO)
+  # Copy:  dup ptr->buffer(Stack/LIFO)
+  # Paste: move buf->ptr(Stack/LIFO)
   #
-  # ATOMIC:
+  # Position
+  # Cam: Ctrl+HJKL or CTRL+Arrow
+  # Ptr: ALT+HJKL  or ALT+Arrow
+  #
+  # Transformers:
   # Intern:        T-Sym->I-Sym
   # Sym+Quote:     I-Sym->T-Sym
   # Pack/Cut/Chop: T-Sym->T-Sym
@@ -153,31 +164,15 @@
   # (Make-Cons)
   # Push
   # Pop
-  # List
+  # List - by default, everything is already in a list
 
-  (bind-keys (list ksd~Control-R ksd~Return)
-             T
-             cmd-intern)
+  (bind-keys (list ksd~Control-R ksd~Return) T cmd-intern)
 
-  (bind-keys (list ksd~Control-L ksd~x)
-             T
-             '((Keysym) (println "Ctrl-x: CUT")))
-
-  (bind-keys (list ksd~Control-L ksd~c)
-             T
-             '((Keysym) (println "Ctrl-c: COPY")))
-
-  (bind-keys (list ksd~Control-L ksd~v)
-             T
-             '((Keysym) (println "Ctrl-v: PASTE")))
-
-  (bind-keys (list ksd~Control-L ksd~z)
-             T
-             '((Keysym) (println "Ctrl-a: REDO")))
-
-  (bind-keys (list ksd~Control-L ksd~z)
-             T
-             '((Keysym) (println "Ctrl-z: UNDO")))
+  (bind-keys (list ksd~Control-L ksd~x) T '((Keysym) (println "Ctrl-x: CUT")))
+  (bind-keys (list ksd~Control-L ksd~c) T '((Keysym) (println "Ctrl-c: COPY")))
+  (bind-keys (list ksd~Control-L ksd~v) T '((Keysym) (println "Ctrl-v: PASTE")))
+  (bind-keys (list ksd~Alt-L     ksd~z) T '((Keysym) (println "Alt-z: REDO")))
+  (bind-keys (list ksd~Control-L ksd~z) T '((Keysym) (println "Ctrl-z: UNDO")))
 
   (bind-keys (list ksd~End      ) T cmd-pack)
   (bind-keys (list ksd~Home     ) T cmd-eval)
@@ -206,58 +201,7 @@
     (bind-keys (list ksd~Alt-R K) T cmd-make-num)))
 
 
-(de pull-verts ()
-
-  (prinl-info "init-worker" (pack "Pulling " *verts-max " verts..."))
-
-  (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
-        Cnt-X 0
-        Pos-X 0.0
-        Pos-Y 0.0)
-
-    (seed (in "/dev/urandom" (rd 64)))
-
-    (for I *verts-max
-
-      (let Vert (req-recv-vert *ipc
-                               Sock-Model
-                               NIL
-                               I)
-
-        (when NIL
-
-          (with Vert
-
-            (=: pos  (list Pos-X Pos-Y 0.0))
-            (when NIL
-              (=: rota (list 0.0   0.0   (rand 0.0 6.283185307179586)))
-              (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
-                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
-                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
-                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
-
-          #(update-glyph> Vert (char (rand 33 126)))
-
-          (update-model-matrix> Vert)
-
-          # FIX - use update...
-          (cmd-render-vert *ipc Vert)
-
-          (inc 'Pos-X *adv-vert)
-          (when (= (inc 'Cnt-X) 256)
-            #(prin-info "init-worker" (pack "Request/Render vertex " I " of " *verts-max "\r"))
-            (setq Cnt-X 0)
-            (setq Pos-X 0.0)
-            (dec 'Pos-Y (+ *adv-vert *adv-vert))
-            #(println "POS-Y: " Pos-Y)
-            T))
-
-        (push '*verts Vert))))
-
-  (prinl-info "init-worker" "Done pulling verts"))
-
-
-# Unused currentyl
+# Unused
 (de handle-client (Sock))
 
 
@@ -430,3 +374,57 @@
 
 
 (de main () (init-worker))
+
+
+#################
+
+
+(de pull-verts ()
+
+  (prinl-info "init-worker" (pack "Pulling " *verts-max " verts..."))
+
+  (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
+        Cnt-X 0
+        Pos-X 0.0
+        Pos-Y 0.0)
+
+    (seed (in "/dev/urandom" (rd 64)))
+
+    (for I *verts-max
+
+      (let Vert (req-recv-vert *ipc
+                               Sock-Model
+                               NIL
+                               I)
+
+        (when NIL
+
+          (with Vert
+
+            (=: pos  (list Pos-X Pos-Y 0.0))
+            (when NIL
+              (=: rota (list 0.0   0.0   (rand 0.0 6.283185307179586)))
+              (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
+                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
+                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
+                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
+
+          #(update-glyph> Vert (char (rand 33 126)))
+
+          (update-model-matrix> Vert)
+
+          # FIX - use update...
+          (cmd-render-vert *ipc Vert)
+
+          (inc 'Pos-X *adv-vert)
+          (when (= (inc 'Cnt-X) 256)
+            #(prin-info "init-worker" (pack "Request/Render vertex " I " of " *verts-max "\r"))
+            (setq Cnt-X 0)
+            (setq Pos-X 0.0)
+            (dec 'Pos-Y (+ *adv-vert *adv-vert))
+            #(println "POS-Y: " Pos-Y)
+            T))
+
+        (push '*verts Vert))))
+
+  (prinl-info "init-worker" "Done pulling verts"))
