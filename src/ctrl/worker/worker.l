@@ -144,14 +144,14 @@
   #
   # Identity:
   # Del/Rem = DEL/BACKSPACE
-  # Eval = CTRL+ENTER
+  # Eval = ALT+ENTER
   # Cut:   move ptr->buffer(Stack/LIFO)
   # Copy:  dup ptr->buffer(Stack/LIFO)
   # Paste: move buf->ptr(Stack/LIFO)
   #
   # Position
   # Cam: Ctrl+HJKL or CTRL+Arrow
-  # Ptr: ALT+HJKL  or ALT+Arrow
+  # Ptr: ALT+HJKL  or Arrow
   #
   # Transformers:
   # Intern:        T-Sym->I-Sym
@@ -166,30 +166,12 @@
   # Pop
   # List - by default, everything is already in a list
 
-  (bind-keys (list ksd~Control-R ksd~Return) T cmd-intern)
-
-  (bind-keys (list ksd~Control-L ksd~x) T '((Keysym) (println "Ctrl-x: CUT")))
-  (bind-keys (list ksd~Control-L ksd~c) T '((Keysym) (println "Ctrl-c: COPY")))
-  (bind-keys (list ksd~Control-L ksd~v) T '((Keysym) (println "Ctrl-v: PASTE")))
-  (bind-keys (list ksd~Alt-L     ksd~z) T '((Keysym) (println "Alt-z: REDO")))
-  (bind-keys (list ksd~Control-L ksd~z) T '((Keysym) (println "Ctrl-z: UNDO")))
-
-  (bind-keys (list ksd~End      ) T cmd-pack)
-  (bind-keys (list ksd~Home     ) T cmd-eval)
-  (bind-keys (list ksd~BackSpace) T cmd-del)
-  (bind-keys (list ksd~Delete   ) T cmd-del)
-
-  (bind-keys (list ksd~Right    ) T cmd-move-cam-px)
-  (bind-keys (list ksd~Left     ) T cmd-move-cam-nx)
-  (bind-keys (list ksd~Up       ) T cmd-move-cam-py)
-  (bind-keys (list ksd~Down     ) T cmd-move-cam-ny)
-
-  (bind-keys (list ksd~Prior    ) T cmd-zoom-cam-in)
-  (bind-keys (list ksd~Next     ) T cmd-zoom-cam-out)
-
   # Enter = Linefeed
-  (bind-keys (list ksd~Return) T cmd-make-char)
-  
+  (bind-keys (list ksd~Return             ) T cmd-make-char)
+  (bind-keys (list ksd~Alt-R    ksd~Return) T cmd-make-cons)
+  (bind-keys (list ksd~Shift-R  ksd~Return) T '((Keysym) (println "Shift-R-Return")))
+  (bind-keys (list ksd~Ctrl-R   ksd~Return) T cmd-eval)
+
   (for (K 32 (<= K 255) (inc K))
     (bind-keys (list K)             T cmd-make-char)
     (bind-keys (list ksd~Shift-L K) T cmd-make-char)
@@ -198,7 +180,32 @@
   # ALT+NUM
   (for (K ksd~d0 (<= K ksd~d9) (inc K))
     (bind-keys (list ksd~Alt-L K) T cmd-make-num)
-    (bind-keys (list ksd~Alt-R K) T cmd-make-num)))
+    (bind-keys (list ksd~Alt-R K) T cmd-make-num))
+
+  (bind-keys (list ksd~End      ) T cmd-pack)
+  (bind-keys (list ksd~BackSpace) T cmd-del)
+  (bind-keys (list ksd~Delete   ) T cmd-del)
+
+  (bind-keys (list ksd~Control-L ksd~x) T '((Keysym) (println "Ctrl-L-x: CUT")))
+  (bind-keys (list ksd~Control-L ksd~c) T '((Keysym) (println "Ctrl-L-c: COPY")))
+  (bind-keys (list ksd~Control-L ksd~v) T '((Keysym) (println "Ctrl-L-v: PASTE")))
+  (bind-keys (list ksd~Alt-L     ksd~z) T '((Keysym) (println "Alt-L-z: REDO")))
+  (bind-keys (list ksd~Control-L ksd~z) T '((Keysym) (println "Ctrl-L-z: UNDO")))
+
+  ##########
+
+  (bind-keys (list ksd~Right) T cmd-move-ptr-px)
+  (bind-keys (list ksd~Left)  T cmd-move-ptr-nx)
+  (bind-keys (list ksd~Up)    T cmd-move-ptr-py)
+  (bind-keys (list ksd~Down)  T cmd-move-ptr-ny)
+
+  (bind-keys (list ksd~Control-L ksd~Right) T cmd-move-cam-px)
+  (bind-keys (list ksd~Control-L ksd~Left)  T cmd-move-cam-nx)
+  (bind-keys (list ksd~Control-L ksd~Up)    T cmd-move-cam-py)
+  (bind-keys (list ksd~Control-L ksd~Down)  T cmd-move-cam-ny)
+
+  (bind-keys (list ksd~Prior    ) T cmd-zoom-cam-in)
+  (bind-keys (list ksd~Next     ) T cmd-zoom-cam-out))
 
 
 # Unused
@@ -318,21 +325,21 @@
 
     # num and caps
     #if (xkb_state_led_name_is_active(state, XKB_LED_NAME_NUM) > 0)
-    #    <The Num Lock LED is active>    
+    #    <The Num Lock LED is active>
 
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
 
       (let (Mods NIL)
-            
+
         (with *xkb
-        
+
           (when (= (is-shift-active> *xkb) 1)
             (when (= (cdr (assoc ksd~Shift-L (: states))) xkb~KEY-DOWN)
               (push 'Mods ksd~Shift-L))
             (when (= (cdr (assoc ksd~Shift-R (: states))) xkb~KEY-DOWN)
               (push 'Mods ksd~Shift-R)))
-              
+
           (when (= (is-ctrl-active> *xkb) 1)
             (when (= (cdr (assoc ksd~Control-L (: states))) xkb~KEY-DOWN)
               (push 'Mods ksd~Control-L))

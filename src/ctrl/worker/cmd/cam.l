@@ -1,10 +1,10 @@
-(de cmd-move-cam (Cnt Move)
+(de cmd-move-cam (Move)
 
    (with *projview
 
       (=: pos (list (+ (get (: pos) 1) (get Move 1))
                     (+ (get (: pos) 2) (get Move 2))
-                    10.(get (: pos) 3))))
+                    10.0)))
 
     (update-mat-view> *projview)
 
@@ -16,10 +16,10 @@
     (cmd-update-pv *ipc))
 
 
-(de cmd-move-cam-px (Keysym) (cmd-move-cam 1 '(0.25   0.0)))
-(de cmd-move-cam-nx (Keysym) (cmd-move-cam 1 '(-0.25  0.0)))
-(de cmd-move-cam-py (Keysym) (cmd-move-cam 2 '(0.0    0.25)))
-(de cmd-move-cam-ny (Keysym) (cmd-move-cam 2 '(0.0   -0.25)))
+(de cmd-move-cam-px (Keysym) (cmd-move-cam '(0.25   0.0)))
+(de cmd-move-cam-nx (Keysym) (cmd-move-cam '(-0.25  0.0)))
+(de cmd-move-cam-py (Keysym) (cmd-move-cam '(0.0    0.25)))
+(de cmd-move-cam-ny (Keysym) (cmd-move-cam '(0.0   -0.25)))
 
 
 (de cmd-zoom-cam (Delta)

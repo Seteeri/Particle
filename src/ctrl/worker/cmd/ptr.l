@@ -1,19 +1,13 @@
 (de cmd-move-ptr (Cnt Move)
 
-   (with *projview
-
+  (with *vert-ptr
       (=: pos (list (+ (get (: pos) 1) (get Move 1))
                     (+ (get (: pos) 2) (get Move 2))
-                    10.(get (: pos) 3))))
+                    (get (: pos) 3))))
 
-    (update-mat-view> *projview)
+  (update-model-matrix> *vert-ptr)
 
-    # Either send relevant data or send entire data
-    # -> Minimize render processing time
-
-    # Pass list of socks so need only serialize once
-
-    (cmd-update-pv *ipc))
+  (cmd-update-vert *ipc *vert-ptr))
 
 
 (de cmd-move-ptr-px (Keysym) (cmd-move-ptr 1 '(0.25   0.0)))
