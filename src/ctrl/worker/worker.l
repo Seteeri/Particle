@@ -115,6 +115,7 @@
   (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
 
   # Designate vertex 1 as ptr
+  # Actually a cons cell
   (setq *vert-ptr (pop '*verts))
 
   (setq *pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
@@ -224,7 +225,7 @@
       (disconn-conn *ipc Sock))
 
     (cond ((= Name 'KEYBOARD-KEY)
-           (cmd-kb Data))
+           (dispatch-kb Data))
 
           ((= Name "update-vert")
            (cmd-update-vert *ipc *vert-ptr))
@@ -298,7 +299,7 @@
         (cmd-render-vert *ipc Vert)))))
 
 
-(de cmd-kb (Data)
+(de dispatch-kb (Data)
 
   (let (Keycode (+ (get Data 4) 8)
         State   (get Data 5)
