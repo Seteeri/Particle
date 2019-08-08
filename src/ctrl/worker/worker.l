@@ -171,7 +171,7 @@
   (bind-keys (list ksd~Return             ) T cmd-make-char)
   (bind-keys (list ksd~Alt-R    ksd~Return) T cmd-make-cons)
   (bind-keys (list ksd~Shift-R  ksd~Return) T '((Keysym) (println "Shift-R-Return")))
-  (bind-keys (list ksd~Ctrl-R   ksd~Return) T cmd-eval)
+  (bind-keys (list ksd~Control-R   ksd~Return) T cmd-eval)
 
   (for (K 32 (<= K 255) (inc K))
     (bind-keys (list K)             T cmd-make-char)
