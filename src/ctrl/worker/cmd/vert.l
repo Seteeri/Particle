@@ -68,20 +68,19 @@
 
   # Note, this does not necessarily delete all the vertices as it dels PARTICLES
 
-  (let Prt (pop '*timeline)
-    (when Prt
+  (let? Prt (pop '*timeline)
+  
+    (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
+          Verts (get Prt 'verts))
 
-      (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
-            Verts (get Prt 'verts))
+      #(println (get Prt 'data) Verts (length Verts))
 
-        #(println (get Prt 'data) Verts (length Verts))
-
-        (for Vert Verts
-          (let Msg (pack "(zv " (get Vert 'off-gl) '")")
-            (send-msg *ipc Sock-Render Msg))
-          (push '*verts Vert)
-          # For now, push pen back
-          (adv-pen -1.0))))))
+      (for Vert Verts
+        (let Msg (pack "(zv " (get Vert 'off-gl) '")")
+          (send-msg *ipc Sock-Render Msg))
+        (push '*verts Vert)
+        # For now, push pen back
+        (adv-pen -1.0)))))
 
 
 (de cmd-eval ()

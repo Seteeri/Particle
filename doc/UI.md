@@ -30,13 +30,7 @@ SYMS:
   A-SYM = ALT + ?
           Or type (new) or (box)
 CONS:
-  Use T-Sym
-  Or select two pieces of data and use shortcut
-  ALT + ENTER
-  Need list command also
-  
-ALT+TAB?
-  
+    
 Unused: ESC, TAB, CAPS, META, etc.
 
 Use arrows to move around, if obj cut off, pan to it
