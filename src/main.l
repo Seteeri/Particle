@@ -58,57 +58,63 @@ own proc
 (def '*proc-work-4)
 
 
+(de fork-2 (Fn)
+  (let Pid-1 (fork)
+    (cond
+      (Pid-1 (native "@" "waitpid" NIL Pid-1 0 0))
+      ((not Pid-1) # Child Proc B
+       (let Pid-2 (fork)
+         (cond
+           (Pid-2 (bye))
+           ((not pid) # Child Proc C
+            (Fn))
+           (T (quit "fork=-1")))))
+      (T (quit "fork=-1")))))
+
+
 (de main ()
 
-    #2**19
+  #{
+  Pass:
+  (def '*sca-vert 0.008)
+  (def '*sca-glyph 5.8239365) # MSDF/tex parameter
+  (def '*adv-glyph 9.375)       # MSDF/tex parameter
+  }#
+
+  (let (Width  (format (/ 2560 2))
+        Height (format (/ 1080 2))
+        Verts  (format (** 2 14))) # 16384
+
+      (fork-2 '(() (exec "pil" "src/render/render.l" "-main" Width Height Verts)))
+
+      (fork-2 '(() (exec "pil" "src/model/model.l" "-main" Width Height Verts)))
+
+      (fork-2 '(() (exec "pil" "src/input/input.l" "-main" Width Height Verts)))
+
+      (fork-2 '(() (exec "pil" "src/ctrl/ctrl.l" "-main" Width Height Verts)))
+
+      (fork-2 '(() (exec "pil" "src/ctrl/worker/worker.l" "-main" Width Height Verts 1))))
+
+  (bye))
     
-    #{
-    Pass:
-    (def '*sca-vert 0.008)
-    (def '*sca-glyph 5.8239365) # MSDF/tex parameter
-    (def '*adv-glyph 9.375)       # MSDF/tex parameter
-    }#
 
-    (let (Width  (format (/ 2560 2))
-          Height (format (/ 1080 2))
-          Verts  (format (** 2 14))) # 16384
+#{
+  # Use taskset to assign processes here
 
-      (when T
-        # Takes the longest to start so run first
-        (unless (setq *proc-render (fork))
-          (exec "pil" "src/render/render.l" "-main" Width Height Verts)))
+  (prinl "Render: " *proc-render)
+  (prinl "Model: " *proc-model)
+  (prinl "Input: " *proc-input)
+  (prinl "Ctrl: " *proc-ctrl)
+  (prinl "Worker: " *proc-work-1)
+              
+  (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read))
+  #(prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))
+  
+  (pipe (call "taskset" "-pc" "1" (format *proc-model)) (read))
+  
+  (pipe (call "taskset" "-pc" "2" (format *proc-ctrl))  (read))
+  (pipe (call "taskset" "-pc" "2" (format *proc-input)) (read))
 
-      (when T
-        (unless (setq *proc-model (fork))
-          (exec "pil" "src/model/model.l" "-main" Width Height Verts)))
-
-      (when T
-        (unless (setq *proc-input (fork))
-          (exec "pil" "src/input/input.l" "-main" Width Height Verts)))
-
-      (when T
-        (unless (setq *proc-ctrl (fork))
-          (exec "pil" "src/ctrl/ctrl.l" "-main" Width Height Verts)))
-
-      (when T
-          (unless (setq *proc-work-1 (fork))
-            (exec "pil" "src/ctrl/worker/worker.l" "-main" Width Height Verts 1)))
-
-      # Use taskset to assign processes here
-
-      (prinl "Render: " *proc-render)
-      (prinl "Model: " *proc-model)
-      (prinl "Input: " *proc-input)
-      (prinl "Ctrl: " *proc-ctrl)
-      (prinl "Worker: " *proc-work-1)
-                  
-      (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read))
-      #(prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))
-      
-      (pipe (call "taskset" "-pc" "1" (format *proc-model)) (read))
-      
-      (pipe (call "taskset" "-pc" "2" (format *proc-ctrl))  (read))
-      (pipe (call "taskset" "-pc" "2" (format *proc-input)) (read))
-
-      # Poss push all of CPU 2 to 3 with render?
-      (pipe (call "taskset" "-pc" "3" (format *proc-render)) (read))))
+  # Poss push all of CPU 2 to 3 with render?
+  (pipe (call "taskset" "-pc" "3" (format *proc-render)) (read))))
+}#

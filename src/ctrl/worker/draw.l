@@ -15,9 +15,9 @@
 (def '*col-cyan    (list (*/ 1.0 42.0  255.0) (*/ 1.0 161.0  255.0) (*/ 1.0 152.0 255.0)))
 (def '*col-green   (list (*/ 1.0 133.0 255.0) (*/ 1.0 153.0  255.0) (*/ 1.0 0.0   255.0)))
 (def '*col-yellow  (list (*/ 1.0 181.0 255.0) (*/ 1.0 137.0  255.0) (*/ 1.0 0.0   255.0)))
+
 (def '*col-orange  (list (*/ 1.0 203.0 255.0) (*/ 1.0 75.0   255.0) (*/ 1.0 22.0  255.0)))
 (def '*col-red     (list (*/ 1.0 220.0 255.0) (*/ 1.0 50.0   255.0) (*/ 1.0 47.0  255.0)))
-
 (def '*col-magenta (list (*/ 1.0 211.0 255.0) (*/ 1.0 54.0 255.0) (*/ 1.0 130.0 255.0)))
 
 # Magenta = unused
@@ -28,11 +28,11 @@
   # Simplify to num, sym, str/sym and pair
   # Diff pair vs lst? Lst ret T, Pair returns Any
   
-  (cond ((num? Any) (prinl "NUM") *col-violet)
-        ((str? Any) (prinl "STR") *col-blue)
-        ((sym? Any) (prinl "SYM") *col-cyan)
-        ((pair Any) (prinl "PAIR") *col-green)
-        ((box? Any) (println "BOX TYPE: IMPLEMENT COLOR!") (bye))))
+  (cond ((num? Any) (prinl-info "get-color-type" "NUM") *col-violet)
+        ((str? Any) (prinl-info "get-color-type" "STR") *col-blue)
+        ((sym? Any) (prinl-info "get-color-type" "SYM") *col-cyan)
+        ((pair Any) (prinl-info "get-color-type" "PAIR") *col-green)
+        ((box? Any) (prinl-info "get-color-type" "BOX") *col-yellow)))
 
                   
 (de read-string-end (End)
@@ -41,9 +41,10 @@
         Data  ())
     (for Prt *timeline
       (T (= Data End))
-      (push 'Data (get Prt 'data))
-      (for Vert (get Prt 'verts)
-        (push 'Verts Vert)))
+      (with Prt
+        (push 'Data (: data))
+        (for Vert (: verts)
+          (push 'Verts Vert))))
 
     (list Verts Data)))
 
@@ -63,7 +64,6 @@
 (de pop-string ()
   (let (Verts  ()
         Data  ())
-    # Pop particles off timeline - ignore ptr (ptr not in timeline)
     (let Prt NIL
       (while (setq Prt (pop '*timeline))
         (push 'Data (get Prt 'data))

@@ -157,27 +157,55 @@ Store DAGs as binary trees?
      * Eval [Done]
        * Test functions on data (syms)
          * Define colors for non-str types aka nums, box, isyms
-     * Atoms [wIP]
+     * Atoms [Done]
        * Syms
-         * Pack (Chr->Str)
-         * Intern (Str->I-Sym)
+         * Pack (Chr->Str) [Proto]
+         * Intern (Str->I-Sym) [Proto/Fn]
            * To enter symbol, hold key, type, release.
            * Chars will be displayed and upon release, replaced and converted
-         * Name+Quote or Sym+Quote (I-Sym->T-Sym or get sym name)
+         * Sym+Quote (I-Sym->T-Sym or get sym name) [Fn][Later when ptr or implement above]
            * (= (sym 'a) (any 'a) 'a "a") -> T
-       * Nums
+           * Sym returns printed rep of sym (str)
+             * Any will do opp and produce sym from printed rep
+           * Str will do list to str and str to list
+           * Name will create new transient symbol with that name
+       * Nums [Done]
          * ALT+NUM to produce numbers
-         * NUM to produce chars and Format to convert
+         * NUM to produce chars
+         * Format to convert between str<->num [Fn]
      * Lists
        * Cons - create cons from last two objects from timeline
+       * Pop
+       * Push
+       * Cut
+       * Append
+
+   * Option to rotate eval timeline
+
+     in-1
+     out-1
+     in-2
+     out-2
+
+     Or
+     
+     in-1  in-2
+     out-1 out-2
 
    * Lists/Molecules: Pointer Ctrl
-     * Transforms
-       * Move items
-         * Test touch input; need unproject       
-     * List Manipulation
-       * Select items
-       * Add/remove items to list
+     * Currently pointer is first element in the list
+     * Select items (pt/ref/link)
+     * Transforms - apply to pointee
+       * Move/Drag/Teleport items
+         * Test touch input; need unproject
+         * Animate movement? Fade in/out?
+         * @ <loc> = moves ptr to it
+
+   * Camera Ctrl
+     * Center
+     * Fit <list of objects>
+     * Pan     
+     * Zoom
 
    * Timeline
      * Undo
@@ -210,7 +238,7 @@ Store DAGs as binary trees?
      * Functionality must exist for manipulating output
        * Create file objects?
 
-   * Implement Wayland - BASIC! [Thurs/Fri]
+   * Implement Wayland - BASIC!
      * Setup tiles for 6 windows = 3 col, 2 row
      * Proof of concept working with eval already
 

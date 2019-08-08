@@ -12,6 +12,8 @@
 
     (push '*timeline Prt))
 
+  #(for X *timeline (print (get X 'data))) (prinl)
+
   (cond ((= Keysym ksd~Return) (nl-pen))
         ((= Keysym ksd~Tab)    (adv-pen 2.0))))
 
@@ -103,16 +105,15 @@
   # (1 2 3)
   # pack (1 2 3) -> "123"
 
-  (let ((Verts Data) (read-string-end 3)
+  (let ((Verts Data) (read-string-end 10)
         Str (pack Data)
         Any (any Str)
         Res (eval Any)
         Col (get-color-type Res))
 
-      #(prinl Str " " "Res: " Res)
-
-      (println Data)
-      (println Verts)
+      #(prinl-info "cmd-eval" (pack "STR=" Str))
+      #(prinl-info "cmd-eval" (pack "RES=" Res))
+      #(println Res)
 
       (nl-pen)
 
@@ -146,3 +147,40 @@
         Prt   (new '(+Particle) Data Verts))
 
     (push '*timeline Prt)))
+
+
+(de cmd-format (Keysym)
+
+  # If given a list, format all nums in list
+  # (1 2 3)
+  # or
+  # ("1" "2" "3")
+
+  #(for Prt *timeline
+  #  (with Prt
+  #    (println (: data) (: verts)))))
+
+  T)
+
+
+(de cmd-make-cons (Keysym)
+
+  # Make cons from last two objects
+
+  # A, B, C, D
+  # -> A, B, (C . D)
+  # -> A, (B . (C . D))
+  # -> (A . (B . (C . D)))
+
+  # Or
+
+  # To build:
+  #
+  # (de add (A B) (+ a b))
+
+  # de -> cons(de)
+  # (de . NIL)
+  # add -> cons(add, (de . NIL))
+  # (add . (de . NIL))
+
+  T)
