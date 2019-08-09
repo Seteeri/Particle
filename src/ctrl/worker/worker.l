@@ -128,6 +128,7 @@
                         *timeline
                         (draw-str "*timeline"
                                   (get-color-type *timeline))))
+  (nl-pen)
   
 
   (prinl-info "init-worker" "Starting epoll...")
@@ -286,7 +287,7 @@
     (unless Msg
       (disconn-conn *ipc Sock))
 
-   (when T
+   (when NIL
 
      (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
            Sock-Render (ipc~get-fd> *ipc "RENDER")
