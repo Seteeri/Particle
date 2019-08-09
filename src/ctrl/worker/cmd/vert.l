@@ -1,49 +1,3 @@
-(de cmd-make-char (Keysym)
-
-  # For strings either use quotations or put additional spacing between symbols
-  # Problem is spaces are invisible
-  # (draw-str (pack "\"" Data "\""))
-
-  (let (Data  (cond ((= Keysym ksd~space) " ")
-                    ((= Keysym ksd~Return) (char 10))
-                    (T (char Keysym)))
-        Verts (draw-str Data (get-color-type Data))
-        Prt   (new '(+Particle) Data Verts))
-
-    (push '*timeline Prt))
-
-  #(for X *timeline (print (get X 'data))) (prinl)
-
-  (cond ((= Keysym ksd~Return) (nl-pen))
-        ((= Keysym ksd~Tab)    (adv-pen 2.0))))
-
-
-(de cmd-pack ()
-
-  (prinl-info "cmd-pack")
-
-  # Build list of chars
-  # Add double-quotes
-
-  # Also set marker before and after
-
-  (let ((Verts Chars) (pop-string))
-
-    # Reposition
-    # 2 possible methods:
-    # 1. Set position for each
-    # 2. Set chr for each
-    #(for Vert Verts)
-
-    # Create particle
-    (let (Data (pack Chars)
-          Prt (new '(+Particle) Data Verts))
-
-      (push '*timeline Prt)
-
-      (println Data))))
-
-
 (de cmd-del (Dir)
 
   (prinl-info "cmd-del")
@@ -120,6 +74,52 @@
                             Res
                             (draw-str (if (num? Res) (format Res) (format (adr Res)))
                                       Col)))))
+
+
+(de cmd-make-char (Keysym)
+
+  # For strings either use quotations or put additional spacing between symbols
+  # Problem is spaces are invisible
+  # (draw-str (pack "\"" Data "\""))
+
+  (let (Data  (cond ((= Keysym ksd~space) " ")
+                    ((= Keysym ksd~Return) (char 10))
+                    (T (char Keysym)))
+        Verts (draw-str Data (get-color-type Data))
+        Prt   (new '(+Particle) Data Verts))
+
+    (push '*timeline Prt))
+
+  #(for X *timeline (print (get X 'data))) (prinl)
+
+  (cond ((= Keysym ksd~Return) (nl-pen))
+        ((= Keysym ksd~Tab)    (adv-pen 2.0))))
+
+
+(de cmd-pack ()
+
+  (prinl-info "cmd-pack")
+
+  # Build list of chars
+  # Add double-quotes
+
+  # Also set marker before and after
+
+  (let ((Verts Chars) (pop-string))
+
+    # Reposition
+    # 2 possible methods:
+    # 1. Set position for each
+    # 2. Set chr for each
+    #(for Vert Verts)
+
+    # Create particle
+    (let (Data (pack Chars)
+          Prt (new '(+Particle) Data Verts))
+
+      (push '*timeline Prt)
+
+      (println Data))))
 
 
 (de cmd-intern (Keysym)

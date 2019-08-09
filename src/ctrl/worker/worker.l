@@ -100,7 +100,8 @@
 
   (setq *xkb (new '(+Xkb)))
 
-
+  (add-key-bindings)
+  
   (gc 256)
 
   (in "verts.bin"
@@ -122,7 +123,12 @@
   (setq *pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
   (setq *cnt-v 2)
 
-  (add-key-bindings)
+  # Render timeline
+  (push '*timeline (new '(+Particle)
+                        *timeline
+                        (draw-str "*timeline"
+                                  (get-color-type *timeline))))
+  
 
   (prinl-info "init-worker" "Starting epoll...")
   (loop (ipc~poll> *ipc -1)))
