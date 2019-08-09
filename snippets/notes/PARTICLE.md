@@ -177,17 +177,7 @@ Store DAGs as binary trees?
          * NUM to produce chars
          * Format to convert between str<->num [Fn]
 
-    ADD LIST FNS/UI
-      * Add PTR conn  = (con Ptr Tgt)
-        : (setq C (1 . a))
-        -> (1 . a)
-        : (con C '(b c d))
-        -> (b c d)
-        : C
-        -> (1 b c d)
-    RENDER FULL CELLS?
-    * Draw lines
-    CREATE TIMELINE AS DEFAULT LIST
+    * Ptr movement should move to atoms or lists
     * Once timeline visible, easier to work with list
     ?TEST EASING FUNCTIONS FOR MOVEMENT?
 

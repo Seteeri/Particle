@@ -61,7 +61,7 @@
 (load "/home/user/Git/particle/src/model/vertex.l")
 (load "/home/user/Git/particle/src/ctrl/xkb.l")
 (load "/home/user/Git/particle/src/ctrl/worker/conn.l")
-(load "/home/user/Git/particle/src/ctrl/worker/pen.l")
+(load "/home/user/Git/particle/src/ctrl/worker/ptr.l")
 (load "/home/user/Git/particle/src/ctrl/worker/draw.l")
 (load "/home/user/Git/particle/src/ctrl/worker/timeline.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/vert.l")
@@ -120,7 +120,9 @@
   # Actually a cons cell
   (setq *vert-ptr (pop '*verts))
 
-  (setq *pen-v (list 0.0 (- (+ *adv-vert *adv-vert)) 0.0))
+  (setq *pen-v (list 0.0 0.0 0.0))
+  (nl-pen)
+  
   (setq *cnt-v 2)
 
   # Render timeline
