@@ -55,9 +55,6 @@
       (adv-pen 1.0))
 
     # Inc byte spacing depending on length
-    (setq *pen-v (list (+ (get *pen-v 1) (* *adv-vert (- 4 (length Str))))
-                       (get *pen-v 2)
-                       0.0))
 
     (flip Verts)))
 
@@ -69,7 +66,7 @@
     # Reset vertex
     # Pos = baseline = X,0,0
     (with Vert
-      (=: pos (list (get *pen-v 1) (get *pen-v 2) 0.0))
+      (=: pos (get *vert-ptr 'pos))
       (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0

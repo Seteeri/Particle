@@ -38,7 +38,6 @@
 (def '*binds)
 (def '*timeline)
 (def '*vert-ptr)
-(def '*pen-v)
 (def '*cnt-v)
 
 
@@ -120,7 +119,6 @@
   # Actually a cons cell
   (setq *vert-ptr (pop '*verts))
 
-  (setq *pen-v (list 0.0 0.0 0.0))
   (nl-pen)
   
   (setq *cnt-v 2)
