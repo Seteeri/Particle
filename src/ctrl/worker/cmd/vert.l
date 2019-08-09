@@ -103,41 +103,42 @@
 
   (prinl-info "cmd-pack")
 
-  # Build list of chars
-  # Add double-quotes
-
-  # Also set marker before and after
+  # Read until non-str
+  # No double-quotes
 
   (let ((Verts Chars) (read-string-2))
 
     (when Chars
 
-      (println Chars)
-
-      (let (Data (pack Chars)
-            Col (get-color-type Data)
-            Prt (new '(+Particle) Data (draw-str Data Col)))
+      (let Data (pack Chars)
 
         (println Data)
 
-        (push '*timeline Prt)))))
+        (adv-pen 1.0)
+
+        (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))))))
 
 
 (de cmd-intern (Keysym)
 
-  (let ((Verts Data) (read-string)
-        Str (pack Data)
-        Res (intern Str)
-        Col (get-color-type Res))
+  # Read last item
+  
+  (let (Verts (get (car *timeline) 'verts)
+        Data (get (car *timeline) 'data))
 
-   #(println Data Str Res)
+    (when (str? Data)
 
-   (nl-pen)
+      (let (Res (intern Data)
+            Col (get-color-type Res))
 
-   (push '*timeline (new '(+Particle)
-                         Res
-                         (draw-str (format (adr Res))
-                                   Col)))))
+        (println Res)
+
+        (adv-pen 1.0)
+
+        (push '*timeline (new '(+Particle)
+                             Res
+                             (draw-str Data
+                                       Col)))))))
 
 
 (de cmd-make-num (Keysym)
