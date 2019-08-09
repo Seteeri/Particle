@@ -1,6 +1,6 @@
 # Are these commands also?
 
-(de adv-pen (Cnt)
+(de adv-ptr (Cnt)
 
   (with *vert-ptr
     (let Pos (list (+ (get (: pos) 1) (*/ *adv-vert Cnt 1.0))
@@ -11,10 +11,10 @@
   (update-model-matrix> *vert-ptr)
   (cmd-update-vert *ipc *vert-ptr)
   
-  (prinl-info "adv-pen" (pack (format (get Pos 1) *Scl) " " (format (get Pos 2) *Scl)))))
+  (prinl-info "adv-ptr" (pack (format (get Pos 1) *Scl) " " (format (get Pos 2) *Scl)))))
 
 
-(de nl-pen ()
+(de nl-ptr ()
 
   (with *vert-ptr
     (let Pos (list 0.0

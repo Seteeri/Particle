@@ -34,7 +34,7 @@
           (send-msg *ipc Sock-Render Msg))
         (push '*verts Vert)
         # For now, push pen back
-        (adv-pen -1.0)))))
+        (adv-ptr -1.0)))))
 
 
 (de cmd-eval ()
@@ -68,15 +68,15 @@
       #(prinl-info "cmd-eval" (pack "RES=" Res))
       #(println Res)
 
-      #(nl-pen)
-      (adv-pen 1.0)
+      #(nl-ptr)
+      (adv-ptr 1.0)
 
       (push '*timeline (new '(+Particle)
                             Res
                             (draw-str (if (num? Res) (format Res) (format (adr Res)))
                                       Col)))
 
-      (adv-pen 1.0)))
+      (adv-ptr 1.0)))
 
 
 (de cmd-make-char (Keysym)
@@ -95,8 +95,8 @@
 
   #(for X *timeline (print (get X 'data))) (prinl)
 
-  (cond ((= Keysym ksd~Return) (nl-pen))
-        ((= Keysym ksd~Tab)    (adv-pen 2.0))))
+  (cond ((= Keysym ksd~Return) (nl-ptr))
+        ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
 
 
 (de cmd-pack ()
@@ -114,7 +114,7 @@
 
         (println Data)
 
-        (adv-pen 1.0)
+        (adv-ptr 1.0)
 
         (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))))))
 
@@ -133,7 +133,7 @@
 
         (println Res)
 
-        (adv-pen 1.0)
+        (adv-ptr 1.0)
 
         (push '*timeline (new '(+Particle)
                              Res

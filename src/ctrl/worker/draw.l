@@ -41,7 +41,7 @@
 
     (for C (chop Str)
       (push 'Verts (draw-glyph C Col))
-      (adv-pen 1.0))
+      (adv-ptr 1.0))
 
     (flip Verts)))
 
@@ -52,7 +52,7 @@
 
     (for N (chop (format Num))
       (push 'Verts (draw-glyph C Col))
-      (adv-pen 1.0))
+      (adv-ptr 1.0))
 
     # Inc byte spacing depending on length
 

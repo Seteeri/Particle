@@ -119,7 +119,7 @@
   # Actually a cons cell
   (setq *vert-ptr (pop '*verts))
 
-  (nl-pen)
+  (nl-ptr)
   
   (setq *cnt-v 2)
 
@@ -128,7 +128,7 @@
                         *timeline
                         (draw-str "*timeline"
                                   (get-color-type *timeline))))
-  (nl-pen)
+  (nl-ptr)
   
 
   (prinl-info "init-worker" "Starting epoll...")
