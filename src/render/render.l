@@ -241,7 +241,7 @@ Class variables may be indicated by an upper case letter
     # Must handle if send fails, i.e. clients slow - in this case, ignore
     #
     # Poss only send if clients are ready
-    #(send-msg-clients *ipc (format (usec)))
+    (send-msg-clients *ipc (format (usec)))
 
     (ipc~poll> *ipc 0)
 

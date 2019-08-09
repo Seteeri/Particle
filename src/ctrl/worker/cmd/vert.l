@@ -182,4 +182,6 @@
   # add -> cons(add, (de . NIL))
   # (add . (de . NIL))
 
+  (println (get (car *timeline) 'data))
+  
   T)

@@ -177,6 +177,23 @@ Store DAGs as binary trees?
          * NUM to produce chars
          * Format to convert between str<->num [Fn]
 
+    FINISH BASE BINDS/CMDS
+    * Add PTR conn  = (con Ptr Tgt)
+      : (setq C (1 . a))
+      -> (1 . a)
+      : (con C '(b c d))
+      -> (b c d)
+      : C
+      -> (1 b c d)
+    RENDER FULL CELLS        
+    CREATE TIMELINE AS DEFAULT LIST
+    * Once timeline visible, easier to work with list
+    ?TEST EASING FUNCTIONS FOR MOVEMENT?
+    DRAW DEFAULT ENV
+    FURTHER CMDS
+    LOAD CODE
+    TRY FILE BROWSING WITH BUILTINS
+
    * Option to rotate eval timeline
 
      in-1

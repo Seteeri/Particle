@@ -63,6 +63,7 @@
 (load "/home/user/Git/particle/src/ctrl/worker/conn.l")
 (load "/home/user/Git/particle/src/ctrl/worker/pen.l")
 (load "/home/user/Git/particle/src/ctrl/worker/draw.l")
+(load "/home/user/Git/particle/src/ctrl/worker/timeline.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/vert.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/cam.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/ptr.l")
@@ -168,10 +169,10 @@
   # List - by default, everything is already in a list
 
   # Enter = Linefeed
-  (bind-keys (list ksd~Return             ) T cmd-make-char)
-  (bind-keys (list ksd~Alt-R    ksd~Return) T cmd-make-cons)
-  (bind-keys (list ksd~Shift-R  ksd~Return) T '((Keysym) (println "Shift-R-Return")))
-  (bind-keys (list ksd~Control-R   ksd~Return) T cmd-eval)
+  (bind-keys (list ksd~Return              ) T cmd-make-char)
+  (bind-keys (list ksd~Alt-R     ksd~Return) T cmd-make-cons)
+  (bind-keys (list ksd~Shift-R   ksd~Return) T '((Keysym) (println "Shift-R-Return")))
+  (bind-keys (list ksd~Control-R ksd~Return) T cmd-eval)
 
   (for (K 32 (<= K 255) (inc K))
     (bind-keys (list K)             T cmd-make-char)
