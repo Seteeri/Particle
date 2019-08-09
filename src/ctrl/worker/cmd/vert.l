@@ -68,12 +68,15 @@
       #(prinl-info "cmd-eval" (pack "RES=" Res))
       #(println Res)
 
-      (nl-pen)
+      #(nl-pen)
+      (adv-pen 1.0)
 
       (push '*timeline (new '(+Particle)
                             Res
                             (draw-str (if (num? Res) (format Res) (format (adr Res)))
-                                      Col)))))
+                                      Col)))
+
+      (adv-pen 1.0)))
 
 
 (de cmd-make-char (Keysym)
@@ -105,21 +108,19 @@
 
   # Also set marker before and after
 
-  (let ((Verts Chars) (pop-string))
+  (let ((Verts Chars) (read-string-2))
 
-    # Reposition
-    # 2 possible methods:
-    # 1. Set position for each
-    # 2. Set chr for each
-    #(for Vert Verts)
+    (when Chars
 
-    # Create particle
-    (let (Data (pack Chars)
-          Prt (new '(+Particle) Data Verts))
+      (println Chars)
 
-      (push '*timeline Prt)
+      (let (Data (pack Chars)
+            Col (get-color-type Data)
+            Prt (new '(+Particle) Data (draw-str Data Col)))
 
-      (println Data))))
+        (println Data)
+
+        (push '*timeline Prt)))))
 
 
 (de cmd-intern (Keysym)
