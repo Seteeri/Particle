@@ -177,6 +177,8 @@ Store DAGs as binary trees?
          * NUM to produce chars
          * Format to convert between str<->num [Fn]
 
+    * Current actions are directyly modifying timeline
+      * Move timeline to the left
     * Ptr movement should move to atoms or lists
     * Once timeline visible, easier to work with list
     ?TEST EASING FUNCTIONS FOR MOVEMENT?

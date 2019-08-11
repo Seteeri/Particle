@@ -115,6 +115,13 @@
 
   (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
 
+  # Create defs/ptrs
+  # Create particles for defs
+  #   Push particles into timeline
+  #
+  # Load all code into timeline
+  # Execute timeline
+
   # Designate vertex 1 as ptr
   # Actually a cons cell
   (setq *vert-ptr (pop '*verts))
