@@ -131,11 +131,11 @@
   (setq *cnt-v 2)
 
   # Render timeline
-  (push '*timeline (new '(+Particle)
-                        *timeline
-                        (draw-str "*timeline"
-                                  (get-color-type *timeline))))
-  (nl-ptr)
+  #(push '*timeline (new '(+Particle)
+  #                      *timeline
+  #                      (draw-str "*timeline"
+  #                                (get-color-type *timeline))))
+  #(nl-ptr)
   
 
   (prinl-info "init-worker" "Starting epoll...")
