@@ -115,9 +115,21 @@
 
   (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
 
+  # How to manage default internal symbols?
+  # -> Must create particles
+  # -> But where to place them?
+  #    -> Timeline
+  #
   # Create defs/ptrs
   # Create particles for defs
   #   Push particles into timeline
+  #
+  # On command:
+  # - Add keybinding to timeline (input)
+  # - Add command to timeline
+  # - Add particle/output to timeline
+  #   - One list of verts for the timeline and one list of verts for main
+  #   - Same data
   #
   # Load all code into timeline
   # Execute timeline
@@ -130,12 +142,12 @@
   
   (setq *cnt-v 2)
 
-  # Render timeline
-  #(push '*timeline (new '(+Particle)
-  #                      *timeline
-  #                      (draw-str "*timeline"
-  #                                (get-color-type *timeline))))
-  #(nl-ptr)
+  # Render timeline  
+  (push '*timeline (new '(+Particle)
+                        *timeline
+                        (draw-str "*timeline"
+                                  (get-color-type *timeline))))
+  (adv-ptr 1.0)
   
 
   (prinl-info "init-worker" "Starting epoll...")
