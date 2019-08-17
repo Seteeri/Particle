@@ -157,18 +157,20 @@
 
 (de add-key-bindings ()
 
-  # Snip: Create str from last newline or space
-
   # CMDS:
   #
+  # Unused:
   # CTRL/ALT/SHIFT+TAB, CTRL/ALT/SHIFT+ESC, CAPS
-  # - CAPS = SNIP?
   #
   # Identity:
   # Make-Char (aka trans sym) = ASCII+PACK
   # Make-Num = CTRL+NUM
-  # Make-Int-Sym = ASCII+CMD(PACK+INTERN) or Hold-ALT+ASCII
+  # Make-Int-Sym = ASCII+CMD(PACK+INTERN)
   # Make-Cons = SHIFT+ENTER
+  #
+  # Combos:
+  # Pack+Intern: cmd-intern-2
+  # 
   #
   # Identity:
   # Del/Rem = DEL/BACKSPACE

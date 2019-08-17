@@ -1490,4 +1490,9 @@ Correct. There is even a function for that, 'adr':
 
       1. assoc ctrl -> no exist
       2. assoc x    -> list exist, assoc x list, check times
-  }#   
+  }#
+
+
+(+ 1 2)
+"(+ 1 2)"
++ 1 2

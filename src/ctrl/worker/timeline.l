@@ -25,18 +25,6 @@
     (list Verts Data)))
 
 
-(de read-string ()
-  # Do not include N
-  (let (Verts  ()
-        Data  ())
-    (for Prt *timeline
-      (push 'Data (get Prt 'data))
-      (for Vert (get Prt 'verts)
-        (push 'Verts Vert)))
-
-    (list Verts Data)))
-
-
 (de read-string-2 ()
 
   # read until nonstr
