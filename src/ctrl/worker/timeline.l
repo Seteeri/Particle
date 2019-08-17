@@ -11,12 +11,14 @@
     (push '*timeline (new '(+Particle) Res (draw-str Data Col)))))
     
 
-(de read-string-end (End)
+(de build-str-end (End)
+
   # Do not include N
+
   (let (Verts  ()
         Data  ())
     (for Prt *timeline
-      (T (= Data End))
+      (T (= (get Prt 'data) End))
       (with Prt
         (push 'Data (: data))
         (for Vert (: verts)
@@ -25,9 +27,9 @@
     (list Verts Data)))
 
 
-(de read-string-2 ()
+(de build-str ()
 
-  # read until nonstr
+  # Build until non-str encountered
   
   (let (Verts ()
         Data  ())

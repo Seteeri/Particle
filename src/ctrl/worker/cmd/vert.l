@@ -92,7 +92,7 @@
   # Read until non-str
   # No double-quotes
 
-  (let ((Verts Chars) (read-string-2))
+  (let ((Verts Chars) (build-str))
 
     (when Chars
 
@@ -122,7 +122,7 @@
 
   # Pack then Intern
   # Same as cmd-pack except result not added to timeline
-  (let ((Verts Chars) (read-string-2))
+  (let ((Verts Chars) (build-str))
   
     (when Chars
     
