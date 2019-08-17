@@ -134,7 +134,7 @@ https://www.reddit.com/r/emacs/comments/3v19uj/is_there_anything_emacs_cant_do
   * PicoLisp does not have threads; Particle uses processes and IPC with shared
   nothing concurrency to achieve parallelism.
   * Processes also provide the following benefits:
-    * Fault-tolerance - a processes crashing does not take the system down with it compared to a thread
+    * Fault-tolerance - a process crashing does not take the system down with it compared to a thread
     * Data-redundancy - data is distributed similar to the relationship between a CPU cache and main memory
     * Opporunities to increase GC performance - multiple processes = parallel and incremental GC
       * Assuming data is evenly distributed...

@@ -1,3 +1,16 @@
+# COuld place these in ptr also?
+
+(de intern-2 (Data)
+  (let (Res (intern Data)
+        Col (get-color-type Res))
+
+    (println Res)
+
+    (adv-ptr 1.0)
+
+    (push '*timeline (new '(+Particle) Res (draw-str Data Col)))))
+    
+
 (de read-string-end (End)
   # Do not include N
   (let (Verts  ()
@@ -24,6 +37,22 @@
     (list Verts Data)))
 
 
+(de read-string-2 ()
+
+  # read until nonstr
+  
+  (let (Verts ()
+        Data  ())
+        
+    (for Prt *timeline
+      (T (not (str? Prt)))
+      (push 'Data (get Prt 'data))
+      (for Vert (get Prt 'verts)
+        (push 'Verts Vert)))
+
+    (list Verts Data)))
+
+
 (de pop-string ()
   (let (Verts  ()
         Data  ())
@@ -40,9 +69,9 @@
 
   # pop until nonchar
   
-  (let (Verts  ()
+  (let (Verts ()
         Data  ()
-        Prt NIL)
+        Prt   NIL)
         
     (loop
       (setq Prt (pop '*timeline))
@@ -56,21 +85,5 @@
               (push '*timeline Prt)
               (setq Prt NIL))))
       (T (not Prt)))
-
-    (list Verts Data)))
-
-
-(de read-string-2 ()
-
-  # read until nonchar
-  
-  (let (Verts  ()
-        Data  ())
-        
-    (for Prt *timeline
-      (T (not (str? Prt)))
-      (push 'Data (get Prt 'data))
-      (for Vert (get Prt 'verts)
-        (push 'Verts Vert)))
 
     (list Verts Data)))

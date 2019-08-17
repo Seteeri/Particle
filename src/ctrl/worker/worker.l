@@ -142,12 +142,13 @@
   
   (setq *cnt-v 2)
 
-  # Render timeline  
-  (push '*timeline (new '(+Particle)
-                        *timeline
-                        (draw-str "*timeline"
-                                  (get-color-type *timeline))))
-  (adv-ptr 1.0)
+  # Render timeline
+  (when NIL
+    (push '*timeline (new '(+Particle)
+                          *timeline
+                          (draw-str "*timeline"
+                                    (get-color-type *timeline))))
+    (adv-ptr 1.0))
   
 
   (prinl-info "init-worker" "Starting epoll...")
@@ -164,10 +165,9 @@
   # - CAPS = SNIP?
   #
   # Identity:
-  # Make-Char = ASCII
-  # Make-Num = ALT+NUM
-  # Make-Int-Sym = ASCII-PACK-INTERN
-  # Make-Trans-Sym = ASCII-PACK/SNIP
+  # Make-Char (aka trans sym) = ASCII+PACK
+  # Make-Num = CTRL+NUM
+  # Make-Int-Sym = ASCII+CMD(PACK+INTERN) or Hold-ALT+ASCII
   # Make-Cons = SHIFT+ENTER
   #
   # Identity:
@@ -197,7 +197,7 @@
   # Enter = Linefeed
   (bind-keys (list ksd~Return              ) T cmd-make-char)
   (bind-keys (list ksd~Alt-R     ksd~Return) T cmd-make-cons)
-  (bind-keys (list ksd~Shift-R   ksd~Return) T cmd-intern)
+  (bind-keys (list ksd~Shift-R   ksd~Return) T cmd-intern-2)
   (bind-keys (list ksd~Control-R ksd~Return) T cmd-eval)
 
   (for (K 32 (<= K 255) (inc K))
@@ -207,8 +207,8 @@
 
   # ALT+NUM
   (for (K ksd~d0 (<= K ksd~d9) (inc K))
-    (bind-keys (list ksd~Alt-L K) T cmd-make-num)
-    (bind-keys (list ksd~Alt-R K) T cmd-make-num))
+    (bind-keys (list ksd~Control-L K) T cmd-make-num)
+    (bind-keys (list ksd~Control-R K) T cmd-make-num))
 
   (bind-keys (list ksd~End      ) T cmd-pack)
   (bind-keys (list ksd~BackSpace) T cmd-del)

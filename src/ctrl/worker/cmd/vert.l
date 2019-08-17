@@ -99,7 +99,7 @@
         ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
 
 
-(de cmd-pack ()
+(de cmd-pack (Keysym)
 
   (prinl-info "cmd-pack")
 
@@ -114,8 +114,10 @@
 
         (println Data)
 
+        # Adv ptr before drawing
         (adv-ptr 1.0)
 
+        # Draw data, create particle, add to timeline
         (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))))))
 
 
@@ -123,22 +125,22 @@
 
   # Read last item
   
-  (let (Verts (get (car *timeline) 'verts)
-        Data (get (car *timeline) 'data))
+  (let Data (get (car *timeline) 'data)
 
     (when (str? Data)
 
-      (let (Res (intern Data)
-            Col (get-color-type Res))
+      (intern-2 Data))))
 
-        (println Res)
 
-        (adv-ptr 1.0)
+(de cmd-intern-2 (Keysym)
 
-        (push '*timeline (new '(+Particle)
-                             Res
-                             (draw-str Data
-                                       Col)))))))
+  # Pack then Intern
+  # Same as cmd-pack except result not added to timeline
+  (let ((Verts Chars) (read-string-2))
+  
+    (when Chars
+    
+      (intern-2 (pack Chars)))))
 
 
 (de cmd-make-num (Keysym)
