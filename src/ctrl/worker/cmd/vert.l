@@ -1,3 +1,23 @@
+(de cmd-make-char (Keysym)
+
+  # For strings either use quotations or put additional spacing between symbols
+  # Problem is spaces are invisible
+  # (draw-str (pack "\"" Data "\""))
+
+  (let (Data  (cond ((= Keysym ksd~space) " ")
+                    ((= Keysym ksd~Return) (char 10))
+                    (T (char Keysym)))
+        Verts (draw-str Data (get-color-type Data))
+        Prt   (new '(+Particle) Data Verts))
+
+    (push '*timeline Prt))
+
+  #(for X *timeline (print (get X 'data))) (prinl)
+
+  (cond ((= Keysym ksd~Return) (nl-ptr))
+        ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
+        
+
 (de cmd-del (Dir)
 
   (prinl-info "cmd-del")
@@ -23,18 +43,11 @@
   # Note, this does not necessarily delete all the vertices as it dels PARTICLES
 
   (let? Prt (pop '*timeline)
-  
-    (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
-          Verts (get Prt 'verts))
-
-      #(println (get Prt 'data) Verts (length Verts))
-
-      (for Vert Verts
-        (let Msg (pack "(zv " (get Vert 'off-gl) '")")
-          (send-msg *ipc Sock-Render Msg))
-        (push '*verts Vert)
-        # For now, push pen back
-        (adv-ptr -1.0)))))
+    (del-particle Prt)
+    
+    # For now, push pen back n vertices
+    # TODO: handle newline and tab
+    (adv-ptr (format (pack (- (+ (length (get Prt 'verts)) 1)) ".0") *Scl))))
 
 
 (de cmd-eval ()
@@ -43,7 +56,10 @@
 
   # Eval last item
 
-  # Variation to build str -> data
+  # Variations:
+  # Eval last
+  # Eval list
+  # Eval str
 
   (let (Data (get (car *timeline) 'data)
         Str (pack Data)
@@ -54,7 +70,7 @@
     (prinl-info "cmd-eval" (pack Str))
 
     #(nl-ptr)
-    (adv-ptr 1.0)
+    (adv-ptr)
 
     (push '*timeline
           (new '(+Particle)
@@ -62,71 +78,69 @@
                (draw-str (if (num? Res) (format Res) (format (adr Res)))
                          Col)))
 
-    (adv-ptr 1.0)))
+    (adv-ptr)))
 
 
-(de cmd-make-char (Keysym)
+(de cmd-eval-2 ()
 
-  # For strings either use quotations or put additional spacing between symbols
-  # Problem is spaces are invisible
-  # (draw-str (pack "\"" Data "\""))
+  (println "cmd-eval-2")
 
-  (let (Data  (cond ((= Keysym ksd~space) " ")
-                    ((= Keysym ksd~Return) (char 10))
-                    (T (char Keysym)))
-        Verts (draw-str Data (get-color-type Data))
-        Prt   (new '(+Particle) Data Verts))
+  # Eval list (default is entire timeline)
 
-    (push '*timeline Prt))
+  (let (Data (build-data)
+        Res (eval Data)
+        Col (get-color-type Res))
 
-  #(for X *timeline (print (get X 'data))) (prinl)
+    (print-tl)
+    (print-tl-2)
+    (println Res)
 
-  (cond ((= Keysym ksd~Return) (nl-ptr))
-        ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
+    (push '*timeline
+          (new '(+Particle)
+               Res
+               (draw-str (if (num? Res) (format Res) (format (adr Res)))
+                         Col)))
+
+    (adv-ptr)))
 
 
 (de cmd-pack (Keysym)
 
   (prinl-info "cmd-pack")
 
-  # Read until non-str
-  # No double-quotes
+  # Replace with str
 
-  (let ((Verts Chars) (build-str))
+  (let Data (pack (build-data))
 
-    (when Chars
+    (println Data)
 
-      (let Data (pack Chars)
+    # Adv ptr before drawing
+    (adv-ptr)
 
-        (println Data)
-
-        # Adv ptr before drawing
-        (adv-ptr 1.0)
-
-        # Draw data, create particle, add to timeline
-        (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))))))
+    # Draw data, create particle, add to timeline
+    (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))))
 
 
 (de cmd-intern (Keysym)
 
-  # Read last item
-  
-  (let Data (get (car *timeline) 'data)
+  # Replace last item (t-sym) with i-sym
 
-    (when (str? Data)
+  # Ensure last item is a str
 
-      (intern-2 Data))))
+  (when (str? (get (car *timeline) 'data))
 
+    (let Prt (pop '*timeline)
 
-(de cmd-intern-2 (Keysym)
+      # TODO: Assumes proper/default spacing
+      (adv-ptr (format (pack (- (length (get Prt 'verts))) ".0") *Scl))
 
-  # Pack then Intern
-  # Same as cmd-pack except result not added to timeline
-  (let ((Verts Chars) (build-str))
-  
-    (when Chars
-    
-      (intern-2 (pack Chars)))))
+      # TODO: Reuse verts
+      (intern-particle (get Prt 'data))
+
+      (del-particle Prt)
+
+      # TODO: Adjust ptr to right of new particle
+      (adv-ptr))))
 
 
 (de cmd-make-num (Keysym)
@@ -135,21 +149,24 @@
         Verts (draw-str Data (get-color-type Data))
         Prt   (new '(+Particle) Data Verts))
 
-    (push '*timeline Prt)))
+    (push '*timeline Prt)
+
+    (adv-ptr)))
 
 
 (de cmd-format (Keysym)
 
-  # If given a list, format all nums in list
-  # (1 2 3)
-  # or
-  # ("1" "2" "3")
+  # Convert last num to str or last str to num
 
-  #(for Prt *timeline
-  #  (with Prt
-  #    (println (: data) (: verts)))))
+  (let Last (get (car *timeline) 'data)
 
-  T)
+    (when (or (str? Last) (num? Last))
+
+      (let Data (format Last)
+      
+        (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))
+
+        (adv-ptr)))))
 
 
 (de cmd-make-cons (Keysym)
@@ -175,3 +192,30 @@
   (println (get (car *timeline) 'data))
   
   T)
+
+
+(de cmd-any (Keysym)
+
+  (let Last (get (car *timeline) 'data)
+
+    (let Data (any Last)
+
+      (println Data)
+
+      # Cannot handle list yet
+    
+      (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))
+
+      (adv-ptr))))
+
+
+(de cmd-intern-2 (Keysym)
+
+  # Pack then Intern
+  # Same as cmd-pack except result not added to timeline
+  (let ((Verts Chars) (build-str))
+  
+    (when Chars
+
+      (adv-ptr)
+      (intern-particle (pack Chars)))))

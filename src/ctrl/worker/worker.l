@@ -148,7 +148,7 @@
                           *timeline
                           (draw-str "*timeline"
                                     (get-color-type *timeline))))
-    (adv-ptr 1.0))
+    (adv-ptr))
   
 
   (prinl-info "init-worker" "Starting epoll...")
@@ -161,16 +161,20 @@
   #
   # Unused:
   # CTRL/ALT/SHIFT+TAB, CTRL/ALT/SHIFT+ESC, CAPS
+  # * Use modifiers to modify fns?
   #
   # Identity:
   # Make-Char (aka trans sym) = ASCII+PACK
+  # * How to input strs directly?
   # Make-Num = CTRL+NUM
+  # * How to input multi-digit numbers directly?
   # Make-Int-Sym = ASCII+CMD(PACK+INTERN)
-  # Make-Cons = SHIFT+ENTER
+  # * How to input directly?
+  # Make-Cons = SHIFT+TAB
   #
-  # Combos:
+  # Combos/Variations:
   # Pack+Intern: cmd-intern-2
-  # Pack+Any+Eval
+  # Pack+Format: cmd-format-2
   #
   # Identity:
   # Del/Rem = DEL/BACKSPACE
@@ -196,18 +200,35 @@
   # Pop
   # List - by default, everything is already in a list
 
-  # Enter = Linefeed
-  (bind-keys (list ksd~Return              ) T cmd-make-char)
-  (bind-keys (list ksd~Alt-R     ksd~Return) T cmd-make-cons)
-  (bind-keys (list ksd~Shift-R   ksd~Return) T cmd-intern)
-  (bind-keys (list ksd~Control-R ksd~Return) T cmd-eval)
+  # For str and num, move ptr directly right
+  # For non-str, move ptr 2x right
 
-  (for (K 32 (<= K 255) (inc K))
+  # Pack (>= 1 chr/num; until non-chr/num)
+  # Chrs -> Str
+  # Nums -> Num
+
+  (bind-keys (list ksd~Control-L     ksd~Tab) T cmd-make-cons)
+  (bind-keys (list ksd~Control-R     ksd~Tab) T cmd-make-cons)
+
+  # Eval
+  (bind-keys (list ksd~Return)               T cmd-make-char)
+  (bind-keys (list ksd~Shift-R   ksd~Return) T '((Keysym) (println "Shift-R + Return")))
+  (bind-keys (list ksd~Control-R ksd~Return) T cmd-eval-2)
+  (bind-keys (list ksd~Alt-R     ksd~Return) T cmd-any)
+
+  # Special case: Space (32)
+  # Mods are used for intern fn
+  (bind-keys (list ksd~space)               T cmd-make-char)
+  (bind-keys (list ksd~Shift-L   ksd~space) T cmd-pack)
+  (bind-keys (list ksd~Control-L ksd~space) T cmd-intern)
+  (bind-keys (list ksd~Alt-L     ksd~space) T cmd-format)
+
+  (for (K 33 (<= K 255) (inc K))
     (bind-keys (list K)             T cmd-make-char)
     (bind-keys (list ksd~Shift-L K) T cmd-make-char)
     (bind-keys (list ksd~Shift-R K) T cmd-make-char))
 
-  # ALT+NUM
+  # Ctrl + Num  = Num
   (for (K ksd~d0 (<= K ksd~d9) (inc K))
     (bind-keys (list ksd~Control-L K) T cmd-make-num)
     (bind-keys (list ksd~Control-R K) T cmd-make-num))
@@ -219,6 +240,7 @@
   (bind-keys (list ksd~Control-L ksd~x) T '((Keysym) (println "Ctrl-L-x: CUT")))
   (bind-keys (list ksd~Control-L ksd~c) T '((Keysym) (println "Ctrl-L-c: COPY")))
   (bind-keys (list ksd~Control-L ksd~v) T '((Keysym) (println "Ctrl-L-v: PASTE")))
+  
   (bind-keys (list ksd~Alt-L     ksd~z) T '((Keysym) (println "Alt-L-z: REDO")))
   (bind-keys (list ksd~Control-L ksd~z) T '((Keysym) (println "Ctrl-L-z: UNDO")))
 

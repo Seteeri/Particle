@@ -1496,3 +1496,45 @@ Correct. There is even a function for that, 'adr':
 (+ 1 2)
 "(+ 1 2)"
 + 1 2
+
++
+Intern
+1
+2
+Eval
+
+################################################################################
+
+ * Lists/Molecules: Pointer Ctrl
+   * Currently pointer is first element in the list
+   * Select items (pt/ref/link)
+   * Transforms - apply to pointee
+     * Move/Drag/Teleport items
+       * Test touch input; need unproject
+       * Animate movement? Fade in/out?
+       * @ <loc> = moves ptr to it
+
+ * Camera Ctrl
+   * Center
+   * Fit <list of objects>
+   * Pan     
+   * Zoom
+
+ * Timeline
+   * Undo
+   * Redo
+   * If undo occurs and there is CDR, branch
+     * Modify Ctrl-Z if this behavior is not wanted
+       * Either through modifier or pointer structure
+   * Dumping the heap - make external symbols?
+
+ * Create default environment
+    * Draw frame time, heaps, etc.
+    * Draw procs -> pico ns -> symbols, timeline
+      * Draw bindings
+    * Draw lists downward
+
+ * Load source code
+   * Turn into strings
+   * Then test symbols
+     * Symbols that already exist - get existing

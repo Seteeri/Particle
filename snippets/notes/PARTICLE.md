@@ -152,103 +152,37 @@ Store DAGs as binary trees?
      * Sort time
      * Repeat keys
 
-   * Atoms: Implement string/atom/list, eval functionality [Mon...]
-     * Create particle for pointer
-       * Pointer is a cons cell
-         * If CDR is a  list, becomes a list
-         * If CDR is an atom, becomes an atom
-     * Eval [Done]
-       * Test functions on data (syms)
-         * Define colors for non-str types aka nums, box, isyms
-     * Atoms [Done]
-       * Syms
-         * Pack (Chr->Str) [Proto]
-         * Intern (Str->I-Sym) [Proto/Fn]
-           * To enter symbol, hold key, type, release.
-           * Chars will be displayed and upon release, replaced and converted
-         * Sym+Quote (I-Sym->T-Sym or get sym name) [Fn][Later when ptr or implement above]
-           * (= (sym 'a) (any 'a) 'a "a") -> T
-           * Sym returns printed rep of sym (str)
-             * Any will do opp and produce sym from printed rep
-           * Str will do list to str and str to list
-           * Name will create new transient symbol with that name
-       * Nums [Done]
-         * ALT+NUM to produce numbers
-         * NUM to produce chars
-         * Format to convert between str<->num [Fn]
+  * Atomic Functionality
+    * Test cmds/workflow
+      * Implement pack for nums
+        * Packing nums will produce a string -> format
+      * Implement any
+        * Test "(de add (a b) (+ a b))" -> any -> eval
+        * Must draw list by traversing
+    * Fix spacing
+      * Check last and prev-last
+    * Color builtin symbols
+    * Ptr should move atomically/semantically instead of spatially
+      * Use touch/mouse to move spatially
+      * Displacement scales with zoom level
 
-    * Current actions are directyly modifying timeline
-      * Move timeline to the left
-    * Ptr movement should move to atoms or lists
+  * List Functionality
+    * Draw full cell?
     * Once timeline visible, easier to work with list
-    ?TEST EASING FUNCTIONS FOR MOVEMENT?
 
-    DRAW DEFAULT ENV
-    FURTHER CMDS
-    LOAD CODE
-    TRY FILE BROWSING WITH BUILTINS
+  * Default particles
+    * Help info
+    * FPS - do in render
 
-   * Option to rotate eval timeline
+  * Load own code
 
-     in-1
-     out-1
-     in-2
-     out-2
-
-     Or
-     
-     in-1  in-2
-     out-1 out-2
-
-   * Lists/Molecules: Pointer Ctrl
-     * Currently pointer is first element in the list
-     * Select items (pt/ref/link)
-     * Transforms - apply to pointee
-       * Move/Drag/Teleport items
-         * Test touch input; need unproject
-         * Animate movement? Fade in/out?
-         * @ <loc> = moves ptr to it
-
-   * Camera Ctrl
-     * Center
-     * Fit <list of objects>
-     * Pan     
-     * Zoom
-
-   * Timeline
-     * Undo
-     * Redo
-     * If undo occurs and there is CDR, branch
-       * Modify Ctrl-Z if this behavior is not wanted
-         * Either through modifier or pointer structure
-     * Dumping the heap - make external symbols?
-
-   * Create default environment
-      * Draw frame time, heaps, etc.
-      * Draw procs -> pico ns -> symbols, timeline
-        * Draw bindings
-      * Draw lists downward
-
-   * Load source code
-     * Turn into strings
-     * Then test symbols
-       * Symbols that already exist - get existing
+  * Explore file browsing using built in functions
 
    * Test compute shaders
      * Rotate all vertices
      * Could use shader then pull data back?
        * Syncing becomes an issue -> at that point, keep transforms on GPU side
        * Vertex data simply contains an offset to the struct
-
-   * File browser - most basic functionality
-     * Wrap call
-     * Use OS commands: dir, dirname, cd, info, path
-     * Functionality must exist for manipulating output
-       * Create file objects?
-
-   * Implement Wayland - BASIC!
-     * Setup tiles for 6 windows = 3 col, 2 row
-     * Proof of concept working with eval already
 
    * Show commands
      * Add disassemble functionality
@@ -264,7 +198,11 @@ Store DAGs as binary trees?
 
    POST DEMO:
 
-  https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
+   * Implement Wayland - BASIC!
+     * Setup tiles for 6 windows = 3 col, 2 row
+     * Proof of concept working with eval already
+
+   https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
 
    * Implement framebuffers
      * Render to target

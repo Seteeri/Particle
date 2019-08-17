@@ -1,15 +1,23 @@
 # COuld place these in ptr also?
 
-(de intern-2 (Data)
+(de del-particle (Prt)
+  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
+        Verts (get Prt 'verts))
+    (for Vert Verts
+      (let Msg (pack "(zv " (get Vert 'off-gl) '")")
+        (send-msg *ipc Sock-Render Msg))
+      (push '*verts Vert))))
+
+
+(de intern-particle (Data)
   (let (Res (intern Data)
         Col (get-color-type Res))
-
-    (println Res)
-
-    (adv-ptr 1.0)
-
     (push '*timeline (new '(+Particle) Res (draw-str Data Col)))))
     
+
+################################################################################
+
+# Rename these to build-data?
 
 (de build-str-end (End)
 
@@ -42,6 +50,16 @@
         (push 'Verts Vert)))
 
     (list Verts Data)))
+
+
+(de build-data ()
+  (let Data ()
+    (for Prt *timeline
+      (push 'Data (get Prt 'data)))
+    Data))
+
+
+################################################################################
 
 
 (de pop-string ()
@@ -78,3 +96,17 @@
       (T (not Prt)))
 
     (list Verts Data)))
+
+
+################################################################################
+
+(de print-tl ()
+  (for Prt *timeline
+    (with Prt
+      (prin (: data) " ")))
+  (prinl))
+
+(de print-tl-2 ()
+  (for Prt *timeline
+    (with Prt
+      (println (sym? (: data)) (str? (: data)) (num? (: data))))))
