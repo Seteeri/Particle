@@ -41,42 +41,28 @@
 
   (println "cmd-eval")
 
-  # Build string from ptr-prev to last newline
+  # Eval last item
 
-  # Build string from a range...
+  # Variation to build str -> data
 
-  # Also what to do if objects are not strs?
-  # Eval verts->data (build list from verts)
-  # Eval verts->strings->data (build string from verts)
-  #
-  # -> Do pack->any->push
-  # Else use must do this manually
-
-  # Read-string will flatten data/verts
-  #
-  # (1 "1") (2 "2") (3 "3")
-  # (1 2 3)
-  # pack (1 2 3) -> "123"
-
-  (let ((Verts Data) (read-string-end 10)
+  (let (Data (get (car *timeline) 'data)
         Str (pack Data)
         Any (any Str)
         Res (eval Any)
         Col (get-color-type Res))
 
-      #(prinl-info "cmd-eval" (pack "STR=" Str))
-      #(prinl-info "cmd-eval" (pack "RES=" Res))
-      #(println Res)
+    (prinl-info "cmd-eval" (pack Str))
 
-      #(nl-ptr)
-      (adv-ptr 1.0)
+    #(nl-ptr)
+    (adv-ptr 1.0)
 
-      (push '*timeline (new '(+Particle)
-                            Res
-                            (draw-str (if (num? Res) (format Res) (format (adr Res)))
-                                      Col)))
+    (push '*timeline
+          (new '(+Particle)
+               Res
+               (draw-str (if (num? Res) (format Res) (format (adr Res)))
+                         Col)))
 
-      (adv-ptr 1.0)))
+    (adv-ptr 1.0)))
 
 
 (de cmd-make-char (Keysym)

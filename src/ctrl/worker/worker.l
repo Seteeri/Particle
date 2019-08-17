@@ -170,7 +170,7 @@
   #
   # Combos:
   # Pack+Intern: cmd-intern-2
-  # 
+  # Pack+Any+Eval
   #
   # Identity:
   # Del/Rem = DEL/BACKSPACE
@@ -199,7 +199,7 @@
   # Enter = Linefeed
   (bind-keys (list ksd~Return              ) T cmd-make-char)
   (bind-keys (list ksd~Alt-R     ksd~Return) T cmd-make-cons)
-  (bind-keys (list ksd~Shift-R   ksd~Return) T cmd-intern-2)
+  (bind-keys (list ksd~Shift-R   ksd~Return) T cmd-intern)
   (bind-keys (list ksd~Control-R ksd~Return) T cmd-eval)
 
   (for (K 32 (<= K 255) (inc K))
