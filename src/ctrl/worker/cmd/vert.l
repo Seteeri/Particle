@@ -110,6 +110,8 @@
 
   # Replace with str
 
+  # Pop until non-str/num
+
   (let Data (pack (build-data))
 
     (println Data)
@@ -119,6 +121,9 @@
 
     # Draw data, create particle, add to timeline
     (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))))
+
+
+(de cmd-pack-alt (Keysym) T)
 
 
 (de cmd-intern (Keysym)
@@ -141,6 +146,9 @@
 
       # TODO: Adjust ptr to right of new particle
       (adv-ptr))))
+
+
+(de cmd-intern-alt (Keysym) T)
 
 
 (de cmd-make-num (Keysym)
@@ -178,18 +186,10 @@
   # -> A, (B . (C . D))
   # -> (A . (B . (C . D)))
 
-  # Or
-
-  # To build:
-  #
-  # (de add (A B) (+ a b))
-
-  # de -> cons(de)
-  # (de . NIL)
-  # add -> cons(add, (de . NIL))
-  # (add . (de . NIL))
-
-  (println (get (car *timeline) 'data))
+  # A B C D
+  # A B C D -> cons -> (C . D)
+  # A B C D (C . D) -> cons -> (D (C . D))
+  # A B C D (C . D) (D (C . D))
   
   T)
 

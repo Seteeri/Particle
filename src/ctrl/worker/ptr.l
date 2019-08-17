@@ -21,7 +21,7 @@
   (cmd-update-vert *ipc *vert-ptr))
 
 
-(de nl-ptr ()
+(de nl-ptr (Cnt)
 
   (with *vert-ptr
     (let Pos (list 0.0

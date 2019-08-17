@@ -153,22 +153,56 @@ Store DAGs as binary trees?
      * Repeat keys
 
   * Atomic Functionality
-    * Test cmds/workflow
-      * Implement pack for nums
-        * Packing nums will produce a string -> format
-      * Implement any
-        * Test "(de add (a b) (+ a b))" -> any -> eval
-        * Must draw list by traversing
-    * Fix spacing
+    * TARGET: BUILD S-EXPR WITHOUT PARENTHESIS
+    * Implement basics [Done]
+    * Implement proper spacing
       * Check last and prev-last
-    * Color builtin symbols
-    * Ptr should move atomically/semantically instead of spatially
-      * Use touch/mouse to move spatially
-      * Displacement scales with zoom level
+      * STR - STR = 1 space
+      * STR - NON-STR = 2 spaces
+      * NON-STR - NON-STR = 2 spaces
+      * Print control characters
+        * Could make very faint to be less noticeable
+    * Finish replacing atoms
+      * Pack
+        * Build until non-str/num
+      * Intern [Done]
+        * Color builtin symbols
+        * Intern should return builtin symbols
+        * User can override this by using strings
+      * Implement alt versions
+    * Move eval-2(list) to eval(last) once list building achieved
+    * Test (println "hello user")
+    * Test list building functionality
+      * Requires ptr movement
+    * To do immediate cmds:
+      * Example: reverse list
+        * (my name is kevin)
+        * (my name is kevin (reverse))
+        * 3 Poss:
+          * (kevin is name my) -> replace input (normal)
+          * (my name is kevin (kevin is name my)) -> append input (+alt)
+          * (my name is kevin (reverse) (kevin is name my))
+            * Manually possible by copying from timeline
+      * Make new list
+      * Type cmds etc
+      * Eval
+      * Next?
+        * Replace old list with output
+        * Or push output
+    
+  * Ptr - should move atomically/semantically instead of spatially
+    * Use touch/mouse to move spatially
+    * Displacement scales with zoom level
+    * Left/Right: Move to prev/next cons
+    * Up/Down: Move to prev/next list/cons
 
   * List Functionality
     * Draw full cell?
     * Once timeline visible, easier to work with list
+
+  * Error Handling
+    * Set * Err to (quit)
+    * On error, print msg and return to top-level
 
   * Default particles
     * Help info

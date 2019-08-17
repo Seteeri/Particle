@@ -52,11 +52,29 @@
     (list Verts Data)))
 
 
+# build eval
 (de build-data ()
   (let Data ()
     (for Prt *timeline
       (push 'Data (get Prt 'data)))
     Data))
+
+
+(de build-pack ()
+
+  # Build until non-str/num encountered
+  
+  (let (Verts ()
+        Data  ())
+        
+    (for Prt *timeline
+      # Stop on non str
+      (T (and (not (str? (get Prt 'data))) (not (num? (get Prt 'data)))))
+      (push 'Data (get Prt 'data))
+      (for Vert (get Prt 'verts)
+        (push 'Verts Vert)))
+
+    (list Verts Data)))
 
 
 ################################################################################

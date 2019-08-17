@@ -371,24 +371,6 @@ Numbers vs Pointers:
   1         2
 
 
-QUESTIONS:
-
-  * How to show spaces?
-
-Strings = main interface = symbols, so strings = symbols
-Symbols are then composed of cons cells...
-
-Strings -> Cons cells
-        -> Numbers (bignum=cons cells)
-
-Note, characters are stored in short num (1-7 bytes) or big num (8 bytes)
-
-Convert numbers by typing name vs pressing digits?
--> Numbers faster when sequential but thats less frequent
-  - In that case, easier to write program to produce it
--> Numbers faster when only typing numbers, but when mixed,
-   typing name faster since fingers remain near home keys
-
 Esc = 1
 Backspace = 14
 Tab = 15

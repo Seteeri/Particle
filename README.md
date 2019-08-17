@@ -65,7 +65,7 @@ Lisp at the OS level would be (past Lisp Machines may provide an answer...).
   * Compiz - 3D desktop effects
   * Blender - 3D editor, extensible UI, keyboard driven
   * Lisp - the programmable programming language
-  * Emacs/StumpWM - consistency, extensibility, text and keyboard driven
+  * Emacs/Vim/StumpWM - consistency, extensibility, text and keyboard driven
   * Evernote - Stepan Pachikov wanted to remember everything
 
 * Secondary Inspirations:

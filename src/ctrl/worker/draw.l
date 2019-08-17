@@ -35,6 +35,12 @@
         ((box? Any) (prinl-info "get-color-type" "BOX") *col-yellow)))
 
 
+(de draw-lst (Lst Col)
+  # Traverse lst, build list
+  # Loop new lst, call draw-*
+  T)
+
+
 (de draw-str (Str Col)
 
   (let Verts ()
