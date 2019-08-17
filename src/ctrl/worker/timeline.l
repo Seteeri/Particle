@@ -33,7 +33,8 @@
         Data  ())
         
     (for Prt *timeline
-      (T (not (str? Prt)))
+      # Stop on non str
+      (NIL (str? (get Prt 'data)))
       (push 'Data (get Prt 'data))
       (for Vert (get Prt 'verts)
         (push 'Verts Vert)))
