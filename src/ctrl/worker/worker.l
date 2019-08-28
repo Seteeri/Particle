@@ -199,6 +199,8 @@
   # Push
   # Pop
   # List - by default, everything is already in a list
+  #
+  # ESC: Clear entire timeline
 
   # For str and num, move ptr directly right
   # For non-str, move ptr 2x right

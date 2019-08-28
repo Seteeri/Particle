@@ -1,8 +1,4 @@
-(de cmd-make-char (Keysym)
-
-  # For strings either use quotations or put additional spacing between symbols
-  # Problem is spaces are invisible
-  # (draw-str (pack "\"" Data "\""))
+(de cmd-make-char-2 (Keysym)
 
   (let (Data  (cond ((= Keysym ksd~space) " ")
                     ((= Keysym ksd~Return) (char 10))
@@ -12,11 +8,55 @@
 
     (push '*timeline Prt))
 
-  #(for X *timeline (print (get X 'data))) (prinl)
-
   (cond ((= Keysym ksd~Return) (nl-ptr))
         ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
         
+
+(de cmd-make-char-3 (Keysym)
+
+  # Color car/cdr different?
+
+  # Draw bytes
+  # Draw value
+
+  (let (Data  (cond ((= Keysym ksd~space) " ")
+                    ((= Keysym ksd~Return) (char 10))
+                    (T (char Keysym)))
+        (Adr-Car Adr-Cdr) (struct (- (>> -4 (adr Data)) 8) '((B . 8) (B . 8)))
+        Adr  (pack (glue " " Adr-Car) " " (glue " " Adr-Cdr))
+        Verts-Adr (draw-str Adr (get-color-type Data))
+        Dummy (nl-ptr)
+        Verts-Repr (draw-str Data (get-color-type Data))
+        Prt   (new '(+Particle) Data Verts))
+
+    (push '*timeline Prt))
+
+  (cond ((= Keysym ksd~Return) (nl-ptr))
+        ((= Keysym ksd~Tab)    (adv-ptr 2.0))
+        (T (adv-ptr 2.0))))
+
+
+(de cmd-make-char (Keysym)
+
+  (let Data (cond ((= Keysym ksd~space) " ")
+                  ((= Keysym ksd~Return) (char 10))
+                  (T (char Keysym)))
+
+    #(draw-cell 'Data)
+    #(draw-cell (adr Data))
+
+    (let Ptr-Pos-Start (get *vert-ptr 'pos)
+      #(draw-cell (>> -4 (adr (cons (cons 1 2) (cons 3 4)))))
+      #(draw-cell (>> -4 (adr (list 1 2 3))))
+      (draw-cell (>> -4 (adr 'Data)))
+
+      (nl-ptr 6.0)
+      (set-pos-ptr-x (get Ptr-Pos-Start 1))))
+  
+
+  (cond ((= Keysym ksd~Return) (nl-ptr))
+        ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
+
 
 (de cmd-del (Dir)
 
@@ -47,7 +87,7 @@
     
     # For now, push pen back n vertices
     # TODO: handle newline and tab
-    (adv-ptr (format (pack (- (+ (length (get Prt 'verts)) 1)) ".0") *Scl))))
+    (adv-ptr (num-to-fl (- (+ (length (get Prt 'verts)) 1))))))
 
 
 (de cmd-eval ()
@@ -181,18 +221,35 @@
 
   # Make cons from last two objects
 
-  # A, B, C, D
-  # -> A, B, (C . D)
-  # -> A, (B . (C . D))
-  # -> (A . (B . (C . D)))
+  # REPLACED:
+  # A B C D
+  # A B (C . D)
+  # A (B . (C . D))
+  # (A . (B . (C . D)))
 
+  # APPENDED:
   # A B C D
   # A B C D -> cons -> (C . D)
   # A B C D (C . D) -> cons -> (D (C . D))
   # A B C D (C . D) (D (C . D))
-  
-  T)
 
+  # Data: (list A B C D) = (A . (B . (C . (D . NIL))))
+  # Draw: A . B . C . D (where . is colored)
+
+  # Data: (list A (B C) D (E F) G) = (A . ((B . (C . NIL)) . (D . ((E . (F . NIL)) . (G . NIL)))))
+  # Draw: A .     D .     G
+  #         B . C   E . F
+
+  (let (Car (get (car *timeline) 'data)
+        Cdr (get (car (cdr *timeline)) 'data)
+        Data (cons Car Cdr))
+
+    (println Data)
+  
+    (push '*timeline (new '(+Particle) Data (draw-str "." (get-color-type Data)))))
+
+  (adv-ptr))
+  
 
 (de cmd-any (Keysym)
 

@@ -152,16 +152,14 @@ Store DAGs as binary trees?
      * Sort time
      * Repeat keys
 
+  * Implement Reingold-Tilford Drawing Algorithm (stratified/hierarchial/pyramidial)
+    * Radial also
+    * Hyperbolic
+    * Use custom layouts for certain symbols like de, let
+
   * Atomic Functionality
     * TARGET: BUILD S-EXPR WITHOUT PARENTHESIS
     * Implement basics [Done]
-    * Implement proper spacing
-      * Check last and prev-last
-      * STR - STR = 1 space
-      * STR - NON-STR = 2 spaces
-      * NON-STR - NON-STR = 2 spaces
-      * Print control characters
-        * Could make very faint to be less noticeable
     * Finish replacing atoms
       * Pack
         * Build until non-str/num

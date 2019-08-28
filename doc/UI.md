@@ -30,7 +30,7 @@ SYMS:
   A-SYM = ALT + ?
           Or type (new) or (box)
 CONS:
-    
+
 Unused: ESC, TAB, CAPS, META, etc.
 
 Use arrows to move around, if obj cut off, pan to it
@@ -71,11 +71,11 @@ by default (the value).
 
 "h" "e" "l" "l" "o"
 
-      +-----------------+
-      |                 |
-      V                 |
-      +-------+-----+   |
-      |  'H'  | PTR |---+
+              +--------+
+              |        |
+              V        |
+      +-------+-----+  |
+      |  'H'  | PTR |--+
       +---+---+-----+
 
 Links represent pointers
@@ -115,14 +115,12 @@ User can choose to see CAR/CDR/CONS:
 
 Abstract:
 
-      (default transient symbol)
-
-      +---------------------+
-      |                     |
-      V                     |
-      +--------+--------+   |
-      |  'H'   |   PTR  |---+
-      +---+----+--------+
+              +--------+
+              |        |
+              V        |
+      +-------+-----+  |
+      |  'H'  | PTR |--+
+      +---+---+-----+
 
   * Single cons cell = contiguous memory of 16 bytes = 2 words
   * Pointers are separate sections of contiguous memory linked together
@@ -137,113 +135,114 @@ Abstract:
 * The interpretation is generally what the user modifies
   * Mod # -> Ptr changes, Mod Ptr -> # changes
 
-(list 1 2) = (cons 1 (cons 2 NIL))
 
-.
-|   |
-PTR PTR
-|    |
-1    .
-     |   |
-     PTR PTR
-     |   |
-     2   NIL
+################################################################################
 
-* Move cons (.) will move PTR with it but not the value if value=cons
+                            +--------+
+                            |        |
+                            V        |
+    +-----+-----+     +-----+-----+  |
+    |  |  | VAL +---> | 'A' |  |  |--+
+    +--+--+-----+     +--+--+-----+
+       |                 
+    "Data"
+                            
 
-PTR . PTR
-|       |
-1       2
+(any "(list 0 abc \"def\" (box) NIL)")
 
-Draw the Heap:
-* Create 3 particles for every byte (0-255)
-  * One cell = 16*3 = 48 particles
-* GL index = (* Heap index (+ 208 48))
+  12345678  87654321    12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->
+  |                     |                       |                       |                     
+  V                     V                       V                       V                     
+  12345678  87654321    12345678  87654321      12345678  87654321      12345678  87654321    
+  V                     V         V             V         V             V---------+           
+  list                  0         NIL           abc       NIL           "a"                  
 
-* Want user to work on particles which is an arbitrary unit of information
-* Particles can represent a cons cell down to a single bit
-* Particle has a ptr and corresponding val
-  * Val can be another ptr
+  I-SYM/FN              NUM                     I-SYM                   T-SYM                
+  (traverse)           (bignum traverse)
 
-( ((1 2 3 4 5 6 7 8) 1)
-  ((1 2 3 4 5 6 7 8) 2) )
 
-Cons
-  CAR
-    251-252-253-254-255-256-257-258 
-    1                              
-  CDR
-    251-252-253-254-255-256-257-258
-    2
+  12345678  87654321  ->  12345678  87654321  ->  NIL
+  |                       |
+  V                       V
+  12345678  87654321      NIL
+  V         V
+  0         NIL
 
-Tecnically VAL need not exist if user modifies raw ptrs
+  A-SYM                   NIL
 
-Cons
-  CAR
-    2  0 0 0 0 0 0 0
-  CDR
-    18 0 0 0 0 0 0 0
-    
-Figure out how to represent bytes, then how to represent its val or interpretation
 
-So 123 etc is each a particle with its own vertex data
-Ofc 123 can also be hex or oct or bin
+(cons (cons) (cons))
 
-* Say above is (cons 0 1) -> ((2 0 0 0 0 0 0 0) (18 0 0 0 0 0 0 0))
-* If modify a byte, number will change
-* Create 3 slots for each number
-* If user wants to modify entire ptr at once:
-  * Create cons with numbers and use cpy function
-  * Or use a pointer
+  12345678  87654321  ->  12345678  87654321
+  |                       |         |
+  V                       V         V
+  12345678  87654321      NIL       NIL    
+  V         V
+  NIL       NIL
 
-. -> CAR -> 2000000 -> VAL
-  -> CDR -> 1800000 -> VAL
+
+(cons 1 2)
+
+  12345678  87654321
+  |         |       
+  V         V       
+  1         2
   
-Bytes connect to following byte; double space between bytes to delimit
 
-Create vertex syms/cons for the target cons cell bytes?
-- Toggle on quote: on vertex data to modify vertex data
-  * This will change the particles to vertex data of vertex data
-- Toggle off quote:
-  * This will change particles back to og vertex data with updated view
-  * Old vertex data will be GC'd
+(cons (cons 1) (cons 2))
 
-Cons: ( ((2__) (0__) (0__) (0__) (0__) (0__) (0__) (0__))
-        ((18_) (0__) (0__) (0__) (0__) (0__) (0__) (0__)) )
-
-With Value:
-
-Cons: ( ( ((2__) (0__) (0__) (0__) (0__) (0__) (0__) (0__))
-          VAL-CAR)
-        ( ((2__) (0__) (0__) (0__) (0__) (0__) (0__) (0__))
-          VAL-CAR)
-          
-LATTER makes more sense
-
->>>> (48+2)*208
-9984 bytes = 9.75 kb per cons cell
-So 1 GB VRAM can draw 107,546 particles
+  12345678  87654321  ->  12345678  87654321
+  |                       |         |
+  V                       V         V
+  12345678  87654321      2         NIL
+  V         V
+  1         NIL
 
 
-#################################################
+(de add (a b)
+  (+ a b))
 
-EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
+  A  D    A  D    A  D    A  D
+  |  |    |  |    |  |    |  |
+  ^  >    ^  >    ^  >    ^  NIL
 
-  Quantum View:
+  A  D    A  D    A  D    A  D
+  |  |    |  |    |  |    |  |
+ de  V   add V    a  ^    +  ^
+  
+                  A  D    A  D
+                  |  |    |  |
+                  b  NIL  a  ^
+                  
+                          A  D
+                          |  |
+                          b  NIL
 
-  Raw Binary
+
+                              .
+                             / \
+                            .   .
+                               / \
+                              .   .
+                                 / \
+                                .   .
+                                   / \
+                                  .   NIL
 
 
-  Element View:
+  (A (B C D (E K P) F (G M)) (H I J) (N O))
 
-  12345678  87654321    12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->  NIL
-  |                     |                       |                       |                       |                       |
-  V                     V                       V                       V                       V                       V
-  12345678  87654321    12345678  87654321      12345678  87654321      12345678  87654321      12345678  87654321      NIL
-  V                     V         V             V         V             V---------+             V         V
-  list                  0         NIL           abc       NIL           "abc"                   0         NIL
 
-  I-SYM/FN              NUM                     I-SYM                   T-SYM                   A-SYM                   NIL
+(let (a b
+      c d
+      e f)
+  T)
+
+  = (let (a b c d e f) T)
+
+  ?
+
+################################################################################
 
 
               0         0
@@ -340,10 +339,6 @@ EXAMPLE: (any "(list 0 abc \"def\" (box) NIL)") :
   Modifications:
   * Changing pointer digits will cause descendants to regenerate
   * Changing symbol values or numbers will cause predecessors to regenerate
-
-  -> Flip model since we work on symbol names
-  -> User chooses option for top: Atoms, CAR/CDR, Pointers, Binary
-
 
   Composite View (show CAR):
 
