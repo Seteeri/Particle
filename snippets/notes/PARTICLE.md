@@ -152,10 +152,7 @@ Store DAGs as binary trees?
      * Sort time
      * Repeat keys
 
-  * Implement Reingold-Tilford Drawing Algorithm (stratified/hierarchial/pyramidial)
-    * Radial also
-    * Hyperbolic
-    * Use custom layouts for certain symbols like de, let
+  * Use custom layouts for certain symbols like de, let
 
   * Atomic Functionality
     * TARGET: BUILD S-EXPR WITHOUT PARENTHESIS
@@ -228,37 +225,40 @@ Store DAGs as binary trees?
      * RECORD DEMO
      * ANNOUNCE ON MAILING LIST, LATER REDDIT
 
-   POST DEMO:
+  POST DEMO:
 
-   * Implement Wayland - BASIC!
-     * Setup tiles for 6 windows = 3 col, 2 row
-     * Proof of concept working with eval already
+  * Implement Wayland - BASIC!
+    * Setup tiles for 6 windows = 3 col, 2 row
+    * Proof of concept working with eval already
 
-   https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
+  https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
 
-   * Implement framebuffers
-     * Render to target
-     * Allows us to create screens/viewports
-     * Create viewport from current view
+  * Implement framebuffers
+    * Render to target
+    * Allows us to create screens/viewports
+    * Create viewport from current view
 
-   * Write docs
+  * Write docs
 
-   * Basic animations
-     * Easing functions
-     * Fades
-     * Use compute shader on large amount
-       * For demo max verts
+  * Basic animations
+    * Easing functions
+    * Fades
+    * Use compute shader on large amount
+      * For demo max verts
 
-   * Use touch to modify lists
-     * Ability to pull items out
-     * Requires spatial index, unproject
-       * Port r-tree from CL   
+  * Use touch to modify lists
+    * Ability to pull items out
+    * Requires spatial index, unproject
+      * Port r-tree from CL   
 
-   * Screenshot
-     * glReadPixels
+  * Screenshot
+    * glReadPixels
 
-   * Implement DRM backend
+  * Implement DRM backend
 
+  * Implement Reingold-Tilford Drawing Algorithm (stratified/hierarchial/pyramidial) [Later]
+    * Radial also
+    * Hyperbolic
 
 * Unscheduled Stuff
 

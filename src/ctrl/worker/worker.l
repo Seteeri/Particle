@@ -137,6 +137,12 @@
   # Designate vertex 1 as ptr
   # Actually a cons cell
   (setq *vert-ptr (pop '*verts))
+  (with *vert-ptr
+    (=: rgba (list (get *col-red 1) (get *col-red 2) (get *col-red 3) 1.0
+                   (get *col-red 1) (get *col-red 2) (get *col-red 3) 1.0
+                   (get *col-red 1) (get *col-red 2) (get *col-red 3) 1.0
+                   (get *col-red 1) (get *col-red 2) (get *col-red 3) 1.0)))
+  (cmd-update-vert *ipc *vert-ptr)
 
   (nl-ptr)
   

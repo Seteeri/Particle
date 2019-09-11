@@ -20,225 +20,185 @@
 (def '*col-red     (list (*/ 1.0 220.0 255.0) (*/ 1.0 50.0   255.0) (*/ 1.0 47.0  255.0)))
 (def '*col-magenta (list (*/ 1.0 211.0 255.0) (*/ 1.0 54.0 255.0) (*/ 1.0 130.0 255.0)))
 
-# Magenta = unused
-# Brightest color = least used element
-
 
 (de get-color-type (Any)
-  # Simplify to num, sym, str/sym and pair
-  # Diff pair vs lst? Lst ret T, Pair returns Any
+  #{
 
-  # CAR/CDR are base-0/base-01
+    Str and Delimeters are base-01/base-0
 
-  # Adjust brightness to indicate time
+    Violet = SYM
+    Blue = NUM
+    Cyan = T
+    Green = CONS
+    Yellow = NIL/()/''''
+    Orange = BOX
+    Red = PTR
+    Magenta = EXT
 
-  (cond ((num? Any) (prinl-info "get-color-type" "NUM")  *col-violet)
-        ((str? Any) (prinl-info "get-color-type" "STR")  *col-blue)
-        ((sym? Any) (prinl-info "get-color-type" "SYM")  *col-cyan)
-        ((pair Any) (prinl-info "get-color-type" "CONS") *col-green)
-        ((box? Any) (prinl-info "get-color-type" "BOX")  *col-yellow)))
+  }#
+  
+  # Adjust brightness for time
 
-
-#{
-  A Cell represents a single cell or CAR/CDR
-
-  Example: For sym, user can delete one cell of sym or all
-
-  This allows user to disassemble and reassemble cells
-
-  DATA
-  [.|.] -> [.|.] -> [.|.] -> [.|.]
-
-  REPR
-  [.|.]    -> [.|.]    -> [.|.]    -> [.|.]
-  |           |           |           |
-  [.|v]       [.|v]       [.|v]       [.|v]  (all pushed into timeline)
-
-  (or build same structure from cons/lists? and push into timeline)
-
-  A Cell holds the Data and the Verts
-  Example: For sym, Cell must be created for each cell in sym
-
-          Symbol
-          |
-          V
-    +-----+-----+
-    |  |  | VAL |
-    +--+--+-----+
-       | tail
-       |
-       V
-       +-----+-----+     +-----+-----+     +-----+--+--+     +----------+---------+
-       |  |  |  ---+---> | KEY |  ---+---> |  |  |  ---+---> |'hgfedcba'|'onmlkji'|
-       +--+--+-----+     +-----+-----+     +--+--+-----+     +----------+---------+
-          |                                   |
-          V                                   V
-          +-----+-----+                       +-----+-----+
-          | VAL | KEY |                       | VAL | KEY |
-          +-----+-----+                       +-----+-----+
+  (cond ((= Any NIL) *col-yellow)
+        ((lst? Any)
+         (if (lst? (cdr Any))
+             *col-base-0
+             *col-green)) # pair
+        (T
+         (cond ((= Any T)   *col-cyan)
+               ((num? Any)  *col-blue)
+               ((box? Any)  *col-orange)
+               ((ext? Any)  *col-magenta)
+               ((str? Any)  *col-base-01)
+               ((sym? Any)  *col-violet)))))
 
 
-                       cell
-                        |
-            +-----------+-----------+
-            |           |           |
-         Number       Symbol       Pair
-                        |
-                        |
-   +--------+-----------+-----------+
-   |        |           |           |
-  NIL   Internal    Transient    External
-
-}#
-
-(def '*pos-start-car)
-(def '*pos-end-car)
-(def '*pos-start-cdr)
-(def '*pos-end-cdr)
-
-(de draw-cell (Adr)
-
-  # Draw CAR/CDR addr
-  # Adjust scale for pointers?
-
-  # Draw CAR ref underneath
-  # Draw CDR ref to the right
-
-  (let ((Adr-Car Adr-Cdr) (struct Adr '((B . 8) (B . 8)))
-
-        Ptr-Pos-Start     (setq *pos-start-car (get *vert-ptr 'pos))
-
-        Verts-Car         (draw-str (glue " " Adr-Car) *col-base-0)
-
-        Pos-End-Car       (setq *pos-end-car (get *vert-ptr 'pos))
-
-        Dummy             (adv-ptr 2.0)
-
-        Pos-Start-Cdr     (setq *pos-start-cdr (get *vert-ptr 'pos))
-
-        Verts-Cdr         (draw-str (glue " " Adr-Cdr) *col-base-01)
-
-        Ptr-Pos-End       (setq *pos-end-cdr (get *vert-ptr 'pos)))
-
-    (push '*timeline (new '(+Particle) Data (conc Verts-Car Verts-Cdr)))
-
-
-    (let ((Long-Car Long-Cdr) (struct Adr '(N . 2))
-           Bin-Car            (bin Long-Car)
-           Tail-Car           (pack (tail 4 (chop Bin-Car)))
-           Bin-Cdr            (bin Long-Cdr)
-           Tail-Cdr           (pack (tail 4 (chop Bin-Cdr))))
-
-      (prin "Adr: ") (prinl Adr)
-      (prin "Car: ") (prinl Long-Car " " Bin-Car " " Tail-Car)
-      (prin "Cdr: ") (prinl Long-Cdr " " Bin-Cdr " " Tail-Cdr)
-
-      # ADD RES VERTS TO PARTICLE
-
-      # Move pointer underneath start of Car
-      (when (= Tail-Car "0000")
-        (nl-ptr 2.0)
-        (set-pos-ptr-x (get Ptr-Pos-Start 1)))
-      (check-ptr-type Adr Long-Car Tail-Car)
-
-      # Move pointer above end of Cdr
-      (when NIL
-        (when (= Tail-Cdr "0000")
-          (set-pos-ptr-x (get Ptr-Pos-End 1))        
-          (set-pos-ptr-y (get Ptr-Pos-End 2))
-          (adv-ptr 4.0))
-        (check-ptr-type Adr Long-Cdr Tail-Cdr))
-      
-      )))
-
-
-(de check-ptr-type (Ptr-Car Ptr Tail-Ptr)
+(de gen-particles (Any)
+  # Circ: 1 2 3 .
+  # Improper: 1 2 3 . 4
 
   #{
-    CONS:      ...0000
-    SYM:       ...1000
-    BIGNUM:    ...S100
-    SHORTNUM:  ...S010
+    (list 1 2 3 (4 5 (6)))
 
-    STR: stored as nums, shortnum takes entire PTR, bignum in CAR + CDR ptr
+    P1
+    - 1
+    - P2 = (2 3)
+    - [1]
 
-    S= pos:0 neg:1
+    P2
+    - 2
+    - P3 = (3)
+    - [2]
+
+    P3
+    - 3
+    - PL
+    - [3]
+
+    PL
+    - (4 5 (6))
+    - P4
+    - [( )]
+
+    # Close token can only be determined after trav list
+    
   }#
 
-  (cond ((= Tail-Ptr "0000")
-         (println "(draw-cell)")   
-         (draw-cell Ptr))
+  # NIL also a lst so place before to treat as sym
 
-        ((= Tail-Ptr "1000")
-          # Ptr is to CDR so -8
-          # Watch for NIL and circular ptrs
-          # For NIL, draw NIL underneath
-         (println "(draw-sym)" Ptr Ptr-Car)
-         (cond ((= Ptr 4380488) (draw-nil Ptr-Car Ptr Tail-Ptr))
-               ((= Ptr (+ Ptr-Car 8)) (println "str detected"))
-               (T (nl-ptr 2.0) (draw-cell (- Ptr 8)))))
-
-        (T
-         (cond ((= (pack (tail 3 (chop Tail-Ptr))) "100")
-                (println "(draw-big)"))
-
-               ((= (pack (tail 2 (chop Tail-Ptr))) "10")
-                (println "(draw-short)")
-                (draw-short Ptr-Car Ptr Tail-Ptr))
-
-               (T
-                (println "(draw-ptr)"))))))
+  (cond ((= Any NIL) (gen-atom Any T))
+        ((lst? Any)
+          # If CDR list then list else cons
+          (if (lst? (cdr Any))
+            (gen-list Any)
+            (gen-pair Any)))
+        (T           (gen-atom Any T))))
 
 
-(de draw-short (Ptr-Car Ptr Tail-Ptr)
+(de gen-list (Any)
+  (if (circ? Any)
+      (nil
+        (prinl "gen-cells: circ list")
+        (gen-atom Any))
 
-  (nl-ptr)
-  (set-pos-ptr-x (get *pos-start-car 1))
-  
-  (draw-str Ptr *col-violet))
+      (let (Open  (draw-chars "(" *col-base-0 NIL)
+            Parts (gen-list-parts Any)
+            First (car Parts))
+        (new '(+Particle)
+             Any
+             First
+             (push (draw-chars ")" *col-base-0 T) Open)))))
 
 
-(de draw-big () T)
+(de gen-list-parts (Any)
+  (let (List ()
+        Prev NIL)
+    # Connect each particle
+    # 1 -> 2 -> 3
+    (for A Any
+      (adv-ptr)
+      (let Part (gen-particles A)
+        (push 'List Part)
+        (when Prev
+          (put Prev 'next Part))
+        (setq Prev Part)))
+    (flip List)))
 
 
-(de draw-ptr () T)
+(de gen-pair (Any)
+  (let (Open  (draw-chars "(" (get-color-type Any) T)
+        Car   (gen-particles (car Any))
+        Dummy (adv-ptr)
+        Dot   (draw-chars "." (get-color-type Any) T)
+        Dummy (adv-ptr)
+        Cdr   (gen-particles (cdr Any))
+        Close (draw-chars ")" (get-color-type Any) T))
+    (new '(+Particle)
+         Any
+         (cons Car Cdr)
+         (append Open Dot Close))))
 
 
-(de draw-nil (Ptr-Car Ptr Tail-Ptr)
+(de gen-atom (Any Adv)
 
-  (if (= Ptr Ptr-Car)
-    (prog
-      (nl-ptr)
-      (set-pos-ptr-x (get *pos-start-car 1)))
-    (set-pos-ptr-x (get *pos-start-cdr 1)))
-  
-  (draw-str "NIL" *col-cyan))
+  (let (Col (get-color-type Any)
+        Verts (cond ((= Any NIL) (draw-sym Any Col Adv))
+                    ((num? Any)  (draw-num Any Col Adv))
+                    ((box? Any)  (draw-sym Any Col Adv))
+                    ((str? Any)  (draw-str Any Col Adv))
+                    (T           (draw-sym Any Col Adv))))
+    (new '(+Particle) Any NIL Verts)))
 
 
 ################################################################################
 
 # Batch these
 
-(de draw-str (Str Col)
+(de draw-str (Str Col Adv)
 
   (let Verts ()
 
-    (for C (chop Str)
+    (for C (chop (pack "\"" Str "\""))
       (push 'Verts (draw-glyph C Col))
-      (adv-ptr 1.0))
+      (when Adv (adv-ptr)))
 
     (flip Verts)))
 
 
-(de draw-num (Num Col)
+(de draw-num (Num Col Adv)
 
   (let Verts ()
 
-    (for N (chop (format Num))
+    (for C (chop (format Num))
       (push 'Verts (draw-glyph C Col))
-      (adv-ptr 1.0))
+      (when Adv (adv-ptr)))
 
     # Inc byte spacing depending on length
+
+    (flip Verts)))
+
+
+(de draw-sym (Sym Col Adv)
+
+  (let Verts ()
+
+    (for C (chop (sym Sym))
+      (push 'Verts (draw-glyph C Col))
+      (when Adv (adv-ptr)))
+
+    # Inc byte spacing depending on length
+
+    (flip Verts)))
+
+
+(de draw-chars (Chars Col Adv)
+  # Similar to str without quotes
+
+  (let Verts ()
+
+    (for C (chop Chars)
+      (push 'Verts (draw-glyph C Col))
+      (when Adv (adv-ptr)))
 
     (flip Verts)))
 

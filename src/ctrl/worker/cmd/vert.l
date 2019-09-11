@@ -10,7 +10,7 @@
 
   (cond ((= Keysym ksd~Return) (nl-ptr))
         ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
-        
+
 
 (de cmd-make-char-3 (Keysym)
 
@@ -38,21 +38,15 @@
 
 (de cmd-make-char (Keysym)
 
-  (let Data (cond ((= Keysym ksd~space) " ")
+  (let (Data (cond ((= Keysym ksd~space) " ")
                   ((= Keysym ksd~Return) (char 10))
                   (T (char Keysym)))
+        Data-2 (list 1 2 3 (list 'foo 'bar (list "hello" "world") "one long string") (cons NIL T) (box))
+        Part (gen-particles Data-2))
 
-    #(draw-cell 'Data)
-    #(draw-cell (adr Data))
+    (push '*timeline Part)
 
-    (let Ptr-Pos-Start (get *vert-ptr 'pos)
-      #(draw-cell (>> -4 (adr (cons (cons 1 2) (cons 3 4)))))
-      #(draw-cell (>> -4 (adr (list 1 2 3))))
-      (draw-cell (>> -4 (adr 'Data)))
-
-      (nl-ptr 6.0)
-      (set-pos-ptr-x (get Ptr-Pos-Start 1))))
-  
+    (adv-ptr 2.0))
 
   (cond ((= Keysym ksd~Return) (nl-ptr))
         ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
@@ -83,11 +77,21 @@
   # Note, this does not necessarily delete all the vertices as it dels PARTICLES
 
   (let? Prt (pop '*timeline)
-    (del-particle Prt)
-    
-    # For now, push pen back n vertices
-    # TODO: handle newline and tab
-    (adv-ptr (num-to-fl (- (+ (length (get Prt 'verts)) 1))))))
+
+    # Prt is either list or atom
+    (if (lst? Prt)
+        (for P Prt
+          (del-particle P)
+
+          # For now, push pen back n vertices
+          # TODO: handle newline and tab
+          (adv-ptr (num-to-fl (- (+ (length (get P 'verts)) 2))))))
+        (prog
+          (del-particle Prt)
+
+          # For now, push pen back n vertices
+          # TODO: handle newline and tab
+          (adv-ptr (num-to-fl (- (+ (length (get Prt 'verts)) 2)))))))
 
 
 (de cmd-eval ()
@@ -211,7 +215,7 @@
     (when (or (str? Last) (num? Last))
 
       (let Data (format Last)
-      
+
         (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))
 
         (adv-ptr)))))
@@ -245,11 +249,11 @@
         Data (cons Car Cdr))
 
     (println Data)
-  
+
     (push '*timeline (new '(+Particle) Data (draw-str "." (get-color-type Data)))))
 
   (adv-ptr))
-  
+
 
 (de cmd-any (Keysym)
 
@@ -260,7 +264,7 @@
       (println Data)
 
       # Cannot handle list yet
-    
+
       (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))
 
       (adv-ptr))))
@@ -271,7 +275,7 @@
   # Pack then Intern
   # Same as cmd-pack except result not added to timeline
   (let ((Verts Chars) (build-str))
-  
+
     (when Chars
 
       (adv-ptr)

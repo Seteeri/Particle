@@ -1544,3 +1544,122 @@ Eval
 - Programming is rarely pure typing
 
 https://www.osnews.com/story/18829/pt-i-spatial-memory/
+
+################################################################################
+
+DISPLAYS
+
+list
+- horizontal
+- vertical
+
+special
+
+- de
+  (de add (a b)
+    (+ a b))
+
+- let
+  (let (a b
+        c d)
+    (+ a c))
+
+
+- for, loop, while
+  (for (I 0
+        (< I 10)
+        (inc I))
+    I)
+
+- if, cond, when
+  (if (= A 1)
+      NIL
+      T)
+
+################################################################################
+
+Poss to draw structures directly by traversing pointers
+
+However, must store vertices somewhere
+
+Another issue is if cell is garbage collected, no way to know, thus cannot free
+vertices. So if vertices were stored in an assoc list - ptr:verts, have no way of knowing.
+
+User must explicitly add/remove data
+
+DATA: [.|.] -> [.|.] -> [.|.]
+      |        |        |
+REPR: [.|.] -> [.|.] -> [.|.]
+
+Particle
+- Dat (CAR)
+- Lnk (CDR)
+- Verts
+
+(list 1 2 3)
+
+Particle 1
+- 1
+- Particle 2 = (2 3)
+- [1]
+
+Particle 2
+- 2
+- Particle 3 = (3)
+- [2]
+
+Particle 3
+- 3
+- NIL
+- [3]
+
+
+################################################################################
+
+Ctrl tab will make cons
+- For now, create on new line
+
+Up/Down - move between cons
+Left/Right - move between atoms
+
+( T (a b c (d e f) g) (1 2 3) T )
+
+.
+  T
+  . a
+    b
+    c
+    .
+      d
+      e
+      f
+    g
+  . 1
+    2
+    3
+  T
+
+
+(de add (a b) (+ a b))
+
+(de add (a b)
+  (+ a b))
+
+.
+  de
+  add
+  .
+    a
+    b
+  .
+    +
+    a
+    b
+
+Default to code blocks like paredit
+
+Treemap
+
+Graphs are inefficient for scaling
+
+http://www.cs.umd.edu/hcil/treemap-history/
