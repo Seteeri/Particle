@@ -28,9 +28,11 @@
 
     Violet = SYM
     Blue = NUM
-    Cyan = T
+    Cyan = CUR
     Green = CONS
-    Yellow = NIL/()/''''
+    Yellow = NIL/()/'''' and T
+    - make () same as delimeter?
+    - and "" same as str?
     Orange = BOX
     Red = PTR
     Magenta = EXT
@@ -45,7 +47,7 @@
              *col-base-0
              *col-green)) # pair
         (T
-         (cond ((= Any T)   *col-cyan)
+         (cond ((= Any T)   *col-yellow)
                ((num? Any)  *col-blue)
                ((box? Any)  *col-orange)
                ((ext? Any)  *col-magenta)

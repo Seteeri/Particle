@@ -1663,3 +1663,52 @@ Treemap
 Graphs are inefficient for scaling
 
 http://www.cs.umd.edu/hcil/treemap-history/
+
+################################################################################
+
+#{
+  CMDS:
+  
+  Unused:
+  CTRL/ALT/SHIFT+TAB, CTRL/ALT/SHIFT+ESC, CAPS
+  * Use modifiers to modify fns?
+  
+  Identity:
+  Make-Char (aka trans sym) = ASCII+PACK
+  * How to input strs directly?
+  Make-Num = CTRL+NUM
+  * How to input multi-digit numbers directly?
+  Make-Int-Sym = ASCII+CMD(PACK+INTERN)
+  * How to input directly?
+  Make-Cons = SHIFT+TAB
+  
+  Combos/Variations:
+  Pack+Intern: cmd-intern-2
+  Pack+Format: cmd-format-2
+  
+  Identity:
+  Del/Rem = DEL/BACKSPACE
+  Eval = ALT+ENTER
+  Cut:   move ptr->buffer(Stack/LIFO)
+  Copy:  dup ptr->buffer(Stack/LIFO)
+  Paste: move buf->ptr(Stack/LIFO)
+  
+  Position
+  Cam: Ctrl+HJKL or CTRL+Arrow
+  Ptr: ALT+HJKL  or Arrow
+  
+  Transformers:
+  Intern:        T-Sym->I-Sym
+  Sym+Quote:     I-Sym->T-Sym
+  Pack/Cut/Chop: T-Sym->T-Sym
+  Format:        Str<->Num
+  
+  
+  MOLECULAR:
+  Create empty list
+  Push
+  Pop
+  List - by default, everything is already in a list
+  
+  ESC: Clear entire timeline
+}#

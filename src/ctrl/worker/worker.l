@@ -36,9 +36,20 @@
 (def '*verts)
 (def '*xkb)
 (def '*binds)
-(def '*timeline)
+
+# Use circular list to limit size
+# TIMELINE = sentinel
+(def '*timeline (list 'TIMELINE))
+
 (def '*vert-ptr)
-(def '*cnt-v)
+(def '*part-ptr 'TIMELINE)
+(def '*list-ptr *timeline)
+(def '*list-pre-ptr *timeline)
+(def '*atom-pre-ptr 'TIMELINE)
+
+(def '*vert-cur)
+(def '*place-cur 'after)
+(def '*cnt-v 1)
 
 
 # Wrapper libraries
@@ -134,20 +145,11 @@
   # Load all code into timeline
   # Execute timeline
 
-  # Designate vertex 1 as ptr
-  # Actually a cons cell
-  (setq *vert-ptr (pop '*verts))
-  (with *vert-ptr
-    (=: rgba (list (get *col-red 1) (get *col-red 2) (get *col-red 3) 1.0
-                   (get *col-red 1) (get *col-red 2) (get *col-red 3) 1.0
-                   (get *col-red 1) (get *col-red 2) (get *col-red 3) 1.0
-                   (get *col-red 1) (get *col-red 2) (get *col-red 3) 1.0)))
-  (cmd-update-vert *ipc *vert-ptr)
-
+  # Make these particles
+  (setq *vert-ptr (alloc-vert *col-red "*"))
   (nl-ptr)
+  (setq *vert-cur (alloc-vert *col-cyan "@"))
   
-  (setq *cnt-v 2)
-
   # Render timeline
   (when NIL
     (push '*timeline (new '(+Particle)
@@ -161,104 +163,137 @@
   (loop (ipc~poll> *ipc -1)))
 
 
+(de alloc-vert (Col Glyph)
+  (let Vert (pop '*verts)
+    (with Vert
+      (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
+                     (get Col 1) (get Col 2) (get Col 3) 1.0
+                     (get Col 1) (get Col 2) (get Col 3) 1.0
+                     (get Col 1) (get Col 2) (get Col 3) 1.0)))
+    (when Glyph (update-glyph> Vert Glyph))
+    (update-model-matrix> Vert)
+    (cmd-update-vert *ipc Vert)
+
+    (inc '*cnt-v)
+    
+    Vert))
+
+
 (de add-key-bindings ()
 
-  # CMDS:
-  #
-  # Unused:
-  # CTRL/ALT/SHIFT+TAB, CTRL/ALT/SHIFT+ESC, CAPS
-  # * Use modifiers to modify fns?
-  #
-  # Identity:
-  # Make-Char (aka trans sym) = ASCII+PACK
-  # * How to input strs directly?
-  # Make-Num = CTRL+NUM
-  # * How to input multi-digit numbers directly?
-  # Make-Int-Sym = ASCII+CMD(PACK+INTERN)
-  # * How to input directly?
-  # Make-Cons = SHIFT+TAB
-  #
-  # Combos/Variations:
-  # Pack+Intern: cmd-intern-2
-  # Pack+Format: cmd-format-2
-  #
-  # Identity:
-  # Del/Rem = DEL/BACKSPACE
-  # Eval = ALT+ENTER
-  # Cut:   move ptr->buffer(Stack/LIFO)
-  # Copy:  dup ptr->buffer(Stack/LIFO)
-  # Paste: move buf->ptr(Stack/LIFO)
-  #
-  # Position
-  # Cam: Ctrl+HJKL or CTRL+Arrow
-  # Ptr: ALT+HJKL  or Arrow
-  #
-  # Transformers:
-  # Intern:        T-Sym->I-Sym
-  # Sym+Quote:     I-Sym->T-Sym
-  # Pack/Cut/Chop: T-Sym->T-Sym
-  # Format:        Str<->Num
-  #
-  #
-  # MOLECULAR:
-  # (Make-Cons)
-  # Push
-  # Pop
-  # List - by default, everything is already in a list
-  #
-  # ESC: Clear entire timeline
+  #{
+    Camera
+    - Dir keys
+      - secondary usage
+      - context switch to dir keys shifts users mind to camera instead of content
+    * Pan - Alt+
+    * Zoom - PG-DN/UP or Ctrl+UP/DN
+    * Extent - Shift+
 
-  # For str and num, move ptr directly right
-  # For non-str, move ptr 2x right
+    Pointer
+    - Select+Place be different pointers?
+    * Place (mode) - R-Ctrl + WASD
+      - Horizontal = *
+      - Vertical   = ^ or ** or @
+    * Select - R-Alt + WASD
 
-  # Pack (>= 1 chr/num; until non-chr/num)
-  # Chrs -> Str
-  # Nums -> Num
 
-  (bind-keys (list ksd~Control-L     ksd~Tab) T cmd-make-cons)
-  (bind-keys (list ksd~Control-R     ksd~Tab) T cmd-make-cons)
+    Strings
+    * Cons/New (ASCII)
+    * Pack
+    * Intern (-> Sym)
 
-  # Eval
-  (bind-keys (list ksd~Return)               T cmd-make-char)
-  (bind-keys (list ksd~Shift-R   ksd~Return) T '((Keysym) (println "Shift-R + Return")))
-  (bind-keys (list ksd~Control-R ksd~Return) T cmd-eval-2)
-  (bind-keys (list ksd~Alt-R     ksd~Return) T cmd-any)
+    Symbols
+    * Cons/New (through Strings)
+    * Sym (-> String)
 
-  # Special case: Space (32)
-  # Mods are used for intern fn
+    Numbers
+    * Cons/New (Alt+#)
+    * Pack
+    * Format (<-> String)
+
+    List/Cons
+    * Make NIL/()/''
+      - option to enter new list after creation - default is NO so pressing
+      new list repeatedly will create list of lists rather than nested lists,
+      hmm technically lists are just nested cons
+    * Split
+    * Join
+
+    Eval
+
+  }#
+
+  # String/Symbol
+
+  (for (K 33 (<= K 255) (inc K))
+    (bind-keys (list K)                     T cmd-make-char)
+    (bind-keys (list ksd~Shift-L K)         T cmd-make-char)
+    (bind-keys (list ksd~Shift-R K)         T cmd-make-char))
+
+  # Special cases: Space (32) and Return
+  
   (bind-keys (list ksd~space)               T cmd-make-char)
   (bind-keys (list ksd~Shift-L   ksd~space) T cmd-pack)
   (bind-keys (list ksd~Control-L ksd~space) T cmd-intern)
   (bind-keys (list ksd~Alt-L     ksd~space) T cmd-format)
 
-  (for (K 33 (<= K 255) (inc K))
-    (bind-keys (list K)             T cmd-make-char)
-    (bind-keys (list ksd~Shift-L K) T cmd-make-char)
-    (bind-keys (list ksd~Shift-R K) T cmd-make-char))
+  (bind-keys (list ksd~Return)              T cmd-make-char)
 
-  # Ctrl + Num  = Num
+  (bind-keys (list ksd~End) T cmd-pack)
+
+  # Number
+  
   (for (K ksd~d0 (<= K ksd~d9) (inc K))
+  
     (bind-keys (list ksd~Control-L K) T cmd-make-num)
     (bind-keys (list ksd~Control-R K) T cmd-make-num))
 
-  (bind-keys (list ksd~End      ) T cmd-pack)
+  # List
+  
+  (bind-keys (list ksd~Control-L     ksd~Tab) T cmd-make-cons)
+  (bind-keys (list ksd~Control-R     ksd~Tab) T cmd-make-cons)
+
+  # Ops (non-std/new)
+
   (bind-keys (list ksd~BackSpace) T cmd-del)
   (bind-keys (list ksd~Delete   ) T cmd-del)
+  
+  (bind-keys (list ksd~Shift-R   ksd~Return) T '((Keysym) (println "Shift-R + Return")))
+  (bind-keys (list ksd~Control-R ksd~Return) T cmd-eval-2)
+  (bind-keys (list ksd~Alt-R     ksd~Return) T cmd-any)
 
   (bind-keys (list ksd~Control-L ksd~x) T '((Keysym) (println "Ctrl-L-x: CUT")))
   (bind-keys (list ksd~Control-L ksd~c) T '((Keysym) (println "Ctrl-L-c: COPY")))
   (bind-keys (list ksd~Control-L ksd~v) T '((Keysym) (println "Ctrl-L-v: PASTE")))
-  
   (bind-keys (list ksd~Alt-L     ksd~z) T '((Keysym) (println "Alt-L-z: REDO")))
   (bind-keys (list ksd~Control-L ksd~z) T '((Keysym) (println "Ctrl-L-z: UNDO")))
 
-  ##########
+  # Pointer
 
-  (bind-keys (list ksd~Right) T cmd-move-ptr-px)
-  (bind-keys (list ksd~Left)  T cmd-move-ptr-nx)
-  (bind-keys (list ksd~Up)    T cmd-move-ptr-py)
-  (bind-keys (list ksd~Down)  T cmd-move-ptr-ny)
+  # Placement (Semantic Space)
+  
+  (bind-keys (list ksd~Control-R ksd~w) T cmd-place-up) #'((Keysym) (println "Control-R + W: Place Up")))
+  (bind-keys (list ksd~Control-R ksd~a) T cmd-place-le) #'((Keysym) (println "Control-R + A: Place Le")))
+  (bind-keys (list ksd~Control-R ksd~s) T cmd-place-dn) #'((Keysym) (println "Control-R + S: Place Dn")))
+  (bind-keys (list ksd~Control-R ksd~d) T cmd-place-ri) #'((Keysym) (println "Control-R + D: Place Ri")))
 
+  # Selection
+
+  (bind-keys (list ksd~Alt-R ksd~w) T cmd-select-up) #'((Keysym) (println "Alt-R + W: Select Up")))
+  (bind-keys (list ksd~Alt-R ksd~a) T cmd-select-le) #'((Keysym) (println "Alt-R + A: Select Le")))
+  (bind-keys (list ksd~Alt-R ksd~s) T cmd-select-dn) #'((Keysym) (println "Alt-R + S: Select Dn")))
+  (bind-keys (list ksd~Alt-R ksd~d) T cmd-select-ri) #'((Keysym) (println "Alt-R + D: Select Ri")))
+
+  # Euclidean Space
+
+  (bind-keys (list ksd~Right)       T cmd-translate-ptr-px)
+  (bind-keys (list ksd~Left)        T cmd-translate-ptr-nx)
+  (bind-keys (list ksd~Up)          T cmd-translate-ptr-py)
+  (bind-keys (list ksd~Down)        T cmd-translate-ptr-ny)
+
+  # Camera
+  
   (bind-keys (list ksd~Control-L ksd~Right) T cmd-move-cam-px)
   (bind-keys (list ksd~Control-L ksd~Left)  T cmd-move-cam-nx)
   (bind-keys (list ksd~Control-L ksd~Up)    T cmd-move-cam-py)
@@ -477,7 +512,6 @@
                              (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
 
           #(update-glyph> Vert (char (rand 33 126)))
-
           (update-model-matrix> Vert)
 
           # FIX - use update...

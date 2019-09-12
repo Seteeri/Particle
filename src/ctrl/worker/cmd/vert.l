@@ -1,52 +1,28 @@
-(de cmd-make-char-2 (Keysym)
-
-  (let (Data  (cond ((= Keysym ksd~space) " ")
-                    ((= Keysym ksd~Return) (char 10))
-                    (T (char Keysym)))
-        Verts (draw-str Data (get-color-type Data))
-        Prt   (new '(+Particle) Data Verts))
-
-    (push '*timeline Prt))
-
-  (cond ((= Keysym ksd~Return) (nl-ptr))
-        ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
-
-
-(de cmd-make-char-3 (Keysym)
-
-  # Color car/cdr different?
-
-  # Draw bytes
-  # Draw value
-
-  (let (Data  (cond ((= Keysym ksd~space) " ")
-                    ((= Keysym ksd~Return) (char 10))
-                    (T (char Keysym)))
-        (Adr-Car Adr-Cdr) (struct (- (>> -4 (adr Data)) 8) '((B . 8) (B . 8)))
-        Adr  (pack (glue " " Adr-Car) " " (glue " " Adr-Cdr))
-        Verts-Adr (draw-str Adr (get-color-type Data))
-        Dummy (nl-ptr)
-        Verts-Repr (draw-str Data (get-color-type Data))
-        Prt   (new '(+Particle) Data Verts))
-
-    (push '*timeline Prt))
-
-  (cond ((= Keysym ksd~Return) (nl-ptr))
-        ((= Keysym ksd~Tab)    (adv-ptr 2.0))
-        (T (adv-ptr 2.0))))
-
-
 (de cmd-make-char (Keysym)
 
   (let (Data (cond ((= Keysym ksd~space) " ")
                   ((= Keysym ksd~Return) (char 10))
                   (T (char Keysym)))
-        Data-2 (list 1 2 3 (list 'foo 'bar (list "hello" "world") "one long string") (cons NIL T) (box))
-        Part (gen-particles Data-2))
+        #Data-2 (list 1 2 3 (list 'foo 'bar (list "hello" "world") "one long string") (cons NIL T) (box))
+        Part (gen-particles Data))
+
+    # Link Part to prev Particle or selection
+    (with Part
+      (=: next (car *timeline)))
+
+    # Pos depending on place
+    (cond ((= *place-cur 'above)  T)
+          ((= *place-cur 'under)  T)
+          ((= *place-cur 'before) T)  
+          ((= *place-cur 'after)  T))
+
+    # Set ptr data
+    #(setq *atom-pre-ptr (car *timeline))
+    (setq *part-ptr Part)
 
     (push '*timeline Part)
 
-    (adv-ptr 2.0))
+    (adv-ptr))
 
   (cond ((= Keysym ksd~Return) (nl-ptr))
         ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
@@ -75,23 +51,27 @@
   # 3. For Verts: push Verts
 
   # Note, this does not necessarily delete all the vertices as it dels PARTICLES
+  
+  # MODIFY COUNTER ALSO
 
-  (let? Prt (pop '*timeline)
+  (unless (= (car *timeline) 'TIMELINE)
 
-    # Prt is either list or atom
-    (if (lst? Prt)
-        (for P Prt
-          (del-particle P)
+    (let Prt (pop '*timeline)
 
-          # For now, push pen back n vertices
-          # TODO: handle newline and tab
-          (adv-ptr (num-to-fl (- (+ (length (get P 'verts)) 2))))))
-        (prog
-          (del-particle Prt)
+      # Prt is either list or atom
+      (if (lst? Prt)
+          (for P Prt
+            (del-particle P)
 
-          # For now, push pen back n vertices
-          # TODO: handle newline and tab
-          (adv-ptr (num-to-fl (- (+ (length (get Prt 'verts)) 2)))))))
+            # For now, push pen back n vertices
+            # TODO: handle newline and tab
+            (adv-ptr (num-to-fl (- (+ (length (get P 'verts)) 2))))))
+          (prog
+            (del-particle Prt)
+
+            # For now, push pen back n vertices
+            # TODO: handle newline and tab
+            (adv-ptr (num-to-fl (- (+ (length (get Prt 'verts)) 1))))))))
 
 
 (de cmd-eval ()

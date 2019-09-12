@@ -185,11 +185,11 @@ Store DAGs as binary trees?
         * Replace old list with output
         * Or push output
     
-  * Ptr - should move atomically/semantically instead of spatially
+  * Cur/Ptr
+    * Implement!
+      * Make globals both particles instead of verts
     * Use touch/mouse to move spatially
     * Displacement scales with zoom level
-    * Left/Right: Move to prev/next cons
-    * Up/Down: Move to prev/next list/cons
 
   * List Functionality
     * Draw full cell?

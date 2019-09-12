@@ -385,3 +385,80 @@ RAlt = 100
 # = # + 1 (1=2)
 F1 = 59
 F2 = 60
+
+########
+WORKFLOW
+
+1. Manx
+2. Strings/Symbols
+3. Numbers/Strings
+4. Lists/Cons
+
+# MANEUVERING
+
+L/R move between atoms
+U/D move between nested lists
+
+https://www.reddit.com/r/emacs/comments/3sfmkz/could_this_be_a_pareditsmartparens_killer/
+
+
+# STRINGS/INTERN
+
+1. Push strings
+2. Pack/replace strings; save point
+
+3. Push strings
+2. Pack/replace strings; save point
+
+Repeat...
+
+Example:
+
+-> H e l l o
+-> Hello
+
+-> Hello W o r l d
+-> Hello World
+
+OR
+
+-> H e l l o   W o r l d
+-> Hello World
+
+Workflow is useful for mixing lists
+So to do: (pack "abc" "def")
+
+1. Push p,a,c,k
+2. Pack/Replace->Intern
+
+-> p a c k
+-> "pack"
+-> pack
+
+-> a b c
+-> "abc"
+
+-> d e f
+-> "def"
+
+-> <eval>
+
+# NUMBERS
+
+Similar...
+
+To go from (1 2 3) -> 123 
+
+-> 1 2 3
+-> Pack/Format/Replace
+
+NUM <-> STR
+
+straightforward
+
+# LISTS
+
+Making lists
+
+1. Use CTRL+TAB/CAPS to create empty list
+
