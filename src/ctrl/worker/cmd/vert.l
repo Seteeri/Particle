@@ -1,31 +1,56 @@
+(de lst-ptr ()
+  (car *lists-ptr))
+
+(de push-ptr (Part)
+  # Pop list, cons item, push new list back
+
+  # Calculate XY adv based on verts of new part
+  # Need to redraw post atoms and/or close parenthesis after each push
+  # - Update needs to recurse/propogate through lists and nested lists etc
+  #   -> Similar to generate particles
+  # -> Later, use multiple workers to traverse graph
+  #   - Send tasks to controller, wait for completion
+  
+  (let List (pop '*lists-ptr)
+    (push '*lists-ptr (cons Part List))))
+
+(de pop-ptr ()
+  # Pop list, pop item, push new list back
+  (let (List (pop '*lists-ptr)
+        Item (pop 'List))
+     (push '*lists-ptr List)
+     Item))
+
+(de car-ptr ()
+  # Pop list, pop item, push new list back
+  (car (car *lists-ptr)))
+  
+##########################
+
+
 (de cmd-make-char (Keysym)
+
+  # Data-2 (list 1 2 3 (list 'foo 'bar (list "hello" "world") "one long string") (cons NIL T) (box))
 
   (let (Data (cond ((= Keysym ksd~space) " ")
                   ((= Keysym ksd~Return) (char 10))
                   (T (char Keysym)))
-        #Data-2 (list 1 2 3 (list 'foo 'bar (list "hello" "world") "one long string") (cons NIL T) (box))
         Part (gen-particles Data))
+
+    (println Data)
 
     # Link Part to prev Particle or selection
     (with Part
-      (=: next (car *timeline)))
+      (=: next (car-ptr)))
 
-    # Pos depending on place
-    (cond ((= *place-cur 'above)  T)
-          ((= *place-cur 'under)  T)
-          ((= *place-cur 'before) T)  
-          ((= *place-cur 'after)  T))
-
-    # Set ptr data
-    #(setq *atom-pre-ptr (car *timeline))
-    (setq *part-ptr Part)
-
-    (push '*timeline Part)
+    (push-ptr Part)
 
     (adv-ptr))
 
-  (cond ((= Keysym ksd~Return) (nl-ptr))
-        ((= Keysym ksd~Tab)    (adv-ptr 2.0))))
+  #(cond ((= Keysym ksd~Return) (nl-ptr))
+  #      ((= Keysym ksd~Tab)    (adv-ptr 2.0)))
+
+  )
 
 
 (de cmd-del (Dir)
@@ -51,12 +76,12 @@
   # 3. For Verts: push Verts
 
   # Note, this does not necessarily delete all the vertices as it dels PARTICLES
-  
+
   # MODIFY COUNTER ALSO
 
-  (unless (= (car *timeline) 'TIMELINE)
+  (unless (= (car-ptr) 'TIMELINE)
 
-    (let Prt (pop '*timeline)
+    (let Prt (pop-ptr)
 
       # Prt is either list or atom
       (if (lst? Prt)
@@ -74,189 +99,188 @@
             (adv-ptr (num-to-fl (- (+ (length (get Prt 'verts)) 1))))))))
 
 
-(de cmd-eval ()
-
-  (println "cmd-eval")
-
-  # Eval last item
-
-  # Variations:
-  # Eval last
-  # Eval list
-  # Eval str
-
-  (let (Data (get (car *timeline) 'data)
-        Str (pack Data)
-        Any (any Str)
-        Res (eval Any)
-        Col (get-color-type Res))
-
-    (prinl-info "cmd-eval" (pack Str))
-
-    #(nl-ptr)
-    (adv-ptr)
-
-    (push '*timeline
-          (new '(+Particle)
-               Res
-               (draw-str (if (num? Res) (format Res) (format (adr Res)))
-                         Col)))
-
-    (adv-ptr)))
-
-
-(de cmd-eval-2 ()
-
-  (println "cmd-eval-2")
-
-  # Eval list (default is entire timeline)
-
-  (let (Data (build-data)
-        Res (eval Data)
-        Col (get-color-type Res))
-
-    (print-tl)
-    (print-tl-2)
-    (println Res)
-
-    (push '*timeline
-          (new '(+Particle)
-               Res
-               (draw-str (if (num? Res) (format Res) (format (adr Res)))
-                         Col)))
-
-    (adv-ptr)))
-
-
-(de cmd-pack (Keysym)
-
-  (prinl-info "cmd-pack")
-
-  # Replace with str
-
-  # Pop until non-str/num
-
-  (let Data (pack (build-data))
-
-    (println Data)
-
-    # Adv ptr before drawing
-    (adv-ptr)
-
-    # Draw data, create particle, add to timeline
-    (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))))
-
-
-(de cmd-pack-alt (Keysym) T)
-
-
-(de cmd-intern (Keysym)
-
-  # Replace last item (t-sym) with i-sym
-
-  # Ensure last item is a str
-
-  (when (str? (get (car *timeline) 'data))
-
-    (let Prt (pop '*timeline)
-
-      # TODO: Assumes proper/default spacing
-      (adv-ptr (format (pack (- (length (get Prt 'verts))) ".0") *Scl))
-
-      # TODO: Reuse verts
-      (intern-particle (get Prt 'data))
-
-      (del-particle Prt)
-
-      # TODO: Adjust ptr to right of new particle
-      (adv-ptr))))
-
-
-(de cmd-intern-alt (Keysym) T)
-
-
 (de cmd-make-num (Keysym)
 
   (let (Data  (format (char Keysym))
-        Verts (draw-str Data (get-color-type Data))
-        Prt   (new '(+Particle) Data Verts))
+        Verts (draw-chars Data (get-color-type Data) T)
+        Prt   (new '(+Particle)
+                   Data
+                   (car-ptr)
+                   Verts))
 
-    (push '*timeline Prt)
+    (push-ptr Prt)
 
     (adv-ptr)))
 
 
 (de cmd-format (Keysym)
 
-  # Convert last num to str or last str to num
+  (prinl-info "cmd-format")
 
-  (let Last (get (car *timeline) 'data)
+  # Convert num<->str
 
-    (when (or (str? Last) (num? Last))
+  (let Last (get (car-ptr) 'data)
 
-      (let Data (format Last)
+    (when (or (str? Last)
+              (num? Last))
 
-        (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))
+      (let (Data (format Last)
+            Col (get-color-type Data)
+            Verts (if (num? Data)
+                      (draw-chars Data Col T)
+                      (draw-str Data Col T)))
+
+        (push-ptr
+              (new '(+Particle)
+                   Data
+                   (car-ptr)
+                   Verts))
 
         (adv-ptr)))))
 
 
-(de cmd-make-cons (Keysym)
+(de cmd-pack (Keysym)
 
-  # Make cons from last two objects
+  (prinl-info "cmd-pack")
 
-  # REPLACED:
-  # A B C D
-  # A B (C . D)
-  # A (B . (C . D))
-  # (A . (B . (C . D)))
+  # Convert to str and push
 
-  # APPENDED:
-  # A B C D
-  # A B C D -> cons -> (C . D)
-  # A B C D (C . D) -> cons -> (D (C . D))
-  # A B C D (C . D) (D (C . D))
+  # This is special as it builds back until non-str/num
+  # Normally, uses last item
 
-  # Data: (list A B C D) = (A . (B . (C . (D . NIL))))
-  # Draw: A . B . C . D (where . is colored)
+  (let Str (pack (get (build-pack) 2))
 
-  # Data: (list A (B C) D (E F) G) = (A . ((B . (C . NIL)) . (D . ((E . (F . NIL)) . (G . NIL)))))
-  # Draw: A .     D .     G
-  #         B . C   E . F
+    # Draw data, create particle, add to timeline
+    (push-ptr
+          (new '(+Particle)
+               Str
+               (car-ptr)
+               (draw-str Str (get-color-type Str) T)))
 
-  (let (Car (get (car *timeline) 'data)
-        Cdr (get (car (cdr *timeline)) 'data)
-        Data (cons Car Cdr))
+    # Set next as needed
 
-    (println Data)
+    (adv-ptr)))
 
-    (push '*timeline (new '(+Particle) Data (draw-str "." (get-color-type Data)))))
+
+(de cmd-pack-2 (Keysym)
+
+  (prinl-info "cmd-pack-2")
+
+  # Convert to str and push
+
+  # Unlike OG, use last item
+  # To use this normally, must create list then push chars into that
+
+  (let Str (pack (get (car-ptr) 'data))
+
+    # Draw data, create particle, add to timeline
+    (push-ptr
+          (new '(+Particle)
+               Str
+               (car-ptr)
+               (draw-str Str (get-color-type Str) T)))
+
+    # Set next as needed
+
+    (adv-ptr)))
+
+
+(de cmd-chop (Keysym)
+
+  (prinl-info "cmd-chop")
+
+  (let Last (get (car-ptr) 'data)
+  
+    (push-ptr (gen-particles (chop Last))))
 
   (adv-ptr))
 
 
-(de cmd-any (Keysym)
+(de cmd-intern (Keysym)
 
-  (let Last (get (car *timeline) 'data)
+  (prinl-info "cmd-intern")
 
-    (let Data (any Last)
+  # Convert last item (t-sym) with i-sym
 
-      (println Data)
+  # Ensure last item is a str
 
-      # Cannot handle list yet
+  (let Last (get (car-ptr) 'data)
 
-      (push '*timeline (new '(+Particle) Data (draw-str Data (get-color-type Data))))
+    (when (str? Last)
+
+      (push-ptr
+            (new '(+Particle)
+                 (intern Last)
+                 (car-ptr)
+                 (draw-chars Last (get-color-type 'data) T)))
 
       (adv-ptr))))
 
 
-(de cmd-intern-2 (Keysym)
+(de cmd-eval ()
 
-  # Pack then Intern
-  # Same as cmd-pack except result not added to timeline
-  (let ((Verts Chars) (build-str))
+(prinl-info "cmd-eval")
 
-    (when Chars
+  # Eval last item - must be data
+  # Else:
+  # Str (pack Data)
+  # Any (any Str)
 
-      (adv-ptr)
-      (intern-particle (pack Chars)))))
+  (let (Last (get (car-ptr) 'data)
+        Any (eval Last))
+
+    (push-ptr (gen-particles Any)))
+
+  (adv-ptr))
+      
+
+(de cmd-any (Keysym)
+
+  (prinl-info "cmd-any")
+
+  # Str -> Any
+
+  (let (Last (get (car-ptr) 'data)
+        Any (any Last))
+
+    (push-ptr (gen-particles Any))
+
+    (adv-ptr)))
+
+
+(de cmd-sym ()
+
+  (prinl-info "cmd-sym")
+
+  # Rev of Any
+  # Any -> Str
+
+  (let (Last (get (car-ptr) 'data)
+        Str (sym Last))
+
+    (push-ptr
+          (new '(+Particle)
+               Str
+               (car-ptr)
+               (draw-str Str (get-color-type Str) T))))
+
+  (adv-ptr))
+
+
+################################################################################
+
+
+(de cmd-make-list (Keysym)
+
+  (prinl-info "cmd-make-list")
+
+  # Produce NIL
+  # Use can enter NIL, at which point is converted into "()"
+
+  (let List (list)
+  
+    (push-ptr (gen-particles List))
+
+    (push '*lists-ptr List)
+
+    (adv-ptr)))

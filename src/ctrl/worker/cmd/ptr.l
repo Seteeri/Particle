@@ -9,39 +9,6 @@
 
   * New - ?
   
-  * Place - repositions pointer semantically
-    * Lists point one direction
-    * Options:
-      * Below prev/next in list: R-Ctrl + A/D
-      * Below above/below in list: R-Ctrl + W/S
-    * Default is R
-    * Example:
-
-      To do:
-      
-      (a
-       b
-       c)
-
-       vs
-
-       (a b c)
-
-       First:
-
-       -> a
-          a
-          
-       -> b
-          a
-          b
-
-       -> c
-          a
-          b
-          c
-      
-  
   * Select - R-Alt+WASD
     * L/R - move list items
     * U/D - move lists
@@ -89,53 +56,61 @@
   * Hold both R-Alt + R-Ctrl to move together
     - Or by itself to move cursor to pointer
 
-  EXAMPLE
+  * Place
+
+    * Selection is always before cursor (old->new)
+    * Push unilaterally to match data structure
+    * Use toggle switch? TAB? Enter?
+
+    1: Given
+    
+    (let (a b
+          c d)
+
+    -> Produce (Insert after b, before c)
+
+    (let (a b
+          e f
+          c d)
+
+    Enter list, get to b
+    (let (a @ b
+          c d)
+    
+    Press +Dn to move below (below start prev row)
+    (let (a b
+          @
+          c d)
+
+    Press +Up to return to above (end of prev row)
+    (let (a b @
+          c d)
+
+    (let (a b
+          e f @
+          c d)
+
+    * Can press +Dn to produce another row or move sel to d to continue
+    push
+
+    * So what does Dn/Up do in middle???
+      -> Currently, nothing or same as Lt/Rt
+    
+
+    Issue
+
+    (let (a b
+          c d
+          @)
+
+    * How does it know how far to move vertically?
+      -> Store lines in list particle - store portion of list/CDR
   
-    * To do let:
-
-      (let (a b
-            c d
-            e f)
-        T)
-
-      - overall: let, nl, Alt+S, a, b, Ctrl+S x2, c, d, Ctrl+S x2, e, f, Alt+W, Ctrl+S x2, T, Alt+W
-      
-        = type let, new list, enter child list, type a, type b, place below prev x2,
-          type c, type d, place below prev x2,
-          type e, type f,
-          enter parent list, place below prev x2, type T, enter parent list
-          
-        - When modifying?
-          -> Example: from a; add x after b, y after d, z after f
-             - goto mode place after: R-Ctrl+D
-             - goto b: R-Alt+D
-             - cons "x": x
-             - goto d: R-Alt+D
-             - cons "y": y
-             - goto f: R-Alt+D
-             - cons "z": z
-             
-        - remember, after new sexpr, it is selected...
-        
-        - note new str is set to new selection, but place is physically elsewhere
-          - this indicates two different cursors!
-          - @=cursor=place
-          - *=pointer=selection (or color object)
-          - similar to Blender's 3D cursor vs selection highlight, except...
-          poss multiple cursors and pointers and can ref to same types to
-          build compounds to do multi-select or multi-place so with the above
-          so can select multiple and can place multiple
-
-      - Or turn all strings into syms at the end
 }#
 
 
 ############################
 # Placement (Semantic Space)
-
-# A/D = mode -> place prev/after
-# - rather than always place after, and move selection
-# W/S = mode -> place above/below
 
 (de cmd-place-up (Keysym)
   (println "Control-R + W: Place Up")
@@ -158,21 +133,39 @@
 #########################
 # Selection (User Space?)
 
-(de cmd-select () T)
-
 (de cmd-select-up (Keysym)
-  (println "Alt-R + W: Select Up")
-  
-  # Search for parent list (store prev list in *list-pre-ptr)
-  T)
+  (println "Control-R + W: Select Up")  
+  (when *lists-ptr
+    (pop '*lists-ptr)))
+
   
 (de cmd-select-dn (Keysym)
-  (println "Alt-R + S: Select Dn")
-  
+  (println "Control-R + S: Select Dn")
+
+  # Push cur list into past list?
+
+  # Enter list
   # Search for subsequent list in current list
-  # Store current list in prev list, before moving
-  
-  T)
+
+  (let (Part (car-ptr)
+        Last (get Part 'data))
+
+    (when (lst? Last)
+
+      (println "BEFORE")
+      (pretty *lists-ptr)
+      (prinl)
+
+      (push '*lists-ptr Part)
+
+      (println "AFTER")
+      (pretty *lists-ptr)
+      (prinl)
+
+      # Move pointer or change color
+      #(change-col-particle Part *col-magenta)
+
+      T)))
 
 
 # NEXT
@@ -183,21 +176,20 @@
 # (f d s a)
 #     <- *
 
-
 (de cmd-select-le (Keysym)
-  (println "Alt-R + A: Select Le")
+  (println "Control-R + A: Select Le")
 
   # Have to get location in current list to get previous...not efficient
   # or...make particle doubly-linked list
   # or...r-tree search
 
+  # Cache this list
+
   # Traverse list until current particle found
   # While iterating save, prev
 
-  #(pretty *timeline) (println *part-ptr) (prinl)
-
   (let (Prev NIL
-        Part (car *timeline))
+        Part (car-ptr))
 
     (until (or (= Part *part-ptr)
                (= Part 'TIMELINE)
@@ -210,10 +202,12 @@
 
   
 (de cmd-select-ri (Keysym)
-  (println "Alt-R + D: Select Ri")
+  (println "Control-R + D: Select Ri")
 
   # Move to next item
   # Check current particle next value
+
+  # Save prev for efficiency
 
   (unless (= *part-ptr 'TIMELINE)
     (with *part-ptr

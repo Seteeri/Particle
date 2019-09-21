@@ -1712,3 +1712,91 @@ http://www.cs.umd.edu/hcil/treemap-history/
   
   ESC: Clear entire timeline
 }#
+
+################################################################################
+
+
+#{
+  Camera
+  - Dir keys
+    - secondary usage
+    - context switch to dir keys shifts users mind to camera instead of content
+  * Pan - Alt+
+  * Zoom - PG-DN/UP or Ctrl+UP/DN
+  * Extent - Shift+
+
+  Pointer
+  - Select+Place be different pointers?
+  * Place (mode) - R-Ctrl + WASD
+    - Horizontal = *
+    - Vertical   = ^ or ** or @
+  * Select - R-Alt + WASD
+
+  Strings
+  * Cons/New (ASCII)
+  * Pack
+  * Chop?
+  * Intern (-> Sym)
+  * Any (-> Str)
+
+  Symbols
+  * Cons/New (through Strings)
+  * Sym (-> String)
+
+  Numbers
+  * Cons/New (Alt+#)
+  * Pack
+  * Format (<-> String)
+
+  List/Cons
+  * Make NIL/()/''
+    - option to enter new list after creation - default is NO so pressing
+    new list repeatedly will create list of lists rather than nested lists,
+    hmm technically lists are just nested cons
+  * Split
+  * Append/Conc (n/d)
+  * Reverse
+
+  Eval
+
+  ##################################
+
+  Non-Shift Keys:
+
+  Shift is primary - destructive
+  Alt is secondary - non-destructive
+
+  OR
+
+  Alpha Keys:
+
+  * Excl WASD e.g.
+  * Ctrl is primary - destructive
+  * Alt is secondary - non-destructive
+  * Numerics use Alt for num input
+  * Layout is non-mnemonic to be consistent - all of them
+  can't start with the first letter due to conflicts
+  * Higher freq cmds closer to WASD like base commands
+  * Place opp. funcs contiguous
+    * Use same button and auto convert?
+
+  Q = Pack (destructive)
+
+  E = Eval (non-destructive)
+
+  F = Any (destructive) - Str -> Any
+  G = Sym (non-destructive) - Any -> Str
+
+  H = Intern (destructive)
+
+  T = Format (destructive)
+
+  Y = Reverse/Flip
+
+  Enter = List
+  Tab   = Cons
+  Space = ?
+  Caps = ?
+
+  TAB = help
+}#

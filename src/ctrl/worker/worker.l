@@ -44,8 +44,7 @@
 (def '*vert-ptr)
 (def '*part-ptr 'TIMELINE)
 (def '*list-ptr *timeline)
-(def '*list-pre-ptr *timeline)
-(def '*atom-pre-ptr 'TIMELINE)
+(def '*lists-ptr (list *timeline))
 
 (def '*vert-cur)
 (def '*place-cur 'after)
@@ -111,7 +110,7 @@
   (setq *xkb (new '(+Xkb)))
 
   (add-key-bindings)
-  
+
   (gc 256)
 
   (in "verts.bin"
@@ -147,17 +146,13 @@
 
   # Make these particles
   (setq *vert-ptr (alloc-vert *col-red "*"))
-  (nl-ptr)
-  (setq *vert-cur (alloc-vert *col-cyan "@"))
-  
+  #(nl-ptr)
+  #(setq *vert-cur (alloc-vert *col-cyan "@"))
+
   # Render timeline
-  (when NIL
-    (push '*timeline (new '(+Particle)
-                          *timeline
-                          (draw-str "*timeline"
-                                    (get-color-type *timeline))))
-    (adv-ptr))
-  
+  (push-ptr (gen-particles *timeline))
+  (adv-ptr)
+
 
   (prinl-info "init-worker" "Starting epoll...")
   (loop (ipc~poll> *ipc -1)))
@@ -175,115 +170,79 @@
     (cmd-update-vert *ipc Vert)
 
     (inc '*cnt-v)
-    
+
     Vert))
 
 
 (de add-key-bindings ()
 
-  #{
-    Camera
-    - Dir keys
-      - secondary usage
-      - context switch to dir keys shifts users mind to camera instead of content
-    * Pan - Alt+
-    * Zoom - PG-DN/UP or Ctrl+UP/DN
-    * Extent - Shift+
+  # Singular Ops (new/del)
 
-    Pointer
-    - Select+Place be different pointers?
-    * Place (mode) - R-Ctrl + WASD
-      - Horizontal = *
-      - Vertical   = ^ or ** or @
-    * Select - R-Alt + WASD
+  ## List
 
+  (bind-keys (list ksd~Control-L     ksd~Return) T cmd-make-list)
+  (bind-keys (list ksd~Control-R     ksd~Return) T cmd-make-list)
 
-    Strings
-    * Cons/New (ASCII)
-    * Pack
-    * Intern (-> Sym)
+  (bind-keys (list ksd~BackSpace) T cmd-del)
+  (bind-keys (list ksd~Delete   ) T cmd-del)
 
-    Symbols
-    * Cons/New (through Strings)
-    * Sym (-> String)
+  ## Number
 
-    Numbers
-    * Cons/New (Alt+#)
-    * Pack
-    * Format (<-> String)
+  (for (K ksd~d0 (<= K ksd~d9) (inc K))
 
-    List/Cons
-    * Make NIL/()/''
-      - option to enter new list after creation - default is NO so pressing
-      new list repeatedly will create list of lists rather than nested lists,
-      hmm technically lists are just nested cons
-    * Split
-    * Join
+    (bind-keys (list ksd~Control-L K) T cmd-make-num)
+    (bind-keys (list ksd~Control-R K) T cmd-make-num))
 
-    Eval
-
-  }#
-
-  # String/Symbol
+  ## String/Symbol
 
   (for (K 33 (<= K 255) (inc K))
     (bind-keys (list K)                     T cmd-make-char)
     (bind-keys (list ksd~Shift-L K)         T cmd-make-char)
     (bind-keys (list ksd~Shift-R K)         T cmd-make-char))
-
-  # Special cases: Space (32) and Return
-  
+  ### Special cases: Space (32), Return, Tab
   (bind-keys (list ksd~space)               T cmd-make-char)
-  (bind-keys (list ksd~Shift-L   ksd~space) T cmd-pack)
-  (bind-keys (list ksd~Control-L ksd~space) T cmd-intern)
-  (bind-keys (list ksd~Alt-L     ksd~space) T cmd-format)
-
   (bind-keys (list ksd~Return)              T cmd-make-char)
+  (bind-keys (list ksd~Tab)                 T cmd-make-char)
 
-  (bind-keys (list ksd~End) T cmd-pack)
-
-  # Number
-  
-  (for (K ksd~d0 (<= K ksd~d9) (inc K))
-  
-    (bind-keys (list ksd~Control-L K) T cmd-make-num)
-    (bind-keys (list ksd~Control-R K) T cmd-make-num))
-
-  # List
-  
-  (bind-keys (list ksd~Control-L     ksd~Tab) T cmd-make-cons)
-  (bind-keys (list ksd~Control-R     ksd~Tab) T cmd-make-cons)
-
-  # Ops (non-std/new)
-
-  (bind-keys (list ksd~BackSpace) T cmd-del)
-  (bind-keys (list ksd~Delete   ) T cmd-del)
-  
-  (bind-keys (list ksd~Shift-R   ksd~Return) T '((Keysym) (println "Shift-R + Return")))
-  (bind-keys (list ksd~Control-R ksd~Return) T cmd-eval-2)
-  (bind-keys (list ksd~Alt-R     ksd~Return) T cmd-any)
+  ## Std Ops
 
   (bind-keys (list ksd~Control-L ksd~x) T '((Keysym) (println "Ctrl-L-x: CUT")))
   (bind-keys (list ksd~Control-L ksd~c) T '((Keysym) (println "Ctrl-L-c: COPY")))
   (bind-keys (list ksd~Control-L ksd~v) T '((Keysym) (println "Ctrl-L-v: PASTE")))
-  (bind-keys (list ksd~Alt-L     ksd~z) T '((Keysym) (println "Alt-L-z: REDO")))
   (bind-keys (list ksd~Control-L ksd~z) T '((Keysym) (println "Ctrl-L-z: UNDO")))
+  (bind-keys (list ksd~Alt-L     ksd~z) T '((Keysym) (println "Alt-L-z: REDO")))
 
-  # Pointer
+  # Binary Ops
+  (bind-keys (list ksd~Control-L ksd~q) T cmd-eval)
 
-  # Placement (Semantic Space)
+  (bind-keys (list ksd~Control-L ksd~e) T cmd-pack)
+  (bind-keys (list ksd~Control-L ksd~r) T cmd-chop)
+    
+  (bind-keys (list ksd~Control-L ksd~f) T cmd-any)
+  (bind-keys (list ksd~Control-L ksd~g) T cmd-sym)
   
-  (bind-keys (list ksd~Control-R ksd~w) T cmd-place-up) #'((Keysym) (println "Control-R + W: Place Up")))
-  (bind-keys (list ksd~Control-R ksd~a) T cmd-place-le) #'((Keysym) (println "Control-R + A: Place Le")))
-  (bind-keys (list ksd~Control-R ksd~s) T cmd-place-dn) #'((Keysym) (println "Control-R + S: Place Dn")))
-  (bind-keys (list ksd~Control-R ksd~d) T cmd-place-ri) #'((Keysym) (println "Control-R + D: Place Ri")))
+  (bind-keys (list ksd~Control-L ksd~t) T cmd-format)
+  (bind-keys (list ksd~Control-L ksd~h) T cmd-intern)
+
+
+  (bind-keys (list ksd~Control-L ksd~y) T '((Keysym) (println "cmd-reverse")))
+  (bind-keys (list ksd~Alt-L ksd~y) T '((Keysym) (println "cmd-flip")))
+  
+  # Pointer
 
   # Selection
 
-  (bind-keys (list ksd~Alt-R ksd~w) T cmd-select-up) #'((Keysym) (println "Alt-R + W: Select Up")))
-  (bind-keys (list ksd~Alt-R ksd~a) T cmd-select-le) #'((Keysym) (println "Alt-R + A: Select Le")))
-  (bind-keys (list ksd~Alt-R ksd~s) T cmd-select-dn) #'((Keysym) (println "Alt-R + S: Select Dn")))
-  (bind-keys (list ksd~Alt-R ksd~d) T cmd-select-ri) #'((Keysym) (println "Alt-R + D: Select Ri")))
+  (bind-keys (list ksd~Control-R ksd~w) T cmd-select-up) #'((Keysym) (println "Control-R + W: Select Up")))
+  (bind-keys (list ksd~Control-R ksd~a) T cmd-select-le) #'((Keysym) (println "Control-R + A: Select Le")))
+  (bind-keys (list ksd~Control-R ksd~s) T cmd-select-dn) #'((Keysym) (println "Control-R + S: Select Dn")))
+  (bind-keys (list ksd~Control-R ksd~d) T cmd-select-ri) #'((Keysym) (println "Control-R + D: Select Ri")))
+
+  # Placement
+
+  (bind-keys (list ksd~Alt-R ksd~w) T cmd-place-up) #'((Keysym) (println "Alt-R + W: Place Up")))
+  (bind-keys (list ksd~Alt-R ksd~a) T cmd-place-le) #'((Keysym) (println "Alt-R + A: Place Le")))
+  (bind-keys (list ksd~Alt-R ksd~s) T cmd-place-dn) #'((Keysym) (println "Alt-R + S: Place Dn")))
+  (bind-keys (list ksd~Alt-R ksd~d) T cmd-place-ri) #'((Keysym) (println "Alt-R + D: Place Ri")))
 
   # Euclidean Space
 
@@ -293,7 +252,7 @@
   (bind-keys (list ksd~Down)        T cmd-translate-ptr-ny)
 
   # Camera
-  
+
   (bind-keys (list ksd~Control-L ksd~Right) T cmd-move-cam-px)
   (bind-keys (list ksd~Control-L ksd~Left)  T cmd-move-cam-nx)
   (bind-keys (list ksd~Control-L ksd~Up)    T cmd-move-cam-py)

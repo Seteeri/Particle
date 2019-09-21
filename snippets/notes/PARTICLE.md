@@ -154,41 +154,30 @@ Store DAGs as binary trees?
 
   * Use custom layouts for certain symbols like de, let
 
-  * Atomic Functionality
-    * TARGET: BUILD S-EXPR WITHOUT PARENTHESIS
-    * Implement basics [Done]
-    * Finish replacing atoms
-      * Pack
-        * Build until non-str/num
-      * Intern [Done]
-        * Color builtin symbols
-        * Intern should return builtin symbols
-        * User can override this by using strings
-      * Implement alt versions
-    * Move eval-2(list) to eval(last) once list building achieved
-    * Test (println "hello user")
-    * Test list building functionality
-      * Requires ptr movement
-    * To do immediate cmds:
-      * Example: reverse list
-        * (my name is kevin)
-        * (my name is kevin (reverse))
-        * 3 Poss:
-          * (kevin is name my) -> replace input (normal)
-          * (my name is kevin (kevin is name my)) -> append input (+alt)
-          * (my name is kevin (reverse) (kevin is name my))
-            * Manually possible by copying from timeline
-      * Make new list
-      * Type cmds etc
-      * Eval
-      * Next?
-        * Replace old list with output
-        * Or push output
+  * S-Expr Functionality
+    * Before proper pack implementation, implement list creation and manx
+    * Draw timeline list contents - (TIMELINE)
+      * Pointer ensures no GC will be performed
+      * All user-created data is attached to timeline symbol
+      * User must create initial list instead of just typing? or draw master list
+  
+    * Rewrite draw [Done]
+    * Implement atomic commands [Done]
+    * Implement list commands [WIP]
+    * Implement binary ops (destructive or non-destructive)
+    * Insert control chars
+      * newline ("^J"), return ("^M") or TAB ("^I")
+    * Ctrl+Tab = show help menu
+    * Batch draw commands
+    * Implement multiple args by getting number of args from docs and pulling
+    from timeline
     
   * Cur/Ptr
     * Implement!
       * Make globals both particles instead of verts
     * Use touch/mouse to move spatially
+      * SNAP TO GRID
+        * Drag to rearrange list
     * Displacement scales with zoom level
 
   * List Functionality
