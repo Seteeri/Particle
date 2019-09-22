@@ -53,7 +53,7 @@
         
     (for Prt (car *lists-ptr)
       # Stop on non str
-      (T (or (not (str? (get Prt 'data))) (= Prt 'TIMELINE)))
+      (T (or (not (str? (get Prt 'data))) (= Prt 'PARTICLE)))
       (push 'Data (get Prt 'data))
       (for Vert (get Prt 'verts)
         (push 'Verts Vert)))

@@ -38,11 +38,11 @@
 (def '*binds)
 
 # Use circular list to limit size
-# TIMELINE = sentinel
-(def '*timeline (list 'TIMELINE))
+# 'PARTICLE = sentinel
+(def '*timeline (list 'PARTICLE))
 
 (def '*vert-ptr)
-(def '*part-ptr 'TIMELINE)
+(def '*part-ptr 'PARTICLE)
 (def '*list-ptr *timeline)
 (def '*lists-ptr (list *timeline))
 

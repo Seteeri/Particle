@@ -192,7 +192,7 @@
         Part (car-ptr))
 
     (until (or (= Part *part-ptr)
-               (= Part 'TIMELINE)
+               (= Part 'PARTICLE)
                (not Part))
       (setq Prev Part)
       (setq Part (get Part 'next)))
@@ -209,14 +209,14 @@
 
   # Save prev for efficiency
 
-  (unless (= *part-ptr 'TIMELINE)
+  (unless (= *part-ptr 'PARTICLE)
     (with *part-ptr
       (println "*part-ptr:next" (: next))
-      (if (= (: next) 'TIMELINE)
+      (if (= (: next) 'PARTICLE)
         (prog
-          (println "1" "NEXT=" 'TIMELINE "CUR=" (: data))
+          (println "1" "NEXT=" 'PARTICLE "CUR=" (: data))
           #(setq *atom-pre-ptr *part-ptr)
-          (setq *part-ptr 'TIMELINE))
+          (setq *part-ptr 'PARTICLE))
         (prog
           (println "2" "NEXT=" (get (: next) 'data) "CUR=" (: data))
           #(setq *atom-pre-ptr *part-ptr)

@@ -156,13 +156,10 @@ Store DAGs as binary trees?
 
   * S-Expr Functionality
     * Before proper pack implementation, implement list creation and manx
-    * Draw timeline list contents - (TIMELINE)
-      * Pointer ensures no GC will be performed
-      * All user-created data is attached to timeline symbol
-      * User must create initial list instead of just typing? or draw master list
   
     * Rewrite draw [Done]
     * Implement atomic commands [Done]
+    * Draw timeline list [Done]    
     * Implement list commands [WIP]
     * Implement binary ops (destructive or non-destructive)
     * Insert control chars

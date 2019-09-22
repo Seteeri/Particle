@@ -1781,6 +1781,7 @@ http://www.cs.umd.edu/hcil/treemap-history/
     * Use same button and auto convert?
 
   Q = Pack (destructive)
+  ? = Glue (default to space or do after space)
 
   E = Eval (non-destructive)
 

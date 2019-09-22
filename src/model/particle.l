@@ -102,8 +102,8 @@
         ((lst? Any)
           # If CDR list then list else cons
           (if (lst? (cdr Any))
-            (gen-list Any)
-            (gen-pair Any)))
+              (gen-list Any)
+              (gen-pair Any)))
         (T           (gen-atom Any T))))
 
 

@@ -12,7 +12,9 @@
   #   - Send tasks to controller, wait for completion
   
   (let List (pop '*lists-ptr)
-    (push '*lists-ptr (cons Part List))))
+    # Traverse List to adj  
+    (push '*lists-ptr (cons Part List))
+    T))
 
 (de pop-ptr ()
   # Pop list, pop item, push new list back
@@ -71,44 +73,40 @@
   # frag will be discarded
 
   # Process:
-  # 1. Pop Prt from timeline/ptr
+  # 1. Pop Part from timeline/ptr
   # 2. For Verts: send zero-vert cmd to render
   # 3. For Verts: push Verts
 
-  # Note, this does not necessarily delete all the vertices as it dels PARTICLES
-
   # MODIFY COUNTER ALSO
 
-  (unless (= (car-ptr) 'TIMELINE)
+  (println (car-ptr))
 
-    (let Prt (pop-ptr)
+  (unless (= (car-ptr) 'PARTICLE)
 
-      # Prt is either list or atom
-      (if (lst? Prt)
-          (for P Prt
-            (del-particle P)
+    (let? Part (pop-ptr)
 
-            # For now, push pen back n vertices
-            # TODO: handle newline and tab
-            (adv-ptr (num-to-fl (- (+ (length (get P 'verts)) 2))))))
-          (prog
-            (del-particle Prt)
+      # Part is either list or atom
+      # Must trace next to ensure all vertices are freed - inv of gen
 
-            # For now, push pen back n vertices
-            # TODO: handle newline and tab
-            (adv-ptr (num-to-fl (- (+ (length (get Prt 'verts)) 1))))))))
+      (pretty Part)
+      
+      (del-particle Part)
+
+      # For now, push pen back n vertices
+      # TODO: handle newline and tab
+      (adv-ptr (num-to-fl (- (+ (length (get Part 'verts)) 1)))))))
 
 
 (de cmd-make-num (Keysym)
 
   (let (Data  (format (char Keysym))
         Verts (draw-chars Data (get-color-type Data) T)
-        Prt   (new '(+Particle)
+        Part   (new '(+Particle)
                    Data
                    (car-ptr)
                    Verts))
 
-    (push-ptr Prt)
+    (push-ptr Part)
 
     (adv-ptr)))
 
