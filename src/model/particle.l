@@ -66,12 +66,16 @@
 
 
 (de del-particle (Part)
-  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Verts (get Part 'verts))
-    (for Vert Verts
-      (let Msg (pack "(zv " (get Vert 'off-gl) '")")
-        (send-msg *ipc Sock-Render Msg))
-      (push '*verts Vert))))
+  (let Sock-Render (ipc~get-fd> *ipc "RENDER")
+    (for Vert (get Part 'verts)
+      (send-msg *ipc
+                Sock-Render
+                (pack "(zv " (get Vert 'off-gl) '")"))
+      (push '*verts Vert)))
+  # Only chase ptrs if list
+  (when (lst? (get Part 'data))
+    (let? Next (get Part 'next)
+      (del-particle Next))))
 
 
 (de gen-particles (Any)

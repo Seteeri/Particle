@@ -82,8 +82,6 @@
 
     (let? Part (pop-ptr)
 
-      # Part is either list or atom
-      # Must trace next to ensure all vertices are freed - inv of gen
       (del-particle Part)
 
       # For now, push pen back n vertices
