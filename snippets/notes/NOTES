@@ -1801,3 +1801,13 @@ http://www.cs.umd.edu/hcil/treemap-history/
 
   TAB = help
 }#
+
+################################################################################
+
+lst-ptr:
+* current list to push to
+
+lists-ptr:
+* list trail
+* pushed to when new list created or user moves down
+* popped from when current list destroyed or user moves up

@@ -39,11 +39,15 @@
 (def '*verts)
 (def '*cnt-v 1)
 
+# Vertices (particle?) for pointer
 (def '*vert-ptr)
 
 # 'PARTICLE = sentinel
 (def '*part-ptr 'PARTICLE)
+
+(def '*lst-ptr)
 (def '*lists-ptr)
+
 
 
 # Wrapper libraries

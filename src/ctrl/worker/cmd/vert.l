@@ -1,7 +1,7 @@
-(de lst-ptr () (car *lists-ptr))
+(de car-ptr () (get *lst-ptr 'next))
+
 
 (de push-ptr (Part)
-  # Pop list, cons item, push new list back
 
   # Calculate XY adv based on verts of new part
   # Need to redraw post atoms and/or close parenthesis after each push
@@ -9,19 +9,43 @@
   #   -> Similar to generate particles
   # -> Later, use multiple workers to traverse graph
   #   - Send tasks to controller, wait for completion
+
+  # Remember *lst-ptr is a Particle with a list
+
+  # Connect data
+  (with *lst-ptr
   
-  (let List (pop '*lists-ptr)
-    # Traverse List to adj  
-    (push '*lists-ptr (cons Part List))))
+    (push (:: data) (get Part 'data))
+
+    # Set Item next
+    (with Part
+      (=: next (get *lst-ptr 'next)))
+
+    # Set Lst next to Particle
+    (=: next Part)))
+
 
 (de pop-ptr ()
-  # Pop list, pop item, push new list back, return item
-  (let (List (pop '*lists-ptr)
-        Item (pop 'List))
-     (push '*lists-ptr List)
-     Item))
 
-(de car-ptr () (car (car *lists-ptr)))
+  # Reverse above
+  # Use prop instead
+
+  (println (get *lst-ptr 'data) (get *lst-ptr 'next) (get (get *lst-ptr 'next) 'next))
+
+  (let? Item (get *lst-ptr 'next)
+  
+    (with *lst-ptr
+
+      # Pop actual data
+      (pop (:: data))
+
+      # Set list next to next's next Particle
+      (=: next (get Item 'next)))
+
+    (println (get *lst-ptr 'data) (get *lst-ptr 'next))
+
+    Item))
+    
   
 ##########################
 
@@ -30,25 +54,21 @@
 
   # Data-2 (list 1 2 3 (list 'foo 'bar (list "hello" "world") "one long string") (cons NIL T) (box))
 
-  (let (Data (cond ((= Keysym ksd~space) " ")
-                  ((= Keysym ksd~Return) (char 10))
-                  (T (char Keysym)))
-        Part (gen-particles Data))
+  (if *lst-ptr
+      (prog
+        (let (Data (cond ((= Keysym ksd~space) " ")
+                        ((= Keysym ksd~Return) (char 10))
+                        (T (char Keysym)))
+              Part (gen-particles Data))
 
-    (println Data)
+          (push-ptr Part)
 
-    # Link Part to prev Particle or selection
-    (with Part
-      (=: next (car-ptr)))
+          #(cond ((= Keysym ksd~Return) (nl-ptr))
+          #      ((= Keysym ksd~Tab)    (adv-ptr 2.0)))
 
-    (push-ptr Part)
+          (adv-ptr)))
 
-    (adv-ptr))
-
-  #(cond ((= Keysym ksd~Return) (nl-ptr))
-  #      ((= Keysym ksd~Tab)    (adv-ptr 2.0)))
-
-  )
+      (prinl-info "cmd-make-char" "MAKE LIST FIRST!")))
 
 
 (de cmd-del (Dir)
@@ -66,7 +86,7 @@
   # After del, vert returns to queue, and next vert will reuse it
   #
   # Makes most sense to simply zero vert, and not worry about instanceCount as
-  # frag will be discarded
+  # frag will be discarded...fix later
 
   # Process:
   # 1. Pop Part from timeline/ptr
@@ -74,10 +94,7 @@
   # 3. For Verts: push Verts
 
   # MODIFY COUNTER ALSO
-
-  (when (car-ptr)
-    (println (get (car-ptr) 'data)))
-
+  
   (unless (= (car-ptr) 'PARTICLE)
     (let? Part (pop-ptr)
       (del-particle Part)
@@ -263,6 +280,31 @@
   # Produce NIL
   # Use can enter NIL, at which point is converted into "()"
 
-  (push-ptr (gen-particles (list)))
+  #{
+  
+    QUESTION: Enter list after creation or stay on same level?
+  
+    Default is NO so pressing new list repeatedly will create subsequent lists
+    rather than nested lists
+    
+    Hmm...technically lists are just nested cons
+
+    From NIL
+
+    (NIL (NIL) (NIL))
+
+    Then alpha
+
+    (NIL (NIL) (NIL "a" "b" "c"))
+    
+  }#
+
+  (let (List (list)
+        Part (gen-particles List))
+
+    (setq *lst-ptr Part)
+
+    # Solely stores list trail
+    (push '*lists-ptr Part))
 
   (adv-ptr))
