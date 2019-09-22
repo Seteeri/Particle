@@ -70,7 +70,6 @@
 (load "/home/user/Git/particle/src/ctrl/worker/conn.l")
 (load "/home/user/Git/particle/src/ctrl/worker/ptr.l")
 (load "/home/user/Git/particle/src/ctrl/worker/draw.l")
-(load "/home/user/Git/particle/src/ctrl/worker/timeline.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/vert.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/cam.l")
 (load "/home/user/Git/particle/src/ctrl/worker/cmd/ptr.l")
