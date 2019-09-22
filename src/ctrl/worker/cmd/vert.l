@@ -79,14 +79,10 @@
     (println (get (car-ptr) 'data)))
 
   (unless (= (car-ptr) 'PARTICLE)
-
     (let? Part (pop-ptr)
-
       (del-particle Part)
-
-      # For now, push pen back n vertices
-      # TODO: handle newline and tab
-      (adv-ptr (num-to-fl (- (+ (length (get Part 'verts)) 1)))))))
+      # Adv backwards over last space
+      (adv-ptr -1.0))))
 
 
 (de cmd-make-num (Keysym)
