@@ -1,12 +1,3 @@
-(class +Particle)
-(dm T (Data
-       Next
-       Verts)
-  
-  (=: data Data)
-  (=: next Next)
-  (=: verts Verts))
-
 # bg:fg/text = base03:base0
 
 (def '*col-base-03 (list (*/ 1.0 0.0   255.0)   (*/ 1.0 43.0  255.0)  (*/ 1.0 54.0  255.0)))
@@ -28,7 +19,6 @@
 (def '*col-orange  (list (*/ 1.0 203.0 255.0) (*/ 1.0 75.0   255.0) (*/ 1.0 22.0  255.0)))
 (def '*col-red     (list (*/ 1.0 220.0 255.0) (*/ 1.0 50.0   255.0) (*/ 1.0 47.0  255.0)))
 (def '*col-magenta (list (*/ 1.0 211.0 255.0) (*/ 1.0 54.0 255.0) (*/ 1.0 130.0 255.0)))
-
 
 (de get-color-type (Any)
   #{
@@ -63,6 +53,25 @@
                ((ext? Any)  *col-magenta)
                ((str? Any)  *col-base-01)
                ((sym? Any)  *col-violet)))))
+
+               
+(class +Particle)
+(dm T (Data
+       Next
+       Verts)
+  
+  (=: data Data)
+  (=: next Next)
+  (=: verts Verts))
+
+
+(de del-particle (Part)
+  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
+        Verts (get Part 'verts))
+    (for Vert Verts
+      (let Msg (pack "(zv " (get Vert 'off-gl) '")")
+        (send-msg *ipc Sock-Render Msg))
+      (push '*verts Vert))))
 
 
 (de gen-particles (Any)
@@ -119,7 +128,7 @@
         (new '(+Particle)
              Any
              First
-             (push (draw-chars ")" *col-base-0 T) Open)))))
+             (conc (draw-chars ")" *col-base-0 T) Open)))))
 
 
 (de gen-list-parts (Any)

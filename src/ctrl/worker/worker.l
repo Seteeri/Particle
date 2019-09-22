@@ -37,14 +37,12 @@
 (def '*xkb)
 (def '*binds)
 
-# Use circular list to limit size
-# 'PARTICLE = sentinel
-(def '*timeline (list 'PARTICLE))
 
 (def '*vert-ptr)
+
+# 'PARTICLE = sentinel
 (def '*part-ptr 'PARTICLE)
-(def '*list-ptr *timeline)
-(def '*lists-ptr (list *timeline))
+(def '*lists-ptr)
 
 (def '*vert-cur)
 (def '*place-cur 'after)
@@ -125,32 +123,14 @@
 
   (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
 
-  # How to manage default internal symbols?
-  # -> Must create particles
-  # -> But where to place them?
-  #    -> Timeline
-  #
-  # Create defs/ptrs
-  # Create particles for defs
-  #   Push particles into timeline
-  #
-  # On command:
-  # - Add keybinding to timeline (input)
-  # - Add command to timeline
-  # - Add particle/output to timeline
-  #   - One list of verts for the timeline and one list of verts for main
-  #   - Same data
-  #
-  # Load all code into timeline
-  # Execute timeline
-
   # Make these particles
   (setq *vert-ptr (alloc-vert *col-red "*"))
   #(nl-ptr)
   #(setq *vert-cur (alloc-vert *col-cyan "@"))
 
-  # Render timeline
-  (push-ptr (gen-particles *timeline))
+  # Root symbol must already exist
+  # Particles ref data so particles are stored linearly
+  (push-ptr (gen-particles *lists-ptr))
   (adv-ptr)
 
 

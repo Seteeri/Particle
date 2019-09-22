@@ -1,5 +1,4 @@
-(de lst-ptr ()
-  (car *lists-ptr))
+(de lst-ptr () (car *lists-ptr))
 
 (de push-ptr (Part)
   # Pop list, cons item, push new list back
@@ -13,19 +12,16 @@
   
   (let List (pop '*lists-ptr)
     # Traverse List to adj  
-    (push '*lists-ptr (cons Part List))
-    T))
+    (push '*lists-ptr (cons Part List))))
 
 (de pop-ptr ()
-  # Pop list, pop item, push new list back
+  # Pop list, pop item, push new list back, return item
   (let (List (pop '*lists-ptr)
         Item (pop 'List))
      (push '*lists-ptr List)
      Item))
 
-(de car-ptr ()
-  # Pop list, pop item, push new list back
-  (car (car *lists-ptr)))
+(de car-ptr () (car (car *lists-ptr)))
   
 ##########################
 
@@ -79,7 +75,8 @@
 
   # MODIFY COUNTER ALSO
 
-  (println (car-ptr))
+  (when (car-ptr)
+    (println (get (car-ptr) 'data)))
 
   (unless (= (car-ptr) 'PARTICLE)
 
@@ -87,9 +84,6 @@
 
       # Part is either list or atom
       # Must trace next to ensure all vertices are freed - inv of gen
-
-      (pretty Part)
-      
       (del-particle Part)
 
       # For now, push pen back n vertices
@@ -275,10 +269,6 @@
   # Produce NIL
   # Use can enter NIL, at which point is converted into "()"
 
-  (let List (list)
-  
-    (push-ptr (gen-particles List))
+  (push-ptr (gen-particles (list)))
 
-    (push '*lists-ptr List)
-
-    (adv-ptr)))
+  (adv-ptr))
