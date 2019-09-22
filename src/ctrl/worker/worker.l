@@ -33,20 +33,17 @@
 
 # Globals
 (def '*metrics)
-(def '*verts)
 (def '*xkb)
 (def '*binds)
 
+(def '*verts)
+(def '*cnt-v 1)
 
 (def '*vert-ptr)
 
 # 'PARTICLE = sentinel
 (def '*part-ptr 'PARTICLE)
 (def '*lists-ptr)
-
-(def '*vert-cur)
-(def '*place-cur 'after)
-(def '*cnt-v 1)
 
 
 # Wrapper libraries
@@ -122,10 +119,11 @@
 
   (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
 
+  # Render default symbols?
+  # User can then use builtin copy to produce a copy of the symbol
+
   # Make these particles
   (setq *vert-ptr (alloc-vert *col-red "*"))
-  #(nl-ptr)
-  #(setq *vert-cur (alloc-vert *col-cyan "@"))
 
   # Root symbol must already exist
   # Particles ref data so particles are stored linearly
