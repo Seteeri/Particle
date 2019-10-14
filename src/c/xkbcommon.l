@@ -52,54 +52,54 @@ const char * 	options
 
 
 (de context-new (Flags)
-  (native "libxkbcommon.so" "xkb_context_new" 'N Flags))
+  (native "libxkbcommon.so.0" "xkb_context_new" 'N Flags))
 
 
 (de keymap-new-from-names (Context Names Flags)
-  (native "libxkbcommon.so" "xkb_keymap_new_from_names" 'N Context Names Flags))
+  (native "libxkbcommon.so.0" "xkb_keymap_new_from_names" 'N Context Names Flags))
 
 
 (de state-new (Keymap)
-  (native "libxkbcommon.so" "xkb_state_new" 'N Keymap))
+  (native "libxkbcommon.so.0" "xkb_state_new" 'N Keymap))
 
 
 (de state-key-get-one-sym (State Keycode)
-  (native "libxkbcommon.so" "xkb_state_key_get_one_sym" 'I State Keycode))
+  (native "libxkbcommon.so.0" "xkb_state_key_get_one_sym" 'I State Keycode))
 
 
 (de keysym-get-name (Keysym Buffer Size)
-  (let Length (native "libxkbcommon.so" "xkb_keysym_get_name" 'I Keysym (if Buffer Buffer *buf-keysym) (if Size Size 64)))
+  (let Length (native "libxkbcommon.so.0" "xkb_keysym_get_name" 'I Keysym (if Buffer Buffer *buf-keysym) (if Size Size 64)))
     (unless (= Length -1)
       (struct (if Buffer Buffer *buf-keysym) 'S)))
 
 
 (de state-key-get-utf8 (State Keycode Buffer Size)
-  (let Length (native "libxkbcommon.so" "xkb_state_key_get_utf8" 'I State Keycode (if Buffer Buffer *buf-keysym) (if Size Size 64)))
+  (let Length (native "libxkbcommon.so.0" "xkb_state_key_get_utf8" 'I State Keycode (if Buffer Buffer *buf-keysym) (if Size Size 64)))
     (unless (= Length -1)
       (struct (if Buffer Buffer *buf-keysym) 'S)))
 
 
 (de state-update-key (State Keycode Direction)
-  (native "libxkbcommon.so" "xkb_state_update_key" 'I State Keycode Direction))
+  (native "libxkbcommon.so.0" "xkb_state_update_key" 'I State Keycode Direction))
 
 
 (de keymap-key-repeats (Keymap Keycode)
-  (native "libxkbcommon.so" "xkb_keymap_key_repeats" 'I Keymap Keycode))
+  (native "libxkbcommon.so.0" "xkb_keymap_key_repeats" 'I Keymap Keycode))
 
 
 (de state-serialize-mods (State Components)
-  (native "libxkbcommon.so" "xkb_state_serialize_mods" 'I State Components))
+  (native "libxkbcommon.so.0" "xkb_state_serialize_mods" 'I State Components))
 
 
 (de state-update-mask (State Depressed-Mods Latched-Mods Locked-Mods
                        Depressed-Layout Latched-Layout Locked-Layout)
-  (native "libxkbcommon.so" "xkb_state_update_mask" 'I State Depressed-Mods Latched-Mods Locked-Mods
+  (native "libxkbcommon.so.0" "xkb_state_update_mask" 'I State Depressed-Mods Latched-Mods Locked-Mods
                                                        Depressed-Layout Latched-Layout Locked-Layout))
 
 
 (de state-serialize-layout (State Components)
-  (native "libxkbcommon.so" "xkb_state_serialize_layout" 'I State Components))
+  (native "libxkbcommon.so.0" "xkb_state_serialize_layout" 'I State Components))
 
 
 (de state-mod-name-is-active (State Name Type)
-  (native "libxkbcommon.so" "xkb_state_mod_name_is_active" 'I State Name Type))
+  (native "libxkbcommon.so.0" "xkb_state_mod_name_is_active" 'I State Name Type))

@@ -1,5 +1,8 @@
 #version 320 es
 
+precision mediump float;
+precision mediump samplerBuffer;
+
 // MSDF
 // UVs are the same
 // Text dims are the same

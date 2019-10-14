@@ -20,9 +20,9 @@ Handle bad accept sock
 
 
 # Wrapper libraries
-(load "/home/user/Git/particle/src/misc.l")
-(load "/home/user/Git/particle/src/c/epoll.l")
-(load "/home/user/Git/particle/src/c/socket.l")
+(load "/home/user/Particle/particle/src/misc.l")
+(load "/home/user/Particle/particle/src/c/epoll.l")
+(load "/home/user/Particle/particle/src/c/socket.l")
 
 
 # Must define class before loading file with methods

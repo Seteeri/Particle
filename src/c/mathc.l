@@ -1,4 +1,4 @@
-(def 'PATH-MATHC "/home/user/Git/particle/ext/mathc/libmathc.so")
+(def 'PATH-MATHC "/home/user/Particle/particle/ext/mathc/libmathc.so")
 
 #learn how to do multiple args
 #(de native-mc (...) (native PATH-MATHC "mat4_perspective" NIL ...))

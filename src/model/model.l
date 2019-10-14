@@ -19,7 +19,7 @@
 (def 'NAME-PID "MODEL")
 
 # C library paths
-(def 'PATH-GLYPHS "/home/user/Git/particle/src/glyphs")
+(def 'PATH-GLYPHS "/home/user/Particle/particle/src/glyphs")
 # UDS paths
 (def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
 (def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
@@ -27,24 +27,24 @@
 
 
 # Wrapper libraries
-(load "/home/user/Git/particle/src/c/mathc.l")
-(load "/home/user/Git/particle/src/c/posix/mman.l")
-(load "/home/user/Git/particle/src/c/posix/stdio.l")
-(load "/home/user/Git/particle/src/c/posix/string.l")
-(load "/home/user/Git/particle/src/c/posix/unistd.l")
-(load "/home/user/Git/particle/src/c/epoll.l")
-(load "/home/user/Git/particle/src/c/socket.l")
+(load "/home/user/Particle/particle/src/c/mathc.l")
+(load "/home/user/Particle/particle/src/c/posix/mman.l")
+(load "/home/user/Particle/particle/src/c/posix/stdio.l")
+(load "/home/user/Particle/particle/src/c/posix/string.l")
+(load "/home/user/Particle/particle/src/c/posix/unistd.l")
+(load "/home/user/Particle/particle/src/c/epoll.l")
+(load "/home/user/Particle/particle/src/c/socket.l")
 # Lisp libraries
-(load "/home/user/Git/particle/src/misc.l")
-(load "/home/user/Git/particle/src/dlst.l")
-(load "/home/user/Git/particle/src/ipc/ipc.l")
-(load "/home/user/Git/particle/src/prot/conn.l")
-(load "/home/user/Git/particle/src/prot/msg.l")
-(load "/home/user/Git/particle/src/prot/obj.l")
-(load "/home/user/Git/particle/src/model/projview.l")
-(load "/home/user/Git/particle/src/metrics/metrics.l")
-(load "/home/user/Git/particle/src/model/conn.l")
-(load "/home/user/Git/particle/src/model/vertex.l")
+(load "/home/user/Particle/particle/src/misc.l")
+(load "/home/user/Particle/particle/src/dlst.l")
+(load "/home/user/Particle/particle/src/ipc/ipc.l")
+(load "/home/user/Particle/particle/src/prot/conn.l")
+(load "/home/user/Particle/particle/src/prot/msg.l")
+(load "/home/user/Particle/particle/src/prot/obj.l")
+(load "/home/user/Particle/particle/src/model/projview.l")
+(load "/home/user/Particle/particle/src/metrics/metrics.l")
+(load "/home/user/Particle/particle/src/model/conn.l")
+(load "/home/user/Particle/particle/src/model/vertex.l")
 
 
 # Globals

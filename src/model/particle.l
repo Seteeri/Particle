@@ -79,7 +79,7 @@
     # Push ptr back n vertices
     (adv-ptr (num-to-fl (- (length Verts)))))
       
-  # Only chase ptrs if list
+  # Only chase ptrs (recurse) if list
   (when (lst? (get Part 'data))
     (let? Next (get Part 'next)
       (del-particle Next))))

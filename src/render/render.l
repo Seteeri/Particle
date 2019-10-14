@@ -19,23 +19,23 @@ Class variables may be indicated by an upper case letter
 (def 'NAME-PID "RENDER")
 
 # C library paths
-(def 'PATH-GLYPHS "/home/user/Git/particle/src/glyphs")
+(def 'PATH-GLYPHS "/home/user/Particle/particle/src/glyphs")
 # UDS paths
 (def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
 (def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
 (def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
 #Shader paths
-(def '*path-structs-shader "/home/user/Git/particle/glsl/structs.glsl")
+(def '*path-structs-shader "/home/user/Particle/particle/glsl/structs.glsl")
 (def '*paths-rast-vert-shader
     (list *path-structs-shader
-          "/home/user/Git/particle/glsl/node.vs.glsl"))
+          "/home/user/Particle/particle/glsl/node.vs.glsl"))
 (def '*paths-rast-frag-shader
     (list *path-structs-shader
-          "/home/user/Git/particle/glsl/filter-bilinear.fs.glsl"
-          "/home/user/Git/particle/glsl/msdf.fs.glsl"))
+          "/home/user/Particle/particle/glsl/filter-bilinear.fs.glsl"
+          "/home/user/Particle/particle/glsl/msdf.fs.glsl"))
 (def '*paths-comp-shader
     (list *path-structs-shader
-          "/home/user/Git/particle/glsl/node.cs.glsl"))
+          "/home/user/Particle/particle/glsl/node.cs.glsl"))
 
 
 (def '*window)
@@ -48,25 +48,25 @@ Class variables may be indicated by an upper case letter
 
 
 # Wrapper libraries
-(load "/home/user/Git/particle/src/c/mathc.l")
-(load "/home/user/Git/particle/src/c/posix/mman.l")
-#(load "/home/user/Git/particle/src/c/posix/stat.l")
-(load "/home/user/Git/particle/src/c/posix/string.l")
-(load "/home/user/Git/particle/src/c/socket.l")
-(load "/home/user/Git/particle/src/c/gl/es.l")
-(load "/home/user/Git/particle/src/c/glfw.l")
-(load "/home/user/Git/particle/src/c/epoll.l")
+(load "/home/user/Particle/particle/src/c/mathc.l")
+(load "/home/user/Particle/particle/src/c/posix/mman.l")
+#(load "/home/user/Particle/particle/src/c/posix/stat.l")
+(load "/home/user/Particle/particle/src/c/posix/string.l")
+(load "/home/user/Particle/particle/src/c/socket.l")
+(load "/home/user/Particle/particle/src/c/gl/es.l")
+(load "/home/user/Particle/particle/src/c/glfw.l")
+(load "/home/user/Particle/particle/src/c/epoll.l")
 # Lisp libraries
-(load "/home/user/Git/particle/src/misc.l")
-(load "/home/user/Git/particle/src/dlst.l")
-(load "/home/user/Git/particle/src/ipc/ipc.l")
-(load "/home/user/Git/particle/src/prot/conn.l")
-(load "/home/user/Git/particle/src/prot/msg.l")
-(load "/home/user/Git/particle/src/prot/obj.l")
-(load "/home/user/Git/particle/src/render/params-buffer.l")
-(load "/home/user/Git/particle/src/render/raster.l")
-#(load "/home/user/Git/particle/src/render/compute.l")
-(load "/home/user/Git/particle/src/render/conn.l")
+(load "/home/user/Particle/particle/src/misc.l")
+(load "/home/user/Particle/particle/src/dlst.l")
+(load "/home/user/Particle/particle/src/ipc/ipc.l")
+(load "/home/user/Particle/particle/src/prot/conn.l")
+(load "/home/user/Particle/particle/src/prot/msg.l")
+(load "/home/user/Particle/particle/src/prot/obj.l")
+(load "/home/user/Particle/particle/src/render/params-buffer.l")
+(load "/home/user/Particle/particle/src/render/raster.l")
+#(load "/home/user/Particle/particle/src/render/compute.l")
+(load "/home/user/Particle/particle/src/render/conn.l")
 
 
 # MOVE TO GL
@@ -190,15 +190,13 @@ Class variables may be indicated by an upper case letter
 
   (gl~enable gl~CULL-FACE)
   (gl~enable gl~DEPTH-TEST)
-  (when TEST-GLYPH
-    (gl~enable gl~BLEND)
-    (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA))
-    #(gl~blend-func gl~ONE gl~ONE-MINUS-SRC-ALPHA))
+  
+  (gl~enable gl~BLEND)
+  #(gl~blend-func gl~ONE gl~ONE-MINUS-SRC-ALPHA)  
+  (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA)
 
   #Get some function pointers
-  (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage"))
-
-  T)
+  (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage")))
 
 
 (de run-render ()
@@ -210,7 +208,7 @@ Class variables may be indicated by an upper case letter
   # Draws only on event?
   # With Wayland, clients will send damage events...
   (when NIL
-    #(test-projview)
+    (test-projview)
     (test-vert))
 
   (while (= (glfw~window-should-close *window) 0)

@@ -85,28 +85,21 @@ own proc
         Height (format (/ 1080 2))
         Verts  (format (** 2 14))) # 16384
 
-      (fork-2 '(() (exec "pil" "src/render/render.l" "-main" Width Height Verts)))
+      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/render/render.l" "-main" Width Height Verts)))
+      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/model/model.l" "-main" Width Height Verts)))
+      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/input/input.l" "-main" Width Height Verts)))
+      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/ctrl/ctrl.l" "-main" Width Height Verts)))
+      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/ctrl/worker/worker.l" "-main" Width Height Verts 1))))
 
-      (fork-2 '(() (exec "pil" "src/model/model.l" "-main" Width Height Verts)))
-
-      (fork-2 '(() (exec "pil" "src/input/input.l" "-main" Width Height Verts)))
-
-      (fork-2 '(() (exec "pil" "src/ctrl/ctrl.l" "-main" Width Height Verts)))
-
-      (fork-2 '(() (exec "pil" "src/ctrl/worker/worker.l" "-main" Width Height Verts 1))))
-
-  (bye))
-    
-
-#{
-  # Use taskset to assign processes here
+  (bye)
 
   (prinl "Render: " *proc-render)
   (prinl "Model: " *proc-model)
   (prinl "Input: " *proc-input)
   (prinl "Ctrl: " *proc-ctrl)
-  (prinl "Worker: " *proc-work-1)
-              
+  (prinl "Worker: " *proc-work-1))
+  
+#{
   (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read))
   #(prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))
   

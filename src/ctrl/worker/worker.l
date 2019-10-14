@@ -22,7 +22,8 @@
 (def 'PATH-UDS-MODEL   "/tmp/particle-model.socket")
 (def 'PATH-UDS-CONTROL "/tmp/particle-control.socket")
 (def 'PATH-UDS-RENDER  "/tmp/particle-render.socket")
-(def 'PATH-GLYPHS      "/home/user/Git/particle/src/glyphs")
+# Pass from main
+(def 'PATH-GLYPHS      "/home/user/Particle/particle/src/glyphs")
 
 # Constants
 (def '*sca-vert  (*/ 1.0 1.0 96.0))
@@ -49,31 +50,30 @@
 (def '*lists-ptr)
 
 
-
 # Wrapper libraries
-(load "/home/user/Git/particle/src/c/mathc.l")
-(load "/home/user/Git/particle/src/c/epoll.l")
-(load "/home/user/Git/particle/src/c/li.l")
-(load "/home/user/Git/particle/src/c/socket.l")
-(load "/home/user/Git/particle/src/c/ksd.l")
-(load "/home/user/Git/particle/src/c/xkbcommon.l")
+(load "/home/user/Particle/particle/src/c/mathc.l")
+(load "/home/user/Particle/particle/src/c/epoll.l")
+(load "/home/user/Particle/particle/src/c/li.l")
+(load "/home/user/Particle/particle/src/c/socket.l")
+(load "/home/user/Particle/particle/src/c/ksd.l")
+(load "/home/user/Particle/particle/src/c/xkbcommon.l")
 # Lisp libraries
-(load "/home/user/Git/particle/src/misc.l")
-(load "/home/user/Git/particle/src/ipc/ipc.l")
-(load "/home/user/Git/particle/src/prot/conn.l")
-(load "/home/user/Git/particle/src/prot/msg.l")
-(load "/home/user/Git/particle/src/prot/obj.l")
-(load "/home/user/Git/particle/src/metrics/metrics.l")
-(load "/home/user/Git/particle/src/model/particle.l")
-(load "/home/user/Git/particle/src/model/projview.l")
-(load "/home/user/Git/particle/src/model/vertex.l")
-(load "/home/user/Git/particle/src/ctrl/xkb.l")
-(load "/home/user/Git/particle/src/ctrl/worker/conn.l")
-(load "/home/user/Git/particle/src/ctrl/worker/ptr.l")
-(load "/home/user/Git/particle/src/ctrl/worker/draw.l")
-(load "/home/user/Git/particle/src/ctrl/worker/cmd/vert.l")
-(load "/home/user/Git/particle/src/ctrl/worker/cmd/cam.l")
-(load "/home/user/Git/particle/src/ctrl/worker/cmd/ptr.l")
+(load "/home/user/Particle/particle/src/misc.l")
+(load "/home/user/Particle/particle/src/ipc/ipc.l")
+(load "/home/user/Particle/particle/src/prot/conn.l")
+(load "/home/user/Particle/particle/src/prot/msg.l")
+(load "/home/user/Particle/particle/src/prot/obj.l")
+(load "/home/user/Particle/particle/src/metrics/metrics.l")
+(load "/home/user/Particle/particle/src/model/particle.l")
+(load "/home/user/Particle/particle/src/model/projview.l")
+(load "/home/user/Particle/particle/src/model/vertex.l")
+(load "/home/user/Particle/particle/src/ctrl/xkb.l")
+(load "/home/user/Particle/particle/src/ctrl/worker/conn.l")
+(load "/home/user/Particle/particle/src/ctrl/worker/ptr.l")
+(load "/home/user/Particle/particle/src/ctrl/worker/draw.l")
+(load "/home/user/Particle/particle/src/ctrl/worker/cmd/vert.l")
+(load "/home/user/Particle/particle/src/ctrl/worker/cmd/cam.l")
+(load "/home/user/Particle/particle/src/ctrl/worker/cmd/ptr.l")
 
 
 (de init-worker ()
@@ -126,8 +126,9 @@
   # Render default symbols?
   # User can then use builtin copy to produce a copy of the symbol
 
+  # Allocate pointer - use same char as PicoLisp ":"
   # Make these particles
-  (setq *vert-ptr (alloc-vert *col-red "*"))
+  (setq *vert-ptr (alloc-vert *col-red ":"))
 
   # Root symbol must already exist
   # Particles ref data so particles are stored linearly

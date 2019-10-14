@@ -10,22 +10,22 @@
 
 
 # Wrapper libraries
-(load "/home/user/Git/particle/src/c/mathc.l")
-(load "/home/user/Git/particle/src/c/posix/mman.l")
-(load "/home/user/Git/particle/src/c/posix/stdio.l")
-(load "/home/user/Git/particle/src/c/posix/string.l")
-(load "/home/user/Git/particle/src/c/posix/unistd.l")
-(load "/home/user/Git/particle/src/c/epoll.l")
-(load "/home/user/Git/particle/src/c/socket.l")
-(load "/home/user/Git/particle/src/c/wayland/util.l")
-(load "/home/user/Git/particle/src/c/wayland/private.l")
-(load "/home/user/Git/particle/src/c/wayland/server-protocol.l")
+(load "/home/user/Particle/particle/src/c/mathc.l")
+(load "/home/user/Particle/particle/src/c/posix/mman.l")
+(load "/home/user/Particle/particle/src/c/posix/stdio.l")
+(load "/home/user/Particle/particle/src/c/posix/string.l")
+(load "/home/user/Particle/particle/src/c/posix/unistd.l")
+(load "/home/user/Particle/particle/src/c/epoll.l")
+(load "/home/user/Particle/particle/src/c/socket.l")
+(load "/home/user/Particle/particle/src/c/wayland/util.l")
+(load "/home/user/Particle/particle/src/c/wayland/private.l")
+(load "/home/user/Particle/particle/src/c/wayland/server-protocol.l")
 # Lisp libraries
-(load "/home/user/Git/particle/src/misc.l")
-(load "/home/user/Git/particle/src/ipc/ipc.l")
-(load "/home/user/Git/particle/src/prot/conn.l")
-(load "/home/user/Git/particle/src/prot/msg.l")
-(load "/home/user/Git/particle/src/prot/obj.l")
+(load "/home/user/Particle/particle/src/misc.l")
+(load "/home/user/Particle/particle/src/ipc/ipc.l")
+(load "/home/user/Particle/particle/src/prot/conn.l")
+(load "/home/user/Particle/particle/src/prot/msg.l")
+(load "/home/user/Particle/particle/src/prot/obj.l")
 
 
 (def '*display)

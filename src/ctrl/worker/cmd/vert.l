@@ -52,13 +52,14 @@
 
 (de cmd-make-char (Keysym)
 
-  # Data-2 (list 1 2 3 (list 'foo 'bar (list "hello" "world") "one long string") (cons NIL T) (box))
+  # Data-2 (list 'P (cons "a" "r") T "ic" 1 "e" NIL (box))
 
   (if *lst-ptr
       (prog
         (let (Data (cond ((= Keysym ksd~space) " ")
                         ((= Keysym ksd~Return) (char 10))
                         (T (char Keysym)))
+              Data (list 'P (cons "a" "r") T "ic" 1 "e" NIL (box))
               Part (gen-particles Data))
 
           (push-ptr Part)

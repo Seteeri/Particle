@@ -16,6 +16,7 @@ Inspired by:
 * Tron
 * Emacs
 * Lisp
+* Oberon OS
 
 Particle is a 3D Lisp structured REPL/shell. It is the implementation of
 my vision of a programmable UI to replace the desktop paradigm - a way to map

@@ -35,21 +35,21 @@
 
 
 # Wrapper libraries
-(load "/home/user/Git/particle/src/c/mathc.l")
-(load "/home/user/Git/particle/src/c/epoll.l")
-(load "/home/user/Git/particle/src/c/li.l")
-(load "/home/user/Git/particle/src/c/socket.l")
-(load "/home/user/Git/particle/src/c/xkbcommon.l")
-(load "/home/user/Git/particle/src/c/timerfd.l")
-(load "/home/user/Git/particle/src/c/ksd.l")
+(load "/home/user/Particle/particle/src/c/mathc.l")
+(load "/home/user/Particle/particle/src/c/epoll.l")
+(load "/home/user/Particle/particle/src/c/li.l")
+(load "/home/user/Particle/particle/src/c/socket.l")
+(load "/home/user/Particle/particle/src/c/xkbcommon.l")
+(load "/home/user/Particle/particle/src/c/timerfd.l")
+(load "/home/user/Particle/particle/src/c/ksd.l")
 # Lisp libraries
-(load "/home/user/Git/particle/src/misc.l")
-(load "/home/user/Git/particle/src/ipc/ipc.l")
-(load "/home/user/Git/particle/src/prot/conn.l")
-(load "/home/user/Git/particle/src/prot/msg.l")
-(load "/home/user/Git/particle/src/prot/obj.l")
-#(load "/home/user/Git/particle/src/ctrl/conn.l")
-(load "/home/user/Git/particle/src/ctrl/xkb.l")
+(load "/home/user/Particle/particle/src/misc.l")
+(load "/home/user/Particle/particle/src/ipc/ipc.l")
+(load "/home/user/Particle/particle/src/prot/conn.l")
+(load "/home/user/Particle/particle/src/prot/msg.l")
+(load "/home/user/Particle/particle/src/prot/obj.l")
+#(load "/home/user/Particle/particle/src/ctrl/conn.l")
+(load "/home/user/Particle/particle/src/ctrl/xkb.l")
 
 
 

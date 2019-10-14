@@ -2,59 +2,59 @@
 
 
 (de init-2 ()
-    (native "libglfw.so" "glfwInit" 'I))
+    (native "libglfw.so.3.3" "glfwInit" 'I))
 
 
 (de window-hint (Hint Value)
-    (native "libglfw.so" "glfwWindowHint" NIL Hint Value))
+    (native "libglfw.so.3.3" "glfwWindowHint" NIL Hint Value))
 
 
 (de make-context-current (Window)
-    (native "libglfw.so" "glfwMakeContextCurrent" NIL Window))
+    (native "libglfw.so.3.3" "glfwMakeContextCurrent" NIL Window))
 
 
 (de create-window (Width Height Title Monitor Share)
-    (native "libglfw.so" "glfwCreateWindow" 'N Width Height Title Monitor Share))
+    (native "libglfw.so.3.3" "glfwCreateWindow" 'N Width Height Title Monitor Share))
 
 
 (de window-should-close (Window)
-    (native "libglfw.so" "glfwWindowShouldClose" 'I Window))
+    (native "libglfw.so.3.3" "glfwWindowShouldClose" 'I Window))
 
 
 (de swap-buffers (Window)
-    (native "libglfw.so" "glfwSwapBuffers" NIL Window))
+    (native "libglfw.so.3.3" "glfwSwapBuffers" NIL Window))
 
 
 (de poll-events ()
-    (native "libglfw.so" "glfwPollEvents"))
+    (native "libglfw.so.3.3" "glfwPollEvents"))
 
 
 (de set-framebuffer-size-callback (Window Cbfun)
-    (native "libglfw.so" "glfwSetFramebufferSizeCallback" 'N Window Cbfun))
+    (native "libglfw.so.3.3" "glfwSetFramebufferSizeCallback" 'N Window Cbfun))
 
 
 (de set-window-size-callback (Window Cbfun)
-    (native "libglfw.so" "glfwSetWindowSizeCallback" 'N Window Cbfun))
+    (native "libglfw.so.3.3" "glfwSetWindowSizeCallback" 'N Window Cbfun))
 
 
 (de set-key-callback (Window Cbfun)
-    (native "libglfw.so" "glfwSetKeyCallback" 'N Window Cbfun))
+    (native "libglfw.so.3.3" "glfwSetKeyCallback" 'N Window Cbfun))
 
 
 (de set-window-should-close (Window Value)
-    (native "libglfw.so" "glfwSetWindowShouldClose" NIL Window Value))
+    (native "libglfw.so.3.3" "glfwSetWindowShouldClose" NIL Window Value))
 
 
 (de destroy-window (Window)
-    (native "libglfw.so" "glfwDestroyWindow" NIL Window))
+    (native "libglfw.so.3.3" "glfwDestroyWindow" NIL Window))
 
 
 (de terminate ()
-    (native "libglfw.so" "glfwTerminate"))
+    (native "libglfw.so.3.3" "glfwTerminate"))
 
 
 (de get-proc-address (Procname)
-    (native "libglfw.so" "glfwGetProcAddress" 'N Procname))
+    (native "libglfw.so.3.3" "glfwGetProcAddress" 'N Procname))
 
 
 (def 'TRUE                        1)

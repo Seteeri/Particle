@@ -11,7 +11,7 @@
           (prinl "[" (usec) "]" "[][init-prog-rast] Vert Shader Log: " Log-Vert)
           (prinl "[" (usec) "]" "[][init-prog-rast] Compiled and attached vertex shader sucessfully"))
       (if Log-Frag
-          (prinl "[" (usec) "]" "[][init-prog-rast] Frag Shader Log: " Log-Vert)
+          (prinl "[" (usec) "]" "[][init-prog-rast] Frag Shader Log: " Log-Frag)
           (prinl "[" (usec) "]" "[][init-prog-rast] Compiled and attached fragment shader sucessfully")))
   
     (link-program Program)

@@ -16,36 +16,36 @@ Naming Conventions:
 
 (local) (clear)
 
-(load "/home/user/Git/particle/src/c/gl/bo.l")
-(load "/home/user/Git/particle/src/c/gl/shad.l")
-(load "/home/user/Git/particle/src/c/gl/prog.l")
+(load "/home/user/Particle/particle/src/c/gl/bo.l")
+(load "/home/user/Particle/particle/src/c/gl/shad.l")
+(load "/home/user/Particle/particle/src/c/gl/prog.l")
 
 
 (def '*glBufferStorage 0)
 
 
 (de viewport (X Y Width Height)
-  (native "libGLESv2.so" "glViewport" NIL X Y Width Height))
+  (native "libGLESv2.so.2" "glViewport" NIL X Y Width Height))
 
 
 (de enable (Cap)
-  (native "libGLESv2.so" "glEnable" NIL Cap))
+  (native "libGLESv2.so.2" "glEnable" NIL Cap))
 
 
 (de disable (Cap)
-  (native "libGLESv2.so" "glDisable" NIL Cap))
+  (native "libGLESv2.so.2" "glDisable" NIL Cap))
 
 
 (de blend-func (Sfactor Dfactor)
-  (native "libGLESv2.so" "glBlendFunc" NIL Sfactor Dfactor))
+  (native "libGLESv2.so.2" "glBlendFunc" NIL Sfactor Dfactor))
 
 
 (de clear (Mask)
-  (native "libGLESv2.so" "glClear" NIL Mask))
+  (native "libGLESv2.so.2" "glClear" NIL Mask))
 
 
 (de clear-color (Red Green Blue Alpha)
-  (native "libGLESv2.so" "glClearColor" NIL
+  (native "libGLESv2.so.2" "glClearColor" NIL
 	    (cons Red -1.0)
 	    (cons Green -1.0)
 	    (cons Blue -1.0)
@@ -64,57 +64,57 @@ Naming Conventions:
 
 
 (de get-boolean-v (Pname Data)
-  (native "libGLESv2.so" "glGetBooleanv" NIL Pname '(Ret (1) . 0))
+  (native "libGLESv2.so.2" "glGetBooleanv" NIL Pname '(Ret (1) . 0))
     Ret)
 
 
 (de get-boolean-v (Pname Data)
-    (get-num (list "libGLESv2.so" "glGetBooleanv" NIL Pname)
+    (get-num (list "libGLESv2.so.2" "glGetBooleanv" NIL Pname)
 	     (if Data Data (cons 1 'B))))
 }#
 
 
 (de get-boolean-v (Pname Data)
   (if Data
-    (native "libGLESv2.so" "glGetBooleanv" NIL Pname Data)
+    (native "libGLESv2.so.2" "glGetBooleanv" NIL Pname Data)
     (let Data-2 (native "@" "malloc" 'N 2)
-      (native "libGLESv2.so" "glGetBooleanv" NIL Pname Data-2)
+      (native "libGLESv2.so.2" "glGetBooleanv" NIL Pname Data-2)
       (let Ret (struct Data-2 'B)
         (native "@" "free" NIL Data-2)
         Ret))))
 
 
 (de get-float-v (Pname Data)
-  (native "libGLESv2.so" "glGetFloatv" NIL Pname Data))
+  (native "libGLESv2.so.2" "glGetFloatv" NIL Pname Data))
 
 
 (de get-integer-v (Pname Data)
-  (native "libGLESv2.so" "glGetIntegerv" NIL Pname Data))
+  (native "libGLESv2.so.2" "glGetIntegerv" NIL Pname Data))
 
 
 (de get-integer64-v (Pname Data)
-  (native "libGLESv2.so" "glGetInteger64v" NIL Pname Data))
+  (native "libGLESv2.so.2" "glGetInteger64v" NIL Pname Data))
 
 
 (de get-integer-i-v (Target Index Data)
-  (native "libGLESv2.so" "glGetIntegeri_v" NIL Target Index Data))
+  (native "libGLESv2.so.2" "glGetIntegeri_v" NIL Target Index Data))
 
 
 (de get-integer64-i-v (Target Index Data)
-  (native "libGLESv2.so" "glGetInteger64i_v" NIL Target Index Data))
+  (native "libGLESv2.so.2" "glGetInteger64i_v" NIL Target Index Data))
 
 
 (de get-string (Name)
-  (native "libGLESv2.so" "glGetString" 'N Name))
+  (native "libGLESv2.so.2" "glGetString" 'N Name))
 
 
 (de get-string-i (Name Index)
-  (native "libGLESv2.so" "glGetStringi" 'N Name Index))
+  (native "libGLESv2.so.2" "glGetStringi" 'N Name Index))
 
 #{
 (de gen-buffers (N)
     (let Buffers (native "@" "malloc" 'N (* 4 N))
-	 (native "libGLESv2.so" "glGenBuffers" NIL N Buffers)
+	 (native "libGLESv2.so.2" "glGenBuffers" NIL N Buffers)
 	 (let Ret (struct Buffers '())
 	    (native "@" "free" NIL Buffers)
 	      Ret)))
@@ -122,66 +122,66 @@ Naming Conventions:
 
 (de gen-buffers (N)
     #TODO: Use more idiomatic method
-  (native "libGLESv2.so" "glGenBuffers" NIL N (list 'Buffers (cons (* 4 N) 'I N)))
+  (native "libGLESv2.so.2" "glGenBuffers" NIL N (list 'Buffers (cons (* 4 N) 'I N)))
     Buffers)
 
 
 (de bind-buffer (Target Buffer)
-  (native "libGLESv2.so" "glBindBuffer" NIL Target Buffer))
+  (native "libGLESv2.so.2" "glBindBuffer" NIL Target Buffer))
 
 
 (de bind-texture (Target Texture)
-  (native "libGLESv2.so" "glBindTexture" NIL Target Texture))
+  (native "libGLESv2.so.2" "glBindTexture" NIL Target Texture))
 
 
 (de bind-buffer-base (Target Index Buffer)
-  (native "libGLESv2.so" "glBindBufferBase" NIL Target Index Buffer))
+  (native "libGLESv2.so.2" "glBindBufferBase" NIL Target Index Buffer))
 
 
 (de buffer-storage (Target Size Data Flags)
-  (native "libGLESv2.so" *glBufferStorage NIL Target Size Data Flags))
+  (native "libGLESv2.so.2" *glBufferStorage NIL Target Size Data Flags))
 
 
 (de unmap-buffer (Target)
   #Returns GLboolean = 1 byte
-  (native "libGLESv2.so" "glUnmapBuffer" 'B Target))
+  (native "libGLESv2.so.2" "glUnmapBuffer" 'B Target))
 
 
 (de map-buffer-range (Target Offset Length Access)
-  (native "libGLESv2.so" "glMapBufferRange" 'N Target Offset Length Access))
+  (native "libGLESv2.so.2" "glMapBufferRange" 'N Target Offset Length Access))
 
 
 (de buffer-data (Target Size Data Usage)
-  (native "libGLESv2.so" "glBufferData" Target Size Data Usage))
+  (native "libGLESv2.so.2" "glBufferData" Target Size Data Usage))
 
 
 (de active-texture (Texture)
-  (native "libGLESv2.so" "glActiveTexture" NIL Texture))
+  (native "libGLESv2.so.2" "glActiveTexture" NIL Texture))
 
 
 (de tex-buffer (Target Internal-format Buffer)
-  (native "libGLESv2.so" "glTexBuffer" NIL Target Internal-format Buffer))
+  (native "libGLESv2.so.2" "glTexBuffer" NIL Target Internal-format Buffer))
 
 
 (de create-program ()
-  (native "libGLESv2.so" "glCreateProgram" 'I))
+  (native "libGLESv2.so.2" "glCreateProgram" 'I))
 
 
 (de delete-program (Program)
-  (native "libGLESv2.so" "glDeleteProgram" NIL Program))
+  (native "libGLESv2.so.2" "glDeleteProgram" NIL Program))
 
 
 (de use-program (Program)
-  (native "libGLESv2.so" "glUseProgram" NIL Program))
+  (native "libGLESv2.so.2" "glUseProgram" NIL Program))
 
 
 (de link-program (Program)
-  (native "libGLESv2.so" "glLinkProgram" NIL Program))
+  (native "libGLESv2.so.2" "glLinkProgram" NIL Program))
 
 
 (de get-program-iv (Program Pname Params)
   #TODO: Need not use list for struct
-  (native "libGLESv2.so" "glGetProgramiv" NIL Program Pname (list 'Params (cons 4 'I 1)))
+  (native "libGLESv2.so.2" "glGetProgramiv" NIL Program Pname (list 'Params (cons 4 'I 1)))
     (car Params))
 
 
@@ -189,7 +189,7 @@ Naming Conventions:
   (when (> Max-Length 0)
     (let (Info-Log   (native "@" "malloc" 'N (+ Max-Length 1))
           Length   (native "@" "malloc" 'N 4))
-      (native "libGLESv2.so" Fn NIL Target Max-Length Length Info-Log)
+      (native "libGLESv2.so.2" Fn NIL Target Max-Length Length Info-Log)
       #Length does not include null char
       (when (> (car (struct Length '(I))) 0)
         #String is already null-terminated
@@ -206,16 +206,16 @@ Naming Conventions:
 
 
 (de create-shader (Shader-type)
-  (native "libGLESv2.so" "glCreateShader" 'I Shader-type))
+  (native "libGLESv2.so.2" "glCreateShader" 'I Shader-type))
 
 
 (de compile-shader (Shader)
-  (native "libGLESv2.so" "glCompileShader" NIL Shader))
+  (native "libGLESv2.so.2" "glCompileShader" NIL Shader))
 
 
 (de get-shader-iv (Shader Pname Params)
   #TODO: Need not use list for struct
-  (native "libGLESv2.so" "glGetShaderiv" NIL Shader Pname (list 'Params (cons 4 'I 1)))
+  (native "libGLESv2.so.2" "glGetShaderiv" NIL Shader Pname (list 'Params (cons 4 'I 1)))
     (car Params))
 
 
@@ -226,7 +226,7 @@ Naming Conventions:
 
 
 (de attach-shader (Program Shader)
-  (native "libGLESv2.so" "glAttachShader" NIL Program Shader))
+  (native "libGLESv2.so.2" "glAttachShader" NIL Program Shader))
 
 
 (de shader-source-2 (Shader Paths)
@@ -271,7 +271,7 @@ Naming Conventions:
              (inc 'Ptr-Len 4)))
 
      #TODO: Fix using Length
-     (native "libGLESv2.so" "glShaderSource" NIL Shader Count String Length)
+     (native "libGLESv2.so.2" "glShaderSource" NIL Shader Count String Length)
       
     #Free memory
     (for Ptr Lst-Free
@@ -287,32 +287,32 @@ Naming Conventions:
 
 
 (de delete-shader (Shader)
-  (native "libGLESv2.so" "glDeleteShader" NIL Shader))
+  (native "libGLESv2.so.2" "glDeleteShader" NIL Shader))
 
 
 (de gen-vertex-arrays (N)
-  (native "libGLESv2.so" "glGenVertexArrays" NIL N (list 'Arrays (cons (* 4 N) 'I N)))
+  (native "libGLESv2.so.2" "glGenVertexArrays" NIL N (list 'Arrays (cons (* 4 N) 'I N)))
     Arrays)
 
 
 (de bind-vertex-array (Array)
-  (native "libGLESv2.so" "glBindVertexArray" NIL Array))
+  (native "libGLESv2.so.2" "glBindVertexArray" NIL Array))
 
 
 (de draw-elements-indirect (Mode Type Indirect)
-  (native "libGLESv2.so" "glDrawElementsIndirect" NIL Mode Type Indirect))
+  (native "libGLESv2.so.2" "glDrawElementsIndirect" NIL Mode Type Indirect))
 
 
 (de fence-sync (Condition Flags)
-  (native "libGLESv2.so" "glFenceSync" 'N Condition Flags))
+  (native "libGLESv2.so.2" "glFenceSync" 'N Condition Flags))
 
 
 (de delete-sync (Sync)
-  (native "libGLESv2.so" "glDeleteSync" NIL Sync))
+  (native "libGLESv2.so.2" "glDeleteSync" NIL Sync))
 
 
 (de client-wait-sync (Sync Flags Timeout)
-  (native "libGLESv2.so" "glClientWaitSync" 'I Sync Flags Timeout))
+  (native "libGLESv2.so.2" "glClientWaitSync" 'I Sync Flags Timeout))
 
 
 (de client-wait (Sync)
@@ -333,15 +333,15 @@ Naming Conventions:
 
 
 (de get-program-iv (Program Pname Params)
-  (native "libGLESv2.so" "glGetProgramiv" NIL Program Pname Params))
+  (native "libGLESv2.so.2" "glGetProgramiv" NIL Program Pname Params))
 
 
 (de get-program-binary (Program Bufsize Length Binary-Format Binary)
-  (native "libGLESv2.so" "glGetProgramBinary" NIL Program Bufsize Length Binary-Format Binary))
+  (native "libGLESv2.so.2" "glGetProgramBinary" NIL Program Bufsize Length Binary-Format Binary))
 
 
 (de program-binary (Program Binary-Format Binary Length)
-  (native "libGLESv2.so" "glProgramBinary" NIL Program Binary-Format Binary Length))
+  (native "libGLESv2.so.2" "glProgramBinary" NIL Program Binary-Format Binary Length))
 
 
 (de read-and-load-prog (Paths-Vert Paths-Frag Path-Bin)
