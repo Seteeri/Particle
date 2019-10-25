@@ -16,9 +16,9 @@ Naming Conventions:
 
 (local) (clear)
 
-(load "/home/user/Particle/particle/src/c/gl/bo.l")
-(load "/home/user/Particle/particle/src/c/gl/shad.l")
-(load "/home/user/Particle/particle/src/c/gl/prog.l")
+(load "/home/user/Particle/particle/src/c/gles/bo.l")
+(load "/home/user/Particle/particle/src/c/gles/shad.l")
+(load "/home/user/Particle/particle/src/c/gles/prog.l")
 
 
 (def '*glBufferStorage 0)

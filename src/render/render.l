@@ -53,7 +53,7 @@ Class variables may be indicated by an upper case letter
 #(load "/home/user/Particle/particle/src/c/posix/stat.l")
 (load "/home/user/Particle/particle/src/c/posix/string.l")
 (load "/home/user/Particle/particle/src/c/socket.l")
-(load "/home/user/Particle/particle/src/c/gl/es.l")
+(load "/home/user/Particle/particle/src/c/gles/gles.l")
 (load "/home/user/Particle/particle/src/c/glfw.l")
 (load "/home/user/Particle/particle/src/c/epoll.l")
 # Lisp libraries

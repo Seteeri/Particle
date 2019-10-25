@@ -156,7 +156,9 @@ Store DAGs as binary trees?
 
   * S-Expr Functionality
     * Before proper pack implementation, implement list creation and manx
-  
+    * Rename gl/es to gles
+    * Move clear
+
     * Rewrite draw [Done]
     * Implement atomic commands [Done]
     * Draw timeline list [Done]    
