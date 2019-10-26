@@ -1,20 +1,16 @@
 (de car-ptr () (get *lst-ptr 'next))
 
+# Technically these are commands also
 
 (de push-ptr (Part)
 
-  # Calculate XY adv based on verts of new part
-  # Need to redraw post atoms and/or close parenthesis after each push
-  # - Update needs to recurse/propogate through lists and nested lists etc
-  #   -> Similar to generate particles
-  # -> Later, use multiple workers to traverse graph
-  #   - Send tasks to controller, wait for completion
+  # Re-adjust remainder of list including close parenthesis
 
-  # Remember *lst-ptr is a Particle with a list
+  # Remember! *lst-ptr is a Particle with a list
 
   # Connect data
   (with *lst-ptr
-  
+
     (push (:: data) (get Part 'data))
 
     # Set Item next
@@ -30,10 +26,8 @@
   # Reverse above
   # Use prop instead
 
-  (println (get *lst-ptr 'data) (get *lst-ptr 'next) (get (get *lst-ptr 'next) 'next))
+  (let Item (get *lst-ptr 'next)
 
-  (let? Item (get *lst-ptr 'next)
-  
     (with *lst-ptr
 
       # Pop actual data
@@ -42,34 +36,53 @@
       # Set list next to next's next Particle
       (=: next (get Item 'next)))
 
-    (println (get *lst-ptr 'data) (get *lst-ptr 'next))
-
     Item))
-    
-  
+
+
 ##########################
 
+#{
+Data (list 1
+           (list 2 6 7 8)
+           3
+           (list 4 (list 9 12))
+           (list 5 10 11))
+Data (list 1
+           (list 2 3 (list 4) 5)
+           (list 6 (list 7 (list 8))))
+Data (list 1
+           (list 2 3 4)
+           (list 5 6 7)
+           8
+           (list 9 (list 10 (list 11))))
+
+    #(push-ptr Part)
+
+    #(cond ((= Keysym ksd~Return) (nl-ptr))
+    #      ((= Keysym ksd~Tab)    (adv-ptr 2.0)))
+}#
 
 (de cmd-make-char (Keysym)
 
-  # Data-2 (list 'P (cons "a" "r") T "ic" 1 "e" NIL (box))
+  (let (Data (cond ((= Keysym ksd~space) " ")
+                   ((= Keysym ksd~Return) (char 10))
+                   (T (char Keysym)))
+        Data '(let (a (+ 1 2)
+                    b (let e (+ 1 2)
+                        e)
+                    c (+ 5 6)
+                    d (let f (+ 1 2)
+                        f))
+                (+ a b)
+                (+ a b c)
+                (list 1 (list 2 4 6) 3)
+                (let a (+ 1 2)
+                  T T T))
+        Part (draw-any Data 0.0))
 
-  (if *lst-ptr
-      (prog
-        (let (Data (cond ((= Keysym ksd~space) " ")
-                        ((= Keysym ksd~Return) (char 10))
-                        (T (char Keysym)))
-              Data (list 'P (cons "a" "r") T "ic" 1 "e" NIL (box))
-              Part (gen-particles Data))
+    #(println "cmd-make-char:Data" Data)
 
-          (push-ptr Part)
-
-          #(cond ((= Keysym ksd~Return) (nl-ptr))
-          #      ((= Keysym ksd~Tab)    (adv-ptr 2.0)))
-
-          (adv-ptr)))
-
-      (prinl-info "cmd-make-char" "MAKE LIST FIRST!")))
+    (adv-ptr)))
 
 
 (de cmd-del (Dir)
@@ -95,25 +108,36 @@
   # 3. For Verts: push Verts
 
   # MODIFY COUNTER ALSO
-  
-  (unless (= (car-ptr) 'PARTICLE)
-    (let? Part (pop-ptr)
-      (del-particle Part)
-      # Adv backwards over last space
-      (adv-ptr -1.0))))
+
+  (println "BEFORE (CUR/NXT)"
+           (get (car-ptr) 'data)
+           (get (get (car-ptr) 'next) 'data))
+
+  (let? Part (pop-ptr)
+
+    (println "POP" (get Part 'data))
+
+    (del-particle Part)
+
+    (println "AFTER (CUR/NXT)"
+             (get (car-ptr) 'data)
+             (get (get (car-ptr) 'next) 'data))
+
+    # Adv backwards over last space
+    (adv-ptr -1.0)))
 
 
 (de cmd-make-num (Keysym)
 
   (let (Data  (format (char Keysym))
-        Verts (draw-chars Data (get-color-type Data) T)
+        Verts (draw-chars Data
+                          (get-color-type Data)
+                          T)
         Part   (new '(+Particle)
-                   Data
-                   (car-ptr)
-                   Verts))
-
+                    Data
+                    (car-ptr)
+                    Verts))
     (push-ptr Part)
-
     (adv-ptr)))
 
 
@@ -194,7 +218,7 @@
   (prinl-info "cmd-chop")
 
   (let Last (get (car-ptr) 'data)
-  
+
     (push-ptr (gen-particles (chop Last))))
 
   (adv-ptr))
@@ -236,7 +260,7 @@
     (push-ptr (gen-particles Any)))
 
   (adv-ptr))
-      
+
 
 (de cmd-any (Keysym)
 
@@ -282,12 +306,12 @@
   # Use can enter NIL, at which point is converted into "()"
 
   #{
-  
+
     QUESTION: Enter list after creation or stay on same level?
-  
+
     Default is NO so pressing new list repeatedly will create subsequent lists
     rather than nested lists
-    
+
     Hmm...technically lists are just nested cons
 
     From NIL
@@ -297,15 +321,21 @@
     Then alpha
 
     (NIL (NIL) (NIL "a" "b" "c"))
-    
+
   }#
 
-  (let (List (list)
-        Part (gen-particles List))
+  (let Part (gen-particles NIL)
+
+    (push-ptr Part)
 
     (setq *lst-ptr Part)
 
-    # Solely stores list trail
-    (push '*lists-ptr Part))
+    # Store list trail
+    #(push '*lists-ptr Part)
+
+    (println "LIST NXT" (get Part 'next))
+    (println "LIST NXT" (get (get Part 'next) 'data))
+
+    T)
 
   (adv-ptr))

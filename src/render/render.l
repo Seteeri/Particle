@@ -69,7 +69,6 @@ Class variables may be indicated by an upper case letter
 (load "/home/user/Particle/particle/src/render/conn.l")
 
 
-# MOVE TO GL
 (def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
 
 

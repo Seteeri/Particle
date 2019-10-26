@@ -26,13 +26,19 @@ notebooks, WMs/DEs, creative coding, and mindmapping into a single interface.
 The target audience consists of programmers, power users and the like, and
 "busy" people.
 
-Ultimately, the goal of Particle is to create a Lispy userspace, while still
-maintaining backwards compatibility with the conventional desktop (Wayland) and
-the C world. This should reduce fragmentation and encourage growth by providing
-a stable base through a programming language just as C has cemented its place in
-the OS/kernel world, or how Apple uses Objective-C/Swift in its userland (I like
-to imagine if MacOS had been open-source, the computing world might be very
-different today...).
+The goal of Particle is to create a Lispy userspace through being the
+init system and encompassing all layers above that. The first step is to
+maintain backwards compatibility with the conventional desktop (Wayland) and
+the C world while rewriting/replacing parts in Lisp.
+
+This will allow a smoother transition to a proper Lisp OS. PilOS provides a minimal
+starting point; however, there would be many hurdles to overcome, driver support
+coming to mind. Initially, a SOC could be targeted as a starting point. 
+It begs the question as to how useful Lisp at the OS level would be today
+in contrast to past Lisp Machines.
+
+I am planning to port PilOS to ARM64 or even RISC-V once devices become
+more adequate.
 
 My personal dream would be to have a consistent computing experience between
 a desktop/workstation, laptop/tablet and smartphone/PDA where information or
@@ -49,16 +55,7 @@ Particle maximizes the following principles:
 * Simplicity/Minimalism
 
 These principles are shared with the underlying programming language (PicoLisp)
-and OS (BSD) to create a consistent *understandable* system.
-
-Future plans include building the userland upon Dragonfly BSD, although
-current development is occuring on Arch Linux/Sway.
-
-PilOS provides a minimal starting point; however, there would be many hurdles to
-overcome including writing a compatibility layer like LinuxKPI to reuse linux
-drivers. Initially, specific hardware or a SOC with adequate performance could
-be targeted to provide a suitable base. It begs the question as to how useful a
-Lisp at the OS level would be (past Lisp Machines may provide an answer...).
+to create a consistent *understandable* system.
 
 ## The Inspiration
 
@@ -68,13 +65,13 @@ Lisp at the OS level would be (past Lisp Machines may provide an answer...).
   * Lisp - the programmable programming language
   * Emacs/Vim/StumpWM - consistency, extensibility, text and keyboard driven
   * Evernote - Stepan Pachikov wanted to remember everything
+  * Firefox Tree Style Tab addon
 
 * Secondary Inspirations:
   * McCLIM - "presentations" - (Convergent evolution I suppose ;))
   * Uzbl/Conkeror - numbered links for navigation
   * Unreal Blueprints - nodal system
   * EagleMode - ZUI system
-  * Xerox PARC - pioneered many modern computing elements and paradigms
 
 * Personal Influences:
   * The Humane Interface by Jeff Raskin
@@ -86,6 +83,7 @@ Lisp at the OS level would be (past Lisp Machines may provide an answer...).
     * Redesigned file hierarchies
     * ZUIs
   * Douglas Engelbart - "The Mother of All Demos"
+  * Xerox PARC - pioneered many modern computing elements and paradigms
   * Sir Tim Berners-Lee - WWW
   * Paul Graham, Peter Norvig
   * Brett Victor - Inventing on Principle
@@ -180,7 +178,6 @@ Lispify:
       * Ogg, MKV, WebM
       * glTF, COLLADA
    * Toybox (Toolchain)
-3. JIT? - last piece of the puzzle but also the most laborious; compile code to PilASM
 
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
@@ -202,8 +199,6 @@ Future Ideas
 
 1. Clone this repo
 2. ...
-
-*Will update when ready...*
 
 ## The License
 

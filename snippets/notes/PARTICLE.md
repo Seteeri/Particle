@@ -154,15 +154,17 @@ Store DAGs as binary trees?
 
   * Use custom layouts for certain symbols like de, let
 
-  * S-Expr Functionality
-    * Before proper pack implementation, implement list creation and manx
-    * Rename gl/es to gles
-    * Move clear
+  * Drawing/Layout of Representation
+    * Diagrams
+      * Implement horizontal layout (done)
+      * Implement vertical layout like tree view
+    * Selection/Pointer
+      * Select diagrams
+      * Continue below...
+        
+    * Rename namespace gl -> gles
+    * Move worker out of ctrl to top level
 
-    * Rewrite draw [Done]
-    * Implement atomic commands [Done]
-    * Draw timeline list [Done]    
-    * Implement list commands [WIP]
     * Implement binary ops (destructive or non-destructive)
     * Insert control chars
       * newline ("^J"), return ("^M") or TAB ("^I")
@@ -172,8 +174,6 @@ Store DAGs as binary trees?
     from timeline
     
   * Cur/Ptr
-    * Implement!
-      * Make globals both particles instead of verts
     * Use touch/mouse to move spatially
       * SNAP TO GRID
         * Drag to rearrange list

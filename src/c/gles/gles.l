@@ -20,7 +20,6 @@ Naming Conventions:
 (load "/home/user/Particle/particle/src/c/gles/shad.l")
 (load "/home/user/Particle/particle/src/c/gles/prog.l")
 
-
 (def '*glBufferStorage 0)
 
 

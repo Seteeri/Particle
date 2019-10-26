@@ -1804,16 +1804,6 @@ http://www.cs.umd.edu/hcil/treemap-history/
 
 ################################################################################
 
-lst-ptr:
-* current list to push to
-
-lists-ptr:
-* list trail
-* pushed to when new list created or user moves down
-* popped from when current list destroyed or user moves up
-
-################################################################################
-
 https://news.ycombinator.com/item?id=15466124
 https://news.ycombinator.com/item?id=1878220
 
@@ -2002,3 +1992,400 @@ Solutions:
    - Requires rendering each viewport
    - Draw border also
    - Can viewports fit into the standard model???
+
+########################################################################
+########################################################################
+
+lst-ptr:
+* current list to push to
+
+lists-ptr:
+* list trail
+* pushed to when new list created or user moves down
+* popped from when current list destroyed or user moves up
+
+* List always exist to push to
+* Default is the space list
+  * Has PARTICLE sentinel
+  * Time list uses same senintel
+* Draw on startup  
+
+* NOTE, Space and Time are both particles themselves
+* The symbols that reference them are a priori (otherwise they would be
+garbage collected)
+
+
+* We are drawing the data which is the result from evaluating the code
+* So if the code is (def *list (list 1 2 3)) -> *list
+* And then evaluating a symbol, results in its value, so *list -> (1 2 3) [depends on the rule like if its a num]
+* Thus we draw all the symbols, for the user to know what the value of
+symbol is, use val...but how to associate the symbol to its
+value...use cons cell? 
+  * User can build table/mapping?
+  * This seems redundant though...
+  * Already attempted to draw all the cons cells by tracing pointers
+    * GC was the issue
+    * No way of knowing when the object was GC'd so could not remove it
+    * Thus the current method of particle -> data, so if particle is
+    removed, then data will be removed automatically
+
+* To do layout, iterate through remainder of list
+
+
+# Must create particles for all default symbols
+# Then push to Space list
+# However, do not push to Time list?
+#   Poss push to list before sentinel
+
+# Is *part-ptr a particle?
+# I.e. *part-ptr refers to a particle
+# Where else to ref particle?
+# Must be a root particle/list to reference them all
+# Symbol -> Particle/List -> Particle/Symbols/List
+
+
+########################################################################
+########################################################################
+
+WASM is trying to abstract OS's, however
+
+The solution is not to build yet another abstraction on top of the OS's
+different models, but to fix the underlying problem.
+
+The solution to fix the underlying problem of different models is
+connected to open-source as the proprietary models became dominant
+first, i.e. Windows
+
+
+If we can interpret fast enough, that relies on source code available
+which makes the platform inherently open-source
+
+The security model on desktops and phones need to be fixed, but that
+also connects to companies and "walled-gardens"/vendor lock-in.
+
+And that ties further down to having open-architecture which
+hopefully RISC can fix
+
+Emacs and Blender provide the most useful examples of success of
+communities coming together around a single paradigm
+- They are also very specific niches
+
+However, as users become creators and not just consumers, tools like
+Blender will become popular to the masses.
+
+The remaining issue is whether its GPL license will affect its
+adoption in the long run - which is why Cycles is permissive.
+
+We can build around its data model from the blend file which is not
+licensed.
+
+Lisp's success relies on open hardware and hardware GC
+
+Later we can transpile WASM to PicoLisp
+
+Would a game engine like Half-Life be similar?
+- Mods/Plugins/Extensions
+
+Web provided a standardized data structure - the DOM - WASM throws this
+out. People wanted to do more, so Javascript was invented.
+
+At the end of the day, it comes down to the memory model...WASM will
+allow different memory models, but at what cost? An inconsistent system
+which creates vulnerabilities?
+
+Apple's walled garden but not be all evil as they restrict what can
+and can't be done to provide a consistent user experience...if only
+there was an open-source version of them...
+
+########################################################################
+
+Normal is draw across
+
+(let a (+ 1 2)
+  T
+  T
+  T)
+
+[let|.] -> [a|.] -> [.|.] ---------> [T|.] -> [T|.] -> [T|N]
+                     |
+                    [1|.] -> [2|N]
+
+(let a (+ 1 2) T T T)
+
+. let
+  a
+  . +
+    1
+    2
+    
+VS
+
+. let
+  a
+  . + 1 2 3 4 . list 5 6 7
+  
+- all understood to belong to same list
+- what if list? go down or across? 
+  -> becomes inconsistent
+
+  
+(let a (+ 1 2 3 4)
+  (list 5 6 7))
+
+
+[let|.] -> [a|.] -> [.|.] ---------> [.|.]
+                     |                |
+                    [1|.] -> [2|N]   [5|.] -> [6|.] -> [7|.]
+
+
+[let|.] -> [a|.] -> [.|.] --------->
+                     | 
+                    [1|.] -> [2|N]
+
+   [.|N]
+    |
+   [5|.] -> [6|.] -> [7|.]
+
+- Con cells cannot overlap
+- Nor can lines overlap/cross as they would be same as windows on top
+of each other...
+
+(let
+    a (+ 1 2)
+    
+    T
+    T
+    T)
+
+
+[let|.]
+     |
+    [a|.] -> [.|.] ------------------> [X|.]
+              |                           |
+             [+|.] -> [1|.] -> [2|N]   [X|.]
+                                          |
+                                       [X|N]
+
+(let
+    a (+ 1 2)
+    
+    (list T T)
+    (list T T)
+    (list T T))
+
+[let|.]
+     |
+    [a|.] -> [.|.] ------------------> [.|.] --------> [.|.] --------> [.|N]
+              |                         |               |               |
+             [+|.] -> [1|.] -> [2|N]   [list]-[T]-[T]  [list]-[T]-[T]  [list]-[T]-[T]
+                                       
+
+HOW TO DISPLAY MORE COMPACT - OR VERTICALLY
+
+let ------------------ bindings --------------------- prog/body
+
+[let|.]
+     |
+    [a|.] -> [.|.] ------------------+
+              |                      |
+             [+|.] -> [1|.] -> [2|N] | 
+                                     |
+                                     +-> [.|.] --------> [.|.] --------> [.|N]
+                                          |               |               |
+                                         [list]-[T]-[T]  [list]-[T]-[T]  [list]-[T]-[T]
+
+                                              (show vertically?)
+
+(let (a (+ 1 2)
+      b (+ 3 4))
+  ...)
+
+Expanded:
+
+					       OR
+[let|.] -> [.|.] ------------------------------+---> 
+            |                                  |
+           [a|.] -> [.|.]-------------------+  |
+                     |                      |  |
+                    [+|.] -> [1|.] -> [2|N] |  |
+                                            |  |
+            +-------------------------------+  |
+            |                                  |
+           [b|.] -> [.|N]                      |
+                     |                         |
+                    [+|.] -> [3|.] -> [4|N]    |
+                                               |
+  +--------------------------------------------+
+  |
+ [T|N]
+
+
+Simplified:
+
+			   OR
+let -> . ------------------+---->
+       |                   |
+       a -> . ----------+  |
+            |           |  |
+            + -> 1 -> 2 |  |
+                        |  |
+       +----------------+  |
+       |                   |
+       b -> .              |
+            |              |
+            + -> 3 -> 4    |
+                           |
+  +------------------------+
+  |
+  T  (this part can be here or to the right
+
+Condensed:
+
+let -> . ->>>>>>>>>>>>>>>>>
+       a -> . -----------+ 
+            + -> 1 -> 2  |  
+       +-----------------+  
+       b -> .              
+            + -> 3 -> 4    
+                           
+(normally, second dot should be under let but here it is draw horizontally)
+
+  . 
+    let . ----------> .
+	 a .           fn-1 a1 a2 a3
+             + 1 2    .
+         b .           fn-2 b1 b2 b3
+             fn 3 4   .
+    .                  fn-3 c1 c2 c3
+      + 1 
+        2
+    . 
+     + 3
+        . 
+          + 4
+            5
+        . 
+          + 6 
+            7
+
+
+  . [1|.] -+
+           |
+    +------+
+    |
+    [2|.] -+
+           |
+    +------+
+    |
+    [3|.]
+
+let as a normal list would be:
+
+  . let 
+    . a 
+      . + 1
+          2
+      b 
+      . fn 3
+         4
+    . + 1 
+        2
+    ...
+
+Vertically oriented:
+
+ [.|.]
+  | |
+  a |
+  +-+
+  |
+  |
+
+ [.|.]
+  | |
+  b |
+  +-+
+  |
+  |
+
+ [.|.]
+  | |
+  c |
+  +-+
+  |
+  |
+
+==
+
+(let (a (+ 1 2)
+      b (fn 3 4))
+  (+ 1 2 3)
+  (+ 3 (+ 4 5) (+ 6 7))
+  (1 2 3))
+
+(let (a (+ 1 
+           2)
+      b (fn 3 
+            4))
+
+  (+ 1 
+     2 
+     3)
+  (+ 3 
+     (+ 4 
+        5) 
+     8
+     (+ 6
+        7)
+     9)
+  (1 
+   2 
+   3))
+
+* probably best to break lines when length >= 4
+  - lines too long = eye loses tracking
+  - lines too short = waste eye tracking vertically as easier to scan horizontally
+  - high code density increases anxiety in the viewer
+
+however, previous is still readable since user expects list to continue rightward or downward
+
+for lists/funs:
+ 
+  . list 1
+         2
+         3
+ 
+  . add 1
+        2
+        3
+
+for special number lists:
+
+  . 1
+    2
+    3
+
+for empty list/NIL
+
+  (list NIL NIL)
+
+  [list|.] -> [.|.] -> [.|.] -> NIL
+               |        |
+              NIL      NIL
+
+  . list NIL
+         NIL
+
+- it is always understood, for lists, the first items are always to the right of the dot
+- after that, lists either continue downward or to the right
+- empty list points to nil
+
+- problem - don't know relationship from a . to b
+  ...but let statement identifies relationship...
+  ...without lines, difficult to follow when code gets longer...
+  ...or is that a code smell ...
+
+- initially draw lines since easier to understand?
+
+- if first item is placed directly under then difficult to distingish items in that list and items in the parent list
+- if first item is placed directly right then difficult to distinugish items in that list and items in the parent list should all the items be placed right

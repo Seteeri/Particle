@@ -32,7 +32,7 @@
 (def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
 (def 'KEY-REPEAT 2)
 
-# Globals
+# Global Symbols
 (def '*metrics)
 (def '*xkb)
 (def '*binds)
@@ -43,9 +43,8 @@
 # Vertices (particle?) for pointer
 (def '*vert-ptr)
 
-# 'PARTICLE = sentinel
-(def '*part-ptr 'PARTICLE)
-
+# Not actually a pointer but the data structure itself
+(def '*part-ptr)
 (def '*lst-ptr)
 (def '*lists-ptr)
 
@@ -70,7 +69,7 @@
 (load "/home/user/Particle/particle/src/ctrl/xkb.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/conn.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/ptr.l")
-(load "/home/user/Particle/particle/src/ctrl/worker/draw.l")
+(load "/home/user/Particle/particle/src/ctrl/worker/draw/draw.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/cmd/vert.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/cmd/cam.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/cmd/ptr.l")
@@ -127,16 +126,16 @@
   # User can then use builtin copy to produce a copy of the symbol
 
   # Allocate pointer - use same char as PicoLisp ":"
-  # Make these particles
+  # Make pointer a particle also
   (setq *vert-ptr (alloc-vert *col-red ":"))
-
-  # Root symbol must already exist
-  # Particles ref data so particles are stored linearly
-  (push-ptr (gen-particles *lists-ptr))
+  
+  (setq *part-ptr (gen-particles (list 'PARTICLE)))
+  (setq *lst-ptr *part-ptr)
+  
   (adv-ptr)
 
-
   (prinl-info "init-worker" "Starting epoll...")
+  
   (loop (ipc~poll> *ipc -1)))
 
 
