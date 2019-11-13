@@ -50,11 +50,12 @@
   # Must determine width of local vars for prg
   
   (if (lst? (get List 2))
-      (draw-let-f1 List Depth)
+      (draw-let-f1 List Depth X-Root)
       (draw-let-f2 List Depth X-Root)))
 
 
-(de draw-let-f1 (List Depth)
+(de draw-let-f1 (List Depth X-Root)
+  
   (let ((X Y) (get *vert-ptr 'pos))
     # Loop two at a time:
     (let R (get List 2)
@@ -68,24 +69,41 @@
           (nl-ptr)
           (set-x-ptr-2 X))))
 
-    (set-y-ptr-2 Y)
-    # Draw list will produce newline before drawing
-    (nl-ptr -1.0)
-    (adv-ptr 6.0)
-    (draw-list (nth List 3) (+ Depth 1.0) (get (get *vert-ptr 'pos) 1))))
+    #{
+      # Draw horizontally
+      
+      (set-y-ptr-2 Y)  
+      # Draw list will produce newline before drawing
+      (nl-ptr -1.0)    
+      (adv-ptr 6.0)
+    }#
+
+    (set-x-ptr-2 (+ X-Root (*/ Depth *adv-vert 1.0)))
+    (adv-ptr 2.0)
+    
+    (draw-list (nth List 3)
+               (+ Depth 1.0)
+               (get (get *vert-ptr 'pos) 1))))
 
 
 (de draw-let-f2 (List Depth X-Root)
+  
   # Same as above...except drawing only 1 pair
+  
   (draw-any (get List 2)) # a
   (adv-ptr)
   (draw-any (get List 3)) # (+ 1 2)
   (adv-ptr)
           
   # Newline, Return feed, Indent two spaces
-  (set-x-ptr-2 (+ X-Root (*/ Depth *adv-vert 1.0))) (adv-ptr 2.0)
+  
+  (set-x-ptr-2 (+ X-Root (*/ Depth *adv-vert 1.0)))
+  (adv-ptr 2.0)
   
   # Remainder can be either list or atom
   # NTH/CDR will return a list although it is not the start of a list but
   # the continuation/remainder of one
-  (draw-list (nth List 4) (+ Depth 1.0) (get (get *vert-ptr 'pos) 1)))
+  
+  (draw-list (nth List 4)
+             (+ Depth 1.0)
+             (get (get *vert-ptr 'pos) 1)))
