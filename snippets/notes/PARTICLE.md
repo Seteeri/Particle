@@ -155,16 +155,11 @@ Store DAGs as binary trees?
   * Use custom layouts for certain symbols like de, let
 
   * Drawing/Layout of Representation
-    * Diagrams
-      * Implement horizontal layout (done)
-      * Implement vertical layout like tree view
-    * Selection/Pointer
-      * Select diagrams
-      * Continue below...
-        
-    * Rename namespace gl -> gles
-    * Move worker out of ctrl to top level
-
+    * Finish drawing [WIP]
+    * Integrate with particle
+      * Particles are the representation of the internal data structure and thus
+      strictly follow the underlying data structure - they are all cons cells
+      * Thus ops can be applied to them the same way as the underlying code
     * Implement binary ops (destructive or non-destructive)
     * Insert control chars
       * newline ("^J"), return ("^M") or TAB ("^I")
@@ -172,6 +167,8 @@ Store DAGs as binary trees?
     * Batch draw commands
     * Implement multiple args by getting number of args from docs and pulling
     from timeline
+
+  * Rename namespace gl -> gles
     
   * Cur/Ptr
     * Use touch/mouse to move spatially
