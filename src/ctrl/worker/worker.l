@@ -71,6 +71,7 @@
 (load "/home/user/Particle/particle/src/ctrl/worker/ptr.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/draw/draw.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/draw/structs.l")
+(load "/home/user/Particle/particle/src/ctrl/worker/draw/forms.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/cmd/vert.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/cmd/cam.l")
 (load "/home/user/Particle/particle/src/ctrl/worker/cmd/ptr.l")
