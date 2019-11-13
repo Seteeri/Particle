@@ -89,7 +89,7 @@ own proc
       (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/model/model.l" "-main" Width Height Verts)))
       (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/input/input.l" "-main" Width Height Verts)))
       (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/ctrl/ctrl.l" "-main" Width Height Verts)))
-      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/ctrl/worker/worker.l" "-main" Width Height Verts 1))))
+      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/worker/worker.l" "-main" Width Height Verts 1))))
 
   (bye)
 
