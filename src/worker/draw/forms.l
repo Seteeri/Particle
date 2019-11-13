@@ -79,7 +79,7 @@
     }#
 
     (set-x-ptr-2 (+ X-Root (*/ Depth *adv-vert 1.0)))
-    (adv-ptr 2.0)
+    (adv-ptr 3.0)
     
     (draw-list (nth List 3)
                (+ Depth 1.0)
@@ -98,7 +98,7 @@
   # Newline, Return feed, Indent two spaces
   
   (set-x-ptr-2 (+ X-Root (*/ Depth *adv-vert 1.0)))
-  (adv-ptr 2.0)
+  (adv-ptr 3.0)
   
   # Remainder can be either list or atom
   # NTH/CDR will return a list although it is not the start of a list but
