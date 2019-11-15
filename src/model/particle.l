@@ -139,19 +139,56 @@
 
 (de draw-list-dot (List Depth X-Root)
 
+  (let ((X Y) (get *vert-ptr 'pos))
+    (println "DRAW DOT" X Y))
+
   (draw-chars (char 183) *col-base-0 NIL)
-  (adv-ptr)
+  (adv-ptr 2.0)
   
-  (draw-list List (+ Depth 1.0) (get (get *vert-ptr 'pos) 1)))
+  (let ((X Y) (get *vert-ptr 'pos))
+    (draw-list List Depth X)))
+
+
+(de draw-list (List Depth X-Root)
+  (inc 'Depth 1.0)
+  (draw-list-two List Depth X-Root))
 
       
-(de draw-list (List Depth X-Root)
+(de draw-list-two (List Depth X-Root)
 
-  (inc 'Depth 1.0)
+  # Draw first two items
+  # Then remainder aligned below second item
+  # This is default method to draw forms
+  # Exceptions are in forms
 
+  (let? Any (car List)
+    (draw-any Any Depth X-Root)
+    (adv-ptr))
+  
+  # Save x
+  (let ((X Y) (get *vert-ptr 'pos))
+  
+    (let? Any (cadr List)
+      (draw-any Any Depth X-Root))
+    
+    # Move ptr to newline
+    # Move ptr back to X-Root
+
+    (let? Rem (nth List 3)
+      (for Any Rem
+        (set-x-ptr-2 X)
+        (nl-ptr)
+        (draw-any Any Depth X)))))
+      
+  
+(de draw-list-one (List Depth X-Root)
+  
+  # Default draw vertically
+  
+  # TODO: Rename set-x-ptr-2 -> x-ptr
+  
   (for Any List
     (set-x-ptr-2 X-Root)
-    # Default draw vertically
     (nl-ptr)
     (draw-any Any Depth X-Root)))
 

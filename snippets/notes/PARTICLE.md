@@ -152,21 +152,26 @@ Store DAGs as binary trees?
      * Sort time
      * Repeat keys
 
-  * Use custom layouts for certain symbols like de, let
-
-  * Drawing/Layout of Representation
+  * Primary Representation
     * Finish drawing [WIP]
+      * Implement cons cell
+      * Implement basic forms
+      * Draw forms with second item on same line as first and remainder below second
+        * Excludes forms starting with numbers
     * Integrate with particle
       * Particles are the representation of the internal data structure and thus
       strictly follow the underlying data structure - they are all cons cells
       * Thus ops can be applied to them the same way as the underlying code
-    * Implement binary ops (destructive or non-destructive)
+    * Implement ops
     * Insert control chars
       * newline ("^J"), return ("^M") or TAB ("^I")
-    * Ctrl+Tab = show help menu
     * Batch draw commands
     * Implement multiple args by getting number of args from docs and pulling
     from timeline
+      * If unknown, pull entire list
+
+  * Draw cons cells / box-ptr diagrams with lines
+    * Fastest/simplest method is primary
 
   * Rename namespace gl -> gles
     
@@ -176,21 +181,20 @@ Store DAGs as binary trees?
         * Drag to rearrange list
     * Displacement scales with zoom level
 
-  * List Functionality
-    * Draw full cell?
-    * Once timeline visible, easier to work with list
-
   * Error Handling
     * Set * Err to (quit)
     * On error, print msg and return to top-level
 
   * Default particles
     * Help info
+      * Like Nano
     * FPS - do in render
 
   * Load own code
 
   * Explore file browsing using built in functions
+    * For example, get a list of files in directory -> return list of strings of
+    files
 
    * Test compute shaders
      * Rotate all vertices
@@ -205,7 +209,7 @@ Store DAGs as binary trees?
    * Test multiple workers
      * Need data sync on model side to broadcast updates
 
-   * PRE-RELEASE - REPL - SEPT 1
+   * PRE-RELEASE - REPL - JAN ?
      * CLEAN UP
      * RECORD DEMO
      * ANNOUNCE ON MAILING LIST, LATER REDDIT
