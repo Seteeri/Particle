@@ -79,7 +79,8 @@ Data (list 1
         #Data '(+ 1 2 3 NIL)
         #Data '(let a (+ 1 2)
         #        T)
-        Part (draw-any Data 0.0))
+        Part (let ((X Y) (get *vert-ptr 'pos))
+                (draw-any Data 0.0 X)))
 
     #(println "cmd-make-char:Data" Data)
 

@@ -91,7 +91,7 @@
       (del-particle Next))))
 
 
-(de draw-any (Any Depth)
+(de draw-any (Any Depth X-Root)
 
   #{
     * Use box-ptr diagrams
@@ -128,12 +128,14 @@
                             ((= (car Any) 'let)
                               (draw-let Any
                                         Depth
-                                        (get (get *vert-ptr 'pos) 1)))
+                                        X-Root))
                             (T
                               (draw-list-dot Any
                                              Depth
-                                             (get (get *vert-ptr 'pos) 1))))
-                          (draw-pair Any Depth (get (get *vert-ptr 'pos) 1))))
+                                             X-Root)))
+                          (draw-pair Any
+                                     Depth
+                                     X-Root)))
         (T            (draw-atom Any T))))
 
 
@@ -190,7 +192,10 @@
     (draw-any Any Depth X-Root)))
 
 
-(de draw-atom (Atom) (draw-chars Atom (get-color-type Atom) T))
+(de draw-atom (Atom)
+  
+  (draw-chars Atom (get-color-type Atom) T))
+  
 
 (de draw-pair (Pair Depth X-Root)
   #{
@@ -218,16 +223,12 @@
         b
         .
   }#
-  
-  (println Pair (car Pair) (cdr Pair))
-  
+
+  # TODO: Pass space flag to draw-any
+    
   (draw-any (car Pair) Depth X-Root)
 
-  (adv-ptr)
-
-  (draw-chars (char 183) *col-base-0 NIL)
-
-  (adv-ptr 2.0)
+  (draw-chars (char 183) *col-base-0 T)
 
   (draw-any (cdr Pair) Depth X-Root)
   
