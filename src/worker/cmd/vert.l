@@ -72,6 +72,8 @@ Data (list 1
                 (+ a b)
                 (list 1 (list 2 4 6) 3)
                 T
+                (cons 'a 'b)
+                (a . b)
                 (let c (+ 5 6)
                   (+ a b)))
         #Data '(+ 1 2 3 NIL)

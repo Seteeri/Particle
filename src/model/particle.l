@@ -133,14 +133,11 @@
                               (draw-list-dot Any
                                              Depth
                                              (get (get *vert-ptr 'pos) 1))))
-                          (draw-pair Any)))
+                          (draw-pair Any Depth (get (get *vert-ptr 'pos) 1))))
         (T            (draw-atom Any T))))
 
 
 (de draw-list-dot (List Depth X-Root)
-
-  (let ((X Y) (get *vert-ptr 'pos))
-    (println "DRAW DOT" X Y))
 
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
@@ -193,8 +190,48 @@
     (draw-any Any Depth X-Root)))
 
 
-(de draw-atom (Any) (draw-chars Any (get-color-type Any) T))
-(de draw-pair (Any) T)
+(de draw-atom (Atom) (draw-chars Atom (get-color-type Atom) T))
+
+(de draw-pair (Pair Depth X-Root)
+  #{
+    Draw pair as car . cdr
+    
+    car . cdr
+    
+    . a b c . d . = (a b (c . d) .)
+    
+    Or no space?
+    
+    . a . b . = ((a . b) .)
+    vs
+    . a.b .
+    
+    -> Still distinguishable - requires only visual-spatial processing instead of
+    abstract reasoning
+    
+    Syms - colored diff
+    Strings - color diff and/or quotes
+    List - (a b .) denotes circular list; only valid at end of list; so if . is 
+             by itself it denotes a circular list; an empty list is NIL or () or ""
+
+      . a
+        b
+        .
+  }#
+  
+  (println Pair (car Pair) (cdr Pair))
+  
+  (draw-any (car Pair) Depth X-Root)
+
+  (adv-ptr)
+
+  (draw-chars (char 183) *col-base-0 NIL)
+
+  (adv-ptr 2.0)
+
+  (draw-any (cdr Pair) Depth X-Root)
+  
+  T)
 
 ################################################################################
 

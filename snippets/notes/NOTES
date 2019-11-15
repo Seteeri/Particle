@@ -2389,3 +2389,7 @@ for empty list/NIL
 
 - if first item is placed directly under then difficult to distingish items in that list and items in the parent list
 - if first item is placed directly right then difficult to distinugish items in that list and items in the parent list should all the items be placed right
+
+################################################################################
+
+Read macros ony apply to strings?
