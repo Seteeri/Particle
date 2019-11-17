@@ -53,6 +53,36 @@
   T)
 
 
+(de draw-cond (List Depth X-Root)
+  # Draw cond, draw prog
+  #{
+    (cond ((= A) 1)
+          ((= B) 2)
+          ((= C) 3))
+  }#
+  
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr 2.0)
+  
+  (draw-atom (car List) Depth X-Root)
+  (adv-ptr)
+
+  (let ((X Y) (get *vert-ptr 'pos))
+
+    # Loop through remainder
+
+    (let? Rem (nth List 2)
+      (until (not Rem)
+        (let ((Any Prg) (car Rem))
+          (draw-any Any Depth X)
+          (adv-ptr)
+          (draw-any Prg Depth X))
+        (setq Rem (cdr Rem))
+        (when Rem
+          (set-x-ptr-2 X)
+          (nl-ptr))))))
+
+
 (de draw-de (List Depth X-Root)
   # Draw first three items, then rest as a list
 
