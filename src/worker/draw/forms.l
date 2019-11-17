@@ -61,23 +61,19 @@
 
 (de draw-let (List Depth X-Root)
 
-  (draw-chars (char 183) *col-base-0 NIL)
-  (adv-ptr 2.0)
-  
-  (draw-atom (car List) Depth X-Root)
-  (adv-ptr)
+  (let ((X Y) (get *vert-ptr 'pos))
 
-  # If second atom is a list:
-  #   draw pairs
-  #   draw two atoms
-  
-  # Must determine width of local vars for prg
-  
-  # Note X-Root is the base of the cons cell
-  
-  (if (lst? (get List 2))
-      (draw-let-list List Depth X-Root)
-      (draw-let-var List Depth X-Root)))
+    (draw-chars (char 183) *col-base-0 NIL)
+    (adv-ptr 2.0)
+    
+    (draw-atom (car List) Depth X-Root)
+    (adv-ptr)
+    
+    # Must determine width of local vars for prg
+    
+    (if (lst? (get List 2))
+        (draw-let-list List Depth X)
+        (draw-let-var List Depth X))))
 
 
 (de draw-let-list (List Depth X-Root)
