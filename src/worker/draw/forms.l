@@ -61,7 +61,8 @@
 
 (de draw-let (List Depth X-Root)
 
-  # No dot drawn
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr 2.0)
   
   (draw-atom (car List) Depth X-Root)
   (adv-ptr)
@@ -124,8 +125,8 @@
   #(set-x-ptr-2 (+ X-Root (*/ Depth *adv-vert 1.0)))
   (set-x-ptr-2 X-Root)
 
-  # Indent ptr 2 spaces
-  (adv-ptr 2.0)
+  # Indent ptr 4 spaces
+  (adv-ptr 4.0)
       
   # Remainder can be either list or atom
   # NTH/CDR will return a list although it is not the start of a list but
