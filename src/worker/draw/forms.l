@@ -59,7 +59,23 @@
   T)
 
 
+(de draw-cons (List Depth X-Root)
+
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr)
+
+  (let ((X Y) (get *vert-ptr 'pos))
+    (for Any List
+      (adv-ptr)
+      (set-y-ptr-2 Y)
+      (draw-any Any Depth X))))
+
+
 (de draw-= (List Depth X-Root)
+
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr)
+
   (let ((X Y) (get *vert-ptr 'pos))
     (for Any List
       (adv-ptr)

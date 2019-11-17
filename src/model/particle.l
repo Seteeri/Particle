@@ -127,7 +127,7 @@
                           (cond
                             #((= (car Any) 'cond) T)
                             #((= (car Any) 'de) T)
-                            #((= (car Any) 'cons) T)
+                            ((= (car Any) 'cons) (draw-cons Any Depth X-Root))
                             ((= (car Any) '=) (draw-= Any Depth X-Root))
                             #((or (= (car Any) 'prog) (= (car Any) 'with)) T)
                             ((= (car Any) 'let) (draw-let Any Depth X-Root))
