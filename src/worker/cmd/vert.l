@@ -64,7 +64,7 @@ Data (list 1
 
 (de cmd-make-char (Keysym)
 
-  (let (Data (cond ((= Keysym ksd~space) " ")
+  (let (Data (cond ((= Keysym ksd~space) "_")
                    ((= Keysym ksd~Return) (char 10))
                    (T (char Keysym)))
         Data (cons 'de cmd-make-char)

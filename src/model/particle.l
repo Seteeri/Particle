@@ -27,7 +27,7 @@
 
     Violet = SYM
     Blue = NUM
-    Cyan = 
+    Cyan =
     - or since cursor is a symbol...
     Green = CONS
     Yellow = NIL/()/'''' and T
@@ -38,7 +38,7 @@
     Magenta = EXT
 
   }#
-  
+
   # Adjust brightness for time
 
   (cond ((== Any NIL) *col-yellow)
@@ -64,7 +64,7 @@
 (dm T (Data
        Next
        Verts)
-  
+
   (=: data Data)
   (=: next Next)
   (=: verts Verts))
@@ -83,7 +83,7 @@
 
     # Push ptr back n vertices
     (adv-ptr (num-to-fl (- (length Verts)))))
-      
+
   # Only chase ptrs (recurse) if list
   (when (and (lst? (get Part 'data))
              (not (= NIL (get Part 'data))))
@@ -101,12 +101,12 @@
         * Both simultaneously a list/symbol
         * Data structure is 4 cons cells
         * Also condensed -> NIL or #### (ptr)
-        
+
     * Lists:   expanded
     * Symbols: condensed, draw CDR (no show property list etc)
     * Nums:    condensed, draw proper num (not chain of cells)
-    
-    * To draw sublists in list, must know number of sublists in 
+
+    * To draw sublists in list, must know number of sublists in
     subsequent sublists to calculate the depth (-Y), two pass
       * For multiprocess, when sublist encountered pass to process
   }#
@@ -124,15 +124,14 @@
   (cond ((== Any NIL) (draw-sym Any (get-color-type Any) T))
         # If CDR list then list else cons
         ((lst? Any)   (if (lst? (cdr Any))
-                          (cond 
-                            ((= (car Any) 'let)
-                              (draw-let Any
-                                        Depth
-                                        X-Root))
-                            (T
-                              (draw-list-dot Any
-                                             Depth
-                                             X-Root)))
+                          (cond
+                            #((= (car Any) 'cond) T)
+                            #((= (car Any) 'de) T)
+                            #((= (car Any) 'cons) T)
+                            ((= (car Any) '=) (draw-= Any Depth X-Root))
+                            #((or (= (car Any) 'prog) (= (car Any) 'with)) T)
+                            ((= (car Any) 'let) (draw-let Any Depth X-Root))
+                            (T (draw-list-dot Any Depth X-Root)))
                           (draw-pair Any
                                      Depth
                                      X-Root)))
@@ -143,7 +142,7 @@
 
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
-  
+
   (let ((X Y) (get *vert-ptr 'pos))
     (draw-list List Depth X)))
 
@@ -152,7 +151,7 @@
   (inc 'Depth 1.0)
   (draw-list-two List Depth X-Root))
 
-      
+
 (de draw-list-two (List Depth X-Root)
 
   # Draw first two items
@@ -163,13 +162,13 @@
   (let? Any (car List)
     (draw-any Any Depth X-Root)
     (adv-ptr))
-  
+
   # Save x
   (let ((X Y) (get *vert-ptr 'pos))
-  
+
     (let? Any (cadr List)
       (draw-any Any Depth X-Root))
-    
+
     # Move ptr to newline
     # Move ptr back to X-Root
 
@@ -178,14 +177,14 @@
         (set-x-ptr-2 X)
         (nl-ptr)
         (draw-any Any Depth X)))))
-      
-  
+
+
 (de draw-list-one (List Depth X-Root)
-  
+
   # Default draw vertically
-  
+
   # TODO: Rename set-x-ptr-2 -> x-ptr
-  
+
   (for Any List
     (set-x-ptr-2 X-Root)
     (nl-ptr)
@@ -193,30 +192,30 @@
 
 
 (de draw-atom (Atom)
-  
+
   (draw-chars Atom (get-color-type Atom) T))
-  
+
 
 (de draw-pair (Pair Depth X-Root)
   #{
     Draw pair as car . cdr
-    
+
     car . cdr
-    
+
     . a b c . d . = (a b (c . d) .)
-    
+
     Or no space?
-    
+
     . a . b . = ((a . b) .)
     vs
     . a.b .
-    
+
     -> Still distinguishable - requires only visual-spatial processing instead of
     abstract reasoning
-    
+
     Syms - colored diff
     Strings - color diff and/or quotes
-    List - (a b .) denotes circular list; only valid at end of list; so if . is 
+    List - (a b .) denotes circular list; only valid at end of list; so if . is
              by itself it denotes a circular list; an empty list is NIL or () or ""
 
       . a
@@ -225,13 +224,13 @@
   }#
 
   # TODO: Pass space flag to draw-any
-    
+
   (draw-any (car Pair) Depth X-Root)
 
   (draw-chars (char 183) *col-green T)
 
   (draw-any (cdr Pair) Depth X-Root)
-  
+
   T)
 
 ################################################################################
@@ -263,17 +262,17 @@
         * Open parenthesis belongs to first object (in repr opposite)
         * Close parenthesis belongs to last object (in repr opposite)
         * So upon adding a new object, must move parenthesis vertex to new object
-        
+
         * If one object, then both parenthesis are part of vertices
         * Draw parenthesis into position, then attach to respective
         atom
       }#
-      
+
       (let (Open  (draw-chars "(" *col-base-0 NIL)
             Parts (gen-list-parts Any)
             Close (draw-chars ")" *col-base-0 T))
-          
-          # Attach both parenthesis to first atom  
+
+          # Attach both parenthesis to first atom
           (if (=1 (length Any))
               T
               T))))
@@ -326,7 +325,7 @@
                     ((box? Any)  (draw-sym Any Col Adv))
                     ((str? Any)  (draw-str Any Col Adv))
                     (T           (draw-sym Any Col Adv))))
-                    
+
     (new '(+Particle) Any NIL Verts)))
 
 

@@ -158,6 +158,10 @@ Store DAGs as binary trees?
       * Implement basic forms
       * Draw forms with second item on same line as first and remainder below second
         * Excludes forms starting with numbers
+      * Exceptions:
+        * de, cond, =
+        * Draw space (" ") by itself draw box
+        * List starts with numbers, draw horizontally or vertically
     * Integrate with particle
       * Particles are the representation of the internal data structure and thus
       strictly follow the underlying data structure - they are all cons cells
