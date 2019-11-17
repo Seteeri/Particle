@@ -228,7 +228,7 @@
     
   (draw-any (car Pair) Depth X-Root)
 
-  (draw-chars (char 183) *col-base-0 T)
+  (draw-chars (char 183) *col-green T)
 
   (draw-any (cdr Pair) Depth X-Root)
   
