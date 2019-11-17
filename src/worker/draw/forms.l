@@ -29,12 +29,6 @@
   or in this case, lists
 }#
 
-(de draw-de (List Depth)
-  #{
-    * Draw first three items, then rest as a list
-  }#
-  T)
-
 
 (de draw-cond (List Depth)
   #{
@@ -57,6 +51,22 @@
 (de draw-if (List Depth)
   #
   T)
+
+
+(de draw-de (List Depth X-Root)
+  # Draw first three items, then rest as a list
+
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr)
+    
+  (let ((X Y) (get *vert-ptr 'pos))
+  
+    (for Any (head 3 List)
+      (adv-ptr)
+      (set-y-ptr-2 Y)
+      (draw-any Any Depth X))
+      
+    (draw-let-prog (nth List 4) Depth X)))
 
 
 (de draw-cons (List Depth X-Root)
