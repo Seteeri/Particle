@@ -125,7 +125,7 @@
         # If CDR list then list else cons
         ((lst? Any)   (if (lst? (cdr Any))
                           (cond
-                            #((or (= (car Any) 'prog) (= (car Any) 'with)) T)
+                            ((or (= (car Any) 'prog) (= (car Any) 'with)) (draw-prog Any Depth X-Root))
                             ((= (car Any) 'cond) (draw-cond Any Depth X-Root))
                             ((= (car Any) 'de) (draw-de Any Depth X-Root))
                             ((= (car Any) 'cons) (draw-cons Any Depth X-Root))
@@ -184,11 +184,13 @@
   # Default draw vertically
 
   # TODO: Rename set-x-ptr-2 -> x-ptr
-
-  (for Any List
-    (set-x-ptr-2 X-Root)
-    (nl-ptr)
-    (draw-any Any Depth X-Root)))
+  
+  (let ((X Y) (get *vert-ptr 'pos))
+  
+    (for Any List
+      (set-x-ptr-2 X)
+      (nl-ptr)
+      (draw-any Any Depth X))))
 
 
 (de draw-atom (Atom)

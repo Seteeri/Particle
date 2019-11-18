@@ -30,26 +30,38 @@
 }#
 
 
-(de draw-cond (List Depth)
+(de draw-prog (List Depth X-Root)
   #{
-    (cond ((= a 1) (prog))
-          ((= a 2) (prog))
-          ((= a 3) (prog))
+    prog,with, etc.
+
+    (with obj
+      prog)
   }#
-  T)
 
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr)
+  
+  (let ((X Y) (get *vert-ptr 'pos))
+  
+    (for Any (head 2 List)
+      (adv-ptr)
+      (set-y-ptr-2 Y)
+      (draw-any Any Depth X))
+    
+    # Move pointer under with, indent
+    (set-x-ptr-2 X)
+    (adv-ptr 3.0)
+    
+    (draw-list-one (nth List 3) Depth X)))
+  
 
-(de draw-prog (List Depth)
-  #{
-    prog,with
+(de draw-if (List Depth X-Root)
+  # Draw first two items subsequently
+  # Draw third item under second item
+  
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr 2.0)
 
-    Indent subsequent lines
-  }#
-  T)
-
-
-(de draw-if (List Depth)
-  #
   T)
 
 
@@ -63,10 +75,12 @@
   
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
-  
-  (draw-atom (car List) Depth X-Root)
-  (adv-ptr)
 
+  (let ((X Y) (get *vert-ptr 'pos))
+
+    (draw-atom (car List) Depth X)
+    (adv-ptr))
+  
   (let ((X Y) (get *vert-ptr 'pos))
 
     # Loop through remainder
@@ -125,12 +139,12 @@
 
 (de draw-let (List Depth X-Root)
 
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr 2.0)
+
   (let ((X Y) (get *vert-ptr 'pos))
 
-    (draw-chars (char 183) *col-base-0 NIL)
-    (adv-ptr 2.0)
-
-    (draw-atom (car List) Depth X-Root)
+    (draw-atom (car List) Depth X)
     (adv-ptr)
 
     # Must determine width of local vars for prg
@@ -161,10 +175,13 @@
           (set-x-ptr-2 X))))
 
     # same Depth since still in let list
+    # must use X-Root
     (draw-let-prog (nth List 3) Depth X-Root)))
 
 
 (de draw-let-var (List Depth X-Root)
+
+  # Instead of using x-root, get from ptr
 
   # TODO: Refactor this using let
 
@@ -179,14 +196,15 @@
 
 (de draw-let-prog (List Depth X-Root)
 
+  # Instead of using x-root, get from ptr
+
   # Newline will be emitted when list is drawn
 
   # Move ptr under let
-  #(set-x-ptr-2 (+ X-Root (*/ Depth *adv-vert 1.0)))
   (set-x-ptr-2 X-Root)
 
   # Indent ptr 4 spaces
-  (adv-ptr 4.0)
+  (adv-ptr 2.0)
 
   # Remainder can be either list or atom
   # NTH/CDR will return a list although it is not the start of a list but

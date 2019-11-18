@@ -71,7 +71,16 @@ Data (list 1
         Part (let ((X Y) (get *vert-ptr 'pos))
                 (draw-any Data 0.0 X)))
 
+    (if (= T T)
+        "Hello"
+        "World")
+
     #(println "cmd-make-char:Data" Data)
+
+    (prog
+      'A
+      'B
+      'C)
 
     (adv-ptr)))
 

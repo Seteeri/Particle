@@ -156,8 +156,8 @@ Store DAGs as binary trees?
     * Finish drawing [WIP]
       * Implement cons cell
       * Implement basic forms
-      * Draw forms with second item on same line as first and remainder below second
-        * Excludes forms starting with numbers
+      * Draw and/or/nor/xor how?
+        * Draw normal
       * Exceptions:
         * de, cond, =
         * Draw space (" ") by itself draw box
