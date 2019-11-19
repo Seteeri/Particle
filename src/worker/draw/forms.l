@@ -101,12 +101,20 @@
 
     # Loop through remainder
 
-    (let? Rem (nth List 2)
+    (let? Rem (cdr List)
       (until (not Rem)
+
+        # Actually a list
+      
+        (draw-list-dot (car Rem) Depth X)
+      
+        #{
         (let ((Any Prg) (car Rem))
           (draw-any Any Depth X)
           (adv-ptr)
           (draw-any Prg Depth X))
+        }#
+        
         (setq Rem (cdr Rem))
         (when Rem
           (set-x-ptr-2 X)
