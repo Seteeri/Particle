@@ -157,10 +157,9 @@ Store DAGs as binary trees?
       * Implement cons cell
       * Implement basic forms
       * Draw and/or/nor/xor how?
-        * Draw normal
       * Exceptions:
         * de, cond, =
-        * Draw space (" ") by itself draw box
+        * Draw space (" ") by itself draw box or draw with quotes
         * List starts with numbers, draw horizontally or vertically
     * Integrate with particle
       * Particles are the representation of the internal data structure and thus

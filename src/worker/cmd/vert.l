@@ -75,7 +75,8 @@ Data (list 1
         "Hello"
         "World")
 
-    #(println "cmd-make-char:Data" Data)
+    (let A 0
+      (prinl A))
 
     (prog
       'A

@@ -30,13 +30,9 @@
 }#
 
 
-(de draw-prog (List Depth X-Root)
-  #{
-    prog,with, etc.
+(de draw-with (List Depth X-Root)
 
-    (with obj
-      prog)
-  }#
+  # Rename to draw-hor-one
 
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr)
@@ -53,6 +49,29 @@
     (adv-ptr 3.0)
     
     (draw-list-one (nth List 3) Depth X)))
+
+
+(de draw-prog (List Depth X-Root)
+  #{
+    (prog
+      A
+      B)
+  }#
+
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr)
+  
+  (let ((X Y) (get *vert-ptr 'pos))
+  
+    (adv-ptr)
+    (set-y-ptr-2 Y)
+    (draw-any (car List) Depth X)
+    
+    # Move pointer under with, indent
+    (set-x-ptr-2 X)
+    (adv-ptr 3.0)
+    
+    (draw-list-one (cdr List) Depth X)))
   
 
 (de draw-if (List Depth X-Root)
