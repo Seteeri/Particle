@@ -132,7 +132,8 @@
                             ((= (car Any) 'cond) (draw-cond Any Depth X-Root))
                             ((= (car Any) 'de) (draw-de Any Depth X-Root))
                             ((= (car Any) 'cons) (draw-cons Any Depth X-Root))
-                            ((= (car Any) '=) (draw-= Any Depth X-Root))
+                            ((or (= (car Any) '=)
+                                 (= (car Any) '==)) (draw-= Any Depth X-Root))
                             ((= (car Any) 'let) (draw-let Any Depth X-Root))
                             (T (draw-list-dot Any Depth X-Root)))
                           (draw-pair Any

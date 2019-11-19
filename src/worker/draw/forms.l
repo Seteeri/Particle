@@ -4,12 +4,14 @@
   Symbol Functions:
   * de - first three items on same line
   * let - 1st/2nd item on same line; 2nd item is a list or atom...
-  * prog/with - cdr on different lines
+  * with - ...
+  * prog - ...
 
   Control Flow:
   * if/when/unless
   * loop/for/while/do
-  * cond/case - like prog...
+  * cond
+  * case/casq/state
   * and/or/not - separate line for each
 
   * Poss add option to split after specific length like 2-3 etc

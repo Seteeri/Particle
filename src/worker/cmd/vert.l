@@ -67,7 +67,7 @@ Data (list 1
   (let (Data (cond ((= Keysym ksd~space) "_")
                    ((= Keysym ksd~Return) (char 10))
                    (T (char Keysym)))
-        Data (cons 'de 'cmd-make-char cmd-make-char)
+        Data (cons 'de 'draw-any draw-any)
         Part (let ((X Y) (get *vert-ptr 'pos))
                 (draw-any Data 0.0 X)))
 
