@@ -12,12 +12,7 @@
   * cond/case - like prog...
   * and/or/not - separate line for each
 
-  Function Calls:
-  * prin* - vertically align arguments after string
-  * fn - (+ 1 2 3) = (+ 1
-                        2
-                        3)
-    * poss add option to split after specific length like 2-3 etc
+  * Poss add option to split after specific length like 2-3 etc
 
   Other:
   * Strings - newline or line break

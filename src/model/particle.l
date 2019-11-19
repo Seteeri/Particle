@@ -126,7 +126,9 @@
         ((lst? Any)   (if (lst? (cdr Any))
                           (cond
                             ((= (car Any) 'prog) (draw-prog Any Depth X-Root))
-                            ((= (car Any) 'with) (draw-with Any Depth X-Root))
+                            ((or (= (car Any) 'with)
+                                 (= (car Any) 'when)
+                                 (= (car Any) 'unless)) (draw-with Any Depth X-Root))
                             ((= (car Any) 'cond) (draw-cond Any Depth X-Root))
                             ((= (car Any) 'de) (draw-de Any Depth X-Root))
                             ((= (car Any) 'cons) (draw-cons Any Depth X-Root))
