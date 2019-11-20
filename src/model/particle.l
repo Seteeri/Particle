@@ -124,23 +124,29 @@
   (cond ((== Any NIL) (draw-sym Any (get-color-type Any) T))
         # If CDR list then list else cons
         ((lst? Any)   (if (lst? (cdr Any))
-                          (cond
-                            ((= (car Any) 'prog) (draw-prog Any Depth X-Root))
-                            ((or (= (car Any) 'with)
-                                 (= (car Any) 'when)
-                                 (= (car Any) 'unless)) (draw-with Any Depth X-Root))
-                            ((= (car Any) 'cond) (draw-cond-2 Any Depth X-Root))
-                            ((= (car Any) 'de) (draw-de Any Depth X-Root))
-                            ((= (car Any) 'cons) (draw-cons Any Depth X-Root))
-                            ((or (= (car Any) '=)
-                                 (= (car Any) '==)) (draw-= Any Depth X-Root))
-                            ((= (car Any) 'let) (draw-let Any Depth X-Root))
-                            (T (draw-list-dot Any Depth X-Root)))
+                          (draw-any-list Any
+                                         Depth
+                                         X-Root)
                           (draw-pair Any
                                      Depth
                                      X-Root)))
         (T            (draw-atom Any T))))
 
+
+(de draw-any-list (Any Depth X-Root)
+  (cond
+    ((= (car Any) 'prog) (draw-prog Any Depth X-Root))
+    ((or (= (car Any) 'with)
+         (= (car Any) 'when)
+         (= (car Any) 'unless)) (draw-with Any Depth X-Root))
+    ((= (car Any) 'cond) (draw-cond-2 Any Depth X-Root))
+    ((= (car Any) 'de) (draw-de Any Depth X-Root))
+    ((= (car Any) 'cons) (draw-cons Any Depth X-Root))
+    ((or (= (car Any) '=)
+         (= (car Any) '==)) (draw-= Any Depth X-Root))
+    ((= (car Any) 'let) (draw-let Any Depth X-Root))
+    (T (draw-list-dot Any Depth X-Root))))
+    
 
 (de draw-list-dot (List Depth X-Root)
 
