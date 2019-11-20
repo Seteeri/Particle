@@ -172,7 +172,7 @@
       (set-y-ptr-2 Y)
       (draw-any Any Depth X))
       
-    (draw-let-prog (nth List 4) Depth X)))
+    (draw-let-prog (nth List 4) Depth X-Root)))
 
 
 (de draw-cons (List Depth X-Root)
