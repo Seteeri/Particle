@@ -81,8 +81,8 @@
   T)
 
 
-(de draw-cond (List Depth X-Root)
-  # Draw cond, draw prog
+(de draw-cond-1 (List Depth X-Root)
+  # Draw cond linearly
   #{
     (cond ((= A) 1)
           ((= B) 2)
@@ -114,6 +114,44 @@
           (adv-ptr)
           (draw-any Prg Depth X))
         }#
+        
+        (setq Rem (cdr Rem))
+        (when Rem
+          (set-x-ptr-2 X)
+          (nl-ptr))))))
+
+
+(de draw-cond-2 (List Depth X-Root)
+  # Draw cond stacked
+  #{
+    (cond ((= A) 1)
+          ((= B) 2)
+          ((= C) 3))
+  }#
+  
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr 2.0)
+
+  (let ((X Y) (get *vert-ptr 'pos))
+
+    (draw-atom (car List) Depth X)
+    (adv-ptr))
+  
+  (let ((X Y) (get *vert-ptr 'pos))
+
+    # Loop through remainder
+
+    (let? Rem (cdr List)
+      (until (not Rem)
+
+        # Draw first part, then second part under
+            
+        (let ((Any Prg) (car Rem))
+          (draw-any Any Depth X)
+          (set-x-ptr-2 X)
+          (nl-ptr)
+          (adv-ptr 2.0)
+          (draw-any Prg Depth X))
         
         (setq Rem (cdr Rem))
         (when Rem
