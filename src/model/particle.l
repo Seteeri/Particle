@@ -146,7 +146,8 @@
          (= (car Any) '==)) (draw-= Any Depth X-Root))
     ((= (car Any) 'let) (draw-let Any Depth X-Root))
     (T (draw-list-dot Any Depth X-Root))))
-    
+
+# draw-list-dot -> draw-list -> draw-list-one/two -> ? draw-list-x/y    
 
 (de draw-list-dot (List Depth X-Root)
 
@@ -163,50 +164,39 @@
 
 
 (de draw-list-two (List Depth X-Root)
-
-  # Draw first two items
-  # Then remainder aligned below second item
-  # This is default method to draw forms
-  # Exceptions are in forms
+  
+  #{
+    Draw first two items
+    Then remainder aligned below second item
+    This is default method to draw forms
+    Exceptions are in forms
+  }#
 
   (let? Any (car List)
     (draw-any Any Depth X-Root)
     (adv-ptr))
 
-  # Save x
+  # Rem will align to 2nd item
+    
   (let ((X Y) (get *vert-ptr 'pos))
 
     (let? Any (cadr List)
       (draw-any Any Depth X-Root))
 
-    # Move ptr to newline
-    # Move ptr back to X-Root
-
     (let? Rem (nth List 3)
-      (for Any Rem
-        (set-x-ptr-2 X)
-        (nl-ptr)
-        (draw-any Any Depth X)))))
+      (set-x-ptr-2 X)
+      (nl-ptr)    
+      (draw-list-y Rem Depth X))))
 
 
 (de draw-list-one (List Depth X-Root)
 
-  # Default draw vertically
-
   # TODO: Rename set-x-ptr-2 -> x-ptr
-  
-  # TODO: Drawing from current position then newline
   
   (let ((X Y) (get *vert-ptr 'pos))
 
     (draw-list-y List Depth X)))
-  
-#{
-    (for Any List
-      (set-x-ptr-2 X)
-      (nl-ptr)
-      (draw-any Any Depth X))))
-}#
+    
 
 #################################
 
