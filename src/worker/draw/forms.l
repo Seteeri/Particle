@@ -145,7 +145,10 @@
       (until (not Rem)
 
         # Draw first part, then second part under
-            
+        
+        (draw-chars (char 183) *col-base-0 NIL)
+        (adv-ptr 2.0)
+        
         (let ((Any Prg) (car Rem))
           (draw-any Any Depth X)
           (set-x-ptr-2 X)

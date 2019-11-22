@@ -70,19 +70,6 @@ Data (list 1
         Data (cons 'de 'draw-any draw-any)
         Part (let ((X Y) (get *vert-ptr 'pos))
                 (draw-any Data 0.0 X)))
-
-    (if (= T T)
-        "Hello"
-        "World")
-
-    (let A 0
-      (prinl A))
-
-    (prog
-      'A
-      'B
-      'C)
-
     (adv-ptr)))
 
 
