@@ -36,11 +36,8 @@
   
   (let ((X Y) (get *vert-ptr 'pos))
   
-    (for Any (head 2 List)
-      (adv-ptr)
-      (set-y-ptr-2 Y)
-      (draw-any Any Depth X))
-    
+    (draw-list-x (head 2 List) Depth X Y)
+
     # Move pointer under with, indent
     (set-x-ptr-2 X)
     (adv-ptr 3.0)
