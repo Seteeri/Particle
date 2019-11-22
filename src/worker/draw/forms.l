@@ -83,11 +83,6 @@
 
 (de draw-cond-1 (List Depth X-Root)
   # Draw cond linearly
-  #{
-    (cond ((= A) 1)
-          ((= B) 2)
-          ((= C) 3))
-  }#
   
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
@@ -107,14 +102,7 @@
         # Actually a list
       
         (draw-list-dot (car Rem) Depth X)
-      
-        #{
-        (let ((Any Prg) (car Rem))
-          (draw-any Any Depth X)
-          (adv-ptr)
-          (draw-any Prg Depth X))
-        }#
-        
+           
         (setq Rem (cdr Rem))
         (when Rem
           (set-x-ptr-2 X)
