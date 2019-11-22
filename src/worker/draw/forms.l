@@ -199,14 +199,11 @@
 (de draw-= (List Depth X-Root)
 
   (draw-chars (char 183) *col-base-0 NIL)
-  (adv-ptr)
+  (adv-ptr 2.0)
 
   (let ((X Y) (get *vert-ptr 'pos))
-    (for Any List
-      (adv-ptr)
-      (set-y-ptr-2 Y)
-      (draw-any Any Depth X))))
-
+    (draw-list-x List Depth X Y)))
+    
 
 (de draw-let (List Depth X-Root)
 
@@ -231,6 +228,7 @@
   (adv-ptr 2.0)
 
   (let ((X Y) (get *vert-ptr 'pos))
+    # REFACTOR THIS
     # Loop two at a time:
     (let R (get List 2)
       (until (not R)

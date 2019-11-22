@@ -202,6 +202,8 @@
 
 # These assume caller has drawn dot so X/Y-Root is rel to dot
 
+# Pass Root as a coord
+
 (de draw-list-y (List Depth X-Root)
 
   (let Rem List
@@ -214,12 +216,12 @@
         (nl-ptr)))))
 
 
-(de draw-list-x (List Depth Y-Root)
+(de draw-list-x (List Depth X-Root Y-Root)
 
   (let Rem List
     (while (car Rem)
       
-      (draw-any (car Rem) Depth Y-Root)
+      (draw-any (car Rem) Depth X-Root)
       
       (when (setq Rem (cdr Rem))
         (set-y-ptr-2 Y-Root)
