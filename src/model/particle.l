@@ -198,12 +198,45 @@
   # TODO: Drawing from current position then newline
   
   (let ((X Y) (get *vert-ptr 'pos))
+
+    (draw-list-y List Depth X)))
   
+#{
     (for Any List
       (set-x-ptr-2 X)
       (nl-ptr)
       (draw-any Any Depth X))))
+}#
 
+#################################
+
+# These assume caller has drawn dot so X/Y-Root is rel to dot
+
+(de draw-list-y (List Depth X-Root)
+
+  (let Rem List
+    (while (car Rem)
+      
+      (draw-any (car Rem) Depth X-Root)
+      
+      (when (setq Rem (cdr Rem))
+        (set-x-ptr-2 X-Root)
+        (nl-ptr)))))
+
+
+(de draw-list-x (List Depth Y-Root)
+
+  (let Rem List
+    (while (car Rem)
+      
+      (draw-any (car Rem) Depth Y-Root)
+      
+      (when (setq Rem (cdr Rem))
+        (set-y-ptr-2 Y-Root)
+        (adv-ptr)))))
+
+
+####################
 
 (de draw-atom (Atom)
 
