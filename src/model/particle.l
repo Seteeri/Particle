@@ -195,6 +195,8 @@
 
   # TODO: Rename set-x-ptr-2 -> x-ptr
   
+  # TODO: Drawing from current position then newline
+  
   (let ((X Y) (get *vert-ptr 'pos))
   
     (for Any List

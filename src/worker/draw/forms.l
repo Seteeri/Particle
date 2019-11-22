@@ -170,11 +170,17 @@
     
   (let ((X Y) (get *vert-ptr 'pos))
   
-    (for Any (head 3 List)
+    (for Any (head 2 List)
       (adv-ptr)
       (set-y-ptr-2 Y)
       (draw-any Any Depth X))
-      
+    
+    (adv-ptr 1.0)
+    (draw-chars (char 183) *col-base-0 NIL)
+    (adv-ptr 2.0)
+    (nl-ptr -1.0)
+    (draw-list-one (get List 3) Depth X-Root)
+           
     (draw-let-prog (nth List 4) Depth X-Root)))
 
 
