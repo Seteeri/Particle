@@ -166,15 +166,13 @@
   # Draw first three items, then rest as a list
 
   (draw-chars (char 183) *col-base-0 NIL)
-  (adv-ptr)
+  (adv-ptr 2.0)
     
   (let ((X Y) (get *vert-ptr 'pos))
-  
-    (for Any (head 2 List)
-      (adv-ptr)
-      (set-y-ptr-2 Y)
-      (draw-any Any Depth X))
+      
+    (draw-list-x (head 2 List) Depth X Y)
     
+    # TODO: Need to make sure not nil or single item
     (adv-ptr)
     (draw-chars (char 183) *col-base-0 NIL)
     (adv-ptr 2.0)
