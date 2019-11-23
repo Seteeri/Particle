@@ -89,71 +89,65 @@
              (not (= NIL (get Part 'data))))
     (let? Next (get Part 'next)
       (del-particle Next))))
+      
 
-# Need variation for drawing columns?
+#{
+  * Lists/cons are fully expanded, however atoms (num/syms) are condensed
+    * NIL
+      * Both simultaneously a list/symbol
+      * Data structure is 4 cons cells
+      * Also condensed -> NIL or #### (ptr)
+
+  * Lists:   expanded
+  * Symbols: condensed, draw CDR (no show property list etc)
+  * Nums:    condensed, draw proper num (not chain of cells)
+}#
+
+#{
+(let ((Adr-Car Adr-Cdr) (unpack-ptrs Any))
+  (prin "Adr: ") (prinl (decode-ptr Adr))
+  (prin "Car: ") (prinl Adr-Car)
+  (prin "Cdr: ") (prinl Adr-Cdr))
+}#
+
+# Determine type of data
+# NIL also a lst so place before to treat NIL as sym
+
+#{
+  
+  (let A 1
+    T
+    (let (A 1
+          B 2)
+      T))
+
+  (prog
+    1
+    2
+    3)
+
+  (for I 10
+    T)
+    
+  (def '*foo 'bar)
+  
+  (1 2 . 3)
+  (4 5 6)
+}#
 
 (de draw-any (Any Depth X-Root)
-
-  #{
-    * Use box-ptr diagrams
-
-    * Lists/cons are fully expanded, however atoms (num/syms) are condensed
-      * NIL
-        * Both simultaneously a list/symbol
-        * Data structure is 4 cons cells
-        * Also condensed -> NIL or #### (ptr)
-
-    * Lists:   expanded
-    * Symbols: condensed, draw CDR (no show property list etc)
-    * Nums:    condensed, draw proper num (not chain of cells)
-
-    * To draw sublists in list, must know number of sublists in
-    subsequent sublists to calculate the depth (-Y), two pass
-      * For multiprocess, when sublist encountered pass to process
-  }#
-
-  #{
-  (let ((Adr-Car Adr-Cdr) (unpack-ptrs Any))
-    (prin "Adr: ") (prinl (decode-ptr Adr))
-    (prin "Car: ") (prinl Adr-Car)
-    (prin "Cdr: ") (prinl Adr-Cdr))
-  }#
-
-  # Determine type of data
-  # NIL also a lst so place before to treat NIL as sym
-
-  #{
-    
-    (let A 1
-      T
-      (let (A 1
-            B 2)
-        T))
-
-    (prog
-      1
-      2
-      3)
-
-    (for I 10
-      T)
-      
-    (def '*foo 'bar)
-    
-    (1 2 . 3)
-    (4 5 6)
-  }#
   
-  (cond ((== Any NIL) (draw-sym Any (get-color-type Any) T))
-        # If CDR list then list else cons
-        ((lst? Any)   (if (lst? (cdr Any))
-                          (draw-any-list Any
-                                         Depth
-                                         X-Root)
-                          (draw-pair Any
-                                     Depth
-                                     X-Root)))
-        (T            (draw-atom Any T))))
+  NIL
+  
+  (if (pair Any)
+      (if (lst? (cdr Any))
+          (draw-any-list Any
+                         Depth
+                         X-Root)
+          (draw-pair Any
+                     Depth
+                     X-Root))
+      (draw-atom Any T)))
 
 
 (de draw-any-list (Any Depth X-Root)
@@ -251,8 +245,8 @@
 (de draw-list-y (List Depth X-Root)
 
   (let Rem List
-    (while (and (pair Rem)
-                (car Rem))
+  
+    (while (pair Rem)
       
       # Only draw cons if not NIL and not a LST/Cons
       # Aka this is an improper list
@@ -272,8 +266,8 @@
   # (lst? NIL) = T
 
   (let Rem List
-    (while (and (pair Rem)
-                (car Rem))
+  
+    (while (pair Rem)
       
       # Only draw cons if not NIL and not a LST/Cons
       # Aka this is an improper list
@@ -289,6 +283,13 @@
 ####################
 
 (de draw-atom (Atom)
+  (let Col (get-color-type Atom)
+    (cond ((num? Atom) (draw-num Atom Col T))
+          ((str? Atom) (draw-str Atom Col T))
+          (T           (draw-sym Atom Col T)))))
+          
+
+(de draw-atom-2 (Atom)
 
   (draw-chars Atom (get-color-type Atom) T))
 
