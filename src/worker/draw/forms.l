@@ -29,7 +29,7 @@
 
 (de draw-with (List Depth X-Root)
 
-  # Rename to draw-hor-one
+  # Rename to draw-hor-one?
 
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr)
