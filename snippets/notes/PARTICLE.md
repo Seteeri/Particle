@@ -156,10 +156,7 @@ Store DAGs as binary trees?
     * Finish drawing [WIP]
       * Implement cons cell
       * Implement basic forms
-      * Draw and/or/nor/xor how?
       * Exceptions:
-        * de - draw arguments as list
-        * de, cond, =
         * Draw space (" ") by itself draw box or draw with quotes
         * List starts with numbers, draw horizontally or vertically
     * Integrate with particle

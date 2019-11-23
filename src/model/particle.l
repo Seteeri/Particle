@@ -145,30 +145,23 @@
     ((or (= (car Any) '=)
          (= (car Any) '==)) (draw-= Any Depth X-Root))
     ((= (car Any) 'let) (draw-let Any Depth X-Root))
-    (T (draw-list-dot Any Depth X-Root))))
+    (T (draw-list-two-dot Any Depth X-Root))))
 
-# draw-list-dot -> draw-list -> draw-list-one/two -> ? draw-list-x/y    
 
-(de draw-list-dot (List Depth X-Root)
+(de draw-list-two-dot (List Depth X-Root)
 
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
 
   (let ((X Y) (get *vert-ptr 'pos))
-    (draw-list List Depth X)))
-
-
-(de draw-list (List Depth X-Root)
-  (inc 'Depth 1.0)
-  (draw-list-two List Depth X-Root))
+    (draw-list-two List (inc 'Depth 1.0) X-Root)))
 
 
 (de draw-list-two (List Depth X-Root)
   
   #{
-    Draw first two items
-    Then remainder aligned below second item
-    This is default method to draw forms
+    Draw first two items, then remainder aligned below second item
+    Default method to draw forms
     Exceptions are in forms
   }#
 
@@ -185,7 +178,7 @@
 
     (let? Rem (nth List 3)
       (set-x-ptr-2 X)
-      (nl-ptr)    
+      (nl-ptr)
       (draw-list-y Rem Depth X))))
 
 
