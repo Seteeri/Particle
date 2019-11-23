@@ -66,16 +66,6 @@
     (adv-ptr 3.0)
     
     (draw-list-col (cdr List) Depth X)))
-  
-
-(de draw-if (List Depth X-Root)
-  # Draw first two items subsequently
-  # Draw third item under second item
-  
-  (draw-chars (char 183) *col-base-0 NIL)
-  (adv-ptr 2.0)
-
-  T)
 
 
 (de draw-cond-1 (List Depth X-Root)
