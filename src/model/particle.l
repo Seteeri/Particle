@@ -139,10 +139,10 @@
       T)
       
     (def '*foo 'bar)
+    
+    (1 2 . 3)
+    (4 5 6)
   }#
-  
-  #(1 2 . 3)
-  (1 2 3)
   
   (cond ((== Any NIL) (draw-sym Any (get-color-type Any) T))
         # If CDR list then list else cons
@@ -251,9 +251,14 @@
 (de draw-list-y (List Depth X-Root)
 
   (let Rem List
-    (while (car Rem)
+    (while (and (pair Rem)
+                (car Rem))
       
-      (draw-any (car Rem) Depth X-Root)
+      # Only draw cons if not NIL and not a LST/Cons
+      # Aka this is an improper list
+      (if (not (lst? (cdr Rem)))
+          (draw-pair Rem Depth X-Root)
+          (draw-any (car Rem) Depth X-Root))
       
       (when (setq Rem (cdr Rem))
         (set-x-ptr-2 X-Root)
@@ -261,11 +266,20 @@
 
 
 (de draw-list-x (List Depth X-Root Y-Root)
+  
+  # Pair vs Lst?
+  # (pair NIL) = NIL
+  # (lst? NIL) = T
 
   (let Rem List
-    (while (car Rem)
+    (while (and (pair Rem)
+                (car Rem))
       
-      (draw-any (car Rem) Depth X-Root)
+      # Only draw cons if not NIL and not a LST/Cons
+      # Aka this is an improper list
+      (if (not (lst? (cdr Rem)))
+          (draw-pair Rem Depth X-Root)
+          (draw-any (car Rem) Depth X-Root))
       
       (when (setq Rem (cdr Rem))
         (set-y-ptr-2 Y-Root)
