@@ -122,6 +122,14 @@
   # Determine type of data
   # NIL also a lst so place before to treat NIL as sym
 
+  (prog
+    1
+    2
+    3)
+
+  (for I 10
+    T)
+
   (cond ((== Any NIL) (draw-sym Any (get-color-type Any) T))
         # If CDR list then list else cons
         ((lst? Any)   (if (lst? (cdr Any))
@@ -140,8 +148,9 @@
     ((or (= (car Any) 'with)
          (= (car Any) 'when)
          (= (car Any) 'unless)
-         (= (car Any) 'while)) (draw-with Any Depth X-Root))    
-    ((= (car Any) 'prog) (draw-prog Any Depth X-Root))
+         (= (car Any) 'while)) (draw-with Any Depth X-Root))             
+    ((= (car Any) 'prog) (draw-prog Any Depth X-Root))  
+    ((= (car Any) 'for) (draw-for Any Depth X-Root))      
     ((= (car Any) 'cond) (draw-cond-2 Any Depth X-Root))
     ((= (car Any) 'de) (draw-de Any Depth X-Root))
     ((or (= (car Any) '=)

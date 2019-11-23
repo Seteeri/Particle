@@ -3,28 +3,54 @@
 
   Symbol Functions:
   * de - first three items on same line
-  * let - 1st/2nd item on same line; 2nd item is a list or atom...
+  * let - ...
   * with - ...
   * prog - ...
 
   Control Flow:
   * if/when/unless
-  * loop/for/while/do
+  * loop/while/do
+    * for - more complicated
   * cond
   * case/casq/state
-  * and/or/not - separate line for each
 
   * Poss add option to split after specific length like 2-3 etc
 
   Other:
   * Strings - newline or line break
 
-  Default to drawing horizontally for lists
-
   Specific formatting for specific structures allow for faster
   readability, in other words, fast identification of blocks of code
   or in this case, lists
 }#
+
+(de draw-for (List Depth X-Root)  
+  (if (sym? (get List 2))
+      (draw-for-three List Depth X-Root)
+      (draw-for-two List Depth X-Root)))
+
+
+(de draw-for-three (List Depth X-Root)
+  # Draw first three
+
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr 2.0)
+  
+  (let ((X Y) (get *vert-ptr 'pos))
+  
+    (draw-list-x (head 3 List) Depth X Y)
+
+    # Move pointer under with, indent
+    (set-x-ptr-2 X)
+    (adv-ptr)
+    (nl-ptr)
+    
+    (draw-list-col (nth List 4) Depth X)))
+  
+  
+(de draw-for-two (List Depth X-Root)
+  # Draw first two - same as draw-with
+  (draw-with List Depth X-Root))
 
 
 (de draw-with (List Depth X-Root)
@@ -32,7 +58,7 @@
   # Rename to draw-hor-one?
 
   (draw-chars (char 183) *col-base-0 NIL)
-  (adv-ptr)
+  (adv-ptr 2.0)
   
   (let ((X Y) (get *vert-ptr 'pos))
   
@@ -64,6 +90,7 @@
     # Move pointer under with, indent
     (set-x-ptr-2 X)
     (adv-ptr 3.0)
+    (nl-ptr)
     
     (draw-list-col (cdr List) Depth X)))
 
