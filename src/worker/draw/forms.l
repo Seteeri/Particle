@@ -98,7 +98,7 @@
 
         # Actually a list
       
-        (draw-list-two-dot (car Rem) Depth X)
+        (draw-list-col2-dot (car Rem) Depth X)
            
         (setq Rem (cdr Rem))
         (when Rem

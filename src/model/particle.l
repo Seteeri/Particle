@@ -145,19 +145,19 @@
     ((or (= (car Any) '=)
          (= (car Any) '==)) (draw-= Any Depth X-Root))
     ((= (car Any) 'let) (draw-let Any Depth X-Root))
-    (T (draw-list-two-dot Any Depth X-Root))))
+    (T (draw-list-col2-dot Any Depth X-Root))))
 
 
-(de draw-list-two-dot (List Depth X-Root)
+(de draw-list-col2-dot (List Depth X-Root)
 
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
 
   (let ((X Y) (get *vert-ptr 'pos))
-    (draw-list-two List (inc 'Depth 1.0) X-Root)))
+    (draw-list-col2 List (inc 'Depth 1.0) X-Root)))
 
 
-(de draw-list-two (List Depth X-Root)
+(de draw-list-col2 (List Depth X-Root)
   
   #{
     Draw first two items, then remainder aligned below second item
