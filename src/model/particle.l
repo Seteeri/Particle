@@ -138,7 +138,10 @@
     (for I 10
       T)
       
+    (def '*foo 'bar)
   }#
+  
+  
   
   (cond ((== Any NIL) (draw-sym Any (get-color-type Any) T))
         # If CDR list then list else cons
@@ -162,6 +165,7 @@
     ((= (car Any) 'prog) (draw-prog Any Depth X-Root))  
     ((= (car Any) 'for) (draw-for Any Depth X-Root))      
     ((= (car Any) 'cond) (draw-cond-2 Any Depth X-Root))
+    ((= (car Any) 'def) (draw-list-row-dot Any Depth X-Root))
     ((= (car Any) 'de) (draw-de Any Depth X-Root))
     ((or (= (car Any) '=)
          (= (car Any) '==)

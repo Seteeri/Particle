@@ -157,6 +157,8 @@ Store DAGs as binary trees?
       * Implement cons cell
       * Implement basic forms
       * Create draw interface where a matrix can be specified
+      * Follow pp style?
+        * We follow indent, poss use rule len list > 12?
       * Exceptions:
         * Draw space (" ") by itself draw box or draw with quotes
         * List starts with numbers, draw horizontally or vertically
