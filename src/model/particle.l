@@ -90,6 +90,7 @@
     (let? Next (get Part 'next)
       (del-particle Next))))
 
+# Need variation for drawing columns?
 
 (de draw-any (Any Depth X-Root)
 

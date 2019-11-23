@@ -79,7 +79,7 @@
 
 
 (de draw-cond-1 (List Depth X-Root)
-  # Draw cond linearly
+  # Draw cond prg row
   
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
@@ -107,12 +107,7 @@
 
 
 (de draw-cond-2 (List Depth X-Root)
-  # Draw cond stacked
-  #{
-    (cond ((= A) 1)
-          ((= B) 2)
-          ((= C) 3))
-  }#
+  # Draw cond prg col
   
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
@@ -149,19 +144,23 @@
 
 (de draw-de (List Depth X-Root)
   # Draw first three items, then rest as a list
+  # Can also b used to define variables: (de *var . 123)
+  # In this case list of de, (*var . 123)
 
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
     
   (let ((X Y) (get *vert-ptr 'pos))
-      
+            
     (draw-list-x (head 2 List) Depth X Y)
-    
     
     (adv-ptr)
     
     # TODO: Need to make sure not nil or single item
-    (draw-list-col-dot (get List 3) Depth X-Root)
+    # Can't use draw any since it will draw list using default layout
+    (if (lst? (get List 3))
+      (draw-list-col-dot (get List 3) Depth X-Root)
+      (draw-any (get List 3) Depth X-Root))
     
     (nl-ptr)
            
