@@ -153,15 +153,13 @@ Store DAGs as binary trees?
      * Repeat keys
 
   * Primary Representation
-    * Finish drawing [WIP]
-      * Implement cons cell
-      * Implement basic forms
-      * Create draw interface where a matrix can be specified
+    * Implement drawing s-exp [Done]
+      * Draw space (" ") by itself draw box or draw with quotes
+        * For now draw quotes on all strings      
+      * Create draw interface where a matrix can be specified?
       * Follow pp style?
         * We follow indent, poss use rule len list > 12?
-      * Exceptions:
-        * Draw space (" ") by itself draw box or draw with quotes
-        * List starts with numbers, draw horizontally or vertically
+    * Implement drawing cons cells/box-ptr diagrams [Later]
     * Integrate with particle
       * Particles are the representation of the internal data structure and thus
       strictly follow the underlying data structure - they are all cons cells
@@ -170,13 +168,8 @@ Store DAGs as binary trees?
     * Insert control chars
       * newline ("^J"), return ("^M") or TAB ("^I")
     * Batch draw commands
-    * Implement multiple args by getting number of args from docs and pulling
-    from timeline
-      * If unknown, pull entire list
-
-  * Draw cons cells / box-ptr diagrams with lines
-    * Fastest/simplest method is primary
-
+    
+    
   * Rename namespace gl -> gles
     
   * Cur/Ptr
