@@ -122,14 +122,24 @@
   # Determine type of data
   # NIL also a lst so place before to treat NIL as sym
 
-  (prog
-    1
-    2
-    3)
+  #{
+    
+    (let A 1
+      T
+      (let (A 1
+            B 2)
+        T))
 
-  (for I 10
-    T)
+    (prog
+      1
+      2
+      3)
 
+    (for I 10
+      T)
+      
+  }#
+  
   (cond ((== Any NIL) (draw-sym Any (get-color-type Any) T))
         # If CDR list then list else cons
         ((lst? Any)   (if (lst? (cdr Any))

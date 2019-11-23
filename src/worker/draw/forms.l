@@ -42,7 +42,7 @@
 
     # Move pointer under with, indent
     (set-x-ptr-2 X)
-    (adv-ptr)
+    (adv-ptr 2.0)
     (nl-ptr)
     
     (draw-list-col (nth List 4) Depth X)))
@@ -74,7 +74,7 @@
 (de draw-prog (List Depth X-Root)
   #{
     (prog
-      A
+       A
       B)
   }#
 
@@ -178,9 +178,7 @@
     (if (lst? (get List 3))
       (draw-list-col-dot (get List 3) Depth X-Root)
       (draw-any (get List 3) Depth X-Root))
-    
-    (nl-ptr)
-           
+               
     (draw-let-prog (nth List 4) Depth X-Root)))
     
 
@@ -224,6 +222,7 @@
 
     # same Depth since still in let list
     # must use X-Root
+        
     (draw-let-prog (nth List 3) Depth X-Root)))
 
 
@@ -244,15 +243,10 @@
 
 (de draw-let-prog (List Depth X-Root)
 
-  # Instead of using x-root, get from ptr
-
-  # Newline will be emitted when list is drawn
-
-  # Move ptr under let
+  # Move ptr under let and indent
   (set-x-ptr-2 X-Root)
-
-  # Indent ptr 4 spaces
   (adv-ptr 2.0)
+  (nl-ptr)  
 
   # Remainder can be either list or atom
   # NTH/CDR will return a list although it is not the start of a list but
