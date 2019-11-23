@@ -182,18 +182,18 @@
       (draw-list-y Rem Depth X))))
 
 
-(de draw-list-one-dot (List Depth X-Root)
+(de draw-list-col-dot (List Depth X-Root)
 
   (draw-chars (char 183) *col-base-0 NIL)
   (adv-ptr 2.0)
 
   (let ((X Y) (get *vert-ptr 'pos))
-    (draw-list-one List Depth X Y)))
+    (draw-list-col List Depth X Y)))
 
 
 # TODO: Rename set-x-ptr-2 -> x-ptr
 
-(de draw-list-one (List Depth X-Root)
+(de draw-list-col (List Depth X-Root)
   
   (let ((X Y) (get *vert-ptr 'pos))
     (draw-list-y List Depth X)))

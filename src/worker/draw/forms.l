@@ -42,7 +42,7 @@
     (set-x-ptr-2 X)
     (adv-ptr 3.0)
     
-    (draw-list-one (nth List 3) Depth X)))
+    (draw-list-col (nth List 3) Depth X)))
 
 
 (de draw-prog (List Depth X-Root)
@@ -65,7 +65,7 @@
     (set-x-ptr-2 X)
     (adv-ptr 3.0)
     
-    (draw-list-one (cdr List) Depth X)))
+    (draw-list-col (cdr List) Depth X)))
   
 
 (de draw-if (List Depth X-Root)
@@ -161,7 +161,7 @@
     (adv-ptr)
     
     # TODO: Need to make sure not nil or single item
-    (draw-list-one-dot (get List 3) Depth X-Root)
+    (draw-list-col-dot (get List 3) Depth X-Root)
     
     (nl-ptr)
            
@@ -261,6 +261,6 @@
   # the continuation/remainder of one
 
   (let ((X Y) (get *vert-ptr 'pos))
-    (draw-list-one List
+    (draw-list-col List
                    Depth
                    X)))
