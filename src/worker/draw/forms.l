@@ -1,26 +1,6 @@
 #{
-  Layout depends on data structure...
-
-  Symbol Functions:
-  * de - first three items on same line
-  * let - ...
-  * with - ...
-  * prog - ...
-
-  Control Flow:
-  * if/when/unless
-  * loop/while/do
-    * for - more complicated
-  * cond
-  * case/casq/state
-
-  * Poss add option to split after specific length like 2-3 etc
-
-  Other:
-  * Strings - newline or line break
-
-  Specific formatting for specific structures allow for faster
-  readability, in other words, fast identification of blocks of code
+  Specific formatting for specific structures allow for faster readability, 
+  i.e. fast identification of blocks of code based on visual structure/pattern
   or in this case, lists
 }#
 
