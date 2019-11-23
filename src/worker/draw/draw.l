@@ -1,3 +1,5 @@
+(def '*space-line (+ *adv-vert *adv-vert))
+
 # bg:fg/text = base03:base0
 
 (def '*col-base-03 (list (*/ 1.0 0.0   255.0) (*/ 1.0 43.0  255.0) (*/ 1.0 54.0  255.0)))
@@ -54,7 +56,6 @@
                ((str? Any)  *col-base-01)
                ((sym? Any)  *col-violet)))))
 
-(def '*space-line (+ *adv-vert *adv-vert))
 
 #{
   * Lists/cons are fully expanded, however atoms (num/syms) are condensed
@@ -102,6 +103,7 @@
 
 
 (de draw-any (Any Depth X-Root)
+  
   (if (pair Any)
       (if (lst? (cdr Any))
           (draw-any-list Any

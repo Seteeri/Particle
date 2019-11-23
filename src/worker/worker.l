@@ -131,7 +131,12 @@
   # Make pointer a particle also
   (setq *vert-ptr (alloc-vert *col-red ":"))
   
-  (setq *part-ptr (gen-particles (list 'PARTICLE)))
+  (let ((X Y) (get *vert-ptr 'pos))
+    (setq *part-ptr 
+          (gen-part (list 'PARTICLE '(a b) '(c d) '(e f))
+                    0.0
+                    X)))
+    
   (setq *lst-ptr *part-ptr)
   
   (adv-ptr)
