@@ -97,22 +97,23 @@ Data (list 1
 
   # MODIFY COUNTER ALSO
 
-  (println "BEFORE (CUR/NXT)"
-           (get (car-ptr) 'data)
-           (get (get (car-ptr) 'next) 'data))
+  #####################
+  
+  # Always assumed *part-ptr is a particle with a list - root particle
+  # or should just call it god particle ;)
 
-  (let? Part (pop-ptr)
+  # Pop from its list
+    
+  (with *part-ptr
+      
+    (view (getl *part-ptr))
+      
+    (pop (:: data))
+    (del-particle (pop (:: a)))
+    
+    )
 
-    (println "POP" (get Part 'data))
-
-    (del-particle Part)
-
-    (println "AFTER (CUR/NXT)"
-             (get (car-ptr) 'data)
-             (get (get (car-ptr) 'next) 'data))
-
-    # Adv backwards over last space
-    (adv-ptr -1.0)))
+  (adv-ptr -1.0))
 
 
 (de cmd-make-num (Keysym)

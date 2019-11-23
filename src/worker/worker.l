@@ -133,7 +133,7 @@
   
   (let ((X Y) (get *vert-ptr 'pos))
     (setq *part-ptr 
-          (gen-part (list 'PARTICLE '(a b) '(c d) '(e f))
+          (gen-part (list 'PARTICLE '(a b) '(c d))
                     0.0
                     X)))
     

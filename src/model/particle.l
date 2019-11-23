@@ -20,7 +20,15 @@
           / \        / \        / \
            |          |          |
 
-  Conc:    . a    ->    . c    ->    . e
+  Conc:  . . a    ->    . c    ->    . e
+         
+  [.|.] -> [.|.] -> NIL
+   |        |
+   |       [c|.] -> [d|.] -> NIL
+   |
+  [a|.] -> [b|.] -> NIL
+  
+  The dot contains the list of particles
 
   Parts reference data so deleting parts will del the ref data and thus it can
   be GC so if the visual representation is gone, so will the data
@@ -52,23 +60,25 @@
 
 (class +Particle)
 (dm T (Data
-       Next
+       A
+       B
        Verts)
 
-  (=: data Data)
-  (=: next Next)
-  (=: verts Verts))
+  (=: data Data) # d
+  (=: a A)
+  (=: b B)
+  (=: verts Verts)) # v
 
 (dm cons> (B)
   # Cons B unto A (this)
-  (=: next B))
+  (=: b B))
 
 
 (de del-particle (Part)
-  # Pass adv?
 
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
         Verts (get Part 'verts))
+    #(println "Verts:" Verts)
     (for Vert Verts
       (send-msg *ipc
                 Sock-Render
@@ -77,13 +87,12 @@
 
     # Push ptr back n vertices
     (adv-ptr (num-to-fl (- (length Verts)))))
-
-  # Only chase ptrs (recurse) if list
-  (when (and (lst? (get Part 'data))
-             (not (= NIL (get Part 'data))))
-    (let? Next (get Part 'next)
-      (del-particle Next))))
-
+  
+  # If it is a list, must go through data
+  (when (pair (get Part 'data))
+    (for P (get Part 'a)
+      (del-particle P))))
+        
 
 (de gen-part (Any Depth X-Root)
 
@@ -112,19 +121,22 @@
       (let (Verts (draw-chars (char 183) *col-base-0 NIL)
             Adv   (adv-ptr 2.0)
             (X Y) (get *vert-ptr 'pos)
-            Parts (gen-list-col2 Any Depth X))
+            Parts (gen-list-col2 Any Depth X)
+            Part  (new '(+Particle)
+                       Any
+                       Parts
+                       NIL      # Caller sets
+                       Verts))
         
-        (prinl-info "gen-list-any" (pack "Generate particle (list): " Any))
-
-        (for Pt Parts
-          (prinl (adr Pt) ":" (get Pt 'data)))
+        (when NIL
+          (prinl-info "gen-list-any" (pack "Generate particle (list): " Any))
+          (println Part)
+          (println Any)
+          (println Parts)
+          (for Pt Parts
+            (prinl "   " (adr Pt) ":" (get Pt 'data))))
         
-        (new '(+Particle)
-             Any
-             Parts
-             Verts)
-
-        )))
+        Part)))
 
 
 (de gen-list-col2 (List Depth X-Root)
@@ -199,7 +211,8 @@
 
     (new '(+Particle)
           Any
-          NIL
+          Any
+          NIL   # Set by caller or pass here?
           Verts)))
 
 
