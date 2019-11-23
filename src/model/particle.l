@@ -136,15 +136,15 @@
 (de draw-any-list (Any Depth X-Root)
   (cond
     ((= (car Any) 'prog) (draw-prog Any Depth X-Root))
-    ((or (= (car Any) 'with)
-         (= (car Any) 'when)
-         (= (car Any) 'unless)) (draw-with Any Depth X-Root))
     ((= (car Any) 'cond) (draw-cond-2 Any Depth X-Root))
     ((= (car Any) 'de) (draw-de Any Depth X-Root))
-    ((= (car Any) 'cons) (draw-cons Any Depth X-Root))
+    ((= (car Any) 'let) (draw-let Any Depth X-Root))    
+    ((or (= (car Any) 'with)
+         (= (car Any) 'when)
+         (= (car Any) 'unless)) (draw-with Any Depth X-Root))    
     ((or (= (car Any) '=)
-         (= (car Any) '==)) (draw-= Any Depth X-Root))
-    ((= (car Any) 'let) (draw-let Any Depth X-Root))
+         (= (car Any) '==)
+         (= (car Any) 'cons)) (draw-list-row-dot Any Depth X-Root))
     (T (draw-list-col2-dot Any Depth X-Root))))
 
 
@@ -198,6 +198,21 @@
   (let ((X Y) (get *vert-ptr 'pos))
     (draw-list-y List Depth X)))
     
+
+(de draw-list-row-dot (List Depth X-Root)
+
+  (draw-chars (char 183) *col-base-0 NIL)
+  (adv-ptr 2.0)
+
+  (let ((X Y) (get *vert-ptr 'pos))
+    (draw-list-row List Depth X Y)))
+
+
+(de draw-list-row (List Depth X-Root)
+
+  (let ((X Y) (get *vert-ptr 'pos))
+    (draw-list-x List Depth X Y)))
+
 
 #################################
 

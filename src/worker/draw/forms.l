@@ -166,24 +166,6 @@
     (nl-ptr)
            
     (draw-let-prog (nth List 4) Depth X-Root)))
-
-
-(de draw-cons (List Depth X-Root)
-
-  (draw-chars (char 183) *col-base-0 NIL)
-  (adv-ptr 2.0)
-
-  (let ((X Y) (get *vert-ptr 'pos))
-    (draw-list-x List Depth X Y)))
-
-
-(de draw-= (List Depth X-Root)
-
-  (draw-chars (char 183) *col-base-0 NIL)
-  (adv-ptr 2.0)
-
-  (let ((X Y) (get *vert-ptr 'pos))
-    (draw-list-x List Depth X Y)))
     
 
 (de draw-let (List Depth X-Root)
