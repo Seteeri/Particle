@@ -156,6 +156,7 @@ Store DAGs as binary trees?
     * Finish drawing [WIP]
       * Implement cons cell
       * Implement basic forms
+      * Create draw interface where a matrix can be specified
       * Exceptions:
         * Draw space (" ") by itself draw box or draw with quotes
         * List starts with numbers, draw horizontally or vertically

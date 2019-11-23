@@ -157,11 +157,12 @@
       
     (draw-list-x (head 2 List) Depth X Y)
     
-    # TODO: Need to make sure not nil or single item
+    
     (adv-ptr)
-    (draw-chars (char 183) *col-base-0 NIL)
-    (adv-ptr 2.0)
-    (draw-list-one (get List 3) Depth X-Root)
+    
+    # TODO: Need to make sure not nil or single item
+    (draw-list-one-dot (get List 3) Depth X-Root)
+    
     (nl-ptr)
            
     (draw-let-prog (nth List 4) Depth X-Root)))
