@@ -155,19 +155,21 @@ Store DAGs as binary trees?
   * Primary Representation
     * Implement drawing s-exp [Done]
       * Draw space (" ") by itself draw box or draw with quotes
-        * For now draw quotes on all strings      
+        * For now draw quotes on all strings
       * Create draw interface where a matrix can be specified?
       * Follow pp style?
         * We follow indent, poss use rule len list > 12?
     * Implement drawing cons cells/box-ptr diagrams [Later]
-    * Integrate with particle
+    * Integrate with particle [WIP]
       * Particles are the representation of the internal data structure and thus
       strictly follow the underlying data structure - they are all cons cells
       * Thus ops can be applied to them the same way as the underlying code
-    * Implement ops
-    * Insert control chars
+    * Use special printing for control characters like enter etc.
       * newline ("^J"), return ("^M") or TAB ("^I")
+    * Implement ops
+      * Print commands by default
     * Batch draw commands
+    * Misc refactoring
     
     
   * Rename namespace gl -> gles

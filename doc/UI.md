@@ -461,4 +461,3 @@ straightforward
 Making lists
 
 1. Use CTRL+TAB/CAPS to create empty list
-

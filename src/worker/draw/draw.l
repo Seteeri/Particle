@@ -330,6 +330,6 @@
 
     (cmd-update-vert *ipc Vert)
 
-    (inc '*cnt-v 1)
+    (inc '*cnt-v)
 
     Vert))

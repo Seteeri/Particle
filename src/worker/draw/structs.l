@@ -1,4 +1,6 @@
-# Batch these
+# TODO:
+# Batch updates
+# Refactor
 
 (de draw-str (Str Col Adv)
 

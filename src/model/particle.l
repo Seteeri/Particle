@@ -78,12 +78,12 @@
 
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
         Verts (get Part 'verts))
-    #(println "Verts:" Verts)
     (for Vert Verts
       (send-msg *ipc
                 Sock-Render
                 (pack "(zv " (get Vert 'off-gl) '")"))
-      (push '*verts Vert))
+      (push '*verts Vert)
+      (dec '*cnt-v))
 
     # Push ptr back n vertices
     (adv-ptr (num-to-fl (- (length Verts)))))
@@ -121,7 +121,7 @@
       (let (Verts (draw-chars (char 183) *col-base-0 NIL)
             Adv   (adv-ptr 2.0)
             (X Y) (get *vert-ptr 'pos)
-            Parts (gen-list-col2 Any Depth X)
+            Parts (gen-list-col Any Depth X)
             Part  (new '(+Particle)
                        Any
                        Parts
@@ -175,6 +175,11 @@
     (flip Out)))
 
 
+(de gen-list-col (List Depth X-Root)
+  (let ((X Y) (get *vert-ptr 'pos))
+    (flip (gen-list-y List Depth X))))
+
+
 (de gen-list-y (List Depth X-Root)
 
   (let (Rem List
@@ -224,5 +229,6 @@
         Cdr   (gen-part (cdr Any)))
     (new '(+Particle)
          Any
-         (cons Car Cdr)
+         Car
+         Cdr
          Dot)))

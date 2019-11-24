@@ -1,30 +1,19 @@
-(de car-ptr () (get *lst-ptr 'next))
+# Methods of ptr
+# Need not implement other commands
 
-# Technically these are commands also
+(de car-ptr ()
+  (with *part-ptr
+    (car (: a))))
 
 (de push-ptr (Part)
-
-  # Re-adjust remainder of list including close parenthesis
-
-  # Remember! *lst-ptr is a Particle with a list
-
-  # Connect data
-  (with *lst-ptr
-
+  (with *part-ptr
     (push (:: data) (get Part 'data))
-
-    # Set Item next
-    (with Part
-      (=: next (get *lst-ptr 'next)))
-
-    # Set Lst next to Particle
-    (=: next Part)))
+    (push (:: a) Part))
+    # Connect new item to head
+    (cons> Part (cadr (: a))))
 
 
 (de pop-ptr ()
-
-  # Reverse above
-  # Use prop instead
 
   (let Item (get *lst-ptr 'next)
 
@@ -64,13 +53,29 @@ Data (list 1
 
 (de cmd-make-char (Keysym)
 
-  (let (Data (cond ((= Keysym ksd~space) "_")
-                   ((= Keysym ksd~Return) (char 10))
-                   (T (char Keysym)))
-        Data (cons 'de 'draw-any draw-any)
-        Part (let ((X Y) (get *vert-ptr 'pos))
-                (draw-any Data 0.0 X)))
-    (adv-ptr)))
+  # Enter/Newline should produce character and move pointer
+
+  (let ((X Y) (copy (get *vert-ptr 'pos)))
+
+    (let (Data (cond ((= Keysym ksd~space) "_")
+                     ((= Keysym ksd~Return) (char 10))
+                     (T (char Keysym)))
+          #Data (cons 'de 'draw-any draw-any)
+          Part (let ((X Y) (get *vert-ptr 'pos))
+                  (gen-part Data 0.0 X)))
+
+      #(view (getl *part-ptr))
+      (push-ptr Part)
+
+      (adv-ptr)
+
+      (when NIL
+        (set-x-ptr-2 X)
+        (set-y-ptr-2 Y)
+        (update-model-matrix> *vert-ptr)
+        (cmd-update-vert *ipc *vert-ptr))
+
+      )))
 
 
 (de cmd-del (Dir)
@@ -98,36 +103,38 @@ Data (list 1
   # MODIFY COUNTER ALSO
 
   #####################
-  
+
   # Always assumed *part-ptr is a particle with a list - root particle
-  # or should just call it god particle ;)
+  # or call it god particle ;)
 
-  # Pop from its list
-    
   (with *part-ptr
-      
-    (view (getl *part-ptr))
-      
     (pop (:: data))
-    (del-particle (pop (:: a)))
-    
-    )
+    (let Part (pop (:: a))
+      (del-particle Part)
+      (with (car (get Part 'verts))
+        (set-x-ptr-2 (get (: pos) 1)))
+        #(set-y-ptr-2 (get (: pos) 2))
+      (update-model-matrix> *vert-ptr)
+      (cmd-update-vert *ipc *vert-ptr)))
 
-  (adv-ptr -1.0))
+  #(view (getl *part-ptr))
+
+  T)
+
+
+#########################
 
 
 (de cmd-make-num (Keysym)
-
-  (let (Data  (format (char Keysym))
-        Verts (draw-chars Data
-                          (get-color-type Data)
-                          T)
-        Part   (new '(+Particle)
+  (let Data (format (char Keysym))
+    (push-ptr (new '(+Particle)
                     Data
-                    (car-ptr)
-                    Verts))
-    (push-ptr Part)
-    (adv-ptr)))
+                    Data
+                    NIL
+                    (draw-chars Data
+                                (get-color-type Data)
+                                T))))
+  (adv-ptr))
 
 
 (de cmd-format (Keysym)
@@ -147,11 +154,11 @@ Data (list 1
                       (draw-chars Data Col T)
                       (draw-str Data Col T)))
 
-        (push-ptr
-              (new '(+Particle)
-                   Data
-                   (car-ptr)
-                   Verts))
+        (push-ptr (new '(+Particle)
+                        Data
+                        Data
+                        NIL
+                        Verts))
 
         (adv-ptr)))))
 
@@ -172,6 +179,7 @@ Data (list 1
           (new '(+Particle)
                Str
                (car-ptr)
+               NIL
                (draw-str Str (get-color-type Str) T)))
 
     # Set next as needed
@@ -194,7 +202,8 @@ Data (list 1
     (push-ptr
           (new '(+Particle)
                Str
-               (car-ptr)
+               Str
+               NIL
                (draw-str Str (get-color-type Str) T)))
 
     # Set next as needed
@@ -228,7 +237,8 @@ Data (list 1
       (push-ptr
             (new '(+Particle)
                  (intern Last)
-                 (car-ptr)
+                 (intern Last)
+                 NIL
                  (draw-chars Last (get-color-type 'data) T)))
 
       (adv-ptr))))
@@ -236,7 +246,7 @@ Data (list 1
 
 (de cmd-eval ()
 
-(prinl-info "cmd-eval")
+  (prinl-info "cmd-eval")
 
   # Eval last item - must be data
   # Else:
@@ -278,7 +288,8 @@ Data (list 1
     (push-ptr
           (new '(+Particle)
                Str
-               (car-ptr)
+               Str
+               NIL
                (draw-str Str (get-color-type Str) T))))
 
   (adv-ptr))
