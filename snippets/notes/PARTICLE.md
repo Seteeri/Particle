@@ -169,6 +169,9 @@ Store DAGs as binary trees?
     * Refactor ptr
     * Implement ops
       * Print commands by default
+      * Relayout
+        * (col n) - n=number of items before row on last item
+        * (row n) - n=number of items before col on last item
     * Batch draw commands
     * Misc refactoring
     

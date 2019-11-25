@@ -128,7 +128,7 @@
       (nil
         (prinl "gen-cells: circ list")
         (gen-atom NIL))
-      (gen-list-row Any Depth X)))
+      (gen-list-col Any Depth X)))
 
 
 (de gen-list-col2 (List Depth X-Root)

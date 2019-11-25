@@ -19,14 +19,20 @@
     # Connect first item to head
     (cons> Part (cadr (: a))))
 
+
 # Tail
 (de conc-ptr (Part)
   (with *part-ptr
     (let Last-A (last (: a))
-      (conc (: data) (cons (get Part 'data)))
-      (conc (: a) (cons Part))
-      # Connect last item to tail
-      (cons> Last-A Part))))
+      (if Last-A
+        (prog
+          (conc (: data) (cons (get Part 'data)))
+          (conc (: a) (cons Part))
+          # Connect last item to tail
+          (cons> Last-A Part))
+        (prog
+          (=: data (cons (get Part 'data)))
+          (=: a (cons Part)))))))
     
 
 (de pop-ptr ()
@@ -86,6 +92,9 @@ Data (list 1
       
       (conc-ptr Part)
 
+      (with *part-ptr
+        (println (: a)))
+
       (adv-ptr)
 
       (when NIL
@@ -129,8 +138,8 @@ Data (list 1
   # Pop last by cutting length - 1
   # list will contain last item
   (with *part-ptr
-    (let (Part (last (: a))
-          Last-D (last (: data)))
+    (println (: a))
+    (let? Part (last (: a))
       (=: a (head -1 (: a)))
       (=: data (head -1 (: data)))
             

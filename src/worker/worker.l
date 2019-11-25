@@ -130,7 +130,7 @@
   # Allocate pointer - use same char as PicoLisp ":"
   # Make pointer a particle also
   (setq *vert-ptr (alloc-vert *col-red ":"))
-  
+    
   (let ((X Y) (get *vert-ptr 'pos))
     (setq *part-ptr 
           (gen-part (list 'PARTICLE '(a b) '(c d))
