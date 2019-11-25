@@ -160,14 +160,10 @@ Store DAGs as binary trees?
       * Follow pp style?
         * We follow indent, poss use rule len list > 12?
     * Integrate with particle [WIP]
-      * Particles are the representation of the internal data structure and thus
-      strictly follow the underlying data structure - they are all cons cells
-      * Thus ops can be applied to them the same way as the underlying code
-    * Add items on top
-      HEAD
-       |
-      \_/
-      TAIL
+    * Handle modifying lists and updating layout of affected code
+      * Anything after/below the list must be updated
+      * All data belongs to master list so lists should not overlap
+      or be in arbitrary places
     * Use special printing for control characters like enter etc.
       * newline ("^J"), return ("^M") or TAB ("^I")
     * Refactor ptr

@@ -5,6 +5,12 @@
   (with *part-ptr
     (car (: a))))
 
+
+(de last-ptr ()
+  (with *part-ptr
+    (last (: a))))
+    
+
 # Head
 (de push-ptr (Part)
   (with *part-ptr
@@ -77,8 +83,6 @@ Data (list 1
                   (gen-part Data 0.0 X)))
 
       #(view (getl *part-ptr))
-      
-      #(push-ptr Part)
       
       (conc-ptr Part)
 
@@ -155,7 +159,7 @@ Data (list 1
 
 (de cmd-make-num (Keysym)
   (let Data (format (char Keysym))
-    (push-ptr (new '(+Particle)
+    (conc-ptr (new '(+Particle)
                     Data
                     Data
                     NIL
@@ -171,7 +175,7 @@ Data (list 1
 
   # Convert num<->str
 
-  (let Last (get (car-ptr) 'data)
+  (let Last (get (last-ptr) 'data)
 
     (when (or (str? Last)
               (num? Last))
@@ -182,7 +186,7 @@ Data (list 1
                       (draw-chars Data Col T)
                       (draw-str Data Col T)))
 
-        (push-ptr (new '(+Particle)
+        (conc-ptr (new '(+Particle)
                         Data
                         Data
                         NIL
@@ -203,10 +207,10 @@ Data (list 1
   (let Str (pack (get (build-pack) 2))
 
     # Draw data, create particle, add to timeline
-    (push-ptr
+    (conc-ptr
           (new '(+Particle)
                Str
-               (car-ptr)
+               Str
                NIL
                (draw-str Str (get-color-type Str) T)))
 
@@ -224,10 +228,10 @@ Data (list 1
   # Unlike OG, use last item
   # To use this normally, must create list then push chars into that
 
-  (let Str (pack (get (car-ptr) 'data))
+  (let Str (pack (get (last-ptr) 'data))
 
     # Draw data, create particle, add to timeline
-    (push-ptr
+    (conc-ptr
           (new '(+Particle)
                Str
                Str
@@ -243,9 +247,9 @@ Data (list 1
 
   (prinl-info "cmd-chop")
 
-  (let Last (get (car-ptr) 'data)
+  (let Last (get (last-ptr) 'data)
 
-    (push-ptr (gen-particles (chop Last))))
+    (conc-ptr (gen-part (chop Last))))
 
   (adv-ptr))
 
@@ -258,11 +262,11 @@ Data (list 1
 
   # Ensure last item is a str
 
-  (let Last (get (car-ptr) 'data)
+  (let Last (get (last-ptr) 'data)
 
     (when (str? Last)
 
-      (push-ptr
+      (conc-ptr
             (new '(+Particle)
                  (intern Last)
                  (intern Last)
@@ -281,10 +285,10 @@ Data (list 1
   # Str (pack Data)
   # Any (any Str)
 
-  (let (Last (get (car-ptr) 'data)
+  (let (Last (get (last-ptr) 'data)
         Any (eval Last))
 
-    (push-ptr (gen-particles Any)))
+    (conc-ptr (gen-part Any)))
 
   (adv-ptr))
 
@@ -295,10 +299,10 @@ Data (list 1
 
   # Str -> Any
 
-  (let (Last (get (car-ptr) 'data)
+  (let (Last (get (last-ptr) 'data)
         Any (any Last))
 
-    (push-ptr (gen-particles Any))
+    (conc-ptr (gen-part Any))
 
     (adv-ptr)))
 
@@ -310,10 +314,10 @@ Data (list 1
   # Rev of Any
   # Any -> Str
 
-  (let (Last (get (car-ptr) 'data)
+  (let (Last (get (last-ptr) 'data)
         Str (sym Last))
 
-    (push-ptr
+    (conc-ptr
           (new '(+Particle)
                Str
                Str
@@ -352,9 +356,9 @@ Data (list 1
 
   }#
 
-  (let Part (gen-particles NIL)
+  (let Part (gen-part NIL)
 
-    (push-ptr Part)
+    (conc-ptr Part)
 
     (setq *lst-ptr Part)
 
