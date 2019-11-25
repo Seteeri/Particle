@@ -109,6 +109,22 @@ Data (list 1
   # Always assumed *part-ptr is a particle with a list - root particle
   # or call it god particle ;)
 
+  # Pop last by cutting length - 1
+  # list will contain last item
+  (with *part-ptr
+    (let (Part (last (: a))
+          Last-D (last (: data)))
+      (=: a (head -1 (: a)))
+      (=: data (head -1 (: data)))
+            
+      (del-particle Part)
+      (with (car (get Part 'verts))
+        (set-x-ptr-2 (get (: pos) 1)))
+        #(set-y-ptr-2 (get (: pos) 2))
+      (update-model-matrix> *vert-ptr)
+      (cmd-update-vert *ipc *vert-ptr))))
+    
+  #{
   (with *part-ptr
     (pop (:: data))
     (let Part (pop (:: a))
@@ -118,10 +134,7 @@ Data (list 1
         #(set-y-ptr-2 (get (: pos) 2))
       (update-model-matrix> *vert-ptr)
       (cmd-update-vert *ipc *vert-ptr)))
-
-  #(view (getl *part-ptr))
-
-  T)
+  }#
 
 
 #########################
