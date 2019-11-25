@@ -159,13 +159,18 @@ Store DAGs as binary trees?
       * Create draw interface where a matrix can be specified?
       * Follow pp style?
         * We follow indent, poss use rule len list > 12?
-    * Implement drawing cons cells/box-ptr diagrams [Later]
     * Integrate with particle [WIP]
       * Particles are the representation of the internal data structure and thus
       strictly follow the underlying data structure - they are all cons cells
       * Thus ops can be applied to them the same way as the underlying code
+    * Add items on top
+      HEAD
+       |
+      \_/
+      TAIL
     * Use special printing for control characters like enter etc.
       * newline ("^J"), return ("^M") or TAB ("^I")
+    * Refactor ptr
     * Implement ops
       * Print commands by default
     * Batch draw commands
@@ -195,6 +200,19 @@ Store DAGs as binary trees?
     * For example, get a list of files in directory -> return list of strings of
     files
 
+   * PRE-RELEASE - REPL - JAN ?
+     * CLEAN UP
+     * RECORD DEMO
+     * ANNOUNCE ON MAILING LIST, LATER REDDIT
+
+  POST DEMO:
+
+  * Implement Wayland - BASIC!
+    * Setup tiles for 6 windows = 3 col, 2 row
+    * Proof of concept working with eval already
+
+   * Implement drawing cons cells/box-ptr diagrams [Later]
+
    * Test compute shaders
      * Rotate all vertices
      * Could use shader then pull data back?
@@ -207,17 +225,6 @@ Store DAGs as binary trees?
      
    * Test multiple workers
      * Need data sync on model side to broadcast updates
-
-   * PRE-RELEASE - REPL - JAN ?
-     * CLEAN UP
-     * RECORD DEMO
-     * ANNOUNCE ON MAILING LIST, LATER REDDIT
-
-  POST DEMO:
-
-  * Implement Wayland - BASIC!
-    * Setup tiles for 6 windows = 3 col, 2 row
-    * Proof of concept working with eval already
 
   https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
 

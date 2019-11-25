@@ -55,9 +55,11 @@ Data (list 1
 
   # Enter/Newline should produce character and move pointer
 
+  # Before drawing, align pointer to head of car of list
+
   (let ((X Y) (copy (get *vert-ptr 'pos)))
 
-    (let (Data (cond ((= Keysym ksd~space) "_")
+    (let (Data (cond ((= Keysym ksd~space) " ")
                      ((= Keysym ksd~Return) (char 10))
                      (T (char Keysym)))
           #Data (cons 'de 'draw-any draw-any)

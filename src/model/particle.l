@@ -9,27 +9,37 @@
   Conc:    1    ->    2    ->    3
 
   Note, conc is pointing to whatever CAR is pointing to
-  Numbers would be copied however
+  Numbers would be copied however...
 
   ((a b) (c d) (e f))
 
           [a|.]...   [c|.]...   [e|.]...
            |          |          |
-  Abst:   [.|.]  ->  [.|.]  ->  [.|.]
+  Abst:   [.|.]  ->  [.|.]  ->  [.|N]
+  
            ^          ^          ^
           / \        / \        / \
            |          |          |
-
-  Conc:  . . a    ->    . c    ->    . e
-         
-  [.|.] -> [.|.] -> NIL
-   |        |
-   |       [c|.] -> [d|.] -> NIL
-   |
-  [a|.] -> [b|.] -> NIL
+           
+  Conc:    .    ->    .    ->  .
+           |          |        |
+           a          c        e
+           |          |        |
   
-  The dot contains the list of particles
-
+      PARTICLE CAR/CDR
+  . = P(a b) / P(c d) 
+  . = P(c d) / P(e f)
+  . = P(e f) / NIL
+  
+  a = (a b) / P(b)
+  b = (b)   / NIL
+  
+  c = (c d) / P(d)
+  d = (d)   / NI
+  
+  e = (e f) / P(f)
+  f = (f)   / NI
+         
   Parts reference data so deleting parts will del the ref data and thus it can
   be GC so if the visual representation is gone, so will the data
 
@@ -46,6 +56,7 @@
 (de decode-ptr  (Any) (>> -4 (adr Any)))
 (de unpack-ptrs (Any) (struct (decode-ptr Any) '((B . 8) (B . 8))))
 (de list? (Any) (and (lst? Any) (not (= Any NIL))))
+
 
 (de change-col-particle (Part Col)
   (for Vert (get Part 'verts)
@@ -140,6 +151,21 @@
 
 
 (de gen-list-col2 (List Depth X-Root)
+  (let ((X Y) (get *vert-ptr 'pos))
+    (flip (gen-list-col2 List Depth X Y))))
+  
+
+(de gen-list-col (List Depth X-Root)
+  (let ((X Y) (get *vert-ptr 'pos))
+    (flip (gen-list-y List Depth X Y))))
+
+
+(de gen-list-row (List Depth X-Root)
+  (let ((X Y) (get *vert-ptr 'pos))
+    (flip (gen-list-x List Depth X Y))))
+
+
+(de gen-list-col2 (List Depth X-Root Y-Root)
 
   # Link particles
   # List = (P 1 2 3 4)
@@ -175,12 +201,9 @@
     (flip Out)))
 
 
-(de gen-list-col (List Depth X-Root)
-  (let ((X Y) (get *vert-ptr 'pos))
-    (flip (gen-list-y List Depth X))))
+(de gen-list-y (List Depth X-Root Y-Root)
 
-
-(de gen-list-y (List Depth X-Root)
+  # Data should point to the cdr (car) rather than the pointed value of the car
 
   (let (Rem List
         Out ()
@@ -198,6 +221,30 @@
       (when (setq Rem (cdr Rem))
         (set-x-ptr-2 X-Root)
         (nl-ptr)))
+
+    Out))
+
+
+(de gen-list-x (List Depth X-Root Y-Root)
+
+  # Data should point to the cdr (car) rather than the pointed value of the car
+
+  (let (Rem List
+        Out ()
+        Prev NIL)
+
+    (while (pair Rem)
+
+      (let Part (if (not (lst? (cdr Rem)))
+                    (gen-pair Rem Depth X-Root)
+                    (gen-part (car Rem) Depth X-Root))
+        (push 'Out Part)
+        (when Prev (cons> Prev Part))
+        (setq Prev Part))
+
+      (when (setq Rem (cdr Rem))
+        (set-y-ptr-2 Y-Root)
+        (adv-ptr)))))
 
     Out))
 
