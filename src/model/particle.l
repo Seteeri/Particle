@@ -109,6 +109,8 @@
 
   # TODO: Handle circular lists and improper lists properly
 
+  # Pass layout
+
   (if (pair Any)
       (if (lst? (cdr Any))
           (gen-list-any Any
@@ -121,48 +123,60 @@
 
 
 (de gen-list-any (Any Depth X-Root)
-
+  # Pass layout
   (if (circ? Any)
-
       (nil
         (prinl "gen-cells: circ list")
         (gen-atom NIL))
-
-      # Draw dot first
-      (let (Verts (draw-chars (char 183) *col-base-0 NIL)
-            Adv   (adv-ptr 2.0)
-            (X Y) (get *vert-ptr 'pos)
-            Parts (gen-list-col Any Depth X)
-            Part  (new '(+Particle)
-                       Any
-                       Parts
-                       NIL      # Caller sets
-                       Verts))
-        
-        (when NIL
-          (prinl-info "gen-list-any" (pack "Generate particle (list): " Any))
-          (println Part)
-          (println Any)
-          (println Parts)
-          (for Pt Parts
-            (prinl "   " (adr Pt) ":" (get Pt 'data))))
-        
-        Part)))
+      (gen-list-row Any Depth X)))
 
 
 (de gen-list-col2 (List Depth X-Root)
-  (let ((X Y) (get *vert-ptr 'pos))
-    (flip (gen-list-col2 List Depth X Y))))
+  # Draw dot first
+  (let Verts (draw-chars (char 183) *col-base-0 NIL)
+    
+    (adv-ptr 2.0)
+    
+    (let ((X Y) (get *vert-ptr 'pos)
+          Parts (flip (gen-list-col2 Any Depth X Y)))
+          
+      (new '(+Particle)
+           Any
+           Parts
+           NIL      # Caller sets
+           Verts))))
   
 
 (de gen-list-col (List Depth X-Root)
-  (let ((X Y) (get *vert-ptr 'pos))
-    (flip (gen-list-y List Depth X Y))))
+  # Draw dot first
+  (let Verts (draw-chars (char 183) *col-base-0 NIL)
+    
+    (adv-ptr 2.0)
+    
+    (let ((X Y) (get *vert-ptr 'pos)
+          Parts (flip (gen-list-y Any Depth X Y)))
+          
+      (new '(+Particle)
+           Any
+           Parts
+           NIL      # Caller sets
+           Verts))))
 
 
 (de gen-list-row (List Depth X-Root)
-  (let ((X Y) (get *vert-ptr 'pos))
-    (flip (gen-list-x List Depth X Y))))
+  # Draw dot first
+  (let Verts (draw-chars (char 183) *col-base-0 NIL)
+    
+    (nl-ptr)
+    
+    (let ((X Y) (get *vert-ptr 'pos)
+          Parts (flip (gen-list-x Any Depth X Y)))
+          
+      (new '(+Particle)
+           Any
+           Parts
+           NIL      # Caller sets
+           Verts))))
 
 
 (de gen-list-col2 (List Depth X-Root Y-Root)
@@ -244,7 +258,7 @@
 
       (when (setq Rem (cdr Rem))
         (set-y-ptr-2 Y-Root)
-        (adv-ptr)))))
+        (adv-ptr)))
 
     Out))
 
