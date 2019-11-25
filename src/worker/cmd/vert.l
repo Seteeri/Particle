@@ -5,13 +5,23 @@
   (with *part-ptr
     (car (: a))))
 
+# Head
 (de push-ptr (Part)
   (with *part-ptr
     (push (:: data) (get Part 'data))
     (push (:: a) Part))
-    # Connect new item to head
+    # Connect first item to head
     (cons> Part (cadr (: a))))
 
+# Tail
+(de conc-ptr (Part)
+  (with *part-ptr
+    (let Last-A (last (: a))
+      (conc (: data) (cons (get Part 'data)))
+      (conc (: a) (cons Part))
+      # Connect last item to tail
+      (cons> Last-A Part))))
+    
 
 (de pop-ptr ()
 
@@ -67,7 +77,10 @@ Data (list 1
                   (gen-part Data 0.0 X)))
 
       #(view (getl *part-ptr))
-      (push-ptr Part)
+      
+      #(push-ptr Part)
+      
+      (conc-ptr Part)
 
       (adv-ptr)
 
