@@ -77,6 +77,63 @@
 (load "/home/user/Particle/particle/src/worker/cmd/ptr.l")
 
 
+(def '*bindings-key
+    ## Number
+    '(~(let List NIL
+        (for (K ksd~d0 (<= K ksd~d9) (inc K))
+          (push 'List (list (list ksd~Control-L K) T cmd-make-num))
+          (push 'List (list (list ksd~Control-R K) T cmd-make-num)))
+        List)
+    ## Char Strings
+      ~(let List NIL
+        (for (K 33 (<= K 255) (inc K))
+          (push 'List (list (list K)                     T cmd-make-char))
+          (push 'List (list (list ksd~Shift-L K)         T cmd-make-char))
+          (push 'List (list (list ksd~Shift-R K)         T cmd-make-char)))
+        List)
+      ((`ksd~Control-L     ksd~Return) T `cmd-make-list)
+      ((`ksd~Control-R     ksd~Return) T `cmd-make-list)
+      ((`ksd~BackSpace) T `cmd-del)
+      ((`ksd~Delete   ) T `cmd-del)
+
+      ### Special cases: Space (32), Return, Tab
+      ((`ksd~space)               T `cmd-make-char)
+      ((`ksd~Return)              T `cmd-make-char)
+      ((`ksd~Tab)                 T `cmd-make-char)
+
+      ## CUA Ops
+      ((`ksd~Control-L `ksd~x) T ((Keysym) (println "Ctrl-L-x: CUT")))
+      ((`ksd~Control-L `ksd~c) T ((Keysym) (println "Ctrl-L-c: COPY")))
+      ((`ksd~Control-L `ksd~v) T ((Keysym) (println "Ctrl-L-v: PASTE")))
+      ((`ksd~Control-L `ksd~z) T ((Keysym) (println "Ctrl-L-z: UNDO")))
+      ((`ksd~Alt-L     `ksd~z) T ((Keysym) (println "Alt-L-z: REDO")))
+
+      # Lisp Ops
+      ((`ksd~Control-L `ksd~q) T `cmd-eval)
+      ((`ksd~Control-L `ksd~e) T `cmd-pack)
+      ((`ksd~Control-L `ksd~r) T `cmd-chop)
+      ((`ksd~Control-L `ksd~f) T `cmd-any)
+      ((`ksd~Control-L `ksd~g) T `cmd-sym)
+      ((`ksd~Control-L `ksd~t) T `cmd-format)
+      ((`ksd~Control-L `ksd~h) T `cmd-intern)
+      ((`ksd~Control-L `ksd~y) T '((Keysym) (println "cmd-reverse")))
+      ((`ksd~Alt-L     `ksd~y) T '((Keysym) (println "cmd-flip")))
+
+      # Pointer Translation
+      ((`ksd~Right)       T `cmd-translate-ptr-px)
+      ((`ksd~Left)        T `cmd-translate-ptr-nx)
+      ((`ksd~Up)          T `cmd-translate-ptr-py)
+      ((`ksd~Down)        T `cmd-translate-ptr-ny)
+
+      # Camera Translation
+      ((`ksd~Control-L `ksd~Right) T `cmd-move-cam-px)
+      ((`ksd~Control-L `ksd~Left)  T `cmd-move-cam-nx)
+      ((`ksd~Control-L `ksd~Up)    T `cmd-move-cam-py)
+      ((`ksd~Control-L `ksd~Down)  T `cmd-move-cam-ny)
+      ((`ksd~Prior    ) T `cmd-zoom-cam-in)
+      ((`ksd~Next     ) T `cmd-zoom-cam-out)))
+
+
 (de init-worker ()
 
   (let Argv (argv)
@@ -108,7 +165,7 @@
 
   (setq *xkb (new '(+Xkb)))
 
-  (add-key-bindings)
+  (apply-key-bindings *bindings-key)
 
   (gc 256)
 
@@ -162,92 +219,8 @@
     Vert))
 
 
-(de add-key-bindings ()
-
-  # Singular Ops (new/del)
-
-  ## List
-
-  (bind-keys (list ksd~Control-L     ksd~Return) T cmd-make-list)
-  (bind-keys (list ksd~Control-R     ksd~Return) T cmd-make-list)
-
-  (bind-keys (list ksd~BackSpace) T cmd-del)
-  (bind-keys (list ksd~Delete   ) T cmd-del)
-
-  ## Number
-
-  (for (K ksd~d0 (<= K ksd~d9) (inc K))
-
-    (bind-keys (list ksd~Control-L K) T cmd-make-num)
-    (bind-keys (list ksd~Control-R K) T cmd-make-num))
-
-  ## String/Symbol
-
-  (for (K 33 (<= K 255) (inc K))
-    (bind-keys (list K)                     T cmd-make-char)
-    (bind-keys (list ksd~Shift-L K)         T cmd-make-char)
-    (bind-keys (list ksd~Shift-R K)         T cmd-make-char))
-  ### Special cases: Space (32), Return, Tab
-  (bind-keys (list ksd~space)               T cmd-make-char)
-  (bind-keys (list ksd~Return)              T cmd-make-char)
-  (bind-keys (list ksd~Tab)                 T cmd-make-char)
-
-  ## Std Ops
-
-  (bind-keys (list ksd~Control-L ksd~x) T '((Keysym) (println "Ctrl-L-x: CUT")))
-  (bind-keys (list ksd~Control-L ksd~c) T '((Keysym) (println "Ctrl-L-c: COPY")))
-  (bind-keys (list ksd~Control-L ksd~v) T '((Keysym) (println "Ctrl-L-v: PASTE")))
-  (bind-keys (list ksd~Control-L ksd~z) T '((Keysym) (println "Ctrl-L-z: UNDO")))
-  (bind-keys (list ksd~Alt-L     ksd~z) T '((Keysym) (println "Alt-L-z: REDO")))
-
-  # Binary Ops
-  (bind-keys (list ksd~Control-L ksd~q) T cmd-eval)
-
-  (bind-keys (list ksd~Control-L ksd~e) T cmd-pack)
-  (bind-keys (list ksd~Control-L ksd~r) T cmd-chop)
-    
-  (bind-keys (list ksd~Control-L ksd~f) T cmd-any)
-  (bind-keys (list ksd~Control-L ksd~g) T cmd-sym)
-  
-  (bind-keys (list ksd~Control-L ksd~t) T cmd-format)
-  (bind-keys (list ksd~Control-L ksd~h) T cmd-intern)
-
-
-  (bind-keys (list ksd~Control-L ksd~y) T '((Keysym) (println "cmd-reverse")))
-  (bind-keys (list ksd~Alt-L ksd~y) T '((Keysym) (println "cmd-flip")))
-  
-  # Pointer
-
-  # Selection
-
-  (bind-keys (list ksd~Control-R ksd~w) T cmd-select-up) #'((Keysym) (println "Control-R + W: Select Up")))
-  (bind-keys (list ksd~Control-R ksd~a) T cmd-select-le) #'((Keysym) (println "Control-R + A: Select Le")))
-  (bind-keys (list ksd~Control-R ksd~s) T cmd-select-dn) #'((Keysym) (println "Control-R + S: Select Dn")))
-  (bind-keys (list ksd~Control-R ksd~d) T cmd-select-ri) #'((Keysym) (println "Control-R + D: Select Ri")))
-
-  # Placement
-
-  (bind-keys (list ksd~Alt-R ksd~w) T cmd-place-up) #'((Keysym) (println "Alt-R + W: Place Up")))
-  (bind-keys (list ksd~Alt-R ksd~a) T cmd-place-le) #'((Keysym) (println "Alt-R + A: Place Le")))
-  (bind-keys (list ksd~Alt-R ksd~s) T cmd-place-dn) #'((Keysym) (println "Alt-R + S: Place Dn")))
-  (bind-keys (list ksd~Alt-R ksd~d) T cmd-place-ri) #'((Keysym) (println "Alt-R + D: Place Ri")))
-
-  # Euclidean Space
-
-  (bind-keys (list ksd~Right)       T cmd-translate-ptr-px)
-  (bind-keys (list ksd~Left)        T cmd-translate-ptr-nx)
-  (bind-keys (list ksd~Up)          T cmd-translate-ptr-py)
-  (bind-keys (list ksd~Down)        T cmd-translate-ptr-ny)
-
-  # Camera
-
-  (bind-keys (list ksd~Control-L ksd~Right) T cmd-move-cam-px)
-  (bind-keys (list ksd~Control-L ksd~Left)  T cmd-move-cam-nx)
-  (bind-keys (list ksd~Control-L ksd~Up)    T cmd-move-cam-py)
-  (bind-keys (list ksd~Control-L ksd~Down)  T cmd-move-cam-ny)
-
-  (bind-keys (list ksd~Prior    ) T cmd-zoom-cam-in)
-  (bind-keys (list ksd~Next     ) T cmd-zoom-cam-out))
+(de apply-key-bindings (Binds)
+  (for Bind Binds (apply bind-keys Bind)))
 
 
 # Unused

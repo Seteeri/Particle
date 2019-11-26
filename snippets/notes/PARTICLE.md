@@ -135,7 +135,7 @@ Store DAGs as binary trees?
        * Add loop to send until empty - add to ipc
        * If blocked, then render or model is lagging
      * Add ability to push/pull range and/or batch [Sun]
-       * Batch: process msgs as list [Done]     
+       * Batch: process msgs as list [Done]
        * Rx: pass adtl args
          * Add handlers to processes
        * For initial loading, could use fork or read default values from file
@@ -166,18 +166,22 @@ Store DAGs as binary trees?
       or be in arbitrary places
     * Use special printing for control characters like enter etc.
       * newline ("^J"), return ("^M") or TAB ("^I")
-    * Refactor ptr
     * Implement ops
-      * Print commands by default
       * Relayout
         * (col n) - n=number of items before row on last item
-        * (row n) - n=number of items before col on last item
+        * (row n) - n=number of items before col on last item    
+      * Print commands by default
+        * Extract data from function [Done]
+      * Lists
+        * Creation/Deletion
+        * Enter/Exit
+    * Refactor ptr
     * Batch draw commands
     * Misc refactoring
-    
-    
+
+
   * Rename namespace gl -> gles
-    
+
   * Cur/Ptr
     * Use touch/mouse to move spatially
       * SNAP TO GRID
@@ -221,7 +225,7 @@ Store DAGs as binary trees?
    * Show commands
      * Add disassemble functionality
      * Render frame time?
-     
+
    * Test multiple workers
      * Need data sync on model side to broadcast updates
 
@@ -243,7 +247,7 @@ Store DAGs as binary trees?
   * Use touch to modify lists
     * Ability to pull items out
     * Requires spatial index, unproject
-      * Port r-tree from CL   
+      * Port r-tree from CL
 
   * Screenshot
     * glReadPixels
@@ -287,7 +291,7 @@ Store DAGs as binary trees?
          -> Need not serialize everything - add ability to serialize only certain members
          * Must define protocol/msg
        * Use LZO or LZ4 data compression
-          
+
   * CTRL MUST SEND MSGS TO ALL CLIENTS
     * Maintain queue per client
     * Add to all clients

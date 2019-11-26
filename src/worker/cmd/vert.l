@@ -135,10 +135,7 @@ Data (list 1
   # Always assumed *part-ptr is a particle with a list - root particle
   # or call it god particle ;)
 
-  # Pop last by cutting length - 1
-  # list will contain last item
   (with *part-ptr
-    (println (: a))
     (let? Part (last (: a))
       (=: a (head -1 (: a)))
       (=: data (head -1 (: data)))
@@ -149,18 +146,6 @@ Data (list 1
         #(set-y-ptr-2 (get (: pos) 2))
       (update-model-matrix> *vert-ptr)
       (cmd-update-vert *ipc *vert-ptr))))
-    
-  #{
-  (with *part-ptr
-    (pop (:: data))
-    (let Part (pop (:: a))
-      (del-particle Part)
-      (with (car (get Part 'verts))
-        (set-x-ptr-2 (get (: pos) 1)))
-        #(set-y-ptr-2 (get (: pos) 2))
-      (update-model-matrix> *vert-ptr)
-      (cmd-update-vert *ipc *vert-ptr)))
-  }#
 
 
 #########################
@@ -347,35 +332,19 @@ Data (list 1
   # Use can enter NIL, at which point is converted into "()"
 
   #{
-
-    QUESTION: Enter list after creation or stay on same level?
+    Enter list after creation or stay on same level?
 
     Default is NO so pressing new list repeatedly will create subsequent lists
     rather than nested lists
-
-    Hmm...technically lists are just nested cons
-
-    From NIL
-
-    (NIL (NIL) (NIL))
-
-    Then alpha
-
-    (NIL (NIL) (NIL "a" "b" "c"))
-
   }#
 
   (let Part (gen-part NIL)
 
     (conc-ptr Part)
 
-    (setq *lst-ptr Part)
+    #(setq *lst-ptr Part)
 
-    # Store list trail
     #(push '*lists-ptr Part)
-
-    (println "LIST NXT" (get Part 'next))
-    (println "LIST NXT" (get (get Part 'next) 'data))
 
     T)
 
