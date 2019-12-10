@@ -126,20 +126,26 @@
 
       # Pointer Translation
       # Make Alt+WASD
-      ((`ksd~Alt-L `ksd~w) T `cmd-translate-ptr-py)
-      ((`ksd~Alt-R `ksd~w) T `cmd-translate-ptr-py)
+      # cmd-translate-ptr-py/px/nx/ny
+      ((`ksd~Alt-L `ksd~w) T `cmd-assign-ptr-out)
+      ((`ksd~Alt-R `ksd~w) T `cmd-assign-ptr-out)
 
-      ((`ksd~Alt-L `ksd~a) T `cmd-translate-ptr-nx)
-      ((`ksd~Alt-R `ksd~a) T `cmd-translate-ptr-nx)
+      ((`ksd~Alt-L `ksd~a) T `cmd-assign-ptr-pre)
+      ((`ksd~Alt-R `ksd~a) T `cmd-assign-ptr-pre)
 
-      ((`ksd~Alt-L `ksd~s) T `cmd-translate-ptr-ny)
-      ((`ksd~Alt-R `ksd~s) T `cmd-translate-ptr-ny)
+      ((`ksd~Alt-L `ksd~s) T `cmd-assign-ptr-in)
+      ((`ksd~Alt-R `ksd~s) T `cmd-assign-ptr-in)
 
-      ((`ksd~Alt-L `ksd~d) T `cmd-translate-ptr-px)
-      ((`ksd~Alt-R `ksd~d) T `cmd-translate-ptr-px)
+      ((`ksd~Alt-L `ksd~d) T `cmd-assign-ptr-nxt)
+      ((`ksd~Alt-R `ksd~d) T `cmd-assign-ptr-nxt)
 
       # Camera Translation
       # Make dir
+      ((`ksd~Right) T `cmd-translate-ptr-px)
+      ((`ksd~Left)  T `cmd-translate-ptr-nx)
+      ((`ksd~Up)    T `cmd-translate-ptr-py)
+      ((`ksd~Down)  T `cmd-translate-ptr-ny)
+            
       ((`ksd~Control-L `ksd~Right) T `cmd-move-cam-px)
       ((`ksd~Control-L `ksd~Left)  T `cmd-move-cam-nx)
       ((`ksd~Control-L `ksd~Up)    T `cmd-move-cam-py)

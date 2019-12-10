@@ -349,34 +349,3 @@ Data (list 1
     T)
 
   (adv-ptr))
-
-
-(de cmd-enter-list (Keysym)
-  (prinl-info "cmd-enter-list")
-  
-  # *part-ptr  -> *root-ptr
-  # *lst-ptr   -> *lst-ptr
-  # *lists-ptr -> *lsts-ptr (track history of lists)
-  
-  # Push *lst-ptr to *lsts-ptr
-  # Set *lst-ptr from pointer
-
-  # Make sure current ptr is a list
-  # CAR and CDR should both be lists
-  
-  # Normally get from ptr/cur pos but for now use end of list
-  # since we have no implemented selecting yet
-  # Selecting is a pointer to a cons cell
-  # Question is how to mark it - for now, use color - yellow
-  
-  # If you push/cons unto a symbol, will get improper list
-    
-  T)
-
-
-(de cmd-exit-list (Keysym)
-  (prinl-info "cmd-exit-list")
-  
-  # Set *lst-ptr from popped *lsts-ptr
-  
-  T)
