@@ -24,21 +24,31 @@
 
 (de get-color-type (Any)
   #{
+    Blue-Green = Data
+    Green-Red = Sub-Data
+    Red-Blue = 
+  
+    Violet = STR
+    Blue =   SYM
+      * Extern/Box have physical delimiters, {} and $...
+      so can also fall under symbols
+    Cyan =   NUM
+    Green =  CONS
+    Yellow = selected
+    Orange = T/NIL and builtin symbols?
+      * Builtin > FUN
+    Red = FUN
+    Magenta = Comments?
 
-    Str and Delimeters are base-01/base-0
-
-    Violet = SYM
-    Blue = NUM
-    Cyan =
-    - or since cursor is a symbol...
-    Green = CONS
-    Yellow = NIL/()/'''' and T
-    - make () same as delimeter?
-    - and "" same as str?
-    Orange = BOX
-    Red = PTR
-    Magenta = EXT
-
+    * What to use base colors for?
+    * Comments are considered strings
+      * When save/load, use a form: (com blah)
+    * Other possibilities: built-in keywords
+    * Make STR base-01/base-0
+      * Double Quotes and Delimeters base-0 (less noticeable)
+    * Comments are really just strings...
+      * On load: convert to STR
+      * On save: convert to comment
   }#
 
   # Adjust brightness for time
@@ -55,7 +65,6 @@
                ((ext? Any)  *col-magenta)
                ((str? Any)  *col-base-01)
                ((sym? Any)  *col-violet)))))
-
 
 #{
   * Lists/cons are fully expanded, however atoms (num/syms) are condensed

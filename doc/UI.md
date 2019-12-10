@@ -198,50 +198,6 @@ Abstract:
   V         V
   1         NIL
 
-
-(de add (a b)
-  (+ a b))
-
-  A  D    A  D    A  D    A  D
-  |  |    |  |    |  |    |  |
-  ^  >    ^  >    ^  >    ^  NIL
-
-  A  D    A  D    A  D    A  D
-  |  |    |  |    |  |    |  |
- de  V   add V    a  ^    +  ^
-  
-                  A  D    A  D
-                  |  |    |  |
-                  b  NIL  a  ^
-                  
-                          A  D
-                          |  |
-                          b  NIL
-
-
-                              .
-                             / \
-                            .   .
-                               / \
-                              .   .
-                                 / \
-                                .   .
-                                   / \
-                                  .   NIL
-
-
-  (A (B C D (E K P) F (G M)) (H I J) (N O))
-
-
-(let (a b
-      c d
-      e f)
-  T)
-
-  = (let (a b c d e f) T)
-
-  ?
-
 ################################################################################
 
 

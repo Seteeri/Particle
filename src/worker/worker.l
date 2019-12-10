@@ -78,13 +78,13 @@
 
 
 (def '*bindings-key
-    ## Number
-    '(~(let List NIL
-        (for (K ksd~d0 (<= K ksd~d9) (inc K))
-          (push 'List (list (list ksd~Control-L K) T cmd-make-num))
-          (push 'List (list (list ksd~Control-R K) T cmd-make-num)))
-        List)
-    ## Char Strings
+      ## Number
+      '(~(let List NIL
+          (for (K ksd~d0 (<= K ksd~d9) (inc K))
+            (push 'List (list (list ksd~Control-L K) T cmd-make-num))
+            (push 'List (list (list ksd~Control-R K) T cmd-make-num)))
+          List)
+      ## Char Strings
       ~(let List NIL
         (for (K 33 (<= K 255) (inc K))
           (push 'List (list (list K)                     T cmd-make-char))
@@ -93,6 +93,8 @@
         List)
       ((`ksd~Control-L     ksd~Return) T `cmd-make-list)
       ((`ksd~Control-R     ksd~Return) T `cmd-make-list)
+      # Or shift enter
+
       ((`ksd~BackSpace) T `cmd-del)
       ((`ksd~Delete   ) T `cmd-del)
 
@@ -119,19 +121,31 @@
       ((`ksd~Control-L `ksd~y) T '((Keysym) (println "cmd-reverse")))
       ((`ksd~Alt-L     `ksd~y) T '((Keysym) (println "cmd-flip")))
 
+      ((`ksd~Alt-R `ksd~Return)    T cmd-enter-list)
+      ((`ksd~Alt-R `ksd~BackSpace) T cmd-exit-list)
+
       # Pointer Translation
-      ((`ksd~Right)       T `cmd-translate-ptr-px)
-      ((`ksd~Left)        T `cmd-translate-ptr-nx)
-      ((`ksd~Up)          T `cmd-translate-ptr-py)
-      ((`ksd~Down)        T `cmd-translate-ptr-ny)
+      # Make Alt+WASD
+      ((`ksd~Alt-L `ksd~w) T `cmd-translate-ptr-py)
+      ((`ksd~Alt-R `ksd~w) T `cmd-translate-ptr-py)
+
+      ((`ksd~Alt-L `ksd~a) T `cmd-translate-ptr-nx)
+      ((`ksd~Alt-R `ksd~a) T `cmd-translate-ptr-nx)
+
+      ((`ksd~Alt-L `ksd~s) T `cmd-translate-ptr-ny)
+      ((`ksd~Alt-R `ksd~s) T `cmd-translate-ptr-ny)
+
+      ((`ksd~Alt-L `ksd~d) T `cmd-translate-ptr-px)
+      ((`ksd~Alt-R `ksd~d) T `cmd-translate-ptr-px)
 
       # Camera Translation
+      # Make dir
       ((`ksd~Control-L `ksd~Right) T `cmd-move-cam-px)
       ((`ksd~Control-L `ksd~Left)  T `cmd-move-cam-nx)
       ((`ksd~Control-L `ksd~Up)    T `cmd-move-cam-py)
       ((`ksd~Control-L `ksd~Down)  T `cmd-move-cam-ny)
-      ((`ksd~Prior    ) T `cmd-zoom-cam-in)
-      ((`ksd~Next     ) T `cmd-zoom-cam-out)))
+      ((`ksd~Prior    )            T `cmd-zoom-cam-in)
+      ((`ksd~Next     )            T `cmd-zoom-cam-out)))
 
 
 (de init-worker ()
@@ -187,19 +201,19 @@
   # Allocate pointer - use same char as PicoLisp ":"
   # Make pointer a particle also
   (setq *vert-ptr (alloc-vert *col-red ":"))
-    
+
   (let ((X Y) (get *vert-ptr 'pos))
-    (setq *part-ptr 
+    (setq *part-ptr
           (gen-part (list 'PARTICLE '(a b) '(c d))
                     0.0
                     X)))
-    
+
   (setq *lst-ptr *part-ptr)
-  
+
   (adv-ptr)
 
   (prinl-info "init-worker" "Starting epoll...")
-  
+
   (loop (ipc~poll> *ipc -1)))
 
 

@@ -75,10 +75,13 @@
        B
        Verts)
 
-  (=: data Data) # d
+  (=: data Data)
   (=: a A)
   (=: b B)
-  (=: verts Verts)) # v
+  (=: verts Verts)
+  
+  (=: layout NIL)
+  (=: end    NIL))
 
 (dm cons> (B)
   # Cons B unto A (this)

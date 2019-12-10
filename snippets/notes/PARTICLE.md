@@ -161,9 +161,18 @@ Store DAGs as binary trees?
         * We follow indent, poss use rule len list > 12?
     * Integrate with particle [WIP]
     * Handle modifying lists and updating layout of affected code
+      * Dir keys move through atoms or list
+        * L/R: Prev/Next atom
+          * Store prev atom
+        * U/D: Enter/exit list
+          * Store prev list
+      * When typing characters, layout horizontally
+        * If list starts with a string, layout horizontally
+        * Store layout type in the particle          
       * Anything after/below the list must be updated
       * All data belongs to master list so lists should not overlap
       or be in arbitrary places
+      * Store pointers to ends of list to speed up, similar to make/link
     * Use special printing for control characters like enter etc.
       * newline ("^J"), return ("^M") or TAB ("^I")
     * Implement ops
@@ -173,8 +182,12 @@ Store DAGs as binary trees?
       * Print commands by default
         * Extract data from function [Done]
       * Lists
-        * Creation/Deletion
+        * Creation/Deletion [Done]
         * Enter/Exit
+          * Alt+Backspace = Enter list
+          * Alt+Enter = Exit list (move to dot/parent list)
+          * Alt+Up = Enter next list
+          * Alt+Dn = Enter prev list
     * Refactor ptr
     * Batch draw commands
     * Misc refactoring

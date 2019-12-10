@@ -216,9 +216,15 @@ Class variables may be indicated by an upper case letter
       (gl~client-wait *fence)
       (gl~delete-sync *fence))
 
+    #{
+      0.16862745098
+      0.211764705882
+      0.0
+    }#
+
     (gl~clear-color 0.0
-                    0.16862745098
-                    0.211764705882
+                    0.0 
+                    0.0 
                     0.0)
     (gl~clear CLEAR-MASK)
 
