@@ -228,9 +228,9 @@
 
     (while (pair Rem)
 
-      (let Part (if (not (lst? (cdr Rem)))
-                    (gen-pair Rem Depth X-Root)
-                    (gen-part (car Rem) Depth X-Root))
+      (let Part (if (lst? (cdr Rem))
+                    (gen-part (car Rem) Depth X-Root)
+                    (gen-pair Rem Depth X-Root))
         (push 'Out Part)
         (when Prev (cons> Prev Part))
         (setq Prev Part))
@@ -252,9 +252,9 @@
 
     (while (pair Rem)
 
-      (let Part (if (not (lst? (cdr Rem)))
-                    (gen-pair Rem Depth X-Root)
-                    (gen-part (car Rem) Depth X-Root))
+      (let Part (if (lst? (cdr Rem))
+                    (gen-part (car Rem) Depth X-Root)
+                    (gen-pair Rem Depth X-Root))
         (push 'Out Part)
         (when Prev (cons> Prev Part))
         (setq Prev Part))
