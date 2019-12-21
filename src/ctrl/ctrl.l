@@ -163,11 +163,10 @@
     (unless Msg
       (disconn-client *ipc Sock))
 
-    (when (= Name 'KEYBOARD-KEY)
-
-      (update-xkb Data)
-
-      (dispatch-msg (format-msg-ev Data)))))
+    (cond ((= Name 'KEYBOARD-KEY)
+            (update-xkb Data)))
+            
+    (dispatch-msg (format-msg-ev Data))))
 
 
 (de format-msg-ev (Data)

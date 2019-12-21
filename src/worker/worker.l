@@ -208,11 +208,21 @@
   # Make pointer a particle also
   (setq *vert-ptr (alloc-vert *col-red ":"))
 
-  (let ((X Y) (get *vert-ptr 'pos))
+  (let ((X Y) (get *vert-ptr 'pos)
+        List (list 1 
+                   '(a b)
+                   "abc"
+                   (cons 4 5)
+                   (list 6 7 8)
+                   (cons 'c 'd)
+                   (cons (list 1 2 3) (list 4 5 6)))
+        List '(let (a 0 b 1) (+ a b))
+        List '(a b (c d) e))
     (setq *part-ptr
-          (gen-part (list 'PARTICLE '(a b) '(c d))
+          (gen-part List
                     0.0
-                    X)))
+                    (get *vert-ptr 'pos)
+                    gen-pair-x-h)))
 
   (setq *lst-ptr *part-ptr)
 
@@ -260,6 +270,12 @@
 
     (cond ((= Name 'KEYBOARD-KEY)
            (dispatch-kb Data))
+
+          ((or (= Name 'TOUCH-UP)
+               (= Name 'TOUCH-DOWN)
+               (= Name 'TOUCH-FRAME)
+               (= Name 'TOUCH-MOTION))
+           (prinl-info "handle-ctrl" (glue " " Data)))
 
           ((= Name "update-vert")
            (cmd-update-vert *ipc *vert-ptr))

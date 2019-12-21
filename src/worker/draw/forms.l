@@ -4,6 +4,9 @@
   or in this case, lists
 }#
 
+
+(de draw-dot (Adv) (draw-chars (char 183) *col-base-0 Adv))
+
 (de draw-for (List Depth X-Root)  
   (if (sym? (get List 2))
       (draw-for-three List Depth X-Root)

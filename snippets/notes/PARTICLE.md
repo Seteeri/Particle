@@ -160,6 +160,8 @@ Store DAGs as binary trees?
       * Follow pp style?
         * We follow indent, poss use rule len list > 12?
     * Integrate with particle [WIP]
+    * Map keys to grid on screen
+      * User can use keys to manuever
     * Handle modifying lists and updating layout of affected code
       * Dir keys move through atoms or list
         * L/R: Prev/Next atom
