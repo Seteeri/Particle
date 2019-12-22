@@ -40,13 +40,9 @@
 (def '*verts)
 (def '*cnt-v 1)
 
-# Vertices (particle?) for pointer
+# Vertices for pointer; also can be found through part-ptr
 (def '*vert-ptr)
-
-# Not actually a pointer but the data structure itself
 (def '*part-ptr)
-(def '*lst-ptr)
-(def '*lists-ptr)
 
 
 # Wrapper libraries
@@ -216,15 +212,15 @@
                    (list 6 7 8)
                    (cons 'c 'd)
                    (cons (list 1 2 3) (list 4 5 6)))
-        List '(let (a 0 b 1) (+ a b))
-        List '(a b (c d) e))
+        #List '(let (a (+ 1 2) b (+ 3 4)) (+ a b) (- a b) (* a b))
+        #List '(let a (+ 1 2) (* a b))
+        List '(a b c)
+        )
     (setq *part-ptr
           (gen-part List
                     0.0
                     (get *vert-ptr 'pos)
-                    gen-pair-x-h)))
-
-  (setq *lst-ptr *part-ptr)
+                    gen-pair-y-h)))
 
   (adv-ptr)
 

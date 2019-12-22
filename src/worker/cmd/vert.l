@@ -73,20 +73,62 @@ Data (list 1
     #      ((= Keysym ksd~Tab)    (adv-ptr 2.0)))
 }#
 
+
 (de cmd-make-char (Keysym)
 
   # Enter/Newline should produce character and move pointer
 
-  # Before drawing, align pointer to head of car of list
+  (let (Data (cond ((= Keysym ksd~space) " ")
+                  ((= Keysym ksd~Return) (char 10))
+                  (T (char Keysym)))
+        List-Data (list Data))
+                   
+    (with *part-ptr
+    
+      # Remove NIL particle
+      # - Traverse *part-ptr (current list) to get last particle
+      #   or store ref to last cdr in particle
+      (let C (: b)
+        (while C
+          (println C (get C 'data) (get C 'a) (get C 'b))
+          (setq C (get C 'b))
+          (call 'sleep 2)))
+
+      # Gen part for data
+      (let Part (gen-pair-y-h List-Data
+                              0.0
+                              (get *vert-ptr 'pos)
+                              gen-pair-y-h
+                              NIL NIL)
+        
+        # Connect part
+        # - Get last item in List
+        # - Set its B/CDR to new part
+                              
+        Part)
+    
+      # Append data (or use conc?)
+      (=: data (append (: data) List-Data))
+      (println (: data)))))
+
+
+(de cmd-make-char-2 (Keysym)
+
+  # Enter/Newline should produce character and move pointer
 
   (let ((X Y) (copy (get *vert-ptr 'pos)))
 
     (let (Data (cond ((= Keysym ksd~space) " ")
                      ((= Keysym ksd~Return) (char 10))
                      (T (char Keysym)))
-          #Data (cons 'de 'draw-any draw-any)
           Part (let ((X Y) (get *vert-ptr 'pos))
                   (gen-part Data 0.0 X)))
+
+      # Before drawing, align pointer to head of car of list
+      
+      # Gen particle
+      # Push/cons particle to ptr
+      #   Draw cons
 
       #(view (getl *part-ptr))
       

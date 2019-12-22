@@ -137,15 +137,22 @@
       (del-particle P))))
 
 
-(de gen-part (Any Depth Root Layout)
+(de gen-part (Any Depth Root Layout Car Cdr)
   # TODO:
-  # Handle circular lists
-  # Pass layout
+  # Handle circular lists - done?
   # Add hooks for special layout depending on car of list
+  
+  # Maybe layout particles after gen?
+  
+  # Root is supposed to be root position of parent list
   
   (if (pair Any)
       (if (lst? (cdr Any))
-          (Layout Any Depth (get *vert-ptr 'pos) Layout)
+          # Specific forms override layout
+          (cond ((= (car Any) 'let)
+                 (gen-let Any Depth (get *vert-ptr 'pos) Layout))
+                (T
+                 (Layout Any Depth (get *vert-ptr 'pos) Layout)))
           (Layout Any Depth (get *vert-ptr 'pos) Layout))
       (gen-atom Any T)))
 
@@ -197,20 +204,21 @@
   
 }#
 
+
 (de draw-cons-x (Ar Dr Ptr-Ar Ptr-Dr)
   (let (Vert-Ar (if (num? Ar)
                     (draw-chars (format Ar) (get-color-type Ar) T)
-                    (draw-chars Ptr-Ar *col-base-0 T)) # (char 187)
+                    (draw-chars "[" *col-base-0 T)) # (char 187)
         Dot   (if (num? Dr)
                   (draw-chars (char 183) (get-color-type Any) T)
                   (draw-dot T))
         Vert-Dr (if (num? Dr)
                     (draw-chars (format Dr) (get-color-type Dr) T)
-                    (draw-chars Ptr-Dr *col-base-0 T))) # (char 166)
+                    (draw-chars "]" *col-base-0 T))) # (char 166)
     (list Vert-Ar Dot Vert-Dr)))
 
 
-(de gen-pair-x-h (Any Depth Root Layout)
+(de gen-pair-x-h (Any Depth Root Layout Car Cdr)
 
   # Draw-cons
   # Draw-ptrs
@@ -226,13 +234,15 @@
     (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr Tail-Ar Tail-Dr)
           X-Cdr (get (get *vert-ptr 'pos) 1)
           
-          Pa-Ar (unless (num? Ar)
+          Pa-Ar (when (and (not (num? Ar))
+                           (not Car))
                   # Move underneath
                   (nl-ptr)
                   (set-x-ptr-2 X)
                   (gen-part Ar Depth Root gen-pair-x-h))
 
-          Pa-Dr (unless (num? Dr)
+          Pa-Dr (when (and (not (num? Dr))
+                           (not Cdr))
                   # If cursor short then must adv
                   (when (<= (get (get *vert-ptr 'pos) 1) X-Cdr)
                     (set-x-ptr-2 X-Cdr))
@@ -246,7 +256,7 @@
            (append Vert-Ar Dot Vert-Dr)))))
            
 
-(de gen-pair-y-h (Any Depth Root Layout)
+(de gen-pair-y-h (Any Depth Root Layout Car Cdr)
 
   # TODO:
   # Offset cells properly
@@ -261,9 +271,11 @@
 
     (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr Tail-Ar Tail-Dr)
           Dummy (adv-ptr)
-          Pa-Ar (unless (num? Ar)
+          Pa-Ar (when (and (not (num? Ar))
+                           (not Car))
                   (gen-part Ar Depth Root gen-pair-y-h))
-          Pa-Dr (unless (num? Dr)
+          Pa-Dr (when (and (not (num? Dr))
+                           (not Cdr))
                   # For cons pair, use colored dot
                   # Position under like a list
                   (set-x-ptr-2 X)
@@ -276,20 +288,70 @@
            (append Vert-Ar Dot Vert-Dr)))))
 
 
-################################################################################
-################################################################################
+(de gen-let (List Depth Root Layout)
+  
+  # Must determine width of local vars for prg
+  
+  (Layout List Depth (get *vert-ptr 'pos) Layout NIL T)
+  
+  (adv-ptr)
+
+  # Manually link above to below
+
+  (gen-let-list (if (lst? (get List 2))
+                    (nth List 2)
+                    (cdr List))
+                Depth
+                Root
+                Layout)
+  
+  (set-x-ptr-2 (car Root))
+  (nl-ptr)
+  
+  # Manually link above to below
+  
+  (gen-pair-y-h (if (lst? (get List 2))
+                    (nth List 3)
+                    (nth List 4))
+                Depth
+                (get *vert-ptr 'pos)
+                gen-pair-y-h))
 
 
-(de gen-list-row (List Depth X-Root)
+(de gen-let-list (List Depth Root Layout)
 
+  # Generate two at a time
+  # Pass option to limit gen-any search depth?
+
+  (Layout List Depth (get *vert-ptr 'pos) Layout T T)
+  
   (let ((X Y) (get *vert-ptr 'pos)
-        Parts (flip (gen-list-x Any Depth X Y)))
+        R (car List))
 
-    (new '(+Particle)
-         Any
-         Parts
-         NIL      # Caller sets
-         NIL)))
+    (while R
+
+      (setq A (car R)
+            B (cadr R))
+
+      (let D (+ Depth 1.0)
+        (Layout R Depth (get *vert-ptr 'pos) Layout NIL T)
+        (adv-ptr)
+        (Layout (cdr R) Depth (get *vert-ptr 'pos) Layout NIL (when (cddr R) T)))
+
+      (when (setq R (cddr R))
+        (nl-ptr)
+        (set-x-ptr-2 X)))))
+
+
+(de gen-let-var (List Depth Root Layout)
+
+  (Layout List Depth (get *vert-ptr 'pos) Layout NIL T)
+  (adv-ptr)
+  (Layout (cdr List) Depth (get *vert-ptr 'pos) Layout NIL T))
+
+
+################################################################################
+################################################################################
 
 
 (de gen-list-col2 (List Depth X-Root Y-Root)
@@ -326,104 +388,6 @@
           (setq Out (append Parts Out)))))
 
     (flip Out)))
-
-
-(de gen-list-y (List Depth X-Root Y-Root)
-
-  #{
-
-  (c (a b))
-                     [b|*]    [c|*]
-                       |        |
-          [a|*]      [.|.] -> [.|.] -> NIL   [d|*]
-            |        |                         |
-  Abst:   [.|.]  ->  [.|.] ----------------> [.|.] -> NIL
-
-  Draw vertically since people used to scrolling...
-
-  Default method is to draw lists cons
-
-  Poss to further expand bignums and symbols, etc
-
-  }#
-
-  # Can this be replaced with gen-cons?
-
-  (let (Rem List
-        Out ()
-        Prev NIL)
-
-    (while (pair Rem) # or just while Rem?
-
-      # Refactor draw-chars to take a number instead of T
-      
-      # Refactor below into draw-pair...
-
-      # (gen-pair Rem Depth X-Root Y-Root)
-
-      (let (Ar (car Rem)
-            Dr (cdr Rem)
-            Ptr (>> -4 (adr Rem))
-            (Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
-            Tail-Ar (pack (tail 4 (chop (bin Ptr-Ar))))
-            Tail-Dr (pack (tail 4 (chop (bin Ptr-Dr)))))
-
-        (println Ar Dr)
-
-        # Generate particle for cons cell
-
-        #{
-        (1 '(a b) 3)
-
-        1.#
-        #.#    #.#   a.*
-               #.#   b.*
-        3.#
-        }#
-
-        (let (Pa-Ar (if (num? Ar)
-                        (draw-chars (format Ar) (get-color-type Ar) T)
-                        (draw-chars Tail-Ar *col-base-0 T))
-              Dot   (draw-dot T)
-              Pa-Dr (if (num? Dr)
-                        (draw-chars (format Dr) (get-color-type Dr) T)
-                        (draw-chars Tail-Dr *col-base-0 T)))
-
-          (adv-ptr)
-          
-          (new '(+Particle)
-               Rem
-               (unless (num? Ar) (gen-part Ar Depth X-Root))
-               NIL # Fill only for bignums
-               (append Pa-Ar Dot Pa-Dr)))
-
-        (when (setq Rem Dr)
-          (set-x-ptr-2 X-Root)
-          (nl-ptr))))
-
-    Out))
-
-
-(de gen-list-x (List Depth X-Root Y-Root)
-
-  (let (Rem List
-        Out ()
-        Prev NIL)
-
-    (while (pair Rem)
-
-      (let Part (if (lst? (cdr Rem))
-                    (gen-part (car Rem) Depth X-Root)
-                    (gen-pair Rem Depth X-Root))
-        (push 'Out Part)
-        (when Prev (cons> Prev Part))
-        (setq Prev Part))
-
-      (when (setq Rem (cdr Rem))
-        (set-y-ptr-2 Y-Root)
-        (adv-ptr)))
-
-    Out))
 
 
 (de gen-list-line (List Depth X-Root Y-Root)

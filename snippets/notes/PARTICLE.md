@@ -159,9 +159,11 @@ Store DAGs as binary trees?
       * Create draw interface where a matrix can be specified?
       * Follow pp style?
         * We follow indent, poss use rule len list > 12?
-    * Integrate with particle [WIP]
-    * Map keys to grid on screen
-      * User can use keys to manuever
+    * Integrate with particle [Done]
+    * Handle same pointers
+      * Store pointer in a map
+      * If particle exists, leave CAR/CDR empty, show only PTR
+      * Poss reference the value from the map (so first ref will be used)
     * Handle modifying lists and updating layout of affected code
       * Dir keys move through atoms or list
         * L/R: Prev/Next atom
@@ -194,6 +196,8 @@ Store DAGs as binary trees?
     * Batch draw commands
     * Misc refactoring
 
+  * Map keys to grid on screen
+    * User can use keys to manuever
 
   * Rename namespace gl -> gles
 

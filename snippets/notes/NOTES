@@ -2395,3 +2395,38 @@ for empty list/NIL
 Read macros ony apply to strings?
 
 http://pages.cs.wisc.edu/~psilord/blog/28.html
+
+#{
+
+  Default to X layout because of strings
+  - Can we mix layouts? Will it confuse the user?
+  
+  CAR can be either dir; top-bottom, left-right
+  
+  Place dot middle when vertical?
+  -> No, destroys grid layout
+  
+  X:
+
+    CAR·CDR -> CAR·CDR -> NIL
+    |          |
+    1          2
+
+  Y:
+  
+    CAR·CDR - 1
+        |
+    +---+
+    |
+    CAR·CDR - 2
+        |
+    +---+
+    |
+    NIL
+    
+  Finally layouts can be defined for specific forms, e.g. let, if, cond, etc.
+  
+}#
+
+cryptorick
+KVMap.l
