@@ -112,12 +112,34 @@
   (=: layout NIL)
   (=: end    NIL))
 
+
 (dm cons> (B)
   # Cons B unto A (this)
   (=: b B))
 
 
-(de del-particle (Part)
+(dm last-part> ()
+  # Make nth version also:
+  # (nth> *part-ptr 1)
+  (let Last (: b)
+    (loop
+      #(with Last (println Last (: data) (: a) (: b)))
+      (NIL (get (get Last 'b) 'data))
+      (setq Last (get Last 'b)))
+    # Should return itself?
+    Last))
+
+
+(dm last-part-2> ()
+  (let Last (: b)
+    (loop
+      (with Last (println Last (: data) (: a) (: b)))
+      (NIL (get (get (get Last 'b) 'b) 'data))
+      (setq Last (get Last 'b)))
+    Last))
+
+
+(de del-particle (Part Car Cdr)
 
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
         Verts (get Part 'verts))
@@ -129,12 +151,14 @@
       (dec '*cnt-v))
 
     # Push ptr back n vertices
-    (adv-ptr (num-to-fl (- (length Verts)))))
-
-  # If it is a list, must go through data
-  (when (pair (get Part 'data))
-    (for P (get Part 'a)
-      (del-particle P))))
+    #(adv-ptr (num-to-fl (- (length Verts))))
+    )
+    
+  (with Part
+    (when (and Car (: a))
+      (del-particle (: a) Car Cdr))
+    (when (and Cdr (: b))
+      (del-particle (: b) Car Cdr))))
 
 
 (de gen-part (Any Depth Root Layout Car Cdr)

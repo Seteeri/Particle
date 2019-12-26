@@ -9,7 +9,7 @@
 (de last-ptr ()
   (with *part-ptr
     (last (: a))))
-    
+
 
 # Head
 (de push-ptr (Part)
@@ -33,7 +33,7 @@
         (prog
           (=: data (cons (get Part 'data)))
           (=: a (cons Part)))))))
-    
+
 
 (de pop-ptr ()
 
@@ -82,115 +82,153 @@ Data (list 1
                   ((= Keysym ksd~Return) (char 10))
                   (T (char Keysym)))
         List-Data (list Data))
-                   
-    (with *part-ptr
-    
-      # Remove NIL particle
-      # - Traverse *part-ptr (current list) to get last particle
-      #   or store ref to last cdr in particle
-      (let C (: b)
-        (while C
-          (println C (get C 'data) (get C 'a) (get C 'b))
-          (setq C (get C 'b))
-          (call 'sleep 2)))
 
-      # Gen part for data
-      (let Part (gen-pair-y-h List-Data
-                              0.0
-                              (get *vert-ptr 'pos)
-                              gen-pair-y-h
-                              NIL NIL)
-        
-        # Connect part
-        # - Get last item in List
-        # - Set its B/CDR to new part
-                              
-        Part)
-    
-      # Append data (or use conc?)
-      (=: data (append (: data) List-Data))
-      (println (: data)))))
+    (println "PART-PTR" *part-ptr (get *part-ptr 'data) (get *part-ptr 'a) (get *part-ptr 'b))
 
+    (if (get *part-ptr 'data)
 
-(de cmd-make-char-2 (Keysym)
+      (prog
 
-  # Enter/Newline should produce character and move pointer
+        # Will return NIL also
+        (let Last (last-part> *part-ptr)
 
-  (let ((X Y) (copy (get *vert-ptr 'pos)))
+          (println "LAST" Last (get Last 'data) (get Last 'a) (get Last 'b))
 
-    (let (Data (cond ((= Keysym ksd~space) " ")
-                     ((= Keysym ksd~Return) (char 10))
-                     (T (char Keysym)))
-          Part (let ((X Y) (get *vert-ptr 'pos))
-                  (gen-part Data 0.0 X)))
+          (unless (get Last 'data)
+            (setq Last *part-ptr))
 
-      # Before drawing, align pointer to head of car of list
-      
-      # Gen particle
-      # Push/cons particle to ptr
-      #   Draw cons
+          # Position at last
+          (let (Vert (car (get Last 'verts))
+                Pos (get Vert 'pos)
+                Ori (get-origin> (get *metrics (get Vert 'chr)) Pos *sca-vert))
+            (set-x-ptr-2 (get Ori 1))
+            (set-y-ptr-2 (get Ori 2))
+            (update-model-matrix> *vert-ptr)
+            (cmd-update-vert *ipc *vert-ptr))
 
-      #(view (getl *part-ptr))
-      
-      (conc-ptr Part)
+          (nl-ptr)
 
-      (with *part-ptr
-        (println (: a)))
+          # Remove NIL particle
+          (del-particle (get Last 'b))
 
-      (adv-ptr)
+          # Gen part for data
+          (let Part (gen-pair-y-h List-Data
+                                  0.0
+                                  (get *vert-ptr 'pos)
+                                  gen-pair-y-h
+                                  NIL NIL)
 
-      (when NIL
-        (set-x-ptr-2 X)
-        (set-y-ptr-2 Y)
-        (update-model-matrix> *vert-ptr)
-        (cmd-update-vert *ipc *vert-ptr))
+            # Connect to last part
+            (with Last (=: b Part))))
 
-      )))
+        # Append data (or use conc?)
+        (with *part-ptr
+          (=: data (conc (: data) List-Data))))
+
+      # else replace particle
+      (prog
+
+        # Position at particle
+        (let (Vert (car (get *part-ptr 'verts))
+              Pos (get Vert 'pos)
+              Ori (get-origin> (get *metrics (get Vert 'chr)) Pos *sca-vert))
+          (set-x-ptr-2 (get Ori 1))
+          (set-y-ptr-2 (get Ori 2))
+          (update-model-matrix> *vert-ptr)
+          (cmd-update-vert *ipc *vert-ptr))
+
+        (del-particle *part-ptr T T)
+
+        # Gen part for data
+        (setq *part-ptr (gen-pair-y-h List-Data
+                                      0.0
+                                      (get *vert-ptr 'pos)
+                                      gen-pair-y-h
+                                      NIL NIL))
+
+        T))))
 
 
 (de cmd-del (Dir)
 
   (prinl-info "cmd-del")
 
-  # Currently, render will attempt to render all verts (*max-verts)
-  # -> Send cmd to render to adjust max
-  # - instanceCount is number of instances from beginning of array
-  # *verts is LIFO, thus will always keep instances pack from beginning of array
-  # -> Maintain vert cnt, instanceCount = size - used
-  #
-  # However, if del from arbitrary point then must zero it and instanceCount
-  # remains the same
-  # After del, vert returns to queue, and next vert will reuse it
-  #
-  # Makes most sense to simply zero vert, and not worry about instanceCount as
-  # frag will be discarded...fix later
+  #{
+    Currently, render will attempt to render all verts (*max-verts)
+    -> Send cmd to render to adjust max
+    - instanceCount is number of instances from beginning of array
+    *verts is LIFO, thus will always keep instances pack from beginning of array
+    -> Maintain vert cnt, instanceCount = size - used
 
-  # Process:
-  # 1. Pop Part from timeline/ptr
-  # 2. For Verts: send zero-vert cmd to render
-  # 3. For Verts: push Verts
+    However, if del from arbitrary point then must zero it and instanceCount
+    remains the same
+    After del, vert returns to queue, and next vert will reuse it
 
-  # MODIFY COUNTER ALSO
+    Makes most sense to simply zero vert, and not worry about instanceCount as
+    frag will be discarded...fix later
+  }#
 
-  #####################
+  (when (get *part-ptr 'data)
 
-  # Always assumed *part-ptr is a particle with a list - root particle
-  # or call it god particle ;)
+    (let (L ()
+          #D ()
+          X *part-ptr)
 
-  (with *part-ptr
-    (let? Part (last (: a))
-      (=: a (head -1 (: a)))
-      (=: data (head -1 (: data)))
-            
-      (del-particle Part)
-      (with (car (get Part 'verts))
-        (set-x-ptr-2 (get (: pos) 1)))
-        #(set-y-ptr-2 (get (: pos) 2))
-      (update-model-matrix> *vert-ptr)
-      (cmd-update-vert *ipc *vert-ptr))))
+      (loop
+        (push 'L X)
+        #(push 'D (get X 'data))
+        # If CDR is NIL, end of list
+        (NIL (get X 'b))
+        (setq X (get X 'b)))
 
+      # Poss cache L?
 
-#########################
+      #{
+        If list becomes empty, then it simply becomes NIL:
+
+          Particle:
+          data = (a b)
+          a = Particle:a
+          b = Particle:(b)
+
+          ->
+
+          Particle:
+          data = NIL
+          a = NIL
+          b = NIL
+      }#
+
+      # Position pointer at start of cadr
+      (when (cadr L)
+        (let (Vert (car (get (cadr L) 'verts))
+              Ori (get-origin> (get *metrics (get Vert 'chr))
+                               (get Vert 'pos)
+                               *sca-vert))
+          (set-x-ptr-2 (get Ori 1))
+          (set-y-ptr-2 (get Ori 2))
+          (update-model-matrix> *vert-ptr)
+          (cmd-update-vert *ipc *vert-ptr)))
+
+      # Delete last particle, incl. NIL
+      (del-particle (car L) T T)
+
+      (println L)
+
+      (if (cdr L)
+
+          (prog
+
+            # Modify CDR of second to last particle
+            (with (cadr L) (=: b NIL)))
+
+          (prog
+
+            # Replace *part-ptr with NIL particle
+            (setq *part-ptr (gen-part NIL
+                                      0.0
+                                      (get *vert-ptr 'pos)
+                                      gen-pair-y-h)))))))
 
 
 (de cmd-make-num (Keysym)

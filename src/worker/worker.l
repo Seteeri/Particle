@@ -214,7 +214,7 @@
                    (cons (list 1 2 3) (list 4 5 6)))
         #List '(let (a (+ 1 2) b (+ 3 4)) (+ a b) (- a b) (* a b))
         #List '(let a (+ 1 2) (* a b))
-        List '(a b c)
+        List '(a b c d)
         )
     (setq *part-ptr
           (gen-part List

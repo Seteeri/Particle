@@ -160,41 +160,44 @@ Store DAGs as binary trees?
       * Follow pp style?
         * We follow indent, poss use rule len list > 12?
     * Integrate with particle [Done]
-    * Handle same pointers
-      * Store pointer in a map
-      * If particle exists, leave CAR/CDR empty, show only PTR
-      * Poss reference the value from the map (so first ref will be used)
-    * Handle modifying lists and updating layout of affected code
-      * Dir keys move through atoms or list
-        * L/R: Prev/Next atom
-          * Store prev atom
-        * U/D: Enter/exit list
-          * Store prev list
-      * When typing characters, layout horizontally
-        * If list starts with a string, layout horizontally
-        * Store layout type in the particle          
-      * Anything after/below the list must be updated
-      * All data belongs to master list so lists should not overlap
-      or be in arbitrary places
-      * Store pointers to ends of list to speed up, similar to make/link
+    * Handle modifying lists and layout [WIP]
+      * Append item [Done]
+      * Remove item
+      * Select item
+        * Ptr is a particle symbol whose value is whatever the user wants
+          * Default = master list
+        * Part-ptr contains master list particle
+          * Rename part-ptr to master-part so part-ptr contains the ptr
+          particle
+        * Moving through a list is equivalent to setting ptr value to
+        nth prev/next or car/cdr, such as pointing to a list or the value
+        * As user moves, ptr changes are stored in history
+      * Creation/Deletion
+      * Enter/Exit
+        * Alt+Backspace = Enter list
+        * Alt+Enter = Exit list (move to dot/parent list)
+        * Alt+Up = Enter next list
+        * Alt+Dn = Enter prev list
+
     * Use special printing for control characters like enter etc.
       * newline ("^J"), return ("^M") or TAB ("^I")
-    * Implement ops
-      * Relayout
-        * (col n) - n=number of items before row on last item
-        * (row n) - n=number of items before col on last item    
+    * Relayout
+      * (col n) - n=number of items before row on last item
+      * (row n) - n=number of items before col on last item    
       * Print commands by default
-        * Extract data from function [Done]
-      * Lists
-        * Creation/Deletion [Done]
-        * Enter/Exit
-          * Alt+Backspace = Enter list
-          * Alt+Enter = Exit list (move to dot/parent list)
-          * Alt+Up = Enter next list
-          * Alt+Dn = Enter prev list
     * Refactor ptr
     * Batch draw commands
     * Misc refactoring
+
+  * Data structures
+    * Implement spatial map
+      * Will be interesting to see data structure
+    * Implement particle map
+      * Poss unneedlessly pollute symbol table...or use namespaces to manage?
+      * Handle same pointers
+        * Store pointer in a map
+        * If particle exists, leave CAR/CDR empty, show only PTR
+        * Poss reference the value from the map (so first ref will be used)      
 
   * Map keys to grid on screen
     * User can use keys to manuever

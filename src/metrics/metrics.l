@@ -12,6 +12,34 @@ Quotient of N and D = (*/ 1.0 N D)
 -> 69388
 }#
 
+# TODO: Move these out to caller
+
+(de load-file-metrics-data (Code)
+
+  (let Path-Glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l")
+
+    #(prinl (usec) " | MODEL | load-file-metrics-data | " Code "-metrics.l ...")
+    (eval (any (in Path-Glyph (till NIL T))))))
+
+
+(de load-metrics (Sca-Glyph)
+
+  (let Metrics ()
+
+    (for Code 255
+
+      #Format path name, read file/code, eval data -> list of data
+      (let (Data          (load-file-metrics-data Code)
+            Metrics-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
+
+        (when (get Metrics-Glyph 'bounds)
+          (calc-metrics> Metrics-Glyph Sca-Glyph))
+
+        (push 'Metrics Metrics-Glyph)))
+
+    (flip Metrics)))
+
+
 #Range
 #Advance
 #Scale
@@ -42,32 +70,6 @@ Quotient of N and D = (*/ 1.0 N D)
 #Calculate other params and save to file so need not do everytime
 
 
-(de load-file-metrics-data (Code)
-
-  (let Path-Glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l")
-  
-    #(prinl (usec) " | MODEL | load-file-metrics-data | " Code "-metrics.l ...")
-    (eval (any (in Path-Glyph (till NIL T))))))
-
-
-(de load-metrics (Sca-Glyph)
-
-  (let Metrics ()
-
-    (for Code 255
-
-      #Format path name, read file/code, eval data -> list of data
-      (let (Data          (load-file-metrics-data Code)
-            Metrics-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
-
-        (when (get Metrics-Glyph 'bounds)
-          (calc-metrics> Metrics-Glyph Sca-Glyph))
-
-        (push 'Metrics Metrics-Glyph)))
-
-    (flip Metrics)))
-
-
 (dm calc-metrics> (Sca-Glyph)
 
     # Convert bounds from shape units to pixel units by multiplying by scale
@@ -76,20 +78,20 @@ Quotient of N and D = (*/ 1.0 N D)
                      (*/ (get (: bounds) 2) Sca-Glyph 1.0)
                      (*/ (get (: bounds) 3) Sca-Glyph 1.0)
                      (*/ (get (: bounds) 4) Sca-Glyph 1.0)))
-    
+
     # Calculate bounding box for glyph (for drawing the texture)
-    # l b r t    
+    # l b r t
     # First, get the origin which may have been moved to create enough space
     # for distance field, then add bounds
     (=: bounds-tex (list (+ (*/ (get (: translate) 1) Sca-Glyph 1.0) (get (: bounds) 1))
                          (+ (*/ (get (: translate) 2) Sca-Glyph 1.0) (get (: bounds) 2))
                          (+ (*/ (get (: translate) 1) Sca-Glyph 1.0) (get (: bounds) 3))
                          (+ (*/ (get (: translate) 2) Sca-Glyph 1.0) (get (: bounds) 4))))
-    
+
     # Dims of bbox
     (=: dims (list (- (get (: bounds-tex) 3) (get (: bounds-tex) 1))
                    (- (get (: bounds-tex) 4) (get (: bounds-tex) 2))))
-        
+
     # AR of bbox
     (=: ratio-aspect (/ (get (: dims) 1)
                         (get (: dims) 2)))
@@ -100,7 +102,7 @@ Quotient of N and D = (*/ 1.0 N D)
     # baseline.x - bounds.l
     # baseline.y - bounds.b
     # baseline.x + bounds.r
-    # baseline.y + bounds.t        
+    # baseline.y + bounds.t
     (=: uv (list (*/ 1.0 (get (: bounds-tex) 3) 96.0)
                  (*/ 1.0 (get (: bounds-tex) 4) 96.0)
                  0.0
@@ -120,34 +122,38 @@ Quotient of N and D = (*/ 1.0 N D)
 
 
 (dm get-pos> (Pos Sca)
-  # Glyph has been cropped to its bbox so adjust vertex by bounds
-  # For example, 'g' hangs below baseline, its bottom bounds is negative so
-  # adding to the y pos will shift it downward moving it into proper pos
-  #
-  # Thus baseline can be derived by substracting the glyph bounds from the pos
-  
+  #{
+    Glyph has been cropped to its bbox so adjust vertex by bounds
+    
+    For example, 'g' hangs below baseline, its bottom bounds is negative so
+    adding to the y pos will shift glyph downward into proper pos
+    
+    Thus, baseline can be derived by substracting the glyph bounds from the pos
+  }#
+
   (list (+ (get Pos 1) (*/ (get (: bounds) 1) Sca 1.0))
         (+ (get Pos 2) (*/ (get (: bounds) 2) Sca 1.0))
         0.0))
 
 
-(dm get-origin> (Pos)
+(dm get-origin> (Pos Sca)
   #{
-  # Derive origin from Vertex position
-  # get-baseline should have been applied
+    Derive origin from Vertex position
+    
+    get-baseline should have been applied
   }#
-  
-  (list (+ (get Pos 1) (- (*/ (get (: bounds) 0) Sca 1.0)))
-        (+ (get Pos 2) (- (*/ (get (: bounds) 1) Sca 1.0)))
+
+  (list (+ (get Pos 1) (- (*/ (get (: bounds) 1) Sca 1.0)))
+        (+ (get Pos 2) (- (*/ (get (: bounds) 2) Sca 1.0)))
         0.0))
 
 
 (dm get-sca> (Sca)
   # Dims already scaled by sca-glyph
-  
-  #(println (format (*/ (get (: dims) 1) Sca 1.0) *Scl) 
+
+  #(println (format (*/ (get (: dims) 1) Sca 1.0) *Scl)
   #         (format (*/ (*/ *adv-glyph *sca-glyph 1.0) Sca 1.0) *Scl))
-  
+
   (list (*/ (get (: dims) 1) Sca 1.0)
         (*/ (get (: dims) 2) Sca 1.0)
         0.0))

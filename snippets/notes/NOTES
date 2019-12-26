@@ -2430,3 +2430,15 @@ http://pages.cs.wisc.edu/~psilord/blog/28.html
 
 cryptorick
 KVMap.l
+
+
+      * Dir keys move through atoms or list
+        * L/R: Prev/Next atom
+        * U/D: Enter/exit list
+      * When typing characters, layout horizontally
+        * If list starts with a string, layout horizontally
+        * Store layout type in the particle
+      * Anything after/below the list must be updated
+      * All data belongs to master list so lists should not overlap
+      or be in arbitrary places
+      * Store pointers to ends of list to speed up, similar to make/link
