@@ -40,9 +40,11 @@
 (def '*verts)
 (def '*cnt-v 1)
 
+(def '*part-root)
+
+(def '*ptr-part)
 # Vertices for pointer; also can be found through part-ptr
 (def '*vert-ptr)
-(def '*part-ptr)
 
 
 # Wrapper libraries
@@ -214,13 +216,13 @@
                    (cons (list 1 2 3) (list 4 5 6)))
         #List '(let (a (+ 1 2) b (+ 3 4)) (+ a b) (- a b) (* a b))
         #List '(let a (+ 1 2) (* a b))
-        List '(a b c d)
+        List '(a b c)
         )
-    (setq *part-ptr
+    (setq *part-root
           (gen-part List
                     0.0
                     (get *vert-ptr 'pos)
-                    gen-pair-y-h)))
+                    gen-pair-x-h)))
 
   (adv-ptr)
 

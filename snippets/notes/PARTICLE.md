@@ -162,7 +162,26 @@ Store DAGs as binary trees?
     * Integrate with particle [Done]
     * Handle modifying lists and layout [WIP]
       * Append item [Done]
-      * Remove item
+      * Remove item [Done]
+        * Skip removing NIL at end of list since it would still point to NIL
+      * TMRW:
+        * Refactor pointer to be a particle/symbol whose CAR is the tgt
+        * Create list
+        * Enter/exit list
+        * Brainstorm
+          * If at end (@NIL) or NIL, append
+          * If middle, 3 options:
+            * Add after - default? makes most sense...
+              * Could also be seen as replacing NIL
+              * Or default is replacing CDR with list
+              * In middle, like replacing its CDR
+                * Breaks list unless CDR is connected
+                * (con (nth n) (new)) to change CDR
+                * (con (new) (nth n+1))
+            * Replace
+              * If user wants to add after or before, must manipulate list
+            * Create list - should be done explicitly by adding NIL
+            * Add before - ?
       * Select item
         * Ptr is a particle symbol whose value is whatever the user wants
           * Default = master list
@@ -190,8 +209,9 @@ Store DAGs as binary trees?
     * Misc refactoring
 
   * Data structures
-    * Implement spatial map
-      * Will be interesting to see data structure
+    * Implement spatial map (R-Tree)
+      * Will be interesting to see data structure...
+      * Need this to optimize finding bounds
     * Implement particle map
       * Poss unneedlessly pollute symbol table...or use namespaces to manage?
       * Handle same pointers

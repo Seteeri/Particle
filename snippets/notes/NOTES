@@ -2442,3 +2442,18 @@ KVMap.l
       * All data belongs to master list so lists should not overlap
       or be in arbitrary places
       * Store pointers to ends of list to speed up, similar to make/link
+
+
+ a        b        c
+[.|.] -> [.|.] -> [.|.] -> NIL
+
+ a        b        X        c
+[.|.] -> [.|.] -> [.|.] -> [.|.] -> NIL
+
+(conc (a b) (x) (c ...))
+
+Must break B-C by modifying the nth's CDR
+
+Con will modify first cell of lst's CDR to point to Any
+
+So append is like (con (nth <last>) (""))

@@ -1,76 +1,6 @@
-# Methods of ptr
-# Need not implement other commands
-
-(de car-ptr ()
-  (with *part-ptr
-    (car (: a))))
-
-
-(de last-ptr ()
-  (with *part-ptr
-    (last (: a))))
-
-
-# Head
-(de push-ptr (Part)
-  (with *part-ptr
-    (push (:: data) (get Part 'data))
-    (push (:: a) Part))
-    # Connect first item to head
-    (cons> Part (cadr (: a))))
-
-
-# Tail
-(de conc-ptr (Part)
-  (with *part-ptr
-    (let Last-A (last (: a))
-      (if Last-A
-        (prog
-          (conc (: data) (cons (get Part 'data)))
-          (conc (: a) (cons Part))
-          # Connect last item to tail
-          (cons> Last-A Part))
-        (prog
-          (=: data (cons (get Part 'data)))
-          (=: a (cons Part)))))))
-
-
-(de pop-ptr ()
-
-  (let Item (get *lst-ptr 'next)
-
-    (with *lst-ptr
-
-      # Pop actual data
-      (pop (:: data))
-
-      # Set list next to next's next Particle
-      (=: next (get Item 'next)))
-
-    Item))
-
-
-##########################
-
 #{
-Data (list 1
-           (list 2 6 7 8)
-           3
-           (list 4 (list 9 12))
-           (list 5 10 11))
-Data (list 1
-           (list 2 3 (list 4) 5)
-           (list 6 (list 7 (list 8))))
-Data (list 1
-           (list 2 3 4)
-           (list 5 6 7)
-           8
-           (list 9 (list 10 (list 11))))
-
-    #(push-ptr Part)
-
-    #(cond ((= Keysym ksd~Return) (nl-ptr))
-    #      ((= Keysym ksd~Tab)    (adv-ptr 2.0)))
+(cond ((= Keysym ksd~Return) (nl-ptr))
+      ((= Keysym ksd~Tab)    (adv-ptr 2.0)))
 }#
 
 
@@ -83,19 +13,19 @@ Data (list 1
                   (T (char Keysym)))
         List-Data (list Data))
 
-    (println "PART-PTR" *part-ptr (get *part-ptr 'data) (get *part-ptr 'a) (get *part-ptr 'b))
+    (println "PART-PTR" *part-root (get *part-root 'data) (get *part-root 'a) (get *part-root 'b))
 
-    (if (get *part-ptr 'data)
+    (if (get *part-root 'data)
 
       (prog
 
         # Will return NIL also
-        (let Last (last-part> *part-ptr)
+        (let Last (last-part> *part-root)
 
           (println "LAST" Last (get Last 'data) (get Last 'a) (get Last 'b))
 
           (unless (get Last 'data)
-            (setq Last *part-ptr))
+            (setq Last *part-root))
 
           # Position at last
           (let (Vert (car (get Last 'verts))
@@ -106,30 +36,31 @@ Data (list 1
             (update-model-matrix> *vert-ptr)
             (cmd-update-vert *ipc *vert-ptr))
 
-          (nl-ptr)
+          #(nl-ptr)
+          (adv-ptr 4.0)
 
           # Remove NIL particle
           (del-particle (get Last 'b))
 
           # Gen part for data
-          (let Part (gen-pair-y-h List-Data
+          (let Part (gen-pair-x-h List-Data
                                   0.0
                                   (get *vert-ptr 'pos)
-                                  gen-pair-y-h
+                                  gen-pair-x-h
                                   NIL NIL)
 
             # Connect to last part
             (with Last (=: b Part))))
 
         # Append data (or use conc?)
-        (with *part-ptr
+        (with *part-root
           (=: data (conc (: data) List-Data))))
 
       # else replace particle
       (prog
 
         # Position at particle
-        (let (Vert (car (get *part-ptr 'verts))
+        (let (Vert (car (get *part-root 'verts))
               Pos (get Vert 'pos)
               Ori (get-origin> (get *metrics (get Vert 'chr)) Pos *sca-vert))
           (set-x-ptr-2 (get Ori 1))
@@ -137,14 +68,13 @@ Data (list 1
           (update-model-matrix> *vert-ptr)
           (cmd-update-vert *ipc *vert-ptr))
 
-        (del-particle *part-ptr T T)
+        (del-particle *part-root T T)
 
         # Gen part for data
-        (setq *part-ptr (gen-pair-y-h List-Data
-                                      0.0
-                                      (get *vert-ptr 'pos)
-                                      gen-pair-y-h
-                                      NIL NIL))
+        (setq *part-root (gen-part List-Data
+                                  0.0
+                                  (get *vert-ptr 'pos)
+                                  gen-pair-x-h))
 
         T))))
 
@@ -168,11 +98,11 @@ Data (list 1
     frag will be discarded...fix later
   }#
 
-  (when (get *part-ptr 'data)
+  (when (get *part-root 'data)
 
     (let (L ()
           #D ()
-          X *part-ptr)
+          X *part-root)
 
       (loop
         (push 'L X)
@@ -224,8 +154,8 @@ Data (list 1
 
           (prog
 
-            # Replace *part-ptr with NIL particle
-            (setq *part-ptr (gen-part NIL
+            # Replace *part-root with NIL particle
+            (setq *part-root (gen-part NIL
                                       0.0
                                       (get *vert-ptr 'pos)
                                       gen-pair-y-h)))))))
