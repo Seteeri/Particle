@@ -7,7 +7,7 @@
 (de ftruncate (Fd Length)
     (native "@" "ftruncate" 'I Fd Length))
 
-
+#{
 (de write-int-to-bytes (N)
     (list (& (>> 24 N) (hex "FF"))
 	  (& (>> 16 N) (hex "FF"))
@@ -27,6 +27,7 @@
 (de read-short-from-bytes (B1 B2)
       (| (>> -8 B1)
       B2))
+}#
 
 (de unlink-fd (Pathname)
     (native "@" "unlink" 'I Pathname))
