@@ -42,7 +42,7 @@
 
 (def '*part-root)
 
-(def '*ptr-part)
+(def '*part-ptr)
 # Vertices for pointer; also can be found through part-ptr
 (def '*vert-ptr)
 
@@ -68,8 +68,7 @@
 (load "/home/user/Particle/particle/src/worker/conn.l")
 (load "/home/user/Particle/particle/src/worker/ptr.l")
 (load "/home/user/Particle/particle/src/worker/draw/draw.l")
-(load "/home/user/Particle/particle/src/worker/draw/structs.l")
-(load "/home/user/Particle/particle/src/worker/draw/forms.l")
+#(load "/home/user/Particle/particle/src/worker/draw/forms.l")
 (load "/home/user/Particle/particle/src/worker/cmd/vert.l")
 (load "/home/user/Particle/particle/src/worker/cmd/cam.l")
 (load "/home/user/Particle/particle/src/worker/cmd/ptr.l")
@@ -199,12 +198,20 @@
 
   (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
 
-  # Render default symbols?
-  # User can then use builtin copy to produce a copy of the symbol
-
-  # Allocate pointer - use same char as PicoLisp ":"
-  # Make pointer a particle also
+  # TODO: Render default symbols
+  
+  # Poss draw entire symbol structure...
+  #{
+  (setq *part-ptr (gen-part (cons T T)
+                            0.0
+                            (list 0.0 0.0)
+                            gen-pair-x-h))
+  (println "DONE - EXITING")
+  (bye)
+  }#
+  
   (setq *vert-ptr (alloc-vert *col-red ":"))
+
 
   (let ((X Y) (get *vert-ptr 'pos)
         List (list 1 

@@ -148,11 +148,7 @@
                 Sock-Render
                 (pack "(zv " (get Vert 'off-gl) '")"))
       (push '*verts Vert)
-      (dec '*cnt-v))
-
-    # Push ptr back n vertices
-    #(adv-ptr (num-to-fl (- (length Verts))))
-    )
+      (dec '*cnt-v)))
     
   (with Part
     (when (and Car (: a))
@@ -174,10 +170,10 @@
       (if (lst? (cdr Any))
           # Specific forms override layout
           (cond ((= (car Any) 'let)
-                 (gen-let Any Depth (get *vert-ptr 'pos) Layout))
+                 (gen-let Any Depth Root Layout))
                 (T
-                 (Layout Any Depth (get *vert-ptr 'pos) Layout)))
-          (Layout Any Depth (get *vert-ptr 'pos) Layout))
+                 (Layout Any Depth Root Layout)))
+          (Layout Any Depth Root Layout))
       (gen-atom Any T)))
 
 
@@ -185,15 +181,11 @@
 
   # If full expansion wanted, go further in gen-num/str/sym etc.
 
-  (let (Col (get-color-type Any)
-        Verts (cond ((num? Any)  (draw-num Any Col Adv))
-                    ((str? Any)  (draw-str Any Col Adv))
-                    (T           (draw-sym Any Col Adv))))
-    (new '(+Particle)
-          Any
-          NIL
-          NIL
-          Verts)))
+  (new '(+Particle)
+        Any
+        NIL
+        NIL
+        (draw-atom Any (get-color-type Any) Adv)))
 
 
 #{

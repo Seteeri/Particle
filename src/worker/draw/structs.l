@@ -1,39 +1,25 @@
-# TODO:
-# Batch updates
-# Refactor
+#{
+  TODO: 
+  * Batch updates
+}#
 
-(de draw-str (Str Col Adv)
+
+(de draw-repr (Repr Col Adv)
 
   (let Verts ()
 
-    (for C (chop (pack "\"" Str "\""))
+    (for C Repr
       (push 'Verts (draw-glyph C Col))
       (when Adv (adv-ptr)))
 
     (flip Verts)))
+  
+(de draw-str (Str Col Adv) (draw-repr (chop (pack "\"" Str "\"")) Col Adv))
+(de draw-num (Num Col Adv) (draw-repr (chop (format Num)) Col Adv))
+(de draw-sym (Sym Col Adv) (draw-repr (chop (sym Sym)) Col Adv))
 
-
-(de draw-num (Num Col Adv)
-
-  (let Verts ()
-
-    (for C (chop (format Num))
-      (push 'Verts (draw-glyph C Col))
-      (when Adv (adv-ptr)))
-
-    # Inc byte spacing depending on length
-
-    (flip Verts)))
-
-
-(de draw-sym (Sym Col Adv)
-
-  (let Verts ()
-
-    (for C (chop (sym Sym))
-      (push 'Verts (draw-glyph C Col))
-      (when Adv (adv-ptr)))
-
-    # Inc byte spacing depending on length
-
-    (flip Verts)))
+(de draw-atom (Atom Col Adv) 
+  (let Col-2 (if Col Col (get-color-type Atom))
+    (cond ((num? Atom) (draw-num Atom Col-2 Adv))
+          ((str? Atom) (draw-str Atom Col-2 Adv))
+          (T           (draw-sym Atom Col-2 Adv)))))
