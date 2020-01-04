@@ -94,9 +94,9 @@ User can choose to see CAR/CDR/CONS:
       - CDR: NIL or VAL
     - Transient: show name (VAL is symbol itself)
       - CAR: Name in encoded pointer (> word = cons cells/list)
-      - CDR: Ptr to CAR/Symbol
+      - CDR: Ptr to CAR/Symbol (or arbitrary)
       - Anon: show ptr
-        - CAR: 0 (NUM as encoded pointer)
+        - CAR: 0 (num as pointer)
           - (= (cons 0 NIL) (box))  -> struct eq, returns NIL but actually same
           - (== (cons 0 NIL) (box)) -> ptr eq, NIL
         - CDR: NIL

@@ -1,3 +1,5 @@
+60 bits = 1 152 921 504 606 846 976
+
 Systemd has effectively rewritten the Linux userland, which depending on your
 interpretation, now provides a unified userland, which may be deemed most
 appropriate for servers and sysadmins. However, I believe for the desktop user
@@ -2457,3 +2459,9 @@ Must break B-C by modifying the nth's CDR
 Con will modify first cell of lst's CDR to point to Any
 
 So append is like (con (nth <last>) (""))
+
+
+The issue is how to draw the symbol.
+
+
+OS DEV:

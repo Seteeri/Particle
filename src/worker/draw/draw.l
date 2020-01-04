@@ -77,8 +77,9 @@
 
 
 (de draw-dot (Adv)
-  (draw-glyph (char 183) *col-base-0)
-  (when Adv (adv-ptr)))
+  (let Dot (draw-glyph (char 183) *col-base-0)
+    (when Adv (adv-ptr))
+    Dot))
 
 
 (de draw-chars (Chars Col Adv)

@@ -130,8 +130,8 @@
       }#
 
       # Position pointer at start of cadr
-      (when (cadr L)
-        (let (Vert (car (get (cadr L) 'verts))
+      (when (car L)
+        (let (Vert (car (get (car L) 'verts))
               Ori (get-origin> (get *metrics (get Vert 'chr))
                                (get Vert 'pos)
                                *sca-vert))
@@ -156,9 +156,9 @@
 
             # Replace *part-root with NIL particle
             (setq *part-root (gen-part NIL
-                                      0.0
-                                      (get *vert-ptr 'pos)
-                                      gen-pair-y-h)))))))
+                                       0.0
+                                       (get *vert-ptr 'pos)
+                                       gen-pair-y-h)))))))
 
 
 (de cmd-make-num (Keysym)

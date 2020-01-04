@@ -165,7 +165,7 @@ Store DAGs as binary trees?
       * Remove item [Done]
         * Skip removing NIL at end of list since it would still point to NIL
       * TMRW:
-        * Refactor pointer to be a particle/symbol whose CAR is the tgt
+        * Refactor pointer to be a particle/symbol whose CAR is the tgt [WIP]
         * Create list
         * Enter/exit list
         * Brainstorm

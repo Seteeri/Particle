@@ -164,8 +164,6 @@
   
   # Maybe layout particles after gen?
   
-  # Root is supposed to be root position of parent list
-  
   (if (pair Any)
       (if (lst? (cdr Any))
           # Specific forms override layout
@@ -188,46 +186,11 @@
         (draw-atom Any (get-color-type Any) Adv)))
 
 
-#{
-
-  Default to X layout because of strings
-  - Can we mix layouts? Will it confuse the user?
-  
-  CAR can be either dir; top-bottom, left-right
-  
-  Place dot middle when vertical?
-  -> No, destroys grid layout
-  
-  X:
-
-    CAR·CDR -> CAR·CDR -> NIL
-    |          |
-    1          2
-
-  Y:
-  
-    CAR·CDR - 1
-        |
-    +---+
-    |
-    CAR·CDR - 2
-        |
-    +---+
-    |
-    NIL
-    
-  Finally layouts can be defined for specific forms, e.g. let, if, cond, etc.
-  
-}#
-
-
 (de draw-cons-x (Ar Dr Ptr-Ar Ptr-Dr)
   (let (Vert-Ar (if (num? Ar)
                     (draw-chars (format Ar) (get-color-type Ar) T)
                     (draw-chars "[" *col-base-0 T)) # (char 187)
-        Dot   (if (num? Dr)
-                  (draw-chars (char 183) (get-color-type Any) T)
-                  (draw-dot T))
+        Dot   (list (draw-dot T))
         Vert-Dr (if (num? Dr)
                     (draw-chars (format Dr) (get-color-type Dr) T)
                     (draw-chars "]" *col-base-0 T))) # (char 166)
@@ -235,9 +198,10 @@
 
 
 (de gen-pair-x-h (Any Depth Root Layout Car Cdr)
-
-  # Draw-cons
-  # Draw-ptrs
+  #{
+    Root is baseline of cons
+    so for a list Root would be coordinates of first cons
+  }#
 
   (let (Ar (car Any)
         Dr (cdr Any)
@@ -245,16 +209,16 @@
         (Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
         Tail-Ar (pack (tail 4 (chop (bin Ptr-Ar))))
         Tail-Dr (pack (tail 4 (chop (bin Ptr-Dr))))
-        (X Y) (get *vert-ptr 'pos))
+        (X Y) (let Pos (get *vert-ptr 'pos)
+                (if Pos Pos Root)))
 
     (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr Tail-Ar Tail-Dr)
           X-Cdr (get (get *vert-ptr 'pos) 1)
           
           Pa-Ar (when (and (not (num? Ar))
                            (not Car))
-                  # Move underneath
-                  (nl-ptr)
-                  (set-x-ptr-2 X)
+                  # Move below, align left of cons
+                  (nl-ptr) (set-x-ptr-2 X)
                   (gen-part Ar Depth Root gen-pair-x-h))
 
           Pa-Dr (when (and (not (num? Dr))
@@ -271,7 +235,7 @@
            Pa-Ar Pa-Dr
            (append Vert-Ar Dot Vert-Dr)))))
            
-
+           
 (de gen-pair-y-h (Any Depth Root Layout Car Cdr)
 
   # TODO:
@@ -369,123 +333,232 @@
 ################################################################################
 ################################################################################
 
-
-(de gen-list-col2 (List Depth X-Root Y-Root)
-
-  # Link particles
-  # List = (P 1 2 3 4)
-  # Parts + Out = (4 3 2) + (1 P)
-  # Out = (4 3 2 1 P)
-  # (flip Out) = (P 1 2 3 4)
-
-  (let (Rem List
-        Out ()
-        Prev NIL)
-
-    (let? Any (car List)
-      (let Part (gen-part Any Depth X-Root)
-        (push 'Out Part)
-        (setq Prev Part))
-      (adv-ptr))
-
-    (let ((X Y) (get *vert-ptr 'pos))
-
-      (let? Any (cadr List)
-        (let Part (gen-part Any Depth X-Root)
-          (push 'Out Part)
-          (cons> Prev Part)
-          (setq Prev Part)))
-
-      (let? Rem (nth List 3)
-        (set-x-ptr-2 X)
-        (nl-ptr)
-        (let Parts (gen-list-y Rem Depth X)
-          (cons> (car Out) (last Parts))
-          (setq Out (append Parts Out)))))
-
-    (flip Out)))
-
-
-(de gen-list-line (List Depth X-Root Y-Root)
-
-  # Pass roots as single pair
-
-  (let (Rem List
-        Out ()
-        Prev NIL)
-
-    (while (pair Rem)
-
-      (let Part (if (lst? (cdr Rem))
-                    (gen-part (car Rem) Depth X-Root)
-                    (gen-pair Rem Depth X-Root))
-        (push 'Out Part)
-        (when Prev (cons> Prev Part))
-        (setq Prev Part))
-
-      (when (setq Rem (cdr Rem))
-        (fn X-Root Y-Root)))
-
-    Out))
-
-
-(de gen-part-2 (Any Depth X-Root)
-
   #{
-    CONS:      ...0000
-    SYM:       ...1000
-    BIGNUM:    ...S100
-    SHORTNUM:  ...S010
+               3 2 1 |
+    CONS:      0 0 0 0
+    SYM:       1 0 0 0
+    BIGNUM:    S 1 0 0
+    SHORTNUM:  S 0 1 0
 
-    STR: stored as nums, shortnum takes entire PTR, bignum in CAR + CDR ptr
-
+    STR: stored as nums
+    NUM: shortnum takes entire PTR, bignum in CAR + CDR ptr
     S= pos:0 neg:1
+  
+    1. *col-yellow  
+    2. *col-orange
+    3. *col-red
+    
+    4. *col-magenta    
+    5. *col-violet
+    6. *col-blue
+    7. *col-cyan
+    8. *col-green
+
+    Cell
+    * Num - 3
+      1 Ptr (builtins) = *col-base-01 or content tone
+      2 Big (interpret whole) = *col-green
+      3 Short = *col-cyan
+    * Sym - 2
+      4 Internal - blue
+      4 Transient
+      4 External
+      5 NIL - violet    
+    6 Pair/List (Cell) - magenta
+      
+    * Accents are *Col
   }#
 
-  #(setq Any (1 2 3))
+# Draw ptrs
+(de draw-cons-ptr (Ptr-Ar Col-Ar Ptr-Dr Col-Dr)
+  (list (draw-chars Ptr-Ar Col-Ar T)
+        (draw-dot T)
+        (draw-chars Ptr-Dr Col-Dr T)))
 
-  (let (Ptr (>> -4 (adr Any))
-        (Ptr-Car Ptr-Cdr) (struct Ptr '(N . 2))
-        Bin-Ptr             (bin Ptr)
-        Tail-Ptr            (pack (tail 4 (chop Bin-Ptr)))
-        Bin-Car             (bin Ptr-Car)
-        Bin-Cdr             (bin Ptr-Cdr)
-        Tail-Car            (pack (tail 4 (chop Bin-Car)))
-        Tail-Cdr            (pack (tail 4 (chop Bin-Cdr))))
 
-    (println Bin-Car Bin-Cdr)
+(de get-col-ptr (Ptr)    
 
-    # Draw this cell, then call fn depending on contents
+  (let ((B1 B2 B3 B4) (cdr (flip (tail 4 (chop (bin Ptr))))))
+    #(println B1 B2 B3 B4)
+    (cond ((= "1" B1) *col-cyan)
+          ((= "1" B2) *col-green)
+          ((= "1" B3) *col-violet)
+          ((= "0" B3) *col-magenta)
+          (T *col-base-01))))
 
-    (let (Car   (draw-chars (format Ptr-Car) *col-base-0 T)
-          #Dummy (adv-ptr)
-          Dot   (draw-chars "." *col-base-0 T)
-          #Dummy (adv-ptr)
-          Cdr   (draw-chars (format Ptr-Cdr) *col-base-0 T))
-      (adv-ptr)
-      (new '(+Particle)
-           Any
-           Car
-           Cdr
-           Dot))
 
-    (cond ((and (= Tail-Ptr "0000") (cdr Any))
-           # Either a cons cell or list (if CDR is another cons)
-           (println "(gen-part-2)" (cdr Any))
-           (gen-part-2 (cdr Any) (+1 Depth) X-Root))
+(de get-type-ptr (Ptr)
 
-          ((= Tail-Ptr "1000")
-           # Includes sym and str
-           # Need not pursue further
-           (cond ((= Ptr Ptr-Cdr)   (println "(draw-str)"))
-                 (T)))
+  # Built-ins will typically be shorts; bits are arbitrary
+   
+  (let ((B1 B2 B3 B4) (cdr (flip (tail 4 (chop (bin Ptr))))))
+    #(println B1 B2 B3 B4)
+    (cond ((= "1" B1) 'short)
+          ((= "1" B2) 'big)
+          ((= "1" B3) 'sym)
+          ((= "0" B3) 'cons)
+          (T 'ptr))))
 
-          (T
-           (let Chop (chop Tail-Ptr)
-             # Need not pursue further
-             (cond ((= (pack (tail 3 Chop)) "100")
-                    (println "(draw-big)"))
 
-                   ((= (pack (tail 2 Chop)) "10")
-                    (println "(draw-short)"))))))))
+(de gen-cell (Any Type Root)
+  (cond ((= Type 'big)   (gen-big Any Root))
+        ((= Type 'sym)   (gen-sym Any Root))
+        ((= Type 'cons)  (gen-pair Any Root))))
 
+
+(de gen-sym (Ptr Root)
+
+  #{
+  
+    INTERNAL:
+    CAR = Cons (property list+name), Short/Big (name)
+    CDR = Any
+    
+    ANONYMOUS:
+    CAR = 0 (long = 2)
+    CDR = Any
+    
+  }#
+
+  (let ((Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
+        Type-Ar         (get-type-ptr Ptr-Ar)
+        Type-Dr         (get-type-ptr Ptr-Dr)
+        (X Y)           (get *vert-ptr 'pos)
+        
+        blah (println Ptr Ptr-Ar Ptr-Dr)
+        blah (println Ptr Type-Ar Type-Dr)
+
+        Col-Ar (cond ((= Ptr-Ar 4380504) *col-yellow)
+                     ((= Ptr-Ar 4380648) *col-red)
+                     (T (get-col-ptr Ptr-Ar)))
+        Col-Dr (cond ((= Ptr-Dr 4380504) *col-yellow)
+                     ((= Ptr-Dr 4380648) *col-red)
+                     (T (get-col-ptr Ptr-Dr)))
+        (Vert-Ar Dot Vert-Dr) (draw-cons-ptr (pack (tail 4 (chop (bin Ptr-Ar)))) Col-Ar
+                                             (pack (tail 4 (chop (bin Ptr-Dr)))) Col-Dr)
+
+        X-Cdr (get (get *vert-ptr 'pos) 1)
+
+        Pa-Ar (unless (or (= Ptr-Ar 4380504)
+                          (= Ptr-Ar 4380648))
+                # Move below, align left of cons
+                (nl-ptr) (set-x-ptr-2 X)    
+                (gen-cell (cond ((= Type-Ar 'sym) (- Ptr-Ar 8))
+                                ((= Type-Ar 'big) (- Ptr-Ar 4))
+                                (T Ptr-Ar))
+                          Type-Ar
+                          Root))
+                          
+        Pa-Dr (unless (or (= Ptr-Dr 4380504)
+                          (= Ptr-Dr 4380648)
+                          (= Ptr-Dr (+ Ptr 8)))
+                 # If cursor short then must adv
+                 (when (<= (get (get *vert-ptr 'pos) 1) X-Cdr)
+                   (set-x-ptr-2 X-Cdr))
+                 (adv-ptr)
+                 (set-y-ptr-2 Y)
+                 (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
+                                 ((= Type-Dr 'big) (- Ptr-Dr 4))
+                                 (T Ptr-Dr))
+                            Type-Dr
+                            Root)))
+    (new '(+Particle)
+         Ptr
+         Pa-Ar Pa-Dr
+         (append Vert-Ar Dot Vert-Dr))))
+
+
+(de gen-big (Ptr Root)
+  
+  (println 'gen-big)
+
+  (let ((Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
+        Type-Ar         'ptr # always
+        Type-Dr         (get-type-ptr Ptr-Dr) # bignum or short
+        (X Y)           (get *vert-ptr 'pos)
+
+        blah (println Ptr Ptr-Ar Ptr-Dr)
+        blah (println Ptr Type-Ar Type-Dr)
+        
+        Col-Ar *col-base-01
+        Col-Dr (cond ((= Ptr-Dr 4380504) *col-yellow)
+                     ((= Ptr-Dr 4380648) *col-red)
+                     (T (get-col-ptr Ptr-Dr)))
+        (Vert-Ar Dot Vert-Dr) (draw-cons-ptr (pack (tail 4 (chop (bin Ptr-Ar)))) Col-Ar
+                                             (pack (tail 4 (chop (bin Ptr-Dr)))) Col-Dr)
+
+        X-Cdr (get (get *vert-ptr 'pos) 1)
+
+        # Never draw...unless wanted...
+        Pa-Ar NIL
+                          
+        Pa-Dr (unless (or (= Ptr-Dr 4380504)
+                          (= Ptr-Dr 4380648))
+                 # If cursor short then must adv
+                 (when (<= (get (get *vert-ptr 'pos) 1) X-Cdr)
+                   (set-x-ptr-2 X-Cdr))
+                 (adv-ptr)
+                 (set-y-ptr-2 Y)
+                 (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
+                                 ((= Type-Dr 'big) (- Ptr-Dr 4))
+                                 (T Ptr-Dr))
+                            Type-Dr
+                            Root)))
+    (new '(+Particle)
+         Ptr
+         Pa-Ar Pa-Dr
+         (append Vert-Ar Dot Vert-Dr))))
+
+
+(de gen-pair (Ptr Root)
+  #{
+  }#
+
+  (println 'gen-pair)
+
+  (let ((Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
+        Type-Ar         (get-type-ptr Ptr-Ar)
+        Type-Dr         (get-type-ptr Ptr-Dr)
+        (X Y)           (get *vert-ptr 'pos)
+        
+        blah (println Ptr Ptr-Ar Ptr-Dr)
+        blah (println Ptr (bin Ptr-Ar) (bin Ptr-Dr))        
+        blah (println Ptr Type-Ar Type-Dr)
+
+        Col-Ar (cond ((= Ptr-Ar 4380504) *col-yellow)
+                     ((= Ptr-Ar 4380648) *col-red)
+                     (T (get-col-ptr Ptr-Ar)))
+        Col-Dr (cond ((= Ptr-Dr 4380504) *col-yellow)
+                     ((= Ptr-Dr 4380648) *col-red)
+                     (T (get-col-ptr Ptr-Dr)))
+        (Vert-Ar Dot Vert-Dr) (draw-cons-ptr (pack (tail 4 (chop (bin Ptr-Ar)))) Col-Ar
+                                             (pack (tail 4 (chop (bin Ptr-Dr)))) Col-Dr)
+
+        X-Cdr (get (get *vert-ptr 'pos) 1)
+
+        Pa-Ar (unless (or (= Ptr-Ar 4380504)
+                          (= Ptr-Ar 4380648))
+                # Move below, align left of cons
+                (nl-ptr) (set-x-ptr-2 X)
+                (gen-cell (cond ((= Type-Ar 'sym) (- Ptr-Ar 8))
+                                ((= Type-Ar 'big) (- Ptr-Ar 4))
+                                (T Ptr-Ar))
+                          Type-Ar
+                          Root))
+                          
+        Pa-Dr (unless (or (= Ptr-Dr 4380504)
+                          (= Ptr-Dr 4380648))
+                 # If cursor short then must adv
+                 (when (<= (get (get *vert-ptr 'pos) 1) X-Cdr)
+                   (set-x-ptr-2 X-Cdr))
+                 (adv-ptr)
+                 (set-y-ptr-2 Y)
+                 (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
+                                 ((= Type-Dr 'big) (- Ptr-Dr 4))
+                                 (T Ptr-Dr))
+                            Type-Dr
+                            Root)))
+    (new '(+Particle)
+         Ptr
+         Pa-Ar Pa-Dr
+         (append Vert-Ar Dot Vert-Dr))))

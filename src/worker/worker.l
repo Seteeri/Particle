@@ -200,37 +200,76 @@
 
   # TODO: Render default symbols
   
-  # Poss draw entire symbol structure...
-  #{
-  (setq *part-ptr (gen-part (cons T T)
-                            0.0
-                            (list 0.0 0.0)
-                            gen-pair-x-h))
-  (println "DONE - EXITING")
-  (bye)
-  }#
+  # Currently, ptr is being used for drawing position
+  # However, to draw the ptr requires ptr so circular dependency  
+  # Create pointer object/symbol
+  # -> Draw entire symbol structure
+
+  (setq *vert-ptr (alloc-vert (list 0.0 0.0 0.0) "|" *col-red))
+
+  (nl-ptr)
+
+  (when T
+    (setq *part-ptr (gen-part (cons T T)
+                              0.0
+                              (list 0.0 0.0)
+                              gen-pair-x-h)))
+
+  (nl-ptr)
   
-  (setq *vert-ptr (alloc-vert *col-red ":"))
+  # Delete vert after?
+  # Set *vert-ptr as cursor for drawing
+    
+  (when NIL
+  
+    (let ((X Y) (get *vert-ptr 'pos))
 
+      (when T
+        (gen-cell (abs (>> -4 (adr (cons NIL T))))
+                  'cons
+                  (0.0 0.0))
+        (nl-ptr 3.0) (set-x-ptr-2 X))
+    
+      (when NIL
+        (gen-cell (abs (>> -4 (adr (cons T (** 1152921504606846976 0)))))
+                  'cons
+                  (0.0 0.0))
+        (nl-ptr 3.0) (set-x-ptr-2 X))
+      
+      (when NIL
+        (gen-cell (abs (>> -4 (adr (cons (cons 3 4) (cons 1 2)))))
+                  'cons
+                  (0.0 0.0))
+        (nl-ptr 2.0) (set-x-ptr-2 X))
 
-  (let ((X Y) (get *vert-ptr 'pos)
-        List (list 1 
-                   '(a b)
-                   "abc"
-                   (cons 4 5)
-                   (list 6 7 8)
-                   (cons 'c 'd)
-                   (cons (list 1 2 3) (list 4 5 6)))
-        #List '(let (a (+ 1 2) b (+ 3 4)) (+ a b) (- a b) (* a b))
-        #List '(let a (+ 1 2) (* a b))
-        List '(a b c)
-        )
+      (when NIL
+        (setq ABCDEFGHIJKLMNOPQRSTUVWXYZ NIL)
+        (put 'ABCDEFGHIJKLMNOPQRSTUVWXYZ "A" "X")
+        (put 'ABCDEFGHIJKLMNOPQRSTUVWXYZ "B" "Y")
+        (gen-cell (abs (>> -4 (adr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ)))
+                  'sym
+                  (0.0 0.0))
+        (nl-ptr 2.0) (set-x-ptr-2 X))
+      
+      (when NIL
+        (gen-cell (abs (>> -4 (adr "ABC")))
+                  'sym
+                  (0.0 0.0))
+        (nl-ptr 2.0) (set-x-ptr-2 X))
+      
+      (when NIL
+        (gen-cell (abs (>> -4 (adr "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")))
+                  'sym
+                  (0.0 0.0)))
+      T))
+  
+  (when T
     (setq *part-root
-          (gen-part List
+          (gen-part () #'(a b) #'(a b (c d) e)
                     0.0
                     (get *vert-ptr 'pos)
                     gen-pair-x-h)))
-
+  
   (adv-ptr)
 
   (prinl-info "init-worker" "Starting epoll...")
@@ -238,14 +277,15 @@
   (loop (ipc~poll> *ipc -1)))
 
 
-(de alloc-vert (Col Glyph)
+(de alloc-vert (Pos Char Col)
   (let Vert (pop '*verts)
     (with Vert
+      (=: pos Pos)
       (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0)))
-    (when Glyph (update-glyph> Vert Glyph))
+    (when Char (update-glyph> Vert Char))
     (update-model-matrix> Vert)
     (cmd-update-vert *ipc Vert)
 
