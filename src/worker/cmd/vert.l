@@ -133,6 +133,7 @@
             Nth-3 (cddr L))
 
         # Position pointer at start of Last-2
+        # TODO: Make fn
         (let (Vert (car (get Last-2 'verts))
               Ori (get-origin> (get *metrics (get Vert 'chr))
                                (get Vert 'pos)
@@ -158,14 +159,7 @@
         # TODO: Make function particle        
         # TODO: Refactor update-glyph
         # TODO: Make char consistent
-        (for Vert (get Part-NIL 'verts)
-          (println "Update vert:" Vert)
-          (with Vert
-            (=: pos (get *vert-ptr 'pos))
-            (update-glyph> Vert (char (: chr))))
-          (update-model-matrix> Vert)
-          (cmd-update-vert *ipc Vert)
-          (adv-ptr))
+        (base-verts> Part-NIL T)
 
         (if Nth-3
 

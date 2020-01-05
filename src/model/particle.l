@@ -139,6 +139,21 @@
     Last))
 
 
+(dm base-verts> (Up)
+  # TODO: Rename update to upload
+  # -> cmd-upload-vert
+  (for Vert (: verts)
+    (with Vert
+      (=: pos (get *vert-ptr 'pos))
+      (update-glyph> Vert (char (: chr))))
+    (update-model-matrix> Vert)
+    (when Up (cmd-update-vert *ipc Vert))
+    (adv-ptr)))
+    
+
+###############################
+
+
 (de del-particle (Part Car Cdr)
 
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER")

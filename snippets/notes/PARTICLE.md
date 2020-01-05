@@ -165,9 +165,9 @@ Store DAGs as binary trees?
       * Remove item [Done]
         * Skip removing NIL at end of list since it would still point to NIL
 
+       * When deleting list, skip deleting NIL [Done]
        * Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
          * CDR, the value of the symbol, is always right of the pointer
-       * When deleting list, skip deleting NIL [WIP]
        * Implement spatial map
 
        * Swap part
