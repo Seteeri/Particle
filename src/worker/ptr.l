@@ -1,6 +1,11 @@
-# Contains a Particle
 (class +Pointer)
+(dm T (Part)
+  # Particle
+  (=: p))
 
+(dm mov> (Vert Up))
+(dm adv> (Cnt))
+(dm nl> (Cnt))
 
 (de mov-ptr (Vert Up)
   (let Ori (get-origin> (get *metrics (get Vert 'chr))
