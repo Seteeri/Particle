@@ -1,4 +1,16 @@
-# Are these commands also?
+(class +Pointer)
+
+
+(de mov-ptr (Vert Up)
+  (let Ori (get-origin> (get *metrics (get Vert 'chr))
+                        (get Vert 'pos)
+                        *sca-vert)
+    (set-x-ptr-2 (get Ori 1))
+    (set-y-ptr-2 (get Ori 2))
+    (update-model-matrix> *vert-ptr)
+    (when Up
+      (cmd-update-vert *ipc *vert-ptr))))
+
 
 (de adv-ptr (Cnt)
 

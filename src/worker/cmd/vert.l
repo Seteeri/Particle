@@ -28,13 +28,7 @@
             (setq Last *part-root))
 
           # Position at last
-          (let (Vert (car (get Last 'verts))
-                Pos (get Vert 'pos)
-                Ori (get-origin> (get *metrics (get Vert 'chr)) Pos *sca-vert))
-            (set-x-ptr-2 (get Ori 1))
-            (set-y-ptr-2 (get Ori 2))
-            (update-model-matrix> *vert-ptr)
-            (cmd-update-vert *ipc *vert-ptr))
+          (mov-ptr (car (get Last 'verts)) T)
 
           #(nl-ptr)
           (adv-ptr 4.0)
@@ -60,13 +54,7 @@
       (prog
 
         # Position at particle
-        (let (Vert (car (get *part-root 'verts))
-              Pos (get Vert 'pos)
-              Ori (get-origin> (get *metrics (get Vert 'chr)) Pos *sca-vert))
-          (set-x-ptr-2 (get Ori 1))
-          (set-y-ptr-2 (get Ori 2))
-          (update-model-matrix> *vert-ptr)
-          (cmd-update-vert *ipc *vert-ptr))
+        (mov-ptr (car (get *part-root 'verts)) T)
 
         (del-particle *part-root T T)
 
@@ -133,15 +121,7 @@
             Nth-3 (cddr L))
 
         # Position pointer at start of Last-2
-        # TODO: Make fn
-        (let (Vert (car (get Last-2 'verts))
-              Ori (get-origin> (get *metrics (get Vert 'chr))
-                               (get Vert 'pos)
-                               *sca-vert))
-          (set-x-ptr-2 (get Ori 1))
-          (set-y-ptr-2 (get Ori 2))
-          (update-model-matrix> *vert-ptr)
-          (cmd-update-vert *ipc *vert-ptr))
+        (mov-ptr (car (get Last-2 'verts)) T)
         
         # Reuse NIL part so need not regenerate it    
         (del-particle Last-2 T NIL)
