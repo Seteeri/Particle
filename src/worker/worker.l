@@ -205,14 +205,14 @@
   # Create pointer object/symbol
   # -> Draw entire symbol structure
 
-  (setq *vert-ptr (alloc-vert (list 0.0 0.0 0.0) "|" *col-red))
+  (setq *vert-ptr (alloc-vert (list 0.0 0.0 0.0) "`" *col-red))
 
   (nl-ptr)
 
   (when T
     (setq *part-ptr (gen-part (cons T T)
                               0.0
-                              (list 0.0 0.0)
+                              (list 0.0 0.0 0.0)
                               gen-pair-x-h)))
 
   (nl-ptr)

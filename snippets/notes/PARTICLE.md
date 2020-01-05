@@ -164,24 +164,30 @@ Store DAGs as binary trees?
       * Append item [Done]
       * Remove item [Done]
         * Skip removing NIL at end of list since it would still point to NIL
-      * TMRW:
-        * Refactor pointer to be a particle/symbol whose CAR is the tgt [WIP]
-        * Create list
-        * Enter/exit list
-        * Brainstorm
-          * If at end (@NIL) or NIL, append
-          * If middle, 3 options:
-            * Add after - default? makes most sense...
-              * Could also be seen as replacing NIL
-              * Or default is replacing CDR with list
-              * In middle, like replacing its CDR
-                * Breaks list unless CDR is connected
-                * (con (nth n) (new)) to change CDR
-                * (con (new) (nth n+1))
-            * Replace
-              * If user wants to add after or before, must manipulate list
-            * Create list - should be done explicitly by adding NIL
-            * Add before - ?
+
+       * Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
+         * CDR, the value of the symbol, is always right of the pointer
+       * When deleting list, skip deleting NIL [WIP]
+       * Implement spatial map
+
+       * Swap part
+         * (con (nth n) (new)) to change CDR
+         * (con (new) (nth n+1))        
+        
+       * Create list
+       * Enter/exit list
+       * Brainstorm
+         * If at end (@NIL) or pointing to NIL, append
+         * Else anywhere else:
+           * If NIL, create list with char OR replace it?
+             * Default:enter list
+           * If not NIL, append after (like at end)
+             * Consistent = easier
+             * Should not replace, since can be done with backspace/delete + append
+               * Same reason insert mode is not default
+         * Use specific command to replace any with list/NIL
+           * Aka use NIL command
+           
       * Select item
         * Ptr is a particle symbol whose value is whatever the user wants
           * Default = master list

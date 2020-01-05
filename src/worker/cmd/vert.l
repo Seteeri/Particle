@@ -13,7 +13,7 @@
                   (T (char Keysym)))
         List-Data (list Data))
 
-    (println "PART-PTR" *part-root (get *part-root 'data) (get *part-root 'a) (get *part-root 'b))
+    #(println "PART-PTR" *part-root (get *part-root 'data) (get *part-root 'a) (get *part-root 'b))
 
     (if (get *part-root 'data)
 
@@ -22,7 +22,7 @@
         # Will return NIL also
         (let Last (last-part> *part-root)
 
-          (println "LAST" Last (get Last 'data) (get Last 'a) (get Last 'b))
+          #(println "LAST" Last (get Last 'data) (get Last 'a) (get Last 'b))
 
           (unless (get Last 'data)
             (setq Last *part-root))
@@ -96,69 +96,87 @@
 
     Makes most sense to simply zero vert, and not worry about instanceCount as
     frag will be discarded...fix later
+    
+    (NIL 1 2 3)
+    Pop 1
+    Connect 2 -> NIL
+    ...
+    (NIL 2 3)
+    Pop 2
+    Connect 3 -> NIL
+    ...
+    (NIL 3)
+    Pop 3
+    Replace if CDDR NIL    
   }#
 
   (when (get *part-root 'data)
 
+    # Build temp list
+    # Poss cache L (and use dirty bit)
+    
     (let (L ()
-          #D ()
+          D ()
           X *part-root)
 
       (loop
         (push 'L X)
-        #(push 'D (get X 'data))
+        (push 'D (get X 'data))
         # If CDR is NIL, end of list
         (NIL (get X 'b))
         (setq X (get X 'b)))
+            
+      # Delete second last particle since last is NIL
+      (let (Last-2 (cadr L)
+            Last-3 (caddr L)
+            Part-NIL (get Last-2 'b)
+            Nth-3 (cddr L))
 
-      # Poss cache L?
-
-      #{
-        If list becomes empty, then it simply becomes NIL:
-
-          Particle:
-          data = (a b)
-          a = Particle:a
-          b = Particle:(b)
-
-          ->
-
-          Particle:
-          data = NIL
-          a = NIL
-          b = NIL
-      }#
-
-      # Position pointer at start of cadr
-      (when (car L)
-        (let (Vert (car (get (car L) 'verts))
+        # Position pointer at start of Last-2
+        (let (Vert (car (get Last-2 'verts))
               Ori (get-origin> (get *metrics (get Vert 'chr))
                                (get Vert 'pos)
                                *sca-vert))
           (set-x-ptr-2 (get Ori 1))
           (set-y-ptr-2 (get Ori 2))
           (update-model-matrix> *vert-ptr)
-          (cmd-update-vert *ipc *vert-ptr)))
+          (cmd-update-vert *ipc *vert-ptr))
+        
+        # Reuse NIL part so need not regenerate it    
+        (del-particle Last-2 T NIL)
+      
+        (println "Part-NIL" Part-NIL (get Part-NIL 'data))
+        (unless Part-NIL
+          (println "GENERATE Part-NIL")
+          (setq Part-NIL (gen-part NIL
+                                   0.0
+                                   (get *vert-ptr 'pos)
+                                   gen-pair-y-h)))
+        
+        # Reposition NIL to ptr
+        # Modify draw-glyph...
+        # TODO: Make function particle        
+        # TODO: Refactor update-glyph
+        # TODO: Make char consistent
+        (for Vert (get Part-NIL 'verts)
+          (println "Update vert:" Vert)
+          (with Vert
+            (=: pos (get *vert-ptr 'pos))
+            (update-glyph> Vert (char (: chr))))
+          (update-model-matrix> Vert)
+          (cmd-update-vert *ipc Vert)
+          (adv-ptr))
 
-      # Delete last particle, incl. NIL
-      (del-particle (car L) T T)
+        (if Nth-3
 
-      (println L)
-
-      (if (cdr L)
-
-          (prog
-
-            # Modify CDR of second to last particle
-            (with (cadr L) (=: b NIL)))
-
-          (prog
+            # Modify CDR of third last particle
+            (with Last-3 (=: b Part-NIL))
 
             # Replace *part-root with NIL particle
-            (setq *part-root (gen-part NIL
-                                       0.0
-                                       (get *vert-ptr 'pos)
-                                       gen-pair-y-h)))))))
+            (setq *part-root Part-NIL))))))
+
+
+#########################
 
 
 (de cmd-make-num (Keysym)
