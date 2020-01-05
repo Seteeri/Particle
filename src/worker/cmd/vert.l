@@ -125,18 +125,9 @@
         
         # Reuse NIL part so need not regenerate it    
         (del-particle Last-2 T NIL)
-      
-        (println "Part-NIL" Part-NIL (get Part-NIL 'data))
-        (unless Part-NIL
-          (println "GENERATE Part-NIL")
-          (setq Part-NIL (gen-part NIL
-                                   0.0
-                                   (get *vert-ptr 'pos)
-                                   gen-pair-y-h)))
         
         # Reposition NIL to ptr
         # Modify draw-glyph...
-        # TODO: Make function particle        
         # TODO: Refactor update-glyph
         # TODO: Make char consistent
         (base-verts> Part-NIL T)
