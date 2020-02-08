@@ -86,7 +86,7 @@
                  *projview)))
 
 
-(de cmd-update-vert (Ipc Vert)
+(de cmd-upd-vert (Ipc Vert)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
 
@@ -99,7 +99,7 @@
                    Vert)))
 
 
-(de cmd-update-pv (Ipc)
+(de cmd-upd-pv (Ipc)
   (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
         Sock-Render (ipc~get-fd> *ipc "RENDER"))
         

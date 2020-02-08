@@ -95,7 +95,7 @@
                      (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0)))
     (update-model-matrix> Vert)
-    (cmd-update-vert *ipc Vert)))
+    (cmd-upd-vert *ipc Vert)))
 
 
 (class +Particle)
@@ -147,7 +147,7 @@
       (=: pos (get *vert-ptr 'pos))
       (update-glyph> Vert (char (: chr))))
     (update-model-matrix> Vert)
-    (when Up (cmd-update-vert *ipc Vert))
+    (when Up (cmd-upd-vert *ipc Vert))
     (adv-ptr)))
     
 

@@ -13,7 +13,7 @@
 
     # Pass list of socks so need only serialize once
 
-    (cmd-update-pv *ipc))
+    (cmd-upd-pv *ipc))
 
 
 (de cmd-move-cam-px (Keysym) (cmd-move-cam '(2.0   0.0)))
@@ -30,7 +30,7 @@
 
   (update-mat-proj> *projview)
 
-  (cmd-update-pv *ipc))
+  (cmd-upd-pv *ipc))
 
 
 (de cmd-zoom-cam-in  (Keysym) (cmd-zoom-cam -2.0))

@@ -21,7 +21,7 @@
     (set-ptr-y (get Ori 2))
     (update-model-matrix> *vert-ptr)
     (when Up
-      (cmd-update-vert *ipc *vert-ptr))))
+      (cmd-upd-vert *ipc *vert-ptr))))
 
 
 (de adv-ptr (Cnt)
@@ -66,4 +66,4 @@
 
 (de upd-ptr ()
   (update-model-matrix> *vert-ptr)
-  (cmd-update-vert *ipc *vert-ptr))
+  (cmd-upd-vert *ipc *vert-ptr))

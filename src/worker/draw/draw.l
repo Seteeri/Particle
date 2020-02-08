@@ -111,7 +111,7 @@
 
     (update-glyph> Vert Char)
     (update-model-matrix> Vert)
-    (cmd-update-vert *ipc Vert)
+    (cmd-upd-vert *ipc Vert)
 
     (inc '*cnt-v)
 

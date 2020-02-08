@@ -306,7 +306,7 @@
                      (get Col 1) (get Col 2) (get Col 3) 1.0)))
     (when Char (update-glyph> Vert Char))
     (update-model-matrix> Vert)
-    (cmd-update-vert *ipc Vert)
+    (cmd-upd-vert *ipc Vert)
 
     (inc '*cnt-v)
 
@@ -342,13 +342,13 @@
            (prinl-info "handle-ctrl" (glue " " Data)))
 
           ((= Name "update-vert")
-           (cmd-update-vert *ipc *vert-ptr))
+           (cmd-upd-vert *ipc *vert-ptr))
 
           ((= Name "calc-pv")
            (cmd-calc-pv (get Data 2) (get Data 3)))
 
           ((= Name "update-pv")
-           (cmd-update-pv *ipc))
+           (cmd-upd-pv *ipc))
 
           ((= Data "bye")
            # Send bye to ctrl which will send to all workers/render/model
