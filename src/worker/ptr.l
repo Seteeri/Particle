@@ -54,13 +54,9 @@
 
 (de set-ptr-x (Pos)
   (with *vert-ptr 
-    (=: pos (list Pos
-                  (get (: pos) 2)
-                  (get (: pos) 3)))))
+    (=: pos (place 1 (: pos) Pos))))
 
 
 (de set-ptr-y (Pos)
   (with *vert-ptr 
-    (=: pos (list (get (: pos) 1)
-                  Pos 
-                  (get (: pos) 3)))))
+    (=: pos (place 2 (: pos) Pos))))
