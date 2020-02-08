@@ -224,7 +224,7 @@
     
     # Move pointer above default data and to the start
     (nl-ptr -1.0)
-    (set-x-ptr-2 X)
+    (set-ptr-x X)
   
     (setq p0
           (gen-part 'p0
@@ -246,7 +246,7 @@
       (gen-cell (abs (>> -4 (adr (new '(+Pointer) NIL))))
                 'sym
                 (0.0 0.0))
-      (set-x-ptr-2 X)))
+      (set-ptr-x X)))
     
   (when NIL
     (setq *part-ptr (gen-part (cons T T)
@@ -260,19 +260,19 @@
       (gen-cell (abs (>> -4 (adr (cons NIL T))))
                 'cons
                 (0.0 0.0))
-      (nl-ptr 3.0) (set-x-ptr-2 X))
+      (nl-ptr 3.0) (set-ptr-x X))
   
     (when NIL
       (gen-cell (abs (>> -4 (adr (cons T (** 1152921504606846976 0)))))
                 'cons
                 (0.0 0.0))
-      (nl-ptr 3.0) (set-x-ptr-2 X))
+      (nl-ptr 3.0) (set-ptr-x X))
     
     (when NIL
       (gen-cell (abs (>> -4 (adr (cons (cons 3 4) (cons 1 2)))))
                 'cons
                 (0.0 0.0))
-      (nl-ptr 2.0) (set-x-ptr-2 X))
+      (nl-ptr 2.0) (set-ptr-x X))
 
     (when NIL
       (setq ABCDEFGHIJKLMNOPQRSTUVWXYZ NIL)
@@ -281,13 +281,13 @@
       (gen-cell (abs (>> -4 (adr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ)))
                 'sym
                 (0.0 0.0))
-      (nl-ptr 2.0) (set-x-ptr-2 X))
+      (nl-ptr 2.0) (set-ptr-x X))
     
     (when NIL
       (gen-cell (abs (>> -4 (adr "ABC")))
                 'sym
                 (0.0 0.0))
-      (nl-ptr 2.0) (set-x-ptr-2 X))
+      (nl-ptr 2.0) (set-ptr-x X))
     
     (when NIL
       (gen-cell (abs (>> -4 (adr "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")))

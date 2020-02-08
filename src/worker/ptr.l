@@ -17,8 +17,8 @@
   (let Ori (get-origin> (get *metrics (get Vert 'chr))
                         (get Vert 'pos)
                         *sca-vert)
-    (set-x-ptr-2 (get Ori 1))
-    (set-y-ptr-2 (get Ori 2))
+    (set-ptr-x (get Ori 1))
+    (set-ptr-y (get Ori 2))
     (update-model-matrix> *vert-ptr)
     (when Up
       (cmd-update-vert *ipc *vert-ptr))))
@@ -52,14 +52,14 @@
   (cmd-update-vert *ipc *vert-ptr))
 
 
-(de set-x-ptr-2 (Pos)
+(de set-ptr-x (Pos)
   (with *vert-ptr 
     (=: pos (list Pos
                   (get (: pos) 2)
                   (get (: pos) 3)))))
 
 
-(de set-y-ptr-2 (Pos)
+(de set-ptr-y (Pos)
   (with *vert-ptr 
     (=: pos (list (get (: pos) 1)
                   Pos 

@@ -233,16 +233,16 @@
           Pa-Ar (when (and (not (num? Ar))
                            (not Car))
                   # Move below, align left of cons
-                  (nl-ptr) (set-x-ptr-2 X)
+                  (nl-ptr) (set-ptr-x X)
                   (gen-part Ar Depth Root gen-pair-x-h))
 
           Pa-Dr (when (and (not (num? Dr))
                            (not Cdr))
                   # If cursor short then must adv
                   (when (<= (get (get *vert-ptr 'pos) 1) X-Cdr)
-                    (set-x-ptr-2 X-Cdr))
+                    (set-ptr-x X-Cdr))
                   (adv-ptr)
-                  (set-y-ptr-2 Y)
+                  (set-ptr-y Y)
                   (gen-part Dr Depth Root gen-pair-x-h)))
       
       (new '(+Particle)
@@ -273,7 +273,7 @@
                            (not Cdr))
                   # For cons pair, use colored dot
                   # Position under like a list
-                  (set-x-ptr-2 X)
+                  (set-ptr-x X)
                   (nl-ptr)
                   (gen-part Dr Depth Root gen-pair-y-h)))
       
@@ -300,7 +300,7 @@
                 Root
                 Layout)
   
-  (set-x-ptr-2 (car Root))
+  (set-ptr-x (car Root))
   (nl-ptr)
   
   # Manually link above to below
@@ -335,7 +335,7 @@
 
       (when (setq R (cddr R))
         (nl-ptr)
-        (set-x-ptr-2 X)))))
+        (set-ptr-x X)))))
 
 
 (de gen-let-var (List Depth Root Layout)
@@ -457,7 +457,7 @@
         Pa-Ar (unless (or (= Ptr-Ar 4380504)
                           (= Ptr-Ar 4380648))
                 # Move below, align left of cons
-                (nl-ptr) (set-x-ptr-2 X)    
+                (nl-ptr) (set-ptr-x X)    
                 (gen-cell (cond ((= Type-Ar 'sym) (- Ptr-Ar 8))
                                 ((= Type-Ar 'big) (- Ptr-Ar 4))
                                 (T Ptr-Ar))
@@ -469,9 +469,9 @@
                           (= Ptr-Dr (+ Ptr 8)))
                  # If cursor short then must adv
                  (when (<= (get (get *vert-ptr 'pos) 1) X-Cdr)
-                   (set-x-ptr-2 X-Cdr))
+                   (set-ptr-x X-Cdr))
                  (adv-ptr)
-                 (set-y-ptr-2 Y)
+                 (set-ptr-y Y)
                  (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
                                  ((= Type-Dr 'big) (- Ptr-Dr 4))
                                  (T Ptr-Dr))
@@ -511,9 +511,9 @@
                           (= Ptr-Dr 4380648))
                  # If cursor short then must adv
                  (when (<= (get (get *vert-ptr 'pos) 1) X-Cdr)
-                   (set-x-ptr-2 X-Cdr))
+                   (set-ptr-x X-Cdr))
                  (adv-ptr)
-                 (set-y-ptr-2 Y)
+                 (set-ptr-y Y)
                  (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
                                  ((= Type-Dr 'big) (- Ptr-Dr 4))
                                  (T Ptr-Dr))
@@ -554,7 +554,7 @@
         Pa-Ar (unless (or (= Ptr-Ar 4380504)
                           (= Ptr-Ar 4380648))
                 # Move below, align left of cons
-                (nl-ptr) (set-x-ptr-2 X)
+                (nl-ptr) (set-ptr-x X)
                 (gen-cell (cond ((= Type-Ar 'sym) (- Ptr-Ar 8))
                                 ((= Type-Ar 'big) (- Ptr-Ar 4))
                                 (T Ptr-Ar))
@@ -565,9 +565,9 @@
                           (= Ptr-Dr 4380648))
                  # If cursor short then must adv
                  (when (<= (get (get *vert-ptr 'pos) 1) X-Cdr)
-                   (set-x-ptr-2 X-Cdr))
+                   (set-ptr-x X-Cdr))
                  (adv-ptr)
-                 (set-y-ptr-2 Y)
+                 (set-ptr-y Y)
                  (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
                                  ((= Type-Dr 'big) (- Ptr-Dr 4))
                                  (T Ptr-Dr))
