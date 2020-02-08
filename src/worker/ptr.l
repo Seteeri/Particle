@@ -14,11 +14,11 @@
 
 
 (de mov-ptr (Vert Upd)
-  (let Ori (get-origin> (get *metrics (get Vert 'chr))
-                        (get Vert 'pos)
-                        *sca-vert)
-    (set-ptr-x (get Ori 1))
-    (set-ptr-y (get Ori 2))
+  (let ((X Y) (get-origin> (get *metrics (get Vert 'chr))
+                           (get Vert 'pos)
+                           *sca-vert))
+    (set-ptr-x X)
+    (set-ptr-y Y)
     (upd-mdl-mtrx> *vert-ptr)
     (when Upd
       (cmd-upd-vert *ipc *vert-ptr))))
