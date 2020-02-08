@@ -77,7 +77,9 @@
 
 
 (de draw-dot (Adv)
+
   (let Dot (draw-glyph (char 183) *col-base-0)
+
     (when Adv (adv-ptr))
     Dot))
 
@@ -133,7 +135,9 @@
 
 
 (de draw-atom (Atom Col Adv) 
+
   (let Col-2 (if Col Col (get-color-type Atom))
+
     (cond ((num? Atom) (draw-num Atom Col-2 Adv))
           ((str? Atom) (draw-str Atom Col-2 Adv))
           (T           (draw-sym Atom Col-2 Adv)))))

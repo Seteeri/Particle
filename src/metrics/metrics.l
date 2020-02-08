@@ -81,7 +81,7 @@ Quotient of N and D = (*/ 1.0 N D)
 
     # Calculate bounding box for glyph (for drawing the texture)
     # l b r t
-    # First, get the origin which may have been moved to create enough space
+    # First, get origin which may have moved to create enough space
     # for distance field, then add bounds
     (=: bounds-tex (list (+ (*/ (get (: translate) 1) Sca-Glyph 1.0) (get (: bounds) 1))
                          (+ (*/ (get (: translate) 2) Sca-Glyph 1.0) (get (: bounds) 2))

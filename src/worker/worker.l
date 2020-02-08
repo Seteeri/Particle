@@ -200,81 +200,100 @@
 
   # TODO: Render default symbols
   
-  # Currently, ptr is being used for drawing position
-  # However, to draw the ptr requires ptr so circular dependency  
-  # Create pointer object/symbol
-  # -> Draw entire symbol structure
+  # However, to draw the Ptr requires Ptr...
+  #
+  # -> Manually make Pointer particle
 
   (setq *vert-ptr (alloc-vert (list 0.0 0.0 0.0) "`" *col-red))
-
-  (nl-ptr)
-
-  (when T
-    (setq *part-ptr (gen-part (cons T T)
-                              0.0
-                              (list 0.0 0.0 0.0)
-                              gen-pair-x-h)))
-
   (nl-ptr)
   
-  # Delete vert after?
-  # Set *vert-ptr as cursor for drawing
-    
   (when NIL
-  
-    (let ((X Y) (get *vert-ptr 'pos))
+    (run-tests))
 
-      (when T
-        (gen-cell (abs (>> -4 (adr (cons NIL T))))
-                  'cons
-                  (0.0 0.0))
-        (nl-ptr 3.0) (set-x-ptr-2 X))
-    
-      (when NIL
-        (gen-cell (abs (>> -4 (adr (cons T (** 1152921504606846976 0)))))
-                  'cons
-                  (0.0 0.0))
-        (nl-ptr 3.0) (set-x-ptr-2 X))
-      
-      (when NIL
-        (gen-cell (abs (>> -4 (adr (cons (cons 3 4) (cons 1 2)))))
-                  'cons
-                  (0.0 0.0))
-        (nl-ptr 2.0) (set-x-ptr-2 X))
-
-      (when NIL
-        (setq ABCDEFGHIJKLMNOPQRSTUVWXYZ NIL)
-        (put 'ABCDEFGHIJKLMNOPQRSTUVWXYZ "A" "X")
-        (put 'ABCDEFGHIJKLMNOPQRSTUVWXYZ "B" "Y")
-        (gen-cell (abs (>> -4 (adr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ)))
-                  'sym
-                  (0.0 0.0))
-        (nl-ptr 2.0) (set-x-ptr-2 X))
-      
-      (when NIL
-        (gen-cell (abs (>> -4 (adr "ABC")))
-                  'sym
-                  (0.0 0.0))
-        (nl-ptr 2.0) (set-x-ptr-2 X))
-      
-      (when NIL
-        (gen-cell (abs (>> -4 (adr "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")))
-                  'sym
-                  (0.0 0.0)))
-      T))
+  (let ((X Y) (get *vert-ptr 'pos))
   
-  (when T
+    # Default data is NIL
     (setq *part-root
-          (gen-part () #'(a b) #'(a b (c d) e)
+          (gen-part ()
+                    0.0
+                    (get *vert-ptr 'pos)
+                    gen-pair-x-h))
+
+  
+    # Default pointer symbol is p0...or use *0...N?
+    
+    # Move pointer above default data and to the start
+    (nl-ptr -1.0)
+    (set-x-ptr-2 X)
+  
+    (setq p0
+          (gen-part 'p0
                     0.0
                     (get *vert-ptr 'pos)
                     gen-pair-x-h)))
-  
+
   (adv-ptr)
 
   (prinl-info "init-worker" "Starting epoll...")
 
   (loop (ipc~poll> *ipc -1)))
+
+
+(de run-tests ()
+
+  (when NIL
+    (let ((X Y) (get *vert-ptr 'pos))
+      (gen-cell (abs (>> -4 (adr (new '(+Pointer) NIL))))
+                'sym
+                (0.0 0.0))
+      (set-x-ptr-2 X)))
+    
+  (when NIL
+    (setq *part-ptr (gen-part (cons T T)
+                              0.0
+                              (list 0.0 0.0 0.0)
+                              gen-pair-x-h)))
+
+  (let ((X Y) (get *vert-ptr 'pos))
+
+    (when T
+      (gen-cell (abs (>> -4 (adr (cons NIL T))))
+                'cons
+                (0.0 0.0))
+      (nl-ptr 3.0) (set-x-ptr-2 X))
+  
+    (when NIL
+      (gen-cell (abs (>> -4 (adr (cons T (** 1152921504606846976 0)))))
+                'cons
+                (0.0 0.0))
+      (nl-ptr 3.0) (set-x-ptr-2 X))
+    
+    (when NIL
+      (gen-cell (abs (>> -4 (adr (cons (cons 3 4) (cons 1 2)))))
+                'cons
+                (0.0 0.0))
+      (nl-ptr 2.0) (set-x-ptr-2 X))
+
+    (when NIL
+      (setq ABCDEFGHIJKLMNOPQRSTUVWXYZ NIL)
+      (put 'ABCDEFGHIJKLMNOPQRSTUVWXYZ "A" "X")
+      (put 'ABCDEFGHIJKLMNOPQRSTUVWXYZ "B" "Y")
+      (gen-cell (abs (>> -4 (adr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ)))
+                'sym
+                (0.0 0.0))
+      (nl-ptr 2.0) (set-x-ptr-2 X))
+    
+    (when NIL
+      (gen-cell (abs (>> -4 (adr "ABC")))
+                'sym
+                (0.0 0.0))
+      (nl-ptr 2.0) (set-x-ptr-2 X))
+    
+    (when NIL
+      (gen-cell (abs (>> -4 (adr "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")))
+                'sym
+                (0.0 0.0)))
+    T))
 
 
 (de alloc-vert (Pos Char Col)

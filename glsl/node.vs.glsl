@@ -8,7 +8,6 @@ layout (std140, binding = 0) uniform projview
 layout (std140, binding = 1) uniform vertices
 {
     vec4 vertex[4];
-    //vec3 barycentric[3];
 };
 layout(std430, binding = 3) readonly buffer data_instances_out
 {

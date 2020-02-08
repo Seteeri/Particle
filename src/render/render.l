@@ -246,10 +246,8 @@ Class variables may be indicated by an upper case letter
     # Poss only send if clients are ready
     (send-msg-clients *ipc (format (usec)))
 
+    # Refactor this so it blocks until event
     (ipc~poll> *ipc 0)
-
-    # Force gc
-    #(gc)
 
     T)
 

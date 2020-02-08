@@ -2465,3 +2465,111 @@ The issue is how to draw the symbol.
 
 
 OS DEV:
+
+
+PTR
+ |
+[.|.] -> [.|.] ->  [.|.] -> NIL
+
+
+How to tie PTR symbol to the list
+Ptr has the property which is the actual obj
+We would need to draw the entire symbol and property list
+Or pointer is simply a cons
+
+(def *ptr (cons NIL <obj>))
+
+Cannot draw entire symbol without shrinking it
+If symbol prop list grew, could not fit it
+
+DO:
+
+
+PTR-1 -> PTR-2
+
+PTR-2 -> DATA
+
+...
+
+
+Solution:
+
+Draw object master pointer property list value with quoted symbol "p-1"
+- Or master pointer is simply a list of quoted symbols and/or nested lists
+
++Pointer
+-> '(p1...)
+
+Draw symbol "p1" above actual data
+- This symbol's value is the data - the symbol itself is not an object
+
+ p1
+ |
+[] [] [] []
+
+Thoughts:
+* Draw pointers objects elsewhere and generate p# symbols
+* Pointers can point to other Pointers
+  * Check for type of object when using data
+
+Or
+
+Draw symbol/object elsewhere and
+draw the symbol on top of the pointed
+Use ... to indicate n-cells between CAR and pointed
+
+- Okay to draw same data
+-> This breaks consistency?
+- If additional objects are drawn between lines then
+spacing is irregular, and the only way to mitigate that is
+to draw lines between cells - use single line (pipe) rotated+scaled
+- It would also require moving objects around
+- Draw between cells
+
+
+Or
+
+Shrink entire symbol/object to fit - use can zoom in to see it
+
+=============================================
+
+Type wherever, like right in the main data, and execute a command or
+to be more organized, create a special list stored in an arbitrary
+symbol that is used
+typing commands
+
+=================================================
+=================================================
+
+- Create Pointer class
+- Draw Pointer object as part another list...
+  - Property: list of syms that point to desired data
+- Draw condensed sym with value below
+  - Exception to the rule
+    - Sym is primitive type so not so bad? Limit number of exceptions to the rule
+  - Drawing a line will help understanding
+  - Color to differentiate specialization/exception?
+  - CDR is typically to the right, but make this exception or use marker to indicate the CDR is below
+- Instead of storing properties in symbol, create class, since symbol props are not
+draw entirely when above data
+  - The value of objects are themselves (or their types)
+
+Multiple pointers will stack which would require moving lines around it
+-> Requires spatial data structure for efficiency
+
+- Poss only move affected parts...but need to draw lines to maintain
+relationships
+  - More explicit, closer in line with user expectations - principle of least astonishment
+
+...
+D-D-D-D-D-D-D-D-...
+
+P0    P1
+P0    P1
+P0    P1
+|     |
+D-D-D-D-D-D-D-D
+
+
+vertical   = nested list - scanning vertically determines depth of list
+horizontal = same list   - scanning horizontally determines breadth of list

@@ -3,9 +3,15 @@
   # Particle
   (=: p))
 
+#{
 (dm mov> (Vert Up))
 (dm adv> (Cnt))
 (dm nl> (Cnt))
+}#
+
+
+# These are not really specific to pointer as they can apply to any Particle
+
 
 (de mov-ptr (Vert Up)
   (let Ori (get-origin> (get *metrics (get Vert 'chr))
@@ -61,20 +67,32 @@
 
 
 (de set-x-ptr (Pos)
-  (with *vert-ptr (=: pos (list Pos (get (: pos) 2) (get (: pos) 3))))
+  (with *vert-ptr 
+    (=: pos (list Pos 
+                  (get (: pos) 2) 
+                  (get (: pos) 3))))
   (update-model-matrix> *vert-ptr)
   (cmd-update-vert *ipc *vert-ptr))
 
 
 (de set-y-ptr (Pos)
-  (with *vert-ptr (=: pos (list (get (: pos) 1) Pos (get (: pos) 3))))
+  (with *vert-ptr 
+    (=: pos (list (get (: pos) 1) 
+                  Pos 
+                  (get (: pos) 3))))
   (update-model-matrix> *vert-ptr)
   (cmd-update-vert *ipc *vert-ptr))
 
 
 (de set-x-ptr-2 (Pos)
-  (with *vert-ptr (=: pos (list Pos (get (: pos) 2) (get (: pos) 3)))))
+  (with *vert-ptr 
+    (=: pos (list Pos
+                  (get (: pos) 2)
+                  (get (: pos) 3)))))
 
 
 (de set-y-ptr-2 (Pos)
-  (with *vert-ptr (=: pos (list (get (: pos) 1) Pos (get (: pos) 3)))))
+  (with *vert-ptr 
+    (=: pos (list (get (: pos) 1)
+                  Pos 
+                  (get (: pos) 3)))))

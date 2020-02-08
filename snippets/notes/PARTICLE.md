@@ -152,7 +152,7 @@ Store DAGs as binary trees?
      * Sort time
      * Repeat keys
 
-  * Primary Representation
+  * Primary Representation [Done]
     * Implement drawing s-exp [Done]
       * Draw space (" ") by itself draw box or draw with quotes
         * For now draw quotes on all strings
@@ -160,49 +160,54 @@ Store DAGs as binary trees?
       * Follow pp style?
         * We follow indent, poss use rule len list > 12?
     * Integrate with particle [Done]
-    * Handle modifying lists and layout [WIP]
+    * Handle modifying lists and layout
       * Append item [Done]
       * Remove item [Done]
         * Skip removing NIL at end of list since it would still point to NIL
-
        * When deleting list, skip deleting NIL [Done]
-       * Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
-         * CDR, the value of the symbol, is always right of the pointer
-       * Implement spatial map
+       
+  * Pointer [WIP]
+    * Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
+    * Draw lines
+      * One node per line segment
+      * Scale node to fit line
+    * Select item
+      * Ptr is a particle symbol whose value is whatever the user wants
+        * Default = master list
+      * Part-ptr contains master list particle
+        * Rename part-ptr to master-part so part-ptr contains the ptr
+        particle
+      * Moving through a list is equivalent to setting ptr value to
+      nth prev/next or car/cdr, such as pointing to a list or the value
+      * As user moves, ptr changes are stored in history
+  
+  * Limit draw lengths to N items (def=12)
+    
+  * Implement spatial map
 
-       * Swap part
-         * (con (nth n) (new)) to change CDR
-         * (con (new) (nth n+1))        
-        
-       * Create list
-       * Enter/exit list
-       * Brainstorm
-         * If at end (@NIL) or pointing to NIL, append
-         * Else anywhere else:
-           * If NIL, create list with char OR replace it?
-             * Default:enter list
-           * If not NIL, append after (like at end)
-             * Consistent = easier
-             * Should not replace, since can be done with backspace/delete + append
-               * Same reason insert mode is not default
-         * Use specific command to replace any with list/NIL
-           * Aka use NIL command
-           
-      * Select item
-        * Ptr is a particle symbol whose value is whatever the user wants
-          * Default = master list
-        * Part-ptr contains master list particle
-          * Rename part-ptr to master-part so part-ptr contains the ptr
-          particle
-        * Moving through a list is equivalent to setting ptr value to
-        nth prev/next or car/cdr, such as pointing to a list or the value
-        * As user moves, ptr changes are stored in history
-      * Creation/Deletion
-      * Enter/Exit
-        * Alt+Backspace = Enter list
-        * Alt+Enter = Exit list (move to dot/parent list)
-        * Alt+Up = Enter next list
-        * Alt+Dn = Enter prev list
+  * Swap part
+    * (con (nth n) (new)) to change CDR
+    * (con (new) (nth n+1))        
+    
+  * List Handling
+    * Create list
+    * Enter/exit list
+    * Brainstorm
+      * If at end (@NIL) or pointing to NIL, append
+      * Else anywhere else:
+        * If NIL, create list with char OR replace it?
+      * Default:enter list
+        * If not NIL, append after (like at end)
+        * Consistent = easier
+          * Should not replace, since can be done with backspace/delete + append
+      * Same reason insert mode is not default
+    * Use specific command to replace any with list/NIL
+    * Aka use NIL command
+    * Enter/Exit
+      * Alt+Backspace = Enter list
+      * Alt+Enter = Exit list (move to dot/parent list)
+      * Alt+Up = Enter next list
+      * Alt+Dn = Enter prev list
 
     * Use special printing for control characters like enter etc.
       * newline ("^J"), return ("^M") or TAB ("^I")
@@ -224,6 +229,9 @@ Store DAGs as binary trees?
         * Store pointer in a map
         * If particle exists, leave CAR/CDR empty, show only PTR
         * Poss reference the value from the map (so first ref will be used)      
+
+  * Split screen
+    * Add commands to do this
 
   * Map keys to grid on screen
     * User can use keys to manuever
