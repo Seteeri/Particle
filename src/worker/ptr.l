@@ -60,30 +60,6 @@
   (cmd-update-vert *ipc *vert-ptr))
 
 
-(de set-pos-ptr (Pos)
-  (with *vert-ptr (=: pos Pos))
-  (update-model-matrix> *vert-ptr)
-  (cmd-update-vert *ipc *vert-ptr))
-
-
-(de set-x-ptr (Pos)
-  (with *vert-ptr 
-    (=: pos (list Pos 
-                  (get (: pos) 2) 
-                  (get (: pos) 3))))
-  (update-model-matrix> *vert-ptr)
-  (cmd-update-vert *ipc *vert-ptr))
-
-
-(de set-y-ptr (Pos)
-  (with *vert-ptr 
-    (=: pos (list (get (: pos) 1) 
-                  Pos 
-                  (get (: pos) 3))))
-  (update-model-matrix> *vert-ptr)
-  (cmd-update-vert *ipc *vert-ptr))
-
-
 (de set-x-ptr-2 (Pos)
   (with *vert-ptr 
     (=: pos (list Pos
