@@ -9,8 +9,6 @@
 
     #(println "PART-PTR" *part-root (get *part-root 'data) (get *part-root 'a) (get *part-root 'b))
 
-    # TODO: Position p0 over new item
-
     (if (get *part-root 'data)
 
       (prog
@@ -61,6 +59,12 @@
                                   gen-pair-x-h))
 
         T))
+        
+  # TODO: Position p0 over new item
+  # Rebase verts at current ptr pos
+  (nl-ptr -1.0)
+  (adv-ptr -3.0)
+  (base-verts> (car *part-ptrs) T)
   
   (cond ((= Keysym ksd~Return) T)
         ((= Keysym ksd~Tab)    T)
@@ -138,7 +142,11 @@
             (with Last-3 (=: b Part-NIL))
 
             # Replace *part-root with NIL particle
-            (setq *part-root Part-NIL))))))
+            (setq *part-root Part-NIL))))
+    
+  (nl-ptr -1.0)
+  (adv-ptr -3.0)
+  (base-verts> (car *part-ptrs) T)))
 
 
 #########################

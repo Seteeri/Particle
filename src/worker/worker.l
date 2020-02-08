@@ -206,36 +206,37 @@
   # TODO: Render default symbols
   
   # However, to draw the Ptr requires Ptr...
-  #
   # -> Manually make Pointer particle
 
   (setq *vert-ptr (alloc-vert (list 0.0 0.0 0.0) "`" *col-red))
   (nl-ptr)
+  
+  # Replace usage of *vert-ptr with p0
   
   (when NIL
     (run-tests))
 
   (let ((X Y) (get *vert-ptr 'pos))
   
+    # Default pointer symbol is p0...or use *0...N?
+    (setq p0 ())
+    
+    # List works for small amount
+    # Use binary trees for larger amount
+    (push '*part-ptrs (gen-part 'p0
+                                0.0
+                                (get *vert-ptr 'pos)
+                                gen-pair-x-h))
+                                
+    (nl-ptr)
+    (set-ptr-x X)
+  
     # Default data is NIL
     (setq *part-root
           (gen-part ()
                     0.0
                     (get *vert-ptr 'pos)
-                    gen-pair-x-h))
-
-      
-    # Move pointer above default data and to the start
-    (nl-ptr -1.0)
-    (set-ptr-x X)
-  
-    # Default pointer symbol is p0...or use *0...N?
-    (setq p0 ())
-    
-    (push '*part-ptrs (gen-part 'p0
-                                0.0
-                                (get *vert-ptr 'pos)
-                                gen-pair-x-h)))
+                    gen-pair-x-h)))
 
   (adv-ptr)
 

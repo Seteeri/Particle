@@ -168,11 +168,14 @@ Store DAGs as binary trees?
        
   * Pointer [WIP]
     * Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
-      * Implement p0
-      * Refactor cmd-char... to update p0
-    * Draw lines
-      * One node per line segment
-      * Scale node to fit line
+      * Implement p* - master ptr [Done]
+      * Refactor cmd-char etc. to update p* [Done]
+      * Replace current marker with p* symbol
+        * Refactor initial particle creation
+    * Create new ptrs
+      * Default is to create pointer to current
+      * Make new ptr point to old ptr
+      * When adding etc, move new ptr and leave old ptr in place
     * Select item
       * Ptr is a particle symbol whose value is whatever the user wants
         * Default = master list
@@ -182,15 +185,13 @@ Store DAGs as binary trees?
       * Moving through a list is equivalent to setting ptr value to
       nth prev/next or car/cdr, such as pointing to a list or the value
       * As user moves, ptr changes are stored in history
-  
-  * Limit draw lengths to N items (def=12)
-    
-  * Implement spatial map
-
+      
   * Swap part
     * (con (nth n) (new)) to change CDR
     * (con (new) (nth n+1))        
-    
+  
+  GET TO HERE =------------------------------------------------------------
+  
   * List Handling
     * Create list
     * Enter/exit list
@@ -213,24 +214,24 @@ Store DAGs as binary trees?
 
     * Use special printing for control characters like enter etc.
       * newline ("^J"), return ("^M") or TAB ("^I")
+    
     * Relayout
       * (col n) - n=number of items before row on last item
       * (row n) - n=number of items before col on last item    
       * Print commands by default
-    * Refactor ptr
-    * Batch draw commands
-    * Misc refactoring
 
-  * Data structures
-    * Implement spatial map (R-Tree)
-      * Will be interesting to see data structure...
-      * Need this to optimize finding bounds
-    * Implement particle map
-      * Poss unneedlessly pollute symbol table...or use namespaces to manage?
-      * Handle same pointers
-        * Store pointer in a map
-        * If particle exists, leave CAR/CDR empty, show only PTR
-        * Poss reference the value from the map (so first ref will be used)      
+  * Limit draw lengths to N items (def=12)
+    * ...then move to newline
+    * any changes to this might have to redraw everything
+      * spatial map will allow optimization
+    
+  * Implement spatial map (R-Tree)
+    * Will be interesting to see data structure...
+    * Need this to optimize finding bounds
+
+  * Draw lines
+    * One node per line segment
+    * Scale node to fit line
 
   * Split screen
     * Add commands to do this
@@ -255,16 +256,15 @@ Store DAGs as binary trees?
       * Like Nano
     * FPS - do in render
 
-  * Load own code
+  * Load own code as data
+    * Really draw relevant internal symbols from table
 
   * Explore file browsing using built in functions
     * For example, get a list of files in directory -> return list of strings of
     files
 
-   * PRE-RELEASE - REPL - JAN ?
-     * CLEAN UP
-     * RECORD DEMO
-     * ANNOUNCE ON MAILING LIST, LATER REDDIT
+  * Test multiple workers
+    * Need data sync on model side to broadcast updates
 
   POST DEMO:
 
@@ -283,9 +283,6 @@ Store DAGs as binary trees?
    * Show commands
      * Add disassemble functionality
      * Render frame time?
-
-   * Test multiple workers
-     * Need data sync on model side to broadcast updates
 
   https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
 
@@ -316,7 +313,7 @@ Store DAGs as binary trees?
     * Radial also
     * Hyperbolic
 
-* Unscheduled Stuff
+  * Unscheduled Stuff
 
    * Replace serialization with pr/rd/wr [Later]
      * Use pr/rd/wr/bytes
@@ -364,7 +361,6 @@ Store DAGs as binary trees?
          * mathc and more...
        * Refactor li into subfolders [?]
        * Remove print msgs from gl
-
 
    * Try proportional fonts with kerning
      * Change blend mode?
@@ -416,13 +412,9 @@ Store DAGs as binary trees?
   * Note 32 MB = 8 ms to mark/sweep
     * = 2,000,000 cons cells -> Test this with loop/cons/heap
 
+## OTHER STUFF
+
 * Benchmark/Profile
-  * JIT Melee:
-    * Python (PyPy)
-    * Ruby (Truffle?)
-    * Erlang
-    * Lisp (PicoLisp)
-    * Lua (LuaRaptorJIT)
   * Tests
     * Sorting Algorithms
     * String Manipulation
@@ -445,13 +437,11 @@ Store DAGs as binary trees?
   * If support discontinued, compile to C, optimize, start from there
 
 * Mailing list:
-  * Does the emulator slowdown apply to 32-bit only? Is there speed penalty on x86-64?
   * WASM backend/implementation
-  * Something like disassemble function? -> No bytecode
   * Image dumping -> RD/WR/PR + STR/ANY
     * Default DB provide this?
     * Dump heap and reload heap
-  * How to delete symbol?
   * Struct does not have 'H' for shorts?
   * Suggestion to docs with more figures of symbols cons trees in diff scenarios
   * (= (cons 0 NIL) (box)) returns NIL when it should be true
+    * Ptr or struct equality?
