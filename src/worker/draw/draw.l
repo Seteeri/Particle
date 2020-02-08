@@ -110,7 +110,7 @@
                      (get Col 1) (get Col 2) (get Col 3) 1.0)))
 
     (update-glyph> Vert Char)
-    (update-model-matrix> Vert)
+    (upd-mdl-mtrx> Vert)
     (cmd-upd-vert *ipc Vert)
 
     (inc '*cnt-v)

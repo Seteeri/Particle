@@ -42,7 +42,7 @@
   
   (when Chr
     (update-glyph> This Chr)
-    (update-model-matrix> This)))
+    (upd-mdl-mtrx> This)))
 
 
 (dm update-glyph> (Chr)
@@ -63,7 +63,7 @@
     (=: sca (get-sca> Metrics *sca-vert))))
         
          
-(dm update-model-matrix> ()
+(dm upd-mdl-mtrx> ()
 
   (=: mm (mat4-mul (mat4-translation (: pos))
                    (mat4-mul (mat4-rotation-z (get (: rota) 3))

@@ -305,7 +305,7 @@
                      (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0)))
     (when Char (update-glyph> Vert Char))
-    (update-model-matrix> Vert)
+    (upd-mdl-mtrx> Vert)
     (cmd-upd-vert *ipc Vert)
 
     (inc '*cnt-v)
@@ -407,7 +407,7 @@
           (=: rota (list 0.0
                          0.0
                          (+ (get (: rota) 3) 0.017)))
-          (update-model-matrix> Vert))
+          (upd-mdl-mtrx> Vert))
 
         # FIX - use update...
         (cmd-render-vert *ipc Vert)))))
@@ -532,7 +532,7 @@
                              (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
 
           #(update-glyph> Vert (char (rand 33 126)))
-          (update-model-matrix> Vert)
+          (upd-mdl-mtrx> Vert)
 
           # FIX - use update...
           (cmd-render-vert *ipc Vert)

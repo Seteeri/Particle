@@ -19,7 +19,7 @@
                         *sca-vert)
     (set-ptr-x (get Ori 1))
     (set-ptr-y (get Ori 2))
-    (update-model-matrix> *vert-ptr)
+    (upd-mdl-mtrx> *vert-ptr)
     (when Up
       (cmd-upd-vert *ipc *vert-ptr))))
 
@@ -65,5 +65,5 @@
 
 
 (de upd-ptr ()
-  (update-model-matrix> *vert-ptr)
+  (upd-mdl-mtrx> *vert-ptr)
   (cmd-upd-vert *ipc *vert-ptr))

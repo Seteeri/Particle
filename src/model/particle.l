@@ -94,7 +94,7 @@
                      (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0)))
-    (update-model-matrix> Vert)
+    (upd-mdl-mtrx> Vert)
     (cmd-upd-vert *ipc Vert)))
 
 
@@ -146,7 +146,7 @@
     (with Vert
       (=: pos (get *vert-ptr 'pos))
       (update-glyph> Vert (char (: chr))))
-    (update-model-matrix> Vert)
+    (upd-mdl-mtrx> Vert)
     (when Up (cmd-upd-vert *ipc Vert))
     (adv-ptr)))
     
