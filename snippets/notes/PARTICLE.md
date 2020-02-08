@@ -168,6 +168,8 @@ Store DAGs as binary trees?
        
   * Pointer [WIP]
     * Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
+      * Implement p0
+      * Refactor cmd-char... to update p0
     * Draw lines
       * One node per line segment
       * Scale node to fit line

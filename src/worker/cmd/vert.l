@@ -1,9 +1,3 @@
-#{
-(cond ((= Keysym ksd~Return) (nl-ptr))
-      ((= Keysym ksd~Tab)    (adv-ptr 2.0)))
-}#
-
-
 (de cmd-make-char (Keysym)
 
   # Enter/Newline should produce character and move pointer
@@ -14,6 +8,8 @@
         List-Data (list Data))
 
     #(println "PART-PTR" *part-root (get *part-root 'data) (get *part-root 'a) (get *part-root 'b))
+
+    # TODO: Position p0 over new item
 
     (if (get *part-root 'data)
 
@@ -64,7 +60,11 @@
                                   (get *vert-ptr 'pos)
                                   gen-pair-x-h))
 
-        T))))
+        T))
+  
+  (cond ((= Keysym ksd~Return) T)
+        ((= Keysym ksd~Tab)    T)
+        (T T))))
 
 
 (de cmd-del (Dir)

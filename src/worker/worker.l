@@ -40,7 +40,12 @@
 (def '*verts)
 (def '*cnt-v 1)
 
+# Currently used as main, however this is the timeline
 (def '*part-root)
+# Main working data
+(def '*part-main)
+# Pointers
+(def '*part-ptrs)
 
 (def '*part-ptr)
 # Vertices for pointer; also can be found through part-ptr
@@ -219,18 +224,18 @@
                     (get *vert-ptr 'pos)
                     gen-pair-x-h))
 
-  
-    # Default pointer symbol is p0...or use *0...N?
-    
+      
     # Move pointer above default data and to the start
     (nl-ptr -1.0)
     (set-ptr-x X)
   
-    (setq p0
-          (gen-part 'p0
-                    0.0
-                    (get *vert-ptr 'pos)
-                    gen-pair-x-h)))
+    # Default pointer symbol is p0...or use *0...N?
+    (setq p0 ())
+    
+    (push '*part-ptrs (gen-part 'p0
+                                0.0
+                                (get *vert-ptr 'pos)
+                                gen-pair-x-h)))
 
   (adv-ptr)
 
