@@ -60,3 +60,7 @@
 (de set-ptr-y (Pos)
   (with *vert-ptr 
     (=: pos (place 2 (: pos) Pos))))
+
+
+(de set-ptr-pos (Pos)
+  (put '*vert-ptr 'pos Pos))
