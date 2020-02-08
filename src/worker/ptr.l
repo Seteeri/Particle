@@ -13,14 +13,14 @@
 # These are not really specific to pointer as they can apply to any Particle
 
 
-(de mov-ptr (Vert Up)
+(de mov-ptr (Vert Upd)
   (let Ori (get-origin> (get *metrics (get Vert 'chr))
                         (get Vert 'pos)
                         *sca-vert)
     (set-ptr-x (get Ori 1))
     (set-ptr-y (get Ori 2))
     (upd-mdl-mtrx> *vert-ptr)
-    (when Up
+    (when Upd
       (cmd-upd-vert *ipc *vert-ptr))))
 
 
