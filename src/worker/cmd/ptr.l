@@ -33,8 +33,7 @@
       (=: pos (list (+ (get (: pos) 1) (get Move 1))
                     (+ (get (: pos) 2) (get Move 2))
                     (get (: pos) 3))))
-  (update-model-matrix> *vert-ptr)
-  (cmd-update-vert *ipc *vert-ptr))
+  (upd-ptr))
 
 
 (de cmd-translate-ptr-px (Keysym) (cmd-translate-ptr 1 (list (*/ *adv-vert 1.0 1.0)   0.0)))

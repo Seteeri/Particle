@@ -34,8 +34,7 @@
                   (+ (car (: pos))
                      (*/ *adv-vert Cnt 1.0)))))
       
-  (update-model-matrix> *vert-ptr)
-  (cmd-update-vert *ipc *vert-ptr))
+  (upd-ptr))
 
 
 (de nl-ptr (Cnt)
@@ -48,8 +47,7 @@
                    (get (: pos) 3))
       (=: pos Pos)))
       
-  (update-model-matrix> *vert-ptr)
-  (cmd-update-vert *ipc *vert-ptr))
+  (upd-ptr))
 
 
 (de set-ptr-x (Pos)
@@ -64,3 +62,8 @@
 
 (de set-ptr-pos (Pos)
   (put '*vert-ptr 'pos Pos))
+
+
+(de upd-ptr ()
+  (update-model-matrix> *vert-ptr)
+  (cmd-update-vert *ipc *vert-ptr))
