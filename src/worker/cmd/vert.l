@@ -134,7 +134,7 @@
         # Modify draw-glyph...
         # TODO: Refactor update-glyph
         # TODO: Make char consistent
-        (base-verts> Part-NIL T)
+        (mov> Part-NIL *pos-cursor)
 
         (if Nth-3
 
@@ -145,8 +145,7 @@
             (setq *part-root Part-NIL))))
     
   (nl-cursor -1.0)
-  (adv-cursor -3.0)
-  (base-verts> (car *part-ptrs) T)))
+  (mov> (car *part-ptrs) *pos-cursor)))
 
 
 #########################
