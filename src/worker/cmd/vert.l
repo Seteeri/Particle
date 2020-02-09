@@ -47,7 +47,7 @@
       # else replace particle
       (prog
 
-        # Position at particle
+        # Move pointer and cursor
         (mov-ptr (car (get *part-root 'verts)) T)
 
         (del-particle *part-root T T)
@@ -64,7 +64,7 @@
   # Rebase verts at current ptr pos
   (nl-ptr -1.0)
   (adv-ptr -3.0)
-  (base-verts> (car *part-ptrs) T)
+  (mov> (car *part-ptrs) *pos-draw)
   
   (cond ((= Keysym ksd~Return) T)
         ((= Keysym ksd~Tab)    T)

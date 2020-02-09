@@ -52,11 +52,14 @@
   }#
   
   (=: chr (char Chr))
-  (=: off-texel (* (- (: chr) 1) (get *dims-tex-node 1) (get *dims-tex-node 2)))
+  (=: off-texel (* (- (: chr) 1)
+                   (get *dims-tex-node 1)
+                   (get *dims-tex-node 2)))
 
   (let Metrics (get *metrics (: chr))
 
-    (unless Metrics (prinl-info "update-glyph>" (pack "Unable to find metrics: " (: chr))))
+    (unless Metrics
+      (prinl-info "update-glyph>" (pack "Unable to find metrics: " (: chr))))
 
     (=: uv (get Metrics 'uv))
     (=: pos (get-pos> Metrics (: pos) *sca-vert))
@@ -64,7 +67,6 @@
         
          
 (dm upd-mdl-mtrx> ()
-
   (=: mm (mat4-mul (mat4-translation (: pos))
                    (mat4-mul (mat4-rotation-z (get (: rota) 3))
                              (mat4-mul (mat4-rotation-y (get (: rota) 2))

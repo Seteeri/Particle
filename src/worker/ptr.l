@@ -3,11 +3,9 @@
   # Particle
   (=: p))
 
-# These are not really specific to pointer 
-# as they can apply to any Particle
+# Really for cursor, not ptr
 
-
-(de mov-ptr (Vert Upd)
+(de mov-ptr (Vert)
   (let ((X Y) (get-origin> (get *metrics (get Vert 'chr))
                            (get Vert 'pos)
                            *sca-vert))

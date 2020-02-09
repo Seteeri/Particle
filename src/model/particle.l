@@ -139,17 +139,31 @@
     Last))
 
 
-(dm base-verts> (Up)
-  # TODO: Rename update to upload
-  # -> cmd-upload-vert
+(dm mov> (Pos)
+
   (for Vert (: verts)
+  
     (with Vert
-      (=: pos *pos-draw)
+      (=: pos Pos)
       (update-glyph> Vert (char (: chr))))
     (upd-mdl-mtrx> Vert)
-    (when Up (cmd-upd-vert *ipc Vert))
-    (adv-ptr)))
+    (cmd-upd-vert *ipc Vert)
     
+    # adv pos
+    (setq Pos (place 1
+                     Pos
+                     (+ (car Pos) *adv-vert)))))
+
+
+(dm get-origin> ()
+  (when (: verts)
+    (let (Vert (car (: verts))
+          Pos (get Vert 'pos)
+          (X Y) (get-origin> (get *metrics (get Vert 'chr))
+                             Pos
+                             *sca-vert))
+      (list X Y (get Pos 3)))))
+  
 
 ###############################
 
