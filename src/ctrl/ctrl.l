@@ -71,8 +71,6 @@
 
     (reg-conns *ipc ID-C))
 
-  (queue '*q-msg "(update-vert 1)")
-  
   (queue '*q-msg (pack "(calc-pv " *width " " *height ")"))
   (queue '*q-msg (pack "(update-pv)"))
 

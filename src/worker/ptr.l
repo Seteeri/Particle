@@ -3,14 +3,8 @@
   # Particle
   (=: p))
 
-#{
-(dm mov> (Vert Up))
-(dm adv> (Cnt))
-(dm nl> (Cnt))
-}#
-
-
-# These are not really specific to pointer as they can apply to any Particle
+# These are not really specific to pointer 
+# as they can apply to any Particle
 
 
 (de mov-ptr (Vert Upd)
@@ -18,52 +12,36 @@
                            (get Vert 'pos)
                            *sca-vert))
     (set-ptr-x X)
-    (set-ptr-y Y)
-    (upd-mdl-mtrx> *vert-ptr)
-    (when Upd
-      (cmd-upd-vert *ipc *vert-ptr))))
+    (set-ptr-y Y)))
 
 
 (de adv-ptr (Cnt)
 
   (unless Cnt (setq Cnt 1.0))
 
-  (with *vert-ptr
-    (=: pos (place 1
-                  (: pos)
-                  (+ (car (: pos))
-                     (*/ *adv-vert Cnt 1.0)))))
-      
-  (upd-ptr))
+  (setq *pos-draw (place 1
+                        *pos-draw
+                        (+ (car *pos-draw)
+                           (*/ *adv-vert Cnt 1.0)))))
 
 
 (de nl-ptr (Cnt)
 
   (unless Cnt (setq Cnt 1.0))
 
-  (with *vert-ptr
-    (let Pos (list (get (: pos) 1)
-                   (- (get (: pos) 2) (*/ (+ *adv-vert *adv-vert) Cnt 1.0))
-                   (get (: pos) 3))
-      (=: pos Pos)))
-      
-  (upd-ptr))
+  (setq *pos-draw (place 2
+                        *pos-draw
+                        (- (cadr *pos-draw)
+                           (*/ (+ *adv-vert *adv-vert) Cnt 1.0)))))
 
 
 (de set-ptr-x (Pos)
-  (with *vert-ptr 
-    (=: pos (place 1 (: pos) Pos))))
+  (setq *pos-draw (place 1 *pos-draw Pos)))
 
 
 (de set-ptr-y (Pos)
-  (with *vert-ptr 
-    (=: pos (place 2 (: pos) Pos))))
+  (setq *pos-draw (place 2 *pos-draw Pos)))
 
 
 (de set-ptr-pos (Pos)
-  (put '*vert-ptr 'pos Pos))
-
-
-(de upd-ptr ()
-  (upd-mdl-mtrx> *vert-ptr)
-  (cmd-upd-vert *ipc *vert-ptr))
+  (setq *pos-draw Pos))

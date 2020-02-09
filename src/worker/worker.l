@@ -48,8 +48,8 @@
 (def '*part-ptrs)
 
 (def '*part-ptr)
-# Vertices for pointer; also can be found through part-ptr
-(def '*vert-ptr)
+
+(def '*pos-draw)
 
 
 # Wrapper libraries
@@ -208,15 +208,11 @@
   # However, to draw the Ptr requires Ptr...
   # -> Manually make Pointer particle
 
-  (setq *vert-ptr (alloc-vert (list 0.0 0.0 0.0) "`" *col-red))
-  (nl-ptr)
-  
-  # Replace usage of *vert-ptr with p0
-  
-  (when NIL
-    (run-tests))
+  (setq *pos-draw (list 0.0 0.0 0.0))
+    
+  (when NIL (run-tests))
 
-  (let ((X Y) (get *vert-ptr 'pos))
+  (let ((X Y) *pos-draw)
   
     # Default pointer symbol is p0...or use *0...N?
     (setq p0 ())
@@ -225,7 +221,7 @@
     # Use binary trees for larger amount
     (push '*part-ptrs (gen-part 'p0
                                 0.0
-                                (get *vert-ptr 'pos)
+                                *pos-draw
                                 gen-pair-x-h))
                                 
     (nl-ptr)
@@ -235,7 +231,7 @@
     (setq *part-root
           (gen-part ()
                     0.0
-                    (get *vert-ptr 'pos)
+                    *pos-draw
                     gen-pair-x-h)))
 
   (adv-ptr)
@@ -248,7 +244,7 @@
 (de run-tests ()
 
   (when NIL
-    (let ((X Y) (get *vert-ptr 'pos))
+    (let ((X Y) *pos-draw)
       (gen-cell (abs (>> -4 (adr (new '(+Pointer) NIL))))
                 'sym
                 (0.0 0.0))
@@ -260,7 +256,7 @@
                               (list 0.0 0.0 0.0)
                               gen-pair-x-h)))
 
-  (let ((X Y) (get *vert-ptr 'pos))
+  (let ((X Y) *pos-draw)
 
     (when T
       (gen-cell (abs (>> -4 (adr (cons NIL T))))

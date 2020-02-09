@@ -103,7 +103,7 @@
     # Reset vertex
     # Pos = baseline = X,0,0
     (with Vert
-      (=: pos (get *vert-ptr 'pos))
+      (=: pos *pos-draw)
       (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0
                      (get Col 1) (get Col 2) (get Col 3) 1.0

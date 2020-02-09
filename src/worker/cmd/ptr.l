@@ -28,12 +28,12 @@
 # Euclidean
 
 
-(de cmd-translate-ptr (Cnt Move)
-  (with *vert-ptr
-      (=: pos (list (+ (get (: pos) 1) (get Move 1))
-                    (+ (get (: pos) 2) (get Move 2))
-                    (get (: pos) 3))))
-  (upd-ptr))
+(de cmd-translate-ptr (Cnt Mov)
+  (let ((X Y Z) *pos-draw
+        (Xd Yd Zd) Mov)
+    (setq *pos-draw (list (+ X Xd)
+                          (+ Y Yd)
+                          Z))))
 
 
 (de cmd-translate-ptr-px (Keysym) (cmd-translate-ptr 1 (list (*/ *adv-vert 1.0 1.0)   0.0)))
