@@ -33,7 +33,7 @@
           # Gen part for data
           (let Part (gen-pair-x-h List-Data
                                   0.0
-                                  *pos-draw
+                                  *pos-cursor
                                   gen-pair-x-h
                                   NIL NIL)
 
@@ -55,7 +55,7 @@
         # Gen part for data
         (setq *part-root (gen-part List-Data
                                   0.0
-                                  *pos-draw
+                                  *pos-cursor
                                   gen-pair-x-h))
 
         T))
@@ -64,7 +64,7 @@
   # Rebase verts at current ptr pos
   (nl-cursor -1.0)
   (adv-cursor -3.0)
-  (mov> (car *part-ptrs) *pos-draw)
+  (mov> (car *part-ptrs) *pos-cursor)
   
   (cond ((= Keysym ksd~Return) T)
         ((= Keysym ksd~Tab)    T)

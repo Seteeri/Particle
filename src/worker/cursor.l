@@ -10,9 +10,9 @@
 
   (unless Cnt (setq Cnt 1.0))
 
-  (setq *pos-draw (place 1
-                        *pos-draw
-                        (+ (car *pos-draw)
+  (setq *pos-cursor (place 1
+                        *pos-cursor
+                        (+ (car *pos-cursor)
                            (*/ *adv-vert Cnt 1.0)))))
 
 
@@ -20,19 +20,19 @@
 
   (unless Cnt (setq Cnt 1.0))
 
-  (setq *pos-draw (place 2
-                        *pos-draw
-                        (- (cadr *pos-draw)
+  (setq *pos-cursor (place 2
+                        *pos-cursor
+                        (- (cadr *pos-cursor)
                            (*/ (+ *adv-vert *adv-vert) Cnt 1.0)))))
 
 
 (de set-cur-x (Pos)
-  (setq *pos-draw (place 1 *pos-draw Pos)))
+  (setq *pos-cursor (place 1 *pos-cursor Pos)))
 
 
 (de set-ptr-y (Pos)
-  (setq *pos-draw (place 2 *pos-draw Pos)))
+  (setq *pos-cursor (place 2 *pos-cursor Pos)))
 
 
 (de set-cur-pos (Pos)
-  (setq *pos-draw Pos))
+  (setq *pos-cursor Pos))

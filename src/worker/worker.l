@@ -49,7 +49,7 @@
 
 (def '*part-ptr)
 
-(def '*pos-draw)
+(def '*pos-cursor)
 
 
 # Wrapper libraries
@@ -208,11 +208,11 @@
   # However, to draw the Ptr requires Ptr...
   # -> Manually make Pointer particle
 
-  (setq *pos-draw (list 0.0 0.0 0.0))
+  (setq *pos-cursor (list 0.0 0.0 0.0))
     
   (when NIL (run-tests))
 
-  (let ((X Y) *pos-draw)
+  (let ((X Y) *pos-cursor)
   
     # Default pointer symbol is p0...or use *0...N?
     (setq p0 ())
@@ -221,7 +221,7 @@
     # Use binary trees for larger amount
     (push '*part-ptrs (gen-part 'p0
                                 0.0
-                                *pos-draw
+                                *pos-cursor
                                 gen-pair-x-h))
                                 
     (nl-cursor)
@@ -231,7 +231,7 @@
     (setq *part-root
           (gen-part ()
                     0.0
-                    *pos-draw
+                    *pos-cursor
                     gen-pair-x-h)))
 
   (adv-cursor)
@@ -244,7 +244,7 @@
 (de run-tests ()
 
   (when NIL
-    (let ((X Y) *pos-draw)
+    (let ((X Y) *pos-cursor)
       (gen-cell (abs (>> -4 (adr (new '(+Pointer) NIL))))
                 'sym
                 (0.0 0.0))
@@ -256,7 +256,7 @@
                               (list 0.0 0.0 0.0)
                               gen-pair-x-h)))
 
-  (let ((X Y) *pos-draw)
+  (let ((X Y) *pos-cursor)
 
     (when T
       (gen-cell (abs (>> -4 (adr (cons NIL T))))

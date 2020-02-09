@@ -238,11 +238,11 @@
         (Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
         Tail-Ar (pack (tail 4 (chop (bin Ptr-Ar))))
         Tail-Dr (pack (tail 4 (chop (bin Ptr-Dr))))
-        (X Y) (let Pos *pos-draw
+        (X Y) (let Pos *pos-cursor
                 (if Pos Pos Root)))
 
     (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr Tail-Ar Tail-Dr)
-          X-Cdr (get *pos-draw 1)
+          X-Cdr (get *pos-cursor 1)
           
           Pa-Ar (when (and (not (num? Ar))
                            (not Car))
@@ -253,7 +253,7 @@
           Pa-Dr (when (and (not (num? Dr))
                            (not Cdr))
                   # If cursor short then must adv
-                  (when (<= (get *pos-draw 1) X-Cdr)
+                  (when (<= (get *pos-cursor 1) X-Cdr)
                     (set-cur-x X-Cdr))
                   (adv-cursor)
                   (set-ptr-y Y)
@@ -276,7 +276,7 @@
         (Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
         Tail-Ar (pack (tail 4 (chop (bin Ptr-Ar))))
         Tail-Dr (pack (tail 4 (chop (bin Ptr-Dr))))
-        (X Y) *pos-draw)
+        (X Y) *pos-cursor)
 
     (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr Tail-Ar Tail-Dr)
           Dummy (adv-cursor)
@@ -301,7 +301,7 @@
   
   # Must determine width of local vars for prg
   
-  (Layout List Depth *pos-draw Layout NIL T)
+  (Layout List Depth *pos-cursor Layout NIL T)
   
   (adv-cursor)
 
@@ -323,7 +323,7 @@
                     (nth List 3)
                     (nth List 4))
                 Depth
-                *pos-draw
+                *pos-cursor
                 gen-pair-y-h))
 
 
@@ -332,9 +332,9 @@
   # Generate two at a time
   # Pass option to limit gen-any search depth?
 
-  (Layout List Depth *pos-draw Layout T T)
+  (Layout List Depth *pos-cursor Layout T T)
   
-  (let ((X Y) *pos-draw
+  (let ((X Y) *pos-cursor
         R (car List))
 
     (while R
@@ -343,9 +343,9 @@
             B (cadr R))
 
       (let D (+ Depth 1.0)
-        (Layout R Depth *pos-draw Layout NIL T)
+        (Layout R Depth *pos-cursor Layout NIL T)
         (adv-cursor)
-        (Layout (cdr R) Depth *pos-draw Layout NIL (when (cddr R) T)))
+        (Layout (cdr R) Depth *pos-cursor Layout NIL (when (cddr R) T)))
 
       (when (setq R (cddr R))
         (nl-cursor)
@@ -354,9 +354,9 @@
 
 (de gen-let-var (List Depth Root Layout)
 
-  (Layout List Depth *pos-draw Layout NIL T)
+  (Layout List Depth *pos-cursor Layout NIL T)
   (adv-cursor)
-  (Layout (cdr List) Depth *pos-draw Layout NIL T))
+  (Layout (cdr List) Depth *pos-cursor Layout NIL T))
 
 
 ################################################################################
@@ -452,7 +452,7 @@
   (let ((Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
         Type-Ar         (get-type-ptr Ptr-Ar)
         Type-Dr         (get-type-ptr Ptr-Dr)
-        (X Y)           *pos-draw
+        (X Y)           *pos-cursor
         
         blah (println Ptr Ptr-Ar Ptr-Dr)
         blah (println Ptr Type-Ar Type-Dr)
@@ -466,7 +466,7 @@
         (Vert-Ar Dot Vert-Dr) (draw-cons-ptr (pack (tail 4 (chop (bin Ptr-Ar)))) Col-Ar
                                              (pack (tail 4 (chop (bin Ptr-Dr)))) Col-Dr)
 
-        X-Cdr (get *pos-draw 1)
+        X-Cdr (get *pos-cursor 1)
 
         Pa-Ar (unless (or (= Ptr-Ar 4380504)
                           (= Ptr-Ar 4380648))
@@ -482,7 +482,7 @@
                           (= Ptr-Dr 4380648)
                           (= Ptr-Dr (+ Ptr 8)))
                  # If cursor short then must adv
-                 (when (<= (get *pos-draw 1) X-Cdr)
+                 (when (<= (get *pos-cursor 1) X-Cdr)
                    (set-cur-x X-Cdr))
                  (adv-cursor)
                  (set-ptr-y Y)
@@ -504,7 +504,7 @@
   (let ((Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
         Type-Ar         'ptr # always
         Type-Dr         (get-type-ptr Ptr-Dr) # bignum or short
-        (X Y)           *pos-draw
+        (X Y)           *pos-cursor
 
         blah (println Ptr Ptr-Ar Ptr-Dr)
         blah (println Ptr Type-Ar Type-Dr)
@@ -516,7 +516,7 @@
         (Vert-Ar Dot Vert-Dr) (draw-cons-ptr (pack (tail 4 (chop (bin Ptr-Ar)))) Col-Ar
                                              (pack (tail 4 (chop (bin Ptr-Dr)))) Col-Dr)
 
-        X-Cdr (get *pos-draw 1)
+        X-Cdr (get *pos-cursor 1)
 
         # Never draw...unless wanted...
         Pa-Ar NIL
@@ -524,7 +524,7 @@
         Pa-Dr (unless (or (= Ptr-Dr 4380504)
                           (= Ptr-Dr 4380648))
                  # If cursor short then must adv
-                 (when (<= (get *pos-draw 1) X-Cdr)
+                 (when (<= (get *pos-cursor 1) X-Cdr)
                    (set-cur-x X-Cdr))
                  (adv-cursor)
                  (set-ptr-y Y)
@@ -548,7 +548,7 @@
   (let ((Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
         Type-Ar         (get-type-ptr Ptr-Ar)
         Type-Dr         (get-type-ptr Ptr-Dr)
-        (X Y)           *pos-draw
+        (X Y)           *pos-cursor
         
         blah (println Ptr Ptr-Ar Ptr-Dr)
         blah (println Ptr (bin Ptr-Ar) (bin Ptr-Dr))        
@@ -563,7 +563,7 @@
         (Vert-Ar Dot Vert-Dr) (draw-cons-ptr (pack (tail 4 (chop (bin Ptr-Ar)))) Col-Ar
                                              (pack (tail 4 (chop (bin Ptr-Dr)))) Col-Dr)
 
-        X-Cdr (get *pos-draw 1)
+        X-Cdr (get *pos-cursor 1)
 
         Pa-Ar (unless (or (= Ptr-Ar 4380504)
                           (= Ptr-Ar 4380648))
@@ -578,7 +578,7 @@
         Pa-Dr (unless (or (= Ptr-Dr 4380504)
                           (= Ptr-Dr 4380648))
                  # If cursor short then must adv
-                 (when (<= (get *pos-draw 1) X-Cdr)
+                 (when (<= (get *pos-cursor 1) X-Cdr)
                    (set-cur-x X-Cdr))
                  (adv-cursor)
                  (set-ptr-y Y)
