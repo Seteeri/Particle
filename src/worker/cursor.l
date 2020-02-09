@@ -1,12 +1,12 @@
-(de mov-ptr (Vert)
+(de mov-cursor (Vert)
   (let ((X Y) (get-origin> (get *metrics (get Vert 'chr))
                            (get Vert 'pos)
                            *sca-vert))
-    (set-ptr-x X)
+    (set-cur-x X)
     (set-ptr-y Y)))
 
 
-(de adv-ptr (Cnt)
+(de adv-cursor (Cnt)
 
   (unless Cnt (setq Cnt 1.0))
 
@@ -16,7 +16,7 @@
                            (*/ *adv-vert Cnt 1.0)))))
 
 
-(de nl-ptr (Cnt)
+(de nl-cursor (Cnt)
 
   (unless Cnt (setq Cnt 1.0))
 
@@ -26,7 +26,7 @@
                            (*/ (+ *adv-vert *adv-vert) Cnt 1.0)))))
 
 
-(de set-ptr-x (Pos)
+(de set-cur-x (Pos)
   (setq *pos-draw (place 1 *pos-draw Pos)))
 
 
@@ -34,5 +34,5 @@
   (setq *pos-draw (place 2 *pos-draw Pos)))
 
 
-(de set-ptr-pos (Pos)
+(de set-cur-pos (Pos)
   (setq *pos-draw Pos))

@@ -22,10 +22,10 @@
             (setq Last *part-root))
 
           # Position at last
-          (mov-ptr (car (get Last 'verts)) T)
+          (mov-cursor (car (get Last 'verts)) T)
 
-          #(nl-ptr)
-          (adv-ptr 4.0)
+          #(nl-cursor)
+          (adv-cursor 4.0)
 
           # Remove NIL particle
           (del-particle (get Last 'b))
@@ -48,7 +48,7 @@
       (prog
 
         # Move pointer and cursor
-        (mov-ptr (car (get *part-root 'verts)) T)
+        (mov-cursor (car (get *part-root 'verts)) T)
 
         (del-particle *part-root T T)
 
@@ -62,8 +62,8 @@
         
   # TODO: Position p0 over new item
   # Rebase verts at current ptr pos
-  (nl-ptr -1.0)
-  (adv-ptr -3.0)
+  (nl-cursor -1.0)
+  (adv-cursor -3.0)
   (mov> (car *part-ptrs) *pos-draw)
   
   (cond ((= Keysym ksd~Return) T)
@@ -125,7 +125,7 @@
             Nth-3 (cddr L))
 
         # Position pointer at start of Last-2
-        (mov-ptr (car (get Last-2 'verts)) T)
+        (mov-cursor (car (get Last-2 'verts)) T)
         
         # Reuse NIL part so need not regenerate it    
         (del-particle Last-2 T NIL)
@@ -144,8 +144,8 @@
             # Replace *part-root with NIL particle
             (setq *part-root Part-NIL))))
     
-  (nl-ptr -1.0)
-  (adv-ptr -3.0)
+  (nl-cursor -1.0)
+  (adv-cursor -3.0)
   (base-verts> (car *part-ptrs) T)))
 
 
@@ -161,7 +161,7 @@
                     (draw-chars Data
                                 (get-color-type Data)
                                 T))))
-  (adv-ptr))
+  (adv-cursor))
 
 
 (de cmd-format (Keysym)
@@ -187,7 +187,7 @@
                         NIL
                         Verts))
 
-        (adv-ptr)))))
+        (adv-cursor)))))
 
 
 (de cmd-pack (Keysym)
@@ -211,7 +211,7 @@
 
     # Set next as needed
 
-    (adv-ptr)))
+    (adv-cursor)))
 
 
 (de cmd-pack-2 (Keysym)
@@ -235,7 +235,7 @@
 
     # Set next as needed
 
-    (adv-ptr)))
+    (adv-cursor)))
 
 
 (de cmd-chop (Keysym)
@@ -246,7 +246,7 @@
 
     (conc-ptr (gen-part (chop Last))))
 
-  (adv-ptr))
+  (adv-cursor))
 
 
 (de cmd-intern (Keysym)
@@ -268,7 +268,7 @@
                  NIL
                  (draw-chars Last (get-color-type 'data) T)))
 
-      (adv-ptr))))
+      (adv-cursor))))
 
 
 (de cmd-eval ()
@@ -285,7 +285,7 @@
 
     (conc-ptr (gen-part Any)))
 
-  (adv-ptr))
+  (adv-cursor))
 
 
 (de cmd-any (Keysym)
@@ -299,7 +299,7 @@
 
     (conc-ptr (gen-part Any))
 
-    (adv-ptr)))
+    (adv-cursor)))
 
 
 (de cmd-sym ()
@@ -319,7 +319,7 @@
                NIL
                (draw-str Str (get-color-type Str) T))))
 
-  (adv-ptr))
+  (adv-cursor))
 
 
 ################################################################################
@@ -349,4 +349,4 @@
 
     T)
 
-  (adv-ptr))
+  (adv-cursor))

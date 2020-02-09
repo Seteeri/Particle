@@ -80,7 +80,7 @@
 
   (let Dot (draw-glyph (char 183) *col-base-0)
 
-    (when Adv (adv-ptr))
+    (when Adv (adv-cursor))
     Dot))
 
 
@@ -91,7 +91,7 @@
 
     (for C (chop Chars)
       (push 'Verts (draw-glyph C Col))
-      (when Adv (adv-ptr)))
+      (when Adv (adv-cursor)))
 
     (flip Verts)))
 
@@ -124,7 +124,7 @@
 
     (for C Repr
       (push 'Verts (draw-glyph C Col))
-      (when Adv (adv-ptr)))
+      (when Adv (adv-cursor)))
 
     (flip Verts)))
 

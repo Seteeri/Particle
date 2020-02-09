@@ -247,15 +247,15 @@
           Pa-Ar (when (and (not (num? Ar))
                            (not Car))
                   # Move below, align left of cons
-                  (nl-ptr) (set-ptr-x X)
+                  (nl-cursor) (set-cur-x X)
                   (gen-part Ar Depth Root gen-pair-x-h))
 
           Pa-Dr (when (and (not (num? Dr))
                            (not Cdr))
                   # If cursor short then must adv
                   (when (<= (get *pos-draw 1) X-Cdr)
-                    (set-ptr-x X-Cdr))
-                  (adv-ptr)
+                    (set-cur-x X-Cdr))
+                  (adv-cursor)
                   (set-ptr-y Y)
                   (gen-part Dr Depth Root gen-pair-x-h)))
       
@@ -279,7 +279,7 @@
         (X Y) *pos-draw)
 
     (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr Tail-Ar Tail-Dr)
-          Dummy (adv-ptr)
+          Dummy (adv-cursor)
           Pa-Ar (when (and (not (num? Ar))
                            (not Car))
                   (gen-part Ar Depth Root gen-pair-y-h))
@@ -287,8 +287,8 @@
                            (not Cdr))
                   # For cons pair, use colored dot
                   # Position under like a list
-                  (set-ptr-x X)
-                  (nl-ptr)
+                  (set-cur-x X)
+                  (nl-cursor)
                   (gen-part Dr Depth Root gen-pair-y-h)))
       
       (new '(+Particle)
@@ -303,7 +303,7 @@
   
   (Layout List Depth *pos-draw Layout NIL T)
   
-  (adv-ptr)
+  (adv-cursor)
 
   # Manually link above to below
 
@@ -314,8 +314,8 @@
                 Root
                 Layout)
   
-  (set-ptr-x (car Root))
-  (nl-ptr)
+  (set-cur-x (car Root))
+  (nl-cursor)
   
   # Manually link above to below
   
@@ -344,18 +344,18 @@
 
       (let D (+ Depth 1.0)
         (Layout R Depth *pos-draw Layout NIL T)
-        (adv-ptr)
+        (adv-cursor)
         (Layout (cdr R) Depth *pos-draw Layout NIL (when (cddr R) T)))
 
       (when (setq R (cddr R))
-        (nl-ptr)
-        (set-ptr-x X)))))
+        (nl-cursor)
+        (set-cur-x X)))))
 
 
 (de gen-let-var (List Depth Root Layout)
 
   (Layout List Depth *pos-draw Layout NIL T)
-  (adv-ptr)
+  (adv-cursor)
   (Layout (cdr List) Depth *pos-draw Layout NIL T))
 
 
@@ -471,7 +471,7 @@
         Pa-Ar (unless (or (= Ptr-Ar 4380504)
                           (= Ptr-Ar 4380648))
                 # Move below, align left of cons
-                (nl-ptr) (set-ptr-x X)    
+                (nl-cursor) (set-cur-x X)    
                 (gen-cell (cond ((= Type-Ar 'sym) (- Ptr-Ar 8))
                                 ((= Type-Ar 'big) (- Ptr-Ar 4))
                                 (T Ptr-Ar))
@@ -483,8 +483,8 @@
                           (= Ptr-Dr (+ Ptr 8)))
                  # If cursor short then must adv
                  (when (<= (get *pos-draw 1) X-Cdr)
-                   (set-ptr-x X-Cdr))
-                 (adv-ptr)
+                   (set-cur-x X-Cdr))
+                 (adv-cursor)
                  (set-ptr-y Y)
                  (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
                                  ((= Type-Dr 'big) (- Ptr-Dr 4))
@@ -525,8 +525,8 @@
                           (= Ptr-Dr 4380648))
                  # If cursor short then must adv
                  (when (<= (get *pos-draw 1) X-Cdr)
-                   (set-ptr-x X-Cdr))
-                 (adv-ptr)
+                   (set-cur-x X-Cdr))
+                 (adv-cursor)
                  (set-ptr-y Y)
                  (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
                                  ((= Type-Dr 'big) (- Ptr-Dr 4))
@@ -568,7 +568,7 @@
         Pa-Ar (unless (or (= Ptr-Ar 4380504)
                           (= Ptr-Ar 4380648))
                 # Move below, align left of cons
-                (nl-ptr) (set-ptr-x X)
+                (nl-cursor) (set-cur-x X)
                 (gen-cell (cond ((= Type-Ar 'sym) (- Ptr-Ar 8))
                                 ((= Type-Ar 'big) (- Ptr-Ar 4))
                                 (T Ptr-Ar))
@@ -579,8 +579,8 @@
                           (= Ptr-Dr 4380648))
                  # If cursor short then must adv
                  (when (<= (get *pos-draw 1) X-Cdr)
-                   (set-ptr-x X-Cdr))
-                 (adv-ptr)
+                   (set-cur-x X-Cdr))
+                 (adv-cursor)
                  (set-ptr-y Y)
                  (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
                                  ((= Type-Dr 'big) (- Ptr-Dr 4))

@@ -224,8 +224,8 @@
                                 *pos-draw
                                 gen-pair-x-h))
                                 
-    (nl-ptr)
-    (set-ptr-x X)
+    (nl-cursor)
+    (set-cur-x X)
   
     # Default data is NIL
     (setq *part-root
@@ -234,7 +234,7 @@
                     *pos-draw
                     gen-pair-x-h)))
 
-  (adv-ptr)
+  (adv-cursor)
 
   (prinl-info "init-worker" "Starting epoll...")
 
@@ -248,7 +248,7 @@
       (gen-cell (abs (>> -4 (adr (new '(+Pointer) NIL))))
                 'sym
                 (0.0 0.0))
-      (set-ptr-x X)))
+      (set-cur-x X)))
     
   (when NIL
     (setq *part-ptr (gen-part (cons T T)
@@ -262,19 +262,19 @@
       (gen-cell (abs (>> -4 (adr (cons NIL T))))
                 'cons
                 (0.0 0.0))
-      (nl-ptr 3.0) (set-ptr-x X))
+      (nl-cursor 3.0) (set-cur-x X))
   
     (when NIL
       (gen-cell (abs (>> -4 (adr (cons T (** 1152921504606846976 0)))))
                 'cons
                 (0.0 0.0))
-      (nl-ptr 3.0) (set-ptr-x X))
+      (nl-cursor 3.0) (set-cur-x X))
     
     (when NIL
       (gen-cell (abs (>> -4 (adr (cons (cons 3 4) (cons 1 2)))))
                 'cons
                 (0.0 0.0))
-      (nl-ptr 2.0) (set-ptr-x X))
+      (nl-cursor 2.0) (set-cur-x X))
 
     (when NIL
       (setq ABCDEFGHIJKLMNOPQRSTUVWXYZ NIL)
@@ -283,13 +283,13 @@
       (gen-cell (abs (>> -4 (adr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ)))
                 'sym
                 (0.0 0.0))
-      (nl-ptr 2.0) (set-ptr-x X))
+      (nl-cursor 2.0) (set-cur-x X))
     
     (when NIL
       (gen-cell (abs (>> -4 (adr "ABC")))
                 'sym
                 (0.0 0.0))
-      (nl-ptr 2.0) (set-ptr-x X))
+      (nl-cursor 2.0) (set-cur-x X))
     
     (when NIL
       (gen-cell (abs (>> -4 (adr "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")))

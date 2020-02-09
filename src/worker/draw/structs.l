@@ -10,7 +10,7 @@
 
     (for C Repr
       (push 'Verts (draw-glyph C Col))
-      (when Adv (adv-ptr)))
+      (when Adv (adv-cursor)))
 
     (flip Verts)))
   
