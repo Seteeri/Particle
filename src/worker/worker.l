@@ -71,7 +71,7 @@
 (load "/home/user/Particle/particle/src/model/vertex.l")
 (load "/home/user/Particle/particle/src/ctrl/xkb.l")
 (load "/home/user/Particle/particle/src/worker/conn.l")
-(load "/home/user/Particle/particle/src/worker/ptr.l")
+(load "/home/user/Particle/particle/src/worker/cursor.l")
 (load "/home/user/Particle/particle/src/worker/draw/draw.l")
 #(load "/home/user/Particle/particle/src/worker/draw/forms.l")
 (load "/home/user/Particle/particle/src/worker/cmd/vert.l")

@@ -1,10 +1,3 @@
-(class +Pointer)
-(dm T (Part)
-  # Particle
-  (=: p))
-
-# Really for cursor, not ptr
-
 (de mov-ptr (Vert)
   (let ((X Y) (get-origin> (get *metrics (get Vert 'chr))
                            (get Vert 'pos)
