@@ -41,7 +41,7 @@
 # List works for small amount...
 # assoc/list -> binary trees -> database
 (def '*particles) # Master index of all particles in the "world"
-(def '*part-root) # List of main particles
+(def '*part-main) # List of main particles
 (def '*part-cmds) # List of commands (undo/history/timeline)
 (def '*part-ptrs) # List of pointers
 
@@ -235,7 +235,7 @@
     (set-cur-x X)
 
     # Default data is NIL
-    (setq *part-root
+    (setq *part-main
           (gen-part ()
                     0.0
                     *pos-cursor

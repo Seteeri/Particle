@@ -7,19 +7,19 @@
                    (T (char Keysym)))
         Data (list Char))
 
-    #(println "PART-PTR" *part-root (get *part-root 'data) (get *part-root 'a) (get *part-root 'b))
+    #(println "PART-PTR" *part-main (get *part-main 'data) (get *part-main 'a) (get *part-main 'b))
 
-    (if (get *part-root 'data)
+    (if (get *part-main 'data)
 
       (prog
 
         # Will return NIL also
-        (let Last (last-part> *part-root)
+        (let Last (last-part> *part-main)
 
           #(println "LAST" Last (get Last 'data) (get Last 'a) (get Last 'b))
 
           (unless (get Last 'data)
-            (setq Last *part-root))
+            (setq Last *part-main))
 
           # Mov cursor to last vert
           (mov-cursor (car (get Last 'verts)) T)
@@ -42,7 +42,7 @@
 
         # Connect data
         # aka modify CDR of Last
-        (with *part-root
+        (with *part-main
           (=: data (conc (: data) Data)))
 
         T)
@@ -51,12 +51,12 @@
       (prog
 
         # Move pointer and cursor
-        (mov-cursor (car (get *part-root 'verts)) T)
+        (mov-cursor (car (get *part-main 'verts)) T)
 
-        (del-particle *part-root T T)
+        (del-particle *part-main T T)
 
         # Gen part for data
-        (setq *part-root (gen-part Data
+        (setq *part-main (gen-part Data
                                    0.0
                                    *pos-cursor
                                    gen-pair-x-h))
@@ -110,14 +110,14 @@
     Replace if CDDR NIL
   }#
 
-  (when (get *part-root 'data)
+  (when (get *part-main 'data)
 
     # Build temp list
     # Poss cache L (and use dirty bit)
 
     (let (L ()
           D ()
-          X *part-root)
+          X *part-main)
 
       (loop
         (push 'L X)
@@ -146,8 +146,8 @@
             # Modify CDR of third last particle
             (with Last-3 (=: b Part-NIL))
 
-            # Replace *part-root with NIL particle
-            (setq *part-root Part-NIL))
+            # Replace *part-main with NIL particle
+            (setq *part-main Part-NIL))
 
         # Modify CDR of Last-3
         # Use con to destructively set the CDR
