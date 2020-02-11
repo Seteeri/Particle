@@ -68,7 +68,7 @@
 (load "/home/user/Particle/particle/src/worker/cursor.l")
 (load "/home/user/Particle/particle/src/worker/draw/draw.l")
 #(load "/home/user/Particle/particle/src/worker/draw/forms.l")
-(load "/home/user/Particle/particle/src/worker/cmd/vert.l")
+(load "/home/user/Particle/particle/src/worker/cmd/part.l")
 (load "/home/user/Particle/particle/src/worker/cmd/cam.l")
 (load "/home/user/Particle/particle/src/worker/cmd/ptr.l")
 
