@@ -1,22 +1,22 @@
 ######################
 # Semantic (Selection)
 
-(de cmd-assign-ptr-pre (Keysym)
+(de cmd-point-ptr-pre (Keysym)
   # Move to next item in the list
   T)
 
 
-(de cmd-assign-ptr-nxt (Keysym)
+(de cmd-point-ptr-nxt (Keysym)
   # Move to prev item in the list
   T)
 
 
-(de cmd-assign-ptr-out (Keysym)
+(de cmd-point-ptr-out (Keysym)
   # Move to outer list
   T)
 
 
-(de cmd-assign-ptr-in (Keysym)
+(de cmd-point-ptr-in (Keysym)
   # Move to inner list
   T)
 
