@@ -172,10 +172,7 @@ Store DAGs as binary trees?
       * Refactor cmd-char etc. to update p* [Done]
       * Replace current marker with p* symbol
         * Refactor initial particle creation
-    * Create new ptrs
-      * Default is to create pointer to current
-      * Make new ptr point to old ptr
-      * When adding etc, move new ptr and leave old ptr in place
+    * Create special command to create pointer symbols [Later]
     * Select item
       * Ptr is a particle symbol whose value is whatever the user wants
         * Default = master list
