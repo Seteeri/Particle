@@ -183,6 +183,17 @@ Store DAGs as binary trees?
       * As user moves, ptr changes are stored in history
     * Create special command to create pointer symbols [Later]
 
+  * Draw default symbols
+    * Draw worker globals (anything starting with *)
+    * Refactor symbol particles
+      * Data stores symbol
+      * A/CAR = NIL
+      * B/CDR = VAL
+    * Limit draw lengths to N items (def=12)
+      * ...then move to newline
+      * any changes to this might have to redraw everything
+        * spatial map will allow optimization
+
   * List Handling
     * Create list
     * Enter/exit list
@@ -224,11 +235,6 @@ Store DAGs as binary trees?
   * Swap part
     * (con (nth n) (new)) to change CDR
     * (con (new) (nth n+1))
-
-  * Limit draw lengths to N items (def=12)
-    * ...then move to newline
-    * any changes to this might have to redraw everything
-      * spatial map will allow optimization
 
   * Implement spatial map (R-Tree)
     * Will be interesting to see data structure...

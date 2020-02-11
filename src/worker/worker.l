@@ -40,7 +40,7 @@
 (def '*cnt-v 1)
 
 (def '*part-root) # Used as main -> make timeline (aka main)
-# (def '*part-cmds) # Store commands issued
+(def '*part-cmds) # Store commands issued
 (def '*part-ptrs)
 
 (def '*pos-cursor)
@@ -141,7 +141,7 @@
       ((`ksd~Left)  T `cmd-trans-ptr-nx)
       ((`ksd~Up)    T `cmd-trans-ptr-py)
       ((`ksd~Down)  T `cmd-trans-ptr-ny)
-            
+
       ((`ksd~Control-L `ksd~Right) T `cmd-move-cam-px)
       ((`ksd~Control-L `ksd~Left)  T `cmd-move-cam-nx)
       ((`ksd~Control-L `ksd~Up)    T `cmd-move-cam-py)
@@ -198,40 +198,52 @@
   (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
 
   # TODO: Render default symbols
-  
+
   # However, to draw the Ptr requires Ptr...
   # -> Manually make Pointer particle
 
   (setq *pos-cursor (list 0.0 0.0 0.0))
-    
+
   (when NIL (run-tests))
 
+  # Default pointer symbol is p0...or use *0...N?
+  (setq p0 ())
+
   (let ((X Y) *pos-cursor)
-  
-    # Default pointer symbol is p0...or use *0...N?
-    (setq p0 ())
-    
+
+     # Draw default global symbols/lists
+    (setq *part-cmds
+          (gen-part '*part-cmds
+                    0.0
+                    *pos-cursor
+                    gen-pair-x-h))
+
+    (nl-cursor 2.0)
+    (set-cur-x X)
+
     # List works for small amount
     # Use binary trees for larger amount
-    (push '*part-ptrs (gen-part 'p0
-                                0.0
-                                *pos-cursor
-                                gen-pair-x-h))
-                                
+    (push '*part-ptrs
+          (gen-part 'p0
+                    0.0
+                    *pos-cursor
+                    gen-pair-x-h))
+                    
     (nl-cursor)
     (set-cur-x X)
-  
+
     # Default data is NIL
     (setq *part-root
           (gen-part ()
                     0.0
                     *pos-cursor
-                    gen-pair-x-h)))
+                    gen-pair-x-h))
+                                        
+    T)
 
-  (adv-cursor)
+  (nl-cursor)
+  (set-cur-x X)
 
-  # Manually track symbols we create...
-  
   (prinl-info "init-worker" "Starting epoll...")
 
   (loop (ipc~poll> *ipc -1)))
@@ -245,7 +257,7 @@
                 'sym
                 (0.0 0.0))
       (set-cur-x X)))
-    
+
   (when NIL
     (setq *part-ptr (gen-part (cons T T)
                               0.0
@@ -259,13 +271,13 @@
                 'cons
                 (0.0 0.0))
       (nl-cursor 3.0) (set-cur-x X))
-  
+
     (when NIL
       (gen-cell (abs (>> -4 (adr (cons T (** 1152921504606846976 0)))))
                 'cons
                 (0.0 0.0))
       (nl-cursor 3.0) (set-cur-x X))
-    
+
     (when NIL
       (gen-cell (abs (>> -4 (adr (cons (cons 3 4) (cons 1 2)))))
                 'cons
@@ -280,13 +292,13 @@
                 'sym
                 (0.0 0.0))
       (nl-cursor 2.0) (set-cur-x X))
-    
+
     (when NIL
       (gen-cell (abs (>> -4 (adr "ABC")))
                 'sym
                 (0.0 0.0))
       (nl-cursor 2.0) (set-cur-x X))
-    
+
     (when NIL
       (gen-cell (abs (>> -4 (adr "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")))
                 'sym
