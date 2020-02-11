@@ -1,6 +1,6 @@
 (de cmd-make-char (Keysym)
 
-  # Enter/Newline should produce character and move pointer
+  # Enter/Newline should produce char + mov ptr/cur
 
   (let (Char (cond ((= Keysym ksd~space) " ")
                    ((= Keysym ksd~Return) (char 10))
@@ -40,9 +40,12 @@
             # Connect to last part
             (with Last (=: b Part))))
 
-        # Append data (or use conc?)
+        # Connect data
+        # aka modify CDR of Last
         (with *part-root
-          (=: data (conc (: data) Data))))
+          (=: data (conc (: data) Data)))
+
+        T)
 
       # else replace particle
       (prog
@@ -59,16 +62,21 @@
                                    gen-pair-x-h))
 
         T))
-        
-  # TODO: Position p0 over new item
-  # Rebase verts at current ptr pos
-  (nl-cursor -1.0)
-  (adv-cursor -3.0)
-  (mov> (car *part-ptrs) *pos-cursor)
-  
-  (cond ((= Keysym ksd~Return) T)
-        ((= Keysym ksd~Tab)    T)
-        (T T))))
+
+    # Data of pointer will always be the symbol itself
+    # Set the symbol's value to new list
+    # Set CDR, not Data?
+    (set (get (car *part-ptrs) 'data) Data)
+
+    # TODO: Position p0 over new item
+    # Rebase verts at current ptr pos
+    (nl-cursor -1.0)
+    (adv-cursor -3.0) # Pos over last item (not NIL)
+    (mov> (car *part-ptrs) *pos-cursor)
+
+    (cond ((= Keysym ksd~Return) T)
+          ((= Keysym ksd~Tab)    T)
+          (T T))))
 
 
 (de cmd-del (Dir)
@@ -88,7 +96,7 @@
 
     Makes most sense to simply zero vert, and not worry about instanceCount as
     frag will be discarded...fix later
-    
+
     (NIL 1 2 3)
     Pop 1
     Connect 2 -> NIL
@@ -99,14 +107,14 @@
     ...
     (NIL 3)
     Pop 3
-    Replace if CDDR NIL    
+    Replace if CDDR NIL
   }#
 
   (when (get *part-root 'data)
 
     # Build temp list
     # Poss cache L (and use dirty bit)
-    
+
     (let (L ()
           D ()
           X *part-root)
@@ -117,7 +125,7 @@
         # If CDR is NIL, end of list
         (NIL (get X 'b))
         (setq X (get X 'b)))
-            
+
       # Delete second last particle since last is NIL
       (let (Last-2 (cadr L)
             Last-3 (caddr L)
@@ -126,14 +134,11 @@
 
         # Position pointer at start of Last-2
         (mov-cursor (car (get Last-2 'verts)) T)
-        
-        # Reuse NIL part so need not regenerate it    
+
+        # Reuse NIL part so need not regenerate it
         (del-particle Last-2 T NIL)
-        
-        # Reposition NIL to ptr
-        # Modify draw-glyph...
-        # TODO: Refactor update-glyph
-        # TODO: Make char consistent
+
+        # Mov NIL to ptr
         (mov> Part-NIL *pos-cursor)
 
         (if Nth-3
@@ -142,10 +147,24 @@
             (with Last-3 (=: b Part-NIL))
 
             # Replace *part-root with NIL particle
-            (setq *part-root Part-NIL))))
-    
-  (nl-cursor -1.0)
-  (mov> (car *part-ptrs) *pos-cursor)))
+            (setq *part-root Part-NIL))
+
+        # Modify CDR of Last-3
+        # Use con to destructively set the CDR
+        (when Last-3
+          (con (get Last-3 'data)))
+
+        # Data of pointer will always be the symbol itself
+        # Set the symbol's value to new end (Last-3)
+        # Particles for symbols only contain the symbol itself in Data
+        #   A and B are left NIL - only for list items
+        (with (car *part-ptrs)
+          (set (: data) Last-3))))
+
+    #(println "POINTER DATA" (get (eval (get (car *part-ptrs) 'data)) 'data))
+
+    (nl-cursor -1.0)
+    (mov> (car *part-ptrs) *pos-cursor)))
 
 
 (de cmd-make-list (Keysym)

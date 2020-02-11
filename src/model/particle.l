@@ -107,10 +107,7 @@
   (=: data Data)
   (=: a A)
   (=: b B)
-  (=: verts Verts)
-
-  (=: layout NIL)
-  (=: end    NIL))
+  (=: verts Verts))
 
 
 (dm cons> (B)
