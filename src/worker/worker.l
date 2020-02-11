@@ -1,14 +1,13 @@
 #{
-    Global variables start with an asterisk "*"
-    Global constants may be written all-uppercase
-    Functions and other global symbols start with a lower case letter
-    Locally bound symbols start with an upper case letter
-    Local functions start with an underscore "_"
-    Classes start with a plus-sign "+", where the first letter
-        is in lower case for abstract classes
-        and in upper case for normal classes
-    Methods end with a right arrow ">"
-    Class variables may be indicated by an upper case letter
+  Global variables start with an asterisk "*"
+  Global constants may be written all-uppercase
+  Functions and other global symbols start with a lower case letter
+  Locally bound symbols start with an upper case letter
+  Local functions start with an underscore "_"
+  Classes start with a plus-sign "+", where the first letter
+    is in lower case for abstract classes and in upper case for normal classes
+  Methods end with a right arrow ">"
+  Class variables may be indicated by an upper case letter
 }#
 
 
@@ -40,15 +39,8 @@
 (def '*verts)
 (def '*cnt-v 1)
 
-# Currently used as main, however this is the timeline
-(def '*part-root)
-# Main working data
-(def '*part-main)
-# Pointers
+(def '*part-root) # Used as main -> make timeline (aka main)
 (def '*part-ptrs)
-
-(def '*part-ptr)
-
 (def '*pos-cursor)
 
 
@@ -236,6 +228,8 @@
 
   (adv-cursor)
 
+  # Manually track symbols we create...
+  
   (prinl-info "init-worker" "Starting epoll...")
 
   (loop (ipc~poll> *ipc -1)))
