@@ -2,10 +2,10 @@
 
   # Enter/Newline should produce character and move pointer
 
-  (let (Data (cond ((= Keysym ksd~space) " ")
-                  ((= Keysym ksd~Return) (char 10))
-                  (T (char Keysym)))
-        List-Data (list Data))
+  (let (Char (cond ((= Keysym ksd~space) " ")
+                   ((= Keysym ksd~Return) (char 10))
+                   (T (char Keysym)))
+        Data (list Char))
 
     #(println "PART-PTR" *part-root (get *part-root 'data) (get *part-root 'a) (get *part-root 'b))
 
@@ -21,17 +21,17 @@
           (unless (get Last 'data)
             (setq Last *part-root))
 
-          # Position at last
+          # Mov cursor to last vert
           (mov-cursor (car (get Last 'verts)) T)
 
-          #(nl-cursor)
+          # Mov cursor in front of last vert which is always NIL
           (adv-cursor 4.0)
 
           # Remove NIL particle
           (del-particle (get Last 'b))
 
-          # Gen part for data
-          (let Part (gen-pair-x-h List-Data
+          # Gen part for new data
+          (let Part (gen-pair-x-h Data
                                   0.0
                                   *pos-cursor
                                   gen-pair-x-h
@@ -42,7 +42,7 @@
 
         # Append data (or use conc?)
         (with *part-root
-          (=: data (conc (: data) List-Data))))
+          (=: data (conc (: data) Data))))
 
       # else replace particle
       (prog
@@ -53,10 +53,10 @@
         (del-particle *part-root T T)
 
         # Gen part for data
-        (setq *part-root (gen-part List-Data
-                                  0.0
-                                  *pos-cursor
-                                  gen-pair-x-h))
+        (setq *part-root (gen-part Data
+                                   0.0
+                                   *pos-cursor
+                                   gen-pair-x-h))
 
         T))
         
@@ -148,6 +148,34 @@
   (mov> (car *part-ptrs) *pos-cursor)))
 
 
+(de cmd-make-list (Keysym)
+
+  (prinl-info "cmd-make-list")
+
+  # Produce NIL
+  # Use can enter NIL, at which point is converted into "()"
+
+  #{
+    Enter list after creation or stay on same level?
+
+    Default is NO so pressing new list repeatedly will create subsequent lists
+    rather than nested lists
+  }#
+
+  (let Part (gen-part NIL)
+
+    (conc-ptr Part)
+
+    #(setq *lst-ptr Part)
+
+    #(push '*lists-ptr Part)
+
+    T)
+
+  (adv-cursor))
+
+
+#########################
 #########################
 
 
@@ -317,35 +345,5 @@
                Str
                NIL
                (draw-str Str (get-color-type Str) T))))
-
-  (adv-cursor))
-
-
-################################################################################
-
-
-(de cmd-make-list (Keysym)
-
-  (prinl-info "cmd-make-list")
-
-  # Produce NIL
-  # Use can enter NIL, at which point is converted into "()"
-
-  #{
-    Enter list after creation or stay on same level?
-
-    Default is NO so pressing new list repeatedly will create subsequent lists
-    rather than nested lists
-  }#
-
-  (let Part (gen-part NIL)
-
-    (conc-ptr Part)
-
-    #(setq *lst-ptr Part)
-
-    #(push '*lists-ptr Part)
-
-    T)
 
   (adv-cursor))

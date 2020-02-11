@@ -183,20 +183,6 @@ Store DAGs as binary trees?
       * As user moves, ptr changes are stored in history
     * Create special command to create pointer symbols [Later]
 
-  * Default particles
-    * Default symbols  
-    * Help info
-      * Like Nano
-    * FPS - do in render
-    * Load own code as data
-      * Really draw relevant internal symbols from table
-
-  * Swap part
-    * (con (nth n) (new)) to change CDR
-    * (con (new) (nth n+1))
-
-  GET TO HERE =------------------------------------------------------------
-
   * List Handling
     * Create list
     * Enter/exit list
@@ -224,6 +210,20 @@ Store DAGs as binary trees?
       * (col n) - n=number of items before row on last item
       * (row n) - n=number of items before col on last item
       * Print commands by default
+
+  GET TO HERE =------------------------------------------------------------
+
+  * Default particles
+    * Default symbols  
+    * Help info
+      * Like Nano
+    * FPS - do in render
+    * Load own code as data
+      * Really draw relevant internal symbols from table
+
+  * Swap part
+    * (con (nth n) (new)) to change CDR
+    * (con (new) (nth n+1))
 
   * Limit draw lengths to N items (def=12)
     * ...then move to newline

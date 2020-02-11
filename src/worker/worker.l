@@ -40,7 +40,9 @@
 (def '*cnt-v 1)
 
 (def '*part-root) # Used as main -> make timeline (aka main)
+# (def '*part-cmds) # Store commands issued
 (def '*part-ptrs)
+
 (def '*pos-cursor)
 
 

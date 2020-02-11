@@ -2,14 +2,24 @@
 # Semantic (Selection)
 
 (de cmd-point-ptr-pre (Keysym)
-  # Move to next item in the list
-  (println "Move to next item")
+  # Move to prev item in the list
+  (println "Move to prev item")
+  
+  # Get previous item from pointer
+  
+  
+  # (when item
+  #   ...
+  
+  # Move pointer to cursor
+  #(mov> (car *part-ptrs) *pos-cursor)
+  
   T)
 
 
 (de cmd-point-ptr-nxt (Keysym)
-  # Move to prev item in the list
-  (println "Move to prev item")
+  # Move to next item in the list
+  (println "Move to next item")
   T)
 
 
