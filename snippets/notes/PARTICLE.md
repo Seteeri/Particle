@@ -165,14 +165,13 @@ Store DAGs as binary trees?
       * Remove item [Done]
         * Skip removing NIL at end of list since it would still point to NIL
        * When deleting list, skip deleting NIL [Done]
-       
+
   * Pointer [WIP]
     * Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
       * Implement p* - master ptr [Done]
       * Refactor cmd-char etc. to update p* [Done]
       * Replace current marker with p* symbol
         * Refactor initial particle creation
-    * Create special command to create pointer symbols [Later]
     * Select item
       * Ptr is a particle symbol whose value is whatever the user wants
         * Default = master list
@@ -182,13 +181,22 @@ Store DAGs as binary trees?
       * Moving through a list is equivalent to setting ptr value to
       nth prev/next or car/cdr, such as pointing to a list or the value
       * As user moves, ptr changes are stored in history
-      
+    * Create special command to create pointer symbols [Later]
+
+  * Default particles
+    * Default symbols  
+    * Help info
+      * Like Nano
+    * FPS - do in render
+    * Load own code as data
+      * Really draw relevant internal symbols from table
+
   * Swap part
     * (con (nth n) (new)) to change CDR
-    * (con (new) (nth n+1))        
-  
+    * (con (new) (nth n+1))
+
   GET TO HERE =------------------------------------------------------------
-  
+
   * List Handling
     * Create list
     * Enter/exit list
@@ -211,17 +219,17 @@ Store DAGs as binary trees?
 
     * Use special printing for control characters like enter etc.
       * newline ("^J"), return ("^M") or TAB ("^I")
-    
+
     * Relayout
       * (col n) - n=number of items before row on last item
-      * (row n) - n=number of items before col on last item    
+      * (row n) - n=number of items before col on last item
       * Print commands by default
 
   * Limit draw lengths to N items (def=12)
     * ...then move to newline
     * any changes to this might have to redraw everything
       * spatial map will allow optimization
-    
+
   * Implement spatial map (R-Tree)
     * Will be interesting to see data structure...
     * Need this to optimize finding bounds
@@ -247,14 +255,6 @@ Store DAGs as binary trees?
   * Error Handling
     * Set * Err to (quit)
     * On error, print msg and return to top-level
-
-  * Default particles
-    * Help info
-      * Like Nano
-    * FPS - do in render
-
-  * Load own code as data
-    * Really draw relevant internal symbols from table
 
   * Explore file browsing using built in functions
     * For example, get a list of files in directory -> return list of strings of

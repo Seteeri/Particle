@@ -3,21 +3,27 @@
 
 (de cmd-point-ptr-pre (Keysym)
   # Move to next item in the list
+  (println "Move to next item")
   T)
 
 
 (de cmd-point-ptr-nxt (Keysym)
   # Move to prev item in the list
+  (println "Move to prev item")
   T)
 
 
 (de cmd-point-ptr-out (Keysym)
   # Move to outer list
+  # Works anywhere
+  (println "Move to outer list")
   T)
 
 
 (de cmd-point-ptr-in (Keysym)
   # Move to inner list
+  # Move to next nearest list?
+  (println "Move to inner list")
   T)
 
 
