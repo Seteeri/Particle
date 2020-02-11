@@ -35,15 +35,17 @@
 (def '*metrics)
 (def '*xkb)
 (def '*binds)
-
-(def '*verts)
+(def '*verts) # Verts loaded
 (def '*cnt-v 1)
 
-(def '*part-root) # Used as main -> make timeline (aka main)
-(def '*part-cmds) # Store commands issued
-(def '*part-ptrs)
+# List works for small amount...
+# assoc/list -> binary trees -> database
+(def '*particles) # Master index of all particles in the "world"
+(def '*part-root) # List of main particles
+(def '*part-cmds) # List of commands (undo/history/timeline)
+(def '*part-ptrs) # List of pointers
 
-(def '*pos-cursor)
+(def '*pos-cursor) # Used when drawing; not literally drawn
 
 
 # Wrapper libraries
@@ -209,6 +211,8 @@
   # Default pointer symbol is p0...or use *0...N?
   (setq p0 ())
 
+  # Must store all particles somewhere...
+
   (let ((X Y) *pos-cursor)
 
      # Draw default global symbols/lists
@@ -221,8 +225,6 @@
     (nl-cursor 2.0)
     (set-cur-x X)
 
-    # List works for small amount
-    # Use binary trees for larger amount
     (push '*part-ptrs
           (gen-part 'p0
                     0.0
