@@ -166,25 +166,28 @@ Store DAGs as binary trees?
         * Skip removing NIL at end of list since it would still point to NIL
        * When deleting list, skip deleting NIL [Done]
 
-  * Pointer [WIP]
+  * Pointer Foundation [Done]
     * Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
       * Implement p* - master ptr [Done]
       * Refactor cmd-char etc. to update p* [Done]
       * Replace current marker with p* symbol
         * Refactor initial particle creation
-    * Select item
-      * Ptr is a particle symbol whose value is whatever the user wants
-        * Default = master list
-      * Part-ptr contains master list particle
-        * Rename part-ptr to master-part so part-ptr contains the ptr
-        particle
-      * Moving through a list is equivalent to setting ptr value to
-      nth prev/next or car/cdr, such as pointing to a list or the value
-      * As user moves, ptr changes are stored in history
-    * Create special command to create pointer symbols [Later]
-
-  * Draw default symbols
-    * Draw worker globals (anything starting with *)
+  
+  * Pointer Selection [WIP]
+    * Implement prev/next, up/down when list creation implemented
+    * As user moves, ptr changes are stored in command history [WIP]
+      * Store in command history
+      * To move around, get last input
+    * History can be purged or saved to disk
+  
+  * Draw default symbols [WIP]
+    * Implement master particle list [WIP]
+      * Need this to store particles of globals
+        * This is the exception, like internal table
+      * Store as assoc list...what is the key?
+        * Data is the key; Value is the particle
+      * Refactor gen-particle to add to particle index
+    * Draw worker globals (anything starting with) [WIP]
     * Refactor symbol particles
       * Data stores symbol
       * A/CAR = NIL
@@ -195,19 +198,15 @@ Store DAGs as binary trees?
         * spatial map will allow optimization
 
   * List Handling
-    * Create list
-    * Enter/exit list
-    * Brainstorm
-      * If at end (@NIL) or pointing to NIL, append
-      * Else anywhere else:
-        * If NIL, create list with char OR replace it?
-      * Default:enter list
-        * If not NIL, append after (like at end)
-        * Consistent = easier
-          * Should not replace, since can be done with backspace/delete + append
-      * Same reason insert mode is not default
+    * Create list and enter it, by default
+      * Makes it easy to create sublist, enter data, move to superlist, etc.
+      * New list creates NIL
+        * Current cmd-make-char will append-end to current list
+        * So create list will append NIL...
+        * User can move pointer to last item to append
+          but move pointer to NIL to create new list
     * Use specific command to replace any with list/NIL
-    * Aka use NIL command
+      * Aka use NIL command
     * Enter/Exit
       * Alt+Backspace = Enter list
       * Alt+Enter = Exit list (move to dot/parent list)
@@ -223,6 +222,8 @@ Store DAGs as binary trees?
       * Print commands by default
 
   GET TO HERE =------------------------------------------------------------
+
+  * Create special command to create pointer symbols [Later]
 
   * Default particles
     * Default symbols  

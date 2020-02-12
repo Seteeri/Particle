@@ -44,9 +44,8 @@
 (def '*part-main) # List of main particles
 (def '*part-cmds) # List of commands (undo/history/timeline)
 (def '*part-ptrs) # List of pointers
-
-(def '*pos-cursor) # Used when drawing; not literally drawn
-
+(def '*pos-cursor (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
+(def 'p0)  # Default pointer
 
 # Wrapper libraries
 (load "/home/user/Particle/particle/src/c/mathc.l")
@@ -204,14 +203,7 @@
   # However, to draw the Ptr requires Ptr...
   # -> Manually make Pointer particle
 
-  (setq *pos-cursor (list 0.0 0.0 0.0))
-
   (when NIL (run-tests))
-
-  # Default pointer symbol is p0...or use *0...N?
-  (setq p0 ())
-
-  # Must store all particles somewhere...
 
   (let ((X Y) *pos-cursor)
 
