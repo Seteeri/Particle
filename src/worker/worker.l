@@ -205,18 +205,34 @@
 
   (when NIL (run-tests))
 
+  (gen-def-parts)
+
+  (prinl-info "init-worker" "Starting epoll...")
+
+  (loop (ipc~poll> *ipc -1)))
+
+
+(de gen-def-parts ()
+  # Draw default global symbols/lists
+
+  # Sym = List
+  # Particle for sym/list
+  # Where to store this particle?
+  # -> Stored in particles
+  # But how to access it?
+  # -> Sym
+
   (let ((X Y) *pos-cursor)
 
-     # Draw default global symbols/lists
-    (setq *part-cmds
-          (gen-part '*part-cmds
-                    0.0
-                    *pos-cursor
-                    gen-pair-x-h))
+    (gen-part '*part-cmds
+              0.0
+              *pos-cursor
+              gen-pair-x-h)
 
     (nl-cursor 2.0)
     (set-cur-x X)
 
+    # Generate ptr
     (push '*part-ptrs
           (gen-part 'p0
                     0.0
@@ -226,21 +242,21 @@
     (nl-cursor)
     (set-cur-x X)
 
-    # Default data is NIL
-    (setq *part-main
-          (gen-part ()
-                    0.0
-                    *pos-cursor
-                    gen-pair-x-h))
-                                        
-    T)
-
+    # Generate main particle
+    (setq *part-main (gen-part ()
+                               0.0
+                               *pos-cursor
+                               gen-pair-x-h))
+                               
+    #{
+    (gen-part '*part-main
+              0.0
+              *pos-cursor
+              gen-pair-x-h)
+    }#
+              
   (nl-cursor)
-  (set-cur-x X)
-
-  (prinl-info "init-worker" "Starting epoll...")
-
-  (loop (ipc~poll> *ipc -1)))
+  (set-cur-x X)))
 
 
 (de run-tests ()

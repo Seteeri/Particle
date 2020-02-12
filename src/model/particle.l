@@ -104,7 +104,6 @@
        B
        Verts)
 
-  # Add to master particle index
   (push '*particles This)
   
   (=: data Data)

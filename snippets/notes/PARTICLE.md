@@ -181,17 +181,18 @@ Store DAGs as binary trees?
     * History can be purged or saved to disk
   
   * Draw default symbols [WIP]
+    * Refactor symbol particles [WIP]
+      * Data stores symbol
+      * A/CAR = NIL
+      * B/CDR = VAL  
     * Implement master particle list [WIP]
       * Need this to store particles of globals
         * This is the exception, like internal table
-      * Store as assoc list...what is the key?
-        * Data is the key; Value is the particle
-      * Refactor gen-particle to add to particle index
-    * Draw worker globals (anything starting with) [WIP]
-    * Refactor symbol particles
-      * Data stores symbol
-      * A/CAR = NIL
-      * B/CDR = VAL
+      * Store as assoc list...
+        * Data is the key?
+        * Value is the particle
+      * Or solely so particles don't get deleted
+        * Poss move vertices into it?
     * Limit draw lengths to N items (def=12)
       * ...then move to newline
       * any changes to this might have to redraw everything
