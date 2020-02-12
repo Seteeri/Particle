@@ -79,8 +79,10 @@
 (de draw-dot (Adv)
 
   (let Dot (draw-glyph (char 183) *col-base-0)
-
+    
+    (cmd-upd-vert *ipc Dot)
     (when Adv (adv-cursor))
+    
     Dot))
 
 
@@ -90,7 +92,12 @@
   (let Verts ()
 
     (for C (chop Chars)
-      (push 'Verts (draw-glyph C Col))
+    
+      (let Vert (draw-glyph C Col)
+        
+        (push 'Verts Vert)
+        (cmd-upd-vert *ipc Vert))
+    
       (when Adv (adv-cursor)))
 
     (flip Verts)))
@@ -103,15 +110,17 @@
     # Reset vertex
     # Pos = baseline = X,0,0
     (with Vert
+    
       (=: pos *pos-cursor)
-      (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
-                     (get Col 1) (get Col 2) (get Col 3) 1.0
-                     (get Col 1) (get Col 2) (get Col 3) 1.0
-                     (get Col 1) (get Col 2) (get Col 3) 1.0)))
+    
+      (let ((R G B) Col)
+        (=: rgba (list R G B 1.0
+                       R G B 1.0
+                       R G B 1.0
+                       R G B 1.0))))
 
     (update-glyph> Vert Char)
     (upd-mdl-mtrx> Vert)
-    (cmd-upd-vert *ipc Vert)
 
     (inc '*cnt-v)
 
@@ -123,22 +132,34 @@
   (let Verts ()
 
     (for C Repr
-      (push 'Verts (draw-glyph C Col))
+      
+      (let Vert (draw-glyph C Col)
+      
+        (push 'Verts Vert)
+        (cmd-upd-vert *ipc Vert))
+      
       (when Adv (adv-cursor)))
 
     (flip Verts)))
 
   
-(de draw-str (Str Col Adv) (draw-repr (chop (pack "\"" Str "\"")) Col Adv))
-(de draw-num (Num Col Adv) (draw-repr (chop (format Num)) Col Adv))
-(de draw-sym (Sym Col Adv) (draw-repr (chop (sym Sym)) Col Adv))
+(de draw-str (Str Col Adv)
+  (draw-repr (chop (pack "\"" Str "\"")) Col Adv))
+
+  
+(de draw-num (Num Col Adv)
+  (draw-repr (chop (format Num)) Col Adv))
+
+
+(de draw-sym (Sym Col Adv)
+  (draw-repr (chop (sym Sym)) Col Adv))
 
 
 (de draw-atom (Atom Col Adv) 
 
-  (let Col-2 (if Col Col (get-color-type Atom))
+  (unless Col (setq Col (get-color-type Atom)))
 
-    (cond ((num? Atom) (draw-num Atom Col-2 Adv))
-          ((str? Atom) (draw-str Atom Col-2 Adv))
-          (T           (draw-sym Atom Col-2 Adv)))))
+  (cond ((num? Atom) (draw-num Atom Col Adv))
+        ((str? Atom) (draw-str Atom Col Adv))
+        (T           (draw-sym Atom Col Adv))))
 
