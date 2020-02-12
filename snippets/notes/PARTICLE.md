@@ -180,6 +180,8 @@ Store DAGs as binary trees?
       * To move around, get last input
     * History can be purged or saved to disk
   
+  * Poss to mix drawing lists horizontal/vertical if there are arrows
+  
   * Draw default symbols [WIP]
     * Refactor symbol particles [WIP]
       * Data stores symbol

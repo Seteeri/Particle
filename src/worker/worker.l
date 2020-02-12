@@ -243,17 +243,17 @@
     (set-cur-x X)
 
     # Generate main particle
+    #{
     (setq *part-main (gen-part ()
                                0.0
                                *pos-cursor
                                gen-pair-x-h))
-                               
-    #{
+    }#
+    
     (gen-part '*part-main
               0.0
               *pos-cursor
               gen-pair-x-h)
-    }#
               
   (nl-cursor)
   (set-cur-x X)))

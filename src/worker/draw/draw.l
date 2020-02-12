@@ -107,7 +107,6 @@
 
   (let Vert (pop '*verts)
 
-    # Reset vertex
     # Pos = baseline = X,0,0
     (with Vert
     
@@ -160,6 +159,8 @@
   (unless Col (setq Col (get-color-type Atom)))
 
   (cond ((num? Atom) (draw-num Atom Col Adv))
+        # Transient symbol
         ((str? Atom) (draw-str Atom Col Adv))
+        # Internal symbol and T
         (T           (draw-sym Atom Col Adv))))
 

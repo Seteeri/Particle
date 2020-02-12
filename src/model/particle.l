@@ -193,25 +193,48 @@
   # Maybe layout particles after gen?
   
   (if (pair Any)
+  
       (if (lst? (cdr Any))
+      
           # Specific forms override layout
           (cond ((= (car Any) 'let)
                  (gen-let Any Depth Root Layout))
                 (T
                  (Layout Any Depth Root Layout)))
+                 
           (Layout Any Depth Root Layout))
-      (gen-atom Any T)))
+      
+      (gen-atom Any Depth Root Layout T)))
 
 
-(de gen-atom (Any Adv)
+(de gen-atom (Any Depth Root Layout Adv)
 
-  # If full expansion wanted, go further in gen-num/str/sym etc.
+  # Pass flag to draw sym val
+  
+  (let Part (new '(+Particle)
+                  Any
+                  NIL
+                  NIL
+                  (draw-atom Any
+                            (get-color-type Any)
+                            Adv))
 
-  (new '(+Particle)
-        Any
-        NIL
-        NIL
-        (draw-atom Any (get-color-type Any) Adv)))
+    # Handle internal symbol excl. T - draw the value (CDR)
+    # Transient sym's value is itself...        
+    (when (and (sym? Any)
+               (not (str? Any)) (not (box? Any)) (not (ext? Any))
+               (not (= Any NIL)))
+      (gen-sym-int Any Depth Root Layout))
+      
+    Part))
+
+
+(de gen-sym-int (Any Depth Root Layout)
+  # Draw CDR
+  # Opt: Ignore NIL?
+        
+  (adv-cursor)
+  (gen-part (eval Any) Depth Root gen-pair-x-h))
 
 
 (de draw-cons-x (Ar Dr Ptr-Ar Ptr-Dr)
@@ -434,7 +457,7 @@
         ((= Type 'cons)  (gen-pair Any Root))))
 
 
-(de gen-sym (Ptr Root)
+(de gen-ptr-sym (Ptr Root)
 
   #{
   
@@ -496,7 +519,7 @@
          (append Vert-Ar Dot Vert-Dr))))
 
 
-(de gen-big (Ptr Root)
+(de gen-ptr-big (Ptr Root)
   
   (println 'gen-big)
 
@@ -538,7 +561,7 @@
          (append Vert-Ar Dot Vert-Dr))))
 
 
-(de gen-pair (Ptr Root)
+(de gen-ptr-pair (Ptr Root)
   #{
   }#
 
