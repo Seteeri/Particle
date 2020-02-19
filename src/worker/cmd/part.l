@@ -11,6 +11,14 @@
 
     # Get particle from *particles
 
+    # Attach NIL particle to symbol
+    (when NIL
+      (println *part-main
+               (get *part-main 'data)
+               (eval (get *part-main 'data))
+               (get *part-main 'a)
+               (get *part-main 'b)))
+
     (if (get *part-main 'data)
 
       (prog

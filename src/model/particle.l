@@ -222,7 +222,7 @@
     (when (and (sym? Any)
                (not (str? Any)) (not (box? Any)) (not (ext? Any))
                (not (= Any NIL)))
-      (gen-sym-int Any Depth Root Layout))
+      (put Part 'b (gen-sym-int Any Depth Root Layout)))
       
     Part))
 
@@ -232,7 +232,7 @@
   # Opt: Ignore NIL?
         
   (adv-cursor)
-  (gen-part (eval Any) Depth Root gen-pair-x-h))
+  (gen-part (val Any) Depth Root gen-pair-x-h))
 
 
 (de draw-cons-x (Ar Dr Ptr-Ar Ptr-Dr)
