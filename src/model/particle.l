@@ -104,8 +104,6 @@
        B
        Verts)
 
-  (push '*particles This)
-  
   (=: data Data)
   (=: a A)
   (=: b B)

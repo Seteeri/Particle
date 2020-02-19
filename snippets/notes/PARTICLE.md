@@ -15,6 +15,17 @@ Particle's goals:
 * dynamicness
 * interactiveness
 
+Combination:
+* Mindmap - VYM
+* Notes - Orgmode
+* TODO Lists - Evernote
+* Project Management - Trello
+* Tags - Tagspaces
+* Messaging - Gitter
+* Non-hierarchial FS - WinFS
+* CMS - Wiki
+
+
 Long Term Goals:
 
 * Core dumping - support image-based editing like traditional Lisps

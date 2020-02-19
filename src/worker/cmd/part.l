@@ -9,6 +9,8 @@
 
     #(println "PART-PTR" *part-main (get *part-main 'data) (get *part-main 'a) (get *part-main 'b))
 
+    # Get particle from *particles
+
     (if (get *part-main 'data)
 
       (prog

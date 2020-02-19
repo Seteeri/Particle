@@ -2573,3 +2573,13 @@ D-D-D-D-D-D-D-D
 
 vertical   = nested list - scanning vertically determines depth of list
 horizontal = same list   - scanning horizontally determines breadth of list
+
+
+################################################################################
+################################################################################
+
+Can't store transient symbols in particles directly...
+
+Symbols can be drawn multiple times so should always be a list
+
+Particles only contains roots

@@ -40,7 +40,7 @@
 
 # List works for small amount...
 # assoc/list -> binary trees -> database
-(def '*particles) # Master index of all particles in the "world"
+(def '*particles) # Master index of all particles in the "world" - store sym:particle
 (def '*part-main) # List of main particles
 (def '*part-cmds) # List of commands (undo/history/timeline)
 (def '*part-ptrs) # List of pointers
@@ -224,37 +224,41 @@
 
   (let ((X Y) *pos-cursor)
 
-    (gen-part '*part-cmds
-              0.0
-              *pos-cursor
-              gen-pair-x-h)
+    (idx '*particles
+          (def '*part-cmds
+               (gen-part '*part-cmds
+                         0.0
+                         *pos-cursor
+                         gen-pair-x-h))
+          T)
 
     (nl-cursor 2.0)
     (set-cur-x X)
 
+    # TODO: Draw *part-ptrs
     # Generate ptr
     (push '*part-ptrs
           (gen-part 'p0
                     0.0
                     *pos-cursor
                     gen-pair-x-h))
-                    
+    (idx '*particles
+         (def 'p0
+              (car *part-ptrs))
+         T)
+
     (nl-cursor)
     (set-cur-x X)
 
     # Generate main particle
-    #{
-    (setq *part-main (gen-part ()
-                               0.0
-                               *pos-cursor
-                               gen-pair-x-h))
-    }#
-    
-    (gen-part '*part-main
-              0.0
-              *pos-cursor
-              gen-pair-x-h)
-              
+    (idx '*particles
+          (def '*part-main
+                (gen-part '*part-main
+                          0.0
+                          *pos-cursor
+                          gen-pair-x-h))
+          T)
+
   (nl-cursor)
   (set-cur-x X)))
 
