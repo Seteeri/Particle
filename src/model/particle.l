@@ -85,7 +85,10 @@
 (de decode-ptr  (Any) (>> -4 (adr Any)))
 (de unpack-ptrs (Any) (struct (decode-ptr Any) '((B . 8) (B . 8))))
 (de list? (Any) (and (lst? Any) (not (= Any NIL))))
-
+(de sym-int? (Any)
+  (and (sym? Any)
+       (not (str? Any)) (not (box? Any)) (not (ext? Any))
+       (not (= Any NIL))))
 
 (de change-col-particle (Part Col)
   (for Vert (get Part 'verts)
@@ -209,22 +212,21 @@
 
   # Pass flag to draw sym val
   
-  (let Part (new '(+Particle)
-                  Any
-                  NIL
-                  NIL
-                  (draw-atom Any
-                            (get-color-type Any)
-                            Adv))
+  # Handle internal symbol excl. T - draw the value (CDR)
+  # Transient sym's value is itself...    
 
-    # Handle internal symbol excl. T - draw the value (CDR)
-    # Transient sym's value is itself...        
-    (when (and (sym? Any)
-               (not (str? Any)) (not (box? Any)) (not (ext? Any))
-               (not (= Any NIL)))
-      (put Part 'b (gen-sym-int Any Depth Root Layout)))
-      
-    Part))
+  # Must do after so drawn after
+  
+  (let (V (draw-atom Any
+                     (get-color-type Any)
+                     Adv)
+        B (when (sym-int? Any)
+            (gen-sym-int Any Depth Root Layout)))
+    (new '(+Particle)
+         Any
+         NIL
+         B
+         V)))
 
 
 (de gen-sym-int (Any Depth Root Layout)
