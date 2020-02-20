@@ -129,15 +129,6 @@
     Last))
 
 
-(dm last-part-2> ()
-  (let Last (: b)
-    (loop
-      (with Last (println Last (: data) (: a) (: b)))
-      (NIL (get (get (get Last 'b) 'b) 'data))
-      (setq Last (get Last 'b)))
-    Last))
-
-
 (dm mov> (Pos)
 
   # TODO:
