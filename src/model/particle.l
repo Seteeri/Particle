@@ -228,7 +228,7 @@
   # Opt: Ignore NIL?
         
   (adv-cursor)
-  (gen-part (val Any) Depth Root gen-pair-x-h))
+  (gen-part (val Any) Depth Root Layout))
 
 
 (de draw-cons-x (Ar Dr Ptr-Ar Ptr-Dr)
