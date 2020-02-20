@@ -1,92 +1,58 @@
 (de cmd-make-char (Keysym)
 
-  # Enter/Newline should produce char + mov ptr/cur
+  # Append char to a list, er symbol containing list
 
-  (let (Char (cond ((= Keysym ksd~space) " ")
-                   ((= Keysym ksd~Return) (char 10))
-                   (T (char Keysym)))
-        Data (list Char))
+  (let Data (list (cond ((= Keysym ksd~space) " ")
+                        ((= Keysym ksd~Return) (char 10))
+                        (T (char Keysym))))
 
-    #(println "PART-PTR" *part-main (get *part-main 'data) (get *part-main 'a) (get *part-main 'b))
+    # This will follow pointers until b is NIL
+    (let Last (last-part> *part-main)
 
-    # Get particle from *particles
+      # Mov cursor to NIL first vert pos
+      (mov-cursor (car (get Last 'verts)) T)
 
-    # Attach NIL particle to symbol
-    (when NIL
-      (println *part-main
-               (get *part-main 'data)
-               (eval (get *part-main 'data))
-               (get *part-main 'a)
-               (length (get (get *part-main 'b) 'verts))))
+      # Gen part for new data; incl CAR/CDR
+      (let Part (gen-pair-x-h Data
+                              0.0
+                              *pos-cursor
+                              gen-pair-x-h
+                              NIL T)
 
-    (if (get *part-main 'data)
-
-      (prog
-
-        # Will return NIL also
-        (let Last (last-part> *part-main)
-
-          #(println "LAST" Last (get Last 'data) (get Last 'a) (get Last 'b))
-
-          (unless (get Last 'data)
-            (setq Last *part-main))
-
-          # Mov cursor to last vert
-          (mov-cursor (car (get Last 'verts)) T)
-
-          # Mov cursor in front of last vert which is always NIL
-          (adv-cursor 4.0)
-
-          # Remove NIL particle
-          (del-particle (get Last 'b))
-
-          # Gen part for new data
-          (let Part (gen-pair-x-h Data
-                                  0.0
-                                  *pos-cursor
-                                  gen-pair-x-h
-                                  NIL NIL)
-
-            # Connect to last part
-            (with Last (=: b Part))))
-
-        # Connect data
-        # aka modify CDR of Last
+        # Connect NIL
+        (with Part
+          (=: b Last))
+        
+        # Reposition NIL in front of new Part
+        (mov-cursor (last (get Part 'verts)) T)
+        (adv-cursor 2.0)
+        (mov> Last *pos-cursor)
+                
         (with *part-main
-          (=: data (conc (: data) Data)))
+          # Connect symbol CDR to Part
+          (=: b Part))))
 
-        T)
-
-      # else replace particle
-      (prog
-
-        # Move pointer and cursor
-        (mov-cursor (car (get *part-main 'verts)) T)
-
-        (del-particle *part-main T T)
-
-        # Gen part for data
-        (setq *part-main (gen-part Data
-                                   0.0
-                                   *pos-cursor
-                                   gen-pair-x-h))
-
-        T))
+    (with *part-main          
+      # Connect data; aka modify CDR of Last        
+      (=: data (conc (: data) Data))))
 
     # Data of pointer will always be the symbol itself
     # Set the symbol's value to new list
     # Set CDR, not Data?
+    # TODO: Remove NIL
     (set (get (car *part-ptrs) 'data) Data)
 
     # TODO: Position p0 over new item
     # Rebase verts at current ptr pos
-    (nl-cursor -1.0)
-    (adv-cursor -3.0) # Pos over last item (not NIL)
-    (mov> (car *part-ptrs) *pos-cursor)
+    (when T
+      (nl-cursor -1.0)
+      (adv-cursor -3.0) # Pos over last item (not NIL)
+      (mov> (car *part-ptrs) *pos-cursor))
 
+    # Enter/Newline should produce char + mov ptr/cur
     (cond ((= Keysym ksd~Return) T)
           ((= Keysym ksd~Tab)    T)
-          (T T))))
+          (T T)))
 
 
 (de cmd-del (Dir)

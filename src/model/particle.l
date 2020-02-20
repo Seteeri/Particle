@@ -121,12 +121,11 @@
 (dm last-part> ()
   # Make nth version also:
   # (nth> *part-ptr 1)
+  
   (let Last (: b)
     (loop
-      #(with Last (println Last (: data) (: a) (: b)))
-      (NIL (get (get Last 'b) 'data))
+      (NIL (get Last 'b))
       (setq Last (get Last 'b)))
-    # Should return itself?
     Last))
 
 
@@ -140,6 +139,10 @@
 
 
 (dm mov> (Pos)
+
+  # TODO:
+  # * Pass flag whether to move CAR/CDR
+  # * Move to another Particle, specify optional adv/nl
 
   (for Vert (: verts)
   
@@ -253,6 +256,8 @@
     Root is baseline of cons
     so for a list Root would be coordinates of first cons
   }#
+
+  # TODO: REFACTOR CAR/CDR
 
   (let (Ar (car Any)
         Dr (cdr Any)
