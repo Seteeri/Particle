@@ -195,11 +195,7 @@ understanding of the C language and the internals of the game engine. Other
 major issues with scripting languages include performance and interoperability.
 
 
-### The Inspiration
-
-It was designed to address limitations I've personally encountered in the quest 
-for a more efficient workflow; the main limitation being, confinement to the 
-desktop/window metaphor and the staticness of widgets.
+### The Linux Desktop
 
 The chances of a Linux *desktop* are virtually nil:
 
@@ -242,11 +238,6 @@ underlying model for interacting with a computer.
 **The way for a future FOSS system does not lie with the desktop but with the 
 computing needs of tomorrow.**
 
-The question is whether FOSS development provides an advantage over proprietary
-development - possibly we are starting to see the tipping point where large
-companies are releasing internally developed projects to the coummunity, whether
-for reasons of convenience or prestige, or actual altruism.
-
 With everything just stated, Wayland, systemd debate, Moore's Law, and finally 
 emerging AR/VR technologies, I believe this presents an opportunity to redefine
 the computing environment. Particle is not an entirely new idea, but a 
@@ -286,6 +277,3 @@ programmers to maintain a gradual learning curve.
 I do not believe it is about dumbing down computers and technology to make it 
 easier to learn, but creating the right tools around programming to drive 
 motivation and learning.
-
-*See writings*
-

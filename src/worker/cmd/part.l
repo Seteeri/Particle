@@ -17,7 +17,7 @@
                (get *part-main 'data)
                (eval (get *part-main 'data))
                (get *part-main 'a)
-               (get *part-main 'b)))
+               (length (get (get *part-main 'b) 'verts))))
 
     (if (get *part-main 'data)
 

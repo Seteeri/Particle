@@ -8,42 +8,33 @@ information as they moved through the computer. What did they look like?
  Ships? Motorcycles? Were the circuits like freeways? I kept dreaming of
   a world I thought I'd never see. And then one day . . .
 
-Inspired by:
-
-* Transformers (Beast Wars), Digimon, Reboot
-* Compiz
-* Blender
-* Tron
-* Emacs
-* Lisp
-* Oberon OS
-
 Particle is a 3D Lisp structured REPL/shell. It is the implementation of
 my vision of a programmable UI to replace the desktop paradigm - a way to map
-our thoughts into the computer. It integrates concepts from CLIs, shells, REPLs,
-notebooks, WMs/DEs, creative coding, and mindmapping into a single interface.
+our thoughts into the computer. 
+
+It integrates various computing and UI concepts from CLIs, shells, REPLs, 
+notebooks, WMs/DEs, creative coding, mindmapping, note-taking into a single 
+interface that can provide convergence across multiple devices such as 
+desktops/workstations, laptops/tablets and smartphones/devices where information
+can easily and literally flow between nodes. This is one step towards that.
+
+The goal of Particle is to create a Lispy userspace, eventually replacing the
+init system and encompassing all layers above that. The first step is to
+maintain backwards compatibility with the conventional desktop (Wayland) and
+the C world while rewriting/replacing parts in Lisp, possibly into an actual
+Lisp OS.
+
+PilOS provides a minimal starting point; however, there would be many hurdles to
+overcome. Initially, a SOC could be targeted as a starting point. 
+
+The computing landscape has changed significantly since the days of Lisp 
+Machines so it begs the question as to how useful Lisp at the OS level would be
+today in contrast to past Lisp Machines. I believe another attempt is warranted
+albeit with a different approach taking advantage of today's computing power
+and ubiquitiousness.
 
 The target audience consists of programmers, power users and the like, and
 "busy" people.
-
-The goal of Particle is to create a Lispy userspace through being the
-init system and encompassing all layers above that. The first step is to
-maintain backwards compatibility with the conventional desktop (Wayland) and
-the C world while rewriting/replacing parts in Lisp.
-
-This will allow a smoother transition to a proper Lisp OS. PilOS provides a minimal
-starting point; however, there would be many hurdles to overcome, driver support
-coming to mind. Initially, a SOC could be targeted as a starting point. 
-It begs the question as to how useful Lisp at the OS level would be today
-in contrast to past Lisp Machines.
-
-I am planning to port PilOS to ARM64 or even RISC-V once devices become
-more adequate.
-
-My personal dream would be to have a consistent computing experience between
-a desktop/workstation, laptop/tablet and smartphone/PDA where information or
-objects can easily flow between devices, i.e. convergence. This is one step
-towards that.
 
 ## The Principles
 
@@ -59,21 +50,19 @@ to create a consistent *understandable* system.
 
 ## The Inspiration
 
-* Primary Inspirations:
+* Primary Inspiration:
+  * Transformers (Beast Wars), Digimon, Reboot, Tron - bridging the divide
   * Compiz - 3D desktop effects
   * Blender - 3D editor, extensible UI, keyboard driven
+  * Firefox Tree Style Tab addon  
   * Lisp - the programmable programming language
   * Emacs/Vim/StumpWM - consistency, extensibility, text and keyboard driven
-  * Evernote - Stepan Pachikov wanted to remember everything
-  * Firefox Tree Style Tab addon
 
-* Secondary Inspirations:
+* Secondary Inspiration:
   * McCLIM - "presentations" - (Convergent evolution I suppose ;))
   * Uzbl/Conkeror - numbered links for navigation
   * Unreal Blueprints - nodal system
   * EagleMode - ZUI system
-
-* Personal Influences:
   * The Humane Interface by Jeff Raskin
     * Elimination of modes
     * Persistence
@@ -85,73 +74,28 @@ to create a consistent *understandable* system.
   * Douglas Engelbart - "The Mother of All Demos"
   * Xerox PARC - pioneered many modern computing elements and paradigms
   * Sir Tim Berners-Lee - WWW
-  * Paul Graham, Peter Norvig
+  * Paul Graham, Peter Norvig - applied Lisp
   * Brett Victor - Inventing on Principle
   * Zach Bean - quicklisp
   * Robert Strandh - CLOSOS/LispOS
   * Chris Schafmeister - Molecular Metaprogramming
-
+  * Evernote - Stepan Pachikov wanted to remember everything
+  * Oberon OS
+  
 ## The Interface
 
-* Built around DAG/trees  - common pattern across domains:
-  * HTML/DOM
-  * Task management
-  * Version control
-  * Init dependencies
-  * Garbage collection tracing
-  * Gantt charts
-  * Compiler internals
-* 3D orthographic nodal environment - "turtles all the way down"
+* Built on lisp data structures - lists/cons, symbols, numbers
+* 3D orthographic "nodal" environment - "turtles all the way down"
 * Primarily keyboard driven interface
-* Non-destructive editing; undo/redo capabilities
+* Non-destructive; undo/redo capabilities
 * Non-blocking UI - user always aware of computer status
+  * User can choose take risk to block
 * Wayland provides conventional desktop
-* Solarized color theme for default
+* Solarized color theme as default
 
-## The Architecture
+## The Infrastructure
 
-* Focused on Wayland and modern OpenGL ES 3.2+ (Vulkan)
-* PicoLisp due to simplicity, expressiveness and consistency
-* Process-based system
-  * Components: Input/Controller, Workers, Model, Render
-  * IPC through message passing
-  * Multiple processes provide fault-tolerance and scalability
-* Rendering engine = Particle system
-  * Compute shaders
-  * AZDO Techniques
-    * Persistent mapping
-    * Instanced drawing
-    * Indirect drawing
-  * Fully programmable vertex pulling
-    * Texture buffers/UBOs/SSBOs -> gl_VertexID+gl_InstanceID
-* R-tree for spatial indexing
-
-Reddit Thread: "Is There anything Emacs CAN't do?"
-https://www.reddit.com/r/emacs/comments/3v19uj/is_there_anything_emacs_cant_do
-
-* Threading
-  * PicoLisp does not have threads; Particle uses processes and IPC with shared
-  nothing concurrency to achieve parallelism.
-  * Processes also provide the following benefits:
-    * Fault-tolerance - a process crashing does not take the system down with it compared to a thread
-    * Data-redundancy - data is distributed similar to the relationship between a CPU cache and main memory
-    * Opporunities to increase GC performance - multiple processes = parallel and incremental GC
-      * Assuming data is evenly distributed...
-* General Responsiveness and Performance
-  * Part of Emacs latency is Emacs Lisp but also its single-threaded architecture
-  * PicoLisp is much faster than Emacs Lisp
-* More Flexible Keybindings
-* Advanced Graphical Capabilities
-  * Particle is based on OpenGL and provides unfiltered access to the drawing API
-  and OpenGL; of course, one of the fundamental design principles is to avoid
-  overlapping windows.
-  * This allows for effects like powermode and highlight-tail.
-* Web Browser
-  * This is planned.
-* Be an OS
-  * A goal of Particle is to create a Lisp userspace, and possibly one day,
-  integrate with PilOS/PilMCU. For now, replacing the DE/WM is the first step by
-  integrating Wayland/XWayland.
+*See ARCHITECTURE.md*
 
 ## The Roadmap
 
