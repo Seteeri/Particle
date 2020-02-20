@@ -242,7 +242,7 @@
     (list Vert-Ar Dot Vert-Dr)))
 
 
-(de gen-pair-x-h (Any Depth Root Layout Car Cdr)
+(de gen-pair-x-h (Any Depth Root Layout Ignore-Car Ignore-Cdr)
   #{
     Root is baseline of cons
     so for a list Root would be coordinates of first cons
@@ -263,13 +263,13 @@
           X-Cdr (get *pos-cursor 1)
           
           Pa-Ar (when (and (not (num? Ar))
-                           (not Car))
+                           (not Ignore-Car))
                   # Move below, align left of cons
                   (nl-cursor) (set-cur-x X)
                   (gen-part Ar Depth Root gen-pair-x-h))
 
           Pa-Dr (when (and (not (num? Dr))
-                           (not Cdr))
+                           (not Ignore-Cdr))
                   # If cursor short then must adv
                   (when (<= (get *pos-cursor 1) X-Cdr)
                     (set-cur-x X-Cdr))
