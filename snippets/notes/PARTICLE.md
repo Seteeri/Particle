@@ -206,6 +206,7 @@ Store DAGs as binary trees?
         * Value is the particle
       * Or solely so particles don't get deleted
         * Poss move vertices into it?
+    * Refactor gen-particle to use globals instead of passing
     * Limit draw lengths to N items (def=12)
       * ...then move to newline
       * any changes to this might have to redraw everything

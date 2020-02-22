@@ -247,6 +247,8 @@
               (car *part-ptrs))
          T)
 
+    # TODO: Set pointer to *part-main
+
     (nl-cursor)
     (set-cur-x X)
 

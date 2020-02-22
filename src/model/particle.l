@@ -19,42 +19,6 @@
 
   (struct (>> -4 (adr *l)) '((B . 8) (B . 8)))
 
-  PARTICLE CAR/CDR = list of particles or particle
-
-  0
-  .   P(P)     / P(a b)
-  .   P(.a .b) / NIL
-
-  1
-  .a  (a b) / P(b)
-  .b  b (b) / NIL  [or B itself]
-
-  2
-  a   a / a
-  b   b / b
-
-  Problem: Cannot differentiate symbol from pair except through ptr encoding
-  -> WAIT! Sym? and other functions use pointer encoding...
-
-  Hmm, poss later implement traversal in asm/picoasm
-
-  TODO: Rewrite this using pointer traversal and combine lessons from first
-  iteration and second iteration. Every cell encountered, create a particle
-  and have it reference the cell. Adr can be used for ptr/num <-> sym/pair. Num
-  themselves can be determined by ptr encoding.
-
-  Unlike first iteration, particle has CAR/CDR so it mimics the cons cell/pair
-  but also possesses other capabilities. Ideally, these would be implemented
-  directly into the interpreter, but hoisting the structure/functionality
-  above the interpreter (i.e. at the lisp level) trades accessibility with
-  performance.
-
-  Particle itself is a symbol so still using symbolic computation.
-
-  #############################################
-
-  To get the value is to get the car of the car
-
   Parts reference data so deleting parts will del the ref data and thus it can
   be GC so if the visual representation is gone, so will the data
 

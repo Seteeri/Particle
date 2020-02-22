@@ -1519,7 +1519,7 @@ Eval
  * Camera Ctrl
    * Center
    * Fit <list of objects>
-   * Pan     
+   * Pan
    * Zoom
 
  * Timeline
@@ -1670,11 +1670,11 @@ http://www.cs.umd.edu/hcil/treemap-history/
 
 #{
   CMDS:
-  
+
   Unused:
   CTRL/ALT/SHIFT+TAB, CTRL/ALT/SHIFT+ESC, CAPS
   * Use modifiers to modify fns?
-  
+
   Identity:
   Make-Char (aka trans sym) = ASCII+PACK
   * How to input strs directly?
@@ -1683,35 +1683,35 @@ http://www.cs.umd.edu/hcil/treemap-history/
   Make-Int-Sym = ASCII+CMD(PACK+INTERN)
   * How to input directly?
   Make-Cons = SHIFT+TAB
-  
+
   Combos/Variations:
   Pack+Intern: cmd-intern-2
   Pack+Format: cmd-format-2
-  
+
   Identity:
   Del/Rem = DEL/BACKSPACE
   Eval = ALT+ENTER
   Cut:   move ptr->buffer(Stack/LIFO)
   Copy:  dup ptr->buffer(Stack/LIFO)
   Paste: move buf->ptr(Stack/LIFO)
-  
+
   Position
   Cam: Ctrl+HJKL or CTRL+Arrow
   Ptr: ALT+HJKL  or Arrow
-  
+
   Transformers:
   Intern:        T-Sym->I-Sym
   Sym+Quote:     I-Sym->T-Sym
   Pack/Cut/Chop: T-Sym->T-Sym
   Format:        Str<->Num
-  
-  
+
+
   MOLECULAR:
   Create empty list
   Push
   Pop
   List - by default, everything is already in a list
-  
+
   ESC: Clear entire timeline
 }#
 
@@ -1850,7 +1850,7 @@ I'm aware of Movitz (http://common-lisp.net/project/movitz/) and LoperOS (http:/
 
 The main thing is to get Zeta-C to work on Common Lisp. Then it's to build a new portable, boot-strappable runtime (I think the Portable Standard Lisp approach of having a SYSLISP layered on top of VOPs is the right way to go for this), and either build a compiler targeting that runtime, or adapt the IR-generating parts of one of SBCL, CMUCL or Clozure. Further bootstrapping can be done with SWANK and X11 once a basic networking stack is in place. I think such a system would be quite fun to hack on.
 
-If you've gotten this far, let me know what you think about this idea. I also have some preliminary thoughts about how this can be worked into the base of a new high-performance/scalability transactional database startup, if you want to hear about that email me: vsedach@gmail.com 
+If you've gotten this far, let me know what you think about this idea. I also have some preliminary thoughts about how this can be worked into the base of a new high-performance/scalability transactional database startup, if you want to hear about that email me: vsedach@gmail.com
 
 
 ########################################################################
@@ -1879,7 +1879,7 @@ Default Particles:
     * fn = form to eval
     * out = result of eval
 
-When data is created, such as through key presses, the output is added 
+When data is created, such as through key presses, the output is added
 to the space symbol list, and the cmd(input) is added to the time symbol list.
 
 Time Sym:
@@ -1911,8 +1911,8 @@ Buffer Sym: C
 
 Undo-3 = reverse cut-char
 Time Sym:  ( Create-... ((C-C C-C C-C) (P-C P-C P-C)) ... )
-Space Sym:  
-Buffer Sym: 
+Space Sym:
+Buffer Sym:
 
 On undo, branch will be created:
             *
@@ -1943,8 +1943,8 @@ OR
 
 (r r r ((u u u)
         (p p p r r r)))
-        
-[Makes most sense since ppp is new timeline]        
+
+[Makes most sense since ppp is new timeline]
 
 (r r r ((u u u)
         (p p p))
@@ -1973,10 +1973,10 @@ the new list can be done any number of ways:
 
 Now, we don't want to move items around with pointer - complicated and
 inefficient so pointer symbol has a property, buf-cua which has the value
-of a list, which it will push/pop to/from. 
+of a list, which it will push/pop to/from.
 
-buf-cua is simply a list visible in another space. ofc it could be 
-list/queue, circular list, or fifo, or something more advanced like a 
+buf-cua is simply a list visible in another space. ofc it could be
+list/queue, circular list, or fifo, or something more advanced like a
 binary tree with custom function, or skip list etc.
 
 Pointers can also point to pointers ad inf so functions will be applied
@@ -1984,7 +1984,7 @@ recursively so user can use a master pointer pointing to subpointers
 which point to the actual targets to select specific subitems
 
 #########
-Question: How to anchor this buf-cua? ...so that data moves around it, 
+Question: How to anchor this buf-cua? ...so that data moves around it,
 never on top or below.
 
 Solutions:
@@ -2010,7 +2010,7 @@ lists-ptr:
 * Default is the space list
   * Has PARTICLE sentinel
   * Time list uses same senintel
-* Draw on startup  
+* Draw on startup
 
 * NOTE, Space and Time are both particles themselves
 * The symbols that reference them are a priori (otherwise they would be
@@ -2022,7 +2022,7 @@ garbage collected)
 * And then evaluating a symbol, results in its value, so *list -> (1 2 3) [depends on the rule like if its a num]
 * Thus we draw all the symbols, for the user to know what the value of
 symbol is, use val...but how to associate the symbol to its
-value...use cons cell? 
+value...use cons cell?
   * User can build table/mapping?
   * This seems redundant though...
   * Already attempted to draw all the cons cells by tracing pointers
@@ -2119,18 +2119,18 @@ Normal is draw across
   . +
     1
     2
-    
+
 VS
 
 . let
   a
   . + 1 2 3 4 . list 5 6 7
-  
+
 - all understood to belong to same list
-- what if list? go down or across? 
+- what if list? go down or across?
   -> becomes inconsistent
 
-  
+
 (let a (+ 1 2 3 4)
   (list 5 6 7))
 
@@ -2141,7 +2141,7 @@ VS
 
 
 [let|.] -> [a|.] -> [.|.] --------->
-                     | 
+                     |
                     [1|.] -> [2|N]
 
    [.|N]
@@ -2154,7 +2154,7 @@ of each other...
 
 (let
     a (+ 1 2)
-    
+
     T
     T
     T)
@@ -2170,7 +2170,7 @@ of each other...
 
 (let
     a (+ 1 2)
-    
+
     (list T T)
     (list T T)
     (list T T))
@@ -2180,7 +2180,7 @@ of each other...
     [a|.] -> [.|.] ------------------> [.|.] --------> [.|.] --------> [.|N]
               |                         |               |               |
              [+|.] -> [1|.] -> [2|N]   [list]-[T]-[T]  [list]-[T]-[T]  [list]-[T]-[T]
-                                       
+
 
 HOW TO DISPLAY MORE COMPACT - OR VERTICALLY
 
@@ -2190,7 +2190,7 @@ let ------------------ bindings --------------------- prog/body
      |
     [a|.] -> [.|.] ------------------+
               |                      |
-             [+|.] -> [1|.] -> [2|N] | 
+             [+|.] -> [1|.] -> [2|N] |
                                      |
                                      +-> [.|.] --------> [.|.] --------> [.|N]
                                           |               |               |
@@ -2205,7 +2205,7 @@ let ------------------ bindings --------------------- prog/body
 Expanded:
 
 					       OR
-[let|.] -> [.|.] ------------------------------+---> 
+[let|.] -> [.|.] ------------------------------+--->
             |                                  |
            [a|.] -> [.|.]-------------------+  |
                      |                      |  |
@@ -2244,30 +2244,30 @@ let -> . ------------------+---->
 Condensed:
 
 let -> . ->>>>>>>>>>>>>>>>>
-       a -> . -----------+ 
-            + -> 1 -> 2  |  
-       +-----------------+  
-       b -> .              
-            + -> 3 -> 4    
-                           
+       a -> . -----------+
+            + -> 1 -> 2  |
+       +-----------------+
+       b -> .
+            + -> 3 -> 4
+
 (normally, second dot should be under let but here it is draw horizontally)
 
-  . 
+  .
     let . ----------> .
 	 a .           fn-1 a1 a2 a3
              + 1 2    .
          b .           fn-2 b1 b2 b3
              fn 3 4   .
     .                  fn-3 c1 c2 c3
-      + 1 
+      + 1
         2
-    . 
+    .
      + 3
-        . 
+        .
           + 4
             5
-        . 
-          + 6 
+        .
+          + 6
             7
 
 
@@ -2283,14 +2283,14 @@ let -> . ->>>>>>>>>>>>>>>>>
 
 let as a normal list would be:
 
-  . let 
-    . a 
+  . let
+    . a
       . + 1
           2
-      b 
+      b
       . fn 3
          4
-    . + 1 
+    . + 1
         2
     ...
 
@@ -2325,23 +2325,23 @@ Vertically oriented:
   (+ 3 (+ 4 5) (+ 6 7))
   (1 2 3))
 
-(let (a (+ 1 
+(let (a (+ 1
            2)
-      b (fn 3 
+      b (fn 3
             4))
 
-  (+ 1 
-     2 
+  (+ 1
+     2
      3)
-  (+ 3 
-     (+ 4 
-        5) 
+  (+ 3
+     (+ 4
+        5)
      8
      (+ 6
         7)
      9)
-  (1 
-   2 
+  (1
+   2
    3))
 
 * probably best to break lines when length >= 4
@@ -2352,11 +2352,11 @@ Vertically oriented:
 however, previous is still readable since user expects list to continue rightward or downward
 
 for lists/funs:
- 
+
   . list 1
          2
          3
- 
+
   . add 1
         2
         3
@@ -2402,12 +2402,12 @@ http://pages.cs.wisc.edu/~psilord/blog/28.html
 
   Default to X layout because of strings
   - Can we mix layouts? Will it confuse the user?
-  
+
   CAR can be either dir; top-bottom, left-right
-  
+
   Place dot middle when vertical?
   -> No, destroys grid layout
-  
+
   X:
 
     CAR·CDR -> CAR·CDR -> NIL
@@ -2415,7 +2415,7 @@ http://pages.cs.wisc.edu/~psilord/blog/28.html
     1          2
 
   Y:
-  
+
     CAR·CDR - 1
         |
     +---+
@@ -2425,9 +2425,9 @@ http://pages.cs.wisc.edu/~psilord/blog/28.html
     +---+
     |
     NIL
-    
+
   Finally layouts can be defined for specific forms, e.g. let, if, cond, etc.
-  
+
 }#
 
 cryptorick
@@ -2583,3 +2583,47 @@ Can't store transient symbols in particles directly...
 Symbols can be drawn multiple times so should always be a list
 
 Particles only contains roots
+
+PROBLEM:
+
+Data: (1 2 3 4 5 6)
+Part: (1) -> (2) -> (3) -> (4)
+
+After appending need to update all particles before it!!!
+Use *particles to map particles to data
+
+Should iterate through data not particles
+
+
+Delete particle in arbitrary list
+-> Deletes particle in particles - DONE
+
+So particle should not have a/b - instead look up in particles
+
+
+  (c (a b))
+                     [a|*]    [b|*]    (SYMS)  a b
+                       |        |
+          [c|.]      [.|.] -> [.|/]    (CONS)  (a b)
+            |        |
+  Abst:   [.|.]  ->  [.|/]                     ((a b))
+
+           ^          ^
+          / \        / \
+           |          |
+
+  Conc:    P     ->   P    ->   N
+
+           P          P    ->   P   ->   N
+
+                      P         P
+
+  (struct (>> -4 (adr *l)) '((B . 8) (B . 8)))
+
+
+Maybe make all particles objects with property pointing to data
+Modify data -> Modify particle
+particle/sym ref data
+
+Particles can reference each other spatially
+Underlying data reference each other semantically

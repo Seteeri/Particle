@@ -1,6 +1,11 @@
 (de cmd-make-char (Keysym)
 
+  # TODO
+  # * Get list from pointer data
+
   # Append char to a list, er symbol containing list
+
+  # (set (get (car *part-ptrs) 'data) Data)
 
   (let Data (list (cond ((= Keysym ksd~space) " ")
                         ((= Keysym ksd~Return) (char 10))
@@ -27,14 +32,16 @@
         (mov-cursor (last (get Part 'verts)) T)
         (adv-cursor 2.0)
         (mov> Last *pos-cursor)
-                
-        (with *part-main
-          # Connect symbol CDR to Part
-          (=: b Part))))
+
+        # Only if empty
+        (unless (get *part-main 'b)
+          (with *part-main
+            # Connect symbol CDR to Part
+            (=: b Part)))))
 
     (with *part-main          
-      # Connect data; aka modify CDR of Last        
-      (=: data (conc (: data) Data))))
+      # Connect data; aka modify CDR of Last
+      (=: data (conc (: data) Data)))
 
     # Data of pointer will always be the symbol itself
     # Set the symbol's value to new list
@@ -52,7 +59,7 @@
     # Enter/Newline should produce char + mov ptr/cur
     (cond ((= Keysym ksd~Return) T)
           ((= Keysym ksd~Tab)    T)
-          (T T)))
+          (T T))))
 
 
 (de cmd-del (Dir)
@@ -86,6 +93,8 @@
     Replace if CDDR NIL
   }#
 
+  #(let Last (last-part> *part-main)
+
   (when (get *part-main 'data)
 
     # Build temp list
@@ -101,7 +110,7 @@
         # If CDR is NIL, end of list
         (NIL (get X 'b))
         (setq X (get X 'b)))
-
+      
       # Delete second last particle since last is NIL
       (let (Last-2 (cadr L)
             Last-3 (caddr L)
@@ -136,8 +145,6 @@
         #   A and B are left NIL - only for list items
         (with (car *part-ptrs)
           (set (: data) Last-3))))
-
-    #(println "POINTER DATA" (get (eval (get (car *part-ptrs) 'data)) 'data))
 
     (nl-cursor -1.0)
     (mov> (car *part-ptrs) *pos-cursor)))
