@@ -45,7 +45,7 @@
 (def '*part-cmds) # List of commands (undo/history/timeline)
 (def '*part-ptrs) # List of pointers
 (def '*pos-cursor (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
-(def 'p0)  # Default pointer
+(def 'p0 '*part-main)  # Default pointer to SYMBOL part-main
 
 # Wrapper libraries
 (load "/home/user/Particle/particle/src/c/mathc.l")
@@ -236,18 +236,17 @@
     (set-cur-x X)
 
     # TODO: Draw *part-ptrs
-    # Generate ptr
+    # Will need to ignore drawing CDR for particle
     (push '*part-ptrs
           (gen-part 'p0
                     0.0
                     *pos-cursor
-                    gen-pair-x-h))
+                    gen-pair-x-h
+                    NIL T))
     (idx '*particles
          (def 'p0
               (car *part-ptrs))
          T)
-
-    # TODO: Set pointer to *part-main
 
     (nl-cursor)
     (set-cur-x X)

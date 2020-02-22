@@ -11,6 +11,15 @@
                         ((= Keysym ksd~Return) (char 10))
                         (T (char Keysym))))
 
+    #{
+      Procedure
+      1. Get Last (always NIL) and Last-2
+      2. Mov cursor to NIL
+      3. Generate new particle
+      4. Connect new particle to Last
+    }#   
+
+
     # This will follow pointers until b is NIL
     (let Last (last-part> *part-main)
 
@@ -34,7 +43,7 @@
         (mov> Last *pos-cursor)
 
         # Only if empty
-        (unless (get *part-main 'b)
+        (unless (get (get *part-main 'b) 'data)
           (with *part-main
             # Connect symbol CDR to Part
             (=: b Part)))))
@@ -42,6 +51,20 @@
     (with *part-main          
       # Connect data; aka modify CDR of Last
       (=: data (conc (: data) Data)))
+
+    (let (L ()
+          D ()
+          X *part-main)
+
+      (loop
+        (push 'L X)
+        (push 'D (get X 'data))
+        (println "DATA" (get X 'data))
+        # If CDR is NIL, end of list
+        (NIL (get X 'b))
+        (setq X (get X 'b)))
+        
+      (println D))
 
     # Data of pointer will always be the symbol itself
     # Set the symbol's value to new list
@@ -95,7 +118,7 @@
 
   #(let Last (last-part> *part-main)
 
-  (when (get *part-main 'data)
+  (when (get *part-main 'b)
 
     # Build temp list
     # Poss cache L (and use dirty bit)
@@ -110,7 +133,7 @@
         # If CDR is NIL, end of list
         (NIL (get X 'b))
         (setq X (get X 'b)))
-      
+        
       # Delete second last particle since last is NIL
       (let (Last-2 (cadr L)
             Last-3 (caddr L)

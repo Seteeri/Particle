@@ -163,22 +163,22 @@
                  
           (Layout Any Depth Root Layout))
       
-      (gen-atom Any Depth Root Layout T)))
+      (gen-atom Any Depth Root Layout T Car Cdr)))
 
 
-(de gen-atom (Any Depth Root Layout Adv)
+(de gen-atom (Any Depth Root Layout Adv Car Cdr)
 
   # Pass flag to draw sym val
   
   # Handle internal symbol excl. T - draw the value (CDR)
-  # Transient sym's value is itself...    
+  # Transient sym's value is itself...
 
   # Must do after so drawn after
   
   (let (V (draw-atom Any
                      (get-color-type Any)
                      Adv)
-        B (when (sym-int? Any)
+        B (when (and (not Cdr) (sym-int? Any))
             (gen-sym-int Any Depth Root Layout)))
     (new '(+Particle)
          Any
@@ -188,7 +188,6 @@
 
 
 (de gen-sym-int (Any Depth Root Layout)
-  # Draw CDR
   # Opt: Ignore NIL?
         
   (adv-cursor)
