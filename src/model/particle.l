@@ -67,18 +67,34 @@
   (=: verts Verts))
 
 
-(dm cons> (B)
-  # Cons B unto A (this)
-  (=: b B))
-
+(dm cons> (B) (=: b B))
+(dm val> () (: b))
 
 (dm last> ()
   
   (let Last (: b)
+  
     (loop
+    
       (NIL (get Last 'b))
+      (println "last>" Last (get Last 'data))
       (setq Last (get Last 'b)))
+      
     Last))
+
+
+(dm tail> (Cnt)
+  
+  (let (I (: b)
+        Ta ())
+        
+    # End loop when NIL or Cnt zero
+    (while (and (n0 Cnt)
+                (setq I (get I 'b)))
+      (push 'Ta I)
+      (dec 'Cnt))
+      
+    Ta))
 
 
 (dm mov> (Pos)
@@ -99,6 +115,26 @@
     (setq Pos (place 1
                      Pos
                      (+ (car Pos) *adv-vert)))))
+
+(dm trace> (Cnt)
+  (let (D ()
+        X (: b))
+    (loop
+      (push 'D (get X 'data))
+      (println (car D) "->" (get X 'b))
+      (NIL (get X 'b))
+      (setq X (get X 'b)))
+    D))
+
+(dm trace-2> (Cnt)
+  (let (S ()
+        X (: b))
+    (loop
+      (push 'S X)
+      (println X "->" (get X 'b))
+      (NIL (get X 'b))
+      (setq X (get X 'b)))
+    S))
 
 # Verts
 # Most of these don't use any properties from part

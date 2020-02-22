@@ -1,11 +1,6 @@
 (de cmd-make-char (Keysym)
 
-  # TODO
-  # * Get list from pointer data
-
   # Append char to a list, er symbol containing list
-
-  # (set (get (car *part-ptrs) 'data) Data)
 
   (let Data (list (cond ((= Keysym ksd~space) " ")
                         ((= Keysym ksd~Return) (char 10))
@@ -13,6 +8,10 @@
 
     #{
       Procedure:
+      1. Get val of p0
+        * Initially Val is *part-main
+        * So Val is either symbol itself or second to last (before NIL)
+          which in either case, the cdr will be NIL      
       1. Get Last (always NIL) and Last-2
       2. Mov cursor to NIL
       3. Generate new particle
@@ -20,11 +19,27 @@
          Last-2 -> New -> Last (NIL)
     }#   
 
-    # This will follow pointers until b is NIL
-    (let Last (last> *part-main)
+    (when NIL
+      (println "START TRACE")
+      (println (trace-2> (get *part-main 'b)))
+      (println "START TAIL")
+      (let? Tail (tail> (get *part-main 'b) 2)
+        (println Tail)
+        (for X Tail
+          (println (get X 'data))))          
+      (println "END"))
 
+    # Get value of p0
+    # Val is Last-1
+    # Nil is Last
+    (let (Val (val> p0)
+          Nil (get Val 'b))
+    
+      (println "Val'data" (get Val 'data))
+      (println "Nil'data" (get Nil 'data))
+    
       # Mov cursor to NIL first vert pos
-      (mov-cursor (car (get Last 'verts)) T)
+      (mov-cursor (car (get Nil 'verts)) T)
 
       # Gen part for new data; incl CAR/CDR
       (let Part (gen-pair-x-h Data
@@ -33,51 +48,33 @@
                               gen-pair-x-h
                               NIL T)
 
+        (println "New Particle:" Part)
+
         # Connect NIL
-        (with Part
-          (=: b Last))
-        
+        (with Part (=: b Nil))
         # Reposition NIL in front of new Part
         (mov-cursor (last (get Part 'verts)) T)
         (adv-cursor 2.0)
-        (mov> Last *pos-cursor)
+        (mov> Nil *pos-cursor)
 
-        # Only if empty
-        (unless (get (get *part-main 'b) 'data)
-          (with *part-main
-            # Connect symbol CDR to Part
-            (=: b Part)))))
-
-    (with *part-main          
-      # Connect data; aka modify CDR of Last
-      (=: data (conc (: data) Data)))
-
-    (let (L ()
-          D ()
-          X *part-main)
-
-      (loop
-        (push 'L X)
-        (push 'D (get X 'data))
-        (println "DATA" (get X 'data))
-        # If CDR is NIL, end of list
-        (NIL (get X 'b))
-        (setq X (get X 'b)))
+        # Connect prev last to new Particle
+        (with Val (=: b Part))
         
-      (println D))
+        # Point to new Part
+        (put p0 'b Part)
 
-    # Data of pointer will always be the symbol itself
-    # Set the symbol's value to new list
-    # Set CDR, not Data?
-    # TODO: Remove NIL
-    (set (get (car *part-ptrs) 'data) Data)
+        # TODO: Position p0 over new item
+        # Rebase verts at current ptr pos
+        (when T
+          (nl-cursor -1.0)
+          (adv-cursor -3.0) # Pos over last item (not NIL)
+          (mov> p0 *pos-cursor))))
 
-    # TODO: Position p0 over new item
-    # Rebase verts at current ptr pos
-    (when T
-      (nl-cursor -1.0)
-      (adv-cursor -3.0) # Pos over last item (not NIL)
-      (mov> (car *part-ptrs) *pos-cursor))
+    # Currently assume this list doesn't change
+    # But upon list change, must update that specific list
+    (with *part-main
+      # Connect data; aka modify CDR of Val
+      (=: data (conc (: data) Data)))
 
     # Enter/Newline should produce char + mov ptr/cur
     (cond ((= Keysym ksd~Return) T)

@@ -260,6 +260,9 @@
                           gen-pair-x-h))
           T)
 
+    # Connect pointer to main
+    (with p0 (=: b *part-main))
+
   (nl-cursor)
   (set-cur-x X)))
 
