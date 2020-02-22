@@ -117,6 +117,13 @@
                      Pos
                      (+ (car Pos) *adv-vert)))))
 
+
+(dm mov-part> (B Off)
+  # TODO:
+  # Implement offset either absolute units or adv
+  (mov> This (get-origin> B)))
+  
+
 (dm trace> (Cnt)
   (let (D ()
         X (: b))
