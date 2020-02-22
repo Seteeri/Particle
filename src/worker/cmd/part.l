@@ -25,8 +25,8 @@
     (let (Val (val> p0)
           Nil (get Val 'b))
     
-      (println "Val'data" (get Val 'data))
-      (println "Nil'data" (get Nil 'data))
+      #(println "Val'data" (get Val 'data))
+      #(println "Nil'data" (get Nil 'data))
     
       # Mov cursor to NIL first vert pos
       (mov-cursor (car (get Nil 'verts)) T)
@@ -37,8 +37,6 @@
                               *pos-cursor
                               gen-pair-x-h
                               NIL T)
-
-        (println "New Particle:" Part)
 
         # Connect NIL
         (with Part (=: b Nil))
@@ -54,11 +52,9 @@
         (put p0 'b Part)
 
         # TODO: Position p0 over new item
-        # Rebase verts at current ptr pos
-        (when T
-          (nl-cursor -1.0)
-          (adv-cursor -3.0) # Pos over last item (not NIL)
-          (mov> p0 *pos-cursor))))
+        (nl-cursor -1.0)
+        (adv-cursor -3.0) # Pos over last item (not NIL)
+        (mov> p0 *pos-cursor)))
 
     # Currently assume this list doesn't change
     # But upon list change, must update that specific list
