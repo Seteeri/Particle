@@ -194,11 +194,11 @@ Store DAGs as binary trees?
   * Poss to mix drawing lists horizontal/vertical if there are arrows
   
   * Draw default symbols [WIP]
-    * Refactor symbol particles [WIP]
+    * Refactor symbol particles [Done]
       * Data stores symbol
       * A/CAR = NIL
       * B/CDR = VAL  
-    * Implement master particle list [WIP]
+    * Implement master particle list [Done]
       * Need this to store particles of globals
         * This is the exception, like internal table
       * Store as assoc list...
@@ -206,8 +206,10 @@ Store DAGs as binary trees?
         * Value is the particle
       * Or solely so particles don't get deleted
         * Poss move vertices into it?
-    * Refactor gen-particle to use globals instead of passing
-    * Limit draw lengths to N items (def=12)
+    * Rewrite cmd-del
+      * Implement spatial map
+    * Refactor gen-particle to use globals instead of passing [Low]
+    * Limit draw lengths to N items (def=12) [Low]
       * ...then move to newline
       * any changes to this might have to redraw everything
         * spatial map will allow optimization

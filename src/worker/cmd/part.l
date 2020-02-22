@@ -78,76 +78,67 @@
     *verts is LIFO, thus will always keep instances pack from beginning of array
     -> Maintain vert cnt, instanceCount = size - used
 
-    However, if del from arbitrary point then must zero it and instanceCount
-    remains the same
-    After del, vert returns to queue, and next vert will reuse it
+    However, if del from arbitrary point then must zero it
+    and instanceCount remains the same
+    After del, vert returns to queue
+    and next vert will reuse it
 
-    Makes most sense to simply zero vert, and not worry about instanceCount as
-    frag will be discarded...fix later
-
-    (NIL 1 2 3)
-    Pop 1
-    Connect 2 -> NIL
-    ...
-    (NIL 2 3)
-    Pop 2
-    Connect 3 -> NIL
-    ...
-    (NIL 3)
-    Pop 3
-    Replace if CDDR NIL
+    Makes most sense to simply zero vert
+    and not worry about instanceCount 
+    as frag will be discarded...fix later
   }#
 
-  (when (get *part-main 'b)
+  (let (Val (val> p0)
+        Nil (get Val 'b))
 
-    # Build temp list
-    # Poss cache L (and use dirty bit)
-
-    (let (L ()
-          D ()
-          X *part-main)
-
-      (loop
-        (push 'L X)
-        (push 'D (get X 'data))
-        # If CDR is NIL, end of list
-        (NIL (get X 'b))
-        (setq X (get X 'b)))
+    # Remember, Val is Last-1, Nil is Last
+    
+    #{
+      Procedure:
+      1. Delete Val
+      2. Connect Last-2/Val-1 to Last/NIL
+        * Must search list
+          * Currently, must traverse
+          * However, when spatially mapped, that may be faster since less
+          pointer chasing
+        * Cache last pointer change - only valid when moving sequentially
+          * Check cmd that produced it
+    }#
         
-      # Delete second last particle since last is NIL
-      (let (Last-2 (cadr L)
-            Last-3 (caddr L)
-            Part-NIL (get Last-2 'b)
-            Nth-3 (cddr L))
+    # Delete second last particle since last is NIL
+    (let (Last-2 (cadr L)
+          Last-3 (caddr L)
+          Part-NIL (get Last-2 'b)
+          Nth-3 (cddr L))
 
-        # Position pointer at start of Last-2
-        (mov-cursor (car (get Last-2 'verts)) T)
+      # Position pointer at start of Last-2
+      (mov-cursor (car (get Last-2 'verts)) T)
 
-        # Reuse NIL part so need not regenerate it
-        (del-particle Last-2 T NIL)
+      # Reuse NIL part so need not regenerate it
+      (del-particle Last-2 T NIL)
 
-        # Mov NIL to ptr
-        (mov> Part-NIL *pos-cursor)
+      # Mov NIL to ptr
+      (mov> Part-NIL *pos-cursor)
 
-        (if Nth-3
+      (if Nth-3
 
-            # Modify CDR of third last particle
-            (with Last-3 (=: b Part-NIL))
+          # Modify CDR of third last particle
+          (with Last-3 (=: b Part-NIL))
 
-            # Replace *part-main with NIL particle
-            (setq *part-main Part-NIL))
+          # Replace *part-main with NIL particle
+          (setq *part-main Part-NIL))
 
-        # Modify CDR of Last-3
-        # Use con to destructively set the CDR
-        (when Last-3
-          (con (get Last-3 'data)))
+      # Modify CDR of Last-3
+      # Use con to destructively set the CDR
+      (when Last-3
+        (con (get Last-3 'data)))
 
-        # Data of pointer will always be the symbol itself
-        # Set the symbol's value to new end (Last-3)
-        # Particles for symbols only contain the symbol itself in Data
-        #   A and B are left NIL - only for list items
-        (with (car *part-ptrs)
-          (set (: data) Last-3))))
+      # Data of pointer will always be the symbol itself
+      # Set the symbol's value to new end (Last-3)
+      # Particles for symbols only contain the symbol itself in Data
+      #   A and B are left NIL - only for list items
+      (with (car *part-ptrs)
+        (set (: data) Last-3)))
 
     (nl-cursor -1.0)
     (mov> (car *part-ptrs) *pos-cursor)))

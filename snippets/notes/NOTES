@@ -2627,3 +2627,7 @@ particle/sym ref data
 
 Particles can reference each other spatially
 Underlying data reference each other semantically
+
+
+Maintain a pointer for every list?
+Or when moving to a new list, make a pointer automatically
