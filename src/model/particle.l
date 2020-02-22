@@ -54,16 +54,6 @@
        (not (str? Any)) (not (box? Any)) (not (ext? Any))
        (not (= Any NIL))))
 
-(de change-col-particle (Part Col)
-  (for Vert (get Part 'verts)
-    (with Vert
-      (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
-                     (get Col 1) (get Col 2) (get Col 3) 1.0
-                     (get Col 1) (get Col 2) (get Col 3) 1.0
-                     (get Col 1) (get Col 2) (get Col 3) 1.0)))
-    (upd-mdl-mtrx> Vert)
-    (cmd-upd-vert *ipc Vert)))
-
 
 (class +Particle)
 (dm T (Data
@@ -110,16 +100,34 @@
                      Pos
                      (+ (car Pos) *adv-vert)))))
 
+# Verts
+# Most of these don't use any properties from part
+# so should move to a vert class or make normal function
 
 (dm get-origin> ()
+    
   (when (: verts)
+  
     (let (Vert (car (: verts))
           Pos (get Vert 'pos)
           (X Y) (get-origin> (get *metrics (get Vert 'chr))
                              Pos
                              *sca-vert))
+                             
       (list X Y (get Pos 3)))))
   
+
+(dm col> (Col)
+  (for Vert (: verts)
+    (with Vert
+      (let ((R G B) Col)
+        (=: rgba (list R G B 1.0
+                       R G B 1.0
+                       R G B 1.0
+                       R G B 1.0))))
+    (upd-mdl-mtrx> Vert)
+    (cmd-upd-vert *ipc Vert)))
+
 
 ###############################
 
