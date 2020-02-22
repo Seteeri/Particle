@@ -82,9 +82,7 @@
   (=: b B))
 
 
-(dm last-part> ()
-  # Make nth version also:
-  # (nth> *part-ptr 1)
+(dm last> ()
   
   (let Last (: b)
     (loop

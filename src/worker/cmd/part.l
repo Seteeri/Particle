@@ -12,16 +12,16 @@
                         (T (char Keysym))))
 
     #{
-      Procedure
+      Procedure:
       1. Get Last (always NIL) and Last-2
       2. Mov cursor to NIL
       3. Generate new particle
-      4. Connect new particle to Last
+      4. Connect new particle to Last and Last-2
+         Last-2 -> New -> Last (NIL)
     }#   
 
-
     # This will follow pointers until b is NIL
-    (let Last (last-part> *part-main)
+    (let Last (last> *part-main)
 
       # Mov cursor to NIL first vert pos
       (mov-cursor (car (get Last 'verts)) T)
@@ -115,8 +115,6 @@
     Pop 3
     Replace if CDDR NIL
   }#
-
-  #(let Last (last-part> *part-main)
 
   (when (get *part-main 'b)
 
