@@ -19,16 +19,6 @@
          Last-2 -> New -> Last (NIL)
     }#   
 
-    (when NIL
-      (println "START TRACE")
-      (println (trace-2> (get *part-main 'b)))
-      (println "START TAIL")
-      (let? Tail (tail> (get *part-main 'b) 2)
-        (println Tail)
-        (for X Tail
-          (println (get X 'data))))          
-      (println "END"))
-
     # Get value of p0
     # Val is Last-1
     # Nil is Last

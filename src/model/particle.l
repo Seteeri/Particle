@@ -85,16 +85,17 @@
 
 (dm tail> (Cnt)
   
+  # FIX:
+  # This is doing "head"
+  
   (let (I (: b)
         Ta ())
         
-    # End loop when NIL or Cnt zero
-    (while (and (n0 Cnt)
-                (setq I (get I 'b)))
-      (push 'Ta I)
-      (dec 'Cnt))
+    # End loop when NIL
+    (while (setq I (get I 'b))
+      (push 'Ta I))
       
-    Ta))
+    (flip (head Cnt Ta))))
 
 
 (dm mov> (Pos)
