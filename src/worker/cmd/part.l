@@ -145,31 +145,11 @@
       (mov> p0 *pos-cursor))))
 
 
-(de cmd-make-list (Keysym)
+(de cmd-make-nil (Keysym)
 
-  (prinl-info "cmd-make-list")
+  (prinl-info "cmd-make-nil")
 
-  # Produce NIL
-  # Use can enter NIL, at which point is converted into "()"
-
-  #{
-    Enter list after creation or stay on same level?
-
-    Default is NO so pressing new list repeatedly will create subsequent lists
-    rather than nested lists
-  }#
-
-  (let Part (gen-part NIL)
-
-    (conc-ptr Part)
-
-    #(setq *lst-ptr Part)
-
-    #(push '*lists-ptr Part)
-
-    T)
-
-  (adv-cursor))
+  T)
 
 
 #########################

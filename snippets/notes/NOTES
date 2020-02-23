@@ -2642,7 +2642,9 @@ Differentiate behavior for pointer/list creation
 * Must enter list to switch to it and append items
   * User can "attach" pointer to current list with cmd -
   this is really just creating a new pointer...
-
+  * This allows user to differentiate whether they want to treat NIL as a list
+  or a symbol
+  
 * Pointer management
   * User has master pointer in pointer list which points
   p0
@@ -2651,3 +2653,14 @@ Differentiate behavior for pointer/list creation
   * User can switch between manipulating p0 or whatever it points to
   * If pointer points to a pointer...either get last pointer or subpointer...
     * Traverse like a list/cons using arrow keys
+
+Editing middle item will cause chain reaction of position updates
+* If list is vertically split, then each item is updated
+* Then these updates must be done piecewise since for a very long list
+it would block
+
+The lisp code itself is a scene graph
+
+Mixing list orientations will be messy
+
+The drawing layout is actually grid based, based on the adv width and nl height

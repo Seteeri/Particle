@@ -88,8 +88,9 @@
           (push 'List (list (list ksd~Shift-L K)         T cmd-make-char))
           (push 'List (list (list ksd~Shift-R K)         T cmd-make-char)))
         List)
-      ((`ksd~Control-L     ksd~Return) T `cmd-make-list)
-      ((`ksd~Control-R     ksd~Return) T `cmd-make-list)
+        
+      ((`ksd~Control-L `ksd~Return) T `cmd-make-nil)
+      ((`ksd~Control-R `ksd~Return) T `cmd-make-nil)
       # Or shift enter
 
       ((`ksd~BackSpace) T `cmd-del)
@@ -473,7 +474,7 @@
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
 
-      (let (Mods NIL)
+      (let Mods ()
 
         (with *xkb
 

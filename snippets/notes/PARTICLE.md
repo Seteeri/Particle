@@ -207,15 +207,11 @@ Store DAGs as binary trees?
         * Value is the particle
       * Or solely so particles don't get deleted
         * Poss move vertices into it?
-    * Rewrite cmd-del
-      * Implement spatial map
-    * Refactor gen-particle to use globals instead of passing [Low]
-    * Limit draw lengths to N items (def=12) [Low]
-      * ...then move to newline
-      * any changes to this might have to redraw everything
-        * spatial map will allow optimization
+    * Rewrite cmd-del [Done]
+      * Implement spatial map [Later]
 
   * List Handling
+    * Implement cmd for NIL
     * Create list and enter it, by default
       * Makes it easy to create sublist, enter data, move to superlist, etc.
       * New list creates NIL
@@ -240,6 +236,13 @@ Store DAGs as binary trees?
       * Print commands by default
 
   GET TO HERE =------------------------------------------------------------
+
+  * Refactor gen-particle to use globals instead of passing
+
+  * Limit draw lengths to N items (def=12)
+    * ...then move to newline
+    * any changes to this might have to redraw everything
+      * spatial map will allow optimization
 
   * Create special command to create pointer symbols [Later]
 
