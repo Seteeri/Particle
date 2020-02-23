@@ -2664,3 +2664,72 @@ The lisp code itself is a scene graph
 Mixing list orientations will be messy
 
 The drawing layout is actually grid based, based on the adv width and nl height
+
+Set limits:
+Strings = 72 (PEP)
+Lists/Atoms (non-str) = 12
+
+Drawing vertically, any post lists need to be redrawn
+- cache the list traversal should help with this
+
+tree view (aka windows dir) is most familiar to people
+
+see apse
+
+KEY FEATURES FOR NOTE-TAKING/PERSONAL KNOWLEDGE DATABASE
+* Local
+* Search
+* Sync
+* Web Clipper
+* ScanTailor
+* Collaboration
+* Native - wait for pil21; until then, create web version
+* Export data to plaintext, PDF, Markdown, ODF/ODT
+
+* PDF/Markdown/RSS
+
+
+CALL THE DEVICE A NOTEBOOK
+
+https://news.ycombinator.com/item?id=19552221
+If you practice GTD like me, you need a trusted repository for capturing
+   your thoughts, items, todos, etc. It should be fast and easy and available
+   everywhere. Thats The value prop that EN brings to the table. No matter
+   what it is you want to capture and store, no matter what platform, they
+   have a way to quickly and easily do it. You can even email notes right into
+   it (they give you a special email address) which I use for things like tech
+   newsletters and stuff. So while you are right that notes apps have been
+   around, its the little things that really make the difference here.
+
+
+
+TODO: Matrix for Competition Pricing
+
+Smartphones are diverging in functionality?
+
+Create "Particle devices" when we get web browsing ability
+
+How to reference object B from object A text?
+- ext sym name
+- tags...all...or use specific title tag if available
+- both?
+
++Note # or Node
+tg:()     #list of tags; always simple symbols/strings; order matters like when searching
+nm:"..."  #opt; used for linking, else raw sym used
+data:"..." #data; only string? ...later img/aud/vid
+date:
+desc:
+
+#############################
+#############################
+
+IF A METHOD USES AN OBJECT...
+MAKE IT A FUNCTION
+
+#############################
+#############################
+
+Heavy usage of javasript causing web to lose accessibility since
+the DOM provides a standard structure easily parsed - the DOM is
+data, not code.

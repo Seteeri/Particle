@@ -8,9 +8,10 @@ information as they moved through the computer. What did they look like?
  Ships? Motorcycles? Were the circuits like freeways? I kept dreaming of
   a world I thought I'd never see. And then one day . . .
 
-Particle is a 3D Lisp structured REPL/shell. It is the implementation of
-my vision of a programmable UI to replace the desktop paradigm - a way to map
-our thoughts into the computer. 
+Particle is a personal knowledge database or personal information manager
+implemented through a 3D Lisp UI. It is the realization of my vision of a 
+programmable UI to replace the desktop paradigm - a way to map our thoughts into
+the computer.
 
 It integrates various computing and UI concepts from CLIs, shells, REPLs, 
 notebooks, WMs/DEs, creative coding, mindmapping, note-taking into a single 
@@ -24,17 +25,14 @@ maintain backwards compatibility with the conventional desktop (Wayland) and
 the C world while rewriting/replacing parts in Lisp, possibly into an actual
 Lisp OS.
 
-PilOS provides a minimal starting point; however, there would be many hurdles to
-overcome. Initially, a SOC could be targeted as a starting point. 
-
 The computing landscape has changed significantly since the days of Lisp 
 Machines so it begs the question as to how useful Lisp at the OS level would be
 today in contrast to past Lisp Machines. I believe another attempt is warranted
 albeit with a different approach taking advantage of today's computing power
 and ubiquitiousness.
 
-The target audience consists of programmers, power users and the like, and
-"busy" people.
+The target audience consists of programmers, power users, information workers
+and "busy" people.
 
 ## The Principles
 
@@ -47,6 +45,28 @@ Particle maximizes the following principles:
 
 These principles are shared with the underlying programming language (PicoLisp)
 to create a consistent *understandable* system.
+
+## The Features (Planned)
+
+* Native/local application; no cloud dependency
+* Synchronized copies across multiple devices
+* Tag-based searching
+* Linkable data
+* Store any data including images, videos, audio, etc.
+* Exportable to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
+* Web clipper to import data from browsing
+
+Others:
+* Revision control
+* Fuzzy search/auto-completion
+* Ink-pen input including drawn annotations
+* OCR scans/images
+* Code-specific support
+* Highlighting  
+
+## The Infrastructure
+
+*See ARCHITECTURE.md*
 
 ## The Inspiration
 
@@ -81,58 +101,30 @@ to create a consistent *understandable* system.
   * Chris Schafmeister - Molecular Metaprogramming
   * Evernote - Stepan Pachikov wanted to remember everything
   * Oberon OS
-  
-## The Interface
-
-* Built on lisp data structures - lists/cons, symbols, numbers
-* 3D orthographic "nodal" environment - "turtles all the way down"
-* Primarily keyboard driven interface
-* Non-destructive; undo/redo capabilities
-* Non-blocking UI - user always aware of computer status
-  * User can choose take risk to block
-* Wayland provides conventional desktop
-* Solarized color theme as default
-
-## The Infrastructure
-
-*See ARCHITECTURE.md*
 
 ## The Roadmap
 
-Core:
-1. Interactive Core (REPL)
+1. UI
 2. Wayland Integration
-3. Widget Toolkit (Vertex-based)
-4. Desktop Functionality
-   1. Media
-      * FFMPEG for media - images, video, audio
-      * Integrate GEGL? Image/graphicsmagick? etc...
-
-Lispify:
-
-1. Native Web Browser
-   * Web remains accessible through Wayland/DE
-   * WebKit Integration - Hmm, port to Lisp?
-   * JavaScript Engines - Embed QuickJS, Ducktape or Jsish
-2. Port Userspace Tools/Libraries
-   * Media - FFmpeg huge so focus on commonly used *open* image/video/audio formats
+3. Desktop Integration
+  1. Open Formats
+    * Native
       * BMP, GIF, JPEG/2000, PNG, WebP
       * FLAC, MP3, Vorbis, Opus
       * Theora, Dirac
       * Ogg, MKV, WebM
       * glTF, COLLADA
-   * Toybox (Toolchain)
-
-Personal Extensions
-1. Per-object vector motion blur (personal favorite)
-2. Power mode
-
-Future Ideas
-* Tiled forward rendering (Forward+)
-  * Clustered -> volumetric forward shading
-* Augmented reality through OpenCV
-* Convergence...
-* PilOS bootloader...
+      * Default to FFMPEG
+    2. Processing Libraries
+      * CFFI first; later port GEGL, libmypaint
+  2. Web Clipper
+4. Userspace Integration
+   * Port Tools/Libraries such as Toybox
+5. Web Integration
+   * Web remains accessible through Wayland/DE
+   * WebKit/JS-Engine Integration
+   * Poss to write HTML/CSS library
+     * JS engine resource intensive
 
 ## The Requirements
 
