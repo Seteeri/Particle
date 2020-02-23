@@ -149,7 +149,55 @@
 
   (prinl-info "cmd-make-nil")
 
-  T)
+  # Get value of p0
+  # Val is Last-1
+  # Nil is Last
+  (let (Val (val> p0)
+        Nil (get Val 'b))
+  
+    #(println "Val'data" (get Val 'data))
+    #(println "Nil'data" (get Nil 'data))
+  
+    # Mov cursor to NIL first vert pos
+    (mov-cursor (car (get Nil 'verts)) T)
+
+    (let Data '(NIL)
+
+      # Gen part for new data; incl CAR/CDR
+      (let Part (gen-pair-x-h Data
+                              0.0
+                              *pos-cursor
+                              gen-pair-x-h
+                              NIL T)
+
+        # Connect NIL
+        (with Part (=: b Nil))
+        # Reposition NIL in front of new Part
+        (mov-cursor (last (get Part 'verts)) T)
+        (adv-cursor 2.0)
+        (mov> Nil *pos-cursor)
+
+        # Connect prev last to new Particle
+        (with Val (=: b Part))
+        
+        # Point to new Part
+        (put p0 'b Part)
+
+        # TODO: Position p0 over new item
+        (nl-cursor -1.0)
+        (adv-cursor -4.0) # Pos over last item (not NIL)
+        (mov> p0 *pos-cursor))
+
+      # Currently assume this list doesn't change
+      # But upon list change, must update that specific list
+      (with *part-main
+        # Connect data; aka modify CDR of Val
+        (=: data (conc (: data) Data)))))
+
+  # Enter/Newline should produce char + mov ptr/cur
+  (cond ((= Keysym ksd~Return) T)
+        ((= Keysym ksd~Tab)    T)
+        (T T)))
 
 
 #########################
