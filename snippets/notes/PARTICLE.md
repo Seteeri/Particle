@@ -192,6 +192,7 @@ Store DAGs as binary trees?
     * History can be purged or saved to disk
   
   * Poss to mix drawing lists horizontal/vertical if there are arrows
+  or very few expections like with pointers
   
   * Draw default symbols [WIP]
     * Refactor symbol particles [Done]

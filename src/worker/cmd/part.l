@@ -52,7 +52,7 @@
 
         # TODO: Position p0 over new item
         (nl-cursor -1.0)
-        (adv-cursor -3.0) # Pos over last item (not NIL)
+        (adv-cursor -4.0) # Pos over last item (not NIL)
         (mov> p0 *pos-cursor))
 
       # Currently assume this list doesn't change
@@ -88,60 +88,61 @@
     as frag will be discarded...fix later
   }#
 
-  (let (Val (val> p0)
-        Nil (get Val 'b))
+  #{
+    Procedure:
+    1. Delete Val
+    2. Connect Last-2/Val-1 to Last/NIL
+      * Must search list
+        * Currently, must traverse
+        * However, when spatially mapped, that may be faster since less
+        pointer chasing
+      * Cache last pointer change - only valid when moving sequentially
+        * Check cmd that produced it
+  }#
 
-    # Remember, Val is Last-1, Nil is Last
-    
-    #{
-      Procedure:
-      1. Delete Val
-      2. Connect Last-2/Val-1 to Last/NIL
-        * Must search list
-          * Currently, must traverse
-          * However, when spatially mapped, that may be faster since less
-          pointer chasing
-        * Cache last pointer change - only valid when moving sequentially
-          * Check cmd that produced it
-    }#
-        
-    # Delete second last particle since last is NIL
-    (let (Last-2 (cadr L)
-          Last-3 (caddr L)
-          Part-NIL (get Last-2 'b)
-          Nth-3 (cddr L))
+  (when (get (get *part-main 'b) 'data)
 
-      # Position pointer at start of Last-2
-      (mov-cursor (car (get Last-2 'verts)) T)
+    (let (Val (val> p0)
+          Tgt (get *part-main 'b)
+          Prv *part-main
+          Nxt NIL)
 
-      # Reuse NIL part so need not regenerate it
-      (del-particle Last-2 T NIL)
+      # Search until pointer - save previous
+      (loop        
+        (T (or (nil (get Tgt 'b))
+                (= Tgt Val)))
+        (setq Prv Tgt)
+        (setq Tgt (get Tgt 'b)))
+      
+      # If Prv is NIL then only 1 item so attach NIL to symbol
+      
+      # Save next
+      (setq Nxt (get Tgt 'b))
 
-      # Mov NIL to ptr
-      (mov> Part-NIL *pos-cursor)
+      # Position pointer at Tgt before del
+      (mov-cursor (car (get Tgt 'verts)) T)
 
-      (if Nth-3
+      # No del CDR
+      (del-particle Tgt T NIL)
 
-          # Modify CDR of third last particle
-          (with Last-3 (=: b Part-NIL))
+      # Mov Nxt to Tgt
+      (when Nxt (mov> Nxt *pos-cursor))
 
-          # Replace *part-main with NIL particle
-          (setq *part-main Part-NIL))
+      # Connect Prv to Nxt
+      (with Prv (=: b Nxt))
 
-      # Modify CDR of Last-3
+      # Modify data/CDR of Prv
       # Use con to destructively set the CDR
-      (when Last-3
-        (con (get Last-3 'data)))
+      (with Prv
+        (con (: data) (get Nxt 'data)))
+      
+      # Point to Prv
+      (put p0 'b Prv)
 
-      # Data of pointer will always be the symbol itself
-      # Set the symbol's value to new end (Last-3)
-      # Particles for symbols only contain the symbol itself in Data
-      #   A and B are left NIL - only for list items
-      (with (car *part-ptrs)
-        (set (: data) Last-3)))
-
-    (nl-cursor -1.0)
-    (mov> (car *part-ptrs) *pos-cursor)))
+      # TODO: Use relative to pos of Prv particle...
+      (nl-cursor -1.0)
+      (adv-cursor -4.0)
+      (mov> p0 *pos-cursor))))
 
 
 (de cmd-make-list (Keysym)

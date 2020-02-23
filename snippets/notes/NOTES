@@ -2628,6 +2628,26 @@ particle/sym ref data
 Particles can reference each other spatially
 Underlying data reference each other semantically
 
+##################################
+##################################
 
 Maintain a pointer for every list?
 Or when moving to a new list, make a pointer automatically
+
+##################################
+
+Differentiate behavior for pointer/list creation
+* There exists special command to create NIL - maybe Enter/Return
+* Creates NIL object like any char
+* Must enter list to switch to it and append items
+  * User can "attach" pointer to current list with cmd -
+  this is really just creating a new pointer...
+
+* Pointer management
+  * User has master pointer in pointer list which points
+  p0
+  (p1 p2 p3 p4 p5 p6 p7 p8 ...)
+  * Accessed programmatically or numerically
+  * User can switch between manipulating p0 or whatever it points to
+  * If pointer points to a pointer...either get last pointer or subpointer...
+    * Traverse like a list/cons using arrow keys

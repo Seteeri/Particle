@@ -84,10 +84,7 @@
 
 
 (dm tail> (Cnt)
-  
-  # FIX:
-  # This is doing "head"
-  
+    
   (let (I (: b)
         Ta ())
         
