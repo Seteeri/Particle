@@ -191,17 +191,19 @@
 
   (gc 256)
 
-  (in "verts.bin"
-    (let (A NIL
-          B NIL
-          C 0
-          Vert NIL)
-      (while (and (setq Cls (rd)) (setq Propls (rd)) (< C *verts-max))
+  (let (A NIL
+        B NIL
+        C 0
+        Vert NIL)
+    (in "verts.bin"          
+      (while (and (setq Cls (rd))
+                  (setq Propls (rd))
+                  (< C *verts-max))
         (putl (setq Vert (box Cls)) Propls)
         (inc 'C)
-        (push '*verts Vert))))
+        (push '*verts Vert)))
 
-  (prinl-info "init-worker" (pack "Loaded " (length *verts) " verts"))
+    (prinl-info "init-worker" (pack "Loaded " C " verts of " *verts-max)))
 
   # TODO: Render default symbols
 
