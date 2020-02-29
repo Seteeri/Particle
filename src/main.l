@@ -83,7 +83,7 @@ own proc
 
   (let (Width  (format (/ 2560 2))
         Height (format (/ 1080 2))
-        Verts  (format (** 2 15))) # 16384
+        Verts  (format (** 2 16))) # 16384
 
       (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/render/render.l" "-main" Width Height Verts)))
       (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/model/model.l" "-main" Width Height Verts)))
@@ -91,13 +91,7 @@ own proc
       (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/ctrl/ctrl.l" "-main" Width Height Verts)))
       (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/worker/worker.l" "-main" Width Height Verts 1))))
 
-  (bye)
-
-  (prinl "Render: " *proc-render)
-  (prinl "Model: " *proc-model)
-  (prinl "Input: " *proc-input)
-  (prinl "Ctrl: " *proc-ctrl)
-  (prinl "Worker: " *proc-work-1))
+  (bye))
   
 #{
   (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read))

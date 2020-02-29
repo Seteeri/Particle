@@ -40,12 +40,17 @@
 
 # List works for small amount...
 # assoc/list -> binary trees -> database
-(def '*particles) # Master index of all particles in the "world" - store sym:particle
-(def '*part-main) # List of main particles
+
+# Master index of all particles in the "world" - store sym:particle
+# Stores pointer particles and main list particle
+(def '*particles)
+(def '*part-lsts) # Traversal history list
+(def '*part-main) # Master list
 (def '*part-cmds) # List of commands (undo/history/timeline)
 (def '*part-ptrs) # List of pointers
-(def '*pos-cursor (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
 (def 'p0 '*part-main)  # Default pointer to SYMBOL part-main
+
+(def '*pos-cursor (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
 
 # Wrapper libraries
 (load "/home/user/Particle/particle/src/c/mathc.l")
@@ -89,10 +94,6 @@
           (push 'List (list (list ksd~Shift-R K)         T cmd-make-char)))
         List)
         
-      ((`ksd~Control-L `ksd~Return) T `cmd-make-nil)
-      ((`ksd~Control-R `ksd~Return) T `cmd-make-nil)
-      # Or shift enter
-
       ((`ksd~BackSpace) T `cmd-del)
       ((`ksd~Delete   ) T `cmd-del)
 
@@ -119,8 +120,11 @@
       ((`ksd~Control-L `ksd~y) T '((Keysym) (println "cmd-reverse")))
       ((`ksd~Alt-L     `ksd~y) T '((Keysym) (println "cmd-flip")))
 
-      ((`ksd~Alt-R `ksd~Return)    T cmd-enter-list)
-      ((`ksd~Alt-R `ksd~BackSpace) T cmd-exit-list)
+      # Create NIL
+      ((`ksd~Control-L `ksd~Return)    T `cmd-make-nil)
+      ((`ksd~Control-R `ksd~Return)    T `cmd-make-nil)
+      ((`ksd~Alt-R     `ksd~Return)    T `cmd-enter-list)
+      ((`ksd~Alt-R     `ksd~BackSpace) T `cmd-exit-list)
 
       # Pointer Translation
       # Make Alt+WASD
@@ -252,7 +256,7 @@
     (nl-cursor)
     (set-cur-x X)
 
-    # Generate main particle
+    # Generate main particle list
     (idx '*particles
           (def '*part-main
                 (gen-part '*part-main

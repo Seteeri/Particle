@@ -2733,3 +2733,15 @@ MAKE IT A FUNCTION
 Heavy usage of javasript causing web to lose accessibility since
 the DOM provides a standard structure easily parsed - the DOM is
 data, not code.
+
+https://itnext.io/why-are-we-creating-a-javascript-only-world-wide-web-db8c3a340b9
+
+part-main = [CUR old old old ...]
+all these lists are ref'd from elsewhere, master or intra, to prevent GC
+
+Separate command to create root list
+
+So the question is whether user can create new roots
+or all new objects/lists are sublist of root
+-> KISS, use latter
+so part-main should never change
