@@ -2745,3 +2745,11 @@ So the question is whether user can create new roots
 or all new objects/lists are sublist of root
 -> KISS, use latter
 so part-main should never change
+
+Next issue is how to handle modifying layouts of nested lists
+Could flatten and use linking (pointers)
+
+Layout like win dir since users most familiar with that
+
+BUG?
+(let Data '(NIL)

@@ -173,6 +173,63 @@
 ###############################
 
 
+(de make-part-list-atom (Any)
+  #{
+    Procedure:
+    1. Get val of p0
+      * Initially Val is *part-main
+      * So Val is either symbol itself or second to last (before NIL)
+        which in either case, the cdr will be NIL      
+    2. Get Last (always NIL) and Last-2
+    3. Mov cursor to NIL
+    4. Generate new particle
+    5. Connect new particle to Last and Last-2
+       Last-2 -> New -> Last (NIL)
+  }#
+
+  # Get value of p0
+  # Val is Last-1; Nil is Last
+  (let (Val (val> p0)
+        Nil (get Val 'b))
+  
+    #(println "Val'data" (get Val 'data) (adr Val))
+    #(println "Nil'data" (get Nil 'data) (adr Nil))
+  
+    # Mov cursor to NIL first vert pos
+    (mov-cursor (car (get Nil 'verts)) T)
+
+    (let Lst-Any (list Any)
+
+      # Gen part for new data; incl CAR/CDR
+      (let Part (gen-pair-x-h Lst-Any
+                              0.0
+                              *pos-cursor
+                              gen-pair-x-h
+                              NIL T)
+
+        # Connect NIL
+        (with Part (=: b Nil))
+        
+        # Reposition NIL in front of new Part
+        (mov-cursor (last (get Part 'verts)) T) (adv-cursor 2.0) (mov> Nil *pos-cursor)
+
+        # Connect prev last to new Particle
+        (with Val (=: b Part))
+        
+        # Point to new Part
+        (put p0 'b Part)
+        # TODO: Position p0 over new item
+        (nl-cursor -1.0) (adv-cursor -4.0) (mov> p0 *pos-cursor))
+
+      # Currently assume this list doesn't change
+      # But upon list change, must update that specific list
+      (with *part-main
+        (=: data (conc (: data) Lst-Any))))))
+
+
+###############################
+
+
 (de del-particle (Part Car Cdr)
 
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
