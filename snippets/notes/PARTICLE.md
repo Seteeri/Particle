@@ -211,14 +211,49 @@ Store DAGs as binary trees?
       * Implement spatial map [Later]
 
   * List Handling
-    * Add cmd for NIL [WIP]
+    * Add cmd for NIL [Done]
       * Lift fn from cmd-make-char and cmd-make-nil -> app-data
+    * Don't draw NIL at end of list (make opt later)    
+      * Pointer points to last item (already does this...)
+    * To enter NIL list, move pointer beneath it
+    * For new lists, create (NIL) instead of ()
+      * Pointer points to NIL
+      * Which implicitly means insert before this object
+    * Limit length of drawing list
+      * Non-string = 12
+      * String = 80
+      * Store length of list in particle
+        * Create subclass of Particle for basic data types?
+            
+                                cell [PARTICLE]
+                                  |
+                      +-----------+-----------+
+                      |           |           |
+                   Number       Symbol       Pair
+                                  |
+                                  |
+             +--------+-----------+-----------+
+             |        |           |           |
+            NIL   Internal    Transient    External
+          
+        Particle
+          Atom (Number/Symbol)
+          Pair
+            len
+    * Newline only applies if current/prev is a string
     * Add specific cmd to replace any with list/NIL
+      * Default is to append/insert
+      * Modifying in-place can be done various ways
+        * Set pointers
     * Enter/Exit
       * Alt+Backspace = Enter list
       * Alt+Enter = Exit list (move to dot/parent list)
       * Alt+Up = Enter next list
       * Alt+Dn = Enter prev list
+      
+  * Pointer
+    * Instead of calling p#, use the fn+#
+    * Default is append-0
 
   * Layout/Drawing
     * Implement spatial index

@@ -57,10 +57,28 @@
        B
        Verts)
 
-  (=: data Data)
   (=: a A)
   (=: b B)
-  (=: verts Verts))
+  (=: verts Verts)
+
+  # for list, track length
+  # (cons Data Length=Num/NIL)
+  (=: data Data)
+  
+  # list of tags; always str; order matters like when searching
+  (=: tg)
+  
+  # when linking, def show date, tags, or show nm or raw location
+  (=: nm)
+  
+  # date/time
+  (=: dat (date))
+  (=: tim (time))
+  
+  # author
+  (=: aut)
+  
+  )
 
 
 (dm cons> (B) (=: b B))

@@ -2730,6 +2730,9 @@ MAKE IT A FUNCTION
 #############################
 #############################
 
+BUG?...
+(let Data '(NIL)
+
 Heavy usage of javasript causing web to lose accessibility since
 the DOM provides a standard structure easily parsed - the DOM is
 data, not code.
@@ -2748,8 +2751,106 @@ so part-main should never change
 
 Next issue is how to handle modifying layouts of nested lists
 Could flatten and use linking (pointers)
+-> Tree/graph data difficult to manuever?
 
-Layout like win dir since users most familiar with that
+Single edit would cause chain reaction of redraw
+To optimize, create list at end then move
 
-BUG?
-(let Data '(NIL)
+Two main orientations:
+* Desktop - Widescreen so favor horizontal
+  * Layout like win dir since users most familiar with that
+* Mobile - Tallscreen so favor vertical
+
+When drawing simply change the list length before newline
+
+Still the issue of sublists:
+* Atom spacing maintained
+* List spacing maintained
+
+If newspace, how to link them?
+
+The problem is when pointer over NIL, don't know if next key press will append
+at that point or append to new list
+
+Or to show it move underneath and make upside down?
+
+Or instead of () -> (NIL)
+
+##############################
+
+To utilize external symbols, only need to manage databases
+and then setup classes with relations
+
+1920*1200*4 = 9000 kb = 8.8 MB
+100 mb = ~ 10 HD images
+
+How to diff symbols/lists? (nums are atomic)
+List is easy
+Symbols are based on lists
+
+obj distribution
+https://www.mail-archive.com/picolisp@software-lab.de/msg03305.html
+
+################################
+################################
+
+cirru editor?
+
+leo editor?
+
+Every particle has the ability to be tagged
+
+"this is a sentence with a " link "in it that has further info"
+
+Particle data:
+
+[.|.]
+STR
+
+[.|.] -> [.|.] -> [.|.] ->
+STR      LINK     STR
+
+Here, user must break string at desired point to insert link
+A function would be best here
+
+Options:
+1. Break by new line, goto line
+  -> Or use function to go to line and break
+
+We are an OOUI
+
+Computer initially programmed by text/symbols but it has evolved
+beyond that - doesn't mean we need to through out text but we
+need to incorporate other methods of communication.
+
+So if we could incorporate the features of Emacs but instead of
+solely applying that to text, we apply it to any data.
+
+Why emacs fail at discoverability?
+
+Take MS office for example - the ribbon
+User can go through all the menus to find what they are looking
+for. Sure, it can be a waste of time but its still faster than
+trying to figure out a command which means going through the manual
+or finding it through google...
+If emacs had a default search bar, it would make it so much more
+convenient for users
+
+Implications for Particle
+* Need an equivalent of menu (menu list) - layout all the bindings
+and commands - expose the basic ones
+* Need a more explicit search bar (lets call it search list)
+  -> A symbol called search-list which has a list user adds to
+    ((cmd-1 (result ...))
+     (cmd-2 (result ...))
+     (cmd-3 (result ...))
+
+Focus on the idea of lists will make it easier for a user to
+understand because of the analogy
+
+Emacs difficult because multiple ways to do things and no default
+way to do it
+
+Emacs buffer is an interface to the interpreter
+
+lem vs emacs?
