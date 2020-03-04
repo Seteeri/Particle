@@ -59,7 +59,9 @@
 
   (=: a A)
   (=: b B)
+  
   (=: verts Verts)
+  (=: ori)
 
   # for list, track length
   # (cons Data Length=Num/NIL)
@@ -111,10 +113,6 @@
 
 (dm mov> (Pos)
 
-  # TODO:
-  # * Pass flag whether to move CAR/CDR
-  # * Move to another Particle, specify optional adv/nl
-
   (for Vert (: verts)
   
     (with Vert
@@ -129,31 +127,76 @@
                      (+ (car Pos) *adv-vert)))))
 
 
-(dm mov-part> (B Off)
-  # TODO:
-  # Implement offset either absolute units or adv
-  (mov> This (get-origin> B)))
+# Rename off -> rel
+(dm mov-off> (Off P)  
+  # Calc tgt pos
+  (let (Pos (get-origin> This)
+        Pos-Tgt (list (+ (get Pos 1) (get Off 1))
+                      (+ (get Pos 2) (get Off 2))
+                      (+ (get Pos 3) (get Off 3))))
+
+    (mov> This Pos-Tgt)
+
+    (when (and (car P) (: a)) (mov-off> (: a) Off P))
+    (when (and (cdr P) (: b)) (mov-off> (: b) Off P))))
+
+
+(dm mov-part> (B P)
+
+  (let (Pos     (get-origin> This)
+        Pos-Tgt (get-origin> B)
+        Off (list (- (get Pos-Tgt 1) (get Pos 1))
+                  (- (get Pos-Tgt 2) (get Pos 2))
+                  (- (get Pos-Tgt 3) (get Pos 3))))
+    
+    (mov> This Pos-Tgt)
+    
+    # Apply offset to car/cdr
+    (when (and (car P) (: a)) (mov-off> (: a) Off P))
+    (when (and (cdr P) (: b)) (mov-off> (: b) Off P))))
+
+
+(dm mov-part-aft> (B P)
+  # Make offset version instead of static function?
   
+  (mov-cursor (last (get B 'verts)) T)
+  (adv-cursor 2.0)
+  
+  (let Pos (get-origin> This)
+    (mov-off> This
+              (list (- (get *pos-cursor 1) (get Pos 1))
+                    (- (get *pos-cursor 2) (get Pos 2))
+                    (- (get *pos-cursor 3) (get Pos 3)))
+              P)))
 
-(dm trace> (Cnt)
-  (let (D ()
-        X (: b))
-    (loop
-      (push 'D (get X 'data))
-      (println (car D) "->" (get X 'b))
-      (NIL (get X 'b))
-      (setq X (get X 'b)))
-    D))
 
-(dm trace-2> (Cnt)
-  (let (S ()
-        X (: b))
-    (loop
-      (push 'S X)
-      (println X "->" (get X 'b))
-      (NIL (get X 'b))
-      (setq X (get X 'b)))
-    S))
+(dm mov-part-abv> (B P)
+  # Make offset version instead of static function?
+  
+  (mov-cursor (car (get B 'verts)) T)
+  (nl-cursor -1.0)
+
+  (let Pos (get-origin> This)
+    (mov-off> This
+              (list (- (get *pos-cursor 1) (get Pos 1))
+                    (- (get *pos-cursor 2) (get Pos 2))
+                    (- (get *pos-cursor 3) (get Pos 3)))
+              P)))
+
+
+(dm mov-part-bel> (B P)
+  # Make offset version instead of static function?
+  
+  (mov-cursor (car (get B 'verts)) T)
+  (nl-cursor 1.0)
+
+  (let Pos (get-origin> This)
+    (mov-off> This
+              (list (- (get *pos-cursor 1) (get Pos 1))
+                    (- (get *pos-cursor 2) (get Pos 2))
+                    (- (get *pos-cursor 3) (get Pos 3)))
+              P)))
+    
 
 # Verts
 # Most of these don't use any properties from part
@@ -184,61 +227,56 @@
     (cmd-upd-vert *ipc Vert)))
 
 
+# Debug
+
+(dm trace> (Cnt)
+  (let (D ()
+        X (: b))
+    (loop
+      (push 'D (get X 'data))
+      (println (car D) "->" (get X 'b))
+      (NIL (get X 'b))
+      (setq X (get X 'b)))
+    D))
+
+(dm trace-2> (Cnt)
+  (let (S ()
+        X (: b))
+    (loop
+      (push 'S X)
+      (println X "->" (get X 'b))
+      (NIL (get X 'b))
+      (setq X (get X 'b)))
+    S))
+
+
 ###############################
 
 
-(de make-part-list-atom (Any)
-  #{
-    Procedure:
-    1. Get val of p0
-      * Initially Val is *part-main
-      * So Val is either symbol itself or second to last (before NIL)
-        which in either case, the cdr will be NIL      
-    2. Get Last (always NIL) and Last-2
-    3. Mov cursor to NIL
-    4. Generate new particle
-    5. Connect new particle to Last and Last-2
-       Last-2 -> New -> Last (NIL)
-  }#
-
-  # Get value of p0
-  # Val is Last-1; Nil is Last
-  (let (Val (val> p0)
-        Nil (get Val 'b))
-  
-    #(println "Val'data" (get Val 'data) (adr Val))
-    #(println "Nil'data" (get Nil 'data) (adr Nil))
-  
-    # Mov cursor to NIL first vert pos
-    (mov-cursor (car (get Nil 'verts)) T)
-
-    (let Lst-Any (list Any)
-
-      # Gen part for new data; incl CAR/CDR
-      (let Part (gen-pair-x-h Lst-Any
-                              0.0
-                              *pos-cursor
-                              gen-pair-x-h
-                              NIL T)
-
-        # Connect NIL
-        (with Part (=: b Nil))
+(de append-part (Any)    
+  (let (Lst-Any (list Any)
+        Val (val> p0)
+        Cdr (get Val 'b)
+        Part (gen-pair-x-h Lst-Any
+                           0.0
+                           *pos-cursor
+                           gen-pair-x-h
+                           NIL T))
         
-        # Reposition NIL in front of new Part
-        (mov-cursor (last (get Part 'verts)) T) (adv-cursor 2.0) (mov> Nil *pos-cursor)
-
-        # Connect prev last to new Particle
-        (with Val (=: b Part))
-        
-        # Point to new Part
-        (put p0 'b Part)
-        # TODO: Position p0 over new item
-        (nl-cursor -1.0) (adv-cursor -4.0) (mov> p0 *pos-cursor))
-
-      # Currently assume this list doesn't change
-      # But upon list change, must update that specific list
-      (with *part-main
-        (=: data (conc (: data) Lst-Any))))))
+    # Set cdr of cur-part to new-part
+    # [c] -> [n]
+    (with Val (=: b Part))
+    
+    # Set cdr of new-part to cdr-part
+    # [n] -> [b] -> ...
+    (with Part (=: b Cdr))
+    
+    # Connect new part data to list part data
+    # Need separate function if not at end
+    (with *part-main
+      (=: data (conc (: data) Lst-Any)))
+      
+    Part))
 
 
 ###############################

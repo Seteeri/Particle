@@ -213,6 +213,7 @@ Store DAGs as binary trees?
   * List Handling
     * Add cmd for NIL [Done]
       * Lift fn from cmd-make-char and cmd-make-nil -> app-data
+    * Store origin in Particle
     * Don't draw NIL at end of list (make opt later)    
       * Pointer points to last item (already does this...)
     * To enter NIL list, move pointer beneath it

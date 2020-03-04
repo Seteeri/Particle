@@ -1,11 +1,77 @@
 (de cmd-make-char (Keysym)
-  # Append char to a list, er symbol containing list
 
-  (make-part-list-atom 
-    (cond ((= Keysym ksd~space) " ")
-          ((= Keysym ksd~Return) (char 10))
-          (T (char Keysym))))
+  #{
+    # Append to end (cur-part) aka insert before NIL
+    
+    # Insert new part under cursor
+    
+    1. Create new part
+    2. Link cur-part to new-part
+    3. Link new-part to cur-part
+    
+    1. Move new part to cur-part
+    2. Move cur-part fwd
+    
+    1. Set ptr value
+    2. Move ptr    
+  }#
 
+  # (mov-cursor (car (get Nil 'verts)) T)
+  
+  (println "*part-main = " (get *part-main 'data))
+  
+  (let (Part-Ptr (val> p0)
+        Cdr (get Part-Ptr 'b)
+        Part (append-part
+                (cond ((= Keysym ksd~space) " ")
+                      ((= Keysym ksd~Return) (char 10))
+                      (T (char Keysym)))))
+  
+    (if (car (get *part-main 'data))
+
+      (prog
+        # Move new part to cdr-part
+        (mov-part> Part Cdr (cons T))
+        
+        # Move cdr-part in front of Part
+        (mov-part-aft> Cdr Part (cons T))
+        
+        # Point to new Part and mov it
+        (put p0 'b Part)
+        (mov-part-abv> p0 Part (cons T)))
+    
+      # List is empty
+      # First item will be below
+      (prog
+        #{
+        
+        [] -> [] -> [] -> NIL
+        a     b     NIL
+        
+        [] -> [] -> [] -> NIL
+        a     b     |        
+                    [] -> NIL
+                    c
+        }#
+      
+        # Move new part to under ptr
+        (mov-part-bel> Part p0 (cons T))      
+      
+        # Move NIL right of new part
+        (let Nil (get Part-Ptr 'a)
+          (mov-part-aft> Nil Part (cons T T))
+          # Connect NIL to new part
+          (with Part
+            (=: b Nil)))
+        
+        # Set car to particle
+        (with Part-Ptr
+          (=: a Part)
+          (=: data (cdr (: data))))
+
+        # Point to new Part and mov it
+        (put p0 'b Part))))
+    
   # Enter/Newline should produce char + mov ptr/cur
   (cond ((= Keysym ksd~Return) T)
         ((= Keysym ksd~Tab)    T)
@@ -16,7 +82,18 @@
 
   (prinl-info "cmd-make-nil")
 
-  (make-part-list-atom))
+  (let (Cdr (get (val> p0) 'b)
+        Part (append-part))
+    
+    # Move new part to cdr-part
+    (mov-part> Part Cdr (cons T))
+    
+    # Move cdr-part in front of Part
+    (mov-part-aft> Cdr Part (cons T))
+    
+    # Point to new Part and mov it
+    (put p0 'b Part)
+    (mov-part-abv> p0 Part (cons T))))
 
 
 (de cmd-enter-list (Keysym)
@@ -30,7 +107,7 @@
     (when (or (pair Data)
               (== Data NIL))
           
-      (println "PAIR" (pair Data))
+      #(println "PAIR" (pair Data))
           
       # Push Part to history
       (push '*part-lsts *part-main)
@@ -38,7 +115,7 @@
       # Move cursor/pointer underneath list
       (nl-cursor 3.0) (mov> p0 *pos-cursor)
     
-      # Do not change pointer - will push to it
+      # Do not change pointer data - will push to it
       
       # Set main particle
       (setq *part-main Val))))
