@@ -124,7 +124,7 @@
       ((`ksd~Control-L `ksd~Return)    T `cmd-make-nil)
       ((`ksd~Control-R `ksd~Return)    T `cmd-make-nil)
       ((`ksd~Alt-R     `ksd~Return)    T `cmd-enter-list)
-      ((`ksd~Alt-R     `ksd~BackSpace) T `cmd-exit-list)
+      ((`ksd~Alt-R     `ksd~BackSpace) T `cmd-leave-list)
 
       # Pointer Translation
       # Make Alt+WASD

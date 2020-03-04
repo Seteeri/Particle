@@ -120,6 +120,31 @@
       # Set main particle
       (setq *part-main Val))))
   
+  
+(de cmd-leave-list (Keysym)
+
+  (prinl-info "cmd-leave-list")
+    
+  (let (Val (val> p0)
+        Data (car (get Val 'data)))
+  
+    # Check pointer is a list; watch for cons == list          
+    (when (or (pair Data)
+              (== Data NIL))
+          
+      #(println "PAIR" (pair Data))
+          
+      # Push Part to history
+      (push '*part-lsts *part-main)
+      
+      # Move cursor/pointer underneath list
+      (nl-cursor 3.0) (mov> p0 *pos-cursor)
+    
+      # Do not change pointer data - will push to it
+      
+      # Set main particle
+      (setq *part-main Val))))  
+  
 
 (de cmd-del (Dir)
 
