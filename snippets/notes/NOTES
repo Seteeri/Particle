@@ -2854,3 +2854,19 @@ way to do it
 Emacs buffer is an interface to the interpreter
 
 lem vs emacs?
+
+THE FUTURE?
+WASM -> LLVM IR -> TGT
+
+Reality is just a convenient measure of complexity
+-alvy ray smith
+
+===============
+
+ *
+ [] -> NIL
+
+vs
+
+ NIL
+ *
