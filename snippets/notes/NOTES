@@ -2863,10 +2863,34 @@ Reality is just a convenient measure of complexity
 
 ===============
 
- *
- [] -> NIL
+(a b NIL)
 
-vs
+[] -> [] -> [] -> NIL
+a     b     |
+            NIL
 
- NIL
- *
+vs 
+
+(a b (NIL))
+
+[] -> [] -> [] -> NIL
+a     b     |
+            [] -> NIL
+            NIL
+
+
+If user "enters" NIL (aka empty list), replace it
+
+[] -> [] -> [] -> NIL
+a     b     |
+            NIL (-> X)
+
+Replace CDR of b - so get previous upon enter
+Should use spatial get instead of list traversal
+
+(a b (x))
+
+[] -> [] -> [] -> NIL
+a     b     |
+            [] -> NIL
+            X

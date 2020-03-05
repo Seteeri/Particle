@@ -3,7 +3,7 @@
                            (get Vert 'pos)
                            *sca-vert))
     (set-cur-x X)
-    (set-ptr-y Y)))
+    (set-cur-y Y)))
 
 
 (de adv-cursor (Cnt)
@@ -30,7 +30,7 @@
   (setq *pos-cursor (place 1 *pos-cursor Pos)))
 
 
-(de set-ptr-y (Pos)
+(de set-cur-y (Pos)
   (setq *pos-cursor (place 2 *pos-cursor Pos)))
 
 

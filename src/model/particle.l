@@ -262,7 +262,7 @@
                            *pos-cursor
                            gen-pair-x-h
                            NIL T))
-        
+
     # Set cdr of cur-part to new-part
     # [c] -> [n]
     (with Val (=: b Part))
@@ -275,6 +275,51 @@
     # Need separate function if not at end
     (with *part-main
       (=: data (conc (: data) Lst-Any)))
+      
+    Part))
+
+
+(de repl-part (Any Pre)
+  #{
+        p0
+  [] -> [] -> NIL
+  a     NIL
+
+        p0
+  []  
+  
+        p0
+  [] -> [] -> NIL
+  a     |
+        b
+  
+  }#
+
+  # Replace NIL with List
+    
+  # Delete particle first
+  (del-particle (val> p0) T T)
+  (with Pre (=: b)) # data still there
+  (with p0 (=: b))
+
+  # Set cursor 2 spaces above ptr
+  (nl-cursor -2.0)
+
+  (let (Lst-Any (list (list Any))
+        Part (gen-part Lst-Any
+                       0.0
+                       *pos-cursor
+                       gen-pair-x-h))
+
+    (with Pre
+      (=: b Part)
+      (con (car (:: data)) Lst-Any))
+    
+    # Save (())
+    (push '*part-lsts Part)
+    
+    # Set new list
+    (setq *part-main (get Part 'a))
       
     Part))
 
@@ -371,29 +416,25 @@
 
   (let (Ar (car Any)
         Dr (cdr Any)
-        Ptr (>> -4 (adr Any))
-        (Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
-        Tail-Ar (pack (tail 4 (chop (bin Ptr-Ar))))
-        Tail-Dr (pack (tail 4 (chop (bin Ptr-Dr))))
         (X Y) (let Pos *pos-cursor
                 (if Pos Pos Root)))
 
-    (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr Tail-Ar Tail-Dr)
+    (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr)
           X-Cdr (get *pos-cursor 1)
           
           Pa-Ar (when (and (not (num? Ar))
                            (not Ignore-Car))
                   # Move below, align left of cons
+                  # For ((x)), create extra newline or draw something...
+                  (when (pair Ar)
+                    (nl-cursor 2.0))
                   (nl-cursor) (set-cur-x X)
                   (gen-part Ar Depth Root gen-pair-x-h))
 
           Pa-Dr (when (and (not (num? Dr))
                            (not Ignore-Cdr))
-                  # If cursor short then must adv
-                  (when (<= (get *pos-cursor 1) X-Cdr)
-                    (set-cur-x X-Cdr))
-                  (adv-cursor)
-                  (set-ptr-y Y)
+                  (set-cur-x X-Cdr)
+                  (adv-cursor) (set-cur-y Y)
                   (gen-part Dr Depth Root gen-pair-x-h)))
       
       (new '(+Particle)

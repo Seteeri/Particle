@@ -16,62 +16,43 @@
     2. Move ptr    
   }#
 
-  # (mov-cursor (car (get Nil 'verts)) T)
-  
-  (println "*part-main = " (get *part-main 'data))
-  
-  (let (Part-Ptr (val> p0)
-        Cdr (get Part-Ptr 'b)
-        Part (append-part
-                (cond ((= Keysym ksd~space) " ")
-                      ((= Keysym ksd~Return) (char 10))
-                      (T (char Keysym)))))
-  
-    (if (car (get *part-main 'data))
+  (if (car (get *part-main 'data))
 
-      (prog
-        # Move new part to cdr-part
-        (mov-part> Part Cdr (cons T))
-        
-        # Move cdr-part in front of Part
-        (mov-part-aft> Cdr Part (cons T))
-        
-        # Point to new Part and mov it
-        (put p0 'b Part)
-        (mov-part-abv> p0 Part (cons T)))
-    
-      # List is empty
-      # First item will be below
-      (prog
-        #{
-        
-        [] -> [] -> [] -> NIL
-        a     b     NIL
-        
-        [] -> [] -> [] -> NIL
-        a     b     |        
-                    [] -> NIL
-                    c
-        }#
+    (let (Part-Ptr (val> p0)
+          Cdr (get Part-Ptr 'b)
+          Part (append-part
+                  (cond ((= Keysym ksd~space) " ")
+                        ((= Keysym ksd~Return) (char 10))
+                        (T (char Keysym)))))
+                        
+      # Move new part to cdr-part
+      (mov-part> Part Cdr (cons T))
       
-        # Move new part to under ptr
-        (mov-part-bel> Part p0 (cons T))      
+      # Move cdr-part in front of Part
+      (mov-part-aft> Cdr Part (cons T))
       
-        # Move NIL right of new part
-        (let Nil (get Part-Ptr 'a)
-          (mov-part-aft> Nil Part (cons T T))
-          # Connect NIL to new part
-          (with Part
-            (=: b Nil)))
-        
-        # Set car to particle
-        (with Part-Ptr
-          (=: a Part)
-          (=: data (cdr (: data))))
+      # Point to new Part and mov it
+      (put p0 'b Part)
+      (mov-part-abv> p0 Part (cons T)))
+  
+    (let (Last (let Last (car *part-lsts)
+                 (loop
+                   # Stop at second to last
+                   (NIL (get (get (get Last 'b) 'b) 'b))
+                   (setq Last (get Last 'b)))
+                 Last)
+          Part (repl-part
+                  (cond ((= Keysym ksd~space) " ")
+                        ((= Keysym ksd~Return) (char 10))
+                        (T (char Keysym)))
+                  Last))
 
-        # Point to new Part and mov it
-        (put p0 'b Part))))
-    
+      # Move new part to under ptr
+      #(mov-part-bel> Part p0 (cons T T))
+      
+      # Point to new Part
+      (put p0 'b (get Part 'a))))
+  
   # Enter/Newline should produce char + mov ptr/cur
   (cond ((= Keysym ksd~Return) T)
         ((= Keysym ksd~Tab)    T)
@@ -83,7 +64,7 @@
   (prinl-info "cmd-make-nil")
 
   (let (Cdr (get (val> p0) 'b)
-        Part (append-part))
+        Part (append-part)) # Need dif fn?
     
     # Move new part to cdr-part
     (mov-part> Part Cdr (cons T))
@@ -91,9 +72,11 @@
     # Move cdr-part in front of Part
     (mov-part-aft> Cdr Part (cons T))
     
-    # Point to new Part and mov it
+    # Set new ptr and move it above
     (put p0 'b Part)
-    (mov-part-abv> p0 Part (cons T))))
+    (mov-part-abv> p0 Part (cons T)))
+    
+  T)
 
 
 (de cmd-enter-list (Keysym)
@@ -106,9 +89,7 @@
     # Check pointer is a list; watch for cons == list          
     (when (or (pair Data)
               (== Data NIL))
-          
-      #(println "PAIR" (pair Data))
-          
+                    
       # Push Part to history
       (push '*part-lsts *part-main)
       
@@ -124,27 +105,14 @@
 (de cmd-leave-list (Keysym)
 
   (prinl-info "cmd-leave-list")
-    
-  (let (Val (val> p0)
-        Data (car (get Val 'data)))
-  
-    # Check pointer is a list; watch for cons == list          
-    (when (or (pair Data)
-              (== Data NIL))
-          
-      #(println "PAIR" (pair Data))
-          
-      # Push Part to history
-      (push '*part-lsts *part-main)
       
-      # Move cursor/pointer underneath list
-      (nl-cursor 3.0) (mov> p0 *pos-cursor)
-    
-      # Do not change pointer data - will push to it
-      
-      # Set main particle
-      (setq *part-main Val))))  
-  
+  # Set main particle to old one
+  (setq *part-main (pop '*part-lsts))
+
+  # Set ptr to cell containing list; mov ptr
+  (put p0 'b *part-main)
+  (mov-part-abv> p0 *part-main))
+
 
 (de cmd-del (Dir)
 
