@@ -213,13 +213,12 @@ Store DAGs as binary trees?
   * List Handling
     * Add cmd for NIL [Done]
       * Lift fn from cmd-make-char and cmd-make-nil -> app-data
+    * To enter NIL list, move pointer beneath it [Done]      
     * Store origin in Particle
-    * Don't draw NIL at end of list (make opt later)    
+      * Needs to be updated with vertices which means updates
+      should be called on particle
+    * Don't draw NIL at end of list [Later]
       * Pointer points to last item (already does this...)
-    * To enter NIL list, move pointer beneath it
-    * For new lists, create (NIL) instead of ()
-      * Pointer points to NIL
-      * Which implicitly means insert before this object
     * Limit length of drawing list
       * Non-string = 12
       * String = 80
@@ -244,8 +243,6 @@ Store DAGs as binary trees?
     * Newline only applies if current/prev is a string
     * Add specific cmd to replace any with list/NIL
       * Default is to append/insert
-      * Modifying in-place can be done various ways
-        * Set pointers
     * Enter/Exit
       * Alt+Backspace = Enter list
       * Alt+Enter = Exit list (move to dot/parent list)
@@ -254,7 +251,7 @@ Store DAGs as binary trees?
       
   * Pointer
     * Instead of calling p#, use the fn+#
-    * Default is append-0
+      * Default is append-0
 
   * Layout/Drawing
     * Implement spatial index
