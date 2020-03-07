@@ -109,9 +109,10 @@
   # Set main particle to old one
   (setq *part-main (pop '*part-lsts))
   
-  # Set ptr to cell containing list; mov ptr
-  (put p0 'b *part-main)
-  (mov-part-abv> p0 *part-main))
+  (let Last-1 (last-1> *part-main)
+    # Set ptr to last item (non-NIL)
+    (put p0 'b Last-1)
+    (mov-part-abv> p0 Last-1)))
 
 
 (de cmd-del (Dir)

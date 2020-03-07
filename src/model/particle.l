@@ -99,6 +99,16 @@
     Last))
 
 
+(dm last-1> ()
+
+  (let Last This
+    (loop
+      # Stop at second to last
+      (NIL (get (get Last 'b) 'b))
+      (setq Last (get Last 'b)))
+    Last))
+
+
 (dm tail> (Cnt)
     
   (let (I (: b)
