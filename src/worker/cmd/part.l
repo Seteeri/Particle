@@ -105,10 +105,10 @@
 (de cmd-leave-list (Keysym)
 
   (prinl-info "cmd-leave-list")
-      
+
   # Set main particle to old one
   (setq *part-main (pop '*part-lsts))
-
+  
   # Set ptr to cell containing list; mov ptr
   (put p0 'b *part-main)
   (mov-part-abv> p0 *part-main))

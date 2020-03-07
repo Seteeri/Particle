@@ -344,10 +344,7 @@
     (with Pre
       (=: b Part)
       (con (car (:: data)) Lst-Any))
-    
-    # Save (())
-    (push '*part-lsts Part)
-    
+        
     # Set new list
     (setq *part-main (get Part 'a))
       
