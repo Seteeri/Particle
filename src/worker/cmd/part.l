@@ -128,6 +128,10 @@
         pointer chasing
       * Cache last pointer change - only valid when moving sequentially
         * Check cmd that produced it
+        
+    a b c NIL
+    
+    a b [] NIL
   }#
 
   (when (get (get *part-main 'b) 'data)
@@ -140,39 +144,34 @@
       # Search until pointer - save previous
       (loop        
         (T (or (nil (get Tgt 'b))
-                (= Tgt Val)))
-        (setq Prv Tgt)
-        (setq Tgt (get Tgt 'b)))
+               (= Tgt Val)))
+        (setq Prv Tgt
+              Tgt (get Tgt 'b)))
       
       # If Prv is NIL then only 1 item so attach NIL to symbol
       
-      # Save next
+      # Save next particle
       (setq Nxt (get Tgt 'b))
 
       # Position pointer at Tgt before del
       (mov-cursor (car (get Tgt 'verts)) T)
 
-      # No del CDR
+      # Delete target, except CDR
       (del> Tgt T NIL)
 
       # Mov Nxt to Tgt
       (when Nxt (mov> Nxt *pos-cursor))
 
       # Connect Prv to Nxt
-      (with Prv (=: b Nxt))
+      (put Prv 'b Nxt)
 
-      # Modify data/CDR of Prv
+      # Modify data of Prv
       # Use con to destructively set the CDR
-      (with Prv
-        (con (: data) (get Nxt 'data)))
+      (con (get Prv 'data) (get Nxt 'data))
       
       # Point to Prv
       (put p0 'b Prv)
-
-      # TODO: Use relative to pos of Prv particle...
-      (nl-cursor -1.0)
-      (adv-cursor -4.0)
-      (mov> p0 *pos-cursor))))
+      (mov-part-abv> p0 Prv (cons T)))))
 
 
 #########################

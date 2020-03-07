@@ -198,6 +198,38 @@
               P)))
     
 
+(dm del> (Car Cdr)
+
+  #{
+    Currently, render will attempt to render all verts (*max-verts)
+    -> Send cmd to render to adjust max
+    - instanceCount is number of instances from beginning of array
+    *verts is LIFO, thus will always keep instances pack from beginning of array
+    -> Maintain vert cnt, instanceCount = size - used
+
+    However, if del from arbitrary point then must zero it
+    and instanceCount remains the same
+    After del, vert returns to queue
+    and next vert will reuse it
+
+    Makes most sense to simply zero vert
+    and not worry about instanceCount 
+    as frag will be discarded...fix later
+  }#
+
+  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
+        Verts (: verts))
+    (for Vert Verts
+      (send-msg *ipc
+                Sock-Render
+                (pack "(zv " (get Vert 'off-gl) '")"))
+      (push '*verts Vert)
+      (dec '*cnt-v)))
+    
+  (when (and Car (: a)) (del> (: a) Car Cdr))
+  (when (and Cdr (: b)) (del> (: b) Car Cdr)))
+
+
 # Verts
 # Most of these don't use any properties from part
 # so should move to a vert class or make normal function
@@ -249,59 +281,7 @@
       (setq X (get X 'b)))
     S))
 
-
-(dm del> (Car Cdr)
-
-  #{
-    Currently, render will attempt to render all verts (*max-verts)
-    -> Send cmd to render to adjust max
-    - instanceCount is number of instances from beginning of array
-    *verts is LIFO, thus will always keep instances pack from beginning of array
-    -> Maintain vert cnt, instanceCount = size - used
-
-    However, if del from arbitrary point then must zero it
-    and instanceCount remains the same
-    After del, vert returns to queue
-    and next vert will reuse it
-
-    Makes most sense to simply zero vert
-    and not worry about instanceCount 
-    as frag will be discarded...fix later
-  }#
-
-  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Verts (: verts))
-    (for Vert Verts
-      (send-msg *ipc
-                Sock-Render
-                (pack "(zv " (get Vert 'off-gl) '")"))
-      (push '*verts Vert)
-      (dec '*cnt-v)))
-    
-  (when (and Car (: a)) (del> (: a) Car Cdr))
-  (when (and Cdr (: b)) (del> (: b) Car Cdr)))
-
-
 ###############################
-
-#{
-(de del-particle (Part Car Cdr)
-
-  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Verts (get Part 'verts))
-    (for Vert Verts
-      (send-msg *ipc
-                Sock-Render
-                (pack "(zv " (get Vert 'off-gl) '")"))
-      (push '*verts Vert)
-      (dec '*cnt-v)))
-    
-  (with Part
-    (when (and Car (: a))
-      (del-particle (: a) Car Cdr))
-    (when (and Cdr (: b))
-      (del-particle (: b) Car Cdr))))
-}#
 
 (de append-part (Any)    
   (let (Lst-Any (list Any)
