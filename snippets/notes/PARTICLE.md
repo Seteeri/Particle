@@ -214,6 +214,7 @@ Store DAGs as binary trees?
     * Add cmd for NIL [Done]
       * Lift fn from cmd-make-char and cmd-make-nil -> app-data
     * To enter NIL list, move pointer beneath it [Done]      
+    * Fix deleting lists
     * Store origin in Particle
       * Needs to be updated with vertices which means updates
       should be called on particle
@@ -248,10 +249,12 @@ Store DAGs as binary trees?
       * Alt+Enter = Exit list (move to dot/parent list)
       * Alt+Up = Enter next list
       * Alt+Dn = Enter prev list
-      
+  
   * Pointer
     * Instead of calling p#, use the fn+#
       * Default is append-0
+    * Insert inbetween
+      * Redraw remainder
 
   * Layout/Drawing
     * Implement spatial index

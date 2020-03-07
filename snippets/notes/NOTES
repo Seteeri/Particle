@@ -2895,6 +2895,7 @@ a     b     |
             [] -> NIL
             X
 
+The Sad State of Personal Knowledge Bases
 
 So all knowledge can be seen as connected, 
 but all knowledge can also be put into hierarchies. 
@@ -2910,3 +2911,35 @@ that are only visible in the context of hierarchies.)
 I'll admit it's pretty weird at first to only get one root node, 
 I think it took me a couple years to get used to that. 
 But once I embraced it the benefits quickly became clear. 
+
+
+It is not about store and searching information but
+having ways to structure and visualize it
+
+
+Tags speed up searches by avoiding full text
+
+(find-tag these are some words)
+(find-tag (these are some words))
+
+OR = find at least one of the tags
+AND = find all of the tags
+FIL = filter left to right
+
+To automake tags, ignore common words
+
+Build DSL for it
+
+Test DB up to 50 GB
+
+Build different data structures to simulate
+YT, IG, FB, BLOGs, TODO LISTS, GITTER/CHAT, etc.
+
+Need to optimize/shortcut string input so users aren't constantly
+packing
+- auto make strings after a certain length
+- if we hide the conses shouldnt be too bad
+- also hide the quotes
+- start string when typing, end upon mod+Enter or mod+Space
+- or time-based, if user stops typing string is automatically made
+  - make sense with stop and go thinking

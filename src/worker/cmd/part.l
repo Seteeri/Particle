@@ -119,23 +119,6 @@
   (prinl-info "cmd-del")
 
   #{
-    Currently, render will attempt to render all verts (*max-verts)
-    -> Send cmd to render to adjust max
-    - instanceCount is number of instances from beginning of array
-    *verts is LIFO, thus will always keep instances pack from beginning of array
-    -> Maintain vert cnt, instanceCount = size - used
-
-    However, if del from arbitrary point then must zero it
-    and instanceCount remains the same
-    After del, vert returns to queue
-    and next vert will reuse it
-
-    Makes most sense to simply zero vert
-    and not worry about instanceCount 
-    as frag will be discarded...fix later
-  }#
-
-  #{
     Procedure:
     1. Delete Val
     2. Connect Last-2/Val-1 to Last/NIL
@@ -148,7 +131,7 @@
   }#
 
   (when (get (get *part-main 'b) 'data)
-
+  
     (let (Val (val> p0)
           Tgt (get *part-main 'b)
           Prv *part-main
@@ -170,7 +153,7 @@
       (mov-cursor (car (get Tgt 'verts)) T)
 
       # No del CDR
-      (del-particle Tgt T NIL)
+      (del> Tgt T NIL)
 
       # Mov Nxt to Tgt
       (when Nxt (mov> Nxt *pos-cursor))

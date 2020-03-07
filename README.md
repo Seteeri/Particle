@@ -68,6 +68,7 @@ Possible:
 
 * Revision control
 * Fuzzy search/auto-completion
+  * Tag suggestions
 * Ink-pen input including drawn annotations
 * OCR scans/images
 * Code-specific support
