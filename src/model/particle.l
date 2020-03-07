@@ -328,7 +328,7 @@
   # Replace NIL with List
     
   # Delete particle first
-  (del-particle (val> p0) T T)
+  (del> (val> p0) T T)
   (with Pre (=: b)) # data still there
   (with p0 (=: b))
 
