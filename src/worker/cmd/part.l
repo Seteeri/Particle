@@ -157,7 +157,11 @@
       # Position pointer at Tgt before del
       (mov-cursor (car (get Tgt 'verts)) T)
 
-      # Delete target, except CDR
+      # For lists, del recursively
+      (when (get Tgt 'a)
+        (del> (get Tgt 'a) T T)
+        (put Tgt 'a))
+      # Delete target/list itself, except CDR
       (del> Tgt T NIL)
 
       # Mov Nxt to Tgt
