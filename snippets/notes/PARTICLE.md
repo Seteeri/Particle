@@ -214,7 +214,7 @@ Store DAGs as binary trees?
     * Add cmd for NIL [Done]
       * Lift fn from cmd-make-char and cmd-make-nil -> app-data
     * To enter NIL list, move pointer beneath it [Done]      
-    * Fix deleting lists
+    * Fix deleting lists [Done]
     * Store origin in Particle
       * Needs to be updated with vertices which means updates
       should be called on particle
@@ -244,18 +244,47 @@ Store DAGs as binary trees?
     * Newline only applies if current/prev is a string
     * Add specific cmd to replace any with list/NIL
       * Default is to append/insert
-    * Enter/Exit
-      * Alt+Backspace = Enter list
-      * Alt+Enter = Exit list (move to dot/parent list)
-      * Alt+Up = Enter next list
-      * Alt+Dn = Enter prev list
+    * UI
+      * Alt+Backspace = Exit list
+      * Alt+Enter = Enter list
+      OR!
+      * Alt+WASD = for items
+        * Or Q/E to enter/exit list
+      * Alt+IJKL = for lists
+        * Hor - next/prev nearest list
+        * Vert - enter/exit nearest list
+  
+  * Fix overlap for sublists...
+  
+  * Primary Lists:
+    1. Main etc.
+    2. Command/History
+    3. Pointer
+    4. Binds
   
   * Pointer
     * Instead of calling p#, use the fn+#
       * Default is append-0
+    * Implement semantic move
     * Insert inbetween
-      * Redraw remainder
+      * Redraw cdr
+    * Create pointer list at top
+      * p0 is special or maybe call it T
+        * Separate controls to move it but same functionality
+      * To switch between pointers, move p0
+               
+               p0
+      lst-ptrs p1 p2 p3 p4 p5
 
+      p1   p2    p3 etc
+      qwerasdfzxcvr
+      
+      * p0 -> symbol = mov one
+      * p0 -> list   = mov all (relative) 
+                       or apply fn to all ptrs
+      * use rot list, only use first
+      
+      
   * Layout/Drawing
     * Implement spatial index
     * Implement treemap as alternative to graph?

@@ -8,7 +8,7 @@ information as they moved through the computer. What did they look like?
 ---
 
 Particle is a personal knowledge base/manager (traditionally called a PIM)
-implemented through a 3D zoomable structured UI based on Lisp.
+implemented through a structured/projectional UI based on Lisp.
 
 It is the realization of my vision to map our thoughts into the computer.
 The long-term technical goal of Particle is to create a Lispy userspace,
@@ -33,7 +33,7 @@ and "busy" people.
 Particle maximizes the following principles:
 
 * Expressiveness
-  * The program should provide primitives that allow the user to express their thoughts in the most concise, succint, and accurate way possible.
+  * The program should provide primitives that allow the user to express their thoughts in the most concise, succinct, and accurate way possible.
 * Flexiblity
   * The program should not stand in the way of the user; it must balance structure with freedom.
 * Minimalism
