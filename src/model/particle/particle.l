@@ -294,15 +294,17 @@
 
 ###############################
 
-(de append-part (Any)    
+# List fn
+
+(de append-any (Any)
   (let (Lst-Any (list Any)
         Val (val> p0)
         Cdr (get Val 'b)
-        Part (gen-pair-x-h Lst-Any
-                           0.0
-                           *pos-cursor
-                           gen-pair-x-h
-                           NIL T))
+        Part (gen-part Lst-Any
+                       0.0
+                       *pos-cursor
+                       gen-pair-x-h
+                       NIL T))
 
     # Set cdr of cur-part to new-part
     # [c] -> [n]
@@ -318,7 +320,7 @@
       (=: data (conc (: data) Lst-Any)))
       
     Part))
-
+    
 
 (de repl-part (Any Pre)
   #{
@@ -368,16 +370,16 @@
 (de gen-part (Any Depth Root Layout Car Cdr)
   # TODO:
   # Handle circular lists - done?
-  
+
   (if (pair Any)
   
       (if (lst? (cdr Any))
       
           # Handle specific forms here
           (cond (T
-                 (Layout Any Depth Root Layout)))
+                 (Layout Any Depth Root Layout Car Cdr)))
                  
-          (Layout Any Depth Root Layout))
+          (Layout Any Depth Root Layout Car Cdr))
       
       (gen-atom Any Depth Root Layout T Car Cdr)))
 
@@ -417,7 +419,7 @@
     so for a list Root would be coordinates of first cons
   }#
 
-  # TODO: REFACTOR CAR/CDR - FLIP FLAGS
+  # TODO: REFACTOR CAR/CDR - FLIP FLAGS?
 
   (let (Ar (car Any)
         Dr (cdr Any)
@@ -427,8 +429,7 @@
     (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr)
           X-Cdr                 (get *pos-cursor 1)
           
-          Pa-Ar (when (and (not (num? Ar))
-                           (not Ignore-Car))
+          Pa-Ar (unless Ignore-Car
                   # Move below, align left of cons
                   # For ((x)), create extra newline or draw something...
                   (when (pair Ar)
@@ -436,8 +437,7 @@
                   (nl-cursor) (set-cur-x X)
                   (gen-part Ar Depth Root gen-pair-x-h))
 
-          Pa-Dr (when (and (not (num? Dr))
-                           (not Ignore-Cdr))
+          Pa-Dr (unless Ignore-Cdr
                   (set-cur-x X-Cdr)
                   (adv-cursor) (set-cur-y Y)
                   (gen-part Dr Depth Root gen-pair-x-h)))

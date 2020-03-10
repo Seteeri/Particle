@@ -20,7 +20,7 @@
 
     (let (Part-Ptr (val> p0)
           Cdr (get Part-Ptr 'b)
-          Part (append-part
+          Part (append-any
                   (cond ((= Keysym ksd~space) " ")
                         ((= Keysym ksd~Return) (char 10))
                         (T (char Keysym)))))
@@ -64,7 +64,7 @@
   (prinl-info "cmd-make-nil")
 
   (let (Cdr (get (val> p0) 'b)
-        Part (append-part)) # Need dif fn?
+        Part (append-any)) # Need dif fn?
     
     # Move new part to cdr-part
     (mov-part> Part Cdr (cons T))
@@ -74,9 +74,7 @@
     
     # Set new ptr and move it above
     (put p0 'b Part)
-    (mov-part-abv> p0 Part (cons T)))
-    
-  T)
+    (mov-part-abv> p0 Part (cons T))))
 
 
 (de cmd-enter-list (Keysym)
@@ -179,20 +177,23 @@
       (mov-part-abv> p0 Prv (cons T)))))
 
 
-#########################
-#########################
-
-
 (de cmd-make-num (Keysym)
-  (let Data (format (char Keysym))
-    (conc-ptr (new '(+Particle)
-                    Data
-                    Data
-                    NIL
-                    (draw-chars Data
-                                (get-color-type Data)
-                                T))))
-  (adv-cursor))
+  (let (Cdr (get (val> p0) 'b)
+        Part (append-any (format (char Keysym))))
+    
+    # Move new part to cdr-part
+    (mov-part> Part Cdr (cons T))
+    
+    # Move cdr-part in front of Part
+    (mov-part-aft> Cdr Part (cons T))
+    
+    # Set new ptr and move it above
+    (put p0 'b Part)
+    (mov-part-abv> p0 Part (cons T))))
+  
+
+#########################
+#########################
 
 
 (de cmd-format (Keysym)
