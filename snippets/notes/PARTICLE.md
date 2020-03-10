@@ -215,8 +215,8 @@ Store DAGs as binary trees?
       * Lift fn from cmd-make-char and cmd-make-nil -> app-data
     * To enter NIL list, move pointer beneath it [Done]      
     * Fix deleting lists [Done]
-    * cmd-add-char: check width of current target
-    * Auto-pack strings
+    * Fix not moving to top list automatically when deleting sublist
+      * Or option?
     * UI
       * Alt+Backspace = Exit list
       * Alt+Enter = Enter list
@@ -268,9 +268,10 @@ Store DAGs as binary trees?
       * p0 -> list   = mov all (relative) 
                        or apply fn to all ptrs
       * use rot list, only use first
+
+  * Auto-pack strings      
       
-      
-  * Layout/Drawing
+  * Supporting Structures
     * Implement spatial index
     * Implement treemap as alternative to graph?
       * Sunburst, conetree, etc.

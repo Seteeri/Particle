@@ -396,7 +396,8 @@
                      Adv)
         B (when (and (not Cdr) (sym-int? Any))
             (gen-sym-int Any Depth Root Layout)))
-    (new '(+Particle)
+            
+    (new (if (num? Any) '(+Num) '(+Sym))
          Any
          NIL
          B
