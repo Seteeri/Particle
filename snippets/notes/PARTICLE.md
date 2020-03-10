@@ -210,40 +210,13 @@ Store DAGs as binary trees?
     * Rewrite cmd-del [Done]
       * Implement spatial map [Later]
 
-  * List Handling
+  * Basic List Handling
     * Add cmd for NIL [Done]
       * Lift fn from cmd-make-char and cmd-make-nil -> app-data
     * To enter NIL list, move pointer beneath it [Done]      
     * Fix deleting lists [Done]
-    * Store origin in Particle
-      * Needs to be updated with vertices which means updates
-      should be called on particle
-    * Don't draw NIL at end of list [Later]
-      * Pointer points to last item (already does this...)
-    * Limit length of drawing list
-      * Non-string = 12
-      * String = 80
-      * Store length of list in particle
-        * Create subclass of Particle for basic data types?
-            
-                                cell [PARTICLE]
-                                  |
-                      +-----------+-----------+
-                      |           |           |
-                   Number       Symbol       Pair
-                                  |
-                                  |
-             +--------+-----------+-----------+
-             |        |           |           |
-            NIL   Internal    Transient    External
-          
-        Particle
-          Atom (Number/Symbol)
-          Pair
-            len
-    * Newline only applies if current/prev is a string
-    * Add specific cmd to replace any with list/NIL
-      * Default is to append/insert
+    * cmd-add-char: check width of current target
+    * Auto-pack strings
     * UI
       * Alt+Backspace = Exit list
       * Alt+Enter = Enter list
@@ -253,14 +226,26 @@ Store DAGs as binary trees?
       * Alt+IJKL = for lists
         * Hor - next/prev nearest list
         * Vert - enter/exit nearest list
+              
+  * List Layout
+    * List Particle has (lay)out property
+      * Particle does not change type
+      * Types (syms):
+        * vertical
+        * horizontal
+        * context (special forms, etc)
+    * List and Str Particles have (len)gth property
+      * Generic list = 12
+      * String list = 80? (or 12?)
+      * String symbol = 80
   
   * Fix overlap for sublists...
   
-  * Primary Lists:
+  * Implement/Draw Primary Lists:
     1. Main etc.
-    2. Command/History
-    3. Pointer
-    4. Binds
+    2. Pointer
+    3. Binds
+    4. Command/History    
   
   * Pointer
     * Instead of calling p#, use the fn+#
@@ -300,6 +285,17 @@ Store DAGs as binary trees?
     * Print commands by default
 
   GET TO HERE =------------------------------------------------------------
+
+  * Lists
+    * Differentiate colors for tagged and untagged data?
+      * Show number of tags?
+    * Store origin in Particle
+      * Update on vertex update -> fn called on particle
+    * Don't draw NIL at end of list
+      * Pointer points to last item
+    * Newline only applies if current/prev is a string
+    * Add specific cmd to replace any with list/NIL
+      * Default is to append/insert
 
   * Refactor gen-particle to use globals instead of passing
 

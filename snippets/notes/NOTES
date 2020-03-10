@@ -2943,3 +2943,63 @@ packing
 - start string when typing, end upon mod+Enter or mod+Space
 - or time-based, if user stops typing string is automatically made
   - make sense with stop and go thinking
+
+
+=======================
+
+
+Store particles in db
+Store gpu buffers in db
+
+[DISK/DB] -> [RAM]
+
+Data created by user...need classes for basic types
+
++Sym - needs a name
+
+                        cell [PARTICLE]
+                          |
+              +-----------+-----------+
+              |           |           |
+           Number       Symbol       Pair
+                          |
+                          |
+     +--------+-----------+-----------+
+     |        |           |           |
+    NIL   Internal    Transient    External
+  
+Particle
+  Atom (Number/Symbol)
+  Pair
+    len
+
+Length for pair, symbol, number
+Default for strings is to pack until user creates non-string
+or presses <mod>+Enter
+-- easier for users
+-- or remove quotes ... or draw lighter
+   -- maintain consistency with reader
+   
+Whhat if uesr wants to tag part of the string?
+-- Move pointer and tag
+-- Or split it
+
+[.]
+("this is an important word that needs to be marked")
+
+[.]
+[.]                     [.]    [.]
+("this is an important" "word" "that needs to be marked")
+
+Instead of breaking the string apart, the tag simply maintains
+a pointer to it with pos in string
+
+This goes into string manipulation...
+User can extract the word by breaking the string into words
+- using split
+Without that, can calulate which char based on distance
+
+chop (by space etc; list uses split)
+mark range of list
+tag
+pack excl tagged

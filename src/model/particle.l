@@ -77,10 +77,9 @@
   (=: dat (date))
   (=: tim (time))
   
-  # author
-  (=: aut)
-  
-  )
+  # Move these to subclasses
+  # Set on creation
+  (=: len 1))
 
 
 (dm cons> (B) (=: b B))
