@@ -342,8 +342,8 @@
     
   # Delete particle first
   (del> (val> p0) T T)
-  (with Pre (=: b)) # data still there
-  (with p0 (=: b))
+  (put Pre 'b) # data still there
+  (put p0 'b)
 
   # Set cursor 2 spaces above ptr
   (nl-cursor -2.0)

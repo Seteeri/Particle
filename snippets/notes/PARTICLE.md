@@ -214,9 +214,10 @@ Store DAGs as binary trees?
     * Add cmd for NIL [Done]
       * Lift fn from cmd-make-char and cmd-make-nil -> app-data
     * To enter NIL list, move pointer beneath it [Done]      
-    * Fix deleting lists [Done]
-    * Fix not moving to top list automatically when deleting sublist
-      * Or option?
+    * Fix:
+      * Not moving to top list automatically when deleting sublist
+        * Or option?
+      * Creating nested empty lists
     * UI
       * Alt+Backspace = Exit list
       * Alt+Enter = Enter list
