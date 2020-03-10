@@ -308,11 +308,11 @@
 
     # Set cdr of cur-part to new-part
     # [c] -> [n]
-    (with Val (=: b Part))
+    (put Val 'b Part)
     
     # Set cdr of new-part to cdr-part
     # [n] -> [b] -> ...
-    (with Part (=: b Cdr))
+    (put Part 'b Cdr)
     
     # Connect new part data to list part data
     # Need separate function if not at end
