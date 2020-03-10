@@ -190,10 +190,6 @@
     # Set new ptr and move it above
     (put p0 'b Part)
     (mov-part-abv> p0 Part (cons T))))
-  
-
-#########################
-#########################
 
 
 (de cmd-format (Keysym)
@@ -202,24 +198,26 @@
 
   # Convert num<->str
 
-  (let Last (get (last-ptr) 'data)
+  (when (get (get *part-main 'b) 'data)
+  
+    (let (Val (val> p0)
+          Cdr (get Val 'b)
+          Dat (format (get (get Val 'a) 'data))          
+          Part (append-any Dat))
+      
+      # Move new part to cdr-part
+      (mov-part> Part Cdr (cons T))
+      
+      # Move cdr-part in front of Part
+      (mov-part-aft> Cdr Part (cons T))
+      
+      # Set new ptr and move it above
+      (put p0 'b Part)
+      (mov-part-abv> p0 Part (cons T)))))
 
-    (when (or (str? Last)
-              (num? Last))
 
-      (let (Data (format Last)
-            Col (get-color-type Data)
-            Verts (if (num? Data)
-                      (draw-chars Data Col T)
-                      (draw-str Data Col T)))
-
-        (conc-ptr (new '(+Particle)
-                        Data
-                        Data
-                        NIL
-                        Verts))
-
-        (adv-cursor)))))
+#########################
+#########################
 
 
 (de cmd-pack (Keysym)
