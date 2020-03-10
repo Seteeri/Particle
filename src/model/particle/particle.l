@@ -85,6 +85,8 @@
 (dm cons> (B) (=: b B))
 (dm val> () (: b))
 
+# List specific?
+
 (dm last> ()
   
   (let Last (: b)
@@ -366,9 +368,6 @@
 (de gen-part (Any Depth Root Layout Car Cdr)
   # TODO:
   # Handle circular lists - done?
-  # Add hooks for special layout depending on car of list
-  
-  # Maybe layout particles after gen?
   
   (if (pair Any)
   
@@ -417,7 +416,7 @@
     so for a list Root would be coordinates of first cons
   }#
 
-  # TODO: REFACTOR CAR/CDR
+  # TODO: REFACTOR CAR/CDR - FLIP FLAGS
 
   (let (Ar (car Any)
         Dr (cdr Any)
@@ -425,7 +424,7 @@
                 (if Pos Pos Root)))
 
     (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr)
-          X-Cdr (get *pos-cursor 1)
+          X-Cdr                 (get *pos-cursor 1)
           
           Pa-Ar (when (and (not (num? Ar))
                            (not Ignore-Car))
@@ -442,7 +441,7 @@
                   (adv-cursor) (set-cur-y Y)
                   (gen-part Dr Depth Root gen-pair-x-h)))
       
-      (new '(+Particle)
+      (new '(+Pair)
            Any
            Pa-Ar Pa-Dr
            (append Vert-Ar Dot Vert-Dr)))))
@@ -474,10 +473,13 @@
                   (nl-cursor)
                   (gen-part Dr Depth Root gen-pair-y-h)))
       
-      (new '(+Particle)
+      (new '(+Pair)
            Any
            Pa-Ar Pa-Dr
            (append Vert-Ar Dot Vert-Dr)))))
+
+
+# let form
 
 
 (de gen-let (List Depth Root Layout)
