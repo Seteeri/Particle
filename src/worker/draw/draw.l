@@ -165,12 +165,8 @@
         (T           (draw-sym Atom Col Adv))))
 
 
-(de draw-cons-x (Ar Dr Ptr-Ar Ptr-Dr)
-  (let (Vert-Ar (if (num? Ar)
-                    (draw-chars (format Ar) (get-color-type Ar) T)
-                    (draw-chars "[" *col-base-0 T)) # (char 187)
-        Dot   (list (draw-dot T))
-        Vert-Dr (if (num? Dr)
-                    (draw-chars (format Dr) (get-color-type Dr) T)
-                    (draw-chars "]" *col-base-0 T))) # (char 166)
+(de draw-cons-x (Ar Dr)
+  (let (Vert-Ar (draw-chars "[" *col-base-0 T) # (char 187)
+        Dot     (list (draw-dot T))
+        Vert-Dr (draw-chars "]" *col-base-0 T)) # (char 166)
     (list Vert-Ar Dot Vert-Dr)))
