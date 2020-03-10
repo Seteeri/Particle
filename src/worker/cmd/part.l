@@ -216,34 +216,6 @@
       (mov-part-abv> p0 Part (cons T)))))
 
 
-#########################
-#########################
-
-
-(de cmd-pack (Keysym)
-
-  (prinl-info "cmd-pack")
-
-  # Convert to str and push
-
-  # This is special as it builds back until non-str/num
-  # Normally, uses last item
-
-  (let Str (pack (get (build-pack) 2))
-
-    # Draw data, create particle, add to timeline
-    (conc-ptr
-          (new '(+Particle)
-               Str
-               Str
-               NIL
-               (draw-str Str (get-color-type Str) T)))
-
-    # Set next as needed
-
-    (adv-cursor)))
-
-
 (de cmd-chop (Keysym)
 
   (prinl-info "cmd-chop")
@@ -270,22 +242,55 @@
 
   (prinl-info "cmd-intern")
 
-  # Convert last item (t-sym) with i-sym
+  (when (get (get *part-main 'b) 'data)
+  
+    (let (Val (val> p0)
+          Cdr (get Val 'b)
+          Tgt (get (get Val 'a) 'data))
+          
+      (when (str? Tgt)
 
-  # Ensure last item is a str
+        (let Part (append-any (intern Tgt))
+        
+          # Val will be gen'd also - move it
+        
+          # Move new part to cdr-part
+          (mov-part> Part Cdr (cons T T))
+          
+          # Move cdr-part in front of Part
+          (mov-part-aft> Cdr Part (cons T))
+          
+          # Set new ptr and move it above
+          (put p0 'b Part)
+          (mov-part-abv> p0 Part (cons T)))))))
 
-  (let Last (get (last-ptr) 'data)
 
-    (when (str? Last)
+#########################
+#########################
 
-      (conc-ptr
-            (new '(+Particle)
-                 (intern Last)
-                 (intern Last)
-                 NIL
-                 (draw-chars Last (get-color-type 'data) T)))
 
-      (adv-cursor))))
+(de cmd-pack (Keysym)
+
+  (prinl-info "cmd-pack")
+
+  # Convert to str and push
+
+  # This is special as it builds back until non-str/num
+  # Normally, uses last item
+
+  (let Str (pack (get (build-pack) 2))
+
+    # Draw data, create particle, add to timeline
+    (conc-ptr
+          (new '(+Particle)
+               Str
+               Str
+               NIL
+               (draw-str Str (get-color-type Str) T)))
+
+    # Set next as needed
+
+    (adv-cursor)))
 
 
 (de cmd-eval ()

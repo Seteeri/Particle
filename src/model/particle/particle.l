@@ -320,7 +320,7 @@
       (=: data (conc (: data) Lst-Any)))
       
     Part))
-    
+
 
 (de repl-part (Any Pre)
   #{
@@ -397,7 +397,7 @@
                      (get-color-type Any)
                      Adv)
         B (when (and (not Cdr) (sym-int? Any))
-            (gen-sym-int Any Depth Root Layout)))
+            (gen-sym-int Any Depth Root Layout Car Cdr)))
             
     (new (if (num? Any) '(+Num) '(+Sym))
          Any
@@ -406,11 +406,11 @@
          V)))
 
 
-(de gen-sym-int (Any Depth Root Layout)
+(de gen-sym-int (Any Depth Root Layout Car Cdr)
   # Opt: Ignore NIL?
-        
+    
   (adv-cursor)
-  (gen-part (val Any) Depth Root Layout))
+  (gen-part (val Any) Depth Root Layout Car Cdr))
 
 
 (de gen-pair-x-h (Any Depth Root Layout Ignore-Car Ignore-Cdr)
