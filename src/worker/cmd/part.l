@@ -244,39 +244,26 @@
     (adv-cursor)))
 
 
-(de cmd-pack-2 (Keysym)
-
-  (prinl-info "cmd-pack-2")
-
-  # Convert to str and push
-
-  # Unlike OG, use last item
-  # To use this normally, must create list then push chars into that
-
-  (let Str (pack (get (last-ptr) 'data))
-
-    # Draw data, create particle, add to timeline
-    (conc-ptr
-          (new '(+Particle)
-               Str
-               Str
-               NIL
-               (draw-str Str (get-color-type Str) T)))
-
-    # Set next as needed
-
-    (adv-cursor)))
-
-
 (de cmd-chop (Keysym)
 
   (prinl-info "cmd-chop")
 
-  (let Last (get (last-ptr) 'data)
-
-    (conc-ptr (gen-part (chop Last))))
-
-  (adv-cursor))
+  (when (get (get *part-main 'b) 'data)
+  
+    (let (Val (val> p0)
+          Cdr (get Val 'b)
+          Dat (chop (get (get Val 'a) 'data))          
+          Part (append-any Dat))
+      
+      # Move new part to cdr-part
+      (mov-part> Part Cdr (cons T))
+      
+      # Move cdr-part in front of Part
+      (mov-part-aft> Cdr Part (cons T))
+      
+      # Set new ptr and move it above
+      (put p0 'b Part)
+      (mov-part-abv> p0 Part (cons T)))))
 
 
 (de cmd-intern (Keysym)
