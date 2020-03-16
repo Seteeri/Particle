@@ -194,7 +194,7 @@ Store DAGs as binary trees?
   * Poss to mix drawing lists horizontal/vertical if there are arrows
   or very few expections like with pointers
   
-  * Draw default symbols [WIP]
+  * Misc [Done]
     * Refactor symbol particles [Done]
       * Data stores symbol
       * A/CAR = NIL
@@ -208,7 +208,6 @@ Store DAGs as binary trees?
       * Or solely so particles don't get deleted
         * Poss move vertices into it?
     * Rewrite cmd-del [Done]
-      * Implement spatial map [Later]
 
   * Basic List Handling
     * Add cmd for NIL [Done]
@@ -229,25 +228,26 @@ Store DAGs as binary trees?
         * Vert - enter/exit nearest list
               
   * List Layout
-    * List Particle has (lay)out property
-      * Particle does not change type
-      * Types (syms):
-        * vertical
-        * horizontal
-        * context (special forms, etc)
-    * List and Str Particles have (len)gth property
-      * Generic list = 12
-      * String list = 80? (or 12?)
-      * String symbol = 80
-  
-  * Fix overlap for sublists...
-  
-  * Implement/Draw Primary Lists:
-    1. Main etc.
-    2. Pointer
-    3. Binds
-    4. Command/History    
-  
+    * Implement basic lay property [WIP]
+      * Lay horizontal [Done]
+      * Lay vertical [Done]
+      * Lay mixed [Done]
+        * Y to X [Done]
+        * X to Y [Done]
+    * Test mixed layout [WIP]
+      * Test modifying middle and reflowing subsequent cdr
+      of any parents
+        * Are doubly-linked lists required?
+        Without this, will have to search to find the list
+        otherwise, can traverse backwards
+        (1 2 3 . 4
+               (5 6 7 . 8)
+                      (9 1 0 1 1)
+    * Interpret lay structure
+    * Separate lay from gen
+
+  * Circular lists -> dot instead of ]
+
   * Pointer
     * Instead of calling p#, use the fn+#
       * Default is append-0
@@ -270,21 +270,26 @@ Store DAGs as binary trees?
                        or apply fn to all ptrs
       * use rot list, only use first
 
-  * Auto-pack strings      
+  * Implement/Draw Primary Lists:
+    1. Main etc.
+    2. Pointer
+    3. Binds
+    4. Command/History
       
   * Supporting Structures
     * Implement spatial index
     * Implement treemap as alternative to graph?
       * Sunburst, conetree, etc.
       * See 'A Visual Survey of Tree Visualization'
+
+  * Auto-pack strings
+    * Upon char, make string, until non-char
+      * Do NIL to create new list
+    * When user marks part of string, break it down by spaces into words/chars
+    * Mark word/chars with tags
   
   * Use special printing for control characters like enter etc.
     * newline ("^J"), return ("^M") or TAB ("^I")
-
-  * Relayout
-    * (col n) - n=number of items before row on last item
-    * (row n) - n=number of items before col on last item
-    * Print commands by default
 
   GET TO HERE =------------------------------------------------------------
 

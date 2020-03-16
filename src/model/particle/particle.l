@@ -56,7 +56,9 @@
        A
        B
        Verts)
-
+  
+  # Store as cons?
+  # (=: ab (a . b))
   (=: a A)
   (=: b B)
   
@@ -77,12 +79,11 @@
   (=: dat (date))
   (=: tim (time))
   
-  # Move these to subclasses
-  # Set on creation
-  (=: len 1))
+  (=: lay 'y))
 
 
 (dm cons> (B) (=: b B))
+
 (dm val> () (: b))
 
 # List specific?
@@ -127,7 +128,7 @@
   (for Vert (: verts)
   
     (with Vert
-      (=: pos Pos)
+      (=: pos (copy Pos))
       (update-glyph> Vert (char (: chr))))
     (upd-mdl-mtrx> Vert)
     (cmd-upd-vert *ipc Vert)
@@ -199,7 +200,7 @@
   # Make offset version instead of static function?
   
   (mov-cursor (car (get B 'verts)) T)
-  (nl-cursor 1.0)
+  (nl-cursor)
 
   (let Pos (get-origin> This)
     (mov-off> This
@@ -270,6 +271,12 @@
     (cmd-upd-vert *ipc Vert)))
 
 
+(dm last-vert-pos> (Cnt)
+  (get (get (last (: verts)) 'pos) Cnt))
+  
+(dm last-vert> ()
+  (last (: verts)))
+  
 # Debug
 
 (dm trace> (Cnt)
@@ -368,8 +375,7 @@
 
 
 (de gen-part (Any Depth Root Layout Car Cdr)
-  # TODO:
-  # Handle circular lists - done?
+  # TODO: Handle circular lists...use another dot at the end
 
   (if (pair Any)
   
@@ -396,7 +402,8 @@
   (let (V (draw-atom Any
                      (get-color-type Any)
                      Adv)
-        B (when (and (not Cdr) (sym-int? Any))
+        B (when (and (not Cdr)
+                     (sym-int? Any))
             (gen-sym-int Any Depth Root Layout Car Cdr)))
             
     (new (if (num? Any) '(+Num) '(+Sym))
@@ -426,7 +433,7 @@
         (X Y) (let Pos *pos-cursor
                 (if Pos Pos Root)))
 
-    (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr)
+    (let ((Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
           X-Cdr                 (get *pos-cursor 1)
           
           Pa-Ar (unless Ignore-Car
@@ -440,13 +447,44 @@
           Pa-Dr (unless Ignore-Cdr
                   (set-cur-x X-Cdr)
                   (adv-cursor) (set-cur-y Y)
-                  (gen-part Dr Depth Root gen-pair-x-h)))
+                  (gen-part Dr Depth Root gen-pair-x-h))
+          Part (new '(+Pair)
+                     Any
+                     Pa-Ar Pa-Dr
+                     (append Vert-Ar Dot Vert-Dr)))
+      #{
+        Skip the list containing the list so:
+          a
+          . 1 2 3
+          c
+      }#
+      (when (num? Ar)
+        (lay-num-ds Part))
       
-      (new '(+Pair)
-           Any
-           Pa-Ar Pa-Dr
-           (append Vert-Ar Dot Vert-Dr)))))
-           
+      Part)))
+
+(de lay-num-ds (Part)
+  # Handle str similarly
+  #
+  # If nested lists, must keep checking until non-pair/list
+  #
+  # Move to caller fn or gen-part...
+  
+  (with Part
+    
+    (let (P-Typ (type Part)
+          A-Typ (type (: a))
+          B-Typ (type (: b)))
+  
+      (when (and (= P-Typ '(+Pair))
+                 (or (= A-Typ '(+Pair))
+                     (= A-Typ'(+Num))))
+        
+        (=: lay 'x)
+        (put (: a) 'lay 'x))
+      
+      (when (= A-Typ '(+Pair)) (lay-num-ds (: a)))
+      (when (= B-Typ '(+Pair)) (lay-num-ds (: b))))))
            
 (de gen-pair-y-h (Any Depth Root Layout Car Cdr)
 
@@ -457,11 +495,9 @@
         Dr (cdr Any)
         Ptr (>> -4 (adr Any))
         (Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
-        Tail-Ar (pack (tail 4 (chop (bin Ptr-Ar))))
-        Tail-Dr (pack (tail 4 (chop (bin Ptr-Dr))))
         (X Y) *pos-cursor)
 
-    (let ((Vert-Ar Dot Vert-Dr) (draw-cons-x Ar Dr Tail-Ar Tail-Dr)
+    (let ((Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
           Dummy (adv-cursor)
           Pa-Ar (when (and (not (num? Ar))
                            (not Car))
@@ -480,6 +516,7 @@
            (append Vert-Ar Dot Vert-Dr)))))
 
 
+##########
 # let form
 
 

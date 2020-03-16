@@ -249,7 +249,7 @@
           Tgt (get (get Val 'a) 'data))
           
       (when (str? Tgt)
-
+        
         (let Part (append-any (intern Tgt))
         
           # Val will be gen'd also - move it

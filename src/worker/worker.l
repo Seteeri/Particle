@@ -70,6 +70,7 @@
 (load "/home/user/Particle/particle/src/model/particle/pair.l")
 (load "/home/user/Particle/particle/src/model/particle/sym.l")
 (load "/home/user/Particle/particle/src/model/particle/num.l")
+(load "/home/user/Particle/particle/src/model/particle/layout.l")
 (load "/home/user/Particle/particle/src/model/projview.l")
 (load "/home/user/Particle/particle/src/model/vertex.l")
 (load "/home/user/Particle/particle/src/ctrl/xkb.l")
@@ -274,8 +275,44 @@
     (with p0 (=: b *part-main))
 
   (nl-cursor)
-  (set-cur-x X)))
+  (set-cur-x X)
+  
+  
+  (nl-cursor)
+  (set-cur-x X)
+  (let Part (gen-part '("a"
+                        (1 (2) (3))
+                        "b")
+                      0.0
+                      *pos-cursor
+                      gen-pair-x-h)
+    
+    (nl-cursor 2.0)
+    (set-cur-x X)
+    (lay-part Part *pos-cursor (get Part 'lay)))
+  
+  T))
 
+#{
+  '(("Task I"
+     ("Subtask A"
+      "Subtask B"
+      ("Subsubtask 1"
+       "Subsubtask 2"
+       "Subsubtask 3")))
+    ("Task II"
+     ("Subtask A"
+      "Subtask B"
+      ("Subsubtask 1"
+       "Subsubtask 2"
+       "Subsubtask 3")))
+    ("Task III"
+     ("Subtask A"
+      "Subtask B"
+      ("Subsubtask 1"
+       "Subsubtask 2"
+       "Subsubtask 3"))))
+}#
 
 (de run-tests ()
 

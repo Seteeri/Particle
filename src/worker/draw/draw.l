@@ -165,8 +165,12 @@
         (T           (draw-sym Atom Col Adv))))
 
 
-(de draw-cons-x (Ar Dr)
-  (let (Vert-Ar (draw-chars "[" *col-base-0 T) # (char 187)
-        Dot     (list (draw-dot T))
-        Vert-Dr (draw-chars "]" *col-base-0 T)) # (char 166)
-    (list Vert-Ar Dot Vert-Dr)))
+(de draw-cell ()
+
+  # TODO: Draw shortnums that fit in pointers
+
+  # (char 187) (char 166)
+  
+  (list (draw-chars "[" *col-base-0 T)
+        (list (draw-dot T))
+        (draw-chars "]" *col-base-0 T)))

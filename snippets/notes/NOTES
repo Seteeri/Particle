@@ -3004,13 +3004,308 @@ mark range of list
 tag
 pack excl tagged
 
+FINAL VERDICT: 
+Focus on bigger picture; worry about this later...
+For now, we can tag particles aka lisp data.
+If user really wanted it, they could refactor into another
+item in the list
+
+Question is whether it should be made visible:
+("The quick brown fox jumped over the fence")
+("The" "quick" "brown" "fox" "jumped" "over" "the" "fence")
+
+Poss draw without quotations or make them very light
+Poss indicate with color instead
+
+Spaces would need quotations still
+
+Raw verbatim text search is triky; poss use other methods to
+narrow range before performing full text search which would
+require combining strings into buffer before actual search
+
+Without the above example, only break apart strings, as needed
+
+Default mode could be to create strings when user presses space
+-> PROBLEM, how to create strings with spaces?
+   -> Use cmd
+   
+what if user initiates with quotes? can't close with quote...
+must escape it...
 
 ================
 
 The Use of Space in Text Editors
 
+================
+
 How to mix layouts?
 
-Property belongs to each list
+Layout property belongs to each list:
+(+/-|X/Y LEN)
 
-Reflow function will take into account list layout
+Pos/neg means direction perpendicular
+
+'x
+
+[.|.] CDR
+CAR
+
+
+'y
+
+[.|.] CAR
+CDR
+
+
+Given LEN=2
+
+'x
+
+[.|.] -> [.|.]
+
+CAR      CAR
+
+(cont. from above end)
+
+[.|.] -> [.|.] CDR
+
+CAR      CAR
+
+
+'y
+          (cont. from left bottom)
+            
+[.|.] CAR  [.|.] CAR
+
+ |          |
+[.|.] CAR  [.|.] CAR
+
+           CDR
+
+
+Layout only applies to top level atoms;
+any sublists have their layout defined
+
+When lists are drawn, its bounds are saved
+Upon any of its items moving, the bounds are updated
+
+
+Full X layout with nested lists
+
+A A A .             A A A
+      B B .     B B
+          C C C
+          
+
+So if C gets another item, B.X inc, A.X inc
+Subsequent items in B and A must move forward
+
+
+A A A .           A A A
+      B B .   B B
+          C C
+          C C
+          C ...
+          
+If C is vertical, then parent lists do not need subsequent items moved
+
+
+Layout Strings
+
+Must specify:
+1. Direction of CDR = X or Y
+2. Direction of CAR/growth = For X, grow up or down; For Y, grow fwd or back
+3. Max length
+
+* When length = 0, #2 negligible
+-> This means combine 3 into 2, it's either 0 or +/-#
+
+* Char codes can be used for newline and tab
+
+* Offset codes relative to base
+  (NUM AXIS)
+
+Typical let statement:
+
+(let (A B
+      C D
+      ...)
+  E
+  F
+  G
+  ...)
+
+Let has vert orientation with exception - draw first two hor  
+List ABCD has -X orientation with length=2
+  - Neg bc items grow -Y
+  - X bc CDR across
+List EFG has -Y orientation with length=0
+  - Neg bc items grow -Y
+  - Y bc CDR below
+  - 0 means single column/row so growth is negligible
+
+Results in:
+
+((-X 1) (-X 2) ^J
+ (2 X) (-Y 1))
+
+This means 1st item use 1st
+second item use 2nd
+^J means move to newline
+offset 2 spaces in x direction
+3rd and remainder uses 4th
+
+
+TODO:
+1. Draw lists/layout
+2. Calculate bounds
+  * Use global vars instead of passing between functions
+3. Test mixed lists and reflow with random modification
+
+
+DID WE JUST CREATE A DSL FOR LIST LAYOUT/DRAWING?
+
+Note, changing bidirectional layouts will cause search before AND
+after
+
+=====
+
+Each process will store a local cache of a symbol
+- Cycle of read, modify, draw, write - repeat
+However, all processes will push the generated data to rasterizer
+
+How to draw a list when an item in the middle is modified
+-> Must know its index
+-> So must traverse list from beginning - find item in list
+-> Cannot consistently cache index
+-> Can cache provided nothing before it is modified
+   at that point, it must be discarded
+-> Cache store the last accessed CDR in the main list
+   so if user added items multiple times in a row, it can
+   reuse it; afterwards, empty it
+
+
+UNDERSTANDING CODE IS HARDER THAN EXPLORING IT
+
+===============================================
+
+How To Handle Mixed Layouts
+
+Check if prev (car/cdr) is opposite layout
+
+For example if default is y but prev is x
+must use final y from prev
+
+  #{
+  
+    [] -> [] -> []
+    |     1     2
+    |
+    [] -> 3
+    |
+    [] -> 4
+
+
+    [] -> [] -> 1
+    |     |
+    |     [] -> 2
+    |
+    [] -> 3
+    |
+    [] -> 4
+
+
+    [] -> [] -> []
+    |     1     2
+    |
+    [] -> []
+    |     |
+    1     2
+    
+    3 variations with spacing - either top/bottom is closer to base
+    or equidistant
+    
+  }#
+
+===================
+
+We can define symbols as "tags for data" 
+(objs are symbols so symbols are objs)
+
+Conventional programs focus on the data and attaching tags
+
+What if we focus on tags and then attaching data to it?
+
+A tag viewport can be positioned L/R or T/B, since we use a tile layout
+* Really just a generic viewport, that the user can have a camera follow
+a list, either adjust zoom+pan to fit entire object or only part of it
+etc.
+
+If everything is a symbol then it can be tagged!
+
+There exists other objects like lists and numbers,
+and of course, other symbols like strings
+so how do those get tagged since they are no symbols?
+
+-> Use a symbol to store the object, and then tag it by adding to its
+tg list
+
+In other words, create a Particle that stores the object (its value)
+and add to its tg list
+
+In this case an external object is used
+which has a unique numeric id
+based on its position in the file/block/offset
+
+It can also be referenced through the tags that it has
+(this is the expected way to find it)
+
+Since everything the user sees is a particle, it can be tagged
+-> EVERYTHING IS TAGGABLE...
+
+
+However, symbols can contain a list etc. - compound structures
+So in order to tag individual parts in the compound structures,
+they must be broken out somehow
+
+For example, a symbol contains a list of words - no, each word in the list
+is actually a particle so they can be individually tagged.
+However, if a part of a string is to be tagged it must be broken out
+
+IDEA!
+
+Given:
+
+("The quick brown fox jumped over the fence")
+
+Break out words in a sublist:
+
+( ("The quick brown fox jumped over the fence")
+  "fox" [tag this]
+)
+
+However, what if the user edits the string?
+-> Then user must edit list
+-> Makes sense since it is not a valid tag...
+-> This can be made automatic so that it is cleared
+when the string is edited
+-> User might want to keep it so what is the default?
+-> KISS and Principle of Least Astonishment
+-> Best way would be if the word is removed from the string,
+the tag should be removed also
+
+( ("The slow grey elephant jumped over the fence")
+  [nothing here anymore]
+)
+
+At this point, this list of tags should become a property of the particle
+or more specifically for a string/symbol particle
+
+For the tagged word in the property list, it would need a property to store
+addtl info (instead of a string symbol, make it a particle or subclass of it)
+such as pos so that we can tell if it has been modified
+
+===========
+
+PicoLisp has a spatial structure but only works in +X and +Y...
+We can create for db files, depending on the quadrant the object lies in

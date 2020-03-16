@@ -1,0 +1,217 @@
+(de lay-part (Any Base Pre-Lay)
+  
+  # (= (cons T) (list T)) -> T
+  
+  (if (= (type Any) '(+Pair))
+  
+      (lay-pair Any Base Pre-Lay)
+      
+      (lay-atom Any Base Pre-Lay)))
+
+
+(de lay-pair (Any Base Pre-Lay)
+
+  # (-Y 1)
+  # 1st arg is pos CAR
+  # 2nd arg is max CDR
+
+  #{
+  (if (lst? (cdr Any)) # T for NIL
+        
+    # Handle specific forms here
+    (cond (T
+           (lay-pair Any)))
+    
+    # Pair
+    (lay-pair Any))
+  }#
+
+  (if (= (get Any 'lay) 'x)
+    
+    (lay-pair-x Any Base Pre-Lay)
+    
+    (lay-pair-y Any Base Pre-Lay)))
+    
+
+(de lay-pair-x (Any Base Pre-Lay)
+  #{
+    Layout CAR=Y, CDR=X relative to Any
+    
+    Main issue when a new list layout detected,
+    the extents of the following list etc. must be known
+    before switching back to the original list
+    
+    On list layout change, push a number to the list
+    Use list for nested layout changes
+    pop after return, apply to next item in the list
+    The last item will have the computed final bounds
+    
+    Instead of a list, poss pass a value and return the final one
+    
+    When drawing across, must keep track of Y depth in domain of CAR/CDR
+    
+  }#
+
+  # RETURN MIN Y
+    
+  (mov> Any Base)
+
+  (with Any
+  
+    (println (get Any 'data))
+  
+    (let ((X-Car Y-Car) (lay-pair-x-car Any
+                                        Base
+                                        (: a)
+                                        (: lay)))
+                                        
+      # Handle if short
+      (let X-End (last-vert-pos> Any 1)
+        (when (< (get *pos-cursor 1) X-End)
+          (setq *pos-cursor (place 1 *pos-cursor X-End))))
+
+      # If Car layout diff, must use the max X bounds
+      (unless (= (get (: a) 'lay) (: lay))
+        (println "CAR Y; CDR X" 
+                 (format X-Car *Scl)
+                 (format (get *pos-cursor 1) *Scl))
+        (set-cur-x (max X-Car (get *pos-cursor 1))))
+        
+      (let ((X-Cdr Y-Cdr) (lay-pair-x-cdr Base
+                                        (: b)
+                                        (: lay)))
+          
+        (list (max X-Car X-Cdr)
+              (min Y-Car Y-Cdr))))))
+
+(de lay-pair-x-car (Any Base Car Lay)
+
+  (let ((X Y) Base)
+
+    # Instead do move part to pos
+    (mov-part-bel> Car Any)
+
+    (mov-cursor (last-vert> Car))
+    
+    (prin "  ") (println 'x 'a (= (get Car 'lay) Lay))
+    
+    # Use X as baseline since CARs are drawn Y
+    
+    (mov-cursor (last-vert> Car))
+    
+    # Return min/max between base and ret lay-part
+    (lay-part Car
+              (list X (get *pos-cursor 2))
+              Lay)))
+
+(de lay-pair-x-cdr (Base Cdr Lay)
+
+  (let ((X Y) Base)
+      
+    # Cursor should be in X pos after drawing CAR recursively
+
+    (adv-cursor 2.0)
+
+    (set-cur-y Y)
+    
+    (let (Cur *pos-cursor)
+    
+      (mov> Cdr *pos-cursor)
+      
+      (mov-cursor (last-vert> Cdr))
+      
+      (prin "  ") (println 'x 'b (= (get Cdr 'lay) Lay))
+                
+      (lay-part Cdr
+                Cur
+                Lay))))
+            
+##############
+
+(de lay-pair-y (Any Base Lay)
+  # Draw CAR=X, CDR=Y
+
+  # RETURN MAX X
+
+  (mov> Any Base)
+  
+  (with Any
+  
+    (println (get Any 'data))
+    
+    # If previous pair was x layout, must keep y (not modify y)
+  
+    (let ((X-Car Y-Car) (lay-pair-y-car Base
+                                        (: a)
+                                        Lay
+                                        (last-vert> Any)))
+        
+      # If Car layout diff, must use the min Y bounds
+            
+      (unless (= (get (: a) 'lay) (: lay))
+        (println "CAR X; CDR Y" 
+                 (format Y-Car *Scl)
+                 (format (get *pos-cursor 2) *Scl))
+        (set-cur-y Y-Car))
+            
+      (let ((X-Cdr Y-Cdr) (lay-pair-y-cdr Base
+                                          (: b)
+                                          Lay))
+
+        (list (max X-Car X-Cdr)
+              (min Y-Car Y-Cdr))))))
+
+(de lay-pair-y-car (Base Car Lay Last-Vert)
+
+  (let ((X Y) Base)
+
+    # Move cursor to end of car into pos
+    (mov-cursor Last-Vert)
+    
+    # Set to 1 to remove space or inc etc
+    (adv-cursor 2.0)
+    
+    # Save this pos as base
+    (let (Cur *pos-cursor)
+    
+      (mov> Car *pos-cursor)
+      (mov-cursor (last-vert> Car))
+    
+      (prin "  ") (println 'y 'a (= (get Car 'lay) Lay))
+      
+      (lay-part Car
+                Cur
+                Lay))))
+
+(de lay-pair-y-cdr (Base Cdr Lay)
+
+  (let ((X Y) Base)
+          
+    # Cursor should be in Y pos after drawing CAR recursively
+    # Move X back and under
+    (set-cur-x X)
+        
+    # Inc to double space etc
+    (nl-cursor)
+            
+    (mov> Cdr *pos-cursor)
+    (mov-cursor (last-vert> Cdr))
+      
+    (prin "  ") (println 'y 'b (= (get Cdr 'lay) Lay))
+            
+    # Use X as baseline since CDRs are drawn Y
+    (lay-part Cdr
+              (list X (get *pos-cursor 2))
+              Lay)))
+
+(de lay-atom (Any Base Pre-Lay)
+  # Recurse as needed for sym, num, etc.
+  
+  (println "lay-atom"
+           (get Any 'data)
+           (format (get *pos-cursor 1) *Scl)
+           (format (get *pos-cursor 2) *Scl))
+  
+  # Symbols have their value drawn
+  *pos-cursor)
+

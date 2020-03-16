@@ -19,10 +19,7 @@
        B
        Verts)
 
-  (super Data A B Verts)
-  
-  (=: lay NIL)
-  (=: len 1))
+  (super Data A B Verts))
 
 
 (dm cons> (B) (=: b B))
