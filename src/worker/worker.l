@@ -226,12 +226,8 @@
 (de gen-def-parts ()
   # Draw default global symbols/lists
 
-  # Sym = List
-  # Particle for sym/list
-  # Where to store this particle?
-  # -> Stored in particles
-  # But how to access it?
-  # -> Sym
+  # Root particles are stored in *particles
+  # *particles itself is not drawn
 
   (let ((X Y) *pos-cursor)
 
@@ -239,9 +235,10 @@
           (def '*part-cmds
                (gen-part '*part-cmds
                          0.0
-                         *pos-cursor
-                         gen-pair-x-h))
+                         *pos-cursor))
           T)
+    (set-cur-x X)
+    (lay-part *part-cmds *pos-cursor (get *part-cmds 'lay))
 
     (nl-cursor 2.0)
     (set-cur-x X)
@@ -252,13 +249,12 @@
           (gen-part 'p0
                     0.0
                     *pos-cursor
-                    gen-pair-x-h
                     NIL T))
     (idx '*particles
          (def 'p0
               (car *part-ptrs))
          T)
-
+    
     (nl-cursor)
     (set-cur-x X)
 
@@ -267,9 +263,10 @@
           (def '*part-main
                 (gen-part '*part-main
                           0.0
-                          *pos-cursor
-                          gen-pair-x-h))
+                          *pos-cursor))
           T)
+    (set-cur-x X)
+    (lay-part *part-main *pos-cursor (get *part-main 'lay))
 
     # Connect pointer to main
     (with p0 (=: b *part-main))
@@ -299,8 +296,7 @@
                             "I.C.2"
                             "I.C.3")))))
                       0.0
-                      *pos-cursor
-                      gen-pair-x-h)
+                      *pos-cursor)
     
     (nl-cursor 2.0)
     (set-cur-x X)
@@ -349,8 +345,7 @@
   (when NIL
     (setq *part-ptr (gen-part (cons T T)
                               0.0
-                              (list 0.0 0.0 0.0)
-                              gen-pair-x-h)))
+                              (list 0.0 0.0 0.0))))
 
   (let ((X Y) *pos-cursor)
 

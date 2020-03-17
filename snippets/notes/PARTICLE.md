@@ -245,17 +245,18 @@ Store DAGs as binary trees?
                       (9 1 0 1 1)
     * Interpret lay structure [Later]
   
+  * Separate layout from generating particles [Done]
+    
+  * Integrate layout with generating particles (Cmd)  
+  
   * Optimize ipc to batch messages, flush etc.
   
   * Integrate pointer/list manx + commands
   
-  * Separate layout from generating particles
-    
-  * Integrate layout with generating particles (Cmd)
-
   * Circular lists -> dot instead of ]
 
   * Move to external symbols
+    * Move verts.bin -> db file
     * Can test multiple workers pull/push database
   
   * Pointer

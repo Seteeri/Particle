@@ -1,15 +1,15 @@
-(de lay-part (Any Base Pre-Lay)
+(de lay-part (Any Base)
   
   # (= (cons T) (list T)) -> T
   
   (if (= (type Any) '(+Pair))
   
-      (lay-pair Any Base Pre-Lay)
+      (lay-pair Any Base)
       
-      (lay-atom Any Base Pre-Lay)))
+      (lay-atom Any Base)))
 
 
-(de lay-pair (Any Base Pre-Lay)
+(de lay-pair (Any Base)
 
   # (-Y 1)
   # 1st arg is pos CAR
@@ -28,12 +28,12 @@
 
   (if (= (get Any 'lay) 'x)
     
-    (lay-pair-x Any Base Pre-Lay)
+    (lay-pair-x Any Base)
     
-    (lay-pair-y Any Base Pre-Lay)))
+    (lay-pair-y Any Base)))
     
 
-(de lay-pair-x (Any Base Pre-Lay)
+(de lay-pair-x (Any Base)
   #{
     Layout CAR=Y, CDR=X relative to Any
     
@@ -58,7 +58,7 @@
 
   (with Any
   
-    (println (get Any 'data))
+    #(println (get Any 'data))
   
     (let ((X-Car Y-Car) (lay-pair-x-car Any
                                         Base
@@ -93,7 +93,7 @@
 
     (mov-cursor (last-vert> Car))
     
-    (prin "  ") (println 'x 'a (= (get Car 'lay) Lay))
+    #(prin "  ") (println 'x 'a (= (get Car 'lay) Lay))
     
     # Use X as baseline since CARs are drawn Y
     
@@ -120,7 +120,7 @@
       
       (mov-cursor (last-vert> Cdr))
       
-      (prin "  ") (println 'x 'b (= (get Cdr 'lay) Lay))
+      #(prin "  ") (println 'x 'b (= (get Cdr 'lay) Lay))
                 
       (lay-part Cdr
                 Cur
@@ -137,7 +137,7 @@
   
   (with Any
   
-    (println (get Any 'data))
+    #(println (get Any 'data))
     
     # If previous pair was x layout, must keep y (not modify y)
   
@@ -177,7 +177,7 @@
       (mov> Car *pos-cursor)
       (mov-cursor (last-vert> Car))
     
-      (prin "  ") (println 'y 'a (= (get Car 'lay) Lay))
+      #(prin "  ") (println 'y 'a (= (get Car 'lay) Lay))
       
       (lay-part Car
                 Cur
@@ -197,21 +197,43 @@
     (mov> Cdr *pos-cursor)
     (mov-cursor (last-vert> Cdr))
       
-    (prin "  ") (println 'y 'b (= (get Cdr 'lay) Lay))
+    #(prin "  ") (println 'y 'b (= (get Cdr 'lay) Lay))
             
     # Use X as baseline since CDRs are drawn Y
     (lay-part Cdr
               (list X (get *pos-cursor 2))
               Lay)))
 
-(de lay-atom (Any Base Pre-Lay)
+
+(de lay-atom (Any Base)
   # Recurse as needed for sym, num, etc.
   
-  (println "lay-atom"
-           (get Any 'data)
-           (format (get *pos-cursor 1) *Scl)
-           (format (get *pos-cursor 2) *Scl))
+  #(println "lay-atom"
+  #         (get Any 'data)
+  #         (format (get *pos-cursor 1) *Scl)
+  #         (format (get *pos-cursor 2) *Scl))
+  
+  (when (and (= (type Any) '(+Sym))
+             (get Any 'b)) 
+    (lay-sym Any Base))
   
   # Symbols have their value drawn
   *pos-cursor)
 
+
+(de lay-sym (Any Base)
+
+  (mov> Any *pos-cursor)
+
+  (with Any
+  
+    # Then check where to put CDR of symbol
+    (if (= (: lay) 'x)
+      
+      # Right
+      (mov-part-aft> (: b) Any)
+      
+      # Below
+      (mov-part-bel> (: b) Any))
+        
+    (mov-cursor (last-vert> (: b)))))

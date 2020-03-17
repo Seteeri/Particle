@@ -310,7 +310,6 @@
         Part (gen-part Lst-Any
                        0.0
                        *pos-cursor
-                       gen-pair-x-h
                        NIL T))
 
     # Set cdr of cur-part to new-part
@@ -358,8 +357,7 @@
   (let (Lst-Any (list (list Any))
         Part (gen-part Lst-Any
                        0.0
-                       *pos-cursor
-                       gen-pair-x-h))
+                       *pos-cursor))
 
     (with Pre
       (=: b Part)
@@ -374,7 +372,7 @@
 ###############################
 
 
-(de gen-part (Any Depth Root Layout Car Cdr)
+(de gen-part (Any Depth Root Car Cdr)
   # TODO: Handle circular lists...use another dot at the end
 
   (if (pair Any)
@@ -383,14 +381,14 @@
       
           # Handle specific forms here
           (cond (T
-                 (Layout Any Depth Root Layout Car Cdr)))
+                 (gen-pair Any Depth Root Car Cdr)))
                  
-          (Layout Any Depth Root Layout Car Cdr))
+          (gen-pair Any Depth Root Car Cdr))
       
-      (gen-atom Any Depth Root Layout T Car Cdr)))
+      (gen-atom Any Depth Root T Car Cdr)))
 
 
-(de gen-atom (Any Depth Root Layout Adv Car Cdr)
+(de gen-atom (Any Depth Root Adv Car Cdr)
 
   # Pass flag to draw sym val
   
@@ -399,12 +397,9 @@
 
   # Must do after so drawn after
   
-  (let (V (draw-atom Any
-                     (get-color-type Any)
-                     Adv)
-        B (when (and (not Cdr)
+  (let (B (when (and (not Cdr)
                      (sym-int? Any))
-            (gen-sym-int Any Depth Root Layout Car Cdr)))
+            (gen-sym-int Any Depth Root Car Cdr)))
             
     (new (if (num? Any)
              '(+Num)
@@ -414,17 +409,18 @@
          Any
          NIL
          B
-         V)))
+         (draw-atom Any
+                     (get-color-type Any)
+                     Adv))))
 
 
-(de gen-sym-int (Any Depth Root Layout Car Cdr)
+(de gen-sym-int (Any Depth Root Car Cdr)
   # Opt: Ignore NIL?
-    
-  (adv-cursor)
-  (gen-part (val Any) Depth Root Layout Car Cdr))
+
+  (gen-part (val Any) Depth Root Car Cdr))
 
 
-(de gen-pair-x-h (Any Depth Root Layout Ignore-Car Ignore-Cdr)
+(de gen-pair (Any Depth Root Ignore-Car Ignore-Cdr)
   #{
     Root is baseline of cons
     so for a list Root would be coordinates of first cons
@@ -439,23 +435,11 @@
 
     (let ((Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
           X-Cdr                 (get *pos-cursor 1)
-          
-          Pa-Ar (unless Ignore-Car
-                  # Move below, align left of cons
-                  # For ((x)), create extra newline or draw something...
-                  (when (pair Ar)
-                    (nl-cursor 2.0))
-                  (nl-cursor) (set-cur-x X)
-                  (gen-part Ar Depth Root gen-pair-x-h))
-
-          Pa-Dr (unless Ignore-Cdr
-                  (set-cur-x X-Cdr)
-                  (adv-cursor) (set-cur-y Y)
-                  (gen-part Dr Depth Root gen-pair-x-h))
           Part (new '(+Pair)
                      Any
-                     Pa-Ar Pa-Dr
-                     (append Vert-Ar Dot Vert-Dr)))
+                    (unless Ignore-Car (gen-part Ar Depth Root))
+                    (unless Ignore-Cdr (gen-part Dr Depth Root))
+                    (append Vert-Ar Dot Vert-Dr)))
       #{
         Skip the list containing the list so:
           a
@@ -511,102 +495,3 @@
       
       (when (= A-Typ '(+Pair)) (lay-num-ds (: a) Lay))
       (when (= B-Typ '(+Pair)) (lay-num-ds (: b) Lay)))))
-
-
-################################################
-
-
-(de gen-pair-y-h (Any Depth Root Layout Car Cdr)
-
-  # TODO:
-  # Offset cells properly
-
-  (let (Ar (car Any)
-        Dr (cdr Any)
-        Ptr (>> -4 (adr Any))
-        (Ptr-Ar Ptr-Dr) (struct Ptr '(N . 2))
-        (X Y) *pos-cursor)
-
-    (let ((Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
-          Dummy (adv-cursor)
-          Pa-Ar (when (and (not (num? Ar))
-                           (not Car))
-                  (gen-part Ar Depth Root gen-pair-y-h))
-          Pa-Dr (when (and (not (num? Dr))
-                           (not Cdr))
-                  # For cons pair, use colored dot
-                  # Position under like a list
-                  (set-cur-x X)
-                  (nl-cursor)
-                  (gen-part Dr Depth Root gen-pair-y-h)))
-      
-      (new '(+Pair)
-           Any
-           Pa-Ar Pa-Dr
-           (append Vert-Ar Dot Vert-Dr)))))
-
-
-##########
-# let form
-
-
-(de gen-let (List Depth Root Layout)
-  
-  # Must determine width of local vars for prg
-  
-  (Layout List Depth *pos-cursor Layout NIL T)
-  
-  (adv-cursor)
-
-  # Manually link above to below
-
-  (gen-let-list (if (lst? (get List 2))
-                    (nth List 2)
-                    (cdr List))
-                Depth
-                Root
-                Layout)
-  
-  (set-cur-x (car Root))
-  (nl-cursor)
-  
-  # Manually link above to below
-  
-  (gen-pair-y-h (if (lst? (get List 2))
-                    (nth List 3)
-                    (nth List 4))
-                Depth
-                *pos-cursor
-                gen-pair-y-h))
-
-
-(de gen-let-list (List Depth Root Layout)
-
-  # Generate two at a time
-  # Pass option to limit gen-any search depth?
-
-  (Layout List Depth *pos-cursor Layout T T)
-  
-  (let ((X Y) *pos-cursor
-        R (car List))
-
-    (while R
-
-      (setq A (car R)
-            B (cadr R))
-
-      (let D (+ Depth 1.0)
-        (Layout R Depth *pos-cursor Layout NIL T)
-        (adv-cursor)
-        (Layout (cdr R) Depth *pos-cursor Layout NIL (when (cddr R) T)))
-
-      (when (setq R (cddr R))
-        (nl-cursor)
-        (set-cur-x X)))))
-
-
-(de gen-let-var (List Depth Root Layout)
-
-  (Layout List Depth *pos-cursor Layout NIL T)
-  (adv-cursor)
-  (Layout (cdr List) Depth *pos-cursor Layout NIL T))
