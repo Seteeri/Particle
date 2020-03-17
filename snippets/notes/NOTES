@@ -3309,3 +3309,13 @@ such as pos so that we can tell if it has been modified
 
 PicoLisp has a spatial structure but only works in +X and +Y...
 We can create for db files, depending on the quadrant the object lies in
+
+===========
+
+How To Do:
+
+. This is a sentence
+  . This is a sub sentence.
+  . Another sentence
+  
+  

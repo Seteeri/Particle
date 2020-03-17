@@ -76,9 +76,10 @@
                ((sym? Any)  *col-violet)))))
 
 
+(def '*char-dot (char 183))
 (de draw-dot (Adv)
 
-  (let Dot (draw-glyph (char 183) *col-base-0)
+  (let Dot (draw-glyph *char-dot *col-base-0)
     
     (cmd-upd-vert *ipc Dot)
     (when Adv (adv-cursor))

@@ -243,11 +243,21 @@ Store DAGs as binary trees?
         (1 2 3 . 4
                (5 6 7 . 8)
                       (9 1 0 1 1)
-    * Interpret lay structure
-    * Separate lay from gen
+    * Interpret lay structure [Later]
+  
+  * Optimize ipc to batch messages, flush etc.
+  
+  * Integrate pointer/list manx + commands
+  
+  * Separate layout from generating particles
+    
+  * Integrate layout with generating particles (Cmd)
 
   * Circular lists -> dot instead of ]
 
+  * Move to external symbols
+    * Can test multiple workers pull/push database
+  
   * Pointer
     * Instead of calling p#, use the fn+#
       * Default is append-0
@@ -277,21 +287,21 @@ Store DAGs as binary trees?
     4. Command/History
       
   * Supporting Structures
-    * Implement spatial index
+    * Implement AABB
     * Implement treemap as alternative to graph?
       * Sunburst, conetree, etc.
       * See 'A Visual Survey of Tree Visualization'
-
-  * Auto-pack strings
-    * Upon char, make string, until non-char
-      * Do NIL to create new list
-    * When user marks part of string, break it down by spaces into words/chars
-    * Mark word/chars with tags
   
   * Use special printing for control characters like enter etc.
     * newline ("^J"), return ("^M") or TAB ("^I")
 
   GET TO HERE =------------------------------------------------------------
+
+  * Auto-pack strings [Later]
+    * Upon char, make string, until non-char
+      * Do NIL to create new list
+    * When user marks part of string, break it down by spaces into words/chars
+    * Mark word/chars with tags
 
   * Lists
     * Differentiate colors for tagged and untagged data?

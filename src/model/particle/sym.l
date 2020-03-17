@@ -20,3 +20,13 @@
        Verts)
 
   (super Data A B Verts))  
+
+
+(class +Str +Particle)
+
+(dm T (Data
+       A
+       B
+       Verts)
+
+  (super Data A B Verts))

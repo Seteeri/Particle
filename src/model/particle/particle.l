@@ -406,7 +406,11 @@
                      (sym-int? Any))
             (gen-sym-int Any Depth Root Layout Car Cdr)))
             
-    (new (if (num? Any) '(+Num) '(+Sym))
+    (new (if (num? Any)
+             '(+Num)
+             (if (str? Any)
+                 '(+Str)
+                 '(+Sym)))
          Any
          NIL
          B
@@ -459,13 +463,35 @@
           c
       }#
       (when (num? Ar)
-        (lay-num-ds Part))
+        (lay-num-ds Part 'x))
+
+      #(when (str? Ar)
+      #  (lay-str-ds Part 'x))
       
       Part)))
 
-(de lay-num-ds (Part)
-  # Handle str similarly
-  #
+
+(de lay-str-ds (Part Lay)
+  # If nested lists, must keep checking until non-pair/list
+  
+  (with Part
+    
+    (let (P-Typ (type Part)
+          A-Typ (type (: a))
+          B-Typ (type (: b)))
+  
+      (when (and (= P-Typ '(+Pair))
+                 (or (= A-Typ '(+Pair))
+                     (= A-Typ '(+Str))))
+        
+        (=: lay Lay)
+        (put (: a) 'lay Lay))
+      
+      (when (= A-Typ '(+Pair)) (lay-num-ds (: a) Lay))
+      (when (= B-Typ '(+Pair)) (lay-num-ds (: b) Lay)))))
+
+
+(de lay-num-ds (Part Lay)
   # If nested lists, must keep checking until non-pair/list
   #
   # Move to caller fn or gen-part...
@@ -478,14 +504,18 @@
   
       (when (and (= P-Typ '(+Pair))
                  (or (= A-Typ '(+Pair))
-                     (= A-Typ'(+Num))))
+                     (= A-Typ '(+Num))))
         
-        (=: lay 'x)
-        (put (: a) 'lay 'x))
+        (=: lay Lay)
+        (put (: a) 'lay Lay))
       
-      (when (= A-Typ '(+Pair)) (lay-num-ds (: a)))
-      (when (= B-Typ '(+Pair)) (lay-num-ds (: b))))))
-           
+      (when (= A-Typ '(+Pair)) (lay-num-ds (: a) Lay))
+      (when (= B-Typ '(+Pair)) (lay-num-ds (: b) Lay)))))
+
+
+################################################
+
+
 (de gen-pair-y-h (Any Depth Root Layout Car Cdr)
 
   # TODO:
