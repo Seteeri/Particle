@@ -4,15 +4,10 @@
 (de cmd-point-ptr-pre (Keysym)
   # Move to prev item in the list
   (println "Move to prev item")
-  
   # Get previous item from pointer
   
-  
-  # (when item
-  #   ...
-  
-  # Move pointer to cursor
-  #(mov> (car *part-ptrs) *pos-cursor)
+  # Either use doubly-linked list or
+  # spatial index
   
   T)
 
@@ -20,8 +15,15 @@
 (de cmd-point-ptr-nxt (Keysym)
   # Move to next item in the list
   (println "Move to next item")
-  T)
-
+  
+  (let (Part-Ptr (val> p0)
+        Cdr      (get Part-Ptr 'b))
+    
+    (when Cdr
+      
+      (put p0 'b Cdr)
+      (mov-part-abv> p0 Cdr (cons T)))))
+  
 
 (de cmd-point-ptr-out (Keysym)
   # Move to outer list

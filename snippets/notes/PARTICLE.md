@@ -234,25 +234,20 @@ Store DAGs as binary trees?
       * Lay mixed [Done]
         * Y to X [Done]
         * X to Y [Done]
-    * Test mixed layout [WIP]
-      * Test modifying middle and reflowing subsequent cdr
-      of any parents
-        * Are doubly-linked lists required?
-        Without this, will have to search to find the list
-        otherwise, can traverse backwards
-        (1 2 3 . 4
-               (5 6 7 . 8)
-                      (9 1 0 1 1)
     * Interpret lay structure [Later]
   
   * Separate layout from generating particles [Done]
     
   * Integrate layout with generating particles (Cmd)  
-  
+    * Check ptr layout
+    * Fix cmd-insert layout
+    * Move pointer semantically fwd and back
+      * Doubly-linked lists required?
+    * Insert anywhere in list
+      * Requires relayout of subsequent items
+
   * Optimize ipc to batch messages, flush etc.
-  
-  * Integrate pointer/list manx + commands
-  
+    
   * Circular lists -> dot instead of ]
 
   * Move to external symbols
@@ -297,6 +292,20 @@ Store DAGs as binary trees?
     * newline ("^J"), return ("^M") or TAB ("^I")
 
   GET TO HERE =------------------------------------------------------------
+
+  * Design different views/presentations
+    * Use familiar setups from Office and other note-taking apps etc.
+    * Ex: Tags
+      * For class, use tag property = list of tags
+    * Ex: Outline
+      * Nested lists of objects
+      * or create class, properties defined as a hierarchy or nested lists
+        * (=: l1 (I))
+        * (=: l2 (1))
+        * (=: l3 (A))
+        * (=: l4 (i))
+    * Ex: Table
+      * Create class, user defines properties
 
   * Auto-pack strings [Later]
     * Upon char, make string, until non-char

@@ -20,11 +20,18 @@
 
     (let (Part-Ptr (val> p0)
           Cdr (get Part-Ptr 'b)
+          Blah (mov-cursor (last-vert> Cdr))
+          Pos *pos-cursor
           Part (append-any
                   (cond ((= Keysym ksd~space) " ")
                         ((= Keysym ksd~Return) (char 10))
                         (T (char Keysym)))))
-                        
+      
+      (put Part 'lay 'x)
+      (put (get Part 'a) 'lay 'x)
+      (put (get Part 'b) 'lay 'x)
+      (lay-part Part Pos)
+
       # Move new part to cdr-part
       (mov-part> Part Cdr (cons T))
       

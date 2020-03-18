@@ -238,7 +238,9 @@
                          *pos-cursor))
           T)
     (set-cur-x X)
-    (lay-part *part-cmds *pos-cursor (get *part-cmds 'lay))
+    (put *part-cmds 'lay 'x)
+    (put (get *part-cmds 'b) 'lay 'x)
+    (lay-part *part-cmds *pos-cursor)
 
     (nl-cursor 2.0)
     (set-cur-x X)
@@ -266,7 +268,9 @@
                           *pos-cursor))
           T)
     (set-cur-x X)
-    (lay-part *part-main *pos-cursor (get *part-main 'lay))
+    (put *part-main 'lay 'x)
+    (put (get *part-main 'b) 'lay 'x)
+    (lay-part *part-main *pos-cursor)
 
     # Connect pointer to main
     (with p0 (=: b *part-main))
@@ -274,33 +278,34 @@
   (nl-cursor)
   (set-cur-x X)
   
+  (when NIL
   
-  (nl-cursor)
-  (set-cur-x X)
-  (let Part (gen-part '(((1 2 3 4)
-                         (5 6 7 8)
-                         (9 10 11 12)
-                         (13 14 15 16))
-                        (("I" "II" "III" "IV" "V")
-                         ("A" "B" "C" "D" "E")
-                         ("1" "2" "3" "4" "5")
-                         (6 7 8 9 10))
-                        ("I"
-                         ("I.A"
-                          ("I.B"
-                           ("I.B.1"
-                            "I.B.2"
-                            "I.B.3"))
-                          ("I.C"
-                           ("I.C.1"
-                            "I.C.2"
-                            "I.C.3")))))
-                      0.0
-                      *pos-cursor)
-    
-    (nl-cursor 2.0)
+    (nl-cursor)
     (set-cur-x X)
-    (lay-part Part *pos-cursor (get Part 'lay)))
+    (let Part (gen-part '(((1 2 3 4)
+                           (5 6 7 8)
+                           (9 10 11 12)
+                           (13 14 15 16))
+                          (("I" "II" "III" "IV" "V")
+                           ("A" "B" "C" "D" "E")
+                           ("1" "2" "3" "4" "5")
+                           (6 7 8 9 10))
+                          ("I"
+                           ("I.A"
+                            ("I.B"
+                             ("I.B.1"
+                              "I.B.2"
+                              "I.B.3"))
+                            ("I.C"
+                             ("I.C.1"
+                              "I.C.2"
+                              "I.C.3")))))
+                        0.0
+                        *pos-cursor)
+      
+      (nl-cursor 2.0)
+      (set-cur-x X)
+      (lay-part Part *pos-cursor (get Part 'lay))))
   
   T))
 

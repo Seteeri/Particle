@@ -54,15 +54,15 @@ These principles are built upon the underlying programming language, [PicoLisp](
 
 ## Features (Planned)
 
-* Native/local application first - no cloud dependency
+* Local data first - no cloud dependency
 * Distributable - synchronize across multiple devices
-* Search based on tags
-* Link/store any data including images, videos, audio, etc.
+* Database backend (object persistence) - scalability and robustness
+* Tag-based searching
+* Import/link any data including images, videos, audio, etc.
 * Export to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
-* Import data from browsing through web clipper
-* Database backend (object persistence) allows for scalability and robustness
-* Visualize data in different forms while maintaining interaction
-  * Extract patterns as ideas for new projects
+* Visualize data in different forms while maintaining interaction - extract patterns as ideas for new projects
+* Encryption - text and block-based
+* Web clipper
 
 Possible:
 
