@@ -257,15 +257,14 @@
   
 
 (dm col> (Col)
-  (for Vert (: verts)
-    (with Vert
-      (let ((R G B) Col)
-        (=: rgba (list R G B 1.0
-                       R G B 1.0
-                       R G B 1.0
-                       R G B 1.0))))
-    (upd-mdl-mtrx> Vert)
-    (cmd-upd-vert *ipc Vert)))
+  (let ((R G B) Col)
+    (for Vert (: verts)
+      (put Vert 'rgba (list R G B 1.0
+                            R G B 1.0
+                            R G B 1.0
+                            R G B 1.0))
+      (upd-mdl-mtrx> Vert)
+      (cmd-upd-vert *ipc Vert))))
 
 
 (dm last-vert-pos> (Cnt)
