@@ -62,9 +62,17 @@
         
         (put p0 'b (get Part 'a)))
       
+      
       (let Part (con-list Data)
-    
-        (mov-cur-part Ref 'end) (adv-cur 2.0)
+        
+        # Move to end of data
+        (mov-cur-part (if (get Ref 'a)
+                          (get Ref 'a)
+                          Ref)
+                      'end)
+        (nl-cur -1.0)
+        (adv-cur 2.0)
+        
         (lay-part Part *cur)
         
         # Pointer always above regardless of layout
@@ -230,6 +238,29 @@
       (mov-part-abv> p0 Part (cons T)))))
 
 
+
+(de cmd-pack (Keysym)
+
+  (prinl-info "cmd-pack")
+
+  # Until doubly-linked list,
+  # Build up list
+
+  (let (Ref (val> p0)
+        Cdr (get Ref 'b)
+        Dat (pack (get *part-main 'data))
+        Part (con-list Dat))
+    
+    (mov-cur-part Ref 'end) (adv-cur 2.0)
+    (lay-part Part *cur)
+    
+    # Pointer always above regardless of layout
+    (put p0 'b Part)
+    (mov-part-abv> p0 Part (cons T)))
+    
+  (adv-cur 2.0))
+
+
 #####################
 
 
@@ -253,6 +284,23 @@
       # Set new ptr and move it above
       (put p0 'b Part)
       (mov-part-abv> p0 Part (cons T)))))
+
+
+(de cmd-eval ()
+
+  (prinl-info "cmd-eval")
+
+  # Eval last item - must be data
+  # Else:
+  # Str (pack Data)
+  # Any (any Str)
+
+  (let (Last (get (last-ptr) 'data)
+        Any (eval Last))
+
+    (conc-ptr (gen-part Any)))
+
+  (adv-cur))
 
 
 (de cmd-intern (Keysym)
@@ -280,47 +328,6 @@
           # Set new ptr and move it above
           (put p0 'b Part)
           (mov-part-abv> p0 Part (cons T)))))))
-
-
-(de cmd-pack (Keysym)
-
-  (prinl-info "cmd-pack")
-
-  # Convert to str and push
-
-  # This is special as it builds back until non-str/num
-  # Normally, uses last item
-
-  (let Str (pack (get (build-pack) 2))
-
-    # Draw data, create particle, add to timeline
-    (conc-ptr
-          (new '(+Particle)
-               Str
-               Str
-               NIL
-               (draw-str Str (get-color-type Str) T)))
-
-    # Set next as needed
-
-    (adv-cur)))
-
-
-(de cmd-eval ()
-
-  (prinl-info "cmd-eval")
-
-  # Eval last item - must be data
-  # Else:
-  # Str (pack Data)
-  # Any (any Str)
-
-  (let (Last (get (last-ptr) 'data)
-        Any (eval Last))
-
-    (conc-ptr (gen-part Any)))
-
-  (adv-cur))
 
 
 (de cmd-any (Keysym)
