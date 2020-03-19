@@ -336,7 +336,7 @@
     Part))
 
 
-(de repl-part (Any Pre)
+(de repl-list (Any Pre)
   #{
         p0
   [] -> [] -> NIL
@@ -353,6 +353,8 @@
   }#
 
   # Replace NIL with List
+    
+  # Handle case when there is something after ref
     
   # Delete particle first
   (del> (val> p0) T T)

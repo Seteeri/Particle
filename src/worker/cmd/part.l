@@ -11,24 +11,65 @@
     If pointing to a new list, layout is based on the type of list,
     which in this case, is strings, so x layout
     
-    (cond ((= Keysym ksd~Return) T)
-          ((= Keysym ksd~Tab)    T)
-          (T T)))
+    ksd~Return
+    ksd~Tab
   }#
   
   (let (Ref (val> p0)
         Cdr (get Ref 'b)
-        Part (con-list
-              (cond ((= Keysym ksd~space) " ")
-                    ((= Keysym ksd~Return) (char 10))
-                    (T (char Keysym)))))
-          
-    (mov-cur-part Ref 'end) (adv-cur 2.0)
-    (lay-part Part *cur)
+        Dat-Ref (car (get Ref 'data))
+        Data (cond ((= Keysym ksd~space) " ")
+                   ((= Keysym ksd~Return) (char 10))
+                   (T (char Keysym))))
+
+    (if (= Dat-Ref NIL)
+      
+      #{
+            p0
+      [] -> [] -> NIL
+      a     NIL
+
+            p0
+      []  
+      
+            p0
+      [] -> [] -> NIL
+      a     |
+            b        
+            
+      # Replace entire (NIL) with ("")
+      }#
+      
+      (let (Last (let Last (car *part-lsts)
+                    (loop
+                      (NIL (get (get (get Last 'b) 'b) 'b))
+                      (setq Last (get Last 'b)))
+                    Last)
+            Part (repl-list Data Last))
+         
+        # Mov cursor below
+        (mov-cur-part Last 'end) (adv-cur 2.0)
+         
+        (put Part 'lay 'x)
+        #(put (get Part 'b) 'lay 'x)
+        (lay-part Part *cur)
+        
+        # Move inner list one space further down
+        (mov-cur-part Last 'end) (adv-cur 2.0)
+        (nl-cur 3.0)
+        (put (get Part 'a) 'lay 'x)
+        (lay-part (get Part 'a) *cur)
+        
+        (put p0 'b (get Part 'a)))
+      
+      (let Part (con-list Data)
     
-    # Pointer always above regardless of layout
-    (put p0 'b Part)
-    (mov-part-abv> p0 Part (cons T))))
+        (mov-cur-part Ref 'end) (adv-cur 2.0)
+        (lay-part Part *cur)
+        
+        # Pointer always above regardless of layout
+        (put p0 'b Part)
+        (mov-part-abv> p0 Part (cons T))))))
 
 
 (de cmd-make-nil (Keysym)
@@ -68,6 +109,7 @@
       (push '*part-lsts *part-main)
       
       # DEPENDS ON LAYOUT!
+      # Default is to push strings
       
       # Move cursor/pointer underneath list
       (nl-cur 3.0) (mov> p0 *cur)

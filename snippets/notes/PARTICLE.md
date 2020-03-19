@@ -240,7 +240,12 @@ Store DAGs as binary trees?
     
   * Integrate layout with generating particles (cmds)
     * Refactor cmds
+      * How to handle enter/exit list?
+        * Lists of lists are Y
+        * Nums and Strs are X
+        * Other syms...default to Y also, but should be X also
     * Remove gen-part pos argument
+    * Cur/part relative position functions
     * Move pointer semantically fwd and back
       * Make particles doubly-linked
       * Doubly-linked lists required?

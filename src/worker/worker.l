@@ -278,7 +278,7 @@
   (nl-cur)
   (set-cur-x X)
   
-  (when T
+  (when NIL
   
     (nl-cur)
     (set-cur-x X)
@@ -300,6 +300,19 @@
                              ("I.C.1"
                               "I.C.2"
                               "I.C.3")))))
+                        0.0
+                        *cur)
+      
+      (nl-cur 2.0)
+      (set-cur-x X)
+      (lay-part Part *cur (get Part 'lay))))
+
+
+  (when T
+  
+    (nl-cur)
+    (set-cur-x X)
+    (let Part (gen-part '("a" "b" ("c" "d"))
                         0.0
                         *cur)
       
