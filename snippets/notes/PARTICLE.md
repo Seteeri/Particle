@@ -244,7 +244,7 @@ Store DAGs as binary trees?
         * Lists of lists are Y
         * Nums and Strs are X
         * Other syms...default to Y also, but should be X also
-    * Remove gen-part pos argument
+    * Remove gen-part pos argument [Done]
     * Cur/part relative position functions
     * Move pointer semantically fwd and back
       * Make particles doubly-linked

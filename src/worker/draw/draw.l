@@ -144,7 +144,8 @@
 
   
 (de draw-str (Str Col Adv)
-  (draw-repr (chop (pack "\"" Str "\"")) Col Adv))
+  #(draw-repr (chop (pack "\"" Str "\"")) Col Adv))
+  (draw-repr (chop Str) Col Adv))
 
   
 (de draw-num (Num Col Adv)
