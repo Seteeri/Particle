@@ -79,7 +79,7 @@
   (=: dat (date))
   (=: tim (time))
   
-  (=: lay 'y))
+  (=: lay 'x))
 
 
 (dm cons> (B) (=: b B))
@@ -201,7 +201,7 @@
   
   (mov-cur-vert (car (get B 'verts)) T)
   (nl-cur)
-
+  
   (let Pos (get-origin> This)
     (mov-off> This
               (list (- (get *cur 1) (get Pos 1))
@@ -255,7 +255,7 @@
           (X Y) (get-origin> (get *metrics (get Vert 'chr))
                              Pos
                              *sca-vert))
-                             
+
       (list X Y (get Pos 3)))))
   
 

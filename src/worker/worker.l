@@ -284,22 +284,23 @@
                            ("1" "2" "3" "4" "5")
                            (6 7 8 9 10))
                           ("I"
-                           ("I.A"
+                            ("I.A"
+                              NIL)  # Need not put NIL
                             ("I.B"
-                             ("I.B.1"
-                              "I.B.2"
-                              "I.B.3"))
+                              ("I.B.1"
+                               "I.B.2"
+                               "I.B.3"))
                             ("I.C"
-                             ("I.C.1"
-                              "I.C.2"
-                              "I.C.3"))))))
+                              ("I.C.1"
+                               "I.C.2"
+                               "I.C.3")))))
       
       (nl-cur 2.0)
       (set-cur-x X)
       (lay-part Part *cur (get Part 'lay))))
 
 
-  (when T
+  (when NIL
   
     (nl-cur)
     (set-cur-x X)

@@ -3317,3 +3317,35 @@ How To Link Symbols?
 Create Link object, which contains the external/internal symbol
 
 WHAT IS OUR MVP
+
+===============
+
+How To Create A Tree Structure
+
+  ("I"
+    ("I.A")
+    ("I.B"
+      ("I.B.1"
+       "I.B.2"
+       "I.B.3"))
+    ("I.C"
+      ("I.C.1"
+       "I.C.2"
+       "I.C.3")))
+
+I .   .              .
+  IA  IB .           IC .
+         IB1 IB2 IB3    IC1 IC2 IC3
+
+* Add "I"
+* Add NIL
+* Enter list
+* Add "I.A"
+* Exit list
+* Add NIL
+* Enter list
+...
+* Exit list
+* Add NIL
+* Enter list
+* Exit list

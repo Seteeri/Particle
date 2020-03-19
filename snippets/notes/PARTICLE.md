@@ -239,12 +239,14 @@ Store DAGs as binary trees?
   * Separate layout from generating particles [Done]
     
   * Integrate layout with generating particles (cmds)
-    * Refactor cmds
-      * How to handle enter/exit list?
-        * Lists of lists are Y
-        * Nums and Strs are X
-        * Other syms...default to Y also, but should be X also
+    * Refactor cmds [WIP]
+      * Lists of lists are Y
+      * Nums and Strs are X
+      * Other syms...default to Y also, but should be X also
+      * Refactor list UI
+    * Add cmds to swap layouts X/Y
     * Remove gen-part pos argument [Done]
+    * Handle missing bounds in metrics for space and ctrl chars
     * Cur/part relative position functions
     * Move pointer semantically fwd and back
       * Make particles doubly-linked

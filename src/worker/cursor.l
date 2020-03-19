@@ -37,6 +37,5 @@
 (de set-cur-y (Y)
   (setq *cur (place 2 *cur Y)))
 
-
 (de set-cur-pos (Pos)
   (setq *cur Pos))

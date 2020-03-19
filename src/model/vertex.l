@@ -47,8 +47,8 @@
 
 (dm update-glyph> (Chr)
   #{
-  translation = baseline (get-origin-from-node-pos *node-ptr-main*)
-  Create diagrams for metrics calculations so easier to understand/visualize
+    translation = baseline (get-origin-from-node-pos *node-ptr-main*)
+    Create diagrams for metrics calculations so easier to understand/visualize
   }#
   
   (=: chr (char Chr))
@@ -59,8 +59,8 @@
   (let Metrics (get *metrics (: chr))
 
     (unless Metrics
-      (prinl-info "update-glyph>" (pack "Unable to find metrics: " (: chr))))
-
+      (prinl-info "update-glyph>" (pack "Unable to find metrics: " (: chr))))      
+      
     (=: uv (get Metrics 'uv))
     (=: pos (get-pos> Metrics (: pos) *sca-vert))
     (=: sca (get-sca> Metrics *sca-vert))))

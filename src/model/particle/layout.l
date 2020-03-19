@@ -58,7 +58,7 @@
 
   (with Any
   
-    #(println (get Any 'data))
+    #(println 'lay-pair-x (get Any 'data))
   
     (let ((X-Car Y-Car) (lay-pair-x-car Any
                                         Base

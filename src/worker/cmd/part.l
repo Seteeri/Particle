@@ -16,13 +16,16 @@
   }#
   
   (let (Ref (val> p0)
-        Cdr (get Ref 'b)
         Dat-Ref (car (get Ref 'data))
         Data (cond ((= Keysym ksd~space) " ")
                    ((= Keysym ksd~Return) (char 10))
                    (T (char Keysym))))
 
-    (if (= Dat-Ref NIL)
+    # When entering empty list (NIL)
+    # ensure new particle is positioned below
+    # If not empty, particle will already be in position
+
+    (if (= (get *part-main 'data) '(NIL))
       
       #{
             p0
@@ -65,14 +68,14 @@
       
       (let Part (con-list Data)
                 
-        # Move to end of data
-        (mov-cur-part (if (get Ref 'a)
-                          (get Ref 'a)
-                          Ref)
-                      'end)
-        (nl-cur -1.0)
+        (if (get Ref 'a)
+          (prog
+            (mov-cur-part (get Ref 'a) 'end)
+            (nl-cur -1.0))
+          (prog
+            (mov-cur-part Ref 'end)))
         (adv-cur 2.0)
-        
+                
         (lay-part Part *cur)
         
         # Pointer always above regardless of layout
@@ -85,18 +88,18 @@
   (prinl-info "cmd-make-nil")
 
   (let (Ref (val> p0)
-        Cdr (get Ref 'b)
         Part (con-list))
     
-    (mov-cur-part Ref 'start)
+    (if (get Ref 'a)
+      (prog
+        (mov-cur-part (get Ref 'a) 'end)
+        (nl-cur -1.0))
+      (prog
+        (mov-cur-part Ref 'end)))
+    (adv-cur 2.0)
+    
     (lay-part Part *cur)
-        
-    # Move new part to cdr-part
-    (mov-part> Part Cdr (cons T))
-    
-    # Move cdr-part in front of Part
-    (mov-part-aft> Cdr Part (cons T))
-    
+
     # Set new ptr and move it above
     (put p0 'b Part)
     (mov-part-abv> p0 Part (cons T))))
@@ -139,7 +142,10 @@
   
     # Set ptr to last item (non-NIL)
     (put p0 'b Last-1)
-    (mov-part-abv> p0 Last-1)))
+    (mov-part-abv> p0 Last-1)
+    
+    # Move cursor
+    (mov-cur-part Last-1)))
 
 
 (de cmd-del (Dir)
@@ -209,7 +215,7 @@
         Cdr (get Ref 'b)
         Part (con-list (format (char Keysym))))
           
-    (mov-cur-part Ref 'end) (adv-cur 2.0)
+    (mov-cur-part (get Ref 'a) 'end) (nl-cur -1.0) (adv-cur 2.0)
     (lay-part Part *cur)
     
     # Pointer always above regardless of layout
@@ -230,7 +236,7 @@
           Dat (format (get (get Ref 'a) 'data))
           Part (con-list Dat))
       
-      (mov-cur-part Ref 'end) (adv-cur 2.0)
+      (mov-cur-part (get Ref 'a) 'end) (nl-cur -1.0) (adv-cur 2.0)
       (lay-part Part *cur)
       
       # Pointer always above regardless of layout
@@ -251,7 +257,7 @@
         Dat (pack (get *part-main 'data))
         Part (con-list Dat))
     
-    (mov-cur-part Ref 'end) (adv-cur 2.0)
+    (mov-cur-part (get Ref 'a) 'end) (nl-cur -1.0) (adv-cur 2.0)
     (lay-part Part *cur)
     
     # Pointer always above regardless of layout
