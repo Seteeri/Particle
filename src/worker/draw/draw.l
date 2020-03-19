@@ -173,6 +173,10 @@
 
   # (char 187) (char 166)
   
+  #{
   (list (draw-chars "[" *col-base-0 T)
         (list (draw-dot T))
         (draw-chars "]" *col-base-0 T)))
+  }#
+
+  (list (list (draw-dot T))))
