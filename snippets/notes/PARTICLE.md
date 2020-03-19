@@ -238,7 +238,9 @@ Store DAGs as binary trees?
   
   * Separate layout from generating particles [Done]
     
-  * Integrate layout with generating particles (Cmd)  
+  * Integrate layout with generating particles (cmds)
+    * Refactor cmds
+    * Remove gen-part pos argument
     * Move pointer semantically fwd and back
       * Make particles doubly-linked
       * Doubly-linked lists required?
@@ -249,8 +251,11 @@ Store DAGs as binary trees?
     * Intergate model into worker
 
   * Optimize ipc to batch messages, flush etc.
-    
-  * Circular lists -> dot instead of ]
+   
+  * Notation
+    * Circular lists -> dot instead of ] or Left-arrow
+    * For X layout: Down-arrow Dot Right-arrow
+    * For Y layout: Right-arrow Dot Down-arrow
 
   * Move to external symbols
     * Move verts.bin -> db file

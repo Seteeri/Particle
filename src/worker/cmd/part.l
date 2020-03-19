@@ -8,9 +8,12 @@
     3. Set ptr value
     4. Move ptr    
     
+    If pointing to a new list, layout is based on the type of list,
+    which in this case, is strings, so x layout
+    
     (cond ((= Keysym ksd~Return) T)
           ((= Keysym ksd~Tab)    T)
-          (T T)))    
+          (T T)))
   }#
   
   (let (Ref (val> p0)
@@ -23,6 +26,7 @@
     (mov-cur-part Ref 'end) (adv-cur 2.0)
     (lay-part Part *cur)
     
+    # Pointer always above regardless of layout
     (put p0 'b Part)
     (mov-part-abv> p0 Part (cons T))))
 
@@ -63,6 +67,8 @@
       # Push Part to history
       (push '*part-lsts *part-main)
       
+      # DEPENDS ON LAYOUT!
+      
       # Move cursor/pointer underneath list
       (nl-cur 3.0) (mov> p0 *cur)
     
@@ -91,7 +97,6 @@
   (prinl-info "cmd-del")
 
   #{
-    Procedure:
     1. Delete Val
     2. Connect Last-2/Val-1 to Last/NIL
       * Must search list
@@ -99,11 +104,7 @@
         * However, when spatially mapped, that may be faster since less
         pointer chasing
       * Cache last pointer change - only valid when moving sequentially
-        * Check cmd that produced it
-        
-    a b c NIL
-    
-    a b [] NIL
+        * Check cmd that produced it        
   }#
 
   (when (get (get *part-main 'b) 'data)
@@ -151,16 +152,17 @@
 
 
 (de cmd-make-num (Keysym)
-  (let (Cdr (get (val> p0) 'b)
+  
+  # Same as cmd-make-char
+
+  (let (Ref (val> p0)
+        Cdr (get Ref 'b)
         Part (con-list (format (char Keysym))))
+          
+    (mov-cur-part Ref 'end) (adv-cur 2.0)
+    (lay-part Part *cur)
     
-    # Move new part to cdr-part
-    (mov-part> Part Cdr (cons T))
-    
-    # Move cdr-part in front of Part
-    (mov-part-aft> Cdr Part (cons T))
-    
-    # Set new ptr and move it above
+    # Pointer always above regardless of layout
     (put p0 'b Part)
     (mov-part-abv> p0 Part (cons T))))
 

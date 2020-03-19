@@ -278,7 +278,7 @@
   (nl-cur)
   (set-cur-x X)
   
-  (when NIL
+  (when T
   
     (nl-cur)
     (set-cur-x X)
