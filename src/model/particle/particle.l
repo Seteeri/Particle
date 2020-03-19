@@ -306,7 +306,7 @@
 
 # List fn
 
-(de append-any (Any)
+(de con-list (Any)
   (let (Lst-Any (list Any)
         Val (val> p0)
         Cdr (get Val 'b)

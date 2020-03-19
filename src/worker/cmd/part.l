@@ -16,7 +16,7 @@
   (let (Ref (val> p0)
         Type (type Ref)
         Cdr (get Ref 'b)
-        Part (append-any
+        Part (con-list
               (cond ((= Keysym ksd~space) " ")
                     ((= Keysym ksd~Return) (char 10))
                     (T (char Keysym)))))
@@ -37,7 +37,7 @@
   (prinl-info "cmd-make-nil")
 
   (let (Cdr (get (val> p0) 'b)
-        Part (append-any)) # Need dif fn?
+        Part (con-list)) # Need dif fn?
     
     # Move new part to cdr-part
     (mov-part> Part Cdr (cons T))
@@ -152,7 +152,7 @@
 
 (de cmd-make-num (Keysym)
   (let (Cdr (get (val> p0) 'b)
-        Part (append-any (format (char Keysym))))
+        Part (con-list (format (char Keysym))))
     
     # Move new part to cdr-part
     (mov-part> Part Cdr (cons T))
@@ -176,7 +176,7 @@
     (let (Val (val> p0)
           Cdr (get Val 'b)
           Dat (format (get (get Val 'a) 'data))          
-          Part (append-any Dat))
+          Part (con-list Dat))
       
       # Move new part to cdr-part
       (mov-part> Part Cdr (cons T))
@@ -198,7 +198,7 @@
     (let (Val (val> p0)
           Cdr (get Val 'b)
           Dat (chop (get (get Val 'a) 'data))          
-          Part (append-any Dat))
+          Part (con-list Dat))
       
       # Move new part to cdr-part
       (mov-part> Part Cdr (cons T))
@@ -223,7 +223,7 @@
           
       (when (str? Tgt)
         
-        (let Part (append-any (intern Tgt))
+        (let Part (con-list (intern Tgt))
         
           # Val will be gen'd also - move it
         
