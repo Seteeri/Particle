@@ -14,16 +14,11 @@
   }#
   
   (let (Ref (val> p0)
-        Type (type Ref)
         Cdr (get Ref 'b)
         Part (con-list
               (cond ((= Keysym ksd~space) " ")
                     ((= Keysym ksd~Return) (char 10))
                     (T (char Keysym)))))
-
-    (put Part 'lay 'x)
-    (put (get Part 'a) 'lay 'x)
-    (put (get Part 'b) 'lay 'x)
           
     (mov-cur-part Ref 'end) (adv-cur 2.0)
     (lay-part Part *cur)
@@ -36,9 +31,13 @@
 
   (prinl-info "cmd-make-nil")
 
-  (let (Cdr (get (val> p0) 'b)
-        Part (con-list)) # Need dif fn?
+  (let (Ref (val> p0)
+        Cdr (get Ref 'b)
+        Part (con-list))
     
+    (mov-cur-part Ref 'start)
+    (lay-part Part *cur)
+        
     # Move new part to cdr-part
     (mov-part> Part Cdr (cons T))
     

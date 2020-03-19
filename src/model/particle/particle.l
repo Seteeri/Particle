@@ -315,6 +315,11 @@
                        *cur
                        NIL T))
 
+    # MOVE TO GEN-PART
+    (put Part 'lay 'x)
+    (put (get Part 'a) 'lay 'x)
+    (put (get Part 'b) 'lay 'x)
+
     # Set cdr of cur-part to new-part
     # [c] -> [n]
     (put Val 'b Part)

@@ -239,14 +239,14 @@ Store DAGs as binary trees?
   * Separate layout from generating particles [Done]
     
   * Integrate layout with generating particles (Cmd)  
-    * Check ptr layout
-    * Fix cmd-insert layout
     * Move pointer semantically fwd and back
+      * Make particles doubly-linked
       * Doubly-linked lists required?
     * Insert anywhere in list
       * Requires relayout of subsequent items
-      
-  * Intergate model into worker
+  
+  * Post
+    * Intergate model into worker
 
   * Optimize ipc to batch messages, flush etc.
     
