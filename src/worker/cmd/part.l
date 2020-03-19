@@ -79,7 +79,8 @@
   # Set main particle to old one
   (setq *part-main (pop '*part-lsts))
   
-  (let Last-1 (last-1> *part-main)
+  (let? Last-1 (last-1> *part-main)
+  
     # Set ptr to last item (non-NIL)
     (put p0 'b Last-1)
     (mov-part-abv> p0 Last-1)))
