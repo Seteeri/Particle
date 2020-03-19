@@ -106,18 +106,18 @@
 
 (de draw-glyph (Char Col)
 
-  (let Vert (pop '*verts)
+  (let (Vert (pop '*verts)
+        (R G B) Col)
 
     # Pos = baseline = X,0,0
     (with Vert
     
       (=: pos *cur)
     
-      (let ((R G B) Col)
-        (=: rgba (list R G B 1.0
-                       R G B 1.0
-                       R G B 1.0
-                       R G B 1.0))))
+      (=: rgba (list R G B 1.0
+                     R G B 1.0
+                     R G B 1.0
+                     R G B 1.0)))
 
     (update-glyph> Vert Char)
     (upd-mdl-mtrx> Vert)
