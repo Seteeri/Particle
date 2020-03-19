@@ -57,8 +57,8 @@
 
   (prinl-info "cmd-enter-list")
     
-  (let (Val (val> p0)
-        Data (car (get Val 'data)))
+  (let (Ref (val> p0)
+        Data (car (get Ref 'data)))
   
     # Check pointer is a list; watch for cons == list          
     (when (or (pair Data)
@@ -75,7 +75,7 @@
       # Do not change pointer data - will push to it
       
       # Set main particle
-      (setq *part-main Val))))
+      (setq *part-main Ref))))
   
   
 (de cmd-leave-list (Keysym)
@@ -97,8 +97,8 @@
   (prinl-info "cmd-del")
 
   #{
-    1. Delete Val
-    2. Connect Last-2/Val-1 to Last/NIL
+    1. Delete Ref
+    2. Connect Last-2/Ref-1 to Last/NIL
       * Must search list
         * Currently, must traverse
         * However, when spatially mapped, that may be faster since less
@@ -109,7 +109,7 @@
 
   (when (get (get *part-main 'b) 'data)
   
-    (let (Val (val> p0)
+    (let (Ref (val> p0)
           Tgt (get *part-main 'b)
           Prv *part-main
           Nxt NIL)
@@ -117,7 +117,7 @@
       # Search until pointer - save previous
       (loop        
         (T (or (nil (get Tgt 'b))
-               (= Tgt Val)))
+               (= Tgt Ref)))
         (setq Prv Tgt
               Tgt (get Tgt 'b)))
       
@@ -197,9 +197,9 @@
 
   (when (get (get *part-main 'b) 'data)
   
-    (let (Val (val> p0)
-          Cdr (get Val 'b)
-          Dat (chop (get (get Val 'a) 'data))          
+    (let (Ref (val> p0)
+          Cdr (get Ref 'b)
+          Dat (chop (get (get Ref 'a) 'data))          
           Part (con-list Dat))
       
       # Move new part to cdr-part
@@ -219,15 +219,15 @@
 
   (when (get (get *part-main 'b) 'data)
   
-    (let (Val (val> p0)
-          Cdr (get Val 'b)
-          Tgt (get (get Val 'a) 'data))
+    (let (Ref (val> p0)
+          Cdr (get Ref 'b)
+          Tgt (get (get Ref 'a) 'data))
           
       (when (str? Tgt)
         
         (let Part (con-list (intern Tgt))
         
-          # Val will be gen'd also - move it
+          # Ref will be gen'd also - move it
         
           # Move new part to cdr-part
           (mov-part> Part Cdr (cons T T))
