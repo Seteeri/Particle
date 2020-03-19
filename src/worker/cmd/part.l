@@ -1,69 +1,35 @@
 (de cmd-make-char (Keysym)
 
   #{
-    # Append to end (cur-part) aka insert before NIL
-    
-    # Insert new part under cursor
+    # Set CDR to new list with single char
     
     1. Create new part
-    2. Link cur-part to new-part
-    3. Link new-part to cur-part
+    2. Set CDR of ref to part
+    3. Set ptr value
+    4. Move ptr    
     
-    1. Move new part to cur-part
-    2. Move cur-part fwd
-    
-    1. Set ptr value
-    2. Move ptr    
+    (cond ((= Keysym ksd~Return) T)
+          ((= Keysym ksd~Tab)    T)
+          (T T)))    
   }#
-
-  (if (car (get *part-main 'data))
-
-    (let (Part-Ptr (val> p0)
-          Cdr (get Part-Ptr 'b)
-          Blah (mov-cur-vert (last-vert> Cdr))
-          Pos *pos-cursor
-          Part (append-any
-                  (cond ((= Keysym ksd~space) " ")
-                        ((= Keysym ksd~Return) (char 10))
-                        (T (char Keysym)))))
-      
-      (put Part 'lay 'x)
-      (put (get Part 'a) 'lay 'x)
-      (put (get Part 'b) 'lay 'x)
-      (lay-part Part Pos)
-
-      # Move new part to cdr-part
-      (mov-part> Part Cdr (cons T))
-      
-      # Move cdr-part in front of Part
-      (mov-part-aft> Cdr Part (cons T))
-      
-      # Point to new Part and mov it
-      (put p0 'b Part)
-      (mov-part-abv> p0 Part (cons T)))
   
-    (let (Last (let Last (car *part-lsts)
-                 (loop
-                   # Stop at second to last
-                   (NIL (get (get (get Last 'b) 'b) 'b))
-                   (setq Last (get Last 'b)))
-                 Last)
-          Part (repl-part
-                  (cond ((= Keysym ksd~space) " ")
-                        ((= Keysym ksd~Return) (char 10))
-                        (T (char Keysym)))
-                  Last))
+  (let (Ref (val> p0)
+        Type (type Ref)
+        Cdr (get Ref 'b)
+        Part (append-any
+              (cond ((= Keysym ksd~space) " ")
+                    ((= Keysym ksd~Return) (char 10))
+                    (T (char Keysym)))))
 
-      # Move new part to under ptr
-      #(mov-part-bel> Part p0 (cons T T))
-      
-      # Point to new Part
-      (put p0 'b (get Part 'a))))
-  
-  # Enter/Newline should produce char + mov ptr/cur
-  (cond ((= Keysym ksd~Return) T)
-        ((= Keysym ksd~Tab)    T)
-        (T T)))
+    (put Part 'lay 'x)
+    (put (get Part 'a) 'lay 'x)
+    (put (get Part 'b) 'lay 'x)
+          
+    (mov-cur-vert (last-vert> Ref)) (adv-cur 2.0)
+    (lay-part Part *pos-cursor)
+    
+    (put p0 'b Part)
+    (mov-part-abv> p0 Part (cons T))))
 
 
 (de cmd-make-nil (Keysym)
