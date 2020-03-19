@@ -65,16 +65,13 @@
   (=: verts Verts)
   (=: ori)
 
-  # for list, track length
-  # (cons Data Length=Num/NIL)
   (=: data Data)
   
   # list of tags; always str; order matters like when searching
+  # name falls under tags, typically should be first
+  # when linking, def show date, tags, or show nm or raw location  
   (=: tg)
-  
-  # when linking, def show date, tags, or show nm or raw location
-  (=: nm)
-  
+    
   # date/time
   (=: dat (date))
   (=: tim (time))
@@ -82,7 +79,7 @@
   (=: lay 'x))
 
 
-(dm cons> (B) (=: b B))
+(dm con> (B) (=: b B))
 
 (dm val> () (: b))
 

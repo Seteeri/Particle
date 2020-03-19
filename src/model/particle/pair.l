@@ -20,6 +20,3 @@
        Verts)
 
   (super Data A B Verts))
-
-
-(dm cons> (B) (=: b B))

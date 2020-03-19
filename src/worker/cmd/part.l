@@ -212,10 +212,16 @@
   # Same as cmd-make-char
 
   (let (Ref (val> p0)
-        Cdr (get Ref 'b)
         Part (con-list (format (char Keysym))))
           
-    (mov-cur-part (get Ref 'a) 'end) (nl-cur -1.0) (adv-cur 2.0)
+    (if (get Ref 'a)
+      (prog
+        (mov-cur-part (get Ref 'a) 'end)
+        (nl-cur -1.0))
+      (prog
+        (mov-cur-part Ref 'end)))
+    (adv-cur 2.0)
+    
     (lay-part Part *cur)
     
     # Pointer always above regardless of layout
@@ -232,11 +238,17 @@
   (when (get (get *part-main 'b) 'data)
   
     (let (Ref (val> p0)
-          Cdr (get Ref 'b)
           Dat (format (get (get Ref 'a) 'data))
           Part (con-list Dat))
       
-      (mov-cur-part (get Ref 'a) 'end) (nl-cur -1.0) (adv-cur 2.0)
+      (if (get Ref 'a)
+        (prog
+          (mov-cur-part (get Ref 'a) 'end)
+          (nl-cur -1.0))
+        (prog
+          (mov-cur-part Ref 'end)))
+      (adv-cur 2.0)
+    
       (lay-part Part *cur)
       
       # Pointer always above regardless of layout
