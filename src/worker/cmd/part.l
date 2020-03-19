@@ -20,7 +20,7 @@
 
     (let (Part-Ptr (val> p0)
           Cdr (get Part-Ptr 'b)
-          Blah (mov-cursor (last-vert> Cdr))
+          Blah (mov-cur-vert (last-vert> Cdr))
           Pos *pos-cursor
           Part (append-any
                   (cond ((= Keysym ksd~space) " ")
@@ -99,7 +99,7 @@
       (push '*part-lsts *part-main)
       
       # Move cursor/pointer underneath list
-      (nl-cursor 3.0) (mov> p0 *pos-cursor)
+      (nl-cur 3.0) (mov> p0 *pos-cursor)
     
       # Do not change pointer data - will push to it
       
@@ -160,7 +160,7 @@
       (setq Nxt (get Tgt 'b))
 
       # Position pointer at Tgt before del
-      (mov-cursor (car (get Tgt 'verts)) T)
+      (mov-cur-vert (car (get Tgt 'verts)) T)
 
       # For lists, del recursively
       (when (get Tgt 'a)
@@ -297,7 +297,7 @@
 
     # Set next as needed
 
-    (adv-cursor)))
+    (adv-cur)))
 
 
 (de cmd-eval ()
@@ -314,7 +314,7 @@
 
     (conc-ptr (gen-part Any)))
 
-  (adv-cursor))
+  (adv-cur))
 
 
 (de cmd-any (Keysym)
@@ -328,7 +328,7 @@
 
     (conc-ptr (gen-part Any))
 
-    (adv-cursor)))
+    (adv-cur)))
 
 
 (de cmd-sym ()
@@ -348,4 +348,4 @@
                NIL
                (draw-str Str (get-color-type Str) T))))
 
-  (adv-cursor))
+  (adv-cur))

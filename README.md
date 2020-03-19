@@ -73,6 +73,7 @@ Possible:
 * OCR scans/images
 * Code-specific support
 * Highlighting
+* Collaboration - outside scope of this project
 
 ## Roadmap to PID 1
 

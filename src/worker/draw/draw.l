@@ -82,7 +82,7 @@
   (let Dot (draw-glyph *char-dot *col-base-0)
     
     (cmd-upd-vert *ipc Dot)
-    (when Adv (adv-cursor))
+    (when Adv (adv-cur))
     
     Dot))
 
@@ -99,7 +99,7 @@
         (push 'Verts Vert)
         (cmd-upd-vert *ipc Vert))
     
-      (when Adv (adv-cursor)))
+      (when Adv (adv-cur)))
 
     (flip Verts)))
 
@@ -138,7 +138,7 @@
         (push 'Verts Vert)
         (cmd-upd-vert *ipc Vert))
       
-      (when Adv (adv-cursor)))
+      (when Adv (adv-cur)))
 
     (flip Verts)))
 

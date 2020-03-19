@@ -91,13 +91,13 @@
     # Instead do move part to pos
     (mov-part-bel> Car Any)
 
-    (mov-cursor (last-vert> Car))
+    (mov-cur-vert (last-vert> Car))
     
     #(prin "  ") (println 'x 'a (= (get Car 'lay) Lay))
     
     # Use X as baseline since CARs are drawn Y
     
-    (mov-cursor (last-vert> Car))
+    (mov-cur-vert (last-vert> Car))
     
     # Return min/max between base and ret lay-part
     (lay-part Car
@@ -110,7 +110,7 @@
       
     # Cursor should be in X pos after drawing CAR recursively
 
-    (adv-cursor 2.0)
+    (adv-cur 2.0)
 
     (set-cur-y Y)
     
@@ -118,7 +118,7 @@
     
       (mov> Cdr *pos-cursor)
       
-      (mov-cursor (last-vert> Cdr))
+      (mov-cur-vert (last-vert> Cdr))
       
       #(prin "  ") (println 'x 'b (= (get Cdr 'lay) Lay))
                 
@@ -166,16 +166,16 @@
   (let ((X Y) Base)
 
     # Move cursor to end of car into pos
-    (mov-cursor Last-Vert)
+    (mov-cur-vert Last-Vert)
     
     # Set to 1 to remove space or inc etc
-    (adv-cursor 2.0)
+    (adv-cur 2.0)
     
     # Save this pos as base
     (let (Cur *pos-cursor)
     
       (mov> Car *pos-cursor)
-      (mov-cursor (last-vert> Car))
+      (mov-cur-vert (last-vert> Car))
     
       #(prin "  ") (println 'y 'a (= (get Car 'lay) Lay))
       
@@ -192,10 +192,10 @@
     (set-cur-x X)
         
     # Inc to double space etc
-    (nl-cursor)
+    (nl-cur)
             
     (mov> Cdr *pos-cursor)
-    (mov-cursor (last-vert> Cdr))
+    (mov-cur-vert (last-vert> Cdr))
       
     #(prin "  ") (println 'y 'b (= (get Cdr 'lay) Lay))
             
@@ -236,4 +236,4 @@
       # Below
       (mov-part-bel> (: b) Any))
         
-    (mov-cursor (last-vert> (: b)))))
+    (mov-cur-vert (last-vert> (: b)))))

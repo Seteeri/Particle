@@ -242,7 +242,7 @@
     (put (get *part-cmds 'b) 'lay 'x)
     (lay-part *part-cmds *pos-cursor)
 
-    (nl-cursor 2.0)
+    (nl-cur 2.0)
     (set-cur-x X)
 
     # TODO: Draw *part-ptrs
@@ -257,7 +257,7 @@
               (car *part-ptrs))
          T)
     
-    (nl-cursor)
+    (nl-cur)
     (set-cur-x X)
 
     # Generate main particle list
@@ -275,12 +275,12 @@
     # Connect pointer to main
     (with p0 (=: b *part-main))
 
-  (nl-cursor)
+  (nl-cur)
   (set-cur-x X)
   
   (when NIL
   
-    (nl-cursor)
+    (nl-cur)
     (set-cur-x X)
     (let Part (gen-part '(((1 2 3 4)
                            (5 6 7 8)
@@ -303,7 +303,7 @@
                         0.0
                         *pos-cursor)
       
-      (nl-cursor 2.0)
+      (nl-cur 2.0)
       (set-cur-x X)
       (lay-part Part *pos-cursor (get Part 'lay))))
   
@@ -358,19 +358,19 @@
       (gen-cell (abs (>> -4 (adr (cons NIL T))))
                 'cons
                 (0.0 0.0))
-      (nl-cursor 3.0) (set-cur-x X))
+      (nl-cur 3.0) (set-cur-x X))
 
     (when NIL
       (gen-cell (abs (>> -4 (adr (cons T (** 1152921504606846976 0)))))
                 'cons
                 (0.0 0.0))
-      (nl-cursor 3.0) (set-cur-x X))
+      (nl-cur 3.0) (set-cur-x X))
 
     (when NIL
       (gen-cell (abs (>> -4 (adr (cons (cons 3 4) (cons 1 2)))))
                 'cons
                 (0.0 0.0))
-      (nl-cursor 2.0) (set-cur-x X))
+      (nl-cur 2.0) (set-cur-x X))
 
     (when NIL
       (setq ABCDEFGHIJKLMNOPQRSTUVWXYZ NIL)
@@ -379,13 +379,13 @@
       (gen-cell (abs (>> -4 (adr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ)))
                 'sym
                 (0.0 0.0))
-      (nl-cursor 2.0) (set-cur-x X))
+      (nl-cur 2.0) (set-cur-x X))
 
     (when NIL
       (gen-cell (abs (>> -4 (adr "ABC")))
                 'sym
                 (0.0 0.0))
-      (nl-cursor 2.0) (set-cur-x X))
+      (nl-cur 2.0) (set-cur-x X))
 
     (when NIL
       (gen-cell (abs (>> -4 (adr "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")))

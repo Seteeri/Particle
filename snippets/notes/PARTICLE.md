@@ -290,6 +290,10 @@ Store DAGs as binary trees?
   
   * Use special printing for control characters like enter etc.
     * newline ("^J"), return ("^M") or TAB ("^I")
+    
+  * Timestamp optional
+    * GPS optional
+    * Really just tags...except expected/defined tags on all items
 
   GET TO HERE =------------------------------------------------------------
 
@@ -326,28 +330,16 @@ Store DAGs as binary trees?
 
   * Refactor gen-particle to use globals instead of passing
 
-  * Limit draw lengths to N items (def=12)
-    * ...then move to newline
-    * any changes to this might have to redraw everything
-      * spatial map will allow optimization
-
   * Create special command to create pointer symbols [Later]
 
-  * Default particles
-    * Default symbols  
-    * Help info
-      * Like Nano
-    * FPS - do in render
-    * Load own code as data
-      * Really draw relevant internal symbols from table
+  * FPS - do in render
+  
+  * Load own code as data
+    * Really draw relevant internal symbols from table
 
   * Swap part
     * (con (nth n) (new)) to change CDR
     * (con (new) (nth n+1))
-
-  * Implement spatial map (R-Tree)
-    * Will be interesting to see data structure...
-    * Need this to optimize finding bounds
 
   * Draw lines
     * One node per line segment
@@ -357,15 +349,10 @@ Store DAGs as binary trees?
     * Add commands to do this
 
   * Map keys to grid on screen
+    * 26 squares if using plain alphabet
     * User can use keys to manuever
 
   * Rename namespace gl -> gles
-
-  * Cur/Ptr
-    * Use touch/mouse to move spatially
-      * SNAP TO GRID
-        * Drag to rearrange list
-    * Displacement scales with zoom level
 
   * Error Handling
     * Set * Err to (quit)
@@ -523,7 +510,7 @@ Store DAGs as binary trees?
 
   * Note 32 MB = 8 ms to mark/sweep
     * = 2,000,000 cons cells -> Test this with loop/cons/heap
-
+    
 ## OTHER STUFF
 
 * Benchmark/Profile

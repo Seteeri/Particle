@@ -171,8 +171,8 @@
 (dm mov-part-aft> (B P)
   # Make offset version instead of static function?
   
-  (mov-cursor (last (get B 'verts)) T)
-  (adv-cursor 2.0)
+  (mov-cur-vert (last (get B 'verts)) T)
+  (adv-cur 2.0)
   
   (let Pos (get-origin> This)
     (mov-off> This
@@ -185,8 +185,8 @@
 (dm mov-part-abv> (B P)
   # Make offset version instead of static function?
   
-  (mov-cursor (car (get B 'verts)) T)
-  (nl-cursor -1.0)
+  (mov-cur-vert (car (get B 'verts)) T)
+  (nl-cur -1.0)
 
   (let Pos (get-origin> This)
     (mov-off> This
@@ -199,8 +199,8 @@
 (dm mov-part-bel> (B P)
   # Make offset version instead of static function?
   
-  (mov-cursor (car (get B 'verts)) T)
-  (nl-cursor)
+  (mov-cur-vert (car (get B 'verts)) T)
+  (nl-cur)
 
   (let Pos (get-origin> This)
     (mov-off> This
@@ -352,7 +352,7 @@
   (put p0 'b)
 
   # Set cursor 2 spaces above ptr
-  (nl-cursor -2.0)
+  (nl-cur -2.0)
 
   (let (Lst-Any (list (list Any))
         Part (gen-part Lst-Any
