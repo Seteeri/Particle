@@ -310,10 +310,7 @@
   (let (Lst-Any (list Any)
         Val (val> p0)
         Cdr (get Val 'b)
-        Part (gen-part Lst-Any
-                       0.0
-                       *cur
-                       NIL T))
+        Part (gen-part Lst-Any NIL T))
 
     # MOVE TO GEN-PART
     (put Part 'lay 'x)
@@ -365,9 +362,7 @@
   (nl-cur -2.0)
 
   (let (Lst-Any (list (list Any))
-        Part (gen-part Lst-Any
-                       0.0
-                       *cur))
+        Part (gen-part Lst-Any))
 
     (with Pre
       (=: b Part)
@@ -382,7 +377,7 @@
 ###############################
 
 
-(de gen-part (Any Depth Root Car Cdr)
+(de gen-part (Any Car Cdr)
   # TODO: Handle circular lists...use another dot at the end
 
   (if (pair Any)
@@ -391,14 +386,14 @@
       
           # Handle specific forms here
           (cond (T
-                 (gen-pair Any Depth Root Car Cdr)))
+                 (gen-pair Any Car Cdr)))
                  
-          (gen-pair Any Depth Root Car Cdr))
+          (gen-pair Any Car Cdr))
       
-      (gen-atom Any Depth Root T Car Cdr)))
+      (gen-atom Any T Car Cdr)))
 
 
-(de gen-atom (Any Depth Root Adv Car Cdr)
+(de gen-atom (Any Adv Car Cdr)
 
   # Pass flag to draw sym val
   
@@ -409,7 +404,7 @@
   
   (let (B (when (and (not Cdr)
                      (sym-int? Any))
-            (gen-sym-int Any Depth Root Car Cdr)))
+            (gen-sym-int Any Car Cdr)))
             
     (new (if (num? Any)
              '(+Num)
@@ -424,13 +419,13 @@
                      Adv))))
 
 
-(de gen-sym-int (Any Depth Root Car Cdr)
+(de gen-sym-int (Any Car Cdr)
   # Opt: Ignore NIL?
 
-  (gen-part (val Any) Depth Root Car Cdr))
+  (gen-part (val Any) Car Cdr))
 
 
-(de gen-pair (Any Depth Root Ignore-Car Ignore-Cdr)
+(de gen-pair (Any Ignore-Car Ignore-Cdr)
   #{
     Root is baseline of cons
     so for a list Root would be coordinates of first cons
@@ -447,8 +442,8 @@
           X-Cdr                 (get *cur 1)
           Part (new '(+Pair)
                      Any
-                    (unless Ignore-Car (gen-part Ar Depth Root))
-                    (unless Ignore-Cdr (gen-part Dr Depth Root))
+                    (unless Ignore-Car (gen-part Ar))
+                    (unless Ignore-Cdr (gen-part Dr))
                     (append Vert-Ar Dot Vert-Dr)))
       #{
         Skip the list containing the list so:
