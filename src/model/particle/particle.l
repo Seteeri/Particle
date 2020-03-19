@@ -431,16 +431,12 @@
 
   (let (Ar (car Any)
         Dr (cdr Any)
-        (X Y) (let Pos *cur
-                (if Pos Pos Root)))
-
-    (let ((Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
-          X-Cdr                 (get *cur 1)
-          Part (new '(+Pair)
-                     Any
-                    (unless Ignore-Car (gen-part Ar))
-                    (unless Ignore-Cdr (gen-part Dr))
-                    (append Vert-Ar Dot Vert-Dr)))
+        (Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
+        Part (new '(+Pair)
+                   Any
+                  (unless Ignore-Car (gen-part Ar))
+                  (unless Ignore-Cdr (gen-part Dr))
+                  (append Vert-Ar Dot Vert-Dr)))
       #{
         Skip the list containing the list so:
           a
@@ -453,7 +449,7 @@
       #(when (str? Ar)
       #  (lay-str-ds Part 'x))
       
-      Part)))
+      Part))
 
 
 (de lay-str-ds (Part Lay)
