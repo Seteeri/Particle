@@ -25,7 +25,7 @@
     (put (get Part 'a) 'lay 'x)
     (put (get Part 'b) 'lay 'x)
           
-    (mov-cur-vert (last-vert> Ref)) (adv-cur 2.0)
+    (mov-cur-part Ref 'end) (adv-cur 2.0)
     (lay-part Part *pos-cursor)
     
     (put p0 'b Part)
