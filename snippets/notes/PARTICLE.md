@@ -245,6 +245,8 @@ Store DAGs as binary trees?
       * Doubly-linked lists required?
     * Insert anywhere in list
       * Requires relayout of subsequent items
+      
+  * Intergate model into worker
 
   * Optimize ipc to batch messages, flush etc.
     

@@ -26,7 +26,7 @@
     (put (get Part 'b) 'lay 'x)
           
     (mov-cur-part Ref 'end) (adv-cur 2.0)
-    (lay-part Part *pos-cursor)
+    (lay-part Part *cur)
     
     (put p0 'b Part)
     (mov-part-abv> p0 Part (cons T))))
@@ -65,7 +65,7 @@
       (push '*part-lsts *part-main)
       
       # Move cursor/pointer underneath list
-      (nl-cur 3.0) (mov> p0 *pos-cursor)
+      (nl-cur 3.0) (mov> p0 *cur)
     
       # Do not change pointer data - will push to it
       
@@ -136,7 +136,7 @@
       (del> Tgt T NIL)
 
       # Mov Nxt to Tgt
-      (when Nxt (mov> Nxt *pos-cursor))
+      (when Nxt (mov> Nxt *cur))
 
       # Connect Prv to Nxt
       (put Prv 'b Nxt)

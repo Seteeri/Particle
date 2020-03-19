@@ -111,7 +111,7 @@
     # Pos = baseline = X,0,0
     (with Vert
     
-      (=: pos *pos-cursor)
+      (=: pos *cur)
     
       (let ((R G B) Col)
         (=: rgba (list R G B 1.0

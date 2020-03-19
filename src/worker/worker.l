@@ -50,7 +50,7 @@
 (def '*part-ptrs) # List of pointers
 (def 'p0 '*part-main)  # Default pointer to SYMBOL part-main
 
-(def '*pos-cursor (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
+(def '*cur (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
 
 # Wrapper libraries
 (load "/home/user/Particle/particle/src/c/mathc.l")
@@ -229,18 +229,18 @@
   # Root particles are stored in *particles
   # *particles itself is not drawn
 
-  (let ((X Y) *pos-cursor)
+  (let ((X Y) *cur)
 
     (idx '*particles
           (def '*part-cmds
                (gen-part '*part-cmds
                          0.0
-                         *pos-cursor))
+                         *cur))
           T)
     (set-cur-x X)
     (put *part-cmds 'lay 'x)
     (put (get *part-cmds 'b) 'lay 'x)
-    (lay-part *part-cmds *pos-cursor)
+    (lay-part *part-cmds *cur)
 
     (nl-cur 2.0)
     (set-cur-x X)
@@ -250,7 +250,7 @@
     (push '*part-ptrs
           (gen-part 'p0
                     0.0
-                    *pos-cursor
+                    *cur
                     NIL T))
     (idx '*particles
          (def 'p0
@@ -265,12 +265,12 @@
           (def '*part-main
                 (gen-part '*part-main
                           0.0
-                          *pos-cursor))
+                          *cur))
           T)
     (set-cur-x X)
     (put *part-main 'lay 'x)
     (put (get *part-main 'b) 'lay 'x)
-    (lay-part *part-main *pos-cursor)
+    (lay-part *part-main *cur)
 
     # Connect pointer to main
     (with p0 (=: b *part-main))
@@ -301,11 +301,11 @@
                               "I.C.2"
                               "I.C.3")))))
                         0.0
-                        *pos-cursor)
+                        *cur)
       
       (nl-cur 2.0)
       (set-cur-x X)
-      (lay-part Part *pos-cursor (get Part 'lay))))
+      (lay-part Part *cur (get Part 'lay))))
   
   T))
 
@@ -341,7 +341,7 @@
 (de run-tests ()
 
   (when NIL
-    (let ((X Y) *pos-cursor)
+    (let ((X Y) *cur)
       (gen-cell (abs (>> -4 (adr (new '(+Pointer) NIL))))
                 'sym
                 (0.0 0.0))
@@ -352,7 +352,7 @@
                               0.0
                               (list 0.0 0.0 0.0))))
 
-  (let ((X Y) *pos-cursor)
+  (let ((X Y) *cur)
 
     (when T
       (gen-cell (abs (>> -4 (adr (cons NIL T))))

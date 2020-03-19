@@ -176,9 +176,9 @@
   
   (let Pos (get-origin> This)
     (mov-off> This
-              (list (- (get *pos-cursor 1) (get Pos 1))
-                    (- (get *pos-cursor 2) (get Pos 2))
-                    (- (get *pos-cursor 3) (get Pos 3)))
+              (list (- (get *cur 1) (get Pos 1))
+                    (- (get *cur 2) (get Pos 2))
+                    (- (get *cur 3) (get Pos 3)))
               P)))
 
 
@@ -190,9 +190,9 @@
 
   (let Pos (get-origin> This)
     (mov-off> This
-              (list (- (get *pos-cursor 1) (get Pos 1))
-                    (- (get *pos-cursor 2) (get Pos 2))
-                    (- (get *pos-cursor 3) (get Pos 3)))
+              (list (- (get *cur 1) (get Pos 1))
+                    (- (get *cur 2) (get Pos 2))
+                    (- (get *cur 3) (get Pos 3)))
               P)))
 
 
@@ -204,9 +204,9 @@
 
   (let Pos (get-origin> This)
     (mov-off> This
-              (list (- (get *pos-cursor 1) (get Pos 1))
-                    (- (get *pos-cursor 2) (get Pos 2))
-                    (- (get *pos-cursor 3) (get Pos 3)))
+              (list (- (get *cur 1) (get Pos 1))
+                    (- (get *cur 2) (get Pos 2))
+                    (- (get *cur 3) (get Pos 3)))
               P)))
     
 
@@ -312,7 +312,7 @@
         Cdr (get Val 'b)
         Part (gen-part Lst-Any
                        0.0
-                       *pos-cursor
+                       *cur
                        NIL T))
 
     # Set cdr of cur-part to new-part
@@ -360,7 +360,7 @@
   (let (Lst-Any (list (list Any))
         Part (gen-part Lst-Any
                        0.0
-                       *pos-cursor))
+                       *cur))
 
     (with Pre
       (=: b Part)
@@ -433,11 +433,11 @@
 
   (let (Ar (car Any)
         Dr (cdr Any)
-        (X Y) (let Pos *pos-cursor
+        (X Y) (let Pos *cur
                 (if Pos Pos Root)))
 
     (let ((Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
-          X-Cdr                 (get *pos-cursor 1)
+          X-Cdr                 (get *cur 1)
           Part (new '(+Pair)
                      Any
                     (unless Ignore-Car (gen-part Ar Depth Root))

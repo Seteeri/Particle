@@ -67,15 +67,15 @@
                                         
       # Handle if short
       (let X-End (last-vert-pos> Any 1)
-        (when (< (get *pos-cursor 1) X-End)
-          (setq *pos-cursor (place 1 *pos-cursor X-End))))
+        (when (< (get *cur 1) X-End)
+          (setq *cur (place 1 *cur X-End))))
 
       # If Car layout diff, must use the max X bounds
       (unless (= (get (: a) 'lay) (: lay))
         (println "CAR Y; CDR X" 
                  (format X-Car *Scl)
-                 (format (get *pos-cursor 1) *Scl))
-        (set-cur-x (max X-Car (get *pos-cursor 1))))
+                 (format (get *cur 1) *Scl))
+        (set-cur-x (max X-Car (get *cur 1))))
         
       (let ((X-Cdr Y-Cdr) (lay-pair-x-cdr Base
                                         (: b)
@@ -101,7 +101,7 @@
     
     # Return min/max between base and ret lay-part
     (lay-part Car
-              (list X (get *pos-cursor 2))
+              (list X (get *cur 2))
               Lay)))
 
 (de lay-pair-x-cdr (Base Cdr Lay)
@@ -114,9 +114,9 @@
 
     (set-cur-y Y)
     
-    (let (Cur *pos-cursor)
+    (let (Cur *cur)
     
-      (mov> Cdr *pos-cursor)
+      (mov> Cdr *cur)
       
       (mov-cur-vert (last-vert> Cdr))
       
@@ -151,7 +151,7 @@
       (unless (= (get (: a) 'lay) (: lay))
         (println "CAR X; CDR Y" 
                  (format Y-Car *Scl)
-                 (format (get *pos-cursor 2) *Scl))
+                 (format (get *cur 2) *Scl))
         (set-cur-y Y-Car))
             
       (let ((X-Cdr Y-Cdr) (lay-pair-y-cdr Base
@@ -172,9 +172,9 @@
     (adv-cur 2.0)
     
     # Save this pos as base
-    (let (Cur *pos-cursor)
+    (let (Cur *cur)
     
-      (mov> Car *pos-cursor)
+      (mov> Car *cur)
       (mov-cur-vert (last-vert> Car))
     
       #(prin "  ") (println 'y 'a (= (get Car 'lay) Lay))
@@ -194,14 +194,14 @@
     # Inc to double space etc
     (nl-cur)
             
-    (mov> Cdr *pos-cursor)
+    (mov> Cdr *cur)
     (mov-cur-vert (last-vert> Cdr))
       
     #(prin "  ") (println 'y 'b (= (get Cdr 'lay) Lay))
             
     # Use X as baseline since CDRs are drawn Y
     (lay-part Cdr
-              (list X (get *pos-cursor 2))
+              (list X (get *cur 2))
               Lay)))
 
 
@@ -210,20 +210,20 @@
   
   #(println "lay-atom"
   #         (get Any 'data)
-  #         (format (get *pos-cursor 1) *Scl)
-  #         (format (get *pos-cursor 2) *Scl))
+  #         (format (get *cur 1) *Scl)
+  #         (format (get *cur 2) *Scl))
   
   (when (and (= (type Any) '(+Sym))
              (get Any 'b)) 
     (lay-sym Any Base))
   
   # Symbols have their value drawn
-  *pos-cursor)
+  *cur)
 
 
 (de lay-sym (Any Base)
 
-  (mov> Any *pos-cursor)
+  (mov> Any *cur)
 
   (with Any
   

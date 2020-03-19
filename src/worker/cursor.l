@@ -2,6 +2,7 @@
   (cond ((= Pos 'start) (mov-cur-vert (first-vert> Part)))
         ((= Pos 'end)   (mov-cur-vert (last-vert> Part)))))
 
+
 (de mov-cur-vert (Vert)
   (with Vert
     (set-cur-pos (get-origin> (get *metrics (: chr))
@@ -13,29 +14,29 @@
 
   (unless Cnt (setq Cnt 1.0))
 
-  (setq *pos-cursor (place 1
-                        *pos-cursor
-                        (+ (car *pos-cursor)
-                           (*/ *adv-vert Cnt 1.0)))))
+  (setq *cur (place 1
+                    *cur
+                    (+ (car *cur)
+                       (*/ *adv-vert Cnt 1.0)))))
 
 
 (de nl-cur (Cnt)
 
   (unless Cnt (setq Cnt 1.0))
 
-  (setq *pos-cursor (place 2
-                        *pos-cursor
-                        (- (cadr *pos-cursor)
-                           (*/ (+ *adv-vert *adv-vert) Cnt 1.0)))))
+  (setq *cur (place 2
+                    *cur
+                    (- (cadr *cur)
+                       (*/ (+ *adv-vert *adv-vert) Cnt 1.0)))))
 
 
 (de set-cur-x (X)
-  (setq *pos-cursor (place 1 *pos-cursor X)))
+  (setq *cur (place 1 *cur X)))
 
 
 (de set-cur-y (Y)
-  (setq *pos-cursor (place 2 *pos-cursor Y)))
+  (setq *cur (place 2 *cur Y)))
 
 
 (de set-cur-pos (Pos)
-  (setq *pos-cursor Pos))
+  (setq *cur Pos))
