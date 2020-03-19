@@ -175,20 +175,20 @@
 
   (when (get (get *part-main 'b) 'data)
   
-    (let (Val (val> p0)
-          Cdr (get Val 'b)
-          Dat (format (get (get Val 'a) 'data))          
+    (let (Ref (val> p0)
+          Cdr (get Ref 'b)
+          Dat (format (get (get Ref 'a) 'data))
           Part (con-list Dat))
       
-      # Move new part to cdr-part
-      (mov-part> Part Cdr (cons T))
+      (mov-cur-part Ref 'end) (adv-cur 2.0)
+      (lay-part Part *cur)
       
-      # Move cdr-part in front of Part
-      (mov-part-aft> Cdr Part (cons T))
-      
-      # Set new ptr and move it above
+      # Pointer always above regardless of layout
       (put p0 'b Part)
       (mov-part-abv> p0 Part (cons T)))))
+
+
+#####################
 
 
 (de cmd-chop (Keysym)
@@ -238,10 +238,6 @@
           # Set new ptr and move it above
           (put p0 'b Part)
           (mov-part-abv> p0 Part (cons T)))))))
-
-
-#########################
-#########################
 
 
 (de cmd-pack (Keysym)
