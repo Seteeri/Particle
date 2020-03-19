@@ -273,6 +273,9 @@
 
 (dm last-vert-pos> (Cnt)
   (get (get (last (: verts)) 'pos) Cnt))
+
+(dm first-vert> ()
+  (car (: verts)))
   
 (dm last-vert> ()
   (last (: verts)))

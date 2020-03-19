@@ -1,3 +1,7 @@
+(de mov-cur-part (Part Pos)
+  (cond ((= Pos 'start) (mov-cur-vert (first-vert> Part)))
+        ((= Pos 'end)   (mov-cur-vert (last-vert> Part)))))
+
 (de mov-cur-vert (Vert)
   (with Vert
     (set-cur-pos (get-origin> (get *metrics (: chr))
