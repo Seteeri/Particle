@@ -19,58 +19,19 @@
                      ((= Keysym ksd~Return) (char 10))
                      (T (char Keysym)))))
 
-    # When entering empty list (NIL)
-    # ensure new particle is positioned below
-    # If not empty, particle will already be in position
-
-    #{
-          p0
-    [] -> [] -> NIL
-    a     NIL
-
-          p0
-    []
-
-          p0
-    [] -> [] -> NIL
-    a     |
-          b
-
-    Replace entire (NIL) with ("")
-    
-    This is assuming the list goes in Y
-    }#
-
     (if (= (get *part-main 'data) '(NIL))
 
-      (let (Ref (val> p0)
-            Dat-Ref (car (get Ref 'data))
-            Last (let Last (car *part-lsts)
-                    (loop
-                      (NIL (get (get (get Last 'b) 'b) 'b))
-                      (setq Last (get Last 'b)))
-                    Last)
-            Part (repl-list Data Last))
-
-        # Mov cursor below
-        (mov-cur-part Last 'end) (adv-cur 2.0)
-
-        (put Part 'lay 'x)
-        (lay-part Part *cur)
-
-        # Move inner list one space further down
-        (mov-cur-part Last 'end) (adv-cur 2.0)
-        (nl-cur 3.0)
-        (put (get Part 'a) 'lay 'x)
-        (lay-part (get Part 'a) *cur)
-
+      # repl-any assumes list has y layout
+      (let Part (repl-any Data)
+        
         (put p0 'b (get Part 'a)))
-
 
       (let Part (con-any Data 'x)
 
-        # Pointer always above regardless of layout
+        
         (put p0 'b Part)
+        
+        # Pointer always above regardless of layout?
         (mov-part-abv> p0 Part (cons T))))))
 
 

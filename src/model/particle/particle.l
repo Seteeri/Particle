@@ -341,7 +341,8 @@
 
 ###############################
 
-# List fn
+# Where to put these?
+# ops.l?
 
 (de con-any (Any Lay)
 
@@ -404,6 +405,32 @@
     (with *part-main
       (=: data (conc (: data) Lst-Any)))
       
+    Part))
+
+
+(de repl-any (Any)
+
+  (let (Ref (val> p0)
+        Dat-Ref (car (get Ref 'data))
+        Last (let Last (car *part-lsts)
+                (loop
+                  (NIL (get (get (get Last 'b) 'b) 'b))
+                  (setq Last (get Last 'b)))
+                Last)
+        Part (repl-list Data Last))
+
+    # Mov cursor below
+    (mov-cur-part Last 'end) (adv-cur 2.0)
+
+    (put Part 'lay 'x)
+    (lay-part Part *cur)
+
+    # Move inner list one space further down
+    (mov-cur-part Last 'end) (adv-cur 2.0)
+    (nl-cur 3.0)
+    (put (get Part 'a) 'lay 'x)
+    (lay-part (get Part 'a) *cur)
+
     Part))
 
 
