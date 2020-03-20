@@ -1,0 +1,129 @@
+(de con-any (Any Lay)
+
+  (let (Ref (val> p0)
+        Dat-Ref (car (get Ref 'data))
+        Lay-Ref (get Ref 'lay)        
+        Part (con-list Any Lay))
+        
+    (if (= Lay-Ref 'x)
+
+      (prog
+        # CDR is to the right
+        # Use X bounds
+        (let Bounds NIL
+          (if (= Ref *part-main)
+              (setq Bounds (calc-bounds> Ref T T))
+              (setq Bounds (calc-bounds> Ref NIL T)))
+          (set-cur-x (get Bounds 1))
+          (set-cur-y (get (get-origin> Ref) 2)))
+        (adv-cur 2.0))
+
+      (prog
+        # CDR is below
+        # Use Y bounds
+        (let Bounds NIL
+          (if (= Ref *part-main)
+              (setq Bounds (calc-bounds> Ref T T))
+              (setq Bounds (calc-bounds> Ref NIL T)))
+          (println 'Bounds Bounds)
+          (set-cur-x (get (get-origin> Ref) 1))
+          (set-cur-y (get Bounds 2)))
+        (nl-cur 2.0)))
+
+    (lay-part Part *cur)
+    
+    Part))
+
+
+(de con-list (Any Lay)
+  (let (Lst-Any (list Any)
+        Val (val> p0)
+        Cdr (get Val 'b)
+        Part (gen-part Lst-Any NIL T))
+
+    # MOVE TO GEN-PART
+    (put Part 'lay Lay)
+    (put (get Part 'a) 'lay Lay)
+    (put (get Part 'b) 'lay Lay)
+
+    # Set cdr of cur-part to new-part
+    # [c] -> [n]
+    (put Val 'b Part)
+    
+    # Set cdr of new-part to cdr-part
+    # [n] -> [b] -> ...
+    (put Part 'b Cdr)
+    
+    # Connect new part data to list part data
+    # Need separate function if not at end
+    (with *part-main
+      (=: data (conc (: data) Lst-Any)))
+      
+    Part))
+
+
+(de repl-any (Any)
+
+  (let (Ref (val> p0)
+        Dat-Ref (car (get Ref 'data))
+        Last (let Last (car *part-lsts)
+                (loop
+                  (NIL (get (get (get Last 'b) 'b) 'b))
+                  (setq Last (get Last 'b)))
+                Last)
+        Part (repl-list Data Last))
+
+    # Mov cursor below
+    (mov-cur-part Last 'end) (adv-cur 2.0)
+
+    (put Part 'lay 'x)
+    (lay-part Part *cur)
+
+    # Move inner list one space further down
+    (mov-cur-part Last 'end) (adv-cur 2.0)
+    (nl-cur 3.0)
+    (put (get Part 'a) 'lay 'x)
+    (lay-part (get Part 'a) *cur)
+
+    Part))
+
+
+(de repl-list (Any Pre)
+  #{
+        p0
+  [] -> [] -> NIL
+  a     NIL
+
+        p0
+  []  
+  
+        p0
+  [] -> [] -> NIL
+  a     |
+        b
+  
+  }#
+
+  # Replace NIL with List
+    
+  # Handle case when there is something after ref
+    
+  # Delete particle first
+  (del> (val> p0) T T)
+  (put Pre 'b) # data still there
+  (put p0 'b)
+
+  # Set cursor 2 spaces above ptr
+  (nl-cur -2.0)
+
+  (let (Lst-Any (list (list Any))
+        Part (gen-part Lst-Any))
+
+    (with Pre
+      (=: b Part)
+      (con (car (:: data)) Lst-Any))
+        
+    # Set new list
+    (setq *part-main (get Part 'a))
+      
+    Part))
