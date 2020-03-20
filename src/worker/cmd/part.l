@@ -16,9 +16,10 @@
 
   (let (Ref (val> p0)
         Dat-Ref (car (get Ref 'data))
-        Data (cond ((= Keysym ksd~space) " ")
-                   ((= Keysym ksd~Return) (char 10))
-                   (T (char Keysym))))
+        Data (when Keysym
+               (cond ((= Keysym ksd~space) " ")
+                     ((= Keysym ksd~Return) (char 10))
+                     (T (char Keysym)))))
 
     # When entering empty list (NIL)
     # ensure new particle is positioned below
@@ -104,22 +105,7 @@
 
   (prinl-info "cmd-make-nil")
 
-  (let (Ref (val> p0)
-        Part (con-list NIL 'x))
-
-    (if (get Ref 'a)
-      (prog
-        (mov-cur-part (get Ref 'a) 'end)
-        (nl-cur -1.0))
-      (prog
-        (mov-cur-part Ref 'end)))
-    (adv-cur 2.0)
-
-    (lay-part Part *cur)
-
-    # Set new ptr and move it above
-    (put p0 'b Part)
-    (mov-part-abv> p0 Part (cons T))))
+  (cmd-make-char))
 
 
 (de cmd-enter-list (Keysym)

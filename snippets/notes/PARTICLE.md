@@ -239,9 +239,9 @@ Store DAGs as binary trees?
   * Separate layout from generating particles [Done]
     
   * Integrate layout with generating particles (cmds)
-    * Create function to calculate bounds of a pair  
-    * Position new particle based on the ref's layout
-      * Must calculate previous item
+    * Create function to calculate bounds of a pair [Done]
+    * Position new particle based on the ref's layout [Done]
+      * Must calculate previous item [Done]
     * Implement doubly-linked particles
     * Refactor cmds
     
