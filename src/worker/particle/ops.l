@@ -21,21 +21,19 @@
   (nl-cur 2.0))
 
 
-(de con-any (Any Lay)
+(de base-cur (Ref)
+  # x: CDR is to the right; use X bounds
+  # y: CDR is below; use Y bounds
+  (if (= (get Ref 'lay) 'x)
+    (base-cur-x Ref) 
+    (base-cur-y Ref)))
 
+
+(de con-any (Any Lay)
   (let (Ref (val> p0)
-        Dat-Ref (car (get Ref 'data))
-        Lay-Ref (get Ref 'lay)        
         Part (con-list Any Lay))
-        
-    # x: CDR is to the right; use X bounds
-    # y: CDR is below; use Y bounds
-    (if (= Lay-Ref 'x)
-      (base-cur-x Ref) 
-      (base-cur-y Ref))
-        
+    (base-cur Ref)
     (lay-part Part *cur)
-    
     Part))
 
 
