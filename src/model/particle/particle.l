@@ -76,7 +76,7 @@
   (=: dat (date))
   (=: tim (time))
   
-  (=: lay 'x))
+  (=: lay 'y))
 
 
 (dm con> (B) (=: b B))
@@ -343,16 +343,16 @@
 
 # List fn
 
-(de con-list (Any)
+(de con-list (Any Lay)
   (let (Lst-Any (list Any)
         Val (val> p0)
         Cdr (get Val 'b)
         Part (gen-part Lst-Any NIL T))
 
     # MOVE TO GEN-PART
-    (put Part 'lay 'x)
-    (put (get Part 'a) 'lay 'x)
-    (put (get Part 'b) 'lay 'x)
+    (put Part 'lay Lay)
+    (put (get Part 'a) 'lay Lay)
+    (put (get Part 'b) 'lay Lay)
 
     # Set cdr of cur-part to new-part
     # [c] -> [n]

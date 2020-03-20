@@ -24,23 +24,23 @@
     # ensure new particle is positioned below
     # If not empty, particle will already be in position
 
+    #{
+          p0
+    [] -> [] -> NIL
+    a     NIL
+
+          p0
+    []
+
+          p0
+    [] -> [] -> NIL
+    a     |
+          b
+
+    Replace entire (NIL) with ("")
+    }#
+
     (if (= (get *part-main 'data) '(NIL))
-
-      #{
-            p0
-      [] -> [] -> NIL
-      a     NIL
-
-            p0
-      []
-
-            p0
-      [] -> [] -> NIL
-      a     |
-            b
-
-      Replace entire (NIL) with ("")
-      }#
 
       (let (Last (let Last (car *part-lsts)
                     (loop
@@ -53,7 +53,6 @@
         (mov-cur-part Last 'end) (adv-cur 2.0)
 
         (put Part 'lay 'x)
-        #(put (get Part 'b) 'lay 'x)
         (lay-part Part *cur)
 
         # Move inner list one space further down
@@ -65,7 +64,7 @@
         (put p0 'b (get Part 'a)))
 
 
-      (let Part (con-list Data)
+      (let Part (con-list Data 'x)
 
         (let Lay (get Ref 'lay)
 
@@ -89,9 +88,10 @@
                 (if (= Ref *part-main)
                     (setq Bounds (calc-bounds> Ref T T))
                     (setq Bounds (calc-bounds> Ref NIL T)))
+                (println 'Bounds Bounds)
                 (set-cur-x (get (get-origin> Ref) 1))
-                (set-cur-y (get Bounds 1)))
-              (nl-cur))))
+                (set-cur-y (get Bounds 2)))
+              (nl-cur 2.0))))
 
         (lay-part Part *cur)
 
@@ -105,7 +105,7 @@
   (prinl-info "cmd-make-nil")
 
   (let (Ref (val> p0)
-        Part (con-list))
+        Part (con-list NIL 'x))
 
     (if (get Ref 'a)
       (prog
@@ -229,7 +229,7 @@
   # Same as cmd-make-char
 
   (let (Ref (val> p0)
-        Part (con-list (format (char Keysym))))
+        Part (con-list (format (char Keysym)) 'x))
 
     (if (get Ref 'a)
       (prog
@@ -256,7 +256,7 @@
 
     (let (Ref (val> p0)
           Dat (format (get (get Ref 'a) 'data))
-          Part (con-list Dat))
+          Part (con-list Dat 'x))
 
       (if (get Ref 'a)
         (prog
@@ -284,7 +284,7 @@
   (let (Ref (val> p0)
         Cdr (get Ref 'b)
         Dat (pack (get *part-main 'data))
-        Part (con-list Dat))
+        Part (con-list Dat 'x))
 
     (mov-cur-part (get Ref 'a) 'end) (nl-cur -1.0) (adv-cur 2.0)
     (lay-part Part *cur)
@@ -308,7 +308,7 @@
     (let (Ref (val> p0)
           Cdr (get Ref 'b)
           Dat (chop (get (get Ref 'a) 'data))
-          Part (con-list Dat))
+          Part (con-list Dat 'x))
 
       # Move new part to cdr-part
       (mov-part> Part Cdr (cons T))
@@ -350,7 +350,7 @@
 
       (when (str? Tgt)
 
-        (let Part (con-list (intern Tgt))
+        (let Part (con-list (intern Tgt) 'x)
 
           # Ref will be gen'd also - move it
 
