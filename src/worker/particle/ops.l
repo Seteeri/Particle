@@ -1,3 +1,26 @@
+(de base-cur-x (Ref)
+  # Move cur to x base of Ref and y origin of Ref
+  (let Bounds NIL
+    (if (= Ref *part-main)
+        (setq Bounds (calc-bounds> Ref T T))
+        (setq Bounds (calc-bounds> Ref NIL T)))
+    (set-cur-x (get Bounds 1))
+    (set-cur-y (get (get-origin> Ref) 2)))
+  (adv-cur 2.0))
+
+        
+(de base-cur-y (Ref)
+  # Move cur to x origin of Ref and y base of Ref
+  (let Bounds NIL
+    (if (= Ref *part-main)
+        (setq Bounds (calc-bounds> Ref T T))
+        (setq Bounds (calc-bounds> Ref NIL T)))
+    (println 'Bounds Bounds)
+    (set-cur-x (get (get-origin> Ref) 1))
+    (set-cur-y (get Bounds 2)))
+  (nl-cur 2.0))
+
+
 (de con-any (Any Lay)
 
   (let (Ref (val> p0)
@@ -5,31 +28,12 @@
         Lay-Ref (get Ref 'lay)        
         Part (con-list Any Lay))
         
+    # x: CDR is to the right; use X bounds
+    # y: CDR is below; use Y bounds
     (if (= Lay-Ref 'x)
-
-      (prog
-        # CDR is to the right
-        # Use X bounds
-        (let Bounds NIL
-          (if (= Ref *part-main)
-              (setq Bounds (calc-bounds> Ref T T))
-              (setq Bounds (calc-bounds> Ref NIL T)))
-          (set-cur-x (get Bounds 1))
-          (set-cur-y (get (get-origin> Ref) 2)))
-        (adv-cur 2.0))
-
-      (prog
-        # CDR is below
-        # Use Y bounds
-        (let Bounds NIL
-          (if (= Ref *part-main)
-              (setq Bounds (calc-bounds> Ref T T))
-              (setq Bounds (calc-bounds> Ref NIL T)))
-          (println 'Bounds Bounds)
-          (set-cur-x (get (get-origin> Ref) 1))
-          (set-cur-y (get Bounds 2)))
-        (nl-cur 2.0)))
-
+      (base-cur-x Ref) 
+      (base-cur-y Ref))
+        
     (lay-part Part *cur)
     
     Part))
