@@ -343,6 +343,43 @@
 
 # List fn
 
+(de con-any (Any Lay)
+
+  (let (Ref (val> p0)
+        Dat-Ref (car (get Ref 'data))
+        Lay-Ref (get Ref 'lay)        
+        Part (con-list Any Lay))
+        
+    (if (= Lay-Ref 'x)
+
+      (prog
+        # CDR is to the right
+        # Use X bounds
+        (let Bounds NIL
+          (if (= Ref *part-main)
+              (setq Bounds (calc-bounds> Ref T T))
+              (setq Bounds (calc-bounds> Ref NIL T)))
+          (set-cur-x (get Bounds 1))
+          (set-cur-y (get (get-origin> Ref) 2)))
+        (adv-cur 2.0))
+
+      (prog
+        # CDR is below
+        # Use Y bounds
+        (let Bounds NIL
+          (if (= Ref *part-main)
+              (setq Bounds (calc-bounds> Ref T T))
+              (setq Bounds (calc-bounds> Ref NIL T)))
+          (println 'Bounds Bounds)
+          (set-cur-x (get (get-origin> Ref) 1))
+          (set-cur-y (get Bounds 2)))
+        (nl-cur 2.0)))
+
+    (lay-part Part *cur)
+    
+    Part))
+
+
 (de con-list (Any Lay)
   (let (Lst-Any (list Any)
         Val (val> p0)

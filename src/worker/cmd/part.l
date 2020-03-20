@@ -39,6 +39,8 @@
           b
 
     Replace entire (NIL) with ("")
+    
+    This is assuming the list goes in Y
     }#
 
     (if (= (get *part-main 'data) '(NIL))
@@ -65,36 +67,7 @@
         (put p0 'b (get Part 'a)))
 
 
-      (let Part (con-list Data 'x)
-
-        (let Lay (get Ref 'lay)
-
-          (if (= Lay 'x)
-
-            (prog
-              # CDR is to the right
-              # Use X bounds
-              (let Bounds NIL
-                (if (= Ref *part-main)
-                    (setq Bounds (calc-bounds> Ref T T))
-                    (setq Bounds (calc-bounds> Ref NIL T)))
-                (set-cur-x (get Bounds 1))
-                (set-cur-y (get (get-origin> Ref) 2)))
-              (adv-cur 2.0))
-
-            (prog
-              # CDR is below
-              # Use Y bounds
-              (let Bounds NIL
-                (if (= Ref *part-main)
-                    (setq Bounds (calc-bounds> Ref T T))
-                    (setq Bounds (calc-bounds> Ref NIL T)))
-                (println 'Bounds Bounds)
-                (set-cur-x (get (get-origin> Ref) 1))
-                (set-cur-y (get Bounds 2)))
-              (nl-cur 2.0))))
-
-        (lay-part Part *cur)
+      (let Part (con-any Data 'x)
 
         # Pointer always above regardless of layout
         (put p0 'b Part)

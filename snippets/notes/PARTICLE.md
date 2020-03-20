@@ -242,6 +242,13 @@ Store DAGs as binary trees?
     * Create function to calculate bounds of a pair [Done]
     * Position new particle based on the ref's layout [Done]
       * Must calculate previous item [Done]
+    * Move pointer semantically fwd and back [Done]
+    * Handle layout when moving to inner list
+    * When updating sublist, update superlists
+      * Insert anywhere in list
+      * Traverse "*part-lsts"
+      * This can result in slow updates, so lists should be done outside 
+      the list then merged in
     * Implement doubly-linked particles
     * Refactor cmds
     
@@ -252,11 +259,7 @@ Store DAGs as binary trees?
       * Other syms...default to Y also, but should be X also
       * Refactor list UI
     * Handle missing bounds in metrics for space and ctrl chars
-    * Move pointer semantically fwd and back
-      * Make particles doubly-linked
-    * Insert anywhere in list
-      * Requires relayout of subsequent items
-    * Cur/part relative position functions      
+    * Cur/part relative position functions
     
   * Post
     * Intergate model into worker

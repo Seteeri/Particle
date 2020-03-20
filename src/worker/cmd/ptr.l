@@ -56,8 +56,6 @@
   # Move to next nearest list?
   (println "Move to inner list")
   
-  (prinl-info "cmd-enter-list")
-
   (let (Ref (val> p0)
         Data (car (get Ref 'data)))
 
