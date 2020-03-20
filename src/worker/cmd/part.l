@@ -102,9 +102,7 @@
 
 
 (de cmd-make-nil (Keysym)
-
   (prinl-info "cmd-make-nil")
-
   (cmd-make-char))
 
 
@@ -212,74 +210,27 @@
 
 (de cmd-make-num (Keysym)
 
-  # Same as cmd-make-char
+  # Use cmd-make-char
 
-  (let (Ref (val> p0)
-        Part (con-list (format (char Keysym)) 'x))
-
-    (if (get Ref 'a)
-      (prog
-        (mov-cur-part (get Ref 'a) 'end)
-        (nl-cur -1.0))
-      (prog
-        (mov-cur-part Ref 'end)))
-    (adv-cur 2.0)
-
-    (lay-part Part *cur)
-
-    # Pointer always above regardless of layout
-    (put p0 'b Part)
-    (mov-part-abv> p0 Part (cons T))))
+  # (con-list (format (char Keysym)) 'x)
+  
+  (println "cmd-make-num"))
 
 
 (de cmd-format (Keysym)
 
-  (prinl-info "cmd-format")
+  # Dat (format (get (get Ref 'a) 'data))
+  # Part (con-list Dat 'x))
 
-  # Convert num<->str
-
-  (when (get (get *part-main 'b) 'data)
-
-    (let (Ref (val> p0)
-          Dat (format (get (get Ref 'a) 'data))
-          Part (con-list Dat 'x))
-
-      (if (get Ref 'a)
-        (prog
-          (mov-cur-part (get Ref 'a) 'end)
-          (nl-cur -1.0))
-        (prog
-          (mov-cur-part Ref 'end)))
-      (adv-cur 2.0)
-
-      (lay-part Part *cur)
-
-      # Pointer always above regardless of layout
-      (put p0 'b Part)
-      (mov-part-abv> p0 Part (cons T)))))
-
+  (prinl-info "cmd-format"))
 
 
 (de cmd-pack (Keysym)
 
-  (prinl-info "cmd-pack")
+  # Dat (pack (get *part-main 'data))
+  # Part (con-list Dat 'x))
 
-  # Until doubly-linked list,
-  # Build up list
-
-  (let (Ref (val> p0)
-        Cdr (get Ref 'b)
-        Dat (pack (get *part-main 'data))
-        Part (con-list Dat 'x))
-
-    (mov-cur-part (get Ref 'a) 'end) (nl-cur -1.0) (adv-cur 2.0)
-    (lay-part Part *cur)
-
-    # Pointer always above regardless of layout
-    (put p0 'b Part)
-    (mov-part-abv> p0 Part (cons T)))
-
-  (adv-cur 2.0))
+  (prinl-info "cmd-pack"))
 
 
 #####################
@@ -287,24 +238,7 @@
 
 (de cmd-chop (Keysym)
 
-  (prinl-info "cmd-chop")
-
-  (when (get (get *part-main 'b) 'data)
-
-    (let (Ref (val> p0)
-          Cdr (get Ref 'b)
-          Dat (chop (get (get Ref 'a) 'data))
-          Part (con-list Dat 'x))
-
-      # Move new part to cdr-part
-      (mov-part> Part Cdr (cons T))
-
-      # Move cdr-part in front of Part
-      (mov-part-aft> Cdr Part (cons T))
-
-      # Set new ptr and move it above
-      (put p0 'b Part)
-      (mov-part-abv> p0 Part (cons T)))))
+  (prinl-info "cmd-chop"))
 
 
 (de cmd-eval ()
