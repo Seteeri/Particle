@@ -74,14 +74,17 @@
         
     (repl-list Part Last)
 
+    # We don't use base-cur since we move to beginning
+
     # Mov cursor below
-    (mov-cur-part Last 'end) (adv-cur 2.0)
+    (mov-cur-part Last 'end)    
+    (adv-cur 2.0)
     
-    (put Part 'lay Lay)
     (lay-part Part *cur)
 
     # Move inner list one space further down
-    (mov-cur-part Last 'end) (adv-cur 2.0) (nl-cur 3.0)
+    (mov-cur-part Last 'end)
+    (adv-cur 2.0) (nl-cur 3.0)
     
     (with Part
       (put (: a) 'lay Lay)
@@ -101,9 +104,6 @@
   (del> (val> p0) T T)
   (put Pre 'b) # data still there
   (put p0 'b)
-
-  # Set cursor 2 spaces above ptr
-  (nl-cur -2.0)
 
   (with Pre
     (=: b Part)
