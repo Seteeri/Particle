@@ -30,7 +30,7 @@
         
     # x: CDR is to the right; use X bounds
     # y: CDR is below; use Y bounds
-    (if (= Lay-Ref 'x)
+    (if (= Lay-Ref Lay)
       (base-cur-x Ref) 
       (base-cur-y Ref))
         
@@ -43,7 +43,7 @@
   (let (Lst-Any (list Any)
         Val (val> p0)
         Cdr (get Val 'b)
-        Part (gen-part Lst-Any NIL T))
+        Part (gen-part Lst-Any Lay NIL T))
 
     # MOVE TO GEN-PART
     (put Part 'lay Lay)
@@ -77,21 +77,21 @@
                   (setq Last (get Last 'b)))
                 Last)
         Lst-Any (list (list Any))
-        Part (gen-part Lst-Any))
+        Part (gen-part Lst-Any Lay))
         
     (repl-list Part Last)
 
     # Mov cursor below
     (mov-cur-part Last 'end) (adv-cur 2.0)
     
-    (put Part 'lay 'x)
+    (put Part 'lay Lay)
     (lay-part Part *cur)
 
     # Move inner list one space further down
     (mov-cur-part Last 'end) (adv-cur 2.0) (nl-cur 3.0)
     
     (with Part
-      (put (: a) 'lay 'x)
+      (put (: a) 'lay Lay)
       (lay-part (: a) *cur))
 
     Part))

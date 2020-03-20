@@ -234,7 +234,7 @@
 
     (idx '*particles
           (def '*part-cmds
-               (gen-part '*part-cmds))
+               (gen-part '*part-cmds 'x))
           T)
     (set-cur-x X)
     (put *part-cmds 'lay 'x)
@@ -247,7 +247,7 @@
     # TODO: Draw *part-ptrs
     # Will need to ignore drawing CDR for particle
     (push '*part-ptrs
-          (gen-part 'p0 NIL T))
+          (gen-part 'p0 'x NIL T))
     (idx '*particles
          (def 'p0
               (car *part-ptrs))
@@ -259,7 +259,7 @@
     # Generate main particle list
     (idx '*particles
           (def '*part-main
-                (gen-part '*part-main))
+                (gen-part '*part-main 'x))
           T)
     (set-cur-x X)
     (put *part-main 'lay 'x)
@@ -294,7 +294,8 @@
                             ("I.C"
                               ("I.C.1"
                                "I.C.2"
-                               "I.C.3")))))
+                               "I.C.3"))))
+                        'x)
       
       (nl-cur 2.0)
       (set-cur-x X)
@@ -305,7 +306,7 @@
   
     (nl-cur)
     (set-cur-x X)
-    (let Part (gen-part '("a" "b" ("c" "d")))
+    (let Part (gen-part '("a" "b" ("c" "d")) 'x)
       
       (nl-cur 2.0)
       (set-cur-x X)

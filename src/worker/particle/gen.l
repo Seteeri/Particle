@@ -1,4 +1,4 @@
-(de gen-part (Any Car Cdr)
+(de gen-part (Any Lay Car Cdr)
   # TODO: Handle circular lists...use another dot at the end
 
   (if (pair Any)
@@ -7,14 +7,14 @@
       
           # Handle specific forms here
           (cond (T
-                 (gen-pair Any Car Cdr)))
+                 (gen-pair Any Lay Car Cdr)))
                  
-          (gen-pair Any Car Cdr))
+          (gen-pair Any Lay Car Cdr))
       
-      (gen-atom Any T Car Cdr)))
+      (gen-atom Any Lay T Car Cdr)))
 
 
-(de gen-atom (Any Adv Car Cdr)
+(de gen-atom (Any Lay Adv Car Cdr)
 
   # Pass flag to draw sym val
   
@@ -25,7 +25,7 @@
   
   (let (B (when (and (not Cdr)
                      (sym-int? Any))
-            (gen-sym-int Any Car Cdr)))
+            (gen-sym-int Any Lay Car Cdr)))
             
     (new (if (num? Any)
              '(+Num)
@@ -40,13 +40,13 @@
                      Adv))))
 
 
-(de gen-sym-int (Any Car Cdr)
+(de gen-sym-int (Any Lay Car Cdr)
   # Opt: Ignore NIL?
 
-  (gen-part (val Any) Car Cdr))
+  (gen-part (val Any) Lay Car Cdr))
 
 
-(de gen-pair (Any Ignore-Car Ignore-Cdr)
+(de gen-pair (Any Lay Ignore-Car Ignore-Cdr)
   #{
     Root is baseline of cons
     so for a list Root would be coordinates of first cons
@@ -59,9 +59,10 @@
         (Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
         Part (new '(+Pair)
                    Any
-                  (unless Ignore-Car (gen-part Ar))
-                  (unless Ignore-Cdr (gen-part Dr))
-                  (append Vert-Ar Dot Vert-Dr)))
+                  (unless Ignore-Car (gen-part Ar Lay))
+                  (unless Ignore-Cdr (gen-part Dr Lay))
+                  (append Vert-Ar Dot Vert-Dr)
+                  Lay))
       #{
         Skip the list containing the list so:
           a

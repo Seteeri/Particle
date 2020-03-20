@@ -22,7 +22,7 @@
     (if (= (get *part-main 'data) '(NIL))
 
       # repl-any assumes list has y layout
-      (let Part (repl-any Data)
+      (let Part (repl-any Data 'x)
         
         # Set new list
         (setq *part-main (get Part 'a))
