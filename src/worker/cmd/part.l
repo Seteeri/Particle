@@ -24,6 +24,9 @@
       # repl-any assumes list has y layout
       (let Part (repl-any Data)
         
+        # Set new list
+        (setq *part-main (get Part 'a))
+        
         (put p0 'b (get Part 'a)))
 
       (let Part (con-any Data 'x)

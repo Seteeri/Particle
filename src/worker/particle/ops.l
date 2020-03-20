@@ -89,6 +89,8 @@
 
 
 (de repl-list (Any Pre)
+  # Pass Lay
+
   #{
         p0
   [] -> [] -> NIL
@@ -122,8 +124,5 @@
     (with Pre
       (=: b Part)
       (con (car (:: data)) Lst-Any))
-        
-    # Set new list
-    (setq *part-main (get Part 'a))
-      
+              
     Part))

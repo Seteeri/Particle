@@ -261,8 +261,7 @@ Store DAGs as binary trees?
     * Handle missing bounds in metrics for space and ctrl chars
     * Cur/part relative position functions
     
-  * Post
-    * Intergate model into worker
+  * Intergate model into worker [Done]
 
   * Optimize ipc to batch messages, flush etc.
    
