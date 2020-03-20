@@ -27,13 +27,10 @@
   # Move to next item in the list
   (println "Move to next item")
   
-  (let (Part-Ptr (val> p0)
-        Cdr      (get Part-Ptr 'b))
-    
-    (when Cdr
-      
-      (put p0 'b Cdr)
-      (mov-part-abv> p0 Cdr (cons T)))))
+  (let? Cdr (get (val> p0) 'b)
+          
+    (put p0 'b Cdr)
+    (mov-part-abv> p0 Cdr (cons T))))
   
 
 (de cmd-point-ptr-out (Keysym)
