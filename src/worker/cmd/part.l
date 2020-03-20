@@ -106,49 +106,6 @@
   (cmd-make-char))
 
 
-(de cmd-enter-list (Keysym)
-
-  (prinl-info "cmd-enter-list")
-
-  (let (Ref (val> p0)
-        Data (car (get Ref 'data)))
-
-    # Check pointer is a list; watch for cons == list
-    (when (or (pair Data)
-              (== Data NIL))
-
-      # Push Part to history
-      (push '*part-lsts *part-main)
-
-      # DEPENDS ON LAYOUT!
-      # Default is to push strings
-
-      # Move cursor/pointer underneath list
-      (nl-cur 3.0) (mov> p0 *cur)
-
-      # Do not change pointer data - will push to it
-
-      # Set main particle
-      (setq *part-main Ref))))
-
-
-(de cmd-leave-list (Keysym)
-
-  (prinl-info "cmd-leave-list")
-
-  # Set main particle to old one
-  (setq *part-main (pop '*part-lsts))
-
-  (let? Last-1 (last-1> *part-main)
-
-    # Set ptr to last item (non-NIL)
-    (put p0 'b Last-1)
-    (mov-part-abv> p0 Last-1)
-
-    # Move cursor
-    (mov-cur-part Last-1)))
-
-
 (de cmd-del (Dir)
 
   (prinl-info "cmd-del")
