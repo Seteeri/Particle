@@ -35,14 +35,14 @@
 
 
 (de con-list (Any Lay)
-  (let (Lst-Any (list Any)
-        Val (val> p0)
-        Cdr (get Val 'b)
+  (let (Ref (val> p0)
+        Cdr (get Ref 'b)
+        Lst-Any (list Any)
         Part (gen-part Lst-Any Lay NIL T))
 
     # Set cdr of cur-part to new-part
     # [c] -> [n]
-    (put Val 'b Part)
+    (put Ref 'b Part)
     
     # Set cdr of new-part to cdr-part
     # [n] -> [b] -> ...
