@@ -62,7 +62,8 @@
     Part))
 
 
-(de repl-any (Any)
+(de repl-any (Any Lay)
+  # Use Lay
 
   (let (Ref (val> p0)
         Dat-Ref (car (get Ref 'data))
@@ -71,43 +72,32 @@
                   (NIL (get (get (get Last 'b) 'b) 'b))
                   (setq Last (get Last 'b)))
                 Last)
-        Part (repl-list Data Last))
+        Lst-Any (list (list Any))
+        Part (gen-part Lst-Any))
+        
+    (repl-list Part Last)
 
     # Mov cursor below
     (mov-cur-part Last 'end) (adv-cur 2.0)
-
+    
     (put Part 'lay 'x)
     (lay-part Part *cur)
 
     # Move inner list one space further down
-    (mov-cur-part Last 'end) (adv-cur 2.0)
-    (nl-cur 3.0)
-    (put (get Part 'a) 'lay 'x)
-    (lay-part (get Part 'a) *cur)
+    (mov-cur-part Last 'end) (adv-cur 2.0) (nl-cur 3.0)
+    
+    (with Part
+      (put (: a) 'lay 'x)
+      (lay-part (: a) *cur))
 
     Part))
 
 
-(de repl-list (Any Pre)
+(de repl-list (Part Pre)
   # Pass Lay
-
-  #{
-        p0
-  [] -> [] -> NIL
-  a     NIL
-
-        p0
-  []  
-  
-        p0
-  [] -> [] -> NIL
-  a     |
-        b
-  
-  }#
-
+  #
   # Replace NIL with List
-    
+  #
   # Handle case when there is something after ref
     
   # Delete particle first
@@ -118,11 +108,6 @@
   # Set cursor 2 spaces above ptr
   (nl-cur -2.0)
 
-  (let (Lst-Any (list (list Any))
-        Part (gen-part Lst-Any))
-
-    (with Pre
-      (=: b Part)
-      (con (car (:: data)) Lst-Any))
-              
-    Part))
+  (with Pre
+    (=: b Part)
+    (con (car (:: data)) (get Part 'data))))
