@@ -4,8 +4,7 @@
                   (calc-bounds> Ref T T)
                   (calc-bounds> Ref NIL T))
     (set-cur-x (get Bounds 1))
-    (set-cur-y (get (get-origin> Ref) 2)))
-  (adv-cur 2.0))
+    (set-cur-y (get (get-origin> Ref) 2))))
 
         
 (de base-cur-y (Ref)
@@ -14,16 +13,15 @@
                   (calc-bounds> Ref T T)
                   (calc-bounds> Ref NIL T))
     (set-cur-x (get (get-origin> Ref) 1))
-    (set-cur-y (get Bounds 2)))
-  (nl-cur 2.0))
+    (set-cur-y (get Bounds 2))))
 
 
 (de base-cur (Ref)
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds
   (if (= (get Ref 'lay) 'x)
-    (base-cur-x Ref) 
-    (base-cur-y Ref)))
+    (prog (base-cur-x Ref) (adv-cur 2.0))
+    (prog (base-cur-y Ref) (nl-cur 2.0))))
 
 
 (de con-any (Any Lay)
