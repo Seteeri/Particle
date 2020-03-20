@@ -14,9 +14,7 @@
     ksd~Tab
   }#
 
-  (let (Ref (val> p0)
-        Dat-Ref (car (get Ref 'data))
-        Data (when Keysym
+  (let (Data (when Keysym
                (cond ((= Keysym ksd~space) " ")
                      ((= Keysym ksd~Return) (char 10))
                      (T (char Keysym)))))
@@ -45,7 +43,9 @@
 
     (if (= (get *part-main 'data) '(NIL))
 
-      (let (Last (let Last (car *part-lsts)
+      (let (Ref (val> p0)
+            Dat-Ref (car (get Ref 'data))
+            Last (let Last (car *part-lsts)
                     (loop
                       (NIL (get (get (get Last 'b) 'b) 'b))
                       (setq Last (get Last 'b)))
