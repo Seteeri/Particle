@@ -17,9 +17,10 @@
 (dm T (Data
        A
        B
-       Verts)
+       Verts
+       Lay)
 
-  (super Data A B Verts))  
+  (super Data A B Verts Lay))
 
 
 (class +Str +Particle)
@@ -27,6 +28,7 @@
 (dm T (Data
        A
        B
-       Verts)
+       Verts
+       Lay)
 
-  (super Data A B Verts))
+  (super Data A B Verts Lay))

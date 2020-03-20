@@ -45,8 +45,8 @@
 
     # MOVE TO GEN-PART
     (put Part 'lay Lay)
-    (put (get Part 'a) 'lay Lay)
-    (put (get Part 'b) 'lay Lay)
+    #(put (get Part 'a) 'lay Lay)
+    #(put (get Part 'b) 'lay Lay)
 
     # Set cdr of cur-part to new-part
     # [c] -> [n]

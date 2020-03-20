@@ -77,7 +77,7 @@
   (=: dat (date))
   (=: tim (time))
   
-  (=: lay 'y))
+  (=: lay Lay))
 
 
 (dm con> (B) (=: b B))
