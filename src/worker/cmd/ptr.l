@@ -8,9 +8,20 @@
   
   # Either use doubly-linked list or
   # spatial index
-  
-  T)
 
+  (let (Ref (val> p0)
+        Tgt (get *part-main 'b)
+        Prv *part-main)
+        
+    (loop
+      (T (or (nil (get Tgt 'b))
+             (= Tgt Ref)))
+      (setq Prv Tgt
+            Tgt (get Tgt 'b)))
+
+    (put p0 'b Prv)
+    (mov-part-abv> p0 Prv (cons T))))
+  
 
 (de cmd-point-ptr-nxt (Keysym)
   # Move to next item in the list
