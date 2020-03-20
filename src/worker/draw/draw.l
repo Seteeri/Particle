@@ -56,8 +56,6 @@
     * Comments are really just strings...
       * On load: convert to STR
       * On save: convert to comment
-      
-  TODO: Use assoc list instead
   }#
 
   # Adjust brightness for time

@@ -270,12 +270,53 @@
 (dm last-vert-pos> (Cnt)
   (get (get (last (: verts)) 'pos) Cnt))
 
+
 (dm first-vert> ()
   (car (: verts)))
+
   
 (dm last-vert> ()
   (last (: verts)))
-  
+
+
+(dm calc-bounds> (A B)
+
+  # Calc bounds of CAR and CDR
+
+  (let ((X1 Y1) (when (and (: a) (not A))
+                  (if (= (type (: a)) '(+Pair))
+                      (calc-bounds> (: a))
+                      (let Vert (last-vert> (: a))
+                        (with Vert
+                          (get-origin> (get *metrics (: chr))
+                                       (: pos)
+                                       *sca-vert)))))
+        (X2 Y2) (when (and (: b) (not B))
+                  (if (= (type (: b)) '(+Pair))
+                      (calc-bounds> (: b))
+                      (let Vert (last-vert> (: b))
+                        (with Vert
+                          (get-origin> (get *metrics (: chr))
+                                       (: pos)
+                                       *sca-vert))))))
+
+    # If neither Car or Cdr, use cons
+    (if (and (not X1) (not X2))
+
+      (let Vert (last-vert> This)
+        (with Vert
+          (get-origin> (get *metrics (: chr))
+                       (: pos)
+                       *sca-vert)))
+
+      (list (cond ((and X1 (not X2)) X1)
+                  ((and X2 (not X1)) X2)
+                  (T (max X1 X2)))
+            (cond ((and Y1 (not Y2)) Y1)
+                  ((and Y2 (not Y1)) Y2)
+                  (T (min Y1 Y2)))))))
+                
+                  
 # Debug
 
 (dm trace> (Cnt)

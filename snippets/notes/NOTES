@@ -3349,3 +3349,37 @@ I .   .              .
 * Add NIL
 * Enter list
 * Exit list
+
+
+MIXED ARBITRARY:
+
+. . . A
+A A . A
+    . A
+    . . . NIL
+    A A A
+
+Modifying mid-list would result in relayout
+
+
+============================================
+
+A list/pair would contain vol for all items in list until NIL
+A num/sym would contain vol for direct CAR and CDR
+
+Calc vol for a pair = vol cell + vol CAR + vol CDR + spacing
+
+[.] CAR
+    asdf
+    asdf
+    asdf
+
+[.] CAR
+    adsf
+    adsf
+    adsf
+    
+[.] CAR
+    asdf
+    adsf
+    asdf

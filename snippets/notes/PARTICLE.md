@@ -239,21 +239,25 @@ Store DAGs as binary trees?
   * Separate layout from generating particles [Done]
     
   * Integrate layout with generating particles (cmds)
-    * Refactor cmds [WIP]
+    * Create function to calculate bounds of a pair  
+    * Position new particle based on the ref's layout
+      * Must calculate previous item
+    * Implement doubly-linked particles
+    * Refactor cmds
+    
+    * Add cmds to swap/toggle layouts X/Y
+      * Must relayout car/cdr
       * Lists of lists are Y
       * Nums and Strs are X
       * Other syms...default to Y also, but should be X also
       * Refactor list UI
-    * Add cmds to swap layouts X/Y
-    * Remove gen-part pos argument [Done]
     * Handle missing bounds in metrics for space and ctrl chars
-    * Cur/part relative position functions
     * Move pointer semantically fwd and back
       * Make particles doubly-linked
-      * Doubly-linked lists required?
     * Insert anywhere in list
       * Requires relayout of subsequent items
-  
+    * Cur/part relative position functions      
+    
   * Post
     * Intergate model into worker
 

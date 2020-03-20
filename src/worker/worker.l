@@ -308,7 +308,13 @@
       
       (nl-cur 2.0)
       (set-cur-x X)
-      (lay-part Part *cur (get Part 'lay))))
+      (lay-part Part *cur (get Part 'lay))
+      
+      (let B (calc-bounds> Part)
+        #(mov> p0 B)
+        (println "BOUNDS:" B))
+      
+      ))
   
   T))
 
