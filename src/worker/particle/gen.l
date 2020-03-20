@@ -1,4 +1,4 @@
-(de gen-part (Any Lay Car Cdr)
+(de gen-part (Any Lay Car-Skip Cdr-Skip)
   # TODO: Handle circular lists...use another dot at the end
 
   (if (pair Any)
@@ -7,14 +7,14 @@
       
           # Handle specific forms here
           (cond (T
-                 (gen-pair Any Lay Car Cdr)))
+                 (gen-pair Any Lay Car-Skip Cdr-Skip)))
                  
-          (gen-pair Any Lay Car Cdr))
+          (gen-pair Any Lay Car-Skip Cdr-Skip))
       
-      (gen-atom Any Lay T Car Cdr)))
+      (gen-atom Any Lay T Car-Skip Cdr-Skip)))
 
 
-(de gen-atom (Any Lay Adv Car Cdr)
+(de gen-atom (Any Lay Adv Car-Skip Cdr-Skip)
 
   # Pass flag to draw sym val
   
@@ -23,9 +23,9 @@
 
   # Must do after so drawn after
   
-  (let (B (when (and (not Cdr)
+  (let (B (when (and (not Cdr-Skip)
                      (sym-int? Any))
-            (gen-sym-int Any Lay Car Cdr)))
+            (gen-sym-int Any Lay Car-Skip Cdr-Skip)))
             
     (new (if (num? Any)
              '(+Num)
@@ -37,16 +37,17 @@
          B
          (draw-atom Any
                      (get-color-type Any)
-                     Adv))))
+                     Adv)
+         Lay)))
 
 
-(de gen-sym-int (Any Lay Car Cdr)
+(de gen-sym-int (Any Lay Car-Skip Cdr-Skip)
   # Opt: Ignore NIL?
 
-  (gen-part (val Any) Lay Car Cdr))
+  (gen-part (val Any) Lay Car-Skip Cdr-Skip))
 
 
-(de gen-pair (Any Lay Ignore-Car Ignore-Cdr)
+(de gen-pair (Any Lay Car-Skip Cdr-Skip)
   #{
     Root is baseline of cons
     so for a list Root would be coordinates of first cons
@@ -59,8 +60,8 @@
         (Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
         Part (new '(+Pair)
                    Any
-                  (unless Ignore-Car (gen-part Ar Lay))
-                  (unless Ignore-Cdr (gen-part Dr Lay))
+                  (unless Car-Skip (gen-part Ar Lay))
+                  (unless Cdr-Skip (gen-part Dr Lay))
                   (append Vert-Ar Dot Vert-Dr)
                   Lay))
       #{
@@ -71,31 +72,8 @@
       }#
       (when (num? Ar)
         (lay-num-ds Part 'x))
-
-      #(when (str? Ar)
-      #  (lay-str-ds Part 'x))
       
       Part))
-
-
-(de lay-str-ds (Part Lay)
-  # If nested lists, must keep checking until non-pair/list
-  
-  (with Part
-    
-    (let (P-Typ (type Part)
-          A-Typ (type (: a))
-          B-Typ (type (: b)))
-  
-      (when (and (= P-Typ '(+Pair))
-                 (or (= A-Typ '(+Pair))
-                     (= A-Typ '(+Str))))
-        
-        (=: lay Lay)
-        (put (: a) 'lay Lay))
-      
-      (when (= A-Typ '(+Pair)) (lay-num-ds (: a) Lay))
-      (when (= B-Typ '(+Pair)) (lay-num-ds (: b) Lay)))))
 
 
 (de lay-num-ds (Part Lay)

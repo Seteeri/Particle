@@ -247,7 +247,7 @@
     # TODO: Draw *part-ptrs
     # Will need to ignore drawing CDR for particle
     (push '*part-ptrs
-          (gen-part 'p0 'x NIL T))
+          (gen-part 'p0 'x T T))
     (idx '*particles
          (def 'p0
               (car *part-ptrs))
@@ -267,7 +267,7 @@
     (lay-part *part-main *cur)
 
     # Connect pointer to main
-    (with p0 (=: b *part-main))
+    (put p0 'b *part-main)
 
   (nl-cur)
   (set-cur-x X)

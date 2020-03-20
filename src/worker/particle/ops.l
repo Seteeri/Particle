@@ -30,7 +30,7 @@
         
     # x: CDR is to the right; use X bounds
     # y: CDR is below; use Y bounds
-    (if (= Lay-Ref Lay)
+    (if (= Lay-Ref 'x)
       (base-cur-x Ref) 
       (base-cur-y Ref))
         
