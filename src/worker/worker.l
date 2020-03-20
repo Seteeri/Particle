@@ -66,11 +66,6 @@
 (load "/home/user/Particle/particle/src/prot/msg.l")
 (load "/home/user/Particle/particle/src/prot/obj.l")
 (load "/home/user/Particle/particle/src/metrics/metrics.l")
-(load "/home/user/Particle/particle/src/model/particle/particle.l")
-(load "/home/user/Particle/particle/src/model/particle/pair.l")
-(load "/home/user/Particle/particle/src/model/particle/sym.l")
-(load "/home/user/Particle/particle/src/model/particle/num.l")
-(load "/home/user/Particle/particle/src/model/particle/layout.l")
 (load "/home/user/Particle/particle/src/model/projview.l")
 (load "/home/user/Particle/particle/src/model/vertex.l")
 (load "/home/user/Particle/particle/src/ctrl/xkb.l")
@@ -81,6 +76,11 @@
 (load "/home/user/Particle/particle/src/worker/cmd/part.l")
 (load "/home/user/Particle/particle/src/worker/cmd/cam.l")
 (load "/home/user/Particle/particle/src/worker/cmd/ptr.l")
+(load "/home/user/Particle/particle/src/worker/particle/particle.l")
+(load "/home/user/Particle/particle/src/worker/particle/pair.l")
+(load "/home/user/Particle/particle/src/worker/particle/sym.l")
+(load "/home/user/Particle/particle/src/worker/particle/num.l")
+(load "/home/user/Particle/particle/src/worker/particle/layout.l")
 
 
 (def '*bindings-key
