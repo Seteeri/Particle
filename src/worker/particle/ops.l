@@ -57,10 +57,9 @@
 
 
 (de repl-any (Any Lay)
-  # Use Lay
+  # Handle case when there is something after ref
 
   (let (Ref (val> p0)
-        Dat-Ref (car (get Ref 'data))
         Last (let Last (car *part-lsts)
                 (loop
                   (NIL (get (get (get Last 'b) 'b) 'b))
@@ -91,11 +90,6 @@
 
 
 (de repl-list (Part Pre)
-  # Pass Lay
-  #
-  # Replace NIL with List
-  #
-  # Handle case when there is something after ref
     
   # Delete particle first
   (del> (val> p0) T T)

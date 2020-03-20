@@ -243,10 +243,8 @@ Store DAGs as binary trees?
     * Position new particle based on the ref's layout [Done]
       * Must calculate previous item [Done]
     * Move pointer semantically fwd and back [Done]
-    * Repl must use bounds
-    * Refactor gen layout use -> move it
-    * Make fn: mov-cur X/adv Y/nl
     * Handle layout when moving to inner list
+    * Handle random edits
     * When updating sublist, update superlists
       * Insert anywhere in list
       * Traverse "*part-lsts"
@@ -254,6 +252,9 @@ Store DAGs as binary trees?
       the list then merged in
     * Implement doubly-linked particles
     * Refactor cmds
+    * Repl must use bounds?
+    * Refactor gen layout use -> move it
+    * Make fn: mov-cur X/adv Y/nl    
     
     * Add cmds to swap/toggle layouts X/Y
       * Must relayout car/cdr
