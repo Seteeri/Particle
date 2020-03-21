@@ -116,7 +116,7 @@
 
       # Lisp Ops
       ((`ksd~Control-L `ksd~q) T `cmd-eval)
-      ((`ksd~Control-L `ksd~e) T `cmd-pack)
+      ((`ksd~Control-L `ksd~u) T `cmd-pack)
       ((`ksd~Control-L `ksd~r) T `cmd-chop)
       ((`ksd~Control-L `ksd~f) T `cmd-any)
       ((`ksd~Control-L `ksd~g) T `cmd-sym)
@@ -126,25 +126,21 @@
       ((`ksd~Alt-L     `ksd~y) T '((Keysym) (println "cmd-flip")))
 
       # Create NIL
-      ((`ksd~Control-L `ksd~Return)    T `cmd-make-nil)
-      ((`ksd~Control-R `ksd~Return)    T `cmd-make-nil)
-      ((`ksd~Alt-R     `ksd~Return)    T `cmd-enter-list)
-      ((`ksd~Alt-R     `ksd~BackSpace) T `cmd-leave-list)
+      ((`ksd~Control-L `ksd~e)    T `cmd-make-nil)
+      ((`ksd~Control-R `ksd~e)    T `cmd-make-nil)
 
       # Pointer Translation
-      # Make Alt+WASD
-      # cmd-trans-ptr-py/px/nx/ny
-      ((`ksd~Alt-L `ksd~w) T `cmd-point-ptr-out)
-      ((`ksd~Alt-R `ksd~w) T `cmd-point-ptr-out)
+      ((`ksd~Control-L `ksd~w) T `cmd-point-ptr-out)
+      ((`ksd~Control-R `ksd~w) T `cmd-point-ptr-out)      
 
-      ((`ksd~Alt-L `ksd~a) T `cmd-point-ptr-pre)
-      ((`ksd~Alt-R `ksd~a) T `cmd-point-ptr-pre)
+      ((`ksd~Control-L `ksd~a) T `cmd-point-ptr-pre)      
+      ((`ksd~Control-R `ksd~a) T `cmd-point-ptr-pre)      
 
-      ((`ksd~Alt-L `ksd~s) T `cmd-point-ptr-in)
-      ((`ksd~Alt-R `ksd~s) T `cmd-point-ptr-in)
+      ((`ksd~Control-L `ksd~s) T `cmd-point-ptr-in)
+      ((`ksd~Control-R `ksd~s) T `cmd-point-ptr-in)
 
-      ((`ksd~Alt-L `ksd~d) T `cmd-point-ptr-nxt)
-      ((`ksd~Alt-R `ksd~d) T `cmd-point-ptr-nxt)
+      ((`ksd~Control-L `ksd~d) T `cmd-point-ptr-nxt)
+      ((`ksd~Control-R `ksd~d) T `cmd-point-ptr-nxt)
 
       # Camera Translation
       # Make dir
