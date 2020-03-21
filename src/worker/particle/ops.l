@@ -49,6 +49,9 @@
     # Ref -> Part -> Cdr
     (put Part 'b Cdr)
     
+    # Back ref
+    (put Part 'c Ref)
+    
     # Connect new part data to list part data
     # Need separate function if not at end
     #   (conc (: data) Lst-Any (get (get Ref 'b) 'data))
@@ -59,7 +62,7 @@
     # Remember, *part-main's value is always the particle itself
     # The value of the symbol *part-main is actually 'b
     #(println (get (get *part-main 'b) 'data))
-        
+    
     Part))
 
 ######################
@@ -115,4 +118,6 @@
 
   (with Pre
     (=: b Part)
-    (con (car (:: data)) (get Part 'data))))
+    (con (car (:: data)) (get Part 'data)))
+    
+  (put Part 'c Pre))

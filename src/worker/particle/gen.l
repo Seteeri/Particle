@@ -53,17 +53,24 @@
     so for a list Root would be coordinates of first cons
   }#
 
-  # TODO: REFACTOR CAR/CDR - FLIP FLAGS?
+  # Check draw-cell! Could return single list...
 
   (let (Ar (car Any)
         Dr (cdr Any)
         (Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
-        Part (new '(+Pair)
-                   Any
-                  (unless Car-Skip (gen-part Ar Lay))
-                  (unless Cdr-Skip (gen-part Dr Lay))
-                  (append Vert-Ar Dot Vert-Dr)
-                  Lay))
+        Part-Car (unless Car-Skip (gen-part Ar Lay))
+        Part-Cdr (unless Cdr-Skip (gen-part Dr Lay))        
+        Part-Pair (new '(+Pair)
+                        Any
+                        Part-Car
+                        Part-Cdr
+                        (append Vert-Ar Dot Vert-Dr)
+                        Lay))
+                        
+      # If CAR/CDR, is a list, set C to pair
+      (unless Car-Skip (put Part-Car 'c Part-Pair))
+      (unless Cdr-Skip (put Part-Cdr 'c Part-Pair))
+        
       #{
         Skip the list containing the list so:
           a
@@ -71,9 +78,9 @@
           c
       }#
       (when (num? Ar)
-        (lay-num-ds Part 'x))
+        (lay-num-ds Part-Pair 'x))
       
-      Part))
+      Part-Pair))
 
 
 (de lay-num-ds (Part Lay)
@@ -87,12 +94,12 @@
           A-Typ (type (: a))
           B-Typ (type (: b)))
   
-      (when (and (= P-Typ '(+Pair))
-                 (or (= A-Typ '(+Pair))
-                     (= A-Typ '(+Num))))
+      (when (and (isa '+Pair P-Typ)
+                 (or (isa '+Pair A-Typ)
+                     (isa '+Num A-Typ)))
         
         (=: lay Lay)
         (put (: a) 'lay Lay))
       
-      (when (= A-Typ '(+Pair)) (lay-num-ds (: a) Lay))
-      (when (= B-Typ '(+Pair)) (lay-num-ds (: b) Lay)))))
+      (when (isa +Pair A-Typ) (lay-num-ds (: a) Lay))
+      (when (isa +Pair B-Typ) (lay-num-ds (: b) Lay)))))
