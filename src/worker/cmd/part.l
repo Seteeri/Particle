@@ -55,11 +55,11 @@
     2. Connect Prv to Nxt
   }#
 
-  (when (get (get *part-main 'b) 'data)
+  (let (Ref (val> p0)
+        Prv (get Ref 'c)
+        Nxt (get Ref 'b))
 
-    (let (Ref (val> p0)
-          Prv (get Ref 'c)
-          Nxt (get Ref 'b))
+    (unless (= (get Ref 'data) '*part-main)
 
       # For lists, del recursively
       (when (get Ref 'a)
