@@ -226,9 +226,14 @@
                 (pack "(zv " (get Vert 'off-gl) '")"))
       (push '*verts Vert)
       (dec '*cnt-v)))
+  
+  (=: c)
+  
+  (when (and Car (: a))
+    (del> (: a) Car Cdr))
     
-  (when (and Car (: a)) (del> (: a) Car Cdr))
-  (when (and Cdr (: b)) (del> (: b) Car Cdr)))
+  (when (and Cdr (: b))
+    (del> (: b) Car Cdr)))
 
 
 # Verts

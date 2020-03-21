@@ -51,56 +51,38 @@
 
   #{
     1. Delete Ref
-    2. Connect Last-2/Ref-1 to Last/NIL
-      * Must search list
-        * Currently, must traverse
-        * However, when spatially mapped, that may be faster since less
-        pointer chasing
-      * Cache last pointer change - only valid when moving sequentially
-        * Check cmd that produced it
+    2. Connect Prv to Nxt
   }#
 
   (when (get (get *part-main 'b) 'data)
 
     (let (Ref (val> p0)
-          Tgt (get *part-main 'b)
-          Prv *part-main
-          Nxt NIL)
-
-      # Search until pointer - save previous
-      (loop
-        (T (or (nil (get Tgt 'b))
-               (= Tgt Ref)))
-        (setq Prv Tgt
-              Tgt (get Tgt 'b)))
-
-      # If Prv is NIL then only 1 item so attach NIL to symbol
-
-      # Save next particle
-      (setq Nxt (get Tgt 'b))
-
-      # Position pointer at Tgt before del
-      (mov-cur-vert (car (get Tgt 'verts)) T)
+          Prv (get Ref 'c)
+          Nxt (get Ref 'b))
 
       # For lists, del recursively
-      (when (get Tgt 'a)
-        (del> (get Tgt 'a) T T)
-        (put Tgt 'a))
-      # Delete target/list itself, except CDR
-      (del> Tgt T NIL)
+      (when (get Ref 'a)
+        (del> (get Ref 'a) T T)
+        (put Ref 'a))
+      # Delete Ref itself, except CDR
+      (del> Ref T NIL)
 
-      # Mov Nxt to Tgt
-      (when Nxt (mov> Nxt *cur))
+      # Position pointer at Ref before del
+      (mov-cur-part Ref 'start)
 
-      # Connect Prv to Nxt
+      # Mov Nxt to Ref
+      (mov> Nxt *cur)
+
+      # Link ptrs
       (put Prv 'b Nxt)
+      (put Nxt 'c Prv)
 
-      # Modify data of Prv
+      # Link data
       # Use con to destructively set the CDR
       (unless (= Prv *part-main)
         (con (get Prv 'data) (get Nxt 'data)))
 
-      # Point to Prv
+      # Link p0
       (put p0 'b Prv)
       (mov-part-abv> p0 Prv (cons T)))))
 
