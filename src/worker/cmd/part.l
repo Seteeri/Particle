@@ -1,3 +1,5 @@
+(def '*mode-car)
+
 (de cmd-make-char (Keysym)
 
   #{
@@ -27,7 +29,7 @@
     }#
 
     # Won't work if NIL is first object
-    (if (= (get *part-main 'data) '(NIL))
+    (if *mode-car
 
       # repl-any assumes list has y layout
       (let Part (repl-any Data 'x)
@@ -35,7 +37,9 @@
         # Set new list
         (setq *part-main (get Part 'a))
         
-        (put p0 'b (get Part 'a)))
+        (put p0 'b (get Part 'a))
+        
+        (setq *mode-car NIL))
 
       (let Part (con-any Data 'x)
                 

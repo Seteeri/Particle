@@ -75,7 +75,9 @@
       # Do not change pointer data - will push to it
 
       # Set main particle
-      (setq *part-main Ref))))
+      (setq *part-main Ref)
+      
+      (setq *mode-car T))))
 
 
 ###########

@@ -3383,3 +3383,37 @@ Calc vol for a pair = vol cell + vol CAR + vol CDR + spacing
     asdf
     adsf
     asdf
+
+
+      (NIL)
+[.] - [.] - NIL
+      NIL
+
+      ("A")
+[.] - [.] - NIL
+      
+      
+      [.] 
+      "A"
+
+
+((CAR))
+
+[.] - CDR
+CAR
+ |
+[.] - CDR
+CAR
+
+When lay=x and enter-list, switch to modify car; vice versa, for exit list
+- Do this once, then return to cdr
+
+When lay=y and enter-list, switch to modify cdr; vice versa, for exit list
+
+(CAR CAR)
+
+[.] - CAR
+CDR
+ |
+[.] - CAR
+CDR
