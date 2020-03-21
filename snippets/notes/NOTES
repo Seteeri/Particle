@@ -3405,11 +3405,6 @@ CAR
 [.] - CDR
 CAR
 
-When lay=x and enter-list, switch to modify car; vice versa, for exit list
-- Do this once, then return to cdr
-
-When lay=y and enter-list, switch to modify cdr; vice versa, for exit list
-
 (CAR CAR)
 
 [.] - CAR

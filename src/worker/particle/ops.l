@@ -84,8 +84,10 @@
 
     # Either use Ref or Last
 
-    # Move new part under old ref pos
-    (mov-cur-part Ref 'start)
+    # HANDLE Y LAYOUT!
+    
+    # Move new part at extents of Pre
+    (base-cur Pre)
     (lay-part Part *cur)
 
     # Move car one space further down
