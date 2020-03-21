@@ -246,6 +246,10 @@ Store DAGs as binary trees?
     * Handle layout when moving to inner list [Done]
     * Implement doubly-linked particles [Sun]
       * Fix sublist handling    
+      * Test nested lists + NILs
+        * Check del
+    * Refactor pointer to point to last (NIL)
+      * More consistent with entering a list
     * Handle random edits [Sun]
       * Update subsequent items in list
       * Update superlist
@@ -268,7 +272,9 @@ Store DAGs as binary trees?
     * Make fn: mov-cur X/adv Y/nl          
     * Handle missing bounds in metrics for space and ctrl chars
     
-  * Optimize ipc to batch messages, flush etc. [Mon]
+  * Refactor [Mon]
+    
+  * Optimize ipc to batch messages, flush etc. [Tues]
     * Instead of directly sending msgs, put into list
     * Call flush to send all
     * Requires rewriting protocol to read multiple messages from single
@@ -282,6 +288,9 @@ Store DAGs as binary trees?
     * newline ("^J"), return ("^M") or TAB ("^I")
     
   =-----------------------------------------------------------------------------
+
+  * Instead of drawing lines to connect nodes, draw generic grid in bg
+  to guide user
 
   * Implement/Draw Primary Lists:
     1. Main etc.

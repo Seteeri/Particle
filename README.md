@@ -7,7 +7,7 @@ information as they moved through the computer. What did they look like?
 
 ---
 
-Particle is a personal knowledge base/manager (traditionally called a PIM)
+Particle is a personal knowledge manager (traditionally called a PIM)
 implemented through a structured/projectional UI based on Lisp.
 
 It is the realization of my vision to map our thoughts into the computer.
