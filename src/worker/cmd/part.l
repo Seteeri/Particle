@@ -32,7 +32,7 @@
     (if *mode-car
 
       # repl-any assumes list has y layout
-      (let Part (repl-any Data 'x)
+      (let Part (repl-ref Data 'x)
                 
         # Set new list
         (setq *part-main (get Part 'a))
@@ -41,7 +41,7 @@
         
         (setq *mode-car NIL))
 
-      (let Part (con-any Data 'x)
+      (let Part (repl-cdr Data 'x)
                 
         (put p0 'b Part)
         

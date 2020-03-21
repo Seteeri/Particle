@@ -23,8 +23,11 @@
     (prog (base-cur-x Ref) (adv-cur 2.0))
     (prog (base-cur-y Ref) (nl-cur 2.0))))
 
+######################
 
-(de con-any (Any Lay)
+(de repl-cdr (Any Lay)
+  # Replace CDR
+
   (let (Ref (val> p0)
         Part (con-list Any Lay))
     (base-cur Ref)
@@ -53,8 +56,11 @@
       
     Part))
 
+######################
 
-(de repl-any (Any Lay)
+(de repl-ref (Any Lay)
+  # Replace entire Ref (CAR)
+
   # Handle case when there is something after ref
 
   (let (Ref (val> p0)

@@ -3417,3 +3417,9 @@ CDR
  |
 [.] - CAR
 CDR
+
+
+Pressing ascii key results in replacing CDR
+except when enter-list is called 
+which results in replacing the CAR
+then returns to normal
