@@ -9,16 +9,7 @@
   # Either use doubly-linked list or
   # spatial index
 
-  (let (Ref (val> p0)
-        Tgt (get *part-main 'b)
-        Prv *part-main)
-        
-    (loop
-      (T (or (nil (get Tgt 'b))
-             (= Tgt Ref)))
-      (setq Prv Tgt
-            Tgt (get Tgt 'b)))
-
+  (let? Prv (get (val> p0) 'c)
     (put p0 'b Prv)
     (mov-part-abv> p0 Prv (cons T))))
   
@@ -28,7 +19,6 @@
   (println "Move to next item")
   
   (let? Cdr (get (val> p0) 'b)
-          
     (put p0 'b Cdr)
     (mov-part-abv> p0 Cdr (cons T))))
   

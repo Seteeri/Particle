@@ -244,13 +244,13 @@ Store DAGs as binary trees?
       * Must calculate previous item [Done]
     * Move pointer semantically fwd and back [Done]
     * Handle layout when moving to inner list [Done]
+    * Implement doubly-linked particles [Done]    
     * Handle random edits
       * Update subsequent items in list
       * Update superlist
         * Traverse "*part-lsts"
         * This can result in slow updates, so lists should be done outside 
           the list then merged in
-    * Implement doubly-linked particles
     * Refactor other cmds    
     * Add cmd to swap/toggle layouts X/Y
       * Must relayout car/cdr
