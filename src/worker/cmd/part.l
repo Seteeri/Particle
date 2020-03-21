@@ -9,8 +9,8 @@
     2. Set CDR of ref to part
     3. Set ptr value
     4. Move ptr
-
-    Position new particle based on the ref's layout
+    5. Update subsequent items
+    6. Update superlist subsequent items
 
     ksd~Return
     ksd~Tab
@@ -21,31 +21,22 @@
                      ((= Keysym ksd~Return) (char 10))
                      (T (char Keysym)))))
 
-    #{
-    (let Ref (val> p0)
-      (println Ref)
-      (println (get Ref 'a) (get (get Ref 'a) 'data))
-      (println (get Ref 'b) (get (get Ref 'b) 'data)))
-    }#
-
-    # Won't work if NIL is first object
     (if *mode-car
 
       # repl-any assumes list has y layout
       (let Part (repl-ref Data 'x)
+        
+        (put p0 'b (get Part 'a))
                 
         # Set new list
         (setq *part-main (get Part 'a))
         
-        (put p0 'b (get Part 'a))
-        
         (setq *mode-car NIL))
 
       (let Part (repl-cdr Data 'x)
-                
-        (put p0 'b Part)
         
-        # Pointer always above regardless of layout?
+        # Pointer always above regardless of layout?        
+        (put p0 'b Part)
         (mov-part-abv> p0 Part (cons T))))))
 
 
@@ -106,7 +97,8 @@
 
       # Modify data of Prv
       # Use con to destructively set the CDR
-      (con (get Prv 'data) (get Nxt 'data))
+      (unless (= Prv *part-main)
+        (con (get Prv 'data) (get Nxt 'data)))
 
       # Point to Prv
       (put p0 'b Prv)
