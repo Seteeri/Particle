@@ -19,12 +19,13 @@
   (let (Data (when Keysym
                (cond ((= Keysym ksd~space) " ")
                      ((= Keysym ksd~Return) (char 10))
-                     (T (char Keysym)))))
+                     (T (char Keysym))))
+        Lay 'x)
 
     (if *mode-car
 
       # repl-any assumes list has y layout
-      (let Part (repl-ref Data 'x)
+      (let Part (repl-ref Data Lay)
         
         (put p0 'b (get Part 'a))
                 
@@ -33,7 +34,7 @@
         
         (setq *mode-car NIL))
 
-      (let Part (repl-cdr Data 'x)
+      (let Part (repl-cdr Data Lay)
         
         # Pointer always above regardless of layout?        
         (put p0 'b Part)

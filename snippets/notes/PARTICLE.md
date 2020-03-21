@@ -243,21 +243,23 @@ Store DAGs as binary trees?
     * Position new particle based on the ref's layout [Done]
       * Must calculate previous item [Done]
     * Move pointer semantically fwd and back [Done]
-    * Handle layout when moving to inner list [Done]
     * Implement doubly-linked particles [Sun]
-      * Fix sublist handling    
+      * Fix sublist handling
+        * Check y layout
       * Test nested lists + NILs
         * Check del
-    * Refactor pointer to point to last (NIL)
-      * More consistent with entering a list
+    * Traversal follows layout  [Sun]
     * Handle random edits [Sun]
       * Update subsequent items in list
       * Update superlist
         * Traverse "*part-lsts"
         * This can result in slow updates, so lists should be done outside 
           the list then merged in
-    * Refactor other cmds [Sun]
-    
+
+    GOAL: Able to build test tree
+
+    * Refactor pointer to point to last (NIL)
+      * More consistent with entering a list    
     * Add cmd to swap/toggle layouts X/Y
       * Must relayout car/cdr
       * Lists of lists are Y
@@ -265,12 +267,11 @@ Store DAGs as binary trees?
       * Other syms...default to Y also, but should be X also
       * Refactor list UI
 
-    GOAL: Able to build test tree
-
+    * Refactor other cmds
+    
     * Add skip car/cdr for layout fn
     * Cur/part relative position functions
     * Refactor gen layout use -> move it
-      * Where to put this?
     * Make fn: mov-cur X/adv Y/nl          
     * Handle missing bounds in metrics for space and ctrl chars
     

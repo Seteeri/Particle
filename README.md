@@ -15,10 +15,10 @@ The long-term technical goal of Particle is to create a Lispy userspace,
 eventually replacing the init system and encompassing all layers above that.
 
 It integrates various computing concepts and UI designs from CLIs, shells,
-REPLs, notebooks, WMs/DEs, creative coding, mindmapping, note-taking into a
-single object-oriented interface that can allow convergence across multiple
-devices such as desktops/workstations, laptops/tablets and smartphones/devices
-where information can flow easily.
+REPLs, notebooks, WMs/DEs, creative coding, mindmapping, outliners, wikis and
+note-taking into a single object-oriented interface that can allow convergence 
+across multiple devices such as desktops/workstations, laptops/tablets and 
+smartphones/devices where information can flow easily.
 
 The computing landscape has changed significantly since the days of Lisp
 Machines so it begs the question as to how useful Lisp at the OS/kernel level
