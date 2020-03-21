@@ -245,29 +245,33 @@ Store DAGs as binary trees?
     * Move pointer semantically fwd and back [Done]
     * Handle layout when moving to inner list
     * Handle random edits
-    * When updating sublist, update superlists
-      * Insert anywhere in list
-      * Traverse "*part-lsts"
-      * This can result in slow updates, so lists should be done outside 
-      the list then merged in
+      * Update subsequent items in list
+      * Update superlist
+        * Traverse "*part-lsts"
+        * This can result in slow updates, so lists should be done outside 
+          the list then merged in
     * Implement doubly-linked particles
-    * Refactor cmds
-    * Repl must use bounds?
-    * Refactor gen layout use -> move it
-    * Make fn: mov-cur X/adv Y/nl    
-    
-    * Add cmds to swap/toggle layouts X/Y
+    * Refactor other cmds    
+    * Add cmd to swap/toggle layouts X/Y
       * Must relayout car/cdr
       * Lists of lists are Y
       * Nums and Strs are X
       * Other syms...default to Y also, but should be X also
       * Refactor list UI
-    * Handle missing bounds in metrics for space and ctrl chars
+
     * Cur/part relative position functions
+    * Refactor gen layout use -> move it
+      * Where to put this?
+    * Make fn: mov-cur X/adv Y/nl          
+    * Handle missing bounds in metrics for space and ctrl chars
     
   * Intergate model into worker [Done]
 
   * Optimize ipc to batch messages, flush etc.
+    * Instead of directly sending msgs, put into list
+    * Call flush to send all
+    * Requires rewriting protocol to read multiple messages from single
+    string
    
   * Notation
     * Circular lists -> dot instead of ] or Left-arrow

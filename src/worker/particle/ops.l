@@ -88,18 +88,17 @@
 
 
 (de repl-list (Part Pre)
-  
-  # Unlink ref
-  (put Pre 'b) # data still there
-  (put p0 'b)  
-    
+      
   # Delete ref
   (let Ref (val> p0)
+    (del> Ref T T))
   
-    (del> Ref T T)
-  
-    # Connect cdr of ref to particle b
-    (put Part 'b (get Ref 'b)))
+  # Connect cdr of ref to particle b
+  # WATCH FOR NIL
+
+  # Unlink ref
+  (put Pre 'b) # data still there
+  (put p0 'b)
 
   (with Pre
     (=: b Part)
