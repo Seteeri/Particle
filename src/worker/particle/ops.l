@@ -73,15 +73,11 @@
   # Handle case when there is something after ref
 
   (let (Ref (val> p0)
-        Pre (let Pre (car *part-lsts)
-              (loop
-                (NIL (get (get (get Pre 'b) 'b) 'b))
-                (setq Pre (get Pre 'b)))
-              Pre)
+        Prv (get Ref 'c)
         Lst-Any (list (list Any))
         Part (gen-part Lst-Any Lay))
         
-    (repl-list Part Pre)
+    (repl-list Part Prv)
 
     # Don't use base-cur since cur at start
 
@@ -89,8 +85,8 @@
 
     # HANDLE Y LAYOUT!
     
-    # Move new part at extents of Pre
-    (base-cur Pre)
+    # Move new part at extents of Prv
+    (base-cur Prv)
     (lay-part Part *cur)
 
     # Move car one space further down
@@ -103,7 +99,7 @@
     Part))
 
 
-(de repl-list (Part Pre)
+(de repl-list (Part Prv)
       
   # Delete ref
   (let Ref (val> p0)
@@ -113,11 +109,11 @@
   # WATCH FOR NIL
 
   # Unlink ref
-  (put Pre 'b) # data still there
+  (put Prv 'b) # data still there
   (put p0 'b)
 
-  (with Pre
+  (with Prv
     (=: b Part)
     (con (car (:: data)) (get Part 'data)))
     
-  (put Part 'c Pre))
+  (put Part 'c Prv))
