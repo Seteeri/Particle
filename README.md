@@ -7,26 +7,15 @@ information as they moved through the computer. What did they look like?
 
 ---
 
-Particle is a personal knowledge manager (also called a PIM/PKB)
-implemented through a structured/projectional UI based on Lisp.
+Particle is a personal knowledge manager (also called a PIM, PKB) implemented through a structured/projectional UI based on Lisp.
 
-It is the realization of my vision to map our thoughts into the computer.
-The long-term technical goal of Particle is to create a Lispy userspace,
-eventually replacing the init system and encompassing all layers above that.
+It is the realization of my vision to map our thoughts into the computer. The long-term technical goal of Particle is to create a Lispy userspace, eventually replacing the init system and encompassing all layers above that.
 
-It integrates various computing concepts and UI designs from CLIs, shells,
-REPLs, notebooks, WMs/DEs, creative coding, mindmapping, outliners, wikis and
-note-taking into a single object-oriented interface that can allow convergence 
-across multiple devices such as desktops/workstations, laptops/tablets and 
-smartphones/devices where information can flow easily.
+It integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, outliners, wikis and note-taking into a single object-oriented interface that can allow convergence across multiple devices such as desktops/workstations, laptops/tablets and  smartphones/devices where information can flow easily.
 
-The computing landscape has changed significantly since the days of Lisp
-Machines so it begs the question as to how useful Lisp at the OS/kernel level
-would be today. I believe another attempt is warranted albeit with a different
-approach taking advantage of today's computing power and ubiquitiousness.
+The computing landscape has changed significantly since the days of Lisp Machines so it begs the question as to how useful Lisp at the OS/kernel level would be today. I believe another attempt is warranted albeit with a different approach taking advantage of today's computing power and ubiquitiousness. 
 
-The target audience consists of programmers, power users, information workers
-and "busy" people.
+The target audience consists of programmers, power users, information workers and "busy" people.
 
 ## Features
 
@@ -92,26 +81,13 @@ Permissively licensed
 
 **Why structured data? Why not use plain text?**
 
-Plain text is convenient but does not scale. Extracting useful information
-through repeatedly parsing plain text becomes redundant and inefficient on larger
-scales (at tens or hundreds of thousands of pieces of information). In the case
-of Particle, the structured data are s-expressions so it is a relatively simple
-model to understand and parse; the Lisp implementation is also open-source.
+Plain text is convenient but does not scale. Extracting useful information through repeatedly parsing plain text becomes redundant and inefficient on larger scales (at tens or hundreds of thousands of pieces of information). In the case of Particle, the structured data are s-expressions so it is a relatively simple model to understand and parse; the Lisp implementation is also open-source.
 
 **Why not use Emacs, org-mode, or ParEdit/Parinfer/Smartparens etc.?**
 
-Emacs is undoubtedly powerful but also difficult to evolve due to its aging
-codebase. It could be rewritten, however, the goals for such a project remain
-undefined which hampers initial development from starting. IMHO, writing it
-purely in Lisp would be interesting...
+Emacs is undoubtedly powerful but also difficult to evolve due to its aging codebase. It could be rewritten, however, the goals for such a project remain undefined which hampers initial development from starting. IMHO, writing it purely in Lisp would be interesting...
 
-Emacs is based around the idea of text buffers, however, editing text requires
-extracting data from the text into internal data structures and parsing back
-into text. For tools that work on parenthesis, they work on the syntactic level,
-not the semantic level. If the data is structured, then its type is known
-providing additional information for the computer to assist the user. In
-addition, Emacs is centered around editing text, however, modern users have a
-need to incorporate other types of data.
+Emacs is based around the idea of text buffers, however, editing text requires extracting data from the text into internal data structures and parsing back into text. For tools that work on parenthesis, they work on the syntactic level, not the semantic level. If the data is structured, then its type is known providing additional information for the computer to assist the user. In addition, Emacs is centered around editing text, however, modern users have a need to incorporate other types of data.
 
 **What about Evernote, OneNote, Notion etc.?**
 

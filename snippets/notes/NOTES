@@ -3420,3 +3420,36 @@ which results in replacing the CAR
 then returns to normal
 
 https://news.ycombinator.com/item?id=17892731
+
+How would data be sorted according to date/time versus tags alphabetically?
+
+-> Query objects, then produce lists of list
+
+((date obj-val)
+ (date obj-val)
+ ...)
+
+If user wanted to change it, they produce a new list
+
+((tag-a obj-val)
+ (tag-aa obj-val)
+ ...
+ (tag-b obj-val)
+ (tag-bb obj-val)
+ ...)
+
+Should entire property list be shown? ...which the user can edit directly
+
+((3 . tag) (2 . time) (1 . date))
+
+
+Right now we are producing lists of strings but eventually these strings
+will be stored in an external symbol (Particle)
+- Strings are made of particles and when joined become a single particle
+
+So how does a user generate a new ext symbol?
+-> Need command ... use ctrl enter or something
+  -> Sym is added to main list
+  -> User moves to it property list value
+  -> Modify
+  -> Commit

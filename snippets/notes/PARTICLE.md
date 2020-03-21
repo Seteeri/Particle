@@ -252,9 +252,9 @@ Store DAGs as binary trees?
     * Handle random edits [Sun]
       * Update subsequent items in list
       * Update superlist
-        * Traverse "*part-lsts"
         * This can result in slow updates, so lists should be done outside 
           the list then merged in
+    * Refactor pack cmd [Sun]
 
     GOAL: Able to build test tree
 
@@ -268,6 +268,7 @@ Store DAGs as binary trees?
       * Refactor list UI
 
     * Refactor other cmds
+      * Implement split space
     
     * Add skip car/cdr for layout fn
     * Cur/part relative position functions
