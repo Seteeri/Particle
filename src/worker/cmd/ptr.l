@@ -21,11 +21,86 @@
   (let? Cdr (get (val> p0) 'b)
     (put p0 'b Cdr)
     (mov-part-abv> p0 Cdr (cons T))))
-  
+
 
 (de cmd-point-ptr-out (Keysym)
-  # Move to outer list
-  # Works anywhere
+  # Move to super list
+  
+  #{
+    (a (b c) e)
+  
+    [ ] - [*] - [ ] - NIL
+     a     |     e
+           |
+          [ ] - [ ] - NIL
+           b     c
+           
+    Stop when CAR is a Pair instead of an atom
+    
+    *a = e
+    *b = (b c)
+  }#
+  
+  (println "Move to outer list")
+  
+  #(println 'cmd-point-ptr-out Part (type Part) (get Part 'data) (get Part 'c))
+  
+  (let Part (val> p0)
+    (loop
+      (T (or (isa '+Pair (get Part 'a))
+             (not Part)))
+      (setq Part (get Part 'c)))
+      
+    (put p0 'b Part)
+    (mov-part-abv> p0 Part (cons T))))
+
+
+(de cmd-point-ptr-in (Keysym)
+  # Move to next list if ref is a list
+  
+  (println "Move to inner list")
+  
+  (let (Ref (val> p0)
+        Data (car (get Ref 'data)))
+
+    # Check pointer is a list; watch for cons == list
+    (when (or (pair Data)
+              (== Data NIL))
+
+      # Move cursor/pointer underneath list
+      (nl-cur 3.0)
+      (mov> p0 *cur)
+      
+      (setq *mode-car T))))
+  
+
+################################
+
+(de cmd-point-ptr-out-2 (Keysym)
+  # Move to super list
+  
+  #{
+    (a (b c) e)
+  
+    [ ] - [*] - [ ] - NIL
+     a     |     e
+           |
+          [ ] - [ ] - NIL
+           b     c
+           
+    Stop when CAR is a Pair instead of an atom
+    
+    *a = e
+    *b = (b c)
+  }#
+  
+  (let Part (val> p0)
+    (until (or (isa '+Pair (get Part 'a))
+               (not Part))
+      (println Part (get Part 'data))
+      (setq Part (get Part 'c))))
+  (println Part)
+  
   (println "Move to outer list")
   
   # Set main particle to old one
@@ -41,9 +116,9 @@
     (mov-cur-part Last-1)))
 
 
-(de cmd-point-ptr-in (Keysym)
-  # Move to inner list
-  # Move to next nearest list?
+(de cmd-point-ptr-in-2 (Keysym)
+  # Move to next list if ref is a list
+  
   (println "Move to inner list")
   
   (let (Ref (val> p0)
@@ -63,6 +138,8 @@
       (nl-cur 3.0) (mov> p0 *cur)
 
       # Do not change pointer data - will push to it
+      
+      # What if there is data - must move to it
 
       # Set main particle
       (setq *part-main Ref)

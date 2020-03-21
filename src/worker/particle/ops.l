@@ -55,14 +55,16 @@
     # Connect new part data to list part data
     # Need separate function if not at end
     #   (conc (: data) Lst-Any (get (get Ref 'b) 'data))
-    (unless (= Ref *part-main)
-      (with Ref
-        (con (car (:: data)) Lst-Any)))
     
     # Remember, *part-main's value is always the particle itself
-    # The value of the symbol *part-main is actually 'b
-    #(println (get (get *part-main 'b) 'data))
+    # The value of the symbol *part-main is actually 'b    
     
+    #(println 'con-list Ref (type Ref) (get Ref 'data))
+    
+    (unless (isa '+Sym Ref)
+      (with Ref
+        (con (car (:: data)) Lst-Any)))
+        
     Part))
 
 ######################
@@ -115,5 +117,7 @@
   (with Prv
     (=: b Part)
     (con (car (:: data)) (get Part 'data)))
+
+  #(println 'repl-list Prv (type Prv) (get Prv 'data))
     
   (put Part 'c Prv))

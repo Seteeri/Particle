@@ -244,14 +244,16 @@ Store DAGs as binary trees?
       * Must calculate previous item [Done]
     * Move pointer semantically fwd and back [Done]
     * Handle layout when moving to inner list [Done]
-    * Implement doubly-linked particles [Done]    
-    * Handle random edits
+    * Implement doubly-linked particles [Sun]
+      * Fix sublist handling    
+    * Handle random edits [Sun]
       * Update subsequent items in list
       * Update superlist
         * Traverse "*part-lsts"
         * This can result in slow updates, so lists should be done outside 
           the list then merged in
-    * Refactor other cmds    
+    * Refactor other cmds [Sun]
+    
     * Add cmd to swap/toggle layouts X/Y
       * Must relayout car/cdr
       * Lists of lists are Y
@@ -266,23 +268,33 @@ Store DAGs as binary trees?
     * Make fn: mov-cur X/adv Y/nl          
     * Handle missing bounds in metrics for space and ctrl chars
     
-  * Intergate model into worker [Done]
-
-  * Optimize ipc to batch messages, flush etc.
+  * Optimize ipc to batch messages, flush etc. [Mon]
     * Instead of directly sending msgs, put into list
     * Call flush to send all
     * Requires rewriting protocol to read multiple messages from single
     string
    
-  * Notation
-    * Circular lists -> dot instead of ] or Left-arrow
-    * For X layout: Down-arrow Dot Right-arrow
-    * For Y layout: Right-arrow Dot Down-arrow
-
   * Move to external symbols
     * Move verts.bin -> db file
     * Can test multiple workers pull/push database
-  
+          
+  * Use special printing for control characters like enter etc.
+    * newline ("^J"), return ("^M") or TAB ("^I")
+    
+  =-----------------------------------------------------------------------------
+
+  * Implement/Draw Primary Lists:
+    1. Main etc.
+    2. Pointer
+    3. Binds
+    4. Command/History
+
+  * Supporting Structures
+    * Implement AABB
+    * Implement treemap as alternative to graph?
+      * Sunburst, conetree, etc.
+      * See 'A Visual Survey of Tree Visualization'
+
   * Pointer
     * Instead of calling p#, use the fn+#
       * Default is append-0
@@ -305,26 +317,14 @@ Store DAGs as binary trees?
                        or apply fn to all ptrs
       * use rot list, only use first
 
-  * Implement/Draw Primary Lists:
-    1. Main etc.
-    2. Pointer
-    3. Binds
-    4. Command/History
-      
-  * Supporting Structures
-    * Implement AABB
-    * Implement treemap as alternative to graph?
-      * Sunburst, conetree, etc.
-      * See 'A Visual Survey of Tree Visualization'
-  
-  * Use special printing for control characters like enter etc.
-    * newline ("^J"), return ("^M") or TAB ("^I")
-    
   * Timestamp optional
     * GPS optional
     * Really just tags...except expected/defined tags on all items
 
-  GET TO HERE =------------------------------------------------------------
+  * Notation
+    * Circular lists -> dot instead of ] or Left-arrow
+    * For X layout: Down-arrow Dot Right-arrow
+    * For Y layout: Right-arrow Dot Down-arrow
 
   * Design different views/presentations
     * Use familiar setups from Office and other note-taking apps etc.
