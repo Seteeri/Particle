@@ -259,6 +259,7 @@ Store DAGs as binary trees?
       * Other syms...default to Y also, but should be X also
       * Refactor list UI
 
+    * Add skip car/cdr for layout fn
     * Cur/part relative position functions
     * Refactor gen layout use -> move it
       * Where to put this?

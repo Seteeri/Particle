@@ -40,20 +40,26 @@
         Cdr (get Ref 'b)
         Lst-Any (list Any)
         Part (gen-part Lst-Any Lay NIL T))
+    
+    # Ref -> Cdr
 
-    # Set cdr of cur-part to new-part
-    # [c] -> [n]
+    # Ref -> Part
     (put Ref 'b Part)
     
-    # Set cdr of new-part to cdr-part
-    # [n] -> [b] -> ...
+    # Ref -> Part -> Cdr
     (put Part 'b Cdr)
     
     # Connect new part data to list part data
     # Need separate function if not at end
-    (with *part-main
-      (=: data (conc (: data) Lst-Any)))
-      
+    #   (conc (: data) Lst-Any (get (get Ref 'b) 'data))
+    (unless (= Ref *part-main)
+      (with Ref
+        (con (car (:: data)) Lst-Any)))
+    
+    # Remember, *part-main's value is always the particle itself
+    # The value of the symbol *part-main is actually 'b
+    #(println (get (get *part-main 'b) 'data))
+        
     Part))
 
 ######################
@@ -64,15 +70,15 @@
   # Handle case when there is something after ref
 
   (let (Ref (val> p0)
-        Last (let Last (car *part-lsts)
-                (loop
-                  (NIL (get (get (get Last 'b) 'b) 'b))
-                  (setq Last (get Last 'b)))
-                Last)
+        Pre (let Pre (car *part-lsts)
+              (loop
+                (NIL (get (get (get Pre 'b) 'b) 'b))
+                (setq Last (get Pre 'b)))
+              Pre)
         Lst-Any (list (list Any))
         Part (gen-part Lst-Any Lay))
         
-    (repl-list Part Last)
+    (repl-list Part Pre)
 
     # Don't use base-cur since cur at start
 
