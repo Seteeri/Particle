@@ -27,21 +27,12 @@
   the visual representation has the same props plus additional props since they
   are compound cells (instances of a class)
 
-  The visual interface is still composed of the underlying data and has the
-  same structure so it is homoiconic.
-
   ###################################
 
   Create different display levels:
 
   - Expand lists
   - Expand symbols and numbers
-
-  Default is to expand all of them
-
-  List of chars/nums: draw horizontally (check first item)
-  List of defined forms: draw specifically
-  List of any: draw two columns (assumes fn calls)
 
 }#
 
@@ -50,27 +41,27 @@
        (not (str? Any)) (not (box? Any)) (not (ext? Any))
        (not (= Any NIL))))
 
-# Call this Cell instead?
+
 (class +Particle)
 (dm T (Data
        A
        B
        Verts
        Lay)
+  # Store origin also?
   
-  # Store as cons?
-  # (=: ab (a . b))
+  # Store as cons to save space?
   (=: a A)
   (=: b B)
+  (=: c) # Prev
   
   (=: verts Verts)
-  (=: ori)
 
   (=: data Data)
   
   # list of tags; always str; order matters like when searching
-  # name falls under tags, typically should be first
-  # when linking, def show date, tags, or show nm or raw location  
+  # consider first tag, the name
+  # when linking, def show date, tags, or show nm or raw location
   (=: tg)
     
   # date/time

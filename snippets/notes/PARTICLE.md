@@ -243,7 +243,7 @@ Store DAGs as binary trees?
     * Position new particle based on the ref's layout [Done]
       * Must calculate previous item [Done]
     * Move pointer semantically fwd and back [Done]
-    * Handle layout when moving to inner list
+    * Handle layout when moving to inner list [Done]
     * Handle random edits
       * Update subsequent items in list
       * Update superlist
