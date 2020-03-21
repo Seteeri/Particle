@@ -73,7 +73,7 @@
         Pre (let Pre (car *part-lsts)
               (loop
                 (NIL (get (get (get Pre 'b) 'b) 'b))
-                (setq Last (get Pre 'b)))
+                (setq Pre (get Pre 'b)))
               Pre)
         Lst-Any (list (list Any))
         Part (gen-part Lst-Any Lay))
