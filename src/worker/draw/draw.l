@@ -177,4 +177,4 @@
         (draw-chars "]" *col-base-0 T)))
   }#
 
-  (list (list (draw-dot T))))
+  (list (draw-dot T)))

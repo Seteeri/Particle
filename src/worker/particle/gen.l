@@ -57,14 +57,14 @@
 
   (let (Ar (car Any)
         Dr (cdr Any)
-        (Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
+        #(Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
         Part-Car (unless Car-Skip (gen-part Ar Lay))
         Part-Cdr (unless Cdr-Skip (gen-part Dr Lay))        
         Part-Pair (new '(+Pair)
                         Any
                         Part-Car
                         Part-Cdr
-                        (append Vert-Ar Dot Vert-Dr)
+                        (draw-cell Ar Dr) # (append Vert-Ar Dot Vert-Dr)
                         Lay))
                         
       # If CAR/CDR, is a list, set C to pair

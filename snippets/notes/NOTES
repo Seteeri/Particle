@@ -3418,3 +3418,5 @@ Pressing ascii key results in replacing CDR
 except when enter-list is called 
 which results in replacing the CAR
 then returns to normal
+
+https://news.ycombinator.com/item?id=17892731
