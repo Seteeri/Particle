@@ -68,18 +68,17 @@
         
     (repl-list Part Last)
 
-    # We don't use base-cur since we move to beginning
+    # Don't use base-cur since cur at start
 
-    # Mov cursor below
-    (mov-cur-part Last 'end)    
-    (adv-cur 2.0)
-    
+    # Either use Ref or Last
+
+    # Move new part under old ref pos
+    (mov-cur-part Ref 'start)
     (lay-part Part *cur)
 
-    # Move inner list one space further down
-    (mov-cur-part Last 'end)
-    (adv-cur 2.0) (nl-cur 3.0)
-    
+    # Move car one space further down
+    (mov-cur-part Part 'start)
+    (nl-cur 3.0)
     (with Part
       (put (: a) 'lay Lay)
       (lay-part (: a) *cur))

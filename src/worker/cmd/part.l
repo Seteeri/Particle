@@ -19,18 +19,26 @@
                      ((= Keysym ksd~Return) (char 10))
                      (T (char Keysym)))))
 
+    #{
+    (let Ref (val> p0)
+      (println Ref)
+      (println (get Ref 'a) (get (get Ref 'a) 'data))
+      (println (get Ref 'b) (get (get Ref 'b) 'data)))
+    }#
+
+    # Won't work if NIL is first object
     (if (= (get *part-main 'data) '(NIL))
 
       # repl-any assumes list has y layout
       (let Part (repl-any Data 'x)
-        
+                
         # Set new list
         (setq *part-main (get Part 'a))
         
         (put p0 'b (get Part 'a)))
 
       (let Part (con-any Data 'x)
-        
+                
         (put p0 'b Part)
         
         # Pointer always above regardless of layout?
