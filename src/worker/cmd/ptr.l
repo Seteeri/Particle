@@ -79,8 +79,9 @@
             
           (prog
             # NIL so must replace it
-            (nl-cur 3.0)
-            (mov> p0 *cur)
+            (mov-part-bel> p0 (get Ref 'a) (cons T))
+            #(nl-cur 3.0)
+            #(mov> p0 *cur)
             (setq *mode-repl T))))))
   
 

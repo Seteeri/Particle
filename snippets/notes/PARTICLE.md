@@ -246,13 +246,11 @@ Store DAGs as binary trees?
     * Implement doubly-linked particles [Sun]
     * Fix sublist handling [Done]
     * Test nested lists + NILs [Done]
-    * Check del    
-    * Check y layout
+    * Refactor del [Done]
+    * Support y layout
+    * Support mixed layout
+    
     * Fix lay-atom function - why checking b?
-      * Refactor cmd-del
-    * Refactor del> to pass ignore flags during recurse
-    * Refactor layout and mov functions
-      * Restrict mov> functions to be used by layout
     * Traversal follows layout  [Sun]
     * Handle random edits [Sun]
       * Update subsequent items in list
@@ -260,9 +258,12 @@ Store DAGs as binary trees?
         * This can result in slow updates, so lists should be done outside 
           the list then merged in
     * Refactor pack cmd [Sun]
-
+      
     GOAL: Able to build test tree
 
+    * Refactor del> to pass ignore flags during recurse [???]    
+    * Refactor layout and mov functions [???]
+      * Restrict mov> functions to be used by layout
     * Refactor pointer to point to last (NIL)
       * More consistent with entering a list    
     * Add cmd to swap/toggle layouts X/Y

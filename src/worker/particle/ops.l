@@ -82,22 +82,35 @@
         Pair (get Ref 'c)
         Prv (get Pair 'c)
         Lst-Any (list (list Any))
-        Part (gen-part Lst-Any Lay NIL T)) 
-        
+        Part (gen-part Lst-Any Lay NIL T))        
     # Don't make Cdr/NIL since it will be connected to existing
         
     (repl-list Prv Pair Part)
-    
-    # Move new Part rel to extents of Prv
-    (base-cur Prv)
-    (lay-part Part *cur)
 
-    # Move Car one space further down
-    (mov-cur-part Part 'start)
-    (nl-cur 3.0)
-    (with Part
-      (put (: a) 'lay Lay)
-      (lay-part (: a) *cur))
+    (if (= Lay 'x)
+    
+        (prog
+          # Move new Part rel to extents of Prv
+          (base-cur Prv)
+          (lay-part Part *cur)
+
+          # Move Car one space further down
+          (mov-cur-part Part 'start)
+          (nl-cur 3.0)
+          (with Part
+            (put (: a) 'lay Lay)
+            (lay-part (: a) *cur)))
+            
+        (prog
+          # Move new Part rel to extents of Prv
+          (base-cur Prv)
+          (lay-part Part *cur)        
+        
+          (mov-cur-part Part 'start)
+          (nl-cur 3.0)
+          (with Part
+            (put (: a) 'lay Lay)
+            (lay-part (: a) *cur))))
 
     Part))
 

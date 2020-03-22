@@ -61,11 +61,8 @@
         Cdr-Prv (get Prv 'b)
         Cdr (get Ref 'b))
 
-    (println 'cmd-del 'Ref (get Ref 'data))
-    (println 'cmd-del 'c (get (get Ref 'c) 'data))
-
-    #(when (isa '+Pair (get Prv 'a))
-    #  (println "Prv is a Pair!"))
+    #(println 'cmd-del 'Ref (get Ref 'data))
+    #(println 'cmd-del 'c (get (get Ref 'c) 'data))
       
     (unless (= (get Ref 'data) '*part-main)
 
@@ -87,7 +84,6 @@
         # Make the Cdr the Car of Prv
         # Move Cdr under Prv      
         (prog
-          (println "Prv is a Pair!")
           (put Prv 'a Cdr)
           (mov-cur-part Prv 'start) (nl-cur)
           (mov> Cdr *cur)

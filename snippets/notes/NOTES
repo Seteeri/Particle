@@ -3517,56 +3517,75 @@ Same as default
     * Backspace will move ptr to prev of ref
     * Delete will move ptr to nxt of ref
 
+#########################################
 
-(de repl-ref (Any Lay)
-  
-  # Pointer is pointing to CAR of a Pair
-  # However, want to replace entire Pair
+Layouts - X
 
-  (let (Ref (val> p0)
-        Prv (get Ref 'c)
-        Lst-Any (list (list Any))
-        Part (gen-part Lst-Any Lay))
+[ ] [ ] [.]          [.]         NIL
+" " " " 
+                             
+        [ ] [ ] NIL  [ ] [ ] NIL
+        " " " "      " " " "
+
+* Less compact; easier to see diff between lists
+* Only previous item need be redrawn
+
+Another way is to stack sublists to maintain top-level spacing:
+
+[ ] [ ] [.] [.] NIL
+" " " "
+
+            [ ] [ ] NIL
+            " " " "
+                  
+        [ ] [ ] NIL
+        " " " "      
+
+* More compact; easier to see same list relations
+* Every single item previous must be redrawn (adjusted downwards)
+
+
+Layouts - Y
+
+[.] [.] "I"
+
+    [.] [ ] "A"
+
+        [ ] "B"
+
+        [ ] "C"
+
+[.] [.] "II"
+
+    [.] [ ] "A"
+
+        [ ] "B"
+
+        [ ] "C"
         
-    (repl-list Part Prv)
-
-    # Don't use base-cur since cur at start
-
-    # Either use Ref or Last
-
-    # HANDLE Y LAYOUT!
-    
-    # Move new part at extents of Prv
-    (base-cur Prv)
-    (lay-part Part *cur)
-
-    # Move car one space further down
-    (mov-cur-part Part 'start)
-    (nl-cur 3.0)
-    (with Part
-      (put (: a) 'lay Lay)
-      (lay-part (: a) *cur))
-
-    Part))
+Layouts - Mixed
 
 
-(de repl-list (Part Prv)
-      
-  # Delete ref
-  (let Ref (val> p0)
-    (del> Ref T T))
-  
-  # Connect cdr of ref to particle b
-  # WATCH FOR NIL
+[.] a
 
-  # Unlink ref
-  (put Prv 'b) # data still there
-  (put p0 'b)
+[.] b
+p0
+[.] NIL
+NIL
 
-  (with Prv
-    (=: b Part)
-    (con (car (:: data)) (get Part 'data)))
+Enter list ->
 
-  #(println 'repl-list Prv (type Prv) (get Prv 'data))
-    
-  (put Part 'c Prv))
+[.] a
+
+[.] b
+    p0
+[.] NIL
+NIL
+
+
+[.] a
+
+[.] b
+
+[.] NIL
+NIL p0
