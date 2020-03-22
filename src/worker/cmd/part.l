@@ -80,7 +80,7 @@
 
       # Link data
       # Use con to destructively set the CDR
-      (unless (= Prv *part-main)
+      (unless (= (get Prv 'data) '*part-main)
         (con (get Prv 'data) (get Nxt 'data)))
 
       # Link p0

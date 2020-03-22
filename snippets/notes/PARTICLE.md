@@ -244,10 +244,10 @@ Store DAGs as binary trees?
       * Must calculate previous item [Done]
     * Move pointer semantically fwd and back [Done]
     * Implement doubly-linked particles [Sun]
-      * Fix sublist handling
-        * Check y layout
-      * Test nested lists + NILs
-        * Check del
+    * Fix sublist handling [Done]
+    * Test nested lists + NILs [Done]
+    * Check del    
+    * Check y layout
     * Traversal follows layout  [Sun]
     * Handle random edits [Sun]
       * Update subsequent items in list

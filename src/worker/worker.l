@@ -129,6 +129,10 @@
       ((`ksd~Control-L `ksd~e)    T `cmd-make-nil)
       ((`ksd~Control-R `ksd~e)    T `cmd-make-nil)
 
+      ((`ksd~Control-R `ksd~Return) T ((Keysym)
+                                        (base-cur (val> p0))
+                                        (mov> p0 *cur)))
+
       # Pointer Translation
       ((`ksd~Control-L `ksd~w) T `cmd-point-ptr-out)
       ((`ksd~Control-R `ksd~w) T `cmd-point-ptr-out)      

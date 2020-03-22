@@ -280,23 +280,9 @@
 
   # Calc bounds of CAR and CDR
 
-  (let ((X1 Y1) (when (and (: a) (not A))
-                  (if (= (type (: a)) '(+Pair))
-                      (calc-bounds> (: a))
-                      (let Vert (last-vert> (: a))
-                        (with Vert
-                          (get-origin> (get *metrics (: chr))
-                                       (: pos)
-                                       *sca-vert)))))
-        (X2 Y2) (when (and (: b) (not B))
-                  (if (= (type (: b)) '(+Pair))
-                      (calc-bounds> (: b))
-                      (let Vert (last-vert> (: b))
-                        (with Vert
-                          (get-origin> (get *metrics (: chr))
-                                       (: pos)
-                                       *sca-vert))))))
-
+  (let ((X1 Y1) (when (and (: a) (not A)) (calc-bounds> (: a)))
+        (X2 Y2) (when (and (: b) (not B)) (calc-bounds> (: b))))
+                  
     # If neither Car or Cdr, use cons
     (if (and (not X1) (not X2))
 
@@ -313,7 +299,6 @@
                   ((and Y2 (not Y1)) Y2)
                   (T (min Y1 Y2)))))))
                 
-                  
 # Debug
 
 (dm trace> (Cnt)
