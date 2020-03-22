@@ -64,22 +64,24 @@
         Data (car (get Ref 'data)))
 
     # Check pointer is a list; watch for cons == list
-    (when (or (pair Data)
+    (when (or (pair Data) 
               (== Data NIL))
-
-      # If item exists, move to it
-
-      # Move cursor/pointer underneath list
-      (if (get (get Ref 'a) 'data)
-          (prog
-            (println (get Ref 'a) (get (get Ref 'a) 'data))
-            (put p0 'b (get Ref 'a))
-            (mov-part-abv> p0 (get Ref 'a) (cons T)))
-          (prog
-            (nl-cur 3.0)
-            (mov> p0 *cur)))
       
-      (setq *mode-car T))))
+      # Point to Car
+      (put p0 'b (get Ref 'a))
+      
+      # Car either has data or is NIL
+      (if (get (get Ref 'a) 'data)
+      
+          (prog
+            # Set pointer and do normal
+            (mov-part-abv> p0 (get Ref 'a) (cons T)))
+            
+          (prog
+            # NIL so must replace it
+            (nl-cur 3.0)
+            (mov> p0 *cur)
+            (setq *mode-repl T))))))
   
 
 ################################

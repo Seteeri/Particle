@@ -1,4 +1,4 @@
-(def '*mode-car)
+(def '*mode-repl)
 
 (de cmd-make-char (Keysym)
 
@@ -22,7 +22,7 @@
                      (T (char Keysym))))
         Lay 'x)
 
-    (if *mode-car
+    (if *mode-repl
 
       # repl-any assumes list has y layout
       (let Part (repl-ref Data Lay)
@@ -32,7 +32,7 @@
         # Set new list
         (setq *part-main (get Part 'a))
         
-        (setq *mode-car NIL))
+        (setq *mode-repl NIL))
 
       (let Part (repl-cdr Data Lay)
         
@@ -50,49 +50,68 @@
 
   (prinl-info "cmd-del")
 
-  #{
-    1. Delete Ref
-    2. Connect Prv to Nxt
+  #{  
+           p0
+    [ ] - [ ] - NIL
+    "a"   "b"
   }#
 
   (let (Ref (val> p0)
         Prv (get Ref 'c)
-        Nxt (get Ref 'b))
+        Cdr-Prv (get Prv 'b)
+        Cdr (get Ref 'b))
 
     (println 'cmd-del 'Ref (get Ref 'data))
     (println 'cmd-del 'c (get (get Ref 'c) 'data))
 
+    #(when (isa '+Pair (get Prv 'a))
+    #  (println "Prv is a Pair!"))
+      
     (unless (= (get Ref 'data) '*part-main)
 
-      # Preserve CDR (aka NIL) so only delete CAR
-      (del> Ref T NIL)
+      # Preserve Cdr (aka NIL) so only delete Car
+      # Must manually do this since the flags are passed down
+      (when (get Ref 'a)
+        (del> (get Ref 'a) T T))
+      (del> Ref NIL NIL)
       (put Ref 'b)
-      
-      (if (isa '+Pair (get Prv 'a))
-        (prog
-          # If list, move Nxt below Prv
-          (mov-part-bel> Nxt Prv (cons T))
-          # Reconnect car
-          (put Prv 'a Nxt)
-          # Mov cur after list; readjust cdr
-          # Could use base, but need not recalculate entire bvh
-          (mov-cur-part Prv 'start)
-          #(println 'b (get Prv 'b) (get (get Prv 'b) 'data))
-          # Temporary! Fix lay-atom fn
-          (lay-part Prv *cur))
-        (prog
-          # Position pointer at Ref before del; mov Nxt to Ref
-          (mov-cur-part Ref 'start)
-          (mov> Nxt *cur)
-          # Link ptrs
-          (put Prv 'b Nxt)))
-          
-      (put Nxt 'c Prv)
-
-      # Link data
-      # Use con to destructively set the CDR
+            
+      # Link Prv->Cdr; con to destructively set Cdr
       (unless (= (get Prv 'data) '*part-main)
-        (con (get Prv 'data) (get Nxt 'data)))
+        (con (get Prv 'data) (get Cdr 'data)))
+
+      #(if (isa '+Pair (get Prv 'a))
+      (if (= (get Prv 'a) Ref)
+
+        # When deleting last item in a sublist
+        # Make the Cdr the Car of Prv
+        # Move Cdr under Prv      
+        (prog
+          (println "Prv is a Pair!")
+          (put Prv 'a Cdr)
+          (mov-cur-part Prv 'start) (nl-cur)
+          (mov> Cdr *cur)
+
+          # Move Prv Cdr also
+          # This will not move recursively
+          # Use lay-part BUT lay-atom must be fixed
+          
+          (put Prv 'b Cdr-Prv)
+
+          #(mov-cur-part Prv 'end) (adv-cur 2.0)
+          (base-cur Prv)
+          (mov> Cdr-Prv *cur))
+        
+        (prog
+          (put Prv 'b Cdr)
+          
+          # Move Cdr
+          # This will not move recursively
+          # Use lay-part BUT lay-atom must be fixed
+          (mov-cur-part Prv 'end) (adv-cur 2.0)
+          (mov> Cdr *cur)))
+
+      (put Cdr 'c Prv)
 
       # Link p0
       (put p0 'b Prv)

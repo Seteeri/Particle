@@ -3473,3 +3473,100 @@ p0
 
 p0
 NIL
+
+
+
+enter list == point to car
+
+Two scenarios upon enter list
+
+Scenario A:
+
+[ ] -> CDR
+NIL (*)
+
+
+Scenario B:
+
+[ ] -> CDR
+ |
+[ ] (*)
+"x" 
+
+Flag will be set and then repl-part must determine if Ref is NIL or Pair
+
+This can be used to replace any item in a list
+
+In reality replacing the CAR means replacing the entire list
+
+In Scenario A:
+
+(NIL) -> ((""))
+
+In Scenario B:
+
+(("x")) -> (("x" "y"))
+
+Same as default
+
+  Solutions:
+  * Append after (expected)
+  * Replace
+    * People rarely use insert mode
+    * Can be done with combination of del + char
+    * Backspace will move ptr to prev of ref
+    * Delete will move ptr to nxt of ref
+
+
+(de repl-ref (Any Lay)
+  
+  # Pointer is pointing to CAR of a Pair
+  # However, want to replace entire Pair
+
+  (let (Ref (val> p0)
+        Prv (get Ref 'c)
+        Lst-Any (list (list Any))
+        Part (gen-part Lst-Any Lay))
+        
+    (repl-list Part Prv)
+
+    # Don't use base-cur since cur at start
+
+    # Either use Ref or Last
+
+    # HANDLE Y LAYOUT!
+    
+    # Move new part at extents of Prv
+    (base-cur Prv)
+    (lay-part Part *cur)
+
+    # Move car one space further down
+    (mov-cur-part Part 'start)
+    (nl-cur 3.0)
+    (with Part
+      (put (: a) 'lay Lay)
+      (lay-part (: a) *cur))
+
+    Part))
+
+
+(de repl-list (Part Prv)
+      
+  # Delete ref
+  (let Ref (val> p0)
+    (del> Ref T T))
+  
+  # Connect cdr of ref to particle b
+  # WATCH FOR NIL
+
+  # Unlink ref
+  (put Prv 'b) # data still there
+  (put p0 'b)
+
+  (with Prv
+    (=: b Part)
+    (con (car (:: data)) (get Part 'data)))
+
+  #(println 'repl-list Prv (type Prv) (get Prv 'data))
+    
+  (put Part 'c Prv))

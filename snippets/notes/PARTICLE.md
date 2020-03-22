@@ -250,6 +250,7 @@ Store DAGs as binary trees?
     * Check y layout
     * Fix lay-atom function - why checking b?
       * Refactor cmd-del
+    * Refactor del> to pass ignore flags during recurse
     * Refactor layout and mov functions
       * Restrict mov> functions to be used by layout
     * Traversal follows layout  [Sun]
