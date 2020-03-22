@@ -248,6 +248,10 @@ Store DAGs as binary trees?
     * Test nested lists + NILs [Done]
     * Check del    
     * Check y layout
+    * Fix lay-atom function - why checking b?
+      * Refactor cmd-del
+    * Refactor layout and mov functions
+      * Restrict mov> functions to be used by layout
     * Traversal follows layout  [Sun]
     * Handle random edits [Sun]
       * Update subsequent items in list

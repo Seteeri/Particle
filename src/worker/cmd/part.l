@@ -59,23 +59,34 @@
         Prv (get Ref 'c)
         Nxt (get Ref 'b))
 
+    (println 'cmd-del 'Ref (get Ref 'data))
+    (println 'cmd-del 'c (get (get Ref 'c) 'data))
+
     (unless (= (get Ref 'data) '*part-main)
 
-      # For lists, del recursively
-      (when (get Ref 'a)
-        (del> (get Ref 'a) T T)
-        (put Ref 'a))
-      # Delete Ref itself, except CDR
+      # Preserve CDR (aka NIL) so only delete CAR
       (del> Ref T NIL)
-
-      # Position pointer at Ref before del
-      (mov-cur-part Ref 'start)
-
-      # Mov Nxt to Ref
-      (mov> Nxt *cur)
-
-      # Link ptrs
-      (put Prv 'b Nxt)
+      (put Ref 'b)
+      
+      (if (isa '+Pair (get Prv 'a))
+        (prog
+          # If list, move Nxt below Prv
+          (mov-part-bel> Nxt Prv (cons T))
+          # Reconnect car
+          (put Prv 'a Nxt)
+          # Mov cur after list; readjust cdr
+          # Could use base, but need not recalculate entire bvh
+          (mov-cur-part Prv 'start)
+          #(println 'b (get Prv 'b) (get (get Prv 'b) 'data))
+          # Temporary! Fix lay-atom fn
+          (lay-part Prv *cur))
+        (prog
+          # Position pointer at Ref before del; mov Nxt to Ref
+          (mov-cur-part Ref 'start)
+          (mov> Nxt *cur)
+          # Link ptrs
+          (put Prv 'b Nxt)))
+          
       (put Nxt 'c Prv)
 
       # Link data

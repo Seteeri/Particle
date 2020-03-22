@@ -3455,3 +3455,21 @@ So how does a user generate a new ext symbol?
   -> Commit
 
 Create user property for user properties?
+
+
+=========================================
+
+NIL solution:
+
+[]
+NIL
+
+p0
+<>
+
+============
+
+[]
+
+p0
+NIL

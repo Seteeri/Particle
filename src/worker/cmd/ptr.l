@@ -67,9 +67,17 @@
     (when (or (pair Data)
               (== Data NIL))
 
+      # If item exists, move to it
+
       # Move cursor/pointer underneath list
-      (nl-cur 3.0)
-      (mov> p0 *cur)
+      (if (get (get Ref 'a) 'data)
+          (prog
+            (println (get Ref 'a) (get (get Ref 'a) 'data))
+            (put p0 'b (get Ref 'a))
+            (mov-part-abv> p0 (get Ref 'a) (cons T)))
+          (prog
+            (nl-cur 3.0)
+            (mov> p0 *cur)))
       
       (setq *mode-car T))))
   
