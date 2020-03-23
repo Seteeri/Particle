@@ -247,14 +247,13 @@ Store DAGs as binary trees?
     * Fix sublist handling [Done]
     * Test nested lists + NILs [Done]
     * Refactor del [Done]
-    * Support y layout
-    * Support mixed layout
-    
-    * Toggle layout
-      * Change current ref AND set state for future
-        * Or should be separate?
-      * Cur should change to reflect state
-        * Really changing symbols: >0 vs ^0
+    * Rewrite entering text
+      * Need pointer/new fns to change layout, new row/col
+        * Change pointer symbol to reflect layout: p0^ or p0>
+      * Should be consistent with outline format
+      * Default layout is oriented towards lists of text/num/syms similar to
+      alphanumerical outlines
+    * Draw symbols with cons cell
     
     * Fix lay-atom function - why checking b?
     * Traversal follows layout  [Sun]
@@ -304,6 +303,8 @@ Store DAGs as binary trees?
     * newline ("^J"), return ("^M") or TAB ("^I")
     
   =-----------------------------------------------------------------------------
+
+  * Demo: Show left->right, Text, Other Data, Custom Data
 
   * Instead of drawing lines to connect nodes, draw generic grid in bg
   to guide user

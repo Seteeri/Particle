@@ -280,149 +280,48 @@
   (set-cur-x X)
   
   (when T
+
+    (nl-cur)
+    (set-cur-x X)
+    (let Part (gen-part '((1 2
+                           (3)))
+                        'y)
+      
+      (nl-cur 2.0)
+      (set-cur-x X)
+      
+      # This will override layout in Particles
+      (lay-part Part *cur)))
+
+
+  (when T
   
     (nl-cur)
     (set-cur-x X)
-    (let Part (gen-part '(((1 2
-                            (3 4)
-                            (5 6
-                              (7 8))
-                            (9 0
-                              (1 2))))
-                          (("I" "II" "III" "IV" "V")
-                           (6 7 8 9 10))
-                          ("I" "Content"
-                            ("A" "Content")
-                            ("B" "Content"
-                              ("1"
-                               "2"))
-                            ("C" "Content"
-                              ("1" "Content"
-                               "2" "Content"))))
-                        'y)
+    (let Part (gen-part '("let" ("a" 1 "b" 2) ("println" "hello world")) 'y)
       
       (nl-cur 2.0)
       (set-cur-x X)
       (lay-part Part *cur)))
 
-
   (when NIL
   
     (nl-cur)
     (set-cur-x X)
-    (let Part (gen-part '("q" "w" ("a" "s")) 'y)
+    (let Part (gen-part '(("1" "Content"
+                           ("1.1" "Content"
+                            ("1.1.1" "Content")
+                            ("1.1.1" "Content"
+                             ("1.1.1.1" "Content")
+                             ("1.1.1.1" "Content")))))
+                        'y)
       
       (nl-cur 2.0)
       (set-cur-x X)
-      (lay-part Part *cur)
+      (lay-part Part *cur)))))
       
-      (let B (calc-bounds> Part)
-        #(mov> p0 B)
-        (println "BOUNDS:" B))
-      
-      ))
 
-  (when NIL
-  
-    (nl-cur)
-    (set-cur-x X)
-    (let Part (gen-part '("q" "w" ("a" "s")) 'x)
-      
-      (nl-cur 2.0)
-      (set-cur-x X)
-      (lay-part Part *cur)
-      
-      (let B (calc-bounds> Part)
-        #(mov> p0 B)
-        (println "BOUNDS:" B))
-      
-      ))
-  
-  T))
-
-#{
-  '(("I"
-     ("A"
-      "B"
-      ("1"
-       "2"
-       (3 4 5))))
-    ("II"))
-
-  '(("Task I"
-     ("Subtask A"
-      "Subtask B"
-      ("Subsubtask 1"
-       "Subsubtask 2"
-       "Subsubtask 3")))
-    ("Task II"
-     ("Subtask A"
-      "Subtask B"
-      ("Subsubtask 1"
-       "Subsubtask 2"
-       "Subsubtask 3")))
-    ("Task III"
-     ("Subtask A"
-      "Subtask B"
-      ("Subsubtask 1"
-       "Subsubtask 2"
-       "Subsubtask 3"))))
-}#
-
-(de run-tests ()
-
-  (when NIL
-    (let ((X Y) *cur)
-      (gen-cell (abs (>> -4 (adr (new '(+Pointer) NIL))))
-                'sym
-                (0.0 0.0))
-      (set-cur-x X)))
-
-  (when NIL
-    (setq *part-ptr (gen-part (cons T T)
-                              0.0
-                              (list 0.0 0.0 0.0))))
-
-  (let ((X Y) *cur)
-
-    (when T
-      (gen-cell (abs (>> -4 (adr (cons NIL T))))
-                'cons
-                (0.0 0.0))
-      (nl-cur 3.0) (set-cur-x X))
-
-    (when NIL
-      (gen-cell (abs (>> -4 (adr (cons T (** 1152921504606846976 0)))))
-                'cons
-                (0.0 0.0))
-      (nl-cur 3.0) (set-cur-x X))
-
-    (when NIL
-      (gen-cell (abs (>> -4 (adr (cons (cons 3 4) (cons 1 2)))))
-                'cons
-                (0.0 0.0))
-      (nl-cur 2.0) (set-cur-x X))
-
-    (when NIL
-      (setq ABCDEFGHIJKLMNOPQRSTUVWXYZ NIL)
-      (put 'ABCDEFGHIJKLMNOPQRSTUVWXYZ "A" "X")
-      (put 'ABCDEFGHIJKLMNOPQRSTUVWXYZ "B" "Y")
-      (gen-cell (abs (>> -4 (adr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ)))
-                'sym
-                (0.0 0.0))
-      (nl-cur 2.0) (set-cur-x X))
-
-    (when NIL
-      (gen-cell (abs (>> -4 (adr "ABC")))
-                'sym
-                (0.0 0.0))
-      (nl-cur 2.0) (set-cur-x X))
-
-    (when NIL
-      (gen-cell (abs (>> -4 (adr "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")))
-                'sym
-                (0.0 0.0)))
-    T))
+(de run-tests ())
 
 
 (de alloc-vert (Pos Char Col)

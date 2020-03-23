@@ -48,16 +48,16 @@
        B
        Verts
        Lay)
+  
   # Store origin also?
   
-  # Store as cons to save space?
+  (=: data Data)
   (=: a A)
   (=: b B)
-  (=: c) # Prev
-  
+  (=: c) # Prev  
   (=: verts Verts)
-
-  (=: data Data)
+  (=: lay Lay)
+  (=: nl)
   
   # list of tags; always str; order matters like when searching
   # consider first tag, the name
@@ -66,9 +66,7 @@
     
   # date/time
   (=: dat (date))
-  (=: tim (time))
-  
-  (=: lay Lay))
+  (=: tim (time)))
 
 
 (dm con> (B) (=: b B))

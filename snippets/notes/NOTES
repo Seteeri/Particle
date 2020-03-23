@@ -2644,7 +2644,7 @@ Differentiate behavior for pointer/list creation
   this is really just creating a new pointer...
   * This allows user to differentiate whether they want to treat NIL as a list
   or a symbol
-  
+
 * Pointer management
   * User has master pointer in pointer list which points
   p0
@@ -2869,7 +2869,7 @@ Reality is just a convenient measure of complexity
 a     b     |
             NIL
 
-vs 
+vs
 
 (a b (NIL))
 
@@ -2897,20 +2897,20 @@ a     b     |
 
 The Sad State of Personal Knowledge Bases
 
-So all knowledge can be seen as connected, 
-but all knowledge can also be put into hierarchies. 
-Concepts and how those concepts are related is something that people come up with, 
+So all knowledge can be seen as connected,
+but all knowledge can also be put into hierarchies.
+Concepts and how those concepts are related is something that people come up with,
 rather than being an inherent property of the universe.
 
-The idea of forcing yourself to put knowledge into hierarchies is that it makes your thinking more clear, 
-makes it easier to remember where things are, 
-and perhaps paradoxically makes it easier to see how things are related. 
-(Or at least highlights certain types of relationships 
+The idea of forcing yourself to put knowledge into hierarchies is that it makes your thinking more clear,
+makes it easier to remember where things are,
+and perhaps paradoxically makes it easier to see how things are related.
+(Or at least highlights certain types of relationships
 that are only visible in the context of hierarchies.)
 
-I'll admit it's pretty weird at first to only get one root node, 
-I think it took me a couple years to get used to that. 
-But once I embraced it the benefits quickly became clear. 
+I'll admit it's pretty weird at first to only get one root node,
+I think it took me a couple years to get used to that.
+But once I embraced it the benefits quickly became clear.
 
 
 It is not about store and searching information but
@@ -2967,7 +2967,7 @@ Data created by user...need classes for basic types
      +--------+-----------+-----------+
      |        |           |           |
     NIL   Internal    Transient    External
-  
+
 Particle
   Atom (Number/Symbol)
   Pair
@@ -2979,7 +2979,7 @@ or presses <mod>+Enter
 -- easier for users
 -- or remove quotes ... or draw lighter
    -- maintain consistency with reader
-   
+
 Whhat if uesr wants to tag part of the string?
 -- Move pointer and tag
 -- Or split it
@@ -3004,7 +3004,7 @@ mark range of list
 tag
 pack excl tagged
 
-FINAL VERDICT: 
+FINAL VERDICT:
 Focus on bigger picture; worry about this later...
 For now, we can tag particles aka lisp data.
 If user really wanted it, they could refactor into another
@@ -3028,7 +3028,7 @@ Without the above example, only break apart strings, as needed
 Default mode could be to create strings when user presses space
 -> PROBLEM, how to create strings with spaces?
    -> Use cmd
-   
+
 what if user initiates with quotes? can't close with quote...
 must escape it...
 
@@ -3074,7 +3074,7 @@ CAR      CAR
 
 'y
           (cont. from left bottom)
-            
+
 [.|.] CAR  [.|.] CAR
 
  |          |
@@ -3095,7 +3095,7 @@ Full X layout with nested lists
 A A A .             A A A
       B B .     B B
           C C C
-          
+
 
 So if C gets another item, B.X inc, A.X inc
 Subsequent items in B and A must move forward
@@ -3106,7 +3106,7 @@ A A A .           A A A
           C C
           C C
           C ...
-          
+
 If C is vertical, then parent lists do not need subsequent items moved
 
 
@@ -3135,7 +3135,7 @@ Typical let statement:
   G
   ...)
 
-Let has vert orientation with exception - draw first two hor  
+Let has vert orientation with exception - draw first two hor
 List ABCD has -X orientation with length=2
   - Neg bc items grow -Y
   - X bc CDR across
@@ -3197,7 +3197,7 @@ For example if default is y but prev is x
 must use final y from prev
 
   #{
-  
+
     [] -> [] -> []
     |     1     2
     |
@@ -3221,15 +3221,15 @@ must use final y from prev
     [] -> []
     |     |
     1     2
-    
+
     3 variations with spacing - either top/bottom is closer to base
     or equidistant
-    
+
   }#
 
 ===================
 
-We can define symbols as "tags for data" 
+We can define symbols as "tags for data"
 (objs are symbols so symbols are objs)
 
 Conventional programs focus on the data and attaching tags
@@ -3378,7 +3378,7 @@ Calc vol for a pair = vol cell + vol CAR + vol CDR + spacing
     adsf
     adsf
     adsf
-    
+
 [.] CAR
     asdf
     adsf
@@ -3391,9 +3391,9 @@ Calc vol for a pair = vol cell + vol CAR + vol CDR + spacing
 
       ("A")
 [.] - [.] - NIL
-      
-      
-      [.] 
+
+
+      [.]
       "A"
 
 
@@ -3415,7 +3415,7 @@ CDR
 
 
 Pressing ascii key results in replacing CDR
-except when enter-list is called 
+except when enter-list is called
 which results in replacing the CAR
 then returns to normal
 
@@ -3491,7 +3491,7 @@ Scenario B:
 [ ] -> CDR
  |
 [ ] (*)
-"x" 
+"x"
 
 Flag will be set and then repl-part must determine if Ref is NIL or Pair
 
@@ -3522,8 +3522,8 @@ Same as default
 Layouts - X
 
 [ ] [ ] [.]          [.]         NIL
-" " " " 
-                             
+" " " "
+
         [ ] [ ] NIL  [ ] [ ] NIL
         " " " "      " " " "
 
@@ -3537,9 +3537,9 @@ Another way is to stack sublists to maintain top-level spacing:
 
             [ ] [ ] NIL
             " " " "
-                  
+
         [ ] [ ] NIL
-        " " " "      
+        " " " "
 
 * More compact; easier to see same list relations
 * Every single item previous must be redrawn (adjusted downwards)
@@ -3563,7 +3563,7 @@ Layouts - Y
 
         [ ] "C"
 
-        
+
 Layouts - Mixed
 
 
@@ -3581,7 +3581,7 @@ Enter list ->
 [.] a
 
 [.] b
-    
+
 [.] NIL
 NIL p0
 
@@ -3641,7 +3641,7 @@ p0 -> [1] -> [2] -> [3] -> [4] -> NIL
 [.] [.] "I"
 
     [.] p0
-        
+
         [ ] "A"
 
         [ ] "B"
@@ -3669,7 +3669,7 @@ p0
 
 ((I (A B C))
 
-1 
+1
 2 p0
 3 [.] [.] "I"
 4     [.] [ ] "A"
@@ -3679,7 +3679,7 @@ p0
 8     NIL
 9 NIL
 
-1 
+1
 2 [.] p0
 3     [.] "I"
 4     [.] [ ] "A"
@@ -3748,8 +3748,8 @@ Or double space the x atoms to match double space of y layout
 
 
 [ ]  [ ]  [.]            [.]            NIL
-" "  " "                            
-                                      
+" "  " "
+
           [ ]  [ ]  NIL  [ ]  [ ]  NIL
           " "  " "       " "  " "
 
@@ -3760,7 +3760,7 @@ Use Toggle
 Make entire thing a single list
 
   (I Title
-    A Title      
+    A Title
     B Title
       1 Hello World
       2 Foo Bar)
@@ -3802,66 +3802,55 @@ Thus:
       (2 Content
         (a Content)
         (b Content))))
-     
+
   * How does user specify CDR is on newline...newline char?
   * [Y] can be at end of line or start of line
-  
+
   [Y]  [X]  [X]       # If CDR missing, then newline; align to first item
        I    Content
-      
+
        [Y]  [X]  [X]
             A    Content
-          
+
             [Y]  [X]  [X]       NIL
                  1    Content
-              
+
             [Y]  [X]  [X]       NIL
                  2    Content
 
             NIL
-      
+
        NIL
 
        [Y]  [X]  [X]
             B    Content
-          
+
             [Y]  [X]  [X]       NIL
                  1    Content
-              
+
             [Y]  [X]  [X]       NIL
                  2    Content
-                 
+
             NIL
-             
+
        NIL
   NIL
-  
+
 Alternative
 
   [Y]  [X]  [X]      [Y] CAR
        I    Content  CDR
-      
+
             [X]  [X]      [Y]   # So CAR is next line?
             A    Content  NIL
-          
+
                  [X]  [X]      NIL
                  1    Content
-              
+
                  [X]  [X]      NIL
                  2    Content
-                 
-       
-So how to produce this?
 
-Default is x layout
-
-* Type I
-* Type Content
-
-
-Pointer properties
-* layout: x, y
-* new row/col, same
+==================
 
 [ ] CAR
 CDR
@@ -3871,43 +3860,161 @@ CAR
 
 (when (isa '+Pair (get Pair 'b)) # instead of a Sym/Num
   (put (get Pair 'b) 'lay 'y))
-  
-Pairs are always Y
-Atoms are always X, except for newline
 
   [Y]  [X]  [X]       # If CDR missing, then newline; align to first item
        I    Content
-      
+
        [Y]  [X]  [X]
             A    Content
-          
+
             [Y]  [X]  [X]       NIL
                  1    Content
-              
+
             [Y]  [X]  [X]       NIL
                  2    Content
 
             NIL
-      
+
        NIL
-       
+
   NIL
-  
+
 
   [Y]  [X]  [X]       # If CDR missing, then newline; align to first item
        I    Content
-      
+
        [X]  NIL
-       
+
        [X]  [X]
         A    Content
-          
+
        [Y]  [X]  [X]       NIL
             1    Content
-          
+
        [Y]  [X]  [X]       NIL
             2    Content
 
        NIL
+
+  NIL
+
+================================================================================
+
+Implement:
+
+* Change Ptr-Ref
+  * layout: x, y
+  * new row/col
+    * Changing this will move obj to newline and redraw cdr
+  * Reflected in object
+* Change New
+  * layout: x, y
+    * Default will be based on current Ref
+  * new row/col
+  * Reflected in Ptr name
+
+* +Pair always Y
+* +Atom always X; newline is exception
+  * Mark in +Atom if newline - stored in Prev or Nxt?
+
+* Refactor layout algo to draw test structures
+
+  [Y]  [X]  [X]
+       I    Content
+
+       [Y]  [X]  [X]
+            A    Content
+
+            [Y]  [X]  [X]       NIL
+                 1    Content
+
+            [Y]  [X]  [X]       NIL
+                 2    Content
+
+            NIL
+
+       NIL
+
+  NIL
+
+'(("I" "Content"
+    ("A" "Content"
+      ("1" "Content"
+       "2" "Content"))))
+
+What if instead of:
+
+(I ... ...
+   (A ... ...
+      (1 ... ...
+      (2 ... ...
+   (B ... ...
+      (1 ... ...
+      (2 ... ...
+(II ... ...
+...
+
+User wanted:
+
+I ... ...       II ... ...       III ... ...
+  (A ... ...       (A ... ...
+     (1 ... ...       (1 ... ...
+
+Or even
+
+I ... ...       
+  (A ... ...       (B ... ...
+     (1 ... ...       (1 ... ...
+
+Need a markup language to express this...
+
+To say
+
+Y layout for first level
+X layout for second level
+... layout for ... level
+
+(Y X ...)
+
+If data exceeds length of markup, default would be to use last one
+-> Specify R for repeat?
+
+(Y X R) = (Y X Y X Y X ...)
+
+This markup data is passed to lay-part function
+-> Need to track level also
+
+To pre-defined layout for special forms:
+
+(let (a 1
+      b 2
+      c 3)
       
-  NIL  
+  body-1
+  body-2
+  body-3)
+  
+(let a 1      
+  body-1
+  body-2
+  body-3)  
+
+Old Notes:
+
+(X (X 2) ^J
+ (2 X) (-Y 1))
+
+This means 1st item use 1st
+second item use 2nd
+^J means move to newline
+offset 2 spaces in x direction
+3rd and remainder uses 4th
+
+
+(let (a 1
+      b 2
+      c 3)
+      
+      body-1
+      body-2
+      body-3)
