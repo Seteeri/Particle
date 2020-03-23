@@ -10,50 +10,16 @@
 
 
 (de lay-pair (Any Base)
-  #{
-  
-  [Y]  [X]  [X]
-       I    Content
-      
-       [Y]  [X]  [X]      \n
-            A    Content
-          
-            [Y]  [X]  [X]       NIL
-                 1    Content
-              
-            [Y]  [X]  [X]       NIL
-                 2    Content
-
-            NIL
-      
-       NIL
-       
-  NIL
-
-  [Y]  [X]  [X]
-       I    Content
-      
-       [Y]  [X]  [X]      NIL
-            A    Content
-          
-       NIL
-       
-  NIL
-  
-  }#
-
   
   (put Any 'lay (if (is-start-of-list Any) 'y 'x))
 
-  (println 'lay-pair (get Any 'lay) (get Any 'data))
+  #(println 'lay-pair (get Any 'lay) (get Any 'data))
 
   # Move Pair first so below can get correct pos
   (mov> Any *cur)
   
   (let Base-2 (if (is-start-of-list Any)
-                  (prog
-                    (println 'lay-pair "  Calc new base" (type (get Any 'a)) (type (get Any 'b)) (get Any 'data))
-                    (get-origin> Any))
+                  (get-origin> Any)
                   Base)
 
     (if (= (get Any 'lay) 'x)
@@ -76,14 +42,6 @@
     
     Base is the pos of the list start; lay-pair sets it
 
-    What Is Happening
-
-    [Y]  [X]  [Y]  [X]  NIL
-         1    NIL  3
-    NIL
-
-    What We Want
-
     [Y]  [X]
          1    
          
@@ -93,10 +51,19 @@
          NIL
          
     NIL
+
+    [X]
+    let
+         
+    [Y]  [X]  [X] NIL
+         A    1
+
+    NIL
     
     For X layout, if CDR is a list, move it rel to base
   
-    Base is start of [Y] so adv 2.0 to get into pos
+    If Base is [Y], adv 2.0 to get into pos
+    else first item, so no adv, simply draw under
   
   }#
   
@@ -118,10 +85,10 @@
         # if interpreted directly
         (if (is-start-of-list (: b)) # or nl
             (prog
-              (println 'lay-pair'x)
+              #(println 'lay-pair'x)
               (set-cur-x (get Base 1))
               (when (get Any 'c)
-                # Really should use last vert of Any
+                # Really should use last vert of og Base
                 (adv-cur 2.0))
               (nl-cur))
               
@@ -154,16 +121,6 @@
     Must return the max X and min Y to calc bounds
   
     Base is the pos of the list start; lay-pair sets it
-    
-    [Y]  [X]
-         1    
-         
-         [Y]  [X]  NIL
-              3
-              
-         NIL
-         
-    NIL    
   }#
   
   (let ((X Y) *cur)

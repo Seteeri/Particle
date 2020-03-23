@@ -70,15 +70,9 @@
       # If CAR/CDR, is a list, set C to pair
       (unless Car-Skip (put Part-Car 'c Part-Pair))
       (unless Cdr-Skip (put Part-Cdr 'c Part-Pair))
-        
-      #{
-        Skip the list containing the list so:
-          a
-          . 1 2 3
-          c
-      }#
-      (when (num? Ar)
-        (lay-num-ds Part-Pair 'x))
+
+      #(when (num? Ar)
+      #  (lay-num-ds Part-Pair 'x))
       #(when (str? Ar)
       #  (lay-str-ds Part-Pair 'x))
               

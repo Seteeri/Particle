@@ -304,7 +304,7 @@
       (set-cur-x X)
       (lay-part Part *cur)))
 
-  (when NIL
+  (when T
   
     (nl-cur)
     (set-cur-x X)
