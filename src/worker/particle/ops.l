@@ -106,17 +106,20 @@
           (base-cur Prv)
           (lay-part Part *cur)        
         
-          (mov-cur-part Part 'start)
-          (nl-cur 3.0)
-          (with Part
-            (put (: a) 'lay Lay)
-            (lay-part (: a) *cur))))
+          # Move Car to the right
+          #(mov-cur-part Part 'end) (adv-cur 2.0)
+          #(base-cur Part)
+          #(with Part
+          #  (put (: a) 'lay Lay)
+          #  (lay-part (: a) *cur))
+          ))
 
     Part))
 
 
 (de repl-list (Prv Pair Part)
   
+
   #{
     Prv - Pair/Part - Cdr
           

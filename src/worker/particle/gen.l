@@ -79,7 +79,9 @@
       }#
       (when (num? Ar)
         (lay-num-ds Part-Pair 'x))
-      
+      #(when (str? Ar)
+      #  (lay-str-ds Part-Pair 'x))
+              
       Part-Pair))
 
 
@@ -89,17 +91,31 @@
   # Move to caller fn or gen-part...
   
   (with Part
-    
-    (let (P-Typ (type Part)
-          A-Typ (type (: a))
-          B-Typ (type (: b)))
   
-      (when (and (isa '+Pair P-Typ)
-                 (or (isa '+Pair A-Typ)
-                     (isa '+Num A-Typ)))
-        
-        (=: lay Lay)
-        (put (: a) 'lay Lay))
+    (when (and (isa '+Pair Part)
+               (or (isa '+Pair (: a))
+                   (isa '+Num (: a))))
       
-      (when (isa +Pair A-Typ) (lay-num-ds (: a) Lay))
-      (when (isa +Pair B-Typ) (lay-num-ds (: b) Lay)))))
+      (=: lay Lay)
+      (put (: a) 'lay Lay))
+    
+    (when (isa +Pair (: a)) (lay-num-ds (: a) Lay))
+    (when (isa +Pair (: b)) (lay-num-ds (: b) Lay))))
+
+
+(de lay-str-ds (Part Lay)
+  # If nested lists, must keep checking until non-pair/list
+  #
+  # Move to caller fn or gen-part...
+  
+  (with Part
+  
+    (when (and (isa '+Pair Part)
+               (or (isa '+Pair (: a))
+                   (isa '+Str (: a))))
+      
+      (=: lay Lay)
+      (put (: a) 'lay Lay))
+    
+    (when (isa +Pair (: a)) (lay-str-ds (: a) Lay))
+    (when (isa +Pair (: b)) (lay-str-ds (: b) Lay))))

@@ -3562,6 +3562,7 @@ Layouts - Y
         [ ] "B"
 
         [ ] "C"
+
         
 Layouts - Mixed
 
@@ -3573,19 +3574,340 @@ p0
 [.] NIL
 NIL
 
+
 Enter list ->
 
-[.] a
-
-[.] b
-    p0
-[.] NIL
-NIL
-
 
 [.] a
 
 [.] b
-
+    
 [.] NIL
 NIL p0
+
+* Should be above?
+* Under makes it consistent with x layout
+
+
+->
+
+
+[.] a
+
+[.] b
+
+[.] [.] c
+NIL     p0
+
+
+=================
+
+What if pointer is part of the list itself?
+
+Given: [1] -> [2] -> [3] -> [4] -> NIL
+
+p0 -> [1] -> [2] -> [3] -> [4] -> NIL
+
+[1] -> p0 -> [2] -> [3] -> [4] -> NIL
+
+[1] -> [2] -> p0 -> [3] -> [4] -> NIL
+
+[1] -> [2] -> [3] -> p0 -> [4] -> NIL
+
+=====================================
+
+[.] p0
+
+    [.] "I"
+
+    [.] [ ] "A"
+
+        [ ] "B"
+
+        [ ] "C"
+
+
+[.] [.] "I"
+
+    p0
+
+    [.] [ ] "A"
+
+        [ ] "B"
+
+        [ ] "C"
+
+
+[.] [.] "I"
+
+    [.] p0
+        
+        [ ] "A"
+
+        [ ] "B"
+
+        [ ] "C"
+
+This will allow to keep the structure in tact
+
+.............................................
+
+What about maintain space between sublists to avoid redraw?
+
+p0
+[.] [.] "I"
+
+    [.] [ ] "A"
+        [ ] "B"
+        [ ] "C"
+
+[.] [.] "II"
+
+    [.] [ ] "A"
+        [ ] "B"
+        [ ] "C"
+
+((I (A B C))
+
+1 
+2 p0
+3 [.] [.] "I"
+4     [.] [ ] "A"
+5         [ ] "B"
+6         [ ] "C"
+7         NIL
+8     NIL
+9 NIL
+
+1 
+2 [.] p0
+3     [.] "I"
+4     [.] [ ] "A"
+5         [ ] "B"
+6         [ ] "C"
+7         NIL
+8     NIL
+9 NIL
+
+Still have to move items on that line so a really long horizontal list would
+take long
+
+=======================
+
+What about pop object?
+
+[1] [2] [3] [4]
+
+    [2]
+[1] p0  [3] [4]
+
+        [3]
+[1] [2] p0  [4]
+
+            [4]
+[1] [2] [3] p0
+
+
+What about pointer jumping?
+
+Bad idea
+
+
+So keep current idea
+For y layout, create column spacing which is equivalent to row spacing for x
+and put pointer on left instead of above
+Draw pointer down? What if number doesn't fit? -> Space up to 3 digits, shouldn't be more than that...
+Many column spacing would be consistent with x layout though
+
+[.] * [.] "I"
+      [.]     * [ ] "A"
+                [ ] "B"
+                [ ] "C"
+
+What about underscore or bounding box like traditional?
+
+=========================
+
+Make pointer just p or *
+
+              *
+ptrs p0 p1 p2 p3 p4
+
+     *
+main a b c
+
+Or double space the x atoms to match double space of y layout
+
+[.] [.] "I"
+
+    [.] [ ] "A"
+
+        [ ] "B"
+
+        [ ] "C"
+
+
+[ ]  [ ]  [.]            [.]            NIL
+" "  " "                            
+                                      
+          [ ]  [ ]  NIL  [ ]  [ ]  NIL
+          " "  " "       " "  " "
+
+=======================================
+
+Use Toggle
+
+Make entire thing a single list
+
+  (I Title
+    A Title      
+    B Title
+      1 Hello World
+      2 Foo Bar)
+
+However, doesn't make much sense since would require using headers as tokens and default the whole purpose of structure
+
+Header at start of every list
+
+  (I Title-Body
+    (A Title-Body)
+    (B Title-Body
+      (1 Title-Body)
+      (2 Title-Body)))
+
+Then should header lists be grouped into a list?
+
+  (I Title-Body
+    ((A Title-Body)
+     (B Title-Body
+      ((1 Title-Body)
+       (2 Title-Body)))))
+
+Pattern becomes:
+
+<head> <body> <subs>
+
+Seems reundant since getting Cdr after Title-Body would return a list
+
+Choose simplest!
+
+Thus:
+
+  (I Content
+    (A Content
+      (1 Content)
+      (2 Content))
+    (B Content
+      (1 Content)
+      (2 Content
+        (a Content)
+        (b Content))))
+     
+  * How does user specify CDR is on newline...newline char?
+  * [Y] can be at end of line or start of line
+  
+  [Y]  [X]  [X]       # If CDR missing, then newline; align to first item
+       I    Content
+      
+       [Y]  [X]  [X]
+            A    Content
+          
+            [Y]  [X]  [X]       NIL
+                 1    Content
+              
+            [Y]  [X]  [X]       NIL
+                 2    Content
+
+            NIL
+      
+       NIL
+
+       [Y]  [X]  [X]
+            B    Content
+          
+            [Y]  [X]  [X]       NIL
+                 1    Content
+              
+            [Y]  [X]  [X]       NIL
+                 2    Content
+                 
+            NIL
+             
+       NIL
+  NIL
+  
+Alternative
+
+  [Y]  [X]  [X]      [Y] CAR
+       I    Content  CDR
+      
+            [X]  [X]      [Y]   # So CAR is next line?
+            A    Content  NIL
+          
+                 [X]  [X]      NIL
+                 1    Content
+              
+                 [X]  [X]      NIL
+                 2    Content
+                 
+       
+So how to produce this?
+
+Default is x layout
+
+* Type I
+* Type Content
+
+
+Pointer properties
+* layout: x, y
+* new row/col, same
+
+[ ] CAR
+CDR
+
+[ ] CDR
+CAR
+
+(when (isa '+Pair (get Pair 'b)) # instead of a Sym/Num
+  (put (get Pair 'b) 'lay 'y))
+  
+Pairs are always Y
+Atoms are always X, except for newline
+
+  [Y]  [X]  [X]       # If CDR missing, then newline; align to first item
+       I    Content
+      
+       [Y]  [X]  [X]
+            A    Content
+          
+            [Y]  [X]  [X]       NIL
+                 1    Content
+              
+            [Y]  [X]  [X]       NIL
+                 2    Content
+
+            NIL
+      
+       NIL
+       
+  NIL
+  
+
+  [Y]  [X]  [X]       # If CDR missing, then newline; align to first item
+       I    Content
+      
+       [X]  NIL
+       
+       [X]  [X]
+        A    Content
+          
+       [Y]  [X]  [X]       NIL
+            1    Content
+          
+       [Y]  [X]  [X]       NIL
+            2    Content
+
+       NIL
+      
+  NIL  

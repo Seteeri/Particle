@@ -279,45 +279,58 @@
   (nl-cur)
   (set-cur-x X)
   
-  (when NIL
+  (when T
   
     (nl-cur)
     (set-cur-x X)
-    (let Part (gen-part '(((1 2 3 4)
-                           (5 6 7 8)
-                           (9 10 11 12)
-                           (13 14 15 16))
+    (let Part (gen-part '(((1 2
+                            (3 4)
+                            (5 6
+                              (7 8))
+                            (9 0
+                              (1 2))))
                           (("I" "II" "III" "IV" "V")
-                           ("A" "B" "C" "D" "E")
-                           ("1" "2" "3" "4" "5")
                            (6 7 8 9 10))
-                          ("I"
-                            ("I.A"
-                              NIL)  # Need not put NIL
-                            ("I.B"
-                              ("I.B.1"
-                               "I.B.2"
-                               "I.B.3"))
-                            ("I.C"
-                              ("I.C.1"
-                               "I.C.2"
-                               "I.C.3"))))
-                        'x)
+                          ("I" "Content"
+                            ("A" "Content")
+                            ("B" "Content"
+                              ("1"
+                               "2"))
+                            ("C" "Content"
+                              ("1" "Content"
+                               "2" "Content"))))
+                        'y)
       
       (nl-cur 2.0)
       (set-cur-x X)
-      (lay-part Part *cur (get Part 'lay))))
+      (lay-part Part *cur)))
 
 
   (when NIL
   
     (nl-cur)
     (set-cur-x X)
-    (let Part (gen-part '("a" "b" ("c" "d")) 'x)
+    (let Part (gen-part '("q" "w" ("a" "s")) 'y)
       
       (nl-cur 2.0)
       (set-cur-x X)
-      (lay-part Part *cur (get Part 'lay))
+      (lay-part Part *cur)
+      
+      (let B (calc-bounds> Part)
+        #(mov> p0 B)
+        (println "BOUNDS:" B))
+      
+      ))
+
+  (when NIL
+  
+    (nl-cur)
+    (set-cur-x X)
+    (let Part (gen-part '("q" "w" ("a" "s")) 'x)
+      
+      (nl-cur 2.0)
+      (set-cur-x X)
+      (lay-part Part *cur)
       
       (let B (calc-bounds> Part)
         #(mov> p0 B)

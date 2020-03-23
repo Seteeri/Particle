@@ -250,6 +250,12 @@ Store DAGs as binary trees?
     * Support y layout
     * Support mixed layout
     
+    * Toggle layout
+      * Change current ref AND set state for future
+        * Or should be separate?
+      * Cur should change to reflect state
+        * Really changing symbols: >0 vs ^0
+    
     * Fix lay-atom function - why checking b?
     * Traversal follows layout  [Sun]
     * Handle random edits [Sun]
