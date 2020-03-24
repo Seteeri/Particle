@@ -4018,3 +4018,6 @@ offset 2 spaces in x direction
       body-1
       body-2
       body-3)
+
+NIL -> when atom added, must move below and convert to Y
+Change symbol

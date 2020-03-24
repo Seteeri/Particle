@@ -75,9 +75,10 @@
 
 
 (def '*char-dot (char 183))
-(de draw-dot (Adv)
+(de draw-dot (Col Adv)
 
-  (let Dot (draw-glyph *char-dot *col-base-0)
+  (let Dot (draw-glyph *char-dot
+                       (if Col Col *col-base-0))
     
     (cmd-upd-vert *ipc Dot)
     (when Adv (adv-cur))
@@ -165,7 +166,7 @@
         (T           (draw-sym Atom Col Adv))))
 
 
-(de draw-cell ()
+(de draw-cell (Col)
 
   # TODO: Draw shortnums that fit in pointers
 
@@ -177,4 +178,4 @@
         (draw-chars "]" *col-base-0 T)))
   }#
 
-  (list (draw-dot T)))
+  (list (draw-dot Col T)))

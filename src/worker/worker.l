@@ -283,9 +283,7 @@
 
     (nl-cur)
     (set-cur-x X)
-    (let Part (gen-part '((1 2
-                           (3)))
-                        'y)
+    (let Part (gen-part NIL 'y)
       
       (nl-cur 2.0)
       (set-cur-x X)
@@ -294,7 +292,7 @@
       (lay-part Part *cur)))
 
 
-  (when T
+  (when NIL
   
     (nl-cur)
     (set-cur-x X)
@@ -304,7 +302,7 @@
       (set-cur-x X)
       (lay-part Part *cur)))
 
-  (when T
+  (when NIL
   
     (nl-cur)
     (set-cur-x X)

@@ -247,6 +247,8 @@ Store DAGs as binary trees?
     * Fix sublist handling [Done]
     * Test nested lists + NILs [Done]
     * Refactor del [Done]
+    * Make NIL type?
+    * When enter-list, change ptr symbol to reflect it instead of pos
     * Rewrite entering text
       * Need pointer/new fns to change layout, new row/col
         * Change pointer symbol to reflect layout: p0^ or p0>
@@ -256,7 +258,6 @@ Store DAGs as binary trees?
     * Draw symbols with cons cell
     
     * Fix lay-atom function - why checking b?
-    * Traversal follows layout  [Sun]
     * Handle random edits [Sun]
       * Update subsequent items in list
       * Update superlist

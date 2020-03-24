@@ -15,36 +15,65 @@
 
 
 (de gen-atom (Any Lay Adv Car-Skip Cdr-Skip)
-
-  # Pass flag to draw sym val
-  
-  # Handle internal symbol excl. T - draw the value (CDR)
-  # Transient sym's value is itself...
-
-  # Must do after so drawn after
-  
-  (let (B (when (and (not Cdr-Skip)
-                     (sym-int? Any))
-            (gen-sym-int Any Lay Car-Skip Cdr-Skip)))
-            
-    (new (if (num? Any)
-             '(+Num)
-             (if (str? Any)
-                 '(+Str)
-                 '(+Sym)))
-         Any
-         NIL
-         B
-         (draw-atom Any
-                     (get-color-type Any)
-                     Adv)
-         Lay)))
+  (if (num? Any)
+      (gen-num Any Lay Adv Car-Skip Cdr-Skip)
+      (if (not Any)
+          (gen-nil Any Lay Adv Car-Skip Cdr-Skip)
+          (gen-sym Any Lay Adv Car-Skip Cdr-Skip))))
 
 
-(de gen-sym-int (Any Lay Car-Skip Cdr-Skip)
-  # Opt: Ignore NIL?
+(de gen-num (Any Lay Adv Car-Skip Cdr-Skip)
+  (new '(+Num)
+       Any
+       NIL
+       NIL
+       (draw-atom Any (get-color-type Any) Adv)
+       Lay))
 
-  (gen-part (val Any) Lay Car-Skip Cdr-Skip))
+
+(de gen-nil (Any Lay Adv Car-Skip Cdr-Skip)
+  (new '(+Sym) # Make NIL type?
+       Any
+       NIL
+       NIL
+       (draw-atom Any (get-color-type Any) Adv)
+       Lay))
+        
+
+(de gen-sym (Any Lay Adv Car-Skip Cdr-Skip)
+
+  # Str's default val is itself so watch for inf recursion
+  # Draw dot again
+
+  # Make Pair and Car both +Sym or just Car?
+  # If property list is shown also...
+
+  # Technically, name is a number
+
+  (let (Ar (name Any)
+        Dr (if (str? Any) NIL (val Any))
+        Part-Car (unless Car-Skip
+                  # Num type but content is a string
+                  (new '(+Num)
+                       Ar
+                       NIL
+                       NIL
+                       (draw-atom Ar (get-color-type 0) Adv)
+                       Lay))
+        Part-Cdr (unless Cdr-Skip
+                  (gen-part Dr Lay))
+        Part-Pair (new (if (str? Any) '(+Str) '(+Sym))
+                       Any
+                       Part-Car
+                       Part-Cdr
+                       (draw-cell (get-color-type Any)) # Color this as a symbol
+                       Lay))
+                        
+      # If CAR/CDR, is a list, set C to pair
+      (unless Car-Skip (put Part-Car 'c Part-Pair))
+      (unless Cdr-Skip (put Part-Cdr 'c Part-Pair))
+              
+      Part-Pair))
 
 
 (de gen-pair (Any Lay Car-Skip Cdr-Skip)
@@ -64,20 +93,26 @@
                         Any
                         Part-Car
                         Part-Cdr
-                        (draw-cell Ar Dr) # (append Vert-Ar Dot Vert-Dr)
+                        (draw-cell) # (append Vert-Ar Dot Vert-Dr)
                         Lay))
                         
       # If CAR/CDR, is a list, set C to pair
       (unless Car-Skip (put Part-Car 'c Part-Pair))
       (unless Cdr-Skip (put Part-Cdr 'c Part-Pair))
-
-      #(when (num? Ar)
-      #  (lay-num-ds Part-Pair 'x))
-      #(when (str? Ar)
-      #  (lay-str-ds Part-Pair 'x))
               
       Part-Pair))
 
+
+(de gen-cell ())
+
+
+################################################################################
+
+
+#(when (num? Ar)
+#  (lay-num-ds Part-Pair 'x))
+#(when (str? Ar)
+#  (lay-str-ds Part-Pair 'x))
 
 (de lay-num-ds (Part Lay)
   # If nested lists, must keep checking until non-pair/list
