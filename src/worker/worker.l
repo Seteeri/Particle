@@ -45,7 +45,7 @@
 # Stores pointer particles and main list particle
 (def '*particles)
 (def '*part-lsts) # Traversal history list
-(def '*part-main) # Master list
+(def '*main) # Master list
 (def '*part-cmds) # List of commands (undo/history/timeline)
 (def '*part-ptrs) # List of pointers
 
@@ -253,11 +253,11 @@
     #############################
     # Generate main particle list
     (idx '*particles
-          (def '*part-main
-                (gen-part '*part-main 'x))
+          (def '*main
+                (gen-part '*main 'x))
           T)
     (set-cur-x X)
-    (lay-part *part-main *cur)
+    (lay-part *main *cur)
 
 
     (nl-cur 3.0)
@@ -276,13 +276,13 @@
     # Connect pointer to main
     # Remove NIL first
     (del> (get p0 'b) T T)
-    (put p0 'b *part-main)
+    (put p0 'b *main)
 
     (set-cur-x X)
     (put p0 'lay 'y)
     (lay-part p0 *cur)
 
-    #(let Bounds (calc-bounds> *part-main)
+    #(let Bounds (calc-bounds> *main)
     #  (mov> p0 Bounds))
 
 

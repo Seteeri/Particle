@@ -114,9 +114,9 @@
   (println "Move to outer list")
   
   # Set main particle to old one
-  (setq *part-main (pop '*part-lsts))
+  (setq *main (pop '*part-lsts))
 
-  (let? Last-1 (last-1> *part-main)
+  (let? Last-1 (last-1> *main)
 
     # Set ptr to last item (non-NIL)
     (put p0 'b Last-1)
@@ -139,7 +139,7 @@
               (== Data NIL))
 
       # Push Part to history
-      (push '*part-lsts *part-main)
+      (push '*part-lsts *main)
 
       # DEPENDS ON LAYOUT!
       # Default is to push strings
@@ -152,7 +152,7 @@
       # What if there is data - must move to it
 
       # Set main particle
-      (setq *part-main Ref)
+      (setq *main Ref)
       
       (setq *mode-car T))))
 

@@ -30,7 +30,7 @@
         (put p0 'b (get Part 'a))
                 
         # Set new list
-        (setq *part-main (get Part 'a))
+        (setq *main (get Part 'a))
         
         (setq *mode-repl NIL))
 
@@ -65,7 +65,7 @@
     #(println 'cmd-del 'Ref (get Ref 'data))
     #(println 'cmd-del 'c (get (get Ref 'c) 'data))
       
-    (unless (= (get Ref 'data) '*part-main)
+    (unless (= (get Ref 'data) '*main)
 
       # Preserve Cdr (aka NIL) so only delete Car
       # Must manually do this since the flags are passed down
@@ -75,7 +75,7 @@
       (put Ref 'b)
             
       # Link Prv->Cdr; con to destructively set Cdr
-      (unless (= (get Prv 'data) '*part-main)
+      (unless (= (get Prv 'data) '*main)
         (con (get Prv 'data) (get Cdr 'data)))
 
       #(if (isa '+Pair (get Prv 'a))
@@ -134,7 +134,7 @@
 
 (de cmd-pack (Keysym)
 
-  # Dat (pack (get *part-main 'data))
+  # Dat (pack (get *main 'data))
   # Part (con-list Dat 'x))
 
   (prinl-info "cmd-pack"))
@@ -169,7 +169,7 @@
 
   (prinl-info "cmd-intern")
 
-  (when (get (get *part-main 'b) 'data)
+  (when (get (get *main 'b) 'data)
 
     (let (Ref (val> p0)
           Cdr (get Ref 'b)

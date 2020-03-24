@@ -54,8 +54,8 @@
     # Need separate function if not at end
     #   (conc (: data) Lst-Any (get (get Ref 'b) 'data))
     
-    # Remember, *part-main's value is always the particle itself
-    # The value of the symbol *part-main is actually 'b    
+    # Remember, *main's value is always the particle itself
+    # The value of the symbol *main is actually 'b    
     
     #(println 'con-list Ref (type Ref) (get Ref 'data))
     
