@@ -250,14 +250,13 @@ Store DAGs as binary trees?
     * Draw symbols with cons cell [Done]
     * Make NIL type [Done]
     * Draw str cdr with dot [Done]
-    * Rewrite entering text [WIP]
-      * Need pointer/new fns to change layout, new row/col
-        * Change pointer symbol to reflect layout: p0^ or p0>
+    * Rewrite list handling [WIP]
+      * When enter-list, change ptr symbol to reflect it instead of pos      
+    * Need pointer/new fns to change layout, new row/col
+      * Change pointer symbol to reflect layout: p0^ or p0>
       * Should be consistent with outline format
       * Default layout is oriented towards lists of text/num/syms similar to
       alphanumerical outlines
-    * Rewrite list handling
-      * When enter-list, change ptr symbol to reflect it instead of pos      
     
     * Handle random edits
       * Update subsequent items in list

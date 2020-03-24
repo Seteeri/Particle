@@ -4037,3 +4037,72 @@ Change symbol
   .   .. "A"
   .   .. "B"
   NIL    
+
+
+  [X]  [X]  [X] NIL
+  A    B    NIL
+
+
+  TO:
+
+  [X]  [X]
+  A    B  
+
+  [Y] C
+  CDR
+  
+  * Store list in main to get the base pos x
+  * Assumes list defaults to newline
+  * Instead of creating nil, can just create new list
+  
+  * Should enter move ptr to newline?
+    * To make this consistent, ptr should point ahead of NIL
+    * OR have it point to NIL and when user enters newline, move CDR below
+  
+  * Default create nil just appends NIL, but does not enter it
+  
+  Three Methods
+  
+  * Create NIL, then enter list mode (which moves NIL to nl), mov ptr, enter char
+  
+  * Enter list mode (creates NIL on nl), mov ptr, enter char
+    * Move NIL below like latter
+    * Next char will be first item
+    
+  [X]  [X]
+  A    B  
+
+  [Y] NIL
+  NIL
+
+  * Create list with Char
+    * Combo of above
+    * No default combo like newline+char (although could be done with a macro)
+
+================================================================================
+
+Lets start with manual layout
+so place NIL either normal or next line
+-> Use newline and layout commands
+
+Ex: Create NIL, move it below, change layout, at this point, either cont or enter list
+
+  [X]  [X]  [X] NIL
+  A    B    NIL
+  
+  
+  [X]  [X]  
+  A    B    
+  
+  [X] NIL
+  NIL  
+  
+  
+  [X]  [X]  
+  A    B    
+  
+  [Y] NIL
+  NIL    
+  
+  Also where semantic move needs to follow layout so in y mode vs x mode, left
+  and right are opposite

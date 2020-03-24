@@ -61,27 +61,36 @@
   (println "Move to inner list")
   
   (let (Ref (val> p0)
+        Car (get Ref 'a)
         Data (car (get Ref 'data)))
 
-    # Check pointer is a list; watch for cons == list
-    (when (or (pair Data) 
-              (== Data NIL))
-      
-      # Point to Car
-      (put p0 'b (get Ref 'a))
-      
-      # Car either has data or is NIL
-      (if (get (get Ref 'a) 'data)
-      
-          (prog
+    # Car either has data or is NIL
+
+    (cond ((= (type (get Car 'a)) '(+Pair))
             # Set pointer and do normal
+            # Point to Car
+            (put p0 'b (get Ref 'a))            
             (mov-part-abv> p0 (get Ref 'a) (cons T)))
-            
-          (prog
-            # NIL so must replace it
-            # Check layout...
-            (mov-part-bel> p0 (get Ref 'a) (cons T))
-            (setq *mode-repl T))))))
+          ((isa '+Nil Car)
+            # Move Ref/((NIL)) to newline if not already
+            # Get base x from Ref
+            (let (Ori (get-origin> (get *main 'b))
+                  Bnds (calc-bounds> (get *main 'b)))
+              
+              (setq *cur (list (get Ori 1)
+                               (get Bnds 2)
+                               (get *cur 3)))
+              (nl-cur 2.0)                               
+              (put Ref 'lay 'y)
+              (lay-part Ref *cur))
+
+            (put p0 'b Car Ref)
+            (mov-part-abv> p0 Ref (cons T))
+            # Set new list
+            #(setq *main Ref)
+            # If not set, Cdr of NIL will be replaced instead of the CAR/entire list
+            (setq *mode-repl T)
+            ))))
   
 
 ###########
