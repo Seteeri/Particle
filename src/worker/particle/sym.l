@@ -23,7 +23,18 @@
   (super Data A B Verts Lay))
 
 
-(class +Str +Particle)
+(class +Str +Sym)
+
+(dm T (Data
+       A
+       B
+       Verts
+       Lay)
+
+  (super Data A B Verts Lay))
+
+
+(class +Nil +Sym)
 
 (dm T (Data
        A

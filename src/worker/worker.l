@@ -48,7 +48,6 @@
 (def '*part-main) # Master list
 (def '*part-cmds) # List of commands (undo/history/timeline)
 (def '*part-ptrs) # List of pointers
-(def 'p0 '*part-main)  # Default pointer to SYMBOL part-main
 
 (def '*cur (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
 
@@ -244,23 +243,23 @@
                (gen-part '*part-cmds 'x))
           T)
     (set-cur-x X)
-    (put *part-cmds 'lay 'x)
-    (put (get *part-cmds 'b) 'lay 'x)
     (lay-part *part-cmds *cur)
 
-    (nl-cur 2.0)
+    (nl-cur 3.0)
     (set-cur-x X)
 
     # TODO: Draw *part-ptrs
     # Will need to ignore drawing CDR for particle
-    (push '*part-ptrs
-          (gen-part 'p0 'x T T))
+    #(push '*part-ptrs (gen-part 'p0 'x))
     (idx '*particles
          (def 'p0
-              (car *part-ptrs))
+              (gen-part 'p0 'x))
          T)
+    (set-cur-x X)
+    (put p0 'lay 'y)
+    (lay-part p0 *cur)
     
-    (nl-cur)
+    (nl-cur 3.0)
     (set-cur-x X)
 
     # Generate main particle list
@@ -269,8 +268,6 @@
                 (gen-part '*part-main 'x))
           T)
     (set-cur-x X)
-    (put *part-main 'lay 'x)
-    (put (get *part-main 'b) 'lay 'x)
     (lay-part *part-main *cur)
 
     # Connect pointer to main
@@ -279,7 +276,7 @@
   (nl-cur)
   (set-cur-x X)
   
-  (when T
+  (when NIL
 
     (nl-cur)
     (set-cur-x X)

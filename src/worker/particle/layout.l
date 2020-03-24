@@ -11,6 +11,7 @@
 
 (de lay-pair (Any Base)
   
+  # Ignore p0 also
   (put Any 'lay (if (is-start-of-list Any) 'y 'x))
 
   #(println 'lay-pair (get Any 'lay) (get Any 'data))
@@ -151,13 +152,23 @@
   
 (de lay-atom (Any Base)
   
-  # Move atom
-  (mov> Any *cur)
+  # Move Pair first so below can get correct pos
+  (mov> Any *cur)  
+  
+  (if (or (isa '+Num Any)
+          (isa '+Nil Any))
+      
+      (prog
+      
+        # Mov cur to bounds, aka last vert start pos
+        (mov-cur-vert (last-vert> Any))
+        # Adv to move to end pos of last vert
+        (adv-cur)        
+        *cur)
 
-  # Mov cur to bounds, aka last vert start pos
-  (mov-cur-vert (last-vert> Any))
-  # Adv to move to end pos of last vert
-  (adv-cur)
-
-  # Return in
-  *cur)
+      (prog
+        
+        # Poss create lay-sym but not needed since same fn'y
+        (if (= (get Any 'lay) 'x)
+          (lay-pair-x Any Base)
+          (lay-pair-y Any Base)))))

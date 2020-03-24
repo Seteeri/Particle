@@ -32,7 +32,7 @@
 
 
 (de gen-nil (Any Lay Adv Car-Skip Cdr-Skip)
-  (new '(+Sym) # Make NIL type?
+  (new '(+Nil)
        Any
        NIL
        NIL
@@ -101,9 +101,6 @@
       (unless Cdr-Skip (put Part-Cdr 'c Part-Pair))
               
       Part-Pair))
-
-
-(de gen-cell ())
 
 
 ################################################################################
