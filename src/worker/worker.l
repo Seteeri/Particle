@@ -251,6 +251,7 @@
     # TODO: Draw *part-ptrs
     # Will need to ignore drawing CDR for particle
     #(push '*part-ptrs (gen-part 'p0 'x))
+    (setq p0 "FOOBAR")
     (idx '*particles
          (def 'p0
               (gen-part 'p0 'x))

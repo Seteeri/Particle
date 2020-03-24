@@ -25,8 +25,7 @@
 (de gen-num (Any Lay Adv Car-Skip Cdr-Skip)
   (new '(+Num)
        Any
-       NIL
-       NIL
+       NIL NIL
        (draw-atom Any (get-color-type Any) Adv)
        Lay))
 
@@ -34,44 +33,48 @@
 (de gen-nil (Any Lay Adv Car-Skip Cdr-Skip)
   (new '(+Nil)
        Any
-       NIL
-       NIL
+       NIL NIL
        (draw-atom Any (get-color-type Any) Adv)
        Lay))
         
 
 (de gen-sym (Any Lay Adv Car-Skip Cdr-Skip)
 
-  # Str's default val is itself so watch for inf recursion
-  # Draw dot again
-
   # Make Pair and Car both +Sym or just Car?
   # If property list is shown also...
 
   # Technically, name is a number
 
+  # Str's default val is itself so watch for inf recursion
+  # Should set Part-Car to Part-Pair ... but leave NIL for now
+  # Draw dot again
+
   (let (Ar (sym Any)
-        Dr (if (str? Any) NIL (val Any))
+        Val (val Any)
+        Dr (if (== Val Any) NIL Val)
         Part-Car (unless Car-Skip
                   # Num type but content is a string
                   (new '(+Num)
                        Ar
-                       NIL
-                       NIL
+                       NIL NIL
                        (draw-atom Ar (get-color-type 0) Adv)
                        Lay))
-        Part-Cdr (unless Cdr-Skip
+        Part-Cdr (when (and (not Cdr-Skip)
+                            (not (== Val Any)))
                   (gen-part Dr Lay))
-        Part-Pair (new (if (str? Any) '(+Str) '(+Sym))
+        Part-Pair (new (if (str? Any) '(+Str) '(+Sym)) # Color as a symbol
                        Any
-                       Part-Car
-                       Part-Cdr
-                       (draw-cell (get-color-type Any)) # Color this as a symbol
+                       Part-Car Part-Cdr
+                       (draw-cell (get-color-type Any) (== Val Any))
                        Lay))
                         
       # If CAR/CDR, is a list, set C to pair
-      (unless Car-Skip (put Part-Car 'c Part-Pair))
-      (unless Cdr-Skip (put Part-Cdr 'c Part-Pair))
+
+      (unless Car-Skip 
+        (put Part-Car 'c Part-Pair))
+      (when (and (not Car-Skip)
+                 (not (== Val Any)))
+        (put Part-Cdr 'c Part-Pair))
               
       Part-Pair))
 
@@ -91,8 +94,7 @@
         Part-Cdr (unless Cdr-Skip (gen-part Dr Lay))        
         Part-Pair (new '(+Pair)
                         Any
-                        Part-Car
-                        Part-Cdr
+                        Part-Car Part-Cdr
                         (draw-cell) # (append Vert-Ar Dot Vert-Dr)
                         Lay))
                         
@@ -105,6 +107,7 @@
 
 ################################################################################
 
+# Recusrively set layout
 
 #(when (num? Ar)
 #  (lay-num-ds Part-Pair 'x))

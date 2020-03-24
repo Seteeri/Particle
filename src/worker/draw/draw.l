@@ -162,9 +162,11 @@
         (T           (draw-sym Atom Col Adv))))
 
 
-(de draw-cell (Col Adv Self)
+(de draw-cell (Col Self)
 
   # (char 187) (char 166)
   # (draw-chars "[" *col-base-0 T)
-
-  (list (draw-dot Col T)))
+  
+  (if Self
+      (list (draw-dot Col) (draw-dot Col))
+      (list (draw-dot Col))))

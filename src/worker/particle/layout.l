@@ -78,8 +78,8 @@
       (nl-cur)
       
       # Lay CAR first since its X bounds has precedence
-      (let Bnd-Car (lay-part (: a)
-                             Base)
+      (let (Bnd-Car (lay-part (: a) Base)
+            Bnd-Cdr Bnd-Car)
         
         # or check 'nl...
         # wouldn't make sense for y layout except to add more spacing
@@ -100,11 +100,12 @@
               (adv-cur)
               (set-cur-y Y)))
         
-        (let Bnd-Cdr (lay-part (: b)
-                               Base)
-
-          (list (max (get Bnd-Car 1) (get Bnd-Cdr 1))
-                (min (get Bnd-Car 2) (get Bnd-Cdr 2))))))))
+        # Str's val/b is NIL (or poss later point to itself)
+        (when (or (: b) (not (= (: b) Any)))
+          (setq Bnd-Cdr (lay-part (: b) Base)))
+            
+        (list (max (get Bnd-Car 1) (get Bnd-Cdr 1))
+              (min (get Bnd-Car 2) (get Bnd-Cdr 2)))))))
 
     
 (de lay-pair-y (Any Base)
@@ -134,8 +135,8 @@
       (adv-cur 2.0)
     
       # Lay CAR first since its Y bounds has precedence
-      (let Bnd-Car (lay-part (: a)
-                             Base)
+      (let (Bnd-Car (lay-part (: a) Base)
+            Bnd-Cdr Bnd-Car)
         
         # At this point, cur is at extents of Car
         # X must be moved back to base      
@@ -143,16 +144,17 @@
         (set-cur-x X)
         (set-cur-y (get Bnd-Car 2)) (nl-cur)
         
-        (let Bnd-Cdr (lay-part (: b)
-                               Base)
-
-          (list (max (get Bnd-Car 1) (get Bnd-Cdr 1))
-                (min (get Bnd-Car 2) (get Bnd-Cdr 2))))))))
+        # Str's val/b is NIL (or poss later point to itself)
+        (when (or (: b) (not (= (: b) Any)))
+          (setq Bnd-Cdr (lay-part (: b) Base)))
+            
+        (list (max (get Bnd-Car 1) (get Bnd-Cdr 1))
+              (min (get Bnd-Car 2) (get Bnd-Cdr 2)))))))
     
   
 (de lay-atom (Any Base)
-  
-  # Move Pair first so below can get correct pos
+    
+  # Move Pair first so below to get correct pos
   (mov> Any *cur)  
   
   (if (or (isa '+Num Any)
@@ -161,8 +163,8 @@
       (prog
       
         # Mov cur to bounds, aka last vert start pos
-        (mov-cur-vert (last-vert> Any))
         # Adv to move to end pos of last vert
+        (mov-cur-vert (last-vert> Any))
         (adv-cur)        
         *cur)
 
