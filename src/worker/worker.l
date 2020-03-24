@@ -106,8 +106,9 @@
       ((`ksd~Return)              T `cmd-make-char)
       ((`ksd~Tab)                 T `cmd-make-char)
 
-      ((`ksd~Control-L `ksd~Tab) T ((Keysym) (println "Ctrl-L-Tab: TOGGLE LAYOUT NEW")))
-      ((`ksd~Alt-L     `ksd~Tab) T ((Keysym) (println "Alt-L-Tab: TOGGLE LAYOUT REF")))
+      # Does not work...
+      # ((`ksd~Shift-L `ksd~Tab) T ((Keysym) (println "Shift-L-Tab: TOGGLE LAYOUT REF")))
+      ((`ksd~Alt-L   `ksd~Tab) T `cmd-swap-layout)
       
       ## CUA Ops
       ((`ksd~Control-L `ksd~x) T ((Keysym) (println "Ctrl-L-x: CUT")))

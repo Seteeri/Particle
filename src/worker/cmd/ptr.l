@@ -1,3 +1,18 @@
+(de cmd-swap-layout (Keysym)
+  (println "Swap layout")
+  
+  (let Ref (val> p0)
+      
+    (with Ref
+      (=: lay (if (= (: lay) 'x) 'y 'x)))
+  
+    (mov-cur-part Ref 'start)
+    
+    (setq *nl-pair NIL)
+    (lay-part Ref *cur))
+    (setq *nl-pair T))
+  
+
 ######################
 # Semantic (Selection)
 
@@ -71,6 +86,7 @@
             # Point to Car
             (put p0 'b (get Ref 'a))            
             (mov-part-abv> p0 (get Ref 'a) (cons T)))
+            
           ((isa '+Nil Car)
             # Move Ref/((NIL)) to newline if not already
             # Get base x from Ref
@@ -86,8 +102,7 @@
 
             (put p0 'b Car Ref)
             (mov-part-abv> p0 Ref (cons T))
-            # Set new list
-            #(setq *main Ref)
+
             # If not set, Cdr of NIL will be replaced instead of the CAR/entire list
             (setq *mode-repl T)
             ))))
