@@ -129,15 +129,13 @@
       ((`ksd~Control-R `ksd~e)    T `cmd-make-nil)
 
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
-                                        (let Bnds (calc-bounds> *cmds)
-                                          (mov> p0 Bnds))
-                                        #(println (get (val> p0) 'c))
-                                        #(view (getl (get (val> p0) 'c))) (prinl) (prinl)
-                                        #(println (val> p0))
-                                        #(view (getl (val> p0))) (prinl) (prinl)
-                                        #(println (get (val> p0) 'b))
-                                        #(view (getl (get (val> p0) 'b))) (prinl) (prinl)
-                                        ))
+                                        (if NIL
+                                            (let Bnds (calc-bounds> (val> p0))
+                                              (println (format (get Bnds 1) *Scl))
+                                              (println (format (get Bnds 2) *Scl))
+                                              (mov> p0 Bnds))
+                                            (prog
+                                              (println (get-origin> (get (get (val> p0) 'a) 'a)))))))
 
       # Pointer Translation
       ((`ksd~Control-L `ksd~w) T `cmd-point-ptr-out)

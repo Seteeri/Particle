@@ -115,6 +115,7 @@
                      R G B 1.0)))
 
     (update-glyph> Vert Char)
+    
     (upd-mdl-mtrx> Vert)
 
     (inc '*cnt-v)

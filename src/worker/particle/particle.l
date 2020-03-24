@@ -286,12 +286,8 @@
                                *sca-vert)))
 
     # If neither Car or Cdr, use cons
-    (if (and (not X1) (not X2))
-
-      (list X3 Y3)
-
-      (list (max (if X1 X1 X3) (if X2 X2 X3) X3)
-            (min (if Y1 Y1 Y3) (if Y2 Y2 Y3) Y3)))))
+    (list (max (if X1 X1 X3) (if X2 X2 X3) X3)
+          (min (if Y1 Y1 Y3) (if Y2 Y2 Y3) Y3))))
 
 # Debug
 
