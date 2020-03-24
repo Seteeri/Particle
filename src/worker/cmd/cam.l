@@ -4,7 +4,10 @@
 
       (=: pos (list (+ (get (: pos) 1) (get Move 1))
                     (+ (get (: pos) 2) (get Move 2))
-                    10.0)))
+                    10.0))
+
+      (let ((X Y Z) (: pos))
+        (prinl-info 'cmd-move-cam (glue " " (list (format X *Scl) (format Y *Scl))))))
 
     (update-mat-view> *projview)
 
@@ -26,7 +29,9 @@
 
   (with *projview
 
-    (inc (:: scale-ortho) Delta))
+    (inc (:: scale-ortho) Delta)
+    
+    (prinl-info 'cmd-zoom-cam (format (: scale-ortho) *Scl)))
 
   (update-mat-proj> *projview)
 

@@ -22,6 +22,11 @@
                      (T (char Keysym))))
         Lay 'x)
 
+    # Push to cmd list
+    (setq *nl-pair NIL)
+    (setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
+    (setq *nl-pair T)
+  
     (if *mode-repl
 
       # repl-any assumes list has y layout
@@ -34,7 +39,7 @@
         
         (setq *mode-repl NIL))
 
-      (let Part (repl-cdr Data Lay)
+      (let Part (repl-cdr (val> p0) Data Lay)
         
         # Pointer always above regardless of layout?        
         (put p0 'b Part)

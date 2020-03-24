@@ -261,12 +261,12 @@ Store DAGs as binary trees?
     * Rewrite list handling
       * When enter-list, change ptr symbol to reflect it instead of pos      
     
-    * Fix lay-atom function - why checking b?
     * Handle random edits
       * Update subsequent items in list
       * Update superlist
         * This can result in slow updates, so lists should be done outside 
           the list then merged in
+    * Make cmds a circular list    
     * Refactor pack cmd
       
     GOAL: Able to build test tree

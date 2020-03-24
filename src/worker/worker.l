@@ -129,7 +129,7 @@
       ((`ksd~Control-R `ksd~e)    T `cmd-make-nil)
 
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
-                                        (let Bnds (calc-bounds> (val> p0) NIL T)
+                                        (let Bnds (calc-bounds> *cmds)
                                           (mov> p0 Bnds))
                                         #(println (get (val> p0) 'c))
                                         #(view (getl (get (val> p0) 'c))) (prinl) (prinl)
@@ -280,17 +280,14 @@
     #(let Bounds (calc-bounds> *main)
     #  (mov> p0 Bounds))
 
+    # TEMP
+    (setq p1 *cmds)
 
     ############
     
     (when NIL
 
-      (nl-cur 3.0)
-      (set-cur-x X)
-
-      (nl-cur)
-      (set-cur-x X)
-      (let Part (gen-part NIL 'y)
+      (let Part (gen-part '(1 2 (3 (4 5)) (6 7)) 'y)
         
         (nl-cur 2.0)
         (set-cur-x X)

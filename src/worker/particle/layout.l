@@ -8,11 +8,14 @@
       
       (lay-atom Any Base)))
 
-
+(def '*nl-pair T)
 (de lay-pair (Any Base)
   
   # Ignore p0 also
-  (put Any 'lay (if (is-start-of-list Any) 'y 'x))
+  (when *nl-pair
+    (put Any 'lay (if (is-start-of-list Any)
+                      'y
+                      'x)))
 
   # Move Pair first so below can get correct pos
   (mov> Any *cur)
@@ -20,6 +23,8 @@
   (let Base-2 (if (is-start-of-list Any)
                   (get-origin> Any)
                   Base)
+
+    (println 'lay-pair Any (get Any 'data) (get Any 'lay))
 
     (if (= (get Any 'lay) 'x)
       
@@ -122,6 +127,8 @@
   
     Base is the pos of the list start; lay-pair sets it
   }#
+
+  #(println Any (get Any 'data))
   
   (let ((X Y) *cur)
       

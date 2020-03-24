@@ -4021,3 +4021,19 @@ offset 2 spaces in x direction
 
 NIL -> when atom added, must move below and convert to Y
 Change symbol
+
+================================================================================
+
+  mixed Y
+  
+  .   ..
+      "A"
+  NIL
+
+
+  pure Y
+  
+  . *cmd
+  .   .. "A"
+  .   .. "B"
+  NIL    
