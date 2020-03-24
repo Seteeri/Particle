@@ -1,15 +1,15 @@
 (de is-start-of-list (Part) (= (type (get Part 'a)) '(+Pair)))
 
-(de lay-part (Any Base)
+(de lay-part (Any Base Car-Skip Cdr-Skip)
   
   (if (= (type Any) '(+Pair))
   
-      (lay-pair Any Base)
+      (lay-pair Any Base Car-Skip Cdr-Skip)
       
-      (lay-atom Any Base)))
+      (lay-atom Any Base Car-Skip Cdr-Skip)))
 
 (def '*nl-pair T)
-(de lay-pair (Any Base)
+(de lay-pair (Any Base Car-Skip Cdr-Skip)
   
   # Ignore p0 also
   (when *nl-pair
@@ -26,12 +26,12 @@
 
     (if (= (get Any 'lay) 'x)
       
-      (lay-pair-x Any Base-2)
+      (lay-pair-x Any Base-2 Car-Skip Cdr-Skip)
       
-      (lay-pair-y Any Base-2))))
+      (lay-pair-y Any Base-2 Car-Skip Cdr-Skip))))
     
 
-(de lay-pair-x (Any Base)
+(de lay-pair-x (Any Base Car-Skip Cdr-Skip)
   #{
 
     Draw CAR -Y
@@ -109,7 +109,7 @@
               (min (get Bnd-Car 2) (get Bnd-Cdr 2)))))))
 
     
-(de lay-pair-y (Any Base)
+(de lay-pair-y (Any Base Car-Skip Cdr-Skip)
   #{
 
     Draw CAR +X
@@ -155,7 +155,7 @@
               (min (get Bnd-Car 2) (get Bnd-Cdr 2)))))))
     
   
-(de lay-atom (Any Base)
+(de lay-atom (Any Base Car-Skip Cdr-Skip)
   
   # Move Pair first so below to get correct pos
   (mov> Any *cur)  
@@ -175,5 +175,5 @@
   
         # Poss create lay-sym but not needed since same fn'y
         (if (= (get Any 'lay) 'x)
-          (lay-pair-x Any Base)
-          (lay-pair-y Any Base)))))
+          (lay-pair-x Any Base Car-Skip Cdr-Skip)
+          (lay-pair-y Any Base Car-Skip Cdr-Skip)))))
