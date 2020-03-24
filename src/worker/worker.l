@@ -259,6 +259,10 @@
     (set-cur-x X)
     (lay-part *part-main *cur)
 
+
+    (nl-cur 3.0)
+    (set-cur-x X)
+
     
     #######################
     # TODO: Draw *part-ptrs
@@ -278,13 +282,16 @@
     (put p0 'lay 'y)
     (lay-part p0 *cur)
 
+    #(let Bounds (calc-bounds> *part-main)
+    #  (mov> p0 Bounds))
+
 
     ############
     
-    (nl-cur 3.0)
-    (set-cur-x X)
-
     (when NIL
+
+      (nl-cur 3.0)
+      (set-cur-x X)
 
       (nl-cur)
       (set-cur-x X)

@@ -1,4 +1,4 @@
-(de is-start-of-list (Part) (isa '+Pair (get Part 'a)))
+(de is-start-of-list (Part) (= (type (get Part 'a)) '(+Pair)))
 
 (de lay-part (Any Base)
   
@@ -18,7 +18,7 @@
 
   # Move Pair first so below can get correct pos
   (mov> Any *cur)
-  
+    
   (let Base-2 (if (is-start-of-list Any)
                   (get-origin> Any)
                   Base)
@@ -86,7 +86,7 @@
         # if interpreted directly
         (if (is-start-of-list (: b)) # or nl
             (prog
-              #(println 'lay-pair'x)
+              #(println 'lay-pair'x is-start-of-list)
               (set-cur-x (get Base 1))
               (when (get Any 'c)
                 # Really should use last vert of og Base

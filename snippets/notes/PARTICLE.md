@@ -247,6 +247,7 @@ Store DAGs as binary trees?
     * Fix sublist handling [Done]
     * Test nested lists + NILs [Done]
     * Refactor del [Done]
+    * Draw symbols with cons cell [Done]
     * Make NIL type [Done]
     * Draw str cdr with dot [Done]
     * Draw num in car [?]
@@ -259,15 +260,14 @@ Store DAGs as binary trees?
       alphanumerical outlines
     * Rewrite list handling
       * When enter-list, change ptr symbol to reflect it instead of pos      
-    * Draw symbols with cons cell
     
     * Fix lay-atom function - why checking b?
-    * Handle random edits [Sun]
+    * Handle random edits
       * Update subsequent items in list
       * Update superlist
         * This can result in slow updates, so lists should be done outside 
           the list then merged in
-    * Refactor pack cmd [Sun]
+    * Refactor pack cmd
       
     GOAL: Able to build test tree
 

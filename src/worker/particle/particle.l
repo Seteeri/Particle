@@ -274,21 +274,20 @@
   (last (: verts)))
 
 
-(dm calc-bounds> (A B)
+(dm calc-bounds> (Car-Skip Cdr-Skip)
 
   # Calc bounds of CAR and CDR
 
-  (let ((X1 Y1) (when (and (: a) (not A)) (calc-bounds> (: a)))
-        (X2 Y2) (when (and (: b) (not B)) (calc-bounds> (: b))))
-                  
+  (let ((X1 Y1) (when (and (: a) (not Car-Skip)) (calc-bounds> (: a)))
+        (X2 Y2) (when (and (: b) (not Cdr-Skip)) (calc-bounds> (: b))))
+
     # If neither Car or Cdr, use cons
     (if (and (not X1) (not X2))
 
-      (let Vert (last-vert> This)
-        (with Vert
-          (get-origin> (get *metrics (: chr))
-                       (: pos)
-                       *sca-vert)))
+      (with (last-vert> This)
+        (get-origin> (get *metrics (: chr))
+                     (: pos)
+                     *sca-vert))
 
       (list (cond ((and X1 (not X2)) X1)
                   ((and X2 (not X1)) X2)

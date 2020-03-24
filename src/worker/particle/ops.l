@@ -1,9 +1,7 @@
 (de base-cur (Ref)  
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds
-  (let Bounds (if (= (get Ref 'data) '*part-main)
-                  (calc-bounds> Ref T T)
-                  (calc-bounds> Ref NIL T))
+  (let Bounds (calc-bounds> Ref NIL T) # Skip CDR
     (if (= (get Ref 'lay) 'x)
         (prog
           # Move cur to x base of Ref and y origin of Ref
@@ -22,9 +20,14 @@
   # Replace CDR
 
   (let (Ref (val> p0)
+        Cur (prog 
+              (base-cur Ref)
+              *cur)
         Part (con-list Any Lay))
-    (base-cur Ref)
-    (lay-part Part *cur)
+            
+    (setq *cur Cur)
+    (lay-part Part Cur)
+    
     Part))
 
 

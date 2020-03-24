@@ -38,7 +38,8 @@
         
         # Pointer always above regardless of layout?        
         (put p0 'b Part)
-        (mov-part-abv> p0 Part (cons T))))))
+        (mov-part-abv> p0 Part (cons T))
+        ))))
 
 
 (de cmd-make-nil (Keysym)
