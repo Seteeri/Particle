@@ -32,8 +32,14 @@ Quotient of N and D = (*/ 1.0 N D)
       (let (Data          (load-file-metrics-data Code)
             Metrics-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
 
-        (when (get Metrics-Glyph 'bounds)
-          (calc-metrics> Metrics-Glyph Sca-Glyph))
+        # When no bounds max it
+        (with Metrics-Glyph
+          (unless (: bounds)
+            # (* 7.74184810394 2.0) = 15.48369620788
+            # l b r t
+            (=: bounds (list 0.0 0.0 15.48369620788 15.48369620788))))
+          
+        (calc-metrics> Metrics-Glyph Sca-Glyph)
 
         (push 'Metrics Metrics-Glyph)))
 
