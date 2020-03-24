@@ -101,7 +101,7 @@
               (set-cur-y Y)))
         
         # Str's val/b is NIL (or poss later point to itself)
-        (when (or (: b) (not (= (: b) Any)))
+        (when (and (: b) (not (= (: b) Any)))
           (setq Bnd-Cdr (lay-part (: b) Base)))
             
         (list (max (get Bnd-Car 1) (get Bnd-Cdr 1))
@@ -145,7 +145,7 @@
         (set-cur-y (get Bnd-Car 2)) (nl-cur)
         
         # Str's val/b is NIL (or poss later point to itself)
-        (when (or (: b) (not (= (: b) Any)))
+        (when (and (: b) (not (= (: b) Any)))
           (setq Bnd-Cdr (lay-part (: b) Base)))
             
         (list (max (get Bnd-Car 1) (get Bnd-Cdr 1))
@@ -153,7 +153,7 @@
     
   
 (de lay-atom (Any Base)
-    
+  
   # Move Pair first so below to get correct pos
   (mov> Any *cur)  
   
@@ -169,7 +169,7 @@
         *cur)
 
       (prog
-        
+  
         # Poss create lay-sym but not needed since same fn'y
         (if (= (get Any 'lay) 'x)
           (lay-pair-x Any Base)
