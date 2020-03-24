@@ -14,8 +14,6 @@
   # Ignore p0 also
   (put Any 'lay (if (is-start-of-list Any) 'y 'x))
 
-  #(println 'lay-pair (get Any 'lay) (get Any 'data))
-
   # Move Pair first so below can get correct pos
   (mov> Any *cur)
     

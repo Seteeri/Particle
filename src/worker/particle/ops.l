@@ -24,7 +24,7 @@
               (base-cur Ref)
               *cur)
         Part (con-list Any Lay))
-            
+
     (setq *cur Cur)
     (lay-part Part Cur)
     

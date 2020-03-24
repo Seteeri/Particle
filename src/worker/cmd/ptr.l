@@ -163,7 +163,7 @@
 
 (de cmd-trans-ptr (Cnt Mov)
   # Move p0
-  (let (Ptr (car *part-ptrs)
+  (let (Ptr p0
         Pos (get-origin> Ptr))
     (mov> Ptr
           (place Cnt
