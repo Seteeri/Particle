@@ -56,6 +56,8 @@
     [ ] - [ ] - NIL
     "a"   "b"
   }#
+  
+  # Refactor into a fn in ops
 
   (let (Ref (val> p0)
         Prv (get Ref 'c)
@@ -95,7 +97,6 @@
           
           (put Prv 'b Cdr-Prv)
 
-          #(mov-cur-part Prv 'end) (adv-cur 2.0)
           (base-cur Prv)
           (mov> Cdr-Prv *cur))
         
@@ -103,9 +104,7 @@
           (put Prv 'b Cdr)
           
           # Move Cdr
-          # This will not move recursively
-          # Use lay-part BUT lay-atom must be fixed
-          (mov-cur-part Prv 'end) (adv-cur 2.0)
+          (base-cur Prv)
           (mov> Cdr *cur)))
 
       (put Cdr 'c Prv)
