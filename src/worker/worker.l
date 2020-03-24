@@ -44,7 +44,7 @@
 # Master index of all particles in the "world" - store sym:particle
 # Stores pointer particles and main list particle
 (def '*particles)
-(def '*part-lsts) # Traversal history list
+(def '*lsts) # Traversal history list
 (def '*main) # Master list
 (def '*cmds) # List of commands (undo/history/timeline)
 (def '*ptrs) # List of pointers
