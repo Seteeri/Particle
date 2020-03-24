@@ -11,7 +11,45 @@
     (setq *nl-pair NIL)
     (lay-part Ref *cur))
     (setq *nl-pair T))
+
+
+(de cmd-mov-nl (Keysym)
+  (println "Move newline")
   
+  # Is this appropriate for Y layout? ...since it already moves to newline
+  
+  (let Ref (val> p0)
+
+    # Get base x from Ref
+    (let (Ori (get-origin> (get *main 'b))
+          Bnds (calc-bounds> (get *main 'b)))
+      
+      (setq *cur (list (get Ori 1)
+                       (get Bnds 2)
+                       (get *cur 3)))
+      (nl-cur 2.0)                               
+      (put Ref 'lay 'y)
+      (lay-part Ref *cur))
+
+    (put p0 'b Car Ref)
+    (mov-part-abv> p0 Ref (cons T))))
+  
+  
+(de cmd-mov-bl (Keysym)
+
+  # This moves in front of prev
+
+  (let (Ref (val> p0)
+        Cur (prog 
+              (base-cur (get Ref 'c))
+              *cur))
+
+    (setq *cur Cur)
+    (lay-part Ref Cur)
+    
+    (put p0 'b Car Ref)
+    (mov-part-abv> p0 Ref (cons T))))
+      
 
 ######################
 # Semantic (Selection)

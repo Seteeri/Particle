@@ -109,6 +109,8 @@
       # Does not work...
       # ((`ksd~Shift-L `ksd~Tab) T ((Keysym) (println "Shift-L-Tab: TOGGLE LAYOUT REF")))
       ((`ksd~Alt-L   `ksd~Tab) T `cmd-swap-layout)
+      ((`ksd~Alt-R   `ksd~Return) T `cmd-mov-nl)
+      ((`ksd~Alt-R   `ksd~BackSpace) T `cmd-mov-bl)
       
       ## CUA Ops
       ((`ksd~Control-L `ksd~x) T ((Keysym) (println "Ctrl-L-x: CUT")))
