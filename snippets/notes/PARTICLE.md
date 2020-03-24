@@ -250,9 +250,7 @@ Store DAGs as binary trees?
     * Draw symbols with cons cell [Done]
     * Make NIL type [Done]
     * Draw str cdr with dot [Done]
-    * Draw num in car [?]
-      * Handle decimals
-    * Rewrite entering text
+    * Rewrite entering text [WIP]
       * Need pointer/new fns to change layout, new row/col
         * Change pointer symbol to reflect layout: p0^ or p0>
       * Should be consistent with outline format
@@ -271,26 +269,19 @@ Store DAGs as binary trees?
       
     GOAL: Able to build test tree
 
+    * Draw num in car [?]
+      * Handle decimals
     * Refactor del> to pass ignore flags during recurse [???]    
     * Refactor layout and mov functions [???]
       * Restrict mov> functions to be used by layout
     * Refactor pointer to point to last (NIL)
-      * More consistent with entering a list    
-    * Add cmd to swap/toggle layouts X/Y
-      * Must relayout car/cdr
-      * Lists of lists are Y
-      * Nums and Strs are X
-      * Other syms...default to Y also, but should be X also
-      * Refactor list UI
-
+      * More consistent with entering a list
     * Refactor other cmds
       * Implement split space
-    
     * Add skip car/cdr for layout fn
     * Cur/part relative position functions
     * Refactor gen layout use -> move it
-    * Make fn: mov-cur X/adv Y/nl          
-    * Handle missing bounds in metrics for space and ctrl chars
+    * Make fn: mov-cur X/adv Y/nl
     
   * Refactor [Mon]
     
