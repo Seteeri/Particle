@@ -46,8 +46,8 @@
 (def '*particles)
 (def '*part-lsts) # Traversal history list
 (def '*main) # Master list
-(def '*part-cmds) # List of commands (undo/history/timeline)
-(def '*part-ptrs) # List of pointers
+(def '*cmds) # List of commands (undo/history/timeline)
+(def '*ptrs) # List of pointers
 
 (def '*cur (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
 
@@ -239,11 +239,11 @@
   (let ((X Y) *cur)
 
     (idx '*particles
-          (def '*part-cmds
-               (gen-part '*part-cmds 'x))
+          (def '*cmds
+               (gen-part '*cmds 'x))
           T)
     (set-cur-x X)
-    (lay-part *part-cmds *cur)
+    (lay-part *cmds *cur)
 
 
     (nl-cur 3.0)
@@ -265,9 +265,9 @@
 
     
     #######################
-    # TODO: Draw *part-ptrs
+    # TODO: Draw *ptrs
     # Will need to ignore drawing CDR for particle
-    #(push '*part-ptrs (gen-part 'p0 'x))
+    #(push '*ptrs (gen-part 'p0 'x))
     (idx '*particles
          (def 'p0
               (gen-part 'p0 'x))
