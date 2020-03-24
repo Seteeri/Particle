@@ -24,8 +24,6 @@
                   (get-origin> Any)
                   Base)
 
-    (println 'lay-pair Any (get Any 'data) (get Any 'lay))
-
     (if (= (get Any 'lay) 'x)
       
       (lay-pair-x Any Base-2)
