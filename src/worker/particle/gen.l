@@ -49,7 +49,9 @@
   # Should set Part-Car to Part-Pair ... but leave NIL for now
   # Draw dot again
 
-  (let (Ar (sym Any)
+  # Name any will fail for box; must use 'sym
+
+  (let (Ar (name Any) 
         Val (val Any)
         Dr (if (== Val Any) NIL Val)
         Part-Car (unless Car-Skip
