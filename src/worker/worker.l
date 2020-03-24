@@ -245,24 +245,12 @@
     (set-cur-x X)
     (lay-part *part-cmds *cur)
 
+
     (nl-cur 3.0)
     (set-cur-x X)
 
-    # TODO: Draw *part-ptrs
-    # Will need to ignore drawing CDR for particle
-    #(push '*part-ptrs (gen-part 'p0 'x))
-    (setq p0 "FOOBAR")
-    (idx '*particles
-         (def 'p0
-              (gen-part 'p0 'x))
-         T)
-    (set-cur-x X)
-    (put p0 'lay 'y)
-    (lay-part p0 *cur)
-    
-    (nl-cur 3.0)
-    (set-cur-x X)
 
+    #############################
     # Generate main particle list
     (idx '*particles
           (def '*part-main
@@ -271,50 +259,69 @@
     (set-cur-x X)
     (lay-part *part-main *cur)
 
+    
+    #######################
+    # TODO: Draw *part-ptrs
+    # Will need to ignore drawing CDR for particle
+    #(push '*part-ptrs (gen-part 'p0 'x))
+    (idx '*particles
+         (def 'p0
+              (gen-part 'p0 'x))
+         T)
+
     # Connect pointer to main
+    # Remove NIL first
+    (del> (get p0 'b) T T)
     (put p0 'b *part-main)
 
-  (nl-cur)
-  (set-cur-x X)
-  
-  (when NIL
-
-    (nl-cur)
     (set-cur-x X)
-    (let Part (gen-part NIL 'y)
-      
-      (nl-cur 2.0)
-      (set-cur-x X)
-      
-      # This will override layout in Particles
-      (lay-part Part *cur)))
+    (put p0 'lay 'y)
+    (lay-part p0 *cur)
 
 
-  (when NIL
-  
-    (nl-cur)
+    ############
+    
+    (nl-cur 3.0)
     (set-cur-x X)
-    (let Part (gen-part '("let" ("a" 1 "b" 2) ("println" "hello world")) 'y)
-      
-      (nl-cur 2.0)
-      (set-cur-x X)
-      (lay-part Part *cur)))
 
-  (when NIL
-  
-    (nl-cur)
-    (set-cur-x X)
-    (let Part (gen-part '(("1" "Content"
-                           ("1.1" "Content"
-                            ("1.1.1" "Content")
-                            ("1.1.1" "Content"
-                             ("1.1.1.1" "Content")
-                             ("1.1.1.1" "Content")))))
-                        'y)
-      
-      (nl-cur 2.0)
+    (when NIL
+
+      (nl-cur)
       (set-cur-x X)
-      (lay-part Part *cur)))))
+      (let Part (gen-part NIL 'y)
+        
+        (nl-cur 2.0)
+        (set-cur-x X)
+        
+        # This will override layout in Particles
+        (lay-part Part *cur)))
+
+
+    (when NIL
+    
+      (nl-cur)
+      (set-cur-x X)
+      (let Part (gen-part '("let" ("a" 1 "b" 2) ("println" "hello world")) 'y)
+        
+        (nl-cur 2.0)
+        (set-cur-x X)
+        (lay-part Part *cur)))
+
+    (when NIL
+    
+      (nl-cur)
+      (set-cur-x X)
+      (let Part (gen-part '(("1" "Content"
+                             ("1.1" "Content"
+                              ("1.1.1" "Content")
+                              ("1.1.1" "Content"
+                               ("1.1.1.1" "Content")
+                               ("1.1.1.1" "Content")))))
+                          'y)
+        
+        (nl-cur 2.0)
+        (set-cur-x X)
+        (lay-part Part *cur)))))
       
 
 (de run-tests ())
