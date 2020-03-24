@@ -247,7 +247,9 @@ Store DAGs as binary trees?
     * Fix sublist handling [Done]
     * Test nested lists + NILs [Done]
     * Refactor del [Done]
-    * Make NIL type?
+    * Make NIL type [Done]
+    * Draw str cdr with dot
+    * Draw num in car
     * When enter-list, change ptr symbol to reflect it instead of pos
     * Rewrite entering text
       * Need pointer/new fns to change layout, new row/col
