@@ -50,7 +50,7 @@
 
   # Technically, name is a number
 
-  (let (Ar (name Any)
+  (let (Ar (sym Any)
         Dr (if (str? Any) NIL (val Any))
         Part-Car (unless Car-Skip
                   # Num type but content is a string

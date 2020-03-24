@@ -43,3 +43,8 @@
        Lay)
 
   (super Data A B Verts Lay))
+
+# +Int
+# +Ext
+# +Str (= Transient)
+# +Box (= Transient)
