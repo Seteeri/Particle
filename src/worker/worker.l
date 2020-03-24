@@ -243,12 +243,8 @@
                (gen-part '*cmds 'x))
           T)
     (set-cur-x X)
+    (put *cmds 'lay 'y)
     (lay-part *cmds *cur)
-
-
-    (nl-cur 3.0)
-    (set-cur-x X)
-
 
     #############################
     # Generate main particle list
@@ -256,13 +252,8 @@
           (def '*main
                 (gen-part '*main 'x))
           T)
-    (set-cur-x X)
-    (lay-part *main *cur)
 
-
-    (nl-cur 3.0)
-    (set-cur-x X)
-
+    #(lay-part *main *cur)
     
     #######################
     # TODO: Draw *ptrs
@@ -279,6 +270,10 @@
     (put p0 'b *main)
 
     (set-cur-x X)
+    (set-cur-y Y)
+
+    (adv-cur 48.0)
+        
     (put p0 'lay 'y)
     (lay-part p0 *cur)
 
