@@ -163,10 +163,10 @@
       ((`ksd~Up)    T `cmd-trans-ptr-py)
       ((`ksd~Down)  T `cmd-trans-ptr-ny)
 
-      ((`ksd~Control-R `ksd~Right) T `cmd-move-cam-px)
-      ((`ksd~Control-R `ksd~Left)  T `cmd-move-cam-nx)
-      ((`ksd~Control-R `ksd~Up)    T `cmd-move-cam-py)
-      ((`ksd~Control-R `ksd~Down)  T `cmd-move-cam-ny)
+      ((`ksd~Alt-R `ksd~Right) T `cmd-move-cam-px)
+      ((`ksd~Alt-R `ksd~Left)  T `cmd-move-cam-nx)
+      ((`ksd~Alt-R `ksd~Up)    T `cmd-move-cam-py)
+      ((`ksd~Alt-R `ksd~Down)  T `cmd-move-cam-ny)
       ((`ksd~Prior    )            T `cmd-zoom-cam-in)
       ((`ksd~Next     )            T `cmd-zoom-cam-out)))
 
@@ -307,7 +307,7 @@
         (set-cur-x X)
         (lay-part Part *cur)))
 
-    (when NIL
+    (when T
     
       (nl-cur)
       (set-cur-x X)
@@ -316,7 +316,7 @@
                               ("1.1.1" "Content")
                               ("1.1.1" "Content"
                                ("1.1.1.1" "Content")
-                               ("1.1.1.1" "Content")))))
+                               ("1.1.1.2" "Content")))))
                           'y)
         
         (nl-cur 2.0)

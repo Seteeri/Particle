@@ -254,26 +254,27 @@ Store DAGs as binary trees?
       * More consistent with entering a list    
     * Rewrite list handling [WIP]
       * When enter-list, change ptr symbol to reflect it instead of pos      
-    * Need pointer/new fns to change layout, new row/col
-      * Change pointer symbol to reflect layout: p0^ or p0>
+    * Need pointer/new fns to change layout, new row/col [Done]
+      * Change pointer symbol to reflect layout: p0^ or p0> [TODO]
       * Should be consistent with outline format
       * Default layout is oriented towards lists of text/num/syms similar to
       alphanumerical outlines
-    * Replace dot with arrow indicating layout (Right/Down)
-    * Particle can have 'nl and 'sp to indicate how many nl or sp before it
-    * Camera needs to move with content like when entering a newline
-      * Requires unproject to test if coord is in the viewport
-    
+    * On enter-list, if not immediately enterable, search for next list?    
+      * Consistent with exit-list, else user has to manually go to first item
     * Handle random edits
       * Update subsequent items in list
       * Update superlist
         * This can result in slow updates, so lists should be done outside 
           the list then merged in
-    * Make cmds a circular list    
+    * Make option: cmds a circular list
     * Refactor pack cmd
       
     GOAL: Able to build test tree
 
+    * Replace dot with arrow indicating layout (Right/Down)
+    * Particle can have 'nl and 'sp to indicate how many nl or sp before it
+    * Camera needs to move with content like when entering a newline
+      * Requires unproject to test if coord is in the viewport
     * Draw num in car [?]
       * Handle decimals
     * Refactor del> to pass ignore flags during recurse [???]    

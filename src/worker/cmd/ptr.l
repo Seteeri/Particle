@@ -76,14 +76,18 @@
   # Move to *main
   
   # Below searches
-  (let Part (val> p0)
+  (let Part (get (val> p0) 'c)
     (loop
       (T (or (isa '+Pair (get Part 'a))
-             (not Part)))
+             (= Part *main)
+             (not (get Part 'c))))
       (setq Part (get Part 'c)))
       
-    (put p0 'b Part)
-    (mov-part-abv> p0 Part (cons T))))
+    (println 'leave-list Part (get Part 'data) (get (get Part 'c) 'data))
+    
+    (when Part
+      (put p0 'b Part)
+      (mov-part-abv> p0 Part (cons T)))))
 
 
 (de cmd-point-ptr-in (Keysym)
@@ -118,14 +122,14 @@
   }#  
   
   (let (Ref (val> p0)
-        Tgt (get Ref 'c)
-        Car (get Tgt 'a))
+        Car (get Ref 'a)
+        Tgt (get Ref 'c))
     
-    (cond ((= (type (get Car 'a)) '(+Pair))
+    (cond ((= (type Car) '(+Pair))
             (put p0 'b Car)
             (mov-part-abv> p0 Car (cons T)))
             
-          ((isa '+Nil Car)
+          ((isa '+Nil Ref)
 
             # Set cur in position for cmd-make-char
             
