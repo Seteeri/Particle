@@ -32,7 +32,7 @@
 
 (de cmd-make-nil (Keysym)
   (prinl-info "cmd-make-nil")
-  (cmd-make-char))
+  (con-any NIL 'x))
 
 
 (de cmd-del (Dir)
@@ -106,29 +106,33 @@
 
 (de cmd-make-num (Keysym)
 
-  # Use cmd-make-char
-
-  # (con-list (format (char Keysym)) 'x)
+  (println "cmd-make-num")
   
-  (println "cmd-make-num"))
+  (con-any (format (char Keysym)) 'x))
 
 
 (de cmd-format (Keysym)
 
-  # Dat (format (get (get Ref 'a) 'data))
-  # Part (con-list Dat 'x))
-
-  (prinl-info "cmd-format"))
+  (prinl-info "cmd-format")
+  
+  (con-any (format (get (get (get (val> p0) 'c) 'a) 'data)) 'x))
 
 
 (de cmd-pack (Keysym)
-
-  # Dat (pack (get *main 'data))
-  # Part (con-list Dat 'x))
   
-  (cmd-make-char )
+  (prinl-info "cmd-pack")
 
-  (prinl-info "cmd-pack"))
+  # Pack current to prev
+  
+  (let (Ref (val> p0)
+        Prv (get Ref 'c)
+        Dat-Prv (get (get Prv 'a) 'data)
+        Cc (get Prv 'c)
+        Dat-Cc (get (get Cc 'a) 'data))
+        
+    # (get (get *main 'b) 'data)
+
+    (con-any (pack Dat-Cc Dat-Prv) 'x)))
 
 
 #####################
