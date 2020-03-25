@@ -30,6 +30,7 @@
                      (get *cur 3)))
     (nl-cur 2.0)                               
     
+    (put Ref 'nl 1.0)
     (lay-part Ref *cur)
     
     (put p0 'b Ref)
