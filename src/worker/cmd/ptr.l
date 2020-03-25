@@ -1,15 +1,15 @@
 (de cmd-swap-layout (Keysym)
   (println "Swap layout")
   
-  (let Ref (val> p0)
+  (let Prv (get (val> p0) 'c)
       
-    (with Ref
+    (with Prv
       (=: lay (if (= (: lay) 'x) 'y 'x)))
   
-    (mov-cur-part Ref 'start)
+    (mov-cur-part Prv 'start)
     
     (setq *nl-pair NIL)
-    (lay-part Ref *cur))
+    (lay-part Prv *cur))
     (setq *nl-pair T))
 
 

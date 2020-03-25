@@ -250,7 +250,7 @@ Store DAGs as binary trees?
     * Draw symbols with cons cell [Done]
     * Make NIL type [Done]
     * Draw str cdr with dot [Done]
-    * Refactor pointer to point to last (NIL)
+    * Refactor pointer to point to last (NIL) [Done]
       * More consistent with entering a list    
     * Rewrite list handling [WIP]
       * When enter-list, change ptr symbol to reflect it instead of pos      
@@ -259,6 +259,8 @@ Store DAGs as binary trees?
       * Should be consistent with outline format
       * Default layout is oriented towards lists of text/num/syms similar to
       alphanumerical outlines
+    * Camera needs to move with content like when entering a newline
+      * Requires unproject to test if coord is in the viewport
     
     * Handle random edits
       * Update subsequent items in list
