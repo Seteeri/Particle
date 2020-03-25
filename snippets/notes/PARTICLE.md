@@ -259,15 +259,15 @@ Store DAGs as binary trees?
       * Should be consistent with outline format
       * Default layout is oriented towards lists of text/num/syms similar to
       alphanumerical outlines
-    * On enter-list, if not immediately enterable, search for next list?    
-      * Consistent with exit-list, else user has to manually go to first item
     * Handle random edits
       * Update subsequent items in list
+        * 
       * Update superlist
         * This can result in slow updates, so lists should be done outside 
           the list then merged in
+    * On enter-list, if not immediately enterable, search for next list?
+      * Consistent with exit-list, else user has to manually go to first item          
     * Make option: cmds a circular list
-    * Refactor pack cmd
       
     GOAL: Able to build test tree
 

@@ -85,7 +85,7 @@
         # or check 'nl...
         # wouldn't make sense for y layout except to add more spacing
         # if interpreted directly
-        (if (is-start-of-list (: b)) # or nl
+        (if (or (is-start-of-list (: b)) (: nl))
             (prog
               #(println 'lay-pair'x is-start-of-list)
               (set-cur-x (get Base 1))

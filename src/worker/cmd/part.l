@@ -43,13 +43,20 @@
                 p0
     [ ] - [ ] - NIL
     "a"   "b"
-    
+
+
+          p0
+    [ ] - NIL
+    "a"   "b"
+        
     * Remove b
     * To delete NIL itself, use delete
       * That's why BackSpace is called back-space?
   }#
   
-  # Refactor into a fn in ops
+  # Refactor into a fn in ops?
+  
+  # Similar to adding items, must update CDR and list CDR
 
   (let (Ref (val> p0)
         Tgt (get Ref 'c)
@@ -99,6 +106,10 @@
           (mov> Ref *cur)))
 
       (put Ref 'c Cc)
+
+      # Reposition Ref to Tgt, recursively
+      (mov-cur-part Tgt 'start)
+      (lay-part Ref *cur)
 
       # Ptr same; simply move it
       (mov-part-abv> p0 Ref (cons T)))))

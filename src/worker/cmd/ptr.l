@@ -151,6 +151,7 @@
               (nl-cur 2.0))
 
             (put Tgt 'lay 'y)
+            (put Tgt 'nl 1.0) # set nl
             (lay-part Tgt *cur)
 
             (put p0 'b Tgt)

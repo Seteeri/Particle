@@ -38,7 +38,15 @@
           Part (repl-cdr Ref Data Lay))
       
       (put p0 'b Ref)
-      (mov-part-abv> p0 Ref (cons T)))))
+      (mov-part-abv> p0 Ref (cons T))))
+      
+  # Ref is already updated
+  # However, update main 'b
+  #(println "Update" (get (get *main 'b) 'data))
+  #(mov-cur-part (get *main 'b) 'start)
+  #(lay-part (get *main 'b) *cur)
+  
+  )
         
 
 (de repl-cdr (Ref Any Lay)
@@ -49,6 +57,8 @@
   (let Part (con-list Ref Any Lay)
 
     (mov-cur-part Ref 'start)
+    
+    # This works recursively
     (lay-part Part *cur)
     
     Part))
