@@ -18,20 +18,21 @@
   
   # Is this appropriate for Y layout? ...since it already moves to newline
   
-  (let Ref (val> p0)
-
-    # Get base x from Ref
-    (let (Ori (get-origin> (get *main 'b))
-          Bnds (calc-bounds> (get *main 'b)))
+  # Move pointer and move NIL (CDR)
+  # Character after this will replace NIL
+    
+  (let (Ref (val> p0)
+        Ori (get-origin> (get *main 'b))
+        Bnds (calc-bounds> (get *main 'b)))
       
-      (setq *cur (list (get Ori 1)
-                       (get Bnds 2)
-                       (get *cur 3)))
-      (nl-cur 2.0)                               
-      (put Ref 'lay 'y)
-      (lay-part Ref *cur))
-
-    (put p0 'b Car Ref)
+    (setq *cur (list (get Ori 1)
+                     (get Bnds 2)
+                     (get *cur 3)))
+    (nl-cur 2.0)                               
+    
+    (lay-part Ref *cur)
+    
+    (put p0 'b Ref)
     (mov-part-abv> p0 Ref (cons T))))
   
   
@@ -39,13 +40,10 @@
 
   # This moves in front of prev
 
-  (let (Ref (val> p0)
-        Cur (prog 
-              (base-cur (get Ref 'c))
-              *cur))
-
-    (setq *cur Cur)
-    (lay-part Ref Cur)
+  (let Ref (val> p0)
+  
+    (base-cur (get Ref 'c))
+    (lay-part Ref *cur)
     
     (put p0 'b Car Ref)
     (mov-part-abv> p0 Ref (cons T))))

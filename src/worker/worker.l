@@ -257,33 +257,30 @@
                 (gen-part '*main 'x))
           T)
 
-    #(lay-part *main *cur)
+    (set-cur-x X)
+    (set-cur-y Y)
+    (adv-cur 48.0)
+
+    (lay-part *main *cur)
     
     #######################
     # TODO: Draw *ptrs
-    # Will need to ignore drawing CDR for particle
-    #(push '*ptrs (gen-part 'p0 'x))
     (idx '*particles
          (def 'p0
               (gen-part 'p0 'x))
          T)
 
-    # Connect pointer to main
-    # Remove NIL first
+    # Remove NIL
     (del> (get p0 'b) T T)
-    (put p0 'b *main)
 
-    (set-cur-x X)
-    (set-cur-y Y)
-
-    (adv-cur 48.0)
-        
+    # Connect pointer to main
+    (put p0 'b (get *main 'b))    
+    # Move cursor above main
+    (mov-part-abv> p0 (get *main 'b) (cons T))
+    
     (put p0 'lay 'y)
     (lay-part p0 *cur)
-
-    #(let Bounds (calc-bounds> *main)
-    #  (mov> p0 Bounds))
-
+        
     # TEMP
     (setq p1 *cmds)
 

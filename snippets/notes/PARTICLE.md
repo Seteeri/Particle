@@ -250,6 +250,8 @@ Store DAGs as binary trees?
     * Draw symbols with cons cell [Done]
     * Make NIL type [Done]
     * Draw str cdr with dot [Done]
+    * Refactor pointer to point to last (NIL)
+      * More consistent with entering a list    
     * Rewrite list handling [WIP]
       * When enter-list, change ptr symbol to reflect it instead of pos      
     * Need pointer/new fns to change layout, new row/col
@@ -273,8 +275,6 @@ Store DAGs as binary trees?
     * Refactor del> to pass ignore flags during recurse [???]    
     * Refactor layout and mov functions [???]
       * Restrict mov> functions to be used by layout
-    * Refactor pointer to point to last (NIL)
-      * More consistent with entering a list
     * Refactor other cmds
       * Implement split space
     * Add skip car/cdr for layout fn

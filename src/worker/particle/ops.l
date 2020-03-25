@@ -17,36 +17,33 @@
 ######################
 
 (de repl-cdr (Ref Any Lay)
-  # Replace CDR
+  # Replace CDR which is typically NIL
+  
+  (let Part (con-list Ref Any Lay)
 
-  (let (Cur (prog 
-              (base-cur Ref)
-              *cur)
-        Part (con-list Ref Any Lay))
-
-    (setq *cur Cur)
-    (lay-part Part Cur)
+    (mov-cur-part Ref 'start)
+    (lay-part Part *cur)
     
     Part))
 
 
 (de con-list (Ref Any Lay)
   #{  
-          p0
+                p0
     [ ] - [ ] - NIL
     "a"   "b"
   }#
 
-  (let (Cdr (get Ref 'b)
+  (let (Prv (get Ref 'c)
         Lst-Any (list Any)
         Part (gen-part Lst-Any Lay NIL T))
 
-    (put Ref 'b Part)    
-    (put Cdr 'c Part)    
+    (put Prv 'b Part)    
+    (put Ref 'c Part)    
     
     (with Part
-      (=: b Cdr)
-      (=: c Ref))
+      (=: b Ref)
+      (=: c Prv))
         
     # Connect new part data to list part data
     # Must conn Cdr also (get (get Ref 'b) 'data)
@@ -54,8 +51,8 @@
     # Remember, *main's value is always the particle itself
     # The value of the symbol *main is actually 'b    
     
-    (unless (isa '+Sym Ref)
-      (with Ref
+    (unless (isa '+Sym Prv)
+      (with Prv
         (con (car (:: data)) Lst-Any)))
         
     Part))

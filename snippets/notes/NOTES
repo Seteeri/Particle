@@ -4107,3 +4107,12 @@ Ex: Create NIL, move it below, change layout, at this point, either cont or ente
   
   Also where semantic move needs to follow layout so in y mode vs x mode, left
   and right are opposite
+
+================================================================================
+
+MODES
+
+Caps lock - there is a light to indicate the mode, however it is not near the user's
+focus. Most people touch type so they do not look down and pay attention to the
+lights. If caps lock changed the cursor, it would be more indicative, similar to
+insert mode

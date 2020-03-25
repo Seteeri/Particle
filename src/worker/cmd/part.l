@@ -39,12 +39,11 @@
         
         (setq *mode-repl NIL))
 
-      (let Part (repl-cdr (val> p0) Data Lay)
+      (let (Ref (val> p0)
+            Part (repl-cdr Ref Data Lay))
         
-        # Pointer always above regardless of layout?        
-        (put p0 'b Part)
-        (mov-part-abv> p0 Part (cons T))
-        ))))
+        (put p0 'b Ref)
+        (mov-part-abv> p0 Ref (cons T))))))
 
 
 (de cmd-make-nil (Keysym)
@@ -57,66 +56,68 @@
   (prinl-info "cmd-del")
 
   #{  
-           p0
+                p0
     [ ] - [ ] - NIL
     "a"   "b"
+    
+    * Remove b
+    * To delete NIL itself, use delete
+      * That's why BackSpace is called back-space?
   }#
   
   # Refactor into a fn in ops
 
   (let (Ref (val> p0)
-        Prv (get Ref 'c)
-        Cdr-Prv (get Prv 'b)
-        Cdr (get Ref 'b))
+        Tgt (get Ref 'c)
+        Cc (get Tgt 'c))
 
-    #(println 'cmd-del 'Ref (get Ref 'data))
-    #(println 'cmd-del 'c (get (get Ref 'c) 'data))
-      
-    (unless (= (get Ref 'data) '*main)
+    (unless (= (get Tgt 'data) '*main)      
 
-      # Preserve Cdr (aka NIL) so only delete Car
+      # Preserve Ref (aka NIL) so only delete Car
       # Must manually do this since the flags are passed down
-      (when (get Ref 'a)
-        (del> (get Ref 'a) T T))
-      (del> Ref NIL NIL)
-      (put Ref 'b)
+      (when (get Tgt 'a)
+        (del> (get Tgt 'a) T T))
+      (del> Tgt NIL NIL)
+      (put Tgt 'b)
             
-      # Link Prv->Cdr; con to destructively set Cdr
-      (unless (= (get Prv 'data) '*main)
-        (con (get Prv 'data) (get Cdr 'data)))
+      # Delete Tgt
+      # Connect Cc to Ref            
+            
+      # Link Cc->Ref; con to destructively set Ref
+      (unless (= (get Cc 'data) '*main)
+        (con (get Cc 'data) (get Ref 'data)))
 
-      #(if (isa '+Pair (get Prv 'a))
-      (if (= (get Prv 'a) Ref)
+      #(if (isa '+Pair (get Cc 'a))
+      (if (= (get Cc 'a) Tgt)
 
         # When deleting last item in a sublist
-        # Make the Cdr the Car of Prv
-        # Move Cdr under Prv      
+        # Make the Ref the Car of Cc
+        # Move Ref under Cc      
         (prog
-          (put Prv 'a Cdr)
-          (mov-cur-part Prv 'start) (nl-cur)
-          (mov> Cdr *cur)
+          (put Cc 'a Ref)
+          (mov-cur-part Cc 'start) (nl-cur)
+          (mov> Ref *cur)
 
-          # Move Prv Cdr also
+          # Move Cc Ref also
           # This will not move recursively
           # Use lay-part BUT lay-atom must be fixed
           
-          (put Prv 'b Cdr-Prv)
+          (put Cc 'b Tgt)
 
-          (base-cur Prv)
-          (mov> Cdr-Prv *cur))
+          (base-cur Cc)
+          (mov> Tgt *cur))
         
         (prog
-          (put Prv 'b Cdr)
+          (put Cc 'b Ref)
           
-          # Move Cdr
-          (base-cur Prv)
-          (mov> Cdr *cur)))
+          # Move Ref
+          (base-cur Cc)
+          (mov> Ref *cur)))
 
-      (put Cdr 'c Prv)
+      (put Ref 'c Cc)
 
-      # Link p0
-      (put p0 'b Prv)
-      (mov-part-abv> p0 Prv (cons T)))))
+      # Ptr same; simply move it
+      (mov-part-abv> p0 Cc (cons T)))))
 
 
 (de cmd-make-num (Keysym)
