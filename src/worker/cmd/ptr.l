@@ -49,24 +49,18 @@
     (mov-part-abv> p0 Ref (cons T))))
       
 
-######################
-# Semantic (Selection)
+###############################
+# Semantic Traversal (Pair/Ptr)
 
 (de cmd-point-ptr-pre (Keysym)
-  # Move to prev item in the list
   (println "Move to prev item")
-  # Get previous item from pointer
   
-  # Either use doubly-linked list or
-  # spatial index
-
   (let? Prv (get (val> p0) 'c)
     (put p0 'b Prv)
     (mov-part-abv> p0 Prv (cons T))))
   
 
 (de cmd-point-ptr-nxt (Keysym)
-  # Move to next item in the list
   (println "Move to next item")
   
   (let? Cdr (get (val> p0) 'b)
@@ -76,26 +70,12 @@
 
 (de cmd-point-ptr-out (Keysym)
   # Move to super list
-  
-  #{
-    (a (b c) e)
-  
-    [ ] - [*] - [ ] - NIL
-     a     |     e
-           |
-          [ ] - [ ] - NIL
-           b     c
-           
-    Stop when CAR is a Pair instead of an atom
     
-    *a = e
-    *b = (b c)
-  }#
-  
   (println "Move to outer list")
   
-  #(println 'cmd-point-ptr-out Part (type Part) (get Part 'data) (get Part 'c))
+  # Move to *main
   
+  # Below searches
   (let Part (val> p0)
     (loop
       (T (or (isa '+Pair (get Part 'a))
@@ -107,40 +87,76 @@
 
 
 (de cmd-point-ptr-in (Keysym)
-  # Move to next list if ref is a list
+  # Move to CAR if it is a list...or any CAR?
+  # Only makes sense if modify a Pair...above logic works for Pairs also
   
   (println "Move to inner list")
   
+  #{
+    Car:
+  
+    If non-NIL, move ptr to it
+  
+    If NIL, move below, set y layout, keep ptr to CDR; cmd-make-char replaces it
+    * Do not implicitly mov Car down - user explicitly does this
+    * Outline format would have this done automatically
+          
+    User has entered NIL already:
+    
+                    p0
+    [X] [X] [X] [X] NIL
+    a   b   c   NIL
+    
+
+    [X] [X] [X]
+    a   b   c
+    
+    p0
+    [Y] NIL
+    NIL
+    
+  }#  
+  
   (let (Ref (val> p0)
-        Car (get Ref 'a)
-        Data (car (get Ref 'data)))
-
-    # Car either has data or is NIL
-
+        Tgt (get Ref 'c)
+        Car (get Tgt 'a))
+    
     (cond ((= (type (get Car 'a)) '(+Pair))
-            # Set pointer and do normal
-            # Point to Car
-            (put p0 'b (get Ref 'a))            
-            (mov-part-abv> p0 (get Ref 'a) (cons T)))
+            (put p0 'b Car)
+            (mov-part-abv> p0 Car (cons T)))
             
           ((isa '+Nil Car)
-            # Move Ref/((NIL)) to newline if not already
-            # Get base x from Ref
-            (let (Ori (get-origin> (get *main 'b))
-                  Bnds (calc-bounds> (get *main 'b)))
-              
+
+            # Set cur in position for cmd-make-char
+            
+            # Move under first item
+            # This assumes X orientation...
+            
+            #(println 'enter-list (get *main 'lay) (get *main 'data))
+                        
+            # If symbol use 'b
+            # If pair use 'a
+            (let (Base (get *main (if (= (type *main) '(+Pair)) 'a 'b))
+                  Ori (get-origin> Base)
+                  Bnds (if (= (get Base 'lay) 'x)
+                           (calc-bounds> Base NIL T)
+                           (calc-bounds> Base T NIL)))
               (setq *cur (list (get Ori 1)
                                (get Bnds 2)
                                (get *cur 3)))
-              (nl-cur 2.0)                               
-              (put Ref 'lay 'y)
-              (lay-part Ref *cur))
+              (nl-cur 2.0))
 
-            (put p0 'b Car Ref)
-            (mov-part-abv> p0 Ref (cons T))
+            (put Tgt 'lay 'y)
+            (lay-part Tgt *cur)
+
+            (put p0 'b Tgt)
+            (mov-part-abv> p0 Tgt (cons T))
 
             # If not set, Cdr of NIL will be replaced instead of the CAR/entire list
+            # Poss to make function that will replace both Cdr and Pair?
+            # -> Probably not since they are different...
             (setq *mode-repl T)
+            
             ))))
   
 

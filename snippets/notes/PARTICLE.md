@@ -259,6 +259,8 @@ Store DAGs as binary trees?
       * Should be consistent with outline format
       * Default layout is oriented towards lists of text/num/syms similar to
       alphanumerical outlines
+    * Replace dot with arrow indicating layout (Right/Down)
+    * Particle can have 'nl and 'sp to indicate how many nl or sp before it
     * Camera needs to move with content like when entering a newline
       * Requires unproject to test if coord is in the viewport
     

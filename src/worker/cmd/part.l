@@ -29,13 +29,16 @@
     
     (if *mode-repl
 
-      # repl-any assumes list has y layout
-      (let Part (repl-ref Data Lay)
+      # repl-ref assumes list has y layout
+      (let (Part (repl-ref Data Lay)
+            Cdr (get (get Part 'a) 'b))
         
-        (put p0 'b (get Part 'a))
+        # Point to Cdr of first item
+        (put p0 'b Cdr)
+        (mov-part-abv> p0 Cdr (cons T))
                 
         # Set new list
-        (setq *main (get Part 'a))
+        (setq *main Part)
         
         (setq *mode-repl NIL))
 

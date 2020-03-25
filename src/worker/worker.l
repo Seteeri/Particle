@@ -163,10 +163,10 @@
       ((`ksd~Up)    T `cmd-trans-ptr-py)
       ((`ksd~Down)  T `cmd-trans-ptr-ny)
 
-      ((`ksd~Control-L `ksd~Right) T `cmd-move-cam-px)
-      ((`ksd~Control-L `ksd~Left)  T `cmd-move-cam-nx)
-      ((`ksd~Control-L `ksd~Up)    T `cmd-move-cam-py)
-      ((`ksd~Control-L `ksd~Down)  T `cmd-move-cam-ny)
+      ((`ksd~Control-R `ksd~Right) T `cmd-move-cam-px)
+      ((`ksd~Control-R `ksd~Left)  T `cmd-move-cam-nx)
+      ((`ksd~Control-R `ksd~Up)    T `cmd-move-cam-py)
+      ((`ksd~Control-R `ksd~Down)  T `cmd-move-cam-ny)
       ((`ksd~Prior    )            T `cmd-zoom-cam-in)
       ((`ksd~Next     )            T `cmd-zoom-cam-out)))
 

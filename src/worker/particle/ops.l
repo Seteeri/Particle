@@ -61,34 +61,46 @@
 
 (de repl-ref (Any Lay)
   #{  
-    Pointer is pointing to CAR of a Pair
-    However, want to replace entire Pair
+    Pointer is pointing to Pair to be replaced
 
-    [ ] - [ ] - CDR
-          NIL (*)
-
-    Ref is NIL/Car
-    Nxt is Nil (sym particle has no b but has the data = 'symbol)
-    Pair is Pair pointing to Ref (CAR)
-    Prv is Pair pointing to Pair (CDR)
+    [X] [X] [X]
+    a   b   c
+    
+    p0
+    [Y] NIL
+    NIL
   }#
 
   (let (Ref (val> p0)
-        Pair (get Ref 'c)
-        Prv (get Pair 'c)
+        Cdr (get Ref 'b)  
+        Prv (get Ref 'c)  
         Lst-Any (list (list Any))
-        Part (gen-part Lst-Any Lay NIL T))        
+        Part (gen-part Lst-Any Lay NIL T))
+        
     # Don't make Cdr/NIL since it will be connected to existing
         
-    (repl-list Prv Pair Part)
+    (repl-list Prv Ref Cdr Part)
 
+    # Cursor will have already been put in position,
+    # so this will handle when list is Y, 
+    # but what about if user enters list with X layout?
+    # -> Should be in pos already?
+    
+    (mov-cur-part Ref 'start)
+
+    # Particle should already have proper layout...
+    (put (get Part 'a) 'lay 'x)
+    (lay-part Part *cur)
+    
+    #{
     (if (= Lay 'x)
     
         (prog
+
           # Move new Part rel to extents of Prv
           (base-cur Prv)
-          (lay-part Part *cur)
-
+          (lay-part Part *cur)      
+          
           # Move Car one space further down
           (mov-cur-part Part 'start)
           (nl-cur 3.0)
@@ -97,47 +109,44 @@
             (lay-part (: a) *cur)))
             
         (prog
-          # Move new Part rel to extents of Prv
-          (base-cur Prv)
-          (lay-part Part *cur)        
-        
-          # Move Car to the right
-          #(mov-cur-part Part 'end) (adv-cur 2.0)
-          #(base-cur Part)
-          #(with Part
-          #  (put (: a) 'lay Lay)
-          #  (lay-part (: a) *cur))
-          ))
-
+                
+          (lay-part Part *cur)))
+    }#
+    
     Part))
 
 
-(de repl-list (Prv Pair Part)
+(de repl-list (Prv Ref Cdr Part)
   
 
   #{
-    Prv - Pair/Part - Cdr
-          
-          [  ]
-          "X"
+    [X] [X] [X]
+    a   b   c
+    
+    p0
+    [Y] NIL
+    NIL
+    
+    * Del Ref
+    * Prv 'b -> Part
+    * Part 'b -> Cdr
+    * Cdr 'c -> Part
+    * Part 'c -> Prv 
   }#
-  
-  (let Cdr (get Pair 'b)
-  
-    # Connect Prv-Part
-    (with Prv
-      (=: b Part)
-      (con (car (:: data)) (get Part 'data)))
     
-    # Connect Part-Cdr
-    (with Cdr
-      (=: c Part))
+  # Connect Prv-Part
+  (with Prv
+    (=: b Part)
+    (con (car (:: data)) (get Part 'data)))
+  
+  # Connect Part-Cdr
+  (with Cdr
+    (=: c Part))
+  
+  (with Part
+    (=: b Cdr)
+    (=: c Prv)
+    (con (car (:: data)) (get Cdr 'data)))
     
-    (with Part
-      (=: b Cdr)
-      (=: c Prv)
-      # Connect data to Cdr data
-      (con (car (:: data)) (get Cdr 'data)))
-      
-    # Do not delete CDR
-    (del> Pair T NIL)))
+  # Do not delete CDR
+  (del> Ref T NIL))
