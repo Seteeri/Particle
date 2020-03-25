@@ -137,9 +137,13 @@
       #(view (getl (val> p0)))
       # If we lay relative to origin should stay in same place
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
-                                        (mov-cur-part (val> p0) 'start)
-                                        (lay-part (val> p0)
-                                                  *cur)))
+                                        (let (Ref (val> p0)
+                                              Car (get Ref 'a))
+                                        (when Car
+                                          (mov-cur-part Car 'start)
+                                          (println 'bnds (get Car 'bnds))
+                                          (adv-cur (get Car 'bnds))
+                                          (mov> p0 *cur)))))
 
       # Pointer Translation
       ((`ksd~Control-L `ksd~w) T `cmd-point-ptr-out)
@@ -154,19 +158,19 @@
       ((`ksd~Control-L `ksd~d) T `cmd-point-ptr-nxt)
       ((`ksd~Control-R `ksd~d) T `cmd-point-ptr-nxt)
 
-      # Camera Translation
-      # Make dir
       ((`ksd~Right) T `cmd-trans-ptr-px)
       ((`ksd~Left)  T `cmd-trans-ptr-nx)
       ((`ksd~Up)    T `cmd-trans-ptr-py)
       ((`ksd~Down)  T `cmd-trans-ptr-ny)
 
-      ((`ksd~Alt-R `ksd~Right) T `cmd-move-cam-px)
-      ((`ksd~Alt-R `ksd~Left)  T `cmd-move-cam-nx)
-      ((`ksd~Alt-R `ksd~Up)    T `cmd-move-cam-py)
-      ((`ksd~Alt-R `ksd~Down)  T `cmd-move-cam-ny)
-      ((`ksd~Prior    )            T `cmd-zoom-cam-in)
-      ((`ksd~Next     )            T `cmd-zoom-cam-out)))
+      # Camera Translation
+
+      ((`ksd~Alt-R `ksd~comma) T `cmd-move-cam-px)
+      ((`ksd~Alt-R `ksd~n)     T `cmd-move-cam-nx)
+      ((`ksd~Alt-R `ksd~j)     T `cmd-move-cam-py)
+      ((`ksd~Alt-R `ksd~m)     T `cmd-move-cam-ny)
+      ((`ksd~Prior)            T `cmd-zoom-cam-in)
+      ((`ksd~Next )            T `cmd-zoom-cam-out)))
 
 
 (de init-worker ()

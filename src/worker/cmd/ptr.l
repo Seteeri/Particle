@@ -29,16 +29,18 @@
                      (get Bnds 2)
                      (get *cur 3)))
 
-    # If this is being done randomly
+    # If this op is random
     # must know min y for all previous elements )Cars)
     #
-    # When particle is lay/drawn, bnds are known which means cache them?
-    # But if car is modified then must be updated fwd
-    #
-    # Or calc from this point backwards until 'a pts to caller
-    #
-    # Cache bnds for atoms, since they don't change
+    # When parts gen, cache bnds for atoms, since they don't change
     # Easy to calc with fixed-width since bnds = num verts * adv
+    #
+    # Based on layout, and vert len and adv, the bnds can be determined
+    #
+    # Everytime list is updated, update the len and bounds
+    # Every item is at the border or within the bnds
+    # So pos cursor at min Y, comparing the list and the item
+    
     (println 'cmd-mov-nl "Set 'nl for " Ref (get Ref 'data))
     
     (put Ref 'nl 1.0)
