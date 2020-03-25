@@ -82,6 +82,7 @@
     Dot))
 
 
+#{
 (de draw-chars (Chars Col Adv)
   # Mostly used to draw non-code and accents etc.
 
@@ -97,6 +98,7 @@
       (when Adv (adv-cur)))
 
     (flip Verts)))
+}#
 
 
 (de draw-glyph (Char Col)
@@ -140,17 +142,22 @@
 
   
 (de draw-str (Str Col Adv)
-  #(draw-repr (chop (pack "\"" Str "\"")) Col Adv))
-  (draw-repr (chop Str) Col Adv))
+  (let Verts (draw-repr (chop Str) Col Adv)
+    (list Verts
+          (*/ *adv-vert (num-to-fl (length Verts)) 1.0))))
 
   
 (de draw-num (Num Col Adv)
-  (draw-repr (chop (format Num)) Col Adv))
+  (let Verts (draw-repr (chop (format Num)) Col Adv)
+    (list Verts
+          (*/ *adv-vert (num-to-fl (length Verts)) 1.0))))
 
 
 (de draw-sym (Sym Col Adv)
-  (draw-repr (chop (sym Sym)) Col Adv))
-
+  (let Verts (draw-repr (chop (sym Sym)) Col Adv)
+    (list Verts
+          (*/ *adv-vert (num-to-fl (length Verts)) 1.0))))
+          
 
 (de draw-atom (Atom Col Adv) 
 
@@ -169,5 +176,7 @@
   # (draw-chars "[" *col-base-0 T)
   
   (if Self
-      (list (draw-dot Col) (draw-dot Col))
-      (list (draw-dot Col))))
+      (list (list (draw-dot Col) (draw-dot Col))
+            (+ *adv-vert *adv-vert))
+      (list (list (draw-dot Col))
+            *adv-vert)))

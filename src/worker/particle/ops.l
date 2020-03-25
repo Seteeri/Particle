@@ -60,10 +60,26 @@
     # Base is list containing Part
     # Cur is where Part should be
 
-    (setq *nl-prv *main)
+    # Diff between symbol and nested list
 
-    (mov-cur-part Ref 'start)
-    (lay-part Part *cur)
+    (println 'repl-cdr "lay-part " Part (get Part 'data) "rel to " Ref (get Ref 'data))
+
+    (let (Ref (val> p0)
+          Ori (get-origin> (get *main 'b))
+          Bnds (calc-bounds> (get *main 'b)))
+        
+      (setq *cur (list (get Ori 1)
+                       (get Bnds 2)
+                       (get *cur 3)))
+
+      (mov-cur-part Ref 'start)
+      (lay-part Part Ori))
+
+    #{
+    (let Base (get-origin> (get *main 'b))
+      (mov-cur-part Ref 'start)
+      (lay-part Part Base))
+    }#
     
     Part))
 

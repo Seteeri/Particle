@@ -28,10 +28,21 @@
     (setq *cur (list (get Ori 1)
                      (get Bnds 2)
                      (get *cur 3)))
-    (nl-cur 2.0)
+
+    # If this is being done randomly
+    # must know min y for all previous elements )Cars)
+    #
+    # When particle is lay/drawn, bnds are known which means cache them?
+    # But if car is modified then must be updated fwd
+    #
+    # Or calc from this point backwards until 'a pts to caller
+    #
+    # Cache bnds for atoms, since they don't change
+    # Easy to calc with fixed-width since bnds = num verts * adv
+    (println 'cmd-mov-nl "Set 'nl for " Ref (get Ref 'data))
     
     (put Ref 'nl 1.0)
-    (lay-part Ref *cur)
+    (lay-part Ref Ori)
     
     (put p0 'b Ref)
     (mov-part-abv> p0 Ref (cons T))))

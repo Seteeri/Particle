@@ -23,19 +23,25 @@
 
 
 (de gen-num (Any Lay Adv Car-Skip Cdr-Skip)
-  (new '(+Num)
-       Any
-       NIL NIL
-       (draw-atom Any (get-color-type Any) Adv)
-       Lay))
+  (let ((Verts Wid) (draw-atom Any (get-color-type Any) Adv)
+        Part (new '(+Num)
+                  Any
+                  NIL NIL
+                  Verts
+                  Lay))
+    (put Part 'bnds Wid)
+    Part))
 
 
 (de gen-nil (Any Lay Adv Car-Skip Cdr-Skip)
-  (new '(+Nil)
-       Any
-       NIL NIL
-       (draw-atom Any (get-color-type Any) Adv)
-       Lay))
+  (let ((Verts Wid) (draw-atom Any (get-color-type Any) Adv)
+        Part (new '(+Nil)
+                  Any
+                  NIL NIL
+                  Verts
+                  Lay))
+    (put Part 'bnds Wid)
+    Part))
         
 
 (de gen-sym (Any Lay Adv Car-Skip Cdr-Skip)
@@ -54,21 +60,27 @@
   (let (Ar (name Any) 
         Val (val Any)
         Dr (if (== Val Any) NIL Val)
+        (Verts-Car Wid-Car) (draw-atom Ar (get-color-type 0) Adv)
         Part-Car (unless Car-Skip
                   # Num type but content is a string
                   (new '(+Num)
                        Ar
                        NIL NIL
-                       (draw-atom Ar (get-color-type 0) Adv)
+                       Verts-Car
                        Lay))
         Part-Cdr (when (and (not Cdr-Skip)
                             (not (== Val Any)))
                   (gen-part Dr Lay))
+        (Verts-Pair Wid-Pair) (draw-cell (get-color-type Any) (== Val Any))
         Part-Pair (new (if (str? Any) '(+Str) '(+Sym)) # Color as a symbol
                        Any
                        Part-Car Part-Cdr
-                       (draw-cell (get-color-type Any) (== Val Any))
+                       Verts-Pair
                        Lay))
+                        
+      # Set bnds
+      (put Part-Car 'bnds Wid-Car)
+      (put Part-Pair 'bnds Wid-Pair)
                         
       # If CAR/CDR, is a list, set C to pair
 
@@ -91,14 +103,16 @@
 
   (let (Ar (car Any)
         Dr (cdr Any)
-        #(Vert-Ar Dot Vert-Dr) (draw-cell Ar Dr)
         Part-Car (unless Car-Skip (gen-part Ar Lay))
         Part-Cdr (unless Cdr-Skip (gen-part Dr Lay))        
+        (Verts-Pair Wid-Pair) (draw-cell)
         Part-Pair (new '(+Pair)
                         Any
                         Part-Car Part-Cdr
-                        (draw-cell) # (append Vert-Ar Dot Vert-Dr)
+                        Verts-Pair
                         Lay))
+                        
+      (put Part-Pair 'bnds Wid-Pair)
                         
       # If CAR/CDR, is a list, set C to pair
       (unless Car-Skip (put Part-Car 'c Part-Pair))

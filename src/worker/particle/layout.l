@@ -8,31 +8,31 @@
       
       (lay-atom Any Base Car-Skip Cdr-Skip)))
 
-(def '*nl-pair T)
-(def '*nl-prv)
+
 (de lay-pair (Any Base Car-Skip Cdr-Skip)
-  
-  # Ignore p0 also
-  (when *nl-pair
-    (put Any 'lay (if (is-start-of-list Any)
-                      'y
-                      'x)))
+
+  (println 'lay-pair Any (get Any 'data) (get Any 'lay))
+
+  # If Any is on a newline
+  # move rel to Base - at x and underneath it
+  # this is assuming min y
+  # so if calling on nl, cur should be set already before calling this
+  # and use origin as new base
+  (setq Base (if (get Any 'nl)
+                 (prog
+                   (println 'lay-pair "Detected NL")
+                   (set-cur-x (get Base 1))
+                   (nl-cur 3.0)
+                   (get-origin> Any))
+                 Base))
 
   # Move Pair first so below can get correct pos
   (mov> Any *cur)
-    
-  (let Base-2 (if (is-start-of-list Any)
-                  (prog
-                    (setq *nl-prv Any)
-                    (get-origin> Any))
-                  Base)
-
-    (if (= (get Any 'lay) 'x)
-      
-      (lay-pair-x Any Base-2 Car-Skip Cdr-Skip)
-      
-      (lay-pair-y Any Base-2 Car-Skip Cdr-Skip))))
-    
+  
+  (if (= (get Any 'lay) 'x)    
+    (lay-pair-x Any Base Car-Skip Cdr-Skip)
+    (lay-pair-y Any Base Car-Skip Cdr-Skip)))
+  
 
 (de lay-pair-x (Any Base Car-Skip Cdr-Skip)
   #{
@@ -85,22 +85,22 @@
       (let (Bnd-Car (lay-part (: a) Base)
             Bnd-Cdr Bnd-Car)
         
-        (if (or (is-start-of-list (: b)) (: nl))
+        #{
+        (if (: nl)
             (prog
-              #(println 'lay-pair'x is-start-of-list)
-              (set-cur-x (get Base 1))              
-              (when (get Any 'c)
-                # Should use bounds of main 'b or last nl
-                # Use then update
-                (adv-cur 2.0))
-              (nl-cur))
+              # Align cur to bounds of main 'b or last nl
+              # Y is already at extents based on drawn Cars
+              (set-cur-x (get Base 1))
+              #(nl-cur 4.0)
+              )
+        }#
               
             (prog
               # At this point, cur is at extents of Car
               # X is valid except for one more adv
               # Y must be moved back to base
               (adv-cur)
-              (set-cur-y Y)))
+              (set-cur-y Y))
         
         # Str's val/b is NIL (or poss later point to itself)
         (when (and (: b) (not (= (: b) Any)))

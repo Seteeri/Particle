@@ -134,14 +134,12 @@
       ((`ksd~Control-L `ksd~e)    T `cmd-make-nil)
       ((`ksd~Control-R `ksd~e)    T `cmd-make-nil)
 
+      #(view (getl (val> p0)))
+      # If we lay relative to origin should stay in same place
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
-                                        (if NIL
-                                            (let Bnds (calc-bounds> (val> p0))
-                                              (println (format (get Bnds 1) *Scl))
-                                              (println (format (get Bnds 2) *Scl))
-                                              (mov> p0 Bnds))
-                                            (prog
-                                              (println (get-origin> (get (get (val> p0) 'a) 'a)))))))
+                                        (mov-cur-part (val> p0) 'start)
+                                        (lay-part (val> p0)
+                                                  *cur)))
 
       # Pointer Translation
       ((`ksd~Control-L `ksd~w) T `cmd-point-ptr-out)

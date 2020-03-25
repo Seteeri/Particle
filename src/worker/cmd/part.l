@@ -108,8 +108,11 @@
       (put Ref 'c Cc)
 
       # Reposition Ref to Tgt, recursively
-      (mov-cur-part Tgt 'start)
-      (lay-part Ref *cur)
+      #(mov-cur-part Tgt 'start)
+      #(lay-part Ref *cur)
+      (let Base (get-origin> (get *main 'b))
+        (mov-cur-part Tgt 'start)
+        (lay-part Ref Base))
 
       # Ptr same; simply move it
       (mov-part-abv> p0 Ref (cons T)))))

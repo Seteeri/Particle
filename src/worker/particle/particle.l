@@ -59,6 +59,8 @@
   (=: lay Lay)
   (=: nl)
   
+  (=: bnds)
+  
   # list of tags; always str; order matters like when searching
   # consider first tag, the name
   # when linking, def show date, tags, or show nm or raw location
