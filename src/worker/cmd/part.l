@@ -101,7 +101,7 @@
       (put Ref 'c Cc)
 
       # Ptr same; simply move it
-      (mov-part-abv> p0 Cc (cons T)))))
+      (mov-part-abv> p0 Ref (cons T)))))
 
 
 (de cmd-make-num (Keysym)
