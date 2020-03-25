@@ -26,27 +26,8 @@
     #(setq *nl-pair NIL)
     #(setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
     #(setq *nl-pair T)
-    
-    (if *mode-repl
-
-      # repl-ref assumes list has y layout
-      (let (Part (repl-ref Data Lay)
-            Cdr (get (get Part 'a) 'b))
-        
-        # Point to Cdr of first item
-        (put p0 'b Cdr)
-        (mov-part-abv> p0 Cdr (cons T))
-                
-        # Set new list
-        (setq *main Part)
-        
-        (setq *mode-repl NIL))
-
-      (let (Ref (val> p0)
-            Part (repl-cdr Ref Data Lay))
-        
-        (put p0 'b Ref)
-        (mov-part-abv> p0 Ref (cons T))))))
+       
+    (con-any Data Lay)))
 
 
 (de cmd-make-nil (Keysym)
@@ -144,6 +125,8 @@
 
   # Dat (pack (get *main 'data))
   # Part (con-list Dat 'x))
+  
+  (cmd-make-char )
 
   (prinl-info "cmd-pack"))
 
