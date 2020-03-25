@@ -259,6 +259,11 @@ Store DAGs as binary trees?
       * Should be consistent with outline format
       * Default layout is oriented towards lists of text/num/syms similar to
       alphanumerical outlines
+    * REFACTOR FLAT LIST, THEN SUBLIST
+      * Refactor layout
+        * For gen-part, if layout passed, force all to have that layout
+        * Should not set lay prop - simply follow
+      * Get newline working properly
     * Handle random edits
       * Update subsequent items in list
         * 

@@ -55,10 +55,14 @@
   # Merge with below?
   
   (let Part (con-list Ref Any Lay)
+    
+    # Note, cur != Base
+    # Base is list containing Part
+    # Cur is where Part should be
+
+    (setq *nl-prv *main)
 
     (mov-cur-part Ref 'start)
-    
-    # This works recursively
     (lay-part Part *cur)
     
     Part))

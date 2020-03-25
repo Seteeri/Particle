@@ -9,6 +9,7 @@
       (lay-atom Any Base Car-Skip Cdr-Skip)))
 
 (def '*nl-pair T)
+(def '*nl-prv)
 (de lay-pair (Any Base Car-Skip Cdr-Skip)
   
   # Ignore p0 also
@@ -21,7 +22,9 @@
   (mov> Any *cur)
     
   (let Base-2 (if (is-start-of-list Any)
-                  (get-origin> Any)
+                  (prog
+                    (setq *nl-prv Any)
+                    (get-origin> Any))
                   Base)
 
     (if (= (get Any 'lay) 'x)
@@ -82,15 +85,13 @@
       (let (Bnd-Car (lay-part (: a) Base)
             Bnd-Cdr Bnd-Car)
         
-        # or check 'nl...
-        # wouldn't make sense for y layout except to add more spacing
-        # if interpreted directly
         (if (or (is-start-of-list (: b)) (: nl))
             (prog
               #(println 'lay-pair'x is-start-of-list)
-              (set-cur-x (get Base 1))
+              (set-cur-x (get Base 1))              
               (when (get Any 'c)
-                # Really should use last vert of og Base
+                # Should use bounds of main 'b or last nl
+                # Use then update
                 (adv-cur 2.0))
               (nl-cur))
               
