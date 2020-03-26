@@ -1,3 +1,14 @@
+(de force-lay (Part Lay)
+  (with Part
+    (=: lay Lay)
+    (when (and (: a)
+                (not (= (: a) Part)))
+      (force-lay (: a) Lay))
+    (when (and (: b)
+               (not (= (: b) Part)))
+      (force-lay (: b) Lay))))
+  
+
 (de base-cur (Ref) # Rename to align
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds

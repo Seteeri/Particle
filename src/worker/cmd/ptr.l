@@ -1,16 +1,22 @@
 (de cmd-swap-layout (Keysym)
   (println "Swap layout")
   
-  (let Prv (get (val> p0) 'c)
-      
-    (with Prv
-      (=: lay (if (= (: lay) 'x) 'y 'x)))
+  # If NIL, get prev, else do ref  
   
-    (mov-cur-part Prv 'start)
+  (let (Ref (val> p0)
+        Prv (get Ref 'c)
+        Tgt (if (= (get Ref 'data) NIL) Prv Ref))
+        
+    (when Tgt
     
-    (setq *nl-pair NIL)
-    (lay-part Prv *cur))
-    (setq *nl-pair T))
+      (println "Swap!" Tgt (get Tgt 'data) (get Tgt 'lay) '-> (if (= (get Tgt 'lay) 'x) 'y 'x))
+      
+      (force-lay Tgt 
+                 (if (= (get Tgt 'lay) 'x) 'y 'x))
+            
+      (mov-cur-part Tgt 'start)      
+      # Opt: force layout
+      (lay-part Tgt (get-origin> *main)))))
 
 
 (de cmd-mov-nl (Keysym)
@@ -93,20 +99,32 @@
 
 (de cmd-point-ptr-pre (Keysym)
   (println "Move to prev item")
+
+  (let Ref (val> p0)
   
-  (let? Prv (get (val> p0) 'c)
-    (println "Moved to " Prv (get Prv 'data))
-    (put p0 'b Prv)
-    (mov-part-abv> p0 Prv (cons T))))
+    (if (= (get Ref 'lay) 'x)
+  
+        (let? Prv (get Ref 'c)
+          (println "Moved to " Prv (get Prv 'data))
+          (put p0 'b Prv)
+          (mov-part-abv> p0 Prv (cons T)))
+          
+        (prog))))
   
 
 (de cmd-point-ptr-nxt (Keysym)
   (println "Move to next item")
+
+  (let Ref (val> p0)
   
-  (let? Cdr (get (val> p0) 'b)
-    (println "Moved to " Cdr (get Cdr 'data))
-    (put p0 'b Cdr)
-    (mov-part-abv> p0 Cdr (cons T))))
+    (if (= (get Ref 'lay) 'x)
+        
+        (let? Cdr (get (val> p0) 'b)
+          (println "Moved to " Cdr (get Cdr 'data))
+          (put p0 'b Cdr)
+          (mov-part-abv> p0 Cdr (cons T)))
+          
+        (prog))))
 
 
 (de cmd-point-ptr-out (Keysym)
@@ -132,19 +150,27 @@
 
 
 (de cmd-point-ptr-in (Keysym)
-  # Move to CAR if it is a list...or any CAR?
-  # Only makes sense if modify a Pair...above logic works for Pairs also
   
   (println "Move to inner list")
   
   #{
+  
+    * X
+      * Move to NIL/list (see below)
+    * Y
+      * Move to CAR/CDR
+    
     Car:
   
-    If non-NIL, move ptr to it
+    If non-NIL:
+    * Move ptr to it
   
-    If NIL, move below, set y layout, keep ptr to CDR; cmd-make-char replaces it
-    * Do not implicitly mov Car down - user explicitly does this
-    * Outline format would have this done automatically
+    If NIL:
+    * Move under
+    * Set Y layout
+    * Move ptr to Pair instead of NIL (like normal mode)
+    * Set flag for cmd-make-char...
+    * User must move to CAR
           
     User has entered NIL already:
     
@@ -152,14 +178,25 @@
     [X] [X] [X] [X] NIL
     a   b   c   NIL
     
+    TO:
 
     [X] [X] [X]
     a   b   c
     
     p0
-    [Y] NIL
-    NIL
+    [Y] [X] [X] [X] NIL
+    NIL d   e   f
+
+    ...
     
+    [Y] [X] [X] [X] NIL
+    NIL h   i   j
+    
+    Effectively, this cmd turns NIL into a list instead of an atom
+    If user exits list, keep structure the same
+    Allows user to create "bullets"
+    User can explicitly move it back and toggle layout
+        
   }#  
   
   (let (Ref (val> p0)
@@ -172,39 +209,43 @@
             
           ((isa '+Nil Ref)
 
-            # Set cur in position for cmd-make-char
-            
-            # Move under first item
-            # This assumes X orientation...
-            
-            #(println 'enter-list (get *main 'lay) (get *main 'data))
-                        
-            # If symbol use 'b
-            # If pair use 'a
-            (let (Base (get *main (if (= (type *main) '(+Pair)) 'a 'b))
-                  Ori (get-origin> Base)
-                  Bnds (if (= (get Base 'lay) 'x)
-                           (calc-bounds> Base NIL T)
-                           (calc-bounds> Base T NIL)))
-              (setq *cur (list (get Ori 1)
-                               (get Bnds 2)
-                               (get *cur 3)))
-              (nl-cur 2.0))
+            # Mov under
+            (cmd-mov-nl)
 
-            (put Tgt 'lay 'y)
-            (put Tgt 'nl 1.0) # set nl
-            (lay-part Tgt *cur)
+            # Set Y layout
+            (with Tgt (=: lay (if (= (: lay) 'x) 'y 'x)))
+            (mov-cur-part Tgt 'start)
+            (lay-part Tgt (get-origin> *main))
 
+            # Update ptr
             (put p0 'b Tgt)
             (mov-part-abv> p0 Tgt (cons T))
 
             # If not set, Cdr of NIL will be replaced instead of the CAR/entire list
-            # Poss to make function that will replace both Cdr and Pair?
-            # -> Probably not since they are different...
-            (setq *mode-repl T)
+            (setq *mode-repl T)))))
+
+#{
+              
+  # If symbol use 'b
+  # If pair use 'a
+  (let (Base (get *main (if (= (type *main) '(+Pair)) 'a 'b))
+        Ori (get-origin> Base)
+        Bnds (if (= (get Base 'lay) 'x)
+                 (calc-bounds> Base NIL T)
+                 (calc-bounds> Base T NIL)))
+    (setq *cur (list (get Ori 1)
+                     (get Bnds 2)
+                     (get *cur 3)))
+    (nl-cur 2.0))
+
+  (put Tgt 'lay 'y)
+  (put Tgt 'nl 1.0) # set nl
+  (lay-part Tgt *cur)
+
+  (put p0 'b Tgt)
+  (mov-part-abv> p0 Tgt (cons T))
             
-            ))))
-  
+}#
 
 ###########
 # Euclidean

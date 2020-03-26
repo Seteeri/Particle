@@ -4116,3 +4116,136 @@ Caps lock - there is a light to indicate the mode, however it is not near the us
 focus. Most people touch type so they do not look down and pay attention to the
 lights. If caps lock changed the cursor, it would be more indicative, similar to
 insert mode
+
+
+================================================================================
+  
+  X: 
+    l/r = C/CDR 
+    u/d = CAR
+    
+    * u/d only works on NIL and lists
+  
+  Y:
+    l/r = CAR
+    u/d = C/CDR
+  
+  Enter list should move to the CAR
+  So if user is on CAR replace, entire list
+
+=============================
+
+  [X] [X] [X] [X] [X] [X] NIL
+  a   b   c   NIL NIL NIL
+
+  Move middle:
+
+    [X] [X] [X] [X]
+    a   b   c   NIL
+
+    [Y] NIL
+    
+    [X] NIL
+    NIL
+  
+  Tab layout:
+  
+    [X] [X] [X] [X] [Y] NIL
+    a   b   c   NIL [X] NIL
+                    NIL
+                    
+    Must be space so:
+
+    [X] [X] [X] [X] [Y] NIL
+    a   b   c   NIL 
+                    [X] NIL
+                    NIL
+  
+=============================
+  
+  [X] [X] [X] [X] [X] [X] NIL
+  a   b   c   NIL NIL NIL
+  
+  Below is same
+  
+  (a b c NIL NIL NIL)
+    
+  [X] [X] [X]
+  a   b   c
+  
+  [Y] NIL
+
+  [Y] NIL
+  
+  [Y] NIL
+
+  NIL
+  
+  
+  (a b c (NIL) (NIL) (NIL))
+    
+  [X] [X] [X]
+  a   b   c
+  
+  [Y] [X] NIL
+      NIL
+  
+  [Y] [X] NIL
+      NIL
+
+  [Y] [X] NIL
+      NIL
+  NIL
+      
+
+  (a b c (NIL (NIL (NIL))))
+    
+  [X] [X] [X]
+  a   b   c
+  
+  [Y] [X] NIL
+      NIL
+  
+      [Y] [X] NIL
+          NIL
+
+          [Y] [X] NIL
+              NIL
+          NIL
+      NIL
+  NIL
+    
+=================================
+
+  (a b c (d e f) (h i j) (k l m))
+
+  [X] [X] [X]
+  a   b   c
+  
+  [Y] [X] [X] [X] NIL
+      d   e   f
+  
+  [Y] [X] [X] [X] NIL
+      h   i   j
+  
+  [Y] [X] [X] [X] NIL
+      k   l   m
+  NIL
+  
+  
+  (a b c (d e f (h i j (k l m))))
+
+  [X] [X] [X]
+  a   b   c
+  
+  [Y] [X] [X] [X]
+      d   e   f
+  
+      [Y] [X] [X] [X]
+          h   i   j
+    
+          [Y] [X] [X] [X] NIL
+              k   l   m
+          NIL
+      NIL
+  NIL

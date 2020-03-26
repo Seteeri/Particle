@@ -260,7 +260,7 @@ Store DAGs as binary trees?
       * Default layout is oriented towards lists of text/num/syms similar to
       alphanumerical outlines
       
-    * Refactor methods: generation, bounds, layout
+    * Refactor methods: generation, bounds, layout (PART I)
       * Refactor calculate bounds [Done]
       * Refactor gen [Done]
         * Should calc be last resort if not there? -> That is an error then
@@ -274,7 +274,13 @@ Store DAGs as binary trees?
       * Refactor cmd-make-nl [Done]
         * Calculate y min from last NL (or list start) until that item
       * Refactor cmd-del [Done]
-      * Refactor other items to use skip flags like mov> etc.
+
+    * Refactor sublist handling (PART II)
+      * Refactor swap-layout [Done]
+      * Ptr mov is with regardless to layout - inverses
+      * Refactor layout to have force option
+      * Refactor layout Y
+      * Then cmds
 
     * Support random access [WIP]
       * Update subsequent items in list [Done]
@@ -286,8 +292,22 @@ Store DAGs as binary trees?
       * Sublist [Todo]      
     * On enter-list, if not immediately enterable, search for next list?
       * Consistent with exit-list, else user has to manually go to first item          
-    * Make option: cmds a circular list
+      
+    GOAL: Able to build test tree
 
+    * Make option: cmds a circular list
+    * Replace dot with arrow indicating layout (Right/Down)
+    * Particle can have 'nl and 'sp to indicate how many nl or sp before it
+    * Camera needs to move with content like when entering a newline
+      * Requires unproject to test if coord is in the viewport
+    * Draw num in car [?]
+      * Handle decimals
+    * Refactor layout and mov functions [???]
+      * Restrict mov> functions to be used by layout
+    * Refactor other cmds
+      * Implement split space
+    * Cur/part relative position functions
+    * Make fn: mov-cur X/adv Y/nl
     * Cache origin [?]
       * This abs pos
       * Need dirty flag to be set on pos change, i.e. layout calls    
@@ -297,27 +317,9 @@ Store DAGs as binary trees?
       * Store newlines in list/Pair?
     * Gen should calc rel/local bnds for each Pair (whose 'a is a Pair) [Later]
       * Or call this separately/after gen      
-      
+    * Refactor other items to use skip flags like mov> etc.
     * For single chars, the bounds is the same      
-      
-    GOAL: Able to build test tree
-
-    * Replace dot with arrow indicating layout (Right/Down)
-    * Particle can have 'nl and 'sp to indicate how many nl or sp before it
-    * Camera needs to move with content like when entering a newline
-      * Requires unproject to test if coord is in the viewport
-    * Draw num in car [?]
-      * Handle decimals
-    * Refactor del> to pass ignore flags during recurse [???]    
-    * Refactor layout and mov functions [???]
-      * Restrict mov> functions to be used by layout
-    * Refactor other cmds
-      * Implement split space
-    * Add skip car/cdr for layout fn
-    * Cur/part relative position functions
-    * Refactor gen layout use -> move it
-    * Make fn: mov-cur X/adv Y/nl
-    
+        
   * Refactor [Mon]
     
   * Optimize ipc to batch messages, flush etc. [Tues]

@@ -27,11 +27,11 @@
   (setq Base (if (get Any 'nl)
                  (prog
                    (println 'lay-pair "Detected NL")
-                   (set-cur-x (get Base 1))
-                   (nl-cur 3.0)
                    (get-origin> Any))
                  Base))
   }#
+
+  #(println 'lay-pair Any (get Any 'lay))
 
   # Move Pair first to get correct pos since bnds rel to origin
   (mov> Any *cur)
@@ -77,8 +77,8 @@
           (lay-part (: a) Base))
       
         # To draw Cdr: (use base-cur? that recalcs...)
-        # X should match Ori 1 + Bnd-Car 1, plus an adv
-        # Y must be moved back to origin of Pair
+        # X =  Ori 1 + Bnd-Car 1, plus an adv
+        # Y = origin of Pair
         (set-cur-x (+ X-Ori X-Bnd-A)) (adv-cur)
         (set-cur-y Y-Ori)
         
@@ -106,34 +106,39 @@
   
     Base is the pos of the list start; lay-pair sets it
   }#
-
-  #(println Any (get Any 'data))
   
-  (let ((X Y) *cur)
-      
-    (with Any
+  (with Any
+  
+    (let ((X-Ori Y-Ori) (get-origin> Any))
     
-      # Mov cur to bounds, aka last vert start pos
-      (mov-cur-vert (last-vert> Any))
-      # Adv two spaces, after last vert, then one more space
-      (adv-cur 2.0)
+      # Mov cur to origin of Pair
+      (set-cur-y Y-Ori)
+      
+      # Use X bnds
+      (set-cur-x (+ X-Ori (get (: bnds) 1)))
+      (adv-cur)
     
       # Lay CAR first since its Y bounds has precedence
-      (let (Bnd-Car (lay-part (: a) Base)
-            Bnd-Cdr Bnd-Car)
+
+      (let ((X-Bnd-A Y-Bnd-A) (get (: a) 'bnds)
+            (X-Bnd-B Y-Bnd-B) (get (: b) 'bnds))
+      
+        (when (or (= Skip 'skip-cdr)
+                  (not Skip))
+          (lay-part (: a) Base))
         
-        # At this point, cur is at extents of Car
-        # X must be moved back to base      
-        # Y is valid except for one more newline
-        (set-cur-x X)
-        (set-cur-y (get Bnd-Car 2)) (nl-cur)
+        # To draw Cdr:
+        # X = Origin
+        # Y = Ori 2 + Bnd-Car 2, plus nl
+        (set-cur-x X-Ori)
+        (set-cur-y (+ Y-Ori Y-Bnd-A)) (nl-cur 3.0)
         
         # Str's val/b is NIL (or poss later point to itself)
-        (when (and (: b) (not (= (: b) Any)))
-          (setq Bnd-Cdr (lay-part (: b) Base)))
-            
-        (list (max (get Bnd-Car 1) (get Bnd-Cdr 1))
-              (min (get Bnd-Car 2) (get Bnd-Cdr 2)))))))
+        (when (and (: b)
+                   (not (= (: b) Any))
+                   (or (= Skip 'skip-car)
+                       (not Skip)))
+          (lay-part (: b) Base))))))
     
   
 (de lay-atom (Any Base Skip)
