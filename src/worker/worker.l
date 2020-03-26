@@ -270,14 +270,14 @@
 
     # Remove NIL
     (del> (get p0 'b) T T)
-
-    # Connect pointer to main
-    (put p0 'b (get *main 'b))    
-    # Move cursor above main
-    (mov-part-abv> p0 (get *main 'b) (cons T))
-    
+    # Replace with main 'b = NIL
+    (put p0 'b (get *main 'b))
+    # Set layout
     (put p0 'lay 'y)
-    (lay-part p0 *cur)
+    # Skip cdr since ptr should be rel to cdr
+    (lay-part p0 *cur 'skip-cdr)
+    # Mov it above NIL
+    (mov-part-abv> p0 (get *main 'b) (cons T))
         
     # TEMP
     (setq p1 *cmds)

@@ -144,7 +144,7 @@
         # Y = Ori 2 + Bnd-Car 2, plus nl
         (set-cur-x X-Ori)
         (set-cur-y (+ Y-Ori Y-Bnd-A)) (nl-cur 3.0)
-        
+                
         # Str's val/b is NIL (or poss later point to itself)
         (when (and (: b)
                    (not (= (: b) Any))
