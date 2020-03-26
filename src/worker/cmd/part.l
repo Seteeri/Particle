@@ -27,7 +27,7 @@
     #(setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
     #(setq *nl-pair T)
 
-    # If Car, replace entire pair
+    # If Car, replace entire pair (to make a sublist)
     (let (Ref (val> *0)
           C   (get Ref 'c)
           Ca  (get C 'a)

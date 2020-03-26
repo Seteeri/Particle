@@ -4132,13 +4132,18 @@ insert mode
     u/d = C/CDR
     ptr = ?
   
-  Enter list should move to the CAR
-  So if user is on CAR replace, entire list
+  If ptr on CAR replace entire thing (current)
+  but technically replacing Car would create a sublist
   
-Change ptr sym when on CAR vs CDR
-  normal is *
-  and CAR is ^
-
+  So if user types a bunch of cars, then goes back and presses a char
+  it should replace it
+  - here can be option to replace or append
+  - most logical is append (also consistent with text)
+    - create insert mode - replace sym also with _0
+    - or do 3 parts _^0
+  
+  But if user enters Car, it will create a sublist
+    
 =============================
 
   [X] [X] [X] [X] [X] [X] NIL

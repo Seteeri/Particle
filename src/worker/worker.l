@@ -284,11 +284,12 @@
 
     ############
     
-    (when NIL
+    (nl-cur 6.0)    
+    
+    (when T
 
-      (let Part (gen-part '(1 2 (3 (4 5)) (6 7)) 'y)
+      (let Part (gen-part '(1 2 (3 (4))) 'y)
         
-        (nl-cur 2.0)
         (set-cur-x X)
         
         # This will override layout in Particles

@@ -277,13 +277,21 @@ Store DAGs as binary trees?
 
     * Refactor sublist handling (PART II)
       * Refactor swap-layout [Done]
+      * Refactor layout Y [Done]      
+      * Ptr mov is with regard to layout - inverses [Done]      
       * Refactor sublist handling [WIP]
-      * Refactor layout Y [WIP]      
-      * Ptr mov is with regardless to layout - inverses [WIP]
+        * On car, create new list
       * Refactor cmds
         * Refactor cmd-del
       * Change ptr sym when moving to CAR...
-      * Refactor layout to have force option
+        * 3 parts in name - default is "*+0"
+          * Dir: * or ^
+          * Atom: + or underscore
+          * Num
+        * or show props?
+      * Fix tests -> base in layout
+      
+      * Test superlist update
 
     * Support random access [WIP]
       * Update subsequent items in list [Done]
@@ -293,11 +301,17 @@ Store DAGs as binary trees?
         of the changes
       * Base [Done]
       * Sublist [Todo]      
-    * On enter-list, if not immediately enterable, search for next list?
-      * Consistent with exit-list, else user has to manually go to first item          
-      
+    
+    * BUILD TEST TREE
+    * TEST LAYOUT OF EXISTING DATA
+    
     GOAL: Able to build test tree
-
+  
+  * Refactor [Wknd]
+    * Refactor layout to have force option
+      * Use fn for now
+    * On enter-list, if not immediately enterable, search for next list?
+      * Make command for prv/nxt list like Q/E
     * Break out ops into files
     * Merge cmd ptr and part      
     * Make option: cmds a circular list
@@ -324,9 +338,7 @@ Store DAGs as binary trees?
       * Or call this separately/after gen      
     * Refactor other items to use skip flags like mov> etc.
     * For single chars, the bounds is the same      
-        
-  * Refactor [Mon]
-    
+            
   * Optimize ipc to batch messages, flush etc. [Tues]
     * Instead of directly sending msgs, put into list
     * Call flush to send all

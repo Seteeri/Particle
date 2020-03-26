@@ -91,7 +91,12 @@
         # To draw Cdr: (use base-cur? that recalcs...)
         # X =  Ori 1 + Bnd-Car 1, plus an adv
         # Y = origin of Pair
-        (set-cur-x (+ X-Ori X-Bnd-A)) (adv-cur)
+        
+        # X should be in place
+        # else have to trace Car
+        #(set-cur-x (+ X-Ori X-Bnd-A)) (adv-cur)
+        (adv-cur)
+        
         (set-cur-y Y-Ori)
         
         # Str's val/b is NIL (or poss later point to itself)
@@ -143,7 +148,11 @@
         # X = Origin
         # Y = Ori 2 + Bnd-Car 2, plus nl
         (set-cur-x X-Ori)
-        (set-cur-y (+ Y-Ori Y-Bnd-A)) (nl-cur 3.0)
+
+        #(set-cur-y (+ Y-Ori Y-Bnd-A)) (nl-cur 3.0)
+        # Y should be in place
+        # else have to trace Car
+        (nl-cur)
                 
         # Str's val/b is NIL (or poss later point to itself)
         (when (and (: b)
@@ -154,24 +163,20 @@
     
   
 (de lay-atom (Any Base Skip)
-  
-  # Move Pair first so below to get correct pos
-  (mov> Any *cur)  
-  
+    
   (if (or (isa '+Num Any)
           (isa '+Nil Any))
       
       (prog
+
+        # Move Pair first so below to get correct pos
+        (mov> Any *cur)
       
         # Mov cur to bounds, aka last vert start pos
         # Adv to move to end pos of last vert
-        (mov-cur-vert (last-vert> Any))
-        (adv-cur)        
-        *cur)
+        (mov-cur-part Any 'end)
+        (adv-cur))
 
       (prog
-  
-        # Poss create lay-sym but not needed since same fn'y
-        (if (= (get Any 'lay) 'x)
-          (lay-pair-x Any Base Skip)
-          (lay-pair-y Any Base Skip)))))
+          
+        (lay-pair Any Base Skip))))
