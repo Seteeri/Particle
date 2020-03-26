@@ -16,7 +16,7 @@
             
       (mov-cur-part Tgt 'start)      
       # Opt: force layout
-      (lay-part Tgt (get-origin> *main)))))
+      (lay-part Tgt (get-origin> *main) 'skip-cdr))))
 
 
 (de cmd-mov-nl (Keysym)
