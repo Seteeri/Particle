@@ -93,12 +93,12 @@
   (println "Move to prev item")
 
   (let Ref (val> *0)
-  
+
     (if (= (get Ref 'lay) 'x)
   
         (mov-ptr-b-prv)
           
-        (prog))))
+        (mov-ptr-a-out))))
   
 
 (de cmd-ptr-right (Keysym)
@@ -110,12 +110,10 @@
         
         (mov-ptr-b-nxt)
           
-        (prog))))
+        (mov-ptr-a-in))))
 
 
 (de cmd-ptr-up (Keysym)
-  # Move to super list
-    
   (println "Move to outer list")
   
   (let Ref (val> *0)
@@ -124,11 +122,10 @@
 
       (mov-ptr-a-out)
           
-      (prog))))
+      (mov-ptr-b-prv))))
 
 
 (de cmd-ptr-down (Keysym)
-  
   (println "Move to inner list")
   
   (let Ref (val> *0)
@@ -137,7 +134,7 @@
   
       (mov-ptr-a-in)
                 
-      (prog))))
+      (mov-ptr-b-nxt))))
 
 
 ###########
