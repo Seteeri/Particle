@@ -89,7 +89,7 @@
 ###############################
 # Semantic Traversal (Pair/Ptr)
 
-(de cmd-point-ptr-pre (Keysym)
+(de cmd-ptr-left (Keysym)
   (println "Move to prev item")
 
   (let Ref (val> p0)
@@ -101,7 +101,7 @@
         (prog))))
   
 
-(de cmd-point-ptr-nxt (Keysym)
+(de cmd-ptr-right (Keysym)
   (println "Move to next item")
 
   (let Ref (val> p0)
@@ -113,7 +113,7 @@
         (prog))))
 
 
-(de cmd-point-ptr-out (Keysym)
+(de cmd-ptr-up (Keysym)
   # Move to super list
     
   (println "Move to outer list")
@@ -127,7 +127,7 @@
       (prog))))
 
 
-(de cmd-point-ptr-in (Keysym)
+(de cmd-ptr-down (Keysym)
   
   (println "Move to inner list")
   

@@ -149,10 +149,10 @@
                                           (mov> p0 *cur))))
 
       # Pointer Translation
-      ((`ksd~Control-L `ksd~w) T `cmd-point-ptr-out)
-      ((`ksd~Control-L `ksd~a) T `cmd-point-ptr-pre)      
-      ((`ksd~Control-L `ksd~s) T `cmd-point-ptr-in)
-      ((`ksd~Control-L `ksd~d) T `cmd-point-ptr-nxt)
+      ((`ksd~Control-L `ksd~w) T `cmd-ptr-up)
+      ((`ksd~Control-L `ksd~a) T `cmd-ptr-left)      
+      ((`ksd~Control-L `ksd~s) T `cmd-ptr-down)
+      ((`ksd~Control-L `ksd~d) T `cmd-ptr-right)
 
       ((`ksd~Right) T `cmd-trans-ptr-px)
       ((`ksd~Left)  T `cmd-trans-ptr-nx)

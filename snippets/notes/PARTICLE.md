@@ -279,6 +279,8 @@ Store DAGs as binary trees?
       * Refactor swap-layout [Done]
       * Refactor layout Y [WIP]      
       * Ptr mov is with regardless to layout - inverses
+      * Break out ops into files
+      * Merge cmd ptr and part
       * Refactor cmds
         * Refactor cmd-del
       * Refactor layout to have force option
