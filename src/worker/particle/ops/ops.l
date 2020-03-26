@@ -54,7 +54,9 @@
           (mov-cur-part Prv 'start)
           (lay-part Part (get-origin> *main) 'skip-cdr)
           
-          (put *0 'b (get Part 'a)))
+          # Move below; must set ptr to Part to get Car
+          (put *0 'b Part)
+          (mov-ptr-a-in))
         
         (prog
           (con-back Prv Ref Part)
