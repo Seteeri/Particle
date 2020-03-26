@@ -6,17 +6,9 @@
   (let (Ref (val> p0)
         Prv (get Ref 'c)
         Tgt (if (= (get Ref 'data) NIL) Prv Ref))
-        
     (when Tgt
-    
       (println "Swap!" Tgt (get Tgt 'data) (get Tgt 'lay) '-> (if (= (get Tgt 'lay) 'x) 'y 'x))
-      
-      (force-lay Tgt 
-                 (if (= (get Tgt 'lay) 'x) 'y 'x))
-            
-      (mov-cur-part Tgt 'start)      
-      # Opt: force layout
-      (lay-part Tgt (get-origin> *main) 'skip-cdr))))
+      (swap-lay Tgt))))
 
 
 (de cmd-mov-nl (Keysym)
@@ -104,10 +96,7 @@
   
     (if (= (get Ref 'lay) 'x)
   
-        (let? Prv (get Ref 'c)
-          (println "Moved to " Prv (get Prv 'data))
-          (put p0 'b Prv)
-          (mov-part-abv> p0 Prv (cons T)))
+        (mov-ptr-b-prv)
           
         (prog))))
   
@@ -119,10 +108,7 @@
   
     (if (= (get Ref 'lay) 'x)
         
-        (let? Cdr (get (val> p0) 'b)
-          (println "Moved to " Cdr (get Cdr 'data))
-          (put p0 'b Cdr)
-          (mov-part-abv> p0 Cdr (cons T)))
+        (mov-ptr-b-nxt)
           
         (prog))))
 
@@ -132,120 +118,27 @@
     
   (println "Move to outer list")
   
-  # Move to *main
+  (let Ref (val> p0)
   
-  # Below searches
-  (let Part (get (val> p0) 'c)
-    (loop
-      (T (or (isa '+Pair (get Part 'a))
-             (= Part *main)
-             (not (get Part 'c))))
-      (setq Part (get Part 'c)))
-      
-    (println 'leave-list Part (get Part 'data) (get (get Part 'c) 'data))
-    
-    (when Part
-      (put p0 'b Part)
-      (mov-part-abv> p0 Part (cons T)))))
+    (if (= (get Ref 'lay) 'x)
+
+      (mov-ptr-a-out)
+          
+      (prog))))
 
 
 (de cmd-point-ptr-in (Keysym)
   
   (println "Move to inner list")
   
-  #{
+  (let Ref (val> p0)
   
-    * X
-      * Move to NIL/list (see below)
-    * Y
-      * Move to CAR/CDR
-    
-    Car:
+    (if (= (get Ref 'lay) 'x)
   
-    If non-NIL:
-    * Move ptr to it
-  
-    If NIL:
-    * Move under
-    * Set Y layout
-    * Move ptr to Pair instead of NIL (like normal mode)
-    * Set flag for cmd-make-char...
-    * User must move to CAR
-          
-    User has entered NIL already:
-    
-                    p0
-    [X] [X] [X] [X] NIL
-    a   b   c   NIL
-    
-    TO:
+      (mov-ptr-a-in)
+                
+      (prog))))
 
-    [X] [X] [X]
-    a   b   c
-    
-    p0
-    [Y] [X] [X] [X] NIL
-    NIL d   e   f
-
-    ...
-    
-    [Y] [X] [X] [X] NIL
-    NIL h   i   j
-    
-    Effectively, this cmd turns NIL into a list instead of an atom
-    If user exits list, keep structure the same
-    Allows user to create "bullets"
-    User can explicitly move it back and toggle layout
-        
-  }#  
-  
-  (let (Ref (val> p0)
-        Car (get Ref 'a)
-        Tgt (get Ref 'c))
-    
-    (cond ((= (type Car) '(+Pair))
-            (put p0 'b Car)
-            (mov-part-abv> p0 Car (cons T)))
-            
-          ((isa '+Nil Ref)
-
-            # Mov under
-            (cmd-mov-nl)
-
-            # Set Y layout
-            (with Tgt (=: lay (if (= (: lay) 'x) 'y 'x)))
-            (mov-cur-part Tgt 'start)
-            (lay-part Tgt (get-origin> *main))
-
-            # Update ptr
-            (put p0 'b Tgt)
-            (mov-part-abv> p0 Tgt (cons T))
-
-            # If not set, Cdr of NIL will be replaced instead of the CAR/entire list
-            (setq *mode-repl T)))))
-
-#{
-              
-  # If symbol use 'b
-  # If pair use 'a
-  (let (Base (get *main (if (= (type *main) '(+Pair)) 'a 'b))
-        Ori (get-origin> Base)
-        Bnds (if (= (get Base 'lay) 'x)
-                 (calc-bounds> Base NIL T)
-                 (calc-bounds> Base T NIL)))
-    (setq *cur (list (get Ori 1)
-                     (get Bnds 2)
-                     (get *cur 3)))
-    (nl-cur 2.0))
-
-  (put Tgt 'lay 'y)
-  (put Tgt 'nl 1.0) # set nl
-  (lay-part Tgt *cur)
-
-  (put p0 'b Tgt)
-  (mov-part-abv> p0 Tgt (cons T))
-            
-}#
 
 ###########
 # Euclidean

@@ -277,10 +277,11 @@ Store DAGs as binary trees?
 
     * Refactor sublist handling (PART II)
       * Refactor swap-layout [Done]
+      * Refactor layout Y [WIP]      
       * Ptr mov is with regardless to layout - inverses
+      * Refactor cmds
+        * Refactor cmd-del
       * Refactor layout to have force option
-      * Refactor layout Y
-      * Then cmds
 
     * Support random access [WIP]
       * Update subsequent items in list [Done]
