@@ -235,19 +235,27 @@
 
   (let (Ref (val> *0)
         Car (get Ref 'a))
-  
-    (put *0 'b Car)
     
-    # Pos depends on layout...
+    (when (and Car
+               (not (isa '+Sym Ref)))
+    
+      (put *0 'b Car)
+      
+      # This handles symbol case specifically...
 
-    (if (= (get Ref 'lay) 'x)
-        (prog
-          # Move to lower bnd of Car
-          (let Bnds (calc-bounds> Car)
-            (set-cur-x (get (get-origin> Car) 1))
-            (set-cur-y (get Bnds 2)) (nl-cur)
-            (lay-part *0 *cur 'skip-cdr)))
-        (prog))))
+      (let Bnds (calc-bounds> Car)
+
+        (if (= (get Ref 'lay) 'x)
+        
+            (prog
+              # Move to lower bnd of Car
+              (set-cur-x (get (get-origin> Car) 1))
+              (set-cur-y (get Bnds 2)) (nl-cur)
+              (lay-part *0 *cur 'skip-cdr))
+              
+            (prog
+              # Move above Car
+              (mov-part-abv> *0 Car (cons T))))))))
 
 
 #######################
