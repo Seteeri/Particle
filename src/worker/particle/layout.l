@@ -1,5 +1,17 @@
 (de is-start-of-list (Part) (= (type (get Part 'a)) '(+Pair)))
 
+
+(de force-lay (Part Lay)
+  (with Part
+    (=: lay Lay)
+    (when (and (: a)
+                (not (= (: a) Part)))
+      (force-lay (: a) Lay))
+    (when (and (: b)
+               (not (= (: b) Part)))
+      (force-lay (: b) Lay))))
+      
+
 # Refactor these into methods
 
 (de lay-part (Any Base Skip)
