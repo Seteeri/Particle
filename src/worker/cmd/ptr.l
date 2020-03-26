@@ -3,7 +3,7 @@
   
   # If NIL, get prev, else do ref  
   
-  (let (Ref (val> p0)
+  (let (Ref (val> *0)
         Prv (get Ref 'c)
         Tgt (if (= (get Ref 'data) NIL) Prv Ref))
     (when Tgt
@@ -41,7 +41,7 @@
   # * Link lines to each other...?
 
   # Calc min Y until NIL or nl
-  (let (Ref (val> p0)
+  (let (Ref (val> *0)
         I Ref
         Y (get (get-origin> Ref) 2))
         
@@ -68,22 +68,22 @@
     
     # And update list Cdr also
     
-    #(put p0 'b Ref)
-    (mov-part-abv> p0 Ref (cons T))))
+    #(put *0 'b Ref)
+    (mov-part-abv> *0 Ref (cons T))))
         
   
 (de cmd-mov-bl (Keysym)
 
   # This moves in front of prev
 
-  (let Ref (val> p0)
+  (let Ref (val> *0)
   
     (base-cur (get Ref 'c))
     (put Ref 'nl NIL)
     (lay-part Ref *cur)
     
-    (put p0 'b Car Ref)
-    (mov-part-abv> p0 Ref (cons T))))
+    (put *0 'b Car Ref)
+    (mov-part-abv> *0 Ref (cons T))))
       
 
 ###############################
@@ -92,7 +92,7 @@
 (de cmd-ptr-left (Keysym)
   (println "Move to prev item")
 
-  (let Ref (val> p0)
+  (let Ref (val> *0)
   
     (if (= (get Ref 'lay) 'x)
   
@@ -104,7 +104,7 @@
 (de cmd-ptr-right (Keysym)
   (println "Move to next item")
 
-  (let Ref (val> p0)
+  (let Ref (val> *0)
   
     (if (= (get Ref 'lay) 'x)
         
@@ -118,7 +118,7 @@
     
   (println "Move to outer list")
   
-  (let Ref (val> p0)
+  (let Ref (val> *0)
   
     (if (= (get Ref 'lay) 'x)
 
@@ -131,7 +131,7 @@
   
   (println "Move to inner list")
   
-  (let Ref (val> p0)
+  (let Ref (val> *0)
   
     (if (= (get Ref 'lay) 'x)
   
@@ -146,15 +146,15 @@
 
 (de cmd-trans-ptr (Cnt Fn)
   
-  (let Ref (val> p0)
+  (let Ref (val> *0)
 
-    (mov-cur-part p0 'start)
+    (mov-cur-part *0 'start)
     (eval Fn)
 
     # Ignore Ref/Cdr
-    (put p0 'b)
-    (lay-part p0 *cur)
-    (put p0 'b Ref)))
+    (put *0 'b)
+    (lay-part *0 *cur)
+    (put *0 'b Ref)))
     
 
 (de cmd-trans-ptr-px (Keysym)

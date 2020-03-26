@@ -41,23 +41,23 @@
 
   #{
     
-                p0
+                *0
     [ ] - [ ] - NIL
     "a"   "b"
 
 
-          p0
+          *0
     [ ] - NIL
     "a"   "b"
         
     OR
 
-          p0
+          *0
     [ ] - [ ] - [ ] - NIL
     "a"   "b"   "c"
 
 
-    p0
+    *0
     [ ] - [ ] - NIL
     "b"   "c"
     
@@ -68,7 +68,7 @@
   
   # Similar to adding items, must update CDR and list CDR
 
-  (let (Ref (val> p0)
+  (let (Ref (val> *0)
         Tgt (get Ref 'c)
         Cc (get Tgt 'c))
 
@@ -137,7 +137,7 @@
         (upd-main-n))      
 
       # Ptr same; simply move it
-      (mov-part-abv> p0 Ref (cons T)))))
+      (mov-part-abv> *0 Ref (cons T)))))
 
 
 (de cmd-make-num (Keysym)
@@ -151,7 +151,7 @@
 
   (prinl-info "cmd-format")
   
-  (con-any (format (get (get (get (val> p0) 'c) 'a) 'data)) 'x))
+  (con-any (format (get (get (get (val> *0) 'c) 'a) 'data)) 'x))
 
 
 (de cmd-pack (Keysym)
@@ -160,7 +160,7 @@
 
   # Pack current to prev
   
-  (let (Ref (val> p0)
+  (let (Ref (val> *0)
         Prv (get Ref 'c)
         Dat-Prv (get (get Prv 'a) 'data)
         Cc (get Prv 'c)
@@ -202,7 +202,7 @@
 
   (when (get (get *main 'b) 'data)
 
-    (let (Ref (val> p0)
+    (let (Ref (val> *0)
           Cdr (get Ref 'b)
           Tgt (get (get Ref 'a) 'data))
 
@@ -219,8 +219,8 @@
           (mov-part-aft> Cdr Part (cons T))
 
           # Set new ptr and move it above
-          (put p0 'b Part)
-          (mov-part-abv> p0 Part (cons T)))))))
+          (put *0 'b Part)
+          (mov-part-abv> *0 Part (cons T)))))))
 
 
 (de cmd-any (Keysym)

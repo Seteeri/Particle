@@ -135,10 +135,10 @@
       ((`ksd~Control-L `ksd~e)    T `cmd-make-nil)
       ((`ksd~Control-R `ksd~e)    T `cmd-make-nil)
 
-      #(view (getl (val> p0)))
+      #(view (getl (val> *0)))
       # If we lay relative to origin should stay in same place
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
-                                        (let (Ref (val> p0)
+                                        (let (Ref (val> *0)
                                               Car (get Ref 'a))
                                           (println 'bnds (get Ref 'bnds) (get Ref 'data))
                                           # origin + bnds
@@ -146,7 +146,7 @@
                                             (setq *cur (list (+ (get Ori 1) (car (get Ref 'bnds)))
                                                              (- (get Ori 2) *adv-vert)
                                                              (get Ori 3))))
-                                          (mov> p0 *cur))))
+                                          (mov> *0 *cur))))
 
       # Pointer Translation
       ((`ksd~Control-L `ksd~w) T `cmd-ptr-up)
@@ -264,20 +264,20 @@
     #######################
     # TODO: Draw *ptrs
     (idx '*particles
-         (def 'p0
-              (gen-part 'p0 'x))
+         (def '*0
+              (gen-part '*0 'x))
          T)
 
     # Remove NIL
-    (del> (get p0 'b) T T)
+    (del> (get *0 'b) T T)
     # Replace with main 'b = NIL
-    (put p0 'b (get *main 'b))
+    (put *0 'b (get *main 'b))
     # Set layout
-    (put p0 'lay 'y)
+    (put *0 'lay 'y)
     # Skip cdr since ptr should be rel to cdr
-    (lay-part p0 *cur 'skip-cdr)
+    (lay-part *0 *cur 'skip-cdr)
     # Mov it above NIL
-    (mov-part-abv> p0 (get *main 'b) (cons T))
+    (mov-part-abv> *0 (get *main 'b) (cons T))
         
     # TEMP
     (setq p1 *cmds)

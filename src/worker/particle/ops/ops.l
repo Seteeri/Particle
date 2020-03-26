@@ -45,19 +45,19 @@
           Cdr (get (get Part 'a) 'b))
       
       # Point to Cdr of first item
-      (put p0 'b Cdr)
-      (mov-part-abv> p0 Cdr (cons T))
+      (put *0 'b Cdr)
+      (mov-part-abv> *0 Cdr (cons T))
               
       # Set new list
       (setq *main Part)
       
       (setq *mode-repl NIL))
 
-    (let (Ref (val> p0)
+    (let (Ref (val> *0)
           Part (repl-cdr Ref Data Lay))
       
-      (put p0 'b Ref)
-      (mov-part-abv> p0 Ref (cons T)))))
+      (put *0 'b Ref)
+      (mov-part-abv> *0 Ref (cons T)))))
         
 
 (de repl-cdr (Ref Any Lay)
@@ -84,7 +84,7 @@
 
 (de con-list (Ref Any Lay)
   #{  
-                p0
+                *0
     [ ] - [ ] - NIL
     "a"   "b"
   }#
@@ -126,12 +126,12 @@
     [X] [X] [X]
     a   b   c
     
-    p0
+    *0
     [Y] NIL
     NIL
   }#
 
-  (let (Ref (val> p0)
+  (let (Ref (val> *0)
         Cdr (get Ref 'b)  
         Prv (get Ref 'c)  
         Lst-Any (list (list Any))
@@ -183,7 +183,7 @@
     [X] [X] [X]
     a   b   c
     
-    p0
+    *0
     [Y] NIL
     NIL
     
@@ -225,17 +225,17 @@
 (de mov-ptr-b-prv ()
   (let? Prv (get Ref 'c)
     (println "Moved to " Prv (get Prv 'data))
-    (put p0 'b Prv)
-    (mov-part-abv> p0 Prv (cons T))))
+    (put *0 'b Prv)
+    (mov-part-abv> *0 Prv (cons T))))
 
 (de mov-ptr-b-nxt ()
-  (let? Cdr (get (val> p0) 'b)
+  (let? Cdr (get (val> *0) 'b)
     (println "Moved to " Cdr (get Cdr 'data))
-    (put p0 'b Cdr)
-    (mov-part-abv> p0 Cdr (cons T))))
+    (put *0 'b Cdr)
+    (mov-part-abv> *0 Cdr (cons T))))
 
 (de mov-ptr-a-out ()
-  (let Part (get (val> p0) 'c)
+  (let Part (get (val> *0) 'c)
     (loop
       (T (or (isa '+Pair (get Part 'a))
              (= Part *main)
@@ -245,8 +245,8 @@
     (println 'leave-list Part (get Part 'data) (get (get Part 'c) 'data))
     
     (when Part
-      (put p0 'b Part)
-      (mov-part-abv> p0 Part (cons T)))))
+      (put *0 'b Part)
+      (mov-part-abv> *0 Part (cons T)))))
 
 (de mov-ptr-a-in ()
   #{
@@ -270,7 +270,7 @@
           
     User has entered NIL already:
     
-                    p0
+                    *0
     [X] [X] [X] [X] NIL
     a   b   c   NIL
     
@@ -279,7 +279,7 @@
     [X] [X] [X]
     a   b   c
     
-    p0
+    *0
     [Y] [X] [X] [X] NIL
     NIL d   e   f
 
@@ -295,13 +295,13 @@
         
   }#  
   
-  (let (Ref (val> p0)
+  (let (Ref (val> *0)
         Car (get Ref 'a)
         Tgt (get Ref 'c))
     
     (cond ((= (type Car) '(+Pair))
-            (put p0 'b Car)
-            (mov-part-abv> p0 Car (cons T)))
+            (put *0 'b Car)
+            (mov-part-abv> *0 Car (cons T)))
             
           ((isa '+Nil Ref)
 
@@ -314,8 +314,8 @@
             (lay-part Tgt (get-origin> *main))
 
             # Update ptr
-            (put p0 'b Tgt)
-            (mov-part-abv> p0 Tgt (cons T))
+            (put *0 'b Tgt)
+            (mov-part-abv> *0 Tgt (cons T))
 
             # If not set, Cdr of NIL will be replaced instead of the CAR/entire list
             (setq *mode-repl T)))))
@@ -338,7 +338,7 @@
   (put Tgt 'nl 1.0) # set nl
   (lay-part Tgt *cur)
 
-  (put p0 'b Tgt)
-  (mov-part-abv> p0 Tgt (cons T))
+  (put *0 'b Tgt)
+  (mov-part-abv> *0 Tgt (cons T))
             
 }#            

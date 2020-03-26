@@ -2647,10 +2647,10 @@ Differentiate behavior for pointer/list creation
 
 * Pointer management
   * User has master pointer in pointer list which points
-  p0
+  *0
   (p1 p2 p3 p4 p5 p6 p7 p8 ...)
   * Accessed programmatically or numerically
-  * User can switch between manipulating p0 or whatever it points to
+  * User can switch between manipulating *0 or whatever it points to
   * If pointer points to a pointer...either get last pointer or subpointer...
     * Traverse like a list/cons using arrow keys
 
@@ -3464,14 +3464,14 @@ NIL solution:
 []
 NIL
 
-p0
+*0
 <>
 
 ============
 
 []
 
-p0
+*0
 NIL
 
 
@@ -3570,7 +3570,7 @@ Layouts - Mixed
 [.] a
 
 [.] b
-p0
+*0
 [.] NIL
 NIL
 
@@ -3583,7 +3583,7 @@ Enter list ->
 [.] b
 
 [.] NIL
-NIL p0
+NIL *0
 
 * Should be above?
 * Under makes it consistent with x layout
@@ -3597,7 +3597,7 @@ NIL p0
 [.] b
 
 [.] [.] c
-NIL     p0
+NIL     *0
 
 
 =================
@@ -3606,17 +3606,17 @@ What if pointer is part of the list itself?
 
 Given: [1] -> [2] -> [3] -> [4] -> NIL
 
-p0 -> [1] -> [2] -> [3] -> [4] -> NIL
+*0 -> [1] -> [2] -> [3] -> [4] -> NIL
 
-[1] -> p0 -> [2] -> [3] -> [4] -> NIL
+[1] -> *0 -> [2] -> [3] -> [4] -> NIL
 
-[1] -> [2] -> p0 -> [3] -> [4] -> NIL
+[1] -> [2] -> *0 -> [3] -> [4] -> NIL
 
-[1] -> [2] -> [3] -> p0 -> [4] -> NIL
+[1] -> [2] -> [3] -> *0 -> [4] -> NIL
 
 =====================================
 
-[.] p0
+[.] *0
 
     [.] "I"
 
@@ -3629,7 +3629,7 @@ p0 -> [1] -> [2] -> [3] -> [4] -> NIL
 
 [.] [.] "I"
 
-    p0
+    *0
 
     [.] [ ] "A"
 
@@ -3640,7 +3640,7 @@ p0 -> [1] -> [2] -> [3] -> [4] -> NIL
 
 [.] [.] "I"
 
-    [.] p0
+    [.] *0
 
         [ ] "A"
 
@@ -3654,7 +3654,7 @@ This will allow to keep the structure in tact
 
 What about maintain space between sublists to avoid redraw?
 
-p0
+*0
 [.] [.] "I"
 
     [.] [ ] "A"
@@ -3670,7 +3670,7 @@ p0
 ((I (A B C))
 
 1
-2 p0
+2 *0
 3 [.] [.] "I"
 4     [.] [ ] "A"
 5         [ ] "B"
@@ -3680,7 +3680,7 @@ p0
 9 NIL
 
 1
-2 [.] p0
+2 [.] *0
 3     [.] "I"
 4     [.] [ ] "A"
 5         [ ] "B"
@@ -3699,13 +3699,13 @@ What about pop object?
 [1] [2] [3] [4]
 
     [2]
-[1] p0  [3] [4]
+[1] *0  [3] [4]
 
         [3]
-[1] [2] p0  [4]
+[1] [2] *0  [4]
 
             [4]
-[1] [2] [3] p0
+[1] [2] [3] *0
 
 
 What about pointer jumping?
@@ -3731,7 +3731,7 @@ What about underscore or bounding box like traditional?
 Make pointer just p or *
 
               *
-ptrs p0 p1 p2 p3 p4
+ptrs *0 p1 p2 p3 p4
 
      *
 main a b c

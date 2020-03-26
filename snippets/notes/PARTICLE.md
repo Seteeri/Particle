@@ -255,7 +255,7 @@ Store DAGs as binary trees?
     * Rewrite list handling [WIP]
       * When enter-list, change ptr symbol to reflect it instead of pos      
     * Need pointer/new fns to change layout, new row/col [Done]
-      * Change pointer symbol to reflect layout: p0^ or p0> [TODO]
+      * Change pointer symbol to reflect layout: *0^ or *0> [TODO]
       * Should be consistent with outline format
       * Default layout is oriented towards lists of text/num/syms similar to
       alphanumerical outlines
@@ -364,18 +364,18 @@ Store DAGs as binary trees?
     * Insert inbetween
       * Redraw cdr
     * Create pointer list at top
-      * p0 is special or maybe call it T
+      * *0 is special or maybe call it T
         * Separate controls to move it but same functionality
-      * To switch between pointers, move p0
+      * To switch between pointers, move *0
                
-               p0
+               *0
       lst-ptrs p1 p2 p3 p4 p5
 
       p1   p2    p3 etc
       qwerasdfzxcvr
       
-      * p0 -> symbol = mov one
-      * p0 -> list   = mov all (relative) 
+      * *0 -> symbol = mov one
+      * *0 -> list   = mov all (relative) 
                        or apply fn to all ptrs
       * use rot list, only use first
 
