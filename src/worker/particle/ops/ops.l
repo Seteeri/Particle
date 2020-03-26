@@ -188,6 +188,9 @@
   (when (get Ref 'nl)
     (put Part 'nl T)
     (put Ref 'nl))
+    
+  # Copy lay
+  (force-lay Part (get Ref 'lay))
 
   # Do not delete CDR
   (del> Ref T NIL))
