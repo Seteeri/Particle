@@ -277,14 +277,13 @@ Store DAGs as binary trees?
 
     * Refactor sublist handling (PART II)
       * Refactor swap-layout [Done]
+      * Refactor sublist handling [WIP]
       * Refactor layout Y [WIP]      
       * Ptr mov is with regardless to layout - inverses [WIP]
-      * Break out ops into files
-      * Merge cmd ptr and part
       * Refactor cmds
         * Refactor cmd-del
+      * Change ptr sym when moving to CAR...
       * Refactor layout to have force option
-      * Change ptr sym when moving to CAR
 
     * Support random access [WIP]
       * Update subsequent items in list [Done]
@@ -299,6 +298,8 @@ Store DAGs as binary trees?
       
     GOAL: Able to build test tree
 
+    * Break out ops into files
+    * Merge cmd ptr and part      
     * Make option: cmds a circular list
     * Replace dot with arrow indicating layout (Right/Down)
     * Particle can have 'nl and 'sp to indicate how many nl or sp before it

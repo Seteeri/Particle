@@ -19,86 +19,102 @@
         
 ######################
 
-(de con-any (Data Lay)
-
-  (if *mode-repl
-
-    # repl-ref assumes list has y layout
-    (let (Part (repl-ref Data Lay)
-          Cdr (get (get Part 'a) 'b))
-      
-      # Point to Cdr of first item
-      (put *0 'b Cdr)
-      (mov-part-abv> *0 Cdr (cons T))
-              
-      # Set new list
-      (setq *main Part)
-      
-      (setq *mode-repl NIL))
-
-    (let (Ref (val> *0)
-          Part (repl-cdr Ref Data Lay))
-      
-      (put *0 'b Ref)
-      (mov-part-abv> *0 Ref (cons T)))))
-        
-
-(de repl-cdr (Ref Any Lay)
-  # Replace CDR
+#{
+  # repl-ref assumes list has y layout
+  (let (Part (repl-ref Data Lay)
+        Cdr (get (get Part 'a) 'b))
     
-  (let Part (con-list Ref Any Lay)
+    # Point to Cdr of first item
+    (put *0 'b Cdr)
+    (mov-part-abv> *0 Cdr (cons T))
+      
+    # ONLY WHEN REPLACING NIL OR PAIR WITH CAR PAIR
+    # Set new list
+    (setq *main Part))
+}#
+
+(de con-any (Data Lay Repl)
+
+  (let (Ref (val> *0)
+        Cdr (get Ref 'b)  
+        Prv (get Ref 'c)  
+        Part (gen-part (list Data) Lay NIL T))
         
-    # Base is origin of Pair containing Ref/Part
-    # Cur is where Part should be - use Ref origin
-    (mov-cur-part Ref 'start)
-    (lay-part Part (get-origin> *main) 'skip-cdr)
+    (if Repl
+    
+        (prog
+          # Note, ref is Car so get Prv
+          (repl-list (get Prv 'c)
+                     Prv
+                     (get Prv 'b)
+                     Part)
+          
+          (println Ref (get Ref 'data))
+          
+          (mov-cur-part Prv 'start)
+          (lay-part Part (get-origin> *main) 'skip-cdr)
+          
+          (put *0 'b (get Part 'a)))
+        
+        (prog
+          (con-back Prv Ref Part)
+                    
+          # Base is origin of Pair containing Ref/Part
+          # Cur is where Part should be - use Ref origin
+          (mov-cur-part Ref 'start)
+          (lay-part Part (get-origin> *main) 'skip-cdr)
+        
+          # Need only update until EOL so traverse Cdr until NIL or nl
+          (upd-cdr-n Part)
+          
+          # Update Main CDR similarly
+          # TEST THIS
+          # Set cur before calling
+          (when NIL
+            (upd-main-n))
+          
+          (put *0 'b Ref)
+          (mov-part-abv> *0 Ref (cons T))))
   
-    # Need only update until EOL so traverse Cdr until NIL or nl
-    (upd-cdr-n Part)
-    
-    # Update Main CDR similarly
-    # TEST THIS
-    # Set cur before calling
-    (when NIL
-      (upd-main-n))
-    
     Part))
 
 
-(de con-list (Ref Any Lay)
+(de con-back (Prv Ref Part)
   #{  
                 *0
     [ ] - [ ] - NIL
-    "a"   "b"
+    a     b
+    
+    TO
+    
+                      *0
+    [ ] - [ ] - [ ] - NIL
+    a     b     c
+    
   }#
 
-  (let (Prv (get Ref 'c)
-        Lst-Any (list Any)
-        Part (gen-part Lst-Any Lay NIL T))
-
-    (put Prv 'b Part)    
-    (put Ref 'c Part)    
-    
-    (with Part
-      (=: b Ref)
-      (=: c Prv))
-    
-    # Set nl if Ref has it; toggle Ref
-    (when (get Ref 'nl)
-      (put Part 'nl T)
-      (put Ref 'nl))
-        
-    # Connect new part data to list part data
-    # Must conn Cdr also (get (get Ref 'b) 'data)
-    
-    # Remember, *main's value is always the particle itself
-    # The value of the symbol *main is actually 'b    
-    
-    (unless (isa '+Sym Prv)
-      (with Prv
-        (con (car (:: data)) Lst-Any)))
-        
-    Part))
+  (put Prv 'b Part)    
+  (put Ref 'c Part)    
+  
+  (with Part
+    (=: b Ref)
+    (=: c Prv))
+  
+  # Set nl if Ref has it; toggle Ref
+  (when (get Ref 'nl)
+    (put Part 'nl T)
+    (put Ref 'nl))
+      
+  # Connect new part data to list part data
+  # Must conn Cdr also (get (get Ref 'b) 'data)
+  
+  # Remember, *main's value is always the particle itself
+  # The value of the symbol *main is actually 'b    
+  
+  (unless (isa '+Sym Prv)
+    (with Prv
+      (con (car (:: data)) (get Part 'data)))))
+      
 
 ######################
 
@@ -116,7 +132,7 @@
 
   (let (Ref (val> *0)
         Cdr (get Ref 'b)  
-        Prv (get Ref 'c)  
+        Prv (get Ref 'c)
         Lst-Any (list (list Any))
         Part (gen-part Lst-Any Lay NIL T))
         
@@ -135,40 +151,16 @@
     (put (get Part 'a) 'lay 'x)
     (lay-part Part *cur)
     
-    #{
-    (if (= Lay 'x)
-    
-        (prog
-
-          # Move new Part rel to extents of Prv
-          (base-cur Prv)
-          (lay-part Part *cur)      
-          
-          # Move Car one space further down
-          (mov-cur-part Part 'start)
-          (nl-cur 3.0)
-          (with Part
-            (put (: a) 'lay Lay)
-            (lay-part (: a) *cur)))
-            
-        (prog
-                
-          (lay-part Part *cur)))
-    }#
-    
     Part))
 
 
 (de repl-list (Prv Ref Cdr Part)
   
-
   #{
+    Replace Ref with Part
+  
     [X] [X] [X]
     a   b   c
-    
-    *0
-    [Y] NIL
-    NIL
     
     * Del Ref
     * Prv 'b -> Part
@@ -180,7 +172,8 @@
   # Connect Prv-Part
   (with Prv
     (=: b Part)
-    (con (car (:: data)) (get Part 'data)))
+    (unless (isa '+Sym Prv)
+      (con (car (:: data)) (get Part 'data))))
   
   # Connect Part-Cdr
   (with Cdr
@@ -190,7 +183,12 @@
     (=: b Cdr)
     (=: c Prv)
     (con (car (:: data)) (get Cdr 'data)))
-    
+
+  # Set nl if Ref has it; toggle Ref
+  (when (get Ref 'nl)
+    (put Part 'nl T)
+    (put Ref 'nl))
+
   # Do not delete CDR
   (del> Ref T NIL))
 
@@ -206,18 +204,60 @@
   (lay-part Tgt (get-origin> *main)))
 
 (de mov-ptr-b-prv ()
-  (let? Prv (get Ref 'c)
+  (println 'mov-ptr-b-prv)
+  (let? Prv (get (val> *0) 'c)
     (println "Moved to " Prv (get Prv 'data))
     (put *0 'b Prv)
     (mov-part-abv> *0 Prv (cons T))))
 
 (de mov-ptr-b-nxt ()
+  (println 'mov-ptr-b-nxt)
   (let? Cdr (get (val> *0) 'b)
     (println "Moved to " Cdr (get Cdr 'data))
     (put *0 'b Cdr)
     (mov-part-abv> *0 Cdr (cons T))))
 
 (de mov-ptr-a-out ()
+  # If ref Car, then move to Pair instead of list
+
+  (println 'mov-ptr-a-out)
+  
+  # Same as prv
+  (let? Prv (get (val> *0) 'c)
+    (println "Moved to " Prv (get Prv 'data))
+    (put *0 'b Prv)
+    (mov-part-abv> *0 Prv (cons T))))
+
+
+(de mov-ptr-a-in ()
+
+  (println 'mov-ptr-a-in)
+
+  (let (Ref (val> *0)
+        Car (get Ref 'a))
+  
+    (put *0 'b Car)
+    
+    # Pos depends on layout...
+
+    (if (= (get Ref 'lay) 'x)
+        (prog
+          # Move to lower bnd of Car
+          (let Bnds (calc-bounds> Car)
+            (set-cur-x (get (get-origin> Car) 1))
+            (set-cur-y (get Bnds 2)) (nl-cur)
+            (lay-part *0 *cur 'skip-cdr)))
+        (prog))))
+
+
+#######################
+
+
+(de mov-ptr-a-out-2 ()
+  # If ref Car, then move to Pair instead of list
+
+  (println 'mov-ptr-a-out)
+
   (let Part (get (val> *0) 'c)
     (loop
       (T (or (isa '+Pair (get Part 'a))
@@ -231,7 +271,8 @@
       (put *0 'b Part)
       (mov-part-abv> *0 Part (cons T)))))
 
-(de mov-ptr-a-in ()
+
+(de mov-ptr-a-in-2 ()
   #{
   
     * X

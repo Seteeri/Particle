@@ -26,8 +26,15 @@
     #(setq *nl-pair NIL)
     #(setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
     #(setq *nl-pair T)
-       
-    (con-any Data Lay)))
+
+    # If Car, replace entire pair
+    (let (Ref (val> *0)
+          C   (get Ref 'c)
+          Ca  (get C 'a)
+          On-Car (= Ca Ref))
+      (when On-Car
+        (println 'cmd-make-char "ON CAR"))
+      (con-any Data Lay On-Car))))
 
 
 (de cmd-make-nil (Keysym)

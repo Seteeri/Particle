@@ -90,51 +90,27 @@
 # Semantic Traversal (Pair/Ptr)
 
 (de cmd-ptr-left (Keysym)
-  (println "Move to prev item")
-
-  (let Ref (val> *0)
-
-    (if (= (get Ref 'lay) 'x)
-  
-        (mov-ptr-b-prv)
-          
-        (mov-ptr-a-out))))
+  (if (= (get (val> *0) 'lay) 'x)
+    (mov-ptr-b-prv)
+    (mov-ptr-a-out)))
   
 
 (de cmd-ptr-right (Keysym)
-  (println "Move to next item")
-
-  (let Ref (val> *0)
-  
-    (if (= (get Ref 'lay) 'x)
-        
-        (mov-ptr-b-nxt)
-          
-        (mov-ptr-a-in))))
+  (if (= (get (val> *0) 'lay) 'x)
+      (mov-ptr-b-nxt)
+      (mov-ptr-a-in)))
 
 
 (de cmd-ptr-up (Keysym)
-  (println "Move to outer list")
-  
-  (let Ref (val> *0)
-  
-    (if (= (get Ref 'lay) 'x)
-
+  (if (= (get (val> *0) 'lay) 'x)
       (mov-ptr-a-out)
-          
-      (mov-ptr-b-prv))))
+      (mov-ptr-b-prv)))
 
 
 (de cmd-ptr-down (Keysym)
-  (println "Move to inner list")
-  
-  (let Ref (val> *0)
-  
-    (if (= (get Ref 'lay) 'x)
-  
+  (if (= (get (val> *0) 'lay) 'x)
       (mov-ptr-a-in)
-                
-      (mov-ptr-b-nxt))))
+      (mov-ptr-b-nxt)))
 
 
 ###########
