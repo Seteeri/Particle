@@ -226,14 +226,18 @@
                 (pack "(zv " (get Vert 'off-gl) '")"))
       (push '*verts Vert)
       (dec '*cnt-v)))
-  
-  (=: c)
-  
+    
   (when (and Car (: a))
     (del> (: a) Car Cdr))
     
   (when (and Cdr (: b))
-    (del> (: b) Car Cdr)))
+    (del> (: b) Car Cdr))
+    
+  # Clear links and flags
+  (=: a)
+  (=: b)
+  (=: c)  
+  (=: nl))    
 
 
 # Verts
@@ -278,19 +282,21 @@
 
 (dm calc-bounds> (Car-Skip Cdr-Skip)
 
-  # Calc bounds of CAR and CDR
+  # Calc abs bounds of CAR and CDR
+  # Store this?
 
-  (let ((X1 Y1) (when (and (: a) (not Car-Skip)) (calc-bounds> (: a)))
-        (X2 Y2) (when (and (: b) (not Cdr-Skip)) (calc-bounds> (: b)))
-        (X3 Y3) (with (last-vert> This)
+  (let ((Xa Ya) (when (and (: a) (not Car-Skip)) (calc-bounds> (: a)))
+        (Xb Yb) (when (and (: b) (not Cdr-Skip)) (calc-bounds> (: b)))
+        (X Y) (with (last-vert> This)
                   (get-origin> (get *metrics (: chr))
                                (: pos)
                                *sca-vert)))
 
     # If neither Car or Cdr, use cons
-    (list (max (if X1 X1 X3) (if X2 X2 X3) X3)
-          (min (if Y1 Y1 Y3) (if Y2 Y2 Y3) Y3))))
+    (list (max (if Xa Xa X) (if Xb Xb X) X)
+          (min (if Ya Ya Y) (if Yb Yb Y) Y))))
 
+          
 # Debug
 
 (dm trace> (Cnt)

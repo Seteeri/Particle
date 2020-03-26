@@ -29,6 +29,7 @@
 (def '*sca-glyph 5.8239365)   # MSDF/tex parameter
 (def '*adv-glyph 9.375)       # MSDF/tex parameter
 (def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
+(def '*adv-vert-2  (+ *adv-vert *adv-vert))
 (def 'KEY-REPEAT 2)
 
 # Global Symbols
@@ -139,24 +140,19 @@
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
                                         (let (Ref (val> p0)
                                               Car (get Ref 'a))
-                                        (when Car
-                                          (mov-cur-part Car 'start)
-                                          (println 'bnds (get Car 'bnds))
-                                          (adv-cur (get Car 'bnds))
-                                          (mov> p0 *cur)))))
+                                          (println 'bnds (get Ref 'bnds) (get Ref 'data))
+                                          # origin + bnds
+                                          (let Ori (get-origin> Ref)
+                                            (setq *cur (list (+ (get Ori 1) (car (get Ref 'bnds)))
+                                                             (- (get Ori 2) *adv-vert)
+                                                             (get Ori 3))))
+                                          (mov> p0 *cur))))
 
       # Pointer Translation
       ((`ksd~Control-L `ksd~w) T `cmd-point-ptr-out)
-      ((`ksd~Control-R `ksd~w) T `cmd-point-ptr-out)      
-
       ((`ksd~Control-L `ksd~a) T `cmd-point-ptr-pre)      
-      ((`ksd~Control-R `ksd~a) T `cmd-point-ptr-pre)      
-
       ((`ksd~Control-L `ksd~s) T `cmd-point-ptr-in)
-      ((`ksd~Control-R `ksd~s) T `cmd-point-ptr-in)
-
       ((`ksd~Control-L `ksd~d) T `cmd-point-ptr-nxt)
-      ((`ksd~Control-R `ksd~d) T `cmd-point-ptr-nxt)
 
       ((`ksd~Right) T `cmd-trans-ptr-px)
       ((`ksd~Left)  T `cmd-trans-ptr-nx)
@@ -164,13 +160,13 @@
       ((`ksd~Down)  T `cmd-trans-ptr-ny)
 
       # Camera Translation
-
-      ((`ksd~Alt-R `ksd~comma) T `cmd-move-cam-px)
-      ((`ksd~Alt-R `ksd~n)     T `cmd-move-cam-nx)
-      ((`ksd~Alt-R `ksd~j)     T `cmd-move-cam-py)
-      ((`ksd~Alt-R `ksd~m)     T `cmd-move-cam-ny)
-      ((`ksd~Prior)            T `cmd-zoom-cam-in)
-      ((`ksd~Next )            T `cmd-zoom-cam-out)))
+      # Prior/Next
+      ((`ksd~Control-R `ksd~slash) T `cmd-move-cam-px)
+      ((`ksd~Control-R `ksd~comma)     T `cmd-move-cam-nx)
+      ((`ksd~Control-R `ksd~semicolon)     T `cmd-move-cam-py)
+      ((`ksd~Control-R `ksd~period)     T `cmd-move-cam-ny)
+      ((`ksd~Control-R `ksd~l)            T `cmd-zoom-cam-in)
+      ((`ksd~Control-R `ksd~apostrophe)            T `cmd-zoom-cam-out)))
 
 
 (de init-worker ()
@@ -309,7 +305,7 @@
         (set-cur-x X)
         (lay-part Part *cur)))
 
-    (when T
+    (when NIL
     
       (nl-cur)
       (set-cur-x X)

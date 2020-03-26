@@ -39,7 +39,8 @@
 
   (prinl-info "cmd-del")
 
-  #{  
+  #{
+    
                 p0
     [ ] - [ ] - NIL
     "a"   "b"
@@ -49,9 +50,18 @@
     [ ] - NIL
     "a"   "b"
         
-    * Remove b
-    * To delete NIL itself, use delete
-      * That's why BackSpace is called back-space?
+    OR
+
+          p0
+    [ ] - [ ] - [ ] - NIL
+    "a"   "b"   "c"
+
+
+    p0
+    [ ] - [ ] - NIL
+    "b"   "c"
+    
+    * Ref does not get deleted - its prv does
   }#
   
   # Refactor into a fn in ops?
@@ -64,7 +74,7 @@
 
     (unless (= (get Tgt 'data) '*main)      
 
-      # Preserve Ref (aka NIL) so only delete Car
+      # Preserve Ref so only delete Car
       # Must manually do this since the flags are passed down
       (when (get Tgt 'a)
         (del> (get Tgt 'a) T T))
@@ -107,12 +117,24 @@
 
       (put Ref 'c Cc)
 
-      # Reposition Ref to Tgt, recursively
-      #(mov-cur-part Tgt 'start)
-      #(lay-part Ref *cur)
-      (let Base (get-origin> (get *main 'b))
-        (mov-cur-part Tgt 'start)
-        (lay-part Ref Base))
+      # Mov Ref to Tgt
+        
+      # Base is origin of Pair containing Ref/Part
+      # Cur is where Part should be - use Ref origin
+      (mov-cur-part Tgt 'start)
+      (lay-part Ref (get-origin> *main) 'skip-cdr)
+    
+      # Do until nl also,
+      # however,
+      # poss move items back to maintain line length
+      # but this means update everthing
+      (upd-cdr-n Ref)
+      
+      # Update Main CDR similarly
+      # TEST THIS
+      # Set cur before calling
+      (when NIL
+        (upd-main-n))      
 
       # Ptr same; simply move it
       (mov-part-abv> p0 Ref (cons T)))))

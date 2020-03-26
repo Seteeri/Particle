@@ -75,30 +75,10 @@
 
 
 (def '*char-dot (char 183))
+
 (de draw-dot (Col)
-  (let Dot (draw-glyph *char-dot
-                       (if Col Col *col-base-0))
-    (cmd-upd-vert *ipc Dot)
-    Dot))
-
-
-#{
-(de draw-chars (Chars Col Adv)
-  # Mostly used to draw non-code and accents etc.
-
-  (let Verts ()
-
-    (for C (chop Chars)
-    
-      (let Vert (draw-glyph C Col)
-        
-        (push 'Verts Vert)
-        (cmd-upd-vert *ipc Vert))
-    
-      (when Adv (adv-cur)))
-
-    (flip Verts)))
-}#
+  (draw-glyph *char-dot 
+              (if Col Col *col-base-0)))
 
 
 (de draw-glyph (Char Col)
@@ -106,7 +86,6 @@
   (let (Vert (pop '*verts)
         (R G B) Col)
 
-    # Pos = baseline = X,0,0
     (with Vert
     
       (=: pos *cur)
@@ -126,18 +105,10 @@
 
 
 (de draw-repr (Repr Col Adv)
-
   (let Verts ()
-
     (for C Repr
-      
-      (let Vert (draw-glyph C Col)
-      
-        (push 'Verts Vert)
-        (cmd-upd-vert *ipc Vert))
-      
+      (push 'Verts (draw-glyph C Col))
       (when Adv (adv-cur)))
-
     (flip Verts)))
 
   
@@ -180,3 +151,22 @@
             (+ *adv-vert *adv-vert))
       (list (list (draw-dot Col))
             *adv-vert)))
+
+
+#{
+(de draw-chars (Chars Col Adv)
+  # Mostly used to draw non-code and accents etc.
+
+  (let Verts ()
+
+    (for C (chop Chars)
+    
+      (let Vert (draw-glyph C Col)
+        
+        (push 'Verts Vert)
+        (cmd-upd-vert *ipc Vert))
+    
+      (when Adv (adv-cur)))
+
+    (flip Verts)))
+}#

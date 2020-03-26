@@ -1,4 +1,4 @@
-(de base-cur (Ref)  
+(de base-cur (Ref) # Rename to align
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds
   (let Bounds (calc-bounds> Ref NIL T) # Skip CDR
@@ -14,8 +14,27 @@
           (set-cur-y (get Bounds 2))
           (nl-cur 2.0)))))
 
-######################
 
+(de upd-cdr-n (Part)
+  (let (Ori (get-origin> *main)
+        I (get Part 'b))
+    (while (and I (not (get I 'nl)))
+      # Cursor is set by lay-part regardless of cdr; unless that fn'y dep on flag
+      (lay-part I Ori 'skip-cdr)
+      (setq I (get I 'b)))))
+
+
+(de upd-main-n ()
+  (unless (= (get *main 'data) '*main)
+    (let (Ori (get-origin> *main)
+          I (get *main 'b))
+      (while (and I (not (get I 'nl)))
+        # Cursor is set by lay-part regardless of cdr; unless that fn'y dep on flag
+        (lay-part I Ori 'skip-cdr)
+        (setq I (get I 'b))))))
+        
+        
+######################
 
 (de con-any (Data Lay)
 
@@ -38,48 +57,27 @@
           Part (repl-cdr Ref Data Lay))
       
       (put p0 'b Ref)
-      (mov-part-abv> p0 Ref (cons T))))
-      
-  # Ref is already updated
-  # However, update main 'b
-  #(println "Update" (get (get *main 'b) 'data))
-  #(mov-cur-part (get *main 'b) 'start)
-  #(lay-part (get *main 'b) *cur)
-  
-  )
+      (mov-part-abv> p0 Ref (cons T)))))
         
 
 (de repl-cdr (Ref Any Lay)
-  # Replace CDR which is typically NIL
-  
-  # Merge with below?
-  
-  (let Part (con-list Ref Any Lay)
+  # Replace CDR
     
-    # Note, cur != Base
-    # Base is list containing Part
-    # Cur is where Part should be
-
-    # Diff between symbol and nested list
-
-    (println 'repl-cdr "lay-part " Part (get Part 'data) "rel to " Ref (get Ref 'data))
-
-    (let (Ref (val> p0)
-          Ori (get-origin> (get *main 'b))
-          Bnds (calc-bounds> (get *main 'b)))
+  (let Part (con-list Ref Any Lay)
         
-      (setq *cur (list (get Ori 1)
-                       (get Bnds 2)
-                       (get *cur 3)))
-
-      (mov-cur-part Ref 'start)
-      (lay-part Part Ori))
-
-    #{
-    (let Base (get-origin> (get *main 'b))
-      (mov-cur-part Ref 'start)
-      (lay-part Part Base))
-    }#
+    # Base is origin of Pair containing Ref/Part
+    # Cur is where Part should be - use Ref origin
+    (mov-cur-part Ref 'start)
+    (lay-part Part (get-origin> *main) 'skip-cdr)
+  
+    # Need only update until EOL so traverse Cdr until NIL or nl
+    (upd-cdr-n Part)
+    
+    # Update Main CDR similarly
+    # TEST THIS
+    # Set cur before calling
+    (when NIL
+      (upd-main-n))
     
     Part))
 
@@ -101,6 +99,11 @@
     (with Part
       (=: b Ref)
       (=: c Prv))
+    
+    # Set nl if Ref has it; toggle Ref
+    (when (get Ref 'nl)
+      (put Part 'nl T)
+      (put Ref 'nl))
         
     # Connect new part data to list part data
     # Must conn Cdr also (get (get Ref 'b) 'data)

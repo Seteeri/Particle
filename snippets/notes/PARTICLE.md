@@ -259,20 +259,46 @@ Store DAGs as binary trees?
       * Should be consistent with outline format
       * Default layout is oriented towards lists of text/num/syms similar to
       alphanumerical outlines
-    * REFACTOR FLAT LIST, THEN SUBLIST
-      * Refactor layout
-        * For gen-part, if layout passed, force all to have that layout
-        * Should not set lay prop - simply follow
-      * Get newline working properly
-    * Handle random edits
-      * Update subsequent items in list
-        * 
-      * Update superlist
-        * This can result in slow updates, so lists should be done outside 
-          the list then merged in
+      
+    * Refactor methods: generation, bounds, layout
+      * Refactor calculate bounds [Done]
+      * Refactor gen [Done]
+        * Should calc be last resort if not there? -> That is an error then
+      * Then layout to get bnds [Done]
+        * And use skip flags
+      * Rename skip flags to symbols to be more clear [Done]
+      * Gen should not upd verts - only pos them [Done]
+      * Refactor cmd-make-char [Done]
+        * Calculate x max from prev item
+        * For single chars, the bounds is the same          
+      * Refactor cmd-make-nl [Done]
+        * Calculate y min from last NL (or list start) until that item
+      * Refactor cmd-del [Done]
+      * Refactor other items to use skip flags like mov> etc.
+
+    * Support random access [WIP]
+      * Update subsequent items in list [Done]
+      * Update superlist [Done]
+        * Poss result in slow updates with large items, so lists should be done
+        outside the list then spliced in which becomes O(N) where N is the length
+        of the changes
+      * Base [Done]
+      * Sublist [Todo]      
     * On enter-list, if not immediately enterable, search for next list?
       * Consistent with exit-list, else user has to manually go to first item          
     * Make option: cmds a circular list
+
+    * Cache origin [?]
+      * This abs pos
+      * Need dirty flag to be set on pos change, i.e. layout calls    
+    * For cmd-make-*, update list with len and bnds [Later]
+      * This only applies to Pairs whose Car is a list
+      * The bnds only applies to Car
+      * Store newlines in list/Pair?
+    * Gen should calc rel/local bnds for each Pair (whose 'a is a Pair) [Later]
+      * Or call this separately/after gen      
+      
+    * For single chars, the bounds is the same      
       
     GOAL: Able to build test tree
 

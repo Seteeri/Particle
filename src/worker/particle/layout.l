@@ -1,23 +1,29 @@
 (de is-start-of-list (Part) (= (type (get Part 'a)) '(+Pair)))
 
-(de lay-part (Any Base Car-Skip Cdr-Skip)
+# Refactor these into methods
+
+(de lay-part (Any Base Skip)
+  
+  #{
+    Skip:
+    'skip-car
+    'skip-cdr
+    'skip-car-cdr
+
+    Only apply to immediate Part
+  }#
   
   (if (= (type Any) '(+Pair))
   
-      (lay-pair Any Base Car-Skip Cdr-Skip)
+      (lay-pair Any Base Skip)
       
-      (lay-atom Any Base Car-Skip Cdr-Skip)))
+      (lay-atom Any Base Skip)))
 
 
-(de lay-pair (Any Base Car-Skip Cdr-Skip)
+(de lay-pair (Any Base Skip)
 
-  (println 'lay-pair Any (get Any 'data) (get Any 'lay))
-
-  # If Any is on a newline
-  # move rel to Base - at x and underneath it
-  # this is assuming min y
-  # so if calling on nl, cur should be set already before calling this
-  # and use origin as new base
+  # Must handle nested lists so logic must be here
+  #{
   (setq Base (if (get Any 'nl)
                  (prog
                    (println 'lay-pair "Detected NL")
@@ -25,16 +31,17 @@
                    (nl-cur 3.0)
                    (get-origin> Any))
                  Base))
+  }#
 
-  # Move Pair first so below can get correct pos
+  # Move Pair first to get correct pos since bnds rel to origin
   (mov> Any *cur)
   
   (if (= (get Any 'lay) 'x)    
-    (lay-pair-x Any Base Car-Skip Cdr-Skip)
-    (lay-pair-y Any Base Car-Skip Cdr-Skip)))
+    (lay-pair-x Any Base Skip)
+    (lay-pair-y Any Base Skip)))
   
 
-(de lay-pair-x (Any Base Car-Skip Cdr-Skip)
+(de lay-pair-x (Any Base Skip)
   #{
 
     Draw CAR -Y
@@ -46,71 +53,44 @@
     CAR X has precedence
     
     Base is the pos of the list start; lay-pair sets it
-
-    [Y]  [X]
-         1    
-         
-         [Y]  [X]  NIL
-              3
-              
-         NIL
-         
-    NIL
-
-    [X]
-    let
-         
-    [Y]  [X]  [X] NIL
-         A    1
-
-    NIL
-    
-    For X layout, if CDR is a list, move it rel to base
-  
-    If Base is [Y], adv 2.0 to get into pos
-    else first item, so no adv, simply draw under
   
   }#
+
+  (with Any
   
-  (let ((X Y) *cur)
+    (let ((X-Ori Y-Ori) (get-origin> Any))
+  
+      # Mov cur to origin of Pair
+      (set-cur-x X-Ori) (set-cur-y Y-Ori)
       
-    (with Any
-    
-      # Mov cur to bounds, aka first vert start pos
-      (mov-cur-vert (first-vert> Any))
-      # Move below
+      # Move below or use its Y bnds - origin is same as bnds for single line
+      # This assumes Pair is always single line with dot or 2x dot
       (nl-cur)
-      
+            
       # Lay CAR first since its X bounds has precedence
-      (let (Bnd-Car (lay-part (: a) Base)
-            Bnd-Cdr Bnd-Car)
-        
-        #{
-        (if (: nl)
-            (prog
-              # Align cur to bounds of main 'b or last nl
-              # Y is already at extents based on drawn Cars
-              (set-cur-x (get Base 1))
-              #(nl-cur 4.0)
-              )
-        }#
-              
-            (prog
-              # At this point, cur is at extents of Car
-              # X is valid except for one more adv
-              # Y must be moved back to base
-              (adv-cur)
-              (set-cur-y Y))
+      
+      (let ((X-Bnd-A Y-Bnd-A) (get (: a) 'bnds)
+            (X-Bnd-B Y-Bnd-B) (get (: b) 'bnds))
+      
+        (when (or (= Skip 'skip-cdr)
+                  (not Skip))
+          (lay-part (: a) Base))
+      
+        # To draw Cdr: (use base-cur? that recalcs...)
+        # X should match Ori 1 + Bnd-Car 1, plus an adv
+        # Y must be moved back to origin of Pair
+        (set-cur-x (+ X-Ori X-Bnd-A)) (adv-cur)
+        (set-cur-y Y-Ori)
         
         # Str's val/b is NIL (or poss later point to itself)
-        (when (and (: b) (not (= (: b) Any)))
-          (setq Bnd-Cdr (lay-part (: b) Base)))
-            
-        (list (max (get Bnd-Car 1) (get Bnd-Cdr 1))
-              (min (get Bnd-Car 2) (get Bnd-Cdr 2)))))))
+        (when (and (: b)
+                   (not (= (: b) Any))
+                   (or (= Skip 'skip-car)
+                       (not Skip)))
+          (lay-part (: b) Base))))))
 
     
-(de lay-pair-y (Any Base Car-Skip Cdr-Skip)
+(de lay-pair-y (Any Base Skip)
   #{
 
     Draw CAR +X
@@ -156,7 +136,7 @@
               (min (get Bnd-Car 2) (get Bnd-Cdr 2)))))))
     
   
-(de lay-atom (Any Base Car-Skip Cdr-Skip)
+(de lay-atom (Any Base Skip)
   
   # Move Pair first so below to get correct pos
   (mov> Any *cur)  
@@ -176,5 +156,5 @@
   
         # Poss create lay-sym but not needed since same fn'y
         (if (= (get Any 'lay) 'x)
-          (lay-pair-x Any Base Car-Skip Cdr-Skip)
-          (lay-pair-y Any Base Car-Skip Cdr-Skip)))))
+          (lay-pair-x Any Base Skip)
+          (lay-pair-y Any Base Skip)))))

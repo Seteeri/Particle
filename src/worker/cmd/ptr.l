@@ -16,39 +16,63 @@
 (de cmd-mov-nl (Keysym)
   (println "Move newline")
   
+  #{
+  
+  [] [] [] [] [] []
+  
+  TO
+  
+  [] [] []
+  
+  [] [] []
+  
+  }#
+  
   # Is this appropriate for Y layout? ...since it already moves to newline
   
-  # Move pointer and move NIL (CDR)
-  # Character after this will replace NIL
-    
-  (let (Ref (val> p0)
-        Ori (get-origin> (get *main 'b))
-        Bnds (calc-bounds> (get *main 'b)))
-      
-    (setq *cur (list (get Ori 1)
-                     (get Bnds 2)
-                     (get *cur 3)))
+  # Move pointer/item under first item of list
+  # Character after this will replace item
 
-    # If this op is random
-    # must know min y for all previous elements )Cars)
-    #
-    # When parts gen, cache bnds for atoms, since they don't change
-    # Easy to calc with fixed-width since bnds = num verts * adv
-    #
-    # Based on layout, and vert len and adv, the bnds can be determined
-    #
-    # Everytime list is updated, update the len and bounds
-    # Every item is at the border or within the bnds
-    # So pos cursor at min Y, comparing the list and the item
+  # Calc min y for all previous item's Cars
+  # X is based on list origin
+  #
+  # Again, need only do this from previous nl to current item
+  # How to track nls?
+  # * Walk backwards until NL encountered
+  # * Put nl item in list of lines as list property
+  # * Link lines to each other...?
+
+  # Calc min Y until NIL or nl
+  (let (Ref (val> p0)
+        I Ref
+        Y (get (get-origin> Ref) 2))
+        
+    (while (and I (not (get I 'nl)))
+      (let Bnds (calc-bounds> I NIL T) # Only CAR, Skip CDR
+        (setq Y (min Y (get Bnds 2))))
+      (setq I (get I 'c)))
     
-    (println 'cmd-mov-nl "Set 'nl for " Ref (get Ref 'data))
+    (set-cur-y Y)
     
-    (put Ref 'nl 1.0)
-    (lay-part Ref Ori)
+    # Newline + Ptr
+    # This assumes pointer is single line
+    (nl-cur 3.0)
     
-    (put p0 'b Ref)
+    # Calc X
+    (let Ori (get-origin> (get *main 'b))
+      (set-cur-x (get Ori 1))
+    
+      (put Ref 'nl T)
+    
+      # Remember base is list, cur is for Ref
+      # This updates Cdr
+      (lay-part Ref Ori))
+    
+    # And update list Cdr also
+    
+    #(put p0 'b Ref)
     (mov-part-abv> p0 Ref (cons T))))
-  
+        
   
 (de cmd-mov-bl (Keysym)
 
@@ -71,6 +95,7 @@
   (println "Move to prev item")
   
   (let? Prv (get (val> p0) 'c)
+    (println "Moved to " Prv (get Prv 'data))
     (put p0 'b Prv)
     (mov-part-abv> p0 Prv (cons T))))
   
@@ -79,6 +104,7 @@
   (println "Move to next item")
   
   (let? Cdr (get (val> p0) 'b)
+    (println "Moved to " Cdr (get Cdr 'data))
     (put p0 'b Cdr)
     (mov-part-abv> p0 Cdr (cons T))))
 
