@@ -1,20 +1,3 @@
-(de base-cur (Ref) # Rename to align
-  # x: CDR is to the right; use X bounds
-  # y: CDR is below; use Y bounds
-  (let Bounds (calc-bounds> Ref NIL T) # Skip CDR
-    (if (= (get Ref 'lay) 'x)
-        (prog
-          # Move cur to x base of Ref and y origin of Ref
-          (set-cur-x (get Bounds 1))
-          (set-cur-y (get (get-origin> Ref) 2))
-          (adv-cur 2.0))
-        (prog
-          # Move cur to x origin of Ref and y base of Ref
-          (set-cur-x (get (get-origin> Ref) 1))
-          (set-cur-y (get Bounds 2))
-          (nl-cur 2.0)))))
-
-
 (de upd-cdr-n (Part)
   (let (Ori (get-origin> *main)
         I (get Part 'b))

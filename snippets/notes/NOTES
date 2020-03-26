@@ -4123,15 +4123,21 @@ insert mode
   X: 
     l/r = C/CDR 
     u/d = CAR
+    ptr = CDR or PAIR
     
     * u/d only works on NIL and lists
   
   Y:
     l/r = CAR
     u/d = C/CDR
+    ptr = ?
   
   Enter list should move to the CAR
   So if user is on CAR replace, entire list
+  
+Change ptr sym when on CAR vs CDR
+  normal is *
+  and CAR is ^
 
 =============================
 
