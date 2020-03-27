@@ -1,6 +1,3 @@
-(de is-start-of-list (Part) (= (type (get Part 'a)) '(+Pair)))
-
-
 (de force-lay (Part Lay)
   (with Part
     (=: lay Lay)
@@ -82,7 +79,11 @@
       # Move below or use its Y dims - origin is same as dims for single line
       # This assumes Pair is always single line with dot or 2x dot
       (nl-cur)
-            
+
+      # If Car is a list, mov extra newlines
+      (when (has-car-pair> Any)
+        (nl-cur (+ *sublist-space-y 1.0)))
+
       # Lay CAR first since its X bounds has precedence
       
       (let ((X-Dims-A Y-Dims-A) (get (: a) 'dims)

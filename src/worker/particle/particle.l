@@ -296,6 +296,9 @@
     (list (max (if Xa Xa X) (if Xb Xb X) X)
           (min (if Ya Ya Y) (if Yb Yb Y) Y))))
 
+
+(dm has-car-pair> () (= (type (: a)) '(+Pair)))
+
           
 # Debug
 

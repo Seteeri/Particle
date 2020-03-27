@@ -31,6 +31,7 @@
 (def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
 (def '*adv-vert-2  (+ *adv-vert *adv-vert))
 (def 'KEY-REPEAT 2)
+(def '*sublist-space-y 2.0)
 
 # Global Symbols
 (def '*metrics)

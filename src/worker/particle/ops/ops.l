@@ -61,7 +61,7 @@
                 (let Dims (calc-bounds> Prv-C NIL T)
                   (setq *cur Dims)
                   (adv-cur 2.0)
-                  (nl-cur 2.0)
+                  (nl-cur *sublist-space-y)
                   (lay-part (get Part 'a) (get-origin> *main)))
                 
                 # Move ptr to Cdr/NIL; must set ptr to Part to get Car
