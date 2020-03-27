@@ -260,6 +260,8 @@
     (set-cur-y Y)
     (adv-cur 48.0)
 
+    # DO this properly
+    (with *main (=: bnds (list (car (get (: a) 'dims)) (cadr (get (: b) 'dims)))))
     (lay-part *main *cur)
     
     #######################
@@ -283,6 +285,11 @@
     # TEMP
     (setq p1 *cmds)
 
+    (idx '*particles (def '*1 (gen-part '*1 'y)) T)
+    (del> (get *1 'b) T T)
+    (nl-cur -3.0)
+    (lay-part *1 *cur)
+
     ############
     
     (nl-cur 6.0)    
@@ -293,7 +300,7 @@
         
         (set-cur-x X)
         
-        # This will override layout in Particles
+        # Must calc bnds for lists        
         (lay-part Part *cur)))
 
 

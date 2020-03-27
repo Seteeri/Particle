@@ -129,13 +129,13 @@
       # however,
       # poss move items back to maintain line length
       # but this means update everthing
-      (upd-cdr-n Ref)
+      (upd-line Ref)
       
       # Update Main CDR similarly
       # TEST THIS
       # Set cur before calling
       (when NIL
-        (upd-main-n))      
+        (upd-line-main))      
 
       # Ptr same; simply move it
       (mov-part-abv> *0 Ref (cons T)))))

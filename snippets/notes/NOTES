@@ -4303,3 +4303,44 @@ a   b   c
         *0
 [Y] [X] NIL
 NIL d
+
+
+================================================================================
+
+2 parts
+- Calc min y for current line
+- Update subsequent items/lines
+
+Laying out an entire tree, nls can be tracked
+So for piecewise building, must store nl info somewhere in the particle
+
+Calc min y for all previous item's Cars
+X is based on list origin
+
+Again, need only do this from previous nl to current item
+
+How to track nls?
+* Walk backwards until NL encountered
+* Put nl item in list of lines as list property
+* Link lines to each other...? nl <-> nl
+  -> Faster than checking every item every time 
+     but not as much overhead as storing a list of line ptrs
+
+
+[] [] [] []
+a  b  c  d
+
+[] [] [] []
+e  f  g  h
+
+[] [] [] []
+i  j  k  l
+
+
+a - e - i
+
+Put cons in 'nl
+
+a.nl = (*main . b)
+e.nl = (a . i)
+i.nl = (e . NIL)

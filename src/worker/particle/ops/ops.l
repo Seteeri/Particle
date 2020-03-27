@@ -1,5 +1,19 @@
 # Move to layout
 
+(de upd-main-bnds (Part)
+  # Everytime an item is added to a line, upd its bounds
+  # Then when upd, need not calc min Y - just grab from line
+
+  (with *main
+    (let (Ori (get-origin> *main)
+          Bnds (calc-bounds> Part NIL T)) # skip Cdr
+      (=: bnds (list (+ (car (: bnds)) 
+                        (- (car Bnds) (car Ori)))
+                     (cadr (: bnds))))
+
+      (mov> *1 Bnds))))
+      
+
 (de con-any (Data Lay Repl)
 
   (let (Ref (val> *0)
@@ -52,8 +66,16 @@
               (prog
                 (println 'con-any "IMPLEMENT Y LAYOUT")))
           
-          (println 'con-any "Update CDR:" Part (get Part 'data))
-          (upd-cdr-n Part)
+          #(println 'con-any "Update CDR:" Part (get Part 'data))
+          #(upd-line Part)
+                    
+          # 1. Calc min y for current line
+          # 2. Update Part Cdr
+          
+          (set-cur-x (+ (car (get-origin> *main))
+                        (car (get *main 'bnds))))
+          (mov> *1 *cur)
+                      
           
           (setq *main Part))
         
@@ -65,13 +87,15 @@
           (mov-cur-part Ref 'start)
           (lay-part Part (get-origin> *main) 'skip-cdr)
         
+          (upd-main-bnds Part)
+        
           # Need only update until EOL so traverse Cdr until NIL or nl
-          (upd-cdr-n Part)
+          (upd-line Part)
           
           # Update Main CDR similarly
           # This needs to update any sublists
           (when T
-            (upd-main-n))
+            (upd-line-main))
           
           (put *0 'b Ref)
           (mov-part-abv> *0 Ref (cons T))))

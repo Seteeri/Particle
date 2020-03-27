@@ -289,13 +289,14 @@ Store DAGs as binary trees?
         * Extent = min bnd'g rect: xmin ymin xmax ymax
         * Bounds = aka bounding box/rect; 
         * So extents == bounds
+      * Refactor layout
+        * Implement updating nl property for layout
+        * Test entire tree
+        * Implement updating nl property for cmds
+          * Call layout, upd-line, upd-line-main
       * Refactor layout to support sublists [WIP]
         * x layout supports sublist [Done]
-        * y layout support sublist              
-      * Refactor layout to support newline [WIP]
-        * This is most problematic for newlines...
-      * Refactor cmds to properly update layout [WIP]
-        * Must support layout and upd-cdr upd-main
+        * y layout support sublist
       * Merge con-back + repl-list
       * Support mov to Car for NIL
         * Make NIL point to itself like Str? Technically it does...        

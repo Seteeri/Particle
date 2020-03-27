@@ -59,7 +59,18 @@
   (=: lay Lay)
   (=: nl)
   
+  #{
+   use l b r t?
+   
+   ymax = line height
+   xmin = origin
+   +---+
+   |   |
+   O---+ xmax/ymin
+         can go below
+  }#  
   (=: dims)
+  (=: bnds (list 0.0 0.0))
   
   # list of tags; always str; order matters like when searching
   # consider first tag, the name

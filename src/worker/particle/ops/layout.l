@@ -11,6 +11,8 @@
 
 # Refactor these into methods
 
+(def '*ln-prv)
+
 (de lay-part (Any Base Skip)
   
   #{
@@ -38,16 +40,18 @@
   # Move Pair first to get correct pos since dims rel to origin
   (mov> Any *cur)
 
-  #{
-  # If newline detected, must follow cmd-new-line
-  # However, unlike there, here we can store last NL while traversing
+  # When newline detected, save last line
+  (when (get Any 'ln)
+    # Set prv ln nxt ptr
+    (println Any (get Any 'data))
+    (let Ln (if *ln-prv *ln-prv *main)
+      (with Ln
+        (=: ln (cons (car (: ln)) Any)))
+      # Set Any
+      (with Any
+        (=: ln (cons Ln NIL)))
+    (setq *ln-prv Any)))
   
-  (setq Base (if (get Any 'nl)
-                 (prog
-                   (println 'lay-pair "Detected NL")
-                   (get-origin> Any))
-                 Base))
-  }#
   
   (if (= (get Any 'lay) 'x)    
     (lay-pair-x Any Base Skip)
@@ -191,64 +195,6 @@
 
 ################################################################################
 
-# 2 parts
-# - Calc min y for current line
-# - Update subsequent items/lines
-
-# Laying out an entire tree, nls can be tracked
-# So for piecewise building, must store nl info somewhere in the particle
-
-# Calc min y for all previous item's Cars
-# X is based on list origin
-#
-# Again, need only do this from previous nl to current item
-
-# How to track nls?
-# * Walk backwards until NL encountered
-# * Put nl item in list of lines as list property
-# * Link lines to each other...? nl <-> nl
-#   -> Faster than checking every item every time 
-#      but not as much overhead as storing a list of lines
-
-#{
-
-[] [] [] []
-a  b  c  d
-
-[] [] [] []
-e  f  g  h
-
-[] [] [] []
-i  j  k  l
-
-
-a - e - i
-
-}#
-
-(de upd-cdr-n (Part)
-  (let (Ori (get-origin> *main)
-        I (get Part 'b))
-    (while (and I (not (get I 'nl)))
-      # Handle layout specific
-      (let? Dims (calc-bounds> (get I 'c) NIL T)
-        (set-cur-x (get Dims 1)) (adv-cur 2.0))
-      (println 'upd-cdr-n "Update" I (get I 'data))
-      (lay-part I Ori 'skip-cdr)
-      (setq I (get I 'b)))))
-
-
-(de upd-main-n ()
-  (unless (= (get *main 'data) '*main)
-    (let (Ori (get-origin> *main)
-          I (get *main 'b))
-      (while (and I (not (get I 'nl)))
-        # Handle layout specific
-        (let? Dims (calc-bounds> (get I 'c) NIL T)
-          (set-cur-x (get Dims 1)) (adv-cur 2.0))
-        (lay-part I Ori 'skip-cdr)
-        (setq I (get I 'b))))))
-        
         
 (de swap-lay (Tgt)
   (force-lay Tgt 
@@ -260,6 +206,30 @@ a - e - i
   # Opt: force layout
   (lay-part Tgt (get-origin> *main)))
 
+
+(de upd-line (Part)
+  (let (Ori (get-origin> *main)
+        I (get Part 'b))
+    (while (and I (not (get I 'nl)))
+      # Handle layout specific
+      (let? Dims (calc-bounds> (get I 'c) NIL T)
+        (set-cur-x (get Dims 1)) (adv-cur 2.0))
+      (println 'upd-line "Update" I (get I 'data))
+      (lay-part I Ori 'skip-cdr)
+      (setq I (get I 'b)))))
+
+
+(de upd-line-main ()
+  (unless (= (get *main 'data) '*main)
+    (let (Ori (get-origin> *main)
+          I (get *main 'b))
+      (while (and I (not (get I 'nl)))
+        # Handle layout specific
+        (let? Dims (calc-bounds> (get I 'c) NIL T)
+          (set-cur-x (get Dims 1)) (adv-cur 2.0))
+        (lay-part I Ori 'skip-cdr)
+        (setq I (get I 'b))))))
+        
 
 (de mov-nl (Ref)
   # Is this appropriate for Y layout? ...since it already moves to newline
