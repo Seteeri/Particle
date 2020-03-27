@@ -1,66 +1,5 @@
 # Move to layout
 
-# 2 parts
-# - Calc min y for current line
-# - Update subsequent items/lines
-
-# Laying out an entire tree, nls can be tracked
-# So for piecewise building, must store nl info somewhere in the particle
-
-# Calc min y for all previous item's Cars
-# X is based on list origin
-#
-# Again, need only do this from previous nl to current item
-
-# How to track nls?
-# * Walk backwards until NL encountered
-# * Put nl item in list of lines as list property
-# * Link lines to each other...? nl <-> nl
-#   -> Faster than checking every item every time 
-#      but not as much overhead as storing a list of lines
-
-#{
-
-[] [] [] []
-a  b  c  d
-
-[] [] [] []
-e  f  g  h
-
-[] [] [] []
-i  j  k  l
-
-
-a - e - i
-
-}#
-
-(de upd-cdr-n (Part)
-  (let (Ori (get-origin> *main)
-        I (get Part 'b))
-    (while (and I (not (get I 'nl)))
-      # Handle layout specific
-      (let? Dims (calc-bounds> (get I 'c) NIL T)
-        (set-cur-x (get Dims 1)) (adv-cur 2.0))
-      (println 'upd-cdr-n "Update" I (get I 'data))
-      (lay-part I Ori 'skip-cdr)
-      (setq I (get I 'b)))))
-
-
-(de upd-main-n ()
-  (unless (= (get *main 'data) '*main)
-    (let (Ori (get-origin> *main)
-          I (get *main 'b))
-      (while (and I (not (get I 'nl)))
-        # Handle layout specific
-        (let? Dims (calc-bounds> (get I 'c) NIL T)
-          (set-cur-x (get Dims 1)) (adv-cur 2.0))
-        (lay-part I Ori 'skip-cdr)
-        (setq I (get I 'b))))))
-        
-        
-######################
-
 (de con-any (Data Lay Repl)
 
   (let (Ref (val> *0)
@@ -221,18 +160,6 @@ a - e - i
 
 ################################################################################
 
-
-(de swap-lay (Tgt)
-  (force-lay Tgt 
-             (if (= (get Tgt 'lay) 'x) 'y 'x))
-        
-  # Note this causes bounds change also
-        
-  (mov-cur-part Tgt 'start)
-  # Opt: force layout
-  (lay-part Tgt (get-origin> *main)))
-
-
 (de point-b-prv ()
   (println 'point-b-prv)
 
@@ -315,36 +242,3 @@ a - e - i
              (not (get Part 'c))))
       (setq Part (get Part 'c)))
 }#
-
-
-(de mov-nl (Ref)
-  # Is this appropriate for Y layout? ...since it already moves to newline
-  # Should make a new column
-  
-  # Calc min Y until NIL or nl
-  (let (I Ref
-        Y (get (get-origin> Ref) 2))
-        
-    (while (and I (not (get I 'nl)))
-      (let Dims (calc-bounds> I NIL T) # Only CAR, Skip CDR
-        (setq Y (min Y (get Dims 2))))
-      (setq I (get I 'c)))
-    
-    (set-cur-y Y)
-    
-    # Newline + Ptr
-    # This assumes pointer is single line
-    (nl-cur 3.0)
-    
-    # Calc X
-    (let Ori (get-origin> (get *main 'b))
-      (set-cur-x (get Ori 1))
-    
-      (put Ref 'nl T)
-    
-      # Remember base is list, cur is for Ref
-      # This updates Cdr
-      (lay-part Ref Ori))
-    
-    # And update list Cdr also
-    T))
