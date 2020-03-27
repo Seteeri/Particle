@@ -1,5 +1,40 @@
 # Move to layout
 
+# 2 parts
+# - Calc min y for current line
+# - Update subsequent items/lines
+
+# Laying out an entire tree, nls can be tracked
+# So for piecewise building, must store nl info somewhere in the particle
+
+# Calc min y for all previous item's Cars
+# X is based on list origin
+#
+# Again, need only do this from previous nl to current item
+
+# How to track nls?
+# * Walk backwards until NL encountered
+# * Put nl item in list of lines as list property
+# * Link lines to each other...? nl <-> nl
+#   -> Faster than checking every item every time 
+#      but not as much overhead as storing a list of lines
+
+#{
+
+[] [] [] []
+a  b  c  d
+
+[] [] [] []
+e  f  g  h
+
+[] [] [] []
+i  j  k  l
+
+
+a - e - i
+
+}#
+
 (de upd-cdr-n (Part)
   (let (Ori (get-origin> *main)
         I (get Part 'b))
@@ -198,8 +233,8 @@
   (lay-part Tgt (get-origin> *main)))
 
 
-(de mov-ptr-b-prv ()
-  (println 'mov-ptr-b-prv)
+(de point-b-prv ()
+  (println 'point-b-prv)
 
   (let (Ref (val> *0)
         Prv (get (val> *0) 'c))
@@ -208,32 +243,32 @@
     
       # Set list
       (when (= (type (get Prv 'a)) '(+Pair))
-        (println 'mov-ptr-a-out "Mov to superlist")
+        (println 'point-a-out "Mov to superlist")
         (setq *main Prv))
     
-      (println 'mov-ptr-a-out Prv (get Prv 'data))
+      (println 'point-a-out Prv (get Prv 'data))
       (put *0 'b Prv)
       (mov-part-abv> *0 Prv (cons T)))))
 
 
-(de mov-ptr-b-nxt ()
-  (println 'mov-ptr-b-nxt)
+(de point-b-nxt ()
+  (println 'point-b-nxt)
 
   (let? Cdr (get (val> *0) 'b)
-    (println 'mov-ptr-b-nxt Cdr (get Cdr 'data))
+    (println 'point-b-nxt Cdr (get Cdr 'data))
     (put *0 'b Cdr)
     (mov-part-abv> *0 Cdr (cons T))))
 
 
-(de mov-ptr-a-out ()
-  (println 'mov-ptr-a-out)
+(de point-a-out ()
+  (println 'point-a-out)
     
-  (mov-ptr-b-prv))
+  (point-b-prv))
 
 
-(de mov-ptr-a-in ()
+(de point-a-in ()
 
-  (println 'mov-ptr-a-in)
+  (println 'point-a-in)
 
   # TODO: Support mov to NIL
 
@@ -251,7 +286,7 @@
         (if (= (type Car) '(+Pair))
 
           (prog
-            (println 'mov-ptr-a-in "Mov to sublist")
+            (println 'point-a-in "Mov to sublist")
             (setq *main Car)
             (mov-part-abv> *0 Car (cons T)))
 
@@ -284,19 +319,8 @@
 
 (de mov-nl (Ref)
   # Is this appropriate for Y layout? ...since it already moves to newline
+  # Should make a new column
   
-  # Move pointer/item under first item of list
-  # Character after this will replace item
-
-  # Calc min y for all previous item's Cars
-  # X is based on list origin
-  #
-  # Again, need only do this from previous nl to current item
-  # How to track nls?
-  # * Walk backwards until NL encountered
-  # * Put nl item in list of lines as list property
-  # * Link lines to each other...?
-
   # Calc min Y until NIL or nl
   (let (I Ref
         Y (get (get-origin> Ref) 2))

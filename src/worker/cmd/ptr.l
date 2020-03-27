@@ -43,26 +43,26 @@
 
 (de cmd-ptr-left (Keysym)
   (if (= (get (val> *0) 'lay) 'x)
-    (mov-ptr-b-prv)
-    (mov-ptr-a-out)))
+    (point-b-prv)
+    (point-a-out)))
   
 
 (de cmd-ptr-right (Keysym)
   (if (= (get (val> *0) 'lay) 'x)
-      (mov-ptr-b-nxt)
-      (mov-ptr-a-in)))
+      (point-b-nxt)
+      (point-a-in)))
 
 
 (de cmd-ptr-up (Keysym)
   (if (= (get (val> *0) 'lay) 'x)
-      (mov-ptr-a-out)
-      (mov-ptr-b-prv)))
+      (point-a-out)
+      (point-b-prv)))
 
 
 (de cmd-ptr-down (Keysym)
   (if (= (get (val> *0) 'lay) 'x)
-      (mov-ptr-a-in)
-      (mov-ptr-b-nxt)))
+      (point-a-in)
+      (point-b-nxt)))
 
 
 ###########
