@@ -1,8 +1,13 @@
+# Move to layout
+
 (de upd-cdr-n (Part)
   (let (Ori (get-origin> *main)
         I (get Part 'b))
     (while (and I (not (get I 'nl)))
-      # Cursor is set by lay-part regardless of cdr; unless that fn'y dep on flag
+      # Handle layout specific
+      (let? Dims (calc-bounds> (get I 'c) NIL T)
+        (set-cur-x (get Dims 1)) (adv-cur 2.0))
+      (println 'upd-cdr-n "Update" I (get I 'data))
       (lay-part I Ori 'skip-cdr)
       (setq I (get I 'b)))))
 
@@ -12,7 +17,9 @@
     (let (Ori (get-origin> *main)
           I (get *main 'b))
       (while (and I (not (get I 'nl)))
-        # Cursor is set by lay-part regardless of cdr; unless that fn'y dep on flag
+        # Handle layout specific
+        (let? Dims (calc-bounds> (get I 'c) NIL T)
+          (set-cur-x (get Dims 1)) (adv-cur 2.0))
         (lay-part I Ori 'skip-cdr)
         (setq I (get I 'b))))))
         
@@ -71,6 +78,9 @@
               (prog
                 (println 'con-any "IMPLEMENT Y LAYOUT")))
           
+          (println 'con-any "Update CDR:" Part (get Part 'data))
+          (upd-cdr-n Part)
+          
           (setq *main Part))
         
         (let Part (gen-part (list Data) Lay NIL T)
@@ -85,9 +95,8 @@
           (upd-cdr-n Part)
           
           # Update Main CDR similarly
-          # TEST THIS
-          # Set cur before calling
-          (when NIL
+          # This needs to update any sublists
+          (when T
             (upd-main-n))
           
           (put *0 'b Ref)
@@ -182,6 +191,8 @@
   (force-lay Tgt 
              (if (= (get Tgt 'lay) 'x) 'y 'x))
         
+  # Note this causes bounds change also
+        
   (mov-cur-part Tgt 'start)
   # Opt: force layout
   (lay-part Tgt (get-origin> *main)))
@@ -259,11 +270,8 @@
 
 #######################
 
-
-(de mov-ptr-a-out-2 ()
-  # If ref Car, then move to Pair instead of list
-
-  (println 'mov-ptr-a-out)
+#{
+  Find list
 
   (let Part (get (val> *0) 'c)
     (loop
@@ -271,105 +279,48 @@
              (= Part *main)
              (not (get Part 'c))))
       (setq Part (get Part 'c)))
-      
-    (println 'leave-list Part (get Part 'data) (get (get Part 'c) 'data))
-    
-    (when Part
-      (put *0 'b Part)
-      (mov-part-abv> *0 Part (cons T)))))
+}#
 
 
-(de mov-ptr-a-in-2 ()
-  #{
+(de mov-nl (Ref)
+  # Is this appropriate for Y layout? ...since it already moves to newline
   
-    * X
-      * Move to NIL/list (see below)
-    * Y
-      * Move to CAR/CDR
-    
-    Car:
-  
-    If non-NIL:
-    * Move ptr to it
-  
-    If NIL:
-    * Move under
-    * Set Y layout
-    * Move ptr to Pair instead of NIL (like normal mode)
-    * Set flag for cmd-make-char...
-    * User must move to CAR
-          
-    User has entered NIL already:
-    
-                    *0
-    [X] [X] [X] [X] NIL
-    a   b   c   NIL
-    
-    TO:
+  # Move pointer/item under first item of list
+  # Character after this will replace item
 
-    [X] [X] [X]
-    a   b   c
-    
-    *0
-    [Y] [X] [X] [X] NIL
-    NIL d   e   f
+  # Calc min y for all previous item's Cars
+  # X is based on list origin
+  #
+  # Again, need only do this from previous nl to current item
+  # How to track nls?
+  # * Walk backwards until NL encountered
+  # * Put nl item in list of lines as list property
+  # * Link lines to each other...?
 
-    ...
-    
-    [Y] [X] [X] [X] NIL
-    NIL h   i   j
-    
-    Effectively, this cmd turns NIL into a list instead of an atom
-    If user exits list, keep structure the same
-    Allows user to create "bullets"
-    User can explicitly move it back and toggle layout
+  # Calc min Y until NIL or nl
+  (let (I Ref
+        Y (get (get-origin> Ref) 2))
         
-  }#  
-  
-  (let (Ref (val> *0)
-        Car (get Ref 'a)
-        Tgt (get Ref 'c))
+    (while (and I (not (get I 'nl)))
+      (let Dims (calc-bounds> I NIL T) # Only CAR, Skip CDR
+        (setq Y (min Y (get Dims 2))))
+      (setq I (get I 'c)))
     
-    (cond ((= (type Car) '(+Pair))
-            (put *0 'b Car)
-            (mov-part-abv> *0 Car (cons T)))
-            
-          ((isa '+Nil Ref)
-
-            # Mov under
-            (cmd-mov-nl)
-
-            # Set Y layout
-            (with Tgt (=: lay (if (= (: lay) 'x) 'y 'x)))
-            (mov-cur-part Tgt 'start)
-            (lay-part Tgt (get-origin> *main))
-
-            # Update ptr
-            (put *0 'b Tgt)
-            (mov-part-abv> *0 Tgt (cons T))
-
-            # If not set, Cdr of NIL will be replaced instead of the CAR/entire list
-            (setq *mode-repl T)))))
-            
-#{
-              
-  # If symbol use 'b
-  # If pair use 'a
-  (let (Base (get *main (if (= (type *main) '(+Pair)) 'a 'b))
-        Ori (get-origin> Base)
-        Dims (if (= (get Base 'lay) 'x)
-                 (calc-bounds> Base NIL T)
-                 (calc-bounds> Base T NIL)))
-    (setq *cur (list (get Ori 1)
-                     (get Dims 2)
-                     (get *cur 3)))
-    (nl-cur 2.0))
-
-  (put Tgt 'lay 'y)
-  (put Tgt 'nl 1.0) # set nl
-  (lay-part Tgt *cur)
-
-  (put *0 'b Tgt)
-  (mov-part-abv> *0 Tgt (cons T))
-            
-}#            
+    (set-cur-y Y)
+    
+    # Newline + Ptr
+    # This assumes pointer is single line
+    (nl-cur 3.0)
+    
+    # Calc X
+    (let Ori (get-origin> (get *main 'b))
+      (set-cur-x (get Ori 1))
+    
+      (put Ref 'nl T)
+    
+      # Remember base is list, cur is for Ref
+      # This updates Cdr
+      (lay-part Ref Ori))
+    
+    # And update list Cdr also
+    T))

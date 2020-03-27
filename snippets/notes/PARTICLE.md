@@ -289,13 +289,18 @@ Store DAGs as binary trees?
         * Extent = min bnd'g rect: xmin ymin xmax ymax
         * Bounds = aka bounding box/rect; 
         * So extents == bounds
+      * Refactor layout to support newline [WIP]
+        * x layout supports sublist [Done]
+        * y layout support sublist
+        * Maintain newlines when re-layout
+        * Lay pair needs to check 
+      * Refactor cmds
+        * Must support layout and upd-cdr upd-main
+        * Refactor del        
+      * Merge con-back + repl-list
       * Support mov to Car for NIL
         * Make NIL point to itself like Str? Technically it does...        
-
-      
-      * Refactor layout to support newline
-        * Maintain newlines when re-layout
-        * Lay pair needs to check
+        
       * Refactor layout to support mixed layouts better      
         * Need newline support before testing mixed layouts since Pairs are
         placed on newline with Y orientation
@@ -315,6 +320,7 @@ Store DAGs as binary trees?
     * TEST LAYOUT OF EXISTING DATA
       
   * Refactor [Nxt Week]
+    * Fix magic numbers
     * Refactor get a,b,c -> a> b> c>
     * Refeactor "*0" mov-part-abv> into cursor fn  
     * Refactor cmd-make-nl
