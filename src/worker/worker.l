@@ -140,10 +140,10 @@
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
                                         (let (Ref (val> *0)
                                               Car (get Ref 'a))
-                                          (println 'bnds (get Ref 'bnds) (get Ref 'data))
-                                          # origin + bnds
+                                          (println 'dims (get Ref 'dims) (get Ref 'data))
+                                          # origin + dims
                                           (let Ori (get-origin> Ref)
-                                            (setq *cur (list (+ (get Ori 1) (car (get Ref 'bnds)))
+                                            (setq *cur (list (+ (get Ori 1) (car (get Ref 'dims)))
                                                              (- (get Ori 2) *adv-vert)
                                                              (get Ori 3))))
                                           (mov> *0 *cur))))

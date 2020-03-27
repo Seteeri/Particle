@@ -264,7 +264,7 @@ Store DAGs as binary trees?
       * Refactor calculate bounds [Done]
       * Refactor gen [Done]
         * Should calc be last resort if not there? -> That is an error then
-      * Then layout to get bnds [Done]
+      * Then layout to get dims [Done]
         * And use skip flags
       * Rename skip flags to symbols to be more clear [Done]
       * Gen should not upd verts - only pos them [Done]
@@ -283,15 +283,15 @@ Store DAGs as binary trees?
         * Swap-layout
         * Newline flag
         * Update CDR
-      * Rename bnds -> dims
+      * Test for sublists in ptr cmds [Done]              
+      * Rename dims -> dims [Done]
         * Dims = l w h
         * Extent = min bnd'g rect: xmin ymin xmax ymax
         * Bounds = aka bounding box/rect; 
         * So extents == bounds
-      * Test for sublists in ptr cmds        
-      * Make NIL point to itself?
-      * Refactor get a,b,c -> a> b> c>
-      * Refeactor "*0" mov-part-abv> into cursor fn
+      * Support mov to Car for NIL
+        * Make NIL point to itself like Str? Technically it does...        
+
       
       * Refactor layout to support newline
         * Maintain newlines when re-layout
@@ -315,8 +315,10 @@ Store DAGs as binary trees?
     * TEST LAYOUT OF EXISTING DATA
       
   * Refactor [Nxt Week]
-      * Refactor cmd-make-nl
-        * What happens in a Y layout -> Make column? maybe later...  
+    * Refactor get a,b,c -> a> b> c>
+    * Refeactor "*0" mov-part-abv> into cursor fn  
+    * Refactor cmd-make-nl
+      * What happens in a Y layout -> Make column? maybe later...  
     * Support random access [WIP]
       * Update subsequent items in list [Done]
       * Update superlist [Done]
@@ -345,17 +347,14 @@ Store DAGs as binary trees?
       * Restrict mov> functions to be used by layout
     * Refactor other cmds
       * Implement split space
-    * Cur/part relative position functions
     * Make fn: mov-cur X/adv Y/nl
     * Cache origin [?]
       * This abs pos
       * Need dirty flag to be set on pos change, i.e. layout calls    
-    * For cmd-make-*, update list with len and bnds [Later]
+    * For cmd-make-*, update list with len and dims [Later]
       * This only applies to Pairs whose Car is a list
-      * The bnds only applies to Car
+      * The dims only applies to Car
       * Store newlines in list/Pair?
-    * Gen should calc rel/local bnds for each Pair (whose 'a is a Pair) [Later]
-      * Or call this separately/after gen      
     * Refactor other items to use skip flags like mov> etc.
     * For single chars, the bounds is the same      
             

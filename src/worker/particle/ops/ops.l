@@ -58,8 +58,8 @@
                 (lay-part Part (get-origin> *main) 'skip-car-cdr)
                 
                 # Move to y bounds
-                (let Bnds (calc-bounds> Prv-C NIL T)
-                  (setq *cur Bnds)
+                (let Dims (calc-bounds> Prv-C NIL T)
+                  (setq *cur Dims)
                   (adv-cur 2.0)
                   (nl-cur 2.0)
                   (lay-part (get Part 'a) (get-origin> *main)))
@@ -234,7 +234,7 @@
     
       (put *0 'b Car)
       
-      (let Bnds (calc-bounds> Car)
+      (let Dims (calc-bounds> Car)
 
         # Set list
         (if (= (type Car) '(+Pair))
@@ -249,7 +249,7 @@
               (prog
                 # Move to lower bnd of Car
                 (set-cur-x (get (get-origin> Car) 1))
-                (set-cur-y (get Bnds 2)) (nl-cur)
+                (set-cur-y (get Dims 2)) (nl-cur)
                 (lay-part *0 *cur 'skip-cdr))
                 
               (prog
@@ -357,11 +357,11 @@
   # If pair use 'a
   (let (Base (get *main (if (= (type *main) '(+Pair)) 'a 'b))
         Ori (get-origin> Base)
-        Bnds (if (= (get Base 'lay) 'x)
+        Dims (if (= (get Base 'lay) 'x)
                  (calc-bounds> Base NIL T)
                  (calc-bounds> Base T NIL)))
     (setq *cur (list (get Ori 1)
-                     (get Bnds 2)
+                     (get Dims 2)
                      (get *cur 3)))
     (nl-cur 2.0))
 

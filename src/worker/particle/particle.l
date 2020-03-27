@@ -59,7 +59,7 @@
   (=: lay Lay)
   (=: nl)
   
-  (=: bnds)
+  (=: dims)
   
   # list of tags; always str; order matters like when searching
   # consider first tag, the name

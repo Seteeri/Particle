@@ -48,8 +48,8 @@
         Y (get (get-origin> Ref) 2))
         
     (while (and I (not (get I 'nl)))
-      (let Bnds (calc-bounds> I NIL T) # Only CAR, Skip CDR
-        (setq Y (min Y (get Bnds 2))))
+      (let Dims (calc-bounds> I NIL T) # Only CAR, Skip CDR
+        (setq Y (min Y (get Dims 2))))
       (setq I (get I 'c)))
     
     (set-cur-y Y)

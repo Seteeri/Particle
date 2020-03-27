@@ -38,7 +38,7 @@
 
   #(println 'lay-pair Any (get Any 'lay))
 
-  # Move Pair first to get correct pos since bnds rel to origin
+  # Move Pair first to get correct pos since dims rel to origin
   (mov> Any *cur)
 
   #{
@@ -79,26 +79,26 @@
       # Mov cur to origin of Pair
       (set-cur-x X-Ori) (set-cur-y Y-Ori)
       
-      # Move below or use its Y bnds - origin is same as bnds for single line
+      # Move below or use its Y dims - origin is same as dims for single line
       # This assumes Pair is always single line with dot or 2x dot
       (nl-cur)
             
       # Lay CAR first since its X bounds has precedence
       
-      (let ((X-Bnd-A Y-Bnd-A) (get (: a) 'bnds)
-            (X-Bnd-B Y-Bnd-B) (get (: b) 'bnds))
+      (let ((X-Dims-A Y-Dims-A) (get (: a) 'dims)
+            (X-Dims-B Y-Dims-B) (get (: b) 'dims))
       
         (when (or (= Skip 'skip-cdr)
                   (not Skip))
           (lay-part (: a) Base))
       
         # To draw Cdr: (use base-cur? that recalcs...)
-        # X =  Ori 1 + Bnd-Car 1, plus an adv
+        # X =  Ori 1 + Dims-Car 1, plus an adv
         # Y = origin of Pair
         
         # X should be in place
         # else have to trace Car
-        #(set-cur-x (+ X-Ori X-Bnd-A)) (adv-cur)
+        #(set-cur-x (+ X-Ori X-Dims-A)) (adv-cur)
         (adv-cur)
         
         (set-cur-y Y-Ori)
@@ -135,14 +135,14 @@
       # Mov cur to origin of Pair
       (set-cur-y Y-Ori)
       
-      # Use X bnds
-      (set-cur-x (+ X-Ori (get (: bnds) 1)))
+      # Use X dims
+      (set-cur-x (+ X-Ori (get (: dims) 1)))
       (adv-cur)
     
       # Lay CAR first since its Y bounds has precedence
 
-      (let ((X-Bnd-A Y-Bnd-A) (get (: a) 'bnds)
-            (X-Bnd-B Y-Bnd-B) (get (: b) 'bnds))
+      (let ((X-Dims-A Y-Dims-A) (get (: a) 'dims)
+            (X-Dims-B Y-Dims-B) (get (: b) 'dims))
       
         (when (or (= Skip 'skip-cdr)
                   (not Skip))
@@ -150,10 +150,10 @@
         
         # To draw Cdr:
         # X = Origin
-        # Y = Ori 2 + Bnd-Car 2, plus nl
+        # Y = Ori 2 + Dims-Car 2, plus nl
         (set-cur-x X-Ori)
 
-        #(set-cur-y (+ Y-Ori Y-Bnd-A)) (nl-cur 3.0)
+        #(set-cur-y (+ Y-Ori Y-Dims-A)) (nl-cur 3.0)
         # Y should be in place
         # else have to trace Car
         (nl-cur)
