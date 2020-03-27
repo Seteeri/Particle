@@ -275,39 +275,59 @@ Store DAGs as binary trees?
         * Calculate y min from last NL (or list start) until that item
       * Refactor cmd-del [Done]
 
-    * Refactor sublist handling (PART II)
+    * Refactor sublist handling (PART II) [Fin Fri?]
       * Refactor swap-layout [Done]
       * Refactor layout Y [Done]      
-      * Ptr mov is with regard to layout - inverses [Done]      
-      * Refactor sublist handling [WIP]
-        * On car, create new list
-      * Refactor cmds
-        * Refactor cmd-del
-      * Change ptr sym when moving to CAR...
-        * 3 parts in name - default is "*+0"
-          * Dir: * or ^
-          * Atom: + or underscore
-          * Num
-        * or show props?
-      * Fix tests -> base in layout
+      * Ptr mov is with regard to layout - inverses [Done]    
+      * Refactor cmd-make-car to create new list when on car [Done]
+        * Swap-layout
+        * Newline flag
+        * Update CDR
+      * Rename bnds -> dims
+        * Dims = l w h
+        * Extent = min bnd'g rect: xmin ymin xmax ymax
+        * Bounds = aka bounding box/rect; 
+        * So extents == bounds
+      * Test for sublists in ptr cmds        
+      * Make NIL point to itself?
+      * Refactor get a,b,c -> a> b> c>
+      * Refeactor "*0" mov-part-abv> into cursor fn
       
+      * Refactor layout to support newline
+        * Maintain newlines when re-layout
+        * Lay pair needs to check
+      * Refactor layout to support mixed layouts better      
+        * Need newline support before testing mixed layouts since Pairs are
+        placed on newline with Y orientation
+      * Refactor cmd-del
+        * Should maintain line length?
       * Test superlist update
-
+    
+    * Change ptr sym when moving to Car [Wknd]
+      * 3 parts in name - default is "*+0"
+        * Dir: * or ^
+        * Atom: + or underscore
+        * Num
+      * or show props on single line (nested pairs)
+    
+    TARGET:
+    * BUILD TEST TREE
+    * TEST LAYOUT OF EXISTING DATA
+      
+  * Refactor [Nxt Week]
+      * Refactor cmd-make-nl
+        * What happens in a Y layout -> Make column? maybe later...  
     * Support random access [WIP]
       * Update subsequent items in list [Done]
       * Update superlist [Done]
         * Poss result in slow updates with large items, so lists should be done
         outside the list then spliced in which becomes O(N) where N is the length
         of the changes
-      * Base [Done]
-      * Sublist [Todo]      
-    
-    * BUILD TEST TREE
-    * TEST LAYOUT OF EXISTING DATA
-    
-    GOAL: Able to build test tree
-  
-  * Refactor [Wknd]
+    * Should swap-layout recurse or not?
+      * Maintain substructure
+      * Do first level or immediate
+      * Shortcut with Ctrl, Alt, Shift Tab
+      * Really only useful when setting up sublists  
     * Refactor layout to have force option
       * Use fn for now
     * On enter-list, if not immediately enterable, search for next list?

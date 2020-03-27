@@ -3,15 +3,9 @@
 (de cmd-make-char (Keysym)
 
   #{
-    Set CDR to new list with single char
-
-    1. Create new part
-    2. Set CDR of ref to part
-    3. Set ptr value
-    4. Move ptr
-    5. Update subsequent items
-    6. Update superlist subsequent items
-
+    If pointing to Car, sublist
+    If pointing to Cell/Cdr, append behind
+  
     ksd~Return
     ksd~Tab
   }#
@@ -27,13 +21,13 @@
     #(setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
     #(setq *nl-pair T)
 
-    # If Car, replace entire pair (to make a sublist)
+    # If Car, make a sublist
     (let (Ref (val> *0)
           C   (get Ref 'c)
           Ca  (get C 'a)
-          On-Car (= Ca Ref))
-      (when On-Car
-        (println 'cmd-make-char "ON CAR"))
+          On-Car (and (isa '+Sym Ref)
+                      (not (isa '+Nil Ref))))
+      (when On-Car (println 'cmd-make-char "ON CAR"))
       (con-any Data Lay On-Car))))
 
 

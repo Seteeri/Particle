@@ -4135,8 +4135,7 @@ insert mode
   If ptr on CAR replace entire thing (current)
   but technically replacing Car would create a sublist
   
-  So if user types a bunch of cars, then goes back and presses a char
-  it should replace it
+  So if user types a bunch of cars, then goes back and presses a char...
   - here can be option to replace or append
   - most logical is append (also consistent with text)
     - create insert mode - replace sym also with _0
@@ -4260,3 +4259,47 @@ insert mode
           NIL
       NIL
   NIL
+
+================================================================================
+
+Creating A Sublist:
+
+[X] [X] [X] [X] NIL
+a   b   c   NIL
+            *0
+
+To:
+
+[X] [X] [X] [X] NIL
+a   b   c   
+            *0
+            [X] NIL
+            d
+            
+            
+* Create additional line for ptr
+
+
+With Y layout:
+                *0
+[X] [X] [X] [Y] [Y] d
+a   b   c   NIL NIL
+            
+* Still a sublist
+
+Then test nl, swap layout to Y
+
+[X] [X] [X] 
+a   b   c   
+
+    *0
+[Y] NIL
+NIL
+
+
+[X] [X] [X] 
+a   b   c   
+
+        *0
+[Y] [X] NIL
+NIL d

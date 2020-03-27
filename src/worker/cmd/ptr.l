@@ -1,6 +1,8 @@
 (de cmd-swap-layout (Keysym)
   (println "Swap layout")
   
+  # Note this causes bounds change also
+  
   # If NIL, get prev, else do ref  
   
   (let (Ref (val> *0)

@@ -34,19 +34,23 @@
 
 (de lay-pair (Any Base Skip)
 
-  # Must handle nested lists so logic must be here
+  # Track lists here
+
+  #(println 'lay-pair Any (get Any 'lay))
+
+  # Move Pair first to get correct pos since bnds rel to origin
+  (mov> Any *cur)
+
   #{
+  # If newline detected, must follow cmd-new-line
+  # However, unlike there, here we can store last NL while traversing
+  
   (setq Base (if (get Any 'nl)
                  (prog
                    (println 'lay-pair "Detected NL")
                    (get-origin> Any))
                  Base))
   }#
-
-  #(println 'lay-pair Any (get Any 'lay))
-
-  # Move Pair first to get correct pos since bnds rel to origin
-  (mov> Any *cur)
   
   (if (= (get Any 'lay) 'x)    
     (lay-pair-x Any Base Skip)
@@ -178,5 +182,7 @@
         (adv-cur))
 
       (prog
-          
+  
+        # Should not call lay pair but rather the method
+        # lay-sym, lay-str
         (lay-pair Any Base Skip))))
