@@ -290,7 +290,7 @@ Store DAGs as binary trees?
         * Bounds = aka bounding box/rect; 
         * So extents == bounds
       * Create Reset command
-      * cmd-make-char [WIP]
+      * cmd-make-char/cmd-make-nl [WIP]
         * Tests:
           * a b c (d e f)
             * Nil should move also when sublist moves (if superlist upd)
@@ -300,12 +300,10 @@ Store DAGs as binary trees?
           * worker must create default line object for main [Done]
           * cmd-make-char must update line bnds [Done]
           * lay-pair must get y bnds from line [Done]
-          * rename "*main" -> "*list"
-        * Update list Cdr
-        * Update superlist Cdr (recursive)
+        * Update list Cdr [Done]
+        * Update superlist Cdr (recursive) [WIP]
           * Create fn to set nl ptrs
-      * cmd-make-nl
-        * Requires bnds and upd fns etc.
+      * Update sublist handling
       * Refactor layout to support sublists [WIP]
         * x layout supports sublist [Done]
         * y layout support sublist

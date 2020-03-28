@@ -163,12 +163,12 @@
 
       # Camera Translation
       # Prior/Next
-      ((`ksd~Control-R `ksd~slash) T `cmd-move-cam-px)
-      ((`ksd~Control-R `ksd~comma)     T `cmd-move-cam-nx)
-      ((`ksd~Control-R `ksd~semicolon)     T `cmd-move-cam-py)
-      ((`ksd~Control-R `ksd~period)     T `cmd-move-cam-ny)
-      ((`ksd~Control-R `ksd~l)            T `cmd-zoom-cam-in)
-      ((`ksd~Control-R `ksd~apostrophe)            T `cmd-zoom-cam-out)))
+      ((`ksd~Alt-R `ksd~Right) T `cmd-move-cam-px)
+      ((`ksd~Alt-R `ksd~Left)     T `cmd-move-cam-nx)
+      ((`ksd~Alt-R `ksd~Up)     T `cmd-move-cam-py)
+      ((`ksd~Alt-R `ksd~Down)     T `cmd-move-cam-ny)
+      ((`ksd~Prior)            T `cmd-zoom-cam-in)
+      ((`ksd~Next)            T `cmd-zoom-cam-out)))
 
 
 (de init-worker ()
