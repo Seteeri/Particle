@@ -1,3 +1,6 @@
+(de print-cur ()
+  (println (format (get *cur 1) *Scl) (format (get *cur 2) *Scl)))
+
 (de mov-cur-part (Part Pos)
   (cond ((= Pos 'start) (mov-cur-vert (first-vert> Part)))
         ((= Pos 'end)   (mov-cur-vert (last-vert> Part)))))
@@ -44,15 +47,15 @@
 (de base-cur (Ref) # Rename to align
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds
-  (let Bounds (calc-bounds> Ref NIL T) # Skip CDR
+  (let Bnds (calc-bounds> Ref NIL T) # Skip CDR
     (if (= (get Ref 'lay) 'x)
         (prog
           # Move cur to x base of Ref and y origin of Ref
-          (set-cur-x (get Bounds 1))
+          (set-cur-x (get Bnds 1))
           (set-cur-y (get (get-origin> Ref) 2))
           (adv-cur 2.0))
         (prog
           # Move cur to x origin of Ref and y base of Ref
           (set-cur-x (get (get-origin> Ref) 1))
-          (set-cur-y (get Bounds 2))
+          (set-cur-y (get Bnds 2))
           (nl-cur 2.0)))))

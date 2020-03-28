@@ -128,7 +128,7 @@
   (for Vert (: verts)
   
     (with Vert
-      (=: pos (copy Pos))
+      (=: pos Pos)
       (update-glyph> Vert (char (: chr))))
     (upd-mdl-mtrx> Vert)
     (cmd-upd-vert *ipc Vert)

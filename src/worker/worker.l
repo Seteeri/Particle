@@ -47,7 +47,8 @@
 # Stores pointer particles and main list particle
 (def '*particles)
 (def '*lsts) # Traversal history list
-(def '*main) # Master list
+(def '*main) # Current list
+(def '*line) # Current line 
 (def '*cmds) # List of commands (undo/history/timeline)
 (def '*ptrs) # List of pointers
 
@@ -81,6 +82,7 @@
 (load "/home/user/Particle/particle/src/worker/particle/pair.l")
 (load "/home/user/Particle/particle/src/worker/particle/sym.l")
 (load "/home/user/Particle/particle/src/worker/particle/num.l")
+(load "/home/user/Particle/particle/src/worker/particle/line.l")
 (load "/home/user/Particle/particle/src/worker/particle/ops/layout.l")
 (load "/home/user/Particle/particle/src/worker/particle/ops/gen.l")
 (load "/home/user/Particle/particle/src/worker/particle/ops/ops.l")
@@ -139,15 +141,14 @@
       #(view (getl (val> *0)))
       # If we lay relative to origin should stay in same place
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
-                                        (let (Ref (val> *0)
-                                              Car (get Ref 'a))
-                                          (println 'dims (get Ref 'dims) (get Ref 'data))
-                                          # origin + dims
-                                          (let Ori (get-origin> Ref)
-                                            (setq *cur (list (+ (get Ori 1) (car (get Ref 'dims)))
-                                                             (- (get Ori 2) *adv-vert)
-                                                             (get Ori 3))))
-                                          (mov> *0 *cur))))
+      
+                                        #(let Ref (val> *0)
+                                        #  (mov-cur-part Ref 'start)
+                                        #  (lay-part Ref (get-origin> *main)))
+                                          
+                                        (mov-*1 *line)
+                                          
+                                        ))
 
       # Pointer Translation
       ((`ksd~Control-L `ksd~w) T `cmd-ptr-up)
@@ -260,9 +261,13 @@
     (set-cur-y Y)
     (adv-cur 48.0)
 
-    # DO this properly
-    (with *main (=: bnds (list (car (get (: a) 'dims)) (cadr (get (: b) 'dims)))))
+    # DO this properly - in gen?
+    (with *main
+      (=: nl (new '(+Line) NIL NIL (get (: a) 'dims)))
+      (=: bnds (get (: a) 'dims)))
     (lay-part *main *cur)
+    
+    (setq *line *main)
     
     #######################
     # TODO: Draw *ptrs

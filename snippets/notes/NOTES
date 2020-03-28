@@ -4344,3 +4344,68 @@ Put cons in 'nl
 a.nl = (*main . b)
 e.nl = (a . i)
 i.nl = (e . NIL)
+
+====================
+
+Each list contains lines
+
+sym = list
+
+[a] [] [] []
+
+[e] [] [] []
+
+[i] [] [] []
+
+sym.nl = (NIL . a)
+a.nl = (sym . e)
+e.nl = (a . i)
+i.nl = (e . NIL)
+
+*main -> lines
+
+If lines don't link to each other than must search main list property
+every time
+
+If on a newline then .nl would have something
+
+*line = [i]
+
+[a] [] [] [] 
+
+[e] [] [] [] 
+
+           *
+[i] [] [] []
+
+To move to previous line, go to (car (get *line nl))
+
+Store line bnds where? 
+-> Create object for nl
+-> Instead of cons pair, use object
+
+================================================================================
+
+[]   [] []
+sym
+     [] []
+     
+     [] []
+     
++------------------------+
+| []   [] [] [] [] [] [] |
+| sym                    |
++------------------------+
+
+ +------------+
+ []   | [] [] |
+ sym          |
+ +------------+
+     
+      +-------+
+      | [] [] |
+      +-------+
+     
+      +-------+
+      | [] [] | 
+      +-------+

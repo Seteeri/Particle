@@ -11,8 +11,6 @@
 
 # Refactor these into methods
 
-(def '*ln-prv)
-
 (de lay-part (Any Base Skip)
   
   #{
@@ -33,25 +31,35 @@
 
 (de lay-pair (Any Base Skip)
 
-  # Track lists here
+  (println 'lay-pair Any (get Any 'data))
+        
+  # Handle newline - same fn as mov-nl
+  (let? Nl-Prv (get (get Any 'nl) 'p)
+  
+    (println 'lay-pair 'NL Nl-Prv (get Nl-Prv 'data))
 
-  #(println 'lay-pair Any (get Any 'lay))
+    # Align cursor to start of prv line
+    # x = origin of prv line
+    # y = bnds of prv line
+    
+    # if sym, get val, else itself
+    (let (Ori (if (isa '+Sym Nl-Prv)
+                  (get-origin> (get Nl-Prv 'b))
+                  (get-origin> Nl-Prv)))
+    
+      (set-cur-x (get Ori 1))
+      
+      (set-cur-y (+ (get Ori 2)
+                    (get (get (get Nl-Prv 'nl) 'bnds) 2)))
+      (nl-cur *sublist-space-y)
+      
+      (print-cur)
+      
+      # Use first item origin as base
+      (setq Base *cur)))
 
   # Move Pair first to get correct pos since dims rel to origin
   (mov> Any *cur)
-
-  # When newline detected, save last line
-  (when (get Any 'ln)
-    # Set prv ln nxt ptr
-    (println Any (get Any 'data))
-    (let Ln (if *ln-prv *ln-prv *main)
-      (with Ln
-        (=: ln (cons (car (: ln)) Any)))
-      # Set Any
-      (with Any
-        (=: ln (cons Ln NIL)))
-    (setq *ln-prv Any)))
-  
   
   (if (= (get Any 'lay) 'x)    
     (lay-pair-x Any Base Skip)
@@ -207,59 +215,55 @@
   (lay-part Tgt (get-origin> *main)))
 
 
-(de upd-line (Part)
-  (let (Ori (get-origin> *main)
-        I (get Part 'b))
-    (while (and I (not (get I 'nl)))
-      # Handle layout specific
-      (let? Dims (calc-bounds> (get I 'c) NIL T)
-        (set-cur-x (get Dims 1)) (adv-cur 2.0))
-      (println 'upd-line "Update" I (get I 'data))
-      (lay-part I Ori 'skip-cdr)
-      (setq I (get I 'b)))))
-
-
-(de upd-line-main ()
-  (unless (= (get *main 'data) '*main)
-    (let (Ori (get-origin> *main)
-          I (get *main 'b))
-      (while (and I (not (get I 'nl)))
-        # Handle layout specific
-        (let? Dims (calc-bounds> (get I 'c) NIL T)
-          (set-cur-x (get Dims 1)) (adv-cur 2.0))
-        (lay-part I Ori 'skip-cdr)
-        (setq I (get I 'b))))))
-        
-
 (de mov-nl (Ref)
   # Is this appropriate for Y layout? ...since it already moves to newline
   # Should make a new column
   
-  # Calc min Y until NIL or nl
-  (let (I Ref
-        Y (get (get-origin> Ref) 2))
+  (if (= (get Ref 'lay) 'x)
+  
+      (prog
+      
+        # [a] [b] [c] [d]
+        # [a] [b] [c]
+      
+        # Shorten line dims to Ref origin
+        (let (Ori (get-origin> *line)
+              Bnds (calc-bounds> (get Ref 'c) NIL T))
+          (with (get *line 'nl)
+            (let ((X Y) (: bnds))
+              (=: bnds (list (- (get Bnds 1) (get Ori 1))
+                             (- (get Bnds 2) (get Ori 2)))))))
         
-    (while (and I (not (get I 'nl)))
-      (let Dims (calc-bounds> I NIL T) # Only CAR, Skip CDR
-        (setq Y (min Y (get Dims 2))))
-      (setq I (get I 'c)))
-    
-    (set-cur-y Y)
-    
-    # Newline + Ptr
-    # This assumes pointer is single line
-    (nl-cur 3.0)
-    
-    # Calc X
-    (let Ori (get-origin> (get *main 'b))
-      (set-cur-x (get Ori 1))
-    
-      (put Ref 'nl T)
-    
-      # Remember base is list, cur is for Ref
-      # This updates Cdr
-      (lay-part Ref Ori))
-    
-    # And update list Cdr also
-    T))
+        #(mov-*1 *line)
+      
+        # Then calc Ref -> EOL dims
+        (let (Part Ref
+              Ori (get-origin> Part)
+              (X Y) Ori)
+          (while (and Part (not (get Part 'nl)))
+            (println Part)
+            (let ((Xb Yb) (calc-bounds> Part NIL T))
+              (setq X (max X Xb))
+              (setq Y (min Y Yb)))
+            (setq Part (get Part 'b)))
+            
+          (put Ref 'nl (new '(+Line)
+                            *line
+                            NIL
+                            (list (- X (car Ori)) (- Y (cadr Ori))))))
+
+        (mov-*1 Ref)
+
+        # Link prev line also
+        (with *line (put (: nl) 'n Ref))
+                           
+        # Base irrelevant; lay-part will override it
+        (lay-part Ref *cur)
         
+        (setq *line Ref)
+
+        # update cdr etc.
+        T)
+        
+      (prog
+        (println "IMPLEMENT MOV-NL FOR Y LAYOUT"))))

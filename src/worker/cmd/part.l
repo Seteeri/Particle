@@ -1,5 +1,3 @@
-(def '*mode-repl)
-
 (de cmd-make-char (Keysym)
 
   #{

@@ -20,9 +20,15 @@
   (let Ref (val> *0)
     (mov-nl Ref)
     
-    #(put *0 'b Ref)
-    (mov-part-abv> *0 Ref (cons T))))
-
+    # Move to Cdr if there
+    (let Cdr (get Ref 'b)
+      (if Cdr
+          (prog
+            (put *0 'b Cdr)
+            (mov-part-abv> *0 Cdr (cons T)))
+          (prog
+            (put *0 'b Ref)
+            (mov-part-abv> *0 Ref (cons T)))))))
   
 (de cmd-mov-bl (Keysym)
 

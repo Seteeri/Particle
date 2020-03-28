@@ -289,11 +289,23 @@ Store DAGs as binary trees?
         * Extent = min bnd'g rect: xmin ymin xmax ymax
         * Bounds = aka bounding box/rect; 
         * So extents == bounds
-      * Refactor layout
-        * Implement updating nl property for layout
-        * Test entire tree
-        * Implement updating nl property for cmds
-          * Call layout, upd-line, upd-line-main
+      * Create Reset command
+      * cmd-make-char [WIP]
+        * Tests:
+          * a b c (d e f)
+            * Nil should move also when sublist moves (if superlist upd)
+          * a b c (d e f), move up, cont list
+            * If new item pens sublist, it should move also (if list upd)
+        * Write newline fn to set nl prop [WIP]
+          * worker must create default line object for main [Done]
+          * cmd-make-char must update line bnds [Done]
+          * lay-pair must get y bnds from line [Done]
+          * rename "*main" -> "*list"
+        * Update list Cdr
+        * Update superlist Cdr (recursive)
+          * Create fn to set nl ptrs
+      * cmd-make-nl
+        * Requires bnds and upd fns etc.
       * Refactor layout to support sublists [WIP]
         * x layout supports sublist [Done]
         * y layout support sublist
