@@ -288,6 +288,7 @@
     (list (max (if Xa Xa X) (if Xb Xb X) X)
           (min (if Ya Ya Y) (if Yb Yb Y) Y))))
 
+# Line
 
 (dm adj-line-to-part> (Ref)
   (let (Ori (get-origin> This)
@@ -309,7 +310,14 @@
       (setq Part (get Part 'b)))
     (list (- X (car Ori)) (- Y (cadr Ori)))))
 
+
+(dm mov-line-p> ()
+  (let? P (get (: nl) 'p)
+    (setq *line P)))
+
+
 # Debug
+
 
 (dm trace> (Cnt)
   (let (D ()

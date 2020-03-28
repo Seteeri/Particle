@@ -245,9 +245,9 @@
         (setq *main Prv))
         
       # Set line
-      (when (get Ref 'nl)
-        (println 'point-a-out "Mov to line")
-        (setq *line (get Ref 'nl 'p)))
+      (when (mov-line-p> Ref)
+        (println 'point-a-out "Mov to line"))
+        
     
       (println 'point-a-out Prv (get Prv 'data))
       (put *0 'b Prv)
@@ -260,9 +260,8 @@
   (let? Cdr (get (get *0 'b) 'b)
   
     # Set line
-    (when (get Cdr 'nl)
-      (println 'point-a-out "Mov to line")
-      (setq *line (get Cdr 'nl 'p)))
+    (when (mov-line-p> Cdr)
+      (println 'point-a-out "Mov to line"))
   
     (println 'point-b-nxt Cdr (get Cdr 'data))
     (put *0 'b Cdr)
