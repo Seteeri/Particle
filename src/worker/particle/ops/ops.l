@@ -246,6 +246,11 @@
         (println 'point-a-out "Mov to superlist")
         (setq *main Prv))
     
+      # Set line
+      (when (get Prv 'nl)
+        (println 'point-a-out "Mov to line")
+        (setq *line Prv))
+    
       (println 'point-a-out Prv (get Prv 'data))
       (put *0 'b Prv)
       (mov-part-abv> *0 Prv (cons T)))))
@@ -255,6 +260,12 @@
   (println 'point-b-nxt)
 
   (let? Cdr (get (val> *0) 'b)
+  
+    # Set line
+    (when (get Cdr 'nl)
+      (println 'point-b-nxt "Mov to line")
+      (setq *line Cdr))
+  
     (println 'point-b-nxt Cdr (get Cdr 'data))
     (put *0 'b Cdr)
     (mov-part-abv> *0 Cdr (cons T))))
@@ -270,7 +281,9 @@
 
   (println 'point-a-in)
 
-  # TODO: Support mov to NIL
+  # TODO:
+  # * Support mov to NIL
+  # * Check line change
 
   (let (Ref (val> *0)
         Car (get Ref 'a))

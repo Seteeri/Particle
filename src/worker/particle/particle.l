@@ -80,6 +80,50 @@
 
 (dm has-car-pair> () (= (type (: a)) '(+Pair)))
 
+(dm last-vert-pos> (Cnt) (get (last (: verts)) 'pos Cnt))
+(dm first-vert> () (car (: verts)))
+(dm last-vert> () (last (: verts)))
+
+(dm del> (Car Cdr)
+
+  #{
+    Currently, render will attempt to render all verts (*max-verts)
+    -> Send cmd to render to adjust max
+    - instanceCount is number of instances from beginning of array
+    *verts is LIFO, thus will always keep instances pack from beginning of array
+    -> Maintain vert cnt, instanceCount = size - used
+
+    However, if del from arbitrary point then must zero it
+    and instanceCount remains the same
+    After del, vert returns to queue
+    and next vert will reuse it
+
+    Makes most sense to simply zero vert
+    and not worry about instanceCount 
+    as frag will be discarded...fix later
+  }#
+
+  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
+        Verts (: verts))
+    (for Vert Verts
+      (send-msg *ipc
+                Sock-Render
+                (pack "(zv " (get Vert 'off-gl) '")"))
+      (push '*verts Vert)
+      (dec '*cnt-v)))
+    
+  (when (and Car (: a))
+    (del> (: a) Car Cdr))
+    
+  (when (and Cdr (: b))
+    (del> (: b) Car Cdr))
+    
+  # Clear links and flags
+  (=: a)
+  (=: b)
+  (=: c)  
+  (=: nl))    
+
 # List specific?
 
 (dm last> ()
@@ -204,47 +248,6 @@
               P)))
     
 
-(dm del> (Car Cdr)
-
-  #{
-    Currently, render will attempt to render all verts (*max-verts)
-    -> Send cmd to render to adjust max
-    - instanceCount is number of instances from beginning of array
-    *verts is LIFO, thus will always keep instances pack from beginning of array
-    -> Maintain vert cnt, instanceCount = size - used
-
-    However, if del from arbitrary point then must zero it
-    and instanceCount remains the same
-    After del, vert returns to queue
-    and next vert will reuse it
-
-    Makes most sense to simply zero vert
-    and not worry about instanceCount 
-    as frag will be discarded...fix later
-  }#
-
-  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Verts (: verts))
-    (for Vert Verts
-      (send-msg *ipc
-                Sock-Render
-                (pack "(zv " (get Vert 'off-gl) '")"))
-      (push '*verts Vert)
-      (dec '*cnt-v)))
-    
-  (when (and Car (: a))
-    (del> (: a) Car Cdr))
-    
-  (when (and Cdr (: b))
-    (del> (: b) Car Cdr))
-    
-  # Clear links and flags
-  (=: a)
-  (=: b)
-  (=: c)  
-  (=: nl))    
-
-
 # Verts
 # Most of these don't use any properties from part
 # so should move to a vert class or make normal function
@@ -269,11 +272,6 @@
                             R G B 1.0))
       (upd-mdl-mtrx> Vert)
       (cmd-upd-vert *ipc Vert))))
-
-
-(dm last-vert-pos> (Cnt) (get (last (: verts)) 'pos Cnt))
-(dm first-vert> () (car (: verts)))
-(dm last-vert> () (last (: verts)))
 
 
 (dm calc-bounds> (Car-Skip Cdr-Skip)
@@ -307,7 +305,6 @@
         Ori (get-origin> This)
         (X Y) Ori)
     (while (and Part (not (get Part 'nl)))
-      (println Part)
       (let ((Xb Yb) (calc-bounds> Part NIL T))
         (setq X (max X Xb))
         (setq Y (min Y Yb)))
