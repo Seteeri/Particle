@@ -46,43 +46,41 @@
 ###########################
 
 (de con-any (Data Lay Repl)
+      
+  (if Repl
+  
+      (repl-car Data Lay)
+
+      (let (Ref (val> *0)
+            Cdr (get Ref 'b)  
+            Prv (get Ref 'c)
+            Part (gen-part (list Data) Lay NIL T))
+            
+        (con-back Prv Ref Part)
+
+        # First must pos Part where Ref was
+        (mov-cur-part Ref 'start)
+        (lay-part Part (get-origin> *main) 'skip-cdr)
         
-    (if Repl
-    
-        (repl-car Data Lay)
-
-        (let (Ref (val> *0)
-              Cdr (get Ref 'b)  
-              Prv (get Ref 'c)
-              Prv-B (get Prv 'b)
-              Prv-C (get Prv 'c)
-              Part (gen-part (list Data) Lay NIL T))
-              
-          (con-back Prv Ref Part)
-
-          # First must pos Part where Ref was
-          (mov-cur-part Ref 'start)
-          (lay-part Part (get-origin> *main) 'skip-cdr)
-          
-          # If Part's ymin < list ymin, must update list bnds
-          # before updating Part+
-          
-          # Adjust line bounds specifically to Part
-          (adj-line-to-part Part)
-                    
-          # Align cursor to bnds of Prv
-          # Ideally, should call lay-part on any Part and it works
-          (align-cur-to-bnds Part)
-          (lay-part (get Part 'b) (get-origin> *main))
-              
-          # Update superlists
-          #(upd-line-main)
-          
-          # Create upd-ptr
-          (put *0 'b Ref)
-          (mov-part-abv> *0 Ref (cons T))
-          
-          Part)))
+        # If Part's ymin < list ymin, must update list bnds
+        # before updating Part+
+        
+        # Adjust line bounds specifically to Part
+        (adj-line-to-part Part)
+                  
+        # Align cursor to bnds of Prv
+        # Ideally, should call lay-part on any Part and it works
+        (align-cur-to-bnds Part)
+        (lay-part (get Part 'b) (get-origin> *main))
+            
+        # Update superlists
+        #(upd-line-main)
+        
+        # Create upd-ptr
+        (put *0 'b Ref)
+        (mov-part-abv> *0 Ref (cons T))
+        
+        Part)))
 
 
 (de repl-car (Data Lay)
