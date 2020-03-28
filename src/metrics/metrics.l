@@ -29,19 +29,19 @@ Quotient of N and D = (*/ 1.0 N D)
     (for Code 255
 
       #Format path name, read file/code, eval data -> list of data
-      (let (Data          (load-file-metrics-data Code)
-            Metrics-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
+      (let (Data (load-file-metrics-data Code)
+            Metric-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
 
         # When no bounds max it
-        (with Metrics-Glyph
+        (with Metric-Glyph
           (unless (: bounds)
             # (* 7.74184810394 2.0) = 15.48369620788
             # l b r t
             (=: bounds (list 0.0 0.0 15.48369620788 15.48369620788))))
           
-        (calc-metrics> Metrics-Glyph Sca-Glyph)
+        (calc-metrics> Metric-Glyph Sca-Glyph)
 
-        (push 'Metrics Metrics-Glyph)))
+        (push 'Metrics Metric-Glyph)))
 
     (flip Metrics)))
 
@@ -60,6 +60,8 @@ Quotient of N and D = (*/ 1.0 N D)
   (=: r R)
   (=: t T))
 
+
+# Per set of glyphs
 (class +Metrics)
 (dm T (Translate
        Bounds)
@@ -71,9 +73,9 @@ Quotient of N and D = (*/ 1.0 N D)
   (=: uv NIL))
 
 
-#Scale and advance the same (adv bc monospaced)
-#Merge metrics and data(ppm) into single file
-#Calculate other params and save to file so need not do everytime
+# Scale and advance the same (adv bc monospaced)
+# Merge metrics and data(ppm) into single file
+# Calculate other params and save to file so need not do everytime
 
 
 (dm calc-metrics> (Sca-Glyph)
