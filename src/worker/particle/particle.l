@@ -76,8 +76,6 @@
   (=: dat (date))
   (=: tim (time)))
 
-(dm val> () (: b))
-
 (dm has-car-pair> () (= (type (: a)) '(+Pair)))
 
 (dm last-vert-pos> (Cnt) (get (last (: verts)) 'pos Cnt))

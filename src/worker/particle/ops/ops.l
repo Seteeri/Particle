@@ -51,7 +51,7 @@
   
       (repl-car Data Lay)
 
-      (let (Ref (val> *0)
+      (let (Ref (get *0 'b)
             Cdr (get Ref 'b)  
             Prv (get Ref 'c)
             Part (gen-part (list Data) Lay NIL T))
@@ -85,7 +85,7 @@
 
 (de repl-car (Data Lay)
 
-  (let (Ref (val> *0)
+  (let (Ref (get *0 'b)
         Cdr (get Ref 'b)  
         Prv (get Ref 'c)
         Prv-B (get Prv 'b)
@@ -234,8 +234,8 @@
 (de point-b-prv ()
   (println 'point-b-prv)
 
-  (let (Ref (val> *0)
-        Prv (get (val> *0) 'c))
+  (let (Ref (get *0 'b)
+        Prv (get (get *0 'b) 'c))
         
     (when Prv
     
@@ -257,7 +257,7 @@
 (de point-b-nxt ()
   (println 'point-b-nxt)
 
-  (let? Cdr (get (val> *0) 'b)
+  (let? Cdr (get (get *0 'b) 'b)
   
     # Set line
     (when (get Cdr 'nl)
@@ -283,7 +283,7 @@
   # * Support mov to NIL
   # * Check line change
 
-  (let (Ref (val> *0)
+  (let (Ref (get *0 'b)
         Car (get Ref 'a))
     
     (when (and Car
@@ -319,7 +319,7 @@
 #{
   Find list
 
-  (let Part (get (val> *0) 'c)
+  (let Part (get (get *0 'b) 'c)
     (loop
       (T (or (isa '+Pair (get Part 'a))
              (= Part *main)

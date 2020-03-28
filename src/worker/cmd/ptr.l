@@ -5,7 +5,7 @@
   
   # If NIL, get prev, else do ref  
   
-  (let (Ref (val> *0)
+  (let (Ref (get *0 'b)
         Prv (get Ref 'c)
         Tgt (if (= (get Ref 'data) NIL) Prv Ref))
     (when Tgt
@@ -17,7 +17,7 @@
   (println "Move newline")
 
   # Calc min Y until NIL or nl
-  (let Ref (val> *0)
+  (let Ref (get *0 'b)
     (mov-nl Ref)
     
     # Move to Cdr if there
@@ -34,7 +34,7 @@
 
   # This moves in front of prev
 
-  (let Ref (val> *0)
+  (let Ref (get *0 'b)
   
     (align-cur-to-bnds (get Ref 'c))
     (put Ref 'nl NIL)
@@ -48,25 +48,25 @@
 # Semantic Traversal (Pair/Ptr)
 
 (de cmd-ptr-left (Keysym)
-  (if (= (get (val> *0) 'lay) 'x)
+  (if (= (get (get *0 'b) 'lay) 'x)
     (point-b-prv)
     (point-a-out)))
   
 
 (de cmd-ptr-right (Keysym)
-  (if (= (get (val> *0) 'lay) 'x)
+  (if (= (get (get *0 'b) 'lay) 'x)
       (point-b-nxt)
       (point-a-in)))
 
 
 (de cmd-ptr-up (Keysym)
-  (if (= (get (val> *0) 'lay) 'x)
+  (if (= (get (get *0 'b) 'lay) 'x)
       (point-a-out)
       (point-b-prv)))
 
 
 (de cmd-ptr-down (Keysym)
-  (if (= (get (val> *0) 'lay) 'x)
+  (if (= (get (get *0 'b) 'lay) 'x)
       (point-a-in)
       (point-b-nxt)))
 
@@ -77,7 +77,7 @@
 
 (de cmd-trans-ptr (Cnt Fn)
   
-  (let Ref (val> *0)
+  (let Ref (get *0 'b)
 
     (mov-cur-part *0 'start)
     (eval Fn)

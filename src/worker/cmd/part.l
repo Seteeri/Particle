@@ -20,7 +20,7 @@
     #(setq *nl-pair T)
 
     # If Car, make a sublist
-    (let (Ref (val> *0)
+    (let (Ref (get *0 'b)
           C   (get Ref 'c)
           Ca  (get C 'a)
           On-Car (and (isa '+Sym Ref)
@@ -67,7 +67,7 @@
   
   # Similar to adding items, must update CDR and list CDR
 
-  (let (Ref (val> *0)
+  (let (Ref (get *0 'b)
         Tgt (get Ref 'c)
         Cc (get Tgt 'c))
 
@@ -150,7 +150,7 @@
 
   (prinl-info "cmd-format")
   
-  (con-any (format (get (val> *0) 'c 'a 'data)) 'x))
+  (con-any (format (get (get *0 'b) 'c 'a 'data)) 'x))
 
 
 (de cmd-pack (Keysym)
@@ -159,7 +159,7 @@
 
   # Pack current to prev
   
-  (let (Ref (val> *0)
+  (let (Ref (get *0 'b)
         Prv (get Ref 'c)
         Dat-Prv (get Prv 'a 'data)
         Cc (get Prv 'c)
@@ -199,7 +199,7 @@
 
   (when (get *main 'b 'data)
 
-    (let (Ref (val> *0)
+    (let (Ref (get *0 'b)
           Cdr (get Ref 'b)
           Tgt (get Ref 'a 'data))
 

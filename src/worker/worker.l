@@ -138,11 +138,11 @@
       ((`ksd~Control-L `ksd~e)    T `cmd-make-nil)
       ((`ksd~Control-R `ksd~e)    T `cmd-make-nil)
 
-      #(view (getl (val> *0)))
+      #(view (getl (get *0 'b)))
       # If we lay relative to origin should stay in same place
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
       
-                                        #(let Ref (val> *0)
+                                        #(let Ref (get *0 'b)
                                         #  (mov-cur-part Ref 'start)
                                         #  (lay-part Ref (get-origin> *main)))
                                         
