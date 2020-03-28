@@ -217,42 +217,23 @@
 
 (de mov-nl (Ref)
   # Is this appropriate for Y layout? ...since it already moves to newline
-  # Should make a new column
+  # -> make new column...
   
   (if (= (get Ref 'lay) 'x)
   
       (prog
-      
-        # [a] [b] [c] [d]
-        # [a] [b] [c]
-      
-        # Shorten line dims to Ref origin
-        (let (Ori (get-origin> *line)
-              Bnds (calc-bounds> (get Ref 'c) NIL T))
-          (with (get *line 'nl)
-            (let ((X Y) (: bnds))
-              (=: bnds (list (- (get Bnds 1) (get Ori 1))
-                             (- (get Bnds 2) (get Ori 2)))))))
-        
-        #(mov-*1 *line)
-      
-        # Then calc Ref -> EOL dims
-        (let (Part Ref
-              Ori (get-origin> Part)
-              (X Y) Ori)
-          (while (and Part (not (get Part 'nl)))
-            (println Part)
-            (let ((Xb Yb) (calc-bounds> Part NIL T))
-              (setq X (max X Xb))
-              (setq Y (min Y Yb)))
-            (setq Part (get Part 'b)))
             
-          (put Ref 'nl (new '(+Line)
-                            *line
-                            NIL
-                            (list (- X (car Ori)) (- Y (cadr Ori))))))
-
-        (mov-*1 Ref)
+        #(mov-*1 *line)
+            
+        # Shorten line dims to Ref c origin
+        # since Ref itself will be on a newline
+        (adj-line-to-part> *line (get Ref 'c))
+                      
+        # Then create Line and calc its dims (from Ref to NIL/NL)
+        (put Ref 'nl (new '(+Line)
+                          *line
+                          NIL
+                          (calc-bounds-nl> Ref)))
 
         # Link prev line also
         (with *line (put (: nl) 'n Ref))

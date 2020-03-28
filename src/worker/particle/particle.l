@@ -65,7 +65,7 @@
          can go below
   }#  
   (=: dims)
-  (=: bnds (list 0.0 0.0))
+  #(=: bnds (list 0.0 0.0))
   
   # list of tags; always str; order matters like when searching
   # consider first tag, the name
@@ -77,6 +77,8 @@
   (=: tim (time)))
 
 (dm val> () (: b))
+
+(dm has-car-pair> () (= (type (: a)) '(+Pair)))
 
 # List specific?
 
@@ -291,9 +293,27 @@
           (min (if Ya Ya Y) (if Yb Yb Y) Y))))
 
 
-(dm has-car-pair> () (= (type (: a)) '(+Pair)))
+(dm adj-line-to-part> (Ref)
+  (let (Ori (get-origin> This)
+        Bnds (calc-bounds> Ref NIL T))
+    (with (: nl)
+      (let ((X Y) (: bnds))
+        (=: bnds (list (- (get Bnds 1) (get Ori 1))
+                       (- (get Bnds 2) (get Ori 2))))))))
 
-          
+
+(dm calc-bounds-nl> ()
+  (let (Part This
+        Ori (get-origin> This)
+        (X Y) Ori)
+    (while (and Part (not (get Part 'nl)))
+      (println Part)
+      (let ((Xb Yb) (calc-bounds> Part NIL T))
+        (setq X (max X Xb))
+        (setq Y (min Y Yb)))
+      (setq Part (get Part 'b)))
+    (list (- X (car Ori)) (- Y (cadr Ori)))))
+
 # Debug
 
 (dm trace> (Cnt)

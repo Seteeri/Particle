@@ -356,13 +356,10 @@ Store DAGs as binary trees?
     * Merge cmd ptr and part      
     * Make option: cmds a circular list
     * Replace dot with arrow indicating layout (Right/Down)
-    * Particle can have 'nl and 'sp to indicate how many nl or sp before it
     * Camera needs to move with content like when entering a newline
       * Requires unproject to test if coord is in the viewport
     * Draw num in car [?]
       * Handle decimals
-    * Refactor layout and mov functions [???]
-      * Restrict mov> functions to be used by layout
     * Refactor other cmds
       * Implement split space
     * Make fn: mov-cur X/adv Y/nl

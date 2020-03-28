@@ -10,6 +10,8 @@
     (set-cur-y (+ (get Ori 2)
                   (get Bnds 2)))
     (mov> *1 *cur)))
+
+########################
   
 
 (de upd-main-bnds (Part)
