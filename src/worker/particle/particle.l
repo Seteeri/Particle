@@ -36,11 +36,6 @@
 
 }#
 
-(de sym-int? (Any)
-  (and (sym? Any)
-       (not (str? Any)) (not (box? Any)) (not (ext? Any))
-       (not (= Any NIL))))
-
 
 (class +Particle)
 (dm T (Data
