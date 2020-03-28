@@ -256,16 +256,14 @@
 # so should move to a vert class or make normal function
 
 (dm get-origin> ()
-    
-  (when (: verts)
   
-    (let (Vert (car (: verts))
-          Pos (get Vert 'pos)
-          (X Y) (get-origin> (get *metrics (get Vert 'chr))
-                             Pos
-                             *sca-vert))
-
-      (list X Y (get Pos 3)))))
+  (let? Vert (car (: verts))
+      
+    (with Vert
+    
+      (get-origin> (get *metrics (: chr))
+                   (: pos)
+                   *sca-vert))))
   
 
 (dm col> (Col)
@@ -279,16 +277,9 @@
       (cmd-upd-vert *ipc Vert))))
 
 
-(dm last-vert-pos> (Cnt)
-  (get (get (last (: verts)) 'pos) Cnt))
-
-
-(dm first-vert> ()
-  (car (: verts)))
-
-  
-(dm last-vert> ()
-  (last (: verts)))
+(dm last-vert-pos> (Cnt) (get (last (: verts)) 'pos Cnt))
+(dm first-vert> () (car (: verts)))
+(dm last-vert> () (last (: verts)))
 
 
 (dm calc-bounds> (Car-Skip Cdr-Skip)

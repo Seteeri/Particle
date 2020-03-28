@@ -151,7 +151,7 @@ Quotient of N and D = (*/ 1.0 N D)
 
   (list (+ (get Pos 1) (- (*/ (get (: bounds) 1) Sca 1.0)))
         (+ (get Pos 2) (- (*/ (get (: bounds) 2) Sca 1.0)))
-        0.0))
+        (get Pos 3)))
 
 
 (dm get-sca> (Sca)
