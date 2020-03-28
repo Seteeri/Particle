@@ -81,9 +81,6 @@
   (=: dat (date))
   (=: tim (time)))
 
-
-(dm con> (B) (=: b B))
-
 (dm val> () (: b))
 
 # List specific?
@@ -171,7 +168,7 @@
 (dm mov-part-aft> (B P)
   # Make offset version instead of static function?
   
-  (mov-cur-vert (last (get B 'verts)) T)
+  (mov-cur-vert (last-vert> B) T)
   (adv-cur 2.0)
   
   (let Pos (get-origin> This)
@@ -185,7 +182,7 @@
 (dm mov-part-abv> (B P)
   # Make offset version instead of static function?
   
-  (mov-cur-vert (car (get B 'verts)) T)
+  (mov-cur-vert (first-vert> B) T)
   (nl-cur -1.0)
 
   (let Pos (get-origin> This)
@@ -199,7 +196,7 @@
 (dm mov-part-bel> (B P)
   # Make offset version instead of static function?
   
-  (mov-cur-vert (car (get B 'verts)) T)
+  (mov-cur-vert (first-vert> B) T)
   (nl-cur)
   
   (let Pos (get-origin> This)
