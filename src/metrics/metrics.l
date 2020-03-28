@@ -162,4 +162,4 @@ Quotient of N and D = (*/ 1.0 N D)
 
   (list (*/ (get (: dims) 1) Sca 1.0)
         (*/ (get (: dims) 2) Sca 1.0)
-        0.0))
+        Sca))
