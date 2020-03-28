@@ -227,6 +227,7 @@
         # since Ref itself will be on a newline
         (adj-line-to-part> *line (get Ref 'c))
 
+        # Make fn in line?
         # Link lines
         (let Nxt (get *line 'nl 'n)
         

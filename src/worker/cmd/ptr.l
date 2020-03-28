@@ -40,14 +40,31 @@
 
   # This moves in front of prev
 
-  (let Ref (get *0 'b)
-  
-    (align-cur-to-bnds (get Ref 'c))
-    (put Ref 'nl NIL)
-    (lay-part Ref *cur)
+  (let (Ref (get *0 'b)
+        Line (get Ref 'nl)
+        Prv-Line (get Line 'p)
+        Nxt-Line (get Line 'n))
     
-    (put *0 'b Car Ref)
-    (mov-part-abv> *0 Ref (cons T))))
+      # Make this a fn
+      # Unlink lines
+      
+      (when Prv-Line
+        (with (get Prv-Line 'nl)
+          (=: n Nxt-Line)))
+        
+      (when Nxt-Line
+        (with (get Nxt-Line 'nl)
+          (=: p Prv-Line)))
+      
+      (setq *line Prv-Line)
+      
+      (put Ref 'nl NIL)
+    
+      (align-cur-to-bnds (get Ref 'c))
+      (lay-part Ref *cur)
+      
+      (put *0 'b Car Ref)
+      (mov-part-abv> *0 Ref (cons T))))
       
 
 ###############################
