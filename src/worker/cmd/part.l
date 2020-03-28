@@ -104,14 +104,14 @@
           
           (put Cc 'b Tgt)
 
-          (base-cur Cc)
+          (align-cur-to-bnds Cc)
           (mov> Tgt *cur))
         
         (prog
           (put Cc 'b Ref)
           
           # Move Ref
-          (base-cur Cc)
+          (align-cur-to-bnds Cc)
           (mov> Ref *cur)))
 
       (put Ref 'c Cc)

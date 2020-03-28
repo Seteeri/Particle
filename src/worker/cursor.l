@@ -41,7 +41,7 @@
   (setq *cur (place 2 *cur Y)))
 
 
-(de base-cur (Ref) # Rename to align
+(de align-cur-to-bnds (Ref) # Rename to align
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds
   (let Bnds (calc-bounds> Ref NIL T) # Skip CDR

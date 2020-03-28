@@ -73,7 +73,7 @@
                     
           # Align cursor to bnds of Prv
           # Ideally, should call lay-part on any Part and it works
-          (base-cur Part)
+          (align-cur-to-bnds Part)
           (lay-part (get Part 'b) (get-origin> *main))
               
           # Update superlists

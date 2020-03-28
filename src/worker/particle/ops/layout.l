@@ -53,8 +53,6 @@
                     (get Nl-Prv 'nl 'bnds 2)))
       (nl-cur *sublist-space-y)
       
-      (print-cur)
-      
       # Use first item origin as base
       (setq Base *cur)))
 
@@ -105,7 +103,7 @@
                   (not Skip))
           (lay-part (: a) Base))
       
-        # To draw Cdr: (use base-cur? that recalcs...)
+        # To draw Cdr: (use align-cur-to-bnds? that recalcs...)
         # X =  Ori 1 + Dims-Car 1, plus an adv
         # Y = origin of Pair
         

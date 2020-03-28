@@ -36,7 +36,7 @@
 
   (let Ref (val> *0)
   
-    (base-cur (get Ref 'c))
+    (align-cur-to-bnds (get Ref 'c))
     (put Ref 'nl NIL)
     (lay-part Ref *cur)
     
