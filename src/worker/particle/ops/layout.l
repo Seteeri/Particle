@@ -226,16 +226,25 @@
         # Shorten line dims to Ref c origin
         # since Ref itself will be on a newline
         (adj-line-to-part> *line (get Ref 'c))
-                      
-        # Then create Line and calc its dims (from Ref to NIL/NL)
-        (put Ref 'nl (new '(+Line)
-                          *line
-                          NIL
-                          (calc-bounds-nl> Ref)))
 
-        # Link prev line also
-        (with *line (put (: nl) 'n Ref))
-                           
+        # Link lines
+        (let Nxt (get *line 'nl 'n)
+        
+          # Then create Line and calc its dims (from Ref to NIL/NL)
+          (put Ref 'nl (new '(+Line)
+                            *line
+                            Nxt
+                            (calc-bounds-nl> Ref)))
+
+          # Link prev n to Ref
+          (with (get *line 'nl)
+            (=: n Ref))
+            
+          # Link nxt p to Ref
+          (when Nxt
+            (with (get Nxt 'nl)
+              (=: p Ref))))
+
         # Base irrelevant; lay-part will override it
         (lay-part Ref *cur)
         

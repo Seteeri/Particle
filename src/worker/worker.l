@@ -142,16 +142,13 @@
       # If we lay relative to origin should stay in same place
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
       
-                                        #(let Ref (get *0 'b)
-                                        #  (mov-cur-part Ref 'start)
-                                        #  (lay-part Ref (get-origin> *main)))
+                                        (let Ref (get *0 'b)
+                                          (mov-cur-part Ref 'start)
+                                          (lay-part Ref (get-origin> *main)))
                                         
-                                        (let? P (get *line 'nl 'p)
-                                          (mov-*1 P))
-                                        
-                                        (call 'sleep 3)
-                                          
-                                        (mov-*1 *line)
+                                        # (let? P (get *line 'nl 'p) (mov-*1 P))
+                                        # (call 'sleep 3)
+                                        # (mov-*1 *line)
                                           
                                         ))
 

@@ -243,11 +243,11 @@
       (when (= (type (get Prv 'a)) '(+Pair))
         (println 'point-a-out "Mov to superlist")
         (setq *main Prv))
-    
+        
       # Set line
-      (when (get Prv 'nl)
+      (when (get Ref 'nl)
         (println 'point-a-out "Mov to line")
-        (setq *line Prv))
+        (setq *line (get Ref 'nl 'p)))
     
       (println 'point-a-out Prv (get Prv 'data))
       (put *0 'b Prv)
@@ -261,8 +261,8 @@
   
     # Set line
     (when (get Cdr 'nl)
-      (println 'point-b-nxt "Mov to line")
-      (setq *line Cdr))
+      (println 'point-a-out "Mov to line")
+      (setq *line (get Cdr 'nl 'p)))
   
     (println 'point-b-nxt Cdr (get Cdr 'data))
     (put *0 'b Cdr)
