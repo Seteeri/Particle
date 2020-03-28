@@ -18,17 +18,23 @@
 
   # Calc min Y until NIL or nl
   (let Ref (get *0 'b)
-    (mov-nl Ref)
-    
-    # Move to Cdr if there
-    (let Cdr (get Ref 'b)
-      (if Cdr
-          (prog
-            (put *0 'b Cdr)
-            (mov-part-abv> *0 Cdr (cons T)))
-          (prog
-            (put *0 'b Ref)
-            (mov-part-abv> *0 Ref (cons T)))))))
+  
+    # If already newline, don't do anything
+    # TODO: Add support for this later?
+    (unless (get Ref 'nl)
+  
+      (mov-nl Ref)
+      
+      # Move to Cdr if there
+      (let Cdr (get Ref 'b)
+        (if Cdr
+            (prog
+              (put *0 'b Cdr)
+              (mov-part-abv> *0 Cdr (cons T)))
+            (prog
+              (put *0 'b Ref)
+              (mov-part-abv> *0 Ref (cons T))))))))
+              
   
 (de cmd-mov-bl (Keysym)
 
