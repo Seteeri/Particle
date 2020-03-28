@@ -150,7 +150,7 @@
 
   (prinl-info "cmd-format")
   
-  (con-any (format (get (get (get (val> *0) 'c) 'a) 'data)) 'x))
+  (con-any (format (get (val> *0) 'c 'a 'data)) 'x))
 
 
 (de cmd-pack (Keysym)
@@ -161,12 +161,10 @@
   
   (let (Ref (val> *0)
         Prv (get Ref 'c)
-        Dat-Prv (get (get Prv 'a) 'data)
+        Dat-Prv (get Prv 'a 'data)
         Cc (get Prv 'c)
-        Dat-Cc (get (get Cc 'a) 'data))
+        Dat-Cc (get Cc 'a 'data))
         
-    # (get (get *main 'b) 'data)
-
     (con-any (pack Dat-Cc Dat-Prv) 'x)))
 
 
@@ -199,11 +197,11 @@
 
   (prinl-info "cmd-intern")
 
-  (when (get (get *main 'b) 'data)
+  (when (get *main 'b 'data)
 
     (let (Ref (val> *0)
           Cdr (get Ref 'b)
-          Tgt (get (get Ref 'a) 'data))
+          Tgt (get Ref 'a 'data))
 
       (when (str? Tgt)
 

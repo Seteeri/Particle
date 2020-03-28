@@ -100,7 +100,7 @@
   (let Last This
     (loop
       # Stop at second to last
-      (NIL (get (get Last 'b) 'b))
+      (NIL (get Last 'b 'b))
       (setq Last (get Last 'b)))
     Last))
 

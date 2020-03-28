@@ -4,7 +4,7 @@
 (de mov-*1 (Line)
   # Move to bnds of current line
   (let (Ori (get-origin> Line)
-        Bnds (get (get Line 'nl) 'bnds))
+        Bnds (get Line 'nl 'bnds))
     (set-cur-x (+ (get Ori 1)
                   (get Bnds 1)))
     (set-cur-y (+ (get Ori 2)
@@ -129,8 +129,8 @@
             (lay-part (get Part 'a) (get-origin> *main)))
           
           # Move ptr to Cdr/NIL; must set ptr to Part to get Car
-          (put *0 'b (get (get Part 'a) 'b))
-          (mov-part-abv> *0 (get (get Part 'a) 'b) (cons T)))
+          (put *0 'b (get Part 'a 'b))
+          (mov-part-abv> *0 (get Part 'a 'b) (cons T)))
           
         (prog
           (println 'con-any "IMPLEMENT Y LAYOUT")))

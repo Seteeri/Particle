@@ -34,7 +34,7 @@
   (println 'lay-pair Any (get Any 'data))
         
   # Handle newline - same fn as mov-nl
-  (let? Nl-Prv (get (get Any 'nl) 'p)
+  (let? Nl-Prv (get Any 'nl 'p)
   
     (println 'lay-pair 'NL Nl-Prv (get Nl-Prv 'data))
 
@@ -50,7 +50,7 @@
       (set-cur-x (get Ori 1))
       
       (set-cur-y (+ (get Ori 2)
-                    (get (get (get Nl-Prv 'nl) 'bnds) 2)))
+                    (get Nl-Prv 'nl 'bnds 2)))
       (nl-cur *sublist-space-y)
       
       (print-cur)
