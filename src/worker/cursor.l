@@ -8,9 +8,9 @@
 
 (de mov-cur-vert (Vert)
   (with Vert
-    (set-cur-pos (get-origin> (get *metrics (: chr))
-                              (: pos)
-                              *sca-vert))))
+    (setq *cur (get-origin> (get *metrics (: chr))
+                            (: pos)
+                            *sca-vert))))
 
 
 (de adv-cur (Cnt)
@@ -39,9 +39,6 @@
 
 (de set-cur-y (Y)
   (setq *cur (place 2 *cur Y)))
-
-(de set-cur-pos (Pos)
-  (setq *cur Pos))
 
 
 (de base-cur (Ref) # Rename to align
