@@ -265,6 +265,7 @@
     (with *main
       (=: nl (new '(+Line) NIL NIL (get (: a) 'dims)))
       (=: bnds (get (: a) 'dims)))
+      
     (lay-part *main *cur)
     
     (setq *line *main)

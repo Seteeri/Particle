@@ -29,7 +29,7 @@
                        (min Y (get Bnds 2))))))))
       
 
-(de upd-line-bnds (Part)
+(de adj-line-to-part (Part)
   # Update until EOL
   
   (let (Ori (get-origin> (get Part 'c))
@@ -66,10 +66,9 @@
           
           # If Part's ymin < list ymin, must update list bnds
           # before updating Part+
-          #(upd-main-bnds Part)
           
-          # Update line bounds also
-          (upd-line-bnds Part)
+          # Adjust line bounds specifically to Part
+          (adj-line-to-part Part)
                     
           # Align cursor to bnds of Prv
           # Ideally, should call lay-part on any Part and it works

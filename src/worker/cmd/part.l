@@ -127,13 +127,13 @@
       # however,
       # poss move items back to maintain line length
       # but this means update everthing
-      (upd-line Ref)
+      (adj-line-to-part Ref)
       
-      # Update Main CDR similarly
-      # TEST THIS
-      # Set cur before calling
-      (when NIL
-        (upd-line-main))      
+      # Layout remainder
+      (align-cur-to-bnds Ref)
+      (lay-part (get Ref 'b) (get-origin> *main))
+      
+      # update superlists etc      
 
       # Ptr same; simply move it
       (mov-part-abv> *0 Ref (cons T)))))
