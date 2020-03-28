@@ -42,7 +42,13 @@
         (=: bnds (list (+ X Dx)
                        (min Y (get Bnds 2))))))))
 
-
+(de upd-super (Ref)  
+  # Recurse
+  (while (setq Super (get Ref 'c))
+    (align-cur-to-bnds Super)
+    (lay-part (get Super 'b)
+              (get-origin> *main))))
+    
 ###########################
 
 (de con-any (Data Lay Repl)
@@ -90,7 +96,8 @@
         Prv (get Ref 'c)
         Prv-B (get Prv 'b)
         Prv-C (get Prv 'c)
-        Part (gen-part (list (list Data)) Lay NIL T))
+        Part (gen-part (list (list Data)) Lay NIL T)
+        Car (get Part 'a))
         
     #{
     
@@ -117,34 +124,32 @@
           # Then nl, draw Car
           (mov-cur-part Prv 'start)
           (lay-part Part (get-origin> *main) 'skip-car-cdr)
+                    
+          # Create nl for Car
+          #   This a new list so Prv will be Nil
+          (put Car 'nl (new '(+Line) 
+                            NIL
+                            NIL
+                            (get Car 'a 'dims)))
           
-          # Move to y bounds; set nl flag
-          (let Dims (calc-bounds> Prv-C NIL T)
-            (setq *cur Dims)
-            (adv-cur 2.0)
-            (nl-cur *sublist-space-y)
-            (lay-part (get Part 'a) (get-origin> *main)))
-          
+          # MAKE ALIGN FN
+          # Pos cur at Prv-C bounds
+          (align-cur-to-bnds Prv-C)
+          (nl-cur *sublist-space-y)
+            
+          # Move Car to y bounds
+          # Base will be origin of Part          
+          (lay-part (get Part 'a) (get-origin> *main))
+                    
           # Move ptr to Cdr/NIL; must set ptr to Part to get Car
           (put *0 'b (get Part 'a 'b))
-          (mov-part-abv> *0 (get Part 'a 'b) (cons T)))
+          (mov-part-abv> *0 (get Part 'a 'b) (cons T))
+          
+          (setq *line Car)
+          (setq *main Car))
           
         (prog
-          (println 'con-any "IMPLEMENT Y LAYOUT")))
-
-    # Update lists...
-    # 1. Calc min y for current line -> use *main bnds
-    # 2. Update Part Cdr
-
-    # Poss reuse make-nl
-
-    # Set newline prop
-    (put (get Part 'a)
-         'nl
-         (cons *main NIL))
-    
-    (setq *main Part)
-    (with *main (=: bnds (copy (get (: a) 'dims))))))
+          (println 'con-any "IMPLEMENT Y LAYOUT")))))
 
 
 (de con-back (Prv Ref Part)

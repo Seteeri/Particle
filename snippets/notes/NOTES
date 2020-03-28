@@ -4409,3 +4409,29 @@ sym
       +-------+
       | [] [] | 
       +-------+
+
+
+RECURSE SUPERLIST
+            
+[X]  [X]  [T]  [X]
+           |
+     [X]  [X]  [T]  [X]
+                |
+          [X]  [X]  [T]  [X]
+                     |    +---+
+          [X]  [X]  [X]  [X]  |
+                              |
+                             [X]
+
+[X]  [X]  [T]  [X]
+           |
+     [X]  [X]  [T]  [X]
+                |
+          [X]  [X]  [T]       [X]
+                     |         |
+          [X]  [X]  [X]  [X]   |
+                               |
+                              [X]
+
+Poss maintain bnds in list also
+Anytime line is updated, it is updated also if line bnds =

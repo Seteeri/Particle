@@ -301,12 +301,10 @@ Store DAGs as binary trees?
           * cmd-make-char must update line bnds [Done]
           * lay-pair must get y bnds from line [Done]
         * Update list Cdr [Done]
-        * Update superlist Cdr (recursive) [WIP]
-          * Create fn to set nl ptrs
-      * Update sublist handling
-      * Refactor layout to support sublists [WIP]
-        * x layout supports sublist [Done]
-        * y layout support sublist
+        * Update superlist/superlines [WIP]
+      * Update sublist handling [WIP]
+      * Refactor cmd-del
+      * Support y layout
       * Merge con-back + repl-list
       * Support mov to Car for NIL
         * Make NIL point to itself like Str? Technically it does...        

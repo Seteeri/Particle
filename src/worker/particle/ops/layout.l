@@ -34,27 +34,45 @@
   (println 'lay-pair Any (get Any 'data))
         
   # Handle newline - same fn as mov-nl
-  (let? Nl-Prv (get Any 'nl 'p)
-  
-    (println 'lay-pair 'NL Nl-Prv (get Nl-Prv 'data))
+  (let (Nl (get Any 'nl)
+        Nl-Prv (get Nl 'p))
+    
+    (when Nl
 
-    # Align cursor to start of prv line
-    # x = origin of prv line
-    # y = bnds of prv line
-    
-    # if sym, get val, else itself
-    (let (Ori (if (isa '+Sym Nl-Prv)
-                  (get-origin> (get Nl-Prv 'b))
-                  (get-origin> Nl-Prv)))
-    
-      (set-cur-x (get Ori 1))
-      
-      (set-cur-y (+ (get Ori 2)
-                    (get Nl-Prv 'nl 'bnds 2)))
-      (nl-cur *sublist-space-y)
-      
-      # Use first item origin as base
-      (setq Base *cur)))
+      (println 'lay-pair 'NL Nl-Prv (get Nl-Prv 'data))
+
+      (if Nl-Prv
+          
+          (prog
+            # Align cursor to start of prv line
+            # x = origin of prv line
+            # y = bnds of prv line
+            
+            # if sym, get val, else itself
+            (let (Ori (if (isa '+Sym Nl-Prv)
+                          (get-origin> (get Nl-Prv 'b))
+                          (get-origin> Nl-Prv)))
+            
+              (set-cur-x (get Ori 1))
+              
+              (set-cur-y (+ (get Ori 2)
+                            (get Nl-Prv 'nl 'bnds 2)))
+              (nl-cur *sublist-space-y)
+              
+              #(println Ori)
+              #(println (get Nl-Prv 'nl))
+              #(println (get Nl-Prv 'nl 'bnds))
+              #(print-cur)
+              
+              # Use first item origin as base
+              (setq Base *cur)))
+              
+          (prog
+            # CAR - Use c since Line p=NIL and n=NIL
+            (let? Cc (get Any 'c 'c)
+              (align-cur-to-bnds Cc)
+              (nl-cur *sublist-space-y)
+              (setq Base *cur))))))
 
   # Move Pair first to get correct pos since dims rel to origin
   (mov> Any *cur)

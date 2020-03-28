@@ -15,9 +15,7 @@
         Lay 'x)
 
     # Push to cmd list
-    #(setq *nl-pair NIL)
     #(setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
-    #(setq *nl-pair T)
 
     # If Car, make a sublist
     (let (Ref (get *0 'b)
