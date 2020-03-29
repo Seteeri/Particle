@@ -12,22 +12,6 @@
     (mov> *1 *cur)))
 
 ########################
-  
-
-(de upd-main-bnds (Part)
-  # Everytime an item is added to a line, upd its bounds
-  # Subtract space between
-  
-  (let (Ori (get-origin> (get Part 'c))
-        Bnds (calc-bounds> Part NIL T)
-        Dx (- (get Bnds 1)
-              (get Ori 1)
-              *adv-vert))
-    (with *main
-      (let ((X Y) (: bnds))
-        (=: bnds (list (+ X Dx)
-                       (min Y (get Bnds 2))))))))
-      
 
 (de adj-line-to-part (Part)
   # Update until EOL
@@ -42,12 +26,26 @@
         (=: bnds (list (+ X Dx)
                        (min Y (get Bnds 2))))))))
 
-(de upd-super (Ref)  
-  # Recurse
-  (while (setq Super (get Ref 'c))
-    (align-cur-to-bnds Super)
-    (lay-part (get Super 'b)
-              (get-origin> *main))))
+(de upd-super (Super)
+  #{
+    [X]  [X]  [T]  [X]
+               |
+               [X]  [X]  [T]  [X]
+                          |
+                          [X]  [X]  [T]  [X]
+                                     |   
+                                     [X]  [X]  [X]  [X]
+                                
+                               
+  }#
+  
+  (while Super
+    (when (= (get Super 'c 'a) Super)
+      (println "FOUND LIST" Super (get Super 'c 'data))
+      (align-cur-to-bnds (get Super 'c))
+      (lay-part (get Super 'c 'b)
+                (get-origin> *main)))
+    (setq Super (get Super 'c))))
     
 ###########################
 
@@ -58,11 +56,9 @@
       (repl-car Data Lay)
 
       (let (Ref (get *0 'b)
-            Cdr (get Ref 'b)  
-            Prv (get Ref 'c)
             Part (gen-part (list Data) Lay NIL T))
             
-        (con-back Prv Ref Part)
+        (con-back Ref Part)
 
         # First must pos Part where Ref was
         (mov-cur-part Ref 'start)
@@ -80,7 +76,7 @@
         (lay-part (get Part 'b) (get-origin> *main))
             
         # Update superlists
-        #(upd-line-main)
+        (upd-super Part)
         
         # Create upd-ptr
         (put *0 'b Ref)
@@ -132,7 +128,6 @@
                             NIL
                             (get Car 'a 'dims)))
           
-          # MAKE ALIGN FN
           # Pos cur at Prv-C bounds
           (align-cur-to-bnds Prv-C)
           (nl-cur *sublist-space-y)
@@ -152,7 +147,7 @@
           (println 'con-any "IMPLEMENT Y LAYOUT")))))
 
 
-(de con-back (Prv Ref Part)
+(de con-back (Ref Part)
   #{  
                 *0
     [ ] - [ ] - NIL
@@ -166,30 +161,39 @@
     
   }#
 
-  (put Prv 'b Part)    
-  (put Ref 'c Part)    
-  
-  (with Part
-    (=: b Ref)
-    (=: c Prv))
-  
-  # Set nl if Ref has it; toggle Ref
-  (when (get Ref 'nl)
-    (put Part 'nl (get Ref 'nl))
-    (put Ref 'nl))
+  (let (Prv (get Ref 'c)
+        Prv-Cdr (get Prv 'b))
+                      
+    # Handle car
+    (if (= (get Prv 'a) Ref)
+        (prog
+          (put Prv 'a Part)
+          (put Prv 'b Prv-Cdr))
+        (put Prv 'b Part))
 
-  # Copy lay
-  #(force-lay Part (get Ref 'lay))
+    (put Ref 'c Part)    
       
-  # Connect new part data to list part data
-  # Must conn Cdr also (get (get Ref 'b) 'data)
-  
-  # Remember, *main's value is always the particle itself
-  # The value of the symbol *main is actually 'b    
-  
-  (unless (isa '+Sym Prv)
-    (with Prv
-      (con (car (:: data)) (get Part 'data)))))
+    (with Part
+      (=: b Ref)
+      (=: c Prv))
+    
+    # Set nl if Ref has it; toggle Ref
+    (when (get Ref 'nl)
+      (put Part 'nl (get Ref 'nl))
+      (put Ref 'nl))
+
+    # Copy lay
+    #(force-lay Part (get Ref 'lay))
+        
+    # Connect new part data to list part data
+    # Must conn Cdr also (get (get Ref 'b) 'data)
+    
+    # Remember, *main's value is always the particle itself
+    # The value of the symbol *main is actually 'b    
+    
+    (unless (isa '+Sym Prv)
+      (with Prv
+        (con (car (:: data)) (get Part 'data))))))
       
 
 (de repl-list (Prv Ref Cdr Part)

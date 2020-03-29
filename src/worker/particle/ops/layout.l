@@ -31,15 +31,13 @@
 
 (de lay-pair (Any Base Skip)
 
-  (println 'lay-pair Any (get Any 'data))
-        
   # Handle newline - same fn as mov-nl
   (let (Nl (get Any 'nl)
         Nl-Prv (get Nl 'p))
     
     (when Nl
 
-      (println 'lay-pair 'NL Nl-Prv (get Nl-Prv 'data))
+      (println 'lay-pair 'found-nl Nl-Prv (get Nl-Prv 'data))
 
       (if Nl-Prv
           
@@ -71,7 +69,7 @@
             # CAR - Use c since Line p=NIL and n=NIL
             (let? Cc (get Any 'c 'c)
               (align-cur-to-bnds Cc)
-              (nl-cur *sublist-space-y)
+              (nl-cur (+ *sublist-space-y 1.0))
               (setq Base *cur))))))
 
   # Move Pair first to get correct pos since dims rel to origin
@@ -270,6 +268,7 @@
         (setq *line Ref)
 
         # update cdr etc.
+        (upd-super Ref)
         T)
         
       (prog

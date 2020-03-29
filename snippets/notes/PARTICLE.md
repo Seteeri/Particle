@@ -301,8 +301,8 @@ Store DAGs as binary trees?
           * cmd-make-char must update line bnds [Done]
           * lay-pair must get y bnds from line [Done]
         * Update list Cdr [Done]
-        * Update superlist/superlines [WIP]
       * Update sublist handling [WIP]
+      * Update superlist/superlines [WIP]      
       * Refactor cmd-del
       * Support y layout
       * Merge con-back + repl-list

@@ -467,7 +467,7 @@
         Name    (xkb~keysym-get-name Keysym)
         Utf-8   (get-utf8> *xkb Keycode))
 
-    (prinl-info "cmd-kb" (pack (str Data) " " Keysym))
+    #(prinl-info "cmd-kb" (pack (str Data) " " Keysym))
 
     # Update states
     (update-key> *xkb Keycode State)
