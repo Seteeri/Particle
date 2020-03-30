@@ -4623,6 +4623,8 @@ A    B
           [X]  NIL
           C
 
+* Default to swap?
+
 On Car:
 
           
@@ -4635,3 +4637,82 @@ A    B    C
 
 * Really meant as a way to move to a sublist
 * Use this mode to replace the char
+
+
+====================================
+
+
+[X]  [X]  [X]  NIL
+A    B    
+          [X] NIL
+          C
+
+          
+SAME
+
+
+[X]  [X]
+A    B    
+
+[Y]  [X] NIL
+NIL  C       
+
+* Both are on a newline
+* former is rel to origin of c, (Move Car, Enter char)
+* latter is rel to list start (Enter char, Alt+Enter)
+  -> Could also do newline on NIL
+
+--------+------------------+--------------------+
+        | Pair/Atom        | Car/Atom           |
+--------+------------------+--------------------+
+Newline | List w Pair      | Empty list         |
+--------+------------------+--------------------+
+Char    | Ins-back/Mov-Cdr | Write-back/Mov-Car |
+--------+------------------+--------------------+
+
+* For newline, which is more logical? OR swapable?
+  * Char on Char, user expects Car to be replaced so current layout makes sense
+* Char will move to sublist if pair has list
+
+--------+------------------+--------------------+
+        | Pair/List        | Car/List           |
+--------+------------------+--------------------+
+Newline | List w Pair      | -                  |
+--------+------------------+--------------------+
+Char    | -                | -                  |
+--------+------------------+--------------------+
+
+* For Newline + Car/List, newline should create a list containing that list
+  * Not possible since Car becomes another Atom
+  * Only Newline on Pair
+* So Newline + Pair/List creates a list with the list
+* For NIL, mov to Car, will create empty list, and for Pair, list with NIL
+
+Char + Car/Atom
+
+    *
+[]  NIL
+a  
+
+    *
+[]  []  NIL
+a   b  
+
+        *
+[]  []  []  NIL
+a   b   c  
+
+vs
+
+    
+[]  []  []  NIL
+d   b   c
+    *
+ 
+[]  []  []  NIL
+d   e   c
+    *
+
+[]  []  []  NIL
+d   e   f
+        *

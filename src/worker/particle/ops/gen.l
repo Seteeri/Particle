@@ -34,10 +34,11 @@
 
 
 (de gen-nil (Any Lay Adv Car-Skip Cdr-Skip)
+  # CAR/CDR point to itself
   (let ((Verts Wid) (draw-atom Any (get-color-type Any) Adv)
         Part (new '(+Nil)
                   Any
-                  NIL NIL
+                  Part Part
                   Verts
                   Lay))
     (put Part 'dims (list Wid *adv-vert-2))

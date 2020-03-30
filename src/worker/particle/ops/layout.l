@@ -32,11 +32,11 @@
 (de lay-pair (Any Base Skip)
     
   # TODO: Handle Y layout
-  (when (and (get Any 'nl 'p)
-             (= (get Any 'lay) 'x))
-    (println 'lay-pair "Sublist detected - move under Pair")
-    (align-cur-to-pair Any)            
-    (setq Base *cur))
+  (when (= (get Any 'lay) 'x)
+    (when (get Any 'nl 'p)
+      (println 'lay-pair "Sublist detected - move under Pair")
+      (align-cur-to-pair Any)            
+      (setq Base *cur)))
 
   # Move Pair first to get correct pos since dims rel to origin
   (mov> Any *cur)
@@ -81,8 +81,10 @@
       (let ((X-Dims-A Y-Dims-A) (get (: a) 'dims)
             (X-Dims-B Y-Dims-B) (get (: b) 'dims))
       
-        (when (or (= Skip 'skip-cdr)
-                  (not Skip))
+        (when (and (: a)
+                   (not (= (: a) Any))
+                   (or (= Skip 'skip-cdr)
+                       (not Skip)))
           (lay-part (: a) Base))
       
         # To draw Cdr: (use align-cur-to-bnds? that recalcs...)
@@ -137,8 +139,10 @@
       (let ((X-Dims-A Y-Dims-A) (get (: a) 'dims)
             (X-Dims-B Y-Dims-B) (get (: b) 'dims))
       
-        (when (or (= Skip 'skip-cdr)
-                  (not Skip))
+        (when (and (: a)
+                   (not (= (: a) Any))
+                   (or (= Skip 'skip-cdr)
+                       (not Skip)))
           (lay-part (: a) Base))
         
         # To draw Cdr:
@@ -184,7 +188,46 @@
 
 ################################################################################
 
+
+(de align-cur-to-pair (Car)
+  #{
+  
+    [X]  [X]  [X]  NIL
+    A    B    [X]  NIL
+              C
+    SAME
+    [X]  [X]
+    A    B    
+    [Y]  [X] NIL
+    NIL  C       
+
+    Both are on a newline, 
+    however former is rel to origin of c,
+    and latter is rel to list start  
+    
+  }#
+  
+  # TODO: Handle Y layout
+
+  # x = origin of Pair
+  # y = bnds of line
+  
+  (set-cur-x (get (origin> (get Car 'c)) 1))  
+  
+  (let Ori (origin> (if (isa '+Sym *line) 
+                        (get *line 'b)
+                        *line))
         
+    (set-cur-y (get (origin> (get Car 'c)) 2))
+    (nl-cur 2.0)
+    (nl-cur *sublist-space-y)
+    
+    #(prin 'align-cur-to-pair " " (get *line 'data) " " (format (get Ori 1) *Scl) " " (format (get Ori 2) *Scl) " ")
+    #(print-cur)
+    
+    ))
+
+
 (de swap-lay (Tgt)
   (force-lay Tgt 
              (if (= (get Tgt 'lay) 'x) 'y 'x))
@@ -202,7 +245,12 @@
   (point-a-in)
   
   # Create new sublist  
-  (con-any (car (get Ref 'data)) 'x T))
+  (let Part (con-any (car (get Ref 'data)) 'x T)
+  
+    # Swap car layout
+    #(swap-lay (get Part 'a))
+    
+    Part))
 
 
 (de mov-nl-2 (Ref)

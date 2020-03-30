@@ -290,26 +290,23 @@ Store DAGs as binary trees?
         * Bounds = aka bounding box/rect; 
         * So extents == bounds
       * Create Reset command [Done]
-      * cmd-make-char/cmd-make-nl [Done]
-        * Tests:
-          * cmd-make-char @ start/end/mid-line
-          * cmd-make-nl @ start/end/mid-line          
-          * cmd-make-char (sublist) @ start/end/mid-line
-      * Update supers [Doneish]
-        * Update dims while traversing
-      * Technically '*list and '*main can be different, i.e. sublist can be on
-      same line as parent list
-        * It can't unless layout swapped...
-      * Refactor cmds:
-        * cmd-make-nl
-        * cmd-del
-        * cmd-swap
+      * Tests:
+        * cmd-make-char @ start/end/mid-line
+        * cmd-make-nl @ start/end/mid-line          
+        * cmd-make-char (sublist) @ start/end/mid-line
+      +---------+------------------+--------------------+----
+      |         | Pair/Atom        | Car/Atom           | NIL
+      +---------+------------------+--------------------+----
+      | Newline | List w Pair      | Empty list         | <-
+      +---------+------------------+--------------------+----
+      | Char    | Ins-back/Mov-Cdr | Write-back/Mov-Car | <-
+      +---------+------------------+--------------------+
+        * Char [Done]
+        * Newline
       * Support y layout
         * Refactor layout to support mixed layouts better      
-      * Store ref to last item in list for faster bnds calc      
-      * Support mov to Car for NIL
-        * Make NIL point to itself like Str? Technically it does...        
-      * Merge con-back + repl-list
+      * Store ref to last item in list for faster bnds calc
+      * Refactor point mov to classes
         
     * Change ptr sym when moving to Car [Wknd]
       * 3 parts in name - default is "*+0"
@@ -323,6 +320,9 @@ Store DAGs as binary trees?
     * TEST LAYOUT OF EXISTING DATA
       
   * Refactor [Nxt Week]
+    * Technically '*list and '*main can be different, i.e. sublist can be on
+    same line as parent list
+      * It can't unless layout swapped...  
     * Fix magic numbers
     * Refeactor "*0" mov-part-abv> into cursor fn  
     * Refactor cmd-make-nl
@@ -336,6 +336,7 @@ Store DAGs as binary trees?
       * Use fn for now
     * On enter-list, if not immediately enterable, search for next list?
       * Make command for prv/nxt list like Q/E
+      * Search within view
     * Break out ops into files
     * Merge cmd ptr and part      
     * Make option: cmds a circular list
@@ -344,13 +345,12 @@ Store DAGs as binary trees?
       * Requires unproject to test if coord is in the viewport
     * Draw num in car [?]
       * Handle decimals
-    * Refactor other cmds
-      * Implement split space
     * Make fn: mov-cur X/adv Y/nl
-    * Cache origin [?]
+    * Cache origin, dims [?]
+      * Store for each layout
       * This abs pos
       * Need dirty flag to be set on pos change, i.e. layout calls    
-    * For cmd-make-*, update list with len and dims [Later]
+    * For cmd-make-*, update list with last and dims [Later]
       * This only applies to Pairs whose Car is a list
       * The dims only applies to Car
       * Store newlines in list/Pair?

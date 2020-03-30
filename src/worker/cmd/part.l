@@ -44,14 +44,9 @@
     # Push to cmd list
     #(setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
 
-    # If Car, make a sublist
-    (let (Ref (get *0 'b)
-          C   (get Ref 'c)
-          Ca  (get C 'a)
-          On-Car (and (isa '+Sym Ref)
-                      (not (isa '+Nil Ref))))
-      (when On-Car (println 'cmd-make-char "Replace Car"))
-      (con-any Data Lay On-Car))))
+    # Handle symbol
+
+    (con-any Data Lay)))
 
 
 (de cmd-make-nil (Keysym)

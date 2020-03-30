@@ -223,8 +223,14 @@
 
 (dm bounds> (Car-Skip Cdr-Skip)
 
-  (let ((Xa Ya) (when (and (: a) (not Car-Skip)) (bounds> (: a)))
-        (Xb Yb) (when (and (: b) (not Cdr-Skip)) (bounds> (: b)))
+  (let ((Xa Ya) (when (and (: a) 
+                           (not (= (: a) This))
+                           (not Car-Skip))
+                  (bounds> (: a)))
+        (Xb Yb) (when (and (: b)
+                           (not (= (: b) This))
+                           (not Cdr-Skip))
+                  (bounds> (: b)))
         (X Y) (with (last-vert> This)
                   (origin> (get *metrics (: chr))
                                (: pos)
@@ -309,7 +315,9 @@
               Y (min Y Yb)))
       (println 'calc-dims-nl Part (get Part 'data))
       (setq Part (get Part 'b))
-      (T (or (not Part) (get Part 'nl))))
+      (T (or (not Part)
+             (get Part 'nl)
+             (not (get Part 'data)))))
     (list (- X (car Ori)) (abs (- Y (cadr Ori))))))
 
 
