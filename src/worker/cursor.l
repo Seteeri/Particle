@@ -57,26 +57,10 @@
           (set-cur-y (get Bnds 2))
           (nl-cur 2.0)))))
           
-          
-(de align-cur-to-line (Line)
-      
-  # x = origin of prv line
-  # y = bnds of prv line
-  
-  # if sym, get val, else itself
-  (let Ori (origin> (if (isa '+Sym Line) 
-                        (get Line 'b)
-                        Line))
-  
-    (set-cur-x (get Ori 1))
-    
-    (set-cur-y (- (get Ori 2)
-                  (get Line 'nl 'dims 2)))
-                  
-    (nl-cur *sublist-space-y)))
-
 
 (de align-cur-to-pair (Car)
+
+  # TODO: Handle Y layout
 
   # x = origin of Pair
   # y = bnds of line
@@ -91,5 +75,7 @@
     (nl-cur 2.0)
     (nl-cur *sublist-space-y)
     
-    (prin 'align-cur-to-pair " " (get *line 'data) " " (format (get Ori 1) *Scl) " " (format (get Ori 2) *Scl) " ")
-    (print-cur)))
+    #(prin 'align-cur-to-pair " " (get *line 'data) " " (format (get Ori 1) *Scl) " " (format (get Ori 2) *Scl) " ")
+    #(print-cur)
+    
+    ))

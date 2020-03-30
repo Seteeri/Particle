@@ -4520,3 +4520,90 @@ R a b c d
 This would require custom function to layout 2nd arg
 
 But then how to do multiline strings?
+
+Alt+Enter will create new list
+
+==============================
+          
+[X]  [X]  [X]  NIL
+A    B    C
+          *
+
+[X]  [X]  [X]       [X]  ...
+A    B    
+               *
+          [X]  NIL
+          NIL
+
+
+[X]  [X]  [X]       [X]  ...
+A    B    
+               *
+          [X]  NIL
+          C
+
+
+Procedure to Create Sublist:
+* Move to Car
+* Create NIL
+* Move ptr to Cdr NIL
+
+
+1. Content
+  1.1 Content
+    1.1.1 Content
+      1.1.1.1 Content
+      1.1.1.2 Content
+    1.1.2 Content
+  1.2 Content
+2. Content
+
+(("1" "Content"
+  ("1.1" "Content"
+    ("1.1.1" "Content"
+      ("1.1.1.1" "Content")
+      ("1.1.1.2" "Content")))))
+
+
+       [X]                                                                    [X]
+
+       [X]  [X]      [X]                                                      [X]  [X]      [X]
+       I    Content                                                           II   Content  ...
+                     [X]  [X]      [X]                [X]                NIL
+                     A    Content   
+                                   [X]  [X]      NIL  [X]  [X]      NIL
+                                   1    Content       2    Content
+                                   
+                                   
+  [Y]  [X]  [X]
+       I    Content
+
+       [Y]  [X]  [X]
+            A    Content
+
+            [Y]  [X]  [X]       NIL
+                 1    Content
+
+            [Y]  [X]  [X]       NIL
+                 2    Content
+
+            NIL
+
+       [Y]  [X]  [X]
+            B    Content
+
+            [Y]  [X]  [X]       NIL
+                 1    Content
+
+            [Y]  [X]  [X]       NIL
+                 2    Content
+
+            NIL
+
+       NIL
+  NIL
+  
+* Rule: Only lists can be on a newline
+  * This guarantees that for the Car, the line p is always the list containing
+  it, and the c is the Pair
+* Store root in list (aka parent list)

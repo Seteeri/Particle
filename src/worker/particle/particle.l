@@ -313,11 +313,6 @@
     (list (- X (car Ori)) (abs (- Y (cadr Ori))))))
 
 
-(dm mov-line-p> ()
-  (let? P (get (: nl) 'p)
-    (setq *line P)))
-
-
 # Debug
 
 

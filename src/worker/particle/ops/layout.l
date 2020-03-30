@@ -30,24 +30,13 @@
 
 
 (de lay-pair (Any Base Skip)
-
-  # Handle newline - same fn as mov-nl
-  (let (Nl (get Any 'nl)
-        Nl-Prv (get Nl 'p))
     
-    (when Nl
-
-      #(println 'lay-pair 'found-nl Nl-Prv (get Nl-Prv 'data))
-
-      (if Nl-Prv
-          
-          (align-cur-to-line Nl-Prv)
-
-          (when (get Any 'c)
-            (println 'lay-pair "Move under Pair")
-            (align-cur-to-pair Any)))
-              
-      (setq Base *cur)))
+  # TODO: Handle Y layout
+  (when (and (get Any 'nl 'p)
+             (= (get Any 'lay) 'x))
+    (println 'lay-pair "Sublist detected - move under Pair")
+    (align-cur-to-pair Any)            
+    (setq Base *cur))
 
   # Move Pair first to get correct pos since dims rel to origin
   (mov> Any *cur)
@@ -183,7 +172,8 @@
         # Mov cur to bounds, aka last vert start pos
         # Adv to move to end pos of last vert
         (mov-cur-part Any 'end)
-        (adv-cur))
+        (adv-cur)
+        *cur)
 
       (prog
   

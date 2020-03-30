@@ -295,8 +295,10 @@ Store DAGs as binary trees?
           * cmd-make-char @ start/end/mid-line
           * cmd-make-nl @ start/end/mid-line          
           * cmd-make-char (sublist) @ start/end/mid-line
-      * Update superlist/superlines [WIP]
-      * Update sublist handling [WIP]
+      * Update supers [Doneish]
+        * Update dims while traversing
+      * Update sublists [WIP]
+      * Store ref to last item in list for faster bnds calc
       * Refactor cmd-del
       * Support y layout
         * Refactor layout to support mixed layouts better      
