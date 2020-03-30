@@ -8,7 +8,7 @@
 
 (de mov-cur-vert (Vert)
   (with Vert
-    (setq *cur (get-origin> (get *metrics (: chr))
+    (setq *cur (origin> (get *metrics (: chr))
                             (: pos)
                             *sca-vert))))
 
@@ -49,10 +49,10 @@
         (prog
           # Move cur to x base of Ref and y origin of Ref
           (set-cur-x (get Bnds 1))
-          (set-cur-y (get (get-origin> Ref) 2))
+          (set-cur-y (get (origin> Ref) 2))
           (adv-cur 2.0))
         (prog
           # Move cur to x origin of Ref and y base of Ref
-          (set-cur-x (get (get-origin> Ref) 1))
+          (set-cur-x (get (origin> Ref) 1))
           (set-cur-y (get Bnds 2))
           (nl-cur 2.0)))))

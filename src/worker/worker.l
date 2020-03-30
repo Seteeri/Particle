@@ -144,7 +144,7 @@
       
                                         #(let Ref (get *0 'b)
                                         #  (mov-cur-part Ref 'start)
-                                        #  (lay-part Ref (get-origin> *main)))
+                                        #  (lay-part Ref (origin> *main)))
                                         
                                         #(println *line (get *line 'data))
                                         

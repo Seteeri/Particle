@@ -3,7 +3,7 @@
 # DEBUG
 (de mov-*1 (Line)
   # Move to bnds of current line
-  (let (Ori (get-origin> Line)
+  (let (Ori (origin> Line)
         Bnds (get Line 'nl 'dims))
     (set-cur-x (+ (get Ori 1)
                   (get Bnds 1)))
@@ -28,7 +28,7 @@
     (when (= (get List 'c 'a) List)
       (align-cur-to-bnds (get List 'c))
       (lay-part (get List 'c 'b)
-                (get-origin> *main)))
+                (origin> *main)))
     (setq List (get List 'c))))
     
     
@@ -50,7 +50,7 @@
         # Since Part is before Ref, it will be in the same place
         # and everything after will move forward
         (mov-cur-part Ref 'start)
-        (lay-part Part (get-origin> *line))
+        (lay-part Part (origin> *line))
         
         # Adjust line bounds
         (println 'con-any "Part has nl" Part (get Part 'data) (get Part 'nl 'dims))
@@ -215,7 +215,7 @@
           # Draw Pair at Prv, no Car/Cdr
           # Then nl, draw Car
           (mov-cur-part Prv 'start)
-          (lay-part Part (get-origin> *main) 'skip-car-cdr)
+          (lay-part Part (origin> *main) 'skip-car-cdr)
           
           # Adjust line bounds specifically to Part
           (adj-line-to-part> *line Part)
@@ -319,7 +319,7 @@
           
               (prog
                 # Move to lower bnd of Car
-                (set-cur-x (get (get-origin> Car) 1))
+                (set-cur-x (get (origin> Car) 1))
                 (set-cur-y (get Dims 2)) (nl-cur)
                 (lay-part *0 *cur 'skip-cdr))
                 

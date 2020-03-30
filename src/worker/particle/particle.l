@@ -166,7 +166,7 @@
 # Rename off -> rel
 (dm mov-off> (Off P)
   # Calc tgt pos
-  (let (Pos (get-origin> This)
+  (let (Pos (origin> This)
         Pos-Tgt (list (+ (get Pos 1) (get Off 1))
                       (+ (get Pos 2) (get Off 2))
                       (+ (get Pos 3) (get Off 3))))
@@ -179,8 +179,8 @@
 
 (dm mov-part> (B P)
 
-  (let (Pos     (get-origin> This)
-        Pos-Tgt (get-origin> B)
+  (let (Pos     (origin> This)
+        Pos-Tgt (origin> B)
         Off (list (- (get Pos-Tgt 1) (get Pos 1))
                   (- (get Pos-Tgt 2) (get Pos 2))
                   (- (get Pos-Tgt 3) (get Pos 3))))
@@ -198,7 +198,7 @@
   (mov-cur-vert (last-vert> B) T)
   (adv-cur 2.0)
 
-  (let Pos (get-origin> This)
+  (let Pos (origin> This)
     (mov-off> This
               (list (- (get *cur 1) (get Pos 1))
                     (- (get *cur 2) (get Pos 2))
@@ -212,7 +212,7 @@
   (mov-cur-vert (first-vert> B) T)
   (nl-cur -1.0)
 
-  (let Pos (get-origin> This)
+  (let Pos (origin> This)
     (mov-off> This
               (list (- (get *cur 1) (get Pos 1))
                     (- (get *cur 2) (get Pos 2))
@@ -226,7 +226,7 @@
   (mov-cur-vert (first-vert> B) T)
   (nl-cur)
 
-  (let Pos (get-origin> This)
+  (let Pos (origin> This)
     (mov-off> This
               (list (- (get *cur 1) (get Pos 1))
                     (- (get *cur 2) (get Pos 2))
@@ -238,13 +238,13 @@
 # Most of these don't use any properties from part
 # so should move to a vert class or make normal function
 
-(dm get-origin> ()
+(dm origin> ()
 
   (let? Vert (car (: verts))
 
     (with Vert
 
-      (get-origin> (get *metrics (: chr))
+      (origin> (get *metrics (: chr))
                    (: pos)
                    *sca-vert))))
 
@@ -265,7 +265,7 @@
   (let ((Xa Ya) (when (and (: a) (not Car-Skip)) (bounds> (: a)))
         (Xb Yb) (when (and (: b) (not Cdr-Skip)) (bounds> (: b)))
         (X Y) (with (last-vert> This)
-                  (get-origin> (get *metrics (: chr))
+                  (origin> (get *metrics (: chr))
                                (: pos)
                                *sca-vert)))
 
@@ -278,7 +278,7 @@
 # Line
 
 (dm adj-line-to-part> (Ref)
-  (let (Ori (get-origin> This)
+  (let (Ori (origin> This)
         Bnds (bounds> Ref NIL T)
         Dims (list (- (get Bnds 1) (get Ori 1))
                    (- (get Bnds 2) (get Ori 2))))
@@ -292,7 +292,7 @@
 (dm inc-line-by-part-x> (Part)
   # Calculate width of new Part plus adv
   # Bnds - Origin
-  (let (Ori (get-origin> Part)
+  (let (Ori (origin> Part)
         Bnds (bounds> Part NIL T)
         Dx (+ (- (get Bnds 1) (get Ori 1))
               *adv-vert-2))
@@ -307,7 +307,7 @@
 (dm dec-line-by-part-x> (End)
   # Add op to add/sub
   (let (Bnds-B (bounds> End NIL T)
-        Ori (get-origin> This)
+        Ori (origin> This)
         Dims (get (: nl) 'dims)
         Bnds-Ln (list (+ (get Ori 1) (get Dims 1))
                       (- (get Ori 2) (get Dims 2)))
@@ -322,7 +322,7 @@
 
 (dm upd-line-by-part-y> (Part)
   # If new bnds smaller, use it
-  (let (Ori (cadr (get-origin> This))
+  (let (Ori (cadr (origin> This))
         Dims (get (: nl) 'dims)
         Bnds-Ln (- Ori (get Dims 2))
         Bnds-B (cadr (bounds> Part NIL T))
@@ -339,7 +339,7 @@
 
 (dm calc-dims-nl> ()
   (let (Part This
-        Ori (get-origin> This)
+        Ori (origin> This)
         (X Y) (bounds> This NIL T))
     (loop
       (let ((Xb Yb) (bounds> Part NIL T))

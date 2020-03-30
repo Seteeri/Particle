@@ -144,7 +144,7 @@ Quotient of N and D = (*/ 1.0 N D)
         0.0))
 
 
-(dm get-origin> (Pos Sca)
+(dm origin> (Pos Sca)
   #{
     Derive origin from Vertex position
     

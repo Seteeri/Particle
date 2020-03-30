@@ -48,8 +48,8 @@
             
             # if sym, get val, else itself
             (let (Ori (if (isa '+Sym Nl-Prv)
-                          (get-origin> (get Nl-Prv 'b))
-                          (get-origin> Nl-Prv)))
+                          (origin> (get Nl-Prv 'b))
+                          (origin> Nl-Prv)))
             
               (set-cur-x (get Ori 1))
               
@@ -70,9 +70,9 @@
               # Align x to prv
               # Align to y bounds of current line
               (let (Ori (if (isa '+Sym *line)
-                            (get-origin> (get *line 'b))
-                            (get-origin> *line)))
-                (set-cur-x (get (get-origin> (get Any 'c)) 1))
+                            (origin> (get *line 'b))
+                            (origin> *line)))
+                (set-cur-x (get (origin> (get Any 'c)) 1))
                 (set-cur-y (+ (get Ori 2)
                               (get *line 'nl 'dims 2))))
 
@@ -105,7 +105,7 @@
 
   (with Any
   
-    (let ((X-Ori Y-Ori) (get-origin> Any))
+    (let ((X-Ori Y-Ori) (origin> Any))
   
       # Mov cur to origin of Pair
       (set-cur-x X-Ori) (set-cur-y Y-Ori)
@@ -165,7 +165,7 @@
   
   (with Any
   
-    (let ((X-Ori Y-Ori) (get-origin> Any))
+    (let ((X-Ori Y-Ori) (origin> Any))
     
       # Mov cur to origin of Pair
       (set-cur-y Y-Ori)
@@ -234,7 +234,7 @@
         
   (mov-cur-part Tgt 'start)
   # Opt: force layout
-  (lay-part Tgt (get-origin> *main)))
+  (lay-part Tgt (origin> *main)))
 
 
 (de mov-nl (Ref)

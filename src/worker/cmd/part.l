@@ -150,7 +150,7 @@
       # Base is origin of Pair containing Ref/Part
       # Cur is where Part should be - use Ref origin
       (mov-cur-part Tgt 'start)
-      (lay-part Ref (get-origin> *main) 'skip-cdr)
+      (lay-part Ref (origin> *main) 'skip-cdr)
     
       # Do until nl also,
       # however,
@@ -160,7 +160,7 @@
       
       # Layout remainder
       (align-cur-to-bnds Ref)
-      (lay-part (get Ref 'b) (get-origin> *main))
+      (lay-part (get Ref 'b) (origin> *main))
       
       # update superlists etc      
 
