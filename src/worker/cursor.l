@@ -66,7 +66,7 @@
   # if sym, get val, else itself
   (let Ori (origin> (if (isa '+Sym Line) 
                         (get Line 'b)
-                        (origin> Line)))
+                        Line))
   
     (set-cur-x (get Ori 1))
     
@@ -85,7 +85,7 @@
   
   (let Ori (origin> (if (isa '+Sym *line) 
                         (get *line 'b)
-                        (origin> *line)))
+                        *line))
         
     (set-cur-y (+ (get Ori 2)
                   (get *line 'nl 'dims 2)))))

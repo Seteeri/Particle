@@ -220,8 +220,7 @@
           # Then create Line and calc its dims (from Ref to NIL/NL)
           (put Ref 'nl (new '(+Line)
                             *line
-                            Nxt
-                            (calc-dims-nl> Ref)))
+                            Nxt))
 
           # Link prev n to Ref
           (with (get *line 'nl)
@@ -255,17 +254,17 @@
           
           Argh, have to calc y dims for both lines...
         }#
+        
+        # Calc dims
+        # Layout is not required to calc dims
+        
+        # This will stop at Ref due to its nl prop set
+        (put *line 'nl 'dims (calc-dims-nl> *line))
+        (put Ref 'nl 'dims (calc-dims-nl> Ref))
 
-        # Shorten line dims to Ref c origin
-        # since Ref itself will be on a newline
-        (let (Dx (dec-line-by-part-x> *line (get Ref 'c))
-              #Dy (upd-line-by-part-y> *line (get Ref 'c))
-              )
-          #(upd-superlines (get *line 'nl 'p) Dx)
-          )        
+        #(upd-superlines (get *line 'nl 'p) Dx)
 
         # Cannot position Ref/newline until current line bnds updated
-
         # Base irrelevant; lay-part will override it
         (lay-part Ref *cur)
         
@@ -273,6 +272,7 @@
         
         # update cdr etc.
         (upd-superlists Ref)
+        
         T)
         
       (prog
