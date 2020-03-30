@@ -53,6 +53,9 @@
         (lay-part Part (origin> *line))
         
         # Adjust line bounds
+        # Changes in X only affect Cdr of superlists
+        # Changes in Y, however, affect subsequent lines, since they all need to be
+        # offset by the Y change
         (println 'con-any "Part has nl" Part (get Part 'data) (get Part 'nl 'dims))
         (let (Dx (inc-line-by-part-x> *line Part)
               Dy (upd-line-by-part-y> *line Part))
@@ -61,8 +64,7 @@
         
         (mov-*1 *line)
         
-        # Update superlists
-        # Assume bounds corresponds...
+        # Update superlists' cdrs
         (upd-superlists Part)
         
         # Create upd-ptr
@@ -138,6 +140,72 @@
       (println 'con-back " *line change: " Ref " -> " Part)
       (setq *line Part))))
       
+      
+##########################
+
+
+
+(de repl-car (Data Lay)
+
+  (let (Ref (get *0 'b)
+        Cdr (get Ref 'b)  
+        Prv (get Ref 'c)
+        Prv-B (get Prv 'b)
+        Prv-C (get Prv 'c)
+        Part (gen-part (list (list Data)) Lay NIL T)
+        Car (get Part 'a))
+        
+    #{
+    
+    [] - [] - NIL
+    a    b
+         *0
+         
+    Cdr = NIL
+    Prv = []b
+    Prv-C = []a
+    
+    }#
+          
+    # Note, ref is Car so get Prv
+    (repl-list Prv-C
+               Prv
+               Prv-B
+               Part)
+    
+    (if (= Lay 'x)
+    
+        (prog
+          # Draw Pair at Prv, no Car/Cdr
+          # Then nl, draw Car
+          (mov-cur-part Prv 'start)
+          (lay-part Part (origin> *line) 'skip-car-cdr)
+          
+          # Adjust line bounds
+          (put *line 'nl 'dims (calc-dims-nl> *line))
+          (mov-*1 *line)
+                    
+          # Create nl for Car
+          #   This a new list so Prv will be Nil
+          (put Car 'nl (new '(+Line) 
+                            NIL
+                            NIL))
+                            #(get Car 'a 'dims)
+          (put Car 'nl 'dims (calc-dims-nl> *line))
+                      
+          # Cur will be moved to proper pos rel to Pair
+          (lay-part Car *cur)
+                    
+          # Move ptr to Cdr/NIL; must set ptr to Part to get Car
+          (put *0 'b (get Car 'b))
+          (mov-part-abv> *0 (get Car 'b) (cons T))
+          
+          (setq *line Car)
+          (setq *main Car))
+          
+        (prog
+          (println 'con-any "IMPLEMENT Y LAYOUT")))))
+
 
 (de repl-list (Prv Ref Cdr Part)
   
@@ -179,68 +247,6 @@
 
   # Do not delete CDR
   (del> Ref T NIL))
-
-
-(de repl-car (Data Lay)
-
-  (let (Ref (get *0 'b)
-        Cdr (get Ref 'b)  
-        Prv (get Ref 'c)
-        Prv-B (get Prv 'b)
-        Prv-C (get Prv 'c)
-        Part (gen-part (list (list Data)) Lay NIL T)
-        Car (get Part 'a))
-        
-    #{
-    
-    [] - [] - NIL
-    a    b
-         *0
-         
-    Cdr = NIL
-    Prv = []b
-    Prv-C = []a
-    
-    }#
-          
-    # Note, ref is Car so get Prv
-    (repl-list Prv-C
-               Prv
-               Prv-B
-               Part)
-    
-    (if (= Lay 'x)
-    
-        (prog
-          # Draw Pair at Prv, no Car/Cdr
-          # Then nl, draw Car
-          (mov-cur-part Prv 'start)
-          (lay-part Part (origin> *main) 'skip-car-cdr)
-          
-          # Adjust line bounds specifically to Part
-          (adj-line-to-part> *line Part)
-          (mov-*1 *line)          
-                    
-          # Create nl for Car
-          #   This a new list so Prv will be Nil
-          (put Car 'nl (new '(+Line) 
-                            NIL
-                            NIL
-                            (get Car 'a 'dims)))
-                      
-          # Move Car to y bounds
-          # Cur will be overriden
-          (lay-part Car *cur)
-                    
-          # Move ptr to Cdr/NIL; must set ptr to Part to get Car
-          (put *0 'b (get Car 'b))
-          (mov-part-abv> *0 (get Car 'b) (cons T))
-          
-          (setq *line Car)
-          (setq *main Car))
-          
-        (prog
-          (println 'con-any "IMPLEMENT Y LAYOUT")))))
 
 
 ################################################################################

@@ -266,11 +266,12 @@
 
         # Cannot position Ref/newline until current line bnds updated
         # Base irrelevant; lay-part will override it
+        # Subsequent lines will be updated also
         (lay-part Ref *cur)
         
         (setq *line Ref)
         
-        # update cdr etc.
+        # Update superlists' cdrs
         (upd-superlists Ref)
         
         T)
