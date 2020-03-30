@@ -197,74 +197,63 @@
 
 
 (de mov-nl (Ref)
+
+  # Move to Car
+  (point-a-in)
+  
+  # Create new sublist  
+  (con-any (car (get Ref 'data)) 'x T))
+
+
+(de mov-nl-2 (Ref)
   # Is this appropriate for Y layout? ...since it already moves to newline
   # -> make new column...
-  
-  (if (= (get Ref 'lay) 'x)
-  
-      (prog
+    
+  (when (or (= (type Ref) '(+Nil)) T)
+    
+    (if (= (get Ref 'lay) 'x)
+    
+        (prog
 
-        # Link lines
-        (let Nxt (get *line 'nl 'n)
-        
-          # Then create Line and calc its dims (from Ref to NIL/NL)
-          (put Ref 'nl (new '(+Line)
-                            *line
-                            Nxt))
+          # For X layout, move to nl, toggle layout
+          # Only do this for lists...and NIL?
 
-          # Link prev n to Ref
-          (with (get *line 'nl)
-            (=: n Ref))
+          # Link lines
+          (let Nxt (get *line 'nl 'n)
+          
+            # Then create Line and calc its dims (from Ref to NIL/NL)
+            (put Ref 'nl (new '(+Line)
+                              *line
+                              Nxt))
+
+            # Link prev n to Ref
+            (with (get *line 'nl)
+              (=: n Ref))
+              
+            # Link nxt p to Ref
+            (when Nxt
+              (with (get Nxt 'nl)
+                (=: p Ref))))
             
-          # Link nxt p to Ref
-          (when Nxt
-            (with (get Nxt 'nl)
-              (=: p Ref))))
+          # Must calc y dims for both lines
+          # Layout is not required to calc dims
+          
+          # This will stop at Ref due to its nl prop set
+          (put *line 'nl 'dims (calc-dims-nl> *line))
+          (put Ref 'nl 'dims (calc-dims-nl> Ref))
 
-        #{
-          Example:
-                *
-          a b c d e f
-            .
-          ___________
-            
-          ->
+          # Cannot position Ref/newline until current line bnds updated
+          # Base irrelevant; lay-part will override it
+          # Subsequent lines will be updated also
+          (lay-part Ref *cur)
           
-          a b c
-            .
-          _____
-          d e f
+          (setq *line Ref)
           
-          _____
+          # Need not update previous lines/lists
+          #(upd-superls (get *line 'nl 'p))
+          #(upd-superlists Ref)
           
-          Truncate current line dims to Ref c bnds
-          Set new line dims x = current line bnds - c bnds
+          T)
           
-          However, new line y dims calc is O(N), otherwise dims will be wrong
-          
-          Argh, have to calc y dims for both lines...
-        }#
-        
-        # Calc dims
-        # Layout is not required to calc dims
-        
-        # This will stop at Ref due to its nl prop set
-        (put *line 'nl 'dims (calc-dims-nl> *line))
-        (put Ref 'nl 'dims (calc-dims-nl> Ref))
-
-        #(upd-superlines (get *line 'nl 'p) Dx)
-
-        # Cannot position Ref/newline until current line bnds updated
-        # Base irrelevant; lay-part will override it
-        # Subsequent lines will be updated also
-        (lay-part Ref *cur)
-        
-        (setq *line Ref)
-        
-        # Update superlists' cdrs
-        (upd-superlists Ref)
-        
-        T)
-        
-      (prog
-        (println "IMPLEMENT MOV-NL FOR Y LAYOUT"))))
+        (prog
+          (println "IMPLEMENT MOV-NL FOR Y LAYOUT")))))

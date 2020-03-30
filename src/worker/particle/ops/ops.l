@@ -32,9 +32,7 @@
     (setq List (get List 'c))))
 
 
-(de upd-superls (List Dx)
-  # Adjust dims by Dx
-  # Only applies if every list is on a new line
+(de upd-superls (List)
   (while List
     (when (get List 'nl)
       (align-cur-to-bnds List)
@@ -77,7 +75,7 @@
           (println 'con-any "Adjust line by: " (format Dx *Scl))
           # Update super lines/lists dims/cdrs
           # skip this line since already updated
-          (upd-superls (get *line 'c) Dx))
+          (upd-superls (get *line 'c)))
 
         (mov-*1 *line)
 
@@ -205,6 +203,8 @@
 
           # Cur will be moved to proper pos rel to Pair
           (lay-part Car *cur)
+
+          # Adjust current line y bounds
 
           # After layout, calc dims for newline
           (put Car 'nl 'dims (calc-dims-nl> Car))

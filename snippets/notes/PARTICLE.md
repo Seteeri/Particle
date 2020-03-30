@@ -275,7 +275,7 @@ Store DAGs as binary trees?
         * Calculate y min from last NL (or list start) until that item
       * Refactor cmd-del [Done]
 
-    * Refactor sublist handling (PART II) [Fin Fri?]
+    * Refactor sublist handling (PART II) [WIP]
       * Refactor swap-layout [Done]
       * Refactor layout Y [Done]      
       * Ptr mov is with regard to layout - inverses [Done]    
@@ -289,19 +289,24 @@ Store DAGs as binary trees?
         * Extent = min bnd'g rect: xmin ymin xmax ymax
         * Bounds = aka bounding box/rect; 
         * So extents == bounds
-      * Create Reset command
-      * cmd-make-char/cmd-make-nl [WIP]
+      * Create Reset command [Done]
+      * cmd-make-char/cmd-make-nl [Done]
         * Tests:
           * cmd-make-char @ start/end/mid-line
           * cmd-make-nl @ start/end/mid-line          
           * cmd-make-char (sublist) @ start/end/mid-line
       * Update supers [Doneish]
         * Update dims while traversing
-      * Update sublists [WIP]
-      * Store ref to last item in list for faster bnds calc
-      * Refactor cmd-del
+      * Technically '*list and '*main can be different, i.e. sublist can be on
+      same line as parent list
+        * It can't unless layout swapped...
+      * Refactor cmds:
+        * cmd-make-nl
+        * cmd-del
+        * cmd-swap
       * Support y layout
         * Refactor layout to support mixed layouts better      
+      * Store ref to last item in list for faster bnds calc      
       * Support mov to Car for NIL
         * Make NIL point to itself like Str? Technically it does...        
       * Merge con-back + repl-list

@@ -4607,3 +4607,31 @@ Procedure to Create Sublist:
   * This guarantees that for the Car, the line p is always the list containing
   it, and the c is the Pair
 * Store root in list (aka parent list)
+
+
+After newline
+
+On Pair/Cdr:
+          *
+[X]  [X]  [X]  NIL
+A    B    C
+
+
+[X]  [X]  [X]       [X]  ...
+A    B    
+               *
+          [X]  NIL
+          C
+
+On Car:
+
+          
+[X]  [X]  [X]  NIL
+A    B    C
+          *
+
+
+???
+
+* Really meant as a way to move to a sublist
+* Use this mode to replace the char
