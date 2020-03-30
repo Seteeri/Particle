@@ -1,3 +1,34 @@
+(de cmd-reset (Keysm)
+  
+  (println 'cmd-reset)
+
+  # Move to to root line
+  (let (Line *line
+        P NIL)
+    (while (setq P (get Line 'p))
+      (setq Line P))
+  
+    # Clear ptr
+    (put *0 'b)
+  
+    # Delete main
+    (del> Line T T)
+    
+    (setq *main NIL)
+    (setq *main (gen-part '*main 'x))
+    (with *main
+      (=: nl (new '(+Line) NIL NIL (get (: a) 'dims))))
+    (setq *cur (copy *pos-main))
+    (lay-part *main *cur)
+    (setq *line *main)
+    (inc-line-by-part-x> *line (get *main 'b))
+    
+    # Repos ptr
+    (put *0 'b (get *main 'b))
+    (lay-part *0 *cur 'skip-cdr)
+    (mov-part-abv> *0 (get *main 'b) (cons T))))
+
+
 (de cmd-make-char (Keysym)
 
   #{
@@ -23,7 +54,7 @@
           Ca  (get C 'a)
           On-Car (and (isa '+Sym Ref)
                       (not (isa '+Nil Ref))))
-      (when On-Car (println 'cmd-make-char "ON CAR"))
+      (when On-Car (println 'cmd-make-char "Replace Car"))
       (con-any Data Lay On-Car))))
 
 
@@ -125,7 +156,7 @@
       # however,
       # poss move items back to maintain line length
       # but this means update everthing
-      (adj-line-to-part Ref)
+      (adj-line-to-part> *line Ref)
       
       # Layout remainder
       (align-cur-to-bnds Ref)

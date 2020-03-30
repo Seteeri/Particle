@@ -37,7 +37,7 @@
     
     (when Nl
 
-      (println 'lay-pair 'found-nl Nl-Prv (get Nl-Prv 'data))
+      #(println 'lay-pair 'found-nl Nl-Prv (get Nl-Prv 'data))
 
       (if Nl-Prv
           
@@ -53,23 +53,31 @@
             
               (set-cur-x (get Ori 1))
               
-              (set-cur-y (+ (get Ori 2)
-                            (get Nl-Prv 'nl 'bnds 2)))
+              (set-cur-y (- (get Ori 2)
+                            (get Nl-Prv 'nl 'dims 2)))
               (nl-cur *sublist-space-y)
               
-              #(println Ori)
-              #(println (get Nl-Prv 'nl))
-              #(println (get Nl-Prv 'nl 'bnds))
               #(print-cur)
               
               # Use first item origin as base
               (setq Base *cur)))
               
           (prog
-            # CAR - Use c since Line p=NIL and n=NIL
-            (let? Cc (get Any 'c 'c)
-              (align-cur-to-bnds Cc)
-              (nl-cur (+ *sublist-space-y 1.0))
+            # CAR
+            (when (get Any 'c)
+              (println 'lay-pair "Move under Pair")
+              
+              # Align x to prv
+              # Align to y bounds of current line
+              (let (Ori (if (isa '+Sym *line)
+                            (get-origin> (get *line 'b))
+                            (get-origin> *line)))
+                (set-cur-x (get (get-origin> (get Any 'c)) 1))
+                (set-cur-y (+ (get Ori 2)
+                              (get *line 'nl 'dims 2))))
+
+              (print-cur)
+
               (setq Base *cur))))))
 
   # Move Pair first to get correct pos since dims rel to origin
@@ -236,13 +244,7 @@
   (if (= (get Ref 'lay) 'x)
   
       (prog
-            
-        #(mov-*1 *line)
-            
-        # Shorten line dims to Ref c origin
-        # since Ref itself will be on a newline
-        (adj-line-to-part> *line (get Ref 'c))
-
+                    
         # Make fn in line?
         # Link lines
         (let Nxt (get *line 'nl 'n)
@@ -262,13 +264,32 @@
             (with (get Nxt 'nl)
               (=: p Ref))))
 
+        # RETHINK THIS
+
+        # Shorten line dims to Ref c origin
+        # since Ref itself will be on a newline
+        (let (Dx (dec-line-by-part-x> *line (get Ref 'c))
+              #Dy (upd-line-by-part-y> *line (get Ref 'c))
+              )
+          #(upd-superlines (get *line 'nl 'p) Dx)
+          )        
+                
         # Base irrelevant; lay-part will override it
         (lay-part Ref *cur)
         
+        # Calculate bnds for newline until nl
+        # Need not recalculate, just go from Ref to next NL or End
+        # Or New Length = Line Bnds X - Ref Bnds X
+        # Before or after lay-part?
+        # Still must recalculate the Y
+                
+        (put (get Ref 'nl) 'dims (calc-bounds-nl> Ref))
+        #(mov-*1 *line)
+        
         (setq *line Ref)
-
+        
         # update cdr etc.
-        (upd-super Ref)
+        (upd-superlists Ref)
         T)
         
       (prog

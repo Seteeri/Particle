@@ -126,7 +126,7 @@
       # Lisp Ops
       ((`ksd~Control-L `ksd~q) T `cmd-eval)
       ((`ksd~Control-L `ksd~u) T `cmd-pack)
-      ((`ksd~Control-L `ksd~r) T `cmd-chop)
+      ((`ksd~Control-L `ksd~r) T `cmd-reset)
       ((`ksd~Control-L `ksd~f) T `cmd-any)
       ((`ksd~Control-L `ksd~g) T `cmd-sym)
       ((`ksd~Control-L `ksd~t) T `cmd-format)
@@ -142,13 +142,32 @@
       # If we lay relative to origin should stay in same place
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
       
-                                        (let Ref (get *0 'b)
-                                          (mov-cur-part Ref 'start)
-                                          (lay-part Ref (get-origin> *main)))
+                                        #(let Ref (get *0 'b)
+                                        #  (mov-cur-part Ref 'start)
+                                        #  (lay-part Ref (get-origin> *main)))
                                         
-                                        # (let? P (get *line 'nl 'p) (mov-*1 P))
-                                        # (call 'sleep 3)
-                                        # (mov-*1 *line)
+                                        #(println *line (get *line 'data))
+                                        
+                                        # Print lines out
+                                        (let (Line *line
+                                              P NIL
+                                              N NIL)
+                                          # Print current line
+                                          (println "Current Line: " Line (get Line 'data))
+                                              
+                                          # Traverse to top
+                                          (while (setq P (get Line 'nl 'p))
+                                            (setq Line P))
+                                          
+                                          (setq N Line)
+                                          
+                                          # Traverse back down
+                                          (loop
+                                            (println "Line: " Line (get Line 'data))
+                                            (setq Line (get Line 'nl 'n))
+                                            (T (not Line))))
+                                            
+                                        (mov-*1 *line)
                                           
                                         ))
 
@@ -254,23 +273,23 @@
 
     #############################
     # Generate main particle list
-    (idx '*particles
-          (def '*main
-                (gen-part '*main 'x))
-          T)
 
     (set-cur-x X)
     (set-cur-y Y)
     (adv-cur 48.0)
 
+    (def '*main (gen-part '*main 'x))
+
     # DO this properly - in gen?
     (with *main
-      (=: nl (new '(+Line) NIL NIL (get (: a) 'dims)))
-      (=: bnds (get (: a) 'dims)))
+      (=: nl (new '(+Line) NIL NIL (get (: a) 'dims))))
+      
+    (setq *pos-main (copy *cur))
       
     (lay-part *main *cur)
     
     (setq *line *main)
+    (inc-line-by-part-x> *line (get *main 'b))
     
     #######################
     # TODO: Draw *ptrs

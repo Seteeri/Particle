@@ -1,7 +1,5 @@
 #{
 
-  Goal is to generate a particle (representation for each cell encountered)
-
   (c (a b))
                      [a|*]    [b|*]    (SYMS)  a b
                        |        |
@@ -19,21 +17,9 @@
 
   (struct (>> -4 (adr *l)) '((B . 8) (B . 8)))
 
-  Parts reference data so deleting parts will del the ref data and thus it can
-  be GC so if the visual representation is gone, so will the data
-
-  The visual representation must have the same structure as the underlying
-  data, in other words, the underlying data are cons cells aka linked lists, so
-  the visual representation has the same props plus additional props since they
-  are compound cells (instances of a class)
-
-  ###################################
-
-  Create different display levels:
-
-  - Expand lists
-  - Expand symbols and numbers
-
+  Parts reference data so deleting parts will del the ref data (provided no
+  other data references it) so if the visual representation is gone, so will 
+  the data (be GC'd).
 }#
 
 
@@ -43,35 +29,34 @@
        B
        Verts
        Lay)
-  
+
   # Store origin also?
-  
+
   (=: data Data)
   (=: a A)
   (=: b B)
-  (=: c) # Prev  
+  (=: c) # Prev
   (=: verts Verts)
   (=: lay Lay)
   (=: nl)
-  
+
   #{
    use l b r t?
-   
+
    ymax = line height
    xmin = origin
    +---+
    |   |
    O---+ xmax/ymin
          can go below
-  }#  
+  }#
   (=: dims)
-  #(=: bnds (list 0.0 0.0))
-  
+
   # list of tags; always str; order matters like when searching
   # consider first tag, the name
   # when linking, def show date, tags, or show nm or raw location
   (=: tg)
-    
+
   # date/time
   (=: dat (date))
   (=: tim (time)))
@@ -97,7 +82,7 @@
     and next vert will reuse it
 
     Makes most sense to simply zero vert
-    and not worry about instanceCount 
+    and not worry about instanceCount
     as frag will be discarded...fix later
   }#
 
@@ -109,31 +94,34 @@
                 (pack "(zv " (get Vert 'off-gl) '")"))
       (push '*verts Vert)
       (dec '*cnt-v)))
-    
+
   (when (and Car (: a))
     (del> (: a) Car Cdr))
-    
+
   (when (and Cdr (: b))
     (del> (: b) Car Cdr))
-    
+
+  (println 'cmd-del "Deleted Particle:" This (: data))
+
   # Clear links and flags
   (=: a)
   (=: b)
-  (=: c)  
-  (=: nl))    
+  (=: c)
+  (=: nl)
+  (=: data))
 
 # List specific?
 
 (dm last> ()
-  
+
   (let Last (: b)
-  
+
     (loop
-    
+
       (NIL (get Last 'b))
       (println "last>" Last (get Last 'data))
       (setq Last (get Last 'b)))
-      
+
     Last))
 
 
@@ -148,27 +136,27 @@
 
 
 (dm tail> (Cnt)
-    
+
   (let (I (: b)
         Ta ())
-        
+
     # End loop when NIL
     (while (setq I (get I 'b))
       (push 'Ta I))
-      
+
     (flip (head Cnt Ta))))
 
 
 (dm mov> (Pos)
 
   (for Vert (: verts)
-  
+
     (with Vert
       (=: pos Pos)
       (update-glyph> Vert (char (: chr))))
     (upd-mdl-mtrx> Vert)
     (cmd-upd-vert *ipc Vert)
-    
+
     # adv pos
     (setq Pos (place 1
                      Pos
@@ -176,7 +164,7 @@
 
 
 # Rename off -> rel
-(dm mov-off> (Off P)  
+(dm mov-off> (Off P)
   # Calc tgt pos
   (let (Pos (get-origin> This)
         Pos-Tgt (list (+ (get Pos 1) (get Off 1))
@@ -196,9 +184,9 @@
         Off (list (- (get Pos-Tgt 1) (get Pos 1))
                   (- (get Pos-Tgt 2) (get Pos 2))
                   (- (get Pos-Tgt 3) (get Pos 3))))
-    
+
     (mov> This Pos-Tgt)
-    
+
     # Apply offset to car/cdr
     (when (and (car P) (: a)) (mov-off> (: a) Off P))
     (when (and (cdr P) (: b)) (mov-off> (: b) Off P))))
@@ -206,10 +194,10 @@
 
 (dm mov-part-aft> (B P)
   # Make offset version instead of static function?
-  
+
   (mov-cur-vert (last-vert> B) T)
   (adv-cur 2.0)
-  
+
   (let Pos (get-origin> This)
     (mov-off> This
               (list (- (get *cur 1) (get Pos 1))
@@ -220,7 +208,7 @@
 
 (dm mov-part-abv> (B P)
   # Make offset version instead of static function?
-  
+
   (mov-cur-vert (first-vert> B) T)
   (nl-cur -1.0)
 
@@ -234,32 +222,32 @@
 
 (dm mov-part-bel> (B P)
   # Make offset version instead of static function?
-  
+
   (mov-cur-vert (first-vert> B) T)
   (nl-cur)
-  
+
   (let Pos (get-origin> This)
     (mov-off> This
               (list (- (get *cur 1) (get Pos 1))
                     (- (get *cur 2) (get Pos 2))
                     (- (get *cur 3) (get Pos 3)))
               P)))
-    
+
 
 # Verts
 # Most of these don't use any properties from part
 # so should move to a vert class or make normal function
 
 (dm get-origin> ()
-  
+
   (let? Vert (car (: verts))
-      
+
     (with Vert
-    
+
       (get-origin> (get *metrics (: chr))
                    (: pos)
                    *sca-vert))))
-  
+
 
 (dm col> (Col)
   (let ((R G B) Col)
@@ -274,15 +262,14 @@
 
 (dm calc-bounds> (Car-Skip Cdr-Skip)
 
-  # Calc abs bounds of CAR and CDR
-  # Store this?
-
   (let ((Xa Ya) (when (and (: a) (not Car-Skip)) (calc-bounds> (: a)))
         (Xb Yb) (when (and (: b) (not Cdr-Skip)) (calc-bounds> (: b)))
         (X Y) (with (last-vert> This)
                   (get-origin> (get *metrics (: chr))
                                (: pos)
                                *sca-vert)))
+
+    #(println 'calc-bounds This (: data) (format X *Scl) (format Y *Scl))
 
     # If neither Car or Cdr, use cons
     (list (max (if Xa Xa X) (if Xb Xb X) X)
@@ -292,23 +279,76 @@
 
 (dm adj-line-to-part> (Ref)
   (let (Ori (get-origin> This)
-        Bnds (calc-bounds> Ref NIL T))
+        Bnds (calc-bounds> Ref NIL T)
+        Dims (list (- (get Bnds 1) (get Ori 1))
+                   (- (get Bnds 2) (get Ori 2))))
     (with (: nl)
-      (let ((X Y) (: bnds))
-        (=: bnds (list (- (get Bnds 1) (get Ori 1))
-                       (- (get Bnds 2) (get Ori 2))))))))
+      (let ((X Y) (: dims))
+        (=: dims Dims)
+        (list (- (car Dims) X)
+              (- (cadr Dims) Y))))))
+
+
+(dm inc-line-by-part-x> (Part)
+  # Calculate width of new Part plus adv
+  # Bnds - Origin
+  (let (Ori (get-origin> Part)
+        Bnds (calc-bounds> Part NIL T)
+        Dx (+ (- (get Bnds 1) (get Ori 1))
+              *adv-vert-2))
+            
+    (with (: nl)
+      (=: dims (list (+ (car (: dims)) Dx)
+                     (cadr (: dims)))))
+
+    Dx))
+
+
+(dm dec-line-by-part-x> (End)
+  # Add op to add/sub
+  (let (Bnds-B (calc-bounds> End NIL T)
+        Ori (get-origin> This)
+        Dims (get (: nl) 'dims)
+        Bnds-Ln (list (+ (get Ori 1) (get Dims 1))
+                      (- (get Ori 2) (get Dims 2)))
+        Dx (- (get Bnds-Ln 1) (get Bnds-B 1)))
+        
+    (with (: nl)
+      (=: dims (list (- (car Dims) Dx)
+                     (cadr Dims))))
+
+    Dx))
+
+
+(dm upd-line-by-part-y> (Part)
+  # If new bnds smaller, use it
+  (let (Ori (cadr (get-origin> This))
+        Dims (get (: nl) 'dims)
+        Bnds-Ln (- Ori (get Dims 2))
+        Bnds-B (cadr (calc-bounds> Part NIL T))
+        Dy (abs (if (< Bnds-B Bnds-Ln)
+                    (- Bnds-B Ori)
+                    (cadr Dims))))
+
+    (with (: nl)
+      (=: dims (list (car Dims)
+                     Dy)))
+
+    Dy))
 
 
 (dm calc-bounds-nl> ()
   (let (Part This
         Ori (get-origin> This)
-        (X Y) Ori)
-    (while (and Part (not (get Part 'nl)))
+        (X Y) (calc-bounds> This NIL T))
+    (loop
       (let ((Xb Yb) (calc-bounds> Part NIL T))
-        (setq X (max X Xb))
-        (setq Y (min Y Yb)))
-      (setq Part (get Part 'b)))
-    (list (- X (car Ori)) (- Y (cadr Ori)))))
+        (setq X (max X Xb)
+              Y (min Y Yb)))
+      (println Part (get Part 'data))
+      (setq Part (get Part 'b))
+      (T (or (not Part) (get Part 'nl))))
+    (list (- X (car Ori)) (abs (- Y (cadr Ori))))))
 
 
 (dm mov-line-p> ()

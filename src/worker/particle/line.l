@@ -1,0 +1,5 @@
+(class +Line)
+(dm T (P N Dims)
+  (=: p P)
+  (=: n N)
+  (=: dims (if Dims Dims (list 0.0 0.0))))

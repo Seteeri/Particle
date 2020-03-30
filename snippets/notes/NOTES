@@ -4423,15 +4423,55 @@ RECURSE SUPERLIST
                               |
                              [X]
 
+
 [X]  [X]  [T]  [X]
            |
-     [X]  [X]  [T]  [X]
+          [X]  [X]  [T]  [X]
                 |
-          [X]  [X]  [T]       [X]
-                     |         |
-          [X]  [X]  [X]  [X]   |
-                               |
-                              [X]
+               [X]  [X]  [T]  [X]
+                     |
+                    [X]  [X]  [X]  [X]
+
 
 Poss maintain bnds in list also
 Anytime line is updated, it is updated also if line bnds =
+
+================================================================================
+
+Every newline = new list
+
+R X X X X
+  X X X X
+  
+= ((X X X X) (X X X X))
+
+Lines are localized to lists
+
+R X X X X
+  X X X X
+  X X X X
+  X X X X
+
+P A A
+  P A A  P A A
+    A A    A A
+
+==============
+
+End
+
+P A A A A ]
+
+P A A A ]
+
+Mid
+      *
+P A B C D]
+      
+      *
+P A B X C D]
+
+Adjust bnds to current item which only applies when ptr at end
+Need to adjust bnds by width of new item
+
+x bnds + width of new char with nil

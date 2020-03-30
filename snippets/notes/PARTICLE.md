@@ -301,21 +301,19 @@ Store DAGs as binary trees?
           * cmd-make-char must update line bnds [Done]
           * lay-pair must get y bnds from line [Done]
         * Update list Cdr [Done]
+      * Update superlist/superlines [WIP]
       * Update sublist handling [WIP]
-      * Update superlist/superlines [WIP]      
+        * Refactor line bnds calc upd
+        * Refactor mov nl
+        * Refactor sublist
+        * Test again
       * Refactor cmd-del
       * Support y layout
-      * Merge con-back + repl-list
+        * Refactor layout to support mixed layouts better      
       * Support mov to Car for NIL
         * Make NIL point to itself like Str? Technically it does...        
+      * Merge con-back + repl-list
         
-      * Refactor layout to support mixed layouts better      
-        * Need newline support before testing mixed layouts since Pairs are
-        placed on newline with Y orientation
-      * Refactor cmd-del
-        * Should maintain line length?
-      * Test superlist update
-    
     * Change ptr sym when moving to Car [Wknd]
       * 3 parts in name - default is "*+0"
         * Dir: * or ^
@@ -329,16 +327,9 @@ Store DAGs as binary trees?
       
   * Refactor [Nxt Week]
     * Fix magic numbers
-    * Refactor get a,b,c -> a> b> c>
     * Refeactor "*0" mov-part-abv> into cursor fn  
     * Refactor cmd-make-nl
       * What happens in a Y layout -> Make column? maybe later...  
-    * Support random access [WIP]
-      * Update subsequent items in list [Done]
-      * Update superlist [Done]
-        * Poss result in slow updates with large items, so lists should be done
-        outside the list then spliced in which becomes O(N) where N is the length
-        of the changes
     * Should swap-layout recurse or not?
       * Maintain substructure
       * Do first level or immediate

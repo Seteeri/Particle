@@ -104,41 +104,40 @@
     Vert))
 
 
-(de draw-repr (Repr Col Adv)
+(de draw-repr (Repr Col)
   (let Verts ()
     (for C Repr
       (push 'Verts (draw-glyph C Col))
-      (when Adv (adv-cur)))
+      (adv-cur))
+    (adv-cur -1.0)
     (flip Verts)))
 
   
-(de draw-str (Str Col Adv)
-  (let Verts (draw-repr (chop Str) Col Adv)
+(de draw-str (Str Col)
+  (let Verts (draw-repr (chop Str) Col)
     (list Verts
-          (*/ *adv-vert (num-to-fl (length Verts)) 1.0))))
+          (*/ *adv-vert (num-to-fl (- (length Verts) 1)) 1.0))))
 
   
-(de draw-num (Num Col Adv)
-  (let Verts (draw-repr (chop (format Num)) Col Adv)
+(de draw-num (Num Col)
+  (let Verts (draw-repr (chop (format Num)) Col)
     (list Verts
-          (*/ *adv-vert (num-to-fl (length Verts)) 1.0))))
+          (*/ *adv-vert (num-to-fl (- (length Verts) 1)) 1.0))))
 
 
-(de draw-sym (Sym Col Adv)
-  (let Verts (draw-repr (chop (sym Sym)) Col Adv)
+(de draw-sym (Sym Col)
+  (let Verts (draw-repr (chop (sym Sym)) Col)
     (list Verts
-          (*/ *adv-vert (num-to-fl (length Verts)) 1.0))))
+          (*/ *adv-vert (num-to-fl (- (length Verts) 1)) 1.0))))
           
 
-(de draw-atom (Atom Col Adv) 
+(de draw-atom (Atom Col)
 
   (unless Col (setq Col (get-color-type Atom)))
 
-  (cond ((num? Atom) (draw-num Atom Col Adv))
-        # Transient symbol
-        ((str? Atom) (draw-str Atom Col Adv))
-        # Internal symbol and T
-        (T           (draw-sym Atom Col Adv))))
+  (cond ((num? Atom) (draw-num Atom Col))
+        ((str? Atom) (draw-str Atom Col))
+        (T           (draw-sym Atom Col))))
 
 
 (de draw-cell (Col Self)
@@ -154,7 +153,7 @@
 
 
 #{
-(de draw-chars (Chars Col Adv)
+(de draw-chars (Chars Col)
   # Mostly used to draw non-code and accents etc.
 
   (let Verts ()
@@ -166,7 +165,9 @@
         (push 'Verts Vert)
         (cmd-upd-vert *ipc Vert))
     
-      (when Adv (adv-cur)))
+      (adv-cur))
+      
+    (adv-cur -1.0)
 
     (flip Verts)))
 }#

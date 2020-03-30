@@ -4,19 +4,20 @@
 (de mov-*1 (Line)
   # Move to bnds of current line
   (let (Ori (get-origin> Line)
-        Bnds (get Line 'nl 'bnds))
+        Bnds (get Line 'nl 'dims))
     (set-cur-x (+ (get Ori 1)
                   (get Bnds 1)))
-    (set-cur-y (+ (get Ori 2)
+    (set-cur-y (- (get Ori 2)
                   (get Bnds 2)))
+    (println 'mov-*1 "Moved *1 to: " (format (get *cur 1) *Scl) (format (get *cur 2) *Scl))
     (mov> *1 *cur)))
 
 ########################
 
-(de adj-line-to-part (Part)
-  # Update until EOL
-  
-  (let (Ori (get-origin> (get Part 'c))
+#{
+# Adjust by one Part
+(de adj-line-to-part (Part)  
+  (let (Ori (get-origin> Part)
         Bnds (calc-bounds> Part NIL T)
         Dx (- (get Bnds 1)
               (get Ori 1)
@@ -25,27 +26,25 @@
       (let ((X Y) (: bnds))
         (=: bnds (list (+ X Dx)
                        (min Y (get Bnds 2))))))))
+}#
 
-(de upd-super (Super)
-  #{
-    [X]  [X]  [T]  [X]
-               |
-               [X]  [X]  [T]  [X]
-                          |
-                          [X]  [X]  [T]  [X]
-                                     |   
-                                     [X]  [X]  [X]  [X]
-                                
-                               
-  }#
-  
-  (while Super
-    (when (= (get Super 'c 'a) Super)
-      (println "FOUND LIST" Super (get Super 'c 'data))
-      (align-cur-to-bnds (get Super 'c))
-      (lay-part (get Super 'c 'b)
+(de upd-superlines (Line Dx)
+  (while Line 
+    (with Line
+      (=: dims (list (+ (car (: dims)) Dx)
+                     (cadr (: dims))))
+      (setq Line (: p)))))
+    
+
+(de upd-superlists (List)
+  # Adjust bounds of each line also
+  (while List
+    (when (= (get List 'c 'a) List)
+      (align-cur-to-bnds (get List 'c))
+      (lay-part (get List 'c 'b)
                 (get-origin> *main)))
-    (setq Super (get Super 'c))))
+    (setq List (get List 'c))))
+    
     
 ###########################
 
@@ -57,26 +56,28 @@
 
       (let (Ref (get *0 'b)
             Part (gen-part (list Data) Lay NIL T))
-            
+        
+        # Connect Part before Ref
+        # Update newline as needed
         (con-back Ref Part)
 
-        # First must pos Part where Ref was
+        # Since Part is before Ref, it will be in the same place
+        # and everything after will move forward
         (mov-cur-part Ref 'start)
-        (lay-part Part (get-origin> *main) 'skip-cdr)
+        (lay-part Part (get-origin> *line))
         
-        # If Part's ymin < list ymin, must update list bnds
-        # before updating Part+
+        # Adjust line bounds
+        (println 'con-any "Part has nl" Part (get Part 'data) (get Part 'nl 'dims))
+        (let (Dx (inc-line-by-part-x> *line Part)
+              Dy (upd-line-by-part-y> *line Part))
+          #(upd-superlines (get *line 'nl 'p) Dx)
+          (println 'con-any "Adjust line by: " (format Dx *Scl)))
         
-        # Adjust line bounds specifically to Part
-        (adj-line-to-part Part)
-                  
-        # Align cursor to bnds of Prv
-        # Ideally, should call lay-part on any Part and it works
-        (align-cur-to-bnds Part)
-        (lay-part (get Part 'b) (get-origin> *main))
-            
+        (mov-*1 *line)
+        
         # Update superlists
-        (upd-super Part)
+        # Assume bounds corresponds...
+        (upd-superlists Part)
         
         # Create upd-ptr
         (put *0 'b Ref)
@@ -85,80 +86,22 @@
         Part)))
 
 
-(de repl-car (Data Lay)
-
-  (let (Ref (get *0 'b)
-        Cdr (get Ref 'b)  
-        Prv (get Ref 'c)
-        Prv-B (get Prv 'b)
-        Prv-C (get Prv 'c)
-        Part (gen-part (list (list Data)) Lay NIL T)
-        Car (get Part 'a))
-        
-    #{
-    
-    [] - [] - NIL
-    a    b
-         *0
-         
-    Cdr = NIL
-    Prv = []b
-    Prv-C = []a
-    
-    }#
-          
-    # Note, ref is Car so get Prv
-    (repl-list Prv-C
-               Prv
-               Prv-B
-               Part)
-    
-    (if (= Lay 'x)
-    
-        (prog
-          # Draw Pair at Prv, no Car/Cdr
-          # Then nl, draw Car
-          (mov-cur-part Prv 'start)
-          (lay-part Part (get-origin> *main) 'skip-car-cdr)
-                    
-          # Create nl for Car
-          #   This a new list so Prv will be Nil
-          (put Car 'nl (new '(+Line) 
-                            NIL
-                            NIL
-                            (get Car 'a 'dims)))
-          
-          # Pos cur at Prv-C bounds
-          (align-cur-to-bnds Prv-C)
-          (nl-cur *sublist-space-y)
-            
-          # Move Car to y bounds
-          # Base will be origin of Part          
-          (lay-part (get Part 'a) (get-origin> *main))
-                    
-          # Move ptr to Cdr/NIL; must set ptr to Part to get Car
-          (put *0 'b (get Part 'a 'b))
-          (mov-part-abv> *0 (get Part 'a 'b) (cons T))
-          
-          (setq *line Car)
-          (setq *main Car))
-          
-        (prog
-          (println 'con-any "IMPLEMENT Y LAYOUT")))))
-
-
 (de con-back (Ref Part)
   #{  
-                *0
-    [ ] - [ ] - NIL
-    a     b
-    
-    TO
-    
-                      *0
+          *0
     [ ] - [ ] - [ ] - NIL
     a     b     c
     
+    TO
+    
+          *0
+    [ ] - [ ] - [ ] - [ ] - NIL
+    a     d     b     c
+    
+    Ref=b
+    Prv=a
+    Cdr=c
+    Part=d
   }#
 
   (let (Prv (get Ref 'c)
@@ -171,29 +114,43 @@
           (put Prv 'b Prv-Cdr))
         (put Prv 'b Part))
 
-    (put Ref 'c Part)    
-      
-    (with Part
-      (=: b Ref)
-      (=: c Prv))
-    
-    # Set nl if Ref has it; toggle Ref
-    (when (get Ref 'nl)
-      (put Part 'nl (get Ref 'nl))
-      (put Ref 'nl))
+    # d <- b
+    (put Ref 'c Part)
 
-    # Copy lay
-    #(force-lay Part (get Ref 'lay))
-        
-    # Connect new part data to list part data
-    # Must conn Cdr also (get (get Ref 'b) 'data)
-    
+    # conn d -> b data
+    (with Part
+      (=: c Prv)    
+      (=: b Ref)
+      (con (car (:: data)) (get Ref 'data)))
+                
     # Remember, *main's value is always the particle itself
     # The value of the symbol *main is actually 'b    
-    
     (unless (isa '+Sym Prv)
+      # a -> d
       (with Prv
-        (con (car (:: data)) (get Part 'data))))))
+        (con (car (:: data)) (get Part 'data))))
+        
+    # Set nl if Ref has it; toggle Ref
+    (when (get Ref 'nl)
+      
+      (let (Nl (get Ref 'nl)
+            Prv (get Nl 'p)
+            Nxt (get Nl 'n))
+            
+        (when Prv
+          (with (get Prv 'nl)
+            (=: n Part)))
+          
+        (when Nxt
+          (with (get Nxt 'nl)
+            (=: p Part))))
+      
+      (put Part 'nl (get Ref 'nl))
+      (put Ref 'nl NIL)
+      
+      # Set newline also
+      (println 'con-back " *line change: " Ref " -> " Part)
+      (setq *line Part))))
       
 
 (de repl-list (Prv Ref Cdr Part)
@@ -238,13 +195,75 @@
   (del> Ref T NIL))
 
 
+(de repl-car (Data Lay)
+
+  (let (Ref (get *0 'b)
+        Cdr (get Ref 'b)  
+        Prv (get Ref 'c)
+        Prv-B (get Prv 'b)
+        Prv-C (get Prv 'c)
+        Part (gen-part (list (list Data)) Lay NIL T)
+        Car (get Part 'a))
+        
+    #{
+    
+    [] - [] - NIL
+    a    b
+         *0
+         
+    Cdr = NIL
+    Prv = []b
+    Prv-C = []a
+    
+    }#
+          
+    # Note, ref is Car so get Prv
+    (repl-list Prv-C
+               Prv
+               Prv-B
+               Part)
+    
+    (if (= Lay 'x)
+    
+        (prog
+          # Draw Pair at Prv, no Car/Cdr
+          # Then nl, draw Car
+          (mov-cur-part Prv 'start)
+          (lay-part Part (get-origin> *main) 'skip-car-cdr)
+          
+          # Adjust line bounds specifically to Part
+          (adj-line-to-part> *line Part)
+          (mov-*1 *line)          
+                    
+          # Create nl for Car
+          #   This a new list so Prv will be Nil
+          (put Car 'nl (new '(+Line) 
+                            NIL
+                            NIL
+                            (get Car 'a 'dims)))
+                      
+          # Move Car to y bounds
+          # Cur will be overriden
+          (lay-part Car *cur)
+                    
+          # Move ptr to Cdr/NIL; must set ptr to Part to get Car
+          (put *0 'b (get Car 'b))
+          (mov-part-abv> *0 (get Car 'b) (cons T))
+          
+          (setq *line Car)
+          (setq *main Car))
+          
+        (prog
+          (println 'con-any "IMPLEMENT Y LAYOUT")))))
+
+
 ################################################################################
 
 (de point-b-prv ()
   (println 'point-b-prv)
 
   (let (Ref (get *0 'b)
-        Prv (get (get *0 'b) 'c))
+        Prv (get Ref 'c))
         
     (when Prv
     
@@ -253,10 +272,10 @@
         (println 'point-a-out "Mov to superlist")
         (setq *main Prv))
         
-      # Set line
-      (when (mov-line-p> Ref)
+      # Set line when Ref has nl
+      (when (get Ref 'nl)
+        (mov-line-p> Ref)
         (println 'point-a-out "Mov to line"))
-        
     
       (println 'point-a-out Prv (get Prv 'data))
       (put *0 'b Prv)
@@ -269,7 +288,8 @@
   (let? Cdr (get (get *0 'b) 'b)
   
     # Set line
-    (when (mov-line-p> Cdr)
+    (when (get Cdr 'nl)
+      (setq *line Cdr)
       (println 'point-a-out "Mov to line"))
   
     (println 'point-b-nxt Cdr (get Cdr 'data))
