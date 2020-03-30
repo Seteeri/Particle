@@ -110,42 +110,6 @@
   (=: nl)
   (=: data))
 
-# List specific?
-
-(dm last> ()
-
-  (let Last (: b)
-
-    (loop
-
-      (NIL (get Last 'b))
-      (println "last>" Last (get Last 'data))
-      (setq Last (get Last 'b)))
-
-    Last))
-
-
-(dm last-1> ()
-
-  (let Last This
-    (loop
-      # Stop at second to last
-      (NIL (get Last 'b 'b))
-      (setq Last (get Last 'b)))
-    Last))
-
-
-(dm tail> (Cnt)
-
-  (let (I (: b)
-        Ta ())
-
-    # End loop when NIL
-    (while (setq I (get I 'b))
-      (push 'Ta I))
-
-    (flip (head Cnt Ta))))
-
 
 (dm mov> (Pos)
 
@@ -239,14 +203,11 @@
 # so should move to a vert class or make normal function
 
 (dm origin> ()
-
   (let? Vert (car (: verts))
-
     (with Vert
-
       (origin> (get *metrics (: chr))
-                   (: pos)
-                   *sca-vert))))
+               (: pos)
+               *sca-vert))))
 
 
 (dm col> (Col)

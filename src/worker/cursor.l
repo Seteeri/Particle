@@ -56,3 +56,36 @@
           (set-cur-x (get (origin> Ref) 1))
           (set-cur-y (get Bnds 2))
           (nl-cur 2.0)))))
+          
+          
+(de align-cur-to-line (Line)
+      
+  # x = origin of prv line
+  # y = bnds of prv line
+  
+  # if sym, get val, else itself
+  (let Ori (origin> (if (isa '+Sym Line) 
+                        (get Line 'b)
+                        (origin> Line)))
+  
+    (set-cur-x (get Ori 1))
+    
+    (set-cur-y (- (get Ori 2)
+                  (get Line 'nl 'dims 2)))
+                  
+    (nl-cur *sublist-space-y)))
+
+
+(de align-cur-to-pair (Car)
+
+  # x = origin of Pair
+  # y = bnds of line
+  
+  (set-cur-x (get (origin> (get Car 'c)) 1))  
+  
+  (let Ori (origin> (if (isa '+Sym *line) 
+                        (get *line 'b)
+                        (origin> *line)))
+        
+    (set-cur-y (+ (get Ori 2)
+                  (get *line 'nl 'dims 2)))))

@@ -41,44 +41,13 @@
 
       (if Nl-Prv
           
-          (prog
-            # Align cursor to start of prv line
-            # x = origin of prv line
-            # y = bnds of prv line
-            
-            # if sym, get val, else itself
-            (let (Ori (if (isa '+Sym Nl-Prv)
-                          (origin> (get Nl-Prv 'b))
-                          (origin> Nl-Prv)))
-            
-              (set-cur-x (get Ori 1))
-              
-              (set-cur-y (- (get Ori 2)
-                            (get Nl-Prv 'nl 'dims 2)))
-              (nl-cur *sublist-space-y)
-              
-              #(print-cur)
-              
-              # Use first item origin as base
-              (setq Base *cur)))
-              
-          (prog
-            # CAR
-            (when (get Any 'c)
-              (println 'lay-pair "Move under Pair")
-              
-              # Align x to prv
-              # Align to y bounds of current line
-              (let (Ori (if (isa '+Sym *line)
-                            (origin> (get *line 'b))
-                            (origin> *line)))
-                (set-cur-x (get (origin> (get Any 'c)) 1))
-                (set-cur-y (+ (get Ori 2)
-                              (get *line 'nl 'dims 2))))
+          (align-cur-to-line Nl-Prv)
 
-              (print-cur)
-
-              (setq Base *cur))))))
+          (when (get Any 'c)
+            (println 'lay-pair "Move under Pair")
+            (align-cur-to-pair Any)))
+              
+      (setq Base *cur)))
 
   # Move Pair first to get correct pos since dims rel to origin
   (mov> Any *cur)
