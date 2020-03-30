@@ -244,8 +244,7 @@
   (if (= (get Ref 'lay) 'x)
   
       (prog
-                    
-        # Make fn in line?
+
         # Link lines
         (let Nxt (get *line 'nl 'n)
         
@@ -253,7 +252,7 @@
           (put Ref 'nl (new '(+Line)
                             *line
                             Nxt
-                            (calc-bounds-nl> Ref)))
+                            (calc-dims-nl> Ref)))
 
           # Link prev n to Ref
           (with (get *line 'nl)
@@ -264,7 +263,29 @@
             (with (get Nxt 'nl)
               (=: p Ref))))
 
-        # RETHINK THIS
+        #{
+          Example:
+                *
+          a b c d e f
+            .
+          ___________
+            
+          ->
+          
+          a b c
+            .
+          _____
+          d e f
+          
+          _____
+          
+          Truncate current line dims to Ref c bnds
+          Set new line dims x = current line bnds - c bnds
+          
+          However, new line y dims calc is O(N), otherwise dims will be wrong
+          
+          Argh, have to calc y dims for both lines...
+        }#
 
         # Shorten line dims to Ref c origin
         # since Ref itself will be on a newline
@@ -273,18 +294,11 @@
               )
           #(upd-superlines (get *line 'nl 'p) Dx)
           )        
-                
+
+        # Cannot position Ref/newline until current line bnds updated
+
         # Base irrelevant; lay-part will override it
         (lay-part Ref *cur)
-        
-        # Calculate bnds for newline until nl
-        # Need not recalculate, just go from Ref to next NL or End
-        # Or New Length = Line Bnds X - Ref Bnds X
-        # Before or after lay-part?
-        # Still must recalculate the Y
-                
-        (put (get Ref 'nl) 'dims (calc-bounds-nl> Ref))
-        #(mov-*1 *line)
         
         (setq *line Ref)
         

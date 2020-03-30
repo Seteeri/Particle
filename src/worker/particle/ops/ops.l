@@ -14,20 +14,6 @@
 
 ########################
 
-#{
-# Adjust by one Part
-(de adj-line-to-part (Part)  
-  (let (Ori (get-origin> Part)
-        Bnds (calc-bounds> Part NIL T)
-        Dx (- (get Bnds 1)
-              (get Ori 1)
-              *adv-vert))
-    (with (get *line 'nl)
-      (let ((X Y) (: bnds))
-        (=: bnds (list (+ X Dx)
-                       (min Y (get Bnds 2))))))))
-}#
-
 (de upd-superlines (Line Dx)
   (while Line 
     (with Line
@@ -319,7 +305,7 @@
     
       (put *0 'b Car)
       
-      (let Dims (calc-bounds> Car)
+      (let Dims (bounds> Car)
 
         # Set list
         (if (= (type Car) '(+Pair))

@@ -292,21 +292,11 @@ Store DAGs as binary trees?
       * Create Reset command
       * cmd-make-char/cmd-make-nl [WIP]
         * Tests:
-          * a b c (d e f)
-            * Nil should move also when sublist moves (if superlist upd)
-          * a b c (d e f), move up, cont list
-            * If new item pens sublist, it should move also (if list upd)
-        * Write newline fn to set nl prop [WIP]
-          * worker must create default line object for main [Done]
-          * cmd-make-char must update line bnds [Done]
-          * lay-pair must get y bnds from line [Done]
-        * Update list Cdr [Done]
+          * cmd-make-char @ start/end/mid-line
+          * cmd-make-nl @ start/end/mid-line          
+          * cmd-make-char (sublist) @ start/end/mid-line
       * Update superlist/superlines [WIP]
       * Update sublist handling [WIP]
-        * Refactor line bnds calc upd
-        * Refactor mov nl
-        * Refactor sublist
-        * Test again
       * Refactor cmd-del
       * Support y layout
         * Refactor layout to support mixed layouts better      

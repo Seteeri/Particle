@@ -44,7 +44,7 @@
 (de align-cur-to-bnds (Ref) # Rename to align
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds
-  (let Bnds (calc-bounds> Ref NIL T) # Skip CDR
+  (let Bnds (bounds> Ref NIL T) # Skip CDR
     (if (= (get Ref 'lay) 'x)
         (prog
           # Move cur to x base of Ref and y origin of Ref

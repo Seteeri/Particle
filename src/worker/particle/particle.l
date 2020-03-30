@@ -260,10 +260,10 @@
       (cmd-upd-vert *ipc Vert))))
 
 
-(dm calc-bounds> (Car-Skip Cdr-Skip)
+(dm bounds> (Car-Skip Cdr-Skip)
 
-  (let ((Xa Ya) (when (and (: a) (not Car-Skip)) (calc-bounds> (: a)))
-        (Xb Yb) (when (and (: b) (not Cdr-Skip)) (calc-bounds> (: b)))
+  (let ((Xa Ya) (when (and (: a) (not Car-Skip)) (bounds> (: a)))
+        (Xb Yb) (when (and (: b) (not Cdr-Skip)) (bounds> (: b)))
         (X Y) (with (last-vert> This)
                   (get-origin> (get *metrics (: chr))
                                (: pos)
@@ -279,7 +279,7 @@
 
 (dm adj-line-to-part> (Ref)
   (let (Ori (get-origin> This)
-        Bnds (calc-bounds> Ref NIL T)
+        Bnds (bounds> Ref NIL T)
         Dims (list (- (get Bnds 1) (get Ori 1))
                    (- (get Bnds 2) (get Ori 2))))
     (with (: nl)
@@ -293,7 +293,7 @@
   # Calculate width of new Part plus adv
   # Bnds - Origin
   (let (Ori (get-origin> Part)
-        Bnds (calc-bounds> Part NIL T)
+        Bnds (bounds> Part NIL T)
         Dx (+ (- (get Bnds 1) (get Ori 1))
               *adv-vert-2))
             
@@ -306,7 +306,7 @@
 
 (dm dec-line-by-part-x> (End)
   # Add op to add/sub
-  (let (Bnds-B (calc-bounds> End NIL T)
+  (let (Bnds-B (bounds> End NIL T)
         Ori (get-origin> This)
         Dims (get (: nl) 'dims)
         Bnds-Ln (list (+ (get Ori 1) (get Dims 1))
@@ -325,7 +325,7 @@
   (let (Ori (cadr (get-origin> This))
         Dims (get (: nl) 'dims)
         Bnds-Ln (- Ori (get Dims 2))
-        Bnds-B (cadr (calc-bounds> Part NIL T))
+        Bnds-B (cadr (bounds> Part NIL T))
         Dy (abs (if (< Bnds-B Bnds-Ln)
                     (- Bnds-B Ori)
                     (cadr Dims))))
@@ -337,12 +337,12 @@
     Dy))
 
 
-(dm calc-bounds-nl> ()
+(dm calc-dims-nl> ()
   (let (Part This
         Ori (get-origin> This)
-        (X Y) (calc-bounds> This NIL T))
+        (X Y) (bounds> This NIL T))
     (loop
-      (let ((Xb Yb) (calc-bounds> Part NIL T))
+      (let ((Xb Yb) (bounds> Part NIL T))
         (setq X (max X Xb)
               Y (min Y Yb)))
       (println Part (get Part 'data))
