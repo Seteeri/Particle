@@ -101,7 +101,7 @@
   (when (and Cdr (: b))
     (del> (: b) Car Cdr))
 
-  (println 'cmd-del "Deleted Particle:" This (: data))
+  (println 'del> "Deleted Particle:" This (: data))
 
   # Clear links and flags
   (=: a)
@@ -299,14 +299,15 @@
 
 
 (dm calc-dims-nl> ()
+  
   (let (Part This
         Ori (origin> This)
-        (X Y) (bounds> This NIL T))
+        (X Y) (if (has-car-pair> This) Ori (bounds> This NIL T)))
     (loop
-      (let ((Xb Yb) (bounds> Part NIL T))
+      (let ((Xb Yb) (if (has-car-pair> Part) Ori (bounds> Part NIL T)))
         (setq X (max X Xb)
               Y (min Y Yb)))
-      (println Part (get Part 'data))
+      (println 'calc-dims-nl Part (get Part 'data))
       (setq Part (get Part 'b))
       (T (or (not Part) (get Part 'nl))))
     (list (- X (car Ori)) (abs (- Y (cadr Ori))))))

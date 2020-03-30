@@ -291,6 +291,8 @@
     (setq *line *main)
     (inc-line-by-part-x> *line (get *main 'b))
     
+    (setq *master *main)
+    
     #######################
     # TODO: Draw *ptrs
     (idx '*particles
@@ -308,7 +310,7 @@
     (lay-part *0 *cur 'skip-cdr)
     # Mov it above NIL
     (mov-part-abv> *0 (get *main 'b) (cons T))
-        
+    
     # TEMP
     (setq p1 *cmds)
 

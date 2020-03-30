@@ -87,5 +87,9 @@
                         (get *line 'b)
                         *line))
         
-    (set-cur-y (+ (get Ori 2)
-                  (get *line 'nl 'dims 2)))))
+    (set-cur-y (get (origin> (get Car 'c)) 2))
+    (nl-cur 2.0)
+    (nl-cur *sublist-space-y)
+    
+    (prin 'align-cur-to-pair " " (get *line 'data) " " (format (get Ori 1) *Scl) " " (format (get Ori 2) *Scl) " ")
+    (print-cur)))

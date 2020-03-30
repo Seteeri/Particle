@@ -4438,26 +4438,6 @@ Anytime line is updated, it is updated also if line bnds =
 
 ================================================================================
 
-Every newline = new list
-
-R X X X X
-  X X X X
-  
-= ((X X X X) (X X X X))
-
-Lines are localized to lists
-
-R X X X X
-  X X X X
-  X X X X
-  X X X X
-
-P A A
-  P A A  P A A
-    A A    A A
-
-==============
-
 End
 
 P A A A A ]
@@ -4475,3 +4455,68 @@ Adjust bnds to current item which only applies when ptr at end
 Need to adjust bnds by width of new item
 
 x bnds + width of new char with nil
+
+[] [] [] NIL
+|  |
+[] []
+|  |
+[] []   *
+|  |
+[] []   [] NIL
+|  |
+[] []
+
+==============
+
+Every new line = new list?
+
+R a b c d
+  e f g h
+  i j k l
+  m n o p
+   
+= ((a b c d)
+   (e f g h)
+   (i j k l)
+   (m n o p))
+
+
+  [Y] [Y] [X] [X] [X] [X] NIL
+       .   .   .   .   .
+       
+      [Y] [X] [X] [X] [X] NIL
+       .   .   .   .   .
+       
+      [Y] [X] [X] [X] [X] NIL
+       .   .   .   .   .
+       
+      [Y] [X] [X] [X] [X] NIL
+       .   .   .   .   . 
+  NIL
+
+(
+  (Lorem ipsum dolor sit amet, consectetur adipiscing elit.)
+  (Praesent luctus lacus nec ultrices scelerisque.)
+  (Nulla ultricies suscipit erat quis fermentum.)
+  (Pellentesque leo mi, sollicitudin a rhoncus at, facilisis in diam.)
+) 
+
+  (let (a 1
+        b 2)
+    (+ a b))
+
+
+  [Y] [X] NIL
+      let
+  
+  [Y] [X] [X] [X] [X] NIL
+      a   1   b   2
+  
+  [Y] [X] [X] [X] NIL
+      +   a   b
+  
+  NIL
+  
+This would require custom function to layout 2nd arg
+
+But then how to do multiline strings?

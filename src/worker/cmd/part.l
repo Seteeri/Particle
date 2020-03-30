@@ -1,32 +1,28 @@
 (de cmd-reset (Keysm)
   
   (println 'cmd-reset)
+          
+  # Clear ptr
+  (put *0 'b)
 
-  # Move to to root line
-  (let (Line *line
-        P NIL)
-    (while (setq P (get Line 'p))
-      (setq Line P))
+  (println 'cmd-reset *master (get *master 'data))
+  (del> *master T T)
   
-    # Clear ptr
-    (put *0 'b)
+  (setq *main NIL)
+  (setq *main (gen-part '*main 'x))
+  (with *main
+    (=: nl (new '(+Line) NIL NIL (get (: a) 'dims))))
+  (setq *cur (copy *pos-main))
+  (lay-part *main *cur)
+  (setq *line *main)
+  (inc-line-by-part-x> *line (get *main 'b))
   
-    # Delete main
-    (del> Line T T)
+  # Repos ptr
+  (put *0 'b (get *main 'b))
+  (lay-part *0 *cur 'skip-cdr)
+  (mov-part-abv> *0 (get *main 'b) (cons T))
     
-    (setq *main NIL)
-    (setq *main (gen-part '*main 'x))
-    (with *main
-      (=: nl (new '(+Line) NIL NIL (get (: a) 'dims))))
-    (setq *cur (copy *pos-main))
-    (lay-part *main *cur)
-    (setq *line *main)
-    (inc-line-by-part-x> *line (get *main 'b))
-    
-    # Repos ptr
-    (put *0 'b (get *main 'b))
-    (lay-part *0 *cur 'skip-cdr)
-    (mov-part-abv> *0 (get *main 'b) (cons T))))
+  (gc))
 
 
 (de cmd-make-char (Keysym)

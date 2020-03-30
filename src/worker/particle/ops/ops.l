@@ -62,6 +62,9 @@
           #(upd-superlines (get *line 'nl 'p) Dx)
           (println 'con-any "Adjust line by: " (format Dx *Scl)))
         
+        # Ignore sublists
+        # (put *line 'nl 'dims (calc-dims-nl> *line))
+                
         (mov-*1 *line)
         
         # Update superlists' cdrs
@@ -181,21 +184,26 @@
           (mov-cur-part Prv 'start)
           (lay-part Part (origin> *line) 'skip-car-cdr)
           
-          # Adjust line bounds
-          (put *line 'nl 'dims (calc-dims-nl> *line))
-          (mov-*1 *line)
-                    
           # Create nl for Car
           #   This a new list so Prv will be Nil
+          # Layout will detect this
           (put Car 'nl (new '(+Line) 
                             NIL
                             NIL))
                             #(get Car 'a 'dims)
-          (put Car 'nl 'dims (calc-dims-nl> *line))
-                      
+
+          # Adjust line bounds
+          # This must ignore sublists?
+          # Need only adjust Y
+          #(put *line 'nl 'dims (calc-dims-nl> *line))
+
           # Cur will be moved to proper pos rel to Pair
           (lay-part Car *cur)
-                    
+
+          # After layout, calc bnds
+          (put Car 'nl 'dims (calc-dims-nl> Car))
+          (mov-*1 Car)
+                                          
           # Move ptr to Cdr/NIL; must set ptr to Part to get Car
           (put *0 'b (get Car 'b))
           (mov-part-abv> *0 (get Car 'b) (cons T))
@@ -261,15 +269,18 @@
     
       # Set list
       (when (= (type (get Prv 'a)) '(+Pair))
-        (println 'point-a-out "Mov to superlist")
-        (setq *main Prv))
+        (println 'point-b-prv "Mov to superlist")
+        (setq *main Prv)
+        # How to get prv line when nl p is nil?
+        (println "WHAT IS THE PREVIOUS LINE???")
+        (setq *line *line))
         
       # Set line when Ref has nl
       (when (get Ref 'nl)
         (mov-line-p> Ref)
-        (println 'point-a-out "Mov to line"))
+        (println 'point-b-prv "Mov to line"))
     
-      (println 'point-a-out Prv (get Prv 'data))
+      (println 'point-b-prv Prv (get Prv 'data))
       (put *0 'b Prv)
       (mov-part-abv> *0 Prv (cons T)))))
 
