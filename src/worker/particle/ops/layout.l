@@ -11,6 +11,15 @@
 
 # Refactor these into methods
 
+(def '*cur-x)
+(def '*cur-y)
+
+(de lay-part-start (Any Base Skip)
+  (setq *cur-x NIL
+        *cur-y NIL)
+  (lay-part Any Base Skip))
+  
+
 (de lay-part (Any Base Skip)
   
   #{
@@ -32,11 +41,12 @@
 (de lay-pair (Any Base Skip)
     
   # TODO: Handle Y layout
-  (when (= (get Any 'lay) 'x)
-    (when (get Any 'nl 'p)
-      (println 'lay-pair "Sublist detected - move under Pair")
-      (align-cur-to-pair Any)            
-      (setq Base *cur)))
+  (when (get Any 'nl 'p)
+    (println 'lay-pair "Sublist detected" (get Any 'nl 'base))
+    (if (= (get Any 'nl 'base) 'line)
+        (align-cur-to-line Any)
+        (align-cur-to-prv Any))
+    (setq Base *cur))
 
   # Move Pair first to get correct pos since dims rel to origin
   (mov> Any *cur)
@@ -86,17 +96,22 @@
                    (or (= Skip 'skip-cdr)
                        (not Skip)))
           (lay-part (: a) Base))
-      
+
         # To draw Cdr: (use align-cur-to-bnds? that recalcs...)
         # X =  Ori 1 + Dims-Car 1, plus an adv
         # Y = origin of Pair
-        
-        # X should be in place
-        # else have to trace Car
-        #(set-cur-x (+ X-Ori X-Dims-A)) (adv-cur)
-        (adv-cur)
-        
         (set-cur-y Y-Ori)
+
+        # Similar to y, after drawing Y Cdr, cur will not be at Car bnds
+        # so move cur to Car bnds (max X)
+        (if (= (get (: a) 'lay) 'y)
+          (prog
+            (println 'lay-part-x "Y layout detected for Car")
+            (setq *cur (list *cur-x (get *cur 2)))
+            (adv-cur))
+          (prog                        
+            # X should be in place, else get from cur bnds
+            (adv-cur)))
         
         # Str's val/b is NIL (or poss later point to itself)
         (when (and (: b)
@@ -138,23 +153,29 @@
 
       (let ((X-Dims-A Y-Dims-A) (get (: a) 'dims)
             (X-Dims-B Y-Dims-B) (get (: b) 'dims))
-      
+                  
         (when (and (: a)
                    (not (= (: a) Any))
                    (or (= Skip 'skip-cdr)
                        (not Skip)))
           (lay-part (: a) Base))
-        
+
         # To draw Cdr:
         # X = Origin
         # Y = Ori 2 + Dims-Car 2, plus nl
         (set-cur-x X-Ori)
 
-        #(set-cur-y (+ Y-Ori Y-Dims-A)) (nl-cur 3.0)
-        # Y should be in place
-        # else have to trace Car
-        (nl-cur)
-                
+        # If Car layout is X, cur will be back at Cdr bnds,
+        # which means Y is level with Any - must set cur to Y bnds (min Y)
+        (if (= (get (: a) 'lay) 'x)
+          (prog
+            (println 'lay-part-y "X layout detected for Car")
+            (setq *cur (list (get *cur 1) *cur-y))
+            (nl-cur 2.0))
+          (when (: b)
+            # Y should be in place, else get from cur bnds
+            (nl-cur 2.0)))
+        
         # Str's val/b is NIL (or poss later point to itself)
         (when (and (: b)
                    (not (= (: b) Any))
@@ -177,7 +198,27 @@
         # Adv to move to end pos of last vert
         (mov-cur-part Any 'end)
         (adv-cur)
-        *cur)
+
+        #{
+        
+         O
+          [X] CDR|
+          CAR    |
+          -------+
+
+         O
+          [X] CAR|
+          CDR    |
+          -------+          
+        }#
+        
+        # max X, min Y
+        (setq *cur-x (if *cur-x
+                        (max *cur-x (get *cur 1))
+                        (get *cur 1)))
+        (setq *cur-y (if *cur-y
+                         (min *cur-y (get *cur 2))
+                         (get *cur 2))))
 
       (prog
   
@@ -189,25 +230,7 @@
 ################################################################################
 
 
-(de align-cur-to-pair (Car)
-  #{
-  
-    [X]  [X]  [X]  NIL
-    A    B    [X]  NIL
-              C
-    SAME
-    [X]  [X]
-    A    B    
-    [Y]  [X] NIL
-    NIL  C       
-
-    Both are on a newline, 
-    however former is rel to origin of c,
-    and latter is rel to list start  
-    
-  }#
-  
-  # TODO: Handle Y layout
+(de align-cur-to-prv (Car)
 
   # x = origin of Pair
   # y = bnds of line
@@ -222,10 +245,38 @@
     (nl-cur 2.0)
     (nl-cur *sublist-space-y)
     
-    #(prin 'align-cur-to-pair " " (get *line 'data) " " (format (get Ori 1) *Scl) " " (format (get Ori 2) *Scl) " ")
+    #(prin 'align-cur-to-prv " " (get *line 'data) " " (format (get Ori 1) *Scl) " " (format (get Ori 2) *Scl) " ")
     #(print-cur)
     
     ))
+
+
+(de align-cur-to-line (Car)
+
+  # x = origin of line
+  # y = bnds of line
+    
+  (let (Line (get Any 'nl 'p)
+        Ori (origin> (if (isa '+Sym Line)
+                         (get Line 'b)
+                         Line)))
+        
+    (set-cur-x (get Ori 1))
+    (unless (isa '+Sym Line)
+      (println 'align-cur-to-line "Adv-cur" Line (get Line 'data))
+      (adv-cur 2.0))
+    
+    (set-cur-y (get (origin> (get Car 'c)) 2))
+    (nl-cur 2.0)
+    (nl-cur *sublist-space-y)
+    
+    #(prin 'align-cur-to-prv " " (get *line 'data) " " (format (get Ori 1) *Scl) " " (format (get Ori 2) *Scl) " ")
+    #(print-cur)
+    
+    ))
+    
+    
+################################################################################
 
 
 (de swap-lay (Tgt)
@@ -241,6 +292,67 @@
 
 (de mov-nl (Ref)
 
+  #{
+    Move to newline and swap layout
+    
+    If user wants to maintain x layout, it can be done afterwards explicitly
+        
+    Given:
+
+      [X]  [X]  [X]  NIL
+      A    B    C
+  
+  }#
+  (if *on-car
+      
+      #{
+        Create empty list aka NIL; move newline, x layout
+        
+        [X]  [X]  [X]  NIL
+        A    B         *
+                  [X]  NIL
+                  NIL
+        
+      }#
+      (repl-car-list NIL 'x)
+      
+      #{
+        Create list with Pair; move newline, y layout
+        - If list already, create nested list; call repl-cdr with Ref data
+
+        [X]  [X]
+        A    B    
+
+        [Y]  [X]  NIL
+        NIL  C
+        
+        * Calling swap-lay and backspace, will result in other example but
+        with C instead of NIL as the CAR
+      }#
+      # Repl-any expects ptr on car
+      (prog
+        (let Part (repl-cdr-list (car (get Ref 'data)) 'x)
+                
+          # Make list y layout
+          (put Part 'lay 'y)
+                    
+          # Mov to newline
+          (mov-part-nl Part 'line)
+                  
+          # Move pointer to deep NIL
+          (let? End (get Part 'a 'b)
+            (put *0 'b End)
+            (mov-part-abv> *0 End (cons T)))
+            
+          (println 'mov-nl "Added Y+newline")
+          
+          Part))))
+
+
+##################
+
+(de mov-nl-2 (Ref)
+
   # Move to Car
   (point-a-in)
   
@@ -253,55 +365,92 @@
     Part))
 
 
-(de mov-nl-2 (Ref)
-  # Is this appropriate for Y layout? ...since it already moves to newline
-  # -> make new column...
+
+(de repl-cdr-list (Data Lay)
+
+  # Similar to repl-car-list but Ref is cdr
+
+  #{
+       *0
+  [] - [] - NIL
+  a    b
+
+  Ref = b
+  Prv = a
+  Cdr = NIL
+  Part = new
+
+       *0
+  [] - [] - NIL
+  a    c
+       
+  }#
+
+  (let Part (gen-part (list (list Data))
+                       Lay 
+                       NIL
+                       T)
+
+    (repl-list (get Ref 'c)
+               (get *0 'b)
+               (get Ref 'b)
+               Part)
+        
+    Part))
+
+
+(de mov-part-nl (Ref Base)
+
+  # base = line or prv
     
-  (when (or (= (type Ref) '(+Nil)) T)
+  # For X layout, move to nl, toggle layout
+  # Only do this for lists...and NIL?
+
+  # Link lines
+  (let Nxt (get *line 'nl 'n)
+  
+    # Then create Line and calc its dims (from Ref to NIL/NL)
+    (put Ref 'nl (new '(+Line)
+                      *line
+                      Nxt
+                      NIL
+                      Base))
+
+    # Link prev n to Ref
+    (with (get *line 'nl)
+      (=: n Ref))
+      
+    # Link nxt p to Ref
+    (when Nxt
+      (with (get Nxt 'nl)
+        (=: p Ref))))
     
-    (if (= (get Ref 'lay) 'x)
+  (println 'mov-part-nl "Create new line: " Ref (get Ref 'data))
+  (println 'mov-part-nl "Prv: " (get Ref 'nl 'p) (get Ref 'nl 'p 'data))
+  (println 'mov-part-nl "Nxt: " (get Ref 'nl 'n) (get Ref 'nl 'n 'data))
     
-        (prog
+  # Must calc y dims for both lines
+  # Layout is not required to calc dims
+  
+  (put *line 'nl 'dims (calc-dims-nl> *line))
 
-          # For X layout, move to nl, toggle layout
-          # Only do this for lists...and NIL?
-
-          # Link lines
-          (let Nxt (get *line 'nl 'n)
-          
-            # Then create Line and calc its dims (from Ref to NIL/NL)
-            (put Ref 'nl (new '(+Line)
-                              *line
-                              Nxt))
-
-            # Link prev n to Ref
-            (with (get *line 'nl)
-              (=: n Ref))
-              
-            # Link nxt p to Ref
-            (when Nxt
-              (with (get Nxt 'nl)
-                (=: p Ref))))
-            
-          # Must calc y dims for both lines
-          # Layout is not required to calc dims
-          
-          # This will stop at Ref due to its nl prop set
-          (put *line 'nl 'dims (calc-dims-nl> *line))
-          (put Ref 'nl 'dims (calc-dims-nl> Ref))
-
-          # Cannot position Ref/newline until current line bnds updated
-          # Base irrelevant; lay-part will override it
-          # Subsequent lines will be updated also
-          (lay-part Ref *cur)
-          
-          (setq *line Ref)
-          
-          # Need not update previous lines/lists
-          #(upd-superls (get *line 'nl 'p))
-          #(upd-superlists Ref)
-          
-          T)
-          
-        (prog
-          (println "IMPLEMENT MOV-NL FOR Y LAYOUT")))))
+  # Cannot position Ref/newline until current line bnds updated
+  # Base irrelevant; lay-part will override it
+  # Subsequent lines will be updated also
+  (lay-part-start Ref *cur)
+  
+  # Start from Cdr since it skips lists  
+  (put Ref 'nl 'dims (calc-dims-nl> (get Ref 'a)))
+  
+  #(println 'mov-part-nl (get Ref 'nl 'dims))
+  
+  (mov-*1 Ref)
+  
+  # Update previous lines/lists
+  # Example, if line shortens, then must reposition cdrs
+  (upd-superls (get *line 'nl 'p))  
+  
+  (setq *line Ref
+        *main Ref)
+  
+  T)

@@ -144,7 +144,7 @@
       
                                         #(let Ref (get *0 'b)
                                         #  (mov-cur-part Ref 'start)
-                                        #  (lay-part Ref (origin> *main)))
+                                        #  (lay-part-start Ref (origin> *main)))
                                         
                                         #(println *line (get *line 'data))
                                         
@@ -269,7 +269,7 @@
           T)
     (set-cur-x X)
     (put *cmds 'lay 'y)
-    (lay-part *cmds *cur)
+    (lay-part-start *cmds *cur)
 
     #############################
     # Generate main particle list
@@ -286,7 +286,7 @@
       
     (setq *pos-main (copy *cur))
       
-    (lay-part *main *cur)
+    (lay-part-start *main *cur)
     
     (setq *line *main)
     (inc-line-by-part-x> *line (get *main 'b))
@@ -307,7 +307,7 @@
     # Set layout
     (put *0 'lay 'y)
     # Skip cdr since ptr should be rel to cdr
-    (lay-part *0 *cur 'skip-cdr)
+    (lay-part-start *0 *cur 'skip-cdr)
     # Mov it above NIL
     (mov-part-abv> *0 (get *main 'b) (cons T))
     
@@ -317,7 +317,7 @@
     (idx '*particles (def '*1 (gen-part '*1 'y)) T)
     (del> (get *1 'b) T T)
     (nl-cur -3.0)
-    (lay-part *1 *cur)
+    (lay-part-start *1 *cur)
 
     ############
     
@@ -330,7 +330,7 @@
         (set-cur-x X)
         
         # Must calc bnds for lists        
-        (lay-part Part *cur)))
+        (lay-part-start Part *cur)))
 
 
     (when NIL
@@ -341,7 +341,7 @@
         
         (nl-cur 2.0)
         (set-cur-x X)
-        (lay-part Part *cur)))
+        (lay-part-start Part *cur)))
 
     (when T
     
@@ -357,7 +357,7 @@
         
         (nl-cur 2.0)
         (set-cur-x X)
-        (lay-part Part *cur)))))
+        (lay-part-start Part *cur)))))
       
 
 (de run-tests ())

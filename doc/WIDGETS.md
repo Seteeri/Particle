@@ -8,118 +8,111 @@ They can be linked together to propagate a signal.
 
 Nodes allow widgets to be recomposed.
 
-Can apply ops to pointer or pointee - use quote to apply to ptr?
+# Text/Labels
+- another list
+- multiline is a list of lists
 
-If node = push button && character = node then how do you "push" a character?
--> Nothing happens - user must define it...where do types come in?
--> Or it evals it since strings are symbols which have values...default = NIL
+# Button
 
-Random thought:
-Left Click = 1
-Right Click = 0
-Wheel = (0 to 1)
+    [Y]  [X]  '*
+         Cmd
 
-Maybe store parts in symbol list?
+Select + Eval (or call func)
 
-What makes a button different from text is simply the border/shading
+# Cycle Button/Drop-down List/Radio Buttons (single state change)
+- iterate through a list
 
-Maintain pointer concept
+    [Y]
+      
+    [Y]  [X] '*
+         Opt
+      
+    [Y]  [X]  NIL
+         Opt
+      
+    [Y]  [X]  NIL
+         Opt
+      
+    [Y]  [X]  NIL
+         Opt
 
-Least Astonishment Principle
-
-Pointers propagate same signal
-
------------
-
-Text/Labels
-- multiline? -> more visual issue; newline means offset relative to last character
-
-[T] --> [E] --> [X] --> [T] <-- [*]
-
-Cycle Button/Drop-down List/Radio Buttons (single state change)
-- iterate through a list basically
-
-single/double linked list
-
-[TXT-1|4] <-- [*]
-|
-[TXT-2|3] <-- [_]
-|
-[TXT-3|2] <-- [_] 
-|
-[TXT-4|1] <-- [_]
-
-(no cycle...since if at start or end, can't go up/dn -> more predictable/consistent behavior)
-
-[UP] = (nth list)
-[DN] = (cdr)
-
-Propagation: [*] --> [TXT-#] 
-                 1/0
-                 
-If list large, use binary tree or skip list
+    NIL
+    
+Selected item has a Cdr
 
 -----------
 
-Combo Box - combo of text field + drop-down/list box
+# Combo Box 
+- combo of text field + drop-down/list box
 
 -----------
 
-Check Box (mutli state change)
-- duplicate pointers -> double pointers
+# Check Box
 
-              [*]
-                |
-[TXT-1|4] <-- [*]
-|               |
-[TXT-2|3] <-- [*]
-|               |
-[TXT-3|2] <-- [*]
-|               |
-[TXT-4|1] <-- [*]
+    [Y]
+      
+    [Y]  [X]  T
+         Opt
+      
+    [Y]  [X]  T
+         Opt
+      
+    [Y]  [X]  T
+         Opt
+      
+    [Y]  [X]  T
+         Opt
 
-To unselect, pop item
+    NIL
 
-              [*]
-                |
-[TXT-1|4] <-- [*]
-|               |
-[TXT-2|3]       |
-|               |
-[TXT-3|2] <-- [*]
-|               |
-[TXT-4|1] <-- [*]
+To unselect, set Cdr
+
+    [Y]
+      
+    [Y]  [X]  T
+         Opt
+      
+    [Y]  [X]  NIL
+         Opt
+      
+    [Y]  [X]  NIL
+         Opt
+      
+    [Y]  [X]  NIL
+         Opt
+         
+    NIL
+
+Selected item has T
 
 ---------
 
-Scrollers - continuous
+# Scrollers - continuous
 
-Scrollbar
-- dir indicates page movement
+## Scrollbar
+- adj ends to change sensitivity
 
-(obj) -> [*] --> [*] --> [*] -> (obj)
+    [*] --> [*] --> [*]
 
-Slider -> Discrete -> Cycle Button
-- note the pointers are not linked
-- pointers at ends? or values? ends makes more sense
-  [*]    [*]    [*]    [*]
-  
-[*] --> [1] -- [2] -- [3] -- [4] --> [*]
-         |
-        [*]
 
-Progress Bar
+## Slider
+- similar to radio buttons with discrete values
+      
+    [*] --> [1] -- [2] -- [3] -- [4] --> [*]
+             |
+            [*]
+
+## Progress Bar
 - similar to scrollbar...continous
 
-[*] --> [%%] --> [*]
+    [*] --> [X] --> [*]
+            %%
 
 ------------
 
-Grid/Table/Matrix/Tree?
-- more of display issue since still just a list?
-- or shared links
-
-link right-down
+# Grid/Table/Matrix/Tree?
+- two dimensional list or lists of lists
+- multiple ways to structure data
 
 [G] --> [_] --> [_] --> [_]
   |       |       |       |

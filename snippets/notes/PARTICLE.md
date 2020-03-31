@@ -294,19 +294,34 @@ Store DAGs as binary trees?
         * cmd-make-char @ start/end/mid-line
         * cmd-make-nl @ start/end/mid-line          
         * cmd-make-char (sublist) @ start/end/mid-line
-      +---------+------------------+--------------------+----
-      |         | Pair/Atom        | Car/Atom           | NIL
-      +---------+------------------+--------------------+----
-      | Newline | List w Pair      | Empty list         | <-
-      +---------+------------------+--------------------+----
-      | Char    | Ins-back/Mov-Cdr | Write-back/Mov-Car | <-
-      +---------+------------------+--------------------+
-        * Char [Done]
-        * Newline
-      * Support y layout
-        * Refactor layout to support mixed layouts better      
+      +-------+--------------------------------------------------------
+      | CMD   |                           Pointer
+      +-------+-------------------+--------------------+---------------
+      |       | Pair/Atom         | Car/Atom           | NIL
+      +-------+-------------------+--------------------+---------------
+      | NL    | List w. Pair      | List w. Car        | Empty list
+      +-------+-------------------+--------------------+---------------
+      | ASCII | Ins-back, Mov-Cdr | Write-car, Mov-Car | Same as left
+      +-------+-------------------+--------------------+---------------
+      | NIL   | Same as above     | Same as above      | Ins...
+      +-------+-------------------+--------------------+---------------
+        * ASCII [WiP]
+          * repl-any is adjusting y bounds
+          * Fix car mode after symbol
+        * Newline [WiP]
+          * End newline works
+          * Mid newline works
+          * Fix ptr pos after nl on NIL
+          * Fix repl-car-any - must make newline
+        * NIL - do Car/Atom, make current item NIL          
+      * When ptr is moving, stay in Car mode
+      * Support y layout [Done...]
       * Store ref to last item in list for faster bnds calc
-      * Refactor point mov to classes
+      * Make methods
+        * Layout
+        * Point cmds
+        * Gen?
+      * Handle multi-line strings -> WILL NEED THIS
         
     * Change ptr sym when moving to Car [Wknd]
       * 3 parts in name - default is "*+0"
@@ -320,13 +335,13 @@ Store DAGs as binary trees?
     * TEST LAYOUT OF EXISTING DATA
       
   * Refactor [Nxt Week]
+    * Is there a way to map modifier keys to Car or Pair/Cdr?
     * Technically '*list and '*main can be different, i.e. sublist can be on
     same line as parent list
       * It can't unless layout swapped...  
     * Fix magic numbers
     * Refeactor "*0" mov-part-abv> into cursor fn  
-    * Refactor cmd-make-nl
-      * What happens in a Y layout -> Make column? maybe later...  
+    * Make columns for Y layout?
     * Should swap-layout recurse or not?
       * Maintain substructure
       * Do first level or immediate
@@ -338,11 +353,13 @@ Store DAGs as binary trees?
       * Make command for prv/nxt list like Q/E
       * Search within view
     * Break out ops into files
-    * Merge cmd ptr and part      
+    * Merge cmd ptr and part
     * Make option: cmds a circular list
+      * Back disappearing items?
     * Replace dot with arrow indicating layout (Right/Down)
     * Camera needs to move with content like when entering a newline
       * Requires unproject to test if coord is in the viewport
+      * When a new item is entered, check its bnds against the view bounds
     * Draw num in car [?]
       * Handle decimals
     * Make fn: mov-cur X/adv Y/nl
@@ -350,14 +367,11 @@ Store DAGs as binary trees?
       * Store for each layout
       * This abs pos
       * Need dirty flag to be set on pos change, i.e. layout calls    
-    * For cmd-make-*, update list with last and dims [Later]
-      * This only applies to Pairs whose Car is a list
-      * The dims only applies to Car
-      * Store newlines in list/Pair?
+    * Cache last item for lists
     * Refactor other items to use skip flags like mov> etc.
-    * For single chars, the bounds is the same      
+    * For single chars, the bounds is the same everytime
             
-  * Optimize ipc to batch messages, flush etc. [Tues]
+  * Optimize ipc to batch messages, flush etc.
     * Instead of directly sending msgs, put into list
     * Call flush to send all
     * Requires rewriting protocol to read multiple messages from single
@@ -366,6 +380,7 @@ Store DAGs as binary trees?
   * Move to external symbols
     * Move verts.bin -> db file
     * Can test multiple workers pull/push database
+    * Refactor Particle into subclass of Entity
           
   * Use special printing for control characters like enter etc.
     * newline ("^J"), return ("^M") or TAB ("^I")

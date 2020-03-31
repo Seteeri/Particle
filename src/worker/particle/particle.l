@@ -305,19 +305,33 @@
 
 
 (dm calc-dims-nl> ()
+  # Calculate until NIL data
   
   (let (Part This
         Ori (origin> This)
         (X Y) (if (has-car-pair> This) Ori (bounds> This NIL T)))
+        
     (loop
+    
+      #(println 'calc-dims-nl "Check Part for dims: " Part (get Part 'data))
+    
       (let ((Xb Yb) (if (has-car-pair> Part) Ori (bounds> Part NIL T)))
         (setq X (max X Xb)
               Y (min Y Yb)))
-      (println 'calc-dims-nl Part (get Part 'data))
-      (setq Part (get Part 'b))
+              
+      # Handle NIL and strs
+      
+      # If encounter Part with y layout and no new line, go to its Car
+      (setq Part (if (and (= (get Part 'lay) 'y)
+                          (not (get Part 'nl)))
+                      (get Part 'a)
+                      (get Part 'b)))
+
+      #(println 'calc-dims-nl "Try Part: " Part (get Part 'data))
+      
       (T (or (not Part)
-             (get Part 'nl)
-             (not (get Part 'data)))))
+             (get Part 'nl))))
+    
     (list (- X (car Ori)) (abs (- Y (cadr Ori))))))
 
 

@@ -1,419 +1,287 @@
 User-Interface
 ==============
 
-Spacing Implies Relationship:
-* Particles = one space (XY)
-* CAR/CDR = two spaces (X)
-* Cons = four spaces (XY)
+*Talk about lay person's understanding of lists versus a programmer's understanding
+of a (singly-linked) list*
 
-* For example, ptr bytes are connected but spacing implies their connection
-* Edges are only used for pointers (CAR/CDR)
+*Talk about this relation to the learning curve*
 
-Two View Modes:
-* Cell view
-* List view
+# Command Matrix
 
-Data Types (Use ALT):
+    +-------+--------------------------------------------------------
+    | CMD   |                           Pointer
+    +-------+-------------------+--------------------+---------------
+    |       | Pair/Atom         | Car/Atom           | NIL
+    +-------+-------------------+--------------------+---------------
+    | NL    | List w. Pair      | List w. Car        | Empty list
+    +-------+-------------------+--------------------+---------------
+    | ASCII | Ins-back, Mov-Cdr | Write-car, Mov-Car | Same as left
+    +-------+-------------------+--------------------+---------------
+    | NIL   | Same as above     | Same as above      | Ins or Wr; def Ins; Wr does nothing; make opt
+    +-------+-------------------+--------------------+---------------
 
-NUM   = ALT + NUM
-SYMS:
-  NIL   = I-SYM: "NIL"
-          ALT + SPACE
-  T-SYM = ASCII
-          Create chars until snip command
-          Snip command can produce a string or internal symbol
-            Tr = (pack chrs)
-            In = (intern (pack chrs))
-          Then use no snip command to use individual chars which is less common pattern
-  I-SYM = See T-Sym
-          Or (intern "")
-  A-SYM = ALT + ?
-          Or type (new) or (box)
-CONS:
+## Basics
 
-Unused: ESC, TAB, CAPS, META, etc.
+### Data, Lists, and Atoms
 
-Use arrows to move around, if obj cut off, pan to it
+Most people are already familiar with the concept of a list. Anytime one creates
+an outline of sorts, one is creating a list or in computer science terms, a data
+structure.
 
-################################################################################
+    I. Title
+       A. Title
+          1. Title
+             i. Title
+             I. Title
+          2. Title
+       B. Title
+    II. Title
+      ...
+    III.
+    ...
 
-- A vertex represents a cons cell
-- A cons cell is made of two pointers, called car & cdr
-- These two pointers can point to an atom or to another cons cell
-  - Car/Cdr is either pointer or binary
-- An atom is an encoded pointer, which is a number or a symbol/string(UTF-8)
-- Numbers: shortnum fit in single cell (two pointers), bignum consists of multiple cells
-- Symbols: CDR=value, CAR= Nil|Name|PList&Name
-  - If only name and no plist, then CAR would point to cons cell containing name
-  - If bignum, then contains multiple cons cells (list with encoded numbers)
-  - If only plist and no name, then CAR would point to a plist with last cons CDR=Nil
-    which is where name would normally be
+`I`'s content consists of a `Title` and body (`A`, `B`, ...), and then links to `II`. The
+same pattern repeats itself throughout.
+
+    I. Title
+       A. Title
+       B. Title
+    II.
+      ...
+    ...
+
+    I. Title
+       Body
+    ...
+
+Because the user is already familiar with Roman numerals (or at least the symbols
+less than ten), the user implicitly knows that `I` proceeds to `II` and so on, 
+without needing any sort of explicit depiction of that relationship.
+
+The indentation of the body indicates that it and its content belong to the
+outer indented heading.
+
+Now, take for example how a programmer could see the same outline 
+as a data structure called a singly-linked list with a more verbose representation:
+
+    [L]  [A]  [A]
+         I.   Title
+
+         [L]  [A]  [A]
+              A.   Title
+
+              [L]  [A]  [A]    NIL
+                   1.   Title
+
+                   [L]  [A]  [A]    NIL
+                        i.   Title
+
+                   NIL
+
+              [L]  [A]  [A]    NIL
+                   2.   Title
+                   
+              NIL
+
+         [L]  [A]  [A]
+              A.   Title
+
+              [L]  [A]  [A]    NIL
+                   1.   Title
+
+                   [L]  [A]  [A]    NIL
+                        i.   Title
+                   
+                   NIL
+                   
+              [L]  [A]  [A]    NIL
+                   2.   Title
+                   
+              NIL
+         NIL
+         
+    [L]  [A]  [A]
+         II.  Title
+         
+         ...
+         
+    ...
+
+* There are two types of data: lists and atoms
+* Lists can contain a combination of lists and atoms
+  * Every list ends with the atom NIL
+* Atoms are either numbers or strings
+  * NIL is an atom, albeit a special one, as it represents an empty list
+  * There are subtypes of symbols but that is for another discussion
+
+### Pointers
+
+* Pointer can be either above or below an item in a list, depending on what it
+is pointing to
+* If above, an ASCII key will insert a key before the current item, and move the
+pointer above the next item
+* If below, an ASCII key will replace the item with input key, and move the pointer
+below the next item
+* Pointers themselves are symbols
+* All pointers begin with an asterisk: `*0` `*1` etc.
+* There can exists as many pointers as desired, however, there exists one root
+master pointer: `*0`.
+
+## Layouts
+
+There exists 2 possible layouts, x or y:
+
+### X Layout
+
+Atom:
+
+    [X] CDR
+    CAR
+
+List:
+
+    [X] [X] CDR
+    CAR CAR
+
+    ...
+
+### Y Layout
+
+Atom:
+
+    [Y] CAR
+    CDR
+
+List:
+
+    [Y] CAR
+    [Y] CAR
+    CDR
+
+    ...
+
+### Defaults
+
+The default layout for atoms is X since text is generally read horizontally.
+
+The default layout for lists is Y:
+* More compact layout
+* Visual distinction of lists
+* More intuitive to most users
+
+In other words, every list is indented on a newline like in an outline.
+
+A combined layout from the first example:
+
+    [Y]  [X]  [X]
+         I.   Title
+
+         [Y]  [X]  [X]
+              A.   Title
+         NIL
+    NIL
+
+## Newline Patterns
+
+A new list is placed on a new line for either layout:
+
+### X Layout
+
+    [X]  [X]  [X]  NIL
+    A    B    
+              [X]  NIL
+              C
+
+* Follows default layout
+
+### Y Layout
+
+    [X]  [X]
+    A    B    
+
+    [Y]  [X]  NIL
+    NIL  C   
+
+* If no pair after, implies following pair is on newline
+
+These combinations are also possible, but to be generally avoided, due to the difficulty 
+in quickly visually distinguishing a list; typically used for special forms.
+
+### Y Layout / Same Line:
+
+    [X]  [X]  [Y]  [X]  NIL
+    A    B    NIL  C
+
+### X Layout / New Line:
+
+    [X]  [X]
+    A    B    
+
+    [X]  NIL
+
+    [X]  NIL
+    C
+
+## Nested Lists
+
+    (a b (c))
+
+    [X]  [X]
+    A    B    
+    
+    0
+    [Y]  [X]  NIL
+    NIL  C
+  
+Call make-nl:
+  
+    (a b ((c)))
+    
+    [X]  [X]
+    A    B    
+
+             0
+    [Y]  [X] NIL
+    NIL
+    
+         [Y]  [X]  NIL
+         NIL  C
+
+## Atoms
+
+*Manipulating strings and numbers*
+
+## List
+
+*Manipulating lists*
+
+# PicoLisp Internals
+
+*For reference*
 
 * Use adr to get encoded pointer - decode to get ptr or for num data
-  - shift left: NIL = (adr NIL) = 273780<<4 = 4380480
-  - left shift = (>> -4 8786312637524)
-  - (cons NIL NIL) = 72 215 66 0 0 0 0 0 | 72 215 66 0 0 0 0 0
-
-* Given (setq A (cons 'B 'C))
-* Symbol ptr, points to CDR so (sym 'A) = ptr to CDR = ptr of (cons 'B 'C)
-* (adr A) = cons address
-* (adr 'A) = ?
-* quote def: any doQuote(any x) {return cdr(x);}
-* Doing (adr (- adr-sym 8)) = infinite loop
-
-         +-----+-----+
-         | CAR | CDR |
-         +-----+-----+
-         TAIL     HEAD
-
-Typing characters produces transient symbol characters with the CDR being shown
-by default (the value).
-
-"h" "e" "l" "l" "o"
-
-              +--------+
-              |        |
-              V        |
-      +-------+-----+  |
-      |  'H'  | PTR |--+
-      +---+---+-----+
-
-Links represent pointers
-- Each char is individual symbol so not linked
-- If chars were in a list, there'd be lines
-
-With chars, can move independently since they are different symbols and thus
-different memory blocks. If they are to be moved together, they must be packed
-and vice versa for the opposite.
-
-User can choose to see CAR/CDR/CONS:
-- Atoms
-  - Symbols (CDR:VALUE)
-    - Internal: show name
-      - CAR: Name, PL (poss)
-      - CDR: NIL or VAL
-    - Transient: show name (VAL is symbol itself)
-      - CAR: Name in encoded pointer (> word = cons cells/list)
-      - CDR: Ptr to CAR/Symbol (or arbitrary)
-      - Anon: show ptr
-        - CAR: 0 (num as pointer)
-          - (= (cons 0 NIL) (box))  -> struct eq, returns NIL but actually same
-          - (== (cons 0 NIL) (box)) -> ptr eq, NIL
-        - CDR: NIL
-    - External: Internal
-    - NIL: just another symbol sort of...show NIL/""/()...only defined once
-  - Number: show number cells, shortnum=pointer, large numbers=cons
-    - largest short number is 1,152,921,504,606,846,976
-    - greater than that will be broken into lists
-    - have to use struct to get cells (do later)
-    - how to differentiate numbers vs chars?
-      - either use strings or colors
-      - worry about this later
-- Cons
-  - Pair: show CAR/CDR...for lists it works also recursively
-
-
-Abstract:
-
-              +--------+
-              |        |
-              V        |
-      +-------+-----+  |
-      |  'H'  | PTR |--+
-      +---+---+-----+
-
-  * Single cons cell = contiguous memory of 16 bytes = 2 words
-  * Pointers are separate sections of contiguous memory linked together
-  * Poss laterally convert between integer-binary-hex (number formats)
-  * Basically, type can be derived graphically/structurally
-  * Could put CAR/CDR together and color to differentiate (or other method)
-
-* Cons cell has two ptrs
-  * = 16 bytes = 128-bits
-* Ptr is interpreted: num, sym/cons, or cons
-  * Num can be enc ptr or list of cons cells where CAR is enc ptr
-* The interpretation is generally what the user modifies
-  * Mod # -> Ptr changes, Mod Ptr -> # changes
-
-
-################################################################################
-
-                            +--------+
-                            |        |
-                            V        |
-    +-----+-----+     +-----+-----+  |
-    |  |  | VAL +---> | 'A' |  |  |--+
-    +--+--+-----+     +--+--+-----+
-       |                 
-    "Data"
-                            
-
-(any "(list 0 abc \"def\" (box) NIL)")
-
-  12345678  87654321    12345678  87654321  ->  12345678  87654321  ->  12345678  87654321  ->
-  |                     |                       |                       |                     
-  V                     V                       V                       V                     
-  12345678  87654321    12345678  87654321      12345678  87654321      12345678  87654321    
-  V                     V         V             V         V             V---------+           
-  list                  0         NIL           abc       NIL           "a"                  
-
-  I-SYM/FN              NUM                     I-SYM                   T-SYM                
-  (traverse)           (bignum traverse)
-
-
-  12345678  87654321  ->  12345678  87654321  ->  NIL
-  |                       |
-  V                       V
-  12345678  87654321      NIL
-  V         V
-  0         NIL
-
-  A-SYM                   NIL
-
-
-(cons (cons) (cons))
-
-  12345678  87654321  ->  12345678  87654321
-  |                       |         |
-  V                       V         V
-  12345678  87654321      NIL       NIL    
-  V         V
-  NIL       NIL
-
-
-(cons 1 2)
-
-  12345678  87654321
-  |         |       
-  V         V       
-  1         2
-  
-
-(cons (cons 1) (cons 2))
-
-  12345678  87654321  ->  12345678  87654321
-  |                       |         |
-  V                       V         V
-  12345678  87654321      2         NIL
-  V         V
-  1         NIL
-
-################################################################################
-
-
-              0         0
-              |         |
-              |         |
-       12345789  12345678
-       ||||||||  ||||||||
-       |
-  [PL][.]
-    |
-    + pos
-    + rot
-    + sca
-    + mm
-    + rgba
-    + uv
-    + off-texel
-    |
-    CAR/CDR (name)
-
-  * Struct data exists for all the above
-  * The problem is representing the vertex data as symbols leads to inf rec.
-  * Solution
-    -> There is none
-    -> Can edit but cannot show
-
-  * CAR-CDR = quad spaced
-  * Vert dist = quad spaced
-  * Note, Vertex is a symbol whose value is the actual symbol
-  * Above pointers cannot be moved individually and will move together
-    * 1/2 move with pointers since they are directly based on it
-    * So cons cells can move independently of each other
-      * Above: if 1/2 were cons cells instead, they could move independently
-      of root cons
-  * To modify vertex data:
-    * Show first level of vertex data
-    * Modifying vertex data will modify cons cell
-    * To modify the vertex data, must create new cons cell/vertex data for said vertex data
-  * Need quote operator!! or is it a mode
-    * (quote particle) -> produce vertex data for particle
-    * (quote (quote particle)) -> produce vertex data for vertex data
-
-  Vertex Obj/Symbol:
-
-              0                     'a'
-              |                     |
-              |                     |
-       12345789  12345678    12345678<-87654321
-                 |      |              |
-       +---------+      +--------------+
-       |                               |
-  [PL][.]                         [PL][.]
-    |                                  |
-    +...                               +...
-
-
-      'h'                   'i'
-       |                     |
-  [PL][.]                   ...
-    |
-    +--[][NIL]
-       |
-       [...][GL]
-       |
-       ...
-
-  * Each of the cons cells above is a vertex
-    -> Inf recursion
-    -> Vertex is lowest level - AKA the interface
-       -> Simple to understand
-       -> If data's rep has multiple ASCII keys, any char can be operated on
-    -> Use transformers to produce another Vertex of a different type
-       * Ex: show pointers
-    -> Possible to edit Vertex itself by editing the class
-
-  * ASCII key = anonymous symbol or object symbol
-    * Vertex symbol will store A as one of the following in its VAL:
-      * Encode A as a  number (CTRL/ALT)
-      * Encode A as ptr to transient symbol (default)
-    * POSS: Use mod key to build string
-      * Hold CTRL/ALT, type alphas, release -> 'hi' instead of 'h' 'i'
-      * Hold CTRL/ALT, type nums, release -> 123 instead of 1 2 3
-    * Types are encoded in pointers to the cons cell
-      * So a cons cell can have any data in it however, how it is addressed
-      determines its type
-      * This is why (= (cons 0 NIL) (box)) -> NIL
-      * Ptr to cons has 0 offset
-      * Ptr to box has 8 offset
-
-  * Opaque pointers, such as pointers to built-in functions - no descendants
-  * Ptrs = no descendant
-  * Nums/Syms = descendant
-
-  Modifications:
-  * Changing pointer digits will cause descendants to regenerate
-  * Changing symbol values or numbers will cause predecessors to regenerate
-
-  Composite View (show CAR):
-
-  12345678  ->  12345678  ->  12345678  ->  12345678  ->  12345678  ->  12345678
-  |             |             |             |             |             |
-  V             V             V             V             V             V
-  list          0             abc           "def"         0             NIL
-
-  * Again, an opaque pointer will not have a descendant
-  * Cons will show first part only
-
-
-  Atomic View:
-
-  list -> 0 -> abc -> "def" -> ${12345678} -> NIL [-> NIL]
-
-
-Numbers vs Pointers:
-
-  12345678  12345678   (cons cell with two opaque pointers)
-
-  12345678  12345678   (cons cell with two numbers)
-  |         |
-  V         V
-  1         2
-
-
-Esc = 1
-Backspace = 14
-Tab = 15
-Q = 16
-A = 30
-Z = 44
-Space = 57
-CAPS = 58
-Win = 125
-LShift = 42
-RShift = 54
-LCtrl = 29
-RCtrl = 97
-LAlt = 56
-RAlt = 100
-~/` = 41
-# = # + 1 (1=2)
-F1 = 59
-F2 = 60
-
-########
-WORKFLOW
-
-1. Manx
-2. Strings/Symbols
-3. Numbers/Strings
-4. Lists/Cons
-
-# MANEUVERING
-
-L/R move between atoms
-U/D move between nested lists
-
-https://www.reddit.com/r/emacs/comments/3sfmkz/could_this_be_a_pareditsmartparens_killer/
-
-
-# STRINGS/INTERN
-
-1. Push strings
-2. Pack/replace strings; save point
-
-3. Push strings
-2. Pack/replace strings; save point
-
-Repeat...
-
-Example:
-
--> H e l l o
--> Hello
-
--> Hello W o r l d
--> Hello World
-
-OR
-
--> H e l l o   W o r l d
--> Hello World
-
-Workflow is useful for mixing lists
-So to do: (pack "abc" "def")
-
-1. Push p,a,c,k
-2. Pack/Replace->Intern
-
--> p a c k
--> "pack"
--> pack
-
--> a b c
--> "abc"
-
--> d e f
--> "def"
-
--> <eval>
-
-# NUMBERS
-
-Similar...
-
-To go from (1 2 3) -> 123 
-
--> 1 2 3
--> Pack/Format/Replace
-
-NUM <-> STR
-
-straightforward
-
-# LISTS
-
-Making lists
-
-1. Use CTRL+TAB/CAPS to create empty list
+  * shift left: NIL = (adr NIL) = 273780<<4 = 4380480
+  * left shift = (>> -4 8786312637524)
+  * (cons NIL NIL) = 72 215 66 0 0 0 0 0 | 72 215 66 0 0 0 0 0
+
+* Atoms
+  * Symbols
+    * Internal:
+      * CAR: Name, PL (poss)
+      * CDR: NIL or VAL
+    * Transient:
+      * CAR: Name encoded in num in pointer (> word = cons cells/list)
+      * CDR: Ptr to Car
+      * Anon: show ptr
+        * CAR: 0 (num as pointer)
+          * (= (cons 0 NIL) (box))  -> struct eq, returns NIL but actually same
+          * (== (cons 0 NIL) (box)) -> ptr eq, NIL
+        * CDR: NIL
+    * External: block address relative to loaded database
+    * NIL: just another symbol sort of
+      * NIL = "" = ()
+  * Number: show number cells, shortnum=pointer, large numbers=cons
+    * largest short number is 1,152,921,504,606,846,976
+    * greater than that will be broken into lists
+
+* Pair: show dot and CAR/CDR

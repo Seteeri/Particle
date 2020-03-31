@@ -16,13 +16,12 @@
 (de cmd-mov-nl (Keysym)
   (println "Move newline")
 
-  # Calc min Y until NIL or nl
   (let Ref (get *0 'b)
-  
+      
     # If already newline, don't do anything
     # TODO: Add support for this later? number of spaces...
     (unless (get Ref 'nl)
-  
+      
       (mov-nl Ref))))
 
   
@@ -51,7 +50,7 @@
       (put Ref 'nl NIL)
     
       (align-cur-to-bnds (get Ref 'c))
-      (lay-part Ref *cur)
+      (lay-part-start Ref *cur)
       
       (put *0 'b Car Ref)
       (mov-part-abv> *0 Ref (cons T))))
@@ -97,7 +96,7 @@
 
     # Ignore Ref/Cdr
     (put *0 'b)
-    (lay-part *0 *cur)
+    (lay-part-start *0 *cur)
     (put *0 'b Ref)))
     
 

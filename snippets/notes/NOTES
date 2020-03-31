@@ -4639,48 +4639,27 @@ A    B    C
 * Use this mode to replace the char
 
 
-====================================
+====================================    
 
+  +-------+--------------------------------------------------------
+  | CMD   |                           Pointer
+  +-------+-------------------+--------------------+---------------
+  |       | Pair/Atom         | Car/Atom           | NIL
+  +-------+-------------------+--------------------+---------------
+  | NL    | List w. Pair      | List w. Car        | Empty list
+  +-------+-------------------+--------------------+---------------
+  | ASCII | Ins-back, Mov-Cdr | Write-car, Mov-Car | Same as left
+  +-------+-------------------+--------------------+---------------
+  | NIL   | Same as above     | Same as above      | Ins...
+  +-------+-------------------+--------------------+---------------
 
-[X]  [X]  [X]  NIL
-A    B    
-          [X] NIL
-          C
-
-          
-SAME
-
-
-[X]  [X]
-A    B    
-
-[Y]  [X] NIL
-NIL  C       
-
-* Both are on a newline
-* former is rel to origin of c, (Move Car, Enter char)
-* latter is rel to list start (Enter char, Alt+Enter)
-  -> Could also do newline on NIL
-
---------+------------------+--------------------+
-        | Pair/Atom        | Car/Atom           |
---------+------------------+--------------------+
-Newline | List w Pair      | Empty list         |
---------+------------------+--------------------+
-Char    | Ins-back/Mov-Cdr | Write-back/Mov-Car |
---------+------------------+--------------------+
+* Newline default
+  * On car - empty list; same line, x layout
+  * No car - list with car; newline , y layout
 
 * For newline, which is more logical? OR swapable?
   * Char on Char, user expects Car to be replaced so current layout makes sense
 * Char will move to sublist if pair has list
-
---------+------------------+--------------------+
-        | Pair/List        | Car/List           |
---------+------------------+--------------------+
-Newline | List w Pair      | -                  |
---------+------------------+--------------------+
-Char    | -                | -                  |
---------+------------------+--------------------+
 
 * For Newline + Car/List, newline should create a list containing that list
   * Not possible since Car becomes another Atom
@@ -4688,31 +4667,154 @@ Char    | -                | -                  |
 * So Newline + Pair/List creates a list with the list
 * For NIL, mov to Car, will create empty list, and for Pair, list with NIL
 
-Char + Car/Atom
+=============================
 
-    *
-[]  NIL
-a  
+Newline + Pair/Atom
 
-    *
-[]  []  NIL
-a   b  
+All these are same structure:
 
-        *
-[]  []  []  NIL
-a   b   c  
+[X]  [X]  [X]  NIL
+A    B    
+          [X]  NIL
+          C
 
-vs
+* follows recursive pattern
 
-    
-[]  []  []  NIL
-d   b   c
-    *
- 
-[]  []  []  NIL
-d   e   c
-    *
+----
 
-[]  []  []  NIL
-d   e   f
-        *
+y layout; no nl
+
+[X]  [X]  [Y]  [X]  NIL
+A    B    NIL  C
+
+* poor legibility
+
+------------
+
+[X]  [X]
+A    B    
+
+[X]  NIL
+
+[X]  NIL
+C
+
+* poor legibility
+
+----
+
+[X]  [X]
+A    B    
+
+[Y]  [X]  NIL
+NIL  C   
+
+* expectation is if no pair after, must be on newline
+
+* Both are on a newline
+* former is rel to origin of c, (Move Car, Enter char)
+* latter is rel to list start (Enter char, Alt+Enter)
+  -> Could also do newline on NIL
+
+* if user wants empty list, create NIL
+
+            X         Y
+
+Same-line
+
+Newline
+
+===========
+
+Nested list
+
+  (a b (c))
+
+  [X]  [X]
+  A    B    
+  
+  *
+  [Y]  [X]  NIL
+  NIL  C
+  
+Call make-nl (note, ptr not on car)
+  
+  (a b ((c)))
+  
+  [X]  [X]
+  A    B    
+
+           *
+  [Y]  [X] NIL
+  NIL
+  
+       [Y]  [X]  NIL
+       NIL  C
+
+* move to inner or outer list? -> outer
+
+=======================================
+            *
+  [X]  [X]  [X]  [X]  [X] NIL
+  A    B    C    D    E
+
+
+mov-nl:
+
+
+  [X]  [X]  
+  A    B    
+
+  [Y]  [X]  NIL
+       C
+  
+  [X]  [X] NIL
+  D    E
+
+
+this is very confusing...
+
+solutions:
+1. Don't allow it (does this make sense?)
+2. Create as if on Car
+3. Create two lines
+
+  [X]  [X]  
+  A    B    
+
+  [Y]  [X]  NIL
+       C
+  
+  [Y]  [X]  [X] NIL
+       D    E
+  
+  NIL
+
+
+  [Y]  [X]  [X]
+       I    Content
+
+       [Y]  [X]  [X]
+            A    Content
+
+            [Y]  [X]  [X]       NIL
+                 1    Content
+
+            [Y]  [X]  [X]       NIL
+                 2    Content
+
+            NIL
+
+       [Y]  [X]  [X]
+            B    Content
+
+            [Y]  [X]  [X]       NIL
+                 1    Content
+
+            [Y]  [X]  [X]       NIL
+                 2    Content
+
+            NIL
+
+       NIL
+  NIL

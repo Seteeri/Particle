@@ -13,13 +13,13 @@
   (with *main
     (=: nl (new '(+Line) NIL NIL (get (: a) 'dims))))
   (setq *cur (copy *pos-main))
-  (lay-part *main *cur)
+  (lay-part-start *main *cur)
   (setq *line *main)
   (inc-line-by-part-x> *line (get *main 'b))
   
   # Repos ptr
   (put *0 'b (get *main 'b))
-  (lay-part *0 *cur 'skip-cdr)
+  (lay-part-start *0 *cur 'skip-cdr)
   (mov-part-abv> *0 (get *main 'b) (cons T))
     
   (gc))
@@ -141,7 +141,7 @@
       # Base is origin of Pair containing Ref/Part
       # Cur is where Part should be - use Ref origin
       (mov-cur-part Tgt 'start)
-      (lay-part Ref (origin> *main) 'skip-cdr)
+      (lay-part-start Ref (origin> *main) 'skip-cdr)
     
       # Do until nl also,
       # however,
@@ -151,7 +151,7 @@
       
       # Layout remainder
       (align-cur-to-bnds Ref)
-      (lay-part (get Ref 'b) (origin> *main))
+      (lay-part-start (get Ref 'b) (origin> *main))
       
       # update superlists etc      
 
