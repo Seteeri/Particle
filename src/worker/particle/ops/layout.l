@@ -338,10 +338,12 @@
                        NIL
                        T)
 
-    (repl-list (get Ref 'c)
+    (repl-pair (get Ref 'c)
                (get *0 'b)
                (get Ref 'b)
                Part)
+               
+    # Delete
         
     Part))
 

@@ -373,7 +373,6 @@ Store DAGs as binary trees?
     * On enter-list, if not immediately enterable, search for next list?
       * Make command for prv/nxt list like Q/E
       * Search within view
-    * Break out ops into files
     * Make option: cmds a circular list
       * Back disappearing items?
     * Replace dot with arrow indicating layout (Right/Down)
