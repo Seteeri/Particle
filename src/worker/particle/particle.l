@@ -38,7 +38,6 @@
   (=: c) # Prev
   (=: verts Verts)
   (=: lay Lay)
-  (=: nl)
 
   #{
    use l b r t?
