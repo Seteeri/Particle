@@ -95,7 +95,7 @@
         # so move cur to Car bnds (max X)
         (if (= (get (: a) 'lay) 'y)
           (prog
-            (println 'lay-part-x "Y layout detected for Car")
+            #(println 'lay-part-x "Y layout detected for Car")
             (setq *cur (list *cur-x (get *cur 2)))
             (adv-cur))
           (prog                        
@@ -157,7 +157,7 @@
         # If Car layout is X, cur will be back at Cdr bnds,
         # which means Y is level with Any - must set cur to Y bnds (min Y)
         (when (= (get (: a) 'lay) 'x)
-            (println 'lay-part-y "X layout detected for Car")
+            #(println 'lay-part-y "X layout detected for Car")
             (setq *cur (list (get *cur 1) *cur-y)))
             
         (when (: b)

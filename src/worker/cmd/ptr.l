@@ -1,11 +1,13 @@
 ###############################
 # Semantic Traversal (Pair/Ptr)
 
-(de cmd-ptr-left (Keysym)
-  (if (= (get *0 'b 'lay) 'x)
-    (point-b-prv)
-    (point-a-out)))
-  
+(de cmd-ptr-left (Keysym)    
+  # Only if Ref and Prv both are Y layout
+  (if (and (= (get *0 'b 'lay) 'y)
+           (= (get *0 'b 'c 'lay) 'y))
+      (point-a-out)
+      (point-b-prv)))
+
 
 (de cmd-ptr-right (Keysym)
   (if (= (get *0 'b 'lay) 'x)
