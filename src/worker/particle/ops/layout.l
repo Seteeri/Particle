@@ -97,7 +97,7 @@
                        (not Skip)))
           (lay-part (: a) Base))
 
-        # To draw Cdr: (use align-cur-to-bnds? that recalcs...)
+        # To draw Cdr:
         # X =  Ori 1 + Dims-Car 1, plus an adv
         # Y = origin of Pair
         (set-cur-y Y-Ori)

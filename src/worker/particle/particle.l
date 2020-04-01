@@ -61,7 +61,6 @@
 
 (dm has-car-pair> () (= (type (: a)) '(+Pair)))
 
-(dm last-vert-pos> (Cnt) (get (last (: verts)) 'pos Cnt))
 (dm first-vert> () (car (: verts)))
 (dm last-vert> () (last (: verts)))
 

@@ -41,7 +41,7 @@
   (setq *cur (place 2 *cur Y)))
 
 
-(de align-cur-to-bnds (Part) # Rename to align
+(de align-cur-to-bnds (Part)
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds
   (let Bnds (bounds> Part NIL T) # Skip CDR
@@ -56,4 +56,3 @@
           (set-cur-x (get Part 'ori 1))
           (set-cur-y (get Bnds 2))
           (nl-cur 2.0)))))
-          
