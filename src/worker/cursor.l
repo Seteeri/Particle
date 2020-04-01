@@ -49,11 +49,11 @@
         (prog
           # Move cur to x base of Part and y origin of Part
           (set-cur-x (get Bnds 1))
-          (set-cur-y (get (get Part 'ori) 2))
+          (set-cur-y (get Part 'ori 2))
           (adv-cur 2.0))
         (prog
           # Move cur to x origin of Part and y base of Part
-          (set-cur-x (get (get Part 'ori) 1))
+          (set-cur-x (get Part 'ori 1))
           (set-cur-y (get Bnds 2))
           (nl-cur 2.0)))))
           

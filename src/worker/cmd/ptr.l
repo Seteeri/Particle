@@ -60,25 +60,25 @@
 # Semantic Traversal (Pair/Ptr)
 
 (de cmd-ptr-left (Keysym)
-  (if (= (get (get *0 'b) 'lay) 'x)
+  (if (= (get *0 'b 'lay) 'x)
     (point-b-prv)
     (point-a-out)))
   
 
 (de cmd-ptr-right (Keysym)
-  (if (= (get (get *0 'b) 'lay) 'x)
+  (if (= (get *0 'b 'lay) 'x)
       (point-b-nxt)
       (point-a-in)))
 
 
 (de cmd-ptr-up (Keysym)
-  (if (= (get (get *0 'b) 'lay) 'x)
+  (if (= (get *0 'b 'lay) 'x)
       (point-a-out)
       (point-b-prv)))
 
 
 (de cmd-ptr-down (Keysym)
-  (if (= (get (get *0 'b) 'lay) 'x)
+  (if (= (get *0 'b 'lay) 'x)
       (point-a-in)
       (point-b-nxt)))
 

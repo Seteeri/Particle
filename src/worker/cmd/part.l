@@ -170,7 +170,7 @@
 
   (prinl-info "cmd-format")
   
-  (con-any (format (get (get *0 'b) 'c 'a 'data)) 'x))
+  (con-any (format (get *0 'b 'c 'a 'data)) 'x))
 
 
 (de cmd-pack (Keysym)

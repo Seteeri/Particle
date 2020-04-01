@@ -437,7 +437,7 @@
 
             (prog
               # Move to lower bnd of Car
-              (set-cur-x (get (get Ref 'ori) 1))
+              (set-cur-x (get Ref 'ori 1))
               (set-cur-y (get (bounds> Ref) 2)) (nl-cur)
               (lay-part-start *0 *cur 'skip-cdr))
 
@@ -478,7 +478,7 @@
 #{
   Find list
 
-  (let Part (get (get *0 'b) 'c)
+  (let Part (get *0 'b 'c)
     (loop
       (T (or (isa '+Pair (get Part 'a))
              (= Part *main)

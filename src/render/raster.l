@@ -76,7 +76,7 @@
     * Need separate ppm since data is copied to shm?
     * Or list of lists with each list starting with the name
  }#
- (let (Ptr (get (get '*buffer-objects 'texture-glyphs) 'gl~ptr)
+ (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
        Off 0)
     (for Code 255
        (let Path-Glyph (pack PATH-GLYPHS "/tex/" Code "-data.l")
@@ -89,7 +89,7 @@
 
 
 (de init-di ()
-  (struct (get (get '*buffer-objects 'draw-indirect) 'gl~ptr) 'N
+  (struct (get '*buffer-objects 'draw-indirect 'gl~ptr) 'N
           (6 . 4)
           (cons *verts-max 4)
           (0 . 4)
@@ -107,7 +107,7 @@
   ;;
   ;;ccw: 0 2 1 0 3 2
   }#
-  (struct (get (get '*buffer-objects 'vertices) 'gl~ptr) 'N
+  (struct (get '*buffer-objects 'vertices 'gl~ptr) 'N
     (list -1.0  1.0  1.0  0.0  1.0
            1.0  0.0  0.0  1.0
            0.0  0.0  0.0  1.0
@@ -115,7 +115,7 @@
 
 
 (de init-el ()
-  (struct (get (get '*buffer-objects 'element) 'gl~ptr) 'N
+  (struct (get '*buffer-objects 'element 'gl~ptr) 'N
     (0 . 4)
     (2 . 4)
     (1 . 4)
