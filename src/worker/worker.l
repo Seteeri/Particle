@@ -85,6 +85,7 @@
 (load "/home/user/Particle/particle/src/worker/particle/ops/layout.l")
 (load "/home/user/Particle/particle/src/worker/particle/ops/gen.l")
 (load "/home/user/Particle/particle/src/worker/particle/ops/ops.l")
+(load "/home/user/Particle/particle/src/worker/particle/ops/point.l")
 
 (def '*bindings-key
       ## Number
