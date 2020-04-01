@@ -109,7 +109,6 @@
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
         Prv-Cdr (get Prv 'b)
-        Prv-C (get Prv 'c)
         Part (gen-part (list Data)
                        Lay 
                        NIL
