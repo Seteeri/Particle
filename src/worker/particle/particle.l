@@ -64,6 +64,18 @@
 (dm first-vert> () (car (: verts)))
 (dm last-vert> () (last (: verts)))
 
+
+(dm con> (Part Prv)
+
+  (=: b Part)
+  (when Prv (=: c Prv))
+  
+  # Remember, *main's 'data is always the symbol itself
+  # To get its val, is to get it's 'b
+  (unless (isa '+Sym This)
+    (con (car (:: data)) (get Part 'data))))
+    
+
 (dm del> (Car Cdr)
 
   #{

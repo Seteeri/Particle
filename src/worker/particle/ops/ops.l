@@ -90,7 +90,21 @@
 
 (de repl-car-any (Data Lay)
 
-  # Replace car with same type
+  #{
+    Replace car with same type
+    
+    [ ]  [ ]  NIL
+    a    b
+         *0
+
+    Ref = b/Car
+    Prv = b/Pair
+    Part = x
+
+    [ ]  [ ]  NIL
+    a    x
+         *0
+  }#    
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
@@ -101,32 +115,10 @@
                        NIL
                        T))
 
-    #{
-
-    [] - [] - NIL
-    a    b
-         *0
-
-    Ref = b/Car
-    Prv-Cdr = NIL
-    Prv = b/Pair
-    Prv-C = a
-    Part = new
-
-    [] - [] - NIL
-    a    c
-         *0
-    }#
-      
     (when (or (not (str? Data)) (not Data))
       (println 'repl-any "WARNING! Data is not a str or NIL; x bnds will be incorrect"))
 
-    (repl-pair Prv-C
-               Prv
-               Prv-Cdr
-               Part)
-
-    # Delete
+    (repl-pair Prv Part)
 
     (if (= Lay 'x)
 
@@ -156,8 +148,25 @@
 
 (de repl-car-list (Data Lay)
   
-  # Newline will call this
-  # Replace car with list underneath
+  #{
+    Newline will call this
+    Replace car with list underneath
+    
+    [ ]  [ ]  NIL
+    a    b
+         *0
+
+    Ref = b/Car
+    Prv = b/Pair
+    Part = x
+
+    [ ]  [ ]  NIL
+    a    
+    
+         [ ]  NIL
+         x
+              *0
+  }#    
 
   (let (Ref (get *0 'b)
         Cdr (get Ref 'b)
@@ -167,29 +176,7 @@
         Part (gen-part (list (list Data)) Lay NIL T)
         Car (get Part 'a))
 
-    #{
-
-    [] - [] - NIL
-    a    b
-         *0
-
-    Cdr = NIL
-    Prv = []b
-    Prv-C = []a
-    
-    [] - [] - NIL
-    a    
-         [] - NIL
-         x    
-              *0
-
-    }#
-
-    # Note, ref is Car so get Prv
-    (repl-pair Prv-C
-               Prv
-               Prv-Cdr
-               Part)
+    (repl-pair Prv Part)
 
     # Delete
 
@@ -238,12 +225,12 @@
     Insert x after a:
   
     *0
-    [ ] - [ ]  NIL
-    a     b   
+    [ ]  [ ]  NIL
+    a    b   
 
            *0
-    [ ] - [ ] - [ ] - NIL
-    a     x     b
+    [ ]  [ ]  [ ]  NIL
+    a    x    b
 
     Ref=a
     Prv=NIL
@@ -272,70 +259,61 @@
   (let (Cdr (get Ref 'b))
 
     # Ref -> Part
-    (with Ref
-      (=: b Part)
-      # Remember, *main's 'data is always the symbol itself
-      # To get its val, is to get it's 'b
-      (unless (isa '+Sym Ref)
-        (con (car (:: data)) (get Part 'data))))
+    (con> Ref Part)
 
     #        Part -> Cdr
     # Ref <- Part
-    (with Part
-      (=: b Cdr)
-      (=: c Ref)
-      (con (car (:: data)) (get Cdr 'data)))
+    (con> Part Cdr Ref)
 
     # Part <- Cdr
-    (with Cdr
-      (=: c Part)
-      # If Cdr was a new line, xfer it to new Part
-      (when (get (: nl) 'p)
-        (xchg-nl Cdr Part)))))
+    (put Cdr 'c Part)
+      
+    # If Cdr is a new line, xfer it to new Part
+    (when (get Cdr 'nl 'p)
+      (xchg-nl Cdr Part))))
 
 
-(de repl-pair (Prv Ref Cdr Part)
+(de repl-pair (Ref Part)
 
   #{
-    Replace Ref with Part
+    Replace b with x
+  
+          *0
+    [ ]   [ ]  [ ]  NIL
+    a     b    c
 
-        *
-    [X] [X] [X]
-    a   b   c
+          *0
+    [ ]   [ ]  [ ]
+    a     x    c
 
-    * Del Ref
-    * Prv 'b -> Part
-    * Part 'b -> Cdr
-    * Cdr 'c -> Part
-    * Part 'c -> Prv
+    Ref=b
+    Cdr=c
+    Prv=a
+    Part=x
   }#
 
-  (unless Cdr
-    (setq Cdr (get Part 'b)))
+  (let (Cdr (get Ref 'b)
+        Prv (get Ref 'c))
 
-  # Connect Prv-Part
-  (with Prv
-    (=: b Part)
-    (unless (isa '+Sym Prv)
-      (con (car (:: data)) (get Part 'data))))
+    # Make method of Particle
+    # Ref -> Part
+    (con> Prv Part)
 
-  # Connect Part-Cdr
-  (with Cdr
-    (=: c Part))
+    #        Part -> Cdr
+    # Prv <- Part
+    (con> Part Cdr Prv)
+    
+    # Part <- Cdr
+    (put Cdr 'c Part)
 
-  (with Part
-    (=: b Cdr)
-    (=: c Prv)
-    (con (car (:: data)) (get Cdr 'data)))
+    # If Ref is a new line, xfer it to new Part
+    (when (get Ref 'nl 'p)
+      (xchg-nl Ref Part))
 
-  (when (get Ref 'nl)
-    (xchg-nl Ref Part))
-
-  # Copy lay
-  (force-lay Part (get Ref 'lay))
-
-  # Do not delete CDR
-  (del> Ref T NIL))
+    # Copy layout?
+    # (force-lay Part (get Ref 'lay))
+      
+    (del> Ref T NIL)))
 
 
 (de xchg-nl (Src Dst)

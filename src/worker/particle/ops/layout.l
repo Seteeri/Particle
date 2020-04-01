@@ -278,7 +278,7 @@
       }#
       # Repl-any expects ptr on car
       (prog
-        (let Part (repl-cdr-list (car (get Ref 'data)) 'x)
+        (let Part (repl-cdr-list Ref (car (get Ref 'data)) 'x)
                 
           # Make list y layout
           (put Part 'lay 'y)
@@ -313,7 +313,7 @@
 
 
 
-(de repl-cdr-list (Data Lay)
+(de repl-cdr-list (Ref Data Lay)
 
   # Similar to repl-car-list but Ref is cdr
 
@@ -338,10 +338,7 @@
                        NIL
                        T)
 
-    (repl-pair (get Ref 'c)
-               (get *0 'b)
-               (get Ref 'b)
-               Part)
+    (repl-pair Ref Part)
                
     # Delete
         
