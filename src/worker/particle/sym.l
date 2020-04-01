@@ -110,8 +110,15 @@
 
 
 (dm nxt> ()
-  (when (: c)
-    (nxt> (: c))))
+  (if (= (get (: c) 'a) This)
+      (nxt> (: c))
+      # Move to start of line cdr
+      (let? Ln-CB (get *line 'c 'b)
+        (println 'nxt> "Mov ptr -> super-line/list" Ln-CB (get Ln-CB 'data))
+        (if *on-car
+            (sub> Ln-CB)
+            (sup> Ln-CB))
+        Ln-CB)))
 
 
 (dm sup> ()
