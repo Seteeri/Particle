@@ -169,10 +169,7 @@
   }#    
 
   (let (Ref (get *0 'b)
-        Cdr (get Ref 'b)
         Prv (get Ref 'c)
-        Prv-Cdr (get Prv 'b)
-        Prv-C (get Prv 'c)
         Part (gen-part (list (list Data)) Lay NIL T)
         Car (get Part 'a))
 
