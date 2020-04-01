@@ -47,7 +47,8 @@
           
         (repl-car-any Data Lay))
       
-      (if (has-car-pair> (get *0 'b 'c))
+      (if (and (has-car-pair> (get *0 'b 'c))
+               (not (isa '+Nil (get *0 'b))))
       
           (ins-car Data Lay)
       
