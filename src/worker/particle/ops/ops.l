@@ -340,25 +340,21 @@
 
 (de xchg-nl (Src Dst)
 
-  (println 'xchg-nl "Create newline for " Dst (get Dst 'data))
-
   (let (Nl (get Src 'nl)
         Prv (get Nl 'p)
         Nxt (get Nl 'n))
 
     (when Prv
-      (with (get Prv 'nl)
-        (=: n Dst)))
+      (put (get Prv 'nl) 'n Dst))
 
     (when Nxt
-      (with (get Nxt 'nl)
-        (=: p Dst))))
+      (put (get Nxt 'nl) 'p Dst))
 
-  (put Dst 'nl (get Src 'nl))
+    (put Dst 'nl Nl))
+
   (put Src 'nl NIL)
 
-  (println 'xchg-nl " *line change: " Src " -> " Dst)
+  (println 'xchg-nl "Exchange line: " Src " -> " Dst)
 
-  # Set newline also
   (setq *line Dst
         *main Dst))
