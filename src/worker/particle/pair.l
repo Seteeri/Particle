@@ -28,7 +28,7 @@
   (when (: c)
     (if *on-car
         (sub> (: c))
-        (prog
+        (prog # These depend on layout...
           (mov-cur-abv (: c))
           (: c)))))
 
@@ -62,11 +62,16 @@
   (if (= (type (: a)) '(+Pair))
       # Line change: superlist -> sublist
       (prog
-       (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))
-       (setq *on-car)
-       (setq *line (: a)
-             *main (: a))
-        (mov-cur-abv (: a))
+        (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))
+        (setq *line (: a)
+              *main (: a))
+        # Here can either move Pair or Car
+        # Default is to follow Car             
+        #(setq *on-car)
+        #(mov-cur-abv (: a))
+        (if *on-car
+            (sub> (: a))
+            (mov-cur-abv (: a)))
         (: a))
 
       # Should always be a Car

@@ -320,12 +320,13 @@ Store DAGs as binary trees?
         +-------+-----------+----------+-----------+----------+-----+
         | NL    |     o     |    o     |     x     |    x     |  o  |
         +-------+-----------+----------+-----------+----------+-----+
-        * Replacing NIL with Char no work [WiP]
+        * Replacing Char with NIL [WiP]
+        * Replacing NIL with Char [WiP]
         * Refactor pointer movement [WiP]
-          * Refactor into methods
+          * Refactor into methods [Done]
+          * When ptr is moving, stay in Car mode [Done]
+          * Support NIL [WiP]
           * Move to Car for Pairs
-          * Support NIL
-          * When ptr is moving, stay in Car mode
       * Support y layout [Done...]
         * Fix lay-pair newline - does not support Y layout        
       * Store ref to last item in list for faster bnds calc

@@ -81,12 +81,10 @@
 
 
 (dm sup> ()
-  (if (: c)
-      (sup> (: c))
-      (prog
-        (setq *on-car)
-        (mov-cur-abv This)
-        This)))
+  (when (: c)
+    (setq *on-car)
+    (mov-cur-abv (: c))
+    (: c)))
 
 
 (dm sub> ()
@@ -124,9 +122,12 @@
 
 
 (dm sup> ()
-  (setq *on-car)
-  (mov-cur-abv This)
-  This)
+  (if (= (get (: c) 'a) This)
+      (sup> (: c))
+      (prog
+        (setq *on-car)
+        (mov-cur-abv This)
+        This)))
 
 
 (dm sub> ()
