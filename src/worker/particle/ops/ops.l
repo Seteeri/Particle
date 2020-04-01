@@ -57,7 +57,6 @@
 
     # Connect Part before Ref
     # Update newline as needed
-    #(ins-bef Ref Part)
     (ins-aft (get Ref 'c) Part)
 
     # Since Part is before Ref, it will be in the same place
