@@ -20,9 +20,9 @@
       
     # If already newline, don't do anything
     # TODO: Add support for this later? number of spaces...
-    (unless (get Ref 'nl)
+    #(unless (get Ref 'nl))
       
-      (mov-nl Ref))))
+    (mov-nl Ref)))
 
   
 (de cmd-mov-bl (Keysym)

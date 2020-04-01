@@ -167,14 +167,13 @@
 
         # If Car layout is X, cur will be back at Cdr bnds,
         # which means Y is level with Any - must set cur to Y bnds (min Y)
-        (if (= (get (: a) 'lay) 'x)
-          (prog
+        (when (= (get (: a) 'lay) 'x)
             (println 'lay-part-y "X layout detected for Car")
-            (setq *cur (list (get *cur 1) *cur-y))
-            (nl-cur 2.0))
-          (when (: b)
-            # Y should be in place, else get from cur bnds
-            (nl-cur 2.0)))
+            (setq *cur (list (get *cur 1) *cur-y)))
+            
+        (when (: b)
+          # Y should be in place, else get from cur bnds
+          (nl-cur 2.0))
         
         # Str's val/b is NIL (or poss later point to itself)
         (when (and (: b)

@@ -290,21 +290,41 @@ Store DAGs as binary trees?
         * Bounds = aka bounding box/rect; 
         * So extents == bounds
       * Create Reset command [Done]
+
       * Tests:
         * cmd-make-char @ start/end/mid-line
         * cmd-make-nl @ start/end/mid-line          
         * cmd-make-char (sublist) @ start/end/mid-line
-      +-------+--------------------------------------------------------
-      | CMD   |                           Pointer
-      +-------+-------------------+--------------------+---------------
-      |       | Pair/Atom         | Car/Atom           | NIL
-      +-------+-------------------+--------------------+---------------
-      | NL    | List w. Pair      | List w. Car        | Empty list
-      +-------+-------------------+--------------------+---------------
-      | ASCII | Ins-back, Mov-Cdr | Write-car, Mov-Car | Same as left
-      +-------+-------------------+--------------------+---------------
-      | NIL   | Same as above     | Same as above      | Ins...
-      +-------+-------------------+--------------------+---------------
+        * nested lists
+        +-------+---------------------------------------------------+
+        | CMD   |                       Pointer                     |
+        +-------+-----------+----------+-----------+----------+-----+
+        |       | Pair/Atom | Car/Atom | Pair/List | Car/List | NIL |
+        +-------+-----------+----------+-----------+----------+-----+
+        | ASCII |     o     |    o     |     o     |    x     |  x  |
+        +-------+-----------+----------+-----------+----------+-----+
+        | NIL   |     o     |    x     |     o     |    ^     |  o  |
+        +-------+-----------+----------+-----------+----------+-----+
+        | NL    |     o     |    o     |     x     |    x     |  o  |
+        +-------+-----------+----------+-----------+----------+-----+
+        * ascii + car/list = replace list? no! should be same as Pair/Atom...
+          * moving down, will move to car, which is a list
+          * Pair or Car?
+            -> Pair!
+            * Car only if coming from left or right car
+
+      * Cmds
+        +-------+--------------------------------------------------------
+        | CMD   |                       Pointer                     
+        +-------+-------------------+--------------------+---------------
+        |       | Pair/Atom         | Car/Atom           | NIL
+        +-------+-------------------+--------------------+---------------
+        | ASCII | Ins-back, Mov-Cdr | Write-car, Mov-Car | Same as left
+        +-------+-------------------+--------------------+---------------
+        | NIL   | Same as above     | Same as above      | Ins...
+        +-------+-------------------+--------------------+---------------
+        | NL    | List w. Pair      | List w. Car        | Empty list
+        +-------+-------------------+--------------------+---------------
         * ASCII [WiP]
           * repl-any is adjusting y bounds
           * Fix car mode after symbol
@@ -314,8 +334,9 @@ Store DAGs as binary trees?
           * Fix ptr pos after nl on NIL
           * Fix repl-car-any - must make newline
         * NIL - do Car/Atom, make current item NIL          
-      * When ptr is moving, stay in Car mode
       * Support y layout [Done...]
+        * Fix lay-pair newline - does not support Y layout        
+      * When ptr is moving, stay in Car mode
       * Store ref to last item in list for faster bnds calc
       * Make methods
         * Layout
