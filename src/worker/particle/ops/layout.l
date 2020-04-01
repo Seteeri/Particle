@@ -1,14 +1,3 @@
-(de force-lay (Part Lay)
-  (with Part
-    (=: lay Lay)
-    (when (and (: a)
-                (not (= (: a) Part)))
-      (force-lay (: a) Lay))
-    (when (and (: b)
-               (not (= (: b) Part)))
-      (force-lay (: b) Lay))))
-      
-
 # Refactor these into methods
 
 (def '*cur-x)
@@ -224,7 +213,18 @@
         # Should not call lay pair but rather the method
         # lay-sym, lay-str
         (lay-pair Any Base Skip))))
-        
+
+
+(de force-lay (Part Lay)
+  (with Part
+    (=: lay Lay)
+    (when (and (: a)
+                (not (= (: a) Part)))
+      (force-lay (: a) Lay))
+    (when (and (: b)
+               (not (= (: b) Part)))
+      (force-lay (: b) Lay))))
+              
 
 (de swap-lay (Tgt)
   (force-lay Tgt 
