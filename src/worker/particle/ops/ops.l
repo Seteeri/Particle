@@ -1,19 +1,3 @@
-# Move to layout
-
-# DEBUG
-(de mov-*1 (Line)
-  # Move to bnds of current line
-  (let (Ori (get Line 'ori)
-        Bnds (get Line 'nl 'dims))
-    (set-cur-x (+ (get Ori 1)
-                  (get Bnds 1) *adv-vert-2))
-    (set-cur-y (- (get Ori 2)
-                  (get Bnds 2)))
-    (println 'mov-*1 "Moved *1 to: " (format (get *cur 1) *Scl) (format (get *cur 2) *Scl))
-    (mov> *1 *cur)))
-
-########################
-
 (de upd-superlines (Line Dx)
   (while Line
     (with Line
