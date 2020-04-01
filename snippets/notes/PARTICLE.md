@@ -374,7 +374,6 @@ Store DAGs as binary trees?
       * Make command for prv/nxt list like Q/E
       * Search within view
     * Break out ops into files
-    * Merge cmd ptr and part
     * Make option: cmds a circular list
       * Back disappearing items?
     * Replace dot with arrow indicating layout (Right/Down)
