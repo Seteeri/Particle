@@ -301,7 +301,7 @@ Store DAGs as binary trees?
         +-------+-----------+----------+-----------+----------+-----+
         |       | Pair/Atom | Car/Atom | Pair/List | Car/List | NIL |
         +-------+-----------+----------+-----------+----------+-----+
-        | ASCII |     o     |    o     |     o     |    x     |  x  |
+        | ASCII |     o     |    o     |     o     |    o     |  x  |
         +-------+-----------+----------+-----------+----------+-----+
         | NIL   |     o     |    x     |     o     |    ^     |  o  |
         +-------+-----------+----------+-----------+----------+-----+
@@ -310,7 +310,7 @@ Store DAGs as binary trees?
         * ascii + car/list = replace list? no! should be same as Pair/Atom...
           * moving down, will move to car, which is a list
           * Pair or Car?
-            -> Pair!
+            -> Pair! Then should push back; only replace if on Car
             * Car only if coming from left or right car
 
       * Cmds

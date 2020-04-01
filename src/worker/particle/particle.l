@@ -72,7 +72,7 @@
   
   # Remember, *main's 'data is always the symbol itself
   # To get its val, is to get it's 'b
-  (unless (isa '+Sym This)
+  (when (pair (: data))
     (con (car (:: data)) (get Part 'data))))
     
 

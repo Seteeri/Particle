@@ -60,43 +60,46 @@
 (de point-a-in ()
 
   (println 'point-a-in)
-  
-  # NIL car pts to itself so need to set flag
+
+  # Clean this up!
 
   (let Ref (get *0 'b)
 
-    (setq *on-car T)
-
     (if (isa '+Nil Ref)
         
-        # Keep ptr but move it
-        (if (= (get Ref 'lay) 'x)
+        (prog
+          (setq *on-car T)
+        
+          # Keep ptr but move it
+          (if (= (get Ref 'lay) 'x)
 
-            (prog
-              # Move to lower bnd of Car
-              (set-cur-x (get Ref 'ori 1))
-              (set-cur-y (get (bounds> Ref) 2)) (nl-cur)
-              (lay-part-start *0 *cur 'skip-cdr))
+              (prog
+                # Move to lower bnd of Car
+                (set-cur-x (get Ref 'ori 1))
+                (set-cur-y (get (bounds> Ref) 2)) (nl-cur)
+                (lay-part-start *0 *cur 'skip-cdr))
 
-            (prog
-              (mov-part-abv> *0 Ref (cons T))))
+              (prog
+                (mov-part-abv> *0 Ref (cons T)))))
 
-        (let Car (get Ref 'a)
+        (let (Car (get Ref 'a)
+              Dims (bounds> Car))
 
           (put *0 'b Car)
 
-          (let Dims (bounds> Car)
+          # Set list
+          (if (= (type Car) '(+Pair))
 
-            # Set list
-            (if (= (type Car) '(+Pair))
+            (prog
+              # Dont set Car flag
+              (println 'point-a-in "Mov to sub-line/list" Car (get Car 'data))
+              (setq *line Car
+                    *main *line)
+              # Check layout
+              (mov-part-abv> *0 Car (cons T)))
 
-              (prog
-                (println 'point-a-in "Mov to sub-line/list" Car (get Car 'data))
-                (setq *line Car
-                      *main *line)
-                # Check layout
-                (mov-part-abv> *0 Car (cons T)))
-
+            (prog
+              (setq *on-car T)
               (if (= (get Ref 'lay) 'x)
 
                   (prog

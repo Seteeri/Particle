@@ -41,26 +41,66 @@
       # Only diff is keep pointer on Car
       (if (isa '+Nil (get *0 'b))
     
-        (let Part (con-cdr Data Lay)
+        (let Part (ins-cdr Data Lay)
           (put *0 'b (get Part 'b))
           (mov-part-bel> *0 (get Part 'b) (cons T)))
           
         (repl-car-any Data Lay))
       
-      (con-cdr Data Lay)))
+      (if (has-car-pair> (get *0 'b 'c))
+      
+          (ins-car Data Lay)
+      
+          (ins-cdr Data Lay))))
 
 
-(de con-cdr (Data Lay)
+(de ins-car (Data Lay)
 
   (let (Ref (get *0 'b)
+        Prv (get Ref 'c)
+        Cdr (get Ref 'b)
+        Part (gen-part (list (list Data)) Lay NIL T)
+        Car (get Part 'a))
+
+    # Beginning of list so must replace entire Pair and link to Cdr
+    
+    # Txfer line before Ref gets deleted
+    (xchg-nl Ref Car)
+
+    (repl-pair Prv Part)
+    
+    (con> Car Cdr)
+    (put Cdr 'c Car)
+    
+    # If new particle and newline, origin will not have been set
+    # However, newline will override *cur/Base
+    (mov-cur-part Prv 'start)
+    (lay-part-start Part *cur)
+
+    (put Car 'nl 'dims (calc-dims-nl> Car))
+    (mov-*1 Car)
+    
+    (upd-superls (get Car 'nl 'p))
+    
+    (put *0 'b (get Car 'b))
+    (mov-part-abv> *0 (get Car 'b) (cons T))
+
+    # Disable car?
+    # (setq *on-car)
+    
+    Part))
+
+
+(de ins-cdr (Data Lay)
+
+  (let (Ref (get *0 'b)
+        Prv (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    # Connect Part before Ref
-    # Update newline as needed
-    (ins-aft (get Ref 'c) Part)
+    (println 'ins-cdr "Ins-aft: " Prv (get Prv 'data))
 
-    # Since Part is before Ref, it will be in the same place
-    # and everything after will move forward
+    (ins-aft Prv Part)
+    
     (mov-cur-part Ref 'start)
     (lay-part-start Part (get *line 'ori))
 
@@ -200,9 +240,12 @@
           
           (upd-superls (get Car 'nl 'p))
 
-          # Move ptr to Cdr/NIL; must set ptr to Part to get Car
-          (put *0 'b (get Car 'b))
-          (mov-part-abv> *0 (get Car 'b) (cons T))
+          # Move ptr to Car
+          (put *0 'b Car)
+          (mov-part-abv> *0 Car (cons T))
+          
+          # Disable car
+          (setq *on-car)
 
           (setq *line Car
                 *main Car))
@@ -213,11 +256,67 @@
 
 ########################
 
+
+(de ins-bef (Ref Part)
+
+  #{
+  
+    Insert x before a, taking its pos:
+  
+    *0
+    [ ]  [ ]  NIL
+    a    b   
+
+           *0
+    [ ]  [ ]  [ ]  NIL
+    a    x    b
+
+    Ref=a
+    Prv=NIL
+    Cdr=b
+    Part=x
+
+    Newline case:
+    
+    [ ]
+    a
+    
+    *0
+    [ ] - NIL
+    b
+    
+    
+    [ ]
+    a
+    
+          *0
+    [ ] - [ ] - NIL
+    x     b
+  
+  }#
+
+  (let (Prv (get Ref 'c))
+
+    # Prv -> Part
+    (con> Prv Part)
+
+    #        Part -> Cdr
+    # Prv <- Part
+    (con> Part Ref Prv)
+    
+    # Part <- Cdr
+    (put Ref 'c Part)
+
+    # If Ref is a new line, xfer it to new Part
+    (when (get Ref 'nl 'p)
+      (xchg-nl Ref Part))))
+
+
 (de ins-aft (Ref Part)
 
   #{
   
-    Insert x after a:
+    Insert x after a, taking pos of next:
   
     *0
     [ ]  [ ]  NIL
@@ -290,7 +389,6 @@
   (let (Cdr (get Ref 'b)
         Prv (get Ref 'c))
 
-    # Make method of Particle
     # Ref -> Part
     (con> Prv Part)
 
@@ -327,7 +425,7 @@
 
   (put Src 'nl NIL)
 
-  (println 'xchg-nl "Exchange line: " Src " -> " Dst)
+  (println 'xchg-nl "Exchange line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
 
   (setq *line Dst
         *main Dst))

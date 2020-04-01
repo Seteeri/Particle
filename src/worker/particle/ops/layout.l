@@ -31,7 +31,7 @@
     
   # TODO: Handle Y layout
   (when (get Any 'nl 'p)
-    (println 'lay-pair "Sublist detected" (get Any 'nl 'base))
+    (println 'lay-pair "Sublist detected" Any (get Any 'data))
     (if (= (get Any 'nl 'base) 'line)
         (align-cur-to-line Any)
         (align-cur-to-prv Any))

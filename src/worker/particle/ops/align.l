@@ -15,7 +15,6 @@
           (nl-cur 2.0)))))
 
 
-
 (de align-cur-to-prv (Car)
 
   # x = origin of Pair
@@ -24,17 +23,12 @@
   (set-cur-x (get Car 'c 'ori 1))
   
   (let Ori (get (if (isa '+Sym *line) 
-                        (get *line 'b)
-                        *line) 'ori)
-        
+                    (get *line 'b)
+                    *line) 'ori)
+    # This is not using line bnds, but rather c origin
     (set-cur-y (get Car 'c 'ori 2))
     (nl-cur 2.0)
-    (nl-cur *sublist-space-y)
-    
-    #(prin 'align-cur-to-prv " " (get *line 'data) " " (format (get Ori 1) *Scl) " " (format (get Ori 2) *Scl) " ")
-    #(print-cur)
-    
-    ))
+    (nl-cur *sublist-space-y)))
 
 
 (de align-cur-to-line (Car)
