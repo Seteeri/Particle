@@ -60,6 +60,7 @@
   (=: tim (time)))
 
 (dm has-car-pair> () (= (type (: a)) '(+Pair)))
+(dm is-nil-or-nil-car> () (or (isa '+Nil This) (isa '+Nil (: a))))
 
 (dm first-vert> () (car (: verts)))
 (dm last-vert> () (last (: verts)))

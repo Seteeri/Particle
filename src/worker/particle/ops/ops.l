@@ -39,13 +39,15 @@
   
       # Replacing NIL has same effect whether pointer is on Car or Pair
       # Only diff is keep pointer on Car
-      (if (isa '+Nil (get *0 'b))
+      (if (or (isa '+Nil (get *0 'b))
+              (isa '+Nil (get *0 'b 'a)))
     
-        (let Part (ins-cdr Data Lay)
-          (put *0 'b (get Part 'b))
-          (mov-part-bel> *0 (get Part 'b) (cons T)))
-          
-        (repl-car-any Data Lay))
+          (let Part (ins-cdr Data Lay)
+            (println "THIS SHOULD REPLACE NIL")
+            (put *0 'b (get Part 'b))
+            (mov-part-bel> *0 (get Part 'b) (cons T)))
+            
+          (repl-car-any Data Lay))
       
       (if (and (has-car-pair> (get *0 'b 'c))
                (not (isa '+Nil (get *0 'b))))
@@ -170,11 +172,15 @@
         (mov-*1 *line)
         
         # Move to next car - should always...
-        # Handle NIL
-        (if (isa '+Nil Prv-Cdr) 
-            (prog
+        # Handle Y layout
+        (println 'repl-car-any Prv-Cdr (get Prv-Cdr 'data) (type Prv-Cdr))
+        (if (or (isa '+Nil Prv-Cdr) (isa '+Nil (get Prv-Cdr 'a)))
+            (let Dims (bounds> Prv-Cdr NIL T)
+              # Move to lower bnd of Car
               (put *0 'b Prv-Cdr)
-              (mov-part-bel> *0 Prv-Cdr (cons T)))
+              (set-cur-x (get Prv-Cdr 'ori 1))
+              (set-cur-y (get Dims 2)) (nl-cur)
+              (lay-part-start *0 *cur 'skip-cdr))
             (let Car (get Prv-Cdr 'a)
               (put *0 'b Car)
               (mov-part-bel> *0 (get Car 'a) (cons T)))))

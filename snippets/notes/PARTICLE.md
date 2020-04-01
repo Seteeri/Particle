@@ -296,24 +296,7 @@ Store DAGs as binary trees?
         * cmd-make-nl @ start/end/mid-line          
         * cmd-make-char (sublist) @ start/end/mid-line
         * nested lists
-        +-------+---------------------------------------------------+
-        | CMD   |                       Pointer                     |
-        +-------+-----------+----------+-----------+----------+-----+
-        |       | Pair/Atom | Car/Atom | Pair/List | Car/List | NIL |
-        +-------+-----------+----------+-----------+----------+-----+
-        | ASCII |     o     |    o     |     o     |    o     |  x  |
-        +-------+-----------+----------+-----------+----------+-----+
-        | NIL   |     o     |    x     |     o     |    ^     |  o  |
-        +-------+-----------+----------+-----------+----------+-----+
-        | NL    |     o     |    o     |     x     |    x     |  o  |
-        +-------+-----------+----------+-----------+----------+-----+
-        * ascii + car/list = replace list? no! should be same as Pair/Atom...
-          * moving down, will move to car, which is a list
-          * Pair or Car?
-            -> Pair! Then should push back; only replace if on Car
-            * Car only if coming from left or right car
 
-      * Cmds
         +-------+--------------------------------------------------------
         | CMD   |                       Pointer                     
         +-------+-------------------+--------------------+---------------
@@ -325,18 +308,26 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         | NL    | List w. Pair      | List w. Car        | Empty list
         +-------+-------------------+--------------------+---------------
-        * ASCII [WiP]
-          * repl-any is adjusting y bounds
-          * Fix car mode after symbol
-        * Newline [WiP]
-          * End newline works
-          * Mid newline works
-          * Fix ptr pos after nl on NIL
-          * Fix repl-car-any - must make newline
-        * NIL - do Car/Atom, make current item NIL          
+                
+        +-------+---------------------------------------------------+
+        | CMD   |                       Pointer                     |
+        +-------+-----------+----------+-----------+----------+-----+
+        |       | Pair/Atom | Car/Atom | Pair/List | Car/List | NIL |
+        +-------+-----------+----------+-----------+----------+-----+
+        | ASCII |     o     |    o     |     o     |    o     |  x  |
+        +-------+-----------+----------+-----------+----------+-----+
+        | NIL   |     o     |    x     |     o     |    o     |  o  |
+        +-------+-----------+----------+-----------+----------+-----+
+        | NL    |     o     |    o     |     x     |    x     |  o  |
+        +-------+-----------+----------+-----------+----------+-----+
+        * Replacing NIL with Char no work [WiP]
+        * Refactor pointer movement [WiP]
+          * Refactor into methods
+          * Move to Car for Pairs
+          * Support NIL
+          * When ptr is moving, stay in Car mode
       * Support y layout [Done...]
         * Fix lay-pair newline - does not support Y layout        
-      * When ptr is moving, stay in Car mode
       * Store ref to last item in list for faster bnds calc
       * Make methods
         * Layout
