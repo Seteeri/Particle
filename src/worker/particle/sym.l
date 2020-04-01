@@ -101,12 +101,14 @@
 
 
 (dm prv> ()
-  (when (: c)
-    (if *on-car
-        (sub> (: c))
-        (prog
-          (mov-cur-abv (: c))
-          (: c)))))
+  (if (= (get (: c) 'a) This)
+      (prv> (: c))
+      (when (: c)
+        (if *on-car
+            (sub> (: c))
+            (prog
+              (mov-cur-abv (: c))
+              (: c))))))
 
 
 (dm nxt> ()
