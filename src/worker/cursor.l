@@ -1,6 +1,17 @@
 (de print-cur ()
   (println (format (get *cur 1) *Scl) (format (get *cur 2) *Scl)))
 
+
+(de mov-cur-abv (Part)
+  # Add start/end?
+  (setq *cur (get Part 'ori))
+  (nl-cur -1.0))
+  
+  
+(de mov-cur-ori (Part)
+  (setq *cur (get Part 'ori)))
+  
+
 (de mov-cur-part (Part Pos)
   (cond ((= Pos 'start) (mov-cur-vert (first-vert> Part)))
         ((= Pos 'end)   (mov-cur-vert (last-vert> Part)))))

@@ -11,40 +11,117 @@
   NIL   Internal    Transient    External
 }#
 
-  
-(class +Sym +Particle)
-
-(dm T (Data
-       A
-       B
-       Verts
-       Lay)
-
-  (super Data A B Verts Lay))
-
-
-(class +Str +Sym)
-
-(dm T (Data
-       A
-       B
-       Verts
-       Lay)
-
-  (super Data A B Verts Lay))
-
-
-(class +Nil +Sym)
-
-(dm T (Data
-       A
-       B
-       Verts
-       Lay)
-
-  (super Data A B Verts Lay))
-
 # +Int
 # +Ext
 # +Str (= Transient)
 # +Box (= Transient)
+
+# CAR empty for Anon syms (CAR is actually number 0)
+
+######################
+(class +Sym +Particle)
+
+
+#################
+(class +Box +Sym)
+
+
+#################
+(class +Ext +Sym)
+
+
+#################
+(class +Int +Sym)
+
+
+(dm prv> ()
+  (when (: c)
+    (prv> (: c))))
+
+
+(dm nxt> ()
+  # Should always have a 'b
+  (when (: b)
+    (if *on-car
+        (sub> (: b))
+        (prog
+          (setq *on-car)
+          (mov-cur-abv (: b))
+          (: b)))))
+
+
+(dm sup> ()
+  (if (: c)
+      (sup> (: c))
+      (prog
+        (setq *on-car)
+        (mov-cur-abv This)
+        This)))
+
+
+(dm sub> ()
+  (setq *on-car T
+        *cur (get (: a) 'ori))
+  (nl-cur)
+  This)
+
+
+#################
+(class +Str +Sym)
+
+
+(dm prv> ()
+  (when (: c)
+    (prv> (: c))))
+
+
+(dm nxt> ()
+  (when (: c)
+    (nxt> (: c))))
+
+
+(dm sup> ()
+  (if (: c)
+      (sup> (: c))
+      (prog
+        (setq *on-car)
+        (mov-cur-abv This)
+        This)))
+
+
+(dm sub> ()
+  (setq *on-car T)
+  (mov-cur-ori (: a))
+  (nl-cur)
+  This)
+
+
+#################
+(class +Nil +Sym)
+
+
+(dm prv> ()
+  (when (: c)
+    (if *on-car
+        (sub> (: c))
+        (prog
+          (mov-cur-abv (: c))
+          (: c)))))
+
+
+(dm nxt> ()
+  (when (: c)
+    (nxt> (: c))))
+
+
+(dm sup> ()
+  (setq *on-car)
+  (mov-cur-abv This)
+  This)
+
+
+(dm sub> ()
+  (setq *on-car T
+        *cur (: ori))
+  (nl-cur)
+  This)

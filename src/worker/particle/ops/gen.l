@@ -73,7 +73,7 @@
                             (not (== Val Any)))
                   (gen-part Dr Lay))
         (Verts-Pair Wid-Pair) (draw-cell (get-color-type Any) (== Val Any))
-        Part-Pair (new (if (str? Any) '(+Str) '(+Sym)) # Color as a symbol
+        Part-Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any
                        Part-Car Part-Cdr
                        Verts-Pair

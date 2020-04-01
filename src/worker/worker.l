@@ -143,6 +143,10 @@
       # If we lay relative to origin should stay in same place
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
 
+                                        # Print ptr
+                                        (let Ref (get *0 'b)
+                                          (println Ref (get Ref 'data)))
+
                                         # Print lines out
                                         (let (Line *line
                                               P NIL
