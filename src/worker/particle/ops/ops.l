@@ -57,7 +57,8 @@
 
     # Connect Part before Ref
     # Update newline as needed
-    (ins-bef Ref Part)
+    #(ins-bef Ref Part)
+    (ins-aft (get Ref 'c) Part)
 
     # Since Part is before Ref, it will be in the same place
     # and everything after will move forward
@@ -230,54 +231,67 @@
 
 ########################
 
-# Rename to ins-aft
-(de ins-bef (Ref Part)
+(de ins-aft (Ref Part)
+
   #{
-          *0
+  
+    Insert x after a:
+  
+    *0
+    [ ] - [ ]  NIL
+    a     b   
+
+           *0
     [ ] - [ ] - [ ] - NIL
-    a     b     c
+    a     x     b
 
-    TO
+    Ref=a
+    Prv=NIL
+    Cdr=b
+    Part=x
 
-          *0
-    [ ] - [ ] - [ ] - [ ] - NIL
-    a     d     b     c
-
-    Ref=b
-    Prv=a
-    Cdr=c
-    Part=d
+    Newline case:
+    
+    *0      
+    [ ]
+    a
+    
+    [ ] - NIL
+    b
+    
+    
+    [ ]
+    a
+    
+    *0
+    [ ] - [ ] - NIL
+    x     b
+  
   }#
 
-  (let (Prv (get Ref 'c)
-        Prv-Cdr (get Prv 'b))
+  (let (Cdr (get Ref 'b))
 
-    # Handle car
-    (if (= (get Prv 'a) Ref)
-        (prog
-          (put Prv 'a Part)
-          (put Prv 'b Prv-Cdr))
-        (put Prv 'b Part))
-
-    # d <- b
-    (put Ref 'c Part)
-
-    # conn d -> b data
-    (with Part
-      (=: c Prv)
-      (=: b Ref)
-      (con (car (:: data)) (get Ref 'data)))
-
-    # Remember, *main's value is always the particle itself
-    # The value of the symbol *main is actually 'b
-    (unless (isa '+Sym Prv)
-      # a -> d
-      (with Prv
+    # Ref -> Part
+    (with Ref
+      (=: b Part)
+      # Remember, *main's 'data is always the symbol itself
+      # To get its val, is to get it's 'b
+      (unless (isa '+Sym Ref)
         (con (car (:: data)) (get Part 'data))))
 
-    # Set nl if Ref has it; toggle Ref
-    (when (get Ref 'nl 'p)
-      (xchg-nl Ref Part))))
+    #        Part -> Cdr
+    # Ref <- Part
+    (with Part
+      (=: b Cdr)
+      (=: c Ref)
+      (con (car (:: data)) (get Cdr 'data)))
+
+    # Part <- Cdr
+    (with Cdr
+      (=: c Part)
+      # If Cdr was a new line, xfer it to new Part
+      (when (get (: nl) 'p)
+        (xchg-nl Cdr Part)))))
 
 
 (de repl-pair (Prv Ref Cdr Part)
@@ -321,30 +335,30 @@
   (force-lay Part (get Ref 'lay))
 
   # Do not delete CDR
-  (del> Ref T NIL))            
+  (del> Ref T NIL))
 
 
-(de xchg-nl (Ref Part)
+(de xchg-nl (Src Dst)
 
-  (println 'xchg-nl "Create newline for " Part (get Part 'data))
+  (println 'xchg-nl "Create newline for " Dst (get Dst 'data))
 
-  (let (Nl (get Ref 'nl)
+  (let (Nl (get Src 'nl)
         Prv (get Nl 'p)
         Nxt (get Nl 'n))
 
     (when Prv
       (with (get Prv 'nl)
-        (=: n Part)))
+        (=: n Dst)))
 
     (when Nxt
       (with (get Nxt 'nl)
-        (=: p Part))))
+        (=: p Dst))))
 
-  (put Part 'nl (get Ref 'nl))
-  (put Ref 'nl NIL)
+  (put Dst 'nl (get Src 'nl))
+  (put Src 'nl NIL)
 
-  (println 'xchg-nl " *line change: " Ref " -> " Part)
+  (println 'xchg-nl " *line change: " Src " -> " Dst)
 
   # Set newline also
-  (setq *line Part
-        *main Part))
+  (setq *line Dst
+        *main Dst))
