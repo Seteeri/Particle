@@ -3,7 +3,7 @@
 # DEBUG
 (de mov-*1 (Line)
   # Move to bnds of current line
-  (let (Ori (origin> Line)
+  (let (Ori (get Line 'ori)
         Bnds (get Line 'nl 'dims))
     (set-cur-x (+ (get Ori 1)
                   (get Bnds 1) *adv-vert-2))
@@ -28,7 +28,7 @@
     (when (= (get List 'c 'a) List)
       (align-cur-to-bnds (get List 'c))
       (lay-part-start (get List 'c 'b)
-                (origin> *main)))
+                (get *main 'ori)))
     (setq List (get List 'c))))
 
 
@@ -38,7 +38,7 @@
       (println 'upd-superls "Re-layout line: " List (get List 'data))
       (align-cur-to-bnds List)
       (lay-part-start (get List 'b)
-                (origin> List))
+                (get List 'ori))
       # Eh double traversal...use cursor from lay-part?
       # This is using whole line, instead do:
       # add to bnds = (- (newend - origin) (oldend/bnds- origin))
@@ -78,7 +78,7 @@
     # Since Part is before Ref, it will be in the same place
     # and everything after will move forward
     (mov-cur-part Ref 'start)
-    (lay-part-start Part (origin> *line))
+    (lay-part-start Part (get *line 'ori))
 
     # Update line bounds
     # Changes in X only affect Cdr of superlists
@@ -217,7 +217,7 @@
       (prog
                   
         (mov-cur-part Prv 'start)
-        (lay-part-start Part (origin> *line))
+        (lay-part-start Part (get *line 'ori))
 
         # Skip line upate
         (mov-*1 *line)
@@ -331,7 +331,7 @@
           # Draw Pair at Prv, no Car/Cdr
           # Then nl, draw Car
           (mov-cur-part Prv 'start)
-          (lay-part-start Part (origin> *line) 'skip-car-cdr)
+          (lay-part-start Part (get *line 'ori) 'skip-car-cdr)
 
           # Create nl for Car
           # Layout will detect this
@@ -437,7 +437,7 @@
 
             (prog
               # Move to lower bnd of Car
-              (set-cur-x (get (origin> Ref) 1))
+              (set-cur-x (get (get Ref 'ori) 1))
               (set-cur-y (get (bounds> Ref) 2)) (nl-cur)
               (lay-part-start *0 *cur 'skip-cdr))
 
@@ -464,7 +464,7 @@
 
                   (prog
                     # Move to lower bnd of Car
-                    (set-cur-x (get (origin> Car) 1))
+                    (set-cur-x (get Car 'ori 1))
                     (set-cur-y (get Dims 2)) (nl-cur)
                     (lay-part-start *0 *cur 'skip-cdr))
 

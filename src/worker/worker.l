@@ -140,13 +140,7 @@
       #(view (getl (get *0 'b)))
       # If we lay relative to origin should stay in same place
       ((`ksd~Control-R `ksd~Return) T ((Keysym)
-      
-                                        #(let Ref (get *0 'b)
-                                        #  (mov-cur-part Ref 'start)
-                                        #  (lay-part-start Ref (origin> *main)))
-                                        
-                                        #(println *line (get *line 'data))
-                                        
+
                                         # Print lines out
                                         (let (Line *line
                                               P NIL

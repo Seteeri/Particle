@@ -73,7 +73,7 @@
 
   (with Any
   
-    (let ((X-Ori Y-Ori) (origin> Any))
+    (let ((X-Ori Y-Ori) (: ori))
   
       # Mov cur to origin of Pair
       (set-cur-x X-Ori) (set-cur-y Y-Ori)
@@ -140,7 +140,7 @@
   
   (with Any
   
-    (let ((X-Ori Y-Ori) (origin> Any))
+    (let ((X-Ori Y-Ori) (: ori))
     
       # Mov cur to origin of Pair
       (set-cur-y Y-Ori)
@@ -234,13 +234,13 @@
   # x = origin of Pair
   # y = bnds of line
   
-  (set-cur-x (get (origin> (get Car 'c)) 1))  
+  (set-cur-x (get Car 'c 'ori 1))
   
-  (let Ori (origin> (if (isa '+Sym *line) 
+  (let Ori (get (if (isa '+Sym *line) 
                         (get *line 'b)
-                        *line))
+                        *line) 'ori)
         
-    (set-cur-y (get (origin> (get Car 'c)) 2))
+    (set-cur-y (get Car 'c 'ori 2))
     (nl-cur 2.0)
     (nl-cur *sublist-space-y)
     
@@ -256,16 +256,16 @@
   # y = bnds of line
     
   (let (Line (get Any 'nl 'p)
-        Ori (origin> (if (isa '+Sym Line)
+        Ori (get (if (isa '+Sym Line)
                          (get Line 'b)
-                         Line)))
+                         Line) 'ori))
         
     (set-cur-x (get Ori 1))
     (unless (isa '+Sym Line)
       (println 'align-cur-to-line "Adv-cur" Line (get Line 'data))
       (adv-cur 2.0))
     
-    (set-cur-y (get (origin> (get Car 'c)) 2))
+    (set-cur-y (get Car 'c 'ori 2))
     (nl-cur 2.0)
     (nl-cur *sublist-space-y)
     
@@ -286,7 +286,7 @@
         
   (mov-cur-part Tgt 'start)
   # Opt: force layout
-  (lay-part Tgt (origin> *main)))
+  (lay-part Tgt (get *main 'ori)))
 
 
 (de mov-nl (Ref)
