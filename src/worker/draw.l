@@ -147,7 +147,7 @@
   
   (if Self
       (list (list (draw-dot Col) (draw-dot Col))
-            (+ *adv-vert *adv-vert))
+            *adv-vert-2)
       (list (list (draw-dot Col))
             *adv-vert)))
 
