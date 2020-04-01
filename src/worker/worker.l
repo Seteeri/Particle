@@ -44,7 +44,7 @@
 # assoc/list -> binary trees -> database
 
 # Master index of all particles in the "world" - store sym:particle
-# Stores pointer particles and main list particle
+# Eventually this will be moved to external symbols
 (def '*particles)
 (def '*lsts) # Traversal history list
 (def '*main) # Current list
@@ -220,7 +220,7 @@
 
   (apply-key-bindings *bindings-key)
 
-  (gc 256)
+  (gc 512)
 
   (let (A NIL
         B NIL
@@ -235,11 +235,6 @@
         (push '*verts Vert)))
 
     (prinl-info "init-worker" (pack "Loaded " C " verts of " *verts-max)))
-
-  # TODO: Render default symbols
-
-  # However, to draw the Ptr requires Ptr...
-  # -> Manually make Pointer particle
 
   (when NIL (run-tests))
 
