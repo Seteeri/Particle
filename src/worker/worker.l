@@ -82,8 +82,9 @@
 (load "/home/user/Particle/particle/src/worker/particle/pair.l")
 (load "/home/user/Particle/particle/src/worker/particle/sym.l")
 (load "/home/user/Particle/particle/src/worker/particle/num.l")
-(load "/home/user/Particle/particle/src/worker/particle/ops/layout.l")
+(load "/home/user/Particle/particle/src/worker/particle/ops/align.l")
 (load "/home/user/Particle/particle/src/worker/particle/ops/gen.l")
+(load "/home/user/Particle/particle/src/worker/particle/ops/layout.l")
 (load "/home/user/Particle/particle/src/worker/particle/ops/ops.l")
 (load "/home/user/Particle/particle/src/worker/particle/ops/point.l")
 
