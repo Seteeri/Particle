@@ -550,9 +550,10 @@
 
 
 (de upd-superls (List)
+  # Should this start at the root of the list and work down?
   (while List
     (when (get List 'line)
-      (println 'upd-superls "Re-layout line: " List (get List 'data))
+      (println 'upd-superls "Layout line: " List)
       (align-cur-to-bnds List)
       (lay-part-start (get List 'b)
                       (get List 'ori))

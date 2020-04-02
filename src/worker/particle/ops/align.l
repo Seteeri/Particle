@@ -15,42 +15,46 @@
           (nl-cur 2.0)))))
 
 
-(de align-cur-to-prv (Car)
+(de align-cur-to-prv (Part)
 
-  # x = origin of Pair
-  # y = bnds of line
-  
-  (set-cur-x (get Car 'c 'ori 1))
-  
-  (let Ori (get (if (isa '+Sym *line) 
-                    (get *line 'b)
-                    *line) 'ori)
-    # This is not using line bnds, but rather c origin
-    (set-cur-y (get Car 'c 'ori 2))
-    (nl-cur 2.0)
-    (nl-cur *sublist-space-y)))
+  (if (= (get Part 'lay) 'x)
+
+      (prog
+        # x = origin of Pair
+        # y = bnds of line
+        (set-cur-x (get Part 'c 'ori 1))
+
+        (let Ori (get (if (isa '+Sym *line)
+                          (get *line 'b)
+                          *line) 'ori)
+          # This is not using line bnds, but rather c origin
+          (set-cur-y (get Part 'c 'ori 2))
+          (nl-cur 2.0)
+          (nl-cur *sublist-space-y)))
+
+      (prog
+        (println 'align-cur-to-prv "IMPLEMENT Y LAYOUT"))))
 
 
-(de align-cur-to-line (Car)
+(de align-cur-to-line (Part)
 
-  # x = origin of line
-  # y = bnds of line
-    
-  (let (Line (get Any 'line 'p)
-        Ori (get (if (isa '+Sym Line)
-                         (get Line 'b)
-                         Line) 'ori))
-        
-    (set-cur-x (get Ori 1))
-    (unless (isa '+Sym Line)
-      (println 'align-cur-to-line "Adv-cur" Line (get Line 'data))
-      (adv-cur 2.0))
-    
-    (set-cur-y (get Car 'c 'ori 2))
-    (nl-cur 2.0)
-    (nl-cur *sublist-space-y)
-    
-    #(prin 'align-cur-to-prv " " (get *line 'data) " " (format (get Ori 1) *Scl) " " (format (get Ori 2) *Scl) " ")
-    #(print-cur)
-    
-    ))
+  (if (= (get Part 'lay) 'x)
+
+      # x = origin of line
+      # y = bnds of line
+      (let (Line (get Any 'line 'p)
+            Ori (get (if (isa '+Sym Line)
+                             (get Line 'b)
+                             Line) 'ori))
+
+        (set-cur-x (get Ori 1))
+        (unless (isa '+Sym Line)
+          (println 'align-cur-to-line "Adv-cur" Line (get Line 'data))
+          (adv-cur 2.0))
+
+        (set-cur-y (get Part 'c 'ori 2))
+        (nl-cur 2.0)
+        (nl-cur *sublist-space-y))
+
+      (prog
+        (println 'align-cur-to-line "IMPLEMENT Y LAYOUT"))))
