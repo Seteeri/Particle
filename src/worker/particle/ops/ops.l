@@ -49,15 +49,13 @@
 
     (ins-aft Prv Part)
 
-    (mov-cur-part Ref 'start)
-    (lay-part-start Part (get *line 'ori))
-
-    # Update line bounds
-    # Changes in X only affect Cdr of superlists
-    # Changes in Y, however, affect subsequent lines, since they all need to be
-    # offset by the Y change
-
     (when NIL
+      (mov-cur-part Ref 'start)
+      (lay-part-start Part (get *line 'ori))
+      # Update line bounds
+      # Changes in X only affect Cdr of superlists
+      # Changes in Y, however, affect subsequent lines, since they all need to be
+      # offset by the Y change      
       (let (Bef (get *line 'line 'dims)
             Dx (inc-line-by-part-x> *line Part)
             Dy (min-line-by-part-y> *line Part)
@@ -67,8 +65,9 @@
         # Skip this line since already updated
         (upd-superls (get *line 'line 'p))))
         
+    (upd-tree)
     (mov-*1 *line)
-
+    
     # Same ref, relayout
     (mov-cur-abv Ref)
     (lay-part-start *0 *cur 'skip-cdr)
@@ -107,26 +106,21 @@
 
     (repl-pair Prv Part)
 
-    (println Ref (get Ref 'data))
-    (println Prv (get Prv 'data))
-    (println Prv-Cdr (get Prv-Cdr 'data))
-    (println Part (get Part 'data))
-
     (if (= Lay 'x)
 
       (prog
+      
+        # nl check?
 
-        (mov-cur-part Prv 'start)
-        (lay-part-start Part (get *line 'ori))
+        #(mov-cur-part Prv 'start)
+        #(lay-part-start Part (get *line 'ori))
 
-        # Skip line upate
+        # Skip line upate?
+        (upd-tree)
         (mov-*1 *line)
 
         (put *0 'b Part)
-        (point-nxt)
-        # NIL diff
-        # (test T (= (get *0 'b) (get Part 'b 'a)))
-        )
+        (point-nxt))
 
       (prog
         (println 'repl-car "IMPLEMENT Y LAYOUT")))
@@ -151,6 +145,8 @@
          [ ]  [ ]
          x    c
          *
+         
+    Very similar to repl-car
   }#
 
   (when (and (not (str? Data))
@@ -162,9 +158,9 @@
         Cdr (get Ref 'c 'b)
         Part (gen-part (list (list Data)) Lay NIL T)
         Car (get Part 'a))
-
+    
     # Txfer line before Ref gets deleted
-    (xchg-nl Ref Car)
+    (xchg-nl (get Ref 'c) Car)
 
     (repl-pair Prv Part)
 
@@ -172,17 +168,17 @@
     (con> Car Cdr)
     (put Cdr 'c Car)
 
-    (mov-cur-part Prv 'start)
-    (lay-part-start Part *cur)
+    #(mov-cur-part Prv 'start)
+    #(lay-part-start Part *cur)
 
     # Calc dims for new line, and update super lines recursively
     #(upd-superls (get Car 'line 'p))
+    (upd-tree)
+    (mov-*1 *line)    
 
     (put *0 'b Car)
     (point-nxt)
     #(test T (= (get *0 'b) (get Car 'b)))
-
-    (println 'repl-list-car (get *0 'b) (get *0 'b 'data))
 
     #(setq *main Car)
     
@@ -212,11 +208,13 @@
     (con> Car Cdr)
     (put Cdr 'c Car)
 
-    (mov-cur-part Prv 'start)
-    (lay-part-start Part *cur)
+    #(mov-cur-part Prv 'start)
+    #(lay-part-start Part *cur)
 
     # Calc dims for new line, and update super lines recursively
     #(upd-superls (get Car 'line 'p))
+    (upd-tree)
+    (mov-*1 *line)
 
     (put *0 'b Car)
     (point-nxt)
@@ -263,8 +261,8 @@
 
           # Draw Pair at Prv, no Car/Cdr
           # Then nl, draw Car
-          (mov-cur-part Prv 'start)
-          (lay-part-start Part (get *line 'ori) 'skip-car-cdr)
+          #(mov-cur-part Prv 'start)
+          #(lay-part-start Part (get *line 'ori) 'skip-car-cdr)
 
           # Create nl for Car
           # Layout will detect this
@@ -273,16 +271,12 @@
           (put Car 'line (new '(+Line) *line))
 
           # Cur will be moved to proper pos rel to Pair
-          (lay-part-start Car *cur)
+          #(lay-part-start Car *cur)
           
           # Super update:
           # * Re-position and draw particles if needed
           # * Calc bounds
-          (upd-superls (get Car 'line 'p))
-
-          # After layout, calc dims for newline
-          #(put Car 'line 'dims (calc-dims-nl> Car))
-          #(put *line 'line 'dims (calc-dims-nl> *line))
+          (upd-tree)
           (mov-*1 *line)
 
           # This will move to car which is expected
@@ -585,7 +579,7 @@
   # Must calc y dims for both lines
   # Layout is not required to calc dims
 
-  (put *line 'line 'dims (calc-dims-nl> *line))
+  #(put *line 'line 'dims (calc-dims-nl> *line))
 
   # Cannot position Ref/newline until current line bnds updated
   # Base irrelevant; lay-part will override it
@@ -593,15 +587,10 @@
   (lay-part-start Ref *cur)
 
   # Start from Cdr since it skips lists
-  (put Ref 'line 'dims (calc-dims-nl> (get Ref 'a)))
+  #(put Ref 'line 'dims (calc-dims-nl> (get Ref 'a)))
 
-  #(println 'mov-part-nl (get Ref 'line 'dims))
-
-  (mov-*1 Ref)
-
-  # Update previous lines/lists
-  # Example, if line shortens, then must reposition cdrs
-  (upd-superls (get *line 'line 'p))
+  (upd-tree)
+  (mov-*1 *Ref)
 
   (setq *line Ref
         *main Ref)
@@ -627,7 +616,7 @@
     (setq List (get List 'c))))
 
 
-(de upd-superls (List)
+(de upd-tree (List)
 
   (setq *cur (get *master 'ori))
   (lay-part-start *master
