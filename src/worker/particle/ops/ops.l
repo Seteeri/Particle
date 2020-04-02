@@ -15,28 +15,28 @@
       #(has-car-pair> (get *0 'b 'c)) # If direct sublist
       (if (is-sublist> (get *0 'b))
       
-          (ins-pair Data Lay)
+          (repl-pair Data Lay)
       
           (ins-cdr Data Lay))))
 
 
-(de ins-pair (Data Lay)
+(de repl-pair (Data Lay)
 
-  # Replace car ptr with list item
+  # Replace entire item with list item
+  # For beginning of list
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
         Cdr (get Ref 'b)
         Part (gen-part (list (list Data)) Lay NIL T)
         Car (get Part 'a))
-
-    # Beginning of list so must replace entire Pair and link to Cdr
     
     # Txfer line before Ref gets deleted
     (xchg-nl Ref Car)
 
     (repl-pair Prv Part)
-    
+
+    # Relink to Cdr
     (con> Car Cdr)
     (put Cdr 'c Car)
     
@@ -45,9 +45,7 @@
     (mov-cur-part Prv 'start)
     (lay-part-start Part *cur)
 
-    (put Car 'line 'dims (calc-dims-nl> Car))
-    (mov-*1 Car)
-    
+    (put Car 'line 'dims (calc-dims-nl> Car)) (mov-*1 Car)
     (upd-superls (get Car 'line 'p))
     
     (put *0 'b Car)
