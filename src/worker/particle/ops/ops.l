@@ -42,12 +42,14 @@
       (if (and (has-car-pair> (get *0 'b 'c))
                (not (isa '+Nil (get *0 'b))))
       
-          (ins-car Data Lay)
+          (ins-pair Data Lay)
       
           (ins-cdr Data Lay))))
 
 
-(de ins-car (Data Lay)
+(de ins-pair (Data Lay)
+
+  # Replace car ptr with list item
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
@@ -77,14 +79,13 @@
     
     (put *0 'b (get Car 'b))
     (mov-part-abv> *0 (get Car 'b) (cons T))
-
-    # Disable car?
-    # (setq *on-car)
     
     Part))
 
 
 (de ins-cdr (Data Lay)
+
+  # Insert item before pair ptr
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
