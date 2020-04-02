@@ -168,6 +168,7 @@
                                             (T (not Line))))
                                             
                                         (mov-*1 *line)
+                                        (println "Master Line: " *master (get *master 'b 'data))
                                           
                                         ))
 

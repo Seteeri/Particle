@@ -27,13 +27,13 @@
     (=: near        (if Near Near 0.1))
     (=: far         (if Far Far 100.0))
           
-    (=: scale-ortho (if Scale-ortho Scale-ortho 24.0))
+    (=: scale-ortho (if Scale-ortho Scale-ortho 32.0))
     (=: near-ortho  (if Near-ortho Near-ortho 1.0))
     (=: ortho-far   (if Ortho-far Ortho-far 512.0))
 
     (=: mat-view    (when Mat-view Mat-view))
 
-    (=: pos    (if Pos Pos (38.0 1.0 10.0)))
+    (=: pos    (if Pos Pos (46.0 -5.0 10.0)))
     (=: rot    (if Rot Rot (0.0 0.0 0.0)))
 
     #scale is (1.0 1.0 1.0)...

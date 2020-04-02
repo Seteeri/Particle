@@ -4,20 +4,37 @@
 
     (if *on-car
 
-        # If NIL and not part of a Pair
-        (if (and (isa '(+Nil) Ref)
-                 (not (= (get Ref 'c 'a) Ref)))
+        #{
+        [] []
+        
+           [] NIL
+           NIL
+           *
+           
+           [] NIL
+           NIL *
+        }#
 
-            # For NIL ins-cdr, then point to Cdr NIL
-            (ins-cdr Data Lay)
-
-            (repl-car Data Lay))
-
+        # If start of list, must replace entire thing
+        # otherwise, normal repl
+        (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
+                 (= (get Ref 'c 'a) Ref))
+              
+            (prog
+              (repl-list-car Data Lay))
+              
+            (prog
+              (if (isa '(+Nil) Ref)
+                  (prog (setq *on-car) (ins-cdr Data Lay))
+                  (repl-car Data Lay))))
+        
         (if (= (get Ref 'c 'a) Ref) # If direct sublist
 
-            (repl-list Data Lay)
+            (prog
+              (repl-list Data Lay))
 
-            (ins-cdr Data Lay)))))
+            (prog
+              (ins-cdr Data Lay))))))
 
 
 (de ins-cdr (Data Lay)
@@ -90,6 +107,11 @@
 
     (repl-pair Prv Part)
 
+    (println Ref (get Ref 'data))
+    (println Prv (get Prv 'data))
+    (println Prv-Cdr (get Prv-Cdr 'data))
+    (println Part (get Part 'data))
+
     (if (= Lay 'x)
 
       (prog
@@ -102,7 +124,8 @@
 
         (put *0 'b Part)
         (point-nxt)
-        #(test T (= (get *0 'b) (get Car 'b)))
+        # NIL diff
+        # (test T (= (get *0 'b) (get Part 'b 'a)))
         )
 
       (prog
@@ -111,10 +134,64 @@
   Part))
 
 
+(de repl-list-car (Data Lay)
+  #{
+    Replace beginning of list when ptr on car
+    
+    [ ]  [ ]
+    a    
+    
+         [ ]  [ ]
+         b    c
+         *
+
+    [ ]  [ ]
+    a    
+    
+         [ ]  [ ]
+         x    c
+         *
+  }#
+
+  (when (and (not (str? Data))
+             (not (<= (length Data) 3)))
+    (println 'repl-list "WARNING! Length needs to be recalculated"))
+
+  (let (Ref (get *0 'b)
+        Prv (get Ref 'c 'c)
+        Cdr (get Ref 'c 'b)
+        Part (gen-part (list (list Data)) Lay NIL T)
+        Car (get Part 'a))
+
+    # Txfer line before Ref gets deleted
+    (xchg-nl Ref Car)
+
+    (repl-pair Prv Part)
+
+    # Relink Car to Cdr
+    (con> Car Cdr)
+    (put Cdr 'c Car)
+
+    (mov-cur-part Prv 'start)
+    (lay-part-start Part *cur)
+
+    # Calc dims for new line, and update super lines recursively
+    #(upd-superls (get Car 'line 'p))
+
+    (put *0 'b Car)
+    (point-nxt)
+    #(test T (= (get *0 'b) (get Car 'b)))
+
+    (println 'repl-list-car (get *0 'b) (get *0 'b 'data))
+
+    #(setq *main Car)
+    
+    Part))
+
+
 (de repl-list (Data Lay)
 
-  # Replace entire item with list item
-  # For beginning of list
+  # Replace beginning of list when ptr over
 
   (when (and (not (str? Data))
              (not (<= (length Data) 3)))
@@ -146,15 +223,14 @@
     (test T (= (get *0 'b) (get Car 'b)))
 
     #(setq *main Car)
-
+    
     Part))
 
 
 (de repl-car-list (Data Lay)
 
   #{
-    Replace car with list underneath
-    Implies new line
+    Replace entire item with list, i.e. replace car with list
 
     [ ]  [ ]  NIL
     a    b

@@ -72,7 +72,9 @@
         #(mov-cur-abv (: a))
         (if *on-car
             (sub> (: a))
-            (mov-cur-abv (: a))))
+            (prog
+              (mov-cur-abv (: a))
+              (: a))))
 
       # Should always be a Car
       (when (: a)
