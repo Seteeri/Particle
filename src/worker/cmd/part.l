@@ -209,9 +209,9 @@
 
   (let Ref (get *0 'b)
 
-    #(make-list Ref)
+    (make-list Ref)))
     
-    (mov-nl Ref)))
+    #(mov-nl Ref)))
 
 
 (de cmd-mov-bl (Keysym)

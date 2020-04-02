@@ -50,9 +50,10 @@
     
     (upd-superls (get Car 'line 'p))
     
-    (put *0 'b (get Car 'b))
-    (mov-part-abv> *0 (get Car 'b) (cons T))
-    
+    (put *0 'b Car)
+    (point-b-nxt)
+    (test (= (get *0 'b) (get Car 'b)))
+        
     Part))
 
 
