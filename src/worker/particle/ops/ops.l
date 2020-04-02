@@ -65,7 +65,7 @@
         Prv (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    (println 'ins-cdr "Ins-aft: " Prv (get Prv 'data))
+    (println 'ins-cdr "Ins-aft (bef Ptr): " Prv (get Prv 'data))
 
     (ins-aft Prv Part)
     
@@ -88,9 +88,9 @@
 
     (mov-*1 *line)
 
-    # Create upd-ptr
-    (put *0 'b Ref)
-    (mov-part-abv> *0 Ref (cons T))
+    # Same ref, relayout
+    (mov-cur-abv Ref)
+    (lay-part-start *0 *cur 'skip-cdr)
 
     Part))
 
