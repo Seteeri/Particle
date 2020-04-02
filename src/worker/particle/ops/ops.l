@@ -8,7 +8,7 @@
             # For NIL ins-cdr
             # Diff being ptr points to Car of new item
             (ins-cdr Data Lay)
-            (point-b-prv))
+            (point-prv))
           
           (repl-car-any Data Lay))
       
@@ -51,7 +51,7 @@
     (upd-superls (get Car 'line 'p))
     
     (put *0 'b Car)
-    (point-b-nxt)
+    (point-nxt)
     (test (= (get *0 'b) (get Car 'b)))
         
     Part))

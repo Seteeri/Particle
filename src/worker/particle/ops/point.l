@@ -21,23 +21,23 @@
 }#
   
 
-(de point-b-prv ()
-  (println 'point-b-prv)
+(de point-prv ()
+  (println 'point-prv)
   (let? Part (prv> (get *0 'b)) (point-ptr Part)))
 
 
-(de point-b-nxt ()
-  (println 'point-b-nxt)
+(de point-nxt ()
+  (println 'point-nxt)
   (let? Part (nxt> (get *0 'b)) (point-ptr Part)))
 
 
-(de point-a-out ()
-  (println 'point-a-out)
+(de point-sup ()
+  (println 'point-sup)
   (let? Part (sup> (get *0 'b)) (point-ptr Part)))
 
 
-(de point-a-in ()
-  (println 'point-a-in)
+(de point-sub ()
+  (println 'point-sub)
   (let? Part (sub> (get *0 'b)) (point-ptr Part)))
 
 

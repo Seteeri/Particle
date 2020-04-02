@@ -5,26 +5,26 @@
   # Only if Ref and Prv both are Y layout
   (if (and (= (get *0 'b 'lay) 'y)
            (= (get *0 'b 'c 'lay) 'y))
-      (point-a-out)
-      (point-b-prv)))
+      (point-sup)
+      (point-prv)))
 
 
 (de cmd-ptr-right (Keysym)
   (if (= (get *0 'b 'lay) 'x)
-      (point-b-nxt)
-      (point-a-in)))
+      (point-nxt)
+      (point-sub)))
 
 
 (de cmd-ptr-up (Keysym)
   (if (= (get *0 'b 'lay) 'x)
-      (point-a-out)
-      (point-b-prv)))
+      (point-sup)
+      (point-prv)))
 
 
 (de cmd-ptr-down (Keysym)
   (if (= (get *0 'b 'lay) 'x)
-      (point-a-in)
-      (point-b-nxt)))
+      (point-sub)
+      (point-nxt)))
 
 
 ###########
