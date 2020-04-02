@@ -12,18 +12,21 @@
           
           (repl-car Data Lay))
       
-      #(has-car-pair> (get *0 'b 'c)) # If direct sublist
-      (if (is-sublist> (get *0 'b))
+      (if (= (get *0 'b 'c 'a) (get *0 'b)) # If direct sublist
       
-          (repl-pair Data Lay)
+          (repl-list Data Lay)
       
           (ins-cdr Data Lay))))
 
 
-(de repl-pair (Data Lay)
+(de repl-list (Data Lay)
 
   # Replace entire item with list item
   # For beginning of list
+
+  (when (and (not (str? Data))
+             (not (<= (length Data) 3)))
+    (println 'repl-list "WARNING! Length needs to be recalculated"))
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
@@ -40,17 +43,12 @@
     (con> Car Cdr)
     (put Cdr 'c Car)
     
-    # If new particle and newline, origin will not have been set
-    # However, newline will override *cur/Base
-    (mov-cur-part Prv 'start)
-    (lay-part-start Part *cur)
-
-    (put Car 'line 'dims (calc-dims-nl> Car)) (mov-*1 Car)
-    (upd-superls (get Car 'line 'p))
+    # Calc dims for new line, and update super lines recursively
+    (upd-superls Car)
     
     (put *0 'b Car)
     (point-nxt)
-    (test (= (get *0 'b) (get Car 'b)))
+    (test T (= (get *0 'b) (get Car 'b)))
         
     Part))
 
@@ -557,10 +555,8 @@
       (println 'upd-superls "Re-layout line: " List (get List 'data))
       (align-cur-to-bnds List)
       (lay-part-start (get List 'b)
-                (get List 'ori))
-      # Eh double traversal...use cursor from lay-part?
-      # This is using whole line, instead do:
+                      (get List 'ori))
       # add to bnds = (- (newend - origin) (oldend/bnds- origin))
-      (put List 'line 'dims (calc-dims-nl> List)))
+      # Use cursor from lay-part
+      (put List 'line 'dims (list *cur-x *cur-y)))
     (setq List (get List 'c))))
-
