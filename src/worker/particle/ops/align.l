@@ -1,4 +1,4 @@
-(de align-cur-to-bnds (Part)
+(de align-cur-to-car-bnds (Part)
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds
   (let Bnds (bounds> Part NIL T) # Skip CDR

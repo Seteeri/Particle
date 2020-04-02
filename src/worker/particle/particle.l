@@ -124,20 +124,26 @@
 
 (dm mov> (Pos)
 
+  # Should use draw?
+
   (for Vert (: verts)
 
     (with Vert
-      (=: pos Pos)
-      (update-glyph> Vert (char (: chr))))
-    (upd-mdl-mtrx> Vert)
-    (cmd-upd-vert *ipc Vert)
+      # Same pos, don't bother
+      (unless (= Pos (: pos))
+        (=: pos Pos)
+        (update-glyph> Vert (char (: chr))))
+        (upd-mdl-mtrx> Vert)
+        (cmd-upd-vert *ipc Vert))
 
     # adv pos
     (setq Pos (place 1
                      Pos
                      (+ (car Pos) *adv-vert))))
                      
-  (=: ori (origin> This)))
+  (=: ori (origin> This))
+  
+  Pos)
 
 
 # Rename off -> rel
@@ -257,11 +263,12 @@
 
 # Line
 
+# Used only by delete
 (dm adj-line-to-part> (Ref)
   (let (Ori (: ori)
         Bnds (bounds> Ref NIL T)
-        Dims (list (- (get Bnds 1) (get Ori 1))
-                   (- (get Bnds 2) (get Ori 2))))
+        Dims (list (abs (- (get Bnds 1) (get Ori 1)))
+                   (abs (- (get Bnds 2) (get Ori 2)))))
     (with (: line)
       (let ((X Y) (: dims))
         (=: dims Dims)
@@ -274,8 +281,8 @@
   # Bnds - Origin
   (let (Ori (get Part 'ori)
         Bnds (bounds> Part NIL T)
-        Dx (+ (- (get Bnds 1) (get Ori 1))
-              *adv-vert-2))
+        Dx (abs (+ (- (get Bnds 1) (get Ori 1))
+              *adv-vert-2)))
             
     (with (: line)
       (=: dims (list (+ (car (: dims)) Dx)
@@ -291,7 +298,7 @@
         Dims (get (: line) 'dims)
         Bnds-Ln (list (+ (get Ori 1) (get Dims 1))
                       (- (get Ori 2) (get Dims 2)))
-        Dx (- (get Bnds-Ln 1) (get Bnds-B 1)))
+        Dx (abs (- (get Bnds-Ln 1) (get Bnds-B 1))))
         
     (with (: line)
       (=: dims (list (- (car Dims) Dx)
@@ -300,7 +307,7 @@
     Dx))
 
 
-(dm upd-line-by-part-y> (Part)
+(dm min-line-by-part-y> (Part)
   # If new bnds smaller, use it
   (let (Ori (cadr (: ori))
         Dims (get (: line) 'dims)
@@ -322,30 +329,25 @@
   
   (let (Part This
         Ori (: ori)
-        (X Y) (if (has-car-pair> This) Ori (bounds> This NIL T)))
+        (X Y) (if (has-car-pair> This)
+                  Ori
+                  (bounds> This NIL T)))
         
     (loop
-    
-      #(println 'calc-dims-nl "Check Part for dims: " Part (get Part 'data))
-    
-      (let ((Xb Yb) (if (has-car-pair> Part) Ori (bounds> Part NIL T)))
+        
+      (let ((Xb Yb) (if (has-car-pair> Part) 
+                        Ori
+                        (bounds> Part NIL T)))
         (setq X (max X Xb)
               Y (min Y Yb)))
-              
-      # Handle NIL and strs
-      
-      # If encounter Part with y layout and no new line, go to its Car
-      (setq Part (if (and (= (get Part 'lay) 'y)
-                          (not (get Part 'line)))
-                      (get Part 'a)
-                      (get Part 'b)))
 
-      #(println 'calc-dims-nl "Try Part: " Part (get Part 'data))
-      
+      (setq Part (get Part 'b))
+
       (T (or (not Part)
              (get Part 'line))))
     
-    (list (- X (car Ori)) (abs (- Y (cadr Ori))))))
+    (list (abs (- X (car Ori)))
+          (abs (- Y (cadr Ori))))))
 
 
 # Debug

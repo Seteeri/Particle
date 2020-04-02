@@ -43,11 +43,11 @@
 (dm sup> ()
   (if (= (get (: c) 'a) This)
       (prog
-        (println 'sub> "Mov ptr -> super-line/list" (: c) (get (: c) 'data))
-        (setq *on-car)
-        (let? Ln (get (: line) 'p)        
-          (setq *line Ln
-                *main Ln)) 
+        (println 'sup> "Mov ptr -> super-line/list" (: c) (get (: c) 'data))
+        (setq *on-car NIL
+              *main (: c))
+        (let? Ln (get (: line) 'p)
+          (setq *line Ln))
         (mov-cur-abv (: c))
         (: c))
 
@@ -63,16 +63,16 @@
       # Line change: superlist -> sublist
       (prog
         (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))
-        (setq *line (: a)
-              *main (: a))
+        (setq *main (: a))
+        (let? Ln (get (: line) 'n)
+          (setq *line Ln))
         # Here can either move Pair or Car
         # Default is to follow Car             
         #(setq *on-car)
         #(mov-cur-abv (: a))
         (if *on-car
             (sub> (: a))
-            (mov-cur-abv (: a)))
-        (: a))
+            (mov-cur-abv (: a))))
 
       # Should always be a Car
       (when (: a)

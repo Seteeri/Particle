@@ -3,6 +3,29 @@
 (def '*cur-x)
 (def '*cur-y)
 
+(de upd-cur ()
+
+  #{
+  
+   O
+    [X] CDR|
+    CAR    |
+    -------+
+
+   O
+    [X] CAR|
+    CDR    |
+    -------+          
+  }#
+  
+  (setq *cur-x (if *cur-x
+                  (max *cur-x (get *cur 1))
+                  (get *cur 1)))
+  (setq *cur-y (if *cur-y
+                   (min *cur-y (get *cur 2))
+                   (get *cur 2))))
+
+
 (de lay-part-start (Any Base Skip)
   (setq *cur-x NIL
         *cur-y NIL)
@@ -38,11 +61,21 @@
     (setq Base *cur))
 
   # Move Pair first to get correct pos since dims rel to origin
-  (mov> Any *cur)
+  (setq *cur (mov> Any *cur))
+  (upd-cur)
   
-  (if (= (get Any 'lay) 'x)    
+  # Lay-pair returns last drawn item, but is unused
+  (if (= (get Any 'lay) 'x)
     (lay-pair-x Any Base Skip)
-    (lay-pair-y Any Base Skip)))
+    (lay-pair-y Any Base Skip))
+
+  # Store dims afterwards and line bnds
+  (with Any
+    (let Dims (list (abs (- *cur-x (get (: ori) 1)))
+                    (abs (- *cur-y (get (: ori) 2))))
+      (=: dims Dims)
+      (when (: line)
+        (put (: line) 'dims Dims)))))
   
 
 (de lay-pair-x (Any Base Skip)
@@ -76,15 +109,17 @@
         (nl-cur (+ *sublist-space-y 1.0)))
 
       # Lay CAR first since its X bounds has precedence
-      
-      (let ((X-Dims-A Y-Dims-A) (get (: a) 'dims)
-            (X-Dims-B Y-Dims-B) (get (: b) 'dims))
-      
-        (when (and (: a)
-                   (not (= (: a) Any))
-                   (or (= Skip 'skip-cdr)
-                       (not Skip)))
-          (lay-part (: a) Base))
+            
+      (when (and (: a)
+                 (not (= (: a) Any))
+                 (or (= Skip 'skip-cdr)
+                     (not Skip)))
+        (lay-part (: a) Base))
+
+      (when (and (: b)
+                 (not (= (: b) Any))
+                 (or (= Skip 'skip-car)
+                     (not Skip)))
 
         # To draw Cdr:
         # X =  Ori 1 + Dims-Car 1, plus an adv
@@ -100,14 +135,11 @@
             (adv-cur))
           (prog                        
             # X should be in place, else get from cur bnds
-            (adv-cur)))
-        
+            (set-cur-x *cur-x)
+            (adv-cur 1.0)))
+      
         # Str's val/b is NIL (or poss later point to itself)
-        (when (and (: b)
-                   (not (= (: b) Any))
-                   (or (= Skip 'skip-car)
-                       (not Skip)))
-          (lay-part (: b) Base))))))
+        (lay-part (: b) Base)))))
 
     
 (de lay-pair-y (Any Base Skip)
@@ -135,19 +167,22 @@
       (set-cur-y Y-Ori)
       
       # Use X dims
-      (set-cur-x (+ X-Ori (get (: dims) 1)))
+      (set-cur-x (+ X-Ori (get (: a) 'dims 1)))
       (adv-cur)
     
       # Lay CAR first since its Y bounds has precedence
-
-      (let ((X-Dims-A Y-Dims-A) (get (: a) 'dims)
-            (X-Dims-B Y-Dims-B) (get (: b) 'dims))
                   
-        (when (and (: a)
-                   (not (= (: a) Any))
-                   (or (= Skip 'skip-cdr)
-                       (not Skip)))
-          (lay-part (: a) Base))
+      (when (and (: a)
+                 (not (= (: a) Any))
+                 (or (= Skip 'skip-cdr)
+                     (not Skip)))
+        (lay-part (: a) Base))
+
+      # Str's val/b is NIL (or poss later point to itself)
+      (when (and (: b)
+                 (not (= (: b) Any))
+                 (or (= Skip 'skip-car)
+                     (not Skip)))
 
         # To draw Cdr:
         # X = Origin
@@ -156,20 +191,14 @@
 
         # If Car layout is X, cur will be back at Cdr bnds,
         # which means Y is level with Any - must set cur to Y bnds (min Y)
-        (when (= (get (: a) 'lay) 'x)
+        (if (= (get (: a) 'lay) 'x)
             #(println 'lay-part-y "X layout detected for Car")
-            (setq *cur (list (get *cur 1) *cur-y)))
+            (setq *cur (list (get *cur 1) *cur-y))
             
-        (when (: b)
-          # Y should be in place, else get from cur bnds
-          (nl-cur 2.0))
+            # Y should be in place, else get from cur bnds
+            (nl-cur 2.0))
         
-        # Str's val/b is NIL (or poss later point to itself)
-        (when (and (: b)
-                   (not (= (: b) Any))
-                   (or (= Skip 'skip-car)
-                       (not Skip)))
-          (lay-part (: b) Base))))))
+        (lay-part (: b) Base)))))
     
   
 (de lay-atom (Any Base Skip)
@@ -180,33 +209,13 @@
       (prog
 
         # Move Pair first so below to get correct pos
-        (mov> Any *cur)
-      
-        # Mov cur to bounds, aka last vert start pos
-        # Adv to move to end pos of last vert
-        (mov-cur-part Any 'end)
-        (adv-cur)
+        # mov> does not use draw fn so it does not use *cur
+        (setq *cur (mov> Any *cur))
+        #(adv-cur)
 
-        #{
-        
-         O
-          [X] CDR|
-          CAR    |
-          -------+
+        (upd-cur)
 
-         O
-          [X] CAR|
-          CDR    |
-          -------+          
-        }#
-        
-        # max X, min Y
-        (setq *cur-x (if *cur-x
-                        (max *cur-x (get *cur 1))
-                        (get *cur 1)))
-        (setq *cur-y (if *cur-y
-                         (min *cur-y (get *cur 2))
-                         (get *cur 2))))
+        Any)
 
       (prog
   

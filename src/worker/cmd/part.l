@@ -119,19 +119,17 @@
           (mov> Ref *cur)
 
           # Move Cc Ref also
-          # This will not move recursively
-          # Use lay-part BUT lay-atom must be fixed
 
           (put Cc 'b Tgt)
 
-          (align-cur-to-bnds Cc)
+          (align-cur-to-car-bnds Cc)
           (mov> Tgt *cur))
 
         (prog
           (put Cc 'b Ref)
 
           # Move Ref
-          (align-cur-to-bnds Cc)
+          (align-cur-to-car-bnds Cc)
           (mov> Ref *cur)))
 
       (put Ref 'c Cc)
@@ -150,7 +148,7 @@
       (adj-line-to-part> *line Ref)
 
       # Layout remainder
-      (align-cur-to-bnds Ref)
+      (align-cur-to-car-bnds Ref)
       (lay-part-start (get Ref 'b) (get *main 'ori))
 
       # update superlists etc

@@ -30,6 +30,7 @@
 (def '*adv-glyph 9.375)       # MSDF/tex parameter
 (def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
 (def '*adv-vert-2  (+ *adv-vert *adv-vert))
+(def '*adv-vert-3  (+ *adv-vert-2 *adv-vert))
 (def 'KEY-REPEAT 2)
 (def '*sublist-space-y 2.0)
 
@@ -300,10 +301,13 @@
     (put *0 'b (get *main 'b))
     # Set layout
     (put *0 'lay 'y)
-    # Skip cdr since ptr should be rel to cdr
+    
+    (mov-cur-abv (get *main 'b))
     (lay-part-start *0 *cur 'skip-cdr)
-    # Mov it above NIL
-    (mov-part-abv> *0 (get *main 'b) (cons T))
+        
+    # Skip cdr since ptr should be rel to cdr
+    #(lay-part-start *0 *cur 'skip-cdr)
+    #(mov-part-abv> *0 (get *main 'b) (cons T))
     
     # TEMP
     (setq p1 *cmds)
@@ -317,7 +321,7 @@
     
     (nl-cur 6.0)    
     
-    (when T
+    (when NIL
 
       (let Part (gen-part '(1 2 (3 (4))) 'y)
         
@@ -337,7 +341,7 @@
         (set-cur-x X)
         (lay-part-start Part *cur)))
 
-    (when T
+    (when NIL
     
       (nl-cur)
       (set-cur-x X)

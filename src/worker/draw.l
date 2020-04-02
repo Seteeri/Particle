@@ -105,11 +105,11 @@
 
 
 (de draw-repr (Repr Col)
+  #(println 'draw-repr Repr)
   (let Verts ()
     (for C Repr
       (push 'Verts (draw-glyph C Col))
       (adv-cur))
-    (adv-cur -1.0)
     (flip Verts)))
 
   

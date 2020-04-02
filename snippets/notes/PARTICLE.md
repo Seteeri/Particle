@@ -308,9 +308,11 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         | NL    | List w. Pair      | List w. Car        | Empty list
         +-------+-------------------+--------------------+---------------
-        * Refactor ops to use point
+        * Refactor ops to use point [Done]
+        * Refactor bounds calc
+          * Cache bnds for each Pair
         * Implement arbitrary atom newline
-        * Replace NIL (EOL) with Char
+        * Replace NIL (EOL) with Char [Done]
           * Car: Replaces prv
           * Pair: Ins-back
         * Rename 'line -> 'line [Done]

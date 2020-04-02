@@ -43,4 +43,5 @@
 
 (de point-ptr (Part)
   (put *0 'b Part)
+  (println 'point-ptr "Mov -> " Part (get Part 'data))
   (lay-part-start *0 *cur 'skip-cdr))
