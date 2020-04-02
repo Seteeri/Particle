@@ -37,17 +37,7 @@
 
   (if *on-car
   
-      # Replacing NIL has same effect whether pointer is on Car or Pair
-      # Only diff is keep pointer on Car
-      (if (or (isa '+Nil (get *0 'b))
-              (isa '+Nil (get *0 'b 'a)))
-    
-          (let Part (ins-cdr Data Lay)
-            (println "THIS SHOULD REPLACE NIL")
-            (put *0 'b (get Part 'b))
-            (mov-part-bel> *0 (get Part 'b) (cons T)))
-            
-          (repl-car-any Data Lay))
+      (repl-car-any Data Lay)
       
       (if (and (has-car-pair> (get *0 'b 'c))
                (not (isa '+Nil (get *0 'b))))
@@ -194,8 +184,8 @@
 (de repl-car-list (Data Lay)
   
   #{
-    Newline will call this
     Replace car with list underneath
+    Implies new line
     
     [ ]  [ ]  NIL
     a    b

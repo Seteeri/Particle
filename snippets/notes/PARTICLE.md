@@ -320,13 +320,19 @@ Store DAGs as binary trees?
         +-------+-----------+----------+-----------+----------+-----+
         | NL    |     o     |    o     |     x     |    x     |  o  |
         +-------+-----------+----------+-----------+----------+-----+
-        * Replacing Char with NIL [WiP]
+        * Use point cmds in ops to reuse code
+        * Refactor type compare to use isa
+        * Rename 'nl -> 'line
+        * Refactor list cmds
         * Replacing NIL with Char [WiP]
+          * Prints msg
+          * Mostly there - check pointer place/mov
         * Refactor pointer movement [WiP]
           * Refactor into methods [Done]
           * When ptr is moving, stay in Car mode [Done]
+          * Move to Car for Pairs [Done]
+          * Support Y layout          
           * Support NIL [WiP]
-          * Move to Car for Pairs
       * Support y layout [Done...]
         * Fix lay-pair newline - does not support Y layout        
       * Store ref to last item in list for faster bnds calc

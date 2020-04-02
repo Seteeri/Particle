@@ -4779,42 +4779,81 @@ solutions:
 2. Create as if on Car
 3. Create two lines
 
+===================
+
+Nl on Cons/Cdr = Nested lists
+
   [X]  [X]  
   A    B    
-
+  
+  *
   [Y]  [X]  NIL
        C
   
-  [Y]  [X]  [X] NIL
-       D    E
+  NIL
   
-  NIL
-
-
-  [Y]  [X]  [X]
-       I    Content
-
-       [Y]  [X]  [X]
-            A    Content
-
-            [Y]  [X]  [X]       NIL
-                 1    Content
-
-            [Y]  [X]  [X]       NIL
-                 2    Content
-
-            NIL
-
-       [Y]  [X]  [X]
-            B    Content
-
-            [Y]  [X]  [X]       NIL
-                 1    Content
-
-            [Y]  [X]  [X]       NIL
-                 2    Content
-
-            NIL
-
+mov-nl
+  
+  [X]  [X]  
+  A    B    
+  
+  * 
+  [Y]  [Y]  [X]  NIL
+            C
+  
        NIL
-  NIL
+  
+  NIL  
+  
+  
+Nl on Car = Serial lists
+
+  [X]  [X]  [X]  NIL
+  A    B    
+
+            [X]  NIL
+            C
+
+  
+mov-nl
+  
+
+  [X]  [X]  [X]  NIL
+  A    B    
+
+            [X]  NIL
+  
+            [X]  NIL
+            C
+
+
+Wait, this does not make sense:
+
+*
+[Y] CAR
+CDR
+
+*
+[X] CDR
+CAR
+
+What is it pointing to?
+
+You can point to the Pair or the Car but is it not the same thing?
+
+So default should have pointer underneath...
+
+
+[X]  [X]
+CAR  CAR
+*    *
+
+Nm it is - ptr on top is pointing to CDR of Prv, even for the Y
+
+======================
+
+Each list tracks lines
+
+Moving super does not imply automatic line or list change
+
+Create targets

@@ -249,7 +249,10 @@
       [X]  [X]  [X]  NIL
       A    B    C
   
+    
+    These need to handle Y layout
   }#
+  
   (if *on-car
       
       #{
@@ -281,7 +284,7 @@
         (let Part (repl-cdr-list Ref (car (get Ref 'data)) 'x)
                 
           # Make list y layout
-          (put Part 'lay 'y)
+          #(put Part 'lay 'y)
                     
           # Mov to newline
           (mov-part-nl Part 'line)
