@@ -10,7 +10,7 @@
             (ins-cdr Data Lay)
             (point-prv))
           
-          (repl-car-any Data Lay))
+          (repl-car Data Lay))
       
       #(has-car-pair> (get *0 'b 'c)) # If direct sublist
       (if (is-sublist> (get *0 'b))
@@ -95,7 +95,7 @@
     Part))
 
 
-(de repl-car-any (Data Lay)
+(de repl-car (Data Lay)
 
   #{
     Replace car with same type
@@ -138,7 +138,7 @@
         
         # Move to next car - should always...
         # Handle Y layout
-        (println 'repl-car-any Prv-Cdr (get Prv-Cdr 'data) (type Prv-Cdr))
+        (println 'repl-car Prv-Cdr (get Prv-Cdr 'data) (type Prv-Cdr))
         (if (or (isa '+Nil Prv-Cdr) (isa '+Nil (get Prv-Cdr 'a)))
             (let Dims (bounds> Prv-Cdr NIL T)
               # Move to lower bnd of Car
