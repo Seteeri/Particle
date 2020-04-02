@@ -426,3 +426,175 @@
 
   (setq *line Dst
         *main Dst))
+
+
+###################
+
+
+(de mov-nl (Ref)
+
+  #{
+    Move to newline and swap layout
+    
+    If user wants to maintain x layout, it can be done afterwards explicitly
+        
+    Given:
+
+      [X]  [X]  [X]  NIL
+      A    B    C
+  
+    
+    These need to handle Y layout
+  }#
+  
+  (if *on-car
+      
+      #{
+        Create empty list aka NIL; move newline, x layout
+        
+        [X]  [X]  [X]  NIL
+        A    B         *
+                  [X]  NIL
+                  NIL
+        
+      }#
+      (repl-car-list NIL 'x)
+      
+      #{
+        Create list with Pair; move newline, y layout
+        - If list already, create nested list; call repl-cdr with Ref data
+
+        [X]  [X]
+        A    B    
+
+        [Y]  [X]  NIL
+        NIL  C
+        
+        * Calling swap-lay and backspace, will result in other example but
+        with C instead of NIL as the CAR
+      }#
+      # Repl-any expects ptr on car
+      (prog
+        (let Part (repl-cdr-list Ref (car (get Ref 'data)) 'x)
+                
+          # Make list y layout
+          #(put Part 'lay 'y)
+                    
+          # Mov to newline
+          (mov-part-nl Part 'line)
+                  
+          # Move pointer to deep NIL
+          (let? End (get Part 'a 'b)
+            (put *0 'b End)
+            (mov-part-abv> *0 End (cons T)))
+            
+          (println 'mov-nl "Added Y+newline")
+          
+          Part))))
+
+
+##################
+
+
+(de mov-nl-2 (Ref)
+
+  # Move to Car
+  (point-a-in)
+  
+  # Create new sublist  
+  (let Part (con-any (car (get Ref 'data)) 'x T)
+  
+    # Swap car layout
+    #(swap-lay (get Part 'a))
+    
+    Part))
+
+
+
+(de repl-cdr-list (Ref Data Lay)
+
+  # Similar to repl-car-list but Ref is cdr
+
+  #{
+       *0
+  [] - [] - NIL
+  a    b
+
+  Ref = b
+  Prv = a
+  Cdr = NIL
+  Part = new
+
+       *0
+  [] - [] - NIL
+  a    c
+       
+  }#
+
+  (let Part (gen-part (list (list Data))
+                       Lay 
+                       NIL
+                       T)
+
+    (repl-pair Ref Part)
+               
+    # Delete
+        
+    Part))
+
+
+(de mov-part-nl (Ref Base)
+
+  # base = line or prv
+    
+  # For X layout, move to nl, toggle layout
+  # Only do this for lists...and NIL?
+
+  # Link lines
+  (let Nxt (get *line 'line 'n)
+  
+    # Then create Line and calc its dims (from Ref to NIL/NL)
+    (put Ref 'line (new '(+Line)
+                      *line
+                      Nxt
+                      NIL
+                      Base))
+
+    # Link prev n to Ref
+    (with (get *line 'line)
+      (=: n Ref))
+      
+    # Link nxt p to Ref
+    (when Nxt
+      (with (get Nxt 'line)
+        (=: p Ref))))
+    
+  (println 'mov-part-nl "Create new line: " Ref (get Ref 'data))
+  (println 'mov-part-nl "Prv: " (get Ref 'line 'p) (get Ref 'line 'p 'data))
+  (println 'mov-part-nl "Nxt: " (get Ref 'line 'n) (get Ref 'line 'n 'data))
+    
+  # Must calc y dims for both lines
+  # Layout is not required to calc dims
+  
+  (put *line 'line 'dims (calc-dims-nl> *line))
+
+  # Cannot position Ref/newline until current line bnds updated
+  # Base irrelevant; lay-part will override it
+  # Subsequent lines will be updated also
+  (lay-part-start Ref *cur)
+  
+  # Start from Cdr since it skips lists  
+  (put Ref 'line 'dims (calc-dims-nl> (get Ref 'a)))
+  
+  #(println 'mov-part-nl (get Ref 'line 'dims))
+  
+  (mov-*1 Ref)
+  
+  # Update previous lines/lists
+  # Example, if line shortens, then must reposition cdrs
+  (upd-superls (get *line 'line 'p))  
+  
+  (setq *line Ref
+        *main Ref)
+  
+  T)

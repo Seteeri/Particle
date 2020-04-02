@@ -308,34 +308,18 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         | NL    | List w. Pair      | List w. Car        | Empty list
         +-------+-------------------+--------------------+---------------
-                
-        +-------+---------------------------------------------------+
-        | CMD   |                       Pointer                     |
-        +-------+-----------+----------+-----------+----------+-----+
-        |       | Pair/Atom | Car/Atom | Pair/List | Car/List | NIL |
-        +-------+-----------+----------+-----------+----------+-----+
-        | ASCII |     o     |    o     |     o     |    o     |  x  |
-        +-------+-----------+----------+-----------+----------+-----+
-        | NIL   |     o     |    x     |     o     |    o     |  o  |
-        +-------+-----------+----------+-----------+----------+-----+
-        | NL    |     o     |    o     |     x     |    x     |  o  |
-        +-------+-----------+----------+-----------+----------+-----+
+        
+        * Implement arbitrary atom newline
         * Rename 'line -> 'line [Done]
-        * Refactor type compare to use isa
+        * Refactor type compare to use isa [Done]
         * Use point cmds in ops to reuse code
         * Create debug levels
           * warning
           * all
-        * Refactor list cmds
         * Replacing NIL with Char [WiP]
           * Prints msg
           * Mostly there - check pointer place/mov
-        * Refactor pointer movement [WiP]
-          * Refactor into methods [Done]
-          * When ptr is moving, stay in Car mode [Done]
-          * Move to Car for Pairs [Done]
-          * Support Y layout          
-          * Support NIL [WiP]
+        * Refactor list cmds
       * Support y layout [Done...]
         * Fix lay-pair newline - does not support Y layout        
       * Store ref to last item in list for faster bnds calc
