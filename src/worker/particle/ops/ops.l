@@ -2,10 +2,18 @@
 
   (if *on-car
   
-      (repl-car-any Data Lay)
+      (if (isa '(+Nil) (get *0 'b))
       
-      (if (and (has-car-pair> (get *0 'b 'c))
-               (not (isa '+Nil (get *0 'b))))
+          (prog
+            # For NIL ins-cdr
+            # Diff being ptr points to Car of new item
+            (ins-cdr Data Lay)
+            (point-b-prv))
+          
+          (repl-car-any Data Lay))
+      
+      #(has-car-pair> (get *0 'b 'c)) # If direct sublist
+      (if (is-sublist> (get *0 'b))
       
           (ins-pair Data Lay)
       
@@ -397,7 +405,7 @@
 ###################
 
 
-(de mov-nl (Ref)
+(de make-list (Ref)
 
   #{
     Move to newline and swap layout

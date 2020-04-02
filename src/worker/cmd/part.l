@@ -192,6 +192,7 @@
   (println "Swap layout")
 
   # Note this causes bounds change also
+  # Maintain x and y bnds?
 
   # If NIL, get prev, else do ref
 
@@ -208,42 +209,14 @@
 
   (let Ref (get *0 'b)
 
-    # If already newline, don't do anything
-    # TODO: Add support for this later? number of spaces...
-    #(unless (get Ref 'line))
-
+    #(make-list Ref)
+    
     (mov-nl Ref)))
 
 
 (de cmd-mov-bl (Keysym)
-
-  # This moves in front of prev
-
-  (let (Ref (get *0 'b)
-        Line (get Ref 'line)
-        Prv-Line (get Line 'p)
-        Nxt-Line (get Line 'n))
-
-      # Make this a fn
-      # Unlink lines
-
-      (when Prv-Line
-        (with (get Prv-Line 'line)
-          (=: n Nxt-Line)))
-
-      (when Nxt-Line
-        (with (get Nxt-Line 'line)
-          (=: p Prv-Line)))
-
-      (setq *line Prv-Line)
-
-      (put Ref 'line NIL)
-
-      (align-cur-to-bnds (get Ref 'c))
-      (lay-part-start Ref *cur)
-
-      (put *0 'b Car Ref)
-      (mov-part-abv> *0 Ref (cons T))))
+  # This moves Ref front of prv
+  T)
 
 
 #####################

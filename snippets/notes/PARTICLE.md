@@ -310,6 +310,9 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         * Refactor ops to use point
         * Implement arbitrary atom newline
+        * Replace NIL (EOL) with Char
+          * Car: Replaces prv
+          * Pair: Ins-back
         * Rename 'line -> 'line [Done]
         * Refactor type compare to use isa [Done]
         * Use point cmds in ops to reuse code
