@@ -320,9 +320,12 @@ Store DAGs as binary trees?
         +-------+-----------+----------+-----------+----------+-----+
         | NL    |     o     |    o     |     x     |    x     |  o  |
         +-------+-----------+----------+-----------+----------+-----+
-        * Use point cmds in ops to reuse code
+        * Rename 'line -> 'line [Done]
         * Refactor type compare to use isa
-        * Rename 'line -> 'line
+        * Use point cmds in ops to reuse code
+        * Create debug levels
+          * warning
+          * all
         * Refactor list cmds
         * Replacing NIL with Char [WiP]
           * Prints msg

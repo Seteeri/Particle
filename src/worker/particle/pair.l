@@ -59,7 +59,7 @@
 
 
 (dm sub> ()
-  (if (= (type (: a)) '(+Pair))
+  (if (isa '(+Pair) (: a))
       # Line change: superlist -> sublist
       (prog
         (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))

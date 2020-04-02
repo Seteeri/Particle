@@ -20,7 +20,7 @@
     Only apply to immediate Part
   }#
   
-  (if (= (type Any) '(+Pair))
+  (if (isa '(+Pair) Any)
   
       (lay-pair Any Base Skip)
       

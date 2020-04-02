@@ -59,7 +59,7 @@
   (=: dat (date))
   (=: tim (time)))
 
-(dm has-car-pair> () (= (type (: a)) '(+Pair)))
+(dm has-car-pair> () (isa '(+Pair) (: a)))
 (dm is-nil-or-nil-car> () (or (isa '+Nil This) (isa '+Nil (: a))))
 
 (dm first-vert> () (car (: verts)))

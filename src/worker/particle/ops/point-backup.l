@@ -66,7 +66,7 @@
            (put *0 'b Ref)
            (mov-part-abv> *0 Ref (cons T)))
            
-          ((= (type Ref) '+Pair)
+          ((isa '(+Pair) Ref)
            (put *0 'b Prv)
            (mov-part-abv> *0 Prv (cons T))
             
@@ -118,7 +118,7 @@
            (set-cur-y (get (bounds> Ref) 2)) (nl-cur)
            (lay-part-start *0 *cur 'skip-cdr))
 
-          ((= (type Car) '(+Pair))
+          ((isa '(+Pair) Car)
            # Dont set Car flag          
            (put *0 'b Car)
            (println 'point-a-in "Mov to sub-line/list" Car (get Car 'data))
