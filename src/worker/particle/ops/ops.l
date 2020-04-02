@@ -1,38 +1,3 @@
-(de upd-superlines (Line Dx)
-  (while Line
-    (with Line
-      (=: dims (list (+ (car (: dims)) Dx)
-                     (cadr (: dims))))
-      (setq Line (: p)))))
-
-
-(de upd-superlists (List)
-  # Adjust bounds of each line also
-  (while List
-    (when (= (get List 'c 'a) List)
-      (align-cur-to-bnds (get List 'c))
-      (lay-part-start (get List 'c 'b)
-                (get *main 'ori)))
-    (setq List (get List 'c))))
-
-
-(de upd-superls (List)
-  (while List
-    (when (get List 'line)
-      (println 'upd-superls "Re-layout line: " List (get List 'data))
-      (align-cur-to-bnds List)
-      (lay-part-start (get List 'b)
-                (get List 'ori))
-      # Eh double traversal...use cursor from lay-part?
-      # This is using whole line, instead do:
-      # add to bnds = (- (newend - origin) (oldend/bnds- origin))
-      (put List 'line 'dims (calc-dims-nl> List)))
-    (setq List (get List 'c))))
-
-
-###########################
-
-
 (de con-any (Data Lay)
 
   (if *on-car
@@ -476,7 +441,13 @@
       }#
       # Repl-any expects ptr on car
       (prog
-        (let Part (repl-cdr-list Ref (car (get Ref 'data)) 'x)
+      
+        (let Part (gen-part (list (list (car (get Ref 'data))))
+                             'x
+                             NIL
+                             T)
+
+          (repl-pair Ref Part)
                 
           # Make list y layout
           #(put Part 'lay 'y)
@@ -496,53 +467,7 @@
 
 ##################
 
-
-(de mov-nl-2 (Ref)
-
-  # Move to Car
-  (point-a-in)
-  
-  # Create new sublist  
-  (let Part (con-any (car (get Ref 'data)) 'x T)
-  
-    # Swap car layout
-    #(swap-lay (get Part 'a))
-    
-    Part))
-
-
-
-(de repl-cdr-list (Ref Data Lay)
-
-  # Similar to repl-car-list but Ref is cdr
-
-  #{
-       *0
-  [] - [] - NIL
-  a    b
-
-  Ref = b
-  Prv = a
-  Cdr = NIL
-  Part = new
-
-       *0
-  [] - [] - NIL
-  a    c
-       
-  }#
-
-  (let Part (gen-part (list (list Data))
-                       Lay 
-                       NIL
-                       T)
-
-    (repl-pair Ref Part)
-               
-    # Delete
-        
-    Part))
-
+# Move to line.l
 
 (de mov-part-nl (Ref Base)
 
@@ -599,3 +524,36 @@
         *main Ref)
   
   T)
+
+
+(de upd-superlines (Line Dx)
+  (while Line
+    (with Line
+      (=: dims (list (+ (car (: dims)) Dx)
+                     (cadr (: dims))))
+      (setq Line (: p)))))
+
+
+(de upd-superlists (List)
+  # Adjust bounds of each line also
+  (while List
+    (when (= (get List 'c 'a) List)
+      (align-cur-to-bnds (get List 'c))
+      (lay-part-start (get List 'c 'b)
+                (get *main 'ori)))
+    (setq List (get List 'c))))
+
+
+(de upd-superls (List)
+  (while List
+    (when (get List 'line)
+      (println 'upd-superls "Re-layout line: " List (get List 'data))
+      (align-cur-to-bnds List)
+      (lay-part-start (get List 'b)
+                (get List 'ori))
+      # Eh double traversal...use cursor from lay-part?
+      # This is using whole line, instead do:
+      # add to bnds = (- (newend - origin) (oldend/bnds- origin))
+      (put List 'line 'dims (calc-dims-nl> List)))
+    (setq List (get List 'c))))
+

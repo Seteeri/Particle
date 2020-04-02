@@ -308,7 +308,7 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         | NL    | List w. Pair      | List w. Car        | Empty list
         +-------+-------------------+--------------------+---------------
-        
+        * Refactor ops to use point
         * Implement arbitrary atom newline
         * Rename 'line -> 'line [Done]
         * Refactor type compare to use isa [Done]
