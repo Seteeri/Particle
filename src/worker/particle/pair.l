@@ -22,7 +22,7 @@
 
   (super Data A B Verts Lay)
   
-  (=: nl))
+  (=: line))
 
 (dm prv> ()
   (when (: c)
@@ -45,7 +45,7 @@
       (prog
         (println 'sub> "Mov ptr -> super-line/list" (: c) (get (: c) 'data))
         (setq *on-car)
-        (let? Ln (get (: nl) 'p)        
+        (let? Ln (get (: line) 'p)        
           (setq *line Ln
                 *main Ln)) 
         (mov-cur-abv (: c))

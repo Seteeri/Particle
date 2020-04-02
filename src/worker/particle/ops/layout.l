@@ -30,9 +30,9 @@
 (de lay-pair (Any Base Skip)
     
   # TODO: Handle Y layout
-  (when (get Any 'nl 'p)
+  (when (get Any 'line 'p)
     (println 'lay-pair "Sublist detected" Any (get Any 'data))
-    (if (= (get Any 'nl 'base) 'line)
+    (if (= (get Any 'line 'base) 'line)
         (align-cur-to-line Any)
         (align-cur-to-prv Any))
     (setq Base *cur))
@@ -356,32 +356,32 @@
   # Only do this for lists...and NIL?
 
   # Link lines
-  (let Nxt (get *line 'nl 'n)
+  (let Nxt (get *line 'line 'n)
   
     # Then create Line and calc its dims (from Ref to NIL/NL)
-    (put Ref 'nl (new '(+Line)
+    (put Ref 'line (new '(+Line)
                       *line
                       Nxt
                       NIL
                       Base))
 
     # Link prev n to Ref
-    (with (get *line 'nl)
+    (with (get *line 'line)
       (=: n Ref))
       
     # Link nxt p to Ref
     (when Nxt
-      (with (get Nxt 'nl)
+      (with (get Nxt 'line)
         (=: p Ref))))
     
   (println 'mov-part-nl "Create new line: " Ref (get Ref 'data))
-  (println 'mov-part-nl "Prv: " (get Ref 'nl 'p) (get Ref 'nl 'p 'data))
-  (println 'mov-part-nl "Nxt: " (get Ref 'nl 'n) (get Ref 'nl 'n 'data))
+  (println 'mov-part-nl "Prv: " (get Ref 'line 'p) (get Ref 'line 'p 'data))
+  (println 'mov-part-nl "Nxt: " (get Ref 'line 'n) (get Ref 'line 'n 'data))
     
   # Must calc y dims for both lines
   # Layout is not required to calc dims
   
-  (put *line 'nl 'dims (calc-dims-nl> *line))
+  (put *line 'line 'dims (calc-dims-nl> *line))
 
   # Cannot position Ref/newline until current line bnds updated
   # Base irrelevant; lay-part will override it
@@ -389,15 +389,15 @@
   (lay-part-start Ref *cur)
   
   # Start from Cdr since it skips lists  
-  (put Ref 'nl 'dims (calc-dims-nl> (get Ref 'a)))
+  (put Ref 'line 'dims (calc-dims-nl> (get Ref 'a)))
   
-  #(println 'mov-part-nl (get Ref 'nl 'dims))
+  #(println 'mov-part-nl (get Ref 'line 'dims))
   
   (mov-*1 Ref)
   
   # Update previous lines/lists
   # Example, if line shortens, then must reposition cdrs
-  (upd-superls (get *line 'nl 'p))  
+  (upd-superls (get *line 'line 'p))  
   
   (setq *line Ref
         *main Ref)

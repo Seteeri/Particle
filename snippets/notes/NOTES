@@ -4339,7 +4339,7 @@ i  j  k  l
 
 a - e - i
 
-Put cons in 'nl
+Put cons in 'line
 
 a.nl = (*main . b)
 e.nl = (a . i)

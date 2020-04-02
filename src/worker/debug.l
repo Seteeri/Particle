@@ -1,7 +1,7 @@
 (de mov-*1 (Line)
   # Move to bnds of current line
   (let (Ori (get Line 'ori)
-        Bnds (get Line 'nl 'dims))
+        Bnds (get Line 'line 'dims))
     (set-cur-x (+ (get Ori 1)
                   (get Bnds 1) *adv-vert))
     (set-cur-y (- (get Ori 2)

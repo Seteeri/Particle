@@ -18,7 +18,7 @@
 
 (de upd-superls (List)
   (while List
-    (when (get List 'nl)
+    (when (get List 'line)
       (println 'upd-superls "Re-layout line: " List (get List 'data))
       (align-cur-to-bnds List)
       (lay-part-start (get List 'b)
@@ -26,7 +26,7 @@
       # Eh double traversal...use cursor from lay-part?
       # This is using whole line, instead do:
       # add to bnds = (- (newend - origin) (oldend/bnds- origin))
-      (put List 'nl 'dims (calc-dims-nl> List)))
+      (put List 'line 'dims (calc-dims-nl> List)))
     (setq List (get List 'c))))
 
 
@@ -70,10 +70,10 @@
     (mov-cur-part Prv 'start)
     (lay-part-start Part *cur)
 
-    (put Car 'nl 'dims (calc-dims-nl> Car))
+    (put Car 'line 'dims (calc-dims-nl> Car))
     (mov-*1 Car)
     
-    (upd-superls (get Car 'nl 'p))
+    (upd-superls (get Car 'line 'p))
     
     (put *0 'b (get Car 'b))
     (mov-part-abv> *0 (get Car 'b) (cons T))
@@ -102,14 +102,14 @@
     # Changes in Y, however, affect subsequent lines, since they all need to be
     # offset by the Y change
     
-    (let (Bef (get *line 'nl 'dims)
+    (let (Bef (get *line 'line 'dims)
           Dx (inc-line-by-part-x> *line Part)
           Dy (upd-line-by-part-y> *line Part)
-          Aft (get *line 'nl 'dims))
+          Aft (get *line 'line 'dims))
       (println 'con-any "Adjust line by: " (format Dx *Scl) ", " Bef " -> " Aft)
       # Update super lines/lists dims/cdrs
       # skip this line since already updated
-      (upd-superls (get *line 'nl 'p)))
+      (upd-superls (get *line 'line 'p)))
 
     (mov-*1 *line)
 
@@ -224,18 +224,18 @@
           # Create nl for Car
           # Layout will detect this
           # Line bnds is not used so NIL is ok for now
-          (put Car 'nl (new '(+Line)
+          (put Car 'line (new '(+Line)
                             *line))
 
           # Cur will be moved to proper pos rel to Pair
           (lay-part-start Car *cur)
 
           # After layout, calc dims for newline
-          (put Car 'nl 'dims (calc-dims-nl> Car))
+          (put Car 'line 'dims (calc-dims-nl> Car))
           
           (mov-*1 Car)
           
-          (upd-superls (get Car 'nl 'p))
+          (upd-superls (get Car 'line 'p))
 
           # Move ptr to Car
           (put *0 'b Car)
@@ -305,7 +305,7 @@
     (put Ref 'c Part)
 
     # If Ref is a new line, xfer it to new Part
-    (when (get Ref 'nl 'p)
+    (when (get Ref 'line 'p)
       (xchg-nl Ref Part))))
 
 
@@ -360,7 +360,7 @@
     (put Cdr 'c Part)
       
     # If Cdr is a new line, xfer it to new Part
-    (when (get Cdr 'nl 'p)
+    (when (get Cdr 'line 'p)
       (xchg-nl Cdr Part))))
 
 
@@ -397,7 +397,7 @@
     (put Cdr 'c Part)
 
     # If Ref is a new line, xfer it to new Part
-    (when (get Ref 'nl 'p)
+    (when (get Ref 'line 'p)
       (xchg-nl Ref Part))
 
     # Copy layout?
@@ -408,19 +408,19 @@
 
 (de xchg-nl (Src Dst)
 
-  (let (Nl (get Src 'nl)
+  (let (Nl (get Src 'line)
         Prv (get Nl 'p)
         Nxt (get Nl 'n))
 
     (when Prv
-      (put (get Prv 'nl) 'n Dst))
+      (put (get Prv 'line) 'n Dst))
 
     (when Nxt
-      (put (get Nxt 'nl) 'p Dst))
+      (put (get Nxt 'line) 'p Dst))
 
-    (put Dst 'nl Nl))
+    (put Dst 'line Nl))
 
-  (put Src 'nl NIL)
+  (put Src 'line NIL)
 
   (println 'xchg-nl "Exchange line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
 

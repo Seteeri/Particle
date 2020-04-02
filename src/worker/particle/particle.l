@@ -117,7 +117,7 @@
   (=: a)
   (=: b)
   (=: c)
-  (=: nl)
+  (=: line)
   (=: data))
 
 
@@ -261,7 +261,7 @@
         Bnds (bounds> Ref NIL T)
         Dims (list (- (get Bnds 1) (get Ori 1))
                    (- (get Bnds 2) (get Ori 2))))
-    (with (: nl)
+    (with (: line)
       (let ((X Y) (: dims))
         (=: dims Dims)
         (list (- (car Dims) X)
@@ -276,7 +276,7 @@
         Dx (+ (- (get Bnds 1) (get Ori 1))
               *adv-vert-2))
             
-    (with (: nl)
+    (with (: line)
       (=: dims (list (+ (car (: dims)) Dx)
                      (cadr (: dims)))))
 
@@ -287,12 +287,12 @@
   # Add op to add/sub
   (let (Bnds-B (bounds> End NIL T)
         Ori (: ori)
-        Dims (get (: nl) 'dims)
+        Dims (get (: line) 'dims)
         Bnds-Ln (list (+ (get Ori 1) (get Dims 1))
                       (- (get Ori 2) (get Dims 2)))
         Dx (- (get Bnds-Ln 1) (get Bnds-B 1)))
         
-    (with (: nl)
+    (with (: line)
       (=: dims (list (- (car Dims) Dx)
                      (cadr Dims))))
 
@@ -302,14 +302,14 @@
 (dm upd-line-by-part-y> (Part)
   # If new bnds smaller, use it
   (let (Ori (cadr (: ori))
-        Dims (get (: nl) 'dims)
+        Dims (get (: line) 'dims)
         Bnds-Ln (- Ori (get Dims 2))
         Bnds-B (cadr (bounds> Part NIL T))
         Dy (abs (if (< Bnds-B Bnds-Ln)
                     (- Bnds-B Ori)
                     (cadr Dims))))
 
-    (with (: nl)
+    (with (: line)
       (=: dims (list (car Dims)
                      Dy)))
 
@@ -335,14 +335,14 @@
       
       # If encounter Part with y layout and no new line, go to its Car
       (setq Part (if (and (= (get Part 'lay) 'y)
-                          (not (get Part 'nl)))
+                          (not (get Part 'line)))
                       (get Part 'a)
                       (get Part 'b)))
 
       #(println 'calc-dims-nl "Try Part: " Part (get Part 'data))
       
       (T (or (not Part)
-             (get Part 'nl))))
+             (get Part 'line))))
     
     (list (- X (car Ori)) (abs (- Y (cadr Ori))))))
 

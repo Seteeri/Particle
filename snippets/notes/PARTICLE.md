@@ -322,7 +322,7 @@ Store DAGs as binary trees?
         +-------+-----------+----------+-----------+----------+-----+
         * Use point cmds in ops to reuse code
         * Refactor type compare to use isa
-        * Rename 'nl -> 'line
+        * Rename 'line -> 'line
         * Refactor list cmds
         * Replacing NIL with Char [WiP]
           * Prints msg

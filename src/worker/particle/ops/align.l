@@ -36,7 +36,7 @@
   # x = origin of line
   # y = bnds of line
     
-  (let (Line (get Any 'nl 'p)
+  (let (Line (get Any 'line 'p)
         Ori (get (if (isa '+Sym Line)
                          (get Line 'b)
                          Line) 'ori))

@@ -155,7 +155,7 @@
                                           (println "Current Line: " Line (get Line 'data))
                                               
                                           # Traverse to top
-                                          (while (setq P (get Line 'nl 'p))
+                                          (while (setq P (get Line 'line 'p))
                                             (setq Line P))
                                           
                                           (setq N Line)
@@ -163,7 +163,7 @@
                                           # Traverse back down
                                           (loop
                                             (println "Line: " Line (get Line 'data))
-                                            (setq Line (get Line 'nl 'n))
+                                            (setq Line (get Line 'line 'n))
                                             (T (not Line))))
                                             
                                         (mov-*1 *line)
@@ -276,7 +276,7 @@
 
     # DO this properly - in gen?
     (with *main
-      (=: nl (new '(+Line) NIL NIL (get (: a) 'dims))))
+      (=: line (new '(+Line) NIL NIL (get (: a) 'dims))))
       
     (setq *pos-main (copy *cur))
       

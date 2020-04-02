@@ -11,7 +11,7 @@
       # If symbol
 
       # Set list and line
-      (let? Ln (get Ref 'nl 'p)
+      (let? Ln (get Ref 'line 'p)
         (setq *line Ln
               *main Ln)
         (println 'point-b-prv "Mov to super-line/list" Ln (get Ln 'data)))
@@ -32,7 +32,7 @@
     (let? Cdr (get Ref 'b)
 
       # Set line
-      (when (get Cdr 'nl)
+      (when (get Cdr 'line)
         (setq *line Cdr
               *main Cdr)
         (println 'point-b-nxt "Mov to sub-line/list" *line (get *line 'data)))
@@ -70,7 +70,7 @@
            (put *0 'b Prv)
            (mov-part-abv> *0 Prv (cons T))
             
-           (let? Ln (get Ref 'nl 'p)
+           (let? Ln (get Ref 'line 'p)
              (setq *line Ln
                    *main Ln)
              (println 'point-a-out "Mov to super-line/list" Ln (get Ln 'data))))
@@ -139,7 +139,7 @@
 #{
 # Mov prv line
         (let? Cb (get *line 'c 'b)
-          (setq *line (get *line 'nl 'p)
+          (setq *line (get *line 'line 'p)
                 *main *line)
           (println 'point-b-nxt Cb (get Cb 'data))
           (put *0 'b Cb)

@@ -11,7 +11,7 @@
   (setq *main NIL)
   (setq *main (gen-part '*main 'x))
   (with *main
-    (=: nl (new '(+Line) NIL NIL (get (: a) 'dims))))
+    (=: line (new '(+Line) NIL NIL (get (: a) 'dims))))
   (setq *cur (copy *pos-main))
   (lay-part-start *main *cur)
   (setq *line *main)
@@ -210,7 +210,7 @@
 
     # If already newline, don't do anything
     # TODO: Add support for this later? number of spaces...
-    #(unless (get Ref 'nl))
+    #(unless (get Ref 'line))
 
     (mov-nl Ref)))
 
@@ -220,7 +220,7 @@
   # This moves in front of prev
 
   (let (Ref (get *0 'b)
-        Line (get Ref 'nl)
+        Line (get Ref 'line)
         Prv-Line (get Line 'p)
         Nxt-Line (get Line 'n))
 
@@ -228,16 +228,16 @@
       # Unlink lines
 
       (when Prv-Line
-        (with (get Prv-Line 'nl)
+        (with (get Prv-Line 'line)
           (=: n Nxt-Line)))
 
       (when Nxt-Line
-        (with (get Nxt-Line 'nl)
+        (with (get Nxt-Line 'line)
           (=: p Prv-Line)))
 
       (setq *line Prv-Line)
 
-      (put Ref 'nl NIL)
+      (put Ref 'line NIL)
 
       (align-cur-to-bnds (get Ref 'c))
       (lay-part-start Ref *cur)
