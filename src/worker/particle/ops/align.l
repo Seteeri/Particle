@@ -1,3 +1,9 @@
+# Called by delete
+# And when updating lines
+# Can bnds be cache'd?
+# So need not traverse tree each time
+# Store car and cdr dims?
+
 (de align-cur-to-car-bnds (Part)
   # x: CDR is to the right; use X bounds
   # y: CDR is below; use Y bounds
@@ -15,11 +21,14 @@
           (nl-cur 2.0)))))
 
 
+# These are used with layout
+
 (de align-cur-to-prv (Part)
 
   (if (= (get Part 'lay) 'x)
 
       (prog
+      
         # x = origin of Pair
         # y = bnds of line
         (set-cur-x (get Part 'c 'ori 1))
@@ -27,10 +36,14 @@
         (let Ori (get (if (isa '+Sym *line)
                           (get *line 'b)
                           *line) 'ori)
+                          
           # This is not using line bnds, but rather c origin
           (set-cur-y (get Part 'c 'ori 2))
           (nl-cur 2.0)
-          (nl-cur *sublist-space-y)))
+          (nl-cur *sublist-space-y))
+        
+        (println 'align-cur-to-prv "Set *cur: " *cur)
+        (setq *cur-x (get *cur 1) *cur-y (get *cur 2)))
 
       (prog
         (println 'align-cur-to-prv "IMPLEMENT Y LAYOUT"))))
@@ -42,19 +55,21 @@
 
       # x = origin of line
       # y = bnds of line
-      (let (Line (get Any 'line 'p)
+      (let (Line (get Part 'line 'p)
             Ori (get (if (isa '+Sym Line)
-                             (get Line 'b)
-                             Line) 'ori))
+                         (get Line 'b)
+                         Line)
+                     'ori)
+            Bnds (get Line 'line 'dims))
+
+        (println 'align-cur-to-line 'Line Line (get Line 'data))
 
         (set-cur-x (get Ori 1))
-        (unless (isa '+Sym Line)
-          (println 'align-cur-to-line "Adv-cur" Line (get Line 'data))
-          (adv-cur 2.0))
 
-        (set-cur-y (get Part 'c 'ori 2))
-        (nl-cur 2.0)
-        (nl-cur *sublist-space-y))
+        (set-cur-y (- (get Ori 2) (get Bnds 2)))
+        (nl-cur (+ 1.0 *sublist-space-y))
+        
+        (setq *cur-x (get *cur 1) *cur-y (get *cur 2)))
 
       (prog
         (println 'align-cur-to-line "IMPLEMENT Y LAYOUT"))))

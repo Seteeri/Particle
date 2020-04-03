@@ -49,23 +49,10 @@
 
     (ins-aft Prv Part)
 
-    (when NIL
-      (mov-cur-part Ref 'start)
-      (lay-part-start Part (get *line 'ori))
-      # Update line bounds
-      # Changes in X only affect Cdr of superlists
-      # Changes in Y, however, affect subsequent lines, since they all need to be
-      # offset by the Y change      
-      (let (Bef (get *line 'line 'dims)
-            Dx (inc-line-by-part-x> *line Part)
-            Dy (min-line-by-part-y> *line Part)
-            Aft (get *line 'line 'dims))
-        (println 'ins-cdr "Adjust line by: " (format Dx *Scl) ", " Bef " -> " Aft)
-        # Update super lines/lists dims/cdrs
-        # Skip this line since already updated
-        (upd-superls (get *line 'line 'p))))
-        
+    # 1500 microseconds
+    # 1.5 milliseconds to upd tree with 2 particles = 22 particles per frame max
     (upd-tree)
+
     (mov-*1 *line)
     
     # Same ref, relayout
@@ -516,39 +503,50 @@
 
       (repl-car-list NIL 'x)
 
+      # Mov current part to NL
+      (prog
+      
+        (mov-part-nl Ref 'line)
+        (upd-tree)
+        (mov-*1 Ref)
+        
+        (mov-cur-abv Ref)
+        (lay-part-start *0 *cur 'skip-cdr)
+        
+        (setq *line Ref))))
+        
+#{
       # Repl-any expects ptr on car
       (prog
 
-        (let Part (gen-part (list (list (car (get Ref 'data))))
+        (let (Part (gen-part (list (list (car (get Ref 'data))))
                              'x
                              NIL
                              T)
+              Prv (get Ref 'c))
 
           (repl-pair Ref Part)
 
-          # Make list y layout
-          #(put Part 'lay 'y)
-
-          # Mov to newline
           (mov-part-nl Part 'line)
 
-          # Move pointer to deep NIL
-          (let? End (get Part 'a 'b)
-            (put *0 'b End)
-            (mov-part-abv> *0 End (cons T)))
+          (upd-tree)
+          (mov-*1 *Part)
+          
+          (put *0 'b Prv)
+          (point-nxt)
+          
+          #(setq *line Part)
 
           (println 'mov-nl "Added Y+newline")
 
           Part))))
-
+}#
 
 ##################
 
 # Move to line.l
 
-(de mov-part-nl (Ref Base)
-
-  # base = line or prv
+(de mov-part-nl (Part)
 
   # For X layout, move to nl, toggle layout
   # Only do this for lists...and NIL?
@@ -556,46 +554,38 @@
   # Link lines
   (let Nxt (get *line 'line 'n)
 
-    # Then create Line and calc its dims (from Ref to NIL/NL)
-    (put Ref 'line (new '(+Line)
+    # Then create Line and calc its dims (from Part to NIL/NL)
+    (put Part 'line (new '(+Line)
                       *line
                       Nxt
                       NIL
-                      Base))
+                      'line))
 
-    # Link prev n to Ref
+    # Link prev n to Part
     (with (get *line 'line)
-      (=: n Ref))
+      (=: n Part))
 
-    # Link nxt p to Ref
+    # Link nxt p to Part
     (when Nxt
       (with (get Nxt 'line)
-        (=: p Ref))))
-
-  (println 'mov-part-nl "Create new line: " Ref (get Ref 'data))
-  (println 'mov-part-nl "Prv: " (get Ref 'line 'p) (get Ref 'line 'p 'data))
-  (println 'mov-part-nl "Nxt: " (get Ref 'line 'n) (get Ref 'line 'n 'data))
-
-  # Must calc y dims for both lines
-  # Layout is not required to calc dims
+        (=: p Part))))
 
   #(put *line 'line 'dims (calc-dims-nl> *line))
+  #(put Part 'line 'dims (calc-dims-nl> (get Part 'a)))
 
-  # Cannot position Ref/newline until current line bnds updated
-  # Base irrelevant; lay-part will override it
-  # Subsequent lines will be updated also
-  (lay-part-start Ref *cur)
+  (println 'mov-part-nl "Create new line: " Part (get Part 'data))
+  (println 'mov-part-nl "Prv: " (get Part 'line 'p) (get Part 'line 'p 'data))
+  (println 'mov-part-nl "Nxt: " (get Part 'line 'n) (get Part 'line 'n 'data)))
 
-  # Start from Cdr since it skips lists
-  #(put Ref 'line 'dims (calc-dims-nl> (get Ref 'a)))
 
-  (upd-tree)
-  (mov-*1 *Ref)
+(de upd-tree (List)
 
-  (setq *line Ref
-        *main Ref)
-
-  T)
+  (setq *cur (get *master 'ori))
+  (lay-part-start *master
+                  (get *master 'ori)))
+                  
+                  
+#######################################
 
 
 (de upd-superlines (Line Dx)
@@ -614,13 +604,6 @@
       (lay-part-start (get List 'c 'b)
                 (get *main 'ori)))
     (setq List (get List 'c))))
-
-
-(de upd-tree (List)
-
-  (setq *cur (get *master 'ori))
-  (lay-part-start *master
-                  (get *master 'ori)))
 
 
 (de upd-superls-2 (List)

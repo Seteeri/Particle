@@ -21,6 +21,16 @@
 ######################
 (class +Sym +Particle)
 
+(dm lay-x> () 
+  (setq *cur (mov> This *cur))
+  (upd-cur)
+  
+  # Pos cur for car
+  (setq *cur (: ori))
+    
+  # Move below or use its Y dims - origin is same as dims for single line
+  # This assumes Pair is always single line with dot or 2x dot
+  (nl-cur))
 
 #################
 (class +Box +Sym)
@@ -136,4 +146,10 @@
   (setq *on-car T
         *cur (: ori))
   (nl-cur)
+  This)
+
+
+(dm lay-x> ()
+  (setq *cur (mov> This *cur))
+  (upd-cur)
   This)

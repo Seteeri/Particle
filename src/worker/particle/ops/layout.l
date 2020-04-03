@@ -2,6 +2,7 @@
 
 (def '*cur-x)
 (def '*cur-y)
+(def '*line-lay)
 
 (de upd-cur ()
 
@@ -25,127 +26,148 @@
                    (min *cur-y (get *cur 2))
                    (get *cur 2))))
 
-
-(de lay-part-start (Any Base Skip)
-  (setq *cur-x NIL
-        *cur-y NIL)
-  (lay-part Any Base Skip))
-  
-
-(de lay-part (Any Base Skip)
-  
-  #{
-    Skip:
-    'skip-car
-    'skip-cdr
-    'skip-car-cdr
-
-    Only apply to immediate Part
-  }#
-  
-  (if (isa '(+Pair) Any)
-  
-      (lay-pair Any Base Skip)
-      
-      (lay-atom Any Base Skip)))
-
-
-(de lay-pair (Any Base Skip)
-    
-  # TODO: Handle Y layout
-  (when (get Any 'line 'p)
-    (println 'lay-pair "Sublist detected" Any (get Any 'data))
-    (if (= (get Any 'line 'base) 'line)
-        (align-cur-to-line Any)
-        (align-cur-to-prv Any))
-    (setq Base *cur))
-
-  # Move Pair first to get correct pos since dims rel to origin
-  (setq *cur (mov> Any *cur))
-  (upd-cur)
-  
-  # Lay-pair returns last drawn item, but is unused
-  (if (= (get Any 'lay) 'x)
-    (lay-pair-x Any Base Skip)
-    (lay-pair-y Any Base Skip))
-
-  # Store dims afterwards and line bnds
-  (with Any
+(de upd-dims (Part)
+  (with Part
     (let Dims (list (abs (- *cur-x (get (: ori) 1)))
                     (abs (- *cur-y (get (: ori) 2))))
       (=: dims Dims)
       (when (: line)
         (put (: line) 'dims Dims)))))
-  
 
-(de lay-pair-x (Any Base Skip)
+
+(de upd-dims-2 (Part)
+  (with Part
+    (let Dims (list (abs (- *cur-x (get (: ori) 1)))
+                    (abs (- *cur-y (get (: ori) 2))))
+      (=: dims Dims))))
+
+
+(de upd-dims-a (Part)
+  (with Part
+    (let Dims (list (abs (- *cur-x (get (: ori) 1)))
+                    (abs (- *cur-y (get (: ori) 2))))
+      (=: dims-a Dims))))
+
+
+(de upd-dims-b (Part)
+  (with Part
+    (let Dims (list (abs (- *cur-x (get (: ori) 1)))
+                    (abs (- *cur-y (get (: ori) 2))))
+      (=: dims-b Dims))))
+
+
+(de lay-part-start (Part Line Skip)
+  (setq *cur-x NIL
+        *cur-y NIL
+        *line-lay *line)
+  (lay-part Part Line Skip))
+
+
+(de lay-part (Part Line Skip)
+  
   #{
-
-    Draw CAR -Y
-    Draw CDR +X
-  
-    [ ]      CDR  
-    CAR ...   
-  
-    CAR X has precedence
-    
-    Base is the pos of the list start; lay-pair sets it
-  
+    Only apply skip to immediate Part
+    'skip-car
+    'skip-cdr
+    'skip-car-cdr
   }#
-
-  (with Any
-
-    # If a has a newline, store cur y, then restore after
-    # keep tracking x for cdr base
   
-    (let ((X-Ori Y-Ori) (: ori)
-          Cur-Y *cur-y)
+  (if (isa '(+Pair) Part)
   
-      # Mov cur to origin of Pair
-      (set-cur-x X-Ori) (set-cur-y Y-Ori)
+      (lay-pair Part Line Skip)
       
-      # Move below or use its Y dims - origin is same as dims for single line
-      # This assumes Pair is always single line with dot or 2x dot
-      (nl-cur)
+      (lay-atom Part Line Skip)))
 
-      # Lay CAR first since its X bounds has precedence
-      (when (and (: a)
-                 (not (= (: a) Any))
-                 (or (= Skip 'skip-cdr)
-                     (not Skip)))      
-        
-        (lay-part (: a) Base))
 
-      (when (get (: a) 'line)
-        (setq *cur-y Cur-Y))
-            
-      (when (and (: b)
-                 (not (= (: b) Any))
-                 (or (= Skip 'skip-car)
-                     (not Skip)))
+(de lay-pair (Part Line Skip)
 
-        # To draw Cdr:
-        # X =  Ori 1 + Dims-Car 1, plus an adv
-        # Y = origin of Pair
-        (set-cur-y Y-Ori)
+  # Iterative pre order traversal
 
-        # Similar to y, after drawing Y Cdr, cur will not be at Car bnds
-        # so move cur to Car bnds (max X)
-        (if (= (get (: a) 'lay) 'y)
-          (prog
-            #(println 'lay-part-x "Y layout detected for Car")
-            (setq *cur (list *cur-x (get *cur 2)))
-            (adv-cur))
-          (prog                        
-            # X should be in place, else get from cur bnds
-            (set-cur-x *cur-x)
-            (adv-cur 1.0)))
-      
-        # Str's val/b is NIL (or poss later point to itself)
-        (lay-part (: b) Base)))))
+  # Draw pair
+  # Draw cars, deepest first
+  # Draw cdr, deepest first
 
+  # Push root
+  (let L ()
     
-(de lay-pair-y (Any Base Skip)
+    (push 'L (cons Part 'a))
+    
+    # Proccess root
+    (while (setq Part (pop 'L))
+      
+      (let (Type (cdr Part)
+            Part (car Part))
+        
+        (println 'lay-pair 
+                 Part
+                 (get Part 'data)
+                 '...
+                 (if (= Type 'a) 'Car 'Cdr)
+                 'of (get Part 'c) (get Part 'c 'data))
+                 
+        (if (= (get Part 'lay) 'x)
+            (lay-pair-x Part Type (caar L))
+            (prog
+              #(println "Y NOT SUPPORTED")
+              (lay-pair-x Part Type (caar L))))
+    
+        (unless (= Skip 'skip-car-cdr)
+            
+          # Push right first
+          (let B (get Part 'b)
+            (if (= Skip 'skip-cdr)
+                (setq Skip NIL)
+                (unless (or (= B Part) (not B))
+                  (push 'L (cons B 'b)))))
+        
+          (let A (get Part 'a)
+            (if (= Skip 'skip-car)
+                (setq Skip NIL)
+                (unless (or (= A Part) (not A))
+                  (push 'L (cons A 'a))))))))))
+
+
+(de lay-pair-x (Part Type Nxt)
+
+  # Move line handling out
+  # Either line handles positioning of Car/Cdr for first item
+  # or the below does
+  #
+  # This should handle draw-car
+
+  # Not with the methods as this applies to all particles
+  (when (= Type 'b)
+    # For non-newline Cdr:
+    # X = bnds of Car
+    # Y = origin of Pair
+    (set-cur-x *cur-x) (adv-cur)
+    (println 'lay-pair "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
+    (when (get Part 'c)
+      (set-cur-y (get Part 'c 'ori 2))
+      (println 'lay-pair "Mov cur y to origin: " (format (get *cur 2) *Scl))))
+
+  (lay-x> Part)
+
+  (cond ((= Type 'a)
+          # Update dims of this and parent
+          (upd-cur)
+          (upd-dims-2 Part))
+          
+        ((= Type 'b)
+
+          # Update dims of this and parent
+          (upd-cur)
+          (upd-dims-2 Part)
+
+          (when (isa '(+Nil) Part)
+            (println 'lay-pair "Found +Nil; set line dims: " *line-lay (get *line-lay 'data))
+            (upd-dims *line-lay)
+            ))))
+
+
+###############################
+
+(de lay-pair-y (Part Line Skip)
   #{
 
     Draw CAR +X
@@ -159,10 +181,10 @@
   
     Must return the max X and min Y to calc bounds
   
-    Base is the pos of the list start; lay-pair sets it
+    Line is the pos of the list start; lay-pair sets it
   }#
   
-  (with Any
+  (with Part
   
     (let ((X-Ori Y-Ori) (: ori))
     
@@ -176,14 +198,14 @@
       # Lay CAR first since its Y bounds has precedence
                   
       (when (and (: a)
-                 (not (= (: a) Any))
+                 (not (= (: a) Part))
                  (or (= Skip 'skip-cdr)
                      (not Skip)))
-        (lay-part (: a) Base))
+        (lay-part (: a) Line))
 
       # Str's val/b is NIL (or poss later point to itself)
       (when (and (: b)
-                 (not (= (: b) Any))
+                 (not (= (: b) Part))
                  (or (= Skip 'skip-car)
                      (not Skip)))
 
@@ -193,7 +215,7 @@
         (set-cur-x X-Ori)
 
         # If Car layout is X, cur will be back at Cdr bnds,
-        # which means Y is level with Any - must set cur to Y bnds (min Y)
+        # which means Y is level with Part - must set cur to Y bnds (min Y)
         (if (= (get (: a) 'lay) 'x)
             #(println 'lay-part-y "X layout detected for Car")
             (setq *cur (list (get *cur 1) *cur-y))
@@ -201,30 +223,30 @@
             # Y should be in place, else get from cur bnds
             (nl-cur 2.0))
         
-        (lay-part (: b) Base)))))
+        (lay-part (: b) Line)))))
     
   
-(de lay-atom (Any Base Skip)
+(de lay-atom (Part Line Skip)
     
-  (if (or (isa '+Num Any)
-          (isa '+Nil Any))
+  (if (or (isa '+Num Part)
+          (isa '+Nil Part))
       
       (prog
 
         # Move Pair first so below to get correct pos
         # mov> does not use draw fn so it does not use *cur
-        (setq *cur (mov> Any *cur))
+        (setq *cur (mov> Part *cur))
         #(adv-cur)
 
         (upd-cur)
 
-        Any)
+        Part)
 
       (prog
   
         # Should not call lay pair but rather the method
         # lay-sym, lay-str
-        (lay-pair Any Base Skip))))
+        (lay-pair Part Line Skip))))
 
 
 (de force-lay (Part Lay)

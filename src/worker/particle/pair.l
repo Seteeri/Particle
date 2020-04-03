@@ -81,6 +81,27 @@
         (sub> (: a)))))
 
 
+(dm lay-x> ()
+  
+  (when (get (: line) 'p)
+    (println 'lay> "Detected line:" This (get This 'data))
+    (println 'lay> "Detected line prv:" (: line) (get (: line) 'p 'data))
+    (if (= (get (: line) 'base) 'line)
+        (align-cur-to-line This)
+        (align-cur-to-prv This))
+    (setq *line-lay This))
+
+  (setq *cur (mov> This *cur))
+  (upd-cur)
+  
+  # Pos cur for car
+  (setq *cur (: ori))
+    
+  # Move below or use its Y dims - origin is same as dims for single line
+  # This assumes Pair is always single line with dot or 2x dot
+  (nl-cur))
+  
+
 (class +Line)
 (dm T (P N Dims Base)
   (=: p P)

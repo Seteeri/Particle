@@ -322,13 +322,13 @@
     
     (nl-cur 6.0)    
     
-    (when NIL
+    (when T
 
       (let Part (gen-part '(1 2 (3 (4))) 'y)
         
         (set-cur-x X)
         
-        # Must calc bnds for lists        
+        # Must calc bnds for lists
         (lay-part-start Part *cur)))
 
 

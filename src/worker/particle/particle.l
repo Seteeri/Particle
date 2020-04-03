@@ -50,6 +50,8 @@
   }#
   # or create layout obj storing dims for x and y
   (=: dims)
+  #(=: dims-a)
+  #(=: dims-b)
 
   # list of tags; always str; order matters like when searching
   # consider first tag, the name

@@ -14,10 +14,7 @@
 
 (class +Num +Particle)
 
-(dm T (Data
-       A
-       B
-       Verts
-       Lay)
-
-  (super Data A B Verts Lay))
+(dm lay-x> ()
+  (setq *cur (mov> This *cur))
+  (upd-cur)
+  This)

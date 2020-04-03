@@ -308,23 +308,23 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         | NL    | List w. Pair      | List w. Car        | Empty list
         +-------+-------------------+--------------------+---------------
+        * Rename 'line -> 'line [Done]
+        * Refactor type compare to use isa [Done]        
         * Refactor ops to use point [Done]
-        * Refactor bounds calc
+        * Refactor bounds calc [Done]
           * Cache bnds for each Pair
-        * Implement arbitrary atom newline
+        * Implement arbitrary atom newline [Done?]
+          * Should be supported with newline handling
         * Replace NIL (EOL) with Char [Done]
           * Car: Replaces prv
           * Pair: Ins-back
-        * Rename 'line -> 'line [Done]
-        * Refactor type compare to use isa [Done]
-        * Use point cmds in ops to reuse code
-        * Create debug levels
-          * warning
-          * all
-        * Replacing NIL with Char [WiP]
-          * Prints msg
-          * Mostly there - check pointer place/mov
-        * Refactor list cmds
+        * Replacing NIL with Char [Done]
+        * Refactor layout line handling [WiP]        
+          * Cache bnds on traversal
+          * Store Car and Cdr dims?
+        * Refactor sublist handling [WiP]
+          * Refactor newline cmds
+        * Use point cmds in ops to reuse code [WiP]        
       * Support y layout [Done...]
         * Fix lay-pair newline - does not support Y layout        
       * Store ref to last item in list for faster bnds calc
