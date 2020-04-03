@@ -6,6 +6,6 @@
                   (get Bnds 1)))
     (set-cur-y (- (get Ori 2)
                   (get Bnds 2)))
-    (nl-cur 2.0)
+    (nl-cur 1.0)
     #(println 'mov-*1 "Moved *1 to: " (format (get *cur 1) *Scl) (format (get *cur 2) *Scl))
     (mov> *1 *cur)))

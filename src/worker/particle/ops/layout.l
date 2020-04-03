@@ -94,8 +94,12 @@
   }#
 
   (with Any
+
+    # If a has a newline, store cur y, then restore after
+    # keep tracking x for cdr base
   
-    (let ((X-Ori Y-Ori) (: ori))
+    (let ((X-Ori Y-Ori) (: ori)
+          Cur-Y *cur-y)
   
       # Mov cur to origin of Pair
       (set-cur-x X-Ori) (set-cur-y Y-Ori)
@@ -104,18 +108,17 @@
       # This assumes Pair is always single line with dot or 2x dot
       (nl-cur)
 
-      # If Car is a list, mov extra newlines
-      (when (has-car-pair> Any)
-        (nl-cur (+ *sublist-space-y 1.0)))
-
       # Lay CAR first since its X bounds has precedence
-            
       (when (and (: a)
                  (not (= (: a) Any))
                  (or (= Skip 'skip-cdr)
-                     (not Skip)))
+                     (not Skip)))      
+        
         (lay-part (: a) Base))
 
+      (when (get (: a) 'line)
+        (setq *cur-y Cur-Y))
+            
       (when (and (: b)
                  (not (= (: b) Any))
                  (or (= Skip 'skip-car)
