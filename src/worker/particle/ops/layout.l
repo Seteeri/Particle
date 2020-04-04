@@ -3,6 +3,7 @@
 (def '*cur-x)
 (def '*cur-y)
 (def '*line-lay)
+(def '*y-lay)
 
 (de upd-cur ()
 
@@ -59,7 +60,7 @@
 (de lay-part-start (Part Line Skip)
   (setq *cur-x NIL
         *cur-y NIL
-        *line-lay *line)
+        *line-lay Line)
   (lay-part Part Line Skip))
 
 
@@ -98,18 +99,18 @@
       (let (Type (cdr Part)
             Part (car Part))
         
-        (println 'lay-pair 
-                 Part
-                 (get Part 'data)
-                 '...
-                 (if (= Type 'a) 'Car 'Cdr)
-                 'of (get Part 'c) (get Part 'c 'data))
+        (when NIL
+          (println 'lay-pair 
+                   Part
+                   (get Part 'data)
+                   '...
+                   (if (= Type 'a) 'Car 'Cdr)
+                   'of (get Part 'c) (get Part 'c 'data)))
                  
         (if (= (get Part 'lay) 'x)
             (lay-pair-x Part Type (caar L))
             (prog
-              #(println "Y NOT SUPPORTED")
-              (lay-pair-x Part Type (caar L))))
+              (lay-pair-y Part Type (caar L))))
     
         (unless (= Skip 'skip-car-cdr)
             
@@ -129,22 +130,17 @@
 
 (de lay-pair-x (Part Type Nxt)
 
-  # Move line handling out
-  # Either line handles positioning of Car/Cdr for first item
-  # or the below does
-  #
-  # This should handle draw-car
-
   # Not with the methods as this applies to all particles
   (when (= Type 'b)
     # For non-newline Cdr:
     # X = bnds of Car
     # Y = origin of Pair
     (set-cur-x *cur-x) (adv-cur)
-    (println 'lay-pair "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
+    #(println 'lay-pair "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
     (when (get Part 'c)
       (set-cur-y (get Part 'c 'ori 2))
-      (println 'lay-pair "Mov cur y to origin: " (format (get *cur 2) *Scl))))
+      #(println 'lay-pair "Mov cur y to origin: " (format (get *cur 2) *Scl))
+      ))
 
   (lay-x> Part)
 
@@ -160,14 +156,51 @@
           (upd-dims-2 Part)
 
           (when (isa '(+Nil) Part)
-            (println 'lay-pair "Found +Nil; set line dims: " *line-lay (get *line-lay 'data))
-            (upd-dims *line-lay)
+            #(when (= (get *line-lay 'lay) 'x)
+              (println 'lay-pair-x "Found +Nil; set line dims: " *line-lay (get *line-lay 'data))
+              (upd-dims *line-lay)
+              #)
+            ))))
+
+
+(de lay-pair-y (Part Type Nxt)
+
+  #(println "LAY Y CDR: " Part (get Part 'data) Type)
+
+  (when (= Type 'b)
+    # For non-newline Cdr:
+    # X = origin of Pair
+    # Y = bnds of Car
+
+    (prog
+      (when (get Part 'c)
+        (set-cur-x (get Part 'c 'ori 1)))
+      # Y should be in place, else get from cur bnds
+      (set-cur-y *cur-y) (nl-cur 3.0)))
+    
+  (lay-y> Part)
+
+  (cond ((= Type 'a)
+          # Update dims of this and parent
+          (upd-cur)
+          (upd-dims-2 Part))
+          
+        ((= Type 'b)
+
+          # Update dims of this and parent
+          (upd-cur)
+          (upd-dims-2 Part)
+
+          (when (isa '(+Nil) Part)
+            (when (= (get *line-lay 'lay) 'y)
+              (println 'lay-pair-y "Found +Nil; set line dims: " *line-lay (get *line-lay 'data))
+              (upd-dims *line-lay))
             ))))
 
 
 ###############################
 
-(de lay-pair-y (Part Line Skip)
+(de lay-pair-y-2 (Part Line Skip)
   #{
 
     Draw CAR +X

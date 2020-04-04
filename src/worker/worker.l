@@ -148,27 +148,27 @@
                                         (let Ref (get *0 'b)
                                           (println Ref (get Ref 'data)))
 
+                                        (println "Master Line: " *master (get *master 'b 'data))
+
                                         # Print lines out
-                                        (let (Line *line
-                                              P NIL
-                                              N NIL)
+                                        (let Line *line
+                                        
                                           # Print current line
                                           (println "Current Line: " Line (get Line 'data))
-                                              
-                                          # Traverse to top
-                                          (while (setq P (get Line 'line 'p))
-                                            (setq Line P))
-                                          
-                                          (setq N Line)
-                                          
-                                          # Traverse back down
-                                          (loop
-                                            (println "Line: " Line (get Line 'data))
-                                            (setq Line (get Line 'line 'n))
-                                            (T (not Line))))
-                                            
-                                        (mov-*1 *line)
-                                        (println "Master Line: " *master (get *master 'b 'data))
+                                          (mov-*1 Line)
+
+                                          (when NIL
+                                            # Traverse from top
+                                            (setq Line *master)
+                                            (loop
+                                              (println "Line: " Line (get Line 'data))
+                                              (mov-*1 Line)
+                                              (call 'sleep 2)                                            
+                                              (setq Line (get Line 'line 'n))
+                                              (T (not Line)))))
+                                        
+                                        #(upd-tree)
+                                        #(mov-*1 *master)
                                           
                                         ))
 
@@ -265,7 +265,7 @@
           T)
     (set-cur-x X)
     (put *cmds 'lay 'y)
-    (lay-part-start *cmds *cur)
+    (lay-part-start *cmds *cmds)
 
     #############################
     # Generate main particle list
@@ -282,7 +282,7 @@
       
     (setq *pos-main (copy *cur))
       
-    (lay-part-start *main *cur)
+    (lay-part-start *main *main)
     
     (setq *line *main)
     (inc-line-by-part-x> *line (get *main 'b))
@@ -304,7 +304,7 @@
     (put *0 'lay 'y)
     
     (mov-cur-abv (get *main 'b))
-    (lay-part-start *0 *cur 'skip-cdr)
+    (lay-part-start *0 *line 'skip-cdr)
         
     # Skip cdr since ptr should be rel to cdr
     #(lay-part-start *0 *cur 'skip-cdr)
@@ -316,7 +316,7 @@
     (idx '*particles (def '*1 (gen-part '*1 'y)) T)
     (del> (get *1 'b) T T)
     (nl-cur -3.0)
-    (lay-part-start *1 *cur)
+    (lay-part-start *1 *line)
 
     ############
     
@@ -329,7 +329,7 @@
         (set-cur-x X)
         
         # Must calc bnds for lists
-        (lay-part-start Part *cur)))
+        (lay-part-start Part *line)))
 
 
     (when NIL
@@ -340,7 +340,7 @@
         
         (nl-cur 2.0)
         (set-cur-x X)
-        (lay-part-start Part *cur)))
+        (lay-part-start Part *line)))
 
     (when NIL
     
@@ -356,7 +356,7 @@
         
         (nl-cur 2.0)
         (set-cur-x X)
-        (lay-part-start Part *cur)))))
+        (lay-part-start Part *line)))))
       
 
 (de run-tests ())

@@ -23,6 +23,31 @@
 
 # These are used with layout
 
+(de align-cur-to-line (Part)
+
+  # x = origin of line
+  # y = bnds of line
+  (let (Line (get Part 'line 'p)
+        Ori-Line (get Line 'ori)
+        Ori (if (isa '+Sym Line)
+                (get Line (if (= (get Line 'lay) 'x)
+                             'b
+                             'a)
+                     'ori)
+                (if (= (get Line 'lay) 'x)
+                    (get Line 'a 'ori)
+                    (get Line 'ori)))
+        Bnds (get Line 'line 'dims))
+
+    (println 'align-cur-to-line 'Line Line (get Line 'data))
+
+    (set-cur-x (get Ori 1))
+
+    (set-cur-y (- (get Ori-Line 2) (get Bnds 2)))
+    (nl-cur (+ 1.0 *sublist-space-y))))
+
+
+#{
 (de align-cur-to-prv (Part)
 
   (if (= (get Part 'lay) 'x)
@@ -33,43 +58,19 @@
         # y = bnds of line
         (set-cur-x (get Part 'c 'ori 1))
 
-        (let Ori (get (if (isa '+Sym *line)
-                          (get *line 'b)
-                          *line) 'ori)
+        (let (Line (get Part 'line 'p)
+              Ori (get (if (isa '+Sym Line)
+                           (get Line 'b)
+                           Line)
+                     'ori)
+              Bnds (get Line 'line 'dims))
                           
-          # This is not using line bnds, but rather c origin
-          (set-cur-y (get Part 'c 'ori 2))
-          (nl-cur 2.0)
-          (nl-cur *sublist-space-y))
+          (set-cur-y (- (get Ori 2) (get Bnds 2)))
+          (nl-cur (+ 1.0 *sublist-space-y)))
         
-        (println 'align-cur-to-prv "Set *cur: " *cur)
+        #(println 'align-cur-to-prv "Set *cur: " *cur)
         (setq *cur-x (get *cur 1) *cur-y (get *cur 2)))
 
       (prog
         (println 'align-cur-to-prv "IMPLEMENT Y LAYOUT"))))
-
-
-(de align-cur-to-line (Part)
-
-  (if (= (get Part 'lay) 'x)
-
-      # x = origin of line
-      # y = bnds of line
-      (let (Line (get Part 'line 'p)
-            Ori (get (if (isa '+Sym Line)
-                         (get Line 'b)
-                         Line)
-                     'ori)
-            Bnds (get Line 'line 'dims))
-
-        (println 'align-cur-to-line 'Line Line (get Line 'data))
-
-        (set-cur-x (get Ori 1))
-
-        (set-cur-y (- (get Ori 2) (get Bnds 2)))
-        (nl-cur (+ 1.0 *sublist-space-y))
-        
-        (setq *cur-x (get *cur 1) *cur-y (get *cur 2)))
-
-      (prog
-        (println 'align-cur-to-line "IMPLEMENT Y LAYOUT"))))
+}#

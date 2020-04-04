@@ -4772,8 +4772,6 @@ mov-nl:
   D    E
 
 
-this is very confusing...
-
 solutions:
 1. Don't allow it (does this make sense?)
 2. Create as if on Car
@@ -4857,3 +4855,81 @@ Each list tracks lines
 Moving super does not imply automatic line or list change
 
 Create targets
+
+
+[X]  [X]  [X]  
+mn   A    B    
+
+     [X]  
+
+     [X]  [X]  
+     C    D    
+  
+          [X]  
+
+          [X]  NIL
+          E
+          
+     [X]
+     E
+
+(a b (c d (e)))
+
+So all items in same list are aligned along x?
+
+Nl + Under X
+
+OR
+
+Nl + Y layout
+
+
+  [Y]   *    * 
+       I    Content
+
+       [Y]   *    * 
+            A    Content
+
+            [Y]   *    *        NIL
+                 1    Content
+
+                  *    *        NIL
+                 1    Content
+
+                  *    *        NIL
+                 1    Content
+
+            [Y]   *    *        NIL
+                 2    Content
+                 
+                  *    *        NIL
+                 2    Content
+
+                  *    *        NIL
+                 2    Content
+
+             *    *    *    * 
+            Foo  Bar  Baz  Boo
+
+             *    *    *    * 
+            Foo  Bar  Baz  Boo
+            
+             *    *    *    * 
+            Foo  Bar  Baz  Boo  
+
+       [Y]   *    * 
+            B    Content
+
+            [Y]   *    *        NIL
+                 1    Content
+
+            [Y]   *    *        NIL
+                 2    Content
+
+            NIL
+
+       NIL
+  NIL
+
+
+Cancel update while it is running - use coroutine

@@ -25,12 +25,55 @@
   (setq *cur (mov> This *cur))
   (upd-cur)
   
+  (pos-cur-for-car-x> This))
+
+
+(dm lay-y> () 
+  (setq *cur (mov> This *cur))
+  (upd-cur)
+    
+  # Pos cur for car
+  (setq *cur (: ori))
+    
+  # Use X dims
+  (set-cur-x (+ (get (: ori) 1) (get (: a) 'dims 1)))
+  (adv-cur))
+  
+  
+(dm pos-cur-for-car-x> ()
   # Pos cur for car
   (setq *cur (: ori))
     
   # Move below or use its Y dims - origin is same as dims for single line
   # This assumes Pair is always single line with dot or 2x dot
   (nl-cur))
+
+  
+(dm pos-cur-for-car-y> ()
+  # Pos cur for car
+  (setq *cur (: ori))
+    
+  # Use X dims
+  (set-cur-x (get (: ori) 1))
+  (adv-cur 2.0))
+
+
+(dm check-nl> ()
+  (when (get (: line) 'p)
+    # When newline detected, must save line dims
+    # Don't update cursor...
+    (upd-dims *line-lay)
+    (println 'lay-y> "Update line:" *line-lay (get *line-lay 'data))  
+  
+    #(println 'lay> "Detected line:" This (get This 'data))
+    #(println 'lay> "Detected line prv:" (: line) (get (: line) 'p 'data))
+    
+    (align-cur-to-line This)
+        
+    (setq *cur-x (get *cur 1) *cur-y (get *cur 2))        
+        
+    (setq *line-lay This)))  
+
 
 #################
 (class +Box +Sym)
@@ -112,6 +155,9 @@
   (if (= (get (: c) 'a) This)
       (prv> (: c))
       (when (: c)
+        (when (get (: line) 'p)
+          (println 'prv> "Mov ptr -> super-line/list" (get (: line) 'p) (get (: line) 'p 'data))
+          (setq *line (get (: line) 'p)))
         (if *on-car
             (sub> (: c))
             (prog
@@ -150,6 +196,16 @@
 
 
 (dm lay-x> ()
+  (check-nl> This)
+
+  (setq *cur (mov> This *cur))
+  (upd-cur)
+  This)
+
+
+(dm lay-y> ()
+  (check-nl> This)
+
   (setq *cur (mov> This *cur))
   (upd-cur)
   This)

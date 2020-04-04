@@ -18,3 +18,8 @@
   (setq *cur (mov> This *cur))
   (upd-cur)
   This)
+
+(dm lay-y> ()
+  (setq *cur (mov> This *cur))
+  (upd-cur)
+  This)
