@@ -311,11 +311,10 @@ Store DAGs as binary trees?
       * Support y layout [WiP]
         * Fix Y Cdr
           * Cannot add      
+      * Refactor line to store list for p
+        * Line would be a nested structure
+        * Maybe X sublist will work?
       * Store ref to last item in list for faster bnds calc
-      * Make methods
-        * Layout
-        * Point cmds
-        * Gen?
       * Handle multi-line strings -> WILL NEED THIS
         
     * Change ptr sym when moving to Car [Wknd]

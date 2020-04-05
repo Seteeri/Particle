@@ -13,8 +13,9 @@
 
 # +Int
 # +Ext
-# +Str (= Transient)
-# +Box (= Transient)
+# +Str (Transient)
+# +Box (Transient-Anonymous)
+# +Nil
 
 # CAR empty for Anon syms (CAR is actually number 0)
 

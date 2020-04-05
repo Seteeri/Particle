@@ -1,5 +1,5 @@
 Widgets
-======
+=======
 
 All widgets are based on an underlying tree structure and can be broken
 down into nodes = push button

@@ -52,9 +52,9 @@
       # Exclude Y layout Pair -> X layout Car
       # *main?
       (prog
-        #(let? Ln (get (: line) 'p)
+        #(let? Ln (get 'c 'line)
         #  (println 'sup> "Mov ptr -> super-line/list" Ln (get Ln 'data))        
-        #  (setq *line Ln))
+        #  (setq *line (: c)))
         (setq *on-car NIL)        
         (mov-cur-abv (: c))
         (: c))
@@ -70,9 +70,9 @@
   (if (isa '(+Pair) (: a))
       # Exclude Y layout Pair -> X layout Car
       (prog
-        #(let? Ln (get (: line) 'n)
+        #(let? Ln (get 'a 'line)
         #  (println 'sub> "Mov ptr -> sub-line/list" Ln (get Ln 'data))
-        #  (setq *line Ln))
+        #  (setq *line (: a)))
         # Either move Pair or Car; default follows Car             
         (if *on-car
             (sub> (: a))

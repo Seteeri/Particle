@@ -4848,40 +4848,7 @@ CAR  CAR
 
 Nm it is - ptr on top is pointing to CDR of Prv, even for the Y
 
-======================
-
-Each list tracks lines
-
-Moving super does not imply automatic line or list change
-
-Create targets
-
-
-[X]  [X]  [X]  
-mn   A    B    
-
-     [X]  
-
-     [X]  [X]  
-     C    D    
-  
-          [X]  
-
-          [X]  NIL
-          E
-          
-     [X]
-     E
-
-(a b (c d (e)))
-
-So all items in same list are aligned along x?
-
-Nl + Under X
-
-OR
-
-Nl + Y layout
+===============================================
 
 
   [Y]   *    * 
@@ -4933,3 +4900,54 @@ Nl + Y layout
 
 
 Cancel update while it is running - use coroutine
+
+Two coroutines:
+* user-input
+* tree update
+
+loop can use co-routine when updating tree, it will yield nodes
+it will check for input inbetween
+
+=================================
+
+New Line Class
+
+[ ]  [ ]  [ ]        [ ]  [ ]        [ ]  
+a    b               d               f
+          
+          [  ]  NIL       [  ]  NIL
+          c               e
+          
+[ ]
+g
+
+4 lines in the above
+
+
+Current Setup:
+
+*main
+p=NIL
+c=[c,e]
+n=g
+
+c
+p=*main
+n=NIL
+
+e
+p=*main
+n=NIL
+
+g
+p=*main
+n=NIL
+
+
+This would work with the current code
+Would need to add checks to methods for line changes for sub/sup
+
+When doing layout of main, when enter sublist, push cur to list
+pop when leave list
+
+Hierarchy of lines

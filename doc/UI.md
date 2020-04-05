@@ -255,7 +255,9 @@ Call make-nl:
 
 *Manipulating lists*
 
-# PicoLisp Internals
+# Undo System
+
+# PicoLisp Internals (Advanced)
 
 *For reference*
 

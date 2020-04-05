@@ -4,17 +4,6 @@
 
     (if *on-car
 
-        #{
-        [] []
-        
-           [] NIL
-           NIL
-           *
-           
-           [] NIL
-           NIL *
-        }#
-
         # If start of list, must replace entire thing
         # otherwise, normal repl
         (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
@@ -24,9 +13,10 @@
               (repl-list-car Data Lay))
               
             (prog
-              (if (and (isa '(+Nil) Ref) (= (get Ref 'c 'b) Ref))
-                  (prog 
-                    #(setq *on-car)
+              # End NIL
+              (if (and (isa '(+Nil) Ref)
+                       (= (get Ref 'c 'b) Ref))
+                  (prog
                     (ins-cdr Data Lay)
                     (point-sub Ref))
                   (repl-car Data Lay))))

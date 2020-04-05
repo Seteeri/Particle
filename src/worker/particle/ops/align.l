@@ -34,9 +34,7 @@
                              'b
                              'a)
                      'ori)
-                (if (= (get Line 'lay) 'x)
-                    (get Line 'a 'ori)
-                    (get Line 'ori)))
+                (get Line 'a 'ori))
         Bnds (get Line 'line 'dims))
 
     (println 'align-cur-to-line 'Line Line (get Line 'data))
