@@ -120,7 +120,7 @@
   (=: a)
   (=: b)
   (=: c)
-  (=: line)
+  (=: line) # Remove from p/n
   (=: data))
 
 
@@ -263,6 +263,207 @@
     (list (max (if Xa Xa X) (if Xb Xb X) X)
           (min (if Ya Ya Y) (if Yb Yb Y) Y))))
 
+######################
+
+
+(de ins-bef (Ref Part)
+
+  #{
+
+    Insert x before a, taking its pos:
+
+    *0
+    [ ]  [ ]  NIL
+    a    b
+
+           *0
+    [ ]  [ ]  [ ]  NIL
+    a    x    b
+
+    Ref=a
+    Prv=NIL
+    Cdr=b
+    Part=x
+
+    Newline case:
+
+    [ ]
+    a
+
+    *0
+    [ ] - NIL
+    b
+
+
+    [ ]
+    a
+
+          *0
+    [ ] - [ ] - NIL
+    x     b
+
+  }#
+
+  (let (Prv (get Ref 'c))
+
+    # Prv -> Part
+    (con> Prv Part)
+
+    #        Part -> Cdr
+    # Prv <- Part
+    (con> Part Ref Prv)
+
+    # Part <- Cdr
+    (put Ref 'c Part)
+
+    # If Ref is a new line, xfer it to new Part
+    (when (get Ref 'line 'p)
+      (xchg-nl Ref Part))))
+
+
+(de ins-aft (Ref Part)
+
+  #{
+
+    Insert x after a, taking pos of next:
+
+    *0
+    [ ]  [ ]  NIL
+    a    b
+
+           *0
+    [ ]  [ ]  [ ]  NIL
+    a    x    b
+
+    Ref=a
+    Prv=NIL
+    Cdr=b
+    Part=x
+
+    Newline case:
+
+    *0
+    [ ]
+    a
+
+    [ ] - NIL
+    b
+
+
+    [ ]
+    a
+
+    *0
+    [ ] - [ ] - NIL
+    x     b
+
+  }#
+
+  (let (Cdr (get Ref 'b))
+
+    # Ref -> Part
+    (con> Ref Part)
+
+    #        Part -> Cdr
+    # Ref <- Part
+    (con> Part Cdr Ref)
+
+    # Part <- Cdr
+    (put Cdr 'c Part)
+
+    # If Cdr is a new line, xfer it to new Part
+    (when (get Cdr 'line 'p)
+      (xchg-nl Cdr Part))))
+
+
+(de repl-pair (Ref Part)
+
+  #{
+    Replace b with x
+
+          *0
+    [ ]   [ ]  [ ]  NIL
+    a     b    c
+
+          *0
+    [ ]   [ ]  [ ]
+    a     x    c
+
+    Ref=b
+    Cdr=c
+    Prv=a
+    Part=x
+  }#
+
+  (let (Cdr (get Ref 'b)
+        Prv (get Ref 'c))
+
+    # Ref -> Part
+    (con> Prv Part)
+
+    #        Part -> Cdr
+    # Prv <- Part
+    (con> Part Cdr Prv)
+
+    # Part <- Cdr
+    (put Cdr 'c Part)
+
+    # If Ref is a new line, xfer it to new Part
+    (when (get Ref 'line 'p)
+      (xchg-nl Ref Part))
+
+    # Copy layout?
+    # (force-lay Part (get Ref 'lay))
+
+    (del> Ref T NIL)))
+
+
+(de xchg-nl (Src Dst)
+
+  (let (Nl (get Src 'line)
+        Prv (get Nl 'p)
+        Nxt (get Nl 'n))
+
+    (when Prv
+      (put (get Prv 'line) 'n Dst))
+
+    (when Nxt
+      (put (get Nxt 'line) 'p Dst))
+
+    (put Dst 'line Nl))
+
+  (put Src 'line NIL)
+
+  (println 'xchg-nl "Exchange line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
+
+  (setq *line Dst))
+
+
+# Debug
+
+
+(dm trace> (Cnt)
+  (let (D ()
+        X (: b))
+    (loop
+      (push 'D (get X 'data))
+      (println (car D) "->" (get X 'b))
+      (NIL (get X 'b))
+      (setq X (get X 'b)))
+    D))
+
+(dm trace-2> (Cnt)
+  (let (S ()
+        X (: b))
+    (loop
+      (push 'S X)
+      (println X "->" (get X 'b))
+      (NIL (get X 'b))
+      (setq X (get X 'b)))
+    S))
+
+
+######
 # Line
 
 # Used only by delete
@@ -350,27 +551,3 @@
     
     (list (abs (- X (car Ori)))
           (abs (- Y (cadr Ori))))))
-
-
-# Debug
-
-
-(dm trace> (Cnt)
-  (let (D ()
-        X (: b))
-    (loop
-      (push 'D (get X 'data))
-      (println (car D) "->" (get X 'b))
-      (NIL (get X 'b))
-      (setq X (get X 'b)))
-    D))
-
-(dm trace-2> (Cnt)
-  (let (S ()
-        X (: b))
-    (loop
-      (push 'S X)
-      (println X "->" (get X 'b))
-      (NIL (get X 'b))
-      (setq X (get X 'b)))
-    S))

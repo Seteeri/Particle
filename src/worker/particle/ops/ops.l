@@ -95,10 +95,6 @@
       
         # nl check?
 
-        #(mov-cur-part Prv 'start)
-        #(lay-part-start Part (get *line 'ori))
-
-        # Skip line upate?
         (upd-tree)
         (mov-*1 *line)
 
@@ -192,11 +188,6 @@
     (con> Car Cdr)
     (put Cdr 'c Car)
 
-    #(mov-cur-part Prv 'start)
-    #(lay-part-start Part *cur)
-
-    # Calc dims for new line, and update super lines recursively
-    #(upd-superls (get Car 'line 'p))
     (upd-tree)
     (mov-*1 *line)
 
@@ -245,23 +236,9 @@
 
         (prog
 
-          # Draw Pair at Prv, no Car/Cdr
-          # Then nl, draw Car
-          #(mov-cur-part Prv 'start)
-          #(lay-part-start Part (get *line 'ori) 'skip-car-cdr)
-
-          # Create nl for Car
-          # Layout will detect this
-          # Line bnds is not used so NIL is ok for now
           (put *line 'line 'n Car)
           (put Car 'line (new '(+Line) *line))
-
-          # Cur will be moved to proper pos rel to Pair
-          #(lay-part-start Car *cur)
           
-          # Super update:
-          # * Re-position and draw particles if needed
-          # * Calc bounds
           (upd-tree)
           (mov-*1 *line)
 
@@ -274,194 +251,22 @@
           # Disable car
           #(setq *on-car)
           
-          (view (getl (get Car 'line)))
           (println 'repl-car-list "Prv line: " *line (get *line 'data))
 
-          (setq *line Car
-                *main Car))
+          (setq *line Car))
 
         (prog
           (println 'repl-car-list "IMPLEMENT Y")))))
 
 
-########################
+################################################################################
 
 
-(de ins-bef (Ref Part)
+(de upd-tree (List)
 
-  #{
-
-    Insert x before a, taking its pos:
-
-    *0
-    [ ]  [ ]  NIL
-    a    b
-
-           *0
-    [ ]  [ ]  [ ]  NIL
-    a    x    b
-
-    Ref=a
-    Prv=NIL
-    Cdr=b
-    Part=x
-
-    Newline case:
-
-    [ ]
-    a
-
-    *0
-    [ ] - NIL
-    b
-
-
-    [ ]
-    a
-
-          *0
-    [ ] - [ ] - NIL
-    x     b
-
-  }#
-
-  (let (Prv (get Ref 'c))
-
-    # Prv -> Part
-    (con> Prv Part)
-
-    #        Part -> Cdr
-    # Prv <- Part
-    (con> Part Ref Prv)
-
-    # Part <- Cdr
-    (put Ref 'c Part)
-
-    # If Ref is a new line, xfer it to new Part
-    (when (get Ref 'line 'p)
-      (xchg-nl Ref Part))))
-
-
-(de ins-aft (Ref Part)
-
-  #{
-
-    Insert x after a, taking pos of next:
-
-    *0
-    [ ]  [ ]  NIL
-    a    b
-
-           *0
-    [ ]  [ ]  [ ]  NIL
-    a    x    b
-
-    Ref=a
-    Prv=NIL
-    Cdr=b
-    Part=x
-
-    Newline case:
-
-    *0
-    [ ]
-    a
-
-    [ ] - NIL
-    b
-
-
-    [ ]
-    a
-
-    *0
-    [ ] - [ ] - NIL
-    x     b
-
-  }#
-
-  (let (Cdr (get Ref 'b))
-
-    # Ref -> Part
-    (con> Ref Part)
-
-    #        Part -> Cdr
-    # Ref <- Part
-    (con> Part Cdr Ref)
-
-    # Part <- Cdr
-    (put Cdr 'c Part)
-
-    # If Cdr is a new line, xfer it to new Part
-    (when (get Cdr 'line 'p)
-      (xchg-nl Cdr Part))))
-
-
-(de repl-pair (Ref Part)
-
-  #{
-    Replace b with x
-
-          *0
-    [ ]   [ ]  [ ]  NIL
-    a     b    c
-
-          *0
-    [ ]   [ ]  [ ]
-    a     x    c
-
-    Ref=b
-    Cdr=c
-    Prv=a
-    Part=x
-  }#
-
-  (let (Cdr (get Ref 'b)
-        Prv (get Ref 'c))
-
-    # Ref -> Part
-    (con> Prv Part)
-
-    #        Part -> Cdr
-    # Prv <- Part
-    (con> Part Cdr Prv)
-
-    # Part <- Cdr
-    (put Cdr 'c Part)
-
-    # If Ref is a new line, xfer it to new Part
-    (when (get Ref 'line 'p)
-      (xchg-nl Ref Part))
-
-    # Copy layout?
-    # (force-lay Part (get Ref 'lay))
-
-    (del> Ref T NIL)))
-
-
-(de xchg-nl (Src Dst)
-
-  (let (Nl (get Src 'line)
-        Prv (get Nl 'p)
-        Nxt (get Nl 'n))
-
-    (when Prv
-      (put (get Prv 'line) 'n Dst))
-
-    (when Nxt
-      (put (get Nxt 'line) 'p Dst))
-
-    (put Dst 'line Nl))
-
-  (put Src 'line NIL)
-
-  (println 'xchg-nl "Exchange line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
-
-  (setq *line Dst))
-
-
-###################
-
+  (setq *cur (get *master 'ori))
+  (lay-part-start *master *master))
+                  
 
 (de make-list (Ref)
 
@@ -536,9 +341,7 @@
         )))
 
 
-##################
-
-# Move to line.l
+# Move to Particle?
 
 (de mov-part-nl (Part)
 
@@ -569,59 +372,4 @@
   (println 'mov-part-nl "Nxt: " (get Part 'line 'n) (get Part 'line 'n 'data)))
 
 
-(de upd-tree (List)
-
-  (setq *cur (get *master 'ori))
-  (lay-part-start *master
-                  *master))
-                  
-                  
 #######################################
-
-
-(de upd-superlines (Line Dx)
-  (while Line
-    (with Line
-      (=: dims (list (+ (car (: dims)) Dx)
-                     (cadr (: dims))))
-      (setq Line (: p)))))
-
-
-(de upd-superlists (List)
-  # Adjust bounds of each line also
-  (while List
-    (when (= (get List 'c 'a) List)
-      (align-cur-to-car-bnds (get List 'c))
-      (lay-part-start (get List 'c 'b)
-                (get *main 'ori)))
-    (setq List (get List 'c))))
-
-
-(de upd-superls-2 (List)
-
-  # Only update it pos change
-  (while List
-
-    (when (get List 'line)
-      (println 'upd-superls "Layout line: " List (get List 'data))
-
-      # Must skip sublists, else this becomes quadratic complexity
-      # Pass to layout or make another fn like layout
-      (align-cur-to-car-bnds List)
-      (lay-part-start (get List 'b)
-                      (get List 'ori))
-
-      # add to bnds = (- (newend - origin) (oldend/bnds- origin))
-      # Use cursor from lay-part
-      #(println "MOV CUR")
-      #(mov> *1 (setq *cur (list *cur-x *cur-y)))
-      #(call 'sleep 2)
-
-      (when NIL
-        (let (Ori (get List 'b 'ori)
-              Dims (list (- (get Ori 1) *cur-x)
-                         (- (get Ori 2) *cur-y)))
-          (println Ori Dims)
-          (put List 'line 'dims Dims))))
-
-    (setq List (get List 'c))))
