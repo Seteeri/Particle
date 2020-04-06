@@ -308,9 +308,18 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         | NL    | List w. Pair      | Mov nl             | Empty list
         +-------+-------------------+--------------------+---------------
+      * Fix:
+        * Cdr when creating lists mid-way
+        * When replacing NIL after newlist@Pair, it currently creates the list
+        on one line and NIL on another line, however it does not create newlist
+        for the NIL
+          * Behavior should be to have NIL be on the same line - same as when a
+          single char is on a newline
       * Support y layout [WiP]
         * Fix Y Cdr
-          * Cannot add      
+          * Cannot add
+        * Support y on same line
+      * Limit x length of items like line wrap
       * Refactor line to store list for p
         * Line would be a nested structure
         * Maybe X sublist will work?

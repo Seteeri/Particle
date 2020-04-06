@@ -40,8 +40,15 @@
 
     (println 'ins-cdr "Ins-aft (bef Ptr): " Prv (get Prv 'data))
 
-    # Copy layout and NL
-    #(put Part 'lay (get Prv 'lay))
+    # If Ref is Y layout, move it to a newline
+    
+    # If replacing NIL and it is Cdr of Y layout
+    # Make NIL on same line
+    (when (and (isa '(+Nil) Ref)
+               (= (get Prv 'lay) 'y))
+      (put Ref 'lay 'x)
+      # Mov NL
+      (xchg-nl Ref Part))
 
     (ins-aft Prv Part)
     
