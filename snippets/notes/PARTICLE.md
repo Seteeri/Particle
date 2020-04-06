@@ -310,7 +310,8 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
       * Fix:
         * Cdr when creating lists mid-way [Done?]
-        * Sub on Cdr of Y pair does not work
+        * Fix newline alignment issues for sublists
+        * Sub on Cdr of Y pair does not work [Done]
         * When replacing NIL after newlist@Pair, it currently creates the list
         on one line and NIL on another line, however it does not create newlist
         for the NIL [Done]
