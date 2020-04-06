@@ -430,9 +430,6 @@
     (when (get Ref 'line 'p)
       (xchg-nl Ref Part))
 
-    # Copy layout?
-    # (force-lay Part (get Ref 'lay))
-
     (unless Del-Skip
       (del> Ref T NIL))))
 

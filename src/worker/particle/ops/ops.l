@@ -337,7 +337,6 @@
         (setq *line Part)
 
         (put Part 'lay 'y)
-        (put Part 'b 'lay 'y)
 
         (make-line (get Part 'b) 'line)
         (setq *line (get Part 'b))
