@@ -1,4 +1,4 @@
-![PARTICLE](https://github.com/Seteeri/Particle/blob/master/particle.png)
+![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/particle.png)
 
 > The Grid. A digital frontier. I tried to picture clusters of
 information as they moved through the computer. What did they look like?

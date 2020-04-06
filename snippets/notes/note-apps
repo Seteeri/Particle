@@ -1,0 +1,111 @@
+Software falls into:
+* Notes
+* Wikis
+* Mindmapping
+
+AKA personal knowledge database
+
+Apps:
+Evernote
+Workflowy
+Notion
+Trello
+Bear (Apple)
+OneNote
+Orgmode
+Joplin
+TagSpace
+Gingko
+SimpleNote
+KeepNote
+TiddlyWiki
+Dynalist
+Treesheets (strlen.com)
+NotePlan
+Scrivner
+Outliner
+Jotterpad
+iThoughtsX
+Quiver
+Zimwiki
+Notional
+Notejoy
+Zenkit
+MindForger
+OmniOutliner (Mac)
+InkDrop
+Joplin
+DevonThink
+Nuclino
+NimbusNote
+Skitch
+turtl
+apse
+Polar
+Journal (usejournal.com)
+Recollectr
+Confluence
+CherryTree
+Quip
+Zettelkasten
+Jode
+Omnifocus
+Laverna
+Dropbox Paper
+
++Wikipedia-Note-Taking Software
++Wikipedia-Mindmapping
+
+Qualities:
+* Local - accessible offline also
+* Sync - maintain synchronized copies across multiple devices
+* Search - find what you are looking for
+* Web Clipper - clip quickly from browser (main search tool)
+* ScanTailor - import scans and photographed documents etc.
+* Collaboration/Whiteboarding - realtime collaboration with other users
+* Export/Intercompatability - data to plain text, s-expr, XML, Orgmode, Markdown, PDF, ODF/ODT, SQL
+* Native - wait for pil21; until then, create web version
+* Security/Encryption - tricky...do string/num encryption for now?
+
+Other mentions:
+* fuzzy search/auto completion - with tags -> speeds it up by show list, select
+* revision control
+* linking notes
+* ink-pen input
+* insert objects - only onenote can insert anything
+* organization capabilities - folders, notebooks, tags, hierarchial/flat
+  Methods:
+    * GTD
+    * Zettelkasten
+* drawn annotations
+* code annotations
+* highlighting
+
+Business Plan:
+1. Target power users on desktop
+   1. Test with Linux users
+   2. Develop web version for Win/MacOS users (and mobile)
+2. Integrate editing functionality for sounds, images, vide etc.
+3. Target mobile users
+4. Sell Raspberry Pi devices that run it as userspace
+5. Develop full-blown OS
+
+* Pay for sync/backup and collab (require P2P or a server)
+* Poss server processing abilities (for mobile and/or power users)
+  * Cheaper to up/dl vs cpu power
+* Encryption
+* Private notes
+  * Like GitHub
+* Autodefrag - should make feature
+
+* 3 pricing tiers
+* Free for edu
+
+Goal:
+* Evolve the power of orgmode/emacs to all data
+
+Links:
+https://www.reddit.com/r/Evernote/comments/cayedp/notion_vs_evernote/
+
+
+ANECDOTES
