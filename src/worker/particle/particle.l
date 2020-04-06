@@ -126,23 +126,26 @@
 
 (dm mov> (Pos)
 
-  # Should use draw?
+  # Check first vert
+  # If changed, change rest
+  # else, do nothing
 
-  (for Vert (: verts)
+  (let? Vert (car (: verts))
+    (unless (= Pos (get Vert 'pos))
+      (for Vert (: verts)
+        (with Vert
+          # Same pos, don't bother
+          (unless (= Pos (: pos))
+            (=: pos Pos)
+            (update-glyph> Vert (char (: chr))))
+            (upd-mdl-mtrx> Vert)
+            (cmd-upd-vert *ipc Vert))
 
-    (with Vert
-      # Same pos, don't bother
-      (unless (= Pos (: pos))
-        (=: pos Pos)
-        (update-glyph> Vert (char (: chr))))
-        (upd-mdl-mtrx> Vert)
-        (cmd-upd-vert *ipc Vert))
+        # adv pos
+        (setq Pos (place 1
+                         Pos
+                         (+ (car Pos) *adv-vert))))))
 
-    # adv pos
-    (setq Pos (place 1
-                     Pos
-                     (+ (car Pos) *adv-vert))))
-                     
   (=: ori (origin> This))
   
   Pos)

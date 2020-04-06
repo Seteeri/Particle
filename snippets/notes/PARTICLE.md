@@ -309,7 +309,7 @@ Store DAGs as binary trees?
         | NL    | List w. Pair      | Mov nl             | Empty list
         +-------+-------------------+--------------------+---------------
       * Fix:
-        * Cdr when creating lists mid-way
+        * Cdr when creating lists mid-way [Done?]
         * When replacing NIL after newlist@Pair, it currently creates the list
         on one line and NIL on another line, however it does not create newlist
         for the NIL [Done]
@@ -319,10 +319,8 @@ Store DAGs as binary trees?
         but to the x origin of the line (Car). [Pass]
           * This is similar to the problem with the sublist, so this is to be
           avoided - aka Y on same line as prv X
-      * Support y layout [WiP]
-        * Fix Y Cdr
-          * Cannot add
-        * Support y on same line
+      * Support y layout [Done]
+        * Support y on same line - no, breaks consistency
       * Limit x length of items like line wrap
       * Refactor line to store list for p
         * Line would be a nested structure
