@@ -348,7 +348,7 @@ Naming Conventions:
   (let (Program (create-program)
         Sz-f  (stat-size Path-Bin)
         Buf   (native "@" "malloc" 'N (+ Sz-f 1))
-        File  (native "@" "fopen" 'I "prog-rast.bin" "rb"))
+        File  (native "@" "fopen" 'I Path-Bin "rb"))
         
     (native "@" "fread"  NIL Buf 1 Sz-f File)
     (native "@" "fclose" NIL File)

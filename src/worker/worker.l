@@ -235,7 +235,7 @@
         B NIL
         C 0
         Vert NIL)
-    (in "verts.bin"          
+    (in "bin/verts.bin"          
       (while (and (setq Cls (rd))
                   (setq Propls (rd))
                   (< C *verts-max))

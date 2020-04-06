@@ -72,11 +72,12 @@
 
     (prinl-info "init-verts" "Finish making verts")
 
-    (unless (info "verts.bin")
-      (out "verts.bin"
+    (unless (info "bin/verts.bin")
+      (prinl-info "init-verts" "Writing ./bin/verts.bin")
+      (out "bin/verts.bin"
         (for Vert Verts
           (pr (val Vert) (getl Vert))))
-      (prinl-info "init-verts" "Wrote verts.bin"))
+      (prinl-info "init-verts" "Wrote ./bin/verts.bin"))
 
      Verts))
 
