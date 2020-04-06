@@ -312,9 +312,13 @@ Store DAGs as binary trees?
         * Cdr when creating lists mid-way
         * When replacing NIL after newlist@Pair, it currently creates the list
         on one line and NIL on another line, however it does not create newlist
-        for the NIL
+        for the NIL [Done]
           * Behavior should be to have NIL be on the same line - same as when a
           single char is on a newline
+        * When Car is placed before Y, the NIL of the Y does not align to Y
+        but to the x origin of the line (Car). [Pass]
+          * This is similar to the problem with the sublist, so this is to be
+          avoided - aka Y on same line as prv X
       * Support y layout [WiP]
         * Fix Y Cdr
           * Cannot add

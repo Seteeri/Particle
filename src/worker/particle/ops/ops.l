@@ -19,12 +19,13 @@
                   (prog
                     (ins-cdr Data Lay)
                     (point-sub Ref))
-                  (repl-car Data Lay))))
+                  (prog
+                    (repl-car Data Lay)))))
         
         (if (= (get Ref 'c 'a) Ref) # If direct sublist
 
             (prog
-              (repl-list Data Lay))
+              (ins-list-car Data Lay))
 
             (prog
               (ins-cdr Data Lay))))))
@@ -39,18 +40,22 @@
         Part (gen-part (list Data) Lay NIL T))
 
     (println 'ins-cdr "Ins-aft (bef Ptr): " Prv (get Prv 'data))
-
-    # If Ref is Y layout, move it to a newline
     
-    # If replacing NIL and it is Cdr of Y layout
-    # Make NIL on same line
-    (when (and (isa '(+Nil) Ref)
-               (= (get Prv 'lay) 'y))
+    (when (and (= (get Prv 'lay) 'y)
+               (isa '(+Nil) Ref))
+      # If replacing NIL and it is Cdr of Y layout
+      # Make NIL on same line
       (put Ref 'lay 'x)
-      # Mov NL
-      (xchg-nl Ref Part))
+      (when (get Ref 'line)
+        (xchg-nl Ref Part)))
 
+    # This will set *line to newline
     (ins-aft Prv Part)
+
+    (when (and (= (get Ref 'lay) 'y)
+               (isa '(+Pair) Ref))
+       # If Ref is Y layout, create newline for Part
+       (make-line Ref))
     
     # 1500 microseconds
     # 1.5 milliseconds to upd tree with 2 particles = 22 particles per frame max
@@ -60,8 +65,67 @@
     
     # Same ref, relayout
     (mov-cur-abv Ref)
-    (lay-part-start *0 *cur 'skip-cdr)
+    (lay-part-start *0 *line 'skip-cdr)
 
+    Part))
+
+
+
+(de repl-list-car (Data Lay)
+  #{
+    Replace beginning of list when ptr on car
+    
+    [ ]  [ ]
+    a    
+    
+         [ ]  [ ]
+         b    c
+         *
+
+    [ ]  [ ]
+    a    
+    
+         [ ]  [ ]
+         x    c
+         *
+         
+    Very similar to repl-car
+  }#
+
+  (let (Ref (get *0 'b)
+        Prv (get Ref 'c 'c)
+        Prv-Lay (get Prv 'lay)
+        Prv-B-Lay (get Prv 'b 'lay)
+        Cdr (get Ref 'c 'b)
+        Part (gen-part (list (list Data)) Lay NIL T)
+        Car (get Part 'a))
+    
+    # Move to Repl pair?
+    # Txfer line before Ref gets deleted
+    (when (get Ref 'c)
+      (xchg-nl (get Ref 'c) Car))
+    # Copy layout for Pair
+    (put Part 'lay (get Prv 'lay))
+
+    (repl-pair Prv Part)
+
+    # Relink Car to Cdr
+    (con> Car Cdr)
+    (put Cdr 'c Car)
+
+    # Copy layout
+    (put Part 'lay Prv-Lay)
+    (put Part 'b 'lay Prv-B-Lay)
+
+    (upd-tree)
+    (mov-*1 *line)    
+
+    (put *0 'b Car)
+    (point-nxt)
+    #(test T (= (get *0 'b) (get Car 'b)))
+
+    #(setq *main Car)
+    
     Part))
 
 
@@ -114,71 +178,23 @@
   Part))
 
 
-(de repl-list-car (Data Lay)
+(de ins-list-car (Data Lay)
+
   #{
-    Replace beginning of list when ptr on car
+  
+    Replace beginning of list when ptr over
     
-    [ ]  [ ]
-    a    
-    
-         [ ]  [ ]
-         b    c
          *
-
-    [ ]  [ ]
-    a    
+    [ ]  [ ] NIL
+         X
+    NIL
     
-         [ ]  [ ]
-         x    c
-         *
-         
-    Very similar to repl-car
+              *
+    [ ]  [ ]  [ ] NIL
+         Z    X
+    NIL    
+    
   }#
-
-  (when (and (not (str? Data))
-             (not (<= (length Data) 3)))
-    (println 'repl-list "WARNING! Length needs to be recalculated"))
-
-  (let (Ref (get *0 'b)
-        Prv (get Ref 'c 'c)
-        Prv-Lay (get Prv 'lay)
-        Prv-B-Lay (get Prv 'b 'lay)
-        Cdr (get Ref 'c 'b)
-        Part (gen-part (list (list Data)) Lay NIL T)
-        Car (get Part 'a))
-    
-    # Txfer line before Ref gets deleted
-    (xchg-nl (get Ref 'c) Car)
-
-    (repl-pair Prv Part)
-
-    # Relink Car to Cdr
-    (con> Car Cdr)
-    (put Cdr 'c Car)
-
-    # Copy layout
-    (put Part 'lay Prv-Lay)
-    (put Part 'b 'lay Prv-B-Lay)
-
-    (upd-tree)
-    (mov-*1 *line)    
-
-    (put *0 'b Car)
-    (point-nxt)
-    #(test T (= (get *0 'b) (get Car 'b)))
-
-    #(setq *main Car)
-    
-    Part))
-
-
-(de repl-list (Data Lay)
-
-  # Replace beginning of list when ptr over
-
-  (when (and (not (str? Data))
-             (not (<= (length Data) 3)))
-    (println 'repl-list "WARNING! Length needs to be recalculated"))
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
@@ -187,24 +203,28 @@
         Car (get Part 'a))
 
     # Txfer line before Ref gets deleted
-    (xchg-nl Ref Car)
+    (when (get Ref 'line)
+      (xchg-nl Ref Car))
+    
+    (put Part 'lay (get Prv 'lay))
 
-    (repl-pair Prv Part)
+    (repl-pair Prv Part 'skip-del)
 
-    # Relink to Cdr
-    (con> Car Cdr)
-    (put Cdr 'c Car)
+    # Relink to Ref
+    (con> Car Ref)
+    (put Ref 'c Car)
 
     (upd-tree)
     (mov-*1 *line)
 
-    (put *0 'b Car)
-    (point-nxt)
-    (test T (= (get *0 'b) (get Car 'b)))
+    # Same ref, relayout
+    (mov-cur-abv Ref)
+    (lay-part-start *0 *line 'skip-cdr)
 
-    #(setq *main Car)
-    
     Part))
+
+
+############################
 
 
 (de repl-car-list (Data Lay)
@@ -313,13 +333,13 @@
 
         (repl-pair Prv Part)
 
-        (mov-part-nl Part 'line)
+        (make-line Part 'line)
         (setq *line Part)
 
         (put Part 'lay 'y)
         (put Part 'b 'lay 'y)
 
-        (mov-part-nl (get Part 'b) 'line)
+        (make-line (get Part 'b) 'line)
         (setq *line (get Part 'b))
 
         (upd-tree)
@@ -328,7 +348,7 @@
         (put *0 'b (get Part 'c))
         (point-nxt)
         
-        #(setq *line Part)
+        (setq *line Part)
 
         (println 'mov-nl "Added Y+newline")
 
@@ -336,7 +356,7 @@
 
       # Mov current part to NL
       (prog
-        (mov-part-nl Ref)
+        (make-line Ref)
         (upd-tree)
         (mov-*1 Ref)
         
@@ -350,7 +370,7 @@
 
 # Move to Particle?
 
-(de mov-part-nl (Part)
+(de make-line (Part)
 
   # For X layout, move to nl, toggle layout
   # Only do this for lists...and NIL?
@@ -374,9 +394,9 @@
       (with (get Nxt 'line)
         (=: p Part))))
 
-  (println 'mov-part-nl "Create new line: " Part (get Part 'data))
-  (println 'mov-part-nl "Prv: " (get Part 'line 'p) (get Part 'line 'p 'data))
-  (println 'mov-part-nl "Nxt: " (get Part 'line 'n) (get Part 'line 'n 'data)))
+  (println 'make-line "Create new line: " Part (get Part 'data))
+  (println 'make-line "Prv: " (get Part 'line 'p) (get Part 'line 'p 'data))
+  (println 'make-line "Nxt: " (get Part 'line 'n) (get Part 'line 'n 'data)))
 
 
 #######################################

@@ -151,10 +151,13 @@
                                         (println "Master Line: " *master (get *master 'b 'data))
 
                                         # Print lines out
-                                        (let Line *line
+                                        (let (Line *line
+                                              Ref (get *0 'b))
                                         
                                           # Print current line
-                                          (println "Current Line: " Line (get Line 'data))
+                                          (println "Line: " Line (get Line 'data))
+                                          (println "Ref Line?: " Ref (get Ref 'data) (get Ref 'line))
+                                          (println "*on-car: " *on-car)
                                           (mov-*1 Line)
 
                                           (when NIL

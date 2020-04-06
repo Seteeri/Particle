@@ -130,6 +130,8 @@
 
 (de lay-pair-x (Part Type Nxt)
 
+  #(println 'lay-pair-x "X: " Part (get Part 'data) Type)
+
   # Not with the methods as this applies to all particles
   (when (= Type 'b)
     # For non-newline Cdr:
@@ -165,18 +167,23 @@
 
 (de lay-pair-y (Part Type Nxt)
 
-  #(println "LAY Y CDR: " Part (get Part 'data) Type)
+  #(println 'lay-pair-y "Y: " Part (get Part 'data) Type)
 
   (when (= Type 'b)
     # For non-newline Cdr:
     # X = origin of Pair
     # Y = bnds of Car
 
-    (prog
-      (when (get Part 'c)
-        (set-cur-x (get Part 'c 'ori 1)))
-      # Y should be in place, else get from cur bnds
-      (set-cur-y *cur-y) (nl-cur 3.0)))
+    (if (= (get Part 'c 'lay) 'x)
+        (prog
+          # X should be in place, else get from cur bnds
+          (set-cur-x *cur-x) (adv-cur)
+          (set-cur-y (get Part 'c 'ori 2)))
+
+        (prog
+          (set-cur-x (get Part 'c 'ori 1))
+          # Y should be in place, else get from cur bnds
+          (set-cur-y *cur-y) (nl-cur 3.0))))
     
   (lay-y> Part)
 

@@ -59,23 +59,6 @@
   (adv-cur 2.0))
 
 
-(dm check-nl> ()
-  (when (get (: line) 'p)
-    # When newline detected, must save line dims
-    # Don't update cursor...
-    (upd-dims *line-lay)
-    (println 'lay-y> "Update line:" *line-lay (get *line-lay 'data))  
-  
-    #(println 'lay> "Detected line:" This (get This 'data))
-    #(println 'lay> "Detected line prv:" (: line) (get (: line) 'p 'data))
-    
-    (align-cur-to-line This)
-        
-    (setq *cur-x (get *cur 1) *cur-y (get *cur 2))        
-        
-    (setq *line-lay This)))  
-
-
 #################
 (class +Box +Sym)
 

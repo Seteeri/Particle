@@ -263,6 +263,21 @@
     (list (max (if Xa Xa X) (if Xb Xb X) X)
           (min (if Ya Ya Y) (if Yb Yb Y) Y))))
 
+
+(dm check-nl> ()
+  (when (get (: line) 'p)
+    # When newline detected, must save line dims
+    # Don't update cursor...
+    (upd-dims *line-lay)
+    (println 'check-nl> "Align and set *line-lay:" *line-lay (get *line-lay 'data))  
+  
+    (align-cur-to-line This)
+        
+    (setq *cur-x (get *cur 1) *cur-y (get *cur 2))        
+        
+    (setq *line-lay This)))
+
+
 ######################
 
 
@@ -321,7 +336,7 @@
       (xchg-nl Ref Part))))
 
 
-(de ins-aft (Ref Part)
+(de ins-aft (Ref Part Line)
 
   #{
 
@@ -376,7 +391,7 @@
       (xchg-nl Cdr Part))))
 
 
-(de repl-pair (Ref Part)
+(de repl-pair (Ref Part Del-Skip)
 
   #{
     Replace b with x
@@ -415,7 +430,8 @@
     # Copy layout?
     # (force-lay Part (get Ref 'lay))
 
-    (del> Ref T NIL)))
+    (unless Del-Skip
+      (del> Ref T NIL))))
 
 
 (de xchg-nl (Src Dst)
