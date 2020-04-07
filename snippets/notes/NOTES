@@ -4951,3 +4951,9 @@ When doing layout of main, when enter sublist, push cur to list
 pop when leave list
 
 Hierarchy of lines
+
+================================================================================
+
+Lines can either be doubly-linked and/or store list of symbols
+
+To update children, traverse children or loop through list

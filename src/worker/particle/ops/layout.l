@@ -43,18 +43,15 @@
       (=: dims Dims))))
 
 
-(de upd-dims-a (Part)
+(de upd-line-m (Part)
+  # Only set on min/max
   (with Part
-    (let Dims (list (abs (- *cur-x (get (: ori) 1)))
-                    (abs (- *cur-y (get (: ori) 2))))
-      (=: dims-a Dims))))
-
-
-(de upd-dims-b (Part)
-  (with Part
-    (let Dims (list (abs (- *cur-x (get (: ori) 1)))
-                    (abs (- *cur-y (get (: ori) 2))))
-      (=: dims-b Dims))))
+    (when (: line)
+      (let (X (abs (- *cur-x (get (: ori) 1)))
+            Y (abs (- *cur-y (get (: ori) 2)))
+            D (list (max (car (get (: line) 'dims)) X)
+                    (max (cadr (get (: line) 'dims)) Y)))
+          (put (: line) 'dims D)))))
 
 
 (de lay-part-start (Part Line Skip)
@@ -137,32 +134,25 @@
     # For non-newline Cdr:
     # X = bnds of Car
     # Y = origin of Pair
-    (set-cur-x *cur-x) (adv-cur)
-    #(println 'lay-pair "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
+    #(set-cur-x *cur-x)
+    (adv-cur 2.0)
+    #(println 'lay-pair-x "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
     (when (get Part 'c)
       (set-cur-y (get Part 'c 'ori 2))
-      #(println 'lay-pair "Mov cur y to origin: " (format (get *cur 2) *Scl))
-      ))
-
+      #(println 'lay-pair-x "Mov cur y to origin: " (format (get *cur 2) *Scl))
+    ))
+      
   (lay-x> Part)
 
-  (cond ((= Type 'a)
-          # Update dims of this and parent
-          (upd-cur)
-          (upd-dims-2 Part))
-          
-        ((= Type 'b)
-
-          # Update dims of this and parent
-          (upd-cur)
-          (upd-dims-2 Part)
-
-          (when (isa '(+Nil) Part)
-            #(when (= (get *line-lay 'lay) 'x)
-              (println 'lay-pair-x "Found +Nil; set line dims: " *line-lay (get *line-lay 'data))
-              (upd-dims *line-lay)
-              #)
-            ))))
+  (upd-cur)
+  
+  # Update on NIL or line
+  (when (isa '(+Nil) Part)
+    (println 'lay-pair-y "Found +Nil; set line dims for: "
+             (get *line-lay 'line 'l 'data) " or " (get *line-lay 'data))
+    (when (get *line-lay 'line 'l)
+        (upd-dims @))
+    (upd-dims *line-lay)))
 
 
 (de lay-pair-y (Part Type Nxt)
@@ -173,6 +163,8 @@
     # For non-newline Cdr:
     # X = origin of Pair
     # Y = bnds of Car
+    
+    # Newline will override...
 
     (if (= (get Part 'c 'lay) 'x)
         (prog
@@ -187,22 +179,14 @@
     
   (lay-y> Part)
 
-  (cond ((= Type 'a)
-          # Update dims of this and parent
-          (upd-cur)
-          (upd-dims-2 Part))
-          
-        ((= Type 'b)
-
-          # Update dims of this and parent
-          (upd-cur)
-          (upd-dims-2 Part)
-
-          (when (isa '(+Nil) Part)
-            (when (= (get *line-lay 'lay) 'y)
-              (println 'lay-pair-y "Found +Nil; set line dims: " *line-lay (get *line-lay 'data))
-              (upd-dims *line-lay))
-            ))))
+  (upd-cur)
+  
+  (when (isa '(+Nil) Part)
+    (println 'lay-pair-x "Found +Nil; set line dims for: "
+             (get *line-lay 'line 'l 'data) " or " (get *line-lay 'data))
+    (when (get *line-lay 'line 'l)
+        (upd-dims @))
+    (upd-dims *line-lay)))
 
 
 ###############################

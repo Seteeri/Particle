@@ -23,54 +23,59 @@
 
 # These are used with layout
 
-(de align-cur-to-line (Part)
+(de align-cur-to-line-y (Part)
 
-  # x = origin of line
-  # y = bnds of line
-  (let (Line (get Part 'line 'p)
-        Ori-Line (get Line 'ori)
-        Ori (if (isa '+Sym Line)
-                (get Line (if (= (get Line 'lay) 'x)
-                             'b
-                             'a)
-                     'ori)
-                (if (= (get Line 'b) Part)
-                    (get Line 'ori)
-                    (get Line 'a 'ori)))
-        Bnds (get Line 'line 'dims))
-
-    (println 'align-cur-to-line 'Line Line (get Line 'data))
-
-    (set-cur-x (get Ori 1))
-
-    (set-cur-y (- (get Ori-Line 2) (get Bnds 2)))
-    (nl-cur (+ 1.0 *sublist-space-y))))
-
-
-#{
-(de align-cur-to-prv (Part)
-
-  (if (= (get Part 'lay) 'x)
-
-      (prog
-      
-        # x = origin of Pair
-        # y = bnds of line
-        (set-cur-x (get Part 'c 'ori 1))
-
-        (let (Line (get Part 'line 'p)
-              Ori (get (if (isa '+Sym Line)
-                           (get Line 'b)
-                           Line)
-                     'ori)
-              Bnds (get Line 'line 'dims))
-                          
-          (set-cur-y (- (get Ori 2) (get Bnds 2)))
-          (nl-cur (+ 1.0 *sublist-space-y)))
+  #{
         
-        #(println 'align-cur-to-prv "Set *cur: " *cur)
-        (setq *cur-x (get *cur 1) *cur-y (get *cur 2)))
+    Y layout:
+    
+    [Y]  CAR
+    CDR
+    
+    x = line ori
+    y = bnds of 'c 'a (or use cur-*?)
+  }#
 
-      (prog
-        (println 'align-cur-to-prv "IMPLEMENT Y LAYOUT"))))
-}#
+  (let (Ori-C (get Part 'line 'l 'ori)
+        Ori-CA (get Part 'c 'a 'ori)
+        Dims-CA (get Part 'c 'a 'line 'dims))
+
+    #(println 'align-cur-to-line-y Part (get Part 'data) 'to (get Part 'line) (get Part 'line 'data))
+
+    (set-cur-x (get Ori-C 1))
+
+    (set-cur-y (- (get Ori-CA 2) (get Dims-CA 2)))
+    (nl-cur (+ 1.0 *sublist-space-y))
+    
+    (print-cur)
+    ))
+
+
+(de align-cur-to-line-x (Part)
+
+  #{
+    
+    X layout:
+  
+    [X]  CDR
+    CAR
+    
+    
+    [X]
+    
+    x = 'c 'ori
+    y = bnds of 'c ..., which should be *cur-y
+      
+  }#
+
+  (let Ori-C (get Part 'line 'l 'ori)
+  
+    #(println 'align-cur-to-line-x Part (get Part 'data) 'Line Line (get Line 'data))
+
+    (set-cur-x (get Ori-C 1))
+
+    (set-cur-y *cur-y)
+    (nl-cur (+ 1.0 *sublist-space-y))
+    
+    (print-cur)
+    ))

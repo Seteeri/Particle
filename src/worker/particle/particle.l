@@ -268,16 +268,17 @@
 
 
 (dm check-nl> ()
-  (when (get (: line) 'p)
-    # When newline detected, must save line dims
-    # Don't update cursor...
-    (upd-dims *line-lay)
-    (println 'check-nl> "Align and set *line-lay:" *line-lay (get *line-lay 'data))  
+  (when (get (: line))
   
-    (align-cur-to-line This)
-        
-    (setq *cur-x (get *cur 1) *cur-y (get *cur 2))        
-        
+    (when (get (: line) 'p)
+    
+      (if (= (get (: c) 'lay) 'y)
+          (align-cur-to-line-y This)
+          (align-cur-to-line-x This))
+          
+      #(setq *cur-x (get *cur 1) *cur-y (get *cur 2))
+      )
+          
     (setq *line-lay This)))
 
 
@@ -335,7 +336,7 @@
     (put Ref 'c Part)
 
     # If Ref is a new line, xfer it to new Part
-    (when (get Ref 'line 'p)
+    (when (get Ref 'line)
       (xchg-nl Ref Part))))
 
 
@@ -390,7 +391,7 @@
     (put Cdr 'c Part)
 
     # If Cdr is a new line, xfer it to new Part
-    (when (get Cdr 'line 'p)
+    (when (get Cdr 'line)
       (xchg-nl Cdr Part))))
 
 
@@ -427,7 +428,7 @@
     (put Cdr 'c Part)
 
     # If Ref is a new line, xfer it to new Part
-    (when (get Ref 'line 'p)
+    (when (get Ref 'line)
       (xchg-nl Ref Part))
 
     (unless Del-Skip
@@ -445,11 +446,18 @@
 
     (when Nxt
       (put (get Nxt 'line) 'p Dst))
+      
+    # Update children's lists when Src is NIL NIL
+    (when (and (not (get Nl 'p)) (not (get Nl 'l)))
+      (let Child (get Nl 'n)
+        (while Child
+          (println 'xchg-nl "Set list: " Child (get Child 'data))
+          (put (get Child 'line) 'l Dst)
+          (setq Child (get Child 'line 'n)))))
 
     (put Dst 'line Nl))
 
   (put Src 'line NIL)
-
   (println 'xchg-nl "Exchange line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
 
   (setq *line Dst))

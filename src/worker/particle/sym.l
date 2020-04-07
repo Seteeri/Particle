@@ -139,9 +139,9 @@
   (if (= (get (: c) 'a) This)
       (prv> (: c))
       (when (: c)
-        (when (get (: line) 'p)
-          (println 'prv> "Mov ptr -> super-line/list" (get (: line) 'p) (get (: line) 'p 'data))
-          (setq *line (get (: line) 'p)))
+        (when (get (: c) 'line)
+          (println 'prv> "Mov ptr -> super-line/list" (: c) (get (: c) 'data))
+          (setq *line (: c)))
         (if *on-car
             (sub> (: c))
             (prog

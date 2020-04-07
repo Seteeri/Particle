@@ -308,7 +308,8 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         | NL    | List w. Pair      | Mov nl             | Empty list
         +-------+-------------------+--------------------+---------------
-        
+      * Rewrite line system
+        * Fix replacing NIL on-car on Y list
       * Fix newline alignment issues for sublists
         * Creating sublist for 2nd item causes CDR to be misaligned
         * Particle newline must know which list it belongs to

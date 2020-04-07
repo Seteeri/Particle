@@ -49,13 +49,26 @@
       (when (get Ref 'line)
         (xchg-nl Ref Part)))
 
+    (when NIL
+      (prinl) (prinl)
+      (let Nl (get *master 'b 'line)
+        (view (getl Nl))
+        (let Child (get Nl 'n)
+          (while Child
+            (println 'xchg-nl "List: " Child (get Child 'data))
+            (view (getl (get Child 'line)))
+            (setq Child (get Child 'line 'n)))))
+      (prinl) (prinl))
+    
     # This will set *line to newline
     (ins-aft Prv Part)
-
+    
+    #{
     (when (and (= (get Ref 'lay) 'y)
                (isa '(+Pair) Ref))
        # If Ref is Y layout, create newline for Part
        (make-line Ref))
+    }#
     
     # 1500 microseconds
     # 1.5 milliseconds to upd tree with 2 particles = 22 particles per frame max
@@ -65,8 +78,9 @@
     
     # Same ref, relayout
     (mov-cur-abv Ref)
+    
     (lay-part-start *0 *line 'skip-cdr)
-
+    
     Part))
 
 
@@ -105,17 +119,14 @@
     (when (get Ref 'c)
       (xchg-nl (get Ref 'c) Car))
     # Copy layout for Pair
-    (put Part 'lay (get Prv 'lay))
+    (put Part 'lay Prv-Lay)
+    (put Part 'b 'lay Prv-B-Lay)
 
     (repl-pair Prv Part)
 
     # Relink Car to Cdr
     (con> Car Cdr)
     (put Cdr 'c Car)
-
-    # Copy layout
-    (put Part 'lay Prv-Lay)
-    (put Part 'b 'lay Prv-B-Lay)
 
     (upd-tree)
     (mov-*1 *line)    
@@ -124,7 +135,8 @@
     (point-nxt)
     #(test T (= (get *0 'b) (get Car 'b)))
 
-    #(setq *main Car)
+    # Set line
+    (setq *line Car)
     
     Part))
 
@@ -292,7 +304,7 @@
 (de upd-tree (List)
 
   (setq *cur (get *master 'ori))
-  (lay-part-start *master *master))
+  (lay-part-start *master (get *master 'b)))
                   
 
 (de make-list (Ref)
@@ -329,17 +341,42 @@
                            'x
                            NIL
                            T)
-            Prv (get Ref 'c))
+            Prv (get Ref 'c)
+            Prv-Cdr (get Prv 'b)
+            Line *line
+            Nxt (get *line 'line 'n))
 
         (repl-pair Prv Part)
-
-        (make-line Part 'line)
-        (setq *line Part)
-
+        
+        # P N D L
+        
+        # List is current list or NIL?
+        # Prv is current list
+        (put Part 'line (new '(+Line)
+                          *line
+                          (get Part 'b)
+                          NIL
+                          (if (get Line 'line 'l) @ *line)))
         (put Part 'lay 'y)
-
-        (make-line (get Part 'b) 'line)
-        (setq *line (get Part 'b))
+        (put Line 'line 'n Part)
+        
+        # Prv is Part
+        # List is Part
+        (let Cdr (get Part 'b)
+          (put Cdr 'line (new '(+Line)
+                            Part
+                            Nxt
+                            NIL
+                            (if (get Line 'line 'l) @ *line)))
+          (put Cdr 'lay (get Prv-Cdr 'lay))
+          (put Nxt 'line 'p Cdr))
+        
+        # For a, no 'p = no newline
+        (put (get Part 'a) 'line (new '(+Line)
+                                      NIL
+                                      NIL
+                                      NIL
+                                      NIL))
 
         (upd-tree)
         (mov-*1 *line)
@@ -347,15 +384,21 @@
         (put *0 'b (get Part 'c))
         (point-nxt)
         
-        (setq *line Part)
-
-        (println 'mov-nl "Added Y+newline")
+        (println 'make-list "Added Y list, moved to newline")
 
         Part)
 
       # Mov current part to NL
       (prog
-        (make-line Ref)
+            
+        (put Ref 'line (new '(+Line)
+                          *line
+                          (get *line 'line 'n)
+                          NIL
+                          (if (get *line 'line 'l) @ *line)))
+        (put (get *line 'line) 'n Ref)
+        (put (get *line 'line 'n) 'line 'p Ref)
+        
         (upd-tree)
         (mov-*1 Ref)
         
@@ -382,7 +425,11 @@
                       *line
                       Nxt
                       NIL
-                      'line))
+                      *line))
+
+    # Push into list
+    #(with (get *line 'line)
+    #  (push (:: c) Part))
 
     # Link prev n to Part
     (with (get *line 'line)
@@ -394,8 +441,30 @@
         (=: p Part))))
 
   (println 'make-line "Create new line: " Part (get Part 'data))
-  (println 'make-line "Prv: " (get Part 'line 'p) (get Part 'line 'p 'data))
-  (println 'make-line "Nxt: " (get Part 'line 'n) (get Part 'line 'n 'data)))
+  #(println 'make-line "Prv: " (get Part 'line 'p) (get Part 'line 'p 'data))
+  #(println 'make-line "Nxt: " (get Part 'line 'n) (get Part 'line 'n 'data))
+  #(println 'make-line "Line: " (get Part 'line 'l) (get Part 'line 'l 'data))
+  )
+
+
+(de ins-line (Part)
+
+  # For X layout, move to nl, toggle layout
+  # Only do this for lists...and NIL?
+
+  # Link lines
+  (let Nxt (get *line 'line 'n)
+
+    # Link prev n to Part
+    (with (get *line 'line)
+      (=: n Part))
+
+    # Link nxt p to Part
+    (when Nxt
+      (with (get Nxt 'line)
+        (=: p Part))))
+
+  (println 'ins-line "Insert line: " Part (get Part 'data)))
 
 
 #######################################

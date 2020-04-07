@@ -29,9 +29,14 @@
     (if *on-car
         (sub> (: c))
         (prog
-          (when (get (: line) 'p)
-            (println 'prv> "Mov ptr -> super-line/list" (get (: line) 'p) (get (: line) 'p 'data))
-            (setq *line (get (: line) 'p)))
+          (when (get (: c) 'line)
+            (println 'prv> "Mov ptr -> super-line/list" (: c) (get (: c) 'data))
+            (setq *line (: c)))
+          # If Y layout, must be newline
+          (when (= (: lay) 'y)
+            (when (get *line 'line 'p)
+              (setq *line @)
+              (println 'prv> "Mov ptr -> super-line/list" @ (get @ 'data))))
           (mov-cur-abv (: c))
           (: c)))))
 
@@ -52,7 +57,7 @@
       # Exclude Y layout Pair -> X layout Car
       # *main?
       (prog
-        #(let? Ln (get 'c 'line)
+        #(let? Ln (get (: c) 'line)
         #  (println 'sup> "Mov ptr -> super-line/list" Ln (get Ln 'data))        
         #  (setq *line (: c)))
         (setq *on-car NIL)        
@@ -70,9 +75,9 @@
   (if (isa '(+Pair) (: a))
       # Exclude Y layout Pair -> X layout Car
       (prog
-        #(let? Ln (get 'a 'line)
-        #  (println 'sub> "Mov ptr -> sub-line/list" Ln (get Ln 'data))
-        #  (setq *line (: a)))
+        (when (get (: a) 'line)
+          (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))
+          (setq *line (: a)))
         # Either move Pair or Car; default follows Car             
         (if *on-car
             (sub> (: a))
@@ -86,7 +91,7 @@
 
 
 (dm lay-x> ()
-  
+    
   (check-nl> This)
 
   (setq *cur (mov> This *cur))
@@ -125,8 +130,8 @@
 
   
 (class +Line)
-(dm T (P N Dims Base)
+(dm T (P N Dims L)
   (=: p P)
   (=: n N)
   (=: dims (if Dims Dims (list 0.0 0.0)))
-  (=: base Base)) # either 'line or 'prv  
+  (=: l L))

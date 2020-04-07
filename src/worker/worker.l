@@ -155,25 +155,13 @@
                                               Ref (get *0 'b))
                                         
                                           # Print current line
-                                          (println "Line: " Line (get Line 'data))
-                                          (println "Ref Line?: " Ref (get Ref 'data) (get Ref 'line))
+                                          (println "Ref: " Ref (get Ref 'data))
                                           (println "*on-car: " *on-car)
-                                          (mov-*1 Line)
+                                          (println "Line:")
+                                          (println Line (get Line 'data))
+                                          (view (getl (get Line 'line)))
 
-                                          (when NIL
-                                            # Traverse from top
-                                            (setq Line *master)
-                                            (loop
-                                              (println "Line: " Line (get Line 'data))
-                                              (mov-*1 Line)
-                                              (call 'sleep 2)                                            
-                                              (setq Line (get Line 'line 'n))
-                                              (T (not Line)))))
-                                        
-                                        #(upd-tree)
-                                        #(mov-*1 *master)
-                                          
-                                        ))
+                                          (mov-*1 Line))))
 
       # Pointer Translation
       ((`ksd~Control-L `ksd~w) T `cmd-ptr-up)
@@ -280,17 +268,16 @@
     (def '*main (gen-part '*main 'x))
 
     # DO this properly - in gen?
-    (with *main
-      (=: line (new '(+Line) NIL NIL (get (: a) 'dims))))
+    (with (get *main 'b)
+      (=: line (new '(+Line) NIL NIL (get *main 'a 'dims) NIL)))
       
     (setq *pos-main (copy *cur))
-      
-    (lay-part-start *main *main)
-    
-    (setq *line *main)
-    (inc-line-by-part-x> *line (get *main 'b))
-    
+    (setq *line (get *main 'b))
     (setq *master *main)
+      
+    (lay-part-start *main *line)
+    
+    #(inc-line-by-part-x> (get *main 'b) (get *main 'b))
     
     #######################
     # TODO: Draw *ptrs
@@ -327,7 +314,10 @@
     
     (when T
 
-      (let Part (gen-part '(1 2 (3 (4))) 'y)
+      (let Part (gen-part '("a" "b" ("c" "d" "e" ("f"))) 'x)
+      
+        # (put (get Part 'b 'b) 'lay 'y)
+        # (put (get Part 'b 'b 'a 'b 'b) 'lay 'y)
         
         (set-cur-x X)
         
