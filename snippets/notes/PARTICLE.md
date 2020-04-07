@@ -308,25 +308,14 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         | NL    | List w. Pair      | Mov nl             | Empty list
         +-------+-------------------+--------------------+---------------
-      * Fix:
-        * Cdr when creating lists mid-way [Done?]
-        * Fix newline alignment issues for sublists
-        * Sub on Cdr of Y pair does not work [Done]
-        * When replacing NIL after newlist@Pair, it currently creates the list
-        on one line and NIL on another line, however it does not create newlist
-        for the NIL [Done]
-          * Behavior should be to have NIL be on the same line - same as when a
-          single char is on a newline
-        * When Car is placed before Y, the NIL of the Y does not align to Y
-        but to the x origin of the line (Car). [Pass]
-          * This is similar to the problem with the sublist, so this is to be
-          avoided - aka Y on same line as prv X
-      * Support y layout [Done]
-        * Support y on same line - no, breaks consistency
+        
+      * Fix newline alignment issues for sublists
+        * Creating sublist for 2nd item causes CDR to be misaligned
+        * Particle newline must know which list it belongs to
+        * Refactor line to store list for p
+          * Line would be a nested structure
+          * Maybe X sublist will work?        
       * Limit x length of items like line wrap
-      * Refactor line to store list for p
-        * Line would be a nested structure
-        * Maybe X sublist will work?
       * Store ref to last item in list for faster bnds calc
       * Handle multi-line strings -> WILL NEED THIS
         
