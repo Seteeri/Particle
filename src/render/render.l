@@ -17,33 +17,31 @@ Class variables may be indicated by an upper case letter
 
 
 # Wrapper libraries
-(load "/home/user/Particle/particle/src/c/mathc.l")
-(load "/home/user/Particle/particle/src/c/posix/mman.l")
-#(load "/home/user/Particle/particle/src/c/posix/stat.l")
-(load "/home/user/Particle/particle/src/c/posix/string.l")
-(load "/home/user/Particle/particle/src/c/socket.l")
-(load "/home/user/Particle/particle/src/c/gles/gles.l")
-(load "/home/user/Particle/particle/src/c/glfw.l")
-(load "/home/user/Particle/particle/src/c/epoll.l")
+(load (pack (pwd) "/src/misc.l"))
+(load-cwd "/src/c/mathc.l")
+(load-cwd "/src/c/posix/mman.l")
+#(load-cwd "/src/c/posix/stat.l")
+(load-cwd "/src/c/posix/string.l")
+(load-cwd "/src/c/socket.l")
+(load-cwd "/src/c/gles/gles.l")
+(load-cwd "/src/c/glfw.l")
+(load-cwd "/src/c/epoll.l")
 # Lisp libraries
-(load "/home/user/Particle/particle/src/misc.l")
-(load "/home/user/Particle/particle/src/dlst.l")
-(load "/home/user/Particle/particle/src/ipc/ipc.l")
-(load "/home/user/Particle/particle/src/prot/conn.l")
-(load "/home/user/Particle/particle/src/prot/msg.l")
-(load "/home/user/Particle/particle/src/prot/obj.l")
-(load "/home/user/Particle/particle/src/render/params-buffer.l")
-(load "/home/user/Particle/particle/src/render/raster.l")
-#(load "/home/user/Particle/particle/src/render/compute.l")
-(load "/home/user/Particle/particle/src/render/conn.l")
+(load-cwd "/src/dlst.l")
+(load-cwd "/src/ipc/ipc.l")
+(load-cwd "/src/prot/conn.l")
+(load-cwd "/src/prot/msg.l")
+(load-cwd "/src/prot/obj.l")
+(load-cwd "/src/render/params-buffer.l")
+(load-cwd "/src/render/raster.l")
+#(load-cwd "/src/render/compute.l")
+(load-cwd "/src/render/conn.l")
 
 
 (def 'NAME-PID "RENDER")
 
-(def '*cwd (pwd))
-
 # C library paths
-(def 'PATH-GLYPHS "/home/user/Particle/particle/src/glyphs")
+(defcwdpath 'PATH-GLYPHS "/src/glyphs")
 
 # UDS paths
 (def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
@@ -51,18 +49,18 @@ Class variables may be indicated by an upper case letter
 (def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
 
 #Shader paths
-(def '*path-structs-shader "/home/user/Particle/particle/glsl/structs.glsl")
+(defcwdpath '*path-structs-shader "/glsl/structs.glsl")
 (def '*paths-rast-vert-shader
-    (list *path-structs-shader
-          "/home/user/Particle/particle/glsl/node.vs.glsl"))
+      (list *path-structs-shader
+            "/glsl/node.vs.glsl"))
 (def '*paths-rast-frag-shader
-    (list *path-structs-shader
-          "/home/user/Particle/particle/glsl/filter-bilinear.fs.glsl"
-          "/home/user/Particle/particle/glsl/msdf.fs.glsl"))
+      (list *path-structs-shader
+            "/glsl/filter-bilinear.fs.glsl"
+            "/glsl/msdf.fs.glsl"))
 (def '*paths-comp-shader
-    (list *path-structs-shader
-          "/home/user/Particle/particle/glsl/node.cs.glsl"))
-(def '*path-prog-rast "bin/prog-rast.bin")
+      (list *path-structs-shader
+            "/glsl/node.cs.glsl"))
+(defcwdpath '*path-prog-rast "/bin/prog-rast.bin")
 
 (def '*window)
 (def '*buffer-objects)

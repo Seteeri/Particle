@@ -5,13 +5,13 @@
   # If file exists: load it
   # else:
 
-  (setq *prog-rast (if (info "bin/prog-rast.bin")
+  (setq *prog-rast (if (info *path-prog-rast)
                        (gl~read-and-load-prog *paths-rast-vert-shader
                                               *paths-rast-frag-shader
-                                              "bin/prog-rast.bin")
+                                              *path-prog-rast)
                        (gl~build-and-write-prog *paths-rast-vert-shader
                                                 *paths-rast-frag-shader
-                                                "bin/prog-rast.bin")))
+                                                *path-prog-rast)))
     
   (gl~use-program *prog-rast)
 
