@@ -4957,3 +4957,9 @@ Hierarchy of lines
 Lines can either be doubly-linked and/or store list of symbols
 
 To update children, traverse children or loop through list
+
+================================================================================
+
+Improving SDF at smaller sizes
+
+http://www.java-gaming.org/topics/solved-signed-distance-field-fonts-look-crappy-at-small-pt-sizes/33612/view.html

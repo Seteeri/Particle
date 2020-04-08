@@ -16,37 +16,6 @@ Class variables may be indicated by an upper case letter
 (scl 6)
 
 
-(def 'NAME-PID "RENDER")
-
-# C library paths
-(def 'PATH-GLYPHS "/home/user/Particle/particle/src/glyphs")
-# UDS paths
-(def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
-(def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
-(def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
-#Shader paths
-(def '*path-structs-shader "/home/user/Particle/particle/glsl/structs.glsl")
-(def '*paths-rast-vert-shader
-    (list *path-structs-shader
-          "/home/user/Particle/particle/glsl/node.vs.glsl"))
-(def '*paths-rast-frag-shader
-    (list *path-structs-shader
-          "/home/user/Particle/particle/glsl/filter-bilinear.fs.glsl"
-          "/home/user/Particle/particle/glsl/msdf.fs.glsl"))
-(def '*paths-comp-shader
-    (list *path-structs-shader
-          "/home/user/Particle/particle/glsl/node.cs.glsl"))
-
-
-(def '*window)
-(def '*buffer-objects)
-(def '*prog-rast)
-(def '*prog-comp)
-(def '*vao)
-(def '*fence)
-(def 'TEST-GLYPH T)
-
-
 # Wrapper libraries
 (load "/home/user/Particle/particle/src/c/mathc.l")
 (load "/home/user/Particle/particle/src/c/posix/mman.l")
@@ -68,6 +37,40 @@ Class variables may be indicated by an upper case letter
 #(load "/home/user/Particle/particle/src/render/compute.l")
 (load "/home/user/Particle/particle/src/render/conn.l")
 
+
+(def 'NAME-PID "RENDER")
+
+(def '*cwd (pwd))
+
+# C library paths
+(def 'PATH-GLYPHS "/home/user/Particle/particle/src/glyphs")
+
+# UDS paths
+(def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
+(def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
+(def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
+
+#Shader paths
+(def '*path-structs-shader "/home/user/Particle/particle/glsl/structs.glsl")
+(def '*paths-rast-vert-shader
+    (list *path-structs-shader
+          "/home/user/Particle/particle/glsl/node.vs.glsl"))
+(def '*paths-rast-frag-shader
+    (list *path-structs-shader
+          "/home/user/Particle/particle/glsl/filter-bilinear.fs.glsl"
+          "/home/user/Particle/particle/glsl/msdf.fs.glsl"))
+(def '*paths-comp-shader
+    (list *path-structs-shader
+          "/home/user/Particle/particle/glsl/node.cs.glsl"))
+(def '*path-prog-rast "bin/prog-rast.bin")
+
+(def '*window)
+(def '*buffer-objects)
+(def '*prog-rast)
+(def '*prog-comp)
+(def '*vao)
+(def '*fence)
+(def 'TEST-GLYPH T)
 
 (def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
 
