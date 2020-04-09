@@ -5,6 +5,7 @@ precision mediump samplerBuffer;
 
 vec4 filter_bilinear(samplerBuffer msdf, 
                       int vertexOffsetTex,
+                      ivec2 vertexDimsTex,
                       uv_t vertexUV, 
                       vec2 vertexDimsTexOffset)
 {
@@ -27,7 +28,6 @@ vec4 filter_bilinear(samplerBuffer msdf,
     // Otherwise offset has to be generated and passed here per glyph
     // Currently, vertexOffsetTex is simply the char index
 
-    ivec2 vertexDimsTex = ivec2(96.0, 96.0);
     int offsetTexel00 = vertexOffsetTex + ( coordTexel.x       + (coordTexel.y       * vertexDimsTex.x));
     int offsetTexel10 = vertexOffsetTex + ((coordTexel.x + 1)  + (coordTexel.y       * vertexDimsTex.x));
     int offsetTexel11 = vertexOffsetTex + ((coordTexel.x + 1)  + ((coordTexel.y + 1) * vertexDimsTex.x));

@@ -83,7 +83,7 @@ own proc
       (fork-2 '(() (exec "pil" (pack Home "model/model.l")   "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
       (fork-2 '(() (exec "pil" (pack Home "input/input.l")   "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
       (fork-2 '(() (exec "pil" (pack Home "ctrl/ctrl.l")     "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
-      (fork-2 '(() (exec "pil" (pack Home "worker/worker.l") "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend 1))))
+      (fork-2 '(() (exec "pil" (pack Home "worker/worker.l") "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend))))
 
   (bye))
   

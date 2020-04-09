@@ -189,9 +189,9 @@
   (let ID-C (pack "WORKER-" *i-proc)
 
     (setq *ipc (new '(ipc~+IPC)
-                     (pack "/tmp/particle-worker-" *i-proc ".socket") 'ipc~block handle-client accept-client
-                     (list (list PATH-UDS-MODEL   T handle-model  "MODEL")
-                           (list PATH-UDS-CONTROL T handle-ctrl   "CONTROL")
+                     (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
+                     (list (list *uds-mod   T handle-model  "MODEL")
+                           (list *uds-ctrl T handle-ctrl   "CONTROL")
                            (list PATH-UDS-RENDER  T handle-render "RENDER")
                            )))
 

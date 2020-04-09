@@ -22,9 +22,9 @@
   (let A '(*width
            *height
            *verts-max
-           PATH-UDS-CONTROL
-           PATH-UDS-INPUT      
-           PATH-UDS-MODEL  
+           *uds-ctrl
+           *uds-in      
+           *uds-mod  
            PATH-UDS-RENDER)
 
     (when (lst? X)

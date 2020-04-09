@@ -38,10 +38,6 @@
 
 # C library paths
 (def 'PATH-GLYPHS "/home/user/Particle/particle/src/glyphs")
-# UDS paths
-(def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
-(def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
-(def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
 
 # Globals
 (def '*sca-vert (*/ 1.0 1.0 96.0))
@@ -120,7 +116,7 @@
 
 (de init-ipc ()
   (setq *ipc (new '(ipc~+IPC)
-                  PATH-UDS-MODEL T recv-conn accept-client
+                  *uds-mod T recv-conn accept-client
                   NIL)))
 
 

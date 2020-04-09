@@ -74,12 +74,6 @@ Class variables may be indicated by an upper case letter
 
   }#
 
-  #Get number of nodes and window size from args instead of file
-  (let Argv (argv)
-    (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-          *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-          *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
-
   (setq *ipc (new '(ipc~+IPC)
                     PATH-UDS-RENDER T recv-conn accept-client
                     NIL))
