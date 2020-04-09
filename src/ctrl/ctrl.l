@@ -12,18 +12,25 @@
 }#
 
 
-# Set math precision to 6 decimals
 (scl 6)
 
+(load (pack (pwd) "/src/misc.l"))
+(mapc 'load-cwd
+      (list "/src/c/mathc.l"
+            "/src/c/epoll.l"
+            "/src/c/li.l"
+            "/src/c/socket.l"
+            "/src/c/xkbcommon.l"
+            "/src/c/timerfd.l"
+            "/src/c/ksd.l"
+            "/src/misc.l"
+            "/src/ipc/ipc.l"
+            "/src/prot/conn.l"
+            "/src/prot/msg.l"
+            "/src/prot/obj.l"
+            "/src/ctrl/xkb.l"))
 
 (def 'NAME-PID "CTRL")
-
-# Paths
-(def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
-(def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
-(def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
-(def 'PATH-UDS-CONTROL "/tmp/particle-control.socket")
-
 
 #Globals
 (def '*q-worker)
@@ -34,32 +41,7 @@
 (def '*delay-int 40)  # ms
 
 
-# Wrapper libraries
-(load "/home/user/Particle/particle/src/c/mathc.l")
-(load "/home/user/Particle/particle/src/c/epoll.l")
-(load "/home/user/Particle/particle/src/c/li.l")
-(load "/home/user/Particle/particle/src/c/socket.l")
-(load "/home/user/Particle/particle/src/c/xkbcommon.l")
-(load "/home/user/Particle/particle/src/c/timerfd.l")
-(load "/home/user/Particle/particle/src/c/ksd.l")
-# Lisp libraries
-(load "/home/user/Particle/particle/src/misc.l")
-(load "/home/user/Particle/particle/src/ipc/ipc.l")
-(load "/home/user/Particle/particle/src/prot/conn.l")
-(load "/home/user/Particle/particle/src/prot/msg.l")
-(load "/home/user/Particle/particle/src/prot/obj.l")
-#(load "/home/user/Particle/particle/src/ctrl/conn.l")
-(load "/home/user/Particle/particle/src/ctrl/xkb.l")
-
-
-
 (de init-ctrl ()
-
-  (let Argv (argv)
-
-    (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-          *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-          *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
   (let ID-C (pack "CTRL")
 
@@ -254,6 +236,7 @@
 
 
 (de main ()
+  (bind-args)
   (init-ctrl)
   (run-ctrl -1)
   (bye))

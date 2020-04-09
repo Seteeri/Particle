@@ -12,41 +12,30 @@ Class variables may be indicated by an upper case letter
 }#
 
 
-# Set math precision to 6 decimals
 (scl 6)
 
-
-# Wrapper libraries
 (load (pack (pwd) "/src/misc.l"))
-(load-cwd "/src/c/mathc.l")
-(load-cwd "/src/c/posix/mman.l")
-#(load-cwd "/src/c/posix/stat.l")
-(load-cwd "/src/c/posix/string.l")
-(load-cwd "/src/c/socket.l")
-(load-cwd "/src/c/gles/gles.l")
-(load-cwd "/src/c/glfw.l")
-(load-cwd "/src/c/epoll.l")
-# Lisp libraries
-(load-cwd "/src/dlst.l")
-(load-cwd "/src/ipc/ipc.l")
-(load-cwd "/src/prot/conn.l")
-(load-cwd "/src/prot/msg.l")
-(load-cwd "/src/prot/obj.l")
-(load-cwd "/src/render/params-buffer.l")
-(load-cwd "/src/render/raster.l")
-#(load-cwd "/src/render/compute.l")
-(load-cwd "/src/render/conn.l")
-
+(mapc 'load-cwd
+      (list "/src/c/mathc.l"
+            "/src/c/posix/mman.l"
+            "/src/c/posix/string.l"
+            "/src/c/socket.l"
+            "/src/c/gles/gles.l"
+            "/src/c/glfw.l"
+            "/src/c/epoll.l"
+            "/src/dlst.l"
+            "/src/ipc/ipc.l"
+            "/src/prot/conn.l"
+            "/src/prot/msg.l"
+            "/src/prot/obj.l"
+            "/src/render/params-buffer.l"
+            "/src/render/raster.l"
+            "/src/render/conn.l"))
+            #"/src/render/compute.l"
 
 (def 'NAME-PID "RENDER")
 
-# C library paths
 (defcwdpath 'PATH-GLYPHS "/src/glyphs")
-
-# UDS paths
-(def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
-(def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
-(def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
 
 #Shader paths
 (defcwdpath '*path-structs-shader "/glsl/structs.glsl")
@@ -266,6 +255,7 @@ Class variables may be indicated by an upper case letter
 
 
 (de main ()
+  (bind-args)
   (init-render)
   (run-render)
   (println 'Exiting...)

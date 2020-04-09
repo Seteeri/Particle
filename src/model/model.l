@@ -12,9 +12,27 @@
 }#
 
 
-# Set math precision to 6 decimals
 (scl 6)
 
+(load (pack (pwd) "/src/misc.l"))
+(mapc 'load-cwd
+      (list "/src/c/mathc.l"
+            "/src/c/posix/mman.l"
+            "/src/c/posix/stdio.l"
+            "/src/c/posix/string.l"
+            "/src/c/posix/unistd.l"
+            "/src/c/epoll.l"
+            "/src/c/socket.l"
+            "/src/misc.l"
+            "/src/dlst.l"
+            "/src/ipc/ipc.l"
+            "/src/prot/conn.l"
+            "/src/prot/msg.l"
+            "/src/prot/obj.l"
+            "/src/model/projview.l"
+            "/src/metrics/metrics.l"
+            "/src/model/conn.l"
+            "/src/model/vertex.l"))
 
 (def 'NAME-PID "MODEL")
 
@@ -24,28 +42,6 @@
 (def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
 (def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
 (def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
-
-
-# Wrapper libraries
-(load "/home/user/Particle/particle/src/c/mathc.l")
-(load "/home/user/Particle/particle/src/c/posix/mman.l")
-(load "/home/user/Particle/particle/src/c/posix/stdio.l")
-(load "/home/user/Particle/particle/src/c/posix/string.l")
-(load "/home/user/Particle/particle/src/c/posix/unistd.l")
-(load "/home/user/Particle/particle/src/c/epoll.l")
-(load "/home/user/Particle/particle/src/c/socket.l")
-# Lisp libraries
-(load "/home/user/Particle/particle/src/misc.l")
-(load "/home/user/Particle/particle/src/dlst.l")
-(load "/home/user/Particle/particle/src/ipc/ipc.l")
-(load "/home/user/Particle/particle/src/prot/conn.l")
-(load "/home/user/Particle/particle/src/prot/msg.l")
-(load "/home/user/Particle/particle/src/prot/obj.l")
-(load "/home/user/Particle/particle/src/model/projview.l")
-(load "/home/user/Particle/particle/src/metrics/metrics.l")
-(load "/home/user/Particle/particle/src/model/conn.l")
-(load "/home/user/Particle/particle/src/model/vertex.l")
-
 
 # Globals
 (def '*sca-vert (*/ 1.0 1.0 96.0))
@@ -83,17 +79,6 @@
 
 
 (de init-model ()
-
-  #(*/ 1.0 2560.0 2.0)
-  #1080.0
-  #(** 2 19)
-
-  #Get number of nodes and window size from args instead of file
-  (let Argv (argv)
-
-    (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-          *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-          *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))))
 
   (init-ipc)
 
@@ -153,7 +138,7 @@
 
 
 (de main ()
-
+  (bind-args)
   (init-model)
   (run-model -1)
   (println 'Exiting...)

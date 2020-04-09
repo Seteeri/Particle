@@ -12,29 +12,20 @@
 }#
 
 
-# Set math precision to 6 decimals
 (scl 6)
 
+(load (pack (pwd) "/src/misc.l"))
+(mapc 'load-cwd
+      (list "/src/c/epoll.l"
+            "/src/c/li.l"
+            "/src/c/socket.l"
+            "/src/misc.l"
+            "/src/ipc/ipc.l"
+            "/src/prot/conn.l"
+            "/src/prot/msg.l"
+            "/src/prot/obj.l"))
 
 (def 'NAME-PID "INPUT")
-
-# Paths
-(def 'PATH-UDS-MODEL  "/tmp/particle-model.socket")
-(def 'PATH-UDS-INPUT  "/tmp/particle-input.socket")
-(def 'PATH-UDS-RENDER "/tmp/particle-render.socket")
-
-
-# Wrapper libraries
-(load "/home/user/Particle/particle/src/c/epoll.l")
-(load "/home/user/Particle/particle/src/c/li.l")
-(load "/home/user/Particle/particle/src/c/socket.l")
-# Lisp libraries
-(load "/home/user/Particle/particle/src/misc.l")
-(load "/home/user/Particle/particle/src/ipc/ipc.l")
-(load "/home/user/Particle/particle/src/prot/conn.l")
-(load "/home/user/Particle/particle/src/prot/msg.l")
-(load "/home/user/Particle/particle/src/prot/obj.l")
-
 
 #Globals
 (def '*input)
@@ -48,11 +39,6 @@
 
 
 (de init-input ()
-
-  (let Argv (argv)
-
-    (setq *width  (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-          *height (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))))
 
   (setq *ipc (new '(ipc~+IPC)
                   PATH-UDS-INPUT T handle-client accept-client))
@@ -185,7 +171,7 @@
 
 
 (de main ()
-
+    (bind-args)
     #(push '*Bye '(end-input))
     (init-input)
     (run-input -1)

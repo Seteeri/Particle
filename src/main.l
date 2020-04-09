@@ -48,16 +48,6 @@ own proc
 }#
 
 
-(def '*proc-render)
-(def '*proc-model)
-(def '*proc-input)
-(def '*proc-ctrl)
-(def '*proc-work-1)
-(def '*proc-work-2)
-(def '*proc-work-3)
-(def '*proc-work-4)
-
-
 (de fork-2 (Fn)
   (let Pid-1 (fork)
     (cond
@@ -75,26 +65,38 @@ own proc
 (de main ()
 
   #{
-  Pass:
-  (def '*sca-vert 0.008)
-  (def '*sca-glyph 5.8239365) # MSDF/tex parameter
-  (def '*adv-glyph 9.375)       # MSDF/tex parameter
+    (def '*sca-vert 0.008)
+    (def '*sca-glyph 5.8239365) # MSDF/tex parameter
+    (def '*adv-glyph 9.375)       # MSDF/tex parameter
   }#
-
-  (let (Width  (format (/ 2560 2))
-        Height (format (/ 1080 2))
-        Verts  (format (** 2 16))) # 16384
-
-      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/render/render.l" "-main" Width Height Verts)))
-      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/model/model.l" "-main" Width Height Verts)))
-      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/input/input.l" "-main" Width Height Verts)))
-      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/ctrl/ctrl.l" "-main" Width Height Verts)))
-      (fork-2 '(() (exec "pil" "/home/user/Particle/particle/src/worker/worker.l" "-main" Width Height Verts 1)))
-      )
+  
+  (let (W (format (/ 2560 2))
+        H (format (/ 1080 2))
+        V (format (** 2 16))
+        Uds-Ctrl "/tmp/part-ctrl.sock"      
+        Uds-In   "/tmp/part-in.sock"        
+        Uds-Mod  "/tmp/part-mod.sock"
+        Uds-Rend "/tmp/part-ren.sock"
+        Home (pack (pwd) "/src/"))
+        
+      (fork-2 '(() (exec "pil" (pack Home "render/render.l") "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
+      (fork-2 '(() (exec "pil" (pack Home "model/model.l")   "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
+      (fork-2 '(() (exec "pil" (pack Home "input/input.l")   "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
+      (fork-2 '(() (exec "pil" (pack Home "ctrl/ctrl.l")     "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
+      (fork-2 '(() (exec "pil" (pack Home "worker/worker.l") "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend 1))))
 
   (bye))
   
 #{
+  (def '*proc-render)
+  (def '*proc-model)
+  (def '*proc-input)
+  (def '*proc-ctrl)
+  (def '*proc-work-1)
+  (def '*proc-work-2)
+  (def '*proc-work-3)
+  (def '*proc-work-4)
+
   (pipe (call "taskset" "-pc" "0" (format *proc-work-1)) (read))
   #(prinl (pipe (call "taskset" "-pc" "1" (format *proc-work-2)) (read)))
   

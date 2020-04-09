@@ -11,16 +11,45 @@
 }#
 
 
-# Set math precision to 6 decimals
 (scl 6)
+
+(load (pack (pwd) "/src/misc.l"))
+(mapc 'load-cwd
+      (list "/src/c/mathc.l"
+            "/src/c/epoll.l"
+            "/src/c/li.l"
+            "/src/c/socket.l"
+            "/src/c/ksd.l"
+            "/src/c/xkbcommon.l"
+            "/src/misc.l"
+            "/src/ipc/ipc.l"
+            "/src/prot/conn.l"
+            "/src/prot/msg.l"
+            "/src/prot/obj.l"
+            "/src/metrics/metrics.l"
+            "/src/model/projview.l"
+            "/src/model/vertex.l"
+            "/src/ctrl/xkb.l"
+            "/src/worker/conn.l"
+            "/src/worker/cursor.l"
+            "/src/worker/debug.l"
+            "/src/worker/draw.l"
+            "/src/worker/cmd/part.l"
+            "/src/worker/cmd/cam.l"
+            "/src/worker/cmd/ptr.l"
+            "/src/worker/particle/particle.l"
+            "/src/worker/particle/pair.l"
+            "/src/worker/particle/sym.l"
+            "/src/worker/particle/num.l"
+            "/src/worker/particle/ops/align.l"
+            "/src/worker/particle/ops/gen.l"
+            "/src/worker/particle/ops/layout.l"
+            "/src/worker/particle/ops/ops.l"
+            "/src/worker/particle/ops/point.l"))
 
 
 (def 'NAME-PID "WORKER")
 
-# Paths
-(def 'PATH-UDS-MODEL   "/tmp/particle-model.socket")
-(def 'PATH-UDS-CONTROL "/tmp/particle-control.socket")
-(def 'PATH-UDS-RENDER  "/tmp/particle-render.socket")
 # Pass from main
 (def 'PATH-GLYPHS      "/home/user/Particle/particle/src/glyphs")
 
@@ -55,39 +84,6 @@
 
 (def '*cur (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
 
-# Wrapper libraries
-(load "/home/user/Particle/particle/src/c/mathc.l")
-(load "/home/user/Particle/particle/src/c/epoll.l")
-(load "/home/user/Particle/particle/src/c/li.l")
-(load "/home/user/Particle/particle/src/c/socket.l")
-(load "/home/user/Particle/particle/src/c/ksd.l")
-(load "/home/user/Particle/particle/src/c/xkbcommon.l")
-# Lisp libraries
-(load "/home/user/Particle/particle/src/misc.l")
-(load "/home/user/Particle/particle/src/ipc/ipc.l")
-(load "/home/user/Particle/particle/src/prot/conn.l")
-(load "/home/user/Particle/particle/src/prot/msg.l")
-(load "/home/user/Particle/particle/src/prot/obj.l")
-(load "/home/user/Particle/particle/src/metrics/metrics.l")
-(load "/home/user/Particle/particle/src/model/projview.l")
-(load "/home/user/Particle/particle/src/model/vertex.l")
-(load "/home/user/Particle/particle/src/ctrl/xkb.l")
-(load "/home/user/Particle/particle/src/worker/conn.l")
-(load "/home/user/Particle/particle/src/worker/cursor.l")
-(load "/home/user/Particle/particle/src/worker/debug.l")
-(load "/home/user/Particle/particle/src/worker/draw.l")
-(load "/home/user/Particle/particle/src/worker/cmd/part.l")
-(load "/home/user/Particle/particle/src/worker/cmd/cam.l")
-(load "/home/user/Particle/particle/src/worker/cmd/ptr.l")
-(load "/home/user/Particle/particle/src/worker/particle/particle.l")
-(load "/home/user/Particle/particle/src/worker/particle/pair.l")
-(load "/home/user/Particle/particle/src/worker/particle/sym.l")
-(load "/home/user/Particle/particle/src/worker/particle/num.l")
-(load "/home/user/Particle/particle/src/worker/particle/ops/align.l")
-(load "/home/user/Particle/particle/src/worker/particle/ops/gen.l")
-(load "/home/user/Particle/particle/src/worker/particle/ops/layout.l")
-(load "/home/user/Particle/particle/src/worker/particle/ops/ops.l")
-(load "/home/user/Particle/particle/src/worker/particle/ops/point.l")
 
 (def '*bindings-key
       ## Number
@@ -185,13 +181,8 @@
 
 
 (de init-worker ()
-
-  (let Argv (argv)
-
-    (setq *width     (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "width invalid")))
-          *height    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "height invalid")))
-          *verts-max (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "verts invalid")))
-          *i-proc    (let (A (format (cut 1 'Argv))) (if (num? A) A (quit "i invalid")))))
+  
+  (setq *i-proc 1)
 
   (setq *metrics (load-metrics *sca-glyph))
 
@@ -554,7 +545,9 @@
   (push '*binds (cons Keys (cons Rep Fn))))
 
 
-(de main () (init-worker))
+(de main ()
+  (bind-args)
+  (init-worker))
 
 
 #################

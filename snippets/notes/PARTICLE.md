@@ -308,14 +308,7 @@ Store DAGs as binary trees?
         +-------+-------------------+--------------------+---------------
         | NL    | List w. Pair      | Mov nl             | Empty list
         +-------+-------------------+--------------------+---------------
-      * Rewrite line system
-        * Fix replacing NIL on-car on Y list
-      * Fix newline alignment issues for sublists
-        * Creating sublist for 2nd item causes CDR to be misaligned
-        * Particle newline must know which list it belongs to
-        * Refactor line to store list for p
-          * Line would be a nested structure
-          * Maybe X sublist will work?        
+      * Rewrite line system [Done]
       * Limit x length of items like line wrap
       * Store ref to last item in list for faster bnds calc
       * Handle multi-line strings -> WILL NEED THIS

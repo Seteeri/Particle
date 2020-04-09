@@ -108,13 +108,13 @@
 
 
 (de make-matrix-ortho (Width
-           Height
-           Scale
-           Near
-           Far)
-    (let (Aspect-ratio (*/ 1.0 Width Height)
-          X            (*/ Scale 0.5 1.0)
-          Y            (*/ 1.0 (*/ Scale 0.5 1.0) Aspect-ratio))
+                       Height
+                       Scale
+                       Near
+                       Far)
+    (let (AR (*/ 1.0 Width Height)
+          X  (*/ Scale 0.5 1.0)
+          Y  (*/ 1.0 (*/ Scale 0.5 1.0) AR))
       (mat4-ortho (- X) X (- Y) Y Near Far)))
 
 
