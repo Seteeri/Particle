@@ -23,6 +23,10 @@ Naming Conventions:
 (def '*glBufferStorage 0)
 
 
+(de blend-equation (Mode)
+  (native "libGLESv2.so.2" "glBlendEquation" NIL Mode))
+  
+
 (de viewport (X Y Width Height)
   (native "libGLESv2.so.2" "glViewport" NIL X Y Width Height))
 
@@ -178,10 +182,10 @@ Naming Conventions:
   (native "libGLESv2.so.2" "glLinkProgram" NIL Program))
 
 
-(de get-program-iv (Program Pname Params)
-  #TODO: Need not use list for struct
-  (native "libGLESv2.so.2" "glGetProgramiv" NIL Program Pname (list 'Params (cons 4 'I 1)))
-    (car Params))
+#(de get-program-iv (Program Pname Params)
+#  #TODO: Need not use list for struct
+#  (native "libGLESv2.so.2" "glGetProgramiv" NIL Program Pname (list 'Params (cons 4 'I 1)))
+#    (car Params))
 
 
 (de get-info-log (Max-Length Fn Target)
@@ -433,6 +437,7 @@ Naming Conventions:
        (PROGRAM-BINARY-LENGTH                   "8741")
        (NUM-PROGRAM-BINARY-FORMATS              "87FE")
        (PROGRAM-BINARY-FORMATS                  "87FF")
+       (FUNC-ADD                                "8006")
        
        (FALSE                                   "0000")
        (TRUE                                    "0001")

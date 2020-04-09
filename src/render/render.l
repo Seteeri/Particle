@@ -52,14 +52,14 @@ Class variables may be indicated by an upper case letter
 (defcwdpath '*path-structs-shader "/glsl/structs.glsl")
 (def '*paths-rast-vert-shader
       (list *path-structs-shader
-            "/glsl/node.vs.glsl"))
+            (pack *cwd "/glsl/node.vs.glsl")))
 (def '*paths-rast-frag-shader
       (list *path-structs-shader
-            "/glsl/filter-bilinear.fs.glsl"
-            "/glsl/msdf.fs.glsl"))
+            (pack *cwd "/glsl/filter-bilinear.fs.glsl")
+            (pack *cwd "/glsl/msdf.fs.glsl")))
 (def '*paths-comp-shader
       (list *path-structs-shader
-            "/glsl/node.cs.glsl"))
+            (pack *cwd "/glsl/node.cs.glsl")))
 (defcwdpath '*path-prog-rast "/bin/prog-rast.bin")
 
 (def '*window)
@@ -192,9 +192,12 @@ Class variables may be indicated by an upper case letter
   (gl~enable gl~DEPTH-TEST)
   
   (gl~enable gl~BLEND)
-  #(gl~blend-func gl~ONE gl~ONE-MINUS-SRC-ALPHA)  
+  
   (gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA)
 
+  #(gl~blend-func gl~ONE gl~ONE-MINUS-SRC-ALPHA)
+  #(gl~blend-equation gl~FUNC-ADD)
+  
   #Get some function pointers
   (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage")))
 
