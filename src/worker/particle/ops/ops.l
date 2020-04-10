@@ -113,7 +113,7 @@
         Cdr (get Ref 'c 'b)
         Part (gen-part (list (list Data)) Lay NIL T)
         Car (get Part 'a))
-    
+        
     # Move to Repl pair?
     # Txfer line before Ref gets deleted
     (when (get Ref 'c)
@@ -167,16 +167,14 @@
                        NIL
                        T))
 
-    (when (or (not (str? Data)) (not Data))
-      (println 'repl-any "WARNING! Data is not a str or NIL; x bnds will be incorrect"))
-
     (repl-pair Prv Part)
 
     (if (= Lay 'x)
 
       (prog
-      
-        # nl check?
+            
+        #(when (get Prv 'line)
+        #  (xchg-nl Prv Part))
 
         (upd-tree)
         (mov-*1 *line)
@@ -344,8 +342,10 @@
             Prv (get Ref 'c)
             Prv-Cdr (get Prv 'b)
             Line *line
+            List (if (get Line 'line 'l) @ Line)
             Nxt (get *line 'line 'n))
 
+        # Should swap newline
         (repl-pair Prv Part)
         
         # P N D L
@@ -353,10 +353,10 @@
         # List is current list or NIL?
         # Prv is current list
         (put Part 'line (new '(+Line)
-                          *line
+                          Line
                           (get Part 'b)
                           NIL
-                          (if (get Line 'line 'l) @ *line)))
+                          List))
         (put Part 'lay 'y)
         (put Line 'line 'n Part)
         
@@ -367,7 +367,7 @@
                             Part
                             Nxt
                             NIL
-                            (if (get Line 'line 'l) @ *line)))
+                            List))
           (put Cdr 'lay (get Prv-Cdr 'lay))
           (put Nxt 'line 'p Cdr))
         

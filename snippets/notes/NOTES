@@ -5011,3 +5011,13 @@ How to handle lines?
 Cut/Copy/Paste? -> This moving items from buffer to ptr
 
 When splitting lines, split by lines, then by space
+
+===================================================
+
+To optimize compute shader,
+
+It is cheap to move all particles by an offset
+
+To update particles, set the new origin and have the shader do all the calcs
+
+That way, the only job of the CPU is to copy memory around

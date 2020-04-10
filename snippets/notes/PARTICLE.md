@@ -36,287 +36,279 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
 
 ## TODO
 
-   * Refactor serialization [WIP]
-     * Be able to send raw bytes [Done]
-     * (mc src dest sz)+bytes [Done]
-   * Synchronize Render with Model [Done]
-     * Render must wait for Model - otherwise anims may skip frames
-     * Double buffer render
-       * GPU might be rendering while we are waiting
-   * Test vertex serialization [Done]
-     * Move vertices to separate process to reduce pressure on GC
-     * Model can push/pull from it...or model holds data and controller processes it?
-   * Add task manager to spread work across frames [Later]
-   * Test projview + input handling [Done]
-     * Use directional keys to move camera
-   * Test vertex serialization [Done]
-     -> Create diagrams for metrics calculations so easier to understand/visualize
-     -> Define mathc path in top level or in wrapper?
-   * Refactor out init parse args [...]
-   * Refactor IPC connection management [Mon]
-     * Remove direct epoll usage in process - isolate in IPC [Done]
-       * Add epoll method to reuse across processes [Done]
-       * Move epoll data to IPC [Done]
-     * Refactor IPC init [Done]
-       * Pass in list of server pairs [No]
-       * Integrate server sockets into conns [Done]
-       * Simplify ID/FD lookup [???]
-     * Dispatch on both server and outgoing sockets [Done]
-   * Implement workers [Done]
-     * Ctrl connects input/render/model?
-       * Handles synchronous mode (delay)
-     * Workers only connect to ctrl/render/model
-       * Recvs work from ctrl
-       * Recvs frame from render and sends data to render (async mode/drop)
-       * Gets data from model and sends data to model (updates/sync)
-   * Test multiple controllers with multiple vertices mutating simultaneously [Done]
-     * N process will move N vert x dist
-   * Refactor [Done]
-     * Move xkb to ctrl and pass events to worker [Done]
-     * Respond to window resizing [Done]
-     * Implement proper exit [Done]
-       * Render send exit key also
+* Refactor serialization [WIP]
+  * Be able to send raw bytes [Done]
+  * (mc src dest sz)+bytes [Done]
+* Synchronize Render with Model [Done]
+  * Render must wait for Model - otherwise anims may skip frames
+  * Double buffer render
+    * GPU might be rendering while we are waiting
+* Test vertex serialization [Done]
+  * Move vertices to separate process to reduce pressure on GC
+  * Model can push/pull from it...or model holds data and controller processes it?
+* Add task manager to spread work across frames [Later]
+* Test projview + input handling [Done]
+  * Use directional keys to move camera
+* Test vertex serialization [Done]
+  -> Create diagrams for metrics calculations so easier to understand/visualize
+  -> Define mathc path in top level or in wrapper?
+* Refactor out init parse args [...]
+* Refactor IPC connection management [Mon]
+  * Remove direct epoll usage in process - isolate in IPC [Done]
+    * Add epoll method to reuse across processes [Done]
+    * Move epoll data to IPC [Done]
+  * Refactor IPC init [Done]
+    * Pass in list of server pairs [No]
+    * Integrate server sockets into conns [Done]
+    * Simplify ID/FD lookup [???]
+  * Dispatch on both server and outgoing sockets [Done]
+* Implement workers [Done]
+  * Ctrl connects input/render/model?
+    * Handles synchronous mode (delay)
+  * Workers only connect to ctrl/render/model
+    * Recvs work from ctrl
+    * Recvs frame from render and sends data to render (async mode/drop)
+    * Gets data from model and sends data to model (updates/sync)
+* Test multiple controllers with multiple vertices mutating simultaneously [Done]
+  * N process will move N vert x dist
+* Refactor [Done]
+  * Move xkb to ctrl and pass events to worker [Done]
+  * Respond to window resizing [Done]
+  * Implement proper exit [Done]
+    * Render send exit key also
 
-   * Rewrite IPC
-     * Abstract common functionality among worker/model/render conns [Done]
-     * Serialize entire object for all [Done]
-     * Model needs to write data [Done]
-     * Make epoll event like timerfd [Done]
-     * Rewrite flush-msgs [Done]
-       * Use doubly linked list
-       * On EPOLLIN, append new data to tail
-       * Read as many as msgs from head until insufficient data
-     * Use single header [Done...necessary?]
-       * Must refactor flush?
-     * Re-use head list [Skip]
-     * Fix caller error handling for send/recv msg [Done]
-       * If looping, do "while (setq msg (recv-msg))"
-     * Fix data sending integrity; warn and block [Done]
-       * Add loop to send until empty - add to ipc
-       * If blocked, then render or model is lagging
-     * Add ability to push/pull range and/or batch [Sun]
-       * Batch: process msgs as list [Done]
-       * Rx: pass adtl args
-         * Add handlers to processes
-       * For initial loading, could use fork or read default values from file
-     * Render should only send msg if client rdy otherwise send will block
-       * Worker can choose to have late msgs dropped - send function to render
-     * Start tracking memcpy performance (bytes/millisecond)
+* Rewrite IPC
+  * Abstract common functionality among worker/model/render conns [Done]
+  * Serialize entire object for all [Done]
+  * Model needs to write data [Done]
+  * Make epoll event like timerfd [Done]
+  * Rewrite flush-msgs [Done]
+    * Use doubly linked list
+    * On EPOLLIN, append new data to tail
+    * Read as many as msgs from head until insufficient data
+  * Use single header [Done...necessary?]
+    * Must refactor flush?
+  * Re-use head list [Skip]
+  * Fix caller error handling for send/recv msg [Done]
+    * If looping, do "while (setq msg (recv-msg))"
+  * Fix data sending integrity; warn and block [Done]
+    * Add loop to send until empty - add to ipc
+    * If blocked, then render or model is lagging
+  * Add ability to push/pull range and/or batch [Sun]
+    * Batch: process msgs as list [Done]
+    * Rx: pass adtl args
+      * Add handlers to processes
+    * For initial loading, could use fork or read default values from file
+  * Render should only send msg if client rdy otherwise send will block
+    * Worker can choose to have late msgs dropped - send function to render
+  * Start tracking memcpy performance (bytes/millisecond)
 
-   * Loading [Done]
-     * Have model save symbols to file
-     * Worker will then load file
+* Loading [Done]
+  * Have model save symbols to file
+  * Worker will then load file
 
-   * Bindings [Done]
-     * Ensure mods not pressed also
-     * Sort time
-     * Repeat keys
+* Bindings [Done]
+  * Ensure mods not pressed also
+  * Sort time
+  * Repeat keys
 
-  * Primary Representation [Done]
-    * Implement drawing s-exp [Done]
-      * Draw space (" ") by itself draw box or draw with quotes
-        * For now draw quotes on all strings
-      * Create draw interface where a matrix can be specified?
-      * Follow pp style?
-        * We follow indent, poss use rule len list > 12?
-    * Integrate with particle [Done]
-    * Handle modifying lists and layout
-      * Append item [Done]
-      * Remove item [Done]
-        * Skip removing NIL at end of list since it would still point to NIL
-       * When deleting list, skip deleting NIL [Done]
+* Primary Representation [Done]
+* Implement drawing s-exp [Done]
+  * Draw space (" ") by itself draw box or draw with quotes
+    * For now draw quotes on all strings
+  * Create draw interface where a matrix can be specified?
+  * Follow pp style?
+    * We follow indent, poss use rule len list > 12?
+* Integrate with particle [Done]
+* Handle modifying lists and layout
+  * Append item [Done]
+  * Remove item [Done]
+    * Skip removing NIL at end of list since it would still point to NIL
+    * When deleting list, skip deleting NIL [Done]
 
-  * Pointer Foundation [Done]
-    * Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
-      * Implement p* - master ptr [Done]
-      * Refactor cmd-char etc. to update p* [Done]
-      * Replace current marker with p* symbol
-        * Refactor initial particle creation
+* Pointer Foundation [Done]
+* Refactor pointer/selector to be a particle/symbol whose CAR is the tgt [WIP]
+  * Implement p* - master ptr [Done]
+  * Refactor cmd-char etc. to update p* [Done]
+  * Replace current marker with p* symbol
+    * Refactor initial particle creation
+
+* Pointer Selection [WIP]
+* Implement prev/next, up/down when list creation implemented
+* As user moves, ptr changes are stored in command history [WIP]
+  * Store in command history
+  * To move around, get last input
+* History can be purged or saved to disk
+
+* Poss to mix drawing lists horizontal/vertical if there are arrows
+or very few expections like with pointers
+
+* Misc [Done]
+* Refactor symbol particles [Done]
+  * Data stores symbol
+  * A/CAR = NIL
+  * B/CDR = VAL  
+* Implement master particle list [Done]
+  * Need this to store particles of globals
+    * This is the exception, like internal table
+  * Store as assoc list...
+    * Data is the key?
+    * Value is the particle
+  * Or solely so particles don't get deleted
+    * Poss move vertices into it?
+* Rewrite cmd-del [Done]
+
+* Basic List Handling
+* Add cmd for NIL [Done]
+  * Lift fn from cmd-make-char and cmd-make-nil -> app-data
+* To enter NIL list, move pointer beneath it [Done]      
+* Fix:
+  * Not moving to top list automatically when deleting sublist
+    * Or option?
+  * Creating nested empty lists
+* UI
+  * Alt+Backspace = Exit list
+  * Alt+Enter = Enter list
+  OR!
+  * Alt+WASD = for items
+    * Or Q/E to enter/exit list
+  * Alt+IJKL = for lists
+    * Hor - next/prev nearest list
+    * Vert - enter/exit nearest list
+          
+* List Layout
+* Implement basic lay property [WIP]
+  * Lay horizontal [Done]
+  * Lay vertical [Done]
+  * Lay mixed [Done]
+    * Y to X [Done]
+    * X to Y [Done]
+* Interpret lay structure [Later]
+
+* Separate layout from generating particles [Done]
+
+* Integrate layout with generating particles (cmds)
+* Create function to calculate bounds of a pair [Done]
+* Position new particle based on the ref's layout [Done]
+  * Must calculate previous item [Done]
+* Move pointer semantically fwd and back [Done]
+* Implement doubly-linked particles [Sun]
+* Fix sublist handling [Done]
+* Test nested lists + NILs [Done]
+* Refactor del [Done]
+* Draw symbols with cons cell [Done]
+* Make NIL type [Done]
+* Draw str cdr with dot [Done]
+* Refactor pointer to point to last (NIL) [Done]
+  * More consistent with entering a list    
+* Rewrite list handling [WIP]
+  * When enter-list, change ptr symbol to reflect it instead of pos      
+* Need pointer/new fns to change layout, new row/col [Done]
+  * Change pointer symbol to reflect layout: p0^ or p0> [TODO]
+  * Should be consistent with outline format
+  * Default layout is oriented towards lists of text/num/syms similar to
+  alphanumerical outlines
   
-  * Pointer Selection [WIP]
-    * Implement prev/next, up/down when list creation implemented
-    * As user moves, ptr changes are stored in command history [WIP]
-      * Store in command history
-      * To move around, get last input
-    * History can be purged or saved to disk
-  
-  * Poss to mix drawing lists horizontal/vertical if there are arrows
-  or very few expections like with pointers
-  
-  * Misc [Done]
-    * Refactor symbol particles [Done]
-      * Data stores symbol
-      * A/CAR = NIL
-      * B/CDR = VAL  
-    * Implement master particle list [Done]
-      * Need this to store particles of globals
-        * This is the exception, like internal table
-      * Store as assoc list...
-        * Data is the key?
-        * Value is the particle
-      * Or solely so particles don't get deleted
-        * Poss move vertices into it?
-    * Rewrite cmd-del [Done]
+* Refactor methods: generation, bounds, layout (PART I)
+  * Refactor calculate bounds [Done]
+  * Refactor gen [Done]
+    * Should calc be last resort if not there? -> That is an error then
+  * Then layout to get dims [Done]
+    * And use skip flags
+  * Rename skip flags to symbols to be more clear [Done]
+  * Gen should not upd verts - only pos them [Done]
+  * Refactor cmd-make-char [Done]
+    * Calculate x max from prev item
+    * For single chars, the bounds is the same          
+  * Refactor cmd-make-nl [Done]
+    * Calculate y min from last NL (or list start) until that item
+  * Refactor cmd-del [Done]
 
-  * Basic List Handling
-    * Add cmd for NIL [Done]
-      * Lift fn from cmd-make-char and cmd-make-nil -> app-data
-    * To enter NIL list, move pointer beneath it [Done]      
-    * Fix:
-      * Not moving to top list automatically when deleting sublist
-        * Or option?
-      * Creating nested empty lists
-    * UI
-      * Alt+Backspace = Exit list
-      * Alt+Enter = Enter list
-      OR!
-      * Alt+WASD = for items
-        * Or Q/E to enter/exit list
-      * Alt+IJKL = for lists
-        * Hor - next/prev nearest list
-        * Vert - enter/exit nearest list
-              
-  * List Layout
-    * Implement basic lay property [WIP]
-      * Lay horizontal [Done]
-      * Lay vertical [Done]
-      * Lay mixed [Done]
-        * Y to X [Done]
-        * X to Y [Done]
-    * Interpret lay structure [Later]
-  
-  * Separate layout from generating particles [Done]
+* Refactor sublist handling (PART II) [WIP]
+  * Refactor swap-layout [Done]
+  * Refactor layout Y [Done]      
+  * Ptr mov is with regard to layout - inverses [Done]    
+  * Refactor cmd-make-car to create new list when on car [Done]
+    * Swap-layout
+    * Newline flag
+    * Update CDR
+  * Test for sublists in ptr cmds [Done]              
+  * Rename dims -> dims [Done]
+    * Dims = l w h
+    * Extent = min bnd'g rect: xmin ymin xmax ymax
+    * Bounds = aka bounding box/rect; 
+    * So extents == bounds
+
+    +-------+--------------------------------------------------------+
+    | CMD   |                       Pointer                          |
+    +-------+-------------------+--------------------+---------------+
+    |       | Pair/Atom         | Car/Atom           | NIL           |
+    +-------+-------------------+--------------------+---------------+
+    | ASCII | Ins-back, Mov-Cdr | Write-car, Mov-Car | Same as left  |
+    +-------+-------------------+--------------------+---------------+
+    | NIL   | Same as above     | Same as above      | Ins...        |
+    +-------+-------------------+--------------------+---------------+
+    | NL    | List w. Pair      | Mov nl             | Empty list    |
+    +-------+-------------------+--------------------+---------------+
     
-  * Integrate layout with generating particles (cmds)
-    * Create function to calculate bounds of a pair [Done]
-    * Position new particle based on the ref's layout [Done]
-      * Must calculate previous item [Done]
-    * Move pointer semantically fwd and back [Done]
-    * Implement doubly-linked particles [Sun]
-    * Fix sublist handling [Done]
-    * Test nested lists + NILs [Done]
-    * Refactor del [Done]
-    * Draw symbols with cons cell [Done]
-    * Make NIL type [Done]
-    * Draw str cdr with dot [Done]
-    * Refactor pointer to point to last (NIL) [Done]
-      * More consistent with entering a list    
-    * Rewrite list handling [WIP]
-      * When enter-list, change ptr symbol to reflect it instead of pos      
-    * Need pointer/new fns to change layout, new row/col [Done]
-      * Change pointer symbol to reflect layout: p0^ or p0> [TODO]
-      * Should be consistent with outline format
-      * Default layout is oriented towards lists of text/num/syms similar to
-      alphanumerical outlines
-      
-    * Refactor methods: generation, bounds, layout (PART I)
-      * Refactor calculate bounds [Done]
-      * Refactor gen [Done]
-        * Should calc be last resort if not there? -> That is an error then
-      * Then layout to get dims [Done]
-        * And use skip flags
-      * Rename skip flags to symbols to be more clear [Done]
-      * Gen should not upd verts - only pos them [Done]
-      * Refactor cmd-make-char [Done]
-        * Calculate x max from prev item
-        * For single chars, the bounds is the same          
-      * Refactor cmd-make-nl [Done]
-        * Calculate y min from last NL (or list start) until that item
-      * Refactor cmd-del [Done]
-
-    * Refactor sublist handling (PART II) [WIP]
-      * Refactor swap-layout [Done]
-      * Refactor layout Y [Done]      
-      * Ptr mov is with regard to layout - inverses [Done]    
-      * Refactor cmd-make-car to create new list when on car [Done]
-        * Swap-layout
-        * Newline flag
-        * Update CDR
-      * Test for sublists in ptr cmds [Done]              
-      * Rename dims -> dims [Done]
-        * Dims = l w h
-        * Extent = min bnd'g rect: xmin ymin xmax ymax
-        * Bounds = aka bounding box/rect; 
-        * So extents == bounds
-      * Create Reset command [Done]
-
-      * Tests:
-        * cmd-make-char @ start/end/mid-line
-        * cmd-make-nl @ start/end/mid-line          
-        * cmd-make-char (sublist) @ start/end/mid-line
-        * nested lists
-
-        +-------+--------------------------------------------------------
-        | CMD   |                       Pointer                     
-        +-------+-------------------+--------------------+---------------
-        |       | Pair/Atom         | Car/Atom           | NIL
-        +-------+-------------------+--------------------+---------------
-        | ASCII | Ins-back, Mov-Cdr | Write-car, Mov-Car | Same as left
-        +-------+-------------------+--------------------+---------------
-        | NIL   | Same as above     | Same as above      | Ins...
-        +-------+-------------------+--------------------+---------------
-        | NL    | List w. Pair      | Mov nl             | Empty list
-        +-------+-------------------+--------------------+---------------
-      * Rewrite line system [Done]
-        * Fix/test non multichar strs
-        * Test pairs
-      * Print bindings so user can see it immediately
-        * Refactor it...
-        * Make a list and gen parts
-        * User should be able to edit it and it can take place
-        * Create fn to prevent incorrect format
-          * Hmm would this require a mode for when you enter it
-          * Change ptr to change mode
-      * Handle multi-line strings
-      
-    * List/Atomic Ops
-      * cmd-del, cmd-backspace...
-      * Replace input with output
-        * Really - move input to cmd history
-      
-    * Str Ops
-      * Core
-      * Basic search/replace
-        * Search outputs list
-        * List can be searched again or replaced, results in output again
-        * Output can then be merged
-      * Pattern matching      
-      
-    * Pointer System
-      * Use master pointer to select main pointer
-      * Master ptr has dedicated binds/cmds
-        * Ctrl+WASD: Mstr
-        * Alt+WASD: Main
-      * System
-        * -> list = all
-          * list of pairs will select those ranges
-        * -> pair = between car cdr
-          * (p . NIL) = until EOL
-          * (p . T) = until Ptr
-        * -> atom = single
-      * or show props on single line (nested pairs)
-
-    * Buffer System (aka Cut/Copy/Paste)
-      * Buffers have ptr prop
-        * p1 -> b1, p2 -> b2, etc.
-      OR
-      * Pointers have buf prop (most logical)
-        * n-ptrs : b1
-        * Similar to ptr list, use a buffer list which follows same pattern
-        * Show first and last items
-      * CUA
-      
-    * Directory Nav
+  * Rewrite line system [Done]
+    * Fix creating sublist on newline str
+    * Test pairs?
     
-    * CLI
-      * Plain list
-      
-    * Tag/Note System
-      * Need "template"
-      
-    TARGET:
-    * BUILD TEST TREE
-    * TEST LAYOUT OF EXISTING DATA
+  * Print bindings so user can see it immediately
+    * Refactor it...
+    * Make a list and gen parts
+    * User should be able to edit it and it can take place
+    * Create fn to prevent incorrect format
+      * Hmm would this require a mode for when you enter it
+      * Change ptr to change mode
+  
+  * Handle multi-line strings
+    
+  * List/Atomic Ops
+    * cmd-del, cmd-backspace...
+    * Replace input with output
+      * Really - move input to cmd history
+    
+  * Str Ops
+    * Core
+    * Basic search/replace
+      * Search outputs list
+      * List can be searched again or replaced, results in output again
+      * Output can then be merged
+    * Pattern matching      
+    
+  * Pointer System
+    * Use master pointer to select main pointer
+    * Master ptr has dedicated binds/cmds
+      * Ctrl+WASD: Mstr
+      * Alt+WASD: Main
+    * System
+      * -> list = all
+        * list of pairs will select those ranges
+      * -> pair = between car cdr
+        * (p . NIL) = until EOL
+        * (p . T) = until Ptr
+      * -> atom = single
+    * or show props on single line (nested pairs)
+
+  * Buffer System (aka Cut/Copy/Paste)
+    * Buffers have ptr prop
+      * p1 -> b1, p2 -> b2, etc.
+    OR
+    * Pointers have buf prop (most logical)
+      * n-ptrs : b1
+      * Similar to ptr list, use a buffer list which follows same pattern
+      * Show first and last items
+    * CUA
+    
+  * Directory Nav
+  
+  * CLI
+    * Plain list
+    
+  * Tag/Note System
+    * Need "template"
       
   * Refactor [Nxt Week]
     * Limit x length of items like line wrap
@@ -504,26 +496,19 @@ LATER:
          * Must define protocol/msg
        * Use LZO or LZ4 data compression
 
-  * CTRL MUST SEND MSGS TO ALL CLIENTS
-    * Maintain queue per client
-    * Add to all clients
-
   * C wrappers
-       * Move xkb class into wrapper
-       * Use c-<fn> for native wrappers
-       * Use <fn-lisp> for lispy wrappers
-       * Check link status
-       * Refactor namespaces
-         * posix
-         * mathc and more...
-       * Refactor li into subfolders [?]
-       * Remove print msgs from gl
+    * Move xkb class into wrapper
+    * Use c-<fn> for native wrappers
+    * Use <fn-lisp> for lispy wrappers
+    * Check link status
+    * Refactor namespaces
+      * posix
+      * mathc and more...
+    * Refactor li into subfolders [?]
+    * Remove print msgs from gl
 
    * Try proportional fonts with kerning
      * Change blend mode?
-
-   * Is crashing due to window resizing? or msg 'C vs 'S...
-     -> Seems to have fixed it
 
    * Tasks uses DAG/ptrees [Later]
      * Built on top of cons cells...

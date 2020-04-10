@@ -114,12 +114,10 @@ Class variables may be indicated by an upper case letter
   (glfw~set-framebuffer-size-callback *window (lisp 'framebuffer-callback handle-framebuffer-size))
   (glfw~set-key-callback *window (lisp 'key-callback handle-key))                                      
 
-  #(glfw~set-window-size-callback *window
-  #                               (lisp 'size-callback handle-window-size))
-
   # Crash
   #(glfw~set-window-focus-callback *window (lisp 'focus-callback handle-focus))
-                           
+  #(glfw~set-window-size-callback *window (lisp 'size-callback handle-window-size))
+  
   T)
 
   
