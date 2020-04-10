@@ -75,7 +75,7 @@ Class variables may be indicated by an upper case letter
   }#
 
   (setq *ipc (new '(ipc~+IPC)
-                    PATH-UDS-RENDER T recv-conn accept-client
+                    *uds-rend T recv-conn accept-client
                     NIL))
 
   #Init context
@@ -111,16 +111,18 @@ Class variables may be indicated by an upper case letter
 
   (glfw~make-context-current *window)
 
-  (glfw~set-framebuffer-size-callback *window
-                                      (lisp 'framebuffer-callback handle-framebuffer-size))
+  (glfw~set-framebuffer-size-callback *window (lisp 'framebuffer-callback handle-framebuffer-size))
+  (glfw~set-key-callback *window (lisp 'key-callback handle-key))                                      
 
   #(glfw~set-window-size-callback *window
-  #                               (lisp 'window-callback handle-window-size))
+  #                               (lisp 'size-callback handle-window-size))
 
-  (glfw~set-key-callback *window
-                         (lisp 'key-callback handle-key)))
+  # Crash
+  #(glfw~set-window-focus-callback *window (lisp 'focus-callback handle-focus))
+                           
+  T)
 
-
+  
 (de handle-framebuffer-size (Window Width Height)
   # Must update projmatrix also
 
@@ -131,21 +133,14 @@ Class variables may be indicated by an upper case letter
       (when (= ID "CTRL")
         (send-msg *ipc
                   Sock
-                  (pack "(window-size " Width " " Height ")")))))
+                  (pack "(fbsize " Width " " Height ")")))))
 
   (gl~viewport 0 0 Width Height)
   
-  (setq *width Width)
-  (setq *height Height))
+  (setq *width Width
+        *height Height))
 
-
-(de handle-window-size (Window Width Height)
-  # Must update projmatrix also  
-  #(setq *width Width)
-  #(setq *height Height)
-  T)
-  
-  
+        
 (de handle-key (Window Key Scancode Action Mods)
   (when (and (= Key glfw~KEY-ESCAPE)
              (= Action glfw~PRESS))
@@ -167,6 +162,10 @@ Class variables may be indicated by an upper case letter
                        
     (glfw~set-window-should-close Window glfw~TRUE)))
 
+    
+(de handle-window-size (Window Width Height))
+(de handle-focus (Window Focused))
+    
 
 (de init-gl ()
   (gl~viewport 0 0 *width *height)
@@ -231,11 +230,11 @@ Class variables may be indicated by an upper case letter
     # Must handle if send fails, i.e. clients slow - in this case, ignore
     #
     # Poss only send if clients are ready
-    (send-msg-clients *ipc (format (usec)))
-
+    #(send-msg-clients *ipc (pack "(frametime " (format (usec)) ")"))
+        
     # Refactor this so it blocks until event
     (ipc~poll> *ipc 0)
-
+    
     T)
 
   (glfw~destroy-window *window)

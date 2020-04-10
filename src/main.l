@@ -70,20 +70,15 @@ own proc
     (def '*adv-glyph 9.375)       # MSDF/tex parameter
   }#
   
-  (let (W (format (/ 2560 2))
-        H (format (/ 1080 2))
-        V (format (** 2 16))
-        Uds-Ctrl "/tmp/part-ctrl.sock"      
-        Uds-In   "/tmp/part-in.sock"        
-        Uds-Mod  "/tmp/part-mod.sock"
-        Uds-Rend "/tmp/part-ren.sock"
-        Home (pack (pwd) "/src/"))
+  (let Home (pack (pwd) "/src/")
         
-      (fork-2 '(() (exec "pil" (pack Home "render/render.l") "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
-      (fork-2 '(() (exec "pil" (pack Home "model/model.l")   "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
-      (fork-2 '(() (exec "pil" (pack Home "input/input.l")   "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
-      (fork-2 '(() (exec "pil" (pack Home "ctrl/ctrl.l")     "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend)))
-      (fork-2 '(() (exec "pil" (pack Home "worker/worker.l") "-main" W H V Uds-Ctrl Uds-In Uds-Mod Uds-Rend))))
+      (fork-2 '(() (exec "pil" (pack Home "render/render.l") "-main")))
+      (fork-2 '(() (exec "pil" (pack Home "model/model.l")   "-main")))
+      (fork-2 '(() (exec "pil" (pack Home "input/input.l")   "-main")))
+      (fork-2 '(() (exec "pil" (pack Home "ctrl/ctrl.l")     "-main")))
+      (fork-2 '(() (exec "pil" (pack Home "worker/worker.l") "-main")))
+      
+      T)
 
   (bye))
   

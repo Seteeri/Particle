@@ -18,22 +18,11 @@
 (de deftmppath (Sym Path)
   (def Sym (in '(mktemp) (line T))))
   
-(de bind-args X
-  (let A '(*width
-           *height
-           *verts-max
-           *uds-ctrl
-           *uds-in      
-           *uds-mod  
-           PATH-UDS-RENDER)
-
-    (when (lst? X)
-      (conc A X))
-  
-    (mapc set A (argv))
-    
-    (unless (num? (setq *width (format *width)))         (quit (pack "Quiting: Invalid width=" *width)))
-    (unless (num? (setq *height (format *height)))       (quit (pack "Quiting: Invalid height=" *height)))
-    (unless (num? (setq *verts-max (format *verts-max))) (quit (pack "Quiting: Invalid verts=" *verts-max)))
-    
-    A))
+(de bind-args ()
+  (setq *width     (/ 2560 2)
+        *height    (/ 1080 2)
+        *verts-max (** 2 16)
+        *uds-ctrl  "/tmp/part-ctrl.sock"
+        *uds-in    "/tmp/part-in.sock"   
+        *uds-mod   "/tmp/part-mod.sock"
+        *uds-rend  "/tmp/part-ren.sock"))

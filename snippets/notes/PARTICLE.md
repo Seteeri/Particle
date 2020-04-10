@@ -10,52 +10,6 @@ is derived as we break down the Lisp atoms into their subcomponents.
 It also comes from the way the cons cells are rendered, like a particle engine
 uses the same model/instancing.
 
-Particle's goals:
-* expressiveness
-* dynamicness
-* interactiveness
-
-Combination:
-* Mindmap - VYM
-* Notes - Orgmode
-* TODO Lists - Evernote
-* Project Management - Trello
-* Tags - Tagspaces
-* Messaging - Gitter
-* Non-hierarchial FS - WinFS
-* CMS - Wiki
-
-
-Long Term Goals:
-
-* Core dumping - support image-based editing like traditional Lisps
-  * PicoLisp has external symbols
-* Mini PicoLisp -> WASM (32-bit)
-* PicoLisp (ASM) + JIT
-  * Write PicoLisp interpreter in PicoLisp and then write JIT in PicoLisp
-  * Poss port to RPython?
-
-Tentative Ideas:
-
-* PyPy Project Ideas - http://doc.pypy.org/en/latest/project-ideas.html
-  * Lua SSA-IR: http://wiki.luajit.org/SSA-IR-2.0
-  * "Sea of Nodes": https://darksi.de/d.sea-of-nodes/
-    * LuaJIT uses alternative structure
-
-## Why
-
-Initially, Common Lisp was used but more control was needed over the GC. I
-Modifying SBCL's GC was one possiblity, but would require a significant
-investment in understanding the codebase and the runtime/compiler implementation
-
-This also lead to the realization of the definition of a Lisp. In Lisp, there
-exists only one fundamental data structure that everything else is built upon -
-the cons cell. The cons cell is further composed of two pointers, also known
-as CAR and CDR. With this fundamental principle, the entire system can be
-visualized.
-
-Last but not least, permissively licensed code.
-
 ### LISP Defined
 
 * Lisp is based on s-expressions which is used for code and data (homoiconicity).
@@ -79,13 +33,8 @@ this is the definition of Protoform.
 directed acyclic graphs*
 https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-graph
 
-Store DAGs as binary trees?
 
 ## TODO
-
-   * Check heap size every frame, warn if large...
-     * Or after every message, if it starts to reach capacity, GC, resize
-       do next free
 
    * Refactor serialization [WIP]
      * Be able to send raw bytes [Done]
@@ -309,22 +258,69 @@ Store DAGs as binary trees?
         | NL    | List w. Pair      | Mov nl             | Empty list
         +-------+-------------------+--------------------+---------------
       * Rewrite line system [Done]
-      * Limit x length of items like line wrap
-      * Store ref to last item in list for faster bnds calc
-      * Handle multi-line strings -> WILL NEED THIS
-        
-    * Change ptr sym when moving to Car [Wknd]
-      * 3 parts in name - default is "*+0"
-        * Dir: * or ^
-        * Atom: + or underscore
-        * Num
+        * Fix/test non multichar strs
+        * Test pairs
+      * Print bindings so user can see it immediately
+        * Refactor it...
+        * Make a list and gen parts
+        * User should be able to edit it and it can take place
+        * Create fn to prevent incorrect format
+          * Hmm would this require a mode for when you enter it
+          * Change ptr to change mode
+      * Handle multi-line strings
+      
+    * List/Atomic Ops
+      * cmd-del, cmd-backspace...
+      * Replace input with output
+        * Really - move input to cmd history
+      
+    * Str Ops
+      * Core
+      * Basic search/replace
+        * Search outputs list
+        * List can be searched again or replaced, results in output again
+        * Output can then be merged
+      * Pattern matching      
+      
+    * Pointer System
+      * Use master pointer to select main pointer
+      * Master ptr has dedicated binds/cmds
+        * Ctrl+WASD: Mstr
+        * Alt+WASD: Main
+      * System
+        * -> list = all
+          * list of pairs will select those ranges
+        * -> pair = between car cdr
+          * (p . NIL) = until EOL
+          * (p . T) = until Ptr
+        * -> atom = single
       * or show props on single line (nested pairs)
+
+    * Buffer System (aka Cut/Copy/Paste)
+      * Buffers have ptr prop
+        * p1 -> b1, p2 -> b2, etc.
+      OR
+      * Pointers have buf prop (most logical)
+        * n-ptrs : b1
+        * Similar to ptr list, use a buffer list which follows same pattern
+        * Show first and last items
+      * CUA
+      
+    * Directory Nav
     
+    * CLI
+      * Plain list
+      
+    * Tag/Note System
+      * Need "template"
+      
     TARGET:
     * BUILD TEST TREE
     * TEST LAYOUT OF EXISTING DATA
       
   * Refactor [Nxt Week]
+    * Limit x length of items like line wrap
+    * Store ref to last item in list for faster bnds calc
     * Is there a way to map modifier keys to Car or Pair/Cdr?
     * Technically '*list and '*main can be different, i.e. sublist can be on
     same line as parent list
@@ -359,11 +355,15 @@ Store DAGs as binary trees?
     * Refactor other items to use skip flags like mov> etc.
     * For single chars, the bounds is the same everytime
             
-  * Optimize ipc to batch messages, flush etc.
-    * Instead of directly sending msgs, put into list
-    * Call flush to send all
-    * Requires rewriting protocol to read multiple messages from single
-    string
+  * Optimize
+    * IPC
+      * Batch messages, flush etc.
+      * Instead of directly sending msgs, put into list
+      * Call flush to send all
+      * Requires rewriting protocol to read multiple messages from single
+      string
+    * Tree Update
+      * Only do CDR
    
   * Move to external symbols
     * Move verts.bin -> db file
@@ -375,44 +375,40 @@ Store DAGs as binary trees?
     
   =-----------------------------------------------------------------------------
 
-  * Demo: Show left->right, Text, Other Data, Custom Data
+  * Demos:
+    * Show left->right, Text, Other Data, Custom Data
+      * Load own code as data
+    * Really draw relevant internal symbols from table
 
+  * Test multiple workers
+    * Need data sync on model side to broadcast updates
+
+  * OpenGL
+    * Implement viewports
+      * Allows split screen
+      * Create viewport from current view
+    * Implement framebuffers
+      * Render to target
+      * Allows us to create screens/viewports
+    * Implement screenshot
+      * glReadPixels
+      
+  * Basic animations
+    * Easing functions
+    * Fades
+    * Use compute shader on large amount
+      * For demo max verts
+
+  * Touch interface
+    * Refactor math library; implement glunproject
+    * Ability to pull items out
+    * Requires spatial index, unproject
+      * Port r-tree from CL      
+      
+  ========================
+      
   * Instead of drawing lines to connect nodes, draw generic grid in bg
   to guide user
-
-  * Implement/Draw Primary Lists:
-    1. Main etc.
-    2. Pointer
-    3. Binds
-    4. Command/History
-
-  * Supporting Structures
-    * Implement AABB
-    * Implement treemap as alternative to graph?
-      * Sunburst, conetree, etc.
-      * See 'A Visual Survey of Tree Visualization'
-
-  * Pointer
-    * Instead of calling p#, use the fn+#
-      * Default is append-0
-    * Implement semantic move
-    * Insert inbetween
-      * Redraw cdr
-    * Create pointer list at top
-      * p0 is special or maybe call it T
-        * Separate controls to move it but same functionality
-      * To switch between pointers, move p0
-               
-               p0
-      lst-ptrs p1 p2 p3 p4 p5
-
-      p1   p2    p3 etc
-      qwerasdfzxcvr
-      
-      * p0 -> symbol = mov one
-      * p0 -> list   = mov all (relative) 
-                       or apply fn to all ptrs
-      * use rot list, only use first
 
   * Timestamp optional
     * GPS optional
@@ -437,43 +433,12 @@ Store DAGs as binary trees?
     * Ex: Table
       * Create class, user defines properties
 
-  * Auto-pack strings [Later]
-    * Upon char, make string, until non-char
-      * Do NIL to create new list
-    * When user marks part of string, break it down by spaces into words/chars
-    * Mark word/chars with tags
-
   * Lists
     * Differentiate colors for tagged and untagged data?
       * Show number of tags?
-    * Store origin in Particle
-      * Update on vertex update -> fn called on particle
     * Don't draw NIL at end of list
       * Pointer points to last item
-    * Newline only applies if current/prev is a string
-    * Add specific cmd to replace any with list/NIL
-      * Default is to append/insert
-
-  * Refactor gen-particle to use globals instead of passing
-
-  * Create special command to create pointer symbols [Later]
-
-  * FPS - do in render
-  
-  * Load own code as data
-    * Really draw relevant internal symbols from table
-
-  * Swap part
-    * (con (nth n) (new)) to change CDR
-    * (con (new) (nth n+1))
-
-  * Draw lines
-    * One node per line segment
-    * Scale node to fit line
-
-  * Split screen
-    * Add commands to do this
-
+    
   * Map keys to grid on screen
     * 26 squares if using plain alphabet
     * User can use keys to manuever
@@ -484,20 +449,12 @@ Store DAGs as binary trees?
     * Set * Err to (quit)
     * On error, print msg and return to top-level
 
-  * Explore file browsing using built in functions
-    * For example, get a list of files in directory -> return list of strings of
-    files
 
-  * Test multiple workers
-    * Need data sync on model side to broadcast updates
-
-  POST DEMO:
+LATER:
 
   * Implement Wayland - BASIC!
     * Setup tiles for 6 windows = 3 col, 2 row
     * Proof of concept working with eval already
-
-   * Implement drawing cons cells/box-ptr diagrams [Later]
 
    * Test compute shaders
      * Rotate all vertices
@@ -505,32 +462,7 @@ Store DAGs as binary trees?
        * Syncing becomes an issue -> at that point, keep transforms on GPU side
        * Vertex data simply contains an offset to the struct
 
-   * Show commands
-     * Add disassemble functionality
-     * Render frame time?
-
   https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
-
-  * Implement framebuffers
-    * Render to target
-    * Allows us to create screens/viewports
-    * Create viewport from current view
-
-  * Write docs
-
-  * Basic animations
-    * Easing functions
-    * Fades
-    * Use compute shader on large amount
-      * For demo max verts
-
-  * Use touch to modify lists
-    * Ability to pull items out
-    * Requires spatial index, unproject
-      * Port r-tree from CL
-
-  * Screenshot
-    * glReadPixels
 
   * Implement DRM backend
 

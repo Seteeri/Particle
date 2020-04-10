@@ -20,9 +20,9 @@ Handle bad accept sock
 
 
 # Wrapper libraries
-(load "/home/user/Particle/particle/src/misc.l")
-(load "/home/user/Particle/particle/src/c/epoll.l")
-(load "/home/user/Particle/particle/src/c/socket.l")
+(load (pack (pwd) "/src/misc.l"))
+(load (pack (pwd) "/src/c/epoll.l"))
+(load (pack (pwd) "/src/c/socket.l"))
 
 
 # Must define class before loading file with methods
@@ -143,10 +143,10 @@ Handle bad accept sock
      (case Bytes-Sent
      
         # Orderly shutdown
-        (0  (nil (prinl-info "send-bytes>" (pack "ERRNO=" (errno) ", Sock=" Sock))))
+        (0  (nil (prinl-info "send-bytes>" (pack "0, ERRNO=" (errno) ", Sock=" Sock))))
         
         # Error
-        (-1 (nil (prinl-info "send-bytes>" (pack "ERRNO=" (errno) ", Sock=" Sock))))
+        (-1 (nil (prinl-info "send-bytes>" (pack "-1, ERRNO=" (errno) ", Sock=" Sock))))
 
         # Poss Byte-Sent != Sz
         (T  Bytes-Sent))))
@@ -171,10 +171,10 @@ Handle bad accept sock
      (case Bytes-Read
      
         # Orderly shutdown
-        (0  (nil (prinl-info "send-bytes>" (pack "ERRNO=" (errno) ", Sock=" Sock))))
+        (0  (nil (prinl-info "recv-bytes>" (pack "0, ERRNO=" (errno) ", Sock=" Sock))))
         
         # Error
-        (-1 (nil (prinl-info "send-bytes>" (pack "ERRNO=" (errno) ", Sock=" Sock))))
+        (-1 (nil (prinl-info "recv-bytes>" (pack "-1, ERRNO=" (errno) ", Sock=" Sock))))
         
         (T  Bytes-Read))))
 

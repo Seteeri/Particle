@@ -42,16 +42,14 @@
 
 
 (de init-ctrl ()
+  
+  (setq *ipc (new '(ipc~+IPC)
+              *uds-ctrl             T handle-worker accept-client
+              (list (list *uds-in   T handle-input  "INPUT")
+                    (list *uds-mod  T '((Sock) (recv-msg *ipc Sock))  "MODEL")
+                    (list *uds-rend T handle-render "RENDER"))))
 
-  (let ID-C (pack "CTRL")
-
-    (setq *ipc (new '(ipc~+IPC)
-               *uds-ctrl            T handle-worker accept-client
-               (list (list *uds-in  T handle-input  "INPUT")
-                     (list *uds-mod  T '((Sock) (recv-msg *ipc Sock))  "MODEL")
-                     (list PATH-UDS-RENDER T handle-render "RENDER"))))
-
-    (reg-conns *ipc ID-C))
+  (reg-conns *ipc NAME-PID)
 
   (queue '*q-msg (pack "(calc-pv " *width " " *height ")"))
   (queue '*q-msg (pack "(update-pv)"))
@@ -104,36 +102,40 @@
 
 (de handle-render (Sock)
   # Currently, render sends frame time which is not used...
-
   # Render will send window resize events
   # Ctrl will send window resize event to workers
+    
   (let (Msg (recv-msg *ipc Sock)
-        Data (any Msg))
-
+        Data (any Msg)
+        Name (get Data 1))
+    
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
     (unless Msg
       (disconn-conn *ipc Sock))
 
-    (if (lst? Data)
+    (cond ((= Name "fbsize")
+           (dispatch-msg (pack "(calc-pv " (get Data 2) " " (get Data 3) ")"))
+           (dispatch-msg (pack "(update-pv)")))
 
-      (when (= (get Data 1) "window-size")
-        (dispatch-msg (pack "(calc-pv " (get Data 2) " " (get Data 3) ")"))
-        (dispatch-msg (pack "(update-pv)")))
+          ((= Name "focus")
+            )
         
-      (when (= Data "bye")
-        # Send to all conns
-        (send-msg-conns *ipc "bye")
-        (ipc~disconn-sock Sock)
-        (ipc~end> *ipc)
-        (println "Ctrl says bye!")
-        (bye)))))
+          ((= Name "bye")
+           # Send to all conns
+           (send-msg-conns *ipc "bye")
+           (ipc~disconn-sock Sock)
+           (ipc~end> *ipc)
+           (println "Ctrl says bye!")
+           (bye)))))
 
 
 (de handle-input (Sock)
 
   # Currently assuming kb events only
 
+  #(println 'handle-input)
+  
   (let (Msg  (recv-msg *ipc Sock)
         Data (any Msg)
         Name (get Data 1))

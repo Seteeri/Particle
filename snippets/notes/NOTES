@@ -4967,3 +4967,47 @@ http://www.java-gaming.org/topics/solved-signed-distance-field-fonts-look-crappy
 https://www.essentialmath.com/blog/?p=151
 
 https://discourse.libcinder.org/t/cinder-sdftext-initial-release-wip/171/14
+
+
+===========================================================================
+
+Very large strings - use a rope or skip-list or binary tree
+
+===========
+
+How to edit a a word/sublist in the middle of the string
+
+If it is a single string, not possible to move the ptr - user must break it apart
+
+Is there a way to do this automatically? ...such as when the user approaches the str
+
+Maybe not the entire string but part of it at least...
+
+After str is broken, user can mark parts of it
+and do pattern matching
+
+For space is there a way, to avoid double space? Use single dot, don't space bf or af
+
+Create string mode for when user is over a string or list of strings?
+
+
+When user breaks string, it must be rejoined 
+before a search/replace
+unless they explicitly programmatically conduct S/R
+
+Demonstrate common scenarios/actions...
+
+Edit a word like a misspelling
+1. Split str into list of strs
+  * Cache this for faster edits
+    * Don't need to implcitly draw this
+    * However, user can explicitly draw it with cmd or programmatically
+  * Limit for very long strs
+2. Pt to word
+3. Ins/Del or Repl word
+4. Glue strs
+
+How to handle lines?
+Cut/Copy/Paste? -> This moving items from buffer to ptr
+
+When splitting lines, split by lines, then by space

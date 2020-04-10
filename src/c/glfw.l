@@ -28,6 +28,10 @@
 (de poll-events ()
     (native "libglfw.so.3.3" "glfwPollEvents"))
 
+    
+(de set-window-focus-callback (Window Cbfun)  
+    (native "libglfw.so.3.3" "glfwSetWindowFocusCallback" 'N Window Cbfun))
+  
 
 (de set-framebuffer-size-callback (Window Cbfun)
     (native "libglfw.so.3.3" "glfwSetFramebufferSizeCallback" 'N Window Cbfun))

@@ -121,16 +121,23 @@
       ((`ksd~Control-L `ksd~z) T ((Keysym) (println "Ctrl-L-z: UNDO")))
       ((`ksd~Alt-L     `ksd~z) T ((Keysym) (println "Alt-L-z: REDO")))
 
-      # Lisp Ops
-      ((`ksd~Control-L `ksd~q) T `cmd-eval)
+      # Str Ops - work on current list
+      # encourages users to create a list when editing
       ((`ksd~Control-L `ksd~u) T `cmd-pack)
+      # split-space (word) : glue " ", 
+      # chop (letter) : glue "", pack
+      # : (mapcar pack (split (chop "The quick brown fox") " ")) -> ("The" "quick" "brown" "fox")
+
+      ((`ksd~Control-L `ksd~t) T `cmd-format)
+      ((`ksd~Control-L `ksd~y) T '((Keysym) (println "cmd-reverse")))
+      ((`ksd~Alt-L     `ksd~y) T '((Keysym) (println "cmd-flip")))      
+      
+      # List/Sym/Atom Ops
+      ((`ksd~Control-L `ksd~q) T `cmd-eval)
       ((`ksd~Control-L `ksd~r) T `cmd-reset)
       ((`ksd~Control-L `ksd~f) T `cmd-any)
       ((`ksd~Control-L `ksd~g) T `cmd-sym)
-      ((`ksd~Control-L `ksd~t) T `cmd-format)
       ((`ksd~Control-L `ksd~h) T `cmd-intern)
-      ((`ksd~Control-L `ksd~y) T '((Keysym) (println "cmd-reverse")))
-      ((`ksd~Alt-L     `ksd~y) T '((Keysym) (println "cmd-flip")))
 
       # Create NIL
       ((`ksd~Control-L `ksd~e)    T `cmd-make-nil)
@@ -184,18 +191,16 @@
   
   (setq *i-proc 1)
 
-  (setq *metrics (load-metrics *sca-glyph))
-
-  (let ID-C (pack "WORKER-" *i-proc)
-
-    (setq *ipc (new '(ipc~+IPC)
-                     (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
-                     (list (list *uds-mod   T handle-model  "MODEL")
-                           (list *uds-ctrl T handle-ctrl   "CONTROL")
-                           (list PATH-UDS-RENDER  T handle-render "RENDER")
-                           )))
-
-    (reg-conns *ipc ID-C))
+  (setq *metrics (load-metrics *sca-glyph)) 
+  
+  (setq *ipc (new '(ipc~+IPC)
+                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
+                    (list (list *uds-mod  T handle-model  "MODEL")
+                          (list *uds-ctrl T handle-ctrl   "CONTROL")
+                          (list *uds-rend T handle-render "RENDER")
+                          )))
+                          
+  (reg-conns *ipc (pack NAME-PID "-" *i-proc))
 
   (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "rdy")
 
@@ -227,7 +232,7 @@
   (when NIL (run-tests))
 
   (gen-def-parts)
-
+  
   (prinl-info "init-worker" "Starting epoll...")
 
   (loop (ipc~poll> *ipc -1)))
@@ -376,12 +381,12 @@
   (let (Msg (recv-msg *ipc Sock)
         Data (any Msg)
         Name (get Data 1))
-
+        
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
     (unless Msg
       (disconn-conn *ipc Sock))
-
+      
     (cond ((= Name 'KEYBOARD-KEY)
            (dispatch-kb Data))
 
@@ -435,6 +440,8 @@
 
 
 (de handle-render (Sock)
+
+  #(println 'handle-render)
 
   (let Msg (recv-msg *ipc Sock)
 
