@@ -8,20 +8,6 @@
   (println 'cmd-reset *master (get *master 'data))
   (del> *master T T)
 
-  (setq *main NIL)
-  (setq *main (gen-part '*main 'x))
-  (with *main
-    (=: line (new '(+Line) NIL NIL NIL (get (: a) 'dims))))
-  (setq *cur (copy *pos-main))
-  (lay-part-start *main *cur)
-  (setq *line *main)
-  (inc-line-by-part-x> *line (get *main 'b))
-
-  # Repos ptr
-  (put *0 'b (get *main 'b))
-  (lay-part-start *0 *cur 'skip-cdr)
-  (mov-part-abv> *0 (get *main 'b) (cons T))
-
   (gc))
 
 
@@ -55,28 +41,47 @@
   (prinl-info "cmd-del")
 
   #{
+  
+    Delete previous
 
-                *0
-    [ ] - [ ] - NIL
-    "a"   "b"
+    
+              *0
+    [ ]  [ ]  NIL
+    a    b
 
+    #############
+    
+         *0
+    [ ]  [ ]  NIL
+    a    b
 
-          *0
-    [ ] - NIL
-    "a"   "b"
+    #############
+    
+    *0
+    [ ]  [ ]  NIL
+    a    b    
 
-    OR
-
-          *0
-    [ ] - [ ] - [ ] - NIL
-    "a"   "b"   "c"
-
+    #############
+    
+    [ ]  [ ]  NIL
+    a    b        
 
     *0
-    [ ] - [ ] - NIL
-    "b"   "c"
+    [ ]  [ ]  NIL
+         c        
 
-    * Ref does not get deleted - its prv does
+    #############
+    
+    [ ]  [ ]  NIL
+    a    b        
+
+    
+    [ ]  [ ]  NIL
+         NIL        
+         
+    *0     
+    NIL
+    
   }#
 
   # Refactor into a fn in ops?
@@ -84,73 +89,60 @@
   # Similar to adding items, must update CDR and list CDR
 
   (let (Ref (get *0 'b)
-        Tgt (get Ref 'c)
-        Cc (get Tgt 'c))
+        Tgt (if *on-car (get Ref 'c 'c) (get Ref 'c))
+        Tgt-Prv (get Tgt 'c)
+        Tgt-Cdr (get Tgt 'b)
+        New-Ref NIL)
 
     (unless (= (get Tgt 'data) '*main)
-
-      # Preserve Ref so only delete Car
-      # Must manually do this since the flags are passed down
-      (when (get Tgt 'a)
-        (del> (get Tgt 'a) T T))
-      (del> Tgt NIL NIL)
+    
+      (cond ((or (isa '(+Pair) (get Tgt 'a))
+                 (isa '(+Nil) (get Tgt 'a)))
+             # Remove line
+             (del-line Tgt)
+             (con> Tgt-Prv Tgt-Cdr)
+             (put Tgt-Cdr 'c Tgt-Prv)
+             (put (get Tgt-Cdr 'line) 'l (get Tgt 'line 'l))
+             (println (get Tgt 'line 'l))
+             (setq New-Ref Tgt-Cdr))
+    
+            # If Tgt prv is Car of Pair, set Car...
+            ((= (get Ref 'c 'a) Ref)
+              (put Tgt-Prv 'a Tgt-Cdr)
+              # To connect, pop, then push
+              (with Tgt-Prv
+                (pop (:: data))
+                (push (:: data) (get Tgt-Cdr 'data)))
+              (put Tgt-Cdr 'c Tgt-Prv)
+              (xchg-nl Tgt Tgt-Cdr)
+              
+              # Tgt-Prv = Y pair
+              # It's list has to be modified also
+              # so get item before and connect new data
+              (with (get Tgt-Prv 'c)
+                (con (car (:: data)) (get Tgt-Prv 'data)))
+                
+              (setq New-Ref Ref))
+                
+            (T
+             (con> Tgt-Prv Tgt-Cdr)
+             (put Tgt-Cdr 'c Tgt-Prv)
+             (setq New-Ref Ref)))
+      
+      # Unlink b before del
       (put Tgt 'b)
-
-      # Delete Tgt
-      # Connect Cc to Ref
-
-      # Link Cc->Ref; con to destructively set Ref
-      (unless (= (get Cc 'data) '*main)
-        (con (get Cc 'data) (get Ref 'data)))
-
-      #(if (isa '+Pair (get Cc 'a))
-      (if (= (get Cc 'a) Tgt)
-
-        # When deleting last item in a sublist
-        # Make the Ref the Car of Cc
-        # Move Ref under Cc
-        (prog
-          (put Cc 'a Ref)
-          (mov-cur-part Cc 'start) (nl-cur)
-          (mov> Ref *cur)
-
-          # Move Cc Ref also
-
-          (put Cc 'b Tgt)
-
-          (align-cur-to-car-bnds Cc)
-          (mov> Tgt *cur))
-
-        (prog
-          (put Cc 'b Ref)
-
-          # Move Ref
-          (align-cur-to-car-bnds Cc)
-          (mov> Ref *cur)))
-
-      (put Ref 'c Cc)
-
-      # Mov Ref to Tgt
-
-      # Base is origin of Pair containing Ref/Part
-      # Cur is where Part should be - use Ref origin
-      (mov-cur-part Tgt 'start)
-      (lay-part-start Ref (get *main 'ori) 'skip-cdr)
-
-      # Do until nl also,
-      # however,
-      # poss move items back to maintain line length
-      # but this means update everthing
-      (adj-line-to-part> *line Ref)
-
-      # Layout remainder
-      (align-cur-to-car-bnds Ref)
-      (lay-part-start (get Ref 'b) (get *main 'ori))
-
-      # update superlists etc
-
-      # Ptr same; simply move it
-      (mov-part-abv> *0 Ref (cons T)))))
+      (del> Tgt T T)
+      
+      (upd-tree)
+      (mov-*1 *line)      
+      
+      # Ptr remains on Ref
+      # How about for on-car?
+      (put *0 'b New-Ref)
+      (mov-cur-abv New-Ref)
+      (lay-part-start *0 *line 'skip-cdr)
+          
+      T)))
 
 
 (de cmd-make-num (Keysym)

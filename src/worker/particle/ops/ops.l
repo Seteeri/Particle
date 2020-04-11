@@ -267,6 +267,8 @@
     
     # P N D L
     
+    # xchg-ln?
+    
     # Make Part on a new line
     (put Part 'line (new '(+Line)
                       Line
@@ -332,6 +334,21 @@
   
   (setq *line Ref))
 
+  
+(de del-line (Part)
+  # Assumes sublines will be deleted or no longer ref'd
+  # or handled by caller
+
+  (let (Nl (get Part 'line)
+        Prv (get Nl 'p)
+        Nxt (get Nl 'n))
+
+    (when Prv
+      (put (get Prv 'line) 'n Nxt))
+
+    (when Nxt
+      (put (get Nxt 'line) 'p Prv))))
+  
         
 (de upd-tree (List)
 

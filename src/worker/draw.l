@@ -85,7 +85,9 @@
 
   (let (Vert (pop '*verts)
         (R G B) Col)
-
+    
+    (inc '*cnt-v)
+    
     (with Vert
     
       (=: pos *cur)
@@ -98,8 +100,6 @@
     (update-glyph> Vert Char)
     
     (upd-mdl-mtrx> Vert)
-
-    (inc '*cnt-v)
 
     Vert))
 

@@ -4992,3 +4992,33 @@ Pass 1:
 * Ctrl then divides the work and sends to workers
 * Workers then upd/cpy their segment and send directly to render
 * When done, commit to database
+
+=================================================================
+
+[ ]  [ ]
+a    b
+
+          *
+[ ]  [ ]  NIL
+     c
+
+NIL
+
+
+-> del
+
+
+[ ]  [ ]
+a    b
+
+     *
+[ ]  NIL
+
+
+NIL
+
+
+- NIL has X layout
+- What about CDR NIL?
+- What if user wants to make list?
+- Ctrl-E creates NIL pair

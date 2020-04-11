@@ -188,67 +188,6 @@
         (upd-dims @))
     (upd-dims *line-lay)))
 
-
-###############################
-
-(de lay-pair-y-2 (Part Line Skip)
-  #{
-
-    Draw CAR +X
-    Draw CDR -Y
-  
-    [ ] CAR
-        ...        
-    CDR
-  
-    CAR Y has precedence
-  
-    Must return the max X and min Y to calc bounds
-  
-    Line is the pos of the list start; lay-pair sets it
-  }#
-  
-  (with Part
-  
-    (let ((X-Ori Y-Ori) (: ori))
-    
-      # Mov cur to origin of Pair
-      (set-cur-y Y-Ori)
-      
-      # Use X dims
-      (set-cur-x (+ X-Ori (get (: a) 'dims 1)))
-      (adv-cur)
-    
-      # Lay CAR first since its Y bounds has precedence
-                  
-      (when (and (: a)
-                 (not (= (: a) Part))
-                 (or (= Skip 'skip-cdr)
-                     (not Skip)))
-        (lay-part (: a) Line))
-
-      # Str's val/b is NIL (or poss later point to itself)
-      (when (and (: b)
-                 (not (= (: b) Part))
-                 (or (= Skip 'skip-car)
-                     (not Skip)))
-
-        # To draw Cdr:
-        # X = Origin
-        # Y = Ori 2 + Dims-Car 2, plus nl
-        (set-cur-x X-Ori)
-
-        # If Car layout is X, cur will be back at Cdr bnds,
-        # which means Y is level with Part - must set cur to Y bnds (min Y)
-        (if (= (get (: a) 'lay) 'x)
-            #(println 'lay-part-y "X layout detected for Car")
-            (setq *cur (list (get *cur 1) *cur-y))
-            
-            # Y should be in place, else get from cur bnds
-            (nl-cur 2.0))
-        
-        (lay-part (: b) Line)))))
-    
   
 (de lay-atom (Part Line Skip)
     

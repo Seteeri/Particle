@@ -180,11 +180,11 @@
       # Camera Translation
       # Prior/Next
       ((`ksd~Alt-R `ksd~Right) T `cmd-move-cam-px)
-      ((`ksd~Alt-R `ksd~Left)     T `cmd-move-cam-nx)
-      ((`ksd~Alt-R `ksd~Up)     T `cmd-move-cam-py)
-      ((`ksd~Alt-R `ksd~Down)     T `cmd-move-cam-ny)
+      ((`ksd~Alt-R `ksd~Left)  T `cmd-move-cam-nx)
+      ((`ksd~Alt-R `ksd~Up)    T `cmd-move-cam-py)
+      ((`ksd~Alt-R `ksd~Down)  T `cmd-move-cam-ny)
       ((`ksd~Prior)            T `cmd-zoom-cam-in)
-      ((`ksd~Next)            T `cmd-zoom-cam-out)))
+      ((`ksd~Next)             T `cmd-zoom-cam-out)))
 
       
 (de init-worker ()
@@ -314,7 +314,7 @@
     
     (nl-cur 6.0)    
     
-    (when T
+    (when NIL
 
       (let Part (gen-part '("a" "b" ("c" "d" "e" ("f"))) 'x)
       

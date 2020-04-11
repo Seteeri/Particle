@@ -99,9 +99,8 @@
     as frag will be discarded...fix later
   }#
 
-  (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
-        Verts (: verts))
-    (for Vert Verts
+  (let Sock-Render (ipc~get-fd> *ipc "RENDER")
+    (for Vert (: verts)
       (send-msg *ipc
                 Sock-Render
                 (pack "(zv " (get Vert 'off-gl) '")"))
@@ -114,9 +113,9 @@
   (when (and Cdr (: b))
     (del> (: b) Car Cdr))
 
-  (println 'del> "Deleted Particle:" This (: data))
+  (println 'del> This (: data))
 
-  # Clear links and flags
+  # Clear links and flags?
   (=: a)
   (=: b)
   (=: c)
