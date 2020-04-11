@@ -265,7 +265,7 @@
 
     # DO this properly - in gen?
     (with (get *main 'b)
-      (=: line (new '(+Line) NIL NIL (get *main 'a 'dims) NIL)))
+      (=: line (new '(+Line) NIL NIL NIL (get *main 'a 'dims))))
       
     (setq *pos-main (copy *cur))
     (setq *line (get *main 'b))

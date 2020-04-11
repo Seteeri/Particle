@@ -130,8 +130,8 @@
 
   
 (class +Line)
-(dm T (P N Dims L)
+(dm T (P N L D)
   (=: p P)
   (=: n N)
-  (=: dims (if Dims Dims (list 0.0 0.0)))
-  (=: l L))
+  (=: l L)
+  (=: dims (if D D (list 0.0 0.0))))

@@ -251,24 +251,22 @@ or very few expections like with pointers
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
     
-  * Rewrite line system [Done]
-    * Fix creating sublist on newline str
-    * Test pairs?
-    
-  * Print bindings so user can see it immediately
-    * Refactor it...
-    * Make a list and gen parts
-    * User should be able to edit it and it can take place
-    * Create fn to prevent incorrect format
-      * Hmm would this require a mode for when you enter it
-      * Change ptr to change mode
-  
-  * Handle multi-line strings
-    
+  * Refactor
+    * Make +Line a symbol
+    * Remove model process
+    * Handle multi-line strings
+    * Refactor bindings
+      * Improve discoverability - user sees it immediately
+        * Once they are adv enough, they can remove it from default setup...
+      * Make a list and gen parts
+      * User should be able to edit it and it can take place
+      * Prevent incorrect format
+        * Hmm would this require a mode when list is entered?
+        * Change ptr to change mode
+      
   * List/Atomic Ops
     * cmd-del, cmd-backspace...
     * Replace input with output
-      * Really - move input to cmd history
     
   * Str Ops
     * Core
@@ -301,66 +299,61 @@ or very few expections like with pointers
       * Similar to ptr list, use a buffer list which follows same pattern
       * Show first and last items
     * CUA
+  
+  * Logging System
+    * Log commands
     
   * Directory Nav
-  
-  * CLI
-    * Plain list
-    
+      
   * Tag/Note System
     * Need "template"
-      
+    * Search functions
+  
+  * CLI
+    * Plain list  
+  
   * Refactor [Nxt Week]
-    * Limit x length of items like line wrap
-    * Store ref to last item in list for faster bnds calc
-    * Is there a way to map modifier keys to Car or Pair/Cdr?
+    * Camera needs to move with content like when entering a newline
+      * Requires unproject to test if coord is in the viewport
+      * When a new item is entered, check its bnds against the view bounds  
     * Technically '*list and '*main can be different, i.e. sublist can be on
     same line as parent list
-      * It can't unless layout swapped...  
+      * It can't unless layout swapped...
+    * For single chars, the bounds is the same everytime
+      * Avoid calc      
     * Fix magic numbers
     * Refeactor "*0" mov-part-abv> into cursor fn  
-    * Make columns for Y layout?
     * Should swap-layout recurse or not?
       * Maintain substructure
       * Do first level or immediate
       * Shortcut with Ctrl, Alt, Shift Tab
       * Really only useful when setting up sublists  
-    * Refactor layout to have force option
-      * Use fn for now
-    * On enter-list, if not immediately enterable, search for next list?
-      * Make command for prv/nxt list like Q/E
-      * Search within view
-    * Make option: cmds a circular list
-      * Back disappearing items?
-    * Replace dot with arrow indicating layout (Right/Down)
-    * Camera needs to move with content like when entering a newline
-      * Requires unproject to test if coord is in the viewport
-      * When a new item is entered, check its bnds against the view bounds
+    * Opt: buffer is a circular list
     * Draw num in car [?]
       * Handle decimals
+      
+    * Replace dot with arrow indicating layout (Right/Down)
     * Make fn: mov-cur X/adv Y/nl
-    * Cache origin, dims [?]
-      * Store for each layout
-      * This abs pos
-      * Need dirty flag to be set on pos change, i.e. layout calls    
     * Cache last item for lists
     * Refactor other items to use skip flags like mov> etc.
-    * For single chars, the bounds is the same everytime
-            
+    * Make columns for Y layout?            
+    * Limit x length of items like line wrap
+    * Store ref to last item in list for faster bnds calc
+    * Is there a way to map modifier keys to Car or Pair/Cdr?
+      * Use mod keys to decide whether to keep input or replace it
+      
+  * Implement external symbols
+    * Move verts.bin -> verts.db
+    * Refactor Particle into subclass of Entity
+    * Can test multiple workers pull/push database      
+      
   * Optimize
     * IPC
+      * Utilize multiple workers - see notes
       * Batch messages, flush etc.
       * Instead of directly sending msgs, put into list
       * Call flush to send all
-      * Requires rewriting protocol to read multiple messages from single
-      string
-    * Tree Update
-      * Only do CDR
-   
-  * Move to external symbols
-    * Move verts.bin -> db file
-    * Can test multiple workers pull/push database
-    * Refactor Particle into subclass of Entity
+      * Requires rewriting protocol to read multiple messages from single str
           
   * Use special printing for control characters like enter etc.
     * newline ("^J"), return ("^M") or TAB ("^I")

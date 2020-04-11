@@ -11,7 +11,7 @@
   (setq *main NIL)
   (setq *main (gen-part '*main 'x))
   (with *main
-    (=: line (new '(+Line) NIL NIL (get (: a) 'dims))))
+    (=: line (new '(+Line) NIL NIL NIL (get (: a) 'dims))))
   (setq *cur (copy *pos-main))
   (lay-part-start *main *cur)
   (setq *line *main)

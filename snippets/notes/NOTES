@@ -32,16 +32,6 @@ that can cut across all domains.
 
 ################################################################################
 
-Generate glyphs for builtin symbols?
-- However, if any changes made to glyphs, it would have to be generated and tex
-uploaded while running
-
-Could do the same for prose - common english words
-https://en.wikipedia.org/wiki/Most_common_words_in_English
-- Or analyze this dynamically as user types
-
---------
-
 For images, load entire image as a texture and then break into tiles
 as user works on it, 2,4,8,16,32,64 etc
 
@@ -81,19 +71,6 @@ https://www.reddit.com/r/opengl/comments/3yrv79/simplistic_texture_less_tronlike
 
 ################################################################################
 
-First engine is called Maximum Instancing Engine -> "Maxstance Engine"
-- Maximum instances
-- Per-instance color/alpha/texture/UVs
-  - Make these command line options
-- No lighting?
-- Post processing effects: motion blur
-  - Focused on creating aesthetic appearance over technically correct
-...
-
-Use EVVEE for more lighting-based renderings...
-
-################################################################################
-
 How to Design Help System
 
 Use lisp describe method as starting point
@@ -130,26 +107,6 @@ nodes as they popup...use augmented reality like pokemon
  22. Should pointer target be predecessor or successor?
     - Successor makes sense since pointer is like an arrow
 
-################################################################################
-
-Implement NOTEPAD:
-
-Edit:
-* Undo/Redo - TODO
-* Cut/Copy/Paste/Delete - Del:YES
-* Select All - TODO
-
-Search: TODO
-* Find
-* Find Next/Prev
-* Replace
-* Jump To
-
-Options: TODO
-* Font - not really feasible right now other than fixed-width/monospace
-* Word Wrap - yes
-* Line Numbers - yes
-* Auto Indent - yes
 
 ################################################################################
 
@@ -5021,3 +4978,17 @@ It is cheap to move all particles by an offset
 To update particles, set the new origin and have the shader do all the calcs
 
 That way, the only job of the CPU is to copy memory around
+
+Instead of traversing the graph, we have a list of all the verts being used
+
+Tell all workers to traverse all the verts to check
+
+However only portions of the graph needed to be updated
+
+Solution would be a 2-pass to figure out which verts need copying
+
+Pass 1:
+* Each worker scans their segment and sends results to ctrl
+* Ctrl then divides the work and sends to workers
+* Workers then upd/cpy their segment and send directly to render
+* When done, commit to database
