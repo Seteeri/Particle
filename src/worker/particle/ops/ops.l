@@ -298,7 +298,7 @@
   (lay-part-start *master (get *master 'b)))
                   
 
-(de make-list (Ref)
+(de make-line (Ref)
 
   #{
               *
@@ -371,7 +371,7 @@
         (put *0 'b (get Part 'c))
         (point-nxt)
         
-        (println 'make-list "Added Y list, moved to newline")
+        (println 'make-line "Added Y list, moved to newline")
 
         Part)
 

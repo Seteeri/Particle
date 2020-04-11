@@ -203,7 +203,7 @@
 
   (let Ref (get *0 'b)
 
-    (make-list Ref)))
+    (make-line Ref)))
     
     #(mov-nl Ref)))
 
