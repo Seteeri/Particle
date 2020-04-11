@@ -27,8 +27,8 @@
             "/src/prot/msg.l"
             "/src/prot/obj.l"
             "/src/metrics/metrics.l"
-            "/src/model/projview.l"
-            "/src/model/vertex.l"
+            "/src/ctrl/projview.l"
+            "/src/ctrl/vertex.l"
             "/src/ctrl/xkb.l"
             "/src/worker/conn.l"
             "/src/worker/cursor.l"
@@ -186,7 +186,7 @@
       ((`ksd~Prior)            T `cmd-zoom-cam-in)
       ((`ksd~Next)            T `cmd-zoom-cam-out)))
 
-
+      
 (de init-worker ()
   
   (setq *i-proc 1)
@@ -195,24 +195,28 @@
   
   (setq *ipc (new '(ipc~+IPC)
                     (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
-                    (list (list *uds-mod  T handle-model  "MODEL")
-                          (list *uds-ctrl T handle-ctrl   "CONTROL")
+                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")
                           (list *uds-rend T handle-render "RENDER")
                           )))
                           
   (reg-conns *ipc (pack NAME-PID "-" *i-proc))
-
-  (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "rdy")
-
+  
+  ##################################
+  # Control should send this on init
   (setq *projview (req-recv-pv *ipc
-                               (ipc~get-fd> *ipc "MODEL")
+                               (ipc~get-fd> *ipc "CONTROL")
                                NIL))
   (cmd-render-pv *ipc)
-
+  ####################
+  
+  
+  #####################
+  # Move to control
   (setq *xkb (new '(+Xkb)))
 
   (apply-key-bindings *bindings-key)
-
+  ##################################
+  
   (gc 512)
 
   (let (A NIL
@@ -232,6 +236,8 @@
   (when NIL (run-tests))
 
   (gen-def-parts)
+  
+  (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "(rdy)")
   
   (prinl-info "init-worker" "Starting epoll...")
 
@@ -417,7 +423,7 @@
            T))
 
     # Send ready when complete
-    (send-msg *ipc Sock "rdy")
+    (send-msg *ipc Sock "(rdy)")
 
     #(prinl (usec) " | WORKER/" *Pid " | Worker ready")
 
@@ -452,8 +458,7 @@
 
    (when NIL
 
-     (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-           Sock-Render (ipc~get-fd> *ipc "RENDER")
+     (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
            Vert        *vert-ptr)
 
         (with Vert
@@ -555,56 +560,3 @@
 (de main ()
   (bind-args)
   (init-worker))
-
-
-#################
-
-
-(de pull-verts ()
-
-  (prinl-info "init-worker" (pack "Pulling " *verts-max " verts..."))
-
-  (let (Sock-Model (ipc~get-fd> *ipc "MODEL")
-        Cnt-X 0
-        Pos-X 0.0
-        Pos-Y 0.0)
-
-    (seed (in "/dev/urandom" (rd 64)))
-
-    (for I *verts-max
-
-      (let Vert (req-recv-vert *ipc
-                               Sock-Model
-                               NIL
-                               I)
-
-        (when NIL
-
-          (with Vert
-
-            (=: pos  (list Pos-X Pos-Y 0.0))
-            (when NIL
-              (=: rota (list 0.0   0.0   (rand 0.0 6.283185307179586)))
-              (=: rgba (list (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
-                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
-                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0
-                             (rand 0.0 1.0) (rand 0.0 1.0) (rand 0.0 1.0) 1.0))))
-
-          #(update-glyph> Vert (char (rand 33 126)))
-          (upd-mdl-mtrx> Vert)
-
-          # FIX - use update...
-          (cmd-render-vert *ipc Vert)
-
-          (inc 'Pos-X *adv-vert)
-          (when (= (inc 'Cnt-X) 256)
-            #(prin-info "init-worker" (pack "Request/Render vertex " I " of " *verts-max "\r"))
-            (setq Cnt-X 0)
-            (setq Pos-X 0.0)
-            (dec 'Pos-Y (+ *adv-vert *adv-vert))
-            #(println "POS-Y: " Pos-Y)
-            T))
-
-        (push '*verts Vert))))
-
-  (prinl-info "init-worker" "Done pulling verts"))

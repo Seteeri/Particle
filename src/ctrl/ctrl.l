@@ -14,23 +14,34 @@
 
 (scl 6)
 
+
 (load (pack (pwd) "/src/misc.l"))
 (mapc 'load-cwd
       (list "/src/c/mathc.l"
+            "/src/c/posix/mman.l"
+            "/src/c/posix/stdio.l"
+            "/src/c/posix/string.l"
+            "/src/c/posix/unistd.l"
             "/src/c/epoll.l"
             "/src/c/li.l"
             "/src/c/socket.l"
             "/src/c/xkbcommon.l"
             "/src/c/timerfd.l"
             "/src/c/ksd.l"
-            "/src/misc.l"
+            "/src/dlst.l"            
             "/src/ipc/ipc.l"
+            "/src/metrics/metrics.l"            
             "/src/prot/conn.l"
             "/src/prot/msg.l"
             "/src/prot/obj.l"
-            "/src/ctrl/xkb.l"))
+            "/src/ctrl/projview.l"
+            "/src/ctrl/vertex.l"                        
+            "/src/ctrl/xkb.l"
+            "/src/ctrl/conn.l"))
 
 (def 'NAME-PID "CTRL")
+
+(def 'PATH-GLYPHS "/home/user/Particle/particle/src/glyphs")
 
 #Globals
 (def '*q-worker)
@@ -39,14 +50,55 @@
 (def '*timerfd)
 (def '*delay-rep 400) # ms
 (def '*delay-int 40)  # ms
+(def '*sca-vert (*/ 1.0 1.0 96.0))
+(def '*sca-glyph 5.8239365) # MSDF/tex parameter
+(def '*adv-glyph 9.375)       # MSDF/tex parameter
+
+
+(de init-verts ()
+
+  (prinl-info "init-verts" (pack "Making " *verts-max " verts..."))
+
+  (let Verts ()
+    (for I *verts-max
+      (let Vert (new '(+Vertex)
+                     (get-vert-off I)
+                     "@"
+                     *color-vert-default
+                     (list 0.0 0.0 0.0) # pos
+                     (list 0.0 0.0 0.0) # rot=0, sca=global scale
+                     (list *sca-vert *sca-vert *sca-vert))
+        (push 'Verts Vert)))
+
+    (setq Verts (flip Verts))
+
+    (prinl-info "init-verts" "Finish making verts")
+
+    (unless (info "bin/verts.bin")
+      (prinl-info "init-verts" "Writing ./bin/verts.bin")
+      (out "bin/verts.bin"
+        (for Vert Verts
+          (pr (val Vert) (getl Vert))))
+      (prinl-info "init-verts" "Wrote ./bin/verts.bin"))
+
+     Verts))
 
 
 (de init-ctrl ()
+
+  #Setup projview
+  (setq *projview (new '(+Projview) *width *height 'o))
+  (update-mat-proj> *projview)
+  (update-mat-view> *projview)
+  
+  #(serialize-to-ptr> *projview (get *projview 'ptr))
+  #(deserialize-fm-ptr> *projview (get *projview 'ptr))
+  #(show *projview)
+  #(view (getl *projview))
   
   (setq *ipc (new '(ipc~+IPC)
               *uds-ctrl             T handle-worker accept-client
               (list (list *uds-in   T handle-input  "INPUT")
-                    (list *uds-mod  T '((Sock) (recv-msg *ipc Sock))  "MODEL")
                     (list *uds-rend T handle-render "RENDER"))))
 
   (reg-conns *ipc NAME-PID)
@@ -68,36 +120,10 @@
 
 (de handle-worker (Sock)
 
-  (let (Msg  (recv-msg *ipc Sock)
-        Data (any Msg)
-        Name (name Data))
-
-    # recv-msg will return data or NIL
-    # This means sending NIL will disconnect the client, like EOF
-    (unless Msg
-      (disconn-client *ipc Sock))
-
-    # Handle other messages
-    (cond ((= Name "rdy")
-           (let Msg (pop '*q-msg)
-             (if Msg
-               (send-msg *ipc Sock Msg)
-               (queue '*q-worker Sock))))
-
-          ((= Name "bye")
-           # Send to all conns
-           (send-msg-conns *ipc "bye")
-           (ipc~disconn-sock Sock)
-           (ipc~end> *ipc)
-           (println "Ctrl says bye!")
-           (bye))
-
-          (T
-           (prinl-info "handle-worker" (pack "UNKNOWN REQUEST: " (str Msg)))))
-
-    #(prinl (usec) " | CTRL   | handle-worker | " Msg)
-
-    T))
+  (unless (flush-msgs *ipc Sock)
+    (disconn-client *ipc Sock))
+    
+  (parse-msgs *ipc Sock process-msg))
 
 
 (de handle-render (Sock)
@@ -139,7 +165,7 @@
   (let (Msg  (recv-msg *ipc Sock)
         Data (any Msg)
         Name (get Data 1))
-
+        
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
     (unless Msg

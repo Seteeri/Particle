@@ -252,7 +252,6 @@ or very few expections like with pointers
     +-------+-------------------+--------------------+---------------+
     
   * Refactor
-    * Make +Line a symbol
     * Remove model process
     * Handle multi-line strings
     * Refactor bindings

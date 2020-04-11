@@ -11,7 +11,7 @@
            (handle-memset Sock Data))
            
           (T
-           (prinl-info "process-msg" (pack "UNKNOWN REQUEST! " Msg))))))
+           (prinl-info "process-msg/RENDER" (pack "UNKNOWN REQUEST! " Msg))))))
 
 
 (de handle-memset (Sock Data)

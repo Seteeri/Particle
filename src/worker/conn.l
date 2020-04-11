@@ -87,28 +87,18 @@
 
 
 (de cmd-upd-vert (Ipc Vert)
-  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-        Sock-Render (ipc~get-fd> *ipc "RENDER"))
+  (let Sock-Render (ipc~get-fd> *ipc "RENDER")
 
     (req-send-vert Ipc
                    Sock-Render
-                   Vert)
-
-    (req-send-vert Ipc
-                   Sock-Model
                    Vert)))
 
 
 (de cmd-upd-pv (Ipc)
-  (let (Sock-Model  (ipc~get-fd> *ipc "MODEL")
-        Sock-Render (ipc~get-fd> *ipc "RENDER"))
+  (let Sock-Render (ipc~get-fd> *ipc "RENDER")
         
     (req-send-pv Ipc
                  Sock-Render
-                 *projview)
-
-    (req-send-pv Ipc
-                 Sock-Model
                  *projview)))
                  
 
