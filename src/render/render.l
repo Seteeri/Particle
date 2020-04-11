@@ -62,37 +62,6 @@ Class variables may be indicated by an upper case letter
 (def 'CLEAR-MASK (| gl~COLOR-BUFFER-BIT gl~DEPTH-BUFFER-BIT))
 
 
-(de init-render ()
-  #{
-  - Model can modify these during runtime through wire
-  - Model will send (memcpy dest size offset)
-  - Render will look up symbol/Mmap, get ptr, memcpy
-
-  - Should not copy all data every frame - waste
-  - Try single buffer + persistent mapping + coherent
-  - Disable draw flag for node, before copying data, then enable after
-
-  }#
-
-  (setq *ipc (new '(ipc~+IPC)
-                    *uds-rend T recv-conn accept-client
-                    NIL))
-
-  #Init context
-  (init-window)
-  (init-gl)
-
-  #Init OpenGL programs
-  (init-rast)
-
-  #Don't need yet...
-  #To disable drawing an object, use 0.0 (float) that is multiplied in vertex shader
-  #Change flags with a vec4
-  #(init-comp)
-
-  T)
-
-
 (de init-window ()
   (glfw~init-2)
 
@@ -182,6 +151,37 @@ Class variables may be indicated by an upper case letter
   (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage")))
 
 
+(de init-render ()
+  #{
+  - Model can modify these during runtime through wire
+  - Model will send (memcpy dest size offset)
+  - Render will look up symbol/Mmap, get ptr, memcpy
+
+  - Should not copy all data every frame - waste
+  - Try single buffer + persistent mapping + coherent
+  - Disable draw flag for node, before copying data, then enable after
+
+  }#
+
+  #Init context
+  (init-window)
+  
+  (init-gl)
+
+  (init-rast)
+
+  #Don't need yet...
+  #To disable drawing an object, use 0.0 (float) that is multiplied in vertex shader
+  #Change flags with a vec4
+  #(init-comp)
+
+  (setq *ipc (new '(ipc~+IPC)
+                    *uds-rend T recv-conn accept-client
+                    NIL))  
+  
+  T)  
+
+  
 (de run-render ()
   #(gl~use-program *prog-rast)
   #(gl~bind-vertex-array *vao)
