@@ -5,7 +5,6 @@
     (if *on-car
 
         # If start of list, must replace entire thing
-        # otherwise, normal repl
         (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
                  (= (get Ref 'c 'a) Ref))
               
@@ -13,7 +12,7 @@
               (repl-list-car Data Lay))
               
             (prog
-              # End NIL
+              # If end-of-list NIL
               (if (and (isa '(+Nil) Ref)
                        (= (get Ref 'c 'b) Ref))
                   (prog
@@ -96,7 +95,7 @@
          x    c
          *
          
-    Very similar to repl-car
+    Have to replace entire list
   }#
 
   (let (Ref (get *0 'b)
@@ -227,77 +226,6 @@
     Part))
 
 
-############################
-
-
-(de repl-car-list (Data Lay)
-
-  #{
-    UNUSED
-  
-    Replace entire item with list, i.e. replace car with list
-
-    [ ]  [ ]  NIL
-    a    b
-         *0
-
-    Ref = b/Car
-    Prv = b/Pair
-    Part = x
-
-    [ ]  [ ]  NIL
-    a
-
-         [ ]  NIL
-         x
-              *0
-  }#
-
-  (let (Ref (get *0 'b)
-        Prv (get Ref 'c)
-        Part (gen-part (list (list Data)) Lay NIL T)
-        Car (get Part 'a))
-
-    (repl-pair Prv Part)
-
-    # Delete
-
-    (if (= Lay 'x)
-
-        (prog
-
-          (put *line 'line 'n Car)
-          (put Car 'line (new '(+Line) *line))
-          
-          (upd-tree)
-          (mov-*1 *line)
-
-          # This will move to car which is expected
-          # Poss more convenient to move to top of Car
-          (put *0 'b Part)
-          (point-sub)
-          (test T (= (get *0 'b) (get Car 'a)))
-
-          # Disable car
-          #(setq *on-car)
-          
-          (println 'repl-car-list "Prv line: " *line (get *line 'data))
-
-          (setq *line Car))
-
-        (prog
-          (println 'repl-car-list "IMPLEMENT Y")))))
-
-
-################################################################################
-
-
-(de upd-tree (List)
-
-  (setq *cur (get *master 'ori))
-  (lay-part-start *master (get *master 'b)))
-                  
-
 (de make-line (Ref)
 
   #{
@@ -394,3 +322,9 @@
         (setq *line Ref)
         
         )))
+
+        
+(de upd-tree (List)
+
+  (setq *cur (get *master 'ori))
+  (lay-part-start *master (get *master 'b)))        
