@@ -262,6 +262,7 @@ or very few expections like with pointers
       * Prevent incorrect format
         * Hmm would this require a mode when list is entered?
         * Change ptr to change mode
+    * Make NIL an empty dot?
       
   * List/Atomic Ops
     * cmd-del, cmd-backspace...

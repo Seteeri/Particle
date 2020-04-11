@@ -69,15 +69,15 @@
 (dm last-vert> () (last (: verts)))
 
 
-(dm con> (Part Prv)
+(dm con> (Cdr Prv)
 
-  (=: b Part)
+  (=: b Cdr)
   (when Prv (=: c Prv))
   
   # Remember, *main's 'data is always the symbol itself
   # To get its val, is to get it's 'b
   (when (pair (: data))
-    (con (car (:: data)) (get Part 'data))))
+    (con (car (:: data)) (get Cdr 'data))))
     
 
 (dm del> (Car Cdr)
@@ -340,7 +340,7 @@
       (xchg-nl Ref Part))))
 
 
-(de ins-aft (Ref Part Line)
+(de ins-aft (Ref Part Line-Skip)
 
   #{
 
@@ -391,7 +391,8 @@
     (put Cdr 'c Part)
 
     # If Cdr is a new line, xfer it to new Part
-    (when (get Cdr 'line)
+    (when (and (get Cdr 'line)
+               (not Line-Skip))
       (xchg-nl Cdr Part))))
 
 

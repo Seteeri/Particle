@@ -100,6 +100,7 @@
          b    c
          *
 
+         
     [ ]  [ ]
     a    
     
@@ -233,14 +234,14 @@
 
     Part))
 
-
+    
 (de make-list (Ref)
 
   #{
-              *
+
     [X]  [X]  [X]  NIL
     A    B    C
-      
+              *
   
     On-car: Create list with Pair; move newline, y layout
 
@@ -249,7 +250,7 @@
 
     [Y]  [X]  NIL
     NIL  C
-
+         *
   }#
 
   (let (Part (gen-part (list (list (car (get Ref 'data))))
@@ -257,18 +258,16 @@
                         NIL
                         T)
         Prv (get Ref 'c)
-        Prv-Cdr (get Prv 'b)
+        Prv-Cdr (get Prv 'b) # != Ref
         Line *line
         List (if (get Line 'line 'l) @ Line)
         Nxt (get *line 'line 'n))
 
-    # Should swap newline
     (repl-pair Prv Part)
     
     # P N D L
     
-    # List is current list or NIL?
-    # Prv is current list
+    # Make Part on a new line
     (put Part 'line (new '(+Line)
                       Line
                       (get Part 'b)
