@@ -252,18 +252,14 @@ or very few expections like with pointers
     +-------+-------------------+--------------------+---------------+
     
   * Refactor
-    * Remove model process [Done]
-    * Fix space
-    * Handle multi-line strings
     * Refactor bindings
       * Improve discoverability - user sees it immediately
         * Once they are adv enough, they can remove it from default setup...
-      * Make a list and gen parts
-      * User should be able to edit it and it can take place
-        * Prevent incorrect format
-          * Hmm would this require a mode when list is entered?
-          * Change ptr to change mode
-        * Actually would need to show actual list...
+      * Show *binds directly
+      * Build structure directly instead of the list
+    * Why is xkb in worker? Should be in ctrl
+    * Fix space glyph
+    * Handle multi-line strings
       
   * List/Atomic Ops
     * cmd-del, cmd-backspace...
