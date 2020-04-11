@@ -202,10 +202,10 @@
   (println "Move newline")
 
   (let Ref (get *0 'b)
-
-    (make-line Ref)))
-    
-    #(mov-nl Ref)))
+    (if *on-car
+        (make-list Ref)
+        (make-line Ref))))
+        
 
 
 (de cmd-mov-bl (Keysym)

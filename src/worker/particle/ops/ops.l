@@ -226,7 +226,7 @@
     Part))
 
 
-(de make-line (Ref)
+(de make-list (Ref)
 
   #{
               *
@@ -242,7 +242,63 @@
     [Y]  [X]  NIL
     NIL  C
 
+  }#
 
+  (let (Part (gen-part (list (list (car (get Ref 'data))))
+                        'x
+                        NIL
+                        T)
+        Prv (get Ref 'c)
+        Prv-Cdr (get Prv 'b)
+        Line *line
+        List (if (get Line 'line 'l) @ Line)
+        Nxt (get *line 'line 'n))
+
+    # Should swap newline
+    (repl-pair Prv Part)
+    
+    # P N D L
+    
+    # List is current list or NIL?
+    # Prv is current list
+    (put Part 'line (new '(+Line)
+                      Line
+                      (get Part 'b)
+                      List))
+    (put Part 'lay 'y)
+    (put Line 'line 'n Part)
+    
+    # Prv is Part
+    # List is Part
+    (let Cdr (get Part 'b)
+      (put Cdr 'line (new '(+Line)
+                        Part
+                        Nxt
+                        List))
+      (put Cdr 'lay (get Prv-Cdr 'lay))
+      (put Nxt 'line 'p Cdr))
+    
+    # For a, no 'p = no newline
+    (put (get Part 'a) 'line (new '(+Line)))
+
+    (upd-tree)
+    (mov-*1 *line)
+    
+    (put *0 'b (get Part 'c))
+    (point-nxt)
+    
+    (println 'make-line "Added Y list, moved to newline")
+
+    Part))
+
+        
+(de make-line (Ref)
+
+  #{
+
+    [X]  [X]  [X]  NIL
+    A    B    C  
+  
     Mov to nl:
     
 
@@ -254,74 +310,20 @@
 
   }#
 
-  (if *on-car
-
-      (let (Part (gen-part (list (list (car (get Ref 'data))))
-                           'x
-                           NIL
-                           T)
-            Prv (get Ref 'c)
-            Prv-Cdr (get Prv 'b)
-            Line *line
-            List (if (get Line 'line 'l) @ Line)
-            Nxt (get *line 'line 'n))
-
-        # Should swap newline
-        (repl-pair Prv Part)
-        
-        # P N D L
-        
-        # List is current list or NIL?
-        # Prv is current list
-        (put Part 'line (new '(+Line)
-                          Line
-                          (get Part 'b)
-                          List))
-        (put Part 'lay 'y)
-        (put Line 'line 'n Part)
-        
-        # Prv is Part
-        # List is Part
-        (let Cdr (get Part 'b)
-          (put Cdr 'line (new '(+Line)
-                            Part
-                            Nxt
-                            List))
-          (put Cdr 'lay (get Prv-Cdr 'lay))
-          (put Nxt 'line 'p Cdr))
-        
-        # For a, no 'p = no newline
-        (put (get Part 'a) 'line (new '(+Line)))
-
-        (upd-tree)
-        (mov-*1 *line)
-        
-        (put *0 'b (get Part 'c))
-        (point-nxt)
-        
-        (println 'make-line "Added Y list, moved to newline")
-
-        Part)
-
-      # Mov current part to NL
-      (prog
-
-        (put Ref 'line (new '(+Line)
-                          *line
-                          (get *line 'line 'n)
-                          (if (get *line 'line 'l) @ *line)))
-        (put (get *line 'line) 'n Ref)
-        (put (get *line 'line 'n) 'line 'p Ref)
-        
-        (upd-tree)
-        (mov-*1 Ref)
-        
-        (mov-cur-abv Ref)
-        (lay-part-start *0 *line 'skip-cdr)
-        
-        (setq *line Ref)
-        
-        )))
+  (put Ref 'line (new '(+Line)
+                    *line
+                    (get *line 'line 'n)
+                    (if (get *line 'line 'l) @ *line)))
+  (put (get *line 'line) 'n Ref)
+  (put (get *line 'line 'n) 'line 'p Ref)
+  
+  (upd-tree)
+  (mov-*1 Ref)
+  
+  (mov-cur-abv Ref)
+  (lay-part-start *0 *line 'skip-cdr)
+  
+  (setq *line Ref))
 
         
 (de upd-tree (List)
