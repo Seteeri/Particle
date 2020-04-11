@@ -95,7 +95,7 @@
          x    c
          *
          
-    Have to replace entire list
+    Effectively, replace entire list
   }#
 
   (let (Ref (get *0 'b)
@@ -106,10 +106,10 @@
         Part (gen-part (list (list Data)) Lay NIL T)
         Car (get Part 'a))
         
-    # Move to Repl pair?
     # Txfer line before Ref gets deleted
     (when (get Ref 'c)
       (xchg-nl (get Ref 'c) Car))
+
     # Copy layout for Pair
     (put Part 'lay Prv-Lay)
     (put Part 'b 'lay Prv-B-Lay)
@@ -127,7 +127,6 @@
     (point-nxt)
     #(test T (= (get *0 'b) (get Car 'b)))
 
-    # Set line
     (setq *line Car)
     
     Part))
@@ -138,22 +137,21 @@
   #{
     Replace car with same type
 
-    [ ]  [ ]  NIL
-    a    b
+    [ ]  [ ]  [ ]  NIL
+    a    b    c
          *0
 
     Ref = b/Car
     Prv = b/Pair
     Part = x
 
-    [ ]  [ ]  NIL
-    a    x
-         *0
+    [ ]  [ ]  [ ]  NIL
+    a    x    c
+              *0
   }#
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
-        Prv-Cdr (get Prv 'b)
         Part (gen-part (list Data)
                        Lay
                        NIL
@@ -161,15 +159,12 @@
 
     (repl-pair Prv Part)
 
+    (upd-tree)
+    (mov-*1 *line)    
+    
     (if (= Lay 'x)
 
       (prog
-            
-        #(when (get Prv 'line)
-        #  (xchg-nl Prv Part))
-
-        (upd-tree)
-        (mov-*1 *line)
 
         (put *0 'b Part)
         (point-nxt))
@@ -196,6 +191,7 @@
          Z    X
     NIL    
     
+    Effectively, replace entire list
   }#
 
   (let (Ref (get *0 'b)
