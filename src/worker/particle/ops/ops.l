@@ -31,8 +31,28 @@
 
 
 (de ins-cdr (Data Lay)
-
-  # Insert item before pair ptr
+  #{
+  
+    Insert item before pair ptr
+    
+    Two special cases:
+    
+    [Y]  [X]  NIL
+         a
+    *
+    NIL
+    
+    
+    [X]  [X]
+    a    b
+    
+    *
+    [Y]  [X]  NIL
+         c
+         
+    NIL
+    
+  }#
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
@@ -43,11 +63,8 @@
     # Use is a Pair instead
     (when (and (= (get Prv 'lay) 'y)
                (isa '(+Nil) Ref))
-      # If replacing NIL and it is Cdr of Y layout
-      # Make NIL on same line
-      (put Ref 'lay 'x)
-      (when (get Ref 'line)
-        (xchg-nl Ref Part)))
+      # Copy layout
+      (put Ref 'lay 'x))
   
     # This will set *line to newline
     (ins-aft Prv Part)
