@@ -19,7 +19,7 @@
   }#
 
   (let (Data (when Keysym
-               (cond ((= Keysym ksd~space) " ")
+               (cond ((= Keysym ksd~space) "_")
                      ((= Keysym ksd~Return) (char 10))
                      ((= Keysym ksd~Tab) (char 10))
                      (T (char Keysym))))
@@ -127,6 +127,8 @@
             (T
              (con> Tgt-Prv Tgt-Cdr)
              (put Tgt-Cdr 'c Tgt-Prv)
+             (when (get Tgt 'line)
+              (xchg-nl Tgt Tgt-Cdr))
              (setq New-Ref Ref)))
       
       # Unlink b before del
@@ -158,20 +160,148 @@
 
   (con-any (format (get *0 'b 'c 'a 'data)) 'x))
 
-
+#####################
+  
 (de cmd-pack (Keysym)
 
   (prinl-info "cmd-pack")
 
-  # Pack current to prev
-
-  (let (Ref (get *0 'b)
+  # Default?
+  # 1. Pack *line to ref
+  # 2. Pack ref to prv
+  #
+  # Push subsequent strings to first one in list
+  # Replace entire list
+  
+  # Handle car
+  
+  # Reuse strs
+  
+  # Two situations
+  # 1. List is Cdr (pair/sym)
+  # 2. List is Car (list)
+  
+  (let (Ref (if (get *line 'l) @ *line)
         Prv (get Ref 'c)
-        Dat-Prv (get Prv 'a 'data)
-        Cc (get Prv 'c)
-        Dat-Cc (get Cc 'a 'data))
+        Data (get Ref 'data)
+        Part NIL)
+    
+    # Gen packed str
+    (put *0 'b Ref)
+    (setq Part (gen-part (list (pack Data)) 'x))
+    
+    (xchg-nl Ref Part)
+    (setq *line Part)
+    
+    # Unlink current items
+    (put Prv 'b Part)
+    (put Part 'c Prv)
+    
+    # Delete entire list
+    (del> Ref T T)
+    
+    # Hmm, what about sublists?
 
-    (con-any (pack Dat-Cc Dat-Prv) 'x)))
+    (upd-tree)
+    (mov-*1 *line)        
+        
+    # Put Ptr above new part
+    (put *0 'b (get Part 'b))
+    (mov-cur-abv (get Part 'b))
+    (lay-part-start *0 *line 'skip-cdr)))
+
+    
+(de cmd-glue-space (Keysym)
+
+  (prinl-info "cmd-glue-space")
+
+  # Default?
+  # 1. Pack *line to ref
+  # 2. Pack ref to prv
+  #
+  # Push subsequent strings to first one in list
+  # Replace entire list
+  
+  # Handle car
+  
+  # Reuse strs
+  
+  # Two situations
+  # 1. List is Cdr (pair/sym)
+  # 2. List is Car (list)
+  
+  (let (Ref (if (get *line 'l) @ *line)
+        Prv (get Ref 'c)
+        Data (get Ref 'data)
+        Part NIL)
+    
+    # Gen packed str
+    (put *0 'b Ref)
+    (setq Part (gen-part (list (glue "_" Data)) 'x))
+    
+    (xchg-nl Ref Part)
+    (setq *line Part)
+    
+    # Unlink current items
+    (put Prv 'b Part)
+    (put Part 'c Prv)
+    
+    # Delete entire list
+    (del> Ref T T)
+    
+    # Hmm, what about sublists?
+
+    (upd-tree)
+    (mov-*1 *line)        
+        
+    # Put Ptr above new part
+    (put *0 'b (get Part 'b))
+    (mov-cur-abv (get Part 'b))
+    (lay-part-start *0 *line 'skip-cdr)))    
+    
+    
+(de cmd-split-space (Keysym)
+
+  (prinl-info "cmd-split-space")
+  
+  # This generates a list so how to draw it?
+  #
+  # abc_def_ghi
+  # ->
+  # (abc def ghi)
+  #
+  
+  (let (Ref (if (get *line 'l) @ *line)
+        Line (get Ref 'c)
+        Prv (get Ref 'c)
+        List (mapcar pack (split (chop (car (get Ref 'data))) "_")))
+    
+    # Del everything but last part
+    (setq End Ref)
+    (until (isa '(+Nil) End)
+      (del> End T NIL)
+      (setq End (get End 'b)))
+    
+    (for Data List
+    
+      (let Part (gen-part (list Data) 'x NIL T)
+        
+        (ins-aft Prv Part T)
+        
+        (setq Prv Part)))
+
+    (xchg-nl Ref (get Line 'b))
+        
+    (con> Prv End)
+    (put End 'c Prv)    
+    
+    (upd-tree)
+    (mov-*1 *line)        
+            
+    # Put Ptr above new part
+    (put *0 'b End)
+    (mov-cur-abv End)
+    (lay-part-start *0 *line 'skip-cdr)))
 
 
 (de cmd-swap-layout (Keysym)

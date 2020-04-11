@@ -123,21 +123,25 @@
 
       # Str Ops - work on current list
       # encourages users to create a list when editing
-      ((`ksd~Control-L `ksd~u) T `cmd-pack)
+      
       # split-space (word) : glue " ", 
-      # chop (letter) : glue "", pack
-      # : (mapcar pack (split (chop "The quick brown fox") " ")) -> ("The" "quick" "brown" "fox")
-
-      ((`ksd~Control-L `ksd~t) T `cmd-format)
-      ((`ksd~Control-L `ksd~y) T '((Keysym) (println "cmd-reverse")))
-      ((`ksd~Alt-L     `ksd~y) T '((Keysym) (println "cmd-flip")))      
+      # chop (letter) : glue "", pack      
+      
+      ((`ksd~Control-L `ksd~h) T `cmd-pack)
+      ((`ksd~Control-L `ksd~j) T `cmd-chop)
+      
+      ((`ksd~Control-L `ksd~y) T `cmd-glue-space)
+      ((`ksd~Control-L `ksd~u) T `cmd-split-space)
+      
+      #((`ksd~Control-L `ksd~y) T '((Keysym) (println "cmd-reverse")))
+      #((`ksd~Alt-L     `ksd~y) T '((Keysym) (println "cmd-flip")))      
       
       # List/Sym/Atom Ops
-      ((`ksd~Control-L `ksd~q) T `cmd-eval)
       ((`ksd~Control-L `ksd~r) T `cmd-reset)
-      ((`ksd~Control-L `ksd~f) T `cmd-any)
-      ((`ksd~Control-L `ksd~g) T `cmd-sym)
-      ((`ksd~Control-L `ksd~h) T `cmd-intern)
+      #((`ksd~Control-L `ksd~q) T `cmd-eval)      
+      #((`ksd~Control-L `ksd~f) T `cmd-any)
+      #((`ksd~Control-L `ksd~g) T `cmd-sym)
+      #((`ksd~Control-L `ksd~h) T `cmd-intern)
 
       # Create NIL
       ((`ksd~Control-L `ksd~e)    T `cmd-make-nil)
@@ -314,7 +318,7 @@
     
     (nl-cur 6.0)    
     
-    (when NIL
+    (when T
 
       (let Part (gen-part '("a" "b" ("c" "d" "e" ("f"))) 'x)
       

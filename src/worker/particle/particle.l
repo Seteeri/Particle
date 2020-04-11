@@ -116,11 +116,12 @@
   (println 'del> This (: data))
 
   # Clear links and flags?
-  (=: a)
-  (=: b)
-  (=: c)
-  (=: line) # Remove from p/n
-  (=: data))
+  #(=: a)
+  #(=: b)
+  #(=: c)
+  #(=: line) # Remove from p/n
+  #(=: data)
+  )
 
 
 (dm mov> (Pos)
