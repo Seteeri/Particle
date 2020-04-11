@@ -63,13 +63,6 @@
     # This will set *line to newline
     (ins-aft Prv Part)
     
-    #{
-    (when (and (= (get Ref 'lay) 'y)
-               (isa '(+Pair) Ref))
-       # If Ref is Y layout, create newline for Part
-       (make-line Ref))
-    }#
-    
     # 1500 microseconds
     # 1.5 milliseconds to upd tree with 2 particles = 22 particles per frame max
     (upd-tree)
@@ -401,62 +394,3 @@
         (setq *line Ref)
         
         )))
-
-
-# Move to Particle?
-
-(de make-line (Part)
-
-  # For X layout, move to nl, toggle layout
-  # Only do this for lists...and NIL?
-
-  # Link lines
-  (let Nxt (get *line 'line 'n)
-
-    # Then create Line and calc its dims (from Part to NIL/NL)
-    (put Part 'line (new '(+Line)
-                      *line
-                      Nxt
-                      *line))
-
-    # Push into list
-    #(with (get *line 'line)
-    #  (push (:: c) Part))
-
-    # Link prev n to Part
-    (with (get *line 'line)
-      (=: n Part))
-
-    # Link nxt p to Part
-    (when Nxt
-      (with (get Nxt 'line)
-        (=: p Part))))
-
-  (println 'make-line "Create new line: " Part (get Part 'data))
-  #(println 'make-line "Prv: " (get Part 'line 'p) (get Part 'line 'p 'data))
-  #(println 'make-line "Nxt: " (get Part 'line 'n) (get Part 'line 'n 'data))
-  #(println 'make-line "Line: " (get Part 'line 'l) (get Part 'line 'l 'data))
-  )
-
-
-(de ins-line (Part)
-
-  # For X layout, move to nl, toggle layout
-  # Only do this for lists...and NIL?
-
-  # Link lines
-  (let Nxt (get *line 'line 'n)
-
-    # Link prev n to Part
-    (with (get *line 'line)
-      (=: n Part))
-
-    # Link nxt p to Part
-    (when Nxt
-      (with (get Nxt 'line)
-        (=: p Part))))
-
-  (println 'ins-line "Insert line: " Part (get Part 'data)))
-
-
-#######################################
