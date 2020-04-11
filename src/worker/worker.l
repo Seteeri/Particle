@@ -216,9 +216,15 @@
   
   #####################
   # Move to control
+  # Why is this here again?
   (setq *xkb (new '(+Xkb)))
 
-  (apply-key-bindings *bindings-key)
+  (for Bind *bindings-key
+    (apply '((Keys Rep Fn)
+             (let B (cons Keys (cons Rep Fn))
+              (push '*binds B)))
+           Bind))
+  
   ##################################
   
   (gc 512)
@@ -356,30 +362,6 @@
         (nl-cur 2.0)
         (set-cur-x X)
         (lay-part-start Part *line)))))
-      
-
-(de run-tests ())
-
-
-(de alloc-vert (Pos Char Col)
-  (let Vert (pop '*verts)
-    (with Vert
-      (=: pos Pos)
-      (=: rgba (list (get Col 1) (get Col 2) (get Col 3) 1.0
-                     (get Col 1) (get Col 2) (get Col 3) 1.0
-                     (get Col 1) (get Col 2) (get Col 3) 1.0
-                     (get Col 1) (get Col 2) (get Col 3) 1.0)))
-    (when Char (update-glyph> Vert Char))
-    (upd-mdl-mtrx> Vert)
-    (cmd-upd-vert *ipc Vert)
-
-    (inc '*cnt-v)
-
-    Vert))
-
-
-(de apply-key-bindings (Binds)
-  (for Bind Binds (apply bind-keys Bind)))
 
 
 # Unused
@@ -549,16 +531,11 @@
 
           (when Map
 
-            (let (Rep (car (cdr Map))
-                  Fn  (cdr (cdr Map)))
+            (let (Rep (cadr Map)
+                  Fn  (cddr Map))
 
               (unless (and (= State KEY-REPEAT) (not Rep))
                 (Fn Keysym)))))))))
-
-
-(de bind-keys (Keys Rep Fn)
-
-  (push '*binds (cons Keys (cons Rep Fn))))
 
 
 (de main ()
