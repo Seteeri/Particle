@@ -252,7 +252,7 @@ or very few expections like with pointers
     +-------+-------------------+--------------------+---------------+
     
   * Refactor
-    * Remove model process
+    * Remove model process [Done]
     * Handle multi-line strings
     * Refactor bindings
       * Improve discoverability - user sees it immediately

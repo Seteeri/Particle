@@ -355,7 +355,6 @@
         (put Part 'line (new '(+Line)
                           Line
                           (get Part 'b)
-                          NIL
                           List))
         (put Part 'lay 'y)
         (put Line 'line 'n Part)
@@ -366,17 +365,12 @@
           (put Cdr 'line (new '(+Line)
                             Part
                             Nxt
-                            NIL
                             List))
           (put Cdr 'lay (get Prv-Cdr 'lay))
           (put Nxt 'line 'p Cdr))
         
         # For a, no 'p = no newline
-        (put (get Part 'a) 'line (new '(+Line)
-                                      NIL
-                                      NIL
-                                      NIL
-                                      NIL))
+        (put (get Part 'a) 'line (new '(+Line)))
 
         (upd-tree)
         (mov-*1 *line)
@@ -390,11 +384,10 @@
 
       # Mov current part to NL
       (prog
-            
+
         (put Ref 'line (new '(+Line)
                           *line
                           (get *line 'line 'n)
-                          NIL
                           (if (get *line 'line 'l) @ *line)))
         (put (get *line 'line) 'n Ref)
         (put (get *line 'line 'n) 'line 'p Ref)
@@ -424,7 +417,6 @@
     (put Part 'line (new '(+Line)
                       *line
                       Nxt
-                      NIL
                       *line))
 
     # Push into list

@@ -28,9 +28,6 @@
 (de cmd-make-char (Keysym)
 
   #{
-    If pointing to Car, sublist
-    If pointing to Cell/Cdr, append behind
-
     ksd~Return
     ksd~Tab
   }#
@@ -38,13 +35,12 @@
   (let (Data (when Keysym
                (cond ((= Keysym ksd~space) " ")
                      ((= Keysym ksd~Return) (char 10))
+                     ((= Keysym ksd~Tab) (char 10))
                      (T (char Keysym))))
         Lay 'x)
 
     # Push to cmd list
     #(setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
-
-    # Handle symbol
 
     (con-any Data Lay)))
 

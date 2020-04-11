@@ -70,7 +70,7 @@
 
   (let Ori-C (get Part 'line 'l 'ori)
   
-    (println 'align-cur-to-line-x Part (get Part 'data) 'Line Line (get Line 'data))
+    (println 'align-cur-to-line-x Part (get Part 'data) 'to (get Part 'line 'l 'data))
     
     (set-cur-x (get Ori-C 1))
 
