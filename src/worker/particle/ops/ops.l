@@ -40,6 +40,7 @@
 
     (println 'ins-cdr "Ins-aft (bef Ptr): " Prv (get Prv 'data))
     
+    # Use is a Pair instead
     (when (and (= (get Prv 'lay) 'y)
                (isa '(+Nil) Ref))
       # If replacing NIL and it is Cdr of Y layout
@@ -47,20 +48,14 @@
       (put Ref 'lay 'x)
       (when (get Ref 'line)
         (xchg-nl Ref Part)))
-
-    (when NIL
-      (prinl) (prinl)
-      (let Nl (get *master 'b 'line)
-        (view (getl Nl))
-        (let Child (get Nl 'n)
-          (while Child
-            (println 'xchg-nl "List: " Child (get Child 'data))
-            (view (getl (get Child 'line)))
-            (setq Child (get Child 'line 'n)))))
-      (prinl) (prinl))
-    
+  
     # This will set *line to newline
     (ins-aft Prv Part)
+
+    # Use is a Pair instead
+    (when (and (= (get Ref 'lay) 'y)
+               (isa '(+Pair) Ref))
+      (make-line Ref))
     
     # 1500 microseconds
     # 1.5 milliseconds to upd tree with 2 particles = 22 particles per frame max
