@@ -1,10 +1,5 @@
 (de init-rast ()
 
-  # Try to load file, if not, compile/save
-
-  # If file exists: load it
-  # else:
-
   (setq *prog-rast (if (info *path-prog-rast)
                        (gl~read-and-load-prog *paths-rast-vert-shader
                                               *paths-rast-frag-shader
@@ -29,41 +24,43 @@
 
 (de init-buffs-rast ()
   #{
-  * Some buffers have a different bind layout per shader stage
-  * Texture requires setting fmt after and other ops
-  * Set initial data for buffers element and draw-indirect
-  * glMapNamedBuffer is unavailable so to persistently map the buffer, it needs to be bound...
-  * to bind a buffer, requires an appropriate program
-  * What is the behavior when binding a buffer with no program bound?
-  * Doesn't matter here...
+    Some buffers have a different bind layout per shader stage
+    Texture requires setting fmt after and other ops
+    Set initial data for buffers element and draw-indirect
+    glMapNamedBuffer is unavailable so to persist map the buffer, must be bound
+    ...to bind a buffer, requires an appropriate program
+    What is the behavior when binding a buffer with no program bound?
+    Doesn't matter here...
   }#
   
   (for Params *params-buffer
- 
+    
+    # -> Use method
     (with Params
          
-      (let (Buffer (new '(gl~+Buffer-Object)
-                         (: size-b)
-                         (: target)
-                         (if (> (: index-vs) -1)
-                             (: index-vs)
-                             (: index-cs))
-                         T))
+      (let Buffer (new '(gl~+Buffer-Object)
+                       (: size-b)
+                       (: target)
+                       (if (> (: index-vs) -1)
+                           (: index-vs)
+                           (: index-cs))
+                       T)
 
-        #Use symbol properties
+        # Use symbol properties
         (put '*buffer-objects (: name) Buffer)
 
-        #Poss more idiomatic way to do this?
+        # Poss more idiomatic way to do this?
+        # -> Use method
         (when (= (: target) gl~TEXTURE-BUFFER)
 
-          #Already active by default?
+          # Already active by default?
           (gl~active-texture gl~TEXTURE0)
 
           (gl~bind-b> Buffer)
 
           (gl~tex-buffer gl~TEXTURE-BUFFER
-                          gl~RGBA8
-                          (get Buffer 'gl~buffer)))))))
+                         gl~RGBA8
+                         (get Buffer 'gl~buffer)))))))
 
 
 (de init-tex-glyphs ()

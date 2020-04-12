@@ -105,7 +105,8 @@
 
 
 (de draw-repr (Repr Col)
-  #(println 'draw-repr Repr)
+  # To handle newline, move cursor when char encountered
+  
   (let Verts ()
     (for C Repr
       (push 'Verts (draw-glyph C Col))
