@@ -16,9 +16,9 @@ Naming Conventions:
 
 (local) (clear)
 
-(load "/home/user/Particle/particle/src/c/gles/bo.l")
-(load "/home/user/Particle/particle/src/c/gles/shad.l")
-(load "/home/user/Particle/particle/src/c/gles/prog.l")
+(load (pack (pwd) "/src/c/gles/buffer.l"))
+(load (pack (pwd) "/src/c/gles/shad.l"))
+(load (pack (pwd) "/src/c/gles/prog.l"))
 
 (def '*glBufferStorage 0)
 
@@ -193,9 +193,9 @@ Naming Conventions:
     (let (Info-Log   (native "@" "malloc" 'N (+ Max-Length 1))
           Length   (native "@" "malloc" 'N 4))
       (native "libGLESv2.so.2" Fn NIL Target Max-Length Length Info-Log)
-      #Length does not include null char
+      # Length does not include null char
       (when (> (car (struct Length '(I))) 0)
-        #String is already null-terminated
+        # String is already null-terminated
         (let Ret (struct Info-Log 'S)
           (native "@" "free" NIL Length)
           (native "@" "free" NIL Info-Log)
@@ -234,10 +234,10 @@ Naming Conventions:
 
 (de shader-source-2 (Shader Paths)
   #{
-  * Read paths into string arrays:
-  count = number in array
-  string = array of strs
-  length = array of corresponding str len
+    * Read paths into string arrays:
+    count = number in array
+    string = array of strs
+    length = array of corresponding str len
   }#
   (let (Count  (length Paths)
         String (native "@" "malloc" 'N (* Count 8))
@@ -248,8 +248,8 @@ Naming Conventions:
 
     (for Path Paths
    
-       #Get file size from stat then allocate
-       #Poss to use mmap to minimize intermittent allocation
+       # Get file size from stat then allocate
+       # Poss to use mmap to minimize intermittent allocation
 
        (let (Sz-f  (stat-size Path)
              Buf   (native "@" "malloc" 'N (+ Sz-f 1)) # + null character
@@ -257,29 +257,27 @@ Naming Conventions:
                
              (native "@" "fread"  NIL Buf Sz-f 1 File)
              (native "@" "fclose" NIL File)
+             
              # Null terminate after reading
              (struct (+ Buf Sz-f) 'N (cons 0 1))
              
-             #Set String ptr to point to Buffer
+             # Set String ptr to point to Buffer
              (struct Ptr-Str 'N (cons Buf 8))
 
-             #Set Buffer Length ptr (w/o null char)
+             # Set Buffer Length ptr (w/o null char)
              (struct Ptr-Len 'N (cons Sz-f 4))
              
-             #Push ptrs to lst-free
+             # Push ptrs to lst-free
              (push 'Lst-Free Buf)
 
              #(prinl "shader-source-2 | fread " Path " " Sz-f " bytes")
              (inc 'Ptr-Str 8)
              (inc 'Ptr-Len 4)))
 
-     #TODO: Fix using Length
+     # TODO: Fix using Length
      (native "libGLESv2.so.2" "glShaderSource" NIL Shader Count String Length)
       
-    #Free memory
-    (for Ptr Lst-Free
-      (native "@" "free" NIL Ptr))
-      
+    (for Ptr Lst-Free (native "@" "free" NIL Ptr))
     (native "@" "free" NIL String)
     (native "@" "free" NIL Length)))
 
@@ -319,15 +317,15 @@ Naming Conventions:
 
 
 (de client-wait (Sync)
-  #Check first, then flush only if necessary
+  # Check first, then flush only if necessary
   (let (Flags 0
         Timeout 0
         Return NIL)
           (loop
              (setq Return (client-wait-sync Sync Flags Timeout))
 
-             #Return when this is satisfied
-             #WAIT-FAILED also?
+             # Return when this is satisfied
+             # WAIT-FAILED also?
              (T (or (= Return ALREADY-SIGNALED)
               (= Return CONDITION-SATISFIED)))
              
@@ -347,7 +345,7 @@ Naming Conventions:
   (native "libGLESv2.so.2" "glProgramBinary" NIL Program Binary-Format Binary Length))
 
 
-(de read-and-load-prog (Paths-Vert Paths-Frag Path-Bin)
+(de up-prg (Paths-Vert Paths-Frag Path-Bin)
 
   (let (Program (create-program)
         Sz-f  (stat-size Path-Bin)
@@ -364,18 +362,18 @@ Naming Conventions:
 
     (native "@" "free" NIL Buf)
 
-    # (prinl-info "read-and-load-prog" (pack Sz-f " " (car (struct Buf '(I . 1)))))
+    # (prinl-info "up-prg" (pack Sz-f " " (car (struct Buf '(I . 1)))))
 
-    # If it fails, use build-and-write-prog
+    # If it fails, use dl-prg
     (if (query-program-info-log Program) # or check link status
       (prog
-        (println "read-and-load-prog" (pack "Failed to load program: " Path-Bin))
+        (println "up-prg" (pack "Failed to load program: " Path-Bin))
         (delete-program Program)
-        (build-and-write-prog Paths-Vert Paths-Frag Path-Bin))
+        (dl-prg Paths-Vert Paths-Frag Path-Bin))
       Program)))
   
 
-(de build-and-write-prog (Paths-Vert Paths-Frag Path-Bin)
+(de dl-prg (Paths-Vert Paths-Frag Path-Bin)
   
   (let (Program (init-prog-rast Paths-Vert Paths-Frag)
         Iv (native "@" "malloc" 'N 4))
@@ -395,7 +393,7 @@ Naming Conventions:
 
       (native "@" "sync")
 
-      #(prinl-info "build-and-write-prog" (pack "Saved " (+ 4 Bufsize) " bytes to " Path-Bin))
+      #(prinl-info "dl-prg" (pack "Saved " (+ 4 Bufsize) " bytes to " Path-Bin))
       
       (native "@" "free" NIL Iv)
       (native "@" "free" NIL Binary-Format)

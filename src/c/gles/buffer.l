@@ -1,5 +1,4 @@
-# Rename to Buffer
-(class +Buffer-Object)
+(class +Buffer)
 (dm T (Size
        Target
        Index

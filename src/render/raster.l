@@ -1,12 +1,12 @@
 (de init-rast ()
 
   (setq *prog-rast (if (info *path-prog-rast)
-                       (gl~read-and-load-prog *paths-rast-vert-shader
-                                              *paths-rast-frag-shader
-                                              *path-prog-rast)
-                       (gl~build-and-write-prog *paths-rast-vert-shader
-                                                *paths-rast-frag-shader
-                                                *path-prog-rast)))
+                       (gl~up-prg *paths-rast-vert-shader
+                                  *paths-rast-frag-shader
+                                  *path-prog-rast)
+                       (gl~dl-prg *paths-rast-vert-shader
+                                  *paths-rast-frag-shader
+                                  *path-prog-rast)))
     
   (gl~use-program *prog-rast)
 
@@ -38,7 +38,7 @@
     # -> Use method
     (with Params
          
-      (let Buffer (new '(gl~+Buffer-Object)
+      (let Buffer (new '(gl~+Buffer)
                        (: size-b)
                        (: target)
                        (if (> (: index-vs) -1)
