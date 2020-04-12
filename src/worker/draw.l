@@ -97,9 +97,9 @@
                      R G B 1.0
                      R G B 1.0)))
 
-    (update-glyph> Vert Char)
+    (upd-gly> Vert Char)
     
-    (upd-mdl-mtrx> Vert)
+    (upd-mod-mat> Vert)
 
     Vert))
 

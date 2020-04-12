@@ -41,11 +41,11 @@
   (=: off-texel NIL)
   
   (when Chr
-    (update-glyph> This Chr)
-    (upd-mdl-mtrx> This)))
+    (upd-gly> This Chr)
+    (upd-mod-mat> This)))
 
 
-(dm update-glyph> (Chr)
+(dm upd-gly> (Chr)
   #{
     translation = baseline (get-origin-from-node-pos *node-ptr-main*)
     Create diagrams for metrics calculations so easier to understand/visualize
@@ -59,14 +59,14 @@
   (let Metrics (get *metrics (: chr))
 
     (unless Metrics
-      (prinl-info "update-glyph>" (pack "Unable to find metrics: " (: chr))))      
+      (prinl-info "upd-gly>" (pack "Unable to find metrics: " (: chr))))      
       
     (=: uv (get Metrics 'uv))
     (=: pos (get-pos> Metrics (: pos) *sca-vert))
     (=: sca (get-sca> Metrics *sca-vert))))
         
          
-(dm upd-mdl-mtrx> ()
+(dm upd-mod-mat> ()
   (=: mm (mat4-mul (mat4-translation (: pos))
                    (mat4-mul (mat4-rotation-z (get (: rota) 3))
                              (mat4-mul (mat4-rotation-y (get (: rota) 2))

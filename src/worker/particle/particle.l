@@ -137,8 +137,8 @@
           # Same pos, don't bother
           (unless (= Pos (: pos))
             (=: pos Pos)
-            (update-glyph> Vert (char (: chr))))
-            (upd-mdl-mtrx> Vert)
+            (upd-gly> Vert (char (: chr))))
+            (upd-mod-mat> Vert)
             (cmd-upd-vert *ipc Vert))
 
         # adv pos
@@ -241,7 +241,7 @@
                             R G B 1.0
                             R G B 1.0
                             R G B 1.0))
-      (upd-mdl-mtrx> Vert)
+      (upd-mod-mat> Vert)
       (cmd-upd-vert *ipc Vert))))
 
 

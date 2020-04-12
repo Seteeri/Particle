@@ -349,7 +349,7 @@
           (=: rota (list 0.0
                          0.0
                          (+ (get (: rota) 3) 0.017)))
-          (upd-mdl-mtrx> Vert))
+          (upd-mod-mat> Vert))
 
         # FIX - use update...
         (cmd-render-vert *ipc Vert)))))

@@ -65,14 +65,8 @@
 
 (de init-tex-glyphs ()
   #{
-  * To load faster, do bulk memcpy or convert to binary (bytes)
-  * Possible Configurations:
-    * all ppm, all metrics
-    * per ppm+metrics
-    * per ppm, per metrics (current)
-    * Need separate ppm since data is copied to shm?
-    * Or list of lists with each list starting with the name
- }#
+    To load faster, convert files to bin and do memcpy
+  }#
  (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
        Off 0)
     (for Code 255
