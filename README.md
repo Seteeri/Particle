@@ -7,7 +7,7 @@ information as they moved through the computer. What did they look like?
 
 ---
 
-Particle is a personal knowledge manager (also called a PIM, PKB) implemented through a structured/projectional UI based on Lisp.
+Particle is a personal knowledge manager (also called a PIM, PKB) implemented through a presentation-based lisp-structured UI.
 
 It is the realization of my vision to map our thoughts into the computer. The long-term technical goal of Particle is to create a Lispy userspace, eventually replacing the init system and encompassing all layers above that.
 
@@ -83,6 +83,47 @@ Permissively licensed
 
 Plain text is convenient but does not scale. Extracting useful information through repeatedly parsing plain text becomes redundant and inefficient on larger scales (at tens or hundreds of thousands of pieces of information). In the case of Particle, the structured data are s-expressions so it is a relatively simple model to understand and parse; the Lisp implementation is also open-source.
 
+
+**There have been many attempts at visual languages, projectional/structured editors, presentation-based interfaces. Why yet another one?**
+
+Originally, I started this project in Common Lisp and encountered CLIM. From what I gathered, its central feature was the concept of presentation types. It also provides a number of interfaces, services, and facilities for building applications. 
+
+However, I wanted to approach the issue from a top-down or hollistic perspective by building a higher-level environment that is also more conceptually vertically integrated, analagous to modding a game versus using a game engine framework like Unity or Unreal etc. By vertically integrating the interface, this maximizes the reuse of concepts and by extension commands, by everything patterned in Lisp, short of the kernel itself. It naturally provides for the concept of discoverability and thus a gradual learning curve as one ventures deeper into the system by learning new types beyond the fundamental Lisp types. This isn't really new - this was one of the wonderful things about Lisp Machines, at least from what I've heard and seen on YouTube.
+
+The key insight is that Lisp data structures are based upon singly linked lists. "Lists" being the operative word. Lists are more common to the layperson than most people realize. For example, when one creates an outline on paper or uses bullets in a word processing program or an outliner itself, etc. they are creating a structure or an interface. The alphanumeric or pictorial icon, indentation and spaces indicate the structure. They indicate which words or data belong to which other words or data.
+
+Effectively, Particle enforces a hierarchical (graph) structure to the UI which makes conventional widgets and toolkits obsolete. For the layperson, all they must know to use the program are lists and strings, and their basic operations like delete, newline, cut/copy/paste which are already conceptually familiar. Eventually other types are encountered, however, because the user already knows the basic commands, they can use that existing knowledge to explore newer types and their functionality. Any data from program windows to images to audio to code, is structured through the use of presentation types.
+
+A list of windows is literally a list of windows and the same list operations apply to it. Of course, there can be more specialized commands also, but that issue falls under discoverability. Ultimately, this is a tradeoff between the developer having complete design freedom versus the user having to learn it.
+
+It is important to note that the goal of Particle is not to teach the user programming but rather implicitly how the system works, i.e. data structures. Should the user want to learn programming, they will already have gained some of the fundamental concepts, at least to program in Lisp.
+
+> I’m a huge proponent of designing your code around the data, rather than the other way around, and I think it’s one of the reasons git has been fairly successful… I will, in fact, claim that the difference between a bad programmer and a good one is whether he considers his code or his data structures more important. Bad programmers worry about the code. Good programmers worry about data structures and their relationships.
+
+-- Linus Torvalds
+
+PicoLisp was chosen for the reason (and for other beneficial reasons) that is a pure Lisp where all data consists of cons cells. It only has three basic types: Pairs, Numbers, and Symbols which all consist of cons cells.
+
+https://www.reddit.com/r/lisp/comments/22lbpe/whatever_became_of_clim/
+
+> The core of it is: there is a single mechanism in which associations between objects (value, etc.) represented in the user interface by widgets (view, component, graphic, element, etc.) are stored, so that commands and other interactions can be defined on the object type, once independently of the specific visual representation being used.
+
+> This differs from "data binding" by exposing the domain objects, not just data, and therefore introducing the notion of commands operating on the objects.
+
+> This differs from "naked objects" (generating UI from domain objects) by admitting different UI representations of the same object.
+
+https://groups.google.com/forum/#!topic/comp.lang.lisp/XpvUwF2xKbk%5B101-125%5D
+
+> The value in Genera's Dynamic Windows is NOT about "completion" it's
+> about object-oriented connected-ness of the entire system.  You aren't
+> clicking on the "name" in dynamic windows.  You are clicking on the EQ
+> object.  This means you can, for example, mouse an instance of
+> something and get that instance as an object to inspect and
+> manipulate.  Emacs has NO basis for equivalent stuff.  None.  If
+> you've seen Genera only through screen shots, you could never imagine.
+> It's like trying to explain someone whose only seen streams of text
+> what an object pointer is.
+
 **Why not use Emacs, org-mode, or ParEdit/Parinfer/Smartparens etc.?**
 
 Emacs is undoubtedly powerful but also difficult to evolve due to its aging codebase. It could be rewritten, however, the goals for such a project remain undefined which hampers initial development from starting. IMHO, writing it purely in Lisp would be interesting...
@@ -107,31 +148,6 @@ Emacs is based around the idea of text buffers, however, editing text requires e
 >
 > Surprisingly, no software with all those features exists yet. There are some interesting options though...
 
-*See ANECDOTES.md*
-
-## Principles
-
-Particle maximizes the following principles:
-
-* Expressiveness
-  * The program should provide primitives that allow the user to express their thoughts in the most concise, succinct, and accurate way possible.
-* Flexiblity
-  * The program should not stand in the way of the user; it must balance structure with freedom.
-* Minimalism
-  * Make the whole system understandable by breaking information into digestible pieces.
-
-These principles are built upon the underlying programming language, [PicoLisp](https://picolisp.com):
-
-* Simple
-  * The internal data structure should be as simple as possible. Only one single data structure is used to build all higher level constructs.
-* Unlimited
-  * There are no limits imposed upon the language due to limitations of the virtual machine architecture. That is, there is no upper bound in symbol name length, number digit counts, stack depth, or data structure and buffer sizes, except for the total memory size of the host machine.
-* Dynamic
-  * Behavior should be as dynamic as possible ("run"-time vs. "compile"-time). All decisions are delayed until runtime where possible. This involves matters like memory management, dynamic symbol binding, and late method binding.
-* Practical
-  * PicoLisp is not just a toy of theoretical value. It is in use since 1988 in actual application development, research and production.
-
-...to create a consistent *discoverable* system with harmonious defaults.
 
 ## Inspirations
 
@@ -146,7 +162,7 @@ These principles are built upon the underlying programming language, [PicoLisp](
 
 * Secondary:
 
-  * McCLIM - "presentations" - (Convergent evolution I suppose ;))
+  * CLIM - presentation-based interface
   * Uzbl/Conkeror - numbered links for navigation
   * Unreal Blueprints - nodal system
   * EagleMode - ZUI system

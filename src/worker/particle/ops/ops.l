@@ -1,3 +1,7 @@
+# Standardize checks
+# Standardize prim ops
+# Try to move more stuff to methods
+
 (de con-any (Data Lay)
 
   (let Ref (get *0 'b)

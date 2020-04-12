@@ -255,8 +255,11 @@ or very few expections like with pointers
     * Refactor bindings
       * Improve discoverability - user sees it immediately
         * Once they are adv enough, they can remove it from default setup...
-      * Show *binds directly
-      * Build structure directly instead of the list
+      * Either show *bindinds-key or *binds directly
+      * Store key syms and fn syms
+        * Get val when called
+      * Mmm, might need to group commands
+        * Majority is ascii/str keys
     * Why is xkb in worker? Should be in ctrl
     * Fix space glyph
     * Handle multi-line strings

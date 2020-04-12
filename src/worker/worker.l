@@ -219,7 +219,7 @@
     
     (nl-cur 6.0)    
     
-    (when T
+    (when NIL
 
       (let Part (gen-part '("a" "b" ("c" "d" "e" ("f"))) 'x)
       
@@ -230,13 +230,12 @@
         
         # Must calc bnds for lists
         (lay-part-start Part *line)))
-
-
+        
     (when NIL
     
       (nl-cur)
       (set-cur-x X)
-      (let Part (gen-part '("let" ("a" 1 "b" 2) ("println" "hello world")) 'y)
+      (let Part (gen-part '*binds 'y)
         
         (nl-cur 2.0)
         (set-cur-x X)

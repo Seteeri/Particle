@@ -285,7 +285,7 @@
 ######################
 
 
-(de ins-bef (Ref Part)
+(de ins-bef (Ref Part Line-Skip)
 
   #{
 
@@ -336,7 +336,8 @@
     (put Ref 'c Part)
 
     # If Ref is a new line, xfer it to new Part
-    (when (get Ref 'line)
+    (when (and (get Cdr 'line)
+               (not Line-Skip))
       (xchg-nl Ref Part))))
 
 
