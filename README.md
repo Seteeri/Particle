@@ -15,9 +15,13 @@ It integrates various computing concepts and UI designs from CLIs, shells, REPLs
 
 The computing landscape has changed significantly since the days of Lisp Machines so it begs the question as to how useful Lisp at the OS/kernel level would be today. I believe another attempt is warranted albeit with a different approach taking advantage of today's computing power and ubiquitiousness. 
 
+I do have the Pinephone on the way so I will also be testing it on that device to hopefully develop a mobile interface and any other devices I can get my hands on...
+
+Currently, Linux and Android is supported. Once Pil21 is done, a native solution can be provided for Windows and Mac/iOS platforms. Until then, a web interface may be developed in lieu of.
+
 The target audience consists of programmers, power users, information workers and "busy" people.
 
-## Features
+## Features (Planned)
 
 * Local data first - no cloud dependency
 * Distributable - synchronize across multiple devices
@@ -25,9 +29,9 @@ The target audience consists of programmers, power users, information workers an
 * Tag-based searching
 * Import/link any data including images, videos, audio, etc.
 * Export to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
-* Visualize data in different forms while maintaining interaction - extract patterns as ideas for new projects
 * Encryption - text and block-based
 * Web clipper
+* Touch/Mobile interface - due to power/battery constraints, an HTML frontend might be more effective than OpenGL/WebGL...
 
 Possible:
 
@@ -44,7 +48,7 @@ Possible:
 
 All Platforms:
 
-* Input/Display (UI)
+* Core UI
 * Desktop Integration
   * Web Clipper
   * Integrate C libraries for various file formats (data types)
@@ -55,10 +59,11 @@ All Platforms:
 Linux/BSD:
 
 * Web Integration
-  * WebKit/JS* Integration
-  * Migrate to native solution
-    * Layout engine
-    * JS engine - port QuickJS?
+  * C
+    * WebKit + JS*
+  * Lisp
+    * Write layout engine
+    * JS engine - port QuickJS to Lisp?
 * Wayland Integration
 * Userspace Integration
   * Port unix utilities such as Toybox or provide Lisp analogues
