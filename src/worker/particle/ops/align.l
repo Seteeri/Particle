@@ -1,26 +1,3 @@
-# Called by delete
-# And when updating lines
-# Can bnds be cache'd?
-# So need not traverse tree each time
-# Store car and cdr dims?
-
-(de align-cur-to-car-bnds (Part)
-  # x: CDR is to the right; use X bounds
-  # y: CDR is below; use Y bounds
-  (let Bnds (bounds> Part NIL T) # Skip CDR
-    (if (= (get Part 'lay) 'x)
-        (prog
-          # Move cur to x base of Part and y origin of Part
-          (set-cur-x (get Bnds 1))
-          (set-cur-y (get Part 'ori 2))
-          (adv-cur 2.0))
-        (prog
-          # Move cur to x origin of Part and y base of Part
-          (set-cur-x (get Part 'ori 1))
-          (set-cur-y (get Bnds 2))
-          (nl-cur 2.0)))))
-
-
 # These are used with layout
 
 (de align-cur-to-line-y (Part)
