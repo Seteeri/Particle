@@ -255,8 +255,23 @@
     [Y]  [X]  NIL
     NIL  C
          *
-  }#
+         
+    Handle when Car is first item in list (no 'line 'l)
 
+    [X]  
+    A
+    *
+
+    ->
+    
+    [Y]  [X]  NIL
+         A
+         *    
+    
+    NIL
+    
+  }#
+  
   (let (Part (gen-part (list (list (car (get Ref 'data))))
                        'x
                        NIL
@@ -269,29 +284,26 @@
 
     (repl-pair Prv Part)
     
-    # P N D L
+    # Create line if needed
+    # otherwise above will have swapped lines
+    (if (get Part 'line)
+        (put Part 'line 'n Prv-Cdr)
+        (put Part 'line (new '(+Line)
+                              Line
+                              Prv-Cdr
+                              List)))
     
-    # xchg-ln?
-    
-    # Make Part on a new line
-    (put Part 'line (new '(+Line)
-                         Line
-                         (get Part 'b)
-                         List))
+    (put Line 'line 'n Part)                
     (put Part 'lay 'y)
-    (put Line 'line 'n Part)
     
-    # Prv is Part
-    # List is Part
-    (let Cdr (get Part 'b)
-      (put Cdr 'line (new '(+Line)
-                          Part
-                          Nxt
-                          List))
-      (put Cdr 'lay (get Prv-Cdr 'lay))
-      (put Nxt 'line 'p Cdr))
+    # (get Part 'b) = Prv-Cdr
+    (put Prv-Cdr 'line (new '(+Line)
+                        Part
+                        Nxt
+                        Part))
+    (put Nxt 'line 'p Prv-Cdr)
     
-    # For a, no 'p = no newline
+    # For a, no 'p/'l = no newline
     (put (get Part 'a) 'line (new '(+Line)))
 
     (upd-tree)

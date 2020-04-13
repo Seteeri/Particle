@@ -17,7 +17,10 @@
         Ori-CA (get Part 'c 'a 'ori)
         Dims-CA (get Part 'c 'a 'line 'dims))
 
-    (println 'align-cur-to-line-y Part (get Part 'data) 'to (get Part 'line) (get Part 'line 'data))
+    (println 'align-cur-to-line-y 
+             Part (get Part 'data) 
+             'to 
+             (get Part 'line) (get Part 'line 'data))
 
     (set-cur-x (get Ori-C 1))
 
