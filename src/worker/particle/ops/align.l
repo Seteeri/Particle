@@ -1,5 +1,7 @@
 # These are used with layout
 
+# Move one more folder up
+
 (de align-cur-to-line-y (Part)
 
   #{
@@ -10,7 +12,7 @@
     CDR
     
     x = line ori
-    y = bnds of 'c 'a (or use cur-*?)
+    y = line bnds of 'c 'a
   }#
 
   (let (Ori-C (get Part 'line 'l 'ori)

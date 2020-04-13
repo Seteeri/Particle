@@ -274,17 +274,14 @@
     
       (if (= (get (: c) 'lay) 'y)
           (align-cur-to-line-y This)
-          (align-cur-to-line-x This))
-          
-      #(setq *cur-x (get *cur 1) *cur-y (get *cur 2))
-      )
+          (align-cur-to-line-x This)))
           
     (setq *line-lay This)))
 
 
 ######################
 
-
+# UNUSED
 (de ins-bef (Ref Part Line-Skip)
 
   #{

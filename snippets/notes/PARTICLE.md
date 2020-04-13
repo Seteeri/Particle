@@ -264,10 +264,8 @@ or very few expections like with pointers
     * Fix space glyph
     * Handle multi-line strings
     * Attempt to build outline
-      * Fix more bugs
-      * Handle Car make-list on Cdr/NIL of Y
-        * Works on non-NIL
-        * If on newline already, simply replace
+      * Y CDR NIL works
+      * Middle NIL fails
       
   * List/Atomic Ops
     * cmd-del, cmd-backspace...

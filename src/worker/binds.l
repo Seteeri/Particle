@@ -63,26 +63,33 @@
 
   #(view (getl (get *0 'b)))
   # If we lay relative to origin should stay in same place
-  ((`ksd~Control-R `ksd~Return) T ((Keysym)
+  ((`ksd~Control-R `ksd~Return) T 
+  ((Keysym)
 
-                                    # Print ptr
-                                    (let Ref (get *0 'b)
-                                      (println Ref (get Ref 'data)))
+    # Print ptr
+    (let Ref (get *0 'b)
+      (println Ref (get Ref 'data)))
 
-                                    (println "Master Line: " *master (get *master 'b 'data))
+    (println "Master Line: " *master (get *master 'b 'data))
 
-                                    # Print lines out
-                                    (let (Line *line
-                                          Ref (get *0 'b))
-                                    
-                                      # Print current line
-                                      (println "Ref: " Ref (get Ref 'data))
-                                      (println "*on-car: " *on-car)
-                                      (println "Line:")
-                                      (println Line (get Line 'data))
-                                      (view (getl (get Line 'line)))
+    # Print lines out
+    (let (Line *line
+          Ref (get *0 'b))
+    
+      # Print current line
+      (println "Ref: " Ref (get Ref 'data))
+      (println "*on-car: " *on-car)
+      (println "Line:")
+      (println Line (get Line 'data))
+      #(view (getl (get Line 'line)))
+      (println 'p (get Line 'line 'p) (get Line 'line 'p 'data))
+      (println 'n (get Line 'line 'n) (get Line 'line 'n 'data))
+      (println 'l (get Line 'line 'l) (get Line 'line 'l 'data))
 
-                                      (mov-*1 Line))))
+      (upd-tree)
+      (mov-*1 *line)      
+      
+      (mov-*1 Line))))
 
   # Pointer Translation
   ((`ksd~Control-L `ksd~w) T `cmd-ptr-up)

@@ -129,18 +129,18 @@
 
   #(println 'lay-pair-x "X: " Part (get Part 'data) Type)
 
-  # Not with the methods as this applies to all particles
   (when (= Type 'b)
+  
     # For non-newline Cdr:
     # X = bnds of Car
     # Y = origin of Pair
-    #(set-cur-x *cur-x)
-    (adv-cur 2.0)
+
     #(println 'lay-pair-x "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
-    (when (get Part 'c)
-      (set-cur-y (get Part 'c 'ori 2))
-      #(println 'lay-pair-x "Mov cur y to origin: " (format (get *cur 2) *Scl))
-    ))
+    #(println 'lay-pair-x "Mov cur y to origin: " (format (get *cur 2) *Scl))
+    
+    # Newline will override these
+    (adv-cur 2.0)
+    (set-cur-y (get Part 'c 'ori 2)))
       
   (lay-x> Part)
 
@@ -148,10 +148,11 @@
   
   # Update on NIL or line
   (when (isa '(+Nil) Part)
-    (println 'lay-pair-y "Found +Nil; set line dims for: "
-             (get *line-lay 'line 'l 'data) " or " (get *line-lay 'data))
     (when (get *line-lay 'line 'l)
-        (upd-dims @))
+      (println 'lay-pair-x "Update line: "
+              (get *line-lay 'line 'l)
+              (get *line-lay 'line 'l 'data))    
+      (upd-dims (get *line-lay 'line 'l)))
     (upd-dims *line-lay)))
 
 
@@ -182,10 +183,11 @@
   (upd-cur)
   
   (when (isa '(+Nil) Part)
-    (println 'lay-pair-x "Found +Nil; set line dims for: "
-             (get *line-lay 'line 'l 'data) " or " (get *line-lay 'data))
     (when (get *line-lay 'line 'l)
-        (upd-dims @))
+      (println 'lay-pair-y "Update line: "
+              (get *line-lay 'line 'l)
+              (get *line-lay 'line 'l 'data))    
+      (upd-dims (get *line-lay 'line 'l)))
     (upd-dims *line-lay)))
 
   
