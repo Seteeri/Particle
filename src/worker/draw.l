@@ -31,21 +31,14 @@
 
 (de get-color-type (Any)
   #{
-    Blue-Green = Data
-    Green-Red = Sub-Data
-    Red-Blue = 
-  
-    Violet = STR
-    Blue =   SYM
-      * Extern/Box have physical delimiters, {} and $...
-      so can also fall under symbols
-    Cyan =   NUM
-    Green =  CONS
-    Yellow = selected
-    Orange = T/NIL and builtin symbols?
-      * Builtin > FUN
-    Red = FUN
-    Magenta = Comments?
+    Violet = SYM
+    Blue = NUM/STR
+    Cyan = Box
+    Green = Ext
+    Yellow = NIL/T
+    Orange = 
+    Red = 
+    Magenta = 
 
     * What to use base colors for?
     * Comments are considered strings
@@ -58,19 +51,16 @@
       * On save: convert to comment
   }#
 
-  # Adjust brightness for time
+  # Adjust brightness for time...or alpha?
 
   (cond ((== Any NIL) *col-yellow)
-        ((lst? Any)
-         (if (lst? (cdr Any))
-             *col-base-0
-             *col-green)) # pair
+        ((lst? Any) *col-base-0)
         (T
          (cond ((== Any T)  *col-yellow)
                ((num? Any)  *col-blue)
                ((box? Any)  *col-orange)
-               ((ext? Any)  *col-magenta)
                ((str? Any)  *col-base-01)
+               ((ext? Any)  *col-magenta)
                ((sym? Any)  *col-violet)))))
 
 

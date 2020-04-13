@@ -258,9 +258,9 @@
   }#
 
   (let (Part (gen-part (list (list (car (get Ref 'data))))
-                        'x
-                        NIL
-                        T)
+                       'x
+                       NIL
+                       T)
         Prv (get Ref 'c)
         Prv-Cdr (get Prv 'b) # != Ref
         Line *line
@@ -275,9 +275,9 @@
     
     # Make Part on a new line
     (put Part 'line (new '(+Line)
-                      Line
-                      (get Part 'b)
-                      List))
+                         Line
+                         (get Part 'b)
+                         List))
     (put Part 'lay 'y)
     (put Line 'line 'n Part)
     
@@ -285,9 +285,9 @@
     # List is Part
     (let Cdr (get Part 'b)
       (put Cdr 'line (new '(+Line)
-                        Part
-                        Nxt
-                        List))
+                          Part
+                          Nxt
+                          List))
       (put Cdr 'lay (get Prv-Cdr 'lay))
       (put Nxt 'line 'p Cdr))
     
