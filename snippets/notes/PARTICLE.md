@@ -252,7 +252,13 @@ or very few expections like with pointers
     +-------+-------------------+--------------------+---------------+
     
   * Refactor
+    * Fix space glyph
+    * Handle multi-line strings
+    * Attempt to build outline
+      * Check newline
+      * Cannot do subsequent newlist - aka nested list    
     * Utilize double shift binds
+    
     * Refactor bindings
       * Improve discoverability - user sees it immediately
         * Once they are adv enough, they can remove it from default setup...
@@ -262,11 +268,7 @@ or very few expections like with pointers
       * Mmm, might need to group commands
         * Majority is ascii/str keys
     * Why is xkb in worker? Should be in ctrl
-    * Fix space glyph
-    * Handle multi-line strings
-    * Attempt to build outline
-      * Check newline
-      * Cannot do subsequent newlist - aka nested list
+    * Replace font with terminus?
       
   * List/Atomic Ops
     * cmd-del, cmd-backspace...

@@ -1,6 +1,6 @@
+# Move more stuff to methods
 # Standardize checks
 # Standardize prim ops
-# Try to move more stuff to methods
 
 (de con-any (Data Lay)
 
@@ -64,7 +64,6 @@
 
     (println 'ins-cdr "Ins-aft (bef Ptr): " Prv (get Prv 'data))
     
-    # Use is a Pair instead
     (when (and (= (get Prv 'lay) 'y)
                (isa '(+Nil) Ref))
       # Copy layout
@@ -73,13 +72,10 @@
     # This will set *line to newline
     (ins-aft Prv Part)
 
-    # Use is a Pair instead
     (when (and (= (get Ref 'lay) 'y)
                (isa '(+Pair) Ref))
       (make-line Ref))
     
-    # 1500 microseconds
-    # 1.5 milliseconds to upd tree with 2 particles = 22 particles per frame max
     (upd-tree)
 
     (mov-*1 *line)
@@ -299,10 +295,11 @@
         (put Part 'lay 'y)
         
         # Make newline for Ref/NIL
-        (put Ref 'line (new '(+Line)
-                              Part
-                              Nxt
-                              List))
+        (unless (get Ref 'line)
+          (put Ref 'line (new '(+Line)
+                                Part
+                                Nxt
+                                List)))
         (put Nxt 'line 'p Ref)
         
         # For a, no 'p/'l = no newline
@@ -342,11 +339,12 @@
         (put Part 'line 'n Prv-Cdr)
         (put Part 'lay 'y)
         
-        # (get Part 'b) = Prv-Cdr
-        (put Prv-Cdr 'line (new '(+Line)
-                            Part
-                            Nxt
-                            List))
+        (println (get Part 'b) Prv-Cdr)
+        (unless (get Prv-Cdr 'line)
+          (put Prv-Cdr 'line (new '(+Line)
+                                  Part
+                                  Nxt
+                                  List)))
         (put Nxt 'line 'p Prv-Cdr)
         
         # For a, no 'p/'l = no newline

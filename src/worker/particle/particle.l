@@ -448,11 +448,16 @@
       
     # Update children's lists when Src is NIL NIL
     (when (and (not (get Nl 'p)) (not (get Nl 'l)))
-      (let Child (get Nl 'n)
-        (while Child
+      (let (Child (get Nl 'n)
+            Visited NIL)
+        (while (and Child
+                    (not (member Child Visited)))
           (println 'xchg-nl "Set list: " Child (get Child 'data))
+          (push 'Visited Child)
           (put (get Child 'line) 'l Dst)
-          (setq Child (get Child 'line 'n)))))
+          (setq Child (get Child 'line 'n))
+          (when (member Child Visited)
+            (println 'xchg-nl "WARNING! Cycle detected: " Child (get Child 'data))))))
 
     (put Dst 'line Nl))
 
