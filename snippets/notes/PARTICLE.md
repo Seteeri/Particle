@@ -264,8 +264,8 @@ or very few expections like with pointers
     * Fix space glyph
     * Handle multi-line strings
     * Attempt to build outline
-      * Y CDR NIL works
-      * Middle NIL fails
+      * Check newline
+      * Cannot do subsequent newlist - aka nested list
       
   * List/Atomic Ops
     * cmd-del, cmd-backspace...
