@@ -13,33 +13,44 @@
       (push 'List (list (list ksd~Shift-L K)         T cmd-make-char))
       (push 'List (list (list ksd~Shift-R K)         T cmd-make-char)))
     List)
-    
-  ((`ksd~BackSpace) T `cmd-del)
-  ((`ksd~Delete   ) T `cmd-del)
 
   ### Special cases: Space (32), Return, Tab
-  ((`ksd~space)               T `cmd-make-char)
-  ((`ksd~Return)              T `cmd-make-char)
-  ((`ksd~Tab)                 T `cmd-make-char)
+  ((`ksd~space)  T `cmd-make-char)
+  ((`ksd~Return) T `cmd-make-char)
+  ((`ksd~Tab)    T `cmd-make-char)
 
-  # Does not work...
-  # ((`ksd~Shift-L `ksd~Tab) T ((Keysym) (println "Shift-L-Tab: TOGGLE LAYOUT REF")))
-  ((`ksd~Alt-L   `ksd~Tab) T `cmd-swap-layout)
-  ((`ksd~Alt-R   `ksd~Return) T `cmd-mov-nl)
-  ((`ksd~Alt-R   `ksd~BackSpace) T `cmd-mov-bl)
+  ((`ksd~BackSpace) T `cmd-del)
+  ((`ksd~Delete   ) T `cmd-del)  
   
-  ## CUA Ops
-  ((`ksd~Control-L `ksd~x) T ((Keysym) (println "Ctrl-L-x: CUT")))
-  ((`ksd~Control-L `ksd~c) T ((Keysym) (println "Ctrl-L-c: COPY")))
-  ((`ksd~Control-L `ksd~v) T ((Keysym) (println "Ctrl-L-v: PASTE")))
-  ((`ksd~Control-L `ksd~z) T ((Keysym) (println "Ctrl-L-z: UNDO")))
-  ((`ksd~Alt-L     `ksd~z) T ((Keysym) (println "Alt-L-z: REDO")))
+  # Make cmds only mod+ASCII? to maintain homerow
+  ((`ksd~Alt-R   `ksd~Return)    T `cmd-mov-nl)
+  ((`ksd~Alt-R   `ksd~BackSpace) T `cmd-mov-bl)
+  # mod+Tab = ?
+  
+  ((`ksd~Control-L `ksd~q) T ((Keysym) (println "Ctrl-L q: MOV-PTR-FIRST")))
+  ((`ksd~Control-L `ksd~e) T ((Keysym) (println "Ctrl-L e: MOV-PTR-LAST")))
+  ((`ksd~Control-L `ksd~r) T `cmd-make-nil)
+  
+  # cmd-swap-layout
+  # cmd-reset
+  # cmd-any
+  # cmd-sym
+  # cmd-intern 
+  
+  ##########
+  # CUA Ops
+  ((`ksd~Control-L `ksd~x) T ((Keysym) (println "Ctrl-L x: CUT")))
+  ((`ksd~Control-L `ksd~c) T ((Keysym) (println "Ctrl-L c: COPY")))
+  ((`ksd~Control-L `ksd~v) T ((Keysym) (println "Ctrl-L v: PASTE")))
+  ((`ksd~Control-L `ksd~z) T ((Keysym) (println "Ctrl-L z: UNDO")))
+  ((`ksd~Alt-L     `ksd~z) T ((Keysym) (println "Alt-L z: REDO")))
 
-  # Str Ops - work on current list
-  # encourages users to create a list when editing
+  #########
+  # Str Ops
   
   # split-space (word) : glue " ", 
   # chop (letter) : glue "", pack      
+  # reverse, flip
   
   ((`ksd~Control-L `ksd~h) T `cmd-pack)
   ((`ksd~Control-L `ksd~j) T `cmd-chop)
@@ -47,20 +58,11 @@
   ((`ksd~Control-L `ksd~y) T `cmd-glue-space)
   ((`ksd~Control-L `ksd~u) T `cmd-split-space)
   
-  #((`ksd~Control-L `ksd~y) T '((Keysym) (println "cmd-reverse")))
-  #((`ksd~Alt-L     `ksd~y) T '((Keysym) (println "cmd-flip")))      
+  # cmd-reverse
+  # cmd-flip
   
-  # List/Sym/Atom Ops
-  ((`ksd~Control-L `ksd~r) T `cmd-reset)
-  #((`ksd~Control-L `ksd~q) T `cmd-eval)      
-  #((`ksd~Control-L `ksd~f) T `cmd-any)
-  #((`ksd~Control-L `ksd~g) T `cmd-sym)
-  #((`ksd~Control-L `ksd~h) T `cmd-intern)
-
-  # Create NIL
-  ((`ksd~Control-L `ksd~e)    T `cmd-make-nil)
-  ((`ksd~Control-R `ksd~e)    T `cmd-make-nil)
-
+  # DEBUG
+  
   #(view (getl (get *0 'b)))
   # If we lay relative to origin should stay in same place
   ((`ksd~Control-R `ksd~Return) T 

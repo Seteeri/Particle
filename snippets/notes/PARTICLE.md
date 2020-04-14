@@ -252,6 +252,7 @@ or very few expections like with pointers
     +-------+-------------------+--------------------+---------------+
     
   * Refactor
+    * Utilize double shift binds
     * Refactor bindings
       * Improve discoverability - user sees it immediately
         * Once they are adv enough, they can remove it from default setup...

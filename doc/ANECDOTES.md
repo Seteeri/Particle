@@ -1,5 +1,6 @@
-Anecdotes
-=========
+Anecdotes (McCLIM, CLIM)
+========================
+
 
 https://news.ycombinator.com/item?id=21961070
 
@@ -21,8 +22,10 @@ The Original Java Utopia, the world dreamed up by Sun where Java Applets would a
 
 But with Java we've already lost the thread of an active environment, one which is responsive to on-the-fly reprogrammability and deep inspection. Maybe it could be done in terms of the JVM, but Java never seems to be used that way. 
 
+
 ---
 ---
+
 
 https://news.ycombinator.com/item?id=22317371
 
@@ -64,8 +67,10 @@ It's a fascinating paradigm, with some shortcomings. Despite CLIM defining some 
 
 One of these days I hope to see a good implementation of these ideas in Javascript. A browser DOM is the perfect substrate on which to implement a modernized CLIM-like UI, rather than reinventing everything the hard way on top of X11 like McCLIM attempts. It would certainly do wonders toward spreading the ideas. 
 
+
 ---
 ---
+
 
 https://news.ycombinator.com/item?id=22498665
 
@@ -103,6 +108,7 @@ https://twitter.com/rainerjoswig?lang=en (lispm on here) sometimes posts interes
 ---
 ---
 
+
 https://news.ycombinator.com/item?id=18518807
 
 First off, note that Lisp OSes were made before modern cybersecurity was a concept.
@@ -126,3 +132,62 @@ One of the biggest downsides of ye olde Lisp machines was garbage collection tim
 > Some had facilities to define dedicated heap regions, but generally the GC had to walk the entire workstation heap across all "applications" in 1980s hardware, which wasn't great.
 
 a stop-the-world global GC was generally tried to be avoided. mid 80s Symbolics Genera had regions for data types (areas), areas for manual memory management, a generational GC, incremental GC (the GC does some work while the programs are running) and an ephemeral GC efficiently tracking memory pages in RAM. For normal use it then looked like global stop-the-world GCs were only used in special situations like saving a GCed image or when running out of free memory. But one often preferred to add more virtual memory then, save the work and reboot. For that one could add paging space when Lisp crashed with an out-of-memory error and continue from there. 
+
+
+---
+---
+
+
+https://news.ycombinator.com/item?id=15057548
+
+
+Blast from the past! I used to work on McCLIM and Climacs as an impressionable youth almost ten years ago. I think the battle for coming up with new ways of defining GUIs is lost (and the web is eating everything anyway), but CLIM was definitely an interesting idea. While it lost a bit in the ability of individual applications to customise their behaviour, it won a lot in the interoperability that was transparently provided by the presentation system. Using "presentations", any on-screen object could be associated with a Lisp object. An application would usually "present" various objects using "presentation types" (image, graph, filename, etc), and other applications could then "accept" input of a given presentation type. If some object of an acceptable type was somewhere on the screen, the user could just click it. Text-based input entry was usually also permitted, assuming the presentation type in question had a textual representation.
+
+I mostly worked on Drei, which was the input editor. It finds use in Climacs (which is probably not worth using if you have Emacs), and the McCLIM Listener, which is really cool. It shows the potential of adding bits of graphics support to a classical REPL, and being able to work interactively with opaque objects.
+
+Using CLIM is a bit like operating an artifact that somehow made its way from an alternative universe. 
+
+---
+---
+
+https://news.ycombinator.com/item?id=9038505
+
+
+I've been thinking hard about this lately, and the first question for me is "What would a 21st Century Lisp Machine mean?"
+
+Lisp Machines were created in part due to the desire to get the most performance possible back in the days when CPUs were made out of discrete low and medium scale integration TTL (there were also ECL hot-rods, but their much greater costs across the board starting with design limited them to proven concepts, like mainframes of proven value, supercomputers, and the Xerox Dorado, after the Alto etc. had proven the worth of the concept).
+
+Everyone was limited: maximum logic speeds were pretty low, you could try to avoid using microcoded synchronous designs, but e.g. Honeywell proved that to be a terrible idea, as noted elsewhere memory was very dear. E.g. the Lisp Machine was conceived not long after Intel shipped the first generally available DRAM chip, a whopping 1,024 bits (which was used along with the first model of the PDP-11 to provide graphics terminals to the MIT-AI PDP-10), etc. etc.
+
+So there was a lot to be said for making a custom TTL CPU optimized for Lisp. And only that, initially: to provide some perspective, the three major improvements of LMI's LAMBDA CPU over the CADR were using Fairchild's FAST family of high speed TTL, stealing one bit from the 8 bits dedicated to tags to double the address space (no doubt a hack enabled by it having a 2 space copying GC), and adding a neat TRW 16 bit integer multiply chip.
+
+The game radically changed when you could fit all of a CPU on a single silicon die. And for a whole bunch of well discussed reasons, to which I would add Symbolics being very badly managed, and LMI killed off by dirty Canadian politics, there was no RISC based Lisp processor, Lisp Machines didn't make the transition to that era. And now CPUs are so fast, so wide, have so much cache ... e.g. more L3 cache than a Lisp Machine of old was likely to have in DRAM, the hardware case isn't compelling. Although I'm following the lowRISC project because they propose to add 2 tag bits to the RISC-V architecture.
+
+So, we're really talking about software, and what was the Lisp Machine in that respect. Well, us partisans of it thought it was the highest leveraged software development platform in existence, akin to supercomputers for leveraging scientists (another field that's changed radically, in part due to technology, in part due to geopolitics changing for the better).
+
+For now, I'll finish this overly long comment by asking if a modern, productive programmer could be so without using a web browser along with the stuff we think of as software development tools. I.e., what would/should the scope of a 21st Century Lisp Machine be? 
+
+---
+
+
+
+
+---
+---
+
+https://news.ycombinator.com/item?id=12703498
+
+
+https://news.ycombinator.com/item?id=19961812
+
+
+https://news.ycombinator.com/item?id=15185827
+
+
+https://news.ycombinator.com/item?id=11712038
+
+
+https://news.ycombinator.com/item?id=9831429
+
+
+https://news.ycombinator.com/item?id=7878679
