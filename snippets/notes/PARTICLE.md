@@ -255,9 +255,11 @@ or very few expections like with pointers
     * Fix space glyph
     * Handle multi-line strings
     * Attempt to build outline
-      * Check newline
-      * Cannot do subsequent newlist - aka nested list    
+      * Support sublist
+      * Refactor into methods
     * Utilize double shift binds
+      * Double ctrl
+      * Double alt
     
     * Refactor bindings
       * Improve discoverability - user sees it immediately

@@ -2,6 +2,10 @@
 # Standardize checks
 # Standardize prim ops
 
+#####################
+#####################
+# SYM
+
 (de con-any (Data Lay)
 
   (let Ref (get *0 'b)
@@ -234,8 +238,53 @@
 
     Part))
 
-    
+  
+###################
+###################
+# Pair/List
+  
+
 (de make-list (Ref)
+
+  (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
+           (= (get Ref 'c 'a) Ref))
+      
+      (prog
+        # Take current Pair A and enclose in another Pair B
+        # Attach Pair B to Prv
+        
+        (make-list-car Ref)
+      
+        (println 'make-list "Handle nested list!"))
+        
+      (make-list-cdr Ref)))
+
+      
+(de make-list-car (Ref)
+
+  (let (Part (gen-part '(NIL)
+                        'x
+                        NIL
+                        T)
+        Prv (get Ref 'c)
+        Line *line
+        List (if (get Line 'line 'l) @ Line)
+        Nxt (get *line 'line 'n))  
+        
+    (ins-aft Ref Part)
+
+    (upd-tree)
+    (mov-*1 *line)
+    
+    (put *0 'b (get Part 'c))
+    (point-nxt)
+    
+    (println 'make-line "Made list on newline")
+
+    Part))
+      
+
+(de make-list-cdr (Ref)
 
   #{
 
@@ -360,9 +409,9 @@
   }#
 
   (put Ref 'line (new '(+Line)
-                    *line
-                    (get *line 'line 'n)
-                    (if (get *line 'line 'l) @ *line)))
+                      *line
+                      (get *line 'line 'n)
+                      (if (get *line 'line 'l) @ *line)))
   (put (get *line 'line) 'n Ref)
   (put (get *line 'line 'n) 'line 'p Ref)
   

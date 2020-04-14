@@ -113,7 +113,7 @@
   (when (and Cdr (: b))
     (del> (: b) Car Cdr))
 
-  (println 'del> This (: data))
+  #(println 'del> This (: data))
 
   # Clear links and flags?
   #(=: a)
