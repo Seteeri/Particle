@@ -28,12 +28,12 @@
     # Push to cmd list
     #(setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
 
-    (con-any Data Lay)))
+    (make-str Data Lay)))
 
 
 (de cmd-make-nil (Keysym)
   (prinl-info "cmd-make-nil")
-  (con-any NIL 'x))
+  (make-str NIL 'x))
 
 
 (de cmd-del (Dir)
@@ -151,14 +151,14 @@
 
   (println "cmd-make-num")
 
-  (con-any (format (char Keysym)) 'x))
+  (make-str (format (char Keysym)) 'x))
 
 
 (de cmd-format (Keysym)
 
   (prinl-info "cmd-format")
 
-  (con-any (format (get *0 'b 'c 'a 'data)) 'x))
+  (make-str (format (get *0 'b 'c 'a 'data)) 'x))
 
 #####################
   
