@@ -11,9 +11,9 @@ Particle is a personal knowledge manager (also called a PIM, PKB) implemented th
 
 It is the realization of my vision to map our thoughts into the computer. The long-term technical goal of Particle is to create a Lispy userspace, eventually replacing the init system and encompassing all layers above that.
 
-It integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, outliners, wikis and note-taking into a single object-oriented interface that can allow convergence across multiple devices such as desktops/workstations, laptops/tablets and  smartphones/devices where information can flow easily.
+It integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, outliners, wikis and note-taking into a single object-oriented interface that can allow convergence across multiple devices such as desktops/workstations, laptops/tablets and smartphones/devices where information can flow easily.
 
-The computing landscape has changed significantly since the days of Lisp Machines so it begs the question as to how useful Lisp at the OS/kernel level would be today. I believe another attempt is warranted albeit with a different approach taking advantage of today's computing power and ubiquitiousness. 
+The computing landscape has been reshaped significantly since the days of Lisp Machines and so too has our computer science knowledge base grown, so it begs the question as to how useful Lisp at the OS/kernel level would be today. As much as a Lisp Machine from scratch would be intriguing, for it to achieve a point of actual usefulness would be highly energy intensive and fundamentally require commercial support; only with specialized hardware could it be remotely competitive. So I believe a more pragmatic approach from the top-down by building a userspace will allow us to get there.
 
 I do have the Pinephone on the way so I will also be testing it on that device to hopefully develop a mobile interface and any other devices I can get my hands on...
 
@@ -31,7 +31,10 @@ The target audience consists of programmers, power users, information workers an
 * Export to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
 * Encryption - text and block-based
 * Web clipper
-* Touch/Mobile interface - due to power/battery constraints, an HTML frontend might be more effective than OpenGL/WebGL...
+* Alternate Interfaces
+  * Touch/Mobile - due to power/battery constraints, an HTML frontend might be more effective than OpenGL/WebGL...
+  * AR/VR - I do have a possible solution for this, moreso for AR...
+
 
 Possible:
 

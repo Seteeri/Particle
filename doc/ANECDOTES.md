@@ -102,3 +102,27 @@ https://twitter.com/rainerjoswig?lang=en (lispm on here) sometimes posts interes
 
 ---
 ---
+
+https://news.ycombinator.com/item?id=18518807
+
+First off, note that Lisp OSes were made before modern cybersecurity was a concept.
+
+Since everything was Lisp all the way down, and Lisp is a very dynamic language, all calls that comprise the OS are available as plain function calls visible to the interactive REPL, introspection, and modification. They were very developer-oriented and had lots of ways to have live displays of objects, to reuse or interact with them, and very deep debugger and documentation integration, since all code was at the same "level".
+
+Since it's a high level language that does not expose low level memory (although certainly there are obscure implementation-specific Lisp operations for doing so used deep in the guts), corruption of memory at a low crashy level isn't generally a thing. Protections between applications/processes aren't as necessary and it can all remain plain running threads & functions interacting with each other & the OS. 
+
+---
+
+Correct. It's not a process-oriented environment, with crash protection facilities keeping everything at arm's length.
+
+There are namespacing facilities (though I'm not sure how far back in history they go) to discriminate your code's reach, as well as to import the public API from others' code, or in a different manner to bore into their private affairs generally for admin/debugging/tracing/modification. "Global" variables have thread-local, dynamically scoped bindings which are super useful for configuration, redirection, or setting other side-band broad context when calling into shared code.
+
+Also it should be noted that these types of machines (at least from the Symbolics point of view) tended to be single-user workstations, though were still networked to allow remote (and simultaneous) access to its running world, with varying levels of per-connection context.
+
+One of the biggest downsides of ye olde Lisp machines was garbage collection times. Some had facilities to define dedicated heap regions, but generally the GC had to walk the entire workstation heap across all "applications" in 1980s hardware, which wasn't great. But at least as a programmer, you could freely code and only worry about minimizing GC pressure when it became an issue, instead of starting from a required malloc/free perspective and constantly worry about leaks. 
+
+---
+
+> Some had facilities to define dedicated heap regions, but generally the GC had to walk the entire workstation heap across all "applications" in 1980s hardware, which wasn't great.
+
+a stop-the-world global GC was generally tried to be avoided. mid 80s Symbolics Genera had regions for data types (areas), areas for manual memory management, a generational GC, incremental GC (the GC does some work while the programs are running) and an ephemeral GC efficiently tracking memory pages in RAM. For normal use it then looked like global stop-the-world GCs were only used in special situations like saving a GCed image or when running out of free memory. But one often preferred to add more virtual memory then, save the work and reboot. For that one could add paging space when Lisp crashed with an out-of-memory error and continue from there. 
