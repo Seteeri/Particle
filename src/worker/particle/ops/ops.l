@@ -113,12 +113,15 @@
          *
          
     Effectively, replace entire list
+    
+    Refactor:
+    * Use original Pair
   }#
 
   (let (Ref (get *0 'b)
-        Prv (get Ref 'c 'c)
-        Prv-Lay (get Prv 'lay)
-        Prv-B-Lay (get Prv 'b 'lay)
+        Cc (get Ref 'c 'c)
+        Cc-Lay (get Cc 'lay)
+        Cc-B-Lay (get Cc 'b 'lay)
         Cdr (get Ref 'c 'b)
         Part (gen-part (list (list Data)) Lay NIL T)
         Car (get Part 'a))
@@ -128,10 +131,10 @@
       (xchg-nl (get Ref 'c) Car))
 
     (with Part
-      (=: lay Prv-Lay)
-      (put (: b) 'lay Prv-B-Lay))
+      (=: lay Cc-Lay)
+      (put (: b) 'lay Cc-B-Lay))
 
-    (repl-pair Prv Part)
+    (repl-pair Cc Part)
 
     # Relink Car to Cdr
     (con> Car Cdr)
