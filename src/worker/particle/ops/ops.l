@@ -127,9 +127,9 @@
     (when (get Ref 'c)
       (xchg-nl (get Ref 'c) Car))
 
-    # Copy layout for Pair
-    (put Part 'lay Prv-Lay)
-    (put Part 'b 'lay Prv-B-Lay)
+    (with Part
+      (=: lay Prv-Lay)
+      (put (: b) 'lay Prv-B-Lay))
 
     (repl-pair Prv Part)
 
