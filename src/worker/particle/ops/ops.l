@@ -438,7 +438,7 @@
                       (get *line 'line 'n)
                       (if (get *line 'line 'l) @ *line)))
   (put (get *line 'line) 'n Ref)
-  (put (get *line 'line 'n) 'line 'p Ref)
+  (put (get *line 'line 'n 'line) 'p Ref)
   
   (upd-tree)
   (mov-*1 Ref)
