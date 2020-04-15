@@ -430,7 +430,7 @@
     (when (get Ref 'line)
       (xchg-nl Ref Part))
 
-    (unless Del-Skip
+    (unless (val 'Del-Skip)
       (del> Ref T NIL))))
 
 

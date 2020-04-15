@@ -252,12 +252,13 @@ or very few expections like with pointers
     +-------+-------------------+--------------------+---------------+
     
   * Refactor
-    * Fix space glyph
-    * Handle multi-line strings
     * Attempt to build outline
       * Support sublist
-      * Refactor into methods
+      * Refactor into methods  
+    * Fix space glyph
+    * Handle multi-line strings
     * Utilize double shift binds
+      * Search menu?
       * Double ctrl
       * Double alt
     
@@ -369,9 +370,10 @@ or very few expections like with pointers
   =-----------------------------------------------------------------------------
 
   * Demos:
-    * Show left->right, Text, Other Data, Custom Data
-      * Load own code as data
-    * Really draw relevant internal symbols from table
+    * List/Atom
+      * Commands
+    * Pixels as list of pixels or lists of lists
+    * Table as list of lists
 
   * Test multiple workers
     * Need data sync on model side to broadcast updates

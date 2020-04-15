@@ -5035,3 +5035,28 @@ Hobbyist = Good/Fast
 ========================
 
 DOUBLE-SHIFT
+
+2 Commands
+* Make Ref Pair the Car of New Pair = (cons Ref NIL)
+  * Need not be on Car
+  * Alt + Tab
+* Make Newline
+  * Alt + Enter
+
+
+    [Ccc]
+    
+    [Cc]  [C]  NIL
+          a
+    NIL   
+
+    ->
+    
+    [Ccc]
+    
+    [Cc]  [P]  [C]  NIL
+               a
+          NIL
+    NIL
+
+    

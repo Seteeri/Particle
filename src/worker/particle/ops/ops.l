@@ -249,37 +249,79 @@
   (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
            (= (get Ref 'c 'a) Ref))
       
-      (prog
-        # Take current Pair A and enclose in another Pair B
-        # Attach Pair B to Prv
-        
-        (make-list-car Ref)
-      
-        (println 'make-list "Handle nested list!"))
+      (make-list-car Ref)
         
       (make-list-cdr Ref)))
 
       
 (de make-list-car (Ref)
+  
+  #{
+  
+    1. Gen pair; skip Car
+    2. Set car to current Pair
+    3. Attach new Pair
+    
+    [Ccc]
+    
+    [Cc]  [C]  NIL
+          a
+    NIL   
 
-  (let (Part (gen-part '(NIL)
-                        'x
-                        NIL
-                        T)
-        Prv (get Ref 'c)
-        Line *line
-        List (if (get Line 'line 'l) @ Line)
-        Nxt (get *line 'line 'n))  
+    ->
+    
+    [Ccc]
+    
+    [Cc]  [P]  [C]  NIL
+               a
+          NIL
+    NIL
+    
+  }#
+  
+  (let (Part (gen-part (cons NIL NIL)
+                       'x
+                       'skip-car)
+        C (get Ref 'c)
+        Cc (get C 'c))
+    
+    (put Part 'lay 'y)    
         
-    (ins-aft Ref Part)
+    # Con Part/Car -> C
+    (put Part 'a C)
+    
+    # Con data, P -> C
+    (put Part 'data (cons (get C 'data)))    
+    
+    # Con Part <- C
+    (put C 'c Part)
 
+    # Con Cc -> P
+    (put Cc 'a Part)
+                            
+    # Con data, Cc -> P
+    (put Cc 'data (cons (get Part 'data)))    
+    
+    # Line
+    (with Part
+      # Con Cc <- Part
+      (=: c Cc)
+      # Create Line start
+      (=: line (new '(+Line)
+                    NIL (: b) NIL))
+      # Create Line for NIL/Cdr
+      (put (: b) 'line (new '(+Line)
+                            Part NIL Part)))
+                            
     (upd-tree)
     (mov-*1 *line)
     
-    (put *0 'b (get Part 'c))
-    (point-nxt)
-    
-    (println 'make-line "Made list on newline")
+    # Maintain on inner tree or outer?
+    (setq *line Cc)
+    (put *0 'b Cc)
+    (point-sub)
+        
+    (println 'make-list-car "Made nested list")
 
     Part))
       
