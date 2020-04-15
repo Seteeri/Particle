@@ -253,7 +253,7 @@ or very few expections like with pointers
     
   * Refactor
     * Attempt to build outline
-      * Support sublist
+      * Support sublist [Done]
       * Refactor into methods  
     * Fix space glyph
     * Handle multi-line strings

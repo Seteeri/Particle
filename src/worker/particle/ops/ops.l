@@ -249,12 +249,12 @@
   (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
            (= (get Ref 'c 'a) Ref))
       
-      (make-list-car Ref)
+      (make-cons-car Ref)
         
       (make-list-cdr Ref)))
 
       
-(de make-list-car (Ref)
+(de make-cons-car (Ref)
   
   #{
   
