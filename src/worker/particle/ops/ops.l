@@ -249,12 +249,12 @@
   (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
            (= (get Ref 'c 'a) Ref))
       
-      (make-cons-car Ref)
+      (make-cons-car-y Ref)
         
-      (make-list-cdr Ref)))
+      (make-cons-car-x Ref)))
 
       
-(de make-cons-car (Ref)
+(de make-cons-car-y (Ref)
   
   #{
   
@@ -285,8 +285,6 @@
         C (get Ref 'c)
         Cc (get C 'c))
     
-    (put Part 'lay 'y)    
-        
     # Con Part/Car -> C
     (put Part 'a C)
     
@@ -296,19 +294,24 @@
     # Con Part <- C
     (put C 'c Part)
 
+    # Con CAR
     # Con Cc -> P
+    # Con data, Cc -> P    
     (put Cc 'a Part)
-                            
-    # Con data, Cc -> P
     (put Cc 'data (cons (get Part 'data)))    
     
     # Line
     (with Part
+      
+      (=: lay 'y)
+    
       # Con Cc <- Part
       (=: c Cc)
+      
       # Create Line start
       (=: line (new '(+Line)
                     NIL (: b) NIL))
+      
       # Create Line for NIL/Cdr
       (put (: b) 'line (new '(+Line)
                             Part NIL Part)))
@@ -325,109 +328,89 @@
 
     Part))
       
-
-(de make-list-cdr (Ref)
-
-  #{
-
-    [X]  [X]  [X]  NIL
-    A    B    C
-              *
+      
+(de make-cons-car-x (Ref)
   
-    On-car: Create list with Pair; move newline, y layout
-
-    [X]  [X]
-    A    B
-
-    [Y]  [X]  NIL
-    NIL  C
-         *
-         
-    Handle when Car is first item in list (no 'line 'l)
-
-    [X]  
-    A
-    *
-
+  #{
+      
+    [ ]  [Cc]  [C]  NIL
+    a    b     c*
+  
     ->
-    
-    [Y]  [X]  NIL
-         A
-         *    
-    
+  
+    [ ]  [Cc]
+    a    b
+
+    [P]  [C]  NIL
+         c*
     NIL
     
   }#
-
-  (let (Part (gen-part (list (list (car (get Ref 'data))))
-                        'x
-                        NIL
-                        T)
-        Prv (get Ref 'c)
-        Line *line
-        List (if (get Line 'line 'l) @ Line)
-        Nxt (get *line 'line 'n))  
+  
+  (let (Part (gen-part (cons NIL NIL)
+                       'x
+                       'skip-car)
+        C (get Ref 'c)
+        Cc (get C 'c))
+         
+    # Con Part/Car -> C
+    (put Part 'a C)
     
-    (if (and (isa '(+Nil) Ref)
-             (get Ref 'line))
+    # Con data, P -> C
+    (put Part 'data (cons (get C 'data)))    
+    
+    # Con Part <- C
+    (put C 'c Part)
 
-        (prog
+    # Con CDR - Diff from Y layout
+    # Con Cc -> P
+    # Con data, Cc -> P    
+    (con> Cc Part)
+    
+    # Create lines for Part
+    (with Part
+     
+      (=: lay 'y)
+     
+      # Con Cc <- Part
+      (=: c Cc)
+      
+      # Use ins-line?        
+      
+      # Create Line
+      (=: line (new '(+Line)
+                    *line
+                    (: b)
+                    (if (get *line 'line 'l) @ *line)))
+                  
+      # Create Line for Cdr
+      (put (: b) 'line (new '(+Line)
+                            Part
+                            (get *line 'line 'n)
+                            (if (get *line 'line 'l) @ *line)))
+      
+      # Connect lines
           
-          (ins-aft Prv Part)
+      # Con nxt line
+      (put (get *line 'line 'n 'line) 'p (: b))
           
-          (put Line 'line 'n Part)
-          
-          # Create line if needed
-          (unless (get Part 'line)
-            (put Part 'line (new '(+Line)
-                                  Line
-                                  Ref
-                                  List)))
-          (put Part 'line 'n Ref)
-          (put Part 'lay 'y)
-          
-          # Create line if needed
-          (unless (get Ref 'line)
-            # If here, Nxt always NIL?
-            (put Ref 'line (new '(+Line)
-                                  Part
-                                  Nxt
-                                  List))))
-          
-                
-        (let Prv-Cdr (get Prv 'b)
-
-          (repl-pair Prv Part)
-          
-          (put Line 'line 'n Part)
-          
-          # Create line if needed
-          (unless (get Part 'line)
-            (put Part 'line (new '(+Line)
-                                  Line
-                                  Prv-Cdr
-                                  List)))
-          (put Part 'line 'n Prv-Cdr)
-          (put Part 'lay 'y)
-          
-          # Create line if needed
-          (unless (get Prv-Cdr 'line)
-            # If here, Nxt always NIL?
-            (put Prv-Cdr 'line (new '(+Line)
-                                    Part
-                                    Nxt
-                                    List)))))
-          
-    # For a, no 'p/'l = no newline
-    (put (get Part 'a) 'line (new '(+Line)))
-
+      # Con prv line
+      (put (get *line 'line) 'n Part))
+               
+        
+    # Create line for C
+    (with C
+      (=: line (new '(+Line))))
+        
     (upd-tree)
     (mov-*1 *line)
     
-    (put *0 'b (get Part 'c))
-    (point-nxt)
-    
-    (println 'make-line "Made list on newline")
+    # Maintain on inner tree or outer?
+    (setq *line Part)
+    (put *0 'b Part)
+    (point-sub)
+        
+    (println 'make-list-car "Made nested list x")
 
     Part))
 

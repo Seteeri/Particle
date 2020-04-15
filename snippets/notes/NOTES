@@ -5044,19 +5044,61 @@ DOUBLE-SHIFT
   * Alt + Enter
 
 
-    [Ccc]
+A:
+
+
+    [ ]
     
     [Cc]  [C]  NIL
-          a
+          a*
     NIL   
 
     ->
     
-    [Ccc]
+    [ ]
     
     [Cc]  [P]  [C]  NIL
-               a
+               a*
           NIL
     NIL
 
+
+B:
     
+    
+    [ ]  [Cc]  [C]  NIL
+    a    b     c*
+  
+    ->
+  
+    [X]  [Cc]
+    a    b
+
+    [P]  [C]  NIL
+         c*
+    NIL
+
+         
+
+- A assumes Cc is Y layout
+- B assumes Cc is X layout
+- B creates line for P...so does A
+  - B attaches to existing line
+  
+  
+Is there a way to create a DSL for this like destructuring-bind
+
+(Cc Ref)
+
+transform to ->
+
+(Cc (Ref))
+
+
+how to label new part?
+
+(Cc Ref)
+
+transform to ->
+
+(Cc (P . Ref))
