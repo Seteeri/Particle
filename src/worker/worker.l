@@ -45,7 +45,8 @@
             "/src/worker/particle/ops/align.l"
             "/src/worker/particle/ops/gen.l"
             "/src/worker/particle/ops/layout.l"
-            "/src/worker/particle/ops/ops.l"
+            "/src/worker/particle/ops/pair.l"
+            "/src/worker/particle/ops/sym.l"            
             "/src/worker/particle/ops/point.l"))
 
 
