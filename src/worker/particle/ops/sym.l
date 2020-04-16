@@ -95,6 +95,8 @@
 
 
 (de repl-list-car (Data Lay)
+  # Replace pair y car
+  
   #{
     Replace beginning of list when ptr on car
     
@@ -125,7 +127,6 @@
         Pair (get Ref 'c)
         C (get Pair 'c)
         Cc (get C 'c)
-        B (get Ref 'b)
         Part (gen-part Data Lay))
 
     # Pair <-> Part (CAR)
@@ -134,10 +135,10 @@
     (put Part 'c Pair)
     
     # Con data
-    (put Pair 'data (cons (get Part 'data) (get B 'data)))
-    
-    (let Data-Bc (get C 'b 'data)
-      (put C 'data (cons (get Pair 'data) Data-Bc)))
+    (put Pair 'data (cons Data
+                          (get Ref 'b 'data)))
+    (put C 'data (cons (get Pair 'data)
+                       (get C 'b 'data)))
       
     (con> Cc C)
     
@@ -152,6 +153,51 @@
         
     Part))
   
+
+(de repl-car (Data Lay)
+  # Replace pair x car
+  #{
+    Replace beginning of list when ptr on car
+        
+    [C]  [P]  [B]
+         b    c
+         *
+
+    
+    [ ]  [ ]  [ ]
+         x    c
+         *
+  }#
+
+  (let (Ref (get *0 'b)
+        Pair (get Ref 'c)
+        C (get Pair 'c)
+        Part (gen-part Data Lay))
+
+    # Pair <-> Part (CAR)
+
+    (put Pair 'a Part)
+    (put Part 'c Pair)
+    
+    # Con data
+    (put Pair 'data (cons Data
+                          (get Ref 'b 'data)))
+    (con> C Pair)
+
+    # Main diff here from repl-list-car
+      
+    # Delete Ref
+    (del> Ref T T)
+    
+    (upd-tree)
+    (mov-*1 *line)    
+
+    (put *0 'b Part)
+    (point-nxt)
+        
+    Part))
+
+
 #{
   ######################
   # INS
@@ -179,56 +225,6 @@
     # Delete Ref
     (del> Ref T T)
 }#
-
-
-(de repl-car (Data Lay)
-
-  #{
-    Replace car with same type
-
-    [ ]  [ ]  [ ]  NIL
-    a    b    c
-         *0
-
-    Ref = b/Car
-    Prv = b/Pair
-    Part = x
-
-    [ ]  [ ]  [ ]  NIL
-    a    x    c
-              *0
-              
-    Refactor
-    * Set data for Cc
-    * Gen part for sym/str
-    * Combine with above fn
-      * Connect Cdr if exists
-  }#
-
-  (let (Ref (get *0 'b)
-        Prv (get Ref 'c)
-        Part (gen-part (list Data)
-                       Lay
-                       NIL
-                       T))
-
-    (repl-pair Prv Part)
-
-    (upd-tree)
-    (mov-*1 *line)    
-    
-    (if (= Lay 'x)
-
-      (prog
-
-        (put *0 'b Part)
-        (point-nxt))
-
-      (prog
-        (println 'repl-car "IMPLEMENT Y LAYOUT")))
-
-  Part))
-
 
 (de ins-list-car (Data Lay)
 
