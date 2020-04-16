@@ -338,7 +338,7 @@
       (xchg-nl Ref Part))))
 
 
-(de ins-aft (Ref Part Line-Skip)
+(de con-aft (Ref Part Line-Skip)
 
   #{
 

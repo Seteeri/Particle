@@ -66,7 +66,7 @@
         Prv (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    (println 'ins-cdr "Ins-aft (bef Ptr): " Prv (get Prv 'data))
+    (println 'ins-cdr "con-aft (bef Ptr): " Prv (get Prv 'data))
     
     (when (and (= (get Prv 'lay) 'y)
                (isa '(+Nil) Ref))
@@ -74,7 +74,7 @@
       (put Ref 'lay 'x))
   
     # This will set *line to newline
-    (ins-aft Prv Part)
+    (con-aft Prv Part)
 
     (when (and (= (get Ref 'lay) 'y)
                (isa '(+Pair) Ref))

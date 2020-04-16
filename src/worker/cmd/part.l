@@ -286,7 +286,7 @@
     
       (let Part (gen-part (list Data) 'x NIL T)
         
-        (ins-aft Prv Part T)
+        (con-aft Prv Part T)
         
         (setq Prv Part)))
 
