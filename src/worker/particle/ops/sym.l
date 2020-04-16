@@ -139,7 +139,6 @@
                           (get Ref 'b 'data)))
     (put C 'data (cons (get Pair 'data)
                        (get C 'b 'data)))
-      
     (con> Cc C)
     
     # Delete Ref
@@ -157,7 +156,7 @@
 (de repl-car (Data Lay)
   # Replace pair x car
   #{
-    Replace beginning of list when ptr on car
+    Replace car
         
     [C]  [P]  [B]
          b    c
@@ -198,35 +197,65 @@
     Part))
 
 
-#{
-  ######################
-  # INS
-  
-  (let (Ref (get *0 'b))
-        Pair (get Ref 'c)
-        C (get Pair 'c)
-        B (get Ref 'b))
-    
-    # Part <-> B
-
-    (con> Part B)
-    (put B 'c Part)    
-    
-    # C <-> Part
-
-    (put C 'a Part)
-    (put Part 'c C)
-    
-    (put C 'data (cons (get Part 'data)))
-    
-    # Swap lines from Pair
-    (xchg-nl Pair Part)
-    
-    # Delete Ref
-    (del> Ref T T)
-}#
-
 (de ins-list-car (Data Lay)
+
+  #{
+  
+    Replace beginning of list when ptr over
+    
+    [Cc]
+    
+          *
+    [Pa]  [Pr] NIL
+          X
+    NIL
+    
+    ->
+    
+    [Cc]
+    
+              *
+    [ ]  [ ]  [ ] NIL
+         Z    X
+    NIL    
+    
+  }#
+    
+  (let (Ref (get *0 'b)
+        Pair (get Ref 'c)
+        Cc (get Pair 'c)
+        Part (gen-part (list Data) Lay NIL T))
+    
+    # Part <-> Ref
+    (con> Part Ref)
+    (put Ref 'c Part)
+           
+    # Pair <-> Part
+    (put Pair 'a Part)
+    (put Part 'c Pair)
+    
+    # Con data
+    (put Pair 'data (cons (get Part 'data)
+                          (get Pair 'b 'data)))
+    (con> Cc Pair)
+    
+    # Swap lines
+    (xchg-nl Ref Part)
+    
+    # Prv (get Pair 'lay)
+    #(put Part 'lay (get Prv 'lay))
+    
+    (upd-tree)
+    (mov-*1 *line)
+
+    # Same ref, relayout
+    (mov-cur-abv Ref)
+    (lay-part-start *0 *line 'skip-cdr)    
+    
+    Part))
+    
+
+(de ins-list-car-2 (Data Lay)
 
   #{
   
