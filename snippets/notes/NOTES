@@ -5102,3 +5102,53 @@ how to label new part?
 transform to ->
 
 (Cc (P . Ref))
+
+
+
+==============
+
+Tables
+
+Row Major
+
+((1,1  2,1  3,1  4,1)
+ (1,2  2,2  3,2  4,2)
+ (1,3  2,3  3,3  4,3)
+ (1,4  2,4  3,4  4,4))
+
+: (get l 1 4) -> first row, last col
+: (get l 4 1) -> last row, first col
+
+
+[Y] [Y] [X] [X] [X] [X]
+
+    NIL
+
+[Y] [Y] [X] [X] [X] [X]
+
+    NIL
+
+[Y] [Y] [X] [X] [X] [X]
+
+    NIL
+
+[Y] [Y] [X] [X] [X] [X]
+   
+    NIL   
+   
+NIL
+
+
+Excel uses <alpha><num>
+
+Use sym to reference it, cache value in sym
+
+
+
+Pixels
+
+- Need to remove spacing / NIL
+
+Sublime Text Cmd search
+
+Card metaphor

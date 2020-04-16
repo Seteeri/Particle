@@ -252,17 +252,16 @@ or very few expections like with pointers
     +-------+-------------------+--------------------+---------------+
     
   * Refactor
-    * Attempt to build outline
+    * Refactor ops [Thr]
       * Support sublist [Done]
-      * Refactor into methods  
-    * Fix space glyph
-    * Handle multi-line strings
-    * Utilize double shift binds
-      * Search menu?
-      * Double ctrl
-      * Double alt
+      * Refactor repl-list-car: reuse pair
+      * Refactor repl-car: reuse pair, merge with above fn
+      * Refactor ins-list-car: reuse pair
+    * Refactor ops into methods [Fri]
+    * Fix space glyph [Sat]
+    * Handle multi-line strings  [Sat]
     
-    * Refactor bindings
+    * Refactor bindings [Sat]
       * Improve discoverability - user sees it immediately
         * Once they are adv enough, they can remove it from default setup...
       * Either show *bindinds-key or *binds directly
@@ -270,10 +269,12 @@ or very few expections like with pointers
         * Get val when called
       * Mmm, might need to group commands
         * Majority is ascii/str keys
-    * Why is xkb in worker? Should be in ctrl
-    * Replace font with terminus?
+    
+    * Why is xkb in worker? Should be in ctrl [Sun]
+    
+    * Replace font with terminus? [Sun]
       
-  * List/Atomic Ops
+  * List/Atomic Ops [Thr?]
     * cmd-del, cmd-backspace...
     * Replace input with output
     
@@ -284,6 +285,14 @@ or very few expections like with pointers
       * List can be searched again or replaced, results in output again
       * Output can then be merged
     * Pattern matching      
+  
+  * Logging System
+    * Log commands  
+  
+  * Eval
+    * Quick demo
+  
+  ----------------
     
   * Pointer System
     * Use master pointer to select main pointer
@@ -308,16 +317,7 @@ or very few expections like with pointers
       * Similar to ptr list, use a buffer list which follows same pattern
       * Show first and last items
     * CUA
-  
-  * Logging System
-    * Log commands
-    
-  * Directory Nav
-      
-  * Tag/Note System
-    * Need "template"
-    * Search functions
-  
+        
   * CLI
     * Plain list  
   
@@ -340,6 +340,10 @@ or very few expections like with pointers
     * Opt: buffer is a circular list
     * Draw num in car [?]
       * Handle decimals
+    * Utilize double shift binds
+      * Search menu?
+      * Double ctrl
+      * Double alt
       
     * Replace dot with arrow indicating layout (Right/Down)
     * Make fn: mov-cur X/adv Y/nl
@@ -367,13 +371,13 @@ or very few expections like with pointers
   * Use special printing for control characters like enter etc.
     * newline ("^J"), return ("^M") or TAB ("^I")
     
-  =-----------------------------------------------------------------------------
-
-  * Demos:
-    * List/Atom
-      * Commands
-    * Pixels as list of pixels or lists of lists
-    * Table as list of lists
+  * Directory Nav
+      
+  * Tag/Note System
+    * Need "template"
+    * Search functions
+    
+  --------
 
   * Test multiple workers
     * Need data sync on model side to broadcast updates
@@ -399,8 +403,6 @@ or very few expections like with pointers
     * Ability to pull items out
     * Requires spatial index, unproject
       * Port r-tree from CL      
-      
-  ========================
       
   * Instead of drawing lines to connect nodes, draw generic grid in bg
   to guide user
@@ -444,11 +446,54 @@ or very few expections like with pointers
     * Set * Err to (quit)
     * On error, print msg and return to top-level
 
+----------
+
+  * Demos:
+    * Core
+      * Lisp
+        * Strs
+        * Lists
+        * Eval
+      * Systems
+        * Help - need "quick escape"
+          * Draw help, bind to move ptr while held
+          * Sublime
+          * Ext of tags?
+        * Cmds
+          * AKA Timeline/History/Undo
+        * Ptrs
+        * Buffers
+        * Views (Viewports)
+        * State
+      * CLI
+    * Key Concept
+      * Pixels as list of pixels or lists of lists
+        * Implement screenshot
+      * Table as list of lists
+      * Widget Deprecation
+    * Application (Concrete)
+      * OS/Dir
+      * Outliner/PIM
+        * Tags/Search
+          * Internals
+      * Spreadsheet
+      * Window Manager
+    * Advanced UI
+      * Touch Interface    
+    
 
 LATER:
 
   * Implement Wayland - BASIC!
-    * Setup tiles for 6 windows = 3 col, 2 row
+    * Setup tiles for each list
+      * Multi
+        * Buffers - Left
+        * Cmds - Right
+        * Ptrs - Top
+        * Main - Bottom
+      * Dual (L-R)
+        * Major - Main
+        * Minor - Buffers/Cmds/Ptrs
     * Proof of concept working with eval already
 
    * Test compute shaders
@@ -512,17 +557,6 @@ LATER:
 
    * Try proportional fonts with kerning
      * Change blend mode?
-
-   * Tasks uses DAG/ptrees [Later]
-     * Built on top of cons cells...
-     * To make task wait for another task, it needs a task ID
-     * If dependency graph used, need a way to continously modify it
-     * When a DAG is executed, store the output of the entire graph
-   * Tasks can be submitted as parallel or serial (waits for current task to complete)
-     * ?For parallel tasks, can cache results, so that if after one of the data
-       is modified while the task was running, it can run it again up to the point
-       the data was modified?
-     * Otherwise, have to lock data while it is being used
 
    * Optimize GL struct [Later]
      * 3 programs to render 3 vertex types
@@ -592,45 +626,6 @@ LATER:
     * Ptr or struct equality?
 
 OLD
-
-Particle
-========
-
-*Image to Be Inserted*
-
-> The Grid. A digital frontier. I tried to picture clusters of
-information as they moved through the computer. What did they look like?
- Ships? Motorcycles? Were the circuits like freeways? I kept dreaming of
-  a world I thought I'd never see. And then one day . . .
-
-Particle is a personal knowledge database or personal information manager
-implemented through a 3D Lisp UI. It is the realization of my vision of a 
-programmable UI to replace the desktop paradigm - a way to map our thoughts into
-the computer.
-
-It integrates various computing and UI concepts from CLIs, shells, REPLs, 
-notebooks, WMs/DEs, creative coding, mindmapping, note-taking into a single 
-interface that can provide convergence across multiple devices such as 
-desktops/workstations, laptops/tablets and smartphones/devices where information
-can easily and literally flow between nodes. This is one step towards that.
-
-The goal of Particle is to create a Lispy userspace, eventually replacing the
-init system and encompassing all layers above that. The first step is to
-maintain backwards compatibility with the conventional desktop (Wayland) and
-the C world while rewriting/replacing parts in Lisp, possibly into an actual
-Lisp OS.
-
-PilOS provides a minimal starting point; however, there would be many hurdles to
-overcome. Initially, a SOC could be targeted as a starting point. 
-
-The computing landscape has changed significantly since the days of Lisp 
-Machines so it begs the question as to how useful Lisp at the OS level would be
-today in contrast to past Lisp Machines. I believe another attempt is warranted
-albeit with a different approach taking advantage of today's computing power
-and ubiquitiousness.
-
-The target audience consists of programmers, power users and the like, and
-"busy" people.
 
 ## The Principles
 
@@ -730,17 +725,3 @@ Future Ideas
 * Augmented reality through OpenCV
 * Convergence...
 * PilOS bootloader...
-
-## The Requirements
-
-* OpenGL ES 3.2+ (OpenGL 4.3+) (See [Mesamatrix](https://mesamatrix.net/))
-* Vulkan/WSI (hopefully...)
-
-## The Installation
-
-1. Clone this repo
-2. ...
-
-## The License
-
-Permissively licensed

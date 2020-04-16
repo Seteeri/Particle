@@ -81,12 +81,10 @@
       (make-line Ref))
     
     (upd-tree)
-
     (mov-*1 *line)
     
     # Same ref, relayout
     (mov-cur-abv Ref)
-    
     (lay-part-start *0 *line 'skip-cdr)
     
     Part))
@@ -97,18 +95,18 @@
   #{
     Replace beginning of list when ptr on car
     
-    [ ]  [ ]
+    [ ]  
     a    
     
-         [ ]  [ ]
+    [ ]  [ ]  [ ]
          b    c
          *
 
          
-    [ ]  [ ]
+    [ ]
     a    
     
-         [ ]  [ ]
+    [ ]  [ ]  [ ]
          x    c
          *
          
@@ -168,6 +166,12 @@
     [ ]  [ ]  [ ]  NIL
     a    x    c
               *0
+              
+    Refactor
+    * Set data for Cc
+    * Gen part for sym/str
+    * Combine with above fn
+      * Connect Cdr if exists
   }#
 
   (let (Ref (get *0 'b)
@@ -212,6 +216,9 @@
     NIL    
     
     Effectively, replace entire list
+    
+    Refactor:
+    * Reuse Cc
   }#
 
   (let (Ref (get *0 'b)
