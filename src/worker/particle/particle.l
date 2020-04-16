@@ -78,7 +78,7 @@
   # To get its val, is to get it's 'b
   (when (pair (: data))
     (con (car (:: data)) (get Cdr 'data))))
-    
+
 
 (dm del> (Car Cdr)
 
@@ -280,64 +280,24 @@
 
 
 ######################
+      
+(de con-all (Parts)
 
-# UNUSED
-(de ins-bef (Ref Part Line-Skip)
+  (let Prv (car Parts)
+  
+    (for Part (cdr Parts)     
+        
+      # Prv -> Part
+      (con> Prv Part)
+      
+      # Do this in con
+      (put Part 'c Prv)
+      
+      (setq Prv Part))))
 
-  #{
-
-    Insert x before a, taking its pos:
-
-    *0
-    [ ]  [ ]  NIL
-    a    b
-
-           *0
-    [ ]  [ ]  [ ]  NIL
-    a    x    b
-
-    Ref=a
-    Prv=NIL
-    Cdr=b
-    Part=x
-
-    Newline case:
-
-    [ ]
-    a
-
-    *0
-    [ ] - NIL
-    b
-
-
-    [ ]
-    a
-
-          *0
-    [ ] - [ ] - NIL
-    x     b
-
-  }#
-
-  (let (Prv (get Ref 'c))
-
-    # Prv -> Part
-    (con> Prv Part)
-
-    #        Part -> Cdr
-    # Prv <- Part
-    (con> Part Ref Prv)
-
-    # Part <- Cdr
-    (put Ref 'c Part)
-
-    # If Ref is a new line, xfer it to new Part
-    (when (and (get Cdr 'line)
-               (not Line-Skip))
-      (xchg-nl Ref Part))))
-
-
+      
+# con-cdr
+# move to con-cdr?
 (de con-aft (Ref Part Line-Skip)
 
   #{
@@ -352,11 +312,6 @@
     [ ]  [ ]  [ ]  NIL
     a    x    b
 
-    Ref=a
-    Prv=NIL
-    Cdr=b
-    Part=x
-
     Newline case:
 
     *0
@@ -374,19 +329,13 @@
     [ ] - [ ] - NIL
     x     b
 
+    Possible to not make newline so x is on same line as a
+    
   }#
 
-  (let (Cdr (get Ref 'b))
+  (let Cdr (get Ref 'b)
 
-    # Ref -> Part
-    (con> Ref Part)
-
-    #        Part -> Cdr
-    # Ref <- Part
-    (con> Part Cdr Ref)
-
-    # Part <- Cdr
-    (put Cdr 'c Part)
+    (con-all (list Ref Part Cdr))
 
     # If Cdr is a new line, xfer it to new Part
     (when (and (get Cdr 'line)
@@ -397,6 +346,7 @@
 (de repl-pair (Ref Part Del-Skip)
 
   #{
+
     Replace b with x
 
           *0
@@ -407,24 +357,12 @@
     [ ]   [ ]  [ ]
     a     x    c
 
-    Ref=b
-    Cdr=c
-    Prv=a
-    Part=x
   }#
 
   (let (Cdr (get Ref 'b)
         Prv (get Ref 'c))
 
-    # Ref -> Part
-    (con> Prv Part)
-
-    #        Part -> Cdr
-    # Prv <- Part
-    (con> Part Cdr Prv)
-
-    # Part <- Cdr
-    (put Cdr 'c Part)
+    (con-all (list Prv Part Cdr))
 
     # If Ref is a new line, xfer it to new Part
     (when (get Ref 'line)

@@ -179,7 +179,7 @@
     Part))
 
         
-(de make-line (Ref)
+(de make-line (Part)
 
   #{
 
@@ -197,20 +197,20 @@
 
   }#
 
-  (put Ref 'line (new '(+Line)
+  (put Part 'line (new '(+Line)
                       *line
                       (get *line 'line 'n)
                       (if (get *line 'line 'l) @ *line)))
-  (put (get *line 'line) 'n Ref)
-  (put (get *line 'line 'n 'line) 'p Ref)
+  (put (get *line 'line) 'n Part)
+  (put (get *line 'line 'n 'line) 'p Part)
   
   (upd-tree)
-  (mov-*1 Ref)
+  (mov-*1 Part)
   
-  (mov-cur-abv Ref)
+  (mov-cur-abv Part)
   (lay-part-start *0 *line 'skip-cdr)
   
-  (setq *line Ref))
+  (setq *line Part))
 
   
 ###################

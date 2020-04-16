@@ -43,13 +43,17 @@
   
     Insert item before pair ptr
     
-    Two special cases:
     
     [Y]  [X]  NIL
          a
     *
     NIL
     
+    - Prv needed to make a line for NIL...
+    - NIL is X layout now
+          
+    
+    Special case:
     
     [X]  [X]
     a    b
@@ -60,25 +64,25 @@
          
     NIL
     
+    - Normally Part would be right of B which is awkward,
+    so ins Part as newline before Y
+    
   }#
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    (println 'ins-cdr "con-aft (bef Ptr): " Prv (get Prv 'data))
-    
-    (when (and (= (get Prv 'lay) 'y)
-               (isa '(+Nil) Ref))
-      # Copy layout
-      (put Ref 'lay 'x))
-  
-    # This will set *line to newline
-    (con-aft Prv Part)
+    (println 'ins-cdr "con-aft: " Prv (get Prv 'data))
 
-    (when (and (= (get Ref 'lay) 'y)
-               (isa '(+Pair) Ref))
-      (make-line Ref))
+    (con-aft Prv Part)
+  
+    # Make line as necessary
+    (if (and (= (get Ref 'lay) 'y)
+                (isa '(+Pair) Ref))
+        (make-line Part)
+        (when (get Ref 'line)
+          (xchg-nl Cdr Part)))
     
     (upd-tree)
     (mov-*1 *line)
@@ -118,8 +122,6 @@
 
   (let (Ref (get *0 'b)
         Cc (get Ref 'c 'c)
-        Cc-Lay (get Cc 'lay)
-        Cc-B-Lay (get Cc 'b 'lay)
         Cdr (get Ref 'c 'b)
         Part (gen-part (list (list Data)) Lay NIL T)
         Car (get Part 'a))
@@ -129,8 +131,8 @@
       (xchg-nl (get Ref 'c) Car))
 
     (with Part
-      (=: lay Cc-Lay)
-      (put (: b) 'lay Cc-B-Lay))
+      (=: lay (get Cc 'lay))
+      (put (: b) 'lay (get Cc 'b 'lay)))
 
     (repl-pair Cc Part)
 
@@ -143,7 +145,6 @@
 
     (put *0 'b Car)
     (point-nxt)
-    #(test T (= (get *0 'b) (get Car 'b)))
 
     (setq *line Car)
     
