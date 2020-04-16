@@ -94,15 +94,14 @@
     Part))
 
 
-
 (de repl-list-car (Data Lay)
   #{
     Replace beginning of list when ptr on car
     
-    [ ]  
+    [Cc]  
     a    
     
-    [ ]  [ ]  [ ]
+    [C]  [P]  [B]
          b    c
          *
 
@@ -118,37 +117,68 @@
     
     Refactor:
     * Use original Pair
+    
+    CREATE METHOD FOR CAR/CDR
   }#
 
   (let (Ref (get *0 'b)
-        Cc (get Ref 'c 'c)
-        Cdr (get Ref 'c 'b)
-        Part (gen-part (list (list Data)) Lay NIL T)
-        Car (get Part 'a))
-        
-    # Txfer line before Ref gets deleted
-    (when (get Ref 'c)
-      (xchg-nl (get Ref 'c) Car))
+        Pair (get Ref 'c)
+        C (get Pair 'c)
+        Cc (get C 'c)
+        B (get Ref 'b)
+        Part (gen-part Data Lay))
 
-    (with Part
-      (=: lay (get Cc 'lay))
-      (put (: b) 'lay (get Cc 'b 'lay)))
+    # Pair <-> Part (CAR)
 
-    (repl-pair Cc Part)
-
-    # Relink Car to Cdr
-    (con> Car Cdr)
-    (put Cdr 'c Car)
-
+    (put Pair 'a Part)
+    (put Part 'c Pair)
+    
+    # Con data
+    (put Pair 'data (cons (get Part 'data) (get B 'data)))
+    
+    (let Data-Bc (get C 'b 'data)
+      (put C 'data (cons (get Pair 'data) Data-Bc)))
+      
+    (con> Cc C)
+    
+    # Delete Ref
+    (del> Ref T T)
+    
     (upd-tree)
     (mov-*1 *line)    
 
-    (put *0 'b Car)
+    (put *0 'b Part)
     (point-nxt)
-
-    (setq *line Car)
-    
+        
     Part))
+  
+#{
+  ######################
+  # INS
+  
+  (let (Ref (get *0 'b))
+        Pair (get Ref 'c)
+        C (get Pair 'c)
+        B (get Ref 'b))
+    
+    # Part <-> B
+
+    (con> Part B)
+    (put B 'c Part)    
+    
+    # C <-> Part
+
+    (put C 'a Part)
+    (put Part 'c C)
+    
+    (put C 'data (cons (get Part 'data)))
+    
+    # Swap lines from Pair
+    (xchg-nl Pair Part)
+    
+    # Delete Ref
+    (del> Ref T T)
+}#
 
 
 (de repl-car (Data Lay)
