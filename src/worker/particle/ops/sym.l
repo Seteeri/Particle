@@ -53,7 +53,8 @@
     - NIL is X layout now
           
     
-    Special case:
+    Special cases:
+    
     
     [X]  [X]
     a    b
@@ -67,6 +68,17 @@
     - Normally Part would be right of B which is awkward,
     so ins Part as newline before Y
     
+    
+    [X]
+    b
+    
+         *
+    [Y]  [Y]  [X]  NIL
+              c
+         NIL
+    NIL
+    
+    
   }#
 
   (let (Ref (get *0 'b)
@@ -75,12 +87,15 @@
 
     (println 'ins-cdr "con-aft: " Prv (get Prv 'data))
 
+    # When Prv is Y/Pair and Ref is Y/Pair
+    
     (con-aft Prv Part)
   
     # Make line as necessary
     (if (and (= (get Ref 'lay) 'y)
                 (isa '(+Pair) Ref))
-        (make-line Part)
+        (prog
+          (make-line Ref))
         (when (get Ref 'line)
           (xchg-nl Cdr Part)))
     

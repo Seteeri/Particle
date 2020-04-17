@@ -41,6 +41,10 @@
           NIL
     NIL
     
+    
+    FIX:
+    * Must set cars until Car is not a Pair
+    
   }#
   
   (let (Part (gen-part (cons NIL NIL)
@@ -62,8 +66,9 @@
     # Con Cc -> P
     # Con data, Cc -> P    
     (put Cc 'a Part)
-    (put Cc 'data (cons (get Part 'data)))    
-    
+    (put Cc 'data (cons (get Part 'data)
+                        (cdr (get Cc 'data))))
+        
     # Line
     (with Part
       
@@ -79,7 +84,20 @@
       # Create Line for NIL/Cdr
       (put (: b) 'line (new '(+Line)
                             Part NIL Part)))
-                            
+    
+    # Con cars backwards
+    (let (Pa C
+          Prv (get C 'a))
+      (while (= (get Pa 'a) Prv)
+        (println Pa (get Pa 'data))
+        (put Pa 'a Prv)
+        (put Pa 'data (cons (get Prv 'data)
+                            (cdr (get Pa 'data))))
+        (setq Prv Pa
+              Pa (get Pa 'c)))
+      (when (= (get Pa 'b) Prv)
+        (con> Pa Prv)))
+    
     (upd-tree)
     (mov-*1 *line)
     
@@ -215,7 +233,15 @@
   
 ###################
 
-  
+
+(de ins-line-pre (Part)
+
+  (let? Prv (get *line 'p)
+    (put (get Prv 'line) 'n Part))
+
+  (put (get *line 'line) 'p Part))
+
+
 (de del-line (Part)
   # Assumes sublines will be deleted or no longer ref'd
   # or handled by caller
