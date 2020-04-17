@@ -254,10 +254,11 @@ or very few expections like with pointers
   * Refactor
     * Refactor ops [Thr]
       * Support sublist [Done]
-      * Refactor repl-list-car: reuse pair
-      * Refactor repl-car: reuse pair, merge with above fn
-      * Refactor ins-list-car: reuse pair
-    * Refactor ops into methods [Fri]
+      * Refactor repl-list-car: reuse pair [Done]
+      * Refactor repl-car: reuse pair, merge with above fn [Done]
+      * Refactor ins-list-car: reuse pair [Done]
+      * Rewrite ins-cdr
+    * Refactor ops into methods [Sat]
     * Fix space glyph [Sat]
     * Handle multi-line strings  [Sat]
     

@@ -80,6 +80,19 @@
     (con (car (:: data)) (get Cdr 'data))))
 
 
+(dm con-cars-c> ()
+  (let (Pa This
+        Prv (: a))
+    (while (= (get Pa 'a) Prv)
+      (put Pa 'a Prv)
+      (put Pa 'data (cons (get Prv 'data)
+                          (cdr (get Pa 'data))))
+      (setq Prv Pa
+            Pa (get Pa 'c)))
+    (when (= (get Pa 'b) Prv)
+      (con> Pa Prv))))
+    
+
 (dm del> (Car Cdr)
 
   #{

@@ -86,17 +86,7 @@
                             Part NIL Part)))
     
     # Con cars backwards
-    (let (Pa C
-          Prv (get C 'a))
-      (while (= (get Pa 'a) Prv)
-        (println Pa (get Pa 'data))
-        (put Pa 'a Prv)
-        (put Pa 'data (cons (get Prv 'data)
-                            (cdr (get Pa 'data))))
-        (setq Prv Pa
-              Pa (get Pa 'c)))
-      (when (= (get Pa 'b) Prv)
-        (con> Pa Prv)))
+    (con-cars-c> C)
     
     (upd-tree)
     (mov-*1 *line)

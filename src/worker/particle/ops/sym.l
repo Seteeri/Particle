@@ -56,11 +56,11 @@
     Special cases:
     
     
-    [X]  [X]
+    [ ]  [ ]
     a    b
     
     *
-    [Y]  [X]  NIL
+    [Y]  [ ]  NIL
          c
          
     NIL
@@ -68,27 +68,14 @@
     - Normally Part would be right of B which is awkward,
     so ins Part as newline before Y
     
-    
-    [X]
-    b
-    
-         *
-    [Y]  [Y]  [X]  NIL
-              c
-         NIL
-    NIL
-    
-    
   }#
-
+         
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
     (println 'ins-cdr "con-aft: " Prv (get Prv 'data))
 
-    # When Prv is Y/Pair and Ref is Y/Pair
-    
     (con-aft Prv Part)
   
     # Make line as necessary
@@ -234,32 +221,79 @@
          Z    X
     NIL    
     
+    -------------------
+    
+    ((c))
+    
+         *
+    [Y]  [Y]  [ ]  NIL
+              c
+         NIL
+    NIL
+    
+    Y/Pair can only be on newline or after Y/Pair
+
+    
+    (x (c))
+         
+    [Y]  [ ]
+         x
+         
+         *
+         [Y]  [ ]  NIL
+              c
+         NIL
+         
+    NIL    
+    
+    - Diff is no exchange newline
+    - Create line for x
   }#
     
   (let (Ref (get *0 'b)
         Pair (get Ref 'c)
         Cc (get Pair 'c)
         Part (gen-part (list Data) Lay NIL T))
-    
+
     # Part <-> Ref
     (con> Part Ref)
     (put Ref 'c Part)
-           
+          
     # Pair <-> Part
     (put Pair 'a Part)
-    (put Part 'c Pair)
-    
+    (put Part 'c Pair)        
+        
+    # Mov nl from Ref to Part
+    (xchg-nl Ref Part)        
+        
     # Con data
     (put Pair 'data (cons (get Part 'data)
-                          (get Pair 'b 'data)))
-    (con> Cc Pair)
-    
-    # Swap lines
-    (xchg-nl Ref Part)
-    
-    # Prv (get Pair 'lay)
-    #(put Part 'lay (get Prv 'lay))
-    
+                          (get Pair 'b 'data)))  
+                
+    (if (and (isa '(+Pair) (get Ref 'a))
+             (isa '(+Pair) Pair))
+        
+        (prog          
+                  
+          # Con cars backwards
+          (con-cars-c> Cc)
+                  
+          # Create additional line for Ref
+          # Ins after current line (Part)
+          (put Ref 'line (new '(+Line)
+                              Part
+                              (get Ref 'b)
+                              (if (get *line 'line 'l) @ *line)))
+          (put (get *line 'line) 'n Ref))
+        
+        (prog
+                                
+          (con> Cc Pair)
+                                
+          # Prv (get Pair 'lay)
+          #(put Part 'lay (get Prv 'lay))
+          ))
+        
     (upd-tree)
     (mov-*1 *line)
 
@@ -267,54 +301,4 @@
     (mov-cur-abv Ref)
     (lay-part-start *0 *line 'skip-cdr)    
     
-    Part))
-    
-
-(de ins-list-car-2 (Data Lay)
-
-  #{
-  
-    Replace beginning of list when ptr over
-    
-         *
-    [ ]  [ ] NIL
-         X
-    NIL
-    
-              *
-    [ ]  [ ]  [ ] NIL
-         Z    X
-    NIL    
-    
-    Effectively, replace entire list
-    
-    Refactor:
-    * Reuse Cc
-  }#
-
-  (let (Ref (get *0 'b)
-        Prv (get Ref 'c)
-        Cdr (get Ref 'b)
-        Part (gen-part (list (list Data)) Lay NIL T)
-        Car (get Part 'a))
-
-    # Txfer line before Ref gets deleted
-    (when (get Ref 'line)
-      (xchg-nl Ref Car))
-    
-    (put Part 'lay (get Prv 'lay))
-
-    (repl-pair Prv Part 'skip-del)
-
-    # Relink to Ref
-    (con> Car Ref)
-    (put Ref 'c Car)
-
-    (upd-tree)
-    (mov-*1 *line)
-
-    # Same ref, relayout
-    (mov-cur-abv Ref)
-    (lay-part-start *0 *line 'skip-cdr)
-
     Part))
