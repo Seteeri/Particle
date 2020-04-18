@@ -315,10 +315,8 @@
       
       (setq Prv Part))))
 
-      
-# con-cdr
-# move to con-cdr?
-(de con-aft (Ref Part Line-Skip)
+
+(de con-sym (Ref Part Line-Skip)
 
   #{
 
