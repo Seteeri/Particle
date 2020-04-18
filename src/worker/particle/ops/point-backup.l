@@ -42,7 +42,7 @@
       (put *0 'b Cdr)
 
       (if *on-car
-          (let Dims (bounds> Cdr NIL T)
+          (let Dims (bnds> Cdr NIL T)
             # Move to lower bnd of Car
             (set-cur-x (get Cdr 'ori 1))
             (set-cur-y (get Dims 2)) (nl-cur)
@@ -115,7 +115,7 @@
            (setq *on-car T)
            # Move to lower bnd of Car
            (set-cur-x (get Ref 'ori 1))
-           (set-cur-y (get (bounds> Ref) 2)) (nl-cur)
+           (set-cur-y (get (bnds> Ref) 2)) (nl-cur)
            (lay-part-start *0 *cur 'skip-cdr))
 
           ((isa '(+Pair) Car)
@@ -132,7 +132,7 @@
             (put *0 'b Car)
             # Move to lower bnd of Car
             (set-cur-x (get Car 'ori 1))
-            (set-cur-y (get (bounds> Car) 2)) (nl-cur)
+            (set-cur-y (get (bnds> Car) 2)) (nl-cur)
             (lay-part-start *0 *cur 'skip-cdr)))))
 
 

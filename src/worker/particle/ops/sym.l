@@ -75,7 +75,7 @@
 
     (println 'ins-sym C (get C 'data))
 
-    (con-aft C Part)
+    (con-sym C Part)
   
     # Make line as necessary
     (if (and (isa '(+Pair) (get Ref 'a))

@@ -265,16 +265,16 @@
       (cmd-upd-vert *ipc Vert))))
 
 
-(dm bounds> (Car-Skip Cdr-Skip)
+(dm bnds> (Car-Skip Cdr-Skip)
 
   (let ((Xa Ya) (when (and (: a) 
                            (not (= (: a) This))
                            (not Car-Skip))
-                  (bounds> (: a)))
+                  (bnds> (: a)))
         (Xb Yb) (when (and (: b)
                            (not (= (: b) This))
                            (not Cdr-Skip))
-                  (bounds> (: b)))
+                  (bnds> (: b)))
         (X Y) (with (last-vert> This)
                   (origin-from-bearing> (get *metrics (: chr))
                            (: pos)
@@ -419,7 +419,7 @@
 # Used only by delete
 (dm adj-line-to-part> (Ref)
   (let (Ori (: ori)
-        Bnds (bounds> Ref NIL T)
+        Bnds (bnds> Ref NIL T)
         Dims (list (abs (- (get Bnds 1) (get Ori 1)))
                    (abs (- (get Bnds 2) (get Ori 2)))))
     (with (: line)
@@ -433,7 +433,7 @@
   # Calculate width of new Part plus adv
   # Bnds - Origin
   (let (Ori (get Part 'ori)
-        Bnds (bounds> Part NIL T)
+        Bnds (bnds> Part NIL T)
         Dx (abs (+ (- (get Bnds 1) (get Ori 1))
               *adv-vert-2)))
             
@@ -446,7 +446,7 @@
 
 (dm dec-line-by-part-x> (End)
   # Add op to add/sub
-  (let (Bnds-B (bounds> End NIL T)
+  (let (Bnds-B (bnds> End NIL T)
         Ori (: ori)
         Dims (get (: line) 'dims)
         Bnds-Ln (list (+ (get Ori 1) (get Dims 1))
@@ -465,7 +465,7 @@
   (let (Ori (cadr (: ori))
         Dims (get (: line) 'dims)
         Bnds-Ln (- Ori (get Dims 2))
-        Bnds-B (cadr (bounds> Part NIL T))
+        Bnds-B (cadr (bnds> Part NIL T))
         Dy (abs (if (< Bnds-B Bnds-Ln)
                     (- Bnds-B Ori)
                     (cadr Dims))))
@@ -484,13 +484,13 @@
         Ori (: ori)
         (X Y) (if (has-car-pair> This)
                   Ori
-                  (bounds> This NIL T)))
+                  (bnds> This NIL T)))
         
     (loop
         
       (let ((Xb Yb) (if (has-car-pair> Part) 
                         Ori
-                        (bounds> Part NIL T)))
+                        (bnds> Part NIL T)))
         (setq X (max X Xb)
               Y (min Y Yb)))
 

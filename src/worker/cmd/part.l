@@ -286,7 +286,7 @@
       (let Part (gen-part (list Data) 'x NIL T)
         
         # T must be NIL to skip
-        (con-aft Prv Part T)
+        (con-sym Prv Part T)
         
         (setq Prv Part)))
 
