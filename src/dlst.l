@@ -34,7 +34,7 @@
   (if (get Node 'nxt)
     (prog
       (put New 'nxt (get Node 'nxt))
-      (put (get Node 'nxt) 'prv New))
+      (put Node 'nxt 'prv New))
     (prog
       (put New 'nxt NIL)
       (put List 'las New)))
@@ -48,7 +48,7 @@
   (if (get Node 'prv)
     (prog
       (put New 'prv (get Node 'prv))
-      (put (get Node 'prv) 'nxt New))
+      (put Node 'prv 'nxt New))
     (prog
       (put New 'prv NIL)
       (put List 'frs New)))
@@ -75,10 +75,10 @@
 
 (de rem-dno (List Node)
   (if (get Node 'prv)
-    (put (get Node 'prv) 'nxt (get Node 'nxt))
+    (put Node 'prv 'nxt (get Node 'nxt))
     (put List 'frs (get Node 'nxt)))
   (if (get Node 'nxt)
-    (put (get Node 'nxt) 'prv (get Node 'prv))
+    (put Node 'nxt 'prv (get Node 'prv))
     (put List 'las (get Node 'prv)))
   (dec (prop List 'len)))
 
