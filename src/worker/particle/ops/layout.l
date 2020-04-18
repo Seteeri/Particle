@@ -131,9 +131,9 @@
   (when (isa '(+Nil) Part)
     (upd-dims *line-lay)
     (when (get *line-lay 'line 'l)
-      (println 'lay-pair-x "Update line: "
-              (get *line-lay 'line 'l)
-              (get *line-lay 'line 'l 'data))    
+      #(println 'lay-pair-x "Update line: "
+      #        (get *line-lay 'line 'l)
+      #        (get *line-lay 'line 'l 'data))    
       (upd-dims (get *line-lay 'line 'l)))))
 
 
@@ -167,9 +167,9 @@
   (when (isa '(+Nil) Part)
     (upd-dims *line-lay)
     (when (get *line-lay 'line 'l)
-      (println 'lay-pair-y "Update line: "
-              (get *line-lay 'line 'l)
-              (get *line-lay 'line 'l 'data))    
+      #(println 'lay-pair-y "Update line: "
+      #        (get *line-lay 'line 'l)
+      #        (get *line-lay 'line 'l 'data))    
       (upd-dims (get *line-lay 'line 'l)))))
 
   
