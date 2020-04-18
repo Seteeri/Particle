@@ -19,7 +19,7 @@
 
 (de mov-cur-vert (Vert)
   (with Vert
-    (setq *cur (origin-from-bearing> (get *metrics (: chr))
+    (setq *cur (ori-frm-bear> (get *metrics (: chr))
                             (: pos)
                             *sca-vert))))
 

@@ -249,7 +249,7 @@
 (dm ori> ()
   (let? Vert (car (: verts))
     (with Vert
-      (origin-from-bearing> (get *metrics (: chr))
+      (ori-frm-bear> (get *metrics (: chr))
                (: pos)
                *sca-vert))))
 
@@ -276,7 +276,7 @@
                            (not Cdr-Skip))
                   (bnds> (: b)))
         (X Y) (with (last-vert> This)
-                  (origin-from-bearing> (get *metrics (: chr))
+                  (ori-frm-bear> (get *metrics (: chr))
                            (: pos)
                            *sca-vert)))
 

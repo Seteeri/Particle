@@ -144,7 +144,7 @@ Quotient of N and D = (*/ 1.0 N D)
         0.0))
 
 
-(dm origin-from-bearing> (Pos Sca)
+(dm ori-frm-bear> (Pos Sca)
   #{
     Derive origin from Vertex position
     
