@@ -131,16 +131,10 @@
         Cc (get C 'c)
         Part (gen-part Data Lay))
 
-    # Pair <-> Part (CAR)
-
-    (put Pair 'a Part)
-    (put Part 'c Pair)
+    (a> Pair Part)
     
-    # Con data
-    (put Pair 'data (cons Data
-                          (get Ref 'b 'data)))
-    (put C 'data (cons (get Pair 'data)
-                       (get C 'b 'data)))
+    (a> C Pair)
+
     (b> Cc C)
     
     # Delete Ref
@@ -175,14 +169,8 @@
         C (get Pair 'c)
         Part (gen-part Data Lay))
 
-    # Pair <-> Part (CAR)
+    (a> Pair Part)
 
-    (put Pair 'a Part)
-    (put Part 'c Pair)
-    
-    # Con data
-    (put Pair 'data (cons Data
-                          (get Ref 'b 'data)))
     (b> C Pair)
 
     # Main diff here from repl-list-car
@@ -257,18 +245,12 @@
 
     # Part <-> Ref
     (b> Part Ref)
-    (put Ref 'c Part)
           
     # Pair <-> Part
-    (put Pair 'a Part)
-    (put Part 'c Pair)        
+    (a> Pair Part)
         
     # Mov nl from Ref to Part
     (xchg-nl Ref Part)        
-        
-    # Con data
-    (put Pair 'data (cons (get Part 'data)
-                          (get Pair 'b 'data)))  
                 
     (if (and (isa '(+Pair) (get Ref 'a))
              (isa '(+Pair) Pair))

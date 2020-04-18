@@ -129,15 +129,8 @@
                        'skip-car)
         C (get Ref 'c)
         Cc (get C 'c))
-         
-    # Con Part/Car -> C
-    (put Part 'a C)
     
-    # Con data, P -> C
-    (put Part 'data (cons (get C 'data)))    
-    
-    # Con Part <- C
-    (put C 'c Part)
+    (a> Part C)
 
     # Con CDR - Diff from Y layout
     # Con Cc -> P
@@ -226,11 +219,9 @@
          
     # Con C <-> Part
     (b> C Part)
-    (put Part 'c C)
 
     # Con Part <-> Ref
     (b> Part Ref)
-    (put Ref 'c Part)
     
     # Create lines for Part
     (with Part
