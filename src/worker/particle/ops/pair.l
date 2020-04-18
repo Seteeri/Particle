@@ -144,10 +144,10 @@
       # Connect lines
           
       # Con nxt line
-      (put (get *line 'line 'n 'line) 'p (: b))
+      (put *line 'line 'n 'line 'p (: b))
           
       # Con prv line
-      (put (get *line 'line) 'n Part))
+      (put *line 'line 'n Part))
                
         
     # Create line for C
@@ -262,7 +262,7 @@
                       *line
                       (get *line 'line 'n)
                       (if (get *line 'line 'l) @ *line)))
-  (put (get *line 'line) 'n Part)
+  (put *line 'line 'n Part)
   (let? Nxt (get *line 'line 'n)
     (put Nxt 'line 'p Part))
   
@@ -284,9 +284,9 @@
 (de ins-line-pre (Part)
 
   (let? Prv (get *line 'p)
-    (put (get Prv 'line) 'n Part))
+    (put Prv 'line 'n Part))
 
-  (put (get *line 'line) 'p Part))
+  (put *line 'line 'p Part))
 
 
 (de del-line (Part)
@@ -298,10 +298,10 @@
         Nxt (get Nl 'n))
 
     (when Prv
-      (put (get Prv 'line) 'n Nxt))
+      (put Prv 'line 'n Nxt))
 
     (when Nxt
-      (put (get Nxt 'line) 'p Prv))))
+      (put Nxt 'line 'p Prv))))
   
         
 (de upd-tree (List)
