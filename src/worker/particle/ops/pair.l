@@ -286,17 +286,15 @@
 
 (de ins-line-pre (Part)
 
-  (let? Prv (get *line 'p)
-    (put Prv 'line 'n Part))
+  (when (get *line 'p)
+    (put @ 'line 'n Part))
 
   (put *line 'line 'p Part))
 
 
 (de del-line (Part)
-  # Assumes sublines will be deleted or no longer ref'd
-  # or handled by caller
 
-  (let Nl (get Part 'line)
+  (let? Nl (get Part 'line)
 
     (when (get Nl 'p)
       (put @ 'line 'n Nxt))
