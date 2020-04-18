@@ -15,7 +15,11 @@
       
       (make-cons-car-y Ref)
         
-      (make-cons-car-x Ref)))
+      (if (isa '(+Nil) Ref)
+      
+          (make-cons-car-x-nil Ref)
+      
+          (make-cons-car-x-sym Ref))))
 
       
 (de make-cons-car-y (Ref)
@@ -96,12 +100,13 @@
     (put *0 'b Cc)
     (point-sub)
         
-    (println 'make-list-car "Made nested list")
+    (println 'make-cons-car-y "Made nested list")
 
     Part))
       
       
-(de make-cons-car-x (Ref)
+(de make-cons-car-x-sym (Ref)
+  #..-sym
   
   #{
       
@@ -182,10 +187,87 @@
     (put *0 'b Part)
     (point-sub)
         
-    (println 'make-list-car "Made nested list x")
+    (println 'make-cons-car-x-sym "Made nested list")
 
     Part))
 
+    
+(de make-cons-car-x-nil (Ref)
+  
+  #{ 
+    
+    For NIL
+    
+    [ ]
+    a
+      
+    [C]  [ ]  NIL
+         b
+         
+    NIL
+    *
+    
+    ->
+    
+    ...
+
+    [ ]  [ ]  NIL
+         NIL
+    
+    NIL
+    
+  }#
+  
+  (let (Part (gen-part '((NIL))
+                       'x
+                       NIL
+                       'skip-cdr)
+        C (get Ref 'c))
+         
+    # Con C <-> Part
+    (con> C Part)
+    (put Part 'c C)
+
+    # Con Part <-> Ref
+    (con> Part Ref)
+    (put Ref 'c Part)
+    
+    # Create lines for Part
+    (with Part
+     
+      (=: lay 'y)
+           
+      # Use ins-line?        
+      
+      # Create Line
+      (=: line (new '(+Line)
+                    C
+                    (: b)
+                    (if (get *line 'line 'l) @ *line)))
+                  
+      # Create Line for Car
+      (put (: a) 'line (new '(+Line))))
+      
+    # Connect lines
+    # C -> Part -> Ref
+    (put C 'line 'n Part)
+    (put Ref 'line 'p Part)
+        
+    (upd-tree)
+    (mov-*1 *line)
+    
+    # Maintain on inner tree or outer?
+    (setq *line Part)
+    (put *0 'b Part)
+    (point-sub)
+        
+    (println 'make-cons-car-x-nil "Made nested list")
+
+    Part))
+    
+    
+####################
+        
         
 (de make-line (Part)
 

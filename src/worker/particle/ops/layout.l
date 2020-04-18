@@ -36,24 +36,6 @@
         (put (: line) 'dims Dims)))))
 
 
-(de upd-dims-2 (Part)
-  (with Part
-    (let Dims (list (abs (- *cur-x (get (: ori) 1)))
-                    (abs (- *cur-y (get (: ori) 2))))
-      (=: dims Dims))))
-
-
-(de upd-line-m (Part)
-  # Only set on min/max
-  (with Part
-    (when (: line)
-      (let (X (abs (- *cur-x (get (: ori) 1)))
-            Y (abs (- *cur-y (get (: ori) 2)))
-            D (list (max (car (get (: line) 'dims)) X)
-                    (max (cadr (get (: line) 'dims)) Y)))
-          (put (: line) 'dims D)))))
-
-
 (de lay-part-start (Part Line Skip)
   (setq *cur-x NIL
         *cur-y NIL
@@ -106,8 +88,7 @@
                  
         (if (= (get Part 'lay) 'x)
             (lay-pair-x Part Type (caar L))
-            (prog
-              (lay-pair-y Part Type (caar L))))
+            (lay-pair-y Part Type (caar L)))
     
         (unless (= Skip 'skip-car-cdr)
             
@@ -148,12 +129,12 @@
   
   # Update on NIL or line
   (when (isa '(+Nil) Part)
+    (upd-dims *line-lay)
     (when (get *line-lay 'line 'l)
       (println 'lay-pair-x "Update line: "
               (get *line-lay 'line 'l)
               (get *line-lay 'line 'l 'data))    
-      (upd-dims (get *line-lay 'line 'l)))
-    (upd-dims *line-lay)))
+      (upd-dims (get *line-lay 'line 'l)))))
 
 
 (de lay-pair-y (Part Type Nxt)
@@ -167,6 +148,7 @@
     
     # Newline will override...
 
+    # or check for pair
     (if (= (get Part 'c 'lay) 'x)
         (prog
           # X should be in place, else get from cur bnds
@@ -183,12 +165,12 @@
   (upd-cur)
   
   (when (isa '(+Nil) Part)
+    (upd-dims *line-lay)
     (when (get *line-lay 'line 'l)
       (println 'lay-pair-y "Update line: "
               (get *line-lay 'line 'l)
               (get *line-lay 'line 'l 'data))    
-      (upd-dims (get *line-lay 'line 'l)))
-    (upd-dims *line-lay)))
+      (upd-dims (get *line-lay 'line 'l)))))
 
   
 (de lay-atom (Part Line Skip)

@@ -5155,10 +5155,30 @@ Card metaphor
 
 ==============================================
 
-(a b c ((d)))
+DSL to relayout atoms like destructuring bind
 
-(a b c (e f(d)))
+[]
+    *
+[]  []  NIL
+    x
+NIL
 
+(Ref)
+
+->
+
+(z Ref)
+
+Prev: (setq z (gen-particle))
+
+
+EXAMPLE:
+
+(let (Ref (get *0 'b)
+      P (gen-particle)
+      I '(Ref)
+      O '(P Ref))
+  (restruct I O))
 
 ============================================
 

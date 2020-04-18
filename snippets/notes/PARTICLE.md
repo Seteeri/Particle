@@ -257,7 +257,10 @@ or very few expections like with pointers
       * Refactor repl-list-car: reuse pair [Done]
       * Refactor repl-car: reuse pair, merge with above fn [Done]
       * Refactor ins-list-car: reuse pair [Done]
-      * Rewrite ins-cdr
+      * Rewrite ins-cdr [Done]
+      * Support list on same line...
+        * Works partly but line bounds calc will be wrong
+      * Fix NIL
     * Refactor ops into methods [Sat]
     * Fix space glyph [Sat]
     * Handle multi-line strings  [Sat]
@@ -339,6 +342,8 @@ or very few expections like with pointers
       * Shortcut with Ctrl, Alt, Shift Tab
       * Really only useful when setting up sublists  
     * Opt: buffer is a circular list
+      * Use dot by itself to indicate circular list
+      * Remember, two dots means it refers to itself
     * Draw num in car [?]
       * Handle decimals
     * Utilize double shift binds
