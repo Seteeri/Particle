@@ -306,13 +306,9 @@
   (let Prv (car Parts)
   
     (for Part (cdr Parts)     
-        
-      # Prv -> Part
+
       (b> Prv Part)
-      
-      # Do this in con
-      (put Part 'c Prv)
-      
+            
       (setq Prv Part))))
 
 
