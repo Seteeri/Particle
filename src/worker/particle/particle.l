@@ -89,7 +89,7 @@
                  (cdr (: data)))))  
     
     
-(dm con-cars-c> ()
+(dm c-a> ()
   (let (C This
         A (: a))
     (while (= (get C 'a) A)

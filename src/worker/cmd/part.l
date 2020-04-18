@@ -292,8 +292,7 @@
 
     (xchg-nl Ref (get Line 'b))
         
-    (b> Prv End)
-    (put End 'c Prv)    
+    (b> Prv End)    
     
     (upd-tree)
     (mov-*1 *line)        

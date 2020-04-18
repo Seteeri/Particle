@@ -256,7 +256,7 @@
              (isa '(+Pair) Pair))
         
         (prog        
-          (con-cars-c> Pair) # Cc
+          (c-a> Pair) # Cc
                   
           # Create additional line for Ref
           # Ins after current line (Part)
@@ -267,7 +267,7 @@
           (put (get *line 'line) 'n Ref))
         
         (prog        
-          (con-cars-c> Pair)
+          (c-a> Pair)
           
           (setq *line Part)))
         

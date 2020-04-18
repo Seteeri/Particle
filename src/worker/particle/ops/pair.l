@@ -75,7 +75,7 @@
                             Part NIL Part)))
     
     # Con cars backwards
-    (con-cars-c> C)
+    (c-a> C)
     
     (upd-tree)
     (mov-*1 *line)
