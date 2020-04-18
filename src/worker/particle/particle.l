@@ -83,7 +83,10 @@
 (dm a> (Car)
 
   (=: a Car)
-  (put Car 'c This))
+  (put Car 'c This)
+  
+  (=: data (cons (get Car 'data)
+                 (cdr (: data)))))  
     
     
 (dm con-cars-c> ()
