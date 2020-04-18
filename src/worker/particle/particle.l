@@ -380,7 +380,8 @@
     (put Dst 'line Nl))
 
   (put Src 'line NIL)
-  (println 'put-line "Exchange line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
+  
+  (println 'put-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
 
   (setq *line Dst))
 
