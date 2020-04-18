@@ -79,7 +79,7 @@
 # Eventually this will be moved to external symbols
 (def '*particles)
 (def '*lsts) # Traversal history list
-(def '*main) # Current list
+(def '*start) # Current list
 (def '*line) # Current line 
 (def '*cmds) # List of commands (undo/history/timeline)
 (def '*ptrs) # List of pointers
@@ -173,17 +173,17 @@
     (set-cur-y Y)
     (adv-cur 48.0)
 
-    (def '*main (gen-part '*main 'x))
+    (def '*start (gen-part '*start 'x))
 
     # DO this properly - in gen?
-    (with (get *main 'b)
-      (=: line (new '(+Line) NIL NIL NIL (get *main 'a 'dims))))
+    (with (get *start 'b)
+      (=: line (new '(+Line) NIL NIL NIL (get *start 'a 'dims))))
       
     (setq *pos-main (copy *cur))
-    (setq *line (get *main 'b))
-    (setq *master *main)
+    (setq *line (get *start 'b))
+    (setq *master *start)
       
-    (lay-part-start *main *line)
+    (lay-part-start *start *line)
         
     #######################
     # TODO: Draw *ptrs
@@ -195,16 +195,16 @@
     # Remove NIL
     (del> (get *0 'b) T T)
     # Replace with main 'b = NIL
-    (put *0 'b (get *main 'b))
+    (put *0 'b (get *start 'b))
     # Set layout
     (put *0 'lay 'y)
     
-    (mov-cur-abv (get *main 'b))
+    (mov-cur-abv (get *start 'b))
     (lay-part-start *0 *line 'skip-cdr)
         
     # Skip cdr since ptr should be rel to cdr
     #(lay-part-start *0 *cur 'skip-cdr)
-    #(mov-part-abv> *0 (get *main 'b) (cons T))
+    #(mov-part-abv> *0 (get *start 'b) (cons T))
     
     # TEMP
     (setq p1 *cmds)

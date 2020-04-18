@@ -215,4 +215,4 @@
         
   (mov-cur-part Tgt 'start)
   # Opt: force layout
-  (lay-part Tgt (get *main 'ori)))
+  (lay-part Tgt (get *start 'ori)))

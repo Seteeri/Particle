@@ -13,7 +13,7 @@
       # Set list and line
       (let? Ln (get Ref 'line 'p)
         (setq *line Ln
-              *main Ln)
+              *start Ln)
         (println 'point-b-prv "Mov to super-line/list" Ln (get Ln 'data)))
 
       (println 'point-b-prv Prv (get Prv 'data))
@@ -34,7 +34,7 @@
       # Set line
       (when (get Cdr 'line)
         (setq *line Cdr
-              *main Cdr)
+              *start Cdr)
         (println 'point-b-nxt "Mov to sub-line/list" *line (get *line 'data)))
 
       (println 'point-b-nxt Cdr (get Cdr 'data))
@@ -72,7 +72,7 @@
             
            (let? Ln (get Ref 'line 'p)
              (setq *line Ln
-                   *main Ln)
+                   *start Ln)
              (println 'point-a-out "Mov to super-line/list" Ln (get Ln 'data))))
            
           (T # Sym
@@ -123,7 +123,7 @@
            (put *0 'b Car)
            (println 'point-a-in "Mov to sub-line/list" Car (get Car 'data))
            (setq *line Car
-                 *main *line)
+                 *start *line)
            # Check layout
            (mov-part-abv> *0 Car (cons T)))
 
@@ -140,7 +140,7 @@
 # Mov prv line
         (let? Cb (get *line 'c 'b)
           (setq *line (get *line 'line 'p)
-                *main *line)
+                *start *line)
           (println 'point-b-nxt Cb (get Cb 'data))
           (put *0 'b Cb)
           (mov-part-abv> *0 Cb (cons T)))

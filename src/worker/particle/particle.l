@@ -70,7 +70,7 @@
   (=: b Cdr)
   (put Cdr 'c This)
   
-  # Remember, *main's 'data is always the symbol itself
+  # Remember, *start's 'data is always the symbol itself
   # To get its val, is to get it's 'b
   (when (pair (: data))
     (con (car (:: data)) (get Cdr 'data))))
@@ -295,6 +295,31 @@
     (setq *line-lay This)))
 
 
+# Debug
+
+
+(dm trace> (Cnt)
+  (let (D ()
+        X (: b))
+    (loop
+      (push 'D (get X 'data))
+      (println (car D) "->" (get X 'b))
+      (NIL (get X 'b))
+      (setq X (get X 'b)))
+    D))
+
+(dm trace-2> (Cnt)
+  (let (S ()
+        X (: b))
+    (loop
+      (push 'S X)
+      (println X "->" (get X 'b))
+      (NIL (get X 'b))
+      (setq X (get X 'b)))
+    S))
+
+    
+
 ######################
       
 (de con-all (Parts)
@@ -384,27 +409,23 @@
   (println 'put-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
 
   (setq *line Dst))
-
-
-# Debug
-
-
-(dm trace> (Cnt)
-  (let (D ()
-        X (: b))
-    (loop
-      (push 'D (get X 'data))
-      (println (car D) "->" (get X 'b))
-      (NIL (get X 'b))
-      (setq X (get X 'b)))
-    D))
-
-(dm trace-2> (Cnt)
-  (let (S ()
-        X (: b))
-    (loop
-      (push 'S X)
-      (println X "->" (get X 'b))
-      (NIL (get X 'b))
-      (setq X (get X 'b)))
-    S))
+  
+  
+(de build-str (Start)
+  # Go prv until Sym, non-Str or newline
+  (let (P Start
+        D NIL)
+    
+    (while (and (isa '(+Str) (get P 'a))
+                (not (isa '(+Sym) P))
+                (not (get P 'line 'p)))
+              
+      (push 'D (get P 'a 'data))
+      
+      (setq P (get P 'c)))
+    
+    (when (and (isa '(+Str) (get P 'a))
+                (not (isa '(+Sym) P)))
+      (push 'D (get P 'a 'data)))
+    
+    (list P D)))

@@ -36,6 +36,10 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
 
 ## TODO
 
+  The extensibility of Emacs
+  The polish of Apple
+  The power of open source
+
     +-------+--------------------------------------------------------+
     | CMD   |                       Pointer                          |
     +-------+-------------------+--------------------+---------------+
@@ -56,15 +60,22 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Refactor ops into methods
     * Fix space glyph
     * Handle multi-line strings
+    * Refactor line fns
     
   * Refactor bindings [Sat]
     * Improve discoverability - user sees it immediately
       * Once they are adv enough, they can remove it from default setup...
-    * Either show *bindinds-key or *binds directly
-    * Store key syms and fn syms
-      * Get val when called
-    * Mmm, might need to group commands
+    * Group commands into diff syms
       * Majority is ascii/str keys
+    * Either show *bindinds-key or *binds directly
+      * Show more aesthetic one and use fn to modify
+      * Store key syms and fn syms
+        * Get val when called
+    * SEARCH IS THE KEY TO DISCOVERABILITY
+      * Google's interface
+      * Make as easy and intuitive to access help
+        * Bind F1
+        * (eval "help") (eval 'help)
     
   * Replace font with terminus? [Sun]
       
@@ -74,9 +85,15 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     
   * Str Ops
     * Core
-    * Basic search/replace
-      * Search outputs list
-      * List can be searched again or replaced, results in output again
+    * Basic search/replace (strs)
+      * Essentially, searching symbol props
+      * Conventional users expect strings, aka prop data when str
+      * Also can search tg, dat, tim, ori (spatial)
+      * Output list of syms/particles + finds
+        * For str, context
+        * Other props, whatever it is
+      * Lists can be composed with search/repl fn
+      * Lists can be sorted
       * Output can then be merged
     * Pattern matching
   

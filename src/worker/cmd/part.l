@@ -94,7 +94,7 @@
         Tgt-Cdr (get Tgt 'b)
         New-Ref NIL)
 
-    (unless (= (get Tgt 'data) '*main)
+    (unless (= (get Tgt 'data) '*start)
     
       (cond ((or (isa '(+Pair) (get Tgt 'a))
                  (isa '(+Nil) (get Tgt 'a)))
@@ -165,14 +165,8 @@
 
   (prinl-info "cmd-pack")
 
-  # Default?
-  # 1. Pack *line to ref
-  # 2. Pack ref to prv
-  #
-  # Push subsequent strings to first one in list
-  # Replace entire list
-  
-  # Handle car
+  # Pack from Ptr until invalid
+  # Pack line then replace it
   
   # Reuse strs
   
@@ -180,27 +174,29 @@
   # 1. List is Cdr (pair/sym)
   # 2. List is Car (list)
   
-  (let (Ref (if (get *line 'l) @ *line)
-        Prv (get Ref 'c)
-        Data (get Ref 'data)
-        Part NIL)
+  (let (Ref (get *0 'b)
+        (Sta Lst) (build-str (get Ref 'c))
+        Prv (get Sta 'c)
+        Part (gen-part (list (pack Lst)) 'x))
+        
+    (println "Del" Sta (get Sta 'data) "TO" Ref (get Ref 'data))
+        
+    # Link new Part
+    (b> Prv Part)
+    (when (get Ref 'b)
+      (del> (get Part 'b) T T)
+      (b> Part (get Ref 'b)))
     
-    # Gen packed str
-    (put *0 'b Ref)
-    (setq Part (gen-part (list (pack Data)) 'x))
+    (when (get Sta 'line)
+      (put-line Sta Part))
     
-    (put-line Ref Part)
-    (setq *line Part)
+    # Delete Sta to Ref (inclusive)
+    (let P Sta
+      (until (= P Ref)
+        (del> P T NIL)
+        (setq P (get P 'b))
+      (del> P T NIL)))
     
-    # Unlink current items
-    (put Prv 'b Part)
-    (put Part 'c Prv)
-    
-    # Delete entire list
-    (del> Ref T T)
-    
-    # Hmm, what about sublists?
-
     (upd-tree)
     (mov-*1 *line)        
         
@@ -338,7 +334,7 @@
         Prv (get Ref 'c))
 
     (when (and (get Ref 'line 'p)
-               (not (= (get Ref 'data) '*main)))
+               (not (= (get Ref 'data) '*start)))
     
       (unless (or (isa '(+Pair) (get Ref 'a))
                   (isa '(+Nil) (get Ref 'a))

@@ -55,7 +55,7 @@
 (dm sup> ()
   (if (= (get (: c) 'a) This)
       # Exclude Y layout Pair -> X layout Car
-      # *main?
+      # *start?
       (prog
         #(let? Ln (get (: c) 'line)
         #  (println 'sup> "Mov ptr -> super-line/list" Ln (get Ln 'data))        
