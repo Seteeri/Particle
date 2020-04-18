@@ -363,32 +363,6 @@
       (put-line Cdr Part))))
 
 
-(de repl-pair (Ref Part Del-Skip)
-
-  #{
-
-    Replace b with x
-
-          *0
-    [ ]   [ ]  [ ]  NIL
-    a     b    c
-
-          *0
-    [ ]   [ ]  [ ]
-    a     x    c
-
-  }#
-
-  (con-all (list (get Ref 'c) Part (get Ref 'b)))
-
-  # If Ref is a new line, xfer it to new Part
-  (when (get Ref 'line)
-    (put-line Ref Part))
-
-  (unless (val 'Del-Skip)
-    (del> Ref T NIL)))
-
-
 (de put-line (Src Dst)
 
   (let Nl (get Src 'line)
