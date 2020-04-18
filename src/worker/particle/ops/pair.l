@@ -142,7 +142,7 @@
     # Con CDR - Diff from Y layout
     # Con Cc -> P
     # Con data, Cc -> P    
-    (con> Cc Part)
+    (b> Cc Part)
     
     # Create lines for Part
     (with Part
@@ -225,11 +225,11 @@
         C (get Ref 'c))
          
     # Con C <-> Part
-    (con> C Part)
+    (b> C Part)
     (put Part 'c C)
 
     # Con Part <-> Ref
-    (con> Part Ref)
+    (b> Part Ref)
     (put Ref 'c Part)
     
     # Create lines for Part

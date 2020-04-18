@@ -69,10 +69,10 @@
 (dm last-vert> () (last (: verts)))
 
 
-(dm con> (Cdr Prv)
+(dm b> (Cdr)
 
   (=: b Cdr)
-  (when Prv (=: c Prv))
+  (put Cdr 'c This)
   
   # Remember, *main's 'data is always the symbol itself
   # To get its val, is to get it's 'b
@@ -80,6 +80,12 @@
     (con (car (:: data)) (get Cdr 'data))))
 
 
+(dm a> (Car)
+
+  (=: a Car)
+  (put Car 'c This))
+    
+    
 (dm con-cars-c> ()
   (let (Pa This
         Prv (: a))
@@ -90,7 +96,7 @@
       (setq Prv Pa
             Pa (get Pa 'c)))
     (when (= (get Pa 'b) Prv)
-      (con> Pa Prv))))
+      (b> Pa Prv))))
     
 
 (dm del> (Car Cdr)
@@ -301,7 +307,7 @@
     (for Part (cdr Parts)     
         
       # Prv -> Part
-      (con> Prv Part)
+      (b> Prv Part)
       
       # Do this in con
       (put Part 'c Prv)

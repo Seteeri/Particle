@@ -141,7 +141,7 @@
                           (get Ref 'b 'data)))
     (put C 'data (cons (get Pair 'data)
                        (get C 'b 'data)))
-    (con> Cc C)
+    (b> Cc C)
     
     # Delete Ref
     (del> Ref T T)
@@ -183,7 +183,7 @@
     # Con data
     (put Pair 'data (cons Data
                           (get Ref 'b 'data)))
-    (con> C Pair)
+    (b> C Pair)
 
     # Main diff here from repl-list-car
       
@@ -256,7 +256,7 @@
         Part (gen-part (list Data) Lay NIL T))
 
     # Part <-> Ref
-    (con> Part Ref)
+    (b> Part Ref)
     (put Ref 'c Part)
           
     # Pair <-> Part

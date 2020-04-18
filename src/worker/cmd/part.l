@@ -100,7 +100,7 @@
                  (isa '(+Nil) (get Tgt 'a)))
              # Remove line
              (del-line Tgt)
-             (con> Tgt-Prv Tgt-Cdr)
+             (b> Tgt-Prv Tgt-Cdr)
              (put Tgt-Cdr 'c Tgt-Prv)
              (put (get Tgt-Cdr 'line) 'l (get Tgt 'line 'l))
              (println (get Tgt 'line 'l))
@@ -125,7 +125,7 @@
               (setq New-Ref Ref))
                 
             (T
-             (con> Tgt-Prv Tgt-Cdr)
+             (b> Tgt-Prv Tgt-Cdr)
              (put Tgt-Cdr 'c Tgt-Prv)
              (when (get Tgt 'line)
               (xchg-nl Tgt Tgt-Cdr))
@@ -293,7 +293,7 @@
 
     (xchg-nl Ref (get Line 'b))
         
-    (con> Prv End)
+    (b> Prv End)
     (put End 'c Prv)    
     
     (upd-tree)
