@@ -32,7 +32,7 @@
         (if (= (get Ref 'c 'a) Ref) # If direct sublist
 
             (prog
-              (ins-list-car Data Lay))
+              (ins-sym-first Data Lay))
 
             (prog
               (ins-sym Data Lay))))))
@@ -187,7 +187,7 @@
     Part))
 
 
-(de ins-list-car (Data Lay)
+(de ins-sym-first (Data Lay)
 
   #{
   
