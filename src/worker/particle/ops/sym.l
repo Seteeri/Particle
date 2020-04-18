@@ -250,25 +250,18 @@
         
     # Mov nl from Ref to Part
     (put-line Ref Part)        
-                
-    (if (and (isa '(+Pair) (get Ref 'a))
-             (isa '(+Pair) Pair))
-        
-        (prog        
-          (c-a> Pair) # Cc
-                  
-          # Create additional line for Ref
-          # Ins after current line (Part)
-          (put Ref 'line (new '(+Line)
-                              Part
-                              (get Ref 'b)
-                              (if (get *line 'line 'l) @ *line)))
-          (put (get *line 'line) 'n Ref))
-        
-        (prog        
-          (c-a> Pair)
           
-          (setq *line Part)))
+    (c-a> Pair)
+          
+    (when (and (isa '(+Pair) (get Ref 'a))
+               (isa '(+Pair) Pair))    
+        # Create additional line for Ref
+        # Ins after current line (Part)
+        (put Ref 'line (new '(+Line)
+                            Part
+                            (get Ref 'b)
+                            (if (get *line 'line 'l) @ *line)))
+        (put *line 'line 'n Ref))
         
     (upd-tree)
     (mov-*1 *line)
