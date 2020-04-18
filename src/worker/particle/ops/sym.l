@@ -83,7 +83,7 @@
         (prog
           (make-line Ref))
         (when (get Ref 'line)
-          (xchg-nl Cdr Part)))
+          (put-line Cdr Part)))
     
     (upd-tree)
     (mov-*1 *line)
@@ -249,7 +249,7 @@
     (a> Pair Part)
         
     # Mov nl from Ref to Part
-    (xchg-nl Ref Part)        
+    (put-line Ref Part)        
                 
     (if (and (isa '(+Pair) (get Ref 'a))
              (isa '(+Pair) Pair))

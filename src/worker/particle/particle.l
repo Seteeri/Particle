@@ -360,7 +360,7 @@
     # If Cdr is a new line, xfer it to new Part
     (when (and (get Cdr 'line)
                (not Line-Skip))
-      (xchg-nl Cdr Part))))
+      (put-line Cdr Part))))
 
 
 (de repl-pair (Ref Part Del-Skip)
@@ -386,13 +386,13 @@
 
     # If Ref is a new line, xfer it to new Part
     (when (get Ref 'line)
-      (xchg-nl Ref Part))
+      (put-line Ref Part))
 
     (unless (val 'Del-Skip)
       (del> Ref T NIL))))
 
 
-(de xchg-nl (Src Dst)
+(de put-line (Src Dst)
 
   (let (Nl (get Src 'line)
         Prv (get Nl 'p)
@@ -410,17 +410,17 @@
             Visited NIL)
         (while (and Child
                     (not (member Child Visited)))
-          (println 'xchg-nl "Set list: " Child (get Child 'data))
+          (println 'put-line "Set list: " Child (get Child 'data))
           (push 'Visited Child)
           (put (get Child 'line) 'l Dst)
           (setq Child (get Child 'line 'n))
           (when (member Child Visited)
-            (println 'xchg-nl "WARNING! Cycle detected: " Child (get Child 'data))))))
+            (println 'put-line "WARNING! Cycle detected: " Child (get Child 'data))))))
 
     (put Dst 'line Nl))
 
   (put Src 'line NIL)
-  (println 'xchg-nl "Exchange line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
+  (println 'put-line "Exchange line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
 
   (setq *line Dst))
 

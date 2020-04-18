@@ -113,7 +113,7 @@
                 (pop (:: data))
                 (push (:: data) (get Tgt-Cdr 'data)))
               (put Tgt-Cdr 'c Tgt-Prv)
-              (xchg-nl Tgt Tgt-Cdr)
+              (put-line Tgt Tgt-Cdr)
               
               # Tgt-Prv = Y pair
               # It's list has to be modified also
@@ -127,7 +127,7 @@
              (b> Tgt-Prv Tgt-Cdr)
              (put Tgt-Cdr 'c Tgt-Prv)
              (when (get Tgt 'line)
-              (xchg-nl Tgt Tgt-Cdr))
+              (put-line Tgt Tgt-Cdr))
              (setq New-Ref Ref)))
       
       # Unlink b before del
@@ -189,7 +189,7 @@
     (put *0 'b Ref)
     (setq Part (gen-part (list (pack Data)) 'x))
     
-    (xchg-nl Ref Part)
+    (put-line Ref Part)
     (setq *line Part)
     
     # Unlink current items
@@ -238,7 +238,7 @@
     (put *0 'b Ref)
     (setq Part (gen-part (list (glue "_" Data)) 'x))
     
-    (xchg-nl Ref Part)
+    (put-line Ref Part)
     (setq *line Part)
     
     # Unlink current items
@@ -290,7 +290,7 @@
         
         (setq Prv Part)))
 
-    (xchg-nl Ref (get Line 'b))
+    (put-line Ref (get Line 'b))
         
     (b> Prv End)    
     
