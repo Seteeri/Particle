@@ -21,7 +21,7 @@
               
             # If end-of-list NIL
             (if (and (isa '(+Nil) Ref)
-                      (= (get Ref 'c 'b) Ref))
+                     (= (get Ref 'c 'b) Ref))
                 (prog
                   (ins-sym Data Lay)
                   (point-sub Ref))
@@ -48,7 +48,7 @@
     *
     NIL
     
-    - Prv needed to make a line for NIL...
+    - C needed to make a line for NIL...
     - NIL is X layout now
           
     
@@ -70,16 +70,16 @@
   }#
          
   (let (Ref (get *0 'b)
-        Prv (get Ref 'c)
+        C (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    (println 'ins-sym "con-aft: " Prv (get Prv 'data))
+    (println 'ins-sym C (get C 'data))
 
-    (con-aft Prv Part)
+    (con-aft C Part)
   
     # Make line as necessary
-    (if (and (= (get Ref 'lay) 'y)
-                (isa '(+Pair) Ref))
+    (if (and (isa '(+Pair) (get Ref 'a))
+             (isa '(+Pair) Ref))
         (prog
           (make-line Ref))
         (when (get Ref 'line)
