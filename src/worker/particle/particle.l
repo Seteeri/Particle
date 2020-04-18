@@ -166,7 +166,7 @@
                          Pos
                          (+ (car Pos) *adv-vert))))))
 
-  (=: ori (origin> This))
+  (=: ori (ori> This))
   
   Pos)
 
@@ -246,7 +246,7 @@
 # Most of these don't use any properties from part
 # so should move to a vert class or make normal function
 
-(dm origin> ()
+(dm ori> ()
   (let? Vert (car (: verts))
     (with Vert
       (origin-from-bearing> (get *metrics (: chr))
