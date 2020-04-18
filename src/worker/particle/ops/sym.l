@@ -17,7 +17,7 @@
                  (= (get Ref 'c 'a) Ref))
               
             (prog
-              (repl-list-car Data Lay))
+              (repl-sym-first Data Lay))
               
             # If end-of-list NIL
             (if (and (isa '(+Nil) Ref)
@@ -95,7 +95,7 @@
     Part))
 
 
-(de repl-list-car (Data Lay)
+(de repl-sym-first (Data Lay)
   # Replace pair y car
   
   #{
@@ -172,7 +172,7 @@
 
     (b> C Pair)
 
-    # Main diff here from repl-list-car
+    # Main diff here from repl-sym-first
       
     # Delete Ref
     (del> Ref T T)
