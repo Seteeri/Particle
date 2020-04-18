@@ -91,7 +91,6 @@
       
       
 (de make-cons-car-x-sym (Ref)
-  #..-sym
   
   #{
       

@@ -24,7 +24,7 @@
               (if (and (isa '(+Nil) Ref)
                        (= (get Ref 'c 'b) Ref))
                   (prog
-                    (ins-cdr Data Lay)
+                    (ins-sym Data Lay)
                     (point-sub Ref))
                   (prog
                     (repl-car Data Lay)))))
@@ -35,10 +35,10 @@
               (ins-list-car Data Lay))
 
             (prog
-              (ins-cdr Data Lay))))))
+              (ins-sym Data Lay))))))
 
 
-(de ins-cdr (Data Lay)
+(de ins-sym (Data Lay)
   #{
   
     Insert item before pair ptr
@@ -74,7 +74,7 @@
         Prv (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    (println 'ins-cdr "con-aft: " Prv (get Prv 'data))
+    (println 'ins-sym "con-aft: " Prv (get Prv 'data))
 
     (con-aft Prv Part)
   
