@@ -394,15 +394,13 @@
 
 (de put-line (Src Dst)
 
-  (let (Nl (get Src 'line)
-        Prv (get Nl 'p)
-        Nxt (get Nl 'n))
+  (let Nl (get Src 'line)
 
-    (when Prv
-      (put (get Prv 'line) 'n Dst))
+    (when (get Nl 'p)
+      (put @ 'line 'n Dst))
 
-    (when Nxt
-      (put (get Nxt 'line) 'p Dst))
+    (when (get Nl 'n)
+      (put @ 'line 'p Dst))
       
     # Update children's lists when Src is NIL NIL
     (when (and (not (get Nl 'p)) (not (get Nl 'l)))
@@ -412,10 +410,11 @@
                     (not (member Child Visited)))
           (println 'put-line "Set list: " Child (get Child 'data))
           (push 'Visited Child)
-          (put (get Child 'line) 'l Dst)
+          (put Child 'line 'l Dst)
           (setq Child (get Child 'line 'n))
-          (when (member Child Visited)
-            (println 'put-line "WARNING! Cycle detected: " Child (get Child 'data))))))
+          #(when (member Child Visited)
+          #  (println 'put-line "WARNING! Cycle detected: " Child (get Child 'data)))
+          )))
 
     (put Dst 'line Nl))
 
