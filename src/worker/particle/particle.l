@@ -50,8 +50,6 @@
   }#
   # or create layout obj storing dims for x and y
   (=: dims)
-  #(=: dims-a)
-  #(=: dims-b)
 
   # list of tags; always str; order matters like when searching
   # consider first tag, the name
@@ -62,8 +60,6 @@
   (=: dat (date))
   (=: tim (time)))
 
-(dm has-car-pair> () (isa '(+Pair) (: a)))
-(dm is-nil-or-nil-car> () (or (isa '+Nil This) (isa '+Nil (: a))))
 
 (dm first-vert> () (car (: verts)))
 (dm last-vert> () (last (: verts)))
@@ -250,8 +246,8 @@
   (let? Vert (car (: verts))
     (with Vert
       (ori-frm-bear> (get *metrics (: chr))
-               (: pos)
-               *sca-vert))))
+                     (: pos)
+                     *sca-vert))))
 
 
 (dm col> (Col)
