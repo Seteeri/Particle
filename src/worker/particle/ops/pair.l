@@ -206,22 +206,26 @@
     (with Part
      
       (=: lay 'y)
-           
-      # Use ins-line?        
       
-      # Create Line
-      (=: line (new '(+Line)
-                    C
-                    (: b)
-                    (if (get *line 'line 'l) @ *line)))
+      (=: line (if (isa '(+Sym) C)
+                   (new '(+Line)
+                        NIL
+                        (: b)
+                        NIL)
+                   (new '(+Line)
+                        C
+                        (: b)
+                        (if (get *line 'line 'l) @ *line))))
                   
       # Create Line for Car
       (put (: a) 'line (new '(+Line))))
       
     # Connect lines
     # C -> Part -> Ref
-    (put C 'line 'n Part)
+    (unless (isa '(+Sym) C)
+      (put C 'line 'n Part))
     (put Ref 'line 'p Part)
+    (put Ref 'line 'l (if (get Part 'line 'l) @ Part))
         
     (upd-tree)
     (mov-*1 *line)
