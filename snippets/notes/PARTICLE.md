@@ -36,6 +36,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
 
 ## TODO
 
+  The integration of Lisp Machines
   The extensibility of Emacs
   The polish of Apple
   The power of open source

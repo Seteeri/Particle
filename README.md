@@ -7,17 +7,19 @@ information as they moved through the computer. What did they look like?
 
 ---
 
-Particle is a personal knowledge manager (also called a PIM, PKB) implemented through a presentation-based lisp-structured UI.
+Particle is a personal knowledge manager (aka PIM) implemented as an outliner through a presentation-based lisp-structured UI.
 
-It is the realization of my vision to map our thoughts into the computer. The long-term technical goal of Particle is to create a Lispy userspace, eventually replacing the init system and encompassing all layers above that.
+It is closest in concept to an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented interface, inspired by Lisp Machines of the past.
 
-It integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, outliners, wikis and note-taking into a single object-oriented interface that can allow convergence across multiple devices such as desktops/workstations, laptops/tablets and smartphones/devices where information can flow easily.
+On Windows/Mac/iOS/Android, it serves as an outliner, however, with Linux and BSD systems it integrates the window manager, i.e. functions as the Wayland compositor. One of the goals of Particle is to create a Lispy userspace, eventually replacing the init system and encompassing all layers above that.
 
-The computing landscape has been reshaped significantly since the days of Lisp Machines and so too has our computer science knowledge base grown, so it begs the question as to how useful Lisp at the kernel level would be today. As much as a Lisp Machine from scratch would be intriguing, for it to achieve a point of actual usefulness would be highly energy intensive and fundamentally require commercial support; even then, only with specialized hardware could it be remotely competitive with existing technology. So I believe a more pragmatic approach from the top-down by building a userspace will allow us to get there.
+The computing landscape has been reshaped significantly since the days of the Lisp Machines, and so too has our computer science knowledge base grown, so it begs the question as to how useful Lisp at the kernel level would be today in terms of cybersecurity, parallel computing, etc.
+
+As much as a Lisp Machine from scratch would be intriguing, for it to be actual useful would be highly energy intensive and fundamentally require commercial support; even then, only with specialized hardware could it be remotely competitive with existing technology. So I believe a more pragmatic approach from the top-down by building a userspace will allow us to get there.
+
+Currently, plans are to initially support Linux and Android. Once Pil21 is done, a native solution can be provided for Windows and Mac/iOS platforms. Until then, a web interface may be developed in lieu of for those sytems.
 
 I do have the Pinephone on the way so I will also be testing it on that device to hopefully develop a mobile interface and any other devices I can get my hands on...
-
-Currently, Linux and Android is supported. Once Pil21 is done, a native solution can be provided for Windows and Mac/iOS platforms. Until then, a web interface may be developed in lieu of.
 
 The target audience consists of programmers, power users, information workers and "busy" people.
 
@@ -30,23 +32,30 @@ The target audience consists of programmers, power users, information workers an
 * Import/link any data including images, videos, audio, etc.
 * Export to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
 * Encryption - text and block-based
-* Web clipper
-* Alternate Interfaces
-  * Touch/Mobile - due to power/battery constraints, an HTML frontend might be more effective than OpenGL/WebGL...
-  * AR/VR - I do have a possible solution for this, moreso for AR...
+* Web browser integration/clipper
+* Wayland/userspace integration
 
 
-Possible:
+Advanced:
 
-* Revision control
+
 * Fuzzy search/auto-completion
   * Tag suggestions
-* Ink-pen input including drawn annotations
-* OCR scans/images
+* OCR
+  * Integration of tesseract library
 * Code-specific support
-* Highlighting
-* Collaboration - outside scope of this project
+* Revision control
+  * Tree diffs
+* Ink-pen input; drawn annotations
+* Collaboration - separate related project
 
+
+Interfaces:
+
+* Touch/Mobile - due to power/battery constraints, an HTML frontend might be more effective than OpenGL/WebGL...
+* AR/VR - I do have a possible solution for this, moreso for AR...
+
+  
 ## Roadmap to PID 1
 
 All Platforms:
