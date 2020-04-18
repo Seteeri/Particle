@@ -293,15 +293,13 @@
   # Assumes sublines will be deleted or no longer ref'd
   # or handled by caller
 
-  (let (Nl (get Part 'line)
-        Prv (get Nl 'p)
-        Nxt (get Nl 'n))
+  (let Nl (get Part 'line)
 
-    (when Prv
-      (put Prv 'line 'n Nxt))
+    (when (get Nl 'p)
+      (put @ 'line 'n Nxt))
 
-    (when Nxt
-      (put Nxt 'line 'p Prv))))
+    (when (get Nl 'n)
+      (put @ 'line 'p Prv))))
   
         
 (de upd-tree (List)
