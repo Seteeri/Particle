@@ -19,15 +19,14 @@
             (prog
               (repl-list-car Data Lay))
               
-            (prog
-              # If end-of-list NIL
-              (if (and (isa '(+Nil) Ref)
-                       (= (get Ref 'c 'b) Ref))
-                  (prog
-                    (ins-sym Data Lay)
-                    (point-sub Ref))
-                  (prog
-                    (repl-car Data Lay)))))
+            # If end-of-list NIL
+            (if (and (isa '(+Nil) Ref)
+                      (= (get Ref 'c 'b) Ref))
+                (prog
+                  (ins-sym Data Lay)
+                  (point-sub Ref))
+                (prog
+                  (repl-sym Data Lay))))
         
         (if (= (get Ref 'c 'a) Ref) # If direct sublist
 
@@ -149,7 +148,7 @@
     Part))
   
 
-(de repl-car (Data Lay)
+(de repl-sym (Data Lay)
   # Replace pair x car
   #{
     Replace car
