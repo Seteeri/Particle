@@ -57,30 +57,15 @@
         C (get Ref 'c)
         Cc (get C 'c))
     
-    # Con Part/Car -> C
-    (put Part 'a C)
+    (a> Part C)
     
-    # Con data, P -> C
-    (put Part 'data (cons (get C 'data)))    
-    
-    # Con Part <- C
-    (put C 'c Part)
-
-    # Con CAR
-    # Con Cc -> P
-    # Con data, Cc -> P    
-    (put Cc 'a Part)
-    (put Cc 'data (cons (get Part 'data)
-                        (cdr (get Cc 'data))))
+    (a> Cc Part)
         
     # Line
     (with Part
       
       (=: lay 'y)
-    
-      # Con Cc <- Part
-      (=: c Cc)
-      
+          
       # Create Line start
       (=: line (new '(+Line)
                     NIL (: b) NIL))
@@ -132,9 +117,6 @@
     
     (a> Part C)
 
-    # Con CDR - Diff from Y layout
-    # Con Cc -> P
-    # Con data, Cc -> P    
     (b> Cc Part)
     
     # Create lines for Part
@@ -217,10 +199,8 @@
                        'skip-cdr)
         C (get Ref 'c))
          
-    # Con C <-> Part
     (b> C Part)
 
-    # Con Part <-> Ref
     (b> Part Ref)
     
     # Create lines for Part

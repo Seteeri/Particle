@@ -252,15 +252,15 @@ or very few expections like with pointers
     +-------+-------------------+--------------------+---------------+
     
   * Refactor
-    * Refactor ops [Thr]
+    * Ops [Done]
       * Support sublist [Done]
       * Refactor repl-list-car: reuse pair [Done]
       * Refactor repl-car: reuse pair, merge with above fn [Done]
       * Refactor ins-list-car: reuse pair [Done]
       * Rewrite ins-cdr [Done]
-      * Support list on same line...
-        * Works partly but line bounds calc will be wrong
-      * Fix NIL
+      * Fix NIL [Done]
+      * Support list on same line... [Later]
+        * Works partly but line bounds calc will be wrong      
     * Implement Q/E : start/end of list
     * Refactor ops into methods [Sat]
     * Fix space glyph [Sat]
