@@ -101,8 +101,7 @@
              # Remove line
              (del-line Tgt)
              (b> Tgt-Prv Tgt-Cdr)
-             (put Tgt-Cdr 'c Tgt-Prv)
-             (put (get Tgt-Cdr 'line) 'l (get Tgt 'line 'l))
+             (put Tgt-Cdr 'line 'l (get Tgt 'line 'l))
              (println (get Tgt 'line 'l))
              (setq New-Ref Tgt-Cdr))
     
