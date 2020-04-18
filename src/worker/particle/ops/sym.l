@@ -273,10 +273,8 @@
     (if (and (isa '(+Pair) (get Ref 'a))
              (isa '(+Pair) Pair))
         
-        (prog          
-                  
-          # Con cars backwards
-          (con-cars-c> Cc)
+        (prog        
+          (con-cars-c> Pair) # Cc
                   
           # Create additional line for Ref
           # Ins after current line (Part)
@@ -286,13 +284,10 @@
                               (if (get *line 'line 'l) @ *line)))
           (put (get *line 'line) 'n Ref))
         
-        (prog
-                                
-          (con> Cc Pair)
-                                
-          # Prv (get Pair 'lay)
-          #(put Part 'lay (get Prv 'lay))
-          ))
+        (prog        
+          (con-cars-c> Pair)
+          
+          (setq *line Part)))
         
     (upd-tree)
     (mov-*1 *line)
