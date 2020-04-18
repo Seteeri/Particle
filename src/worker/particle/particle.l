@@ -379,17 +379,14 @@
 
   }#
 
-  (let (Cdr (get Ref 'b)
-        Prv (get Ref 'c))
+  (con-all (list (get Ref 'c) Part (get Ref 'b)))
 
-    (con-all (list Prv Part Cdr))
+  # If Ref is a new line, xfer it to new Part
+  (when (get Ref 'line)
+    (put-line Ref Part))
 
-    # If Ref is a new line, xfer it to new Part
-    (when (get Ref 'line)
-      (put-line Ref Part))
-
-    (unless (val 'Del-Skip)
-      (del> Ref T NIL))))
+  (unless (val 'Del-Skip)
+    (del> Ref T NIL)))
 
 
 (de put-line (Src Dst)
