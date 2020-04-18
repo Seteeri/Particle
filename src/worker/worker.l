@@ -184,9 +184,7 @@
     (setq *master *main)
       
     (lay-part-start *main *line)
-    
-    #(inc-line-by-part-x> (get *main 'b) (get *main 'b))
-    
+        
     #######################
     # TODO: Draw *ptrs
     (idx '*particles
