@@ -292,15 +292,19 @@
                       (get *line 'line 'n)
                       (if (get *line 'line 'l) @ *line)))
   (put (get *line 'line) 'n Part)
-  (put (get *line 'line 'n 'line) 'p Part)
+  (let? Nxt (get *line 'line 'n)
+    (put Nxt 'line 'p Part))
   
   (upd-tree)
   (mov-*1 Part)
   
+  (setq *line Part)
   (mov-cur-abv Part)
   (lay-part-start *0 *line 'skip-cdr)
   
-  (setq *line Part))
+  (println 'make-line "Made newline")
+  
+  Part)
 
   
 ###################

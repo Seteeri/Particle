@@ -261,6 +261,7 @@ or very few expections like with pointers
       * Support list on same line...
         * Works partly but line bounds calc will be wrong
       * Fix NIL
+    * Implement Q/E : start/end of list
     * Refactor ops into methods [Sat]
     * Fix space glyph [Sat]
     * Handle multi-line strings  [Sat]
