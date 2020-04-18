@@ -22,8 +22,8 @@
   
   (setq *cur-x (if *cur-x
                   (max *cur-x (get *cur 1))
-                  (get *cur 1)))
-  (setq *cur-y (if *cur-y
+                  (get *cur 1))
+        *cur-y (if *cur-y
                    (min *cur-y (get *cur 2))
                    (get *cur 2))))
 
