@@ -90,16 +90,14 @@
     
     
 (dm con-cars-c> ()
-  (let (Pa This
-        Prv (: a))
-    (while (= (get Pa 'a) Prv)
-      (put Pa 'a Prv)
-      (put Pa 'data (cons (get Prv 'data)
-                          (cdr (get Pa 'data))))
-      (setq Prv Pa
-            Pa (get Pa 'c)))
-    (when (= (get Pa 'b) Prv)
-      (b> Pa Prv))))
+  (let (C This
+        A (: a))
+    (while (= (get C 'a) A)
+      (a> C A)
+      (setq A C
+            C (get C 'c)))
+    (when (= (get C 'b) A)
+      (b> C A))))
     
 
 (dm del> (Car Cdr)
