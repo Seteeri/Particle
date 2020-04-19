@@ -1,0 +1,2 @@
+Anecdotes: LISP FAILED
+======================

@@ -11,11 +11,11 @@ Particle is a personal knowledge manager (aka PIM) implemented as an outliner th
 
 It is closest in concept to an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented interface, inspired by Lisp Machines of the past.
 
-On Windows/Mac/iOS/Android, it serves as an outliner, however, with Linux and BSD systems it integrates the window manager, i.e. functions as the Wayland compositor. One of the goals of Particle is to create a Lispy userspace, eventually replacing the init system and encompassing all layers above that.
+On Windows/Mac/iOS/Android, it serves as an outliner, however, with Linux and BSD systems it integrates the window manager, i.e. functions as the Wayland compositor. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that.
 
 The computing landscape has been reshaped significantly since the days of the Lisp Machines, and so too has our computer science knowledge base grown, so it begs the question as to how useful Lisp at the kernel level would be today in terms of cybersecurity, parallel computing, etc.
 
-As much as a Lisp Machine from scratch would be intriguing, for it to be actual useful would be highly energy intensive and fundamentally require commercial support; even then, only with specialized hardware could it be remotely competitive with existing technology. So I believe a more pragmatic approach from the top-down by building a userspace will allow us to get there.
+As much as a Lisp Machine from scratch would be intriguing, for it to be actual useful would be highly energy intensive and fundamentally require commercial support; even then, only with specialized hardware could it be remotely competitive with existing technology. So I believe a more pragmatic approach from the top-down by focusing on the UX through the userspace will allow us to get there.
 
 Currently, plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done, a native solution can be provided. Until then, a HTML/WebGL interface may be developed in conjunction.
 
@@ -27,8 +27,13 @@ The target audience consists of programmers, power users, information workers an
 
 * Local data first - no cloud dependency
 * Distributable - synchronize across multiple devices
-* Database backend (object persistence) - scalability and robustness
-  * Plain text (Lisp code) or binary (Lisp data)
+* Storage mechanism
+  * Plain text (Lisp code)
+    * Internal symbols
+  * Binary (Lisp data)
+    * Internal symbols -> external symbols 
+    * Uses built-in database functionality of VM
+    * PicoLisp has persistent objects built-in as a first class data type
 * Tag-based searching
 * Import/link any data including images, videos, audio, etc.
 * Export to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL

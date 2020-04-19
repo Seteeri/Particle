@@ -131,25 +131,35 @@
   # Check first vert
   # If changed, change rest
   # else, do nothing
-
+  
   (let? Vert (car (: verts))
-    (unless (= Pos (get Vert 'pos))
-      (for Vert (: verts)
-        (with Vert
-          # Same pos, don't bother
-          (unless (= Pos (: pos))
+    
+    (if (= (ori> (get *metrics (get Vert 'chr))
+                          (get Vert 'pos)
+                          *sca-vert)
+           Pos)
+    
+        # Set to pos of last vert (mul by length)
+        (prog
+          (setq Pos (list (+ (get Pos 1)
+                            (*/ *adv-vert (num-to-fl (length (: verts))) 1.0))
+                          (get Pos 2))))
+    
+        (for Vert (: verts)
+        
+          (with Vert
             (=: pos Pos)
             (upd-gly> Vert (char (: chr))))
-            (upd-mod-mat> Vert)
-            (cmd-upd-vert *ipc Vert))
+            
+          (upd-mod-mat> Vert)
+          (cmd-upd-vert *ipc Vert)
 
-        # adv pos
-        (setq Pos (place 1
-                         Pos
-                         (+ (car Pos) *adv-vert))))))
+          (setq Pos (place 1
+                          Pos
+                          (+ (car Pos) *adv-vert))))))
 
   (=: ori (ori> This))
-  
+    
   Pos)
 
 
@@ -231,7 +241,7 @@
 (dm ori> ()
   (let? Vert (car (: verts))
     (with Vert
-      (ori-frm-bear> (get *metrics (: chr))
+      (ori> (get *metrics (: chr))
                      (: pos)
                      *sca-vert))))
 
@@ -258,7 +268,7 @@
                            (not Cdr-Skip))
                   (bnds> (: b)))
         (X Y) (with (last-vert> This)
-                  (ori-frm-bear> (get *metrics (: chr))
+                  (ori> (get *metrics (: chr))
                            (: pos)
                            *sca-vert)))
 

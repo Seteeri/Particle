@@ -5,7 +5,17 @@
 (def '*line-lay)
 (def '*y-lay)
 
+
 (de upd-cur ()
+  (setq *cur-x (if *cur-x
+                  (max @ (get *cur 1))
+                  (get *cur 1))
+        *cur-y (if *cur-y
+                  (min @ (get *cur 2))
+                  (get *cur 2))))
+
+              
+(de upd-cur-debug ()
 
   #{
   
@@ -20,13 +30,24 @@
     -------+          
   }#
   
-  (setq *cur-x (if *cur-x
-                  (max *cur-x (get *cur 1))
-                  (get *cur 1))
-        *cur-y (if *cur-y
-                   (min *cur-y (get *cur 2))
-                   (get *cur 2))))
-
+  (let (X *cur-x
+        Y *cur-y)
+        
+    (setq *cur-x (if *cur-x
+                    (max @ (get *cur 1))
+                    (get *cur 1))
+          *cur-y (if *cur-y
+                    (min @ (get *cur 2))
+                    (get *cur 2)))
+    
+    (when (or (not (= X *cur-x))
+              (not (= Y *cur-y)))
+                            
+      (println 'upd-cur
+              (format X *Scl) '-> (format *cur-x *Scl)
+              (format Y *Scl) '-> (format *cur-y *Scl)))))            
+              
+              
 (de upd-dims (Part)
   (with Part
     (let Dims (list (abs (- *cur-x (get (: ori) 1)))
@@ -108,21 +129,23 @@
 
 (de lay-pair-x (Part Type Nxt)
 
-  #(println 'lay-pair-x "X: " Part (get Part 'data) Type)
-
   (when (= Type 'b)
   
     # For non-newline Cdr:
     # X = bnds of Car
     # Y = origin of Pair
-
-    #(println 'lay-pair-x "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
-    #(println 'lay-pair-x "Mov cur y to origin: " (format (get *cur 2) *Scl))
     
     # Newline will override these
     (adv-cur 2.0)
-    (set-cur-y (get Part 'c 'ori 2)))
-      
+    (set-cur-y (get Part 'c 'ori 2))
+    
+    #(println 'lay-pair-x "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
+    #(println 'lay-pair-x "Mov cur y to origin: " (format (get *cur 2) *Scl))
+    
+    )
+
+  #(println 'lay-pair-x Part (type Part) (get Part 'data) Type)
+    
   (lay-x> Part)
 
   (upd-cur)
@@ -138,8 +161,6 @@
 
 
 (de lay-pair-y (Part Type Nxt)
-
-  #(println 'lay-pair-y "Y: " Part (get Part 'data) Type)
 
   (when (= Type 'b)
     # For non-newline Cdr:
@@ -159,7 +180,9 @@
           (set-cur-x (get Part 'c 'ori 1))
           # Y should be in place, else get from cur bnds
           (set-cur-y *cur-y) (nl-cur 3.0))))
-    
+
+  #(println 'lay-pair-y Part (get Part 'data) Type)          
+          
   (lay-y> Part)
 
   (upd-cur)
@@ -183,8 +206,7 @@
         # Move Pair first so below to get correct pos
         # mov> does not use draw fn so it does not use *cur
         (setq *cur (mov> Part *cur))
-        #(adv-cur)
-
+        
         (upd-cur)
 
         Part)

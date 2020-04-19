@@ -19,9 +19,9 @@
 
 (de mov-cur-vert (Vert)
   (with Vert
-    (setq *cur (ori-frm-bear> (get *metrics (: chr))
-                            (: pos)
-                            *sca-vert))))
+    (setq *cur (ori> (get *metrics (: chr))
+                              (: pos)
+                              *sca-vert))))
 
 
 (de adv-cur (Cnt)

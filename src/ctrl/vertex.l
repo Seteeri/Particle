@@ -46,10 +46,6 @@
 
 
 (dm upd-gly> (Chr)
-  #{
-    translation = baseline (get-origin-from-node-pos *node-ptr-main*)
-    Create diagrams for metrics calculations so easier to understand/visualize
-  }#
   
   (=: chr (char Chr))
   (=: off-texel (* (- (: chr) 1)
@@ -59,8 +55,8 @@
   (let Metrics (get *metrics (: chr))
 
     (unless Metrics
-      (prinl-info "upd-gly>" (pack "Unable to find metrics: " (: chr))))      
-      
+      (prinl-info "upd-gly>" (pack "Unable to find metrics: " (: chr)))) 
+        
     (=: uv (get Metrics 'uv))
     (=: pos (get-pos> Metrics (: pos) *sca-vert))
     (=: sca (get-sca> Metrics *sca-vert))))

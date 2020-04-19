@@ -54,6 +54,10 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     +-------+-------------------+--------------------+---------------+
     
   * Refactor [Mon]
+    * Simply str sym
+      * Don't draw internal/intermediate cells - draw last
+        * Maintain consistency
+        * For int syms and strs, name is at end of Car/Prop List
     * Fix space glyph
     * Handle multi-line strings
     * Implement cmds Q/E : start/end of list

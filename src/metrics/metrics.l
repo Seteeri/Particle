@@ -131,12 +131,13 @@ Quotient of N and D = (*/ 1.0 N D)
 
 (dm get-pos> (Pos Sca)
   #{
-    Glyph has been cropped to its bbox so adjust vertex by bounds
+    Glyph has been cropped to its bbox - adjust vert by bnds
     
-    For example, 'g' hangs below baseline, its bottom bounds is negative so
-    adding to the y pos will shift glyph downward into proper pos
+    For example, 'g' hangs below baseline,
+    its bottom bounds is negative,
+    y pos + y bnds, shifts glyph downward into proper pos
     
-    Thus, baseline can be derived by substracting the glyph bounds from the pos
+    Thus, baseline = pos - bnds
   }#
 
   (list (+ (get Pos 1) (*/ (get (: bounds) 1) Sca 1.0))
@@ -144,11 +145,9 @@ Quotient of N and D = (*/ 1.0 N D)
         0.0))
 
 
-(dm ori-frm-bear> (Pos Sca)
+(dm ori> (Pos Sca)
   #{
     Derive origin from Vertex position
-    
-    get-baseline should have been applied
   }#
 
   (list (+ (get Pos 1) (- (*/ (get (: bounds) 1) Sca 1.0)))
@@ -157,7 +156,9 @@ Quotient of N and D = (*/ 1.0 N D)
 
 
 (dm get-sca> (Sca)
-  # Dims already scaled by sca-glyph
+  #{
+    Dims already scaled by sca-glyph
+  }#
 
   #(println (format (*/ (get (: dims) 1) Sca 1.0) *Scl)
   #         (format (*/ (*/ *adv-glyph *sca-glyph 1.0) Sca 1.0) *Scl))

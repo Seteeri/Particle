@@ -528,80 +528,7 @@ Column-major versus row-major is purely a notational convention. Note that post-
 
 Sadly, the use of column-major format in the spec and blue book has resulted in endless confusion in the OpenGL programming community. Column-major notation suggests that matrices are not laid out in memory as a programmer would expect.
 
-################################################################################
 
-* DAG/nodes IPC
-  * Interop/conversion between bytes and cons a poss issue!!
-    * Render does no additional processing on nodes, simply does memcpy
-    * Memcpy certain amount of bytes per frame
-      * Perform benchmark; dependent on computer performance characteristics
-    * If render simple and mostly C calls and development static, write render
-    in C
-
-  * No shared memory? -> Later, use to increase performance as needed with memfd_create
-    * Model processes nodes, serializes, puts into queue of render
-    * Use socket buffer as message queue, for now...
-
-  * To do multiple processes working on nodes, split total node capacity across
-    processors
-    * However, processes will need to synchronize with each other
-    * To optimize, localize objects by moving between processes
-    * Use PicoLisp pool+memfd_create, in this situation
-      * Pool uses GIL on the file, although can lock single symbols
-
-  * or...BUILD A GUI AROUND THE EXISTING DATABASE STRUCTURE?
-    * Later, when multiple processes need to work on data and synchronize, use
-      PL pool (except use memfd_create instead)
-  * On top of nodes, build binary trees - lisp code/data
-
-
-* Implementation
-  * Graph = pool
-  * Node  = external symbol
-  * Modify Node, Commit Node, Notify Render Of Node
-  * Number nodes node-1, node-2, node-n... and allocate among processors
-    * Or one database per processor
-  * Intermediate file write can be removed if memory used directly
-    * Ask on mailing list about this
-
-* If we use PicoLisp infrastructure:
-
-  Model
-  |_________________________
-  |      |       |    |    |
-  View-1 View-2  W-1  w-2  w-3
-
-* If we use symbols/classes, then those would represent the GUI parts?
-
-Latency:
-
-Each process has a copy of objects in its local heap. Think of DB as external
-heap from app perspective.
-
-It'll be faster if we back it with memfd
-
-* Model write DB
-  *
-* Render read DB
-  * Update nodes when idle...
-
-https://www.mail-archive.com/picolisp@software-lab.de/msg08887.html
-
-################################################################################
-
-Areas
-- Have instances of Heap lists
-- When wanting to use another, simply change pointers Heap and Avail
-- GC remains the same
-- But what if object in Heap A points to object in heap B?
-  - Would still work but might be inefficient due to possibly different pages
-  -> Need copying/moving/compacting solution
-
-- Can simulate areas by processes but would have to copy objects over when
-cross references exist - naturally copying/moving/compacting
-  - Proc could broadcast request which any node would satisfy
-  - Gives concurrent/parallel GC for free
-  - Gives compacting for free also - initially copy cost must be paid once upfront
 
 ################################################################################
 
@@ -609,19 +536,6 @@ Each vertex has either a texture or a pixel (no texture)
 
 ################################################################################
 
-- Default options (for auto pack/glue):
-  - Num: prints bytes? ...(see below)
-  - Char: user explicitly packs etc
-  - Words: auto pack on enter or space (non-graphical characters)
-  - Sentences: auto pack on . + non-graphical character
-  - Paragraphs: auto pack on tab
-
-- Eval=<mod>+Enter, Read=<mod>+Enter to convert code to data)
-
-Internally, nodes are added to a timeline (maintains ref to them so no GC)
-- Question - should users modify timeline directly?
-
-################################################################################
 
 : "X"
 -> "X"
@@ -679,60 +593,6 @@ Shift+Enter/Tab = Read
 Ctrl+Enter/Tab = Eval
 
 ################################################################################
-
-[user@skynet protoform]$ Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called close-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called close-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called open-restricted
-Called close-restricted
-Called open-restricted
-Called open-restricted
-Called close-restricted
-
-
-################################################################################
-
-Possible Bug! -> More like something I don't understand
-
-input.l:
-
-(class +Input)
-(dm T ())
-(dm test> () T)
-
-
-main.l:
-
-(load "input.l")
-
-(def '*input)
-
-(de end-main ()
-  (test> *input))
-
-(de main ()
-    (push '*Bye '(end-main)))
 
 
 https://news.ycombinator.com/item?id=9981874
@@ -963,17 +823,7 @@ So, in general, when you just deal with simple lists, the cumbersomeness of usin
 
 KIND OF LIKE POINTERS, EH?
 
-################################################################################
-
-PTR = INPUT/EVAL
-
-Note, when a symbol or cons cell is created, it is recursively drawn
-
-A symbol, property list, value, name are all drawn
-For symbols, a "draw" property is attached which contains the gl parameters
-This property itself is also drawn in OpenGL
-
-########################
+=======================
 
 STRING/SYM FUNCTIONALITY
 

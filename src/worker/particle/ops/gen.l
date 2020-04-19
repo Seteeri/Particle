@@ -60,7 +60,7 @@
 
   (let (Ar (name Any) 
         Val (val Any)
-        Dr (if (== Val Any) NIL Val)
+        Dr (if (= Val Any) NIL Val)
         (Verts-Car Wid-Car) (draw-atom Ar (get-color-type 0) Adv)
         Part-Car (unless Car-Skip
                   # Num type but content is a string
@@ -70,15 +70,15 @@
                        Verts-Car
                        Lay))
         Part-Cdr (when (and (not Cdr-Skip)
-                            (not (== Val Any)))
+                            (not (= Val Any)))
                   (gen-part Dr Lay))
-        (Verts-Pair Wid-Pair) (draw-cell (get-color-type Any) (== Val Any))
+        (Verts-Pair Wid-Pair) (draw-cell (get-color-type Any) (= Val Any))
         Part-Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any
                        Part-Car Part-Cdr
                        Verts-Pair
                        Lay))
-                        
+                       
       # Set dims
       (put Part-Car 'dims (list Wid-Car *adv-vert-2))
       (put Part-Pair 'dims (list Wid-Pair *adv-vert-2))
@@ -88,7 +88,7 @@
       (unless Car-Skip 
         (put Part-Car 'c Part-Pair))
       (when (and (not Car-Skip)
-                 (not (== Val Any)))
+                 (not (= Val Any)))
         (put Part-Cdr 'c Part-Pair))
               
       Part-Pair))

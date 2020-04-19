@@ -1,5 +1,5 @@
-Anecdotes (McCLIM, CLIM)
-========================
+Anecdotes: CLIM, McCLIM
+=======================
 
 
 https://news.ycombinator.com/item?id=21961070
