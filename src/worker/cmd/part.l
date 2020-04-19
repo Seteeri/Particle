@@ -230,7 +230,8 @@
         (lay-part-start *0 *line 'skip-cdr)))))
         
 
-########################
+#######
+
     
 (de cmd-glue-sp-syms (Keysym)
 
@@ -298,6 +299,47 @@
         (lay-part-start *0 *line 'skip-cdr)))))
 
 
+(de cmd-eval ()
+  (prinl-info "cmd-eval")
+  
+  # Eval Ref data directly
+  
+  (let (Ref (get *0 'b)
+        Sta (get Ref 'c)
+        End (get Ref 'b)
+        In (get Ref 'a 'data)
+        Out (eval In))
+
+    (point-nxt)        
+        
+    (make-str Out 'x)))
+  
+
+(de cmd-str ()
+  (prinl-info "cmd-str")
+  
+  # Parse str/code to lisp data
+  
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))
+      
+      (let (Sta (get Ref 'c)
+            End (get Ref 'b)
+            In (get Ref 'a 'data)
+            Out (str In))
+            
+        (point-nxt)
+            
+        (make-str (car Out) 'x)))))
+  
+
+############################
+
+
 (de cmd-swap-layout (Keysym)
   (println "Swap layout")
 
@@ -313,7 +355,7 @@
       (println "Swap!" Tgt (get Tgt 'data) (get Tgt 'lay) '-> (if (= (get Tgt 'lay) 'x) 'y 'x))
       (swap-lay Tgt))))
 
-
+      
 (de cmd-mov-nl (Keysym)
   (println "Move newline")
 
@@ -352,9 +394,10 @@
         (lay-part-start *0 *line 'skip-cdr)))))
 
 
-#####################
+###########################################################
 
-(de cmd-eval () (prinl-info "cmd-eval"))
+# Advanced
+
 (de cmd-intern (Keysym) (prinl-info "Use (intern <data>)"))
 (de cmd-any (Keysym) (prinl-info "Use (any ...); str -> any"))
 (de cmd-sym () (prinl-info "Use (sym ...); rev of (any ...)"))

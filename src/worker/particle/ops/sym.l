@@ -6,6 +6,7 @@
 #####################
 # SYM
 
+# make-sym?
 (de make-str (Data Lay)
 
   (let Ref (get *0 'b)
