@@ -165,9 +165,9 @@
 
 # Reuse strs for these fns
 
-(de cmd-pack (Keysym)
+(de cmd-pack-syms (Keysym)
 
-  (prinl-info "cmd-pack")
+  (prinl-info "cmd-pack-syms")
 
   # Pack from Ptr until invalid
   # Pack line then replace it
