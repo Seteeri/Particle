@@ -160,138 +160,144 @@
   (make-str (format (get *0 'b 'c 'a 'data)) 'x))
 
 #####################
-  
+
+# cmd-chop = chop last item
+
+# Reuse strs for these fns
+
 (de cmd-pack (Keysym)
 
   (prinl-info "cmd-pack")
 
   # Pack from Ptr until invalid
   # Pack line then replace it
-  
-  # Reuse strs
-  
-  # Check for invalid refs- only pack when End is Sym
-  
-  (let (End (get *0 'b)
-        (Sta Lst) (build-str (get End 'c))
-        Prv (get Sta 'c)
-        Part (gen-part (list (pack Lst)) 'x))
-        
-    (println 'cmd-pack Sta (get Sta 'data) "TO" End (get End 'data))
-        
-    # Prv <-> Part
-    (b> Prv Part)
-    # Part <-> End'b
-    (when (get End 'b)
-      (del> (get Part 'b) T T)
-      (b> Part (get End 'b)))
-    
-    (when (get Sta 'line)
-      (put-line Sta Part))
-    
-    # Inclusive
-    (del-rx Sta End)
-    
-    (upd-tree)
-    (mov-*1 *line)        
-        
-    # Put Ptr above new part
-    (put *0 'b (get Part 'b))
-    (mov-cur-abv (get Part 'b))
-    (lay-part-start *0 *line 'skip-cdr)))
 
-    
-(de cmd-glue-space (Keysym)
-
-  (prinl-info "cmd-glue-space")
-
-  # Default?
-  # 1. Pack *line to ref
-  # 2. Pack ref to prv
-  #
-  # Push subsequent strings to first one in list
-  # Replace entire list
+  (let Ref (get *0 'b)
   
-  # Handle car
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
   
-  # Reuse strs
+    (when (isa '(+Str) (get Ref 'a))  
   
-  # Two situations
-  # 1. List is Cdr (pair/sym)
-  # 2. List is Car (list)
-  
-  (let (Ref (if (get *line 'l) @ *line)
-        Prv (get Ref 'c)
-        Data (get Ref 'data)
-        Part NIL)
-    
-    # Gen packed str
-    (put *0 'b Ref)
-    (setq Part (gen-part (list (glue "_" Data)) 'x))
-    
-    (put-line Ref Part)
-    (setq *line Part)
-    
-    # Unlink current items
-    (put Prv 'b Part)
-    (put Part 'c Prv)
-    
-    # Delete entire list
-    (del> Ref T T)
-    
-    # Hmm, what about sublists?
-
-    (upd-tree)
-    (mov-*1 *line)        
-        
-    # Put Ptr above new part
-    (put *0 'b (get Part 'b))
-    (mov-cur-abv (get Part 'b))
-    (lay-part-start *0 *line 'skip-cdr)))    
-    
-    
-(de cmd-split-space (Keysym)
-
-  (prinl-info "cmd-split-space")
-  
-  # This generates a list so how to draw it?
-  #
-  # abc_def_ghi
-  # ->
-  # (abc def ghi)
-  #
-  
-  (let (Ref (if (get *line 'l) @ *line)
-        Line (get Ref 'c)
-        Prv (get Ref 'c)
-        List (mapcar pack (split (chop (car (get Ref 'data))) "_")))
-    
-    # Del everything but last part
-    (setq End Ref)
-    (until (isa '(+Nil) End)
-      (del> End T NIL)
-      (setq End (get End 'b)))
-    
-    (for Data List
-    
-      (let Part (gen-part (list Data) 'x NIL T)
-        
-        # T must be NIL to skip
-        (con-sym Prv Part T)
-        
-        (setq Prv Part)))
-
-    (put-line Ref (get Line 'b))
-        
-    (b> Prv End)    
-    
-    (upd-tree)
-    (mov-*1 *line)        
+      (let (End Ref
+            (Sta Lst) (build-str End)
+            Data (pack Lst))
             
-    # Put Ptr above new part
-    (put *0 'b End)
-    (mov-cur-abv End)
-    (lay-part-start *0 *line 'skip-cdr)))
+        (println 'cmd-pack Sta (get Sta 'data) "TO" End (get End 'data))
+      
+        (repl-line-str Sta End Data)))))
+
+        
+(de cmd-chop (Keysym)
+
+  (prinl-info "cmd-chop")
+
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))  
+  
+      (let (Sta (get Ref 'c)
+            End (get Ref 'b)
+            List (chop (get Ref 'a 'data)))
+      
+        # Add list, item by item
+        (let Prv Sta
+        
+          (for Data List
+          
+            (let Part (gen-part (list Data) 'x NIL T)
+              
+              # T must be NIL to skip
+              (con-sym Prv Part T)
+              
+              (setq Prv Part)))
+
+          (b> Prv End))
+        
+        (println Ref (get Ref 'data) (get Ref 'line))
+        (put-line Ref (get Sta 'b))
+        
+        # Del Ref except Cdr
+        (del-car> Ref)    
+        
+        (upd-tree)
+        (mov-*1 *line)        
+                
+        # Put Ptr above new part
+        (put *0 'b End)
+        (mov-cur-abv End)
+        (lay-part-start *0 *line 'skip-cdr)))))
+        
+
+########################
+    
+(de cmd-glue-sp (Keysym)
+
+  (prinl-info "cmd-glue-sp")
+  
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a)) 
+  
+      (let (End Ref
+            (Sta Lst) (build-str End)
+            Data (glue "_" Lst))
+            
+        (println 'cmd-glue-sp Sta (get Sta 'data) "TO" End (get End 'data))
+            
+        (repl-line-str Sta End Data)))))
+    
+    
+(de cmd-split-sp (Keysym)
+
+  (prinl-info "cmd-split-sp")
+  
+  # Split current Ref by space
+  
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))
+      
+      (let (Sta (get Ref 'c)
+            End (get Ref 'b)
+            List (mapcar pack (split (chop (get Ref 'a 'data)) "_")))
+        
+        # Add list, item by item
+        (let Prv Sta
+        
+          (for Data List
+          
+            (let Part (gen-part (list Data) 'x NIL T)
+              
+              # T must be NIL to skip
+              (con-sym Prv Part T)
+              
+              (setq Prv Part)))
+
+          (b> Prv End))
+        
+        (println Ref (get Ref 'data) (get Ref 'line))
+        (put-line Ref (get Sta 'b))
+        
+        # Del Ref except Cdr
+        (del-car> Ref)    
+        
+        (upd-tree)
+        (mov-*1 *line)        
+                
+        # Put Ptr above new part
+        (put *0 'b End)
+        (mov-cur-abv End)
+        (lay-part-start *0 *line 'skip-cdr)))))
 
 
 (de cmd-swap-layout (Keysym)
@@ -317,7 +323,6 @@
     (if *on-car
         (make-list Ref)
         (make-line Ref))))
-        
 
 
 (de cmd-mov-bl (Keysym)
@@ -351,7 +356,6 @@
 
 #####################
 
-(de cmd-chop (Keysym) (prinl-info "cmd-chop"))
 (de cmd-eval () (prinl-info "cmd-eval"))
 (de cmd-intern (Keysym) (prinl-info "Use (intern <data>)"))
 (de cmd-any (Keysym) (prinl-info "Use (any ...); str -> any"))

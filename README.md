@@ -28,11 +28,11 @@ The target audience consists of programmers, power users, information workers an
 * Local data first - no cloud dependency
 * Distributable - synchronize across multiple devices
 * Database backend (object persistence) - scalability and robustness
+  * Plain text (Lisp code) or binary (Lisp data)
 * Tag-based searching
 * Import/link any data including images, videos, audio, etc.
 * Export to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
-* Encryption - text and block-based
-* Web browser integration/clipper
+* Browser integration (aka web clipper)
 * Wayland/userspace integration
 
 
@@ -46,6 +46,7 @@ Advanced:
 * Code-specific support
 * Revision control
   * Tree diffs
+* Encryption - text and block-based
 * Ink-pen input; drawn annotations
 * Collaboration - separate related project
 

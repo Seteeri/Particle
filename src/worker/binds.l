@@ -55,8 +55,8 @@
   ((`ksd~Control-L `ksd~h) T `cmd-pack)
   ((`ksd~Control-L `ksd~j) T `cmd-chop)
   
-  ((`ksd~Control-L `ksd~y) T `cmd-glue-space)
-  ((`ksd~Control-L `ksd~u) T `cmd-split-space)
+  ((`ksd~Control-L `ksd~y) T `cmd-glue-sp)
+  ((`ksd~Control-L `ksd~u) T `cmd-split-sp)
   
   # cmd-reverse
   # cmd-flip

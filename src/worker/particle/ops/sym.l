@@ -271,3 +271,36 @@
     (lay-part-start *0 *line 'skip-cdr)    
     
     Part))
+    
+    
+(de repl-line-str (Sta End Data)
+
+  # Replace line of strings with op
+
+  (let (Prv (get Sta 'c)
+        Part (gen-part (list Data) 'x))
+        
+    # Prv <-> Part
+    (b> Prv Part)
+    # Part <-> End'b
+    (when (get End 'b)
+      (del> (get Part 'b) T T)
+      (b> Part (get End 'b)))
+    
+    (when (get Sta 'line)
+      (put-line Sta Part))
+    
+    # Inclusive
+    (del-rx Sta End)
+    
+    # Later, move this group to undo/cmd list
+    
+    (upd-tree)
+    (mov-*1 *line)        
+        
+    # Put Ptr above new part
+    (put *0 'b (get Part 'b))
+    (mov-cur-abv (get Part 'b))
+    (lay-part-start *0 *line 'skip-cdr)))
+    
+    
