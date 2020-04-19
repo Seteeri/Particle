@@ -96,23 +96,12 @@
       (b> C A))))
     
 
-(dm del> (Car Cdr)
+(dm del> (A B)
 
   #{
-    Currently, render will attempt to render all verts (*max-verts)
-    -> Send cmd to render to adjust max
-    - instanceCount is number of instances from beginning of array
-    *verts is LIFO, thus will always keep instances pack from beginning of array
-    -> Maintain vert cnt, instanceCount = size - used
-
-    However, if del from arbitrary point then must zero it
-    and instanceCount remains the same
-    After del, vert returns to queue
-    and next vert will reuse it
-
-    Makes most sense to simply zero vert
-    and not worry about instanceCount
-    as frag will be discarded...fix later
+    Render will render *max-verts
+    * Poss send cmd to render to adjust instance count
+      * verts is LIFO - always keeps instances contiguous
   }#
 
   (let Sock-Render (ipc~get-fd> *ipc "RENDER")
@@ -123,23 +112,20 @@
       (push '*verts Vert)
       (dec '*cnt-v)))
 
-  (when (and Car (: a))
-    (del> (: a) Car Cdr))
+  (when (and A (: a)) (del> (: a) A B))
 
-  (when (and Cdr (: b))
-    (del> (: b) Car Cdr))
+  (when (and B (: b)) (del> (: b) A B))
 
   #(println 'del> This (: data))
-
-  # Clear links and flags?
-  #(=: a)
-  #(=: b)
-  #(=: c)
-  #(=: line) # Remove from p/n
-  #(=: data)
-  )
+  
+  This)
 
 
+(dm del-car> ()
+  (when (: a) (del> @ T T))
+  (del> This NIL NIL))
+
+  
 (dm mov> (Pos)
 
   # Check first vert
@@ -321,15 +307,18 @@
     
 
 ######################
-      
+
+(de del-rx (Sta End)  
+  (let P Sta
+    (until (= P End)        
+      (del-car> P)
+      (setq P (get P 'b)))
+    (del-car> P)))
+
 (de con-all (Parts)
-
   (let Prv (car Parts)
-  
     (for Part (cdr Parts)     
-
       (b> Prv Part)
-            
       (setq Prv Part))))
 
 
@@ -415,17 +404,18 @@
   # Go prv until Sym, non-Str or newline
   (let (P Start
         D NIL)
-    
+        
     (while (and (isa '(+Str) (get P 'a))
                 (not (isa '(+Sym) P))
-                (not (get P 'line 'p)))
-              
+                (not (get P 'line)))
+      
       (push 'D (get P 'a 'data))
       
       (setq P (get P 'c)))
     
-    (when (and (isa '(+Str) (get P 'a))
-                (not (isa '(+Sym) P)))
-      (push 'D (get P 'a 'data)))
+    (if (and (isa '(+Str) (get P 'a))
+             (not (isa '(+Sym) P)))
+      (push 'D (get P 'a 'data))
+      (setq P (get P 'b)))
     
     (list P D)))

@@ -170,32 +170,27 @@
   
   # Reuse strs
   
-  # Two situations
-  # 1. List is Cdr (pair/sym)
-  # 2. List is Car (list)
+  # Check for invalid refs- only pack when End is Sym
   
-  (let (Ref (get *0 'b)
-        (Sta Lst) (build-str (get Ref 'c))
+  (let (End (get *0 'b)
+        (Sta Lst) (build-str (get End 'c))
         Prv (get Sta 'c)
         Part (gen-part (list (pack Lst)) 'x))
         
-    (println "Del" Sta (get Sta 'data) "TO" Ref (get Ref 'data))
+    (println 'cmd-pack Sta (get Sta 'data) "TO" End (get End 'data))
         
-    # Link new Part
+    # Prv <-> Part
     (b> Prv Part)
-    (when (get Ref 'b)
+    # Part <-> End'b
+    (when (get End 'b)
       (del> (get Part 'b) T T)
-      (b> Part (get Ref 'b)))
+      (b> Part (get End 'b)))
     
     (when (get Sta 'line)
       (put-line Sta Part))
     
-    # Delete Sta to Ref (inclusive)
-    (let P Sta
-      (until (= P Ref)
-        (del> P T NIL)
-        (setq P (get P 'b))
-      (del> P T NIL)))
+    # Inclusive
+    (del-rx Sta End)
     
     (upd-tree)
     (mov-*1 *line)        
