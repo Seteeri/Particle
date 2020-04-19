@@ -161,8 +161,6 @@
 
 #####################
 
-# cmd-chop = chop last item
-
 # Reuse strs for these fns
 
 (de cmd-pack-syms (Keysym)
@@ -234,9 +232,9 @@
 
 ########################
     
-(de cmd-glue-sp (Keysym)
+(de cmd-glue-sp-syms (Keysym)
 
-  (prinl-info "cmd-glue-sp")
+  (prinl-info "cmd-glue-sp-syms")
   
   (let Ref (get *0 'b)
   

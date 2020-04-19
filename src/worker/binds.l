@@ -51,12 +51,14 @@
   # split-space (word) : glue " ", 
   # chop (letter) : glue "", pack      
   # reverse, flip
+  #
   # cmd-pack-list - ref must be a list or start of list
+  # cmd-glue-sp-list - ref must be a list or start of list
   
   ((`ksd~Control-L `ksd~h) T `cmd-pack-syms)
   ((`ksd~Control-L `ksd~j) T `cmd-chop)
   
-  ((`ksd~Control-L `ksd~y) T `cmd-glue-sp)
+  ((`ksd~Control-L `ksd~y) T `cmd-glue-sp-syms)
   ((`ksd~Control-L `ksd~u) T `cmd-split-sp)
   
   # cmd-reverse
