@@ -17,7 +17,7 @@ The computing landscape has been reshaped significantly since the days of the Li
 
 As much as a Lisp Machine from scratch would be intriguing, for it to be actual useful would be highly energy intensive and fundamentally require commercial support; even then, only with specialized hardware could it be remotely competitive with existing technology. So I believe a more pragmatic approach from the top-down by building a userspace will allow us to get there.
 
-Currently, plans are to initially support Linux and Android. Once Pil21 is done, a native solution can be provided for Windows and Mac/iOS platforms. Until then, a web interface may be developed in lieu of for those sytems.
+Currently, plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done, a native solution can be provided. Until then, a HTML/WebGL interface may be developed in conjunction.
 
 I do have the Pinephone on the way so I will also be testing it on that device to hopefully develop a mobile interface and any other devices I can get my hands on...
 
@@ -39,7 +39,7 @@ The target audience consists of programmers, power users, information workers an
 Advanced:
 
 
-* Fuzzy search/auto-completion
+* Fuzzy string matching
   * Tag suggestions
 * OCR
   * Integration of tesseract library

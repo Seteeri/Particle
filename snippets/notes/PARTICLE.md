@@ -53,38 +53,36 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
     
-  * Refactor [Sun]
-    * Refactor cmd-del
-    * Refactor pack et al
-    * Implement cmds Q/E : start/end of list
-    * Refactor point
-    * Refactor ops into methods
+  * Refactor [Mon]
     * Fix space glyph
     * Handle multi-line strings
+    * Implement cmds Q/E : start/end of list
+    * Refactor cmd-del
+    * Refactor point
+    * Refactor ops into methods
     * Refactor line fns
     
-  * Refactor bindings [Sat]
+  * Bindings [Tyes]
     * Improve discoverability - user sees it immediately
-      * Once they are adv enough, they can remove it from default setup...
+      * Once adv enough, user can remove it from default setup ;)
     * Group commands into diff syms
       * Majority is ascii/str keys
     * Either show *bindinds-key or *binds directly
       * Show more aesthetic one and use fn to modify
       * Store key syms and fn syms
         * Get val when called
-    * SEARCH IS THE KEY TO DISCOVERABILITY
-      * Google's interface
-      * Make as easy and intuitive to access help
-        * Bind F1
-        * (eval "help") (eval 'help)
     
-  * Replace font with terminus? [Sun]
-      
-  * List/Atomic Ops [Thr?]
-    * cmd-del, cmd-backspace...
-    * Replace input with output
-    
-  * Str Ops
+  * Replace font with terminus? [Tues]
+  
+  * Logging System
+    * Log commands
+  
+  * Cam
+    * Camera needs to move with content like when entering a newline
+      * Requires unproject to test if coord is in the viewport
+      * When a new item is entered, check its bnds against the view bounds  
+  
+  * Str Ops [Wed]
     * Core
     * Basic search/replace (strs)
       * Essentially, searching symbol props
@@ -97,19 +95,11 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Lists can be sorted
       * Output can then be merged
     * Pattern matching
-  
-  * Logging System
-    * Log commands
-    
-  * Cam
-    * Camera needs to move with content like when entering a newline
-      * Requires unproject to test if coord is in the viewport
-      * When a new item is entered, check its bnds against the view bounds    
-  
-  * Eval
-    * Quick demo
-  
+          
   * Why is xkb in worker? Should be in ctrl []
+  
+  * Eval/CLI
+    * Put output on newlist in newline
   
   ----------------
     
@@ -138,7 +128,14 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * CUA
         
   * CLI
-    * Plain list  
+    * Plain list
+  
+  * SEARCH IS THE KEY TO DISCOVERABILITY
+    * Google's interface
+    * Make as easy and intuitive to access help
+      * Bind F1
+      * (eval "help") (eval 'help)
+    * Fuzzy-search
   
   * Refactor [Nxt Week]
     * Technically '*list and '*main can be different, i.e. sublist can be on

@@ -19,9 +19,9 @@
   }#
 
   (let (Data (when Keysym
-               (cond ((= Keysym ksd~space) "_")
-                     ((= Keysym ksd~Return) (char 10))
-                     ((= Keysym ksd~Tab) (char 10))
+               (cond ((= Keysym ksd~space) " ")
+                     ((= Keysym ksd~Return) " ")
+                     ((= Keysym ksd~Tab) " ")
                      (T (char Keysym))))
         Lay 'x)
 
