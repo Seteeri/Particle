@@ -63,8 +63,8 @@
 
 (de init-sockaddr (Family Path)
   #{
-  (sun-family :ushort) #sa_family_t = unsigned short int
-  (sun-path :char :count 108)
+    (sun-family :ushort) #sa_family_t = unsigned short int
+    (sun-path :char :count 108)
   }#
 
   (let Ptr (native "@" "malloc" 'N (+ 2 108))
@@ -93,9 +93,9 @@
         Sockaddr (init-sockaddr 1 Path))
 
     #{
-    Retry:
-    >N= Delay
-    <0 = Once
+      Retry:
+      >N= Delay
+      <0 = Once
     }#
 
     (if (> Retry 0)
@@ -141,43 +141,42 @@
 
 
 (de accept (Sock Block)
-    #{
+  #{
     For nonblocking, will either return a valid fd (> 0)
     or it will fail and set errno to e-again or e-wouldblock
     Any other errno indicates failure somewhere else
 
     flags=0 - same as accept
-    }#
+  }#
 
-    (let (Sockaddr     (native "@" "malloc" 'N 110)
-          Sockaddr-Len (native "@" "malloc" 'N 4))  #socklen_t
+  (let (Sockaddr     (native "@" "malloc" 'N 110)
+        Sockaddr-Len (native "@" "malloc" 'N 4))  #socklen_t
 
-      (struct Sockaddr-Len 'N (cons SOCKADDR-LEN 4))
+    (struct Sockaddr-Len 'N (cons SOCKADDR-LEN 4))
 
-      (let Ret (accept-4 Sock
-                         Sockaddr
-                         Sockaddr-Len
-                         (if Block 0 SOCK-NONBLOCK))
+    (let Ret (accept-4 Sock
+                        Sockaddr
+                        Sockaddr-Len
+                        (if Block 0 SOCK-NONBLOCK))
 
-        (native "@" "free" NIL Sockaddr)
-        (native "@" "free" NIL Sockaddr-Len)
+      (native "@" "free" NIL Sockaddr)
+      (native "@" "free" NIL Sockaddr-Len)
 
-        Ret)))
+      Ret)))
 
 
 (de end (Sock)
-
-    (shutdown Sock SHUT-RDWR)
-    (native "@" "close" NIL Sock))
-
-
-(de read-rmem-default ()
-  (pipe
-   (call "cat" "/proc/sys/net/core/rmem_default")
-   (read)))
+  (shutdown Sock SHUT-RDWR)
+  (native "@" "close" NIL Sock))
 
 
-(de read-wmem-default ()
-  (pipe
-   (call "cat" "/proc/sys/net/core/wmem_default")
-   (read)))
+# single-str: (in '(ls) (till NIL T))
+(de get-rmem-default ()
+  (in '("cat" "/proc/sys/net/core/rmem_default")
+      (until (eof)
+        (format (line T)))))
+
+(de get-wmem-default ()
+  (in '("cat" "/proc/sys/net/core/wmem_default")
+      (until (eof)
+        (format (line T)))))

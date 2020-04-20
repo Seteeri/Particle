@@ -32,12 +32,6 @@
 (def '*ipc)
 
 
-(de get-rmem-default ()
-  (pipe
-   (call "cat" "/proc/sys/net/core/rmem_default")
-   (read)))
-
-
 (de init-input ()
 
   (setq *ipc (new '(ipc~+IPC)
