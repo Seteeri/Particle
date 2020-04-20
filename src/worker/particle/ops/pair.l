@@ -224,8 +224,20 @@
     # C -> Part -> Ref
     (unless (isa '(+Sym) C)
       (put C 'line 'n Part))
-    (put Ref 'line 'p Part)
-    (put Ref 'line 'l (if (get Part 'line 'l) @ Part))
+      
+    (with Ref
+      (if (: line)
+          (with (: line)
+            (=: p Part)
+            (=: n (get *line 'line b))
+            (=: l (get Part 'line 'l)))
+          (=: line (new '(+Line)
+                        Part
+                        (get *line 'line b)
+                        (get Part 'line 'l)))))
+        
+    (println 'make-cons-car-x-nil Ref (get Ref 'data) (get Ref 'line))
+    (view (getl Ref))
         
     (upd-tree)
     (mov-*1 *line)

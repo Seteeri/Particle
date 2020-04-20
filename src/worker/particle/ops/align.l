@@ -19,7 +19,7 @@
         #Ori-CA (get Part 'c 'a 'ori)
         #Dims-CA (get Part 'c 'a 'line 'dims)
 
-    (when NIL
+    (when T
       (println 'align-cur-to-line-y 
               Part (get Part 'data) 
               'to 
