@@ -33,7 +33,7 @@
 
     (=: mat-view    (when Mat-view Mat-view))
 
-    (=: pos    (if Pos Pos (46.0 -5.0 10.0)))
+    (=: pos    (if Pos Pos (47.0 -4.0 10.0)))
     (=: rot    (if Rot Rot (0.0 0.0 0.0)))
 
     #scale is (1.0 1.0 1.0)...

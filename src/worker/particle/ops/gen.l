@@ -58,10 +58,12 @@
 
   # Name any will fail for box; must use 'sym
 
+  (println 'gen-sym Any (get-color-type Any))
+  
   (let (Ar (name Any) 
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
-        (Verts-Car Wid-Car) (draw-atom Ar (get-color-type 0) Adv)
+        (Verts-Car Wid-Car) (draw-atom Ar (get-color-type Any) Adv)
         Part-Car (unless Car-Skip
                   # Num type but content is a string
                   (new '(+Num)

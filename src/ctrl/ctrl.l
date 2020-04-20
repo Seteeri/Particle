@@ -43,6 +43,16 @@
 
 (def 'PATH-GLYPHS "/home/user/Particle/particle/src/glyphs")
 
+# Constants
+(def '*glyph-dims '(96.0 96.0))
+(def '*sca-vert  (*/ 1.0 1.0 96.0)) # vertex scale = 1/96.0
+(def '*sca-glyph 5.8239365) # msdf param, mul by shape units -> px units, used by metrics
+(def '*adv-glyph 9.375) # msdf param, mul by sca-glyph to get proper adv
+# assumes all verts are scaled the same
+(def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
+(def '*adv-vert-2  (+ *adv-vert *adv-vert))
+(def '*adv-vert-3  (+ *adv-vert-2 *adv-vert))
+
 #Globals
 (def '*q-worker)
 (def '*q-msg)
@@ -50,8 +60,6 @@
 (def '*timerfd)
 (def '*delay-rep 400) # ms
 (def '*delay-int 40)  # ms
-(def '*sca-vert (*/ 1.0 1.0 96.0))
-(def '*sca-glyph 5.8239365) # MSDF/tex parameter
 
 
 (de init-verts ()

@@ -1,11 +1,3 @@
-#{
-  TODO: 
-  * Batch updates
-}#
-
-
-(def '*space-line (+ *adv-vert *adv-vert))
-
 # bg:fg/text = base03:base0
 
 (def '*col-base-03 (list (*/ 1.0 0.0   255.0) (*/ 1.0 43.0  255.0) (*/ 1.0 54.0  255.0)))
@@ -31,37 +23,42 @@
 
 (de get-color-type (Any)
   #{
-    Violet = SYM
-    Blue = NUM/STR
-    Cyan = Box
-    Green = Ext
-    Yellow = NIL/T
-    Orange = 
-    Red = 
-    Magenta = 
+                        Cell
+                          |
+              +-----------+-----------+
+              |           |           |
+           Number       Symbol       Pair
+                          |
+                          |
+     +--------+-----------+-----------+
+     |        |           |           |
+    NIL   Internal    Transient    External  
 
-    * What to use base colors for?
-    * Comments are considered strings
-      * When save/load, use a form: (com blah)
-    * Other possibilities: built-in keywords
-    * Make STR base-01/base-0
-      * Double Quotes and Delimeters base-0 (less noticeable)
-    * Comments are really just strings...
-      * On load: convert to STR
-      * On save: convert to comment
+    Yellow = NIL (T?)
+    Orange = Num
+    Red = Pair
+    Magenta = Builtins
+    
+    Violet = Int/Sym
+    Blue = Str/Sym/Trans
+    Cyan = Ext/Sym
+    Green = Box/Sym/Trans
+
+    Base = List
+    
+    White/Black = Ptrs
   }#
 
   # Adjust brightness for time...or alpha?
 
-  (cond ((== Any NIL) *col-yellow)
-        ((lst? Any) *col-base-0)
-        (T
-         (cond ((== Any T)  *col-yellow)
-               ((num? Any)  *col-blue)
-               ((box? Any)  *col-orange)
-               ((str? Any)  *col-base-01)
-               ((ext? Any)  *col-magenta)
-               ((sym? Any)  *col-violet)))))
+  (cond ((or (== Any NIL)
+             (== Any T))  *col-yellow)
+        ((lst? Any)       *col-base-0)
+        ((num? Any)       *col-orange)
+        ((box? Any)       *col-green)
+        ((str? Any)       *col-blue)
+        ((ext? Any)       *col-cyan)
+        ((sym? Any)       *col-violet)))
 
 
 (def '*char-dot (char 183))

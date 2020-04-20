@@ -19,10 +19,10 @@
     (cmd-upd-pv *ipc))
 
 
-(de cmd-move-cam-px (Keysym) (cmd-move-cam '(2.0   0.0)))
-(de cmd-move-cam-nx (Keysym) (cmd-move-cam '(-2.0  0.0)))
-(de cmd-move-cam-py (Keysym) (cmd-move-cam '(0.0    2.0)))
-(de cmd-move-cam-ny (Keysym) (cmd-move-cam '(0.0   -2.0)))
+(de cmd-move-cam-px (Keysym) (cmd-move-cam (list *adv-vert-2     0.0)))
+(de cmd-move-cam-nx (Keysym) (cmd-move-cam (list (- *adv-vert-2) 0.0)))
+(de cmd-move-cam-py (Keysym) (cmd-move-cam (list 0.0 *adv-vert-2)))
+(de cmd-move-cam-ny (Keysym) (cmd-move-cam (list 0.0 (- *adv-vert-2))))
 
 
 (de cmd-zoom-cam (Delta)
@@ -38,5 +38,5 @@
   (cmd-upd-pv *ipc))
 
 
-(de cmd-zoom-cam-in  (Keysym) (cmd-zoom-cam -2.0))
-(de cmd-zoom-cam-out (Keysym) (cmd-zoom-cam  2.0))
+(de cmd-zoom-cam-in  (Keysym) (cmd-zoom-cam -1.0))
+(de cmd-zoom-cam-out (Keysym) (cmd-zoom-cam  1.0))
