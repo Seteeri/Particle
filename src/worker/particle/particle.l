@@ -136,7 +136,7 @@
   
     (with Vert
       (=: pos Pos)
-      (upd-gly> Vert (char (: chr))))
+      (upd-gly> Vert))
       
     (upd-mod-mat> Vert)
     (cmd-upd-vert *ipc Vert)
@@ -176,7 +176,7 @@
         
             (with Vert
               (=: pos Pos)
-              (upd-gly> Vert (char (: chr))))
+              (upd-gly> Vert))
               
             (upd-mod-mat> Vert)
             (cmd-upd-vert *ipc Vert)

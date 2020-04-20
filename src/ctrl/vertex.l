@@ -47,7 +47,9 @@
 
 (dm upd-gly> (Chr)
   
-  (=: chr (char Chr))
+  (when Chr
+    (=: chr (char Chr)))
+
   (=: off-texel (* (- (: chr) 1)
                    (get *dims-tex-node 1)
                    (get *dims-tex-node 2)))
