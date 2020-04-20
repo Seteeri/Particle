@@ -63,12 +63,6 @@ own proc
 
 
 (de main ()
-
-  #{
-    (def '*sca-vert 0.008)
-    (def '*sca-glyph 5.8239365) # MSDF/tex parameter
-    (def '*adv-glyph 9.375)       # MSDF/tex parameter
-  }#
   
   (let Home (pack (pwd) "/src/")
         

@@ -7,6 +7,8 @@
                        (gl~dl-prg *paths-rast-vert-shader
                                   *paths-rast-frag-shader
                                   *path-prog-rast)))
+                                  
+  (println 'init-rast *prog-rast)
     
   (gl~use-program *prog-rast)
 
@@ -19,7 +21,9 @@
   (when TEST-GLYPH (init-tex-glyphs))
   (init-di)
   (init-verts)
-  (init-el))
+  (init-el)
+  
+  (println 'init-rast "DONE"))
 
 
 (de init-buffs-rast ()
@@ -67,16 +71,16 @@
   #{
     To load faster, convert files to bin and do memcpy
   }#
- (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
-       Off 0)
-    (for Code 255
-       (let Path-Glyph (pack PATH-GLYPHS "/tex/" Code "-data.l")
-          #(prinl (usec) " | RENDER | init-tex-glyphs | " Code "-data.l...")
-          #More idiomatic way to do this...
-          (let Data (any (in Path-Glyph (till NIL T)))
-            (for B Data
-              (struct (+ Ptr Off) 'N (cons B 1))
-              (inc 'Off)))))))
+  (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
+        Off 0)
+      (for Code 255
+        (let Path-Glyph (pack PATH-GLYPHS "/tex/" Code "-data.l")
+            #(prinl (usec) " | RENDER | init-tex-glyphs | " Code "-data.l...")
+            #More idiomatic way to do this...
+            (let Data (any (in Path-Glyph (till NIL T)))
+              (for B Data
+                (struct (+ Ptr Off) 'N (cons B 1))
+                (inc 'Off)))))))
 
 
 (de init-di ()

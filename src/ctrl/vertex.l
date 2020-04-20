@@ -58,8 +58,8 @@
       (prinl-info "upd-gly>" (pack "Unable to find metrics: " (: chr)))) 
         
     (=: uv (get Metrics 'uv))
-    (=: pos (get-pos> Metrics (: pos) *sca-vert))
-    (=: sca (get-sca> Metrics *sca-vert))))
+    (=: pos (pos> Metrics (: pos) *sca-vert))
+    (=: sca (sca> Metrics *sca-vert))))
         
          
 (dm upd-mod-mat> ()

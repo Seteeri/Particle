@@ -56,12 +56,16 @@
 (def 'PATH-GLYPHS      "/home/user/Particle/particle/src/glyphs")
 
 # Constants
-(def '*sca-vert  (*/ 1.0 1.0 96.0))
-(def '*sca-glyph 5.8239365)   # MSDF/tex parameter
-(def '*adv-glyph 9.375)       # MSDF/tex parameter
+(def '*glyph-dims '(96.0 96.0))
+(def '*sca-vert  (*/ 1.0 1.0 96.0)) # vertex scale = 1/96.0
+(def '*sca-glyph 5.8239365) # msdf param, mul by shape units -> px units, used by metrics
+(def '*adv-glyph 9.375) # msdf param, mul by sca-glyph to get proper adv
+
+# assumes all verts are scaled the same
 (def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
 (def '*adv-vert-2  (+ *adv-vert *adv-vert))
 (def '*adv-vert-3  (+ *adv-vert-2 *adv-vert))
+
 (def 'KEY-REPEAT 2)
 (def '*sublist-space-y 2.0)
 
@@ -84,14 +88,14 @@
 (def '*cmds) # List of commands (undo/history/timeline)
 (def '*ptrs) # List of pointers
 
-(def '*cur (list 0.0 0.0 0.0)) # Used when drawing; not literally drawn
+(def '*cur (list 0.0 0.0 0.0)) # for drawing. not literally drawn
 
 
 (de init-worker ()
   
   (setq *i-proc 1)
 
-  (setq *metrics (load-metrics *sca-glyph)) 
+  (setq *metrics (load-metrics)) 
   
   (setq *ipc (new '(ipc~+IPC)
                     (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client

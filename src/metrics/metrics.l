@@ -15,14 +15,13 @@ Quotient of N and D = (*/ 1.0 N D)
 # TODO: Move these out to caller
 
 (de load-file-metrics-data (Code)
-
-  (let Path-Glyph (pack PATH-GLYPHS "/metrics/" Code "-metrics.l")
-
-    #(prinl (usec) " | MODEL | load-file-metrics-data | " Code "-metrics.l ...")
+  (let Path-Glyph (pack PATH-GLYPHS
+                        "/metrics/"
+                        Code "-metrics.l")
     (eval (any (in Path-Glyph (till NIL T))))))
 
 
-(de load-metrics (Sca-Glyph)
+(de load-metrics ()
 
   (let Metrics ()
 
@@ -34,12 +33,12 @@ Quotient of N and D = (*/ 1.0 N D)
 
         # When no bounds max it
         (with Metric-Glyph
-          (unless (: bounds)
+          (unless (: bnds)
             # (* 7.74184810394 2.0) = 15.48369620788
             # l b r t
-            (=: bounds (list 0.0 0.0 15.48369620788 15.48369620788))))
+            (=: bnds (list 0.0 0.0 15.48369620788 15.48369620788))))
           
-        (calc-metrics> Metric-Glyph Sca-Glyph)
+        (calc-metrics> Metric-Glyph)
 
         (push 'Metrics Metric-Glyph)))
 
@@ -63,106 +62,102 @@ Quotient of N and D = (*/ 1.0 N D)
 
 # Per set of glyphs
 (class +Metrics)
-(dm T (Translate
-       Bounds)
-  (=: translate Translate)
-  (=: bounds Bounds)
-  (=: bounds-tex NIL)
+(dm T (Tra
+       Bnds)
+  (=: tra Tra)
+  (=: bnds Bnds)
+  (=: bnds-tex NIL)
   (=: dims NIL)
-  (=: ratio-aspect NIL)
+  (=: ar NIL)
   (=: uv NIL))
 
 
-# Scale and advance the same (adv bc monospaced)
-# Merge metrics and data(ppm) into single file
-# Calculate other params and save to file so need not do everytime
+# Precalc these when generating metadata
 
+(dm calc-metrics> ()
 
-(dm calc-metrics> (Sca-Glyph)
+    # bnds: l b r t
 
-    # Convert bounds from shape units to pixel units by multiplying by scale
-    # Bounds is relative to origin so neg values possible
-    (=: bounds (list (*/ (get (: bounds) 1) Sca-Glyph 1.0)
-                     (*/ (get (: bounds) 2) Sca-Glyph 1.0)
-                     (*/ (get (: bounds) 3) Sca-Glyph 1.0)
-                     (*/ (get (: bounds) 4) Sca-Glyph 1.0)))
+    # sca-glyph * shape units = pixel units
+    # Bounds is rel to ori so neg nums possible
+    (=: bnds 
+        (list (*/ (get (: bnds) 1) *sca-glyph 1.0)
+              (*/ (get (: bnds) 2) *sca-glyph 1.0)
+              (*/ (get (: bnds) 3) *sca-glyph 1.0)
+              (*/ (get (: bnds) 4) *sca-glyph 1.0)))
 
-    # Calculate bounding box for glyph (for drawing the texture)
-    # l b r t
-    # First, get origin which may have moved to create enough space
-    # for distance field, then add bounds
-    (=: bounds-tex (list (+ (*/ (get (: translate) 1) Sca-Glyph 1.0) (get (: bounds) 1))
-                         (+ (*/ (get (: translate) 2) Sca-Glyph 1.0) (get (: bounds) 2))
-                         (+ (*/ (get (: translate) 1) Sca-Glyph 1.0) (get (: bounds) 3))
-                         (+ (*/ (get (: translate) 2) Sca-Glyph 1.0) (get (: bounds) 4))))
-
-    # Dims of bbox
-    (=: dims (list (- (get (: bounds-tex) 3) (get (: bounds-tex) 1))
-                   (- (get (: bounds-tex) 4) (get (: bounds-tex) 2))))
+    # bbox (for tex draw) rel to 
+    # 1. Get origin which may have moved during gen to create enough space for df
+    # 2. Add bnds
+    # 3. Expand by 1.0 since ori=(0,0)
+    (=: bnds-tex 
+        (list (+ (*/ (car  (: tra)) *sca-glyph 1.0) (get (: bnds) 1) -1.0)
+              (+ (*/ (cadr (: tra)) *sca-glyph 1.0) (get (: bnds) 2) -1.0)
+              (+ (*/ (car  (: tra)) *sca-glyph 1.0) (get (: bnds) 3) 1.0)
+              (+ (*/ (cadr (: tra)) *sca-glyph 1.0) (get (: bnds) 4) 1.0)))
+    
+    # dims of bbox
+    (=: dims (list (- (get (: bnds-tex) 3) (get (: bnds-tex) 1))
+                   (- (get (: bnds-tex) 4) (get (: bnds-tex) 2))))
 
     # AR of bbox
-    (=: ratio-aspect (/ (get (: dims) 1)
-                        (get (: dims) 2)))
+    (=: ar (/ (car  (: dims))
+              (cadr (: dims))))
 
     # l b r t = 1 2 3 4
-    # origin (0,0) is considered bottom left corner so (1,1) is top right corner
+    # ori=(0,0)=bottom left
+    # so (1,1)=top right
     #
     # baseline.x - bounds.l
     # baseline.y - bounds.b
     # baseline.x + bounds.r
     # baseline.y + bounds.t
-    (=: uv (list (*/ 1.0 (get (: bounds-tex) 3) 96.0)
-                 (*/ 1.0 (get (: bounds-tex) 4) 96.0)
+    (=: uv (list (*/ 1.0 (get (: bnds-tex) 3) (car  *glyph-dims))
+                 (*/ 1.0 (get (: bnds-tex) 4) (cadr *glyph-dims))
                  0.0
-                 0.0   #r-t 1,1
-                 (*/ 1.0 (get (: bounds-tex) 3) 96.0)
-                 (*/ 1.0 (get (: bounds-tex) 2) 96.0)
+                 0.0   # r-t 1,1
+                 (*/ 1.0 (get (: bnds-tex) 3) (car  *glyph-dims))
+                 (*/ 1.0 (get (: bnds-tex) 2) (cadr *glyph-dims))
                  0.0
-                 0.0   #r-b 1,0
-                 (*/ 1.0 (get (: bounds-tex) 1) 96.0)
-                 (*/ 1.0 (get (: bounds-tex) 2) 96.0)
+                 0.0   # r-b 1,0
+                 (*/ 1.0 (get (: bnds-tex) 1) (car  *glyph-dims))
+                 (*/ 1.0 (get (: bnds-tex) 2) (cadr *glyph-dims))
                  0.0
-                 0.0   #l-b 0,0
-                 (*/ 1.0 (get (: bounds-tex) 1) 96.0)
-                 (*/ 1.0 (get (: bounds-tex) 4) 96.0)
+                 0.0   # l-b 0,0
+                 (*/ 1.0 (get (: bnds-tex) 1) (car  *glyph-dims))
+                 (*/ 1.0 (get (: bnds-tex) 4) (cadr *glyph-dims))
                  0.0
-                 0.0))) #l-t 0,1
+                 0.0))) # l-t 0,1
 
 
-(dm get-pos> (Pos Sca)
+(dm pos> (Ori Sca)
   #{
-    Glyph has been cropped to its bbox - adjust vert by bnds
+    Pos is the ori
+    Actual vert pos is rel to ori
+    Adj vert by bnds since glyph has been cropped to bbox/bnds
     
     For example, 'g' hangs below baseline,
-    its bottom bounds is negative,
-    y pos + y bnds, shifts glyph downward into proper pos
-    
-    Thus, baseline = pos - bnds
+    bottom bnds is neg,
+    y pos + y bnds (neg), shifts glyph downward into proper pos
   }#
 
-  (list (+ (get Pos 1) (*/ (get (: bounds) 1) Sca 1.0))
-        (+ (get Pos 2) (*/ (get (: bounds) 2) Sca 1.0))
+  (list (+ (car  Ori) (*/ (car  (: bnds)) Sca 1.0))
+        (+ (cadr Ori) (*/ (cadr (: bnds)) Sca 1.0))
         0.0))
 
 
 (dm ori> (Pos Sca)
   #{
-    Derive origin from Vertex position
+    Derive ori from pos
   }#
 
-  (list (+ (get Pos 1) (- (*/ (get (: bounds) 1) Sca 1.0)))
-        (+ (get Pos 2) (- (*/ (get (: bounds) 2) Sca 1.0)))
-        (get Pos 3)))
+  (list (+ (car  Pos) (- (*/ (car  (: bnds)) Sca 1.0)))
+        (+ (cadr Pos) (- (*/ (cadr (: bnds)) Sca 1.0)))
+        0.0))
 
 
-(dm get-sca> (Sca)
-  #{
-    Dims already scaled by sca-glyph
-  }#
-
-  #(println (format (*/ (get (: dims) 1) Sca 1.0) *Scl)
-  #         (format (*/ (*/ *adv-glyph *sca-glyph 1.0) Sca 1.0) *Scl))
-
-  (list (*/ (get (: dims) 1) Sca 1.0)
-        (*/ (get (: dims) 2) Sca 1.0)
+(dm sca> (Sca)
+  # Scale based on uv dims, not tex/glyph dims
+  (list (*/ (car  (: dims)) Sca 1.0)
+        (*/ (cadr (: dims)) Sca 1.0)
         Sca))

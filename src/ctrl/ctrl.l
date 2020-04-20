@@ -52,7 +52,6 @@
 (def '*delay-int 40)  # ms
 (def '*sca-vert (*/ 1.0 1.0 96.0))
 (def '*sca-glyph 5.8239365) # MSDF/tex parameter
-(def '*adv-glyph 9.375)       # MSDF/tex parameter
 
 
 (de init-verts ()
@@ -67,7 +66,7 @@
                      *color-vert-default
                      (list 0.0 0.0 0.0) # pos
                      (list 0.0 0.0 0.0) # rot=0, sca=global scale
-                     (list *sca-vert *sca-vert *sca-vert))
+                     (need 3 *sca-vert))
         (push 'Verts Vert)))
 
     (setq Verts (flip Verts))
