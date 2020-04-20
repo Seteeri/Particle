@@ -61,7 +61,7 @@
   (let (Ar (name Any) 
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
-        (Verts-Car Wid-Car) (draw-atom Ar (get-color-type Any) Adv)
+        (Verts-Car Wid-Car) (draw-atom Ar (get-color-type Any))
         Part-Car (unless Car-Skip
                   # Num type but content is a string
                   (new '(+Num)
