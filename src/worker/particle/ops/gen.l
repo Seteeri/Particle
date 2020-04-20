@@ -57,8 +57,6 @@
   # Draw dot again
 
   # Name any will fail for box; must use 'sym
-
-  (println 'gen-sym Any (get-color-type Any))
   
   (let (Ar (name Any) 
         Val (val Any)

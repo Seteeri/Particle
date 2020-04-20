@@ -34,10 +34,10 @@
             "/src/prot/conn.l"
             "/src/prot/msg.l"
             "/src/prot/obj.l"
-            "/src/ctrl/projview.l"
-            "/src/ctrl/vertex.l"                        
             "/src/ctrl/xkb.l"
-            "/src/ctrl/conn.l"))
+            "/src/ctrl/conn.l"
+            "/src/worker/projview.l"
+            "/src/worker/particle/vertex.l"))
 
 (def 'NAME-PID "CTRL")
 
