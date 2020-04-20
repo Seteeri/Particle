@@ -321,7 +321,7 @@
       # Caller will call upd-cur after this
       (setq *cur-x NIL)
     
-      (if (= (get (: c) 'lay) 'y)
+      (if (= (get (: c) 'lay) 'y) # or auto for pairs
           (align-cur-to-line-y This)
           (align-cur-to-line-x This)))
           

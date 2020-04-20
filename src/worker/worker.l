@@ -165,15 +165,14 @@
     # Won't need this with external syms  
   
     (def '*cmds (gen-part '*cmds 'x))
-    
-    (set-cur-x X)
-    (put *cmds 'lay 'y)
-    
+        
     # Must make lines
+    (put *cmds 'lay 'y)    
     (put *cmds 'line (new '(+Line) NIL (get *cmds 'b) NIL))
     (put *cmds 'b 'line (new '(+Line) *cmds NIL *cmds))
     
     # (mov-2> *cmds *cur)
+    (set-cur-x X)
     (lay-part-start *cmds *cmds)
 
     #################

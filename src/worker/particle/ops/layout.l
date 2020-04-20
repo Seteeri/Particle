@@ -52,7 +52,7 @@
   (with Part
     (let Dims (list (abs (- *cur-x (car (: ori))))
                     (abs (- *cur-y (cadr (: ori)))))
-      (=: dims Dims)
+      #(=: dims Dims)
       (when (: line)
         (put (: line) 'dims Dims)))))
 
@@ -134,13 +134,16 @@
     # For non-newline Cdr:
     # X = bnds of Car = cur-x
     # Y = origin of Pair
+    #
+    # Newline will override
     
-    # Newline will override these
+    # Don't bother since Cdr of Y always has newline
+    # (if (= (get Part 'c 'lay) 'x)
     (set-cur-x *cur-x) (adv-cur 2.0)
     (set-cur-y (get Part 'c 'ori 2))
     
-    #(println 'lay-pair-x "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
-    #(println 'lay-pair-x "Mov cur y to origin: " (format (get *cur 2) *Scl))
+    #(println 'lay-pair-x "Mov cur x to *cur-x: " (format (car *cur) *Scl))
+    #(println 'lay-pair-x "Mov cur y to origin: " (format (cadr *cur) *Scl))
     
     )
 
