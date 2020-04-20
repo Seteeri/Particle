@@ -33,12 +33,7 @@
   (setq *cur (mov> This *cur))
   (upd-cur)
     
-  # Pos cur for car
-  (setq *cur (: ori))
-    
-  # Use X dims
-  (set-cur-x (+ (get (: ori) 1) (get (: a) 'dims 1)))
-  (adv-cur))
+  (pos-cur-for-car-y> This))
   
   
 (dm pos-cur-for-car-x> ()
@@ -129,7 +124,7 @@
   (mov-cur-ori (: a))
   (nl-cur)
   This)
-
+  
 
 #################
 (class +Nil +Sym)

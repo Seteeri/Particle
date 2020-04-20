@@ -56,6 +56,10 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
   * Refactor [Mon]
     * Refactor metrics [Done]
     * Fix space glyph [Done]
+    * Refactor layout
+      * Verify upd-cur calls
+      * More refactor
+    * Gen calling draw fns - does not need to actually draw...
     * Simply str sym
       * Don't draw internal/intermediate cells - draw last
         * Maintain consistency

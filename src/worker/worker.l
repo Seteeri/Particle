@@ -156,23 +156,28 @@
 
 
 (de gen-def-parts ()
-  # Draw default global symbols/lists
-
-  # Root particles are stored in *particles
-  # *particles itself is not drawn
 
   (let ((X Y) *cur)
 
-    (idx '*particles
-          (def '*cmds
-               (gen-part '*cmds 'x))
-          T)
+    # Root particles are stored in *particles
+    # *particles itself is not drawn
+    #
+    # Won't need this with external syms  
+  
+    (def '*cmds (gen-part '*cmds 'x))
+    
     (set-cur-x X)
     (put *cmds 'lay 'y)
+    
+    # Must make lines
+    (put *cmds 'line (new '(+Line) NIL (get *cmds 'b) NIL))
+    (put *cmds 'b 'line (new '(+Line) *cmds NIL *cmds))
+    
+    # (mov-2> *cmds *cur)
     (lay-part-start *cmds *cmds)
 
-    #############################
-    # Generate main particle list
+    #################
+    # Gen/Draw *start
 
     (set-cur-x X)
     (set-cur-y Y)
@@ -184,18 +189,18 @@
     (with (get *start 'b)
       (=: line (new '(+Line) NIL NIL NIL (get *start 'a 'dims))))
       
-    (setq *pos-main (copy *cur))
-    (setq *line (get *start 'b))
-    (setq *master *start)
-      
+    (setq *pos-main (copy *cur)
+          *line (get *start 'b)
+          *master *start)
+    
+    # Force draw for first particle since ori=cur
+    (mov-2> *start *cur)
     (lay-part-start *start *line)
         
-    #######################
+    ##################
     # TODO: Draw *ptrs
-    (idx '*particles
-         (def '*0
-              (gen-part '*0 'x))
-         T)
+    
+    (idx '*particles (def '*0 (gen-part '*0 'x)) T)
 
     # Remove NIL
     (del> (get *0 'b) T T)
@@ -211,13 +216,15 @@
     #(lay-part-start *0 *cur 'skip-cdr)
     #(mov-part-abv> *0 (get *start 'b) (cons T))
     
+    ######
     # TEMP
+    
     (setq p1 *cmds)
 
     (idx '*particles (def '*1 (gen-part '*1 'y)) T)
     (del> (get *1 'b) T T)
-    (nl-cur -3.0)
-    (lay-part-start *1 *line)
+    #(nl-cur -3.0)
+    #(lay-part-start *1 *line)
 
     ############
     
@@ -225,7 +232,7 @@
     
     (when NIL
 
-      (let Part (gen-part '("a" "b" ("c" "d" "e" ("f"))) 'x)
+      (let Part (gen-part '("a" "b" ("c" "d" "e" ("f"))) 'y)
       
         # (put (get Part 'b 'b) 'lay 'y)
         # (put (get Part 'b 'b 'a 'b 'b) 'lay 'y)

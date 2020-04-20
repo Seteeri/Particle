@@ -126,6 +126,30 @@
   (del> This NIL NIL))
 
   
+(dm mov-2> (Pos)
+
+  # Check first vert
+  # If changed, change rest
+  # else, do nothing
+      
+  (for Vert (: verts)
+  
+    (with Vert
+      (=: pos Pos)
+      (upd-gly> Vert (char (: chr))))
+      
+    (upd-mod-mat> Vert)
+    (cmd-upd-vert *ipc Vert)
+
+    (setq Pos (place 1
+                    Pos
+                    (+ (car Pos) *adv-vert))))
+
+  (=: ori (ori> This))
+    
+  Pos)
+
+
 (dm mov> (Pos)
 
   # Check first vert
@@ -135,34 +159,40 @@
   (let? Vert (car (: verts))
     
     (if (= (ori> (get *metrics (get Vert 'chr))
-                          (get Vert 'pos)
-                          *sca-vert)
+                               (get Vert 'pos)
+                               *sca-vert)
            Pos)
     
         # Set to pos of last vert (mul by length)
         (prog
+          (println 'mov> "Skip: " This (: data))
           (setq Pos (list (+ (get Pos 1)
-                            (*/ *adv-vert (num-to-fl (length (: verts))) 1.0))
+                             (*/ *adv-vert (num-to-fl (- (length (: verts)) 1)) 1.0))
                           (get Pos 2))))
     
-        (for Vert (: verts)
+        (prog
         
-          (with Vert
-            (=: pos Pos)
-            (upd-gly> Vert (char (: chr))))
-            
-          (upd-mod-mat> Vert)
-          (cmd-upd-vert *ipc Vert)
+          (for Vert (: verts)
+        
+            (with Vert
+              (=: pos Pos)
+              (upd-gly> Vert (char (: chr))))
+              
+            (upd-mod-mat> Vert)
+            (cmd-upd-vert *ipc Vert)
 
-          (setq Pos (place 1
-                          Pos
-                          (+ (car Pos) *adv-vert))))))
+            (setq Pos (place 1
+                            Pos
+                            (+ (car Pos) *adv-vert))))
+        
+          (setq Pos (list (- (get Pos 1) *adv-vert)
+                          (get Pos 2)))
+          
+          (=: ori (ori> This)))))
 
-  (=: ori (ori> This))
-    
   Pos)
-
-
+  
+  
 # Rename off -> rel
 (dm mov-off> (Off P)
   # Calc tgt pos
@@ -283,6 +313,13 @@
   (when (get (: line))
   
     (when (get (: line) 'p)
+    
+      # Set bnds of current line
+      (upd-dims *line-lay)
+    
+      # Reset max x
+      # Caller will call upd-cur after this
+      (setq *cur-x NIL)
     
       (if (= (get (: c) 'lay) 'y)
           (align-cur-to-line-y This)

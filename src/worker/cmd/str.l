@@ -292,8 +292,6 @@
   # Eval Ref data directly
   
   (let (Ref (get *0 'b)
-        Sta (get Ref 'c)
-        End (get Ref 'b)
         In (get Ref 'a 'data)
         Out (eval In))
 
@@ -314,13 +312,9 @@
   
     (when (isa '(+Str) (get Ref 'a))
       
-      (let (Sta (get Ref 'c)
-            End (get Ref 'b)
-            In (get Ref 'a 'data)
+      (let (In (get Ref 'a 'data)
             Out (str In))
-            
-        (point-nxt)
-            
+                        
         (make-str (car Out) 'x)))))
         
         
@@ -329,12 +323,15 @@
   
   # Eval Ref data directly
   
-  (let (Ref (get *0 'b)
-        Sta (get Ref 'c)
-        End (get Ref 'b)
-        In (get Ref 'a 'data)
-        Out (eval (car (str In))))
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))
+  
+      (let (In (get Ref 'a 'data)
+            Out (eval (car (str In))))
 
-    (point-nxt)        
-        
-    (make-str Out 'x)))
+        # Move to next line
+        (make-line (make-str Out 'x))))))

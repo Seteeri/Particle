@@ -8,11 +8,11 @@
 
 (de upd-cur ()
   (setq *cur-x (if *cur-x
-                  (max @ (get *cur 1))
-                  (get *cur 1))
+                   (max @ (car *cur))
+                   (car *cur))
         *cur-y (if *cur-y
-                  (min @ (get *cur 2))
-                  (get *cur 2))))
+                   (min @ (cadr *cur))
+                   (cadr *cur))))
 
               
 (de upd-cur-debug ()
@@ -50,8 +50,8 @@
               
 (de upd-dims (Part)
   (with Part
-    (let Dims (list (abs (- *cur-x (get (: ori) 1)))
-                    (abs (- *cur-y (get (: ori) 2))))
+    (let Dims (list (abs (- *cur-x (car (: ori))))
+                    (abs (- *cur-y (cadr (: ori)))))
       (=: dims Dims)
       (when (: line)
         (put (: line) 'dims Dims)))))
@@ -132,11 +132,11 @@
   (when (= Type 'b)
   
     # For non-newline Cdr:
-    # X = bnds of Car
+    # X = bnds of Car = cur-x
     # Y = origin of Pair
     
     # Newline will override these
-    (adv-cur 2.0)
+    (set-cur-x *cur-x) (adv-cur 2.0)
     (set-cur-y (get Part 'c 'ori 2))
     
     #(println 'lay-pair-x "Mov cur x to *cur-x: " (format (get *cur 1) *Scl))
@@ -148,12 +148,10 @@
     
   (lay-x> Part)
 
-  (upd-cur)
-  
   # Update on NIL or line
   (when (isa '(+Nil) Part)
     (upd-dims *line-lay)
-    (when (get *line-lay 'line 'l)
+    (when (and (get *line-lay 'line 'l) T)
       #(println 'lay-pair-x "Update line: "
       #        (get *line-lay 'line 'l)
       #        (get *line-lay 'line 'l 'data))    
@@ -184,12 +182,10 @@
   #(println 'lay-pair-y Part (get Part 'data) Type)          
           
   (lay-y> Part)
-
-  (upd-cur)
   
   (when (isa '(+Nil) Part)
     (upd-dims *line-lay)
-    (when (get *line-lay 'line 'l)
+    (when (and (get *line-lay 'line 'l) T)
       #(println 'lay-pair-y "Update line: "
       #        (get *line-lay 'line 'l)
       #        (get *line-lay 'line 'l 'data))    
@@ -206,7 +202,6 @@
         # Move Pair first so below to get correct pos
         # mov> does not use draw fn so it does not use *cur
         (setq *cur (mov> Part *cur))
-        
         (upd-cur)
 
         Part)
