@@ -35,6 +35,7 @@
             "/src/worker/debug.l"
             "/src/worker/draw.l"
             "/src/worker/cmd/part.l"
+            "/src/worker/cmd/str.l"
             "/src/worker/cmd/cam.l"
             "/src/worker/cmd/ptr.l"
             "/src/worker/binds.l"            

@@ -35,6 +35,7 @@
   # also need str cmd to create data
   ((`ksd~Control-L   `ksd~Tab) T `cmd-eval)
   ((`ksd~Alt-L       `ksd~Tab) T `cmd-str)
+  ((`ksd~Shift-L       `ksd~Tab) T `cmd-eval-str)
   
   # other cmds...
   
