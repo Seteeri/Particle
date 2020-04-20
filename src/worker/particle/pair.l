@@ -40,6 +40,7 @@
           (mov-cur-abv (: c))
           (: c)))))
 
+          
 (dm nxt> ()  
   (when (: b)
     (if *on-car

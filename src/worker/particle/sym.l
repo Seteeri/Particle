@@ -176,15 +176,26 @@
 
 (dm lay-x> ()
   (check-nl> This)
-
   (setq *cur (mov> This *cur))
   (upd-cur)
+  (upd-line> This)
   This)
 
 
 (dm lay-y> ()
   (check-nl> This)
-
   (setq *cur (mov> This *cur))
   (upd-cur)
+  (upd-line> This)
   This)
+
+
+(dm upd-line> ()
+  # Standalone NIL
+  (when (= (get (: c) 'b) This)
+    (upd-dims *line-lay)
+    (when (and (get *line-lay 'line 'l) T)
+      #(println 'lay-pair-x "Update line: "
+      #        (get *line-lay 'line 'l)
+      #        (get *line-lay 'line 'l 'data))    
+      (upd-dims (get *line-lay 'line 'l)))))

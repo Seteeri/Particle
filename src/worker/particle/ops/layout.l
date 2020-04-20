@@ -146,17 +146,8 @@
 
   #(println 'lay-pair-x Part (type Part) (get Part 'data) Type)
     
-  (lay-x> Part)
-
-  # Update on NIL or line
-  (when (isa '(+Nil) Part)
-    (upd-dims *line-lay)
-    (when (and (get *line-lay 'line 'l) T)
-      #(println 'lay-pair-x "Update line: "
-      #        (get *line-lay 'line 'l)
-      #        (get *line-lay 'line 'l 'data))    
-      (upd-dims (get *line-lay 'line 'l)))))
-
+  (lay-x> Part))
+  
 
 (de lay-pair-y (Part Type Nxt)
 
@@ -181,15 +172,7 @@
 
   #(println 'lay-pair-y Part (get Part 'data) Type)          
           
-  (lay-y> Part)
-  
-  (when (isa '(+Nil) Part)
-    (upd-dims *line-lay)
-    (when (and (get *line-lay 'line 'l) T)
-      #(println 'lay-pair-y "Update line: "
-      #        (get *line-lay 'line 'l)
-      #        (get *line-lay 'line 'l 'data))    
-      (upd-dims (get *line-lay 'line 'l)))))
+  (lay-y> Part))
 
   
 (de lay-atom (Part Line Skip)
