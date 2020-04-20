@@ -95,11 +95,11 @@
 
   #Setup projview
   (setq *projview (new '(+Projview) *width *height 'o))
-  (update-mat-proj> *projview)
-  (update-mat-view> *projview)
+  (upd-mat-proj> *projview)
+  (upd-mat-view> *projview)
   
-  #(serialize-to-ptr> *projview (get *projview 'ptr))
-  #(deserialize-fm-ptr> *projview (get *projview 'ptr))
+  #(wr-ptr> *projview (get *projview 'ptr))
+  #(rd-ptr> *projview (get *projview 'ptr))
   #(show *projview)
   #(view (getl *projview))
   

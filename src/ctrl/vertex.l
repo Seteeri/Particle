@@ -70,11 +70,11 @@
                                                  (mat4-scaling (: sca))))))))
          
 
-(de serialize-mat-to-ptr (M Ptr)
+(de wr-mat-to-ptr (M Ptr)
   (struct Ptr 'N (cons -1.0 M)))
 
 
-(dm serialize-to-ptr> (Ptr)
+(dm wr-ptr> (Ptr)
   (struct Ptr 'N
           (cons (: off-gl) 8)
           (: chr)
@@ -88,7 +88,7 @@
   SZ-VERT)
 
 
-(dm deserialize-fm-ptr> (Ptr)
+(dm rd-ptr> (Ptr)
 
   (let ((Off-Gl Chr Pos Rota Sca Mm Rgba Uv Off-Texel)
         (struct Ptr 
@@ -127,12 +127,12 @@
 
 
 (dm cpy-to-ptr> (Ptr)
-  (serialize-to-ptr> This Ptr)
+  (wr-ptr> This Ptr)
   SZ-VERT)
 
 
 (dm cpy-to-obj> (Ptr)
-  (deserialize-fm-ptr> This Ptr))
+  (rd-ptr> This Ptr))
 
 
 (dm fmt-msg-send> (Off)

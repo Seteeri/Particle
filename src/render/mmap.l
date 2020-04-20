@@ -120,8 +120,8 @@
                         (car (nth *params-mmap-projview 3))
                         T)
         Ptr (get Mmap 'ptr))
-    (serialize-mat-proj-to-ptr> *projview (get Mmap 'ptr))
-    (serialize-mat-view-to-ptr> *projview (+ (get Mmap 'ptr) 16))
+    (wr-mat-proj-ptr> *projview (get Mmap 'ptr))
+    (wr-mat-view-ptr> *projview (+ (get Mmap 'ptr) 16))
     Mmap))
 
 

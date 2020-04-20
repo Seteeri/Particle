@@ -9,7 +9,7 @@
       (let ((X Y Z) (: pos))
         (prinl-info 'cmd-move-cam (glue " " (list (format X *Scl) (format Y *Scl))))))
 
-    (update-mat-view> *projview)
+    (upd-mat-view> *projview)
 
     # Either send relevant data or send entire data
     # -> Minimize render processing time
@@ -33,7 +33,7 @@
     
     (prinl-info 'cmd-zoom-cam (format (: scale-ortho) *Scl)))
 
-  (update-mat-proj> *projview)
+  (upd-mat-proj> *projview)
   
   (cmd-upd-pv *ipc))
 

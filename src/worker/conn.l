@@ -13,7 +13,7 @@
               Sock
               Msg
               *ptr-vert
-              (serialize-to-ptr> Obj *ptr-vert))))
+              (wr-ptr> Obj *ptr-vert))))
 
 
 (de req-recv-obj (Ipc Sock Obj Sz-Obj Off-Obj)
@@ -106,4 +106,4 @@
   (with *projview
     (=: width  Width)
     (=: height Height)
-    (update-mat-proj> *projview)))
+    (upd-mat-proj> *projview)))
