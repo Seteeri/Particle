@@ -322,3 +322,19 @@
         (point-nxt)
             
         (make-str (car Out) 'x)))))
+        
+        
+(de cmd-eval-str ()
+  (prinl-info "cmd-eval-str")
+  
+  # Eval Ref data directly
+  
+  (let (Ref (get *0 'b)
+        Sta (get Ref 'c)
+        End (get Ref 'b)
+        In (get Ref 'a 'data)
+        Out (eval (car (str In))))
+
+    (point-nxt)        
+        
+    (make-str Out 'x)))
