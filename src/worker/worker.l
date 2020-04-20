@@ -61,7 +61,6 @@
 (def '*sca-vert  (*/ 1.0 1.0 96.0)) # vertex scale = 1/96.0
 (def '*sca-glyph 5.8239365) # msdf param, mul by shape units -> px units, used by metrics
 (def '*adv-glyph 9.375) # msdf param, mul by sca-glyph to get proper adv
-
 # assumes all verts are scaled the same
 (def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
 (def '*adv-vert-2  (+ *adv-vert *adv-vert))
@@ -280,59 +279,43 @@
         
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
-    (unless Msg
-      (disconn-conn *ipc Sock))
+    (if Msg
+        
+        (prog
       
-    (cond ((= Name 'KEYBOARD-KEY)
-           (dispatch-kb Data))
+          (cond ((= Name 'KEYBOARD-KEY)
+                (dispatch-kb Data))
 
-          ((or (= Name 'TOUCH-UP)
-               (= Name 'TOUCH-DOWN)
-               (= Name 'TOUCH-FRAME)
-               (= Name 'TOUCH-MOTION))
-           (prinl-info "handle-ctrl" (glue " " Data)))
+                ((or (= Name 'TOUCH-UP)
+                    (= Name 'TOUCH-DOWN)
+                    (= Name 'TOUCH-FRAME)
+                    (= Name 'TOUCH-MOTION))
+                (prinl-info "handle-ctrl" (glue " " Data)))
 
-          ((= Name "update-vert")
-           (cmd-upd-vert *ipc *vert-ptr))
+                ((= Name "update-vert")
+                (cmd-upd-vert *ipc *vert-ptr))
 
-          ((= Name "calc-pv")
-           (cmd-calc-pv (get Data 2) (get Data 3)))
+                ((= Name "calc-pv")
+                (cmd-calc-pv (get Data 2) (get Data 3)))
 
-          ((= Name "update-pv")
-           (cmd-upd-pv *ipc))
+                ((= Name "update-pv")
+                (cmd-upd-pv *ipc))
 
-          ((= Data "bye")
-           # Send bye to ctrl which will send to all workers/render/model
-           (send-msg *ipc Sock "bye")
-           (ipc~disconn-sock Sock)
-           (ipc~end> *ipc)
-           (println "Worker says bye!")
-           (bye))
+                ((= Data "bye")
+                # Send bye to ctrl which will send to all workers/render/model
+                (send-msg *ipc Sock "bye")
+                (ipc~disconn-sock Sock)
+                (ipc~end> *ipc)
+                (println "Worker says bye!")
+                (bye))
 
-          (T
-           T))
+                (T
+                T))
 
-    # Send ready when complete
-    (send-msg *ipc Sock "(rdy)")
-
-    #(prinl (usec) " | WORKER/" *Pid " | Worker ready")
-
-    T))
-
-
-(de handle-model (Sock)
-
-  (let Msg (recv-msg *ipc Sock)
-
-    # Handle recv updates from model
-
-    # recv-msg will return data or NIL
-    # This means sending NIL will disconnect the client, like EOF
-    (unless Msg
-      (disconn-conn *ipc Sock))
-
-    (when NIL
-      (prinl Msg))))
+          # Send ready when complete
+          (send-msg *ipc Sock "(rdy)"))
+          
+        (disconn-conn *ipc Sock))))
 
 
 (de handle-render (Sock)

@@ -450,18 +450,22 @@
 (de build-str (Start)
   # Go prv until Sym, non-Str or newline
   (let (P Start
+        B NIL
         D NIL)
         
     (while (and (isa '(+Str) (get P 'a))
                 (not (isa '(+Sym) P))
+                (not (= (get P 'a) B))
                 (not (get P 'line)))
       
       (push 'D (get P 'a 'data))
       
+      (setq B P)
       (setq P (get P 'c)))
     
     (if (and (isa '(+Str) (get P 'a))
-             (not (isa '(+Sym) P)))
+             (not (isa '(+Sym) P))
+             (not (= (get P 'a) B)))
       (push 'D (get P 'a 'data))
       (setq P (get P 'b)))
     

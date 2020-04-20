@@ -51,14 +51,19 @@ If dst NIL: send bytes back
     (del (assoc Sock (: clients)) (:: clients))
     (let ID (get (cdr (assoc Sock (: conns))) 1)
       (del (assoc ID (: conns-id)) (:: conns-id)))
-    (del (assoc Sock (: conns)) (:: conns)))
+    (del (assoc Sock (: conns)) (:: conns))
   
-  (epoll~ctl> (: ep)
-              epoll~DEL
-              Sock
-              0)
+    # Why is this NIL???
+    (when (: ep)
+      (epoll~ctl> (: ep)
+                  epoll~DEL
+                  Sock
+                  0)))
               
-  (ipc~disconn-sock Sock))
+  (ipc~disconn-sock Sock)
+  
+  # Exit for now
+  (bye))  
 
 
 (de disconn-conn (Ipc Sock)
@@ -68,14 +73,19 @@ If dst NIL: send bytes back
   (with Ipc
     (let ID (get (cdr (assoc Sock (: conns))) 1)
       (del (assoc ID (: conns-id)) (:: conns-id)))
-    (del (assoc Sock (: conns)) (:: conns)))
+    (del (assoc Sock (: conns)) (:: conns))
   
-  (epoll~ctl> (: ep)
-              epoll~DEL
-              Sock
-              0)
+    # Why is this NIL???
+    (when (: ep)
+      (epoll~ctl> (: ep)
+                  epoll~DEL
+                  Sock
+                  0)))
               
-  (ipc~disconn-sock Sock))
+  (ipc~disconn-sock Sock)
+  
+  # Exit for now
+  (bye))
 
 
 (de reg-conns (Ipc ID-C)

@@ -144,23 +144,22 @@
     
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
-    (unless Msg
-      (disconn-conn *ipc Sock))
+    (if Msg
+        (cond ((= Name "fbsize")
+              (dispatch-msg (pack "(calc-pv " (get Data 2) " " (get Data 3) ")"))
+              (dispatch-msg (pack "(update-pv)")))
 
-    (cond ((= Name "fbsize")
-           (dispatch-msg (pack "(calc-pv " (get Data 2) " " (get Data 3) ")"))
-           (dispatch-msg (pack "(update-pv)")))
-
-          ((= Name "focus")
-            )
-        
-          ((= Name "bye")
-           # Send to all conns
-           (send-msg-conns *ipc "bye")
-           (ipc~disconn-sock Sock)
-           (ipc~end> *ipc)
-           (println "Ctrl says bye!")
-           (bye)))))
+              ((= Name "focus")
+                )
+            
+              ((= Name "bye")
+              # Send to all conns
+              (send-msg-conns *ipc "bye")
+              (ipc~disconn-sock Sock)
+              (ipc~end> *ipc)
+              (println "Ctrl says bye!")
+              (bye)))
+        (disconn-conn *ipc Sock))))
 
 
 (de handle-input (Sock)
