@@ -156,10 +156,8 @@
 
 
 (def '*dlst (new '(+Dlst)))
-(def '*buf-flush (native "@" "malloc" 'N
-                  (pipe
-                    (call "cat" "/proc/sys/net/core/rmem_default")
-                    (read))))
+# Sock should be loaded
+(def '*buf-flush (native "@" "malloc" 'N (sock~get-rmem-default)))
 
 
 (de write-int-to-bytes (N)
@@ -197,6 +195,7 @@
   # 2. Handle lists
 
   (let Cont T
+  
     (while Cont
 
       # First check if sufficient length otherwise get head
@@ -228,18 +227,12 @@
                     Data (any Msg))
 
                     # Parse Bin
-                    (if (=0 Sz-Bin)
-
-                      (Fn-Proc Ipc Sock Data Sz-Bin *buf-flush)
-
-                      (prog
-                        (for I Sz-Bin
-                          (byte (+ *buf-flush (- I 1))
-                                (get (rem-frs *dlst) 'dat)))
-                        (Fn-Proc Ipc Sock Data Sz-Bin *buf-flush))))))))
-
-    #(prinl-info "flush-msgs-2" (pack "End loop with *dlst.len=" (get *dlst 'len)))
-    ))
+                    (when (not (=0 Sz-Bin))
+                      (for I Sz-Bin
+                        (byte (+ *buf-flush (- I 1))
+                              (get (rem-frs *dlst) 'dat))))
+                    
+                    (Fn-Proc Ipc Sock Data Sz-Bin *buf-flush))))))))
 
   #(prinl-info "flush-msgs-2" (pack "*dlst.len=" (get *dlst 'len)))
   #(prinl-info "flush-msgs-2" "#### END FLUSH ####")
