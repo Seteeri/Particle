@@ -178,11 +178,10 @@
 
   #(prinl-info "flush-msgs-2" (pack "*dlst.len=" (get *dlst 'len)))
 
-  (let Bytes-Read (ipc~recv-bytes> Ipc Sock T T 0)
-    (when Bytes-Read
-      (for B (struct (get Ipc 'ipc~buf-rd) (cons 'B Bytes-Read))
-        (let Node (new '(+Node-Dlst) B)
-          (ins-las *dlst Node))))
+  (let? Bytes-Read (ipc~recv-bytes> Ipc Sock T T 0)
+    (for B (struct (get Ipc 'ipc~buf-rd) (cons 'B Bytes-Read))
+      (let Node (new '(+Node-Dlst) B)
+        (ins-las *dlst Node)))
     Bytes-Read))
 
 
