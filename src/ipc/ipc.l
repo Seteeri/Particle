@@ -134,22 +134,14 @@ Handle bad accept sock
   * With blocking sockets, will block until space available (all data is buffered)
   * If msg too long, send will fail and no data will be buffered
   }#
-
-  (let Bytes-Sent (sock~send Sock
-                             (if (num? Buf) Buf (: buf-wr))
-                             (if (num? Sz)  Sz  (: sz-buf-wr))
-                             (if (num? Flags) Flags 0))
                              
-     (case Bytes-Sent
-     
-        # Orderly shutdown
-        (0  (nil (prinl-info "send-bytes>" (pack "0, ERRNO=" (errno) ", Sock=" Sock))))
-        
-        # Error
-        (-1 (nil (prinl-info "send-bytes>" (pack "-1, ERRNO=" (errno) ", Sock=" Sock))))
-
-        # Poss Byte-Sent != Sz
-        (T  Bytes-Sent))))
+  (case (sock~send Sock
+                  (if (num? Buf) Buf (: buf-wr))
+                  (if (num? Sz)  Sz  (: sz-buf-wr))
+                  (if (num? Flags) Flags 0))
+    (0  @) # Orderly shutdown
+    (-1 @) # Error
+    (T  @))) # Poss != Sz
 
 
 (dm recv-bytes> (Sock Buf Sz Flags)
@@ -163,20 +155,13 @@ Handle bad accept sock
   * Return num or NIL
   }#
 
-  (let Bytes-Read (sock~recv Sock
-                             (if (num? Buf)   Buf (: buf-rd))
-                             (if (num? Sz)    Sz  (: sz-buf-rd))
-                             (if (num? Flags) Flags 0))
-                               
-     (case Bytes-Read
-     
-        # Orderly shutdown
-        (0  (nil (prinl-info "recv-bytes>" (pack "0, ERRNO=" (errno) ", Sock=" Sock))))
-        
-        # Error
-        (-1 (nil (prinl-info "recv-bytes>" (pack "-1, ERRNO=" (errno) ", Sock=" Sock))))
-        
-        (T  Bytes-Read))))
+  (case (sock~recv Sock
+                   (if (num? Buf)   Buf (: buf-rd))
+                   (if (num? Sz)    Sz  (: sz-buf-rd))
+                   (if (num? Flags) Flags 0))
+    (0  @) # Orderly shutdown
+    (-1 @) # Error
+    (T  @)))
 
 
 (dm dispatch-handler-conn> (Sock)
@@ -193,11 +178,11 @@ Handle bad accept sock
   
 (dm poll> (Timeout)
   #{
-  epoll-wait:
-  * ep-events size should correspond to maxevents
-  * -1 = timeout = block
-     0 = return if nothing
-  * returns event count
+    epoll-wait:
+    * ep-events size should correspond to maxevents
+    * -1 = timeout = block
+      0 = return if nothing
+    * returns event count
   }#
            
   (let Cnt (epoll~wait> (: ep) Timeout)
