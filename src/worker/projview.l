@@ -34,12 +34,7 @@
   (=: mat-view    (when Mat-View @))
 
   (=: pos    (if Pos @ (47.0 -4.0 10.0)))
-  (=: rot    (if Rot @ (0.0 0.0 0.0)))
-
-  #scale is (1.0 1.0 1.0)...
-  
-  # Move this out
-  (=: ptr         (native "@" "malloc" 'N 1024)))
+  (=: rot    (if Rot @ (0.0 0.0 0.0))))
 
 
 (dm wr-ptr> (Ptr)

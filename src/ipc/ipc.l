@@ -42,7 +42,7 @@ Handle bad accept sock
   (=: sz-buf-rd (sock~get-rmem-default))
   (=: buf-rd    (native "@" "malloc" 'N (: sz-buf-rd)))
   (=: sz-buf-wr (sock~get-wmem-default))
-  (=: buf-wr    (native "@" "malloc" 'N (: sz-buf-rd)))
+  (=: buf-wr    (native "@" "malloc" 'N (: sz-buf-wr)))
 
   # REFACTOR/TODO:
   # * Integrate server sockets into single list for FD/ID lookup
