@@ -39,9 +39,9 @@ Handle bad accept sock
 
   # Start simple - 1 pair for all sockets
   # Later, could do per connection and use as cache...
-  (=: sz-buf-rd (sock~get-rmem-default))
+  (=: sz-buf-rd (sock~get-rmem-def))
   (=: buf-rd    (native "@" "malloc" 'N (: sz-buf-rd)))
-  (=: sz-buf-wr (sock~get-wmem-default))
+  (=: sz-buf-wr (sock~get-wmem-def))
   (=: buf-wr    (native "@" "malloc" 'N (: sz-buf-wr)))
 
   # REFACTOR/TODO:

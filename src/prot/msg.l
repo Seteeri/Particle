@@ -157,7 +157,7 @@
 
 (def '*dlst (new '(+Dlst)))
 # Sock should be loaded
-(def '*buf-flush (native "@" "malloc" 'N (sock~get-rmem-default)))
+(def '*buf-flush (native "@" "malloc" 'N (sock~get-rmem-def)))
 
 
 (de write-int-to-bytes (N)

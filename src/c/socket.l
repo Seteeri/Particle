@@ -171,12 +171,12 @@
 
 
 # single-str: (in '(ls) (till NIL T))
-(de get-rmem-default ()
+(de get-rmem-def ()
   (in '("cat" "/proc/sys/net/core/rmem_default")
       (until (eof)
         (format (line T)))))
 
-(de get-wmem-default ()
+(de get-wmem-def ()
   (in '("cat" "/proc/sys/net/core/wmem_default")
       (until (eof)
         (format (line T)))))
