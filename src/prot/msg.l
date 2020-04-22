@@ -28,14 +28,14 @@
 
       (if Bytes-Sent
 
-        Bytes-Sent
+          @
 
-        (nil (prinl-info "send-msg-len" (pack "Failed to send" " " (if Bytes-Sent Bytes-Sent NIL))))))))
+          (nil (prinl-info "send-msg-len" (pack "Failed to send" " " (if Bytes-Sent @ NIL))))))))
 
 
 (de write-msg (Ipc Sexpr Bin Sz-Bin)
-  (let (Bin    (if Bin Bin 0)
-        Sz-Bin (if Sz-Bin Sz-Bin 0)
+  (let (Bin    (if Bin @ 0)
+        Sz-Bin (if Sz-Bin @ 0)
         Len-Sexpr (+ (length Sexpr) 1)
         Len-Body  (+ Len-Sexpr Sz-Bin)
         Len-Msg   (+ 4 4 Len-Body)
@@ -69,9 +69,9 @@
 
     (if Bytes-Sent
 
-      Bytes-Sent
+        @
 
-      (nil (prinl-info "send-msg-len" (pack "Failed to send" " " (if Bytes-Sent Bytes-Sent NIL)))))))
+        (nil (prinl-info "send-msg-len" (pack "Failed to send" " " (if Bytes-Sent @ NIL)))))))
 
 
 (de send-msg-clients (Ipc Msg)
@@ -136,7 +136,7 @@
 
       (if Bytes-Recv
 
-        Bytes-Recv
+        @
 
         (nil (prinl-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))")))))))
 

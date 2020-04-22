@@ -25,10 +25,10 @@
       (=: ptr (map-buffer-range-2 Target
                                   0
                                   Size
-                                  (if Data Data 0)))
+                                  (if Data @ 0)))
       (buffer-data Target
                    Size
-                   (if Data Data 0)
+                   (if Data @ 0)
                    Usage))
   
   (bind-b> This))

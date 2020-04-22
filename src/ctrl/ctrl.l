@@ -130,7 +130,7 @@
   (unless (flush-msgs *ipc Sock)
     (disconn-client *ipc Sock))
     
-  (parse-msgs *ipc Sock process-msg))
+  (parse-msgs *ipc Sock proc-msg))
 
 
 (de handle-render (Sock)

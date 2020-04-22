@@ -55,8 +55,8 @@ const char * 	options
   (native "libxkbcommon.so.0" "xkb_context_new" 'N Flags))
 
 
-(de keymap-new-from-names (Context Names Flags)
-  (native "libxkbcommon.so.0" "xkb_keymap_new_from_names" 'N Context Names Flags))
+(de keymap-new-from-names (Ctx Names Flags)
+  (native "libxkbcommon.so.0" "xkb_keymap_new_from_names" 'N Ctx Names Flags))
 
 
 (de state-new (Keymap)
@@ -68,15 +68,15 @@ const char * 	options
 
 
 (de keysym-get-name (Keysym Buffer Size)
-  (let Length (native "libxkbcommon.so.0" "xkb_keysym_get_name" 'I Keysym (if Buffer Buffer *buf-keysym) (if Size Size 64)))
+  (let Length (native "libxkbcommon.so.0" "xkb_keysym_get_name" 'I Keysym (if Buffer @ *buf-keysym) (if Size Size 64)))
     (unless (= Length -1)
-      (struct (if Buffer Buffer *buf-keysym) 'S)))
+      (struct (if Buffer @ *buf-keysym) 'S)))
 
 
 (de state-key-get-utf8 (State Keycode Buffer Size)
-  (let Length (native "libxkbcommon.so.0" "xkb_state_key_get_utf8" 'I State Keycode (if Buffer Buffer *buf-keysym) (if Size Size 64)))
+  (let Length (native "libxkbcommon.so.0" "xkb_state_key_get_utf8" 'I State Keycode (if Buffer @ *buf-keysym) (if Size Size 64)))
     (unless (= Length -1)
-      (struct (if Buffer Buffer *buf-keysym) 'S)))
+      (struct (if Buffer @ *buf-keysym) 'S)))
 
 
 (de state-update-key (State Keycode Direction)

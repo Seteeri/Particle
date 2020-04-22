@@ -17,9 +17,9 @@
 (de gen-atom (Any Lay Adv Car-Skip Cdr-Skip)
   (if (num? Any)
       (gen-num Any Lay Adv Car-Skip Cdr-Skip)
-      (if (not Any)
-          (gen-nil Any Lay Adv Car-Skip Cdr-Skip)
-          (gen-sym Any Lay Adv Car-Skip Cdr-Skip))))
+      (if Any
+          (gen-sym Any Lay Adv Car-Skip Cdr-Skip)
+          (gen-nil Any Lay Adv Car-Skip Cdr-Skip))))
 
 
 (de gen-num (Any Lay Adv Car-Skip Cdr-Skip)

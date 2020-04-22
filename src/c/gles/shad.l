@@ -8,10 +8,10 @@
 
     # If reusing/caching shaders, need not delete
     (if Info-Log
-        Info-Log
+        @
         (prog
-            (attach-shader Program Shader)
-           (delete-shader Shader)))))
+          (attach-shader Program Shader)
+          (delete-shader Shader)))))
 
 
 (de compile-shader-2 (Type

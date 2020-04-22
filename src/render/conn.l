@@ -1,6 +1,6 @@
-(de process-msg (Ipc Sock Data Sz-Bin Bin)
+(de proc-msg (Ipc Sock Data Sz-Bin Bin)
 
-  #(prinl-info "process-msg/RENDER" (str Data))
+  #(prinl-info "proc-msg/RENDER" (str Data))
 
   (let (Name-Fn (get Data 1))
 
@@ -11,7 +11,7 @@
            (handle-memset Sock Data))
            
           (T
-           (prinl-info "process-msg/RENDER" (pack "UNKNOWN REQUEST! " Msg))))))
+           (prinl-info "proc-msg/RENDER" (pack "UNKNOWN REQUEST! " Msg))))))
 
 
 (de handle-memset (Sock Data)
@@ -42,14 +42,14 @@
 (de write-dst (Ptr Dst Sock Sz Off)
 
   (cond ((= Dst "projview")
-         #(println (usec) " | write-dst projview | " (struct (get *ipc 'ipc~buf-rd) '((B . 64) (B . 64))))
+         #(println (usec) " | write-dst projview | " (struct (get *ipc 'ipc~buf) '((B . 64) (B . 64))))
          (let (Ptr-Gl  (get '*buffer-objects 'projview 'gl~ptr)
                Ptr-Buf Ptr)
            (memcpy Ptr-Gl (+ Ptr-Buf 9) 64)
            (memcpy (+ Ptr-Gl 64) (+ Ptr-Buf 9 64 24) 64)))
 
         ((= Dst "nodes")
-         #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf-rd) '(B . 241)))
+         #(println (usec) " | write-dst nodes | " (struct (get *ipc 'ipc~buf) '(B . 241)))
          #(prinl-info "write-dst" (pack "Off=" Off))
 
          (let (Ptr-Gl  (+ (get '*buffer-objects 'nodes 'gl~ptr) Off)

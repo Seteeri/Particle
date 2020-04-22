@@ -59,6 +59,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
         * Maintain consistency
         * For int syms and strs, name is at end of Car/Prop List
     * Pack et al must handle sublist
+    * Refactor socket - set err instead of propogating
     * Refactor layout
       * Update dims for pairs?
         * Dims already generated during gen

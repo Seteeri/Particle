@@ -135,43 +135,31 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
                       (cons CR 8))))
 
 
-(de add-devices (Context)
-
+(de add-devices (Ctx)
   (for File (dir DEVICES-PATH)
-
-	 (when (and (not (= File "by-id"))
-		          (not (= File "by-path")))
-              
-	   (let (Filepath (pack DEVICES-PATH "/" File)
-           Dev (path-add-device Context Filepath))
-           
-	     (unless (= Dev 0)
-	       (if (not (or (device-has-capability Dev
-                                             DEVICE-CAP-KEYBOARD)
-                      (device-has-capability Dev
-                                             DEVICE-CAP-POINTER)))
-            (path-remove-device Dev)))))))
+    (when (and (not (= File "by-id"))
+               (not (= File "by-path")))
+      (let Fp (pack DEVICES-PATH "/" File)
+        (path-add-device Ctx Fp)))))
 
 
-
-
-(de unref (Context)
-    (native "libinput.so.10.13.0" "libinput_unref" 'N Context))
+(de unref (Ctx)
+    (native "libinput.so.10.13.0" "libinput_unref" 'N Ctx))
 
 (de path-create-context (Interface User-date)
     (native "libinput.so.10.13.0" "libinput_path_create_context" 'N Interface User-date))
 
-(de path-add-device (Context Path)
-    (native "libinput.so.10.13.0" "libinput_path_add_device" 'N Context Path))
+(de path-add-device (Ctx Path)
+    (native "libinput.so.10.13.0" "libinput_path_add_device" 'N Ctx Path))
 
 (de path-remove-device (Dev)
     (native "libinput.so.10.13.0" "libinput_path_remove_device" NIL Dev))
 
-(de get-fd (Context)
-    (native "libinput.so.10.13.0" "libinput_get_fd" 'I Context))
+(de get-fd (Ctx)
+    (native "libinput.so.10.13.0" "libinput_get_fd" 'I Ctx))
 
-(de dispatch (Context)
-    (native "libinput.so.10.13.0" "libinput_dispatch" 'I Context))
+(de dispatch (Ctx)
+    (native "libinput.so.10.13.0" "libinput_dispatch" 'I Ctx))
 
 (de device-has-capability (Dev Capability)
     (native "libinput.so.10.13.0" "libinput_device_has_capability" 'I Dev Capability))
@@ -182,109 +170,109 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (de device-unref (Dev)
     (native "libinput.so.10.13.0" "libinput_device_unref" 'N Dev))
 
-(de get-event (Context)
-    (native "libinput.so.10.13.0" "libinput_get_event" 'N Context))
+(de get-event (Ctx)
+    (native "libinput.so.10.13.0" "libinput_get_event" 'N Ctx))
 
-(de event-get-type (Event)
-    (native "libinput.so.10.13.0" "libinput_event_get_type" 'I Event))
+(de event-get-type (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_get_type" 'I Ev))
 
-(de event-destroy (Event)
-    (native "libinput.so.10.13.0" "libinput_event_destroy" NIL Event))
+(de event-destroy (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_destroy" NIL Ev))
 
 
-(de get-kb-event (Event)
-    (native "libinput.so.10.13.0" "libinput_event_get_keyboard_event" 'N Event))
+(de get-kb-event (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_get_keyboard_event" 'N Ev))
 
-(de kb-get-time (Kb-Event)
-    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_time" 'I Kb-Event))
+(de kb-get-time (Kb-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_time" 'I Kb-Ev))
 
-(de kb-get-time-usec (Kb-Event)
-    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_time_usec" 'N Kb-Event))
+(de kb-get-time-usec (Kb-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_time_usec" 'N Kb-Ev))
 
-(de kb-get-key (Kb-Event)
-    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_key" 'I Kb-Event))
+(de kb-get-key (Kb-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_key" 'I Kb-Ev))
 
-(de kb-get-key-state (Kb-Event)
+(de kb-get-key-state (Kb-Ev)
     #Return symbol (enum)
-    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_key_state" 'I Kb-Event))
+    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_key_state" 'I Kb-Ev))
 
-(de kb-get-base-event (Event)
-    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_base_event" 'N Event))
+(de kb-get-base-event (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_base_event" 'N Ev))
 
-(de kb-get-seat-key-count (Event)
-    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_seat_key_count" 'I Event))
+(de kb-get-seat-key-count (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_keyboard_get_seat_key_count" 'I Ev))
 
 
-(de get-ptr-event (Event)
-    (native "libinput.so.10.13.0" "libinput_event_get_pointer_event" 'N Event))
+(de get-ptr-event (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_get_pointer_event" 'N Ev))
 
-(de ptr-get-time (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_time" 'I Ptr-Event))
+(de ptr-get-time (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_time" 'I Ptr-Ev))
 
-(de ptr-get-time-usec (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_time_usec" 'N Ptr-Event))
+(de ptr-get-time-usec (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_time_usec" 'N Ptr-Ev))
 
-(de ptr-get-button (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_button" 'I Ptr-Event))
+(de ptr-get-button (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_button" 'I Ptr-Ev))
 
-(de ptr-get-button-state (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_button_state" 'I Ptr-Event))
+(de ptr-get-button-state (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_button_state" 'I Ptr-Ev))
 
-(de ptr-get-dx (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_dx" +1.0 Ptr-Event))
+(de ptr-get-dx (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_dx" +1.0 Ptr-Ev))
 
-(de ptr-get-dy (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_dy" +1.0 Ptr-Event))
+(de ptr-get-dy (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_dy" +1.0 Ptr-Ev))
 
-(de ptr-get-dx-unaccelerated (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_dx_unaccelerated" +1.0 Ptr-Event))
+(de ptr-get-dx-unaccelerated (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_dx_unaccelerated" +1.0 Ptr-Ev))
 
-(de ptr-get-dy-unaccelerated (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_dy_unaccelerated" +1.0 Ptr-Event))
+(de ptr-get-dy-unaccelerated (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_dy_unaccelerated" +1.0 Ptr-Ev))
 
-(de ptr-get-seat-button-count (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_seat_button_count" 'I Ptr-Event))
+(de ptr-get-seat-button-count (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_seat_button_count" 'I Ptr-Ev))
 
-(de ptr-has-axis (Event Axis)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_has_axis" 'I Event Axis))
+(de ptr-has-axis (Ev Axis)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_has_axis" 'I Ev Axis))
 
-(de ptr-get-axis-source (Event)
+(de ptr-get-axis-source (Ev)
     #ENUM
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_axis_source" 'I Event))
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_axis_source" 'I Ev))
 
-(de ptr-get-axis-value (Event Axis)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_axis_value" '+1.0 Event Axis))
+(de ptr-get-axis-value (Ev Axis)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_axis_value" '+1.0 Ev Axis))
 
-(de ptr-get-axis-value-discrete (Event Axis)
-    (native "libinput.so.10.13.0" "libinput_event_pointer_get_axis_value_discrete" +1.0 Event Axis))
+(de ptr-get-axis-value-discrete (Ev Axis)
+    (native "libinput.so.10.13.0" "libinput_event_pointer_get_axis_value_discrete" +1.0 Ev Axis))
 
 
-(de get-tch-event (Ptr-Event)
-    (native "libinput.so.10.13.0" "libinput_event_get_touch_event" 'N Ptr-Event))
+(de get-tch-event (Ptr-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_get_touch_event" 'N Ptr-Ev))
 
-(de tch-get-time (Tch-Event)
-    (native "libinput.so.10.13.0" "libinput_event_touch_get_time" 'I Tch-Event))
+(de tch-get-time (Tch-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_touch_get_time" 'I Tch-Ev))
 
-(de tch-get-time-usec (Tch-Event)
-    (native "libinput.so.10.13.0" "libinput_event_touch_get_time_usec" 'N Tch-Event))
+(de tch-get-time-usec (Tch-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_touch_get_time_usec" 'N Tch-Ev))
 
-(de tch-get-slot get-time (Tch-Event)
-    (native "libinput.so.10.13.0" "libinput_event_touch_get_slot" 'I Tch-Event))
+(de tch-get-slot get-time (Tch-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_touch_get_slot" 'I Tch-Ev))
 
-(de tch-get-seat-slot get-time (Tch-Event)
-    (native "libinput.so.10.13.0" "libinput_event_touch_get_seat_slot" 'I Tch-Event))
+(de tch-get-seat-slot get-time (Tch-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_touch_get_seat_slot" 'I Tch-Ev))
 
-(de tch-get-x (Tch-Event)
-    (native "libinput.so.10.13.0" "libinput_event_touch_get_x" +1.0 Tch-Event))
+(de tch-get-x (Tch-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_touch_get_x" +1.0 Tch-Ev))
 
-(de tch-get-y (Tch-Event)
-    (native "libinput.so.10.13.0" "libinput_event_touch_get_y" +1.0 Tch-Event))
+(de tch-get-y (Tch-Ev)
+    (native "libinput.so.10.13.0" "libinput_event_touch_get_y" +1.0 Tch-Ev))
 
-(de tch-get-x-transformed (Tch-Event Width)
-    (native "libinput.so.10.13.0" "libinput_event_touch_get_x_transformed" +1.0 Tch-Event Width))
+(de tch-get-x-transformed (Tch-Ev Width)
+    (native "libinput.so.10.13.0" "libinput_event_touch_get_x_transformed" +1.0 Tch-Ev Width))
 
-(de tch-get-y-transformed (Tch-Event Width)
-    (native "libinput.so.10.13.0" "libinput_event_touch_get_y_transformed" +1.0 Tch-Event Height))
+(de tch-get-y-transformed (Tch-Ev Width)
+    (native "libinput.so.10.13.0" "libinput_event_touch_get_y_transformed" +1.0 Tch-Ev Height))
 
 
 (de get-tool-event (Tablet-tool-event)
@@ -293,18 +281,18 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (de tt-get-tool (Tablet-tool)
     (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_tool" 'N Tablet-tool))
 
-(de tt-get-x (Event)
-    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_x" +1.0 Event))
+(de tt-get-x (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_x" +1.0 Ev))
 
-(de tt-get-y (Event)
-    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_y" +1.0 Event))
+(de tt-get-y (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_y" +1.0 Ev))
 
 
-(de tt-get-pressure (Event)
-    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_pressure" +1.0 Event))
+(de tt-get-pressure (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_pressure" +1.0 Ev))
 
-(de tt-get-distance (Event)
-    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_distance" +1.0 Event))
+(de tt-get-distance (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_distance" +1.0 Ev))
 
 
 (de tool-has-pressure (Tool)
@@ -328,11 +316,11 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (de tool-has-button (Tool Code)
     (native "libinput.so.10.13.0" "libinput_tablet_tool_has_button" 'I Tool Code))
 
-(de tt-get-tip-state (Event)
-    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_tip_state" 'I Event))
+(de tt-get-tip-state (Ev)
+    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_tip_state" 'I Ev))
 
-(de tt-get-x-transformed (Tch-Event Width)
-    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_x_transformed" +1.0 Tch-Event Width))
+(de tt-get-x-transformed (Tch-Ev Width)
+    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_x_transformed" +1.0 Tch-Ev Width))
 
-(de tt-get-y-transformed (Tch-Event Height)
-    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_y_transformed" +1.0 Tch-Event Height))
+(de tt-get-y-transformed (Tch-Ev Height)
+    (native "libinput.so.10.13.0" "libinput_event_tablet_tool_get_y_transformed" +1.0 Tch-Ev Height))

@@ -136,11 +136,11 @@ Handle bad accept sock
   }#
                              
   (case (sock~send Sock
-                  (if (num? Buf) Buf (: buf-wr))
-                  (if (num? Sz)  Sz  (: sz-buf-wr))
-                  (if (num? Flags) Flags 0))
-    (0  @) # Orderly shutdown
-    (-1 @) # Error
+                  (if (num? Buf)   @ (: buf-wr))
+                  (if (num? Sz)    @  (: sz-buf-wr))
+                  (if (num? Flags) @ 0))
+    (0  NIL) # Orderly shutdown
+    (-1 NIL) # Error
     (T  @))) # Poss != Sz
 
 
@@ -156,11 +156,11 @@ Handle bad accept sock
   }#
 
   (case (sock~recv Sock
-                   (if (num? Buf)   Buf (: buf-rd))
-                   (if (num? Sz)    Sz  (: sz-buf-rd))
-                   (if (num? Flags) Flags 0))
-    (0  @) # Orderly shutdown
-    (-1 @) # Error
+                   (if (num? Buf)   @ (: buf-rd))
+                   (if (num? Sz)    @  (: sz-buf-rd))
+                   (if (num? Flags) @ 0))
+    (0  NIL) # Orderly shutdown
+    (-1 NIL) # Error
     (T  @)))
 
 

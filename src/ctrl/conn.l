@@ -1,4 +1,4 @@
-(de process-msg (Ipc Sock Data Sz-Bin Bin)
+(de proc-msg (Ipc Sock Data Sz-Bin Bin)
 
   (let Name (name (get Data 1))
   
@@ -23,7 +23,7 @@
            (bye))
 
           (T
-           (prinl-info "CONTROL/process-msg" (pack "UNKNOWN REQUEST! " Data))))))
+           (prinl-info "CONTROL/proc-msg" (pack "UNKNOWN REQUEST! " Data))))))
 
 
 (de handle-memcpy (Sock Data Ptr)

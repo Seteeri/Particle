@@ -65,7 +65,7 @@
 
 (de draw-dot (Col)
   (draw-glyph *char-dot 
-              (if Col Col *col-base-0)))
+              (if Col @ *col-base-0)))
 
 
 (de draw-glyph (Char Col)

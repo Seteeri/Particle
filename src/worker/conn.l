@@ -47,7 +47,7 @@
 (de req-recv-vert (Ipc Sock Obj Cnt)
   (req-recv-obj Ipc
                 Sock
-                (if Obj Obj (new '(+Vertex)))
+                (if Obj @ (new '(+Vertex)))
                 SZ-VERT
                 (get-vert-off Cnt)))
 
@@ -63,7 +63,7 @@
 (de req-recv-pv (Ipc Sock Obj)
   (req-recv-obj Ipc
                 Sock
-                (if Obj Obj (new '(+Projview)))
+                (if Obj @ (new '(+Projview)))
                 SZ-PV
                 0))
 

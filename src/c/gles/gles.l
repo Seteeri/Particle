@@ -73,7 +73,7 @@ Naming Conventions:
 
 (de get-boolean-v (Pname Data)
     (get-num (list "libGLESv2.so.2" "glGetBooleanv" NIL Pname)
-	     (if Data Data (cons 1 'B))))
+	     (if Data @ (cons 1 'B))))
 }#
 
 
