@@ -184,17 +184,10 @@ At the end of the day, you could say it is using a list metaphor instead of a de
 
   * Transformers (Beast Wars), Digimon, Reboot, Tron - bridging the divide
   * Compiz - 3D desktop effects
-  * Blender - 3D editor, extensible UI, keyboard driven
-  * Firefox Tree Style Tab addon
-  * Lisp - the programmable programming language
+  * Firefox Tree Style Tab addon  
+  * Lisp/Lisp Machines - the programmable programming language
   * Emacs/Org-mode - consistency, extensibility, text and keyboard driven
-
-* Secondary:
-
   * CLIM - presentation-based interface
-  * Uzbl/Conkeror - numbered links for navigation
-  * Unreal Blueprints - nodal system
-  * EagleMode - ZUI system
   * The Humane Interface by Jeff Raskin
     * Elimination of modes
     * Persistence
@@ -203,6 +196,13 @@ At the end of the day, you could say it is using a list metaphor instead of a de
     * Elimintation of applications -> commands
     * Redesigned file hierarchies
     * ZUIs
+  * Evernote - Stepan Pachikov wanted to remember everything
+  
+* Secondary:
+  
+  * Uzbl/Conkeror - numbered links for navigation
+  * Unreal Blueprints - nodal system
+  * EagleMode - ZUI system
   * Douglas Engelbart - "The Mother of All Demos"
   * Xerox PARC - pioneered many modern computing elements and paradigms
   * Sir Tim Berners-Lee - WWW
@@ -210,7 +210,5 @@ At the end of the day, you could say it is using a list metaphor instead of a de
   * Brett Victor - Inventing on Principle
   * Zach Bean - quicklisp
   * Robert Strandh - CLOSOS/LispOS
-  * Chris Schafmeister - Molecular Metaprogramming
-  * Evernote - Stepan Pachikov wanted to remember everything
+  * Chris Schafmeister - Molecular Metaprogramming  
   * Oberon OS
-

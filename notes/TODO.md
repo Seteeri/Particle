@@ -52,14 +52,13 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     +-------+-------------------+--------------------+---------------+
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
-    
-  * Refactor [Tues]
+
+  * Refactor [Wed]
     * Simply view - str sym
       * Don't draw internal/intermediate cells - draw last
         * Maintain consistency
         * For int syms and strs, name is at end of Car/Prop List
     * Pack et al must handle sublist
-    * Refactor socket - set err instead of propogating
     * Refactor layout
       * Update dims for pairs?
         * Dims already generated during gen
@@ -70,8 +69,9 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Refactor point
     * Refactor ops into methods
     * Refactor line fns
+    * Refactor socket - set err instead of propogating    
     
-  * Bindings [Tyes]
+  * Bindings [Wed]
     * Improve discoverability - user sees it immediately
       * Once adv enough, user can remove it from default setup ;)
     * Group commands into diff syms
