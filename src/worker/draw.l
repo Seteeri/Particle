@@ -35,9 +35,9 @@
     NIL   Internal    Transient    External  
 
     Yellow = NIL (T?)
-    Orange = Num
+    Orange = Builtins
     Red = Pair
-    Magenta = Builtins
+    Magenta = Num
     
     Violet = Int/Sym
     Blue = Str/Sym/Trans
@@ -54,7 +54,7 @@
   (cond ((or (== Any NIL)
              (== Any T))  *col-yellow)
         ((lst? Any)       *col-base-0)
-        ((num? Any)       *col-orange)
+        ((num? Any)       *col-magenta)
         ((box? Any)       *col-green)
         ((str? Any)       *col-blue)
         ((ext? Any)       *col-cyan)
@@ -124,11 +124,12 @@
   (unless Col (setq Col (get-color-type Atom)))
 
   (cond ((num? Atom) (draw-num Atom Col))
+        ((box? Atom) (draw-sym Atom Col))
         ((str? Atom) (draw-str Atom Col))
         (T           (draw-sym Atom Col))))
 
 
-(de draw-cell (Col Self)
+(de draw-pair (Col Self)
 
   # (char 187) (char 166)
   # (draw-chars "[" *col-base-0 T)

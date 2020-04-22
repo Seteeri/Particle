@@ -15,6 +15,7 @@
 # +Ext
 # +Str (Transient)
 # +Box (Transient-Anonymous)
+#   Note, (str? (box)) = T
 # +Nil
 
 # CAR empty for Anon syms (CAR is actually number 0)
@@ -101,6 +102,8 @@
 #################
 (class +Str +Sym)
 
+# This class represents either, the name
+# or the pair when expanded (name/car is +Num)
 
 (dm prv> ()
   (when (: c)
@@ -121,7 +124,9 @@
 
 (dm sub> ()
   (setq *on-car T)
-  (mov-cur-ori (: a))
+  (if (: a)
+      (mov-cur-ori (: a))
+      (mov-cur-ori This))
   (nl-cur)
   This)
   

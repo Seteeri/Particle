@@ -11,19 +11,19 @@
                  
           (gen-pair Any Lay Car-Skip Cdr-Skip))
       
-      (gen-atom Any Lay T Car-Skip Cdr-Skip)))
+      (gen-atom Any Lay)))
 
 
-(de gen-atom (Any Lay Adv Car-Skip Cdr-Skip)
+(de gen-atom (Any Lay)
   (if (num? Any)
-      (gen-num Any Lay Adv Car-Skip Cdr-Skip)
+      (gen-num Any Lay)
       (if Any
-          (gen-sym Any Lay Adv Car-Skip Cdr-Skip)
-          (gen-nil Any Lay Adv Car-Skip Cdr-Skip))))
+          (gen-sym Any Lay)
+          (gen-nil Any Lay))))
 
 
-(de gen-num (Any Lay Adv Car-Skip Cdr-Skip)
-  (let ((Verts Wid) (draw-atom Any (get-color-type Any) Adv)
+(de gen-num (Any Lay)
+  (let ((Verts Wid) (draw-atom Any (get-color-type Any))
         Part (new '(+Num)
                   Any
                   NIL NIL
@@ -33,46 +33,54 @@
     Part))
 
 
-(de gen-nil (Any Lay Adv Car-Skip Cdr-Skip)
-  # CAR/CDR point to itself
-  (let ((Verts Wid) (draw-atom Any (get-color-type Any) Adv)
+(de gen-nil (Any Lay)
+  (let ((Verts Wid) (draw-atom Any (get-color-type Any))
         Part (new '(+Nil)
                   Any
-                  Part Part
+                  NIL NIL
                   Verts
                   Lay))
     (put Part 'dims (list Wid *adv-vert-2))
     Part))
+
+    
+(de gen-sym (Any Lay)
+  (let ((Verts Wid) (draw-atom Any (get-color-type Any))
+        Cls (cond ((box? Any)       '(+Box))
+                  ((str? Any)       '(+Str))
+                  ((ext? Any)       '(+Ext))
+                  ((sym? Any)       '(+Int)))
+        Part (new Cls
+                  Any
+                  NIL NIL
+                  Verts
+                  Lay))
+    (put Part 'dims (list Wid *adv-vert-2))
+    Part))
+    
         
+(de gen-sym-pair (Any Lay Car-Skip Cdr-Skip)
 
-(de gen-sym (Any Lay Adv Car-Skip Cdr-Skip)
+  # Technically, name is a number cell
 
-  # Make Pair and Car both +Sym or just Car?
-  # If property list is shown also...
-
-  # Technically, name is a number
-
-  # Str's default val is itself so watch for inf recursion
-  # Should set Part-Car to Part-Pair ... but leave NIL for now
-  # Draw dot again
-
-  # Name any will fail for box; must use 'sym
+  # Use name for str since it exclude quotes
+  # Name any will fail for box, use 'sym
   
-  (let (Ar (name Any) 
+  (let (Name (if (str? Any) (name Any) (sym Any))
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
-        (Verts-Car Wid-Car) (draw-atom Ar (get-color-type Any))
+        (Verts-Car Wid-Car) (draw-atom Name (get-color-type Any))
         Part-Car (unless Car-Skip
                   # Num type but content is a string
                   (new '(+Num)
-                       Ar
+                       Name
                        NIL NIL
                        Verts-Car
                        Lay))
         Part-Cdr (when (and (not Cdr-Skip)
                             (not (= Val Any)))
                   (gen-part Dr Lay))
-        (Verts-Pair Wid-Pair) (draw-cell (get-color-type Any) (= Val Any))
+        (Verts-Pair Wid-Pair) (draw-pair (get-color-type Any) (= Val Any))
         Part-Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any
                        Part-Car Part-Cdr
@@ -100,13 +108,13 @@
     so for a list Root would be coordinates of first cons
   }#
 
-  # Check draw-cell! Could return single list...
+  # Check draw-pair! Could return single list...
 
   (let (Ar (car Any)
         Dr (cdr Any)
         Part-Car (unless Car-Skip (gen-part Ar Lay))
         Part-Cdr (unless Cdr-Skip (gen-part Dr Lay))        
-        (Verts-Pair Wid-Pair) (draw-cell)
+        (Verts-Pair Wid-Pair) (draw-pair)
         Part-Pair (new '(+Pair)
                         Any
                         Part-Car Part-Cdr

@@ -43,12 +43,12 @@
             "/src/worker/particle/pair.l"
             "/src/worker/particle/sym.l"
             "/src/worker/particle/num.l"
+            "/src/worker/particle/point.l"            
             "/src/worker/particle/ops/align.l"
             "/src/worker/particle/ops/gen.l"
             "/src/worker/particle/ops/layout.l"
             "/src/worker/particle/ops/pair.l"
-            "/src/worker/particle/ops/sym.l"            
-            "/src/worker/particle/ops/point.l"))
+            "/src/worker/particle/ops/sym.l"))
 
 
 (def 'NAME-PID "WORKER")
@@ -163,7 +163,7 @@
     #
     # Won't need this with external syms  
   
-    (def '*cmds (gen-part '*cmds 'x))
+    (def '*cmds (gen-sym-pair '*cmds 'x))
         
     # Must make lines
     (put *cmds 'lay 'y)    
@@ -181,7 +181,7 @@
     (set-cur-y Y)
     (adv-cur 48.0)
 
-    (def '*start (gen-part '*start 'x))
+    (def '*start (gen-sym-pair '*start 'x))
 
     # DO this properly - in gen?
     (with (get *start 'b)
@@ -198,7 +198,7 @@
     ##################
     # TODO: Draw *ptrs
     
-    (idx '*particles (def '*0 (gen-part '*0 'x)) T)
+    (idx '*particles (def '*0 (gen-sym-pair '*0 'x)) T)
 
     # Remove NIL
     (del> (get *0 'b) T T)
@@ -219,7 +219,7 @@
     
     (setq p1 *cmds)
 
-    (idx '*particles (def '*1 (gen-part '*1 'y)) T)
+    (idx '*particles (def '*1 (gen-sym-pair '*1 'y)) T)
     (del> (get *1 'b) T T)
     #(nl-cur -3.0)
     #(lay-part-start *1 *line)

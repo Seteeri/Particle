@@ -54,10 +54,13 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     +-------+-------------------+--------------------+---------------+
 
   * Refactor [Wed]
-    * Simply view - str sym
+    * Simply view - str sym [Done]
       * Don't draw internal/intermediate cells - draw last
         * Maintain consistency
         * For int syms and strs, name is at end of Car/Prop List
+    * Support cons
+      * Place cons on newline
+      * Or allow cons on same line, but if Cdr changes, move to newline
     * Pack et al must handle sublist
     * Refactor layout
       * Update dims for pairs?

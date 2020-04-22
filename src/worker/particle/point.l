@@ -1,26 +1,3 @@
-#{
-
-  Str
-
-  [+Pair]
-
-  [+Str]]
-  a (+Num)
-
-  Sym
-
-  [+Pair]
-
-  [+Sym] 
-  s (+Num)
-
-  Ref will be either a pair or an atom  
-  Pair will call sub> method, returning a Particle
-  Set pointer to its origins
-  Method will set *on-car
-}#
-  
-
 (de point-prv ()
   #(println 'point-prv)
   (let? Part (prv> (get *0 'b)) (point-ptr Part)))

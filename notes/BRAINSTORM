@@ -4456,6 +4456,115 @@ EXAMPLE:
 
 ============================================
 
+How to handle symbols?
+
+When in list, don't expand
+If not in list, expand
+
+What happens when multiple particles drawn for same symbol?
+
+Then what happens if that symbol's value is changed
+
+Data changes properly but repr doesn't
+It must be updated, which means it must be tracked/indexed, otherwise search
+so any internal symbols drawn, ie gen-sym is called, it must index it
+
+symbol : list of particles
+
+=============
+
+So should *start itself be in a list of global symbols
+- no start itself is the root symbol
+- well all the symbols with * are roots
+
+=============
+
+using the interface, how does the user make a symbol?
+
+Programmatically:
+internal: type string, eval intern
+extern: eval new
+
+UI:
+intern: type string, eval intern
+  - but how to set its value?
+extern: type chars, make list, etc.
+
+
+and how to delete?
+
+========================================
+(zap 'sym) -> sym
+"Delete" the symbol sym. For internal symbols, that means to remove it from the
+current namespace, effectively transforming it to a transient symbol. For
+external symbols, it means to mark it as "deleted", so that upon a later commit
+it will be removed from the database file. See also intern.
+========================================
+-> zap
+: (setq L (list 'a 'b 'c))
+-> (a b c)
+: L
+-> (a b c)
+: (setq A 1 B 2 C 3)
+-> 3
+: L 
+-> (a b c)
+: (zap 'a)
+-> "a"
+: L
+-> ("a" b c)
+
+
+=============
+
+(list "a" "b" "c")
+
+(list a b c)
+
+So for url's they become interal/external symbols, instead of trans symbols
+Which means they point to something, er the name is symbolic for something
+
+So mix of strings and links
+
+*start = (list "This" "is" "a" 'link)
+
+*start .     .   .  .
+       This  is  a  link
+       <B>   <B> <B> <C>
+
+Example:
+
+Given: 
+
+(setq B 1)
+
+Compare:
+
+Data = Eval:
+
+(list "A"  B  "C") = ("A" 1  "C")
+(list "A" 'B  "C") = ("A" 'B  "C")
+(list "A" 1  "C")  = ("A" 1 "C")
+
+So don't draw value...
+Ofc, user could eval all the symbols in a list and replace them with its values
+
+
+https://www.mail-archive.com/picolisp@software-lab.de/msg07287.html
+
+> (list (box) (box) (box))
+> ...
+> ($177760526373112 $177760526373114 $177760526373116)
+
+
+> Where each memory location is two more than the previous. I am wondering
+
+Yes. BTW, these are actually cell addresses, not bytes. The values have to be
+multiplied by 16 to get the physical addresses. And the value is printed in
+octal representation.
+
+============================================
+
 https://news.ycombinator.com/item?id=20191406
 
 https://no-kill-switch.ghost.io/the-rise-of-personal-knowledge-management-tools/
