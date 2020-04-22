@@ -1,3 +1,38 @@
+## Inspirations
+
+* Primary:
+
+  * Transformers (Beast Wars), Digimon, Reboot, Tron - bridging the divide
+  * Compiz - 3D desktop effects
+  * Firefox Tree Style Tab addon  
+  * Lisp/Lisp Machines - the programmable programming language
+  * Emacs/Org-mode - consistency, extensibility, text and keyboard driven
+  * CLIM - presentation-based interface
+  * The Humane Interface by Jeff Raskin
+    * Elimination of modes
+    * Persistence
+    * Unlimited undo
+    * Incremental search
+    * Elimintation of applications -> commands
+    * Redesigned file hierarchies
+    * ZUIs
+  * Evernote - Stepan Pachikov wanted to remember everything
+  
+* Secondary:
+  
+  * Uzbl/Conkeror - numbered links for navigation
+  * Unreal Blueprints - nodal system
+  * EagleMode - ZUI system
+  * Douglas Engelbart - "The Mother of All Demos"
+  * Xerox PARC - pioneered many modern computing elements and paradigms
+  * Sir Tim Berners-Lee - WWW
+  * Paul Graham, Peter Norvig - applied Lisp
+  * Brett Victor - Inventing on Principle
+  * Zach Bean - quicklisp
+  * Robert Strandh - CLOSOS/LispOS
+  * Chris Schafmeister - Molecular Metaprogramming  
+  * Oberon OS
+
 ## The Premise
 
 [A comment made by lispm, an old time lisper, on the concept of
