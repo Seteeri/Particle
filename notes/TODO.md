@@ -61,13 +61,14 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Implement cmds Q/E : start/end of line/list [Done]
     * Gen calling draw fns [Done]
     * Handle multi-line strings [Done]
-    * Draw ctrl characters: ^M, ^J, ^I
+    * Draw ctrl characters: ^M, ^J, ^I [Done]
       * Draw newline when by itself
       * When packed do not draw it - make opt?
       * (in "file" (till NIL))
     * Force draw after creating char
-    * Refactor layout to use methods
+    * Pack et al must handle sublist [Done]
     * Refactor mov>
+    * Refactor layout to use methods
     
     * Refactor eval
       * Place output in sublist
@@ -75,11 +76,8 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Support cons
       * Place cons on newline
       * Or allow cons on same line, but if Cdr changes, move to newline
-    * Pack et al must handle sublist
     * Refactor layout
-      * Update dims for pairs?
-        * Dims already generated during gen
-    * Refactor cmd-del
+    * Refactor/fix cmd-del
     * Refactor point
     * Refactor ops into methods
     * Refactor line fns

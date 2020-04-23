@@ -177,45 +177,15 @@
           
   (lay-y> Part))
 
-  
+
 (de lay-atom (Part Line Skip)
+    
+  # Should not call lay pair but rather the method
+  # lay-sym, lay-str    
     
   (if (or (isa '+Num Part)
           (isa '+Nil Part))
-      
-      (prog
-
-        # Move Pair first so below to get correct pos
-        # mov> does not use draw fn so it does not use *cur
-        (setq *cur (mov> Part *cur))
-        (upd-cur)
-
-        Part)
-
-      (prog
+             
+      (lay> Part)
   
-        # Should not call lay pair but rather the method
-        # lay-sym, lay-str
-        (lay-pair Part Line Skip))))
-
-
-(de force-lay (Part Lay)
-  (with Part
-    (=: lay Lay)
-    (when (and (: a)
-                (not (= (: a) Part)))
-      (force-lay (: a) Lay))
-    (when (and (: b)
-               (not (= (: b) Part)))
-      (force-lay (: b) Lay))))
-              
-
-(de swap-lay (Tgt)
-  (force-lay Tgt 
-             (if (= (get Tgt 'lay) 'x) 'y 'x))
-        
-  # Note this causes bounds change also
-        
-  (mov-cur-part Tgt 'start)
-  # Opt: force layout
-  (lay-part Tgt (get *start 'ori)))
+      (lay-pair Part Line Skip)))

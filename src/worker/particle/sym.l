@@ -23,6 +23,13 @@
 ######################
 (class +Sym +Particle)
 
+
+(dm lay> ()
+  (if (= (: lay) 'x)
+      (lay-x> This)
+      (lay-y> This)))
+
+
 (dm lay-x> () 
   (setq *cur (mov> This *cur))
   (upd-cur)
@@ -97,7 +104,17 @@
         *cur (get (: a) 'ori))
   (nl-cur)
   This)
+  
 
+#{
+(dm lay> ()
+  # Either a Pair or name
+  (if (: a)
+      (lay-pair This)
+      (if (= (: lay) 'x)
+          (lay-x> This)
+          (lay-y> This)))  
+}#
 
 #################
 (class +Str +Sym)
