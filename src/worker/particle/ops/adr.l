@@ -9,21 +9,21 @@
   NUM: shortnum takes entire PTR, bignum in CAR + CDR ptr
   S= pos:0 neg:1
 
-  1. *col-yellow  
-  2. *col-orange
-  3. *col-red
+  1. *sol-yellow  
+  2. *sol-orange
+  3. *sol-red
   
-  4. *col-magenta    
-  5. *col-violet
-  6. *col-blue
-  7. *col-cyan
-  8. *col-green
+  4. *sol-magenta    
+  5. *sol-violet
+  6. *sol-blue
+  7. *sol-cyan
+  8. *sol-green
 
   Cell
   * Num - 3
-    1 Ptr (builtins) = *col-base-01 or content tone
-    2 Big (interpret whole) = *col-green
-    3 Short = *col-cyan
+    1 Ptr (builtins) = *sol-base-01 or content tone
+    2 Big (interpret whole) = *sol-green
+    3 Short = *sol-cyan
   * Sym - 2
     4 Internal - blue
     4 Transient
@@ -50,11 +50,11 @@
 
   (let ((B1 B2 B3 B4) (cdr (flip (tail 4 (chop (bin Ptr))))))
     #(println B1 B2 B3 B4)
-    (cond ((= "1" B1) *col-cyan)
-          ((= "1" B2) *col-green)
-          ((= "1" B3) *col-violet)
-          ((= "0" B3) *col-magenta)
-          (T *col-base-01))))
+    (cond ((= "1" B1) *sol-cyan)
+          ((= "1" B2) *sol-green)
+          ((= "1" B3) *sol-violet)
+          ((= "0" B3) *sol-magenta)
+          (T *sol-base-01))))
 
 
 (de get-type-ptr (Ptr)
@@ -98,11 +98,11 @@
         blah (println Ptr Ptr-Ar Ptr-Dr)
         blah (println Ptr Type-Ar Type-Dr)
 
-        Col-Ar (cond ((= Ptr-Ar 4380504) *col-yellow)
-                     ((= Ptr-Ar 4380648) *col-red)
+        Col-Ar (cond ((= Ptr-Ar 4380504) *sol-yellow)
+                     ((= Ptr-Ar 4380648) *sol-red)
                      (T (get-col-ptr Ptr-Ar)))
-        Col-Dr (cond ((= Ptr-Dr 4380504) *col-yellow)
-                     ((= Ptr-Dr 4380648) *col-red)
+        Col-Dr (cond ((= Ptr-Dr 4380504) *sol-yellow)
+                     ((= Ptr-Dr 4380648) *sol-red)
                      (T (get-col-ptr Ptr-Dr)))
         (Vert-Ar Dot Vert-Dr) (draw-cons-ptr (pack (tail 4 (chop (bin Ptr-Ar)))) Col-Ar
                                              (pack (tail 4 (chop (bin Ptr-Dr)))) Col-Dr)
@@ -150,9 +150,9 @@
         blah (println Ptr Ptr-Ar Ptr-Dr)
         blah (println Ptr Type-Ar Type-Dr)
         
-        Col-Ar *col-base-01
-        Col-Dr (cond ((= Ptr-Dr 4380504) *col-yellow)
-                     ((= Ptr-Dr 4380648) *col-red)
+        Col-Ar *sol-base-01
+        Col-Dr (cond ((= Ptr-Dr 4380504) *sol-yellow)
+                     ((= Ptr-Dr 4380648) *sol-red)
                      (T (get-col-ptr Ptr-Dr)))
         (Vert-Ar Dot Vert-Dr) (draw-cons-ptr (pack (tail 4 (chop (bin Ptr-Ar)))) Col-Ar
                                              (pack (tail 4 (chop (bin Ptr-Dr)))) Col-Dr)
@@ -195,11 +195,11 @@
         blah (println Ptr (bin Ptr-Ar) (bin Ptr-Dr))        
         blah (println Ptr Type-Ar Type-Dr)
 
-        Col-Ar (cond ((= Ptr-Ar 4380504) *col-yellow)
-                     ((= Ptr-Ar 4380648) *col-red)
+        Col-Ar (cond ((= Ptr-Ar 4380504) *sol-yellow)
+                     ((= Ptr-Ar 4380648) *sol-red)
                      (T (get-col-ptr Ptr-Ar)))
-        Col-Dr (cond ((= Ptr-Dr 4380504) *col-yellow)
-                     ((= Ptr-Dr 4380648) *col-red)
+        Col-Dr (cond ((= Ptr-Dr 4380504) *sol-yellow)
+                     ((= Ptr-Dr 4380648) *sol-red)
                      (T (get-col-ptr Ptr-Dr)))
         (Vert-Ar Dot Vert-Dr) (draw-cons-ptr (pack (tail 4 (chop (bin Ptr-Ar)))) Col-Ar
                                              (pack (tail 4 (chop (bin Ptr-Dr)))) Col-Dr)

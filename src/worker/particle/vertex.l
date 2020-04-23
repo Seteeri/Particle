@@ -25,7 +25,7 @@
   # Offset into render gl buffer
   (=: off-gl Off-Gl)
 
-  (=: chr Chr)
+  (=: ch Chr)
   
   # POSS:
   # Either keep these here or move to model matrix...
@@ -48,16 +48,16 @@
 (dm upd-gly> (Chr)
   
   (when Chr
-    (=: chr (char Chr)))
+    (=: ch (char Chr)))
 
-  (=: off-texel (* (- (: chr) 1)
+  (=: off-texel (* (- (: ch) 1)
                    (get *dims-tex-node 1)
                    (get *dims-tex-node 2)))
 
-  (let Metrics (get *metrics (: chr))
+  (let Metrics (get *metrics (: ch))
 
     (unless Metrics
-      (prinl-info "upd-gly>" (pack "Unable to find metrics: " (: chr)))) 
+      (prinl-info "upd-gly>" (pack "Unable to find metrics: " (: ch)))) 
         
     (=: uv (get Metrics 'uv))
     (=: pos (pos> Metrics (: pos) *sca-vert))
@@ -79,7 +79,7 @@
 (dm wr-ptr> (Ptr)
   (struct Ptr 'N
           (cons (: off-gl) 8)
-          (: chr)
+          (: ch)
           (cons -1.0 (: pos))
           (cons -1.0 (: rota))
           (cons -1.0 (: sca))
@@ -106,7 +106,7 @@
 
     (=: off-gl Off-Gl)
     
-    (=: chr (car Chr))
+    (=: ch (car Chr))
         
     (=: pos  Pos)
     (=: rota Rota)

@@ -1,15 +1,14 @@
 (de cmd-make-char (Keysym)
 
   #{
-    ksd~Return
-    ksd~Tab
+    \r = ^M
+    \n = ^J
+    \t = ^I
   }#
-
-  (let (Data (when Keysym
-               (cond ((= Keysym ksd~space) " ")
-                     ((= Keysym ksd~Return) " ")
-                     ((= Keysym ksd~Tab) " ")
-                     (T (char Keysym))))
+  
+  (let (Data (cond ((= Keysym ksd~Return) "^J")
+                   ((= Keysym ksd~Tab) "^I")
+                   (T (char Keysym)))
         Lay 'x)
 
     # Push to cmd list

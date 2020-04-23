@@ -1,24 +1,24 @@
 # bg:fg/text = base03:base0
 
-(def '*col-base-03 (list (*/ 1.0 0.0   255.0) (*/ 1.0 43.0  255.0) (*/ 1.0 54.0  255.0)))
-(def '*col-base-02 (list (*/ 1.0 0.0   255.0) (*/ 1.0 54.0  255.0) (*/ 1.0 66.0  255.0)))
-(def '*col-base-01 (list (*/ 1.0 88.0  255.0) (*/ 1.0 110.0 255.0) (*/ 1.0 117.0 255.0)))
-(def '*col-base-00 (list (*/ 1.0 101.0 255.0) (*/ 1.0 123.0 255.0) (*/ 1.0 131.0 255.0)))
+(def '*sol-base-03 (list (*/ 1.0 0.0   255.0) (*/ 1.0 43.0  255.0) (*/ 1.0 54.0  255.0)))
+(def '*sol-base-02 (list (*/ 1.0 0.0   255.0) (*/ 1.0 54.0  255.0) (*/ 1.0 66.0  255.0)))
+(def '*sol-base-01 (list (*/ 1.0 88.0  255.0) (*/ 1.0 110.0 255.0) (*/ 1.0 117.0 255.0)))
+(def '*sol-base-00 (list (*/ 1.0 101.0 255.0) (*/ 1.0 123.0 255.0) (*/ 1.0 131.0 255.0)))
 
-(def '*col-base-0  (list (*/ 1.0 131.0 255.0) (*/ 1.0 148.0 255.0) (*/ 1.0 150.0 255.0)))
-(def '*col-base-1  (list (*/ 1.0 147.0 255.0) (*/ 1.0 161.0 255.0) (*/ 1.0 161.0 255.0)))
-(def '*col-base-2  (list (*/ 1.0 238.0 255.0) (*/ 1.0 232.0 255.0) (*/ 1.0 213.0 255.0)))
-(def '*col-base-3  (list (*/ 1.0 253.0 255.0) (*/ 1.0 246.0 255.0) (*/ 1.0 227.0 255.0)))
+(def '*sol-base-0  (list (*/ 1.0 131.0 255.0) (*/ 1.0 148.0 255.0) (*/ 1.0 150.0 255.0)))
+(def '*sol-base-1  (list (*/ 1.0 147.0 255.0) (*/ 1.0 161.0 255.0) (*/ 1.0 161.0 255.0)))
+(def '*sol-base-2  (list (*/ 1.0 238.0 255.0) (*/ 1.0 232.0 255.0) (*/ 1.0 213.0 255.0)))
+(def '*sol-base-3  (list (*/ 1.0 253.0 255.0) (*/ 1.0 246.0 255.0) (*/ 1.0 227.0 255.0)))
 
-(def '*col-violet  (list (*/ 1.0 108.0 255.0) (*/ 1.0 113.0  255.0) (*/ 1.0 196.0 255.0)))
-(def '*col-blue    (list (*/ 1.0 38.0  255.0) (*/ 1.0 139.0  255.0) (*/ 1.0 210.0 255.0)))
-(def '*col-cyan    (list (*/ 1.0 42.0  255.0) (*/ 1.0 161.0  255.0) (*/ 1.0 152.0 255.0)))
-(def '*col-green   (list (*/ 1.0 133.0 255.0) (*/ 1.0 153.0  255.0) (*/ 1.0 0.0   255.0)))
-(def '*col-yellow  (list (*/ 1.0 181.0 255.0) (*/ 1.0 137.0  255.0) (*/ 1.0 0.0   255.0)))
+(def '*sol-violet  (list (*/ 1.0 108.0 255.0) (*/ 1.0 113.0  255.0) (*/ 1.0 196.0 255.0)))
+(def '*sol-blue    (list (*/ 1.0 38.0  255.0) (*/ 1.0 139.0  255.0) (*/ 1.0 210.0 255.0)))
+(def '*sol-cyan    (list (*/ 1.0 42.0  255.0) (*/ 1.0 161.0  255.0) (*/ 1.0 152.0 255.0)))
+(def '*sol-green   (list (*/ 1.0 133.0 255.0) (*/ 1.0 153.0  255.0) (*/ 1.0 0.0   255.0)))
+(def '*sol-yellow  (list (*/ 1.0 181.0 255.0) (*/ 1.0 137.0  255.0) (*/ 1.0 0.0   255.0)))
 
-(def '*col-orange  (list (*/ 1.0 203.0 255.0) (*/ 1.0 75.0 255.0) (*/ 1.0 22.0  255.0)))
-(def '*col-red     (list (*/ 1.0 220.0 255.0) (*/ 1.0 50.0 255.0) (*/ 1.0 47.0  255.0)))
-(def '*col-magenta (list (*/ 1.0 211.0 255.0) (*/ 1.0 54.0 255.0) (*/ 1.0 130.0 255.0)))
+(def '*sol-orange  (list (*/ 1.0 203.0 255.0) (*/ 1.0 75.0 255.0) (*/ 1.0 22.0  255.0)))
+(def '*sol-red     (list (*/ 1.0 220.0 255.0) (*/ 1.0 50.0 255.0) (*/ 1.0 47.0  255.0)))
+(def '*sol-magenta (list (*/ 1.0 211.0 255.0) (*/ 1.0 54.0 255.0) (*/ 1.0 130.0 255.0)))
 
 
 (de get-color-type (Any)
@@ -52,28 +52,29 @@
   # Adjust brightness for time...or alpha?
 
   (cond ((or (== Any NIL)
-             (== Any T))  *col-yellow)
-        ((lst? Any)       *col-base-0)
-        ((num? Any)       *col-magenta)
-        ((box? Any)       *col-green)
-        ((str? Any)       *col-blue)
-        ((ext? Any)       *col-cyan)
-        ((sym? Any)       *col-violet)))
+             (== Any T))  *sol-yellow)
+        ((lst? Any)       *sol-base-0)
+        ((num? Any)       *sol-magenta)
+        ((box? Any)       *sol-green)
+        ((str? Any)       *sol-blue)
+        ((ext? Any)       *sol-cyan)
+        ((sym? Any)       *sol-violet)))
 
 
 (def '*char-dot (char 183))
 
 (de gen-vert-dot (Col)
   (gen-vert-glyph *char-dot 
-              (if Col @ *col-base-0)))
+              (if Col @ *sol-base-0)))
 
 
-(de gen-vert-glyph (Char Col)
+(de gen-vert-glyph (Char Col Val)
   (let (Vert (pop '*verts)
         (R G B) Col)
     (inc '*cnt-v)
     (with Vert
-      (=: chr (char Char))
+      (=: ch (char Char)) # used for metrics look up 
+      (=: val Val)
       (=: rgba (list R G B 1.0
                      R G B 1.0
                      R G B 1.0
@@ -82,12 +83,17 @@
 
 
 (de gen-vert-repr (Repr Col)
-  # To handle newline, move cursor when char encountered
-  
   (let Verts ()
-    (for C Repr
-      (push 'Verts (gen-vert-glyph C Col))
-      (adv-cur))
+    (for Ch Repr
+      (case Ch
+        ("^J" (push 'Verts (gen-vert-glyph "\^" Col)
+                           (gen-vert-glyph "J"  Col Ch)))
+        ("^M" (push 'Verts (gen-vert-glyph "\^" Col)
+                           (gen-vert-glyph "M"  Col Ch)))
+        ("^I" (push 'Verts (gen-vert-glyph "\^" Col)
+                           (gen-vert-glyph "I"  Col Ch)))
+        (T    (push 'Verts (gen-vert-glyph Ch Col Ch)))))
+        
     (flip Verts)))
 
   
@@ -122,7 +128,7 @@
 (de gen-vert-pair (Col Self)
 
   # (char 187) (char 166)
-  # (gen-vert-chars "[" *col-base-0 T)
+  # (gen-vert-chars "[" *sol-base-0 T)
   
   (if Self
       (list (list (gen-vert-dot Col) (gen-vert-dot Col))

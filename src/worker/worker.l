@@ -170,7 +170,7 @@
     (put *cmds 'line (new '(+Line) NIL (get *cmds 'b) NIL))
     (put *cmds 'b 'line (new '(+Line) *cmds NIL *cmds))
     
-    # (mov-2> *cmds *cur)
+    # (mov-verts> *cmds *cur)
     (set-cur-x X)
     (lay-part-start *cmds *cmds)
 
@@ -192,7 +192,7 @@
           *master *start)
     
     # Force draw for first particle since ori=cur
-    (mov-2> *start *cur)
+    (mov-verts> *start *cur)
     (lay-part-start *start *line)
         
     ##################

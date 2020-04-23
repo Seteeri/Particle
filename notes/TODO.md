@@ -58,8 +58,14 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Don't draw internal/intermediate cells - draw last
         * Maintain consistency
         * For int syms and strs, name is at end of Car/Prop List
-    * Implement cmds Q/E : start/end of list [Done]
-    * Handle multi-line strings
+    * Implement cmds Q/E : start/end of line/list [Done]
+    * Handle multi-line strings [Done]
+    * Refactor layout to use methods
+    * Refactor mov>
+    * Draw ctrl characters: ^M, ^J, ^I
+      * Draw newline when by itself
+      * When packed do not draw it - make opt?
+      * (in "file" (till NIL))
     
     * Support cons
       * Place cons on newline

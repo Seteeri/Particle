@@ -130,6 +130,41 @@
   (nl-cur)
   This)
   
+  
+(dm mov-verts> (Pos)
+
+  # Handle newline and tab
+
+  # Must update cur bnds since 
+  # originally computes based on final pos  
+    
+  (let ((X Y) Pos
+        X-B X
+        Y-B Y)
+  
+    (for Vert (: verts)
+  
+      (with Vert
+        (=: pos Pos)
+        (upd-gly> Vert))
+        
+      (upd-mod-mat> Vert)
+      (cmd-upd-vert *ipc Vert)
+      
+      (if (or (= (get Vert 'val) "^M")
+              (= (get Vert 'val) "^J"))      
+          (setq X-B (max X-B (car Pos))
+                Y-B (min Y-B (cadr Pos))
+                Pos (list X (- (cadr Pos) *adv-vert-2)))
+          (setq Pos (list (+ (car Pos) *adv-vert) (cadr Pos)))))
+  
+    (setq Pos (list (- (car Pos) *adv-vert)
+                    (cadr Pos)))
+    
+    (=: ori (ori> This))
+
+    (list (max X-B (car Pos)) (min Y-B (cadr Pos)))))
+  
 
 #################
 (class +Nil +Sym)

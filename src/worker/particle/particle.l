@@ -125,13 +125,9 @@
 (dm del-car> ()
   (when (: a) (del> @ T T))
   (del> This NIL NIL))
-
+                  
   
-(dm mov-2> (Pos)
-
-  # Check first vert
-  # If changed, change rest
-  # else, do nothing
+(dm mov-verts> (Pos)
       
   (for Vert (: verts)
   
@@ -142,10 +138,12 @@
     (upd-mod-mat> Vert)
     (cmd-upd-vert *ipc Vert)
 
-    (setq Pos (place 1
-                    Pos
-                    (+ (car Pos) *adv-vert))))
+    (setq Pos (list (+ (car Pos) *adv-vert)
+                    (cadr Pos))))
 
+  (setq Pos (list (- (car Pos) *adv-vert)
+                  (cadr Pos)))
+                    
   (=: ori (ori> This))
     
   Pos)
@@ -157,41 +155,23 @@
   # If changed, change rest
   # else, do nothing
   
+  #{
   (let? Vert (car (: verts))
         
-    (if (= (ori> (get *metrics (get Vert 'chr))
+    (if (= (ori> (get *metrics (get Vert 'ch))
                                (get Vert 'pos)
                                *sca-vert)
            Pos)
     
         # Set to pos of last vert (mul by length)
-        (prog
-          #(println 'mov> "Skip: " This (: data))
-          (setq Pos (list (+ (get Pos 1)
-                             (*/ *adv-vert (num-to-fl (- (length (: verts)) 1)) 1.0))
-                          (get Pos 2))))
+        (setq Pos (list (+ (car Pos)
+                            (*/ *adv-vert (num-to-fl (- (length (: verts)) 1)) 1.0))
+                        (cadr Pos)))
     
-        (prog
-        
-          (for Vert (: verts)
-        
-            (with Vert
-              (=: pos Pos)
-              (upd-gly> Vert))
-              
-            (upd-mod-mat> Vert)
-            (cmd-upd-vert *ipc Vert)
-
-            (setq Pos (place 1
-                            Pos
-                            (+ (car Pos) *adv-vert))))
-        
-          (setq Pos (list (- (get Pos 1) *adv-vert)
-                          (get Pos 2)))
-          
-          (=: ori (ori> This)))))
-
-  Pos)
+        (setq Pos (mov-verts> This Pos))))
+  }#
+  
+  (mov-verts> This Pos))
   
   
 # Rename off -> rel
@@ -272,7 +252,7 @@
 (dm ori> ()
   (let? Vert (car (: verts))
     (with Vert
-      (ori> (get *metrics (: chr))
+      (ori> (get *metrics (: ch))
             (: pos)
             *sca-vert))))
 
@@ -299,7 +279,7 @@
                            (not Cdr-Skip))
                   (bnds> (: b)))
         (X Y) (with (last-vert> This)
-                  (ori> (get *metrics (: chr))
+                  (ori> (get *metrics (: ch))
                         (: pos)
                         *sca-vert)))
 
