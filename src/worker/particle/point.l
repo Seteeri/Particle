@@ -24,7 +24,6 @@
 
 
 (de point-ln-first ()
-  # Go prv until newline
   (let (F T
         S (if *on-car  # Move up if on Car
               (get *0 'b 'c)
@@ -35,7 +34,6 @@
           (off F)
           (setq F (setq P (get P 'c)))))
     (unless (= P S)
-      (println "FIRST: " P (get P 'data))
       (if *on-car
           (sub> P)
           (mov-cur-abv P))
@@ -43,4 +41,18 @@
 
       
 (de point-ln-last ()
-  T)
+  (let (F T
+        S (if *on-car  # Move up if on Car
+              (get *0 'b 'c)
+              (get *0 'b))
+        P S)
+    # Stop before line
+    (while F
+      (if (or (get P 'b 'line) (not (get P 'b)))
+          (off F)
+          (setq F (setq P (get P 'b)))))
+    (unless (= P S)
+      (if *on-car
+          (sub> P)
+          (mov-cur-abv P))
+      (point-ptr P))))
