@@ -69,25 +69,15 @@
 
 
 (de gen-vert-glyph (Char Col)
-
   (let (Vert (pop '*verts)
         (R G B) Col)
-    
     (inc '*cnt-v)
-    
     (with Vert
-    
-      (=: pos *cur)
-    
+      (=: chr (char Char))
       (=: rgba (list R G B 1.0
                      R G B 1.0
                      R G B 1.0
                      R G B 1.0)))
-
-    (upd-gly> Vert Char)
-    
-    (upd-mod-mat> Vert)
-
     Vert))
 
 
@@ -139,24 +129,3 @@
             *adv-vert-2)
       (list (list (gen-vert-dot Col))
             *adv-vert)))
-
-
-#{
-(de gen-vert-chars (Chars Col)
-  # Mostly used to draw non-code and accents etc.
-
-  (let Verts ()
-
-    (for C (chop Chars)
-    
-      (let Vert (gen-vert-glyph C Col)
-        
-        (push 'Verts Vert)
-        (cmd-upd-vert *ipc Vert))
-    
-      (adv-cur))
-      
-    (adv-cur -1.0)
-
-    (flip Verts)))
-}#

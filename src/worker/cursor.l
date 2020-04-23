@@ -20,8 +20,8 @@
 (de mov-cur-vert (Vert)
   (with Vert
     (setq *cur (ori> (get *metrics (: chr))
-                              (: pos)
-                              *sca-vert))))
+                     (: pos)
+                     *sca-vert))))
 
 
 (de adv-cur (Cnt)

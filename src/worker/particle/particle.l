@@ -157,7 +157,7 @@
   # else, do nothing
   
   (let? Vert (car (: verts))
-    
+        
     (if (= (ori> (get *metrics (get Vert 'chr))
                                (get Vert 'pos)
                                *sca-vert)
@@ -272,8 +272,8 @@
   (let? Vert (car (: verts))
     (with Vert
       (ori> (get *metrics (: chr))
-                     (: pos)
-                     *sca-vert))))
+            (: pos)
+            *sca-vert))))
 
 
 (dm col> (Col)
@@ -299,8 +299,8 @@
                   (bnds> (: b)))
         (X Y) (with (last-vert> This)
                   (ori> (get *metrics (: chr))
-                           (: pos)
-                           *sca-vert)))
+                        (: pos)
+                        *sca-vert)))
 
     #(println 'calc-bounds This (: data) (format X *Scl) (format Y *Scl))
 
