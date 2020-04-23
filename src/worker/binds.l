@@ -26,15 +26,19 @@
   ((`ksd~Alt-R   `ksd~Return)    T `cmd-mov-nl)
   ((`ksd~Alt-R   `ksd~BackSpace) T `cmd-mov-bl)
   
-  ((`ksd~Control-L `ksd~q) T ((Keysym) (println "Ctrl-L q: MOV-PTR-FIRST")))
-  ((`ksd~Control-L `ksd~e) T ((Keysym) (println "Ctrl-L e: MOV-PTR-LAST")))
   ((`ksd~Control-L `ksd~r) T `cmd-make-nil)
+  ((`ksd~Control-L `ksd~t) T `cmd-mov-nl)  
   
+  ((`ksd~Control-L `ksd~q) T `cmd-ptr-ln-first)
+  ((`ksd~Control-L `ksd~e) T `cmd-ptr-ln-last)
+  # ctrl + alt + q = move to start of list  
+  # ctrl + alt + e = move to end of list
+    
   # Tab for eval
   # eval-str to pass to str
   # also need str cmd to create data
-  ((`ksd~Control-L   `ksd~Tab) T `cmd-eval-str)
-  ((`ksd~Alt-L       `ksd~Tab) T `cmd-str)
+  ((`ksd~Control-L `ksd~Tab)            T `cmd-eval-str)
+  ((`ksd~Alt-L     `ksd~Tab)            T `cmd-str)
   ((`ksd~Control-L `ksd~Alt-L `ksd~Tab) T `cmd-eval)
   
   # other cmds...

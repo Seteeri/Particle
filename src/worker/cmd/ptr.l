@@ -26,6 +26,14 @@
       (point-sub)
       (point-nxt)))
 
+      
+(de cmd-ptr-ln-first (Keysym)
+  (point-ln-first))
+
+
+(de cmd-ptr-ln-last (Keysym)
+  (point-ln-last))
+      
 
 ###########
 # Euclidean
