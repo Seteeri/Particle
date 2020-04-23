@@ -134,7 +134,9 @@
     (a> Pair Part)
     
     (a> C Pair)
-
+    
+    #(c-a> Part)
+    
     (b> Cc C)
     
     # Delete Ref
@@ -171,8 +173,10 @@
 
     (a> Pair Part)
 
+    #(c-a> Part)
+    
     (b> C Pair)
-
+    
     # Main diff here from repl-sym-first
       
     # Delete Ref
@@ -274,9 +278,9 @@
     Part))
     
     
-(de repl-line-str (Sta End Data)
+(de repl-list-str (Sta End Data)
 
-  # Replace line of strings with op
+  # Replace list/line of strings with single string
 
   (let (Prv (get Sta 'c)
         Part (gen-part (list Data) 'x))
@@ -309,4 +313,49 @@
     (mov-cur-abv (get Part 'b))
     (lay-part-start *0 *line 'skip-cdr)))
     
+
+(de repl-str-list (Ref List)
+
+  # Replace single string with list/line of strings
+  
+  (let (Sta (get Ref 'c)
+        End (get Ref 'b)
+        Prv NIL)
+  
+    # Add list, item by item
+    # Do car, then cdr
+
+    (let (Data (car List)
+          Part (gen-part (list Data) 'x NIL T))
+      (if (= (get Sta 'a) Ref)
+          (prog
+            (a> Sta Part)
+            (c-a> Part))
+          (b> Sta Part))
+  
+      (put-line Ref Part)
+  
+      (setq Prv Part))
     
+    (for Data (cdr List)
+    
+      (let Part (gen-part (list Data) 'x NIL T)
+        
+        # T must be NIL to skip
+        (con-sym Prv Part T)
+        
+        (setq Prv Part)))
+
+    # Con last Part to existing cdr
+    (b> Prv End)        
+    
+    # Del Ref except Cdr
+    (del-car> Ref)    
+    
+    (upd-tree)
+    (mov-*1 *line)        
+            
+    # Put Ptr above new part
+    (put *0 'b End)
+    (mov-cur-abv End)
+    (lay-part-start *0 *line 'skip-cdr)))

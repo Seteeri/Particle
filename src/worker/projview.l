@@ -33,7 +33,7 @@
 
   (=: mat-view    (when Mat-View @))
 
-  (=: pos    (if Pos @ (47.0 -4.0 10.0)))
+  (=: pos    (if Pos @ (42.0 -4.0 10.0)))
   (=: rot    (if Rot @ (0.0 0.0 0.0))))
 
 

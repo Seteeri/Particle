@@ -60,7 +60,7 @@
     (a> Part C)
     
     (a> Cc Part)
-        
+    
     # Line
     (with Part
       
@@ -115,6 +115,7 @@
         Cc (get C 'c))
     
     (a> Part C)
+    #(c-a> C)
 
     (b> Cc Part)
     
@@ -122,10 +123,7 @@
     (with Part
      
       (=: lay 'y)
-     
-      # Con Cc <- Part
-      (=: c Cc)
-      
+           
       # Use ins-line?        
       
       # Create Line

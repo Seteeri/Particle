@@ -7,8 +7,8 @@
   }#
   
   (let (Data (cond ((= Keysym ksd~Return) "^J")
-                   ((= Keysym ksd~Tab) "^I")
-                   (T (char Keysym)))
+                  ((= Keysym ksd~Tab) "^I")
+                  (T (char Keysym)))
         Lay 'x)
 
     # Push to cmd list
@@ -37,7 +37,7 @@
 
     #############
     
-         *0
+        *0
     [ ]  [ ]  NIL
     a    b
 
@@ -54,7 +54,7 @@
 
     *0
     [ ]  [ ]  NIL
-         c        
+        c        
 
     #############
     
@@ -63,8 +63,8 @@
 
     
     [ ]  [ ]  NIL
-         NIL        
-         
+        NIL        
+        
     *0     
     NIL
     
@@ -83,13 +83,13 @@
     (unless (= (get Tgt 'data) '*start)
     
       (cond ((or (isa '(+Pair) (get Tgt 'a))
-                 (isa '(+Nil) (get Tgt 'a)))
-             # Remove line
-             (del-line Tgt)
-             (b> Tgt-Prv Tgt-Cdr)
-             (put Tgt-Cdr 'line 'l (get Tgt 'line 'l))
-             (println (get Tgt 'line 'l))
-             (setq New-Ref Tgt-Cdr))
+                (isa '(+Nil) (get Tgt 'a)))
+            # Remove line
+            (del-line Tgt)
+            (b> Tgt-Prv Tgt-Cdr)
+            (put Tgt-Cdr 'line 'l (get Tgt 'line 'l))
+            (println (get Tgt 'line 'l))
+            (setq New-Ref Tgt-Cdr))
     
             # If Tgt prv is Car of Pair, set Car...
             ((= (get Ref 'c 'a) Ref)
@@ -110,11 +110,11 @@
               (setq New-Ref Ref))
                 
             (T
-             (b> Tgt-Prv Tgt-Cdr)
-             (put Tgt-Cdr 'c Tgt-Prv)
-             (when (get Tgt 'line)
+            (b> Tgt-Prv Tgt-Cdr)
+            (put Tgt-Cdr 'c Tgt-Prv)
+            (when (get Tgt 'line)
               (put-line Tgt Tgt-Cdr))
-             (setq New-Ref Ref)))
+            (setq New-Ref Ref)))
       
       # Unlink b before del
       (put Tgt 'b)
@@ -169,7 +169,7 @@
             
         (println 'cmd-pack Sta (get Sta 'data) "TO" End (get End 'data))
 
-        (repl-line-str Sta End Data)))))
+        (repl-list-str Sta End Data)))))
 
         
 (de cmd-chop (Keysym)
@@ -182,39 +182,14 @@
       (setq Ref (get Ref 'c)))
   
     (when (isa '(+Str) (get Ref 'a))  
-  
+    
       (let (Sta (get Ref 'c)
             End (get Ref 'b)
+            Prv NIL
             List (chop (get Ref 'a 'data)))
-      
-        # Add list, item by item
-        (let Prv Sta
-        
-          (for Data List
-          
-            (let Part (gen-part (list Data) 'x NIL T)
-              
-              # T must be NIL to skip
-              (con-sym Prv Part T)
-              
-              (setq Prv Part)))
-
-          (b> Prv End))
-        
-        (println Ref (get Ref 'data) (get Ref 'line))
-        (put-line Ref (get Sta 'b))
-        
-        # Del Ref except Cdr
-        (del-car> Ref)    
-        
-        (upd-tree)
-        (mov-*1 *line)        
-                
-        # Put Ptr above new part
-        (put *0 'b End)
-        (mov-cur-abv End)
-        (lay-part-start *0 *line 'skip-cdr)))))
-        
+  
+        (repl-str-list Ref List)))))
+  
 
 #######
 
@@ -236,7 +211,7 @@
             
         (println 'cmd-glue-sp Sta (get Sta 'data) "TO" End (get End 'data))
             
-        (repl-line-str Sta End Data)))))
+        (repl-list-str Sta End Data)))))
     
     
 (de cmd-split-sp (Keysym)
@@ -255,34 +230,8 @@
       (let (Sta (get Ref 'c)
             End (get Ref 'b)
             List (mapcar pack (split (chop (get Ref 'a 'data)) " ")))
-        
-        # Add list, item by item
-        (let Prv Sta
-        
-          (for Data List
-          
-            (let Part (gen-part (list Data) 'x NIL T)
-              
-              # T must be NIL to skip
-              (con-sym Prv Part T)
-              
-              (setq Prv Part)))
 
-          (b> Prv End))
-        
-        (println Ref (get Ref 'data) (get Ref 'line))
-        (put-line Ref (get Sta 'b))
-        
-        # Del Ref except Cdr
-        (del-car> Ref)    
-        
-        (upd-tree)
-        (mov-*1 *line)        
-                
-        # Put Ptr above new part
-        (put *0 'b End)
-        (mov-cur-abv End)
-        (lay-part-start *0 *line 'skip-cdr)))))
+        (repl-str-list Ref List)))))
 
 
 (de cmd-eval ()

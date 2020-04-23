@@ -55,10 +55,6 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
 
   * Refactor [Wed]
     * Simply view - str sym [Done]
-      * Don't draw internal/intermediate cells - draw last
-        * Maintain consistency
-        * For int syms and strs, name is at end of Car/Prop List
-    * Implement cmds Q/E : start/end of line/list [Done]
     * Gen calling draw fns [Done]
     * Handle multi-line strings [Done]
     * Draw ctrl characters: ^M, ^J, ^I [Done]
@@ -67,7 +63,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * (in "file" (till NIL))
     * Pack et al must handle sublist [Done]
     * Refactor layout to use methods [Done]
-    * Refactor mov>
+    * Refactor mov> [Done]
     
     * Refactor eval
       * Place output in sublist
@@ -81,6 +77,11 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Refactor line fns
     * Force draw after creating char
     * Refactor socket - set err instead of propogating
+    * Implement cmds Q/E : start/end of line/list
+    * Draw ctrl characters: ^M, ^J, ^I
+      * Draw newline when by itself
+      * When packed do not draw it - make opt?
+      * (in "file" (till NIL))    
     
   * Bindings []
     * Improve discoverability - user sees it immediately
