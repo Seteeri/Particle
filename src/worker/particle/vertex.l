@@ -25,7 +25,7 @@
   # Offset into render gl buffer
   (=: off-gl Off-Gl)
 
-  (=: chr NIL)
+  (=: chr Chr)
   
   # POSS:
   # Either keep these here or move to model matrix...

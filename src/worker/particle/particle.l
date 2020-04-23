@@ -150,7 +150,7 @@
     
   Pos)
 
-
+  
 (dm mov> (Pos)
 
   # Check first vert
@@ -166,7 +166,7 @@
     
         # Set to pos of last vert (mul by length)
         (prog
-          (println 'mov> "Skip: " This (: data))
+          #(println 'mov> "Skip: " This (: data))
           (setq Pos (list (+ (get Pos 1)
                              (*/ *adv-vert (num-to-fl (- (length (: verts)) 1)) 1.0))
                           (get Pos 2))))
@@ -176,7 +176,6 @@
           (for Vert (: verts)
         
             (with Vert
-              (println "MOV>" Vert (char (get Vert 'chr)))
               (=: pos Pos)
               (upd-gly> Vert))
               

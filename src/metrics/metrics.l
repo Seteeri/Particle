@@ -36,7 +36,8 @@ Quotient of N and D = (*/ 1.0 N D)
           (unless (: bnds)
             # (* 7.74184810394 2.0) = 15.48369620788
             # l b r t
-            (=: bnds (list 0.0 0.0 15.48369620788 15.48369620788))))
+            #(=: bnds (list 0.0 0.0 15.48369620788 15.48369620788))
+            (=: bnds (need 4 0.0))))
           
         (calc-metrics> Metric-Glyph)
 
