@@ -123,9 +123,9 @@
 
   (unless Col (setq Col (get-color-type Atom)))
 
-  (cond ((num? Atom) (draw-num Atom Col))
-        ((box? Atom) (draw-sym Atom Col))
-        ((str? Atom) (draw-str Atom Col))
+  (cond ((num? Atom)             (draw-num Atom Col))
+        ((and (str? Atom) 
+              (not (box? Atom))) (draw-str Atom Col))
         (T           (draw-sym Atom Col))))
 
 
