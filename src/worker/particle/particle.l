@@ -109,6 +109,7 @@
       (send-msg *ipc
                 Sock-Render
                 (pack "(zv " (get Vert 'off-gl) '")"))
+      (put Vert 'pos) # nil pos to force draw on reuse
       (push '*verts Vert)
       (dec '*cnt-v)))
 

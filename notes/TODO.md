@@ -58,6 +58,9 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Don't draw internal/intermediate cells - draw last
         * Maintain consistency
         * For int syms and strs, name is at end of Car/Prop List
+    * Implement cmds Q/E : start/end of list [Done]
+    * Handle multi-line strings
+    
     * Support cons
       * Place cons on newline
       * Or allow cons on same line, but if Cdr changes, move to newline
@@ -66,15 +69,13 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Update dims for pairs?
         * Dims already generated during gen
     * Gen calling draw fns - does not need to actually draw...
-    * Handle multi-line strings
-    * Implement cmds Q/E : start/end of list
     * Refactor cmd-del
     * Refactor point
     * Refactor ops into methods
     * Refactor line fns
-    * Refactor socket - set err instead of propogating    
+    * Refactor socket - set err instead of propogating
     
-  * Bindings [Wed]
+  * Bindings []
     * Improve discoverability - user sees it immediately
       * Once adv enough, user can remove it from default setup ;)
     * Group commands into diff syms
@@ -84,7 +85,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Store key syms and fn syms
         * Get val when called
     
-  * Replace font with terminus? [Wed]
+  * Replace font with terminus? []
   
   * Logging System
     * Log commands
