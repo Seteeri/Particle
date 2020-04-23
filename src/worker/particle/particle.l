@@ -127,29 +127,27 @@
   (del> This NIL NIL))
                   
   
-(dm mov-verts> (Pos)
+(dm mov-verts> ()
       
   (for Vert (: verts)
   
     (with Vert
-      (=: pos Pos)
+      (=: pos *cur)
       (upd-gly> Vert))
       
     (upd-mod-mat> Vert)
     (cmd-upd-vert *ipc Vert)
 
-    (setq Pos (list (+ (car Pos) *adv-vert)
-                    (cadr Pos))))
-
-  (setq Pos (list (- (car Pos) *adv-vert)
-                  (cadr Pos)))
+    (setq *cur (list (+ (car *cur) *adv-vert)
+                     (cadr *cur))))
                     
   (=: ori (ori> This))
-    
-  Pos)
+  
+  (setq *cur (list (- (car *cur) *adv-vert)
+                   (cadr *cur))))
 
   
-(dm mov> (Pos)
+(dm mov> ()
 
   # Check first vert
   # If changed, change rest
@@ -171,18 +169,17 @@
         (setq Pos (mov-verts> This Pos))))
   }#
   
-  (mov-verts> This Pos))
+  (mov-verts> This))
   
   
 # Rename off -> rel
 (dm mov-off> (Off P)
   # Calc tgt pos
-  (let (Pos (: ori)
-        Pos-Tgt (list (+ (get Pos 1) (get Off 1))
-                      (+ (get Pos 2) (get Off 2))
-                      (+ (get Pos 3) (get Off 3))))
-
-    (mov> This Pos-Tgt)
+  (let Pos (: ori)
+    (setq *cur (list (+ (get Pos 1) (get Off 1))
+                     (+ (get Pos 2) (get Off 2))
+                     (+ (get Pos 3) (get Off 3))))
+    (mov> This)
 
     (when (and (car P) (: a)) (mov-off> (: a) Off P))
     (when (and (cdr P) (: b)) (mov-off> (: b) Off P))))
@@ -196,7 +193,8 @@
                   (- (get Pos-Tgt 2) (get Pos 2))
                   (- (get Pos-Tgt 3) (get Pos 3))))
 
-    (mov> This Pos-Tgt)
+    (setq *cur Pos-Tgt)
+    (mov> This)
 
     # Apply offset to car/cdr
     (when (and (car P) (: a)) (mov-off> (: a) Off P))

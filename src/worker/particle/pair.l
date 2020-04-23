@@ -95,7 +95,7 @@
     
   (check-nl> This)
 
-  (setq *cur (mov> This *cur))
+  (mov> This)
   (upd-cur)
   
   (pos-cur-for-car-x> This))
@@ -105,7 +105,7 @@
   
   (check-nl> This)
 
-  (setq *cur (mov> This *cur))
+  (mov> This)
   (upd-cur)
   
   (pos-cur-for-car-y> This))

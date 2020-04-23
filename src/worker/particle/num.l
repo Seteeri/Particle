@@ -14,8 +14,14 @@
 
 (class +Num +Particle)
 
+(dm lay> ()
+  (if (= (: lay) 'x)
+      (lay-x> This)
+      (lay-y> This)))
+
+
 (dm lay-x> ()
-  (setq *cur (mov> This *cur))
+  (mov> This)
   (upd-cur)
   This)
 
@@ -25,7 +31,7 @@
   (let (X (get *cur 1)
         Y (get *cur 2))
 
-    (setq *cur (mov> This *cur))
+    (mov> This)
     (upd-cur)        
         
     (when (or (not (= X (get *cur 1)))
@@ -39,6 +45,6 @@
   
   
 (dm lay-y> ()
-  (setq *cur (mov> This *cur))
+  (mov> This)
   (upd-cur)
   This)

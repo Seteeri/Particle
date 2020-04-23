@@ -31,14 +31,14 @@
 
 
 (dm lay-x> () 
-  (setq *cur (mov> This *cur))
+  (mov> This)
   (upd-cur)
   
   (pos-cur-for-car-x> This))
 
 
 (dm lay-y> () 
-  (setq *cur (mov> This *cur))
+  (mov> This)
   (upd-cur)
     
   (pos-cur-for-car-y> This))
@@ -148,39 +148,38 @@
   This)
   
   
-(dm mov-verts> (Pos)
+(dm mov-verts> ()
 
   # Handle newline and tab
 
   # Must update cur bnds since 
   # originally computes based on final pos  
     
-  (let ((X Y) Pos
+  (let ((X Y) *cur
         X-B X
         Y-B Y)
   
     (for Vert (: verts)
   
       (with Vert
-        (=: pos Pos)
+        (=: pos *cur)
         (upd-gly> Vert))
         
       (upd-mod-mat> Vert)
       (cmd-upd-vert *ipc Vert)
       
       (if (or (= (get Vert 'val) "^M")
-              (= (get Vert 'val) "^J"))      
-          (setq X-B (max X-B (car Pos))
-                Y-B (min Y-B (cadr Pos))
-                Pos (list X (- (cadr Pos) *adv-vert-2)))
-          (setq Pos (list (+ (car Pos) *adv-vert) (cadr Pos)))))
-  
-    (setq Pos (list (- (car Pos) *adv-vert)
-                    (cadr Pos)))
-    
+              (= (get Vert 'val) "^J"))    
+          (setq X-B (max X-B (car *cur))
+                Y-B (min Y-B (cadr *cur))
+                *cur (list X (- (cadr *cur) *adv-vert-2)))
+          (setq *cur (list (+ (car *cur) *adv-vert) (cadr *cur)))))
+      
     (=: ori (ori> This))
 
-    (list (max X-B (car Pos)) (min Y-B (cadr Pos)))))
+    # Mov cur back one adv
+    (setq *cur (list (max X-B (- (car *cur) *adv-vert))
+                     (min Y-B (cadr *cur))))))
   
 
 #################
@@ -210,15 +209,7 @@
             (setq *on-car)
             (mov-cur-abv This)
             This))))
-            
-#{
-      # Move to start of line cdr
-      (let? Ln-CB (get *line 'c)
-        (println 'nxt> "Mov ptr -> super-line/list" Ln-CB (get Ln-CB 'data))
-        (if *on-car
-            (sub> Ln-CB)
-            (sup> Ln-CB)))))
-}#
+
 
 (dm sup> ()
   (if (= (get (: c) 'a) This)
@@ -241,7 +232,7 @@
 
 (dm lay-x> ()
   (check-nl> This)
-  (setq *cur (mov> This *cur))
+  (mov> This)
   (upd-cur)
   (upd-line> This)
   This)
@@ -249,7 +240,7 @@
 
 (dm lay-y> ()
   (check-nl> This)
-  (setq *cur (mov> This *cur))
+  (mov> This)
   (upd-cur)
   (upd-line> This)
   This)
