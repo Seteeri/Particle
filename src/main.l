@@ -66,10 +66,10 @@ own proc
   
   (let Home (pack (pwd) "/src/")
         
-      (fork-2 '(() (exec "pil" (pack Home "render/render.l") "-main")))
-      (fork-2 '(() (exec "pil" (pack Home "input/input.l")   "-main")))
-      (fork-2 '(() (exec "pil" (pack Home "ctrl/ctrl.l")     "-main")))
-      (fork-2 '(() (exec "pil" (pack Home "worker/worker.l") "-main")))
+      (fork-2 '(() (exec "pil" (pack Home "render/render.l") "-main" "+")))
+      (fork-2 '(() (exec "pil" (pack Home "input/input.l")   "-main" "+")))
+      (fork-2 '(() (exec "pil" (pack Home "ctrl/ctrl.l")     "-main" "+")))
+      (fork-2 '(() (exec "pil" (pack Home "worker/worker.l") "-main" "+")))
       
       T)
 
