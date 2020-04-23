@@ -63,12 +63,12 @@
 
 (def '*char-dot (char 183))
 
-(de draw-dot (Col)
-  (draw-glyph *char-dot 
+(de gen-vert-dot (Col)
+  (gen-vert-glyph *char-dot 
               (if Col @ *col-base-0)))
 
 
-(de draw-glyph (Char Col)
+(de gen-vert-glyph (Char Col)
 
   (let (Vert (pop '*verts)
         (R G B) Col)
@@ -91,65 +91,65 @@
     Vert))
 
 
-(de draw-repr (Repr Col)
+(de gen-vert-repr (Repr Col)
   # To handle newline, move cursor when char encountered
   
   (let Verts ()
     (for C Repr
-      (push 'Verts (draw-glyph C Col))
+      (push 'Verts (gen-vert-glyph C Col))
       (adv-cur))
     (flip Verts)))
 
   
-(de draw-str (Str Col)
-  (let Verts (draw-repr (chop Str) Col)
+(de gen-vert-str (Str Col)
+  (let Verts (gen-vert-repr (chop Str) Col)
     (list Verts
           (*/ *adv-vert (num-to-fl (- (length Verts) 1)) 1.0))))
 
   
-(de draw-num (Num Col)
-  (let Verts (draw-repr (chop (format Num)) Col)
+(de gen-vert-num (Num Col)
+  (let Verts (gen-vert-repr (chop (format Num)) Col)
     (list Verts
           (*/ *adv-vert (num-to-fl (- (length Verts) 1)) 1.0))))
 
 
-(de draw-sym (Sym Col)
-  (let Verts (draw-repr (chop (sym Sym)) Col)
+(de gen-vert-sym (Sym Col)
+  (let Verts (gen-vert-repr (chop (sym Sym)) Col)
     (list Verts
           (*/ *adv-vert (num-to-fl (- (length Verts) 1)) 1.0))))
           
 
-(de draw-atom (Atom Col)
+(de gen-vert-atom (Atom Col)
 
   (unless Col (setq Col (get-color-type Atom)))
 
-  (cond ((num? Atom)             (draw-num Atom Col))
+  (cond ((num? Atom)             (gen-vert-num Atom Col))
         ((and (str? Atom) 
-              (not (box? Atom))) (draw-str Atom Col))
-        (T           (draw-sym Atom Col))))
+              (not (box? Atom))) (gen-vert-str Atom Col))
+        (T           (gen-vert-sym Atom Col))))
 
 
-(de draw-pair (Col Self)
+(de gen-vert-pair (Col Self)
 
   # (char 187) (char 166)
-  # (draw-chars "[" *col-base-0 T)
+  # (gen-vert-chars "[" *col-base-0 T)
   
   (if Self
-      (list (list (draw-dot Col) (draw-dot Col))
+      (list (list (gen-vert-dot Col) (gen-vert-dot Col))
             *adv-vert-2)
-      (list (list (draw-dot Col))
+      (list (list (gen-vert-dot Col))
             *adv-vert)))
 
 
 #{
-(de draw-chars (Chars Col)
+(de gen-vert-chars (Chars Col)
   # Mostly used to draw non-code and accents etc.
 
   (let Verts ()
 
     (for C (chop Chars)
     
-      (let Vert (draw-glyph C Col)
+      (let Vert (gen-vert-glyph C Col)
         
         (push 'Verts Vert)
         (cmd-upd-vert *ipc Vert))

@@ -31,7 +31,7 @@
             "/src/worker/conn.l"
             "/src/worker/cursor.l"
             "/src/worker/debug.l"
-            "/src/worker/draw.l"
+            "/src/worker/gen-vert.l"
             "/src/worker/cmd/part.l"
             "/src/worker/cmd/str.l"
             "/src/worker/cmd/cam.l"

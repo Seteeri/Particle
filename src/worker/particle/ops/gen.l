@@ -23,7 +23,7 @@
 
 
 (de gen-num (Any Lay)
-  (let ((Verts Wid) (draw-atom Any (get-color-type Any))
+  (let ((Verts Wid) (gen-vert-atom Any (get-color-type Any))
         Part (new '(+Num)
                   Any
                   NIL NIL
@@ -34,7 +34,7 @@
 
 
 (de gen-nil (Any Lay)
-  (let ((Verts Wid) (draw-atom Any (get-color-type Any))
+  (let ((Verts Wid) (gen-vert-atom Any (get-color-type Any))
         Part (new '(+Nil)
                   Any
                   NIL NIL
@@ -45,7 +45,7 @@
 
     
 (de gen-sym (Any Lay)
-  (let ((Verts Wid) (draw-atom Any (get-color-type Any))
+  (let ((Verts Wid) (gen-vert-atom Any (get-color-type Any))
         Cls (cond ((box? Any)       '(+Box))
                   ((str? Any)       '(+Str))
                   ((ext? Any)       '(+Ext))
@@ -69,7 +69,7 @@
   (let (Name (if (str? Any) (name Any) (sym Any))
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
-        (Verts-Car Wid-Car) (draw-atom Name (get-color-type Any))
+        (Verts-Car Wid-Car) (gen-vert-atom Name (get-color-type Any))
         Part-Car (unless Car-Skip
                   # Num type but content is a string
                   (new '(+Num)
@@ -80,7 +80,7 @@
         Part-Cdr (when (and (not Cdr-Skip)
                             (not (= Val Any)))
                   (gen-part Dr Lay))
-        (Verts-Pair Wid-Pair) (draw-pair (get-color-type Any) (= Val Any))
+        (Verts-Pair Wid-Pair) (gen-vert-pair (get-color-type Any) (= Val Any))
         Part-Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any
                        Part-Car Part-Cdr
@@ -108,13 +108,13 @@
     so for a list Root would be coordinates of first cons
   }#
 
-  # Check draw-pair! Could return single list...
+  # Check gen-vert-pair! Could return single list...
 
   (let (Ar (car Any)
         Dr (cdr Any)
         Part-Car (unless Car-Skip (gen-part Ar Lay))
         Part-Cdr (unless Cdr-Skip (gen-part Dr Lay))        
-        (Verts-Pair Wid-Pair) (draw-pair)
+        (Verts-Pair Wid-Pair) (gen-vert-pair)
         Part-Pair (new '(+Pair)
                         Any
                         Part-Car Part-Cdr
