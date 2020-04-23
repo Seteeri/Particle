@@ -58,26 +58,16 @@
 
 
 (de lay-part-start (Part Line Skip)
-  (setq *cur-x NIL
-        *cur-y NIL
-        *line-lay Line)
-  (lay-part Part Line Skip))
-
-
-(de lay-part (Part Line Skip)
-  
   #{
     Only apply skip to immediate Part
     'skip-car
     'skip-cdr
     'skip-car-cdr
   }#
-  
-  (if (isa '(+Pair) Part)
-  
-      (lay-pair Part Line Skip)
-      
-      (lay-atom Part Line Skip)))
+  (setq *cur-x NIL
+        *cur-y NIL
+        *line-lay Line)
+  (lay-pair Part Line Skip))
 
 
 (de lay-pair (Part Line Skip)
@@ -177,15 +167,3 @@
           
   (lay-y> Part))
 
-
-(de lay-atom (Part Line Skip)
-    
-  # Should not call lay pair but rather the method
-  # lay-sym, lay-str    
-    
-  (if (or (isa '+Num Part)
-          (isa '+Nil Part))
-             
-      (lay> Part)
-  
-      (lay-pair Part Line Skip)))

@@ -65,10 +65,9 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Draw newline when by itself
       * When packed do not draw it - make opt?
       * (in "file" (till NIL))
-    * Force draw after creating char
     * Pack et al must handle sublist [Done]
+    * Refactor layout to use methods [Done]
     * Refactor mov>
-    * Refactor layout to use methods
     
     * Refactor eval
       * Place output in sublist
@@ -76,11 +75,11 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Support cons
       * Place cons on newline
       * Or allow cons on same line, but if Cdr changes, move to newline
-    * Refactor layout
     * Refactor/fix cmd-del
     * Refactor point
     * Refactor ops into methods
     * Refactor line fns
+    * Force draw after creating char
     * Refactor socket - set err instead of propogating
     
   * Bindings []
