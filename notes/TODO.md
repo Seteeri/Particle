@@ -59,14 +59,19 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
         * Maintain consistency
         * For int syms and strs, name is at end of Car/Prop List
     * Implement cmds Q/E : start/end of line/list [Done]
+    * Gen calling draw fns [Done]
     * Handle multi-line strings [Done]
-    * Refactor layout to use methods
-    * Refactor mov>
     * Draw ctrl characters: ^M, ^J, ^I
       * Draw newline when by itself
       * When packed do not draw it - make opt?
       * (in "file" (till NIL))
+    * Force draw after creating char
+    * Refactor layout to use methods
+    * Refactor mov>
     
+    * Refactor eval
+      * Place output in sublist
+      * Depends on the user really
     * Support cons
       * Place cons on newline
       * Or allow cons on same line, but if Cdr changes, move to newline
@@ -74,7 +79,6 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Refactor layout
       * Update dims for pairs?
         * Dims already generated during gen
-    * Gen calling draw fns - does not need to actually draw...
     * Refactor cmd-del
     * Refactor point
     * Refactor ops into methods

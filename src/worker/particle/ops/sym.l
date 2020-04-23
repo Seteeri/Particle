@@ -280,9 +280,14 @@
 
   (let (Prv (get Sta 'c)
         Part (gen-part (list Data) 'x))
-        
-    # Prv <-> Part
-    (b> Prv Part)
+    
+    # If car of pair
+    (if (= (get Sta 'c 'a) Sta)    
+        (prog
+          (a> Prv Part)
+          (c-a> Part))
+        (b> Prv Part))
+    
     # Part <-> End'b
     (when (get End 'b)
       (del> (get Part 'b) T T)

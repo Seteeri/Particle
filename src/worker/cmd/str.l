@@ -168,7 +168,7 @@
             Data (pack Lst))
             
         (println 'cmd-pack Sta (get Sta 'data) "TO" End (get End 'data))
-      
+
         (repl-line-str Sta End Data)))))
 
         
@@ -232,7 +232,7 @@
   
       (let (End Ref
             (Sta Lst) (build-str End)
-            Data (glue "_" Lst))
+            Data (glue " " Lst))
             
         (println 'cmd-glue-sp Sta (get Sta 'data) "TO" End (get End 'data))
             
@@ -254,7 +254,7 @@
       
       (let (Sta (get Ref 'c)
             End (get Ref 'b)
-            List (mapcar pack (split (chop (get Ref 'a 'data)) "_")))
+            List (mapcar pack (split (chop (get Ref 'a 'data)) " ")))
         
         # Add list, item by item
         (let Prv Sta

@@ -105,5 +105,5 @@
 (de cmd-calc-pv (Width Height)
   (with *projview
     (=: width  Width)
-    (=: height Height)
-    (upd-mat-proj> *projview)))
+    (=: height Height))
+  (upd-mat-proj> *projview))
