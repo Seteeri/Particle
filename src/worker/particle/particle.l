@@ -176,6 +176,7 @@
           (for Vert (: verts)
         
             (with Vert
+              (println "MOV>" Vert (char (get Vert 'chr)))
               (=: pos Pos)
               (upd-gly> Vert))
               
