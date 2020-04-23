@@ -85,18 +85,16 @@
     (println "Master Line: " *master (get *master 'b 'data))
 
     # Print lines out
-    (let (Line *line
-          Ref (get *0 'b))
+    (let Ref (get *0 'b)
     
       # Print current line
-      (println "Ref: " Ref (get Ref 'data))
+      (println "Current Ref: " Ref (get Ref 'data))
       (println "*on-car: " *on-car)
-      (println "Line:")
-      (println Line (get Line 'data))
-      #(view (getl (get Line 'line)))
-      (println 'p (get Line 'line 'p) (get Line 'line 'p 'data))
-      (println 'n (get Line 'line 'n) (get Line 'line 'n 'data))
-      (println 'l (get Line 'line 'l) (get Line 'line 'l 'data))
+      (println "Current Line:" *line (get *line 'data))
+      #(view (getl (get *line 'line)))
+      (println 'p (get *line 'line 'p) (get *line 'line 'p 'data))
+      (println 'n (get *line 'line 'n) (get *line 'line 'n 'data))
+      (println 'l (get *line 'line 'l) (get *line 'line 'l 'data))
 
       (upd-tree)
       (mov-*1 *line)      

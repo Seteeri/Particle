@@ -253,7 +253,7 @@
 ####################
         
         
-(de make-line (Part)
+(de make-line (Ref)
 
   #{
 
@@ -271,24 +271,26 @@
 
   }#
 
-  (put Part 'line (new '(+Line)
+  (println "LINE: " *line (get *line 'data))
+  
+  (put Ref 'line (new '(+Line)
                       *line
                       (get *line 'line 'n)
                       (if (get *line 'line 'l) @ *line)))
-  (put *line 'line 'n Part)
-  (let? Nxt (get *line 'line 'n)
-    (put Nxt 'line 'p Part))
+  (when (get *line 'line 'n)
+    (put @ 'line 'p Ref))
+  (put *line 'line 'n Ref)    
   
   (upd-tree)
-  (mov-*1 Part)
+  (mov-*1 Ref)
   
-  (setq *line Part)
-  (mov-cur-abv Part)
+  (setq *line Ref)
+  (mov-cur-abv Ref)
   (lay-part-start *0 *line 'skip-cdr)
   
   (println 'make-line "Made newline")
-  
-  Part)
+    
+  Ref)
 
   
 ###################
