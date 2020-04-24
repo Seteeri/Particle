@@ -30,7 +30,7 @@
            (wr-dst Ptr Dst Sock Sz Off))
 
           ((and (not Dst) Src) # Read bytes from ..., send on socket
-           (read-src Src Sock Sz Off))
+           (rd-src Src Sock Sz Off))
 
           ((and Dst Src)
            (prinl (usec) " | handle-memcpy | Ptr to ptr memcpy not implemented!"))
@@ -73,14 +73,14 @@
            T))))
 
 
-(de read-src (Src Sock Sz Off)
+(de rd-src (Src Sock Sz Off)
 
   # Unused; retrieve data from GL buffers
 
   (cond ((= Src "projview")
-         (prinl (usec) " | read-src | projview not implemented!"))
+         (prinl (usec) " | rd-src | projview not implemented!"))
 
         ((= Src "nodes")
-         (prinl (usec) " | read-src | nodes not implemented!"))))
+         (prinl (usec) " | rd-src | nodes not implemented!"))))
          
          

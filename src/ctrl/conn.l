@@ -36,7 +36,7 @@
            (wr-dst Ptr Dst Sock Sz Off))
 
           ((and (not Dst) Src) # Read bytes from ..., send on socket
-           (read-src Src Sock Sz Off))
+           (rd-src Src Sock Sz Off))
 
           ((and Dst Src)
            (prinl-info "handle-memcpy" "Ptr to ptr memcpy not implemented!"))
@@ -57,9 +57,9 @@
       (cpy-to-obj> (get *verts (get-vert-ix Off)) Ptr))))
 
 
-(de read-src (Src Sock Sz Off)
+(de rd-src (Src Sock Sz Off)
 
-  #(println "read-src" Src Sock Sz Off)
+  #(println "rd-src" Src Sock Sz Off)
   
   (cond ((= Src "projview")  
          (send-obj *ipc Sock *projview SZ-PV))
