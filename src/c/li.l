@@ -112,12 +112,12 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
   
   #This implicitly frees context
   (unref (: context))
-  (=: context NIL)
-  (=: fd-context NIL)
+  (=: context)
+  (=: fd-context)
 
   (when (: interface)
     (native "@" "free" NIL (: interface))
-    (=: interface NIL)))
+    (=: interface)))
 
 
 (de make-interface ()
