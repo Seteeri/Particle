@@ -53,9 +53,6 @@
 
 (def 'NAME-PID "WORKER")
 
-# Pass from main
-(def 'PATH-GLYPHS      "/home/user/Particle/particle/src/glyphs")
-
 # Constants
 (def '*glyph-dims '(96.0 96.0))
 (def '*sca-vert  (*/ 1.0 1.0 96.0)) # vertex scale = 1/96.0
@@ -93,15 +90,12 @@
 
 (de init-worker ()
   
-  (setq *i-proc 1)
-
-  (setq *metrics (load-metrics)) 
-  
-  (setq *ipc (new '(ipc~+IPC)
-                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
-                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")
-                          (list *uds-rend T handle-render "RENDER")
-                          )))
+  (setq *i-proc 1
+        *metrics (load-metrics (pack *path-gly "metrics/"))
+        *ipc (new '(ipc~+IPC)
+                   (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
+                   (list (list *uds-ctrl T handle-ctrl   "CONTROL")
+                         (list *uds-rend T handle-render "RENDER"))))
                           
   (reg-conns *ipc (pack NAME-PID "-" *i-proc))
   

@@ -19,7 +19,7 @@
 
 (de mov-cur-vert (Vert)
   (with Vert
-    (setq *cur (ori> (get *metrics (: ch))
+    (setq *cur (ori> (: met)
                      (: pos)
                      *sca-vert))))
 

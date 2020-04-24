@@ -156,9 +156,9 @@
   #{
   (let? Vert (car (: verts))
         
-    (if (= (ori> (get *metrics (get Vert 'ch))
-                               (get Vert 'pos)
-                               *sca-vert)
+    (if (= (ori> (get Vert 'met)
+                 (get Vert 'pos)
+                 *sca-vert)
            Pos)
     
         # Set to pos of last vert (mul by length)
@@ -250,7 +250,7 @@
 (dm ori> ()
   (let? Vert (car (: verts))
     (with Vert
-      (ori> (get *metrics (: ch))
+      (ori> (: met)
             (: pos)
             *sca-vert))))
 
@@ -277,7 +277,7 @@
                            (not Cdr-Skip))
                   (bnds> (: b)))
         (X Y) (with (last-vert> This)
-                  (ori> (get *metrics (: ch))
+                  (ori> (: met)
                         (: pos)
                         *sca-vert)))
 

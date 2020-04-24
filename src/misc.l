@@ -25,4 +25,5 @@
         *uds-ctrl  "/tmp/part-ctrl.sock"
         *uds-in    "/tmp/part-in.sock"   
         *uds-mod   "/tmp/part-mod.sock"
-        *uds-rend  "/tmp/part-ren.sock"))
+        *uds-rend  "/tmp/part-ren.sock"
+        *path-gly  (pack (pwd) "/src/glyphs/")))

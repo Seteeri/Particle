@@ -12,123 +12,102 @@ Quotient of N and D = (*/ 1.0 N D)
 -> 69388
 }#
 
-# TODO: Move these out to caller
 
-(de load-file-metrics-data (Code)
-  (let Path-Glyph (pack PATH-GLYPHS
-                        "/metrics/"
-                        Code "-metrics.l")
-    (eval (any (in Path-Glyph (till NIL T))))))
+(de load-metrics (Path)
 
-
-(de load-metrics ()
+  # Format path name, read file/code, eval data -> list of data
 
   (let Metrics ()
 
     (for Code 255
-
-      #Format path name, read file/code, eval data -> list of data
-      (let (Data (load-file-metrics-data Code)
-            Metric-Glyph (new '(+Metrics) (get Data 4) (get Data 6)))
-
-        # When no bounds max it
-        (with Metric-Glyph
-          (unless (: bnds)
-            # (* 7.74184810394 2.0) = 15.48369620788
-            # l b r t
-            #(=: bnds (list 0.0 0.0 15.48369620788 15.48369620788))
-            (=: bnds (need 4 0.0))))
           
-        (calc-metrics> Metric-Glyph)
-
-        (push 'Metrics Metric-Glyph)))
+        (push 'Metrics
+              (let Data (eval (car (str (in 
+                                          (pack Path
+                                                Code "-metrics.l")
+                                          (till NIL T)))))
+                (new '(+Metrics) 
+                      (get Data 4)
+                      (get Data 6)))))
 
     (flip Metrics)))
 
 
-#Range
-#Advance
-#Scale
+# Range
+# Advance
+# Scale
 
 (class +Bounds)
-(dm T (L
-       B
-       R
-       T)
+(dm T (L B R T)
   (=: l L)
   (=: b B)
   (=: r R)
   (=: t T))
 
 
-# Per set of glyphs
 (class +Metrics)
 (dm T (Tra
        Bnds)
+       
   (=: tra Tra)
-  (=: bnds Bnds)
-  (=: bnds-tex NIL)
-  (=: dims NIL)
-  (=: ar NIL)
-  (=: uv NIL))
 
+  # Precalc these when generating metadata
 
-# Precalc these when generating metadata
+  # bnds: l b r t
+  
+  (unless Bnds
+    (setq Bnds (need 4 0.0)))
+  
+  # sca-glyph * shape units = pixel units
+  # Bounds is rel to ori so neg nums possible
+  (=: bnds 
+      (list (*/ (get Bnds 1) *sca-glyph 1.0)
+            (*/ (get Bnds 2) *sca-glyph 1.0)
+            (*/ (get Bnds 3) *sca-glyph 1.0)
+            (*/ (get Bnds 4) *sca-glyph 1.0)))
 
-(dm calc-metrics> ()
+  # bbox (for tex draw) rel to 
+  # 1. Get origin which may have moved during gen to create enough space for df
+  # 2. Add bnds
+  # 3. Expand by 1.0 since ori=(0,0)
+  (=: bnds-tex 
+      (list (+ (*/ (car  (: tra)) *sca-glyph 1.0) (get (: bnds) 1) -1.0)
+            (+ (*/ (cadr (: tra)) *sca-glyph 1.0) (get (: bnds) 2) -1.0)
+            (+ (*/ (car  (: tra)) *sca-glyph 1.0) (get (: bnds) 3) 1.0)
+            (+ (*/ (cadr (: tra)) *sca-glyph 1.0) (get (: bnds) 4) 1.0)))
+  
+  # dims of bbox
+  (=: dims (list (- (get (: bnds-tex) 3) (get (: bnds-tex) 1))
+                 (- (get (: bnds-tex) 4) (get (: bnds-tex) 2))))
 
-    # bnds: l b r t
+  # AR of bbox
+  (=: ar (/ (car  (: dims))
+            (cadr (: dims))))
 
-    # sca-glyph * shape units = pixel units
-    # Bounds is rel to ori so neg nums possible
-    (=: bnds 
-        (list (*/ (get (: bnds) 1) *sca-glyph 1.0)
-              (*/ (get (: bnds) 2) *sca-glyph 1.0)
-              (*/ (get (: bnds) 3) *sca-glyph 1.0)
-              (*/ (get (: bnds) 4) *sca-glyph 1.0)))
-
-    # bbox (for tex draw) rel to 
-    # 1. Get origin which may have moved during gen to create enough space for df
-    # 2. Add bnds
-    # 3. Expand by 1.0 since ori=(0,0)
-    (=: bnds-tex 
-        (list (+ (*/ (car  (: tra)) *sca-glyph 1.0) (get (: bnds) 1) -1.0)
-              (+ (*/ (cadr (: tra)) *sca-glyph 1.0) (get (: bnds) 2) -1.0)
-              (+ (*/ (car  (: tra)) *sca-glyph 1.0) (get (: bnds) 3) 1.0)
-              (+ (*/ (cadr (: tra)) *sca-glyph 1.0) (get (: bnds) 4) 1.0)))
-    
-    # dims of bbox
-    (=: dims (list (- (get (: bnds-tex) 3) (get (: bnds-tex) 1))
-                   (- (get (: bnds-tex) 4) (get (: bnds-tex) 2))))
-
-    # AR of bbox
-    (=: ar (/ (car  (: dims))
-              (cadr (: dims))))
-
-    # l b r t = 1 2 3 4
-    # ori=(0,0)=bottom left
-    # so (1,1)=top right
-    #
-    # baseline.x - bounds.l
-    # baseline.y - bounds.b
-    # baseline.x + bounds.r
-    # baseline.y + bounds.t
-    (=: uv (list (*/ 1.0 (get (: bnds-tex) 3) (car  *glyph-dims))
-                 (*/ 1.0 (get (: bnds-tex) 4) (cadr *glyph-dims))
-                 0.0
-                 0.0   # r-t 1,1
-                 (*/ 1.0 (get (: bnds-tex) 3) (car  *glyph-dims))
-                 (*/ 1.0 (get (: bnds-tex) 2) (cadr *glyph-dims))
-                 0.0
-                 0.0   # r-b 1,0
-                 (*/ 1.0 (get (: bnds-tex) 1) (car  *glyph-dims))
-                 (*/ 1.0 (get (: bnds-tex) 2) (cadr *glyph-dims))
-                 0.0
-                 0.0   # l-b 0,0
-                 (*/ 1.0 (get (: bnds-tex) 1) (car  *glyph-dims))
-                 (*/ 1.0 (get (: bnds-tex) 4) (cadr *glyph-dims))
-                 0.0
-                 0.0))) # l-t 0,1
+  # l b r t = 1 2 3 4
+  # ori=(0,0)=bottom left
+  # so (1,1)=top right
+  #
+  # baseline.x - bounds.l
+  # baseline.y - bounds.b
+  # baseline.x + bounds.r
+  # baseline.y + bounds.t
+  (=: uv (list (*/ 1.0 (get (: bnds-tex) 3) (car  *glyph-dims))
+               (*/ 1.0 (get (: bnds-tex) 4) (cadr *glyph-dims))
+               0.0
+               0.0   # r-t 1,1
+               (*/ 1.0 (get (: bnds-tex) 3) (car  *glyph-dims))
+               (*/ 1.0 (get (: bnds-tex) 2) (cadr *glyph-dims))
+               0.0
+               0.0   # r-b 1,0
+               (*/ 1.0 (get (: bnds-tex) 1) (car  *glyph-dims))
+               (*/ 1.0 (get (: bnds-tex) 2) (cadr *glyph-dims))
+               0.0
+               0.0   # l-b 0,0
+               (*/ 1.0 (get (: bnds-tex) 1) (car  *glyph-dims))
+               (*/ 1.0 (get (: bnds-tex) 4) (cadr *glyph-dims))
+               0.0
+               0.0))) # l-t 0,1
 
 
 (dm pos> (Ori Sca)

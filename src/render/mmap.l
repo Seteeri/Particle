@@ -141,7 +141,7 @@
         Ptr (get Mmap 'ptr)
         Offset 0)
     (for Code 255
-      (let Path-glyph (pack PATH-GLYPHS "/tex/" Code "-data.l")
+      (let Path-glyph (pack *path-gly "tex/" Code "-data.l")
         #(println "Reading " Path-glyph " ...")
         (any (in Path-glyph (till NIL T)))
         (struct (+ Ptr Offset) 'N

@@ -74,7 +74,7 @@
   (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
         Off 0)
       (for Code 255
-        (let Path-Glyph (pack PATH-GLYPHS "/tex/" Code "-data.l")
+        (let Path-Glyph (pack *path-gly "tex/" Code "-data.l")
             #(prinl (usec) " | RENDER | init-tex-glyphs | " Code "-data.l...")
             #More idiomatic way to do this...
             (let Data (any (in Path-Glyph (till NIL T)))

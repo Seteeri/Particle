@@ -41,8 +41,6 @@
 
 (def 'NAME-PID "CTRL")
 
-(def 'PATH-GLYPHS "/home/user/Particle/particle/src/glyphs")
-
 # Constants
 (def '*glyph-dims '(96.0 96.0))
 (def '*sca-vert  (*/ 1.0 1.0 96.0)) # vertex scale = 1/96.0

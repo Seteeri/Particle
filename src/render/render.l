@@ -35,8 +35,6 @@ Class variables may be indicated by an upper case letter
 
 (def 'NAME-PID "RENDER")
 
-(defcwdpath 'PATH-GLYPHS "/src/glyphs")
-
 #Shader paths
 (defcwdpath '*path-structs-shader "/glsl/structs.glsl")
 (def '*paths-rast-vert-shader
