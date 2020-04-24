@@ -106,13 +106,13 @@
           # Push right first
           (let B (get Part 'b)
             (if (= Skip 'skip-cdr)
-                (setq Skip NIL)
+                (off Skip)
                 (unless (or (= B Part) (not B))
                   (push 'L (cons B 'b)))))
         
           (let A (get Part 'a)
             (if (= Skip 'skip-car)
-                (setq Skip NIL)
+                (off Skip)
                 (unless (or (= A Part) (not A))
                   (push 'L (cons A 'a))))))))))
 
