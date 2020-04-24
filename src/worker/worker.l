@@ -269,7 +269,7 @@
 
   (let (Msg (recv-msg *ipc Sock)
         Data (any Msg)
-        Name (get Data 1))
+        Name (car Data))
         
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
@@ -277,34 +277,33 @@
         
         (prog
       
-          (cond ((= Name 'KEYBOARD-KEY)
-                  (dispatch-kb Data))
+          (case Name
+          
+            (KEYBOARD-KEY
+              (dispatch-kb Data))
 
-                ((or (= Name 'TOUCH-UP)
-                    (= Name 'TOUCH-DOWN)
-                    (= Name 'TOUCH-FRAME)
-                    (= Name 'TOUCH-MOTION))
-                  (prinl-info "handle-ctrl" (glue " " Data)))
+            ((TOUCH-UP
+              TOUCH-DOWN
+              TOUCH-FRAME
+              TOUCH-MOTION)
+              (prinl-info "handle-ctrl" (glue " " Data)))
 
-                ((= Name "update-vert")
-                  (cmd-upd-vert *ipc *vert-ptr))
+            ("update-vert"
+              (cmd-upd-vert *ipc *vert-ptr))
 
-                ((= Name "calc-pv")
-                  (cmd-calc-pv (get Data 2) (get Data 3)))
+            ("calc-pv"
+              (cmd-calc-pv (get Data 2) (get Data 3)))
 
-                ((= Name "upd-pv")
-                  (cmd-upd-pv *ipc))
+            ("upd-pv"
+              (cmd-upd-pv *ipc))
 
-                ((= Name "bye")
-                  # Send bye to ctrl which will send to all workers/render/model
-                  (send-msg *ipc Sock "(bye)")
-                  (ipc~disconn-sock Sock)
-                  (ipc~end> *ipc)
-                  (println "Worker says bye!")
-                  (bye))
-
-                (T
-                T))
+            ("bye"
+              # Send bye to ctrl which will send to all workers/render/model
+              (send-msg *ipc Sock "(bye)")
+              (ipc~disconn-sock Sock)
+              (ipc~end> *ipc)
+              (println "Worker says bye!")
+              (bye)))
 
           # Send ready when complete
           (send-msg *ipc Sock "(rdy)"))

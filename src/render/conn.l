@@ -2,7 +2,7 @@
 
   #(prinl-info "proc-msg/RENDER" (str Data))
 
-  (let (Name-Fn (get Data 1))
+  (let (Name-Fn (car Data))
 
     (cond ((= Name-Fn "mc")
            (handle-memcpy Sock Data Bin))

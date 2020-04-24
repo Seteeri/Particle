@@ -138,7 +138,7 @@
     
   (let (Msg (recv-msg *ipc Sock)
         Data (any Msg)
-        Name (get Data 1))
+        Name (car Data))
     
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
@@ -184,7 +184,7 @@
 (de format-msg-ev (Data)
   (pack "("
         (glue " "
-              (list (name (get Data 1))
+              (list (name (car Data))
                     (format (get Data 2))
                     (format (get Data 3))
                     (format (get Data 4))
