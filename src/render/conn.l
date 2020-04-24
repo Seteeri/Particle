@@ -2,16 +2,16 @@
 
   #(prinl-info "proc-msg/RENDER" (str Data))
 
-  (let (Name-Fn (car Data))
+  (case (car Data)
 
-    (cond ((= Name-Fn "mc")
-           (handle-memcpy Sock Data Bin))
+    ("mc"
+      (handle-memcpy Sock Data Bin))
 
-          ((= Name-Fn "zv")
-           (handle-memset Sock Data))
-           
-          (T
-           (prinl-info "proc-msg/RENDER" (pack "UNKNOWN REQUEST! " Msg))))))
+    ("zv"
+      (handle-memset Sock Data))
+      
+    (T
+      (prinl-info "proc-msg/RENDER" (pack "UNKNOWN REQUEST! " Msg)))))
 
 
 (de handle-memset (Sock Data)
