@@ -54,14 +54,16 @@
                    (get *dims-tex-node 1)
                    (get *dims-tex-node 2)))
 
-  (let Metrics (get *metrics (: ch))
-
-    (unless Metrics
-      (prinl-info "upd-ch>" (pack "Unable to find metrics: " (: ch)))) 
+  (unless (: met)
+    (=: met (get *metrics (: ch)))
+    (unless (: met)
+      (prinl-info "upd-ch>" (pack "Unable to find metrics: " (: ch)))))
+                   
+  (let? Met (: met)
         
-    (=: uv (get Metrics 'uv))
-    (=: pos (pos> Metrics (: pos) *sca-vert))
-    (=: sca (sca> Metrics *sca-vert))))
+    (=: uv (get Met 'uv))
+    (=: pos (pos> Met (: pos) *sca-vert))
+    (=: sca (sca> Met *sca-vert))))
         
          
 (dm upd-mod-mat> ()
