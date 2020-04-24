@@ -353,7 +353,7 @@
     #(prinl-info "cmd-kb" (pack (str Data) " " Keysym))
 
     # Update states
-    (update-key> *xkb Keycode State)
+    (upd-key> *xkb Keycode State)
 
     # Note this returns the actual cell
     (with *xkb

@@ -32,7 +32,7 @@
 
 (dm get-one-sym>      (Keycode)             (xkb~state-key-get-one-sym  (: state) Keycode))
 (dm get-utf8>         (Keycode Buffer Size) (xkb~state-key-get-utf8     (: state) Keycode Buffer Size))
-(dm update-key>       (Keycode Direction)   (xkb~state-update-key       (: state) Keycode Direction))
+(dm upd-key>       (Keycode Direction)   (xkb~state-update-key       (: state) Keycode Direction))
 (dm key-repeats>      (Keycode)             (xkb~keymap-key-repeats     (: keymap) Keycode))
 (dm serialize-mods>   (Components)          (xkb~state-serialize-mods   (: state) Components))
 (dm serialize-layout> (Components)          (xkb~state-serialize-layout (: state) Components))

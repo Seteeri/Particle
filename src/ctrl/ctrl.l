@@ -239,7 +239,7 @@
         Keycode (+ Keyed 8)
         State   (get Data 5))
 
-    (update-key> *xkb Keycode State)
+    (upd-key> *xkb Keycode State)
     
     (when (= (key-repeats> *xkb Keycode) xkb~KEY-DOWN)
       # Pass key evdev since worker will +8 to match passthrough events from
