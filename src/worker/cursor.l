@@ -19,10 +19,11 @@
 
 
 (de mov-cur-vert (Vert)
-  (with Vert
-    (setq *cur (ori> (: met)
-                     (: pos)
-                     *sca-vert))))
+  (setq *cur 
+        (with Vert
+          (ori> (: met)
+                (: pos)
+                *sca-vert))))
 
 
 (de adv-cur (Cnt)
