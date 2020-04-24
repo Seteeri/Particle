@@ -163,7 +163,7 @@
   
       (with Vert
         (=: pos *cur)
-        (upd-gly> Vert))
+        (upd-ch> Vert))
         
       (upd-mod-mat> Vert)
       (cmd-upd-vert *ipc Vert)

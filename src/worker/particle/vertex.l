@@ -16,7 +16,7 @@
 
 (class +Vertex)
 (dm T (Off-Gl
-       Chr       #Use to get offset, if char then data is char also
+       Ch       #Use to get offset, if char then data is char also
        RGBA
        Pos
        Rota
@@ -25,7 +25,7 @@
   # Offset into render gl buffer
   (=: off-gl Off-Gl)
 
-  (=: ch Chr)
+  (=: ch Ch)
   
   # POSS:
   # Either keep these here or move to model matrix...
@@ -40,15 +40,15 @@
   (=: uv NIL)
   (=: off-texel NIL)
   
-  (when Chr
-    (upd-gly> This Chr)
+  (when Ch
+    (upd-ch> This Ch)
     (upd-mod-mat> This)))
 
 
-(dm upd-gly> (Chr)
+(dm upd-ch> (Ch)
   
-  (when Chr
-    (=: ch (char Chr)))
+  (when Ch
+    (=: ch (char Ch)))
 
   (=: off-texel (* (- (: ch) 1)
                    (get *dims-tex-node 1)
@@ -57,7 +57,7 @@
   (let Metrics (get *metrics (: ch))
 
     (unless Metrics
-      (prinl-info "upd-gly>" (pack "Unable to find metrics: " (: ch)))) 
+      (prinl-info "upd-ch>" (pack "Unable to find metrics: " (: ch)))) 
         
     (=: uv (get Metrics 'uv))
     (=: pos (pos> Metrics (: pos) *sca-vert))
@@ -92,7 +92,7 @@
 
 (dm rd-ptr> (Ptr)
 
-  (let ((Off-Gl Chr Pos Rota Sca Mm Rgba Uv Off-Texel)
+  (let ((Off-Gl Ch Pos Rota Sca Mm Rgba Uv Off-Texel)
         (struct Ptr 
                 '((N . 1)
                   (B . 1)
@@ -106,7 +106,7 @@
 
     (=: off-gl Off-Gl)
     
-    (=: ch (car Chr))
+    (=: ch (car Ch))
         
     (=: pos  Pos)
     (=: rota Rota)
