@@ -134,7 +134,9 @@
   (for Vert (: verts)
   
     (with Vert
-      (=: pos *cur)
+      (=: pos (if (= (get Vert 'ch) (char "*"))
+                  *cur
+                  *cur))
       (upd-ch> Vert))
       
     (upd-mod-mat> Vert)

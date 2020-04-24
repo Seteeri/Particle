@@ -4563,6 +4563,35 @@ Yes. BTW, these are actually cell addresses, not bytes. The values have to be
 multiplied by 16 to get the physical addresses. And the value is printed in
 octal representation.
 
+=============================================
+
+https://news.ycombinator.com/item?id=18958046
+
+For me it was efficiency of reading. It is proven that proportional, serif fonts read significantly faster (17%) [1] or [2] (6.1%). Also, in my opinion, scanning is much faster.
+
+This makes sense: our eye uses the top and bottom of words to ‘key’ the word. Use proportional and you add information to this system.
+
+[1] https://blog.codinghorror.com/comparing-font-legibility/
+
+[2] https://journals.sagepub.com/doi/pdf/10.1177/001872088302500...
+
+(edit: add references to research) 
+
+If drawn after ptr, ptr is above
+If drawn before ptr, ptr is under
+
+So draw non-ptrs first
+Then draw ptrs after
+
+https://graphicdesign.stackexchange.com/questions/5650/do-all-monospace-sans-serif-fonts-look-the-same
+
+http://s9w.github.io/font_compare/
+
+systemE -> sinit -> 
+sinit is a suckless init, initially based on Rich Felker's minimal init.
+
+https://superuser.com/questions/320529/how-to-create-a-linux-system-that-runs-a-single-application/991733#991733
+
 ============================================
 
 https://news.ycombinator.com/item?id=20191406

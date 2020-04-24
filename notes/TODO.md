@@ -72,8 +72,6 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Draw newline when by itself
       * When packed do not draw it - make opt?
       * (in "file" (till NIL))
-    * Replace font with terminus? []    
-    
     
   * Bindings []
     * Improve discoverability - user sees it immediately
@@ -85,33 +83,24 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Store key syms and fn syms
         * Get val when called
     
-  
   * Logging System
     * Log commands
   
   * Cam
     * Camera needs to move with content like when entering a newline
       * Requires unproject to test if coord is in the viewport
-      * When a new item is entered, check its bnds against the view bounds  
-  
-  * Str Ops [Wed]
-    * Core
-    * Basic search/replace (strs)
-      * Essentially, searching symbol props
-      * Conventional users expect strings, aka prop data when str
-      * Also can search tg, dat, tim, ori (spatial)
-      * Output list of syms/particles + finds
-        * For str, context
-        * Other props, whatever it is
-      * Lists can be composed with search/repl fn
-      * Lists can be sorted
-      * Output can then be merged
-    * Pattern matching
-          
+      * When a new item is entered, check its bnds against the view bounds    
+                
   * Why is xkb in worker? Should be in ctrl []
   
-  * Eval/CLI
-    * Put output on newlist in newline
+  * Implement external symbols
+    * Sep verts and parts in diff dbs
+      * verts.db
+      * parts.db
+    * Refactor Particle into subclass of Entity
+    * Can test multiple workers pull/push database
+    * Workers send serialized data directly to raster
+      * ...instead of writing to DB and having raster read it  
   
   ----------------
     
@@ -149,19 +138,21 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * (eval "help") (eval 'help)
     * Fuzzy-search
   
+  * Adv Str Ops
+    * Basic search/replace (strs)
+      * Essentially, searching symbol props
+      * Conventional users expect strings, aka prop data when str
+      * Also can search tg, dat, tim, ori (spatial)
+      * Output list of syms/particles + finds
+        * For str, context
+        * Other props, whatever it is
+      * Lists can be composed with search/repl fn
+      * Lists can be sorted
+      * Output can then be merged
+    * Pattern matching  
+  
   * Refactor [Nxt Week]
-    * Technically '*list and '*main can be different, i.e. sublist can be on
-    same line as parent list
-      * It can't unless layout swapped...
-    * For single chars, the bounds is the same everytime
-      * Avoid calc      
-    * Fix magic numbers
     * Refeactor "*0" mov-part-abv> into cursor fn  
-    * Should swap-layout recurse or not?
-      * Maintain substructure
-      * Do first level or immediate
-      * Shortcut with Ctrl, Alt, Shift Tab
-      * Really only useful when setting up sublists  
     * Opt: buffer is a circular list
       * Use dot by itself to indicate circular list
       * Remember, two dots means it refers to itself
@@ -181,12 +172,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Store ref to last item in list for faster bnds calc
     * Is there a way to map modifier keys to Car or Pair/Cdr?
       * Use mod keys to decide whether to keep input or replace it
-      
-  * Implement external symbols
-    * Move verts.bin -> verts.db
-    * Refactor Particle into subclass of Entity
-    * Can test multiple workers pull/push database      
-      
+            
   * Optimize
     * IPC
       * Utilize multiple workers - see notes
@@ -194,10 +180,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Instead of directly sending msgs, put into list
       * Call flush to send all
       * Requires rewriting protocol to read multiple messages from single str
-          
-  * Use special printing for control characters like enter etc.
-    * newline ("^J"), return ("^M") or TAB ("^I")
-    
+              
   * Directory Nav
       
   * Tag/Note System

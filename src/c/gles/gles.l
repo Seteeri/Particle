@@ -23,8 +23,20 @@ Naming Conventions:
 (def '*glBufferStorage 0)
 
 
+(de blend-equation-separate (Mode-RGB Mode-A)
+  (native "libGLESv2.so.2" "glBlendEquationSeparate" NIL Mode-RGB Mode-A))
+
+  
 (de blend-equation (Mode)
   (native "libGLESv2.so.2" "glBlendEquation" NIL Mode))
+
+  
+(de blend-func-separate (Src-RGB Dst-RGB Src-A Dst-A)
+  (native "libGLESv2.so.2" "glBlendFuncSeparate" NIL Src-RGB Dst-RGB Src-A Dst-A))
+  
+  
+(de blend-func (Sfactor Dfactor)
+  (native "libGLESv2.so.2" "glBlendFunc" NIL Sfactor Dfactor))  
   
 
 (de viewport (X Y Width Height)
@@ -37,10 +49,6 @@ Naming Conventions:
 
 (de disable (Cap)
   (native "libGLESv2.so.2" "glDisable" NIL Cap))
-
-
-(de blend-func (Sfactor Dfactor)
-  (native "libGLESv2.so.2" "glBlendFunc" NIL Sfactor Dfactor))
 
 
 (de clear (Mask)
@@ -400,8 +408,8 @@ Naming Conventions:
       (native "@" "free" NIL Binary))
 
     Program))
-
-
+   
+    
 (mapc '((X) (def (car X) (hex (cadr X))))
       (quote
        
