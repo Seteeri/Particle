@@ -38,7 +38,7 @@
             "/src/worker/cmd/ptr.l"
             "/src/worker/binds.l"   
             "/src/worker/projview.l"
-            "/src/worker/particle/vertex.l"
+            "/src/worker/vertex.l"
             "/src/worker/particle/particle.l"
             "/src/worker/particle/pair.l"
             "/src/worker/particle/sym.l"

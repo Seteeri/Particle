@@ -28,6 +28,7 @@ Class variables may be indicated by an upper case letter
             "/src/prot/conn.l"
             "/src/prot/msg.l"
             "/src/prot/obj.l"
+            "/src/worker/vertex.l"
             "/src/render/params-buffer.l"
             "/src/render/raster.l"
             "/src/render/conn.l"))

@@ -15,10 +15,10 @@
 
 
 (de handle-memset (Sock Data)
-  #(println 'handle-memset Data)
+  # Render only
   (let (Off     (get Data 2)
         Ptr-Gl  (+ (get '*buffer-objects 'nodes 'gl~ptr) Off))
-    (native "@" "memset" NIL Ptr-Gl 0 208)))
+    (native "@" "memset" NIL Ptr-Gl 0 SZ-GL-VERT)))
 
 
 (de handle-memcpy (Sock Data Ptr)
