@@ -37,7 +37,7 @@
             "/src/ctrl/xkb.l"
             "/src/ctrl/conn.l"
             "/src/worker/projview.l"
-            "/src/worker/particle/vertex.l"))
+            "/src/worker/vertex.l"))
 
 (def 'NAME-PID "CTRL")
 
@@ -102,9 +102,9 @@
   #(view (getl *projview))
   
   (setq *ipc (new '(ipc~+IPC)
-              *uds-ctrl             T handle-worker accept-client
-              (list (list *uds-in   T handle-input  "INPUT")
-                    (list *uds-rend T handle-render "RENDER"))))
+                  *uds-ctrl             T handle-worker accept-client
+                  (list (list *uds-in   T handle-input  "INPUT")
+                        (list *uds-rend T handle-render "RENDER"))))
 
   (reg-conns *ipc NAME-PID)
 

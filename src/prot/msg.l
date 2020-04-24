@@ -223,7 +223,7 @@
 
               (let (Str  (rem-frs-n-d-c *dlst Len-Sexpr)
                     Msg  (pack (flip (cdr Str)))
-                    Data (any Msg))
+                    Data (car (str Msg)))
 
                     # Parse Bin
                     (when (not (=0 Sz-Bin))
