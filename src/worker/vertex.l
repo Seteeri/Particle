@@ -37,8 +37,8 @@
   (=: mm (mat4-identity))
   
   (=: rgba RGBA)      
-  (=: uv NIL)
-  (=: off-texel NIL)
+  (=: uv)
+  (=: off-texel)
   
   (when Ch
     (upd-ch> This Ch)
