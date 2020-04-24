@@ -122,29 +122,3 @@
     (wr-mat-proj-ptr> *projview (get Mmap 'ptr))
     (wr-mat-view-ptr> *projview (+ (get Mmap 'ptr) 16))
     Mmap))
-
-
-(de init-mmap-tex-glyphs ()
-  #{
-    Optimize loading
-  }#
-  
-  (let (Mmap (init-mmap (get *params-mmap-tex-glyphs 2)
-                        (get *params-mmap-tex-glyphs 3)
-                        T)
-        Ptr (get Mmap 'ptr)
-        Off 0)
-        
-    (for Code 255
-      (let Path-glyph (pack *path-gly "tex/" Code "-data.l")
-        #(println "Reading " Path-glyph " ...")
-        (any (in Path-glyph (till NIL T)))
-        (struct (+ Ptr Off) 'N
-                (0 . 4)
-                (2 . 4)
-                (1 . 4)
-                (0 . 4)
-                (3 . 4)
-                (2 . 4))
-        (inc 'Off)))
-        Mmap))
