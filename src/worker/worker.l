@@ -292,7 +292,7 @@
                 ((= Name "calc-pv")
                 (cmd-calc-pv (get Data 2) (get Data 3)))
 
-                ((= Name "update-pv")
+                ((= Name "upd-pv")
                 (cmd-upd-pv *ipc))
 
                 ((= Data "bye")

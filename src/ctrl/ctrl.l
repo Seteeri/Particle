@@ -109,7 +109,7 @@
   (reg-conns *ipc NAME-PID)
 
   (queue '*q-msg (pack "(calc-pv " *width " " *height ")"))
-  (queue '*q-msg (pack "(update-pv)"))
+  (queue '*q-msg (pack "(upd-pv)"))
 
   (setq *xkb (new '(+Xkb)))
 
@@ -146,7 +146,7 @@
         (case Name
           ("fbsize"
             (dispatch-msg (pack "(calc-pv " (get Data 2) " " (get Data 3) ")"))
-            (dispatch-msg (pack "(update-pv)")))
+            (dispatch-msg (pack "(upd-pv)")))
 
           ("focus"
             )
