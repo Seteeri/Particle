@@ -140,7 +140,7 @@
 
 
 (dm sub> ()
-  (setq *on-car T)
+  (on *on-car)
   (if (: a)
       (mov-cur-ori (: a))
       (mov-cur-ori This))
