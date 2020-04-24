@@ -1,3 +1,3 @@
-(list 'code 138
-      'tra (list 7.741848 7.741848)
-      'bnds NIL)
+'(code 138
+  tra  (7.741848 7.741848)
+  bnds NIL)

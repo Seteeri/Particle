@@ -91,7 +91,7 @@
 (de init-worker ()
   
   (setq *i-proc 1
-        *metrics (load-metrics (pack *path-gly "metrics/"))
+        *metrics (load-metrics (pack *path-gly "proc/"))
         *ipc (new '(ipc~+IPC)
                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")

@@ -14,22 +14,17 @@ Quotient of N and D = (*/ 1.0 N D)
 
 
 (de load-metrics (Path)
-
-  # Format path name, read file/code, eval data -> list of data
-
+  
   (let Metrics ()
 
     (for Code 255
-          
+        
         (push 'Metrics
-              (let Data (eval (car (str (in 
-                                          (pack Path
-                                                Code "-metrics.l")
-                                          (till NIL T)))))
-                (new '(+Metrics) 
-                      (get Data 4)
-                      (get Data 6)))))
-
+              (let Met (new '(+Metrics))
+                (putl Met (car (str (in (pack Path Code ".l")
+                                        (till NIL T)))))
+                Met)))
+                                                              
     (flip Metrics)))
 
 
@@ -46,12 +41,15 @@ Quotient of N and D = (*/ 1.0 N D)
 
 
 (class +Metrics)
-(dm T (Tra
-       Bnds)
+
+(dm calc> (Tra Bnds)
+
+  #(out (pack "src/glyphs/proc/" Code ".l")
+  #  (pretty (getl Met)))
+
+  # Used when generating proc from raw metrics
        
   (=: tra Tra)
-
-  # Precalc these when generating metadata
 
   # bnds: l b r t
   
