@@ -45,10 +45,10 @@
     
 (de gen-sym (Any Lay)
   (let ((Verts Wid) (gen-vert-atom Any (get-color-type Any))
-        Cls (cond ((box? Any)       '(+Box))
-                  ((str? Any)       '(+Str))
-                  ((ext? Any)       '(+Ext))
-                  ((sym? Any)       '(+Int)))
+        Cls (cond ((box? Any) '(+Box))
+                  ((str? Any) '(+Str))
+                  ((ext? Any) '(+Ext))
+                  ((sym? Any) '(+Int)))
         Part (new Cls
                   Any
                   NIL NIL
