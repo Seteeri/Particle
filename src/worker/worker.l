@@ -102,8 +102,7 @@
   ##################################
   # Control should send this on init
   (setq *projview (req-recv-pv *ipc
-                               (ipc~get-fd> *ipc "CONTROL")
-                               NIL))
+                               (ipc~get-fd> *ipc "CONTROL")))
   (cmd-render-pv *ipc)
   ####################
   
@@ -161,7 +160,7 @@
         
     # Must make lines
     (put *cmds 'lay 'y)    
-    (put *cmds 'line (new '(+Line) NIL (get *cmds 'b) NIL))
+    (put *cmds 'line (new '(+Line) NIL (get *cmds 'b)))
     (put *cmds 'b 'line (new '(+Line) *cmds NIL *cmds))
     
     # (mov-verts> *cmds *cur)
