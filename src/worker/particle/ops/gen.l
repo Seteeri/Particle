@@ -6,8 +6,7 @@
       (if (lst? (cdr Any))
       
           # Handle specific forms here
-          (cond (T
-                 (gen-pair Any Lay Car-Skip Cdr-Skip)))
+          (gen-pair Any Lay Car-Skip Cdr-Skip)
                  
           (gen-pair Any Lay Car-Skip Cdr-Skip))
       
