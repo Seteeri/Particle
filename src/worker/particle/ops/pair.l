@@ -51,7 +51,7 @@
     
   }#
   
-  (let (Part (gen-part (cons NIL NIL)
+  (let (Part (gen-part (cons)
                        'x
                        'skip-car)
         C (get Ref 'c)
@@ -108,7 +108,7 @@
     
   }#
   
-  (let (Part (gen-part (cons NIL NIL)
+  (let (Part (gen-part (cons)
                        'x
                        'skip-car)
         C (get Ref 'c)
