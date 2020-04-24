@@ -49,11 +49,12 @@
 
   #(println "write-dst" Ptr Dst Sock Sz Off)
 
-  (cond ((= Dst "projview")
-         (cpy-to-obj> *projview Ptr))
+  (case Dst
+    ("projview"
+     (cpy-to-obj> *projview Ptr))
    
-        ((= Dst "nodes")
-         (cpy-to-obj> (get *verts (get-vert-ix Off)) Ptr))))
+    ("nodes"
+      (cpy-to-obj> (get *verts (get-vert-ix Off)) Ptr))))
 
 
 (de read-src (Src Sock Sz Off)
