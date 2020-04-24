@@ -77,10 +77,10 @@
 (de send-event (Ev)
 
   (let (Type (li~event-get-type Ev)
-        Name-Type (li~get-event-type-name Type))
+        Name (li~get-event-type-name Type))
 
     (let Msg (pack "("
-                   (glue " " (make (link Name-Type)
+                   (glue " " (make (link Name)
                                    (link (build-ev-lst-str Ev Type))))
                    ")")
 
