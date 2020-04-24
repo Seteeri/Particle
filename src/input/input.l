@@ -54,15 +54,15 @@
 
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
-    (unless Msg
-      (disconn-client *ipc Sock))
-
-    (when (= Data "bye")
-      (send-msg-conns *ipc "(bye)")
-      (ipc~disconn-sock Sock)
-      (end)
-      (println "Input says bye!")
-      (bye))))
+    
+    (if Msg
+        (when (= Data "bye")
+          (send-msg-conns *ipc "(bye)")
+          (ipc~disconn-sock Sock)
+          (end)
+          (println "Input says bye!")
+          (bye))
+        (disconn-client *ipc Sock))))
 
 
 (de handle-fd-li ()
