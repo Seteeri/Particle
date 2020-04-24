@@ -87,15 +87,10 @@
   (let (Type (li~event-get-type Ev)
         Name-Type (li~get-event-type-name Type))
 
-    #(prinl (usec) " | handle-context   | Ev: " Type "=" Name-Type)
-
     (let Msg (pack "("
                    (glue " " (make (link Name-Type)
                                    (link (build-ev-lst-str Ev Type))))
                    ")")
-
-      #(when (= Type li~KEYBOARD-KEY)
-      #  (println Msg))
 
       # Workers will send messages to input when they are ready
       (send-msg-clients *ipc Msg))))
