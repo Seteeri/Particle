@@ -160,7 +160,7 @@ Class variables may be indicated by an upper case letter
   - Disable draw flag for node, before copying data, then enable after
 
   }#
-
+  
   #Init context
   (init-window)
   

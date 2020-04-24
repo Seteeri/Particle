@@ -17,8 +17,10 @@
 
   (init-buffs-rast)
 
-  #Load default buffer data
-  (when TEST-GLYPH (init-tex-glyphs))
+  # Load default buffer data
+  # Method 1,2,3:
+  # 1.93, 2.16, 2.4
+  (init-tex-glyphs)
   (init-di)
   (init-verts)
   (init-el)
@@ -68,19 +70,30 @@
 
 
 (de init-tex-glyphs ()
+  # Method 2
   #{
-    To load faster, convert files to bin and do memcpy
+    (mapc '((B)
+              (byte (+ Ptr Off) B)
+              (inc 'Off))
+          Data))))))
   }#
-  (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
-        Off 0)
-      (for Code 255
-        (let Path-Glyph (pack *path-gly "tex/" Code "-data.l")
-            #(prinl (usec) " | RENDER | init-tex-glyphs | " Code "-data.l...")
-            #More idiomatic way to do this...
-            (let Data (car (str (in Path-Glyph (till NIL T))))
-              (for B Data
-                (struct (+ Ptr Off) 'N (cons B 1))
-                (inc 'Off)))))))
+
+
+  # Method 3
+  #{
+    (for B Data
+      (struct (+ Ptr Off) 'N (cons B 1))
+      (inc 'Off)))))))
+  }#  
+  
+  # To load faster, bin + memcpy  
+  
+  (let Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
+    (for Code 255
+      (let Path-Glyph (pack *path-gly "tex/" Code "-data.l")
+          (let Data (car (str (in Path-Glyph (till NIL T))))
+            (eval (append '(struct Ptr N) Data))
+            (inc 'Ptr (length Data)))))))
 
 
 (de init-di ()
