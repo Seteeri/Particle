@@ -35,9 +35,8 @@
 (de init-input ()
 
   (setq *ipc (new '(ipc~+IPC)
-                  *uds-in T handle-client accept-client))
-
-  (setq *input (new '(li~+Li)))
+                  *uds-in T handle-client accept-client)
+        *input (new '(li~+Li)))
   (ipc~add-conn> *ipc (get *input 'li~fd-context) "LI" handle-fd-li))
 
 
