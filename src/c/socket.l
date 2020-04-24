@@ -109,7 +109,7 @@
                              Sockaddr
                              SOCKADDR-LEN))
           (native "@" "close" NIL Sock)
-          (setq Sock NIL)))
+          (off Sock)))
 
     (native "@" "free" NIL Sockaddr)
 
