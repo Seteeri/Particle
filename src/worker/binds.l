@@ -9,9 +9,9 @@
   ## Char Strings
   ~(let List NIL
     (for (K 33 (<= K 255) (inc K))
-      (push 'List (list (list K)                     T cmd-make-char))
-      (push 'List (list (list ksd~Shift-L K)         T cmd-make-char))
-      (push 'List (list (list ksd~Shift-R K)         T cmd-make-char)))
+      (push 'List (list (list K)             T cmd-make-char))
+      (push 'List (list (list ksd~Shift-L K) T cmd-make-char))
+      (push 'List (list (list ksd~Shift-R K) T cmd-make-char)))
     List)
 
   ### Special cases: Space (32), Return, Tab

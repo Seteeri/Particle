@@ -52,19 +52,8 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     +-------+-------------------+--------------------+---------------+
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
-
-  * Refactor [Wed]
-    * Simply view - str sym [Done]
-    * Gen calling draw fns [Done]
-    * Handle multi-line strings [Done]
-    * Draw ctrl characters: ^M, ^J, ^I [Done]
-      * Draw newline when by itself
-      * When packed do not draw it - make opt?
-      * (in "file" (till NIL))
-    * Pack et al must handle sublist [Done]
-    * Refactor layout to use methods [Done]
-    * Refactor mov> [Done]
     
+  * Later?
     * Refactor/fix cmd-del
     * Refactor eval
       * Place output in sublist
@@ -82,7 +71,9 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Draw ctrl characters: ^M, ^J, ^I
       * Draw newline when by itself
       * When packed do not draw it - make opt?
-      * (in "file" (till NIL))    
+      * (in "file" (till NIL))
+    * Replace font with terminus? []    
+    
     
   * Bindings []
     * Improve discoverability - user sees it immediately
@@ -94,7 +85,6 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Store key syms and fn syms
         * Get val when called
     
-  * Replace font with terminus? []
   
   * Logging System
     * Log commands
