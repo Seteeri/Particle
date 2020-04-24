@@ -77,7 +77,7 @@
         (let Path-Glyph (pack *path-gly "tex/" Code "-data.l")
             #(prinl (usec) " | RENDER | init-tex-glyphs | " Code "-data.l...")
             #More idiomatic way to do this...
-            (let Data (any (in Path-Glyph (till NIL T)))
+            (let Data (car (str (in Path-Glyph (till NIL T))))
               (for B Data
                 (struct (+ Ptr Off) 'N (cons B 1))
                 (inc 'Off)))))))
