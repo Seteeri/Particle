@@ -53,17 +53,17 @@ Handle bad accept sock
   # * Create method for loop - returns conns/conns-id
   
   # Listener stuff
-  (=: listener NIL)
+  (=: listener)
   (=: nonblock-listener Nonblock-listener)
   (=: handler-listener Handler-Listener)
   (=: handler-accept Handler-Accept)
-  (=: clients NIL)
+  (=: clients)
   
   (when Path-listener
     (init-listener> This))
   
-  (=: conns    NIL)
-  (=: conns-id NIL)
+  (=: conns)
+  (=: conns-id)
   
   (init-conns> This Conns))
   
