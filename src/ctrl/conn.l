@@ -33,7 +33,7 @@
   (let ((Dst Src Sz Off) (cdr Data))
 
     (cond ((and Dst (not Src)) # Write bytes to ..., recv from socket
-           (write-dst Ptr Dst Sock Sz Off))
+           (wr-dst Ptr Dst Sock Sz Off))
 
           ((and (not Dst) Src) # Read bytes from ..., send on socket
            (read-src Src Sock Sz Off))
@@ -45,9 +45,9 @@
            (prinl-info "handle-memcpy" "Invalid Dst Src parameters!")))))
 
 
-(de write-dst (Ptr Dst Sock Sz Off)
+(de wr-dst (Ptr Dst Sock Sz Off)
 
-  #(println "write-dst" Ptr Dst Sock Sz Off)
+  #(println "wr-dst" Ptr Dst Sock Sz Off)
 
   (case Dst
     ("projview"
