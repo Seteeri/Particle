@@ -167,11 +167,11 @@
         (&  N        (hex "FF"))))
 
 
-(de read-int-from-bytes (Bytes)
-  (| (>> -24 (get Bytes 1))
-     (>> -16 (get Bytes 2))
-     (>> -8  (get Bytes 3))
-     (get Bytes 4)))
+(de read-int-from-bytes (B)
+  (| (>> -24 (get B 1))
+     (>> -16 (get B 2))
+     (>> -8  (get B 3))
+     (get B 4)))
 
 
 (de flush-msgs (Ipc Sock)
