@@ -244,10 +244,10 @@
     (when (= (key-repeats> *xkb Keycode) xkb~KEY-DOWN)
       # Pass key evdev since worker will +8 to match passthrough events from
       # libinput
-      (update-timer Keyed State))))
+      (upd-timer Keyed State))))
 
 
-(de update-timer (Keycode State)
+(de upd-timer (Keycode State)
 
   (if (= State xkb~KEY-DOWN)
 
