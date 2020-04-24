@@ -100,9 +100,9 @@
 
     (if (> Retry 0)
 
-        (until (= 0 (connect Sock
-                             Sockaddr
-                             SOCKADDR-LEN))
+        (until (=0 (connect Sock
+                            Sockaddr
+                            SOCKADDR-LEN))
           (wait Retry))
 
         (when (= -1 (connect Sock
