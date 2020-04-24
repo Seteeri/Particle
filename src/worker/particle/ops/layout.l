@@ -1,16 +1,13 @@
-# Refactor these into methods
-
-(def '*cur-x)
-(def '*cur-y)
+(def '*bnds-x)
+(def '*bnds-y)
 (def '*line-lay)
-(def '*y-lay)
 
 
 (de upd-cur ()
-  (setq *cur-x (if *cur-x
+  (setq *bnds-x (if *bnds-x
                    (max @ (car *cur))
                    (car *cur))
-        *cur-y (if *cur-y
+        *bnds-y (if *bnds-y
                    (min @ (cadr *cur))
                    (cadr *cur))))
 
@@ -30,28 +27,28 @@
     -------+          
   }#
   
-  (let (X *cur-x
-        Y *cur-y)
+  (let (X *bnds-x
+        Y *bnds-y)
         
-    (setq *cur-x (if *cur-x
+    (setq *bnds-x (if *bnds-x
                     (max @ (get *cur 1))
                     (get *cur 1))
-          *cur-y (if *cur-y
+          *bnds-y (if *bnds-y
                     (min @ (get *cur 2))
                     (get *cur 2)))
     
-    (when (or (not (= X *cur-x))
-              (not (= Y *cur-y)))
+    (when (or (not (= X *bnds-x))
+              (not (= Y *bnds-y)))
                             
       (println 'upd-cur
-              (format X *Scl) '-> (format *cur-x *Scl)
-              (format Y *Scl) '-> (format *cur-y *Scl)))))            
+              (format X *Scl) '-> (format *bnds-x *Scl)
+              (format Y *Scl) '-> (format *bnds-y *Scl)))))            
               
               
 (de upd-dims (Part)
   (with Part
-    (let Dims (list (abs (- *cur-x (car (: ori))))
-                    (abs (- *cur-y (cadr (: ori)))))
+    (let Dims (list (abs (- *bnds-x (car (: ori))))
+                    (abs (- *bnds-y (cadr (: ori)))))
       #(=: dims Dims)
       (when (: line)
         (put (: line) 'dims Dims)))))
@@ -64,8 +61,8 @@
     'skip-cdr
     'skip-car-cdr
   }#
-  (setq *cur-x NIL
-        *cur-y NIL
+  (setq *bnds-x NIL
+        *bnds-y NIL
         *line-lay Line)
   (lay-pair Part Line Skip))
 
@@ -98,8 +95,8 @@
                    'of (get Part 'c) (get Part 'c 'data)))
                  
         (if (lay-x?> Part)
-            (lay-pair-x Part Type (caar L))
-            (lay-pair-y Part Type (caar L)))
+            (lay-pair-x Part Type)
+            (lay-pair-y Part Type))
     
         (unless (= Skip 'skip-car-cdr)
             
@@ -117,7 +114,7 @@
                   (push 'L (cons A 'a))))))))))
 
 
-(de lay-pair-x (Part Type Nxt)
+(de lay-pair-x (Part Type)
 
   (when (= Type 'b)
   
@@ -129,10 +126,10 @@
     
     # Don't bother since Cdr of Y always has newline
     # (if (= (get Part 'c 'lay) 'x)
-    (set-cur-x *cur-x) (adv-cur 2.0)
+    (set-cur-x *bnds-x) (adv-cur 2.0)
     (set-cur-y (get Part 'c 'ori 2))
     
-    #(println 'lay-pair-x "Mov cur x to *cur-x: " (format (car *cur) *Scl))
+    #(println 'lay-pair-x "Mov cur x to *bnds-x: " (format (car *cur) *Scl))
     #(println 'lay-pair-x "Mov cur y to origin: " (format (cadr *cur) *Scl))
     
     )
@@ -142,7 +139,7 @@
   (lay-x> Part))
   
 
-(de lay-pair-y (Part Type Nxt)
+(de lay-pair-y (Part Type)
 
   (when (= Type 'b)
     # For non-newline Cdr:
@@ -155,13 +152,13 @@
     (if (lay-x?> (get Part 'c))
         (prog
           # X should be in place, else get from cur bnds
-          (set-cur-x *cur-x) (adv-cur)
+          (set-cur-x *bnds-x) (adv-cur)
           (set-cur-y (get Part 'c 'ori 2)))
 
         (prog
           (set-cur-x (get Part 'c 'ori 1))
           # Y should be in place, else get from cur bnds
-          (set-cur-y *cur-y) (nl-cur 3.0))))
+          (set-cur-y *bnds-y) (nl-cur 3.0))))
 
   #(println 'lay-pair-y Part (get Part 'data) Type)          
           

@@ -28,7 +28,7 @@
     (set-cur-x (get Ori-C 1))
 
     #(set-cur-y (- (get Ori-CA 2) (get Dims-CA 2)))
-    (set-cur-y *cur-y)
+    (set-cur-y *bnds-y)
     (nl-cur (+ 1.0 *sublist-space-y))))
 
 
@@ -45,7 +45,7 @@
     [X]
     
     x = 'c 'ori
-    y = bnds of 'c ..., which should be *cur-y
+    y = bnds of 'c ..., which should be *bnds-y
       
   }#
 
@@ -59,5 +59,5 @@
     
     (set-cur-x (get Ori-C 1))
 
-    (set-cur-y *cur-y)
+    (set-cur-y *bnds-y)
     (nl-cur (+ 1.0 *sublist-space-y))))

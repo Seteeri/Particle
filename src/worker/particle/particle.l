@@ -300,7 +300,7 @@
     
       # Reset max x
       # Caller will call upd-cur after this
-      (setq *cur-x)
+      (setq *bnds-x)
     
       (if (lay-y?> (: c)) # or auto for pairs
           (align-cur-to-line-y This)
