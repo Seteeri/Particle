@@ -1,29 +1,28 @@
 (de proc-msg (Ipc Sock Data Sz-Bin Bin)
-
-  (let Name (name (get Data 1))
   
-    # mcr
-    # Copy a range to the socket
-          
-    (cond ((= Name "mc")
-           (handle-memcpy Sock Data Bin))
+  # mcr
+  # Copy a range to the socket
+        
+  (case (name (car Data))
+    ("mc"
+      (handle-memcpy Sock Data Bin))
 
-          ((= Name "rdy")
-           (let Msg (pop '*q-msg)
-             (if Msg
-               (send-msg *ipc Sock Msg)
-               (queue '*q-worker Sock))))
-                         
-          ((= Name "bye")
-           # Send to all conns
-           (send-msg-conns *ipc "bye")
-           (ipc~disconn-sock Sock)
-           (ipc~end> *ipc)
-           (println "Ctrl says bye!")
-           (bye))
+    ("rdy"
+      (let Msg (pop '*q-msg)
+        (if Msg
+          (send-msg *ipc Sock Msg)
+          (queue '*q-worker Sock))))
+                    
+    ("bye"
+      # Send to all conns
+      (send-msg-conns *ipc "bye")
+      (ipc~disconn-sock Sock)
+      (ipc~end> *ipc)
+      (println "Ctrl says bye!")
+      (bye))
 
-          (T
-           (prinl-info "CONTROL/proc-msg" (pack "UNKNOWN REQUEST! " Data))))))
+    (T
+      (prinl-info "CONTROL/proc-msg" (pack "UNKNOWN REQUEST! " Data)))))
 
 
 (de handle-memcpy (Sock Data Ptr)
