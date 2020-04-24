@@ -298,7 +298,7 @@
     
       # Reset max x
       # Caller will call upd-cur after this
-      (setq *cur-x NIL)
+      (setq *cur-x)
     
       (if (= (get (: c) 'lay) 'y) # or auto for pairs
           (align-cur-to-line-y This)
@@ -419,7 +419,7 @@
 
     (put Dst 'line Nl))
 
-  (put Src 'line NIL)
+  (put Src 'line)
   
   (println 'put-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
 
