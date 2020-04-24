@@ -278,30 +278,30 @@
         (prog
       
           (cond ((= Name 'KEYBOARD-KEY)
-                (dispatch-kb Data))
+                  (dispatch-kb Data))
 
                 ((or (= Name 'TOUCH-UP)
                     (= Name 'TOUCH-DOWN)
                     (= Name 'TOUCH-FRAME)
                     (= Name 'TOUCH-MOTION))
-                (prinl-info "handle-ctrl" (glue " " Data)))
+                  (prinl-info "handle-ctrl" (glue " " Data)))
 
                 ((= Name "update-vert")
-                (cmd-upd-vert *ipc *vert-ptr))
+                  (cmd-upd-vert *ipc *vert-ptr))
 
                 ((= Name "calc-pv")
-                (cmd-calc-pv (get Data 2) (get Data 3)))
+                  (cmd-calc-pv (get Data 2) (get Data 3)))
 
                 ((= Name "upd-pv")
-                (cmd-upd-pv *ipc))
+                  (cmd-upd-pv *ipc))
 
-                ((= Data "bye")
-                # Send bye to ctrl which will send to all workers/render/model
-                (send-msg *ipc Sock "bye")
-                (ipc~disconn-sock Sock)
-                (ipc~end> *ipc)
-                (println "Worker says bye!")
-                (bye))
+                ((= Name "bye")
+                  # Send bye to ctrl which will send to all workers/render/model
+                  (send-msg *ipc Sock "(bye)")
+                  (ipc~disconn-sock Sock)
+                  (ipc~end> *ipc)
+                  (println "Worker says bye!")
+                  (bye))
 
                 (T
                 T))

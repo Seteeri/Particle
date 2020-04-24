@@ -116,7 +116,7 @@ Class variables may be indicated by an upper case letter
         (when (= ID "CTRL")
           (send-msg *ipc
                     Sock
-                    (pack "bye")))))
+                    (pack "(bye)")))))
  
     # Cleanup GL?
     (glfw~destroy-window *window)

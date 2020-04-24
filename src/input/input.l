@@ -58,7 +58,7 @@
       (disconn-client *ipc Sock))
 
     (when (= Data "bye")
-      (send-msg-conns *ipc "bye")
+      (send-msg-conns *ipc "(bye)")
       (ipc~disconn-sock Sock)
       (end)
       (println "Input says bye!")
