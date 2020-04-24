@@ -4,6 +4,7 @@
   # Copy a range to the socket
         
   (case (name (car Data))
+  
     ("mc"
       (handle-memcpy Sock Data Bin))
 
@@ -50,6 +51,7 @@
   #(println "wr-dst" Ptr Dst Sock Sz Off)
 
   (case Dst
+  
     ("projview"
      (cpy-to-obj> *projview Ptr))
    
@@ -61,8 +63,10 @@
 
   #(println "rd-src" Src Sock Sz Off)
   
-  (cond ((= Src "projview")  
-         (send-obj *ipc Sock *projview SZ-PV))
+  (case Src
+  
+    ("projview"
+      (send-obj *ipc Sock *projview SZ-PV))
 
-        ((= Src "nodes")
-         (send-obj *ipc Sock (get *verts (get-vert-ix Off)) SZ-VERT))))
+    ("nodes"
+      (send-obj *ipc Sock (get *verts (get-vert-ix Off)) SZ-VERT))))
