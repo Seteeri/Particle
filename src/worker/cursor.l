@@ -13,8 +13,9 @@
   
 
 (de mov-cur-part (Part Pos)
-  (cond ((= Pos 'start) (mov-cur-vert (first-vert> Part)))
-        ((= Pos 'end)   (mov-cur-vert (last-vert> Part)))))
+  (case Pos
+    (start (mov-cur-vert (first-vert> Part)))
+    (end   (mov-cur-vert (last-vert> Part)))))
 
 
 (de mov-cur-vert (Vert)
