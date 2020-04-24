@@ -200,7 +200,7 @@
       # First check if sufficient length otherwise get head
       (if (not (>= (get *dlst 'len) 12))
 
-        (setq Cont NIL)
+        (off Cont)
 
         (let Head (rem-frs-n-d *dlst 12)
 
@@ -219,7 +219,7 @@
               (prog
                 # Push head back
                 (for B Head (ins-frs *dlst (new '(+Node-Dlst) B)))
-                (setq Cont NIL))
+                (off Cont))
 
               (let (Str  (rem-frs-n-d-c *dlst Len-Sexpr)
                     Msg  (pack (flip (cdr Str)))
