@@ -66,18 +66,10 @@
 
 
 (de handle-fd-li ()
-
   (with *input
-
     (li~dispatch (: li~context))
-
-    (loop
-
-       (setq Ev (li~get-event (: li~context)))
-       (T (=0 Ev))
-
+    (until (=0 (setq Ev (li~get-event (: li~context))))
        (send-event Ev)
-
        (li~event-destroy Ev)
        (li~dispatch (: li~context)))))
 
