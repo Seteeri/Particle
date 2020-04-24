@@ -169,17 +169,16 @@
   
   (let (Msg  (recv-msg *ipc Sock)
         Data (any Msg)
-        Name (get Data 1))
+        Name (car Data))
         
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
-    (unless Msg
-      (disconn-client *ipc Sock))
-
-    (cond ((= Name 'KEYBOARD-KEY)
-            (update-xkb Data)))
-            
-    (dispatch-msg (format-msg-ev Data))))
+    (if Msg
+        (prog
+          (cond ((= Name 'KEYBOARD-KEY)
+                  (update-xkb Data)))
+          (dispatch-msg (format-msg-ev Data)))
+        (disconn-client *ipc Sock))))
 
 
 (de format-msg-ev (Data)
