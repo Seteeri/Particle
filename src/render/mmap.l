@@ -1,18 +1,17 @@
 (class +Mmap)
-
 (dm T (Path
-      FD
-      Ptr
-      Size)
-  (=: path (when Path path))
-  (=: fd   (when FD FD))    
-  (=: ptr  (when Ptr Ptr))
-  (=: size (when Size Size)))
+       FD
+       Ptr
+       Sz)
+  (=: path (when Path @))
+  (=: fd   (when FD @))    
+  (=: ptr  (when Ptr @))
+  (=: size (when Sz @))
 
 
 (de init-mmap (Path
-              Size
-              Create)
+               Sz
+               Create)
     
   (let Fd (memfd-create Path 0)
             
@@ -22,45 +21,45 @@
       
       #Configure the size of the shared memory segment - only on create
     (when Create
-      (ftruncate Fd Size))
+      (ftruncate Fd Sz))
       
     #Map shm to address space of process
     (let Ptr (mmap NIL
-                   Size
+                   Sz
                    (| PROT-READ PROT-WRITE)
                    (| MAP-SHARED)
                    Fd
                    0)
   
-      (when (= Ptr 0) #null ptr
+      (when (=0 Ptr) #null ptr
         (quit "(= mmap -1)"))
 
       # zero memory?
-      (new '(+Mmap) Path Fd Ptr Size))))
+      (new '(+Mmap) Path Fd Ptr Sz))))
 
 
 #{
 (de init-mmap-ipc (P)
-    (init-mmap (car (nth P 2))
-        (car (nth P 3))
+    (init-mmap (get P 2)
+        (get P 3))
         T))
 }#
 
 (de init-mmap-nodes ()
-  (init-mmap (car (nth *params-mmap-nodes 2))
-             (car (nth *params-mmap-nodes 3))
+  (init-mmap (get *params-mmap-nodes 2)
+             (get *params-mmap-nodes 3)
              T))
 
 
 (de init-mmap-atomic-counter ()
-  (init-mmap (car (nth *params-mmap-atomic 2))
-             (car (nth *params-mmap-counter 3))
+  (init-mmap (get *params-mmap-atomic 2)
+             (get *params-mmap-counter 3)
              T))
 
 
 (de init-mmap-draw-indirect ()
-  (let (Mmap (init-mmap (car (nth *params-mmap-draw-indirect 2))
-                        (car (nth *params-mmap-draw-indirect 3))
+  (let (Mmap (init-mmap (get *params-mmap-draw-indirect 2)
+                        (get *params-mmap-draw-indirect 3)
               T)
         Ptr (get Mmap 'ptr))
           
@@ -89,8 +88,8 @@
   ;;
   ;;ccw: 0 2 1 0 3 2
   }#
-  (let (Mmap (init-mmap (car (nth *params-mmap-vertices 2))
-                        (car (nth *params-mmap-vertices 3))
+  (let (Mmap (init-mmap (get *params-mmap-vertices 2)
+                        (get *params-mmap-vertices 3)
               T)
         Ptr (get Mmap 'ptr))
     (struct Ptr 'N (list -1.0  1.0  1.0  0.0  1.0
@@ -101,8 +100,8 @@
 
 
 (de init-mmap-element ()
-  (let (Mmap (init-mmap (car (nth *params-mmap-element 2))
-                        (car (nth *params-mmap-element 3))
+  (let (Mmap (init-mmap (get *params-mmap-element 2)
+                        (get *params-mmap-element 3)
                         T)
         Ptr (get Mmap 'ptr))
     (struct Ptr 'N
@@ -116,8 +115,8 @@
 
 
 (de init-mmap-projview ()
-  (let (Mmap (init-mmap (car (nth *params-mmap-projview 2))
-                        (car (nth *params-mmap-projview 3))
+  (let (Mmap (init-mmap (get *params-mmap-projview 2)
+                        (get *params-mmap-projview 3)
                         T)
         Ptr (get Mmap 'ptr))
     (wr-mat-proj-ptr> *projview (get Mmap 'ptr))
@@ -127,29 +126,25 @@
 
 (de init-mmap-tex-glyphs ()
   #{
-  - To load faster, do bulk memcpy or convert to bytes
-  - Possible Configurations:
-    - all ppm, all metrics
-    - per ppm+metrics
-    - per ppm, per metrics (current)
-    - Need separate ppm since data is copied to shm?
-      - Or list of lists with each list starting with the name
+    Optimize loading
   }#
-  (let (Mmap (init-mmap (car (nth *params-mmap-tex-glyphs 2))
-                        (car (nth *params-mmap-tex-glyphs 3))
+  
+  (let (Mmap (init-mmap (get *params-mmap-tex-glyphs 2)
+                        (get *params-mmap-tex-glyphs 3)
                         T)
         Ptr (get Mmap 'ptr)
-        Offset 0)
+        Off 0)
+        
     (for Code 255
       (let Path-glyph (pack *path-gly "tex/" Code "-data.l")
         #(println "Reading " Path-glyph " ...")
         (any (in Path-glyph (till NIL T)))
-        (struct (+ Ptr Offset) 'N
+        (struct (+ Ptr Off) 'N
                 (0 . 4)
                 (2 . 4)
                 (1 . 4)
                 (0 . 4)
                 (3 . 4)
                 (2 . 4))
-        (inc 'Offset)))
+        (inc 'Off)))
         Mmap))
