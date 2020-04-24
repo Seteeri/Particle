@@ -49,7 +49,7 @@
 (de handle-client (Sock)
 
   (let (Msg (recv-msg *ipc Sock)
-        Data (any Msg))
+        Data (car (str Msg)))
 
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF

@@ -168,7 +168,7 @@
   #(println 'handle-input)
   
   (let (Msg  (recv-msg *ipc Sock)
-        Data (any Msg)
+        Data (car (str Msg))
         Name (car Data))
         
     # recv-msg will return data or NIL

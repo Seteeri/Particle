@@ -97,7 +97,7 @@
                    (if (= Type 'a) 'Car 'Cdr)
                    'of (get Part 'c) (get Part 'c 'data)))
                  
-        (if (= (get Part 'lay) 'x)
+        (if (lay-x?> Part)
             (lay-pair-x Part Type (caar L))
             (lay-pair-y Part Type (caar L)))
     
@@ -152,7 +152,7 @@
     # Newline will override...
 
     # or check for pair
-    (if (= (get Part 'c 'lay) 'x)
+    (if (lay-x?> (get Part 'c))
         (prog
           # X should be in place, else get from cur bnds
           (set-cur-x *cur-x) (adv-cur)

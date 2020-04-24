@@ -65,13 +65,14 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Refactor layout to use methods [Done]
     * Refactor mov> [Done]
     
+    * Refactor/fix cmd-del
     * Refactor eval
       * Place output in sublist
       * Depends on the user really
     * Support cons
       * Place cons on newline
       * Or allow cons on same line, but if Cdr changes, move to newline
-    * Refactor/fix cmd-del
+      * Need fn for this    
     * Refactor point
     * Refactor ops into methods
     * Refactor line fns

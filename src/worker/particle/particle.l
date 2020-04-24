@@ -64,6 +64,8 @@
 (dm first-vert> () (car (: verts)))
 (dm last-vert> () (last (: verts)))
 
+(dm lay-x?> () (= (: lay) 'x))
+(dm lay-y?> () (= (: lay) 'y))
 
 (dm b> (Cdr)
 
@@ -300,7 +302,7 @@
       # Caller will call upd-cur after this
       (setq *cur-x)
     
-      (if (= (get (: c) 'lay) 'y) # or auto for pairs
+      (if (lay-y?> (: c)) # or auto for pairs
           (align-cur-to-line-y This)
           (align-cur-to-line-x This)))
           
