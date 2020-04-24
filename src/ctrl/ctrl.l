@@ -176,7 +176,7 @@
     (if Msg
         (prog
           (cond ((= Name 'KEYBOARD-KEY)
-                  (update-xkb Data)))
+                  (upd-xkb Data)))
           (dispatch-msg (format-msg-ev Data)))
         (disconn-client *ipc Sock))))
 
@@ -224,7 +224,7 @@
         T)))
 
 
-(de update-xkb (Data)
+(de upd-xkb (Data)
 
   #{
   https://www.x.org/releases/X11R7.7/doc/xproto/x11protocol.html#Keyboards
@@ -237,10 +237,7 @@
 
   (let (Keyed   (get Data 4)
         Keycode (+ Keyed 8)
-        State   (get Data 5)
-        Keysym  (get-one-sym> *xkb Keycode)
-        Name    (xkb~keysym-get-name Keysym)
-        Utf-8   (get-utf8> *xkb Keycode))
+        State   (get Data 5))
 
     (update-key> *xkb Keycode State)
     
