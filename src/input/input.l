@@ -80,14 +80,14 @@
 
     (let Msg (pack "("
                    (glue " " (make (link Name)
-                                   (link (build-ev-lst-str Ev Type))))
+                                   (link (build-ev-lst Ev Type))))
                    ")")
 
       # Workers will send messages to input when they are ready
       (send-msg-clients *ipc Msg))))
 
 
-(de build-ev-lst-str (Ev Type)
+(de build-ev-lst (Ev Type)
 
   (cond ((= Type li~KEYBOARD-KEY)
           (glue " " (list (format (li~kb-get-time Ev))

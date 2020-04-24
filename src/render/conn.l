@@ -77,10 +77,11 @@
 
   # Unused; retrieve data from GL buffers
 
-  (cond ((= Src "projview")
-         (prinl (usec) " | rd-src | projview not implemented!"))
+  (cond Src
+    ("projview"
+      (prinl (usec) " | rd-src | projview not implemented!"))
 
-        ((= Src "nodes")
-         (prinl (usec) " | rd-src | nodes not implemented!"))))
+    ("nodes"
+      (prinl (usec) " | rd-src | nodes not implemented!"))))
          
          
