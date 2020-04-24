@@ -74,7 +74,7 @@
     (loop
 
        (setq Ev (li~get-event (: li~context)))
-       (T (= Ev 0))
+       (T (=0 Ev))
 
        (send-event Ev)
 

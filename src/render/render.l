@@ -191,7 +191,7 @@ Class variables may be indicated by an upper case letter
     (test-projview)
     (test-vert))
 
-  (while (= (glfw~window-should-close *window) 0)
+  (while (=0 (glfw~window-should-close *window))
 
     (when *fence
       (gl~client-wait *fence)
