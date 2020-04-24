@@ -120,7 +120,7 @@
   
   ##################################
   
-  (gc 512)
+  (gc 128)
 
   (let (A NIL
         B NIL
@@ -128,9 +128,9 @@
         Vert NIL)
     (in "bin/verts.bin"          
       (while (and (setq Cls (rd))
-                  (setq Propls (rd))
+                  (setq Props (rd))
                   (< C *verts-max))
-        (putl (setq Vert (box Cls)) Propls)
+        (putl (setq Vert (box Cls)) Props)
         (inc 'C)
         (push '*verts Vert)))
 
