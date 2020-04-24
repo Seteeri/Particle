@@ -124,7 +124,7 @@
 
 (dm del-car> ()
   (when (: a) (del> @ T T))
-  (del> This NIL NIL))
+  (del> This))
                   
   
 (dm mov-verts> ()
