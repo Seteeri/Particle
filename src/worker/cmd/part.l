@@ -21,7 +21,7 @@
 
   (let (Ref (get *0 'b)
         Prv (get Ref 'c)
-        Tgt (if (= (get Ref 'data) NIL) Prv Ref))
+        Tgt (if (get Ref 'data) Ref Prv))
     (when Tgt
       (println "Swap!" Tgt (get Tgt 'data) (get Tgt 'lay) '-> (if (= (get Tgt 'lay) 'x) 'y 'x))
       (swap-lay Tgt))))
