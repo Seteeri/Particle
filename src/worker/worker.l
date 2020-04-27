@@ -91,7 +91,7 @@
 (de init-worker ()
   
   (setq *i-proc 1
-        *metrics (load-metrics (pack *path-gly "proc/"))
+        *metrics (load-metrics (pack *path-gly "m/"))
         *ipc (new '(ipc~+IPC)
                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")
@@ -147,6 +147,18 @@
   (loop (ipc~poll> *ipc -1)))
 
 
+(de load-metrics (Path)
+  (let Metrics ()
+    (for Code 255 
+      (push 'Metrics
+            (let (Met (new '(+Metrics))
+                  Path-M (pack Path Code ".l"))
+              (putl Met (car (str (in Path-M
+                                      (till NIL T)))))
+              Met)))                                          
+    (flip Metrics)))
+
+    
 (de gen-def-parts ()
 
   (let ((X Y) *cur)

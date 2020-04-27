@@ -1,51 +1,53 @@
 #{
-Based on texture...poss move to render?
+  Based on texture...poss move to render?
 
-Product of X and Y = (*/ X Y 1.0).
+  Product of X and Y = (*/ X Y 1.0).
 
-: (*/ 32.1 1.056 1.0)  # 32.1 * 1.056 = 33.8976
--> 33898
+  : (*/ 32.1 1.056 1.0)  # 32.1 * 1.056 = 33.8976
+  -> 33898
 
-Quotient of N and D = (*/ 1.0 N D)
+  Quotient of N and D = (*/ 1.0 N D)
 
-: (*/ 1.0 91.8 1.323)  # 91.8 / 1.323 = 69.38775510...
--> 69388
+  : (*/ 1.0 91.8 1.323)  # 91.8 / 1.323 = 69.38775510...
+  -> 69388
 }#
-
-
-(de load-metrics (Path)
-  
-  (let Metrics ()
-
-    (for Code 255
-        
-        (push 'Metrics
-              (let Met (new '(+Metrics))
-                (putl Met (car (str (in (pack Path Code ".l")
-                                        (till NIL T)))))
-                Met)))
-                                                              
-    (flip Metrics)))
-
-
-# Range
-# Advance
-# Scale
-
-(class +Bounds)
-(dm T (L B R T)
-  (=: l L)
-  (=: b B)
-  (=: r R)
-  (=: t T))
-
 
 (class +Metrics)
 
-(dm calc> (Tra Bnds)
+(dm pos> (Ori)
+  #{
+    Pos is the ori
+    Actual vert pos is rel to ori
+    Adj vert by bnds since glyph has been cropped to bbox/bnds
+    
+    For example, 'g' hangs below baseline,
+    bottom bnds is neg,
+    y pos + y bnds (neg), shifts glyph downward into proper pos
+  }#
 
-  #(out (pack "src/glyphs/proc/" Code ".l")
-  #  (pretty (getl Met)))
+  (list (+ (car  Ori) (*/ (car  (: bnds)) *sca-vert 1.0))
+        (+ (cadr Ori) (*/ (cadr (: bnds)) *sca-vert 1.0))
+        0.0))
+
+
+(dm ori> (Pos)
+  #{
+    Derive ori from pos
+  }#
+
+  (list (+ (car  Pos) (- (*/ (car  (: bnds)) *sca-vert 1.0)))
+        (+ (cadr Pos) (- (*/ (cadr (: bnds)) *sca-vert 1.0)))
+        0.0))
+
+
+(dm sca> ()
+  # Scale based on uv dims, not tex/glyph dims
+  (list (*/ (car  (: dims)) *sca-vert 1.0)
+        (*/ (cadr (: dims)) *sca-vert 1.0)
+        *sca-vert))
+
+
+(dm calc> (Tra Bnds)
 
   # Used when generating proc from raw metrics
        
@@ -106,36 +108,4 @@ Quotient of N and D = (*/ 1.0 N D)
                (*/ 1.0 (get (: bnds-tex) 4) (cadr *glyph-dims))
                0.0
                0.0))) # l-t 0,1
-
-
-(dm pos> (Ori Sca)
-  #{
-    Pos is the ori
-    Actual vert pos is rel to ori
-    Adj vert by bnds since glyph has been cropped to bbox/bnds
-    
-    For example, 'g' hangs below baseline,
-    bottom bnds is neg,
-    y pos + y bnds (neg), shifts glyph downward into proper pos
-  }#
-
-  (list (+ (car  Ori) (*/ (car  (: bnds)) Sca 1.0))
-        (+ (cadr Ori) (*/ (cadr (: bnds)) Sca 1.0))
-        0.0))
-
-
-(dm ori> (Pos Sca)
-  #{
-    Derive ori from pos
-  }#
-
-  (list (+ (car  Pos) (- (*/ (car  (: bnds)) Sca 1.0)))
-        (+ (cadr Pos) (- (*/ (cadr (: bnds)) Sca 1.0)))
-        0.0))
-
-
-(dm sca> (Sca)
-  # Scale based on uv dims, not tex/glyph dims
-  (list (*/ (car  (: dims)) Sca 1.0)
-        (*/ (cadr (: dims)) Sca 1.0)
-        Sca))
+        

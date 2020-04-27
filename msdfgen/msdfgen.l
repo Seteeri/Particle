@@ -11,20 +11,25 @@
 
   # FiraMono
           
-  (for Font '(("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf"            "DejaVuSansMono-Bold")
-              ("/usr/share/fonts/TTF/DejaVuSansMono-BoldOblique.ttf"     "DejaVuSansMono-BoldOblique")
-              ("/usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf"         "DejaVuSansMono-Oblique")
-              ("/usr/share/fonts/TTF/DejaVuSansMono.ttf"                 "DejaVuSansMono")
-              ("/usr/share/fonts/TTF/DejaVuSansMono.ttf"                 "DejaVuSansMono")
-              ("/usr/share/fonts/OTF/FiraCode-Bold.otf"                  "FiraCode-Bold")
-              ("/usr/share/fonts/OTF/FiraCode-Light.otf"                 "FiraCode-Light")
-              ("/usr/share/fonts/OTF/FiraCode-Medium.otf"                "FiraCode-Medium")
-              ("/usr/share/fonts/OTF/FiraCode-Regular.otf"               "FiraCode-Regular")
-              ("/usr/share/fonts/OTF/FiraCode-Retina.otf"                "FiraCode-Retina")
-              ("/usr/share/fonts/TTF/FantasqueSansMono-Regular.ttf"      "FantasqueSansMono-Regular")
-              ("/usr/share/fonts/TTF/FantasqueSansMono-Italic.ttf"       "FantasqueSansMono-Italic")
-              ("/usr/share/fonts/TTF/FantasqueSansMono-BoldItalic.ttf"   "FantasqueSansMono-BoldItalic")
-              ("/usr/share/fonts/TTF/FantasqueSansMono-Bold.ttf"         "FantasqueSansMono-Bold"))
+  (for Font 
+       
+       '(("/usr/share/fonts/TTF/DejaVuSansMono.ttf"                 "DejaVuSansMono"))
+       
+#{
+      '(("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf"            "DejaVuSansMono-Bold")
+        ("/usr/share/fonts/TTF/DejaVuSansMono-BoldOblique.ttf"     "DejaVuSansMono-BoldOblique")
+        ("/usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf"         "DejaVuSansMono-Oblique")
+        ("/usr/share/fonts/TTF/DejaVuSansMono.ttf"                 "DejaVuSansMono")
+        ("/usr/share/fonts/OTF/FiraCode-Bold.otf"                  "FiraCode-Bold")
+        ("/usr/share/fonts/OTF/FiraCode-Light.otf"                 "FiraCode-Light")
+        ("/usr/share/fonts/OTF/FiraCode-Medium.otf"                "FiraCode-Medium")
+        ("/usr/share/fonts/OTF/FiraCode-Regular.otf"               "FiraCode-Regular")
+        ("/usr/share/fonts/OTF/FiraCode-Retina.otf"                "FiraCode-Retina")
+        ("/usr/share/fonts/TTF/FantasqueSansMono-Regular.ttf"      "FantasqueSansMono-Regular")
+        ("/usr/share/fonts/TTF/FantasqueSansMono-Italic.ttf"       "FantasqueSansMono-Italic")
+        ("/usr/share/fonts/TTF/FantasqueSansMono-BoldItalic.ttf"   "FantasqueSansMono-BoldItalic")
+        ("/usr/share/fonts/TTF/FantasqueSansMono-Bold.ttf"         "FantasqueSansMono-Bold"))
+}#
 
     (setq *path-font  (car Font)
           *nm-font    (cadr Font)
@@ -213,6 +218,7 @@
         Sca (get In 'scale)
         Bnds (if (get In 'bounds) @ (need 4 0.0)))
 
+    (put 'Out 'advance (get In 'advance))
     (put 'Out 'scale Sca)
     (put 'Out 'range (get In 'range))
     (put 'Out 'code (get In 'code))
@@ -220,28 +226,24 @@
     # sca * shape units = px
     # Bounds is rel to ori so neg nums possible
     (put 'Out 'bnds
-        (list (* (get Bnds 1) Sca)
-              (* (get Bnds 2) Sca)
-              (* (get Bnds 3) Sca)
-              (* (get Bnds 4) Sca)))
+        (list (*/ (get Bnds 1) Sca 1.0)
+              (*/ (get Bnds 2) Sca 1.0)
+              (*/ (get Bnds 3) Sca 1.0)
+              (*/ (get Bnds 4) Sca 1.0)))
 
     # bbox (for tex draw) rel to 
     # 1. Get origin which may have moved during gen to create enough space for df
     # 2. Add bnds
     # 3. Expand to df rx
     (put 'Out 'bnds-tex 
-        (list (+ (get Bnds 1) -1.0)
-              (+ (get Bnds 2) -1.0)
-              (+ (get Bnds 3) 1.0)
-              (+ (get Bnds 4) 1.0)))
+        (list (+ (get 'Out 'bnds 1) -1.0)
+              (+ (get 'Out 'bnds 2) -1.0)
+              (+ (get 'Out 'bnds 3)  1.0)
+              (+ (get 'Out 'bnds 4)  1.0)))
     
     # dims of bbox
     (put 'Out 'dims (list (- (get 'Out 'bnds-tex 3) (get 'Out 'bnds-tex 1))
-                         (- (get 'Out 'bnds-tex 4) (get 'Out 'bnds-tex 2))))
-
-    # AR of bbox
-    (put 'Out 'ar (/ (car  (get 'Out 'dims))
-                    (cadr (get 'Out 'dims))))
+                          (- (get 'Out 'bnds-tex 4) (get 'Out 'bnds-tex 2))))
 
     # l b r t = 1 2 3 4
     # ori=(0,0)=bottom left

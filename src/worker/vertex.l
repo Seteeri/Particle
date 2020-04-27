@@ -62,8 +62,8 @@
   (let? Met (: met)
         
     (=: uv (get Met 'uv))
-    (=: pos (pos> Met (: pos) *sca-vert))
-    (=: sca (sca> Met *sca-vert))))
+    (=: pos (pos> Met (: pos)))
+    (=: sca (sca> Met))))
         
          
 (dm upd-mod-mat> ()
