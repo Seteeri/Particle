@@ -1,4 +1,4 @@
-#Node tex dims are all 96x96
+# Node tex dims are all 96x96
 (def '*dims-tex-node (list 96 96))
 
 (def '*color-vert-default (list 0.5137255 0.5803922 0.60784316 1.0 
@@ -42,25 +42,34 @@
   
   (when Ch
     (upd-ch> This Ch)
+    (upd-met> This)
     (upd-mod-mat> This)))
 
 
-(dm upd-ch> (Ch)
-  
+(dm upd-met> (Ch)
+
   (when Ch
     (=: ch (char Ch)))
-
+    
   (=: off-texel (* (- (: ch) 1)
-                   (get *dims-tex-node 1)
-                   (get *dims-tex-node 2)))
-
+                   (car *dims-tex-node)
+                   (cadr *dims-tex-node)))    
+        
+  (=: met (get *metrics (: ch)))
+  
   (unless (: met)
-    (=: met (get *metrics (: ch)))
-    (unless (: met)
-      (prinl-info "upd-ch>" (pack "Unable to find metrics: " (: ch)))))
+    (prinl-info "upd-met>" (pack "Unable to find metrics: " (: ch)))))
+
+    
+(dm upd-ch> (Ch)
+
+  # This is updating pos
+
+  (when Ch
+    (=: ch (char Ch)))
                    
   (let? Met (: met)
-        
+
     (=: uv (get Met 'uv))
     (=: pos (pos> Met (: pos)))
     (=: sca (sca> Met))))

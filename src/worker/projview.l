@@ -33,7 +33,7 @@
 
   (=: mat-view    (when Mat-View @))
 
-  (=: pos    (if Pos @ (42.0 -4.0 10.0)))
+  (=: pos    (if Pos @ (11.0 0.0 10.0)))
   (=: rot    (if Rot @ (0.0 0.0 0.0))))
 
 
@@ -96,10 +96,10 @@
                             (: near)
                             (: far))
           (make-mat-ortho (: width)
-                             (: height)
-                             (: scale-ortho)
-                             (: near-ortho)
-                             (: ortho-far)))))
+                          (: height)
+                          (: scale-ortho)
+                          (: near-ortho)
+                          (: ortho-far)))))
 
 
 (de make-mat-ortho (W H S N F)

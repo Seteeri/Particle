@@ -71,9 +71,9 @@
 (de gen-vert-glyph (Char Col Val)
   (let (Vert (pop '*verts)
         (R G B) Col)
-    (inc '*cnt-v)
+    (inc '*cnt-v)   
+    (upd-met> Vert Char)
     (with Vert
-      (=: ch (char Char)) # used for metrics look up 
       (=: val Val)
       (=: rgba (list R G B 1.0
                      R G B 1.0

@@ -134,11 +134,9 @@
   (for Vert (: verts)
   
     (with Vert
-      (=: pos (if (= (get Vert 'ch) (char "*"))
-                  *cur
-                  *cur))
-      (upd-ch> Vert))
-      
+      (=: pos *cur))
+    
+    (upd-ch> Vert)
     (upd-mod-mat> Vert)
     (cmd-upd-vert *ipc Vert)
 
@@ -161,8 +159,7 @@
   (let? Vert (car (: verts))
         
     (if (= (ori> (get Vert 'met)
-                 (get Vert 'pos)
-                 *sca-vert)
+                 (get Vert 'pos))
            Pos)
     
         # Set to pos of last vert (mul by length)
@@ -255,8 +252,7 @@
   (let? Vert (car (: verts))
     (with Vert
       (ori> (: met)
-            (: pos)
-            *sca-vert))))
+            (: pos)))))
 
 
 (dm col> (Col)
@@ -282,8 +278,7 @@
                   (bnds> (: b)))
         (X Y) (with (last-vert> This)
                   (ori> (: met)
-                        (: pos)
-                        *sca-vert)))
+                        (: pos))))
 
     #(println 'calc-bounds This (: data) (format X *Scl) (format Y *Scl))
 

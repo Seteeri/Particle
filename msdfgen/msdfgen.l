@@ -4,11 +4,11 @@
   
   (gc 32)
   
-  (setq *Scl 16
+  (setq *Scl 6
         *sz-s "96"
         *sz-f '(96.0 96.0)
         *path-msdfgen "/home/user/Git/msdfgen/build/msdfgen")
-
+        
   # FiraMono
           
   (for Font 
@@ -43,14 +43,14 @@
           *dir-l      (pack *dir-out "/l"))
     
     (when T
-      (call 'rm "-rv" (pack *dir-out    "/"))
+      (call 'rm "-r" (pack *dir-out    "/"))
       
-      (call 'mkdir "-pv" (pack *dir-ppm    "/"))
-      (call 'mkdir "-pv" (pack *dir-png-af "/"))
-      (call 'mkdir "-pv" (pack *dir-m-af   "/"))    
-      (call 'mkdir "-pv" (pack *dir-png    "/"))
-      (call 'mkdir "-pv" (pack *dir-m      "/"))
-      (call 'mkdir "-pv" (pack *dir-l      "/")))
+      (call 'mkdir "-p" (pack *dir-ppm    "/"))
+      (call 'mkdir "-p" (pack *dir-png-af "/"))
+      (call 'mkdir "-p" (pack *dir-m-af   "/"))    
+      (call 'mkdir "-p" (pack *dir-png    "/"))
+      (call 'mkdir "-p" (pack *dir-m      "/"))
+      (call 'mkdir "-p" (pack *dir-l      "/")))
   
     (start))
     
@@ -81,7 +81,9 @@
   
   (conv-ppm-lisp)
   
-  (calc-m))
+  #(calc-m)
+  
+  )
 
 
 (de gen-png-msdf ()
@@ -128,8 +130,8 @@
                   Metrics (in (list *path-msdfgen
                                     "-font"
                                     *path-font (format U)
-                                    "-scale" (format Sca *Scl)
-                                    "-translate" (format (car Trans) *Scl) (format (cadr Trans) *Scl)
+                                    "-scale" Sca
+                                    "-translate" (car Trans) (cadr Trans)
                                     "-size" *sz-s *sz-s
                                     "-printmetrics"
                                     "-o" Out-Nm)
@@ -162,8 +164,7 @@
                     (till)))
 
           (println Cmd)
-          (prinl)
-          (println (pack Ppm))))))  
+          (prinl)))))
 
 
 (de conv-ppm-lisp ()
@@ -176,14 +177,18 @@
         (if (info Out-Nm)
         
             (prinl (pack "[4] Skip: " In-Nm))
-    
-            (prog
             
-              (let V (in In-Nm (till))
-                (out Out-Nm
-                  (prin "(")
-                  (prin (clip V))
-                  (prin ")")))
+            (let Data (nth (str (in In-Nm
+                                  (till NIL T)))
+                          5)
+                          
+              # Add alpha 255 then write to file
+              (out Out-Nm
+                (pretty 
+                  (make
+                    (while Data
+                      (chain (cut 3 'Data))
+                      (link 255)))))
               
               (prinl (pack "[4] PPM -> LISP: " Out-Nm)))))))
   
@@ -202,8 +207,6 @@
                 Pr (car (str (pack (in In-M-Nm (till)))))
                 Pr-Out (calc Pr))
     
-            (pretty Pr-Out)
-          
             (out Out-M-Nm
               (pretty (getl Pr-Out)))
               
@@ -214,36 +217,73 @@
 
   # bnds: l b r t
   
-  (let (Out T
+  # http://pico-lisp.blogspot.com/p/arithmetic-operations.html
+  
+  (let (Out NIL
         Sca (get In 'scale)
-        Bnds (if (get In 'bounds) @ (need 4 0.0)))
+        Bnds (if (get In 'bounds) @ (need 4 "0.0")))
 
     (put 'Out 'advance (get In 'advance))
     (put 'Out 'scale Sca)
     (put 'Out 'range (get In 'range))
     (put 'Out 'code (get In 'code))
+
+    #{
+    (prinl *Scl)
+    (prinl Sca)
+    (prinl (format Sca *Scl))
+    (prinl)
+    (for X Bnds (prin X) (prin " ")) (prinl)
+    (for X Bnds (prin (format X *Scl)) (prin " ")) (prinl)
+    (prinl)
+    }#
     
+    # RENAME bnds -> bbox OR combine with bottom
     # sca * shape units = px
     # Bounds is rel to ori so neg nums possible
     (put 'Out 'bnds
-        (list (*/ (get Bnds 1) Sca 1.0)
-              (*/ (get Bnds 2) Sca 1.0)
-              (*/ (get Bnds 3) Sca 1.0)
-              (*/ (get Bnds 4) Sca 1.0)))
+        (list (format (*/ (format (get Bnds 1) *Scl)
+                          (format Sca *Scl) 1.0)
+                      (* *Scl 2))
+              (format (*/ (format (get Bnds 2) *Scl)
+                          (format Sca *Scl) 1.0)
+                      (* *Scl 2))
+              (format (*/ (format (get Bnds 3) *Scl)
+                          (format Sca *Scl) 1.0)
+                      (* *Scl 2))
+              (format (*/ (format (get Bnds 4) *Scl)
+                          (format Sca *Scl) 1.0)
+                      (* *Scl 2))))
 
+    #{
+    (for X (get 'Out 'bnds) (prin X) (prin " ")) (prinl)
+    (for X (get 'Out 'bnds) (prin (format X *Scl)) (prin " ")) (prinl)
+    (prinl)
+    (call 'sleep 1)  
+    }#
+              
+    # RENAME bnds-tex -> bbox-gly
     # bbox (for tex draw) rel to 
     # 1. Get origin which may have moved during gen to create enough space for df
     # 2. Add bnds
-    # 3. Expand to df rx
+    # 3. Expand to df rx or shift?
     (put 'Out 'bnds-tex 
-        (list (+ (get 'Out 'bnds 1) -1.0)
-              (+ (get 'Out 'bnds 2) -1.0)
-              (+ (get 'Out 'bnds 3)  1.0)
-              (+ (get 'Out 'bnds 4)  1.0)))
+        (list (format (+ (format (get 'Out 'bnds 1) *Scl) -1.0)
+                      *Scl)
+              (format (+ (format (get 'Out 'bnds 2) *Scl) -1.0)
+                      *Scl)
+              (format (+ (format (get 'Out 'bnds 3) *Scl)  1.0)
+                      *Scl)
+              (format (+ (format (get 'Out 'bnds 4) *Scl)  1.0)
+                      *Scl)))
     
     # dims of bbox
-    (put 'Out 'dims (list (- (get 'Out 'bnds-tex 3) (get 'Out 'bnds-tex 1))
-                          (- (get 'Out 'bnds-tex 4) (get 'Out 'bnds-tex 2))))
+    (put 'Out 'dims (list (format (- (format (get 'Out 'bnds-tex 3) *Scl) 
+                                     (format (get 'Out 'bnds-tex 1) *Scl))
+                                  *Scl)
+                          (format (- (format (get 'Out 'bnds-tex 4) *Scl)
+                                     (format (get 'Out 'bnds-tex 2) *Scl))
+                                  *Scl)))
 
     # l b r t = 1 2 3 4
     # ori=(0,0)=bottom left
@@ -253,32 +293,38 @@
     # baseline.y - bounds.b
     # baseline.x + bounds.r
     # baseline.y + bounds.t
-    (put 'Out 'uv (list (*/ 1.0 (get 'Out 'bnds-tex 3) (car  *sz-f))
-                        (*/ 1.0 (get 'Out 'bnds-tex 4) (cadr *sz-f))
-                        0.0
-                        0.0   # r-t 1,1
-                        (*/ 1.0 (get 'Out 'bnds-tex 3) (car  *sz-f))
-                        (*/ 1.0 (get 'Out 'bnds-tex 2) (cadr *sz-f))
-                        0.0
-                        0.0   # r-b 1,0
-                        (*/ 1.0 (get 'Out 'bnds-tex 1) (car  *sz-f))
-                        (*/ 1.0 (get 'Out 'bnds-tex 2) (cadr *sz-f))
-                        0.0
-                        0.0   # l-b 0,0
-                        (*/ 1.0 (get 'Out 'bnds-tex 1) (car  *sz-f))
-                        (*/ 1.0 (get 'Out 'bnds-tex 4) (cadr *sz-f))
-                        0.0
-                        0.0)) # l-t 0,1
+    (put 'Out 'uv (list (format (*/ 1.0 (format (get 'Out 'bnds-tex 3) *Scl) (car  *sz-f))
+                                *Scl)
+                        (format (*/ 1.0 (format (get 'Out 'bnds-tex 4) *Scl) (cadr *sz-f))
+                                *Scl)
+                        "0.0"
+                        "0.0"
+                        (format (*/ 1.0 (format (get 'Out 'bnds-tex 3) *Scl) (car  *sz-f))
+                                *Scl)
+                        (format (*/ 1.0 (format (get 'Out 'bnds-tex 2) *Scl) (cadr *sz-f))
+                                *Scl)
+                        "0.0"
+                        "0.0"
+                        (format (*/ 1.0 (format (get 'Out 'bnds-tex 1) *Scl) (car  *sz-f))
+                                *Scl)
+                        (format (*/ 1.0 (format (get 'Out 'bnds-tex 2) *Scl) (cadr *sz-f))
+                                *Scl)
+                        "0.0"
+                        "0.0"
+                        (format (*/ 1.0 (format (get 'Out 'bnds-tex 1) *Scl) (car  *sz-f))
+                                *Scl)
+                        (format (*/ 1.0 (format (get 'Out 'bnds-tex 4) *Scl) (cadr *sz-f))
+                                *Scl)
+                        "0.0"
+                        "0.0"))
     
     'Out))
-
+    
     
 (de wr-met (U Metrics M-Nm Sca Trans)
                                             
   (setq Metrics (mapcar pack (split Metrics "^J")))
-  
-  #(println Metrics)
-  
+    
   # Build property list out of metrics
   
   (let M-Out (list (cons 'code U))
@@ -287,9 +333,11 @@
     
       (let ((Nm Val) (mapcar pack (split (chop Line) "="))
             Nm (pack (clip (chop Nm)))
-            Vals (mapcar pack (split (chop Val) ","))
-            Vals (mapcar '((V) (format V *Scl))
-                         Vals))
+            Vals-2 (mapcar pack (split (chop Val) ","))
+            Vals (mapcar '((V) (pack (clip (chop V))))
+                         Vals-2))
+        
+        # Check for exponent
         
         (when Nm
           (push 'M-Out
@@ -298,7 +346,8 @@
 
     (when Sca (push 'M-Out (cons (intern "scale") Sca)))
     (when Trans (push 'M-Out (cons (intern "translate") Trans)))
-                      
+    
+    #(println Metrics)
     (println M-Out)
                       
     (out M-Nm

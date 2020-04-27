@@ -2,9 +2,9 @@
 
    (with *projview
 
-      (=: pos (list (+ (get (: pos) 1) (get Move 1))
-                    (+ (get (: pos) 2) (get Move 2))
-                    10.0))
+      (=: pos (list (+ (car (: pos)) (car Move))
+                    (+ (cadr (: pos)) (cadr Move))
+                    1.0))
 
       (let ((X Y Z) (: pos))
         (prinl-info 'cmd-move-cam (glue " " (list (format X *Scl) (format Y *Scl))))))
@@ -37,6 +37,6 @@
   
   (cmd-upd-pv *ipc))
 
-
-(de cmd-zoom-cam-in  (Keysym) (cmd-zoom-cam -1.0))
-(de cmd-zoom-cam-out (Keysym) (cmd-zoom-cam  1.0))
+# arbitrary...
+(de cmd-zoom-cam-in  (Keysym) (cmd-zoom-cam -0.25))
+(de cmd-zoom-cam-out (Keysym) (cmd-zoom-cam 0.25))

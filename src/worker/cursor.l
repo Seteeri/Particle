@@ -22,8 +22,7 @@
   (setq *cur 
         (with Vert
           (ori> (: met)
-                (: pos)
-                *sca-vert))))
+                (: pos)))))
 
 
 (de adv-cur (Cnt)

@@ -54,12 +54,10 @@
 (def 'NAME-PID "WORKER")
 
 # Constants
-(def '*glyph-dims '(96.0 96.0))
-(def '*sca-vert  (*/ 1.0 1.0 96.0)) # vertex scale = 1/96.0
-(def '*sca-glyph 5.8239365) # msdf param, mul by shape units -> px units, used by metrics
-(def '*adv-glyph 9.375) # msdf param, mul by sca-glyph to get proper adv
-# assumes all verts are scaled the same
-(def '*adv-vert  (*/ (*/ *adv-glyph *sca-glyph 1.0) *sca-vert 1.0))
+(def '*glyph-dims  '(96.0 96.0))
+(def '*sca-vert    (*/ 1.0 1.0 32.0)) # ortho-scale
+(def '*adv-glyph   19.265625)
+(def '*adv-vert    (*/ *adv-glyph *sca-vert 1.0))
 (def '*adv-vert-2  (+ *adv-vert *adv-vert))
 (def '*adv-vert-3  (+ *adv-vert-2 *adv-vert))
 
@@ -148,14 +146,17 @@
 
 
 (de load-metrics (Path)
-  (let Metrics ()
+  (let (Metrics ()
+        Path-M-Def (pack Path "32-m.l"))
     (for Code 255 
       (push 'Metrics
             (let (Met (new '(+Metrics))
-                  Path-M (pack Path Code ".l"))
-              (putl Met (car (str (in Path-M
-                                      (till NIL T)))))
-              Met)))                                          
+                  Path-M (pack Path Code "-m.l"))
+              (unless (info Path-M) (setq Path-M Path-M-Def))
+              (let Pro (car (str (in Path-M
+                                      (till NIL T))))
+                (calc> Met Pro))
+              Met)))
     (flip Metrics)))
 
     
@@ -184,7 +185,7 @@
 
     (set-cur-x X)
     (set-cur-y Y)
-    (adv-cur 48.0)
+    (adv-cur 16.0)
 
     (def '*start (gen-sym-pair '*start 'x))
 

@@ -139,10 +139,11 @@ Class variables may be indicated by an upper case letter
   (gl~enable gl~CULL-FACE)
   (gl~enable gl~DEPTH-TEST)
   (gl~enable gl~BLEND)
-  #(gl~enable gl~ALPHA-TEST)
   
   (gl~blend-equation-separate gl~FUNC-ADD gl~FUNC-ADD)
   (gl~blend-func-separate gl~ONE gl~ONE-MINUS-SRC-ALPHA gl~ONE gl~ONE-MINUS-SRC-ALPHA)
+  
+  #(gl~blend-func gl~SRC-ALPHA gl~ONE-MINUS-SRC-ALPHA)
   
   # Get some function pointers
   (setq gl~*glBufferStorage (glfw~get-proc-address "glBufferStorage")))
