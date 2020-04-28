@@ -6,9 +6,7 @@ Plain text is convenient but does not scale. Extracting useful information throu
 
 **Why not Emacs, org-mode, or ParEdit/Parinfer/Smartparens etc.?**
 
-Emacs is undoubtedly powerful but also difficult to evolve due to its aging codebase. It could be rewritten, however, the goals for such a project remain undefined which hampers initial development from starting. IMHO, writing it purely in Lisp would be interesting...
-
-Emacs is based around the idea of text buffers, however, editing text requires extracting data from the text into internal data structures and parsing back into text. For tools that work on parenthesis, they work on the syntactic level, not the semantic level. If the data is structured, then its type is known providing additional information for the computer to assist the user. In addition, Emacs is centered around editing text, however, modern users have a need to incorporate other types of data.
+Emacs is undoubtedly powerful but also difficult to evolve due to its aging codebase. It could be rewritten, however, the goals for such a project remain undefined which hampers initial development from starting. In addition, Emacs is centered around editing buffers of text, however, modern users have a need to incorporate other data types with non-linear structures.
 
 **What about Evernote, OneNote, Notion etc.?**
 
@@ -28,9 +26,11 @@ Emacs is based around the idea of text buffers, however, editing text requires e
 >
 > Surprisingly, no software with all those features exists yet. There are some interesting options though...
 
-**There have been many attempts at visual languages, projectional/structured editors, presentation-based interfaces. Why yet another one?**
+**There have been many attempts at projectional/structured editors, presentation-based interfaces. Why yet another one? Why not use McCLIM?**
 
 Originally, I started this project in Common Lisp and encountered CLIM, which is a descendant of the Symbolics Genera-based Lisp Machine's Dynamic Windows/Lisp Listener. Its central feature is the concept of presentation types, commands and transformers. 
+
+I think one of the issues it failed to become largely popular was, first, it did not appeal to developers outside the Lisp ecosystem as it was an interface manager and not just a toolkit (similar to what Qt has evolved into today), and secondly, it did not interact well with the established paradigms of fixed widgets. In some ways it reminds me of a display manager in that similar to the X windowing system, it too provided similar drawing primitives (which are today deprecated in favor of manipulating the buffer directly by toolkits etc.).
 
 https://www.reddit.com/r/lisp/comments/22lbpe/whatever_became_of_clim/
 
@@ -40,7 +40,11 @@ https://www.reddit.com/r/lisp/comments/22lbpe/whatever_became_of_clim/
 
 > This differs from "naked objects" (generating UI from domain objects) by admitting different UI representations of the same object.
 
-However, I wanted to approach the issue from a top-down or hollistic perspective by building a higher-level environment that more conceptually vertically integrated, analagous to modding a game versus using a game engine framework like Unity or Unreal etc. The integration of the interface maximizes the reuse of concepts and by extension commands, since everything is patterned in Lisp, short of the kernel itself (another discussion). It naturally provides discoverability and thus a gradual learning curve as one ventures deeper into the system by learning new types beyond the fundamental Lisp types. This isn't really new - this was one of the wonderful things about Lisp Machines, at least from what I've read in discussions and seen on YouTube.
+However, I wanted to approach the issue from a top-down or hollistic perspective by building a higher-level environment that more conceptually vertically integrated, analagous to modding a game versus using a game engine framework like Unity or Unreal etc. The integration of the interface maximizes the reuse of concepts and by extension commands, since everything is patterned in Lisp, short of the kernel itself (another discussion). It naturally provides discoverability and thus a gradual learning curve as one ventures deeper into the system by learning new types beyond the fundamental Lisp types. This isn't really new - this was one of the wonderful things about Lisp Machines, at least from what I've researched.
+
+This could be viewed as violating the Unix philosophy by integrating everything, however, I believe it still maintains the core tenets. The Unix philosophy is centered around the C model style of programming where processes communicate through piping text implemented with Bash scripts. Arguably, Lisp has a more dynamic approach but with an underlying model of lists and atoms based on cons cells.
+
+Looking at the current ecosystem, the alternative is what has been witnessed over the last several decades -fragmentation, which depending on how it is viewed is also the freedom to change components. However, for some users, an integrated approach is needed for a more productive experience rather than an exploratory one currently favored.
 
 https://groups.google.com/forum/#!topic/comp.lang.lisp/XpvUwF2xKbk%5B101-125%5D
 
@@ -62,7 +66,11 @@ In contrast, Emacs relies on the concept of (gap) buffers and strictly manipulat
 
 In Particle, a list of windows is literally a list of windows and the same list operations apply (exchange windows for arbitrary data type of your choice). Of course, there can be more specialized commands also, however, that is moreso an issue of discoverability. The fundamental concern of the UI is a tradeoff between the developer having complete design freedom versus the user having to learn it.
 
-It is important to note that the goal of Particle is not to teach the user programming but rather implicitly how the system works, i.e. data structures. Should the user want to learn programming, they will already have gained some of the fundamental concepts, at least to program in Lisp.
+**Is this another visual language like Eve etc.?**
+
+The goal of Particle is not to be a pedagogical platform for programming nor a visual programming language in itself, however, the hope is the user can implicitly understand how the system works through using it, i.e. manipulating its data structures. Then, should the user want to learn programming, they will already have gained some of the fundamental concepts, at least to program in Lisp.
+
+That being said, I believe learning programming initially through concepts rather than initially through code may be an easier route for the less abstract-minded people. Concrete code is meant to represent abstract concepts. For some, it is difficult to learn both systems at once and so it is easier to learn one system at a time.
 
 > I’m a huge proponent of designing your code around the data, rather than the other way around, and I think it’s one of the reasons git has been fairly successful… I will, in fact, claim that the difference between a bad programmer and a good one is whether he considers his code or his data structures more important. Bad programmers worry about the code. Good programmers worry about data structures and their relationships.
 
@@ -76,3 +84,27 @@ This consistency makes it easy to reason about the system by connecting the link
 
 At the end of the day, you could say it is using a list metaphor instead of a desktop metaphor since what's really important is that TODO list on your desk and not so much the desk itself ;)
 
+**Does this roughly offer the same benefits that the old lisp machines provided?**
+
+I found this response by lispm to ChyrsaLisp to be relevant in regards to attempts at recreating Lisp Machines:
+
+https://news.ycombinator.com/item?id=15466124
+
+> No.
+
+> I expect this will be a fairly controversial comment, so I want to preface this by saying that I'm a big Lisp fan (just look at my handle). Lisp is my favorite programming language. I've been using it for nearly forty years. My first Lisp was P-Lisp on an Apple II in 1980. And I worked on Symbolics Lisp machines in the 1990s. They were very cool, but there's a reason they failed: general-purpose computing is infrastructure, and the economics of infrastructure are such that having a single standard is the most economical solution, even if that standard is sub-optimal. For better or worse, the standard for general-purpose computing is the C machine.
+
+> Because it's general-purpose you certainly can run Lisp on a C machine (just as you could run C on a Lisp machine). You can even do this at the system level. But Lisp will always be at a disadvantage because the hardware is optimized for C. Because of this, C will always win at the system level because at that level performance matters.
+
+> But that in and of itself is not the determining factor. The determining factor is the infrastructure that has grown up around the C machine in the last few decades. There is an enormous amount of work that has gone into building compilers, network stacks, data interchange formats, libraries, etc. etc. and they are all optimized for C. For Lisp to be competitive at the system level, nearly all of this infrastructure would have to be re-created, and that is not going to happen. Even with the enormous productivity advantages that Lisp has over C (and they really are enormous) this is not enough to overcome the economic advantages that C has by virtue of being the entrenched standard.
+
+> The way Lisp can still win in today's world is not by trying to replace C on the system level, but by "embracing and extending" C at the application level. I use Clozure Common Lisp. It has an Objective-C bridge, so I can call ObjC functions as if they were Lisp functions. There is no reason for me to know or care that these functions are actually written in C (except insofar as I have to be a little bit careful about memory management when I call C functions from Lisp) and so using Lisp in this way still gives me a huge lever that is economically viable even in today's world. I have web servers in production running in CCL on Linux, and it's a huge win. I can spin up a new web app on AWS in just a few minutes from a standing start. It's a Lisp machine, but at the application level, not the system level. My kernel (Linux) and web front end (nginx) are written in C, but that doesn't impact me at all because they are written by someone else. I just treat them as black boxes.
+
+> I don't want to denigrate ChrysaLisp in any way. It's tremendously cool. But cool is not enough to win in the real world.
+
+
+**Is this the same as Microsoft's OLE or Apple's OpenDoc systems which both failed?**
+
+Not quite. OLE was a closed proprietary standard, in which OpenDoc was developed as an open standard. Both failed for various reasons. Data formats/standards exist because different programs written in different languages structure their data in different ways which makes for a complex ecosystem of formats. Additionally, some programs may be closed-source to be made unavailable for other programs to use which requires reverse-engineering. Unfortunately, this is all at the expense of the user, as data from one program cannot be used as data in another program unless a proper converter or importer is used, which leads to a waste of programming efforts that could be used towards more novel purposes.
+
+Fortunately, the world has been moving towards open source. Some of the most widespread formats include XML, associated with Ant and office programs, and JSON associated with Javascript. However, S-Expressions are arguably simpler and can serve both roles as a generic serialization format and syntax for a programming language. Thus, it can represent both data and code simultaneously.

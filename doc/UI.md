@@ -1,28 +1,28 @@
 User-Interface
 ==============
 
-*Talk about lay person's understanding of lists versus a programmer's understanding
-of a (singly-linked) list*
-
-*Talk about this relation to the learning curve*
-
 # Command Matrix
 
-    +-------+--------------------------------------------------------
-    | CMD   |                           Pointer
-    +-------+-------------------+--------------------+---------------
-    |       | Pair/Atom         | Car/Atom           | NIL
-    +-------+-------------------+--------------------+---------------
-    | NL    | List w. Pair      | List w. Car        | Empty list
-    +-------+-------------------+--------------------+---------------
-    | ASCII | Ins-back, Mov-Cdr | Write-car, Mov-Car | Same as left
-    +-------+-------------------+--------------------+---------------
-    | NIL   | Same as above     | Same as above      | Ins or Wr; def Ins; Wr does nothing; make opt
-    +-------+-------------------+--------------------+---------------
+# Basic Concepts
 
-## Basics
+    +--------------+--------------+
+    | Programmer   | Layperson    |
+    +--------------+--------------+
+    | List         | Outline/Tree |
+    +--------------+--------------+
+    | Atom: Number | Number       |
+    +--------------+--------------+
+    | Atom: Symbol | Hyperlink    |
+    +--------------+--------------+
+    | Atom: String | Text         |
+    +--------------+--------------+
 
-### Data, Lists, and Atoms
+* There are two types of data in the "world": lists and atoms
+* Lists contain a mix of lists and/or atoms
+* Atoms are one of three types: numbers, strings, symbols
+  * Every list ends with the atom NIL which will be explained in the next section
+    
+## Lists
 
 Most people are already familiar with the concept of a list. Anytime one creates
 an outline of sorts, one is creating a list or in computer science terms, a data
@@ -107,29 +107,80 @@ as a data structure called a singly-linked list with a more verbose representati
          
     ...
 
-* There are two types of data: lists and atoms
-* Lists can contain a combination of lists and atoms
-  * Every list ends with the atom NIL
-* Atoms are either numbers or strings
-  * NIL is an atom, albeit a special one, as it represents an empty list
-  * There are subtypes of symbols but that is for another discussion
 
-### Pointers
+## Symbols
 
-* Pointer can be either above or below an item in a list, depending on what it
-is pointing to
-* If above, an ASCII key will insert a key before the current item, and move the
-pointer above the next item
-* If below, an ASCII key will replace the item with input key, and move the pointer
-below the next item
-* Pointers themselves are symbols
-* All pointers begin with an asterisk: `*0` `*1` etc.
-* There can exists as many pointers as desired, however, there exists one root
-master pointer: `*0`.
+* Symbols are similar to hyperlinks in a web page in that they have a representation (the visible text) and they also can link to other data that is not explicitly visible (generally visible when hovering over the text).
+* It is best to think of strings/text as links without a link or value.
+
+* `NIL` is a special type; it is both an atom and a list
+  * It has multiple representations:
+    * `""` : empty string
+    * `()` : empty list
+    * `NIL` : symbol, represents False value (`T` represents True)
+
+* There are subtypes of symbols but that is for another discussion
+  * Widgets which will be discussed in a later section
+
+
+#### Pointers
+
+* A pointer is conceptually the same as a traditional mouse cursor or pointer used to select objects
+* Pointers are represented as text, instead of a cursor to be able to refer to it more conveniently by name
+  * How would you refer to a mouse cursor in a conventional system?
+* A pointer can be either above or below an item in a list
+  * above: ASCII key will insert a key before the current item, and move the pointer above the next item
+    * Same as normal typing
+  * below: ASCII key will replace the item, and move the pointer below the next item
+    * Same as normal typing with insert/overwrite mode on
+* By convention, all pointer names begin with an asterisk: `*0` `*1` etc.
+* There can exists as many pointers as desired, however, there exists one root master pointer: `*0`.
+  * It should not be deleted
+
+Basic Operations:
+
+* Select one atom or list
+  * Point to atom
+  * Point to start of list
+
+* Select part of list
+  * Set `start` pointer and `end` pointer to desired data
+  * Put `start` and `end` pointer in a list
+  * Point `*0` pointer to that list
+
+  
+Compound Operations:
+  
+Basic operations can be combined to perform more advanced selections:
+
+* Select non-contiguous atoms in a list
+* Select mixture of above and lists
+
+...and others.
+
+This can be achieved by using list operations:
+
+Given:
+
+         *1        *2        *3
+    [ ]  [ ]  [ ]  [ ]  [ ]  [ ]
+          a    b    c    d    e
+
+Select sublist:
+(setq *0 '((*1 *2)))
+
+Select atoms:
+(setq *0 '(*1 *2 *3))
+
+Select both sublist *1-*2, and atom *3:
+(setq *0 '((*1 *2) *3))
+
 
 ## Layouts
 
-There exists 2 possible layouts, x or y:
+Objects are linked; the linked object is either drawn to the right of or underneath the original object.
+
+Thus there exists 2 possible layouts, x or y:
 
 ### X Layout
 
@@ -247,17 +298,28 @@ Call make-nl:
          [Y]  [X]  NIL
          NIL  C
 
-## Atoms
+         
+# Basic Operations
 
-*Manipulating strings and numbers*
 
-## List
+## Cut Copy Paste (CUA Ops)
 
-*Manipulating lists*
 
-# Undo System
+## Undo System
 
-# PicoLisp Internals (Advanced)
+
+## Input/Output
+
+### Files and Databases
+
+
+# Advanced
+
+# Namespaces
+
+# OpenGL
+
+# PicoLisp Internals
 
 *For reference*
 

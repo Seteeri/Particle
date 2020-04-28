@@ -111,7 +111,8 @@ nodes as they popup...use augmented reality like pokemon
 ################################################################################
 
 Never liked the idea of the cursor being inbetween chars...
-WHAT IS IT SELECTING???
+Ambiguous as to whether the previous or next is being selected
+Or not? Since list points to right side typically...
 
 CLI: Type command -> Enter (no shortcuts)
 Emacs: Key chords/bindings + modes [MAX KEYBINDINGS/MODESish]
@@ -120,127 +121,6 @@ Archy: Quasimode + type command [MIN KEYBINDINGS/MIN MODES]
 US: Type command -> Eval
 
 https://academia.stackexchange.com/questions/109/is-there-any-efficient-non-linear-note-taking-software
-
-MOVEMENT:
-1. Link move (semantic move)
-2. Euclidean move (discrete steps)
-3. Jump move (jump to node)
-  -> Requires IDs
-
-   * Diagram:
-
-      h-e-l-l-o---w-o-r-l-d-*
-
-      h-e-l-l-o---w-o-r-l-d
-                  *
-
-      Case A
-                  w
-                  *
-      h-e-l-l-o---a-o-r-l-d
-                  *
-
-                  w-o-r-l-d
-                  * * * * *
-      h-e-l-l-o---a-b-c-d-e
-                          *
-
-                  w-o-r-l-d
-                  * * * * *
-                  | | c | |  (c still linked to b and d) !-> b has 3 outputs now...
-                  | | * | |
-      h-e-l-l-o---a-b-z-d-e
-                      *
-
-      Case B - this would need to be explicitly done
-               use command like "branch" to move "world"
-               to a list
-
-                  *-w-o-r-l-d
-                  *
-      h-e-l-l-o---a-b-c-d-e
-                          *
-
-                  *-w-o-r-l-d
-                  *
-                  |   *-c-d-e
-                  |   *
-      h-e-l-l-o---a-b-z
-                      *
-
-                  *-w-o-r-l-d
-                  *-a
-                  *
-                  |   *-c-d-e
-                  |   *
-      h-e-l-l-o---x-b-z
-                  *
-
-      If x is deleted, then entire branch moves to undo graph
-
-      Case C - user modifies history; undo will still track changes
-               below achieves users intentions
-
-                  *-w-o-r-l-d
-                  *
-      h-e-l-l-o---a
-                  *
-
-                  *-w
-                  *
-      h-e-l-l-o---a-o-r-l-d
-                          *
-
-      alternatives - user retypes it; user copies it
-
-      Case D - this is implicit - "insert-node"
-               this actually behaves like overwrite (insert mode) - usually used to maintain spacing
-               use alt+<char> for this?
-
-                  w o r l d
-                  * * * * *
-      h-e-l-l-o---a-b-c-d-e
-                          *
-
-      ________________________
-
-                 (* w-o-r-l-d)
-                  |
-                  *
-      h-e-l-l-o---u
-                  *
-
-      undo*----->(* w-o-r-l-d)
-                 /|\
-                  |
-                  *
-                 /|\
-                  ------------------|
-      h -> e -> l -> l -> o -> - -> u -> s -> e -> r
-                                   /|\
-                                    |
-                                    *
-
-      * If user wanted to simulate insert, multiple ways:
-        - Branch text, link text (del ptr)
-        - Cut text/line, insert text, paste text
-        - verbose: manually unlink/move everything
-
-                  * w-o-r-l-d
-                  *
-      h-e-l-l-o---u-s-e-r
-                        *
-
-      Relink "world" by typing command:
-
-                  * w-o-r-l-d
-                  *
-      h-e-l-l-o---u-s-e-r-\n-l-i-n-k---i-d
-                          {               }* -> eval
-
-      Eval will unlink newline (input) and link output
-
-      h-e-l-l-o---u-s-e-r-w-o-r-l-d
                                   *
 https://softwareengineering.stackexchange.com/questions/224146/how-has-an-increase-in-the-complexity-of-systems-affected-successive-generations/224152
 
@@ -597,135 +477,9 @@ Ctrl+Enter/Tab = Eval
 
 https://news.ycombinator.com/item?id=9981874
 
-JIT inspired by
-- Pixie
-- El Compilador
-- Stalin
-- SELF
-- LuaJIT
-
-
-https://en.wikipedia.org/wiki/Self-organizing_list
-
-
-Launch:
-* libinput
-* model
-* render
-
-libinput connects to model
-model connects to render
-
-* make model the server
-* libinput and render connect
-
-libinput is one of many
-view is one of many
-but only one data
-
-OpenGL::
-
-* Triple/NoSync roughly similar to Double/NoSync
-
 https://www.bfilipek.com/2015/01/persistent-mapped-buffers-benchmark.html
 
-LAYOUT 1
-========
-
-I/O       CPU         I/O
-Input --> Ctrl 1 <--> Model, Render
-      --> Ctrl 2 <--> Model, Render
-      --> Ctrl 3 <--> Model, Render
-      --> Ctrl N <--> Model, Render
-
-INPUT:  GOOD
-CTRL:   ????
-MODEL:  ????
-RENDER: ????
-
-Memcpy Trail
-* Ctrl/Serialize, Ctrl/Socket -> Render/GL
-
-* Input epolls for events and forwards them
-  * Input not just physically attached devices/peripherals
-  * Poss network I/O
-
-* Ctrl
-  * Applies functions to data
-  * Pulls from Model/Update cache
-  * Cache to reduce necessary copies and decrease latency
-  * Pushes to Model & Render
-
-* Model epolls for memcpy
-  * Recvs data from Ctrl and updates memory
-  * Broadcast updates
-    -> Poss decentralize?
-  * Use Redis or some other mechanism/library
-
-* Render epolls for memcpy
-  * Pushes frame time to Ctrls -> Triggers anim frame generation
-  * After pushing frame, Render can either wait or continue
-
-* Supports at least quad-core...seems like a waste to have input/model/render on
-own proc
-  * Poss assign to same process at the expense of latency to increase bandwith
-
-LAYOUT 2
-========
-
-Input --> Model <--> Render
-
-*DOES NOT SCALE!
-*Ties input handling and frame handling together
-
-* Model will respond to events through epoll
-  * Input handlers write directly to render socket/queue
-    * If buffer becomes full, must block recv events until render catches up
-    * Input can initialize anim events
-  * Frame handlers write to render socket/queue
-    * This triggers animation frames to be produced
-    * UDS can be implemented to drop animation frames
-    * One socket per animation
-      * Grouping
-* Render will try recv on TCP and recv UDS
-  * UDS - one datagram per socket; must process all sockets
-  * TCP - iterate through sockets until empty or time limit
-  * Memcpy speed is relatively constant which can be used to approximate the
-  number of bytes that can be copied per frame = ~192 mb/16.7ms
-    * IPC overhead like syscalls to recv/send will be an issue
-
-##################
-
-Animation Example:
-* Ctrl:
-  * Loop #0: Recv event->Handle event->Write Render socket
-* Render (pre-draw):
-  * Loop #1: Send time->Read sock
-  * Loop #2: Send time->Read sock
-  * Loop #3: Send time->Read sock
-
-"When a new packet is received for a UDP socket that has a full receive buffer,
-the new packet is dropped, even when it would be preferrable to drop the
-older (buffered) packets."
-
-* Assume UDP sized for 1 frame
-  * UDP buffer size can be increased to accomodate additional frames to get latest N frames
-* If render handler sends TCP then render must recv from socket until last data
-* Also render, must pull all events first before executing memcpy
-* Between Loop #1/2/3, if render gets frame 1 on frame 3 time, then it will still
-get frame 1 time, then possibly frame 4 will be loaded next, resulting in the
-middle frames being not drawn (dropped).
-* Frames can be delayed or dropped
-  * Per task
-  * If delayed animation will appear too fast or slow...?
-    -> Users don't like delayed typing which is annoying
-    -> Why? Disorients users as to whats going on - defies expectations
-       -> Least Astonishment Principle
-* Render only draws so even if the data is not displayed, it still exists and
-can be rendered anytime.
-
 https://stackoverflow.com/questions/2963898/faster-alternative-to-memcpy
-
 
 ################################################################################
 
@@ -4591,6 +4345,18 @@ systemE -> sinit ->
 sinit is a suckless init, initially based on Rich Felker's minimal init.
 
 https://superuser.com/questions/320529/how-to-create-a-linux-system-that-runs-a-single-application/991733#991733
+
+https://www.phoronix.com/forums/forum/phoronix/general-discussion/40672-richard-stallman-calls-llvm-a-terrible-setback/page16
+
+https://news.ycombinator.com/item?id=19797152
+
+Can anyone suggest interesting work that is kind of the opposite of this? Vast real estate, rich HIDs, dynamic autonomous presentation?
+
+So focused on many/big screens, with an eye towards future high-res AR/VR 3D, rather than a single "space is precious" small screen. Rich human interface devices, like multitouch and 3D hand pose and stylus and head position and gaze, rather than a single mouse. Display as a dynamic ecosystem of presentations, under the influence of multiple agents, rather than detailed manual control. UI as collaborative improv dance, rather than as micromanagement.
+
+Punchcards and console toggles; teletype printer; VT100 terminal; small bitmapped monitor and mouse; larger monitor; largerer monitor; largererer; multiple monitors; with multitouch and stylus tablet; future high-res AR/VR... as tech so very slowly becomes less crippling, the UIs do too...
+
+Hmm, though for current VR, with its 1980's VGA-like non-blurry pixels are more precious than they've been for decades, fine-grained control and space sharing might be quite nice? 
 
 ============================================
 

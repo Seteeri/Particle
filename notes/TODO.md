@@ -53,6 +53,25 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
     
+  * Optimize MSDFGEN
+    * Precalc everything
+  * Lazy load glyphs
+    * Load ASCII initially
+    * Convert glyphs into db later...
+  * Implement database
+    * Load db files into memory/tmpfs
+    * Convert +Particle/+Vertex into db
+      * This will allow linking particles
+      * Refactor Particle into subclass of Entity
+      * Can test multiple workers pull/push database
+      * Workers send serialized data directly to raster
+        * ...instead of writing to DB and having raster read it
+    * Store classes in separate files?
+      * verts.db
+      * parts.db
+  * Need better reset for testing
+  * Use mouse cursor for pointer symbol?
+    
   * Later?
     * Refactor/fix cmd-del
     * Refactor eval
@@ -82,26 +101,17 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Show more aesthetic one and use fn to modify
       * Store key syms and fn syms
         * Get val when called
-    
-  * Logging System
-    * Log commands
-  
+      
   * Cam
     * Camera needs to move with content like when entering a newline
       * Requires unproject to test if coord is in the viewport
       * When a new item is entered, check its bnds against the view bounds    
-                
+    
+  * Log/Undo System
+    * Log commands    
+    
   * Why is xkb in worker? Should be in ctrl []
-  
-  * Implement external symbols
-    * Sep verts and parts in diff dbs
-      * verts.db
-      * parts.db
-    * Refactor Particle into subclass of Entity
-    * Can test multiple workers pull/push database
-    * Workers send serialized data directly to raster
-      * ...instead of writing to DB and having raster read it  
-  
+    
   ----------------
     
   * Pointer System
