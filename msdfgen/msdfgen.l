@@ -221,6 +221,7 @@
   
   (let (Out NIL
         Sca (get In 'scale)
+        Sca-F (format Sca-F *Scl)
         Bnds (if (get In 'bounds) @ (need 4 "0.0")))
 
     (put 'Out 'advance (get In 'advance))
@@ -243,16 +244,16 @@
     # Bounds is rel to ori so neg nums possible
     (put 'Out 'bnds
         (list (format (*/ (format (get Bnds 1) *Scl)
-                          (format Sca *Scl) 1.0)
+                          Sca-F 1.0)
                       (* *Scl 2))
               (format (*/ (format (get Bnds 2) *Scl)
-                          (format Sca *Scl) 1.0)
+                          Sca-F 1.0)
                       (* *Scl 2))
               (format (*/ (format (get Bnds 3) *Scl)
-                          (format Sca *Scl) 1.0)
+                          Sca-F 1.0)
                       (* *Scl 2))
               (format (*/ (format (get Bnds 4) *Scl)
-                          (format Sca *Scl) 1.0)
+                          Sca-F 1.0)
                       (* *Scl 2))))
 
     #{

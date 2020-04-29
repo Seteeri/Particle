@@ -17,10 +17,7 @@
 
   (init-buffs-rast)
 
-  # Load default buffer data
-  # Method 1,2,3:
-  # 1.93, 2.16, 2.4
-  (init-tex-glyphs)
+  (init-glys)
   (init-di)
   (init-verts)
   (init-el)
@@ -69,7 +66,7 @@
                          (get Buffer 'gl~buffer)))))))
 
 
-(de init-tex-glyphs ()
+(de init-glys ()
   #{
     Method 2
     

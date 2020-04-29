@@ -56,6 +56,10 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
   * Optimize MSDFGEN
     * Precalc everything
   * Lazy load glyphs
+    * Collaboritive effort [Later]
+      * Render loads tex
+      * Gly loads metrics
+      * Do later when msgs are refactored
     * Load ASCII initially
     * Convert glyphs into db later...
   * Implement database
