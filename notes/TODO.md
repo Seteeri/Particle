@@ -54,9 +54,10 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     +-------+-------------------+--------------------+---------------+
   
   * Put glyphs in binary form in single file [Done]
-    * Mmap and memcpy
-    * Worker should load idx file
-    * Use for lookup in upd-ch/met>
+    * Mmap and memcpy [Done]
+    * Worker should load idx file [Done]
+    * Use for lookup in upd-ch/met> [Done]
+    * Load metrics on demand?
   * Implement database
     * Load db files into memory/tmpfs
     * Convert +Particle/+Vertex into db
