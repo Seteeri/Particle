@@ -53,6 +53,9 @@
   
   (=: off-texel (cdr (lup *idx-met (: ch))))
   
+  (unless (: off-texel)
+    (prinl-info "upd-met>" (pack "Unable to find off-texel: " (: ch))))
+  
   (=: met (get *metrics (: ch)))
   
   (unless (: met)
