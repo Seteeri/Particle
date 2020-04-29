@@ -161,15 +161,16 @@
 
 (de load-metrics (Path)
   (let (Metrics ()
-        Path-M-Def (pack Path "32-m.l"))
+        Path-M-Def (pack Path "32-m.v.l"))
     (for Code 255 
       (push 'Metrics
             (let (Met (new '(+Metrics))
-                  Path-M (pack Path Code "-m.l"))
+                  Path-M (pack Path Code "-m.v.l"))
               (unless (info Path-M) (setq Path-M Path-M-Def))
               (let Pro (car (str (in Path-M
                                       (till NIL T))))
-                (calc> Met Pro))
+                (putl Met Pro)
+                (calc-sca-f> Met))
               Met)))
     (flip Metrics)))
 

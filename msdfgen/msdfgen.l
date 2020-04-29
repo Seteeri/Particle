@@ -4,7 +4,7 @@
   
   (gc 32)
   
-  (setq *Scl 16
+  (setq *Scl 6
         *num3 (** 10 *Scl)
         *sz-s "96"
         *sz-f (list (format "96.0" *Scl)
@@ -44,7 +44,7 @@
           *dir-m      (pack *dir-out "/m")
           *dir-l      (pack *dir-out "/l"))
     
-    (when NIL
+    (when T
       (call 'rm "-r" (pack *dir-out    "/"))
       
       (call 'mkdir "-p" (pack *dir-ppm    "/"))
@@ -297,15 +297,6 @@
                         (*/ *num3 (get 'Out 'bnds-tex 4) (cadr *sz-f))
                         (format "0.0" *Scl)
                         (format "0.0" *Scl)))
-    
-    (when (= (get In 'code) 113)
-      #(pretty Bnds)
-      (println (car  Tra) Sca *num3 (get 'Out 'bnds 1) -1.0)
-      (println *num3 (get 'Out 'bnds-tex 3) (car  *sz-f))
-      (println (*/ *num3 (get 'Out 'bnds-tex 3) (car  *sz-f)))
-      (prinl)
-      (pretty (getl 'Out))
-      (bye))
     
     'Out))
     

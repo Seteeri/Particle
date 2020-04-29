@@ -47,6 +47,12 @@
         1.0))
 
 
+(dm calc-sca-f> ()
+  (=: sca-f (*/ 1.0
+                *sca-vert
+                (: scale))))
+        
+        
 (dm calc> (Pro)
 
   # bnds: l b r t
@@ -121,3 +127,6 @@
             
             0.0
             0.0)))
+            
+  #(when (= (get Pro 'code) 113)
+  #  (pretty (getl This))))
