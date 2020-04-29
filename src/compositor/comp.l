@@ -3,7 +3,7 @@
 
 
 # Set math precision to 6 decimals
-(scl 6)
+# (scl 6)
 
 
 (def 'NAME-PID "COMP")

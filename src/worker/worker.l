@@ -11,7 +11,7 @@
 }#
 
 
-(scl 6)
+# (scl 6)
 
 (load (pack (pwd) "/src/misc.l"))
 (mapc 'load-cwd
