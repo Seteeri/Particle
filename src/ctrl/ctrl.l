@@ -18,17 +18,13 @@
 (load (pack (pwd) "/src/misc.l"))
 (mapc 'load-cwd
       (list "/src/c/mathc.l"
-            "/src/c/posix/mman.l"
-            "/src/c/posix/stdio.l"
-            "/src/c/posix/string.l"
-            "/src/c/posix/unistd.l"
             "/src/c/epoll.l"
             "/src/c/li.l"
             "/src/c/socket.l"
             "/src/c/xkbcommon.l"
             "/src/c/timerfd.l"
             "/src/c/ksd.l"
-            "/src/dlst.l"            
+            "/src/dlst.l"
             "/src/ipc/ipc.l"
             "/src/metrics/metrics.l"            
             "/src/prot/conn.l"
@@ -84,7 +80,6 @@
 
 (de init-ctrl ()
 
-  #Setup projview
   (setq *projview (new '(+Projview) *width *height 'o))
   (upd-mat-proj> *projview)
   (upd-mat-view> *projview)
@@ -231,7 +226,7 @@
   (let (Keyed   (get Data 4)
         Keycode (+ Keyed 8)
         State   (get Data 5))
-
+        
     (upd-key> *xkb Keycode State)
     
     (when (= (key-repeats> *xkb Keycode) xkb~KEY-DOWN)

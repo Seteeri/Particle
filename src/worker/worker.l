@@ -101,6 +101,7 @@
   # Control should send this on init
   (setq *projview (req-recv-pv *ipc
                                (ipc~get-fd> *ipc "CONTROL")))
+                               
   (cmd-render-pv *ipc)
   ####################
   

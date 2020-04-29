@@ -36,13 +36,13 @@
     (struct *mat4-out (-1.0 . 16)))
 
 
-(de mat4-ortho (L R B T N F)
+(de mat4-ortho (L R B Tt N F)
     (native PATH-MATHC "mat4_ortho" 'N
 	    *mat4-out
 	    (cons L -1.0)
 	    (cons R -1.0)
 	    (cons B -1.0)
-	    (cons T -1.0)
+	    (cons Tt -1.0)
 	    (cons N -1.0)
 	    (cons F -1.0))
     (struct *mat4-out (-1.0 . 16)))

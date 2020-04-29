@@ -79,7 +79,7 @@
     (=: mat-proj Mat-Proj)
     (=: fov (car Fov))
     (=: near (car Near))
-    (=: Far (car far))
+    (=: far (car Far))
     (=: scale-ortho (car Scale-Ortho))
     (=: near-ortho (car Near-Ortho))
     (=: ortho-far (car Ortho-Far))
