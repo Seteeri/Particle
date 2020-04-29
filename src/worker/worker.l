@@ -120,6 +120,7 @@
   
   (gc 128)
 
+  #{
   (let (A NIL
         B NIL
         C 0
@@ -133,7 +134,19 @@
         (push '*verts Vert)))
 
     (prinl-info "init-worker" (pack "Loaded " C " verts of " *verts-max)))
-
+  }#
+  
+  (for I *verts-max
+    (push '*verts
+          (new '(+Vertex)
+               (get-vert-off I)
+               "@"
+               *color-vert-default
+               (list 0.0 0.0 0.0) # pos
+               (list 0.0 0.0 0.0) # rot=0, sca=global scale
+               (need 3 *sca-vert))))
+  (setq *verts (flip *verts))
+  
   (when NIL (run-tests))
 
   (gen-def-parts)
