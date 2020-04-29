@@ -88,49 +88,21 @@
   }#  
   
   (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
-        Gly-Def (pack *path-gly "l/32.ppm.l"))
+        Path-Gly-Def (pack *path-gly "l/32.ppm.l"))
     (for Code 255
       (let Path-Glyph (pack *path-gly "l/" Code ".ppm.l")
-        (unless (info Path-Glyph)
-          (setq Path-Glyph Gly-Def))
-        # Skip first 4 items (=header)
-        (let Data (car (str (in Path-Glyph 
-                              (till NIL T))))
-          (eval (append '(struct Ptr N) Data))
-          (inc 'Ptr (length Data)))))))
+        (inc 'Ptr (load-gly (if (info Path-Glyph)
+                                Path-Glyph
+                                Path-Gly-Def)))))))
 
 
-(de init-tex-glyphs-2 ()
-  #{
-    Method 2
-    
-      (mapc '((B)
-                (byte (+ Ptr Off) B)
-                (inc 'Off))
-            Data))))))
+(de load-gly (Path)
+  (let Data (car (str (in Path
+                        (till NIL T))))
+    (eval (append '(struct Ptr N) Data))
+    (length Data)))
 
-    Method 3
 
-      (for B Data
-        (struct (+ Ptr Off) 'N (cons B 1))
-        (inc 'Off)))))))
-        
-    To load even faster, bin + memcpy
-  }#  
-  
-  (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
-        Gly-Def (pack *path-gly "l/32.ppm.l"))
-    (for Code 255
-      (let Path-Glyph (pack *path-gly "l/" Code ".ppm.l")
-        (unless (info Path-Glyph)
-          (setq Path-Glyph Gly-Def))
-        # Skip first 4 items (=header)
-        (let Data (car (str (in Path-Glyph 
-                                    (till NIL T))))
-          (eval (append '(struct Ptr N) Data))
-          (inc 'Ptr (length Data)))))))          
-          
-          
 (de init-di ()
   (struct (get '*buffer-objects 'draw-indirect 'gl~ptr) 'N
           (6 . 4)
