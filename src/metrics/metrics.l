@@ -66,11 +66,11 @@
                       (push 'L (format X *Scl)))
                     (flip L))
                  (need 2 0.0)))
-
+                 
   (=: sca-f (*/ 1.0
                 *sca-vert
-                (: scale)))
-
+                (: scale)))  
+                
   # sca-glyph * shape units = pixel units
   # Bounds is rel to ori so neg nums possible
   (=: bnds 
