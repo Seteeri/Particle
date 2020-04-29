@@ -1,38 +1,37 @@
 # pil msdfgen.l -main +
 
+#{
+  '(("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf"            "DejaVuSansMono-Bold")
+    ("/usr/share/fonts/TTF/DejaVuSansMono-BoldOblique.ttf"     "DejaVuSansMono-BoldOblique")
+    ("/usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf"         "DejaVuSansMono-Oblique")
+    ("/usr/share/fonts/TTF/DejaVuSansMono.ttf"                 "DejaVuSansMono")
+    ("/usr/share/fonts/OTF/FiraCode-Bold.otf"                  "FiraCode-Bold")
+    ("/usr/share/fonts/OTF/FiraCode-Light.otf"                 "FiraCode-Light")
+    ("/usr/share/fonts/OTF/FiraCode-Medium.otf"                "FiraCode-Medium")
+    ("/usr/share/fonts/OTF/FiraCode-Regular.otf"               "FiraCode-Regular")
+    ("/usr/share/fonts/OTF/FiraCode-Retina.otf"                "FiraCode-Retina")
+    ("/usr/share/fonts/TTF/FantasqueSansMono-Regular.ttf"      "FantasqueSansMono-Regular")
+    ("/usr/share/fonts/TTF/FantasqueSansMono-Italic.ttf"       "FantasqueSansMono-Italic")
+    ("/usr/share/fonts/TTF/FantasqueSansMono-BoldItalic.ttf"   "FantasqueSansMono-BoldItalic")
+    ("/usr/share/fonts/TTF/FantasqueSansMono-Bold.ttf"         "FantasqueSansMono-Bold"))
+}#
+
+
 (de main ()
   
   (gc 32)
   
   (setq *Scl 6
         *num3 (** 10 *Scl)
+        *sz-t (* 96 96)
         *sz-s "96"
         *sz-f (list (format "96.0" *Scl)
                     (format "96.0" *Scl))
         *path-msdfgen "/home/user/Git/msdfgen/build/msdfgen")
-        
-  # FiraMono
-          
-  (for Font 
-       
+                  
+  (for Font        
        '(("/usr/share/fonts/TTF/DejaVuSansMono.ttf"                 "DejaVuSansMono"))
        
-#{
-      '(("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf"            "DejaVuSansMono-Bold")
-        ("/usr/share/fonts/TTF/DejaVuSansMono-BoldOblique.ttf"     "DejaVuSansMono-BoldOblique")
-        ("/usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf"         "DejaVuSansMono-Oblique")
-        ("/usr/share/fonts/TTF/DejaVuSansMono.ttf"                 "DejaVuSansMono")
-        ("/usr/share/fonts/OTF/FiraCode-Bold.otf"                  "FiraCode-Bold")
-        ("/usr/share/fonts/OTF/FiraCode-Light.otf"                 "FiraCode-Light")
-        ("/usr/share/fonts/OTF/FiraCode-Medium.otf"                "FiraCode-Medium")
-        ("/usr/share/fonts/OTF/FiraCode-Regular.otf"               "FiraCode-Regular")
-        ("/usr/share/fonts/OTF/FiraCode-Retina.otf"                "FiraCode-Retina")
-        ("/usr/share/fonts/TTF/FantasqueSansMono-Regular.ttf"      "FantasqueSansMono-Regular")
-        ("/usr/share/fonts/TTF/FantasqueSansMono-Italic.ttf"       "FantasqueSansMono-Italic")
-        ("/usr/share/fonts/TTF/FantasqueSansMono-BoldItalic.ttf"   "FantasqueSansMono-BoldItalic")
-        ("/usr/share/fonts/TTF/FantasqueSansMono-Bold.ttf"         "FantasqueSansMono-Bold"))
-}#
-
     (setq *path-font  (car Font)
           *nm-font    (cadr Font)
           *uni-rx     (gen-uni-rx *nm-font)
@@ -44,7 +43,7 @@
           *dir-m      (pack *dir-out "/m")
           *dir-l      (pack *dir-out "/l"))
     
-    (when T
+    (when NIL
       (call 'rm "-r" (pack *dir-out    "/"))
       
       (call 'mkdir "-p" (pack *dir-ppm    "/"))
@@ -81,9 +80,12 @@
        
   # Run
   
-  (calc-m)
+  #(calc-m)
   
   (conv-ppm-lisp)
+  
+  # write to one single bin file
+  (conv-ppms-bin)
     
   T)
 
@@ -368,3 +370,63 @@
                                  (list (hex (car X))
                                        (hex (cadr X))))))
                   (flip L)))))      
+
+                  
+(de conv-ppms-bin ()
+  
+  # Bin is tightly packed so
+  # cannot use index access;
+  # must be mapped in a binary tree
+  # unicode : offset
+  
+  (let (Out-Rgba8 (pack *dir-l "/" *nm-font ".rgba8.bin")
+        Out-Idx (pack *dir-l "/" *nm-font ".idx.l")
+        Out-Idx-Bin (pack *dir-l "/" *nm-font ".idx.bin")
+        Off 0
+        R NIL)
+    
+    (if (or (info Out-Rgba8)
+            (info Out-Bt))
+  
+        (prinl (pack "[5] Skip: " Out-Rgba8))
+              
+        # Sort numerically (conv filename/str to num)
+        (let (Fild (filter '((F)
+                              (tail '("." "p" "p" "m" "." "l") (chop F)))
+                            (dir *dir-l))
+              Sord (by '((S)
+                          (format (pack (car (split (chop S) ".")))))
+                        sort Fild))
+        
+          # Hmm, have sord push str into another list and double loop?
+        
+          # Write RGBA8
+          (out Out-Rgba8       
+        
+            (for File Sord
+                
+              (push 'R
+                    (cons (format (pack (car (split (chop File) "."))))
+                          Off))
+              
+              (let (In-Nm (pack *dir-l "/" File)
+                    Data (car (str (in In-Nm (till NIL T)))))
+                    
+                # Write list of RGBA bytes
+                (eval (append '(wr) Data))
+                
+                # Shader needs texel offset, not byte offset
+                # so pass dims of tex
+                # byte off = x * y * 4 (rgba)
+                (inc 'Off *sz-t)
+                
+                (out NIL
+                  (prinl (pack "[5] PPMs -> BIN: "
+                                In-Nm " "
+                                Off))))))
+                                
+          # Write binary tree
+          (off B)
+          (balance 'B (flip R))
+          (out Out-Idx (pretty B))
+          (out Out-Idx-Bin (pr B))))))

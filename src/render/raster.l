@@ -84,13 +84,18 @@
     To load even faster, bin + memcpy
   }#  
   
-  (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
-        Path-Gly-Def (pack *path-gly "l/32.ppm.l"))
-    (for Code 255
-      (let Path-Glyph (pack *path-gly "l/" Code ".ppm.l")
-        (inc 'Ptr (load-gly (if (info Path-Glyph)
-                                Path-Glyph
-                                Path-Gly-Def)))))))
+  (if 'load-rgba8-bin
+      
+      (prog
+        (load-rgba8-bin (pack *path-gly "l/" "DejaVuSansMono.rgba8.bin")))
+  
+      (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
+            Path-Gly-Def (pack *path-gly "l/32.ppm.l"))
+        (for Code 255
+          (let Path-Glyph (pack *path-gly "l/" Code ".ppm.l")
+            (inc 'Ptr (load-gly (if (info Path-Glyph)
+                                    Path-Glyph
+                                    Path-Gly-Def))))))))
 
 
 (de load-gly (Path)
@@ -98,6 +103,18 @@
                         (till NIL T))))
     (eval (append '(struct Ptr N) Data))
     (length Data)))
+    
+    
+(de load-rgba8-bin (Path)
+  (let Dst (get '*buffer-objects 'texture-glyphs 'gl~ptr)
+    (let? Sz (car (info Path))
+      (let (Fd (open Path T)
+            Src (native "@" "mmap" 'N 0 Sz (| PROT-READ PROT-WRITE) (| MAP-PRIVATE) Fd 0))
+        #(println Dst Src Path Sz Fd)
+        (native "@" "memcpy" NIL Dst Src Sz)
+        (native "@" "munmap" Src Sz)
+        (close Fd)
+        Sz))))
 
 
 (de init-di ()

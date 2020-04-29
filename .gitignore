@@ -18,3 +18,5 @@ tramp
 *.o
 
 /glyphs/
+
+*.bin

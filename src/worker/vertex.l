@@ -50,11 +50,9 @@
 
   (when Ch
     (=: ch (char Ch)))
-    
-  (=: off-texel (* (- (: ch) 1)
-                   (car *dims-tex-node)
-                   (cadr *dims-tex-node)))    
-        
+  
+  (=: off-texel (cdr (lup *idx-met (: ch))))
+  
   (=: met (get *metrics (: ch)))
   
   (unless (: met)
@@ -64,6 +62,10 @@
 (dm upd-ch> (Ch)
 
   # This is updating pos
+  
+  # Should not take CH
+  
+  # RENAME THIS
 
   (when Ch
     (=: ch (char Ch)))

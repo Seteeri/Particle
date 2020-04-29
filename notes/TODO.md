@@ -52,16 +52,11 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     +-------+-------------------+--------------------+---------------+
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
-    
-  * Optimize MSDFGEN
-    * Precalc everything
-  * Lazy load glyphs
-    * Collaboritive effort [Later]
-      * Render loads tex
-      * Gly loads metrics
-      * Do later when msgs are refactored
-    * Load ASCII initially
-    * Convert glyphs into db later...
+  
+  * Put glyphs in binary form in single file [Done]
+    * Mmap and memcpy
+    * Worker should load idx file
+    * Use for lookup in upd-ch/met>
   * Implement database
     * Load db files into memory/tmpfs
     * Convert +Particle/+Vertex into db
@@ -75,12 +70,10 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * parts.db
   * Need better reset for testing
   * Use mouse cursor for pointer symbol?
+    * Or greek symbols
     
   * Later?
     * Refactor/fix cmd-del
-    * Refactor eval
-      * Place output in sublist
-      * Depends on the user really
     * Support cons
       * Place cons on newline
       * Or allow cons on same line, but if Cdr changes, move to newline
@@ -95,6 +88,12 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Draw newline when by itself
       * When packed do not draw it - make opt?
       * (in "file" (till NIL))
+    * Lazy load glyphs [Later]
+      * Do later when msgs are refactored
+      * Render loads tex
+      * Gly loads metrics
+      * Load ASCII initially
+      * Convert glyphs into db?    
     
   * Bindings []
     * Improve discoverability - user sees it immediately

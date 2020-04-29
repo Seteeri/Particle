@@ -66,3 +66,7 @@ https://news.ycombinator.com/item?id=6498878
 
 
 http://web.archive.org/web/20090416033922/http://stevenf.tumblr.com/post/94591835/warning-a-long-rambly-exploration-of-the-state
+
+
+Smalltalk
+https://news.ycombinator.com/item?id=14333157

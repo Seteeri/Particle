@@ -90,11 +90,12 @@
   
   (setq *i-proc 1
         *metrics (load-metrics (pack *path-gly "m/"))
+        *idx-met (in (pack *path-gly "l/DejaVuSansMono.idx.bin") (rd))
         *ipc (new '(ipc~+IPC)
                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")
                          (list *uds-rend T handle-render "RENDER"))))
-                          
+                         
   (reg-conns *ipc (pack NAME-PID "-" *i-proc))
   
   ##################################

@@ -39,7 +39,7 @@
           (new '(+Params-Buffer)
                 'texture-glyphs
                 gl~TEXTURE-BUFFER 
-                (/ 134217728 4)
+                (* 128 1024 1024)
                 -1 -1
                 'rgba8)
           
