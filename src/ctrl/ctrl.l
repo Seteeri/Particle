@@ -16,7 +16,7 @@
 
 
 (load (pack (pwd) "/src/misc.l"))
-(mapc 'load-cwd
+(mapc 'ld-cwd
       (list "/src/c/mathc.l"
             "/src/c/epoll.l"
             "/src/c/li.l"

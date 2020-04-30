@@ -84,28 +84,28 @@
     To load even faster, bin + memcpy
   }#  
   
-  (if 'load-rgba8-bin
+  (if 'ld-rgba8-bin
       
       (prog
-        (load-rgba8-bin (pack *path-gly "l/" "DejaVuSansMono.rgba8.bin")))
+        (ld-rgba8-bin (pack *path-gly "l/" "DejaVuSansMono.rgba8.bin")))
   
       (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
             Path-Gly-Def (pack *path-gly "l/32.ppm.l"))
         (for Code 255
           (let Path-Glyph (pack *path-gly "l/" Code ".ppm.l")
-            (inc 'Ptr (load-gly (if (info Path-Glyph)
+            (inc 'Ptr (ld-gly (if (info Path-Glyph)
                                     Path-Glyph
                                     Path-Gly-Def))))))))
 
 
-(de load-gly (Path)
+(de ld-gly (Path)
   (let Data (car (str (in Path
                         (till NIL T))))
     (eval (append '(struct Ptr N) Data))
     (length Data)))
     
     
-(de load-rgba8-bin (Path)
+(de ld-rgba8-bin (Path)
   (let Dst (get '*buffer-objects 'texture-glyphs 'gl~ptr)
     (let? Sz (car (info Path))
       (let (Fd (open Path T)

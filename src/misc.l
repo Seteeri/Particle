@@ -12,7 +12,7 @@
 (de defcwdpath (Sym Path)
   (def Sym (pack *cwd Path)))
 
-(de load-cwd (Path)
+(de ld-cwd (Path)
   (load (pack *cwd Path)))
   
 (de deftmppath (Sym Path)

@@ -14,7 +14,7 @@
 # (scl 6)
 
 (load (pack (pwd) "/src/misc.l"))
-(mapc 'load-cwd
+(mapc 'ld-cwd
       (list "/src/c/mathc.l"
             "/src/c/epoll.l"
             "/src/c/li.l"
@@ -89,7 +89,7 @@
 (de init-worker ()
   
   (setq *i-proc 1
-        *idx-uni-met (load-idx-uni-met)
+        *idx-uni-met (ld-idx-uni-met)
         *idx-uni-tex (in (pack *path-gly "l/DejaVuSansMono.idx.bin") (rd))
         *ipc (new '(ipc~+IPC)
                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
@@ -160,8 +160,8 @@
   (loop (ipc~poll> *ipc -1)))
 
 
-(de load-metrics (Path)
-  #*metrics (load-metrics (pack *path-gly "m/"))
+(de ld-metrics (Path)
+  #*metrics (ld-metrics (pack *path-gly "m/"))
   (let (Metrics ()
         Path-M-Def (pack Path "32-m.v.l"))
     (for Code 255 
@@ -177,7 +177,7 @@
     (flip Metrics)))
 
     
-(de load-idx-uni-met ()
+(de ld-idx-uni-met ()
 
   # Must update scale
   # unless scale is done during gen
