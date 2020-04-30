@@ -9,7 +9,7 @@ information as they moved through the computer. What did they look like?
 
 Particle is a personal knowledge manager (aka PIM) implemented as an outliner through a presentation-based lisp-structured UI.
 
-It is closest in concept to an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented (or symbolic, if you will) interface.
+It is closest in concept to an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented (or symbolic, if you will) interface. It is not, however, a visual programming language.
 
 The idea is to take the extensibility of Emacs combined with the dynamics ahd cohesion of past Lisp Machines, Oberon and others, and instead of being based solely around text, evolve that concept to arbitrary objects, based upon a fundamental data concept and thus language, to create a uniform and consistent interface taking advantage of modern hardware features such as GPUs and parallelism.
 

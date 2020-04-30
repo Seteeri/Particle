@@ -57,7 +57,11 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Mmap and memcpy [Done]
     * Worker should load idx file [Done]
     * Use for lookup in upd-ch/met> [Done]
-    * Load metrics on demand?
+  * Refactor/optimize metrics
+    * Compact into single binary
+    * Load entire range...?
+    * Lazy load texel-offset and metrics?
+      * Need db
   * Implement database
     * Load db files into memory/tmpfs
     * Convert +Particle/+Vertex into db
@@ -94,7 +98,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Render loads tex
       * Gly loads metrics
       * Load ASCII initially
-      * Convert glyphs into db?    
+      * Convert glyphs into db?
     
   * Bindings []
     * Improve discoverability - user sees it immediately

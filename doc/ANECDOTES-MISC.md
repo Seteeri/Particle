@@ -70,3 +70,6 @@ http://web.archive.org/web/20090416033922/http://stevenf.tumblr.com/post/9459183
 
 Smalltalk
 https://news.ycombinator.com/item?id=14333157
+
+Maybe Visual Programming is The Answer. Maybe Not 
+https://news.ycombinator.com/item?id=22978454
