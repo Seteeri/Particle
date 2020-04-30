@@ -17,7 +17,7 @@
 
   (init-buffs-rast)
 
-  (init-glys)
+  (ld-glys-bin (pack *path-gly "l/" "DejaVuSansMono.rgba8.bin"))
   (init-di)
   (init-verts)
   (init-el)
@@ -66,36 +66,14 @@
                          (get Buffer 'gl~buffer)))))))
 
 
-(de init-glys ()
-  #{
-    Method 2
-    
-      (mapc '((B)
-                (byte (+ Ptr Off) B)
-                (inc 'Off))
-            Data))))))
-
-    Method 3
-
-      (for B Data
-        (struct (+ Ptr Off) 'N (cons B 1))
-        (inc 'Off)))))))
-        
-    To load even faster, bin + memcpy
-  }#  
-  
-  (if 'ld-rgba8-bin
-      
-      (prog
-        (ld-rgba8-bin (pack *path-gly "l/" "DejaVuSansMono.rgba8.bin")))
-  
-      (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
-            Path-Gly-Def (pack *path-gly "l/32.ppm.l"))
-        (for Code 255
-          (let Path-Glyph (pack *path-gly "l/" Code ".ppm.l")
-            (inc 'Ptr (ld-gly (if (info Path-Glyph)
-                                    Path-Glyph
-                                    Path-Gly-Def))))))))
+(de ld-glys ()
+  (let (Ptr (get '*buffer-objects 'texture-glyphs 'gl~ptr)
+        Path-Gly-Def (pack *path-gly "l/32.ppm.l"))
+    (for Code 255
+      (let Path-Glyph (pack *path-gly "l/" Code ".ppm.l")
+        (inc 'Ptr (ld-gly (if (info Path-Glyph)
+                                Path-Glyph
+                                Path-Gly-Def)))))))
 
 
 (de ld-gly (Path)
@@ -104,8 +82,8 @@
     (eval (append '(struct Ptr N) Data))
     (length Data)))
     
-    
-(de ld-rgba8-bin (Path)
+
+(de ld-glys-bin (Path)
   (let Dst (get '*buffer-objects 'texture-glyphs 'gl~ptr)
     (let? Sz (car (info Path))
       (let (Fd (open Path T)
