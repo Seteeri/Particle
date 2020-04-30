@@ -62,6 +62,10 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Load entire range...?
     * Lazy load texel-offset and metrics?
       * Need db
+  * Move msdfgen.l to fonts
+
+  * Refactor/fix cmd-del
+      
   * Implement database
     * Load db files into memory/tmpfs
     * Convert +Particle/+Vertex into db
@@ -78,7 +82,6 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Or greek symbols
     
   * Later?
-    * Refactor/fix cmd-del
     * Support cons
       * Place cons on newline
       * Or allow cons on same line, but if Cdr changes, move to newline

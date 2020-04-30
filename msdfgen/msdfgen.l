@@ -80,12 +80,13 @@
        
   # Run
   
+  # gen individual, then write to one single bin file
   #(calc-m)
+  (conv-ms-bin) # pass list in
   
-  (conv-ppm-lisp)
-  
-  # write to one single bin file
-  (conv-ppms-bin)
+  # gen individual, then write to one single bin file
+  #(conv-ppm-lisp)
+  (conv-ppms-bin) # pass list in
     
   T)
 
@@ -381,22 +382,23 @@
   
   (let (Out-Rgba8 (pack *dir-l "/" *nm-font ".rgba8.bin")
         Out-Idx (pack *dir-l "/" *nm-font ".idx.l")
-        Out-Idx-Bin (pack *dir-l "/" *nm-font ".idx.bin")
-        Off 0
-        R NIL)
+        Out-Idx-Bin (pack *dir-l "/" *nm-font ".idx.bin"))
     
     (if (or (info Out-Rgba8)
-            (info Out-Bt))
+            (info Out-Idx)
+            (info Out-Idx-Bin))
   
-        (prinl (pack "[5] Skip: " Out-Rgba8))
+        (prinl 'conv-ppms-bin " Skip")
               
         # Sort numerically (conv filename/str to num)
         (let (Fild (filter '((F)
-                              (tail '("." "p" "p" "m" "." "l") (chop F)))
+                              (tail (chop ".ppm.l") (chop F)))
                             (dir *dir-l))
               Sord (by '((S)
                           (format (pack (car (split (chop S) ".")))))
-                        sort Fild))
+                        sort Fild)
+              Off 0
+              R NIL)
         
           # Hmm, have sord push str into another list and double loop?
         
@@ -425,6 +427,49 @@
                                 In-Nm " "
                                 Off))))))
                                 
+          # Write binary tree
+          (off B)
+          (balance 'B (flip R))
+          (out Out-Idx (pretty B))
+          (out Out-Idx-Bin (pr B))))))
+
+          
+(de conv-ms-bin ()
+
+  # Read each metrics file into a binary tree
+  # Write binary tree to binary
+
+  (let (Out-Idx (pack *dir-m "/" *nm-font ".idx.l")
+        Out-Idx-Bin (pack *dir-m "/" *nm-font ".idx.bin"))
+    
+    (if (or (info Out-Idx)
+            (info Out-Idx-Bin))
+  
+        (prinl 'conv-ms-bin " Skip")
+
+        # Sort numerically (conv filename/str to num)
+        (let (Fild (filter '((F)
+                              (tail (chop "-m.v.l") (chop F)))
+                            (dir *dir-m))
+              Sord (by '((S)
+                          (format (pack (car (split (chop S) "-")))))
+                        sort Fild)
+              R NIL)
+                
+          (for File Sord
+                                  
+            (let (In-Nm (pack *dir-m "/" File)
+                  Data (car (str (in In-Nm (till NIL T)))))
+                  
+              # Create the class?
+              (push 'R
+                    (cons (format (pack (car (split (chop File) "-"))))
+                          Data))
+                            
+              (out NIL
+                (prinl (pack "[5] METRICS -> BIN: "
+                              In-Nm " ")))))
+                              
           # Write binary tree
           (off B)
           (balance 'B (flip R))

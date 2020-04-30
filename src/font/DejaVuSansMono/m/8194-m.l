@@ -1,1 +1,0 @@
-((translate 10638 10638) (scale . 94000000) (range . 21277) (advance . 19265625) (code . 8194))

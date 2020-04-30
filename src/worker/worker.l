@@ -89,8 +89,8 @@
 (de init-worker ()
   
   (setq *i-proc 1
-        *metrics (load-metrics (pack *path-gly "m/"))
-        *idx-met (in (pack *path-gly "l/DejaVuSansMono.idx.bin") (rd))
+        *idx-uni-met (load-idx-uni-met)
+        *idx-uni-tex (in (pack *path-gly "l/DejaVuSansMono.idx.bin") (rd))
         *ipc (new '(ipc~+IPC)
                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")
@@ -161,6 +161,7 @@
 
 
 (de load-metrics (Path)
+  #*metrics (load-metrics (pack *path-gly "m/"))
   (let (Metrics ()
         Path-M-Def (pack Path "32-m.v.l"))
     (for Code 255 
@@ -174,6 +175,28 @@
                 (calc-sca-f> Met))
               Met)))
     (flip Metrics)))
+
+    
+(de load-idx-uni-met ()
+
+  # Must update scale
+  # unless scale is done during gen
+  # for now, keep dynamic
+
+  # HEAP:
+  # B-Tree
+  # Objs
+  # 
+  # Should interleave by looping and creating simul.
+  # This would require building b-tree here
+  
+  (let B (in (pack *path-gly "m/DejaVuSansMono.idx.bin") (rd))
+    (for M (idx 'B)
+      (let O (new '(+Metrics))
+        (putl O (cdr M))
+        (calc-sca-f> O)
+        (con M O)))
+    B))
 
     
 (de gen-def-parts ()

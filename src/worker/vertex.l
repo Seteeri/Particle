@@ -51,12 +51,12 @@
   (when Ch
     (=: ch (char Ch)))
   
-  (=: off-texel (cdr (lup *idx-met (: ch))))
+  (=: off-texel (cdr (lup *idx-uni-tex (: ch))))
   
   (unless (: off-texel)
     (prinl-info "upd-met>" (pack "Unable to find off-texel: " (: ch))))
   
-  (=: met (get *metrics (: ch)))
+  (=: met (cdr (lup *idx-uni-met (: ch))))
   
   (unless (: met)
     (prinl-info "upd-met>" (pack "Unable to find metrics: " (: ch)))))

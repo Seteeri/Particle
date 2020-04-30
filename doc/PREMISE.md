@@ -98,6 +98,10 @@ The consistency of PicoLisp (LISP) makes it easy to reason about the system by c
 
 The relationship to other objects at the presentation level is the same as objects to the underlying data model, and the data model's relationship to other objects is the same at the presentation level.
 
+The other issue is how to draw graphs and trees (which are mathemtically speaking, a subset of), which is an NP-complete problem. Node editors have shown that once a graph or tree gets to a certain size it can become unweildly and unmanageable (aka sphagehtti code). The same issue has arisen with graphing programs. 
+
+With Particle, it restricts the layout of trees and automatically lays out the branches. It is a balance between giving the user complete freedom to the point they easily manage to shoot themselves in the foot versus taking the gun completely away from them. However, should the user want to be able to arbitrarily layout objects, it can be done programmatically.
+
 ## Origins
 
 Originally, Particle began in Python, then moved to Common Lisp, at which point I encountered CLIM, which is a descendant of the Symbolics Genera-based Lisp Machine's Dynamic Windows/Lisp Listener. Its central feature is the concept of presentation types, commands and transformers. 
