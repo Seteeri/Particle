@@ -65,6 +65,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Load db files into memory/tmpfs
     * Convert +Particle/+Vertex into db
       * This will allow linking particles
+        * The Ext sym name is like universal id/ptr
       * Refactor Particle into subclass of Entity
       * Can test multiple workers pull/push database
       * Workers send serialized data directly to raster
@@ -72,27 +73,25 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Store classes in separate files?
       * verts.db
       * parts.db
-  * Need better reset for testing
-  * Use mouse cursor for pointer symbol?
-    * Or greek symbols
-  
+      
+  * Improve testing environment
+    * Have processes run independently
+        
   * Generate undefined glyph - 0
   
-  * Later?
-    * Support cons
-      * Place cons on newline
-      * Or allow cons on same line, but if Cdr changes, move to newline
-      * Need fn for this    
+  * Worker
+    * Play with eval more
+      * Support cons
+        * Place cons on newline
+        * Or allow cons on same line, but if Cdr changes, move to newline
+        * Need fn for this    
     * Refactor point
     * Refactor ops into methods
     * Refactor line fns
-    * Force draw after creating char
-    * Refactor socket - set err instead of propogating
     * Implement cmds Q/E : start/end of line/list
     * Draw ctrl characters: ^M, ^J, ^I
       * Draw newline when by itself
       * When packed do not draw it - make opt?
-      * (in "file" (till NIL))
     * Lazy load glyphs [Later]
       * Do later when msgs are refactored
       * Render loads tex
@@ -101,25 +100,40 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Load ASCII initially
       * Convert glyphs into db
     
+  * Refactor socket - set err instead of propogating
+    
+  * Colors follow HTML links
+    * Symbols are blue
+      * Unvisited is blue
+      * Visited is purple aka eval'd
+    * Strings are just grey/white/black (since bg is black)
+    
   * Bindings []
+    * Create particle for symbol
     * Improve discoverability - user sees it immediately
       * Once adv enough, user can remove it from default setup ;)
-    * Group commands into diff syms
-      * Majority is ascii/str keys
-    * Either show *bindinds-key or *binds directly
-      * Show more aesthetic one and use fn to modify
-      * Store key syms and fn syms
-        * Get val when called
+    * Group commands
+      * Majority is ascii/str keys which typically doesn't change
+    * Either show input or output
+      * Code or data form
+      * After change, eval it
+        * For "button", create a list somewhere: (update bindings to *bindings-key)
+        * User clicks it by eval'ing it
+      * Ideal is to show symbols, instead of their val (num)
       
   * Cam
     * Camera needs to move with content like when entering a newline
       * Requires unproject to test if coord is in the viewport
-      * When a new item is entered, check its bnds against the view bounds    
+      * When a new item is entered, check its bnds against the view bounds
+    * Refactor math class
     
   * Log/Undo System
-    * Log commands    
+    * Log commands
+    * Undo later?
     
   * Why is xkb in worker? Should be in ctrl []
+  * Use mouse cursor for pointer symbol?
+    * Or greek symbols
     
   ----------------
     
