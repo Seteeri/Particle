@@ -1,16 +1,7 @@
-# Node tex dims are all 96x96
-(def '*dims-tex-node (list 96 96))
-
-(def '*color-vert-default (list 0.5137255 0.5803922 0.60784316 1.0 
-                                0.5137255 0.5803922 0.60784316 1.0
-				                        0.5137255 0.5803922 0.60784316 1.0 
-                                0.5137255 0.5803922 0.60784316 1.0))
-
-
 (def 'SZ-VERT (+ 8 1 12 12 12 64 64 64 4))
 (def 'SZ-GL-VERT 208)
 
-# Reuse across all vertices for txfer
+# Reuse across all vertices for serialization
 (def '*ptr-vert (native "@" "malloc" 'N SZ-VERT))
 
 
@@ -72,12 +63,17 @@
         
          
 (dm upd-mod-mat> ()
-  (=: mm (mat4-mul (mat4-translation (: pos))
-                   (mat4-mul (mat4-rotation-z (get (: rota) 3))
-                             (mat4-mul (mat4-rotation-y (get (: rota) 2))
-                                       (mat4-mul (mat4-rotation-x (get (: rota) 1))
-                                                 (mat4-scaling (: sca))))))))
-         
+  (=: mm
+      (mat4-mul
+        (mat4-translation (: pos))
+        (mat4-mul
+          (mat4-rotation-z (caddr (: rota)))
+          (mat4-mul
+            (mat4-rotation-y (cadr (: rota)))
+            (mat4-mul
+              (mat4-rotation-x (car (: rota)))
+              (mat4-scaling (: sca))))))))
+
 
 (de wr-mat-to-ptr (M Ptr)
   (struct Ptr 'N (cons -1.0 M)))
@@ -126,18 +122,16 @@
     (=: off-texel (car Off-Texel))))
         
         
-################################################################################
-
 (de get-vert-ix (Off)
   (+ (/ Off SZ-GL-VERT) 1))
 
+  
 (de get-vert-off (Cnt)
   (* (- Cnt 1) SZ-GL-VERT)) # use gl size
 
 
 (dm cpy-to-ptr> (Ptr)
-  (wr-ptr> This Ptr)
-  SZ-VERT)
+  (wr-ptr> This Ptr))
 
 
 (dm cpy-to-obj> (Ptr)

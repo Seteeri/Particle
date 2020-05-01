@@ -84,6 +84,11 @@
 (def '*ptrs) # List of pointers
 
 (def '*cur (list 0.0 0.0 0.0)) # for drawing. not literally drawn
+(def '*color-vert-def
+  (list 0.5137255 0.5803922 0.60784316 1.0 
+        0.5137255 0.5803922 0.60784316 1.0
+        0.5137255 0.5803922 0.60784316 1.0 
+        0.5137255 0.5803922 0.60784316 1.0))
 
 
 (de init-worker ()
@@ -143,7 +148,7 @@
           (new '(+Vertex)
                (get-vert-off I)
                "@"
-               *color-vert-default
+               *color-vert-def
                (need 3 0.0)
                (need 3 0.0)
                (need 3 *sca-vert))))
