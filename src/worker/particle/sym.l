@@ -162,18 +162,22 @@
     (for Vert (: verts)
   
       (with Vert
-        (=: pos *cur)
-        (upd-ch> Vert))
         
-      (upd-mod-mat> Vert)
-      (cmd-upd-vert *ipc Vert)
+        (when (: dirt)
+        
+          (=: pos *cur)
+          (upd-ch> Vert)
+          (upd-mod-mat> Vert)
+          (cmd-upd-vert *ipc Vert)
+          
+          (off (:: dirt)))
       
-      (if (or (= (get Vert 'val) "^M")
-              (= (get Vert 'val) "^J"))    
-          (setq X-B (max X-B (car *cur))
-                Y-B (min Y-B (cadr *cur))
-                *cur (list X (- (cadr *cur) *adv-vert-2)))
-          (setq *cur (list (+ (car *cur) *adv-vert) (cadr *cur)))))
+        (if (or (= (: val) "^M")
+                (= (: val) "^J"))
+            (setq X-B (max X-B (car *cur))
+                  Y-B (min Y-B (cadr *cur))
+                  *cur (list X (- (cadr *cur) *adv-vert-2)))
+            (setq *cur (list (+ (car *cur) *adv-vert) (cadr *cur))))))
       
     (=: ori (ori> This))
 

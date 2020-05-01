@@ -61,17 +61,20 @@
         ((sym? Any)       *sol-violet)))
 
 
-(def '*char-dot (char 183))
+(def '*char-dot (char (hex "00B7")))
+#(def '*char-dot (char (hex "2022")))
+#(def '*char-dot (char (hex "2219")))
+#(def '*char-dot (char (hex "25CF")))
 
 (de gen-vert-dot (Col)
   (gen-vert-glyph *char-dot 
-              (if Col @ *sol-base-0)))
+                  (if Col @ *sol-base-0)))
 
 
 (de gen-vert-glyph (Char Col Val)
   (let (Vert (pop '*verts)
         (R G B) Col)
-    (inc '*cnt-v)   
+    (inc '*cnt-v)
     (upd-met> Vert Char)
     (with Vert
       (=: val Val)
@@ -79,6 +82,7 @@
                      R G B 1.0
                      R G B 1.0
                      R G B 1.0)))
+    (put Vert 'dirt T)
     Vert))
 
 

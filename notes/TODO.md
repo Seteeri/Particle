@@ -75,7 +75,9 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
   * Need better reset for testing
   * Use mouse cursor for pointer symbol?
     * Or greek symbols
-    
+  
+  * Generate undefined glyph - 0
+  
   * Later?
     * Support cons
       * Place cons on newline

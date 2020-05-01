@@ -58,7 +58,10 @@
 
   # date/time
   (=: dat (date))
-  (=: tim (time)))
+  (=: tim (time))
+  
+  # whether to redraw
+  (=: dirt T))
 
 
 (dm first-vert> () (car (: verts)))
@@ -134,14 +137,18 @@
   (for Vert (: verts)
   
     (with Vert
-      (=: pos *cur))
+  
+      (when (: dirt)
     
-    (upd-ch> Vert)
-    (upd-mod-mat> Vert)
-    (cmd-upd-vert *ipc Vert)
+        (=: pos *cur)      
+        (upd-ch> Vert)
+        (upd-mod-mat> Vert)
+        (cmd-upd-vert *ipc Vert)
+        
+        (off (:: dirt))))
 
     (setq *cur (list (+ (car *cur) *adv-vert)
-                     (cadr *cur))))
+                    (cadr *cur))))
                     
   (=: ori (ori> This))
   
