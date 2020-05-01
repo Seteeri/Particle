@@ -60,7 +60,11 @@
 (def '*adv-vert    (*/ *adv-glyph *sca-vert 1.0))
 (def '*adv-vert-2  (+ *adv-vert *adv-vert))
 (def '*adv-vert-3  (+ *adv-vert-2 *adv-vert))
-
+(def '*color-vert-def
+  (list 0.5137255 0.5803922 0.60784316 1.0 
+        0.5137255 0.5803922 0.60784316 1.0
+        0.5137255 0.5803922 0.60784316 1.0 
+        0.5137255 0.5803922 0.60784316 1.0))
 (def 'KEY-REPEAT 2)
 (def '*sublist-space-y 2.0)
 
@@ -84,11 +88,6 @@
 (def '*ptrs) # List of pointers
 
 (def '*cur (list 0.0 0.0 0.0)) # for drawing. not literally drawn
-(def '*color-vert-def
-  (list 0.5137255 0.5803922 0.60784316 1.0 
-        0.5137255 0.5803922 0.60784316 1.0
-        0.5137255 0.5803922 0.60784316 1.0 
-        0.5137255 0.5803922 0.60784316 1.0))
 
 
 (de init-worker ()
@@ -125,24 +124,8 @@
   
   ##################################
   
-  (gc 128)
-
-  #{
-  (let (A NIL
-        B NIL
-        C 0
-        Vert NIL)
-    (in "bin/verts.bin"          
-      (while (and (setq Cls (rd))
-                  (setq Props (rd))
-                  (< C *verts-max))
-        (putl (setq Vert (box Cls)) Props)
-        (inc 'C)
-        (push '*verts Vert)))
-
-    (prinl-info "init-worker" (pack "Loaded " C " verts of " *verts-max)))
-  }#
-  
+  (gc 64)
+    
   (for I *verts-max
     (push '*verts
           (new '(+Vertex)
@@ -153,6 +136,9 @@
                (need 3 0.0)
                (need 3 *sca-vert))))
   (setq *verts (flip *verts))
+  
+  # Pack the verts...
+  (gc)
   
   (when NIL (run-tests))
 
