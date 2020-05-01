@@ -89,8 +89,8 @@
 (de init-worker ()
   
   (setq *i-proc 1
-        *idx-uni-met (ld-idx-uni-met)
-        *idx-uni-tex (in (pack *path-gly "l/DejaVuSansMono.idx.bin") (rd))
+        *idx-uni-met (ld-idx-uni-met (pack *path-gly "DejaVuSansMono.met.idx.bin"))
+        *idx-uni-tex (in (pack *path-gly "DejaVuSansMono.rgba8.idx.bin") (rd))
         *ipc (new '(ipc~+IPC)
                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")
@@ -177,7 +177,7 @@
     (flip Metrics)))
 
     
-(de ld-idx-uni-met ()
+(de ld-idx-uni-met (File)
 
   # Must update scale
   # unless scale is done during gen
@@ -190,7 +190,7 @@
   # Should interleave by looping and creating simul.
   # This would require building b-tree here
   
-  (let B (in (pack *path-gly "m/DejaVuSansMono.idx.bin") (rd))
+  (let B (in File (rd))
     (for M (idx 'B)
       (let O (new '(+Metrics))
         (putl O (cdr M))

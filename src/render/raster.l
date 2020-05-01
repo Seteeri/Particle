@@ -17,7 +17,7 @@
 
   (init-buffs-rast)
 
-  (ld-glys-bin (pack *path-gly "l/" "DejaVuSansMono.rgba8.bin"))
+  (ld-glys-bin (pack *path-gly "DejaVuSansMono.rgba8.bin"))
   (init-di)
   (init-verts)
   (init-el)
