@@ -23,7 +23,7 @@
 
   # Move below into perspective and ortho classes
   
-  (=: fov         (if Fov @ (to-radians 45.0)))
+  (=: fov         (if Fov @ (to-rads 45.0)))
   (=: near        (if Near @ 0.1))
   (=: far         (if Far @ 100.0))
         
