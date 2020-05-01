@@ -47,37 +47,6 @@
 (def '*delay-int 40)  # ms
 
 
-#{
-(de init-verts ()
-
-  (prinl-info "init-verts" (pack "Making " *verts-max " verts..."))
-
-  (let Verts ()
-    (for I *verts-max
-      (let Vert (new '(+Vertex)
-                     (get-vert-off I)
-                     "@"
-                     *color-vert-default
-                     (list 0.0 0.0 0.0) # pos
-                     (list 0.0 0.0 0.0) # rot=0, sca=global scale
-                     (need 3 *sca-vert))
-        (push 'Verts Vert)))
-
-    (setq Verts (flip Verts))
-
-    (prinl-info "init-verts" "Finish making verts")
-
-    (unless (info "bin/verts.bin")
-      (prinl-info "init-verts" "Writing ./bin/verts.bin")
-      (out "bin/verts.bin"
-        (for Vert Verts
-          (pr (val Vert) (getl Vert))))
-      (prinl-info "init-verts" "Wrote ./bin/verts.bin"))
-
-     Verts))
-}#
-
-
 (de init-ctrl ()
 
   (setq *projview (new '(+Projview) *width *height 'o))

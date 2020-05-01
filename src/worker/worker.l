@@ -144,8 +144,8 @@
                (get-vert-off I)
                "@"
                *color-vert-default
-               (list 0.0 0.0 0.0) # pos
-               (list 0.0 0.0 0.0) # rot=0, sca=global scale
+               (need 3 0.0)
+               (need 3 0.0)
                (need 3 *sca-vert))))
   (setq *verts (flip *verts))
   

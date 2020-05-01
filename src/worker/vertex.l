@@ -22,10 +22,10 @@
        Rota
        Sca)
 
-  # Offset into render gl buffer
+  # Ptr offset in render gl buffer
   (=: off-gl Off-Gl)
 
-  (=: ch Ch)
+  (=: ch (char Ch))
   
   # POSS:
   # Either keep these here or move to model matrix...
@@ -41,8 +41,8 @@
   (=: off-texel)
   
   (when Ch
-    (upd-ch> This Ch)
     (upd-met> This)
+    (upd-mod> This)
     (upd-mod-mat> This)))
 
 
@@ -59,25 +59,16 @@
   (=: met (cdr (lup *idx-uni-met (: ch))))
   
   (unless (: met)
-    (prinl-info "upd-met>" (pack "Unable to find metrics: " (: ch)))))
+    (prinl-info "upd-met>" (pack "Unable to find metrics: " (: ch))))
+    
+  (=: uv (get (: met) 'uv)))
 
     
-(dm upd-ch> (Ch)
-
-  # This is updating pos
-  
-  # Should not take CH
-  
-  # RENAME THIS
-
-  (when Ch
-    (=: ch (char Ch)))
-                   
+(dm upd-mod> ()
   (let? Met (: met)
-
-    (=: uv (get Met 'uv))
     (=: pos (pos> Met (: pos)))
-    (=: sca (sca> Met))))
+    (=: sca (sca> Met))
+    (upd-mod-mat> This)))
         
          
 (dm upd-mod-mat> ()

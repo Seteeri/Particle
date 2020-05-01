@@ -166,8 +166,7 @@
         (when (: dirt)
         
           (=: pos *cur)
-          (upd-ch> Vert)
-          (upd-mod-mat> Vert)
+          (upd-mod> Vert)
           (cmd-upd-vert *ipc Vert)
           
           (off (:: dirt)))
