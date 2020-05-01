@@ -53,16 +53,11 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
   
-  * Put glyphs in binary form in single file [Done]
+  * Put metrics/glyphs in binary form in single file [Done]
     * Mmap and memcpy [Done]
     * Worker should load idx file [Done]
     * Use for lookup in upd-ch/met> [Done]
-  * Refactor/optimize metrics
-    * Compact into single binary
-    * Load entire range...?
-    * Lazy load texel-offset and metrics?
-      * Need db
-  * Move msdfgen.l to fonts
+  * Move msdfgen.l to fonts [Done]
 
   * Refactor/fix cmd-del
       
@@ -100,8 +95,9 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Do later when msgs are refactored
       * Render loads tex
       * Gly loads metrics
+      * Need worker to tell render to load
       * Load ASCII initially
-      * Convert glyphs into db?
+      * Convert glyphs into db
     
   * Bindings []
     * Improve discoverability - user sees it immediately

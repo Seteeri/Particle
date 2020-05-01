@@ -26,7 +26,7 @@
             "/src/c/ksd.l"
             "/src/dlst.l"
             "/src/ipc/ipc.l"
-            "/src/metrics/metrics.l"            
+            "/src/font/metrics.l"            
             "/src/prot/conn.l"
             "/src/prot/msg.l"
             "/src/prot/obj.l"

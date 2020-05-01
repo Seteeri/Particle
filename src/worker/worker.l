@@ -26,7 +26,7 @@
             "/src/prot/conn.l"
             "/src/prot/msg.l"
             "/src/prot/obj.l"
-            "/src/metrics/metrics.l"
+            "/src/font/metrics.l"
             "/src/ctrl/xkb.l"
             "/src/worker/conn.l"
             "/src/worker/cursor.l"
