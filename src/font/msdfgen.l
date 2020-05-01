@@ -381,8 +381,8 @@
   # unicode : offset
   
   (let (Out-Rgba8 (pack *dir-l "/" *nm-font ".rgba8.bin")
-        Out-Idx (pack *dir-l "/" *nm-font ".idx.l")
-        Out-Idx-Bin (pack *dir-l "/" *nm-font ".idx.bin"))
+        Out-Idx (pack *dir-l "/" *nm-font ".rgba8.idx.l")
+        Out-Idx-Bin (pack *dir-l "/" *nm-font ".rgba8.idx.bin"))
     
     (if (or (info Out-Rgba8)
             (info Out-Idx)
@@ -439,8 +439,8 @@
   # Read each metrics file into a binary tree
   # Write binary tree to binary
 
-  (let (Out-Idx (pack *dir-m "/" *nm-font ".idx.l")
-        Out-Idx-Bin (pack *dir-m "/" *nm-font ".idx.bin"))
+  (let (Out-Idx (pack *dir-m "/" *nm-font ".met.idx.l")
+        Out-Idx-Bin (pack *dir-m "/" *nm-font ".met.idx.bin"))
     
     (if (or (info Out-Idx)
             (info Out-Idx-Bin))
