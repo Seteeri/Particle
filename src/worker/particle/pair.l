@@ -104,8 +104,8 @@
 (dm lay-y> ()
   
   (check-nl> This)
-
-  (mov> This)
+  
+  (mov> This) 
   (upd-cur)
   
   (pos-cur-for-car-y> This))

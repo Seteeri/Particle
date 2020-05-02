@@ -283,3 +283,22 @@
 
         # Move to next line
         (make-line (make-str Out 'x))))))
+
+        
+(de cmd-pes ()
+  # Pack and eval-Str
+  
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))  
+  
+      (let (End Ref
+            (Sta Lst) (build-str End)
+            Str (pack Lst)
+            Out (eval (car (str Str))))
+        
+        (repl-list-str Sta End Str T)
+        (make-line (make-str Out 'x))))))

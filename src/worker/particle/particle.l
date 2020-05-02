@@ -133,24 +133,24 @@
                   
   
 (dm mov-verts> ()
-      
+
   (for Vert (: verts)
   
     (with Vert
   
       (when (: dirt)
-    
+        
         (=: pos *cur)      
-        (upd-mod> Vert)
+        (upd-mod> Vert)    
         (cmd-upd-vert *ipc Vert)
         
         (off (:: dirt))))
 
     (setq *cur (list (+ (car *cur) *adv-vert)
                     (cadr *cur))))
-                    
+                                        
   (=: ori (ori> This))
-  
+    
   (setq *cur (list (- (car *cur) *adv-vert)
                    (cadr *cur))))
 

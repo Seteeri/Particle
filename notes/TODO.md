@@ -53,7 +53,22 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
   
+  * Eval
+    * Move NIL on newline
+    * Support cons
+      * Place cons on newline
+      * Or allow cons on same line, but if Cdr changes, move to newline
+      * Need fn for this      
+  
+  * Font Rendering
+    * https://github.com/mapbox/tiny-sdf
+      * Felzenszwalb/Huttenlocher distance transform
+    * https://github.com/astiopin/webgl_fonts
+      * glyph hinting
+      * subpixel antialiasing
+    
   * Draw *binds-ops
+    * Symbols have a value and a property list
     * Instead of double space, use ptr arrow
       * Arrow should be colored diff
       * Use two symbols: <up>0 <dn>0
@@ -64,23 +79,26 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
         * For "button", create a list somewhere: (update bindings to *bindings-key)
         * User clicks it by eval'ing it
       * Ideal is to show symbols, instead of their val (num)  
-  
-  * Refactor/fix cmd-del
-            
-  * Improve testing environment
-    * Have processes run independently
-              
-  * Refactor socket - set err instead of propogating
-              
-  * Cam
-    * Camera needs to move with content like when entering a newline
-      * Requires unproject to test if coord is in the viewport
-      * When a new item is entered, check its bnds against the view bounds
-    * Refactor math class
     
   * Log/Undo System
     * Log commands
     * Undo later?
+    
+  * Cam
+    * Cap zooming
+    * Camera needs to move with content like when entering a newline
+      * Requires unproject to test if coord is in the viewport
+      * When a new item is entered, check its bnds against the view bounds
+    * Refactor math class
+  
+  * Draw grid in bg
+  
+  * Improve testing environment
+    * Have processes run independently
+              
+  * Refactor socket - set err instead of propogating    
+    
+  * Refactor/fix cmd-del    
     
   * Implement database
     * Load db files into memory/tmpfs
@@ -104,11 +122,6 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Visited is purple aka eval'd
     * Strings are just grey/white/black (since bg is black)
   * Worker
-    * Play with eval more
-      * Support cons
-        * Place cons on newline
-        * Or allow cons on same line, but if Cdr changes, move to newline
-        * Need fn for this    
     * Refactor point
     * Refactor ops into methods
     * Refactor line fns

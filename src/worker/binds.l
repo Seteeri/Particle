@@ -280,14 +280,15 @@
     ((ksd~Control-L ksd~e) T cmd-ptr-ln-last)
     # ctrl + alt + q = move to start of list  
     # ctrl + alt + e = move to end of list
-      
+    
+    # Pack + Eval-Str
+    ((ksd~Control-L ksd~g) T cmd-pes)
+    
     # Tab for eval
-    # eval-str to pass to str
-    # also need str cmd to create data
     ((ksd~Control-L ksd~Tab)            T cmd-eval-str)
     ((ksd~Alt-L     ksd~Tab)            T cmd-str)
     ((ksd~Control-L ksd~Alt-L ksd~Tab) T cmd-eval)
-    
+        
     # other cmds...
     
     ##########

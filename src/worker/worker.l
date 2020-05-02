@@ -84,7 +84,7 @@
 (def '*lsts) # Traversal history list
 (def '*start) # Current list
 (def '*line) # Current line 
-(def '*log) # List of commands (undo/history/timeline)
+(def '*log) # List of history for undo/redo
 (def '*ptrs) # List of pointers
 
 (def '*cur (list 0.0 0.0 0.0)) # for drawing. not literally drawn
@@ -203,29 +203,27 @@
     #
     # Won't need this with external syms  
   
-    #(setq *bind-ops-p (gen-part *binds-ops 'y))
-    #(lay-part-start *bind-ops-p *bind-ops-p)  
-    
-    #(pretty *binds-ops)
+    #######
+    # Binds
   
-    #{
+    (setq *bind-ops-p (gen-sym-pair '*binds-ops 'y))
+    (lay-part-start *bind-ops-p *bind-ops-p)  
+      
         
     #####
     # Log
-    
-    (setq *log (gen-sym-pair '*log 'x))
+       
+    (setq *log (gen-sym-pair '*log 'y))
         
     # Must make lines
-    (put *log 'lay 'y)    
-    (put *log 'line (new '(+Line) NIL (get *log 'b)))
-    (put *log 'b 'line (new '(+Line) *log NIL *log))
+    #(put *log 'lay 'y)    
+    #(put *log 'line (new '(+Line) NIL (get *log 'b)))
+    #(put *log 'b 'line (new '(+Line) *log NIL *log))
     
     (set-cur-x X) (set-cur-y Y)
-    (adv-cur 16.0)    
-    (lay-part-start *cmds *cmds)
-    
-    }#
-    
+    (adv-cur 24.0)
+    (lay-part-start *log *log)
+        
     ########
     # *start
 
@@ -240,7 +238,7 @@
           *master *start)
     
     (set-cur-x X) (set-cur-y Y)
-    (adv-cur 32.0)    
+    (adv-cur 48.0)    
     # Force draw for first particle since ori=cur
     (mov-verts> *start *cur)
     (lay-part-start *start *line)
@@ -273,28 +271,16 @@
     (del> (get *1 'b) T T)
 
     ############
-    
-    #(nl-cur 6.0)    
-    
-    (when T
-
-      (let Part (gen-part '(
-                            ((ksd~Return) T cmd-make-char)
-                            ((ksd~Tab)    T cmd-make-char)
-                            
-                            ((ksd~BackSpace) T cmd-del)
-                            ((ksd~Delete   ) T cmd-del)  
-                          )
-      
-                          'y)
-      
-        # (put (get Part 'b 'b) 'lay 'y)
-        # (put (get Part 'b 'b 'a 'b 'b) 'lay 'y)
         
+    (when NIL
+
+      (let Part (gen-part *binds-ops
+                          'y)
+                          
         (set-cur-x X)
         
         # Must calc bnds for lists
-        (lay-part-start Part *line)))
+        (lay-part-start Part Part)))
         
     (when NIL
     
@@ -384,7 +370,8 @@
     (unless Msg
       (disconn-conn *ipc Sock))
 
-    (test-rot-p0)))
+    #(test-rot-p0)
+    ))
 
 
 (def 'PI 3.141592)

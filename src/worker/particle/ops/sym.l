@@ -278,7 +278,7 @@
     Part))
     
     
-(de repl-list-str (Sta End Data)
+(de repl-list-str (Sta End Data Skip-Upd)
 
   # Replace list/line of strings with single string
 
@@ -303,15 +303,16 @@
     # Inclusive
     (del-rx Sta End)
     
-    # Later, move this group to undo/cmd list
-    
-    (upd-tree)
-    (mov-*1 *line)        
-        
-    # Put Ptr above new part
     (put *0 'b (get Part 'b))
-    (mov-cur-abv (get Part 'b))
-    (lay-part-start *0 *line 'skip-cdr)))
+    
+    # Later, move this group to undo/cmd list
+    (unless Skip-Upd
+      (upd-tree)
+      (mov-*1 *line)        
+      
+      # Put Ptr above new part
+      (mov-cur-abv (get Part 'b))
+      (lay-part-start *0 *line 'skip-cdr))))
     
 
 (de repl-str-list (Ref List)
