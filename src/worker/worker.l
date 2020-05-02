@@ -28,17 +28,17 @@
             "/src/prot/obj.l"
             "/src/font/metrics.l"
             "/src/ctrl/xkb.l"
+            "/src/worker/debug.l"            
             "/src/worker/conn.l"
-            "/src/worker/cursor.l"
-            "/src/worker/debug.l"
+            "/src/worker/cursor.l"   
+            "/src/worker/projview.l"
+            "/src/worker/vertex.l"            
             "/src/worker/gen-vert.l"
             "/src/worker/cmd/part.l"
             "/src/worker/cmd/str.l"
             "/src/worker/cmd/cam.l"
             "/src/worker/cmd/ptr.l"
-            "/src/worker/binds.l"   
-            "/src/worker/projview.l"
-            "/src/worker/vertex.l"
+            "/src/worker/binds.l"            
             "/src/worker/particle/particle.l"
             "/src/worker/particle/pair.l"
             "/src/worker/particle/sym.l"
@@ -103,31 +103,28 @@
   (reg-conns *ipc (pack NAME-PID "-" *i-proc))
   
   ##################################
-  # Control should send this on init
+  
   (setq *projview (req-recv-pv *ipc
                                (ipc~get-fd> *ipc "CONTROL")))
                                
   (cmd-render-pv *ipc)
+  
   ####################
   
     
   #####################
-  # Move to control
-  # Why is this here again?
+
   (setq *xkb (new '(+Xkb)))
 
-  (for Bind *binds-ascii
-    (apply '((Keys Rep Fn)
-             (let B (cons Keys (cons Rep Fn))
-              (push '*binds B)))
-           Bind))
-
-  (for Bind *binds-ops
-    (apply '((Keys Rep Fn)
-             (let B (cons Keys (cons Rep Fn))
-              (push '*binds B)))
-           Bind))
-           
+  # User can modify '*binds-* and 
+  # then call func to upd
+  (let L (sort 
+           (append
+              (list-binds-ascii *binds-latin-1)
+              (list-binds-num *binds-num)
+              (list-binds *binds-ops)))
+    (balance '*binds L))
+    
   ##################################
   
   (gc 64)
@@ -155,8 +152,8 @@
   (prinl-info "init-worker" "Starting epoll...")
 
   (loop (ipc~poll> *ipc -1)))
-
-
+  
+  
 (de ld-metrics (Path)
   #*metrics (ld-metrics (pack *path-gly "m/"))
   (let (Metrics ()
@@ -373,7 +370,7 @@
    (when NIL
 
      (let (Sock-Render (ipc~get-fd> *ipc "RENDER")
-           Vert        *vert-ptr)
+           Vert        *p0)
 
         (with Vert
           (when NIL
@@ -383,10 +380,9 @@
           (=: rota (list 0.0
                          0.0
                          (+ (get (: rota) 3) 0.017)))
-          (upd-mod-mat> Vert))
+          (upd-mod> Vert))
 
-        # FIX - use update...
-        (cmd-render-vert *ipc Vert)))))
+        (cmd-upd-vert *ipc Vert)))))
 
 
 (de dispatch-kb (Data)
@@ -410,9 +406,6 @@
         (push (:: states) (cons Keysym State))))
 
     # Check bindings and dispatch handlers
-
-    # Poss user remaps kb so another key produces a diff keysym so this would
-    # be invalid
 
     # num and caps
     #if (xkb_state_led_name_is_active(state, XKB_LED_NAME_NUM) > 0)
@@ -453,17 +446,13 @@
 
         (push 'Mods Keysym)
         (setq Mods (flip Mods))
-
-        # Find map
-        (let Map (assoc Mods *binds)
-
-          (when Map
-
-            (let (Rep (cadr Map)
-                  Fn  (cddr Map))
-
-              (unless (and (= State KEY-REPEAT) (not Rep))
-                (Fn Keysym)))))))))
+        
+        (let? V (cdr (lup *binds Mods))
+          (let (Rep (car V)
+                Fn (cadr V))
+            (unless (and (= State KEY-REPEAT) (not Rep))
+              (println Mods Fn)
+              (Fn Keysym))))))))
 
 
 (de main ()
