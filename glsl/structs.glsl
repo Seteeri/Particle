@@ -3,10 +3,8 @@
 precision mediump float;
 precision mediump samplerBuffer;
 
-// MSDF
-// UVs are the same
-// Text dims are the same
-// RGBAs are the same - likely to be utilized dynamically
+// For padding
+// https://community.khronos.org/t/ssbo-alignment-question/75614/4
 
 // stpq
 // TODO: use vec4 -> simpler
@@ -31,4 +29,13 @@ struct instance_t {
     uv_t uvs[4];     // * 16 4 = 64
     ivec4 w_flags;   // *  4 4 = 16
                      //        = 208 bytes
+};
+
+// Reduce size
+struct instance_t_2 {
+    mat4 model;      // * 16 4 = 64 
+    rgba_t rgbas;    // * 4  4 = 16
+    uv_t uvs[4];     // * 8  4 = 32
+    int w_flags;     // * 4  1 = 4
+                     //        = 116 bytes (closest to 16x = 128)
 };

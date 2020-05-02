@@ -66,7 +66,7 @@
         0.5137255 0.5803922 0.60784316 1.0 
         0.5137255 0.5803922 0.60784316 1.0))
 (def 'KEY-REPEAT 2)
-(def '*sublist-space-y 2.0)
+(def '*sublist-space-y 1.0)
 
 # Global Symbols
 (def '*metrics)
@@ -84,7 +84,7 @@
 (def '*lsts) # Traversal history list
 (def '*start) # Current list
 (def '*line) # Current line 
-(def '*cmds) # List of commands (undo/history/timeline)
+(def '*log) # List of commands (undo/history/timeline)
 (def '*ptrs) # List of pointers
 
 (def '*cur (list 0.0 0.0 0.0)) # for drawing. not literally drawn
@@ -127,7 +127,8 @@
     
   ##################################
   
-  (gc 64)
+  # ~0.5 sec for 1 GB
+  (gc 1024)
     
   (for I *verts-max
     (push '*verts
@@ -202,25 +203,33 @@
     #
     # Won't need this with external syms  
   
-    (def '*cmds (gen-sym-pair '*cmds 'x))
+    #(setq *bind-ops-p (gen-part *binds-ops 'y))
+    #(lay-part-start *bind-ops-p *bind-ops-p)  
+    
+    #(pretty *binds-ops)
+  
+    #{
+        
+    #####
+    # Log
+    
+    (setq *log (gen-sym-pair '*log 'x))
         
     # Must make lines
-    (put *cmds 'lay 'y)    
-    (put *cmds 'line (new '(+Line) NIL (get *cmds 'b)))
-    (put *cmds 'b 'line (new '(+Line) *cmds NIL *cmds))
+    (put *log 'lay 'y)    
+    (put *log 'line (new '(+Line) NIL (get *log 'b)))
+    (put *log 'b 'line (new '(+Line) *log NIL *log))
     
-    # (mov-verts> *cmds *cur)
-    (set-cur-x X)
+    (set-cur-x X) (set-cur-y Y)
+    (adv-cur 16.0)    
     (lay-part-start *cmds *cmds)
+    
+    }#
+    
+    ########
+    # *start
 
-    #################
-    # Gen/Draw *start
-
-    (set-cur-x X)
-    (set-cur-y Y)
-    (adv-cur 16.0)
-
-    (def '*start (gen-sym-pair '*start 'x))
+    (setq *start (gen-sym-pair '*start 'x))
 
     # DO this properly - in gen?
     (with (get *start 'b)
@@ -230,6 +239,8 @@
           *line (get *start 'b)
           *master *start)
     
+    (set-cur-x X) (set-cur-y Y)
+    (adv-cur 32.0)    
     # Force draw for first particle since ori=cur
     (mov-verts> *start *cur)
     (lay-part-start *start *line)
@@ -260,16 +271,22 @@
 
     (idx '*particles (def '*1 (gen-sym-pair '*1 'y)) T)
     (del> (get *1 'b) T T)
-    #(nl-cur -3.0)
-    #(lay-part-start *1 *line)
 
     ############
     
-    (nl-cur 6.0)    
+    #(nl-cur 6.0)    
     
-    (when NIL
+    (when T
 
-      (let Part (gen-part '("a" "b" ("c" "d" "e" ("f"))) 'y)
+      (let Part (gen-part '(
+                            ((ksd~Return) T cmd-make-char)
+                            ((ksd~Tab)    T cmd-make-char)
+                            
+                            ((ksd~BackSpace) T cmd-del)
+                            ((ksd~Delete   ) T cmd-del)  
+                          )
+      
+                          'y)
       
         # (put (get Part 'b 'b) 'lay 'y)
         # (put (get Part 'b 'b 'a 'b 'b) 'lay 'y)

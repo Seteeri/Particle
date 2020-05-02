@@ -53,12 +53,11 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
   
-  * Bindings []
-    * Create particle for symbol
-    * Improve discoverability - user sees it immediately
-      * Once adv enough, user can remove it from default setup ;)
-    * Group commands
-      * Majority is ascii/str keys which typically doesn't change
+  * Draw *binds-ops
+    * Instead of double space, use ptr arrow
+      * Arrow should be colored diff
+      * Use two symbols: <up>0 <dn>0
+      * So up/dn is really changing symbols and moving them into cur pos
     * Either show input or output
       * Code or data form
       * After change, eval it

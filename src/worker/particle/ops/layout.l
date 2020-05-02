@@ -158,7 +158,7 @@
         (prog
           (set-cur-x (get Part 'c 'ori 1))
           # Y should be in place, else get from cur bnds
-          (set-cur-y *bnds-y) (nl-cur 3.0))))
+          (set-cur-y *bnds-y) (nl-cur (+ 1.0 *sublist-space-y)))))
 
   #(println 'lay-pair-y Part (get Part 'data) Type)          
           

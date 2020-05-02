@@ -38,5 +38,5 @@
   (cmd-upd-pv *ipc))
 
 # arbitrary...
-(de cmd-zoom-cam-in  (Keysym) (cmd-zoom-cam -0.25))
-(de cmd-zoom-cam-out (Keysym) (cmd-zoom-cam 0.25))
+(de cmd-zoom-cam-in  (Keysym) (cmd-zoom-cam -1.0))
+(de cmd-zoom-cam-out (Keysym) (cmd-zoom-cam 1.0))
