@@ -53,14 +53,36 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
   
-  * Put metrics/glyphs in binary form in single file [Done]
-    * Mmap and memcpy [Done]
-    * Worker should load idx file [Done]
-    * Use for lookup in upd-ch/met> [Done]
-  * Move msdfgen.l to fonts [Done]
-
+  * Bindings []
+    * Create particle for symbol
+    * Improve discoverability - user sees it immediately
+      * Once adv enough, user can remove it from default setup ;)
+    * Group commands
+      * Majority is ascii/str keys which typically doesn't change
+    * Either show input or output
+      * Code or data form
+      * After change, eval it
+        * For "button", create a list somewhere: (update bindings to *bindings-key)
+        * User clicks it by eval'ing it
+      * Ideal is to show symbols, instead of their val (num)  
+  
   * Refactor/fix cmd-del
-      
+            
+  * Improve testing environment
+    * Have processes run independently
+              
+  * Refactor socket - set err instead of propogating
+              
+  * Cam
+    * Camera needs to move with content like when entering a newline
+      * Requires unproject to test if coord is in the viewport
+      * When a new item is entered, check its bnds against the view bounds
+    * Refactor math class
+    
+  * Log/Undo System
+    * Log commands
+    * Undo later?
+    
   * Implement database
     * Load db files into memory/tmpfs
     * Convert +Particle/+Vertex into db
@@ -72,13 +94,16 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
         * ...instead of writing to DB and having raster read it
     * Store classes in separate files?
       * verts.db
-      * parts.db
-      
-  * Improve testing environment
-    * Have processes run independently
-        
-  * Generate undefined glyph - 0
-  
+      * parts.db    
+    
+  * Why is xkb in worker? Should be in ctrl []
+  * Use mouse cursor for pointer symbol?
+    * Or greek symbols
+  * Colors follow HTML links
+    * Symbols are blue
+      * Unvisited is blue
+      * Visited is purple aka eval'd
+    * Strings are just grey/white/black (since bg is black)
   * Worker
     * Play with eval more
       * Support cons
@@ -98,43 +123,8 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Gly loads metrics
       * Need worker to tell render to load
       * Load ASCII initially
-      * Convert glyphs into db
-    
-  * Refactor socket - set err instead of propogating
-    
-  * Colors follow HTML links
-    * Symbols are blue
-      * Unvisited is blue
-      * Visited is purple aka eval'd
-    * Strings are just grey/white/black (since bg is black)
-    
-  * Bindings []
-    * Create particle for symbol
-    * Improve discoverability - user sees it immediately
-      * Once adv enough, user can remove it from default setup ;)
-    * Group commands
-      * Majority is ascii/str keys which typically doesn't change
-    * Either show input or output
-      * Code or data form
-      * After change, eval it
-        * For "button", create a list somewhere: (update bindings to *bindings-key)
-        * User clicks it by eval'ing it
-      * Ideal is to show symbols, instead of their val (num)
-      
-  * Cam
-    * Camera needs to move with content like when entering a newline
-      * Requires unproject to test if coord is in the viewport
-      * When a new item is entered, check its bnds against the view bounds
-    * Refactor math class
-    
-  * Log/Undo System
-    * Log commands
-    * Undo later?
-    
-  * Why is xkb in worker? Should be in ctrl []
-  * Use mouse cursor for pointer symbol?
-    * Or greek symbols
-    
+      * Convert glyphs into db    
+  * Generate undefined glyph - 0      
   ----------------
     
   * Pointer System

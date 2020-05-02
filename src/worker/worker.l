@@ -91,7 +91,7 @@
 
 
 (de init-worker ()
-  
+    
   (setq *i-proc 1
         *idx-uni-met (ld-idx-uni-met (pack *path-gly "DejaVuSansMono.met.idx.bin"))
         *idx-uni-tex (in (pack *path-gly "DejaVuSansMono.rgba8.idx.bin") (rd))
@@ -110,18 +110,24 @@
   (cmd-render-pv *ipc)
   ####################
   
-  
+    
   #####################
   # Move to control
   # Why is this here again?
   (setq *xkb (new '(+Xkb)))
 
-  (for Bind *bindings-key
+  (for Bind *binds-ascii
     (apply '((Keys Rep Fn)
              (let B (cons Keys (cons Rep Fn))
               (push '*binds B)))
            Bind))
-  
+
+  (for Bind *binds-ops
+    (apply '((Keys Rep Fn)
+             (let B (cons Keys (cons Rep Fn))
+              (push '*binds B)))
+           Bind))
+           
   ##################################
   
   (gc 64)

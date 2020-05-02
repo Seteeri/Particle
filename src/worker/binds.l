@@ -1,4 +1,4 @@
-(def '*bindings-key
+(def '*binds-ascii
 
   ## Number
   '(~(let List NIL
@@ -12,7 +12,10 @@
       (push 'List (list (list K)             T cmd-make-char))
       (push 'List (list (list ksd~Shift-L K) T cmd-make-char))
       (push 'List (list (list ksd~Shift-R K) T cmd-make-char)))
-    List)
+    List)))
+
+
+(def '*binds-ops
 
   ### Special cases: Space (32), Return, Tab
   ((`ksd~space)  T `cmd-make-char)
@@ -119,4 +122,4 @@
   ((`ksd~Alt-R `ksd~Up)    T `cmd-move-cam-py)
   ((`ksd~Alt-R `ksd~Down)  T `cmd-move-cam-ny)
   ((`ksd~Prior)            T `cmd-zoom-cam-in)
-  ((`ksd~Next)             T `cmd-zoom-cam-out)))
+  ((`ksd~Next)             T `cmd-zoom-cam-out))
