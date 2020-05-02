@@ -315,7 +315,7 @@
       (lay-part-start *0 *line 'skip-cdr))))
     
 
-(de repl-str-list (Ref List)
+(de repl-str-list (Ref List Skip-Upd)
 
   # Replace single string with list/line of strings
   
@@ -353,10 +353,12 @@
     # Del Ref except Cdr
     (del-car> Ref)    
     
-    (upd-tree)
-    (mov-*1 *line)        
-            
-    # Put Ptr above new part
     (put *0 'b End)
-    (mov-cur-abv End)
-    (lay-part-start *0 *line 'skip-cdr)))
+    
+    (unless Skip-Upd
+      (upd-tree)
+      (mov-*1 *line)        
+              
+      # Put Ptr above new part
+      (mov-cur-abv End)
+      (lay-part-start *0 *line 'skip-cdr))))
