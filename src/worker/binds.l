@@ -22,8 +22,7 @@
                            Keys)
               Rep (if (sym? Rep) (val Rep) @)
               Cmd (if (sym? Cmd) (val Cmd) @))
-          (push 'L (list Keys Rep Cmd)
-                   (list (cons ksd~Alt-L Keys) Rep Cmd)
+          (push 'L (list (cons ksd~Alt-L Keys) Rep Cmd)
                    (list (cons ksd~Alt-R Keys) Rep Cmd)))))
     L))
     
