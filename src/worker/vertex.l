@@ -63,16 +63,20 @@
         
          
 (dm upd-mod-mat> ()
+  # T * R * S
   (=: mm
       (mat4-mul
         (mat4-translation (: pos))
         (mat4-mul
-          (mat4-rotation-z (caddr (: rota)))
-          (mat4-mul
-            (mat4-rotation-y (cadr (: rota)))
+          (mat4-rotation-z
+            (caddr (: rota)))
             (mat4-mul
-              (mat4-rotation-x (car (: rota)))
-              (mat4-scaling (: sca))))))))
+              (mat4-rotation-y
+                (cadr (: rota)))
+                (mat4-mul
+                  (mat4-rotation-x 
+                    (car (: rota)))
+                    (mat4-scaling (: sca))))))))         
 
 
 (de wr-mat-to-ptr (M Ptr)

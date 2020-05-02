@@ -106,14 +106,17 @@
 
 (de init-verts ()
   #{
-  ;;top right, bottom right, bottom left, top left
-  ;;
-  ;;3---0
-  ;;| / |
-  ;;2---1
-  ;;
-  ;;ccw: 0 2 1 0 3 2
+    top right, bottom right, bottom left, top left
+    
+    3---0
+    | / |
+    2---1
+    
+    ccw: 0 2 1 0 3 2
+    
+    origin: bottom left
   }#
+  
   (struct (get '*buffer-objects 'vertices 'gl~ptr) 'N
     (list -1.0  1.0  1.0  0.0  1.0
                 1.0  0.0  0.0  1.0

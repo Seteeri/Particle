@@ -71,6 +71,8 @@
 ################################################################################
 
 
+# Rename from cmd-render to rpc-render
+
 (de cmd-render-vert (Ipc Vert)
   (let (Sock-Render (ipc~get-fd> *ipc "RENDER"))
     #(prinl-info "render-vert" (pack "Sending vert @ " (get Vert 'off-gl)))

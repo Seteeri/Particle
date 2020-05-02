@@ -158,7 +158,6 @@ Class variables may be indicated by an upper case letter
   - Should not copy all data every frame - waste
   - Try single buffer + persistent mapping + coherent
   - Disable draw flag for node, before copying data, then enable after
-
   }#
   
   #Init context
@@ -225,8 +224,9 @@ Class variables may be indicated by an upper case letter
     # Must handle if send fails, i.e. clients slow - in this case, ignore
     #
     # Poss only send if clients are ready
-    #(send-msg-clients *ipc (pack "(frametime " (format (usec)) ")"))
-        
+    (send-msg-clients *ipc (pack "(frametime " (format (usec)) ")"))
+    #(println 'HERE)
+    
     # Refactor this so it blocks until event
     (ipc~poll> *ipc 0)
     
