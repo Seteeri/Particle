@@ -7,12 +7,13 @@
   }#
   
   (let (Data (cond ((= Keysym ksd~Return) "^J")
-                  ((= Keysym ksd~Tab) "^I")
-                  (T (char Keysym)))
+                   ((= Keysym ksd~Tab) "^I")
+                   (T (char Keysym)))
         Lay 'x)
 
     # Push to cmd list
-    #(setq p1 (repl-cdr p1 (glue " " (list (date) (time) "cmd-make-char" Data)) 'y))
+    # Make class
+    # Put properties
 
     (make-str Data Lay)))
 
@@ -232,6 +233,28 @@
             List (mapcar pack (split (chop (get Ref 'a 'data)) " ")))
 
         (repl-str-list Ref List)))))
+        
+        
+# Evals        
+        
+        
+(de cmd-eval-str ()
+  (prinl-info "cmd-eval-str")
+  
+  # Eval Ref data directly
+  
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))
+  
+      (let (In (get Ref 'a 'data)
+            Out (eval (car (str In))))
+
+        # Move to next line
+        (make-line (make-str Out 'x))))))
 
 
 (de cmd-eval ()
@@ -263,27 +286,8 @@
       (let (In (get Ref 'a 'data)
             Out (str In))
                         
-        (make-str (car Out) 'x)))))
+        (make-str (car Out) 'x)))))        
         
-        
-(de cmd-eval-str ()
-  (prinl-info "cmd-eval-str")
-  
-  # Eval Ref data directly
-  
-  (let Ref (get *0 'b)
-  
-    (when (isa '(+Nil) Ref)
-      (setq Ref (get Ref 'c)))
-  
-    (when (isa '(+Str) (get Ref 'a))
-  
-      (let (In (get Ref 'a 'data)
-            Out (eval (car (str In))))
-
-        # Move to next line
-        (make-line (make-str Out 'x))))))
-
         
 (de cmd-pes ()
   # Pack and eval-Str

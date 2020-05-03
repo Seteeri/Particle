@@ -43,7 +43,7 @@ The target audience consists of programmers, power users, information workers an
   * Binary (Lisp data)
     * External symbols 
     * PicoLisp has built-in database with external symbols as first-class data type
-      * Hmm...memory based db file = ~single memory address space across proccesses?
+      * memory based db file = emulation of single address space?
 * Tag-based searching
 * Import/link any data including images, videos, audio, etc.
 * Export to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL

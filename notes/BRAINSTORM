@@ -4360,6 +4360,40 @@ Hmm, though for current VR, with its 1980's VGA-like non-blurry pixels are more 
 
 https://en.wikipedia.org/wiki/AoS_and_SoA
 
+https://github.com/pel-daniel/mind-bicycles
+
+=============================================
+
+
+https://news.ycombinator.com/item?id=19746122
+
+Summary:
+
+- We don't need separate processes if the language we use is inherently safe (e.g., modern Common Lisp).
+
+- Without process isolation, it is possible to share large, complicated and possibly mutable data structures (graphs, arrays, user-defined objects) system-wide.
+
+- Once it is possible to cheaply share and communicate arbitrary data structures, it is pointless to maintain designated 'file system'.
+
+- Not having a file system raises the question of what data should be persistent and what shouldn't. But on a modern computer, it is feasible to just treat all data as persistent (maybe excluding the youngest GC generation).
+
+The best news is that the author is actually working hard to implement this operating system. The first part - the Lisp implementation - is already in a pretty good shape and could be finished within the next two years: https://github.com/robert-strandh/SICL 
+
+
+=================================
+
+PIM: Search, Hierarchy/Tree, Tag
+
+Trees allow indexing on data
+Tags allow indexing on trees
+Search allows indexing on tags
+
+=================================
+
+Load turns strings into data
+Then evals main
+
+============================================
 ============================================
 
 https://news.ycombinator.com/item?id=20191406

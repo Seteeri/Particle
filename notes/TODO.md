@@ -36,7 +36,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
 
 ## TODO
 
-  The integration of Lisp Machines
+  The cohesiveness of Lisp Machines
   The extensibility of Emacs
   The polish of Apple
   The power of open source
@@ -52,23 +52,18 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     +-------+-------------------+--------------------+---------------+
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
+              
+  * Refactor socket - set err instead of propogating    
+  * Refactor/fix cmd-del                  
+  * Refactor layout
+    * *binds-ops needs mix of x/y
+    * Traverse parts and change lists to y etc
+  * Need to be able to mov pointer to another list
+    * Either modify master ptr
+    * Or mov current ptr
   
-  * Eval
-    * Move NIL on newline
-    * Support cons
-      * Place cons on newline
-      * Or allow cons on same line, but if Cdr changes, move to newline
-      * Need fn for this      
-  
-  * Font Rendering
-    * https://github.com/mapbox/tiny-sdf
-      * Felzenszwalb/Huttenlocher distance transform
-    * https://github.com/astiopin/webgl_fonts
-      * glyph hinting
-      * subpixel antialiasing
-    
   * Draw *binds-ops
-    * Symbols have a value and a property list
+    * Need custom layout
     * Instead of double space, use ptr arrow
       * Arrow should be colored diff
       * Use two symbols: <up>0 <dn>0
@@ -82,7 +77,8 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     
   * Log/Undo System
     * Log commands
-    * Undo later?
+    * This cannot be unlimited - use a circular list
+    * Push old commands to file
     
   * Cam
     * Cap zooming
@@ -90,16 +86,23 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Requires unproject to test if coord is in the viewport
       * When a new item is entered, check its bnds against the view bounds
     * Refactor math class
-  
-  * Draw grid in bg
-  
+    
   * Improve testing environment
     * Have processes run independently
               
-  * Refactor socket - set err instead of propogating    
-    
-  * Refactor/fix cmd-del    
-    
+  * Push all data into binary tree
+    * Unlike a CLI, we hold references to old data
+      * Which if future commands change old data, it has to be updated
+        * E.g. zap
+      * Which means data/particles must be tracked
+    * Given multi particles repr same data
+      * To gc data, delete all particles ref data
+      * Assumes non-visible particles are not ref data
+    * Data : List of Particles
+      * handle 'zap - isyms replaced with name (tsym) - invalidates particles
+    * Draw all symbols will access all data?
+    * External symbols are more explicit  
+  
   * Implement database
     * Load db files into memory/tmpfs
     * Convert +Particle/+Vertex into db
@@ -112,31 +115,14 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Store classes in separate files?
       * verts.db
       * parts.db    
-    
-  * Why is xkb in worker? Should be in ctrl []
-  * Use mouse cursor for pointer symbol?
-    * Or greek symbols
-  * Colors follow HTML links
-    * Symbols are blue
-      * Unvisited is blue
-      * Visited is purple aka eval'd
-    * Strings are just grey/white/black (since bg is black)
-  * Worker
-    * Refactor point
-    * Refactor ops into methods
-    * Refactor line fns
-    * Implement cmds Q/E : start/end of line/list
-    * Draw ctrl characters: ^M, ^J, ^I
-      * Draw newline when by itself
-      * When packed do not draw it - make opt?
-    * Lazy load glyphs [Later]
-      * Do later when msgs are refactored
-      * Render loads tex
-      * Gly loads metrics
-      * Need worker to tell render to load
-      * Load ASCII initially
-      * Convert glyphs into db    
-  * Generate undefined glyph - 0      
+
+  * Font Rendering
+    * https://github.com/mapbox/tiny-sdf
+      * Felzenszwalb/Huttenlocher distance transform
+    * https://github.com/astiopin/webgl_fonts
+      * glyph hinting
+      * subpixel antialiasing      
+  
   ----------------
     
   * Pointer System
@@ -186,7 +172,7 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Output can then be merged
     * Pattern matching  
   
-  * Refactor [Nxt Week]
+  * Refactor
     * Refeactor "*0" mov-part-abv> into cursor fn  
     * Opt: buffer is a circular list
       * Use dot by itself to indicate circular list
@@ -197,7 +183,8 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
       * Search menu?
       * Double ctrl
       * Double alt
-      
+    * Draw grid in bg
+    
     * Replace dot with arrow indicating layout (Right/Down)
     * Make fn: mov-cur X/adv Y/nl
     * Cache last item for lists
@@ -207,7 +194,38 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     * Store ref to last item in list for faster bnds calc
     * Is there a way to map modifier keys to Car or Pair/Cdr?
       * Use mod keys to decide whether to keep input or replace it
-            
+          
+    * Symbols
+      * all: left click = select/point
+      * all: 2x left click = eval
+      * Value = double right click
+      * Props = right click      
+        
+    * Why is xkb in worker? Should be in ctrl []
+    * Use mouse cursor for pointer symbol?
+      * Or greek symbols
+    * Colors follow HTML links
+      * Symbols are blue
+        * Unvisited is blue
+        * Visited is purple aka eval'd
+      * Strings are just grey/white/black (since bg is black)
+    * Worker
+      * Refactor point
+      * Refactor ops into methods
+      * Refactor line fns
+      * Implement cmds Q/E : start/end of line/list
+      * Draw ctrl characters: ^M, ^J, ^I
+        * Draw newline when by itself
+        * When packed do not draw it - make opt?
+      * Lazy load glyphs [Later]
+        * Do later when msgs are refactored
+        * Render loads tex
+        * Gly loads metrics
+        * Need worker to tell render to load
+        * Load ASCII initially
+        * Convert glyphs into db    
+    * Generate undefined glyph - 0                
+          
   * Optimize
     * IPC
       * Utilize multiple workers - see notes

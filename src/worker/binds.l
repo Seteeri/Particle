@@ -284,6 +284,8 @@
     # Pack + Eval-Str
     ((ksd~Control-L ksd~g) T cmd-pes)
     
+    ((ksd~Control-L ksd~b) T cmd-intern)
+    
     # Tab for eval
     ((ksd~Control-L ksd~Tab)            T cmd-eval-str)
     ((ksd~Alt-L     ksd~Tab)            T cmd-str)
@@ -320,9 +322,6 @@
     # cmd-flip
     
     # DEBUG
-    
-    #(view (getl (get *0 'b)))
-    # If we lay relative to origin should stay in same place
     ((ksd~Control-R ksd~Return) T cmd-print-ptr)
 
 

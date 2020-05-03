@@ -3,33 +3,33 @@ Table of Contents
 
 # Intro
 
-## Foreward
-
-## Premise
-
-# Main
+## Roadmap
 
 ## Installation
 
-Requirements:
-* OpenGL ES 3.2+ (OpenGL 4.3+) (See [Mesamatrix](https://mesamatrix.net/))
-* Vulkan/WSI (TODO)
-
-1. Clone this repo
-2. ...
+# UI
 
 ## UI
 
-## Architecture
-
 ## Widgets
 
-# Appendix
+# API
 
-## Roadmap
+## Design Concept: Tree layout
+
+## Design Concept: Parallelism
+
+## Design Concept: Search, Tags and Trees
+
+# Appendix
 
 ## FAQ
 
 ## Anecdotes
 
 ## Case Studies
+
+
+Requirements:
+* OpenGL ES 3.2+ (OpenGL 4.3+) (See [Mesamatrix](https://mesamatrix.net/))
+* Vulkan/WSI (TODO)
