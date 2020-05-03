@@ -7,21 +7,19 @@ information as they moved through the computer. What did they look like?
 
 ---
 
-Particle is a personal knowledge manager (aka PIM) implemented as an outliner through a presentation-based lisp-structured UI.
+Particle is a personal knowledge/information manager (aka PIM) implemented with a presentation-based lisp-structured UI.
 
-It is closest in concept to an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented (or symbolic, if you will) interface. It is not, however, a visual programming language.
+The idea is to take the extensibility of Emacs combined with the dynamics and cohesion of past Lisp Machines, Oberon, Open Dylan, Intentional Programming and other models, and to evolve that consistent text interface to arbitrary objects, taking advantage of modern hardware such as GPUs and parallelism.
 
-The idea is to take the extensibility of Emacs combined with the dynamics ahd cohesion of past Lisp Machines, Oberon and others, and instead of being based solely around text, evolve that concept to arbitrary objects, based upon a fundamental data concept and thus language, to create a uniform and consistent interface taking advantage of modern hardware features such as GPUs and parallelism.
+Plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM-based), a native solution can be provided. The Pinephone is also on the way ;)
 
-On Windows/Mac/iOS/Android, it serves as an outliner, however, with Linux and BSD systems it integrates the window manager, i.e. functions as the Wayland compositor. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that.
+The target audience consists of programmers, power users, information/knowledge workers.
 
-Currently, plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM based), a native solution can be provided. The Pinephone is also on the way ;)
-
-The target audience consists of programmers, power users, information workers and "busy" people.
+## Demos
 
 ## Goals
 
-* To get work done in an efficient and productive manner
+* To get work done efficiently and effectively
 * To remember everything, an extension of the human brain (Evernote/Stepan Pachikov)
 * To structure a system in such a way that it can be described, explained, and understood as a whole (Oberon/Niklaus Wurth)
 * To ameliorate the following sentiments: (Qix/Brad Beer)
@@ -33,22 +31,26 @@ The target audience consists of programmers, power users, information workers an
   * "I want to use the full power of the computer."
   * "I want the computer to meet me more than half way."
 
-## Features (Planned)
+## UI
 
+Ostensibly, it resembles an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented (or symbolic, if you will) interface; *it is not a visual programming language*.
+
+On MS and Apple systems, it serves as an outliner "app", however, with Linux and BSD systems it integrates the window manager, i.e. functions as the Wayland compositor. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that.
+
+*WIP*
 * Local data first - no cloud dependency
 * Distributable - synchronize across multiple devices
-* Storage mechanism
-  * Plain text (Lisp code)
-    * Internal symbols
+* Storage mechanisms
+  * Plaintext (Lisp code)
   * Binary (Lisp data)
-    * External symbols 
-    * PicoLisp has built-in database with external symbols as first-class data type
-      * memory based db file = emulation of single address space?
-* Tag-based searching
-* Import/link any data including images, videos, audio, etc.
-* Export to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
+  * Database backend (Lisp data)
+* Tag-based searching through trees
+* Import/link any data
+  * Binary files such as images, video, audio etc. are not imported into the db and left as separate files
+* Export* to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
+* Orthographic view aka zooming interface
 * Browser integration (aka web clipper)
-* Wayland/userspace integration
+* Wayland/Userspace* integration
 
 
 Advanced:
@@ -56,41 +58,98 @@ Advanced:
 
 * Fuzzy string matching
   * Tag suggestions
-* OCR
-  * Integration of tesseract library
 * Code-specific support
 * Revision control
   * Tree diffs
 * Encryption - text and block-based
+* OCR
 * Ink-pen input; drawn annotations
 * Collaboration - separate related project
 
 
 Interfaces:
 
-* Touch/Mobile - due to power/battery constraints, an HTML frontend might be more effective than OpenGL/WebGL...
-* AR/VR - I do have a possible solution for this, moreso for AR...
+* Touch/Mobile - power constraints and form factor need to be adressed
+* AR/VR - I do have a design for AR...
 
-## Future
+## API
 
-The computing landscape has been reshaped significantly since the days of the Lisp Machines, and so too has our computer science knowledge base grown, so it begs the question as to how useful Lisp at the kernel level would be today in terms of cybersecurity, parallel computing, etc.
+* PicoLisp VM
+  * Purely cons-based
+  * Threaded interpreter
+  * No compiler explicitly to maintain "formal equivalence of code and data"
+  * Lisp-1 meaning single namespace for function and variable names
+  * Dynamically scoped, dynamic/shallow symbol binding, late method binding
+    * Transient symbols (includes strings) lexically scoped
+  * Written in macro asm; No C code
+  * ~3x faster than CPython
+  * Built-in database using external symbols as first-class data type
+    * memory based db file = emulation of single address space?
+* Modern OpenGL ES 3.2, aka programmable pipeline
+  * Vulkan planned
+  * Uses glyph instancing aka "particle system"
+    * Multi-channel signed distance fonts
+      * Felzenszwalb/Huttenlocher distance transform*
+      * Glyph hinting*
+      * Subpixel antialiasing*
+    * Compute shaders
+    * AZDO techniques to minimize draw calls and reduce CPU<->GPU comms
+      * Persistent mapping
+      * Instanced drawing
+      * Indirect drawing
+      * Explicit synchronization with double/triple buffering (testing)
+      * Programmable vertex pulling
+        * Texture buffers/UBOs/SSBOs
+        * gl_VertexID+gl_InstanceID
+  * Transparency sorting currently avoided by preventing objects overlapping
+    * Orthographic projection
+    * Investigate further later
+* Process-based
+  * Renderer, Input, and Control/Workers separate processes
+    * Number of workers matches core count approximately
+  * IPC through sockets, pipes, and memory-backed DB with concurrent GC
+  * Provides fault-tolerance and scalability
+* Maintains responsive UI by cycling processes to allow parallel GC
+  * Renderer primarily memcpys to minimize GC occurance and duration
+* Parallelism*
+  * Auto-parallelize dependency tree
+  * Ported from CL library lparallel
+* Wayland focused
 
-As much as a Lisp Machine from scratch would be intriguing, for it to be actual useful would be highly energy intensive and fundamentally require commercial support; even then, only with specialized hardware could it be remotely competitive with existing technology. So I believe a more pragmatic approach from the top-down by focusing on the UX through the userspace will allow us to get there.
+## Inspirations
 
-## License
+* Primary:
 
-Apache License 2.0
+  * Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide
+  * The Humane Interface by Jeff Raskin
+  * Emacs by RMS
+  * Presentation Based User Interfaces by E.C. Ciccarelli at MIT
+  * Open Dylan by Apple
+  * OpenDoc by Apple
+  * Lisp discovered by John McCarthy
+  * Lisp Machines by Xerox PARC and MIT
+  * Evernote by Stepan Pachikov
+  * Oberon OS by Niklaus Wirth at ETH Zürich
+  * Intentional Programming by Charles Simonyi at Microsoft
+  
+* Others:
 
-## Roadmap to PID 1
-
-See [Roadmap](https://github.com/Seteeri/Particle/tree/master/doc/ROADMAP.md)
-
-## Installation
-
-See [Installation](https://github.com/Seteeri/Particle/tree/master/doc/ROADMAP.md)
+  * Compiz 3D effects
+  * Firefox Tree Style Tab addon
+  * Uzbl/Conkeror numbered links for navigation
+  * Unreal Blueprints, Blender nodal systems
+  * EagleMode ZUI system
+  * Sir Tim Berners-Lee
+  * Paul Graham
+  * Peter Norvig
+  * Brett Victor
+  * Robert Strandh
+  * Chris Schafmeister
 
 ## FAQ
 
 See [FAQ](https://github.com/Seteeri/Particle/tree/master/doc/FAQ.md)
 
-## Demos
+## License
+
+Apache License 2.0

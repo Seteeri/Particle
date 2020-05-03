@@ -1,44 +1,9 @@
 PREMISE
 =======
-
-# Inspirations
-
-* Primary:
-
-  * Transformers (Beast Wars), Digimon, Reboot, Tron - bridging the divide
-  * Compiz - 3D desktop effects
-  * Firefox Tree Style Tab addon  
-  * Lisp/Lisp Machines - the programmable programming language
-  * Emacs/Org-mode - consistency, extensibility, text and keyboard driven
-  * CLIM - presentation-based interface
-  * The Humane Interface by Jeff Raskin
-    * Elimination of modes
-    * Persistence
-    * Unlimited undo
-    * Incremental search
-    * Elimintation of applications -> commands
-    * Redesigned file hierarchies
-    * ZUIs
-  * Evernote - Stepan Pachikov wanted to remember everything
-  
-* Secondary:
-  
-  * Uzbl/Conkeror - numbered links for navigation
-  * Unreal Blueprints - nodal system
-  * EagleMode - ZUI system
-  * Douglas Engelbart - "The Mother of All Demos"
-  * Xerox PARC - pioneered many modern computing elements and paradigms
-  * Sir Tim Berners-Lee - WWW
-  * Paul Graham, Peter Norvig - applied Lisp
-  * Brett Victor - Inventing on Principle
-  * Zach Bean - quicklisp
-  * Robert Strandh - CLOSOS/LispOS
-  * Chris Schafmeister - Molecular Metaprogramming  
-  * Oberon OS
   
 # The Problem
 
-Most programs have different modes and corresponding interfaces (aka functions, operators, methods) We define a mode as a set of interfaces for a type of object.
+A program has different operators that apply to different objects. We define this set of operators that work on a specific object as a mode. So when a user is working on an object of type A, they can only use operators belonging to a set, called mode A. Modes need not be mutually exclusive and can overlap.
 
 Examples:
 * Mode A can exist for objects of type A; mode B can exist for objects of type B
@@ -48,39 +13,53 @@ This last example is important to note for this discussion.
 
 ## The Spectrum
 
-For example, in a code editor such as Emacs, there may be various objects that contain text such as text buffers and GUI elements, however, the text cannot be manipulated with the same tools in the same way consistently. Of course, there are valid reasons for why GUI text cannot be modified etc. however, for the purposes of this discussion, we assume the goal is to have a fully open modifiable dynamic environment.
+For example, a text editor typically has a text area, a menu, buttons and various widgets that all contain text objects, however, the text cannot be manipulated the same way consistently across objects. Text cannot be selected in a button the same way it can in a text area (Whether it is meant to be static or dynamic in a hypothetical system). Taken to an extreme, such as in a 3D creation program, every object has its own mode with minimal overlap, which the user must become familiar with to be effective and productive.
 
-On the other end of the spectrum, taking to an extreme *The Single Responsibility Principle* or *Separation of Concerns*, ends up overwhelming the user by reintroducing complexity by creating too many concepts, albeit simple, that need to be managed. In the context, of programming, defining different functions with the same arguments that do the same thing (assuming argument signature irrelevant to function identity). This would also increase complexity for the containing class/module/package and thus the program overall.
+On the other end of the spectrum, taking to an extreme *The Single Responsibility Principle* or *Separation of Concerns*, the numerous modes end up overwhelming the user by reintroducing complexity through absolute simplicity effectively removing the concept abstractions which are necessary to manage complexity.
 
 ## The Learning Curve and Complexity
 
-The more types there are and the more interfaces there are, the more contexts the user has to keep track of, such as they have object of type x so what interface applies to type x?
+It should be obvious that the more types there are and the more type-specific operators there are, the more contexts the user has to keep track of, which increases the mental burden on the user and directs their attention away from the problem they are trying to solve.
 
-As the complexity increases, so does the learning curve. One could say, programming is creating/learning simultaneously. Functions are identified by their functionality and/or arguments, and objects are identified by their members and/or methods. Once familiarized, choosing what function for what object or vice versa, induces heavy context switching in the user's mind between two domains - the solution (tool) and the problem.
+As the complexity increases, so does the learning curve. Functions are identified by their functionality and arguments, and objects are identified by their type. Once familiarized, choosing what function for what object or vice versa, induces heavy context switching in the user's mind between two domains - the solution and the problem.
 
-It's easier for most people to see things physically built up as objects upon objects, rather than as functions upon functions like a process. For example, an object in a factory could be seen as an object evolving through an assembly line or as the various functions on the assembly line, taking that object through a process.
+In the first step, the user identifies the problem, secondly, conjures the abstract solution in their mind, and thirdly, then implements said solution using elements of the system, or more specifically the objects, operators, and modes of the program (and programming language). Finally, the process is repeated. The less mental gymnastics required to implement said solution, i.e. the third step, the more efficient and productive the user becomes in solving problems until they deem there are virtually no problems left to solve and the system is deemed complete.
 
-If one were to be able to use a single interface for any object, that would simplify that aspect of complexity. The inverse is to have one object and various functions that all accept that object as an argument, which would be a functional perspective; however, this has not proven to be the most popular method for reasons not discussed here. Like most things, the answer lies somewhere in the middle. 
+A system can be seen as objects built upon objects like parts of a car or functions taking in functions like a process. For example, an object in a factory could be seen as an object evolving through an assembly line or as the various functions on the assembly line apply functions to that object.
 
-The key to making it feasible is objects/functions need to be flexible and dynamic enough to be created/destroyed/transformed/viewed dynamically - this is provided by the Lisp environment and the OpenGL environment.
+The current desktop has various applications with specific functionality that operate on different types of data implemented in different programming languages resulting in a user needing to learn each program's modes to be effective. One of the reasons for this is for proprietary and commercial reasons. Another reason is for the subjective reasons a programming language is chosen typically for infrastructure/social, financial cost, optimization/performance, or size reasons.
 
-## Emacs Example
+However, a few basic commands typically persistent between programs that most laypersons are familiar with both as a function and as a keyboard shortcut; often referred to as common user actions (CUA), such as New, Open, Save, Exit, Cut, Copy, Paste, Delete, Find.
 
-In Emacs, there is the mainbuffer and the minibuffer for commands; to go further, text also exists in the menus and status bar. In order to execute commands, the user has to shift their focus to the minibuffer and its contextual properties such as limitations compared to the main buffer. Conventionally, the user highlights text, and then switches context to type/execute commands. 
+This begs the question, why can programs not be made to reduce this burden on the users? In other words, is it possible to create a system where users can use those CUA across all programs on all objects?
 
-In Protoform, both code and text/data (i.e. command) exist in the same "buffer". Basically, code can be placed *arbitrarily* and executed *arbitrarily*. If Emacs literally did this, the code would look jumbled because of the mixture of commands/output. The tree/nodal structure allows it to be inherently structured (as a branch of text).
+## The Unix Legacy
 
-To summarize, all code and data is visualized in the same context - the user can then explicitly change the context seamlessly across domains.
+The design of Unix has influenced the designs of OS's seen today, particularly mainstream OS's. The Unix philosophy prefers to treat all data as text streams (and by extension files?). The issue today is while text is still important and those methods useful, the computer medium has evolved to support data types beyond text such as multimedia and objects. However, in order to operate on those non-text objects, requires them to be represented as raw bytes.
 
-## Blender Example
+Using a C struct as an inter-program format or IPC format, requires both programs to have the exact same memory layout and the same type sizes. However, programs can use different libraries which results in different layouts and different compilers that result in different type sizes, so it cannot be guaranteed. Trying to guarantee memory layout between programs would require all programs involved using the same compiler and compiler settings, same libraries built the same way and so on, which would create a lot of maintenance overhead, and cooperation and agreement between parties. Additionally, in a proprietary or commercial context, this is not feasible. FOSS can solve the sharing of data problem, however, it by itself is unlikely to solve the social aspects. In the FOSS ecosystem, rarely is there a unanimous concensus - DE/WMs/widget fragmentation, and the never-ending creation of new standards are evidence of this.
 
-As a DSL grows and expands (without implementing further DSLs), it begins to turn into a GPL.
+As a result, various serialization formats have emerged, popular text-based ones being JSON, XML, YAML, and popular binary ones being MsgPack and ProtocolBuffers. On top of that, many programming languages have language-specific protocols. Again, most of them exist for the fact that these formats are operated on by different programming languages which have different data types which may or may not map to the types supported by the format.
 
-In many programs, scripting languages are implemented to allow the user to extend the program. In open source software, editing the source/patches also remain an option. However, for proprietary software, this is the most viable solution to allow the user to extend the code in isolation from the proprietary code.
+As the FOSS ecosystem has shown, having an open format is not enough for it to be successful, the language used need also be successful, which we'll define as widely used in the professional industry. For a language to be successful, it usually has to capitalize on an emerging frontier in computing, which typically leads to commercialization. Lisp had Lisp Machines, but the ecosystem did not transfer over to the newer architecture, and the infamous AI winter occured. C was developed to make assembly programming easier at Bell Labs. Java had Sun Microsystems. C++ was an alternative to slow Java. Javascript was the language of the first popular web browser, Netscape. As for Python, my best guess is it focused mostly on the humanistic aspect: readability, extensibility, and maintainability, which made it easy to learn, at the cost of performance when computers became fast enough to run interpreters at a relatively decent speed. The list goes on.
 
-In Blender, the Python language is used to extend the program, including the UI. In the Blender Game Engine, logic bricks exist as an alternative VPL to Python. For simple programs, they work well. However, in practice, as the number of blocks grows, so does the complexity, which results in spaghetti code (quite literally). One way to resolve this is to give users better facilities to visually manage the logic bricks. At some point, the user may want to introduce customized or advanced logic, however, there are only so many capable bricks and the only way to create new bricks is to go into the source code to implement one. This requires an understanding of the C language and the internals of the game engine. Other major issues with scripting languages include performance and interoperability.
+As abstractions build on abstractions, when a problem is identified and unable to be fixed at the current level, the user then attempts to fix the problem at a more fundamental level. If it is unable to be fixed, then a new layer of abstraction is built on top to offset that, the current state of the x86 architecture and commodity platforms good examples. Interestingly, Lisp allows the user to extend the language to fix the problem instead of complicating the system with more abstractions. Hence, when the entire system is made of Lisp down to the metal, the problems in the software domain are capable of being resolved thoroughly.
 
-Unreal Engine's blueprints face similar issues of spaghetti code.
+That begs the question, if that computing paradigm is better, why is it not popular today? 
+
+Maybe for reasons outlined by Peter Gabriel - "worse is better" verus "the right thing". Maybe because of the monopoly MS had on the PC market. Maybe it was technology that was too early for its time.
+
+However, the ecosystem and infrastructure that has been established around the C and Unix model is difficult to overcome. However, just as technology continues marching forward, new opportunities will present themselves. With the rise of mobile computing, multi-core processors, and the increasing connectivity of the world, abstractions that we have built are no longer flexible enough to take advantage of multi-core and parallel computing. Threads are not a robust solution.
+
+## The Lisp Rebirth
+
+Lisp was originally commercialized around the single programmers managing their entire stack down to the hardware. 
+
+Lisp-based computers developed at MIT and Xerox. The MIT line went commercial with SymbolicsMachine, LispMachinesIncorporated (LMI), and later TexasInstrumentsExplorer which subsumed LMI. Commodity hardware (MooresLaw) and better compiler techniques erased the cost/benefit ratio for a special purpose LispMachine compared to stock hardware for general purpose computing. LMI, one of the last companies developing Lisp hardware, went bankrupt before it could bring a new RISC-based Lisp Machine to market.
+
+https://wiki.c2.com/?TheEvolutionOfLisp
+
+
 
 #### BRAINSTORM
 
@@ -98,9 +77,9 @@ The consistency of PicoLisp (LISP) makes it easy to reason about the system by c
 
 The relationship to other objects at the presentation level is the same as objects to the underlying data model, and the data model's relationship to other objects is the same at the presentation level.
 
-The other issue is how to draw graphs and trees (which are mathemtically speaking, a subset of), which is an NP-complete problem. Node editors have shown that once a graph or tree gets to a certain size it can become unweildly and unmanageable (aka sphagehtti code). The same issue has arisen with graphing programs. 
+The other issue is how to draw graphs and trees (which are mathemtically speaking, a subset of), which is an NP-complete problem. Node editors have shown that once a graph or tree gets to a certain size it can become unweildly and unmanageable (aka sphagehtti code). The same issue has arisen with graphing programs.
 
-With Particle, it restricts the layout of trees and automatically lays out the branches. It is a balance between giving the user complete freedom to the point they easily manage to shoot themselves in the foot versus taking the gun completely away from them. However, should the user want to be able to arbitrarily layout objects, it can be done programmatically.
+With Particle, it restricts the layout of trees and automatically lays out the branches. It is a balance between giving the user complete freedom to the point they easily manage to shoot themselves in the foot versus taking the gun completely away from them. Too much restriction results in a tabular UI, and too little restriction results in sphagehtti nodes. However, should the user want to be able to arbitrarily layout objects, it can be done programmatically.
 
 ## Origins
 

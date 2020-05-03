@@ -59,9 +59,35 @@ Input  ->    Ctrl
     * Simulates single-address memory
 * Background concurrent GC in process
 
-
+Notes:
 Merge input with control?
-           
+
+# Parallel Model
+
+* Coroutine same for all
+* Build test program?
+* No way to detect GC...
+  * Check heap size after each call
+  * If within threshold, switch proc
+  * If user does an op, GC will seen as part of op
+  * Or call GC always after command
+* Possible to detect if GC will occur beforehand
+  * If var determined during fn call, calc data that will be used when var known
+
+Proc 1
+  Co
+    loop inf
+      Do [broadcast any data used, so Procs cache from db]
+      Yield [after every command?]
+  Switch to Proc 2
+  GC
+  Co
+  
+Proc 2
+Proc 3
+Proc 4
+
+
 # Data Structures
 
 +Particle

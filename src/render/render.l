@@ -190,6 +190,8 @@ Class variables may be indicated by an upper case letter
     (test-projview)
     (test-vert))
 
+  (gc 0)
+    
   (while (=0 (glfw~window-should-close *window))
 
     (when *fence
@@ -228,6 +230,9 @@ Class variables may be indicated by an upper case letter
     
     # Refactor this so it blocks until event
     (ipc~poll> *ipc 0)
+    
+    # Avg 7 ms max to GC
+    (bench (gc))
     
     T)
 

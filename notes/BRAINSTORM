@@ -4393,6 +4393,89 @@ Search allows indexing on tags
 Load turns strings into data
 Then evals main
 
+=================================
+
+I could create libraries for PicoLisp but it wouldn't be standardized
+
+Without a lead application, there can be no standard libraries; a project has to take charge
+
+But why hasn't Allegro CL or LispWorks created standard libraries?
+They have but it's commercial only
+So had they released it to the public, it would help?
+Yes, but they wouldn't since that's how they make their money
+
+===============
+
+Possible to pack cells or "unroll"
+
+: (list (adr (cons)) (adr (cons)) (adr (cons)))
+-> (8758778893956 8758778893958 8758778893960)
+
+Then use place to modify after
+
+==============================
+
+the skip list, a similar variation on the linked list, 
+offers fast lookup and hurts the advantages of linked lists (quick insert/deletion) 
+less than an unrolled linked list
+
+==============
+
+Compile pilasm
+https://freenode.irclog.whitequark.org/picolisp/2018-08-10#22800426
+
+    #!bin/picolisp lib.l
+    # 08may16abu
+
+    (load "lib/misc.l")
+
+    (setq
+      *Architecture "arm64"
+      *System ".linux"
+      *TargetOS "Linux" )
+
+    (load "src64/lib/asm.l"
+      (pack "src64/lib/fmt.s.l")
+      (pack "src64/arch/" *Architecture ".l") T )
+
+    (build NIL ""
+      (load
+          (pack "src64/sys/" *Architecture *System ".defs.l")
+          "src64/defs.l"
+          "asm.l" ) )
+
+    (call "rm" "arm64.symtab")
+
+    (bye)
+
+=========
+    
+Multilisp
+PCALL FUTURE
+
+MultiLisp achieves parallelism with the PCALL macro, where
+
+(PCALL Fun A B C ...)
+
+is equivalent to
+
+(Fun A B C ...)
+
+except that the arguments A, B, C, etc. are explicitly allowed to be evaluated in parallel; this circumvents the usual order of evaluation, which is sequential and left to right. It also makes use of a parallel programming construct called futures, which resembles forking, combined with lazy evaluation. Using this construct, an expression such as
+
+(cons (FUTURE A) (FUTURE B))
+
+can be written, which will overlap the evaluation of the expressions A and B, not only with each other, but with computations that use the result of the cons call, until an operation is performed that needs correct information about the value of A or B. 
+    
+
+=============    
+    
+buffered gc:
+https://www.jstage.jst.go.jp/article/ipsjjip/27/0/27_479/_pdf
+
+
+https://github.com/status-im/nimbus/wiki/Interpreter-optimization-resources
+
 ============================================
 ============================================
 

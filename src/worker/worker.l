@@ -207,6 +207,17 @@
     # Binds
   
     (setq *bind-ops-p (gen-sym-pair '*binds-ops 'y))
+    
+    #{
+    # Make all pairs Y and create lines
+    (let P *bind-ops-p
+      (while P
+        (when (isa '(+Pair) (get P 'a))
+          (put P 'lay 'y)
+          (put P 'line (new '(+Line)))
+          (put (get P 'a) 'line (new '(+Line))))))
+    }#
+    
     (lay-part-start *bind-ops-p *bind-ops-p)  
       
         

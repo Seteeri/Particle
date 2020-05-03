@@ -52,12 +52,26 @@ https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-g
     +-------+-------------------+--------------------+---------------+
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
-              
-  * Refactor socket - set err instead of propogating    
-  * Refactor/fix cmd-del                  
+  
   * Refactor layout
     * *binds-ops needs mix of x/y
     * Traverse parts and change lists to y etc
+      * Either do in gen or lay phase
+  * Don't pool Particles
+    * GC mem ok tho
+  * Fix eval output - need refactor layout
+  * Show namespaces
+    * Symbols fall under namespaces
+  * Print system out
+    * Where to put it?
+      * Separate *out list
+        * Part of process...
+        * Visualize process?
+      * Sublist of original cmd
+      * Two lines
+  * Draw Particle symbols user can change - need refactor layout
+  * Refactor/fix cmd-del
+  * Refactor socket - set err instead of propogating
   * Need to be able to mov pointer to another list
     * Either modify master ptr
     * Or mov current ptr

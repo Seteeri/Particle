@@ -62,8 +62,61 @@ The Acme editor famously works this way. So, in a rudimentary way, does the Emac
 ---
 
 
-https://news.ycombinator.com/item?id=6498878
+https://news.ycombinator.com/item?id=20037962
 
+
+ I'm with you that pure text can be limiting as a medium for thinking and communication, and that using a wider range of visual expression like diagrams and illustrations can dramatically enhance understanding.
+
+No visual programming environment I've seen compares to the expressivity of writing code - but I also consider myself a visual thinker, and I believe there's still a lot of potential for imaginative rethinking of what it means to code. Text is just a subset of visual communication, and there's no reason why we need to limit ourselves to what can be typed - maybe we could include dynamic interactive symbols as new "words", or program by visually constructing diagrams that include code..
+
+The sweetspot seems to me, visual languages that also let you use code.
+
+
+
+The ideal would be a language which has a non-ambiguous mapping between both textual and visual, so that you can freely switch between them as you wish, but I’ve never seen such a thing that was satisfactory and haven’t been able to come up with something myself. Having a visual AST or flowchart version of an otherwise textual language just doesn’t do it for me.
+
+Failing that, maybe a hybrid thing that lets me do mathematical code and pure algorithmic work textually, but to do all of the higher level architecture and coordination, asynchronous code and stream processing visually.
+
+Personally, I really enjoyed my experience with Max/MSP, I found it quite liberating in many ways and much (but definitely not all) of it suited my way of thinking closely enough that I could bypass the pen-and-paper to figure out complex things. I also really liked not having to name things (until I wanted to, at least) which I found made experimenting with ideas, before they were solid enough to put names to things, was also quite interesting. 
+
+
+---
+---
+
+
+https://news.ycombinator.com/item?id=16227130
+
+
+A couple of points:
+
+1. Making programming accessible probably means making software more accessible.
+
+I remember a study of what mental capacity was most correlated with being able to learn foreign language. It was empathy. So a large part is wanting to communicate. If you want to communicate, you will find a way, and I think we see the same thing in programming. So called "non-programmers" learn the most absurd programming languages and systems if they are motivated. Also see Minecraft. And amazing/horrifying Excel spreadsheets.
+
+One of the issues I see with "novice environments" is that they tend to be very separate from everything else on the machine. I would find that very demotivating.
+
+What I would love to see is "open source as if we meant it", meaning programs that do something we want to do, that we would use, written in such a way (probably also: in such a language) that tinkering/adapting is a reasonable proposition. Yes, that means I don't think that currently is the case: except for the core-dev team, is it a reasonable proposition for people who want to adapt GNUmeric to download the source code and start tinkering? For novices?
+
+2. I am not convinced by the low-end vs. high-end distinction
+
+I think a lot of the same things that make programming awful for beginners also make it awful for advanced programmers. We have just gotten used to the pain and accept it, though I am not sure why.
+
+3. I am not convinced by starting over from scratch
+
+There are reasons why we have what we have, and not all of them are bad.
+
+4. I am not convinced by not starting over from scratch
+
+Of the reasons why we have what we have, a lot of them are bad. A lot needs to be reexamined and rethought.
+
+Resolving that contradiction (thesis, antithesis?) is difficult, it requires looking at what we have in a lot of detail, including the history of how we got here, where we need apply tweaks and where we can interact properly with the rich computing tapestry we have.
+
+Just extending what we have is probably not a solution, because one of the problems is too much cruft, but just starting over from scratch is likely to lead to cool but ultimately superficial projects.
+
+
+# Others
+
+https://news.ycombinator.com/item?id=6498878
 
 http://web.archive.org/web/20090416033922/http://stevenf.tumblr.com/post/94591835/warning-a-long-rambly-exploration-of-the-state
 
