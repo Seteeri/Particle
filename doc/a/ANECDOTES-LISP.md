@@ -99,3 +99,24 @@ You should consider trying it and stealing a few ideas from it for the greater g
 > on-screen text that can serve as an entry point or continuation to perform all sorts of computations, things you'd normally write hacky scripts for.
 
 The Acme editor famously works this way. So, in a rudimentary way, does the Emacs scratch buffer. It's a weird amalgam of text editor and REPL: you evaluate snippets of text and get the output in-place, and then edit the text to get what you want next. This live-text-as-code way of working is not how I'm used to interacting with a programming system and always slightly rewires my brain. But even in that simple form, you can grasp in it the beginnings of a whole computational paradigm, all the way up to UI. (Computational models don't usually imply a UI—this is an exception, as are spreadsheets.) Oberon must be the most systematic realization of this. I'd like to try it. 
+
+
+---
+---
+
+
+https://news.ycombinator.com/item?id=17706589
+
+
+The target markets were too small (or even were shrinking) to justify the investments necessary to keep the architectures going. Keep in mind that all in all only around 10k machines were produced over the technology lifetime (75-92). That's not a large number. Lisp machines started with hand-made CPUs and ended with special micro-processors (TI, Symbolics, ...). The jump to Lisp-supporting newer RISC (or similar) architectures did not happen, because the main sponsors (DARPA, Military, etc.) did no longer saw them as interesting - applications could run on workstations and high-end PCs. Next-gen CPUs were in the making in end 80s / early 90s (Symbolics, Xerox, LMI, SPUR...) but they did not reach the market - money was running out. The whole thing had its last incarnation in commercial emulators: Medley (the Interlisp-D from Xerox) for Intel+SPARC and Open Genera (Symbolics) for DEC Alpha.
+
+ 
+---
+
+In short Moore's Law.
+
+Between 1970 and 2010 if you could design special purpose hardware that ran 10 times faster than the state of the art you would need to get it to market in volume in under 3 years.
+
+If you took any longer the general purpose CPUs from Intel would by that point be within spitting distance of your superior architecture, at a fraction of the cost.
+
+That's what happened to Symbolics, general purpose PC's could run their software faster than the dedicated machines they designed. 

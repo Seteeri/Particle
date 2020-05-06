@@ -25,8 +25,10 @@ TODO
   * Don't pool Particles
     * GC mem ok tho
   * Fix eval output - need refactor layout
-  * Show namespaces
-    * Symbols fall under namespaces
+  * Visual Hierarchy
+    * Process -> Namespace -> Symbols...
+    * Process assumed to be the same...so indicate with ptr?
+      * Namespace is the root...
   * Print system out
     * Where to put it?
       * Separate *out list

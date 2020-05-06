@@ -1,4 +1,4 @@
-![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/particle.png)
+![PARTICLE LOGO](https://github.com/Seteeri/Particle/blob/master/art/particle.png)
 
 > The Grid. A digital frontier. I tried to picture clusters of
 information as they moved through the computer. What did they look like?
@@ -16,6 +16,18 @@ Plans are to initially support Linux and Android. Windows requires WSL or virtua
 The target audience consists of programmers, power users, information/knowledge workers.
 
 ## Demos
+
+![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/types.png)
+
+Types are color coded to remove the need for tokens to optimize drawing and information efficiency. 
+
+Strings do not have double quotes. Pairs do not have parentheses and terminate with the NIL symbol for proper lists (or arbitrary data for improper lists). Circular lists follow PicoLisp conventions and terminate with a dot.
+
+In constrast to text/string editors, the data structure (AST) is manipulated directly so the reader is not involved. The list is built as you type. ASCII keys produce a single character string, and specific keyboard shortcuts/combinations perform Lisp operations such as packing strings and interning the string into a symbol. Numbers can be input directly using ALT+"NUM" or similarly, converted from a string to a number or vice versa.
+
+Lines are double spaced to allow space for the pointer (cursor).
+
+For example, can you identify the types and the relationships between the objects?
 
 ## Goals
 
@@ -139,6 +151,7 @@ Interfaces:
   * Uzbl/Conkeror numbered links for navigation
   * Unreal Blueprints, Blender nodal systems
   * EagleMode ZUI system
+  * Microsoft Excel
   * Sir Tim Berners-Lee
   * Paul Graham
   * Peter Norvig

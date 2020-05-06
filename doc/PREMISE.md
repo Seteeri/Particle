@@ -35,13 +35,13 @@ This begs the question, why can programs not be made to reduce this burden on th
 
 ## The Unix Legacy
 
-The design of Unix has influenced the designs of OS's seen today, particularly mainstream OS's. The Unix philosophy prefers to treat all data as text streams (and by extension files?). The issue today is while text is still important and those methods useful, the computer medium has evolved to support data types beyond text such as multimedia and objects. However, in order to operate on those non-text objects, requires them to be represented as raw bytes.
+The design of Unix has influenced the designs of OS's seen today, particularly mainstream OS's. The Unix philosophy prefers to treat all data as text streams and files. The issue today is while text is still important and those methods useful, the computer medium has evolved to support data types beyond text such as multimedia and objects. However, in order to operate on those non-text objects, requires them to be represented as raw bytes.
 
 Using a C struct as an inter-program format or IPC format, requires both programs to have the exact same memory layout and the same type sizes. However, programs can use different libraries which results in different layouts and different compilers that result in different type sizes, so it cannot be guaranteed. Trying to guarantee memory layout between programs would require all programs involved using the same compiler and compiler settings, same libraries built the same way and so on, which would create a lot of maintenance overhead, and cooperation and agreement between parties. Additionally, in a proprietary or commercial context, this is not feasible. FOSS can solve the sharing of data problem, however, it by itself is unlikely to solve the social aspects. In the FOSS ecosystem, rarely is there a unanimous concensus - DE/WMs/widget fragmentation, and the never-ending creation of new standards are evidence of this.
 
 As a result, various serialization formats have emerged, popular text-based ones being JSON, XML, YAML, and popular binary ones being MsgPack and ProtocolBuffers. On top of that, many programming languages have language-specific protocols. Again, most of them exist for the fact that these formats are operated on by different programming languages which have different data types which may or may not map to the types supported by the format.
 
-As the FOSS ecosystem has shown, having an open format is not enough for it to be successful, the language used need also be successful, which we'll define as widely used in the professional industry. For a language to be successful, it usually has to capitalize on an emerging frontier in computing, which typically leads to commercialization. Lisp had Lisp Machines, but the ecosystem did not transfer over to the newer architecture, and the infamous AI winter occured. C was developed to make assembly programming easier at Bell Labs. Java had Sun Microsystems. C++ was an alternative to slow Java. Javascript was the language of the first popular web browser, Netscape. As for Python, my best guess is it focused mostly on the humanistic aspect: readability, extensibility, and maintainability, which made it easy to learn, at the cost of performance when computers became fast enough to run interpreters at a relatively decent speed. The list goes on.
+As the FOSS ecosystem has shown, having an open format is not enough for it to be successful, the language used need also be successful, which we'll define as widely used in the professional industry. For a language to be successful, it usually has to capitalize on an emerging frontier in computing, which typically leads to commercialization. Lisp had Lisp Machines, but the ecosystem did not transfer over to the newer architecture, and the infamous AI winter occured. C was developed to make assembly programming easier at Bell Labs with Unix. Java had Sun Microsystems. C++ was an alternative to Java. Javascript was the language of the first popular web browser, Netscape. As for Python, my best guess is it focused mostly on the humanistic aspect: readability, extensibility, and maintainability, which made it easy to learn, at the cost of performance when computers became fast enough to run interpreters at a relatively decent speed. The list goes on.
 
 As abstractions build on abstractions, when a problem is identified and unable to be fixed at the current level, the user then attempts to fix the problem at a more fundamental level. If it is unable to be fixed, then a new layer of abstraction is built on top to offset that, the current state of the x86 architecture and commodity platforms good examples. Interestingly, Lisp allows the user to extend the language to fix the problem instead of complicating the system with more abstractions. Hence, when the entire system is made of Lisp down to the metal, the problems in the software domain are capable of being resolved thoroughly.
 
@@ -49,15 +49,39 @@ That begs the question, if that computing paradigm is better, why is it not popu
 
 Maybe for reasons outlined by Peter Gabriel - "worse is better" verus "the right thing". Maybe because of the monopoly MS had on the PC market. Maybe it was technology that was too early for its time.
 
-However, the ecosystem and infrastructure that has been established around the C and Unix model is difficult to overcome. However, just as technology continues marching forward, new opportunities will present themselves. With the rise of mobile computing, multi-core processors, and the increasing connectivity of the world, abstractions that we have built are no longer flexible enough to take advantage of multi-core and parallel computing. Threads are not a robust solution.
+However, the ecosystem and infrastructure that has been established around the C and Unix model is difficult to overcome. However, just as technology continues marching forward, new opportunities will present themselves. With the rise of mobile computing, multi-core processors, and the increasing connectivity of the world, abstractions that we have built are no longer flexible enough to take advantage of multi-core and parallel computing. The solution remains unknown.
 
 ## The Lisp Rebirth
 
-Lisp was originally commercialized around the single programmers managing their entire stack down to the hardware. 
+Lisp was originally commercialized around the single programmer managing their entire stack down to the hardware. 
 
-Lisp-based computers developed at MIT and Xerox. The MIT line went commercial with SymbolicsMachine, LispMachinesIncorporated (LMI), and later TexasInstrumentsExplorer which subsumed LMI. Commodity hardware (MooresLaw) and better compiler techniques erased the cost/benefit ratio for a special purpose LispMachine compared to stock hardware for general purpose computing. LMI, one of the last companies developing Lisp hardware, went bankrupt before it could bring a new RISC-based Lisp Machine to market.
+## Why did Lisp Fail?
 
-https://wiki.c2.com/?TheEvolutionOfLisp
+[The Evolution of Lisp](https://wiki.c2.com/?TheEvolutionOfLisp)
+
+> Lisp-based computers developed at MIT and Xerox. The MIT line went commercial with SymbolicsMachine, LispMachinesIncorporated (LMI), and later TexasInstrumentsExplorer which subsumed LMI. Commodity hardware (MooresLaw) and better compiler techniques erased the cost/benefit ratio for a special purpose LispMachine compared to stock hardware for general purpose computing. LMI, one of the last companies developing Lisp hardware, went bankrupt before it could bring a new RISC-based Lisp Machine to market.
+
+[The Scheme Machine (1994) [pdf]](https://news.ycombinator.com/item?id=17706589)
+
+> Quick question: why did we stop producing lisp machines, or any other machine more closely related to Lambda calculus model of computation than a Turing machine? Is it merely cultural, or are there technical reasons as to why we stopped producing them competitively?
+
+> The target markets were too small (or even were shrinking) to justify the investments necessary to keep the architectures going. Keep in mind that all in all only around 10k machines were produced over the technology lifetime (75-92). That's not a large number. Lisp machines started with hand-made CPUs and ended with special micro-processors (TI, Symbolics, ...). The jump to Lisp-supporting newer RISC (or similar) architectures did not happen, because the main sponsors (DARPA, Military, etc.) did no longer saw them as interesting - applications could run on workstations and high-end PCs. Next-gen CPUs were in the making in end 80s / early 90s (Symbolics, Xerox, LMI, SPUR...) but they did not reach the market - money was running out. The whole thing had its last incarnation in commercial emulators: Medley (the Interlisp-D from Xerox) for Intel+SPARC and Open Genera (Symbolics) for DEC Alpha.
+
+Another response:
+
+> In short Moore's Law.
+
+> Between 1970 and 2010 if you could design special purpose hardware that ran 10 times faster than the state of the art you would need to get it to market in volume in under 3 years.
+
+> If you took any longer the general purpose CPUs from Intel would by that point be within spitting distance of your superior architecture, at a fraction of the cost.
+
+> That's what happened to Symbolics, general purpose PC's could run their software faster than the dedicated machines they designed. 
+
+These articles explain the demise of Symbolics:
+
+https://danluu.com/symbolics-lisp-machines/
+
+http://web.mit.edu/6.933/www/Symbolics.pdf
 
 
 

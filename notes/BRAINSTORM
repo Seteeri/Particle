@@ -4476,6 +4476,81 @@ https://www.jstage.jst.go.jp/article/ipsjjip/27/0/27_479/_pdf
 
 https://github.com/status-im/nimbus/wiki/Interpreter-optimization-resources
 
+
+==============
+
+RGBA = list of ints
+
+RGBA -> +Pixel
+
+(+Pixel ...) -> +Img
+
+(save +Img Path) 
+
+where +Img is an image so literally depicted as:
+
+'save  []  "some/file/path/name.ext"
+
+which is semantically equivalent to:
+
+(save (+Pixel ...) "some/file/path/name.ext") = (save ((R G B A) (R G B A) ...)  "some/file/path/name.ext")
+
+Think as text IS a glyph which IS an image, so everything is an image
+Thus, "text" and "images" can be mixed together seamlessly
+
+So this composition is like a visual macro?
+
+Macros increase expressiveness by increasing abstractness
+The user sees an image rather than mentally parsing text and thinking what it represents
+It visually reduces the amount of information or compresses it, (in terms of information theory/entropy)
+so the user needs less information to process/recognize
+
+Macros do this at a semantic level, however, we need a way to do this at a syntax level
+Syntax meaning symbols representing the data/code
+Generally programmers think in terms of text/tokens
+but its ultimately about symbols (like APL?)
+
+So what we want to do is to be able to perform the equivalent of macros on symbols
+I.e. we take it another step further and compress at the visual/glyphic/symbolic level
+
+Expressiveness usually means more bang for your buck
+i.e. less code necessary = less LOC = less bugs (naively speaking)
+
+Glyph Level: [] [] [] [] ->  [][][][]
+             |  |  |  |      +---+--+
+             |  |  |  |          |
+             |  |  |  |      +---+---+
+Code Level: (() () () ()) -> (. . . .)
+
+More assumptions must be made by the underlying system
+to figure out intent of a sufficiently succint statement or expression
+
+https://wiki.c2.com/?CritiqueOfIntentionalProgramming
+
+=================================
+
+Abstractions are easy to understand horizontally due to the DSL
+
+However, abstraction needs consistency all the way through vertically to maintain consistency horizontally
+
+Abstractions when debugged, need to be understood throughout
+
+Using a series of macros versus a series of functions in an API is mentally different
+since the functions are only modifying their data and not both the syntax and the data
+
+What typically happens is when the base changes, aka environment changes,
+the abstractions break and they leak
+
+What Lisp has to offset the complexity of the tower of babel
+is it unifies code and data whereas mixing DSLs of different languages
+with different syntax creates larger complexity
+
+3. Any large software project with poor management and communication. 4. Any software project employing multiple implementation languages [4]. 5. A software project that solves problems via the Unix philosophy of linking many small, existing, domain specific tools together, rather than producing a complete, monolithic, monumental pile of code that will become historically notorious for its failure.
+
+============================================
+
+To incorporate, Unix users, need file interface or to improve upon it
+
 ============================================
 ============================================
 

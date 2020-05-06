@@ -232,7 +232,7 @@ Class variables may be indicated by an upper case letter
     (ipc~poll> *ipc 0)
     
     # Avg 7 ms max to GC
-    (bench (gc))
+    #(bench (gc))
     
     T)
 
