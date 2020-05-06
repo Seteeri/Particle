@@ -323,6 +323,20 @@ Call make-nl:
 
 *For reference*
 
+LISP in a Nutshell:
+
+* Lisp is based on s-expressions which are used for code and data.
+* S-expressions consists of atoms and pairs
+* Atoms and pairs are both made of cells consisting of two tagged pointers
+* Atoms are either symbols or numbers
+  * Symbols include strings
+* Pairs whose CDR points to another pair creats a list
+  * Proper lists end with NIL
+  
+*Note to self: research relationship between binary trees, general trees,
+directed acyclic graphs*
+https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-graph
+
 * Use adr to get encoded pointer - decode to get ptr or for num data
   * shift left: NIL = (adr NIL) = 273780<<4 = 4380480
   * left shift = (>> -4 8786312637524)

@@ -1,22 +1,5 @@
-Architecture/Infrastructure
-===========================
-
-# Overview
-
-* Focused on Wayland and modern OpenGL ES 3.2+ (Vulkan)
-* PicoLisp due to simplicity, expressiveness and consistency
-* Process-based system
-  * Components: Input/Controller, Workers, Model, Render
-  * IPC through message passing
-  * Multiple processes provide fault-tolerance and scalability
-* Rendering engine = Particle system
-  * Compute shaders
-  * AZDO Techniques
-    * Persistent mapping
-    * Instanced drawing
-    * Indirect drawing
-  * Fully programmable vertex pulling
-    * Texture buffers/UBOs/SSBOs -> gl_VertexID+gl_InstanceID
+API
+===
 
 # Initialization Sequence    
     
@@ -62,7 +45,27 @@ Input  ->    Ctrl
 Notes:
 Merge input with control?
 
-# Parallel Model
+# Data Structures
+
+## Lisp
+
++Particle
+
++Vertex
+
++Metrics
+
+## OpenGL
+
+SSBO
+
+UBO
+
+Various Buffers
+
+# Design Concepts
+
+## GC
 
 * Coroutine same for all
 * Build test program?
@@ -87,13 +90,8 @@ Proc 2
 Proc 3
 Proc 4
 
+## Tree Layout
 
-# Data Structures
+## Dependency Graph Parallelism
 
-+Particle
-
-+Vertex
-
-+Metrics
-
-## OpenGL Buffers
+## Search, Tags and Trees

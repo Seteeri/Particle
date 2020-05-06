@@ -76,8 +76,8 @@ Interfaces:
 
 * PicoLisp VM
   * Purely cons-based
-  * Threaded interpreter
-  * No compiler explicitly to maintain "formal equivalence of code and data"
+  * Threaded interpreter only
+    * No compiler explicitly to maintain "formal equivalence of code and data"
   * Lisp-1 meaning single namespace for function and variable names
   * Dynamically scoped, dynamic/shallow symbol binding, late method binding
     * Transient symbols (includes strings) lexically scoped

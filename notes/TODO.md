@@ -1,40 +1,5 @@
-Particle
-========
-
-The name comes from the idea that in Lisp there exists two types of data: atoms
-and lists. The word atom means "indivisible" and was chosen to state their
-fundamental nature. However, in our system, we breakdown atoms into their
-individual bytes and bits. Using a loose analogy of physics, the name particle
-is derived as we break down the Lisp atoms into their subcomponents.
-
-It also comes from the way the cons cells are rendered, like a particle engine
-uses the same model/instancing.
-
-### LISP Defined
-
-* Lisp is based on s-expressions which is used for code and data (homoiconicity).
-* S-expressions consists of an atom or a cons cell.
-* Atoms are either symbols or numeric literals.
-* Nested cons cells form lists.
-* All data is either an atom or a cons cell.
-
-# Particle Defined
-
-Starting with hardware memory cells
-
-C/ASM: pointers/memory addresses
-
-LISP: s-expressions = two pointers/memory addresses
-
-Thus it only makes sense that the GUI is made of s-expressions = lists = binary trees -
-this is the definition of Protoform.
-
-*Note to self: research relationship between binary trees, general trees,
-directed acyclic graphs*
-https://stackoverflow.com/questions/16860566/s-expression-for-directed-acyclic-graph
-
-
-## TODO
+TODO
+====
 
   The cohesiveness of Lisp Machines
   The extensibility of Emacs
