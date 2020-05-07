@@ -3,9 +3,9 @@
 
 ##############################################
   
-(de req-send-obj (Ipc Sock Obj Sz-Obj Off-Obj)
+(de req-send-obj (Ipc Sock Obj Sz Off)
 
-  (let Msg (fmt-msg-send> Obj Off-Obj)
+  (let Msg (fmt-msg-send> Obj Off)
 
     #(prinl-info "req-send-obj" Msg)
     
@@ -16,10 +16,10 @@
               (wr-ptr> Obj *ptr-vert))))
 
 
-(de req-recv-obj (Ipc Sock Obj Sz-Obj Off-Obj)
+(de req-recv-obj (Ipc Sock Obj Sz Off)
   # Either pass in object or instance new one
 
-  (let Msg (fmt-msg-recv> Obj Off-Obj)
+  (let Msg (fmt-msg-recv> Obj Off)
 
     #(prinl-info "req-recv-obj" Msg)
 
@@ -30,82 +30,47 @@
   (recv-obj Ipc
             Sock
             Obj
-            Sz-Obj))
+            Sz))
 
 
 ################################################################################
 
-
-(de req-send-vert (Ipc Sock Obj)
+(de req-send (Ipc Obj)
   (req-send-obj Ipc
-                Sock
+                (ipc~get-fd> *ipc "RENDER")
                 Obj
-                SZ-VERT
+                (meta Obj 'sz)
                 (get Obj 'off-gl)))
+               
 
-
-(de req-recv-vert (Ipc Sock Obj Cnt)
+(de req-recv-vert (Ipc Sock Obj Cnt Off)
   (req-recv-obj Ipc
                 Sock
                 (if Obj @ (new '(+Vertex)))
                 SZ-VERT
-                (get-vert-off Cnt)))
+                Off))
 
 
-(de req-send-pv (Ipc Sock Obj)
-  (req-send-obj Ipc
-                Sock
-                Obj
-                SZ-PV
-                0))
-
-
-(de req-recv-pv (Ipc Sock Obj)
+(de req-recv-pv (Ipc Sock Obj Off)
   (req-recv-obj Ipc
                 Sock
                 (if Obj @ (new '(+Projview)))
                 SZ-PV
-                0))
+                Off))
 
 
 ################################################################################
+ 
+(de req-recv-to-obj (Ipc Obj Cnt)
+  (req-recv-obj Ipc
+                (ipc~get-fd> *ipc "RENDER")
+                Obj
+                (meta Obj 'sz)
+                (get Obj 'off-gl)))
 
-
-# Rename from cmd-render to rpc-render
-
-(de cmd-render-vert (Ipc Vert)
-  (let (Sock-Render (ipc~get-fd> *ipc "RENDER"))
-    #(prinl-info "render-vert" (pack "Sending vert @ " (get Vert 'off-gl)))
-    (req-send-vert Ipc
-                   Sock-Render
-                   Vert)))
-
-
-(de cmd-render-pv (Ipc)
-  (let (Sock-Render (ipc~get-fd> *ipc "RENDER"))
-    (req-send-pv Ipc
-                 Sock-Render
-                 *projview)))
-
-
-(de cmd-upd-vert (Ipc Vert)
-  (let Sock-Render (ipc~get-fd> *ipc "RENDER")
-
-    (req-send-vert Ipc
-                   Sock-Render
-                   Vert)))
-
-
-(de cmd-upd-pv (Ipc)
-  (let Sock-Render (ipc~get-fd> *ipc "RENDER")
-        
-    (req-send-pv Ipc
-                 Sock-Render
-                 *projview)))
-                 
-
-(de cmd-calc-pv (W H)
-  (with *projview
-    (=: width  W)
-    (=: height H))
-  (upd-mat-proj> *projview))
+                
+(de req-recv (Ipc Cls Cnt)
+  (req-recv-obj Ipc
+                (ipc~get-fd> *ipc "RENDER")
+                (new Cls)
+                (meta Cls 'sz)))

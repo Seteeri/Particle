@@ -138,7 +138,7 @@
         
         (=: pos *cur)      
         (upd-mod> Vert)    
-        (cmd-upd-vert *ipc Vert)
+        (req-send *ipc Vert)
         
         (off (:: dirt))))
 
@@ -265,7 +265,7 @@
                             R G B 1.0
                             R G B 1.0))
       (upd-mod-mat> Vert)
-      (cmd-upd-vert *ipc Vert))))
+      (req-send *ipc Vert))))
 
 
 (dm bnds> (Car-Skip Cdr-Skip)

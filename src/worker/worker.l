@@ -105,9 +105,11 @@
   ##################################
   
   (setq *projview (req-recv-pv *ipc
-                               (ipc~get-fd> *ipc "CONTROL")))
+                               (ipc~get-fd> *ipc "CONTROL")
+                               NIL
+                               0))
                                
-  (cmd-render-pv *ipc)
+  (req-send *ipc *projview)
   
   ####################
   
@@ -332,13 +334,17 @@
               (prinl-info "handle-ctrl" (glue " " Data)))
 
             ("update-vert"
-              (cmd-upd-vert *ipc *vert-ptr))
+              (req-send *ipc *vert-ptr))
 
             ("calc-pv"
-              (cmd-calc-pv (get Data 2) (get Data 3)))
+              # method?
+              (with *projview
+                (=: width  (get Data 2))
+                (=: height (get Data 3)))
+              (upd-mat-proj> *projview))
 
             ("upd-pv"
-              (cmd-upd-pv *ipc))
+              (req-send *ipc *projview))
 
             ("bye"
               # Send bye to ctrl which will send to all workers/render/model
@@ -493,7 +499,7 @@
                                 
           ))
                 
-        (cmd-upd-vert *ipc Vert)))))              
+        (req-send *ipc Vert)))))              
               
               
 (de main ()

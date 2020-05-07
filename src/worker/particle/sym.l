@@ -167,7 +167,7 @@
         
           (=: pos *cur)
           (upd-mod> Vert)
-          (cmd-upd-vert *ipc Vert)
+          (req-send *ipc Vert)
           
           (off (:: dirt)))
       

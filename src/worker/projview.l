@@ -2,7 +2,7 @@
 
 
 (class +Projview)
-(var sz SZ-PV)
+(var sz . `SZ-PV)
 
 (dm T (Width
        Height
