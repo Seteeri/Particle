@@ -19,15 +19,19 @@ The target audience consists of programmers, power users, information/knowledge 
 
 ![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/types.png)
 
-Types are color coded to remove the need for tokens to optimize drawing and information efficiency. 
+Types are color coded to remove the need for tokens to optimize drawing and information efficiency. Lines are double spaced to allow space for the pointer (cursor). 
 
-Strings do not have double quotes. It is possible to remove other identifying tokens for the other types such as the curly brackets and dollar sign. Pairs do not have parentheses and terminate with the NIL symbol for proper lists (or arbitrary data for improper lists). Circular lists follow PicoLisp conventions and terminate with a dot.
+Can you identify the types and the relationships between the objects?
 
-In constrast to text/string editors, the data structure (AST) is manipulated directly so the reader is not involved. The list is built as you type. ASCII keys produce a single character string, and specific keyboard shortcuts/combinations perform Lisp operations such as packing strings and interning the string into a symbol. Numbers can be input directly using ALT+"NUM" or similarly, converted from a string to a number or vice versa.
+Strings do not have double quotes; it is possible to remove other identifying tokens such as curly brackets and the dollar sign. Pairs do not have parentheses and terminate with the NIL symbol for proper lists (or arbitrary data for improper lists). Circular lists follow PicoLisp conventions and terminate with a dot.
 
-Lines are double spaced to allow space for the pointer (cursor).
+In constrast to text/string editors, the data structure (AST) is transformed directly so the reader is not involved. The list is constructed as you type. Typing keys produce a single character string, and specific keyboard shortcuts/combinations perform fundamental Lisp operations such as packing strings and interning the string to produce a symbol. Numbers are input directly using ALT+"NUM" or similarly, converted from a string to a number or vice versa with format.
 
-For example, can you identify the types and the relationships between the objects?
+Particle separates the representation from the data ("presentaion-based"), allowing arbitrary representations beyond conventional strings. This aspect is not new. The crucial feature that enables Particle is rather than view text and images as distinct types on both the semantic and data level, text is considered equal to images. Another way of thinking about text is they are simply glyphs, icons - symbols, and likewise conventional GUIs use the same concept and people think about them the same way when interacting. 
+
+At the data structure level, both text and images have the same data layout. This is enabled by the underlying Lisp structure that implements text, aka encoded numbers, in cons cells as symbols. Likewise, images are also implemented as cons cells. The power of storing data in cons cells over raw bytes like in a typical program, is cons cells have inherent properties due to their two-pointer structure which enables linking arbitrary data which can then be interpreted in different ways at a higher abstraction level. Ultimately, this allows operations that work on text to work on images also. The same way in a compiled Lisp, macros can create new DSLs or syntax aka glyphs, which can be used alongside native syntax, the same can be done with images - they can be mixed with text/code.
+
+For example, a pixel data type consisting of a list of 4 numbers from 0-255, representing RGBA, can be directly represented as a square with the corresponding color. An image can then be defined as a list of pixels, or a list of list of 4 numbers, and that data type can be literally represented as all the pixels combined into a single image. All of this can be done with basic Lisp operations and without typing any explicit code. This idea can then be further extended to allow the user to create literal symbols to represent arbitrary data, and yet they retain the composability of the underlying Lisp structure. In addition, in the context of code, code can be represented by text, so for example, comments can represent code to more effectively indicate the programmer's intentions.
 
 ## Goals
 
@@ -45,7 +49,7 @@ For example, can you identify the types and the relationships between the object
 
 ## UI
 
-Ostensibly, it resembles an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented (or symbolic, if you will) interface; *it is not a visual programming language*.
+Ostensibly, it resembles an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented (more operatively, symbolic) interface; *it is not a visual programming language*.
 
 On MS and Apple systems, it serves as an outliner "app", however, with Linux and BSD systems it integrates the window manager, i.e. functions as the Wayland compositor. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that.
 
@@ -104,18 +108,18 @@ Interfaces:
       * Felzenszwalb/Huttenlocher distance transform*
       * Glyph hinting*
       * Subpixel antialiasing*
-    * Compute shaders
-    * AZDO techniques to minimize draw calls and reduce CPU<->GPU comms
-      * Persistent mapping
-      * Instanced drawing
-      * Indirect drawing
-      * Explicit synchronization with double/triple buffering (testing)
-      * Programmable vertex pulling
-        * Texture buffers/UBOs/SSBOs
-        * gl_VertexID+gl_InstanceID
-  * Transparency sorting currently avoided by preventing objects overlapping
-    * Orthographic projection
-    * Investigate further later
+  * Compute shaders
+  * AZDO techniques to minimize draw calls and reduce CPU<->GPU comms
+    * Persistent mapping
+    * Instanced drawing
+    * Indirect drawing
+    * Explicit synchronization with double/triple buffering (testing)
+    * Programmable vertex pulling
+      * Texture buffers/UBOs/SSBOs
+      * gl_VertexID+gl_InstanceID
+* Transparency sorting currently avoided by preventing objects overlapping
+  * Orthographic projection
+  * Investigate further later
 * Process-based
   * Renderer, Input, and Control/Workers separate processes
     * Number of workers matches core count approximately

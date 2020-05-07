@@ -15,6 +15,12 @@ TODO
       * Either do in gen or lay phase
   * Refactor/fix cmd-del
   * Refactor socket - set err instead of propogating
+  * Start handling longer tasks
+    * Rotate process
+    * Or...
+      * Deploy task
+      * Set timeout to rotate
+      * Fork
   
   * Eval
     * Fix eval output - need refactor layout

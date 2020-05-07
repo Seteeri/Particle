@@ -120,3 +120,39 @@ Between 1970 and 2010 if you could design special purpose hardware that ran 10 t
 If you took any longer the general purpose CPUs from Intel would by that point be within spitting distance of your superior architecture, at a fraction of the cost.
 
 That's what happened to Symbolics, general purpose PC's could run their software faster than the dedicated machines they designed. 
+
+
+---
+---
+
+
+https://news.ycombinator.com/item?id=20657798
+
+
+“I believe the author is misreading this definition.”
+
+Agreed. Author has tied self in knots from overthinking it. Homoiconicity has nothing to do with external [text] representation and parsing (deserialization).
+
+Homoiconicity in a programming language means that every complete program is a composition of the language’s core datatypes, and nothing more.
+
+OP’s suggestion that homoiconicity could be a sliding scale is nonsense. A language is either homoiconic, or it isn’t.
+
+Here’s a simple test: many languages have first-class functions/procedures/handlers, but most of them do not first-class commands. Any language which has commands which are not values cannot be homoiconic.
+
+A Lisp program is composed entirely of Lisp’s atomic types (`number`, `string`, `symbol`) and fundamental collection type (`list`). Lisp, being an exercise in extreme parsimony, does not define a discrete `command` type but instead overloads its `list` datatype to operate as either a command or a list according to context. Thus commands in Lisp can be created, manipulated, passed around, and evaluated at any time, using the exact same toolset as is used to create, manipulate, pass around, and evaluate Lisp lists.
+
+
+---
+
+
+"... the original definition: languages which have the same external and internal representations are homoiconic."
+
+I would re-phrase that as: "Languages whose external and internal representations of their programs are (to a great degree) ISOMORPHIC, are, and should be, called homoiconic."
+
+What does "iconicity" mean? It means isomorphism, meaning the structure of two things are similar, one can be taken to be a picture, an "icon" of the other.
+
+Lisp clearly has this property. It is clearly homo-iconic. And most importantly most other languages do NOT have this property. Therefore "homo-iconic" is a very useful property which can be easily used to divide programming languages into two groups, those that are and those that aren't.
+
+The original definition is bad: "which have the SAME external and internal representations". "Sameness" is not what homo-iconicity is about. It is about the structures of the external and internal representation being SIMILAR enough that one of them could be considered an ICON, a PICTURE of the other. Perhaps we should stop using words like "similar" as well? They are not "boolean" are they?
+
+Clearly 'homo-iconic" has a sound well-founded meaning, even if not everybody gets it. It is a subtle concept similar to understanding why something can be used as a metaphor for another thing. Not everybody gets metaphors either. 

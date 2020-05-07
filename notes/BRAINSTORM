@@ -4551,6 +4551,9 @@ with different syntax creates larger complexity
 
 To incorporate, Unix users, need file interface or to improve upon it
 
+Less dependencies mean the base language has the batteries included
+but those batteries can only exist through concensus
+
 ============================================
 ============================================
 
