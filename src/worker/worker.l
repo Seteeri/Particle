@@ -360,71 +360,13 @@
 
   (let Msg (recv-msg *ipc Sock)
   
-    # recv-msg will return data or NIL
-    # This means sending NIL will disconnect the client, like EOF
-    (unless Msg
-      (disconn-conn *ipc Sock))
-
     #(test-rot-p0)
-    ))
+  
+    (if Msg
+        (disconn-conn *ipc Sock))))
 
 
-(def 'PI 3.141592)
-(def 'PI2 (+ PI PI))
-(def '*rot-z 0.0)
-(de test-rot-p0 ()
-
-  (let? Part (get *0 'a)
-    
-    (with Part
-    
-      (let Vert (car (: verts))
-        
-        (with Vert
-
-          (let (Ce (with (: met)
-                    (let (Dims (: dims))
-                      (list (*/ (*/ (car Dims) (: sca-f) 1.0) 0.5 1.0)
-                            (*/ (*/ (cadr Dims) (: sca-f) 1.0) 0.5 1.0)
-                            0.0)))
-                Tr (mat4-translation
-                     (list (- (car Ce))
-                           (- (cadr Ce))
-                           0.0)))
-                    
-          (inc '*rot-z 0.03)
-          (when (> *rot-z PI2) (setq *rot-z 0.0))
-          
-          # Scale from origin (left bottom)
-          # Translate origin to center
-          # Rotate rel to center
-          # Translate back to origin
-          # Translate to final pos          
-          
-          (=: mm
-              (mat4-mul
-                (mat4-translation (: pos))
-                (mat4-mul
-                  (mat4-inverse Tr)
-                  (mat4-mul
-                    (mat4-rotation-z *rot-z)
-                    (mat4-mul
-                      Tr
-                      (mat4-mul
-                        (mat4-inverse (mat4-translation (: pos)))
-                        (mat4-mul
-                          (mat4-translation (: pos))
-                          (mat4-mul
-                            (mat4-rotation-z (caddr (: rota)))
-                            (mat4-mul
-                              (mat4-rotation-y (cadr (: rota)))
-                              (mat4-mul
-                                (mat4-rotation-x (car (: rota)))
-                                (mat4-scaling (: sca))))))))))))
-                                
-          ))
-                
-        (cmd-upd-vert *ipc Vert)))))
+(de send-msg-rend (M) (send-msg *ipc (ipc~get-fd> *ipc "RENDER") M))
 
 
 (de dispatch-kb (Data)
@@ -496,6 +438,64 @@
               (Fn Keysym))))))))
 
 
+(def 'PI 3.141592)
+(def 'PI2 (+ PI PI))
+(def '*rot-z 0.0)
+(de test-rot-p0 ()
+
+  (let? Part (get *0 'a)
+    
+    (with Part
+    
+      (let Vert (car (: verts))
+        
+        (with Vert
+
+          (let (Ce (with (: met)
+                    (let (Dims (: dims))
+                      (list (*/ (*/ (car Dims) (: sca-f) 1.0) 0.5 1.0)
+                            (*/ (*/ (cadr Dims) (: sca-f) 1.0) 0.5 1.0)
+                            0.0)))
+                Tr (mat4-translation
+                     (list (- (car Ce))
+                           (- (cadr Ce))
+                           0.0)))
+                    
+          (inc '*rot-z 0.03)
+          (when (> *rot-z PI2) (setq *rot-z 0.0))
+          
+          # Scale from origin (left bottom)
+          # Translate origin to center
+          # Rotate rel to center
+          # Translate back to origin
+          # Translate to final pos          
+          
+          (=: mm
+              (mat4-mul
+                (mat4-translation (: pos))
+                (mat4-mul
+                  (mat4-inverse Tr)
+                  (mat4-mul
+                    (mat4-rotation-z *rot-z)
+                    (mat4-mul
+                      Tr
+                      (mat4-mul
+                        (mat4-inverse (mat4-translation (: pos)))
+                        (mat4-mul
+                          (mat4-translation (: pos))
+                          (mat4-mul
+                            (mat4-rotation-z (caddr (: rota)))
+                            (mat4-mul
+                              (mat4-rotation-y (cadr (: rota)))
+                              (mat4-mul
+                                (mat4-rotation-x (car (: rota)))
+                                (mat4-scaling (: sca))))))))))))
+                                
+          ))
+                
+        (cmd-upd-vert *ipc Vert)))))              
+              
+              
 (de main ()
   (bind-args)
   (init-worker))

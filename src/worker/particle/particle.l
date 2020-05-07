@@ -108,14 +108,11 @@
     * Poss send cmd to render to adjust instance count
       * verts is LIFO - always keeps instances contiguous
   }#
-
-  (let Sock-Render (ipc~get-fd> *ipc "RENDER")
-    (for Vert (: verts)
-      (send-msg *ipc
-                Sock-Render
-                (pack "(zv " (get Vert 'off-gl) '")"))
-      (push '*verts (get Vert 'off-gl))
-      (dec '*cnt-v)))
+  
+  (for Vert (: verts)
+    (send-msg-rend (pack "(zv " (get Vert 'off-gl) '")"))
+    (push '*verts (get Vert 'off-gl))
+    (dec '*cnt-v))
 
   (when (and A (: a)) (del> (: a) A B))
 

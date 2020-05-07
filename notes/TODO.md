@@ -6,45 +6,34 @@ TODO
   The polish of Apple
   The power of open source
 
-    +-------+--------------------------------------------------------+
-    | CMD   |                       Pointer                          |
-    +-------+-------------------+--------------------+---------------+
-    |       | Pair/Atom         | Car/Atom           | NIL           |
-    +-------+-------------------+--------------------+---------------+
-    | ASCII | Ins-back, Mov-Cdr | Write-car, Mov-Car | Same as left  |
-    +-------+-------------------+--------------------+---------------+
-    | NIL   | Same as above     | Same as above      | Ins...        |
-    +-------+-------------------+--------------------+---------------+
-    | NL    | List w. Pair      | Mov nl             | Empty list    |
-    +-------+-------------------+--------------------+---------------+
-  
-  * Make Dot YELLOW!
-    * Small so use most visible color to offset
-    * Make NIL grey since its so common but not as useful
+  * Refactor messages
+    * Queue and flush
+  * Refactor math
   * Refactor layout
     * *binds-ops needs mix of x/y
     * Traverse parts and change lists to y etc
       * Either do in gen or lay phase
-  * Don't pool Particles
-    * GC mem ok tho
-  * Fix eval output - need refactor layout
+  * Refactor/fix cmd-del
+  * Refactor socket - set err instead of propogating
+  
+  * Eval
+    * Fix eval output - need refactor layout
+    * Print system out
+      * Where to put it?
+        * Separate *out list
+          * Part of process...
+          * Visualize process?
+        * Sublist of original cmd
+        * Two lines
+  
   * Visual Hierarchy
     * Process -> Namespace -> Symbols...
     * Process assumed to be the same...so indicate with ptr?
-      * Namespace is the root...
-  * Print system out
-    * Where to put it?
-      * Separate *out list
-        * Part of process...
-        * Visualize process?
-      * Sublist of original cmd
-      * Two lines
-  * Draw Particle symbols user can change - need refactor layout
-  * Refactor/fix cmd-del
-  * Refactor socket - set err instead of propogating
+      * Namespace is the root...  
   * Need to be able to mov pointer to another list
     * Either modify master ptr
     * Or mov current ptr
+  * Draw spine or use grid to provide visual line guide
   
   * Draw *binds-ops
     * Need custom layout
@@ -157,7 +146,7 @@ TODO
     * Pattern matching  
   
   * Refactor
-    * Refeactor "*0" mov-part-abv> into cursor fn  
+    * Refactor "*0" mov-part-abv> into cursor fn  
     * Opt: buffer is a circular list
       * Use dot by itself to indicate circular list
       * Remember, two dots means it refers to itself
@@ -168,6 +157,9 @@ TODO
       * Double ctrl
       * Double alt
     * Draw grid in bg
+    * Make Dot YELLOW!
+      * Small so use most visible color to offset
+      * Make NIL grey since its so common but not as useful
     
     * Replace dot with arrow indicating layout (Right/Down)
     * Make fn: mov-cur X/adv Y/nl
