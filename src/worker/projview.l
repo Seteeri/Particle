@@ -2,6 +2,8 @@
 
 
 (class +Projview)
+(var sz SZ-PV)
+
 (dm T (Width
        Height
        Type-Proj

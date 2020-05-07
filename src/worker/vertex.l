@@ -6,6 +6,8 @@
 
 
 (class +Vertex)
+(var sz SZ-GL-VERT)
+
 (dm T (Off-Gl
        Ch       #Use to get offset, if char then data is char also
        RGBA
