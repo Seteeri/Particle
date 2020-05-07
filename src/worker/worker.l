@@ -126,11 +126,10 @@
     (balance '*binds L))
     
   ##################################
+    
+  (for I *verts-max (push '*verts (get-vert-off I)))
+  (setq *verts (flip *verts))  
   
-  (gen-verts)
-  
-  (when NIL (run-tests))
-
   (gen-def-parts)
   
   (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "(rdy)")
@@ -138,25 +137,6 @@
   (prinl-info "init-worker" "Starting epoll...")
 
   (loop (ipc~poll> *ipc -1)))
-
-  
-(de gen-verts ()  
-  # ~0.5 sec for 1 GB
-  (gc 1024)
-    
-  (for I *verts-max
-    (push '*verts
-          (new '(+Vertex)
-               (get-vert-off I)
-               "@"
-               *color-vert-def
-               (need 3 0.0)
-               (need 3 0.0)
-               (need 3 *sca-vert))))
-  (setq *verts (flip *verts))
-  
-  # Pack the verts...
-  (gc))
 
   
 (de ld-metrics (Path)

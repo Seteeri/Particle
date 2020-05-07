@@ -114,8 +114,7 @@
       (send-msg *ipc
                 Sock-Render
                 (pack "(zv " (get Vert 'off-gl) '")"))
-      (put Vert 'pos) # nil pos to force draw on reuse
-      (push '*verts Vert)
+      (push '*verts (get Vert 'off-gl))
       (dec '*cnt-v)))
 
   (when (and A (: a)) (del> (: a) A B))

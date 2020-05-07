@@ -11,26 +11,28 @@
        RGBA
        Pos
        Rota
-       Sca)
+       Sca
+       Val)
 
   # Ptr offset in render gl buffer
   (=: off-gl Off-Gl)
-
   (=: ch (char Ch))
+  (=: val Val)  
+  (=: rgba RGBA)      
   
-  # POSS:
   # Either keep these here or move to model matrix...
-  # Instead of storing pos/rot/sca, directly modify mm
-  # - Downside is mm must be calculated repeatedly
   (=: pos Pos)
   (=: rota Rota)
   (=: sca Sca)
+  
   (=: mm (mat4-identity))
   
-  (=: rgba RGBA)      
+  # Rel to Ch
   (=: uv)
   (=: off-texel)
   
+  (=: dirt T)
+      
   (when Ch
     (upd-met> This)
     (upd-mod> This)

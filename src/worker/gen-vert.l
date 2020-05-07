@@ -71,19 +71,20 @@
                   (if Col @ *sol-base-0)))
 
 
-(de gen-vert-glyph (Char Col Val)
-  (let (Vert (pop '*verts)
-        (R G B) Col)
-    (inc '*cnt-v)
-    (upd-met> Vert Char)
-    (with Vert
-      (=: val Val)
-      (=: rgba (list R G B 1.0
-                     R G B 1.0
-                     R G B 1.0
-                     R G B 1.0)))
-    (put Vert 'dirt T)
-    Vert))
+(de gen-vert-glyph (Ch Col Val)
+  (inc '*cnt-v)
+  (let ((R G B) Col)
+    (new '(+Vertex)
+         (pop '*verts)
+         Ch
+         (list R G B 1.0
+               R G B 1.0
+               R G B 1.0
+               R G B 1.0)
+         (need 3 0.0)
+         (need 3 0.0)
+         (need 3 *sca-vert)
+         Val)))
 
 
 (de gen-vert-repr (Repr Col)

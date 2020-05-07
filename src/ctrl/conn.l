@@ -48,12 +48,12 @@
 
 (de wr-dst (Ptr Dst Sock Sz Off)
 
-  #(println "wr-dst" Ptr Dst Sock Sz Off)
+  (println "wr-dst" Ptr Dst Sock Sz Off)
 
   (case Dst
   
     ("projview"
-     (cpy-to-obj> *projview Ptr))
+      (cpy-to-obj> *projview Ptr))
    
     ("nodes"
       (cpy-to-obj> (get *verts (get-vert-ix Off)) Ptr))))
