@@ -18,6 +18,9 @@ TODO
     | NL    | List w. Pair      | Mov nl             | Empty list    |
     +-------+-------------------+--------------------+---------------+
   
+  * Make Dot YELLOW!
+    * Small so use most visible color to offset
+    * Make NIL grey since its so common but not as useful
   * Refactor layout
     * *binds-ops needs mix of x/y
     * Traverse parts and change lists to y etc

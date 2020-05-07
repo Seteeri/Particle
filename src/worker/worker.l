@@ -127,6 +127,20 @@
     
   ##################################
   
+  (gen-verts)
+  
+  (when NIL (run-tests))
+
+  (gen-def-parts)
+  
+  (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "(rdy)")
+  
+  (prinl-info "init-worker" "Starting epoll...")
+
+  (loop (ipc~poll> *ipc -1)))
+
+  
+(de gen-verts ()  
   # ~0.5 sec for 1 GB
   (gc 1024)
     
@@ -142,18 +156,8 @@
   (setq *verts (flip *verts))
   
   # Pack the verts...
-  (gc)
-  
-  (when NIL (run-tests))
+  (gc))
 
-  (gen-def-parts)
-  
-  (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "(rdy)")
-  
-  (prinl-info "init-worker" "Starting epoll...")
-
-  (loop (ipc~poll> *ipc -1)))
-  
   
 (de ld-metrics (Path)
   #*metrics (ld-metrics (pack *path-gly "m/"))

@@ -21,7 +21,7 @@ The target audience consists of programmers, power users, information/knowledge 
 
 Types are color coded to remove the need for tokens to optimize drawing and information efficiency. 
 
-Strings do not have double quotes. Pairs do not have parentheses and terminate with the NIL symbol for proper lists (or arbitrary data for improper lists). Circular lists follow PicoLisp conventions and terminate with a dot.
+Strings do not have double quotes. It is possible to remove other identifying tokens for the other types such as the curly brackets and dollar sign. Pairs do not have parentheses and terminate with the NIL symbol for proper lists (or arbitrary data for improper lists). Circular lists follow PicoLisp conventions and terminate with a dot.
 
 In constrast to text/string editors, the data structure (AST) is manipulated directly so the reader is not involved. The list is built as you type. ASCII keys produce a single character string, and specific keyboard shortcuts/combinations perform Lisp operations such as packing strings and interning the string into a symbol. Numbers can be input directly using ALT+"NUM" or similarly, converted from a string to a number or vice versa.
 
