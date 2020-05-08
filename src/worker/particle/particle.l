@@ -396,13 +396,17 @@
 
 (de put-line (Src Dst)
 
-  (let Nl (get Src 'line)
+  (let (Nl (get Src 'line)
+        Nxt (get Nl 'n))
 
     (when (get Nl 'p)
       (put @ 'line 'n Dst))
 
-    (when (get Nl 'n)
-      (put @ 'line 'p Dst))
+    (when Nxt
+      (put Nxt 'line 'p Dst))
+      
+    (when (= Nxt Dst)
+      (put Nl 'n))
       
     # Update children's lists when Src is NIL NIL
     (when (and (not (get Nl 'p)) (not (get Nl 'l)))

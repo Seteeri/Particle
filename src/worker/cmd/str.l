@@ -84,13 +84,12 @@
     (unless (= (get Tgt 'data) '*start)
     
       (cond ((or (isa '(+Pair) (get Tgt 'a))
-                (isa '(+Nil) (get Tgt 'a)))
-            # Remove line
-            (del-line Tgt)
-            (b> Tgt-Prv Tgt-Cdr)
-            (put Tgt-Cdr 'line 'l (get Tgt 'line 'l))
-            (println (get Tgt 'line 'l))
-            (setq New-Ref Tgt-Cdr))
+                 (isa '(+Nil)  (get Tgt 'a)))
+              # Remove line
+              (del-line Tgt)
+              (b> Tgt-Prv Tgt-Cdr)
+              (put Tgt-Cdr 'line 'l (get Tgt 'line 'l))
+              (setq New-Ref Tgt-Cdr))
     
             # If Tgt prv is Car of Pair, set Car...
             ((= (get Ref 'c 'a) Ref)
@@ -111,11 +110,11 @@
               (setq New-Ref Ref))
                 
             (T
-            (b> Tgt-Prv Tgt-Cdr)
-            (put Tgt-Cdr 'c Tgt-Prv)
-            (when (get Tgt 'line)
-              (put-line Tgt Tgt-Cdr))
-            (setq New-Ref Ref)))
+              (b> Tgt-Prv Tgt-Cdr)
+              (put Tgt-Cdr 'c Tgt-Prv)
+              (when (get Tgt 'line)
+                (put-line Tgt Tgt-Cdr))
+              (setq New-Ref Ref)))
       
       # Unlink b before del
       (put Tgt 'b)
