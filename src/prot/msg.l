@@ -51,7 +51,7 @@
 
       (when Bin
         (native "@" "memcpy" NIL
-        (+ (: ipc~buf-wr) 4 4 4 Len-Sexpr) Bin Sz-Bin)))
+                (+ (: ipc~buf-wr) 4 4 4 Len-Sexpr) Bin Sz-Bin)))
 
     Len-Sock))
 
@@ -118,27 +118,23 @@
 (de recv-msg-len (Ipc Sock)
 
   (with Ipc
-
-    (let Bytes-Recv (ipc~recv-bytes> Ipc Sock T 12 sock~MSG-WAITALL)
     
-      (if Bytes-Recv
+    (if (ipc~recv-bytes> Ipc Sock T 12 sock~MSG-WAITALL)
 
-        (struct (: ipc~buf-rd) '(I . 3))
+      (struct (: ipc~buf-rd) '(I . 3))
 
-        (nil (prinl-info "recv-msg-len" (pack "Bytes-Recv=" Bytes-Recv)))))))
+      (nil (prinl-info "recv-msg-len" (pack "Bytes-Recv=" @))))))
 
 
 (de recv-msg-bin (Ipc Sock Sz)
 
   (with Ipc
 
-    (let (Bytes-Recv (ipc~recv-bytes> Ipc Sock T Sz sock~MSG-WAITALL))
+    (if (ipc~recv-bytes> Ipc Sock T Sz sock~MSG-WAITALL)
 
-      (if Bytes-Recv
+      @
 
-        @
-
-        (nil (prinl-info "recv-msg-body" (pack "(not (= Bytes-Recv=" Bytes-Recv " " Len "))")))))))
+      (nil (prinl-info "recv-msg-bin" (pack "(not (= Bytes-Recv=" @ " " Len "))"))))))
 
 
 # FLUSH

@@ -6,9 +6,6 @@ TODO
   The polish of Apple
   The power of open source
 
-  * Refactor messages
-    * Queue and flush
-  * Refactor math
   * Refactor layout
     * *binds-ops needs mix of x/y
     * Traverse parts and change lists to y etc
@@ -21,6 +18,9 @@ TODO
       * Deploy task
       * Set timeout to rotate
       * Fork
+  * Refactor messages [Later]
+    * Queue and flush
+  * Refactor math
   
   * Eval
     * Fix eval output - need refactor layout
