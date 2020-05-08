@@ -1,12 +1,12 @@
 #{
-Poss replace entire class with nng
+  Poss replace entire class with nng
 
-Pass in/out + err handler functions:
+  Pass in/out + err handler functions:
 
-For dispatch, poss store function pointer in struct event data or pointer to
-custom struct
+  For dispatch, poss store function pointer in struct event data or pointer to
+  custom struct
 
-Handle bad accept sock
+  Handle bad accept sock
 }#
 
 (symbols 'ipc 'pico)
@@ -19,20 +19,16 @@ Handle bad accept sock
 (def '*ms-retry 7) # 7 ms or 144 FPS
 
 
-# Wrapper libraries
 (load (pack (pwd) "/src/misc.l"))
 (load (pack (pwd) "/src/c/epoll.l"))
 (load (pack (pwd) "/src/c/socket.l"))
 
 
-# Must define class before loading file with methods
 (class +IPC)
 
 
-(dm T (Path-listener Nonblock-listener Handler-Listener Handler-Accept
+(dm T (Path-Listener Nonblock-Listener Handler-Listener Handler-Accept
        Conns)
-
-  (=: debug-ipc T)
 
   # Ideally, cnt = number of connections to avoid excessive epoll-wait calls
   (=: ep (new '(epoll~+Epoll) 16))
@@ -52,27 +48,24 @@ Handle bad accept sock
   # * Maintain list of initiated connections
   # * Create method for loop - returns conns/conns-id
   
-  # Listener stuff
   (=: listener)
-  (=: nonblock-listener Nonblock-listener)
   (=: handler-listener Handler-Listener)
   (=: handler-accept Handler-Accept)
   (=: clients)
-  
-  (when Path-listener
-    (init-listener> This))
-  
+  (when Path-Listener
+    (init-listener> This @ Nonblock-Listener))
+    
   (=: conns)
   (=: conns-id)
   
   (init-conns> This Conns))
   
 
-(dm init-listener> ()
+(dm init-listener> (Path Nonblock)
 
-  (=: listener (sock~listen Path-listener 
-                            Nonblock-listener 
-                            64))
+  (=: listener (sock~listen Path
+                            Nonblock
+                            16))
   (epoll~ctl> (: ep)
               epoll~ADD
               (: listener)
@@ -137,7 +130,7 @@ Handle bad accept sock
                              
   (case (sock~send Sock
                   (if (num? Buf)   @ (: buf-wr))
-                  (if (num? Sz)    @  (: sz-buf-wr))
+                  (if (num? Sz)    @ (: sz-buf-wr))
                   (if (num? Flags) @ 0))
     (0  NIL) # Orderly shutdown
     (-1 NIL) # Error
@@ -157,7 +150,7 @@ Handle bad accept sock
 
   (case (sock~recv Sock
                    (if (num? Buf)   @ (: buf-rd))
-                   (if (num? Sz)    @  (: sz-buf-rd))
+                   (if (num? Sz)    @ (: sz-buf-rd))
                    (if (num? Flags) @ 0))
     (0  NIL) # Orderly shutdown
     (-1 NIL) # Error
@@ -173,10 +166,10 @@ Handle bad accept sock
 
     
 (dm get-fd> (ID-S)
-  (get (cdr (assoc ID-S (: conns-id))) 1))
+  (car (cdr (assoc ID-S (: conns-id)))))
   
   
-(dm poll> (Timeout)
+(dm poll> (To)
   #{
     epoll-wait:
     * ep-events size should correspond to maxevents
@@ -185,7 +178,7 @@ Handle bad accept sock
     * returns event count
   }#
            
-  (let Cnt (epoll~wait> (: ep) Timeout)
+  (let Cnt (epoll~wait> (: ep) To)
 
     (for Fd (epoll~get-events> (: ep) Cnt)
 
