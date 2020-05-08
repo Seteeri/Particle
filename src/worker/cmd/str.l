@@ -85,6 +85,7 @@
     
       (cond ((or (isa '(+Pair) (get Tgt 'a))
                  (isa '(+Nil)  (get Tgt 'a)))
+              (prinl) (prinl) (println "COND 1") (prinl) (prinl)
               # Remove line
               (del-line Tgt)
               (b> Tgt-Prv Tgt-Cdr)
@@ -93,6 +94,7 @@
     
             # If Tgt prv is Car of Pair, set Car...
             ((= (get Ref 'c 'a) Ref)
+              (prinl) (prinl) (println "COND 2") (prinl) (prinl)
               (put Tgt-Prv 'a Tgt-Cdr)
               # To connect, pop, then push
               (with Tgt-Prv

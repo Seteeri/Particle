@@ -106,6 +106,16 @@
          c*
     NIL
     
+    ---
+    
+    [ ]  [ ]  NIL
+    sym  a*
+    
+    -> 
+
+    [ ]  [ ] [ ]  NIL
+    sym      a*    
+         NIL
   }#
   
   (let (Part (gen-part (cons)
@@ -128,15 +138,19 @@
       
       # Create Line
       (=: line (new '(+Line)
-                    *line
+                    (unless (isa '(+Sym) Cc)
+                      *line)
                     (: b)
-                    (if (get *line 'line 'l) @ *line)))
+                    (unless (isa '(+Sym) Cc)
+                      (if (get *line 'line 'l) @ *line))))
                   
       # Create Line for Cdr
       (put (: b) 'line (new '(+Line)
                             Part
                             (get *line 'line 'n)
-                            (if (get *line 'line 'l) @ *line)))
+                            (if (isa '(+Sym) Cc)
+                                Part
+                                (if (get *line 'line 'l) @ *line))))
       
       # Connect lines
           
