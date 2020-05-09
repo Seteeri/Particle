@@ -3,30 +3,21 @@
   (let Ref (get *0 'b)
 
     (if *on-car
-
-        # If start of list, must replace entire thing
-        (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
-                 (= (get Ref 'c 'a) Ref))
               
+        # If end-of-list NIL
+        (if (and (isa '(+Nil) Ref)
+                 (= (get Ref 'c 'b) Ref))
             (prog
-              (repl-str Data Lay))
-              
-            # If end-of-list NIL
-            (if (and (isa '(+Nil) Ref)
-                     (= (get Ref 'c 'b) Ref))
-                (prog
-                  (ins-str Data Lay)
-                  (point-sub Ref))
-                (prog
-                  (repl-str Data Lay))))
+              (ins-str Data Lay)
+              (point-sub Ref))
+
+            (repl-str Data Lay))
         
         (if (= (get Ref 'c 'a) Ref) # If direct sublist
 
-            (prog
-              (ins-str-first Data Lay))
+            (ins-str-first Data Lay)
 
-            (prog
-              (ins-str Data Lay))))))
+            (ins-str Data Lay)))))
 
 
 (de ins-str (Data Lay)
