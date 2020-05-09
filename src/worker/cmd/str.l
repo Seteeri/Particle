@@ -123,3 +123,23 @@
             List (mapcar pack (split (chop (get Ref 'a 'data)) " ")))
 
         (repl-str-list Ref List)))))
+        
+        
+(de cmd-intern (Keysym)
+  # Convert string to symbol
+  # Build char until space
+  
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))  
+  
+      (let (End Ref
+            (Sta Lst) (build-str-sp End)
+            Data (intern (pack Lst)))
+            
+        (println 'cmd-intern Sta (get Sta 'data) "TO" End (get End 'data))
+
+        (repl-list-str Sta End Data)))))        
