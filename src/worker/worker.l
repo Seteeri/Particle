@@ -62,7 +62,7 @@
 (def '*font)
 (def '*xkb)
 (def '*binds)
-(def '*verts) # Verts loaded
+(def '*vert-offs)
 (def '*cnt-v 1)
 
 # List works for small amount...
@@ -122,8 +122,8 @@
     
   ##################################
     
-  (for I *verts-max (push '*verts (get-vert-off I)))
-  (setq *verts (flip *verts))  
+  (for I *verts-max (push '*vert-offs (get-vert-off I)))
+  (setq *vert-offs (flip *vert-offs))  
   
   (gen-def-parts)
   

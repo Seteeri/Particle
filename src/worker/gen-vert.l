@@ -76,7 +76,7 @@
   (let ((R G B) Col
         Sca (meta '(+Vertex) 'sca-vert))
     (new '(+Vertex)
-         (pop '*verts)
+         (pop '*vert-offs)
          Ch
          (list R G B 1.0
                R G B 1.0

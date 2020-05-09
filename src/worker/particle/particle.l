@@ -111,7 +111,7 @@
   
   (for Vert (: verts)
     (send-msg-rend (pack "(zv " (get Vert 'off-gl) '")"))
-    (push '*verts (get Vert 'off-gl))
+    (push '*vert-offs (get Vert 'off-gl))
     (dec '*cnt-v))
 
   (when (and A (: a)) (del> (: a) A B))
