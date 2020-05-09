@@ -380,21 +380,21 @@
 
   (let (Keycode (+ (get Data 4) 8)
         State   (get Data 5)
-        Keysym  (get-one-sym> *xkb Keycode)  # or Data 7
-        Name    (xkb~keysym-get-name Keysym)
+        Ks  (get-one-sym> *xkb Keycode)  # or Data 7
+        Name    (xkb~keysym-get-name Ks)
         Utf-8   (get-utf8> *xkb Keycode))
 
-    #(prinl-info "cmd-kb" (pack (str Data) " " Keysym))
+    #(prinl-info "cmd-kb" (pack (str Data) " " Ks))
 
     # Update states
     (upd-key> *xkb Keycode State)
 
     # Note this returns the actual cell
     (with *xkb
-      (let State-Xkb (assoc Keysym (: states))
+      (let State-Xkb (assoc Ks (: states))
         (when State-Xkb
           (del State-Xkb (:: states)))
-        (push (:: states) (cons Keysym State))))
+        (push (:: states) (cons Ks State))))
 
     # Check bindings and dispatch handlers
 
@@ -435,14 +435,14 @@
 
         # TODO: Sort key times
 
-        (push 'Mods Keysym)
+        (push 'Mods Ks)
         (setq Mods (flip Mods))
         
         (let? V (cdr (lup *binds Mods))
           (let (Rep (car V)
                 Fn (cadr V))
             (unless (and (= State KEY-REPEAT) (not Rep))
-              (Fn Keysym))))))))
+              (Fn Ks))))))))
 
 
 (def 'PI 3.141592)

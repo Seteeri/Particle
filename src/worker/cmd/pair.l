@@ -1,4 +1,4 @@
-(de cmd-reset (Keysm)
+(de cmd-reset (Ks)
 
   (println 'cmd-reset)
 
@@ -11,7 +11,7 @@
   (gc))
 
       
-(de cmd-mov-nl (Keysym)
+(de cmd-mov-nl (Ks)
   (println "Move newline")
 
   (let Ref (get *0 'b)
@@ -20,33 +20,13 @@
         (make-line Ref))))
 
 
-(de cmd-mov-bl (Keysym)
+(de cmd-mov-bl (Ks)
   
   # This moves Ref front of prv
   # Only applies to non-list...
     
   (let? Ref (get *0 'b)
     (backspace-line Ref)))
-
-
-(de cmd-intern (Keysym)
-  # Convert string to symbol
-  # Build char until space
-  
-  (let Ref (get *0 'b)
-  
-    (when (isa '(+Nil) Ref)
-      (setq Ref (get Ref 'c)))
-  
-    (when (isa '(+Str) (get Ref 'a))  
-  
-      (let (End Ref
-            (Sta Lst) (build-str-sp End)
-            Data (intern (pack Lst)))
-            
-        (println 'cmd-intern Sta (get Sta 'data) "TO" End (get End 'data))
-
-        (repl-list-str Sta End Data)))))
 
 
 (de cmd-del (Dir)

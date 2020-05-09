@@ -296,11 +296,11 @@
     ##########
     # CUA Ops
     
-    #((ksd~Control-L ksd~x) T ((Keysym) (println "Ctrl-L x: CUT")))
-    #((ksd~Control-L ksd~c) T ((Keysym) (println "Ctrl-L c: COPY")))
-    #((ksd~Control-L ksd~v) T ((Keysym) (println "Ctrl-L v: PASTE")))
-    #((ksd~Control-L ksd~z) T ((Keysym) (println "Ctrl-L z: UNDO")))
-    #((ksd~Alt-L     ksd~z) T ((Keysym) (println "Alt-L z: REDO")))
+    #((ksd~Control-L ksd~x) T ((Ks) (println "Ctrl-L x: CUT")))
+    #((ksd~Control-L ksd~c) T ((Ks) (println "Ctrl-L c: COPY")))
+    #((ksd~Control-L ksd~v) T ((Ks) (println "Ctrl-L v: PASTE")))
+    #((ksd~Control-L ksd~z) T ((Ks) (println "Ctrl-L z: UNDO")))
+    #((ksd~Alt-L     ksd~z) T ((Ks) (println "Alt-L z: REDO")))
 
     #########
     # Str Ops

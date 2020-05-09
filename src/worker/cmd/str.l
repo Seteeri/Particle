@@ -1,4 +1,4 @@
-(de cmd-make-char (Keysym)
+(de cmd-make-char (Ks)
 
   #{
     \r = ^M
@@ -6,9 +6,9 @@
     \t = ^I
   }#
   
-  (let (Data (cond ((= Keysym ksd~Return) "^J")
-                   ((= Keysym ksd~Tab) "^I")
-                   (T (char Keysym)))
+  (let (Data (cond ((= Ks ksd~Return) "^J")
+                   ((= Ks ksd~Tab) "^I")
+                   (T (char Ks)))
         Lay 'x)
 
     # Push to cmd list
@@ -18,19 +18,19 @@
     (make-str Data Lay)))
 
 
-(de cmd-make-nil (Keysym)
+(de cmd-make-nil (Ks)
   (prinl-info "cmd-make-nil")
   (make-str NIL 'x))
 
 
-(de cmd-make-num (Keysym)
+(de cmd-make-num (Ks)
 
   (println "cmd-make-num")
 
-  (make-str (format (char Keysym)) 'x))
+  (make-str (format (char Ks)) 'x))
 
 
-(de cmd-format (Keysym)
+(de cmd-format (Ks)
 
   (prinl-info "cmd-format")
 
@@ -40,7 +40,7 @@
 
 # Reuse strs for these fns
 
-(de cmd-pack-syms (Keysym)
+(de cmd-pack-syms (Ks)
 
   (prinl-info "cmd-pack-syms")
 
@@ -63,7 +63,7 @@
         (repl-list-str Sta End Data)))))
 
         
-(de cmd-chop (Keysym)
+(de cmd-chop (Ks)
 
   (prinl-info "cmd-chop")
 
@@ -85,7 +85,7 @@
 #######
 
     
-(de cmd-glue-sp-syms (Keysym)
+(de cmd-glue-sp-syms (Ks)
 
   (prinl-info "cmd-glue-sp-syms")
   
@@ -105,7 +105,7 @@
         (repl-list-str Sta End Data)))))
     
     
-(de cmd-split-sp (Keysym)
+(de cmd-split-sp (Ks)
 
   (prinl-info "cmd-split-sp")
   
@@ -125,7 +125,7 @@
         (repl-str-list Ref List)))))
         
         
-(de cmd-intern (Keysym)
+(de cmd-intern (Ks)
   # Convert string to symbol
   # Build char until space
   

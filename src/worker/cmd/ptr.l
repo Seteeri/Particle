@@ -1,7 +1,7 @@
 ###############################
 # Semantic Traversal (Pair/Ptr)
 
-(de cmd-ptr-left (Keysym)    
+(de cmd-ptr-left (Ks)    
   # Only if Ref and Prv both are Y layout
   (if (and (lay-y?> (get *0 'b))
            (lay-y?> (get *0 'b 'c)))
@@ -9,29 +9,29 @@
       (point-prv)))
 
 
-(de cmd-ptr-right (Keysym)
+(de cmd-ptr-right (Ks)
   (if (lay-x?> (get *0 'b))
       (point-nxt)
       (point-sub)))
 
 
-(de cmd-ptr-up (Keysym)
+(de cmd-ptr-up (Ks)
   (if (lay-x?> (get *0 'b))
       (point-sup)
       (point-prv)))
 
 
-(de cmd-ptr-down (Keysym)
+(de cmd-ptr-down (Ks)
   (if (lay-x?> (get *0 'b))
       (point-sub)
       (point-nxt)))
 
       
-(de cmd-ptr-ln-first (Keysym)
+(de cmd-ptr-ln-first (Ks)
   (point-ln-first))
 
 
-(de cmd-ptr-ln-last (Keysym)
+(de cmd-ptr-ln-last (Ks)
   (point-ln-last))
       
 
@@ -52,16 +52,16 @@
     (put *0 'b Ref)))
     
 
-(de cmd-trans-ptr-px (Keysym)
+(de cmd-trans-ptr-px (Ks)
   (cmd-trans-ptr 1 '(adv-cur 1.0)))
   
-(de cmd-trans-ptr-nx (Keysym)
+(de cmd-trans-ptr-nx (Ks)
   (cmd-trans-ptr 1 '(adv-cur -1.0)))
   
-(de cmd-trans-ptr-py (Keysym)
+(de cmd-trans-ptr-py (Ks)
   (cmd-trans-ptr 2 '(nl-cur -1.0)))
   
-(de cmd-trans-ptr-ny (Keysym)
+(de cmd-trans-ptr-ny (Ks)
   (cmd-trans-ptr 2 '(nl-cur 1.0)))
 
 
