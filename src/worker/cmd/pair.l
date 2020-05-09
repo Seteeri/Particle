@@ -47,3 +47,129 @@
         (println 'cmd-intern Sta (get Sta 'data) "TO" End (get End 'data))
 
         (repl-list-str Sta End Data)))))
+
+
+(de cmd-del (Dir)
+
+  (prinl-info "cmd-del")
+
+  #{
+  
+    Delete previous
+
+    
+              *0
+    [ ]  [ ]  NIL
+    a    b
+
+    #############
+    
+        *0
+    [ ]  [ ]  NIL
+    a    b
+
+    #############
+    
+    *0
+    [ ]  [ ]  NIL
+    a    b    
+
+    #############
+    
+    [ ]  [ ]  NIL
+    a    b        
+
+    *0
+    [ ]  [ ]  NIL
+        c        
+
+    #############
+    
+    [ ]  [ ]  NIL
+    a    b        
+
+    
+    [ ]  [ ]  NIL
+        NIL        
+        
+    *0     
+    NIL
+    
+  }#
+
+  (let? Ref (get *0 'b)
+  
+    (del-pair Ref)))
+        
+# Evals        
+        
+        
+(de cmd-eval-str ()
+  (prinl-info "cmd-eval-str")
+  
+  # Eval Ref data directly
+  
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))
+  
+      (let (In (get Ref 'a 'data)
+            Out (eval (car (str In))))
+
+        # Move to next line
+        (make-line (make-str Out 'x))))))
+
+
+(de cmd-eval ()
+  (prinl-info "cmd-eval")
+  
+  # Eval Ref data directly
+  
+  (let (Ref (get *0 'b)
+        In (get Ref 'a 'data)
+        Out (eval In))
+
+    (point-nxt)        
+        
+    (make-str Out 'x)))
+  
+
+(de cmd-str ()
+  (prinl-info "cmd-str")
+  
+  # Parse str/code to lisp data
+  
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))
+      
+      (let (In (get Ref 'a 'data)
+            Out (str In))
+                        
+        (make-str (car Out) 'x)))))        
+        
+        
+(de cmd-pes ()
+  # Pack and eval-Str
+  
+  (let Ref (get *0 'b)
+  
+    (when (isa '(+Nil) Ref)
+      (setq Ref (get Ref 'c)))
+  
+    (when (isa '(+Str) (get Ref 'a))  
+  
+      (let (End Ref
+            (Sta Lst) (build-str End)
+            Str (pack Lst)
+            Out (eval (car (str Str))))
+        
+        (repl-list-str Sta End Str T)
+        (make-line (make-str Out 'x))))))
+        
