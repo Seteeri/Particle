@@ -91,4 +91,28 @@
   
   (println 'put-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
 
-  (setq *line Dst))      
+  (setq *line Dst))  
+  
+
+(de backspace-line (Ref)  
+  (let Prv (get Ref 'c)
+
+    (when (and (get Ref 'line 'p)
+               (not (= (get Ref 'data) '*start)))
+    
+      (unless (or (isa '(+Pair) (get Ref 'a))
+                  (isa '(+Nil) (get Ref 'a))
+                  (= (get Prv 'a) Ref))
+                                    
+        (setq *line (get Ref 'line 'p))
+        # Remove line
+        (del-line Ref)
+        (put Ref 'line)
+
+        (upd-tree)
+        (mov-*1 *line)      
+        
+        # Ptr remains on Ref
+        # How about for on-car?
+        (mov-cur-abv Ref)
+        (lay-part-start *0 *line 'skip-cdr)))))  

@@ -41,28 +41,8 @@
   # This moves Ref front of prv
   # Only applies to non-list...
     
-  (let (Ref (get *0 'b)
-        Prv (get Ref 'c))
-
-    (when (and (get Ref 'line 'p)
-               (not (= (get Ref 'data) '*start)))
-    
-      (unless (or (isa '(+Pair) (get Ref 'a))
-                  (isa '(+Nil) (get Ref 'a))
-                  (= (get Prv 'a) Ref))
-                                    
-        (setq *line (get Ref 'line 'p))
-        # Remove line
-        (del-line Ref)
-        (put Ref 'line)
-
-        (upd-tree)
-        (mov-*1 *line)      
-        
-        # Ptr remains on Ref
-        # How about for on-car?
-        (mov-cur-abv Ref)
-        (lay-part-start *0 *line 'skip-cdr)))))
+  (let? Ref (get *0 'b)
+    (backspace-line Ref)))
 
 
 ###########################################################
