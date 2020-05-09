@@ -9,7 +9,7 @@
                  (= (get Ref 'c 'a) Ref))
               
             (prog
-              (repl-sym-first Data Lay))
+              (repl-str-first Data Lay))
               
             # If end-of-list NIL
             (if (and (isa '(+Nil) Ref)
@@ -18,7 +18,7 @@
                   (ins-str Data Lay)
                   (point-sub Ref))
                 (prog
-                  (repl-sym Data Lay))))
+                  (repl-str Data Lay))))
         
         (if (= (get Ref 'c 'a) Ref) # If direct sublist
 
@@ -87,7 +87,7 @@
     Part))
 
 
-(de repl-sym-first (Data Lay)
+(de repl-str-first (Data Lay)
   # Replace pair y car
   
   #{
@@ -142,7 +142,7 @@
     Part))
   
 
-(de repl-sym (Data Lay)
+(de repl-str (Data Lay)
   # Replace pair x car
   #{
     Replace car
@@ -168,7 +168,7 @@
     
     (b> C Pair)
     
-    # Main diff here from repl-sym-first
+    # Main diff here from repl-str-first
       
     # Delete Ref
     (del> Ref T T)
