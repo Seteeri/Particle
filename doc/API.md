@@ -1,6 +1,48 @@
 API
 ===
 
+* PicoLisp VM
+  * Purely cons-based
+  * Threaded interpreter only
+    * No compiler explicitly to maintain "formal equivalence of code and data"
+  * Lisp-1 meaning single namespace for function and variable names
+  * Dynamically scoped, dynamic/shallow symbol binding, late method binding
+    * Transient symbols (includes strings) lexically scoped
+  * Written in macro asm; No C code
+  * ~3x faster than CPython
+  * Built-in database using external symbols as first-class data type
+    * memory based db file = emulation of single address space?
+* Modern OpenGL ES 3.2, aka programmable pipeline
+  * Vulkan planned
+  * Uses glyph instancing aka "particle system"
+    * Multi-channel signed distance fonts
+      * Felzenszwalb/Huttenlocher distance transform*
+      * Glyph hinting*
+      * Subpixel antialiasing*
+  * Compute shaders
+  * AZDO techniques to minimize draw calls and reduce CPU<->GPU comms
+    * Persistent mapping
+    * Instanced drawing
+    * Indirect drawing
+    * Explicit synchronization with double/triple buffering (testing)
+    * Programmable vertex pulling
+      * Texture buffers/UBOs/SSBOs
+      * gl_VertexID+gl_InstanceID
+* Transparency sorting currently avoided by preventing objects overlapping
+  * Orthographic projection
+  * Investigate further later
+* Process-based
+  * Renderer, Input, and Control/Workers separate processes
+    * Number of workers matches core count approximately
+  * IPC through sockets, pipes, and memory-backed DB with concurrent GC
+  * Provides fault-tolerance and scalability
+* Maintains responsive UI by cycling processes to allow parallel GC
+  * Renderer primarily memcpys to minimize GC occurance and duration
+* Parallelism*
+  * Auto-parallelize dependency tree
+  * Ported from CL library lparallel
+* Wayland focused
+
 # Initialization Sequence    
     
 # Process Data Flow
