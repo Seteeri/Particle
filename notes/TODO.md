@@ -6,13 +6,13 @@ TODO
   The polish of Apple
   The power of open source
 
-  * Refactor socket - set err instead of propogating  
   * Refactor ops
     * Use list transform fn
   * Refactor layout
     * *binds-ops needs mix of x/y
     * Traverse parts and change lists to y etc
       * Either do in gen or lay phase
+  * Refactor socket - set err instead of propogating  
   * Refactor math
   
   * Eval

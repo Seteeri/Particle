@@ -31,21 +31,23 @@
 
 (de ins-str (Data Lay)
   #{
-  
-    Insert item before pair ptr
+    Insert after ptr/pair (rel to Ref 'b 'c)
+    or
+    Insert before ptr/pair
     
+          *
+    [ ]  [ ]  ...
+    a    c    
+
+    ->
     
-    [Y]  [X]  NIL
-         a
-    *
-    NIL
+          *
+    [ ]  [ ]  [ ]  ...
+    a    b    c                 
     
-    - C needed to make a line for NIL...
-    - NIL is X layout now
-          
+    ---
     
-    Special cases:
-    
+    Special case: Insert before ptr/list
     
     [ ]  [ ]
     a    b
@@ -58,34 +60,109 @@
     
     - Normally Part would be right of B which is awkward,
     so ins Part as newline before Y
+    - Or start newline and move Y to newline
     
   }#
          
   (let (Ref (get *0 'b)
-        C (get Ref 'c)
+        Pair (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    (println 'ins-str C (get C 'data))
-
-    (con-sym C Part)
+    (con-sym Pair Part)
   
-    # Make line as necessary
+    # Make line as necessary if car is a list
     (if (and (isa '(+Pair) (get Ref 'a))
              (isa '(+Pair) Ref))
-        (prog
-          (make-line Ref))
+        (make-line Ref)
         (when (get Ref 'line)
           (put-line Cdr Part)))
     
     (upd-tree)
     (mov-*1 *line)
-    
-    # Same ref, relayout
+        
     (mov-cur-abv Ref)
     (lay-part-start *0 *line 'skip-cdr)
     
     Part))
+    
 
+(de ins-str-first (Data Lay)
+
+  #{
+    Insert item before ptr
+
+    [X]
+    
+          *
+    [Y]  [ ] ...
+          X
+    NIL
+    
+    ->
+    
+    [X]
+    
+               *
+    [Y]  [ ]  [ ] ...
+          Z    X
+    NIL    
+    
+    -------------------
+    
+          *
+    [Y]  [Y]  ...
+              
+         NIL
+    NIL
+    
+    ->
+          *
+    [Y]  [ ]
+         a
+         
+         [Y]  ...
+              
+         NIL
+         
+    NIL
+  }#
+    
+  (let (Ref (get *0 'b)
+        Pair (get Ref 'c)
+        Part (gen-part (list Data) Lay NIL T)
+        Is-Ref-Pair-of-Pair (and (isa '(+Pair) (get Ref 'a))
+                                 (isa '(+Pair) Pair)))
+
+    (b> Part Ref)
+          
+    (a> Pair Part)
+        
+    (put-line Ref Part)        
+          
+    (c-a> Pair)
+          
+    (when Is-Ref-Pair-of-Pair
+      # Create additional line for Ref
+      # Ins after current line (Part)
+      (put Ref 'line (new '(+Line)
+                          Part
+                          (get Ref 'b)
+                          (if (get *line 'line 'l) @ *line)))
+      (put *line 'line 'n Ref))
+        
+    (upd-tree)
+    (mov-*1 *line)
+
+    (if Is-Ref-Pair-of-Pair
+        (prog
+          (put *0 'b Part)
+          (mov-cur-abv Part))
+        (mov-cur-abv Ref))
+    
+    (lay-part-start *0 *line 'skip-cdr)    
+    
+    Part))
+    
 
 (de repl-str (Data Lay)
   #{
@@ -137,93 +214,6 @@
     (put *0 'b Part)
     (point-nxt)
         
-    Part))
-
-
-(de ins-str-first (Data Lay)
-
-  #{
-  
-    Replace beginning of list when ptr over
-    
-    [Cc]
-    
-          *
-    [Pa]  [Pr] NIL
-          X
-    NIL
-    
-    ->
-    
-    [Cc]
-    
-              *
-    [ ]  [ ]  [ ] NIL
-         Z    X
-    NIL    
-    
-    -------------------
-    
-    ((c))
-    
-         *
-    [Y]  [Y]  [ ]  NIL
-              c
-         NIL
-    NIL
-    
-    Y/Pair can only be on newline or after Y/Pair
-
-    
-    (x (c))
-         
-    [Y]  [ ]
-         x
-         
-         *
-         [Y]  [ ]  NIL
-              c
-         NIL
-         
-    NIL    
-    
-    - Diff is no exchange newline
-    - Create line for x
-  }#
-    
-  (let (Ref (get *0 'b)
-        Pair (get Ref 'c)
-        Cc (get Pair 'c)
-        Part (gen-part (list Data) Lay NIL T))
-
-    # Part <-> Ref
-    (b> Part Ref)
-          
-    # Pair <-> Part
-    (a> Pair Part)
-        
-    # Mov nl from Ref to Part
-    (put-line Ref Part)        
-          
-    (c-a> Pair)
-          
-    (when (and (isa '(+Pair) (get Ref 'a))
-               (isa '(+Pair) Pair))    
-        # Create additional line for Ref
-        # Ins after current line (Part)
-        (put Ref 'line (new '(+Line)
-                            Part
-                            (get Ref 'b)
-                            (if (get *line 'line 'l) @ *line)))
-        (put *line 'line 'n Ref))
-        
-    (upd-tree)
-    (mov-*1 *line)
-
-    # Same ref, relayout
-    (mov-cur-abv Ref)
-    (lay-part-start *0 *line 'skip-cdr)    
-    
     Part))
     
     
