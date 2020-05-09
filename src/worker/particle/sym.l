@@ -175,13 +175,13 @@
                 (= (: val) "^J"))
             (setq X-B (max X-B (car *cur))
                   Y-B (min Y-B (cadr *cur))
-                  *cur (list X (- (cadr *cur) *adv-vert-2)))
-            (setq *cur (list (+ (car *cur) *adv-vert) (cadr *cur))))))
+                  *cur (list X (- (cadr *cur) (meta '(+Vertex) 'adv-vert-2))))
+            (setq *cur (list (+ (car *cur) (meta '(+Vertex) 'adv-vert)) (cadr *cur))))))
       
     (=: ori (ori> This))
 
     # Mov cur back one adv
-    (setq *cur (list (max X-B (- (car *cur) *adv-vert))
+    (setq *cur (list (max X-B (- (car *cur) (meta '(+Vertex) 'adv-vert)))
                      (min Y-B (cadr *cur))))))
   
 

@@ -28,7 +28,7 @@
                   NIL NIL
                   Verts
                   Lay))
-    (put Part 'dims (list Wid *adv-vert-2))
+    (put Part 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
     Part))
 
 
@@ -39,7 +39,7 @@
                   NIL NIL
                   Verts
                   Lay))
-    (put Part 'dims (list Wid *adv-vert-2))
+    (put Part 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
     Part))
 
     
@@ -54,7 +54,7 @@
                   NIL NIL
                   Verts
                   Lay))
-    (put Part 'dims (list Wid *adv-vert-2))
+    (put Part 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
     Part))
     
         
@@ -87,8 +87,8 @@
                        Lay))
                        
       # Set dims
-      (put Part-Car 'dims (list Wid-Car *adv-vert-2))
-      (put Part-Pair 'dims (list Wid-Pair *adv-vert-2))
+      (put Part-Car 'dims (list Wid-Car (meta '(+Vertex) 'adv-vert-2)))
+      (put Part-Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
                         
       # If CAR/CDR, is a list, set C to pair
 
@@ -120,7 +120,7 @@
                         Verts-Pair
                         Lay))
                         
-      (put Part-Pair 'dims (list Wid-Pair *adv-vert-2))
+      (put Part-Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
                         
       # If CAR/CDR, is a list, set C to pair
       (unless Car-Skip (put Part-Car 'c Part-Pair))

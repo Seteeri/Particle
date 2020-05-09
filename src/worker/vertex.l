@@ -6,7 +6,18 @@
 
 
 (class +Vertex)
-(var sz . `SZ-GL-VERT)
+(with *Class
+  (=: sz          SZ-GL-VERT)
+  (=: sca-vert    (*/ 1.0 1.0 32.0)) # ortho-scale
+  (=: adv-glyph   19.265625) # taken from font
+  (=: adv-vert    (*/ (: adv-glyph)
+                      (: sca-vert) 1.0))
+  (=: adv-vert-2  (+ (: adv-vert)
+                     (: adv-vert)))
+  (=: color-vert-def (list 0.5137255 0.5803922 0.60784316 1.0 
+                           0.5137255 0.5803922 0.60784316 1.0
+                           0.5137255 0.5803922 0.60784316 1.0 
+                           0.5137255 0.5803922 0.60784316 1.0)))
 
 (dm T (Off-Gl
        Ch       #Use to get offset, if char then data is char also

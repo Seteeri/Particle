@@ -54,18 +54,6 @@
 
 (def 'NAME-PID "WORKER")
 
-# Constants
-(def '*glyph-dims  '(96.0 96.0))
-(def '*sca-vert    (*/ 1.0 1.0 32.0)) # ortho-scale
-(def '*adv-glyph   19.265625)
-(def '*adv-vert    (*/ *adv-glyph *sca-vert 1.0))
-(def '*adv-vert-2  (+ *adv-vert *adv-vert))
-(def '*adv-vert-3  (+ *adv-vert-2 *adv-vert))
-(def '*color-vert-def
-  (list 0.5137255 0.5803922 0.60784316 1.0 
-        0.5137255 0.5803922 0.60784316 1.0
-        0.5137255 0.5803922 0.60784316 1.0 
-        0.5137255 0.5803922 0.60784316 1.0))
 (def 'KEY-REPEAT 2)
 (def '*sublist-space-y 1.0)
 

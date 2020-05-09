@@ -19,10 +19,10 @@
     (req-send *ipc *projview))
 
 
-(de cmd-move-cam-px (Ks) (cmd-move-cam (list *adv-vert-2     0.0)))
-(de cmd-move-cam-nx (Ks) (cmd-move-cam (list (- *adv-vert-2) 0.0)))
-(de cmd-move-cam-py (Ks) (cmd-move-cam (list 0.0 *adv-vert-2)))
-(de cmd-move-cam-ny (Ks) (cmd-move-cam (list 0.0 (- *adv-vert-2))))
+(de cmd-move-cam-px (Ks) (cmd-move-cam (list (meta '(+Vertex) 'adv-vert-2)     0.0)))
+(de cmd-move-cam-nx (Ks) (cmd-move-cam (list (- (meta '(+Vertex) 'adv-vert-2)) 0.0)))
+(de cmd-move-cam-py (Ks) (cmd-move-cam (list 0.0 (meta '(+Vertex) 'adv-vert-2))))
+(de cmd-move-cam-ny (Ks) (cmd-move-cam (list 0.0 (- (meta '(+Vertex) 'adv-vert-2)))))
 
 
 (de cmd-zoom-cam (Delta)

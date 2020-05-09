@@ -35,5 +35,5 @@
 
 (dm calc-sca-f> ()
   (=: sca-f (*/ 1.0
-                *sca-vert
+                (meta '(+Vertex) 'sca-vert)
                 (: scale))))

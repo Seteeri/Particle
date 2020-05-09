@@ -73,7 +73,8 @@
 
 (de gen-vert-glyph (Ch Col Val)
   (inc '*cnt-v)
-  (let ((R G B) Col)
+  (let ((R G B) Col
+        Sca (meta '(+Vertex) 'sca-vert))
     (new '(+Vertex)
          (pop '*verts)
          Ch
@@ -83,7 +84,7 @@
                R G B 1.0)
          (need 3 0.0)
          (need 3 0.0)
-         (need 3 *sca-vert)
+         (need 3 Sca)
          Val)))
 
 
@@ -105,19 +106,19 @@
 (de gen-vert-str (Str Col)
   (let Verts (gen-vert-repr (chop Str) Col)
     (list Verts
-          (*/ *adv-vert (num-to-fl (- (length Verts) 1)) 1.0))))
+          (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
 
   
 (de gen-vert-num (Num Col)
   (let Verts (gen-vert-repr (chop (format Num)) Col)
     (list Verts
-          (*/ *adv-vert (num-to-fl (- (length Verts) 1)) 1.0))))
+          (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
 
 
 (de gen-vert-sym (Sym Col)
   (let Verts (gen-vert-repr (chop (sym Sym)) Col)
     (list Verts
-          (*/ *adv-vert (num-to-fl (- (length Verts) 1)) 1.0))))
+          (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
           
 
 (de gen-vert-atom (Atom Col)
@@ -137,6 +138,6 @@
   
   (if Self
       (list (list (gen-vert-dot Col) (gen-vert-dot Col))
-            *adv-vert-2)
+            (meta '(+Vertex) 'adv-vert-2))
       (list (list (gen-vert-dot Col))
-            *adv-vert)))
+            (meta '(+Vertex) 'adv-vert))))

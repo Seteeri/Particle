@@ -142,12 +142,12 @@
         
         (off (:: dirt))))
 
-    (setq *cur (list (+ (car *cur) *adv-vert)
+    (setq *cur (list (+ (car *cur) (meta '(+Vertex) 'adv-vert))
                     (cadr *cur))))
                                         
   (=: ori (ori> This))
     
-  (setq *cur (list (- (car *cur) *adv-vert)
+  (setq *cur (list (- (car *cur) (meta '(+Vertex) 'adv-vert))
                    (cadr *cur))))
 
   
@@ -166,7 +166,7 @@
     
         # Set to pos of last vert (mul by length)
         (setq Pos (list (+ (car Pos)
-                            (*/ *adv-vert (num-to-fl (- (length (: verts)) 1)) 1.0))
+                            (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length (: verts)) 1)) 1.0))
                         (cadr Pos)))
     
         (setq Pos (mov-verts> This Pos))))

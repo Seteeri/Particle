@@ -32,7 +32,7 @@
   (setq *cur (place 1
                     *cur
                     (+ (car *cur)
-                       (*/ *adv-vert Cnt 1.0)))))
+                       (*/ (meta '(+Vertex) 'adv-vert) Cnt 1.0)))))
 
 
 (de nl-cur (Cnt)
@@ -42,7 +42,7 @@
   (setq *cur (place 2
                     *cur
                     (- (cadr *cur)
-                       (*/ (+ *adv-vert *adv-vert) Cnt 1.0)))))
+                       (*/ (+ (meta '(+Vertex) 'adv-vert) (meta '(+Vertex) 'adv-vert)) Cnt 1.0)))))
 
 
 (de set-cur-x (X)
