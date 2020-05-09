@@ -1,4 +1,3 @@
-####################
         
         
 (de make-line (Ref)
@@ -39,9 +38,6 @@
   (println 'make-line "Made newline")
     
   Ref)
-
-  
-###################
 
 
 (de ins-line-pre (Part)

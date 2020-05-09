@@ -3,6 +3,12 @@
 (def '*line-lay)
 
 
+(de upd-tree (List)
+
+  (setq *cur (get *master 'ori))
+  (lay-part-start *master (get *master 'b)))    
+
+
 (de upd-cur ()
   (setq *bnds-x (if *bnds-x
                    (max @ (car *cur))

@@ -255,9 +255,3 @@
     (println 'make-cons-car-x-nil "Made nested list")
 
     Part))
-    
-    
-(de upd-tree (List)
-
-  (setq *cur (get *master 'ori))
-  (lay-part-start *master (get *master 'b)))            

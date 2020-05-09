@@ -1,11 +1,3 @@
-# Move more stuff to methods
-# Standardize checks
-# Standardize prim ops
-
-#####################
-#####################
-# SYM
-
 # make-sym?
 (de make-str (Data Lay)
 
