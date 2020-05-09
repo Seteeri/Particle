@@ -1,5 +1,3 @@
-        
-        
 (de make-line (Ref)
 
   #{

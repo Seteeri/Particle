@@ -1,4 +1,3 @@
-# make-sym?
 (de make-str (Data Lay)
 
   (let Ref (get *0 'b)
@@ -16,7 +15,7 @@
             (if (and (isa '(+Nil) Ref)
                      (= (get Ref 'c 'b) Ref))
                 (prog
-                  (ins-sym Data Lay)
+                  (ins-str Data Lay)
                   (point-sub Ref))
                 (prog
                   (repl-sym Data Lay))))
@@ -24,13 +23,13 @@
         (if (= (get Ref 'c 'a) Ref) # If direct sublist
 
             (prog
-              (ins-sym-first Data Lay))
+              (ins-str-first Data Lay))
 
             (prog
-              (ins-sym Data Lay))))))
+              (ins-str Data Lay))))))
 
 
-(de ins-sym (Data Lay)
+(de ins-str (Data Lay)
   #{
   
     Insert item before pair ptr
@@ -66,7 +65,7 @@
         C (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    (println 'ins-sym C (get C 'data))
+    (println 'ins-str C (get C 'data))
 
     (con-sym C Part)
   
@@ -183,7 +182,7 @@
     Part))
 
 
-(de ins-sym-first (Data Lay)
+(de ins-str-first (Data Lay)
 
   #{
   
