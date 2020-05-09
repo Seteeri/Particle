@@ -290,7 +290,7 @@
 
 
 (dm check-nl> ()
-  (when (get (: line))
+  (when (: line)
   
     (when (get (: line) 'p)
     

@@ -1,16 +1,3 @@
-(de cmd-reset (Ks)
-
-  (println 'cmd-reset)
-
-  # Clear ptr
-  (put *0 'b)
-
-  (println 'cmd-reset *master (get *master 'data))
-  (del> *master T T)
-
-  (gc))
-
-      
 (de cmd-mov-nl (Ks)
   (println "Move newline")
 
@@ -33,54 +20,11 @@
 
   (prinl-info "cmd-del")
 
-  #{
-  
-    Delete previous
-
-    
-              *0
-    [ ]  [ ]  NIL
-    a    b
-
-    #############
-    
-        *0
-    [ ]  [ ]  NIL
-    a    b
-
-    #############
-    
-    *0
-    [ ]  [ ]  NIL
-    a    b    
-
-    #############
-    
-    [ ]  [ ]  NIL
-    a    b        
-
-    *0
-    [ ]  [ ]  NIL
-        c        
-
-    #############
-    
-    [ ]  [ ]  NIL
-    a    b        
-
-    
-    [ ]  [ ]  NIL
-        NIL        
-        
-    *0     
-    NIL
-    
-  }#
-
   (let? Ref (get *0 'b)
   
     (del-pair Ref)))
-        
+
+
 # Evals        
         
         
@@ -153,3 +97,17 @@
         (repl-list-str Sta End Str T)
         (make-line (make-str Out 'x))))))
         
+
+# Fix
+
+(de cmd-reset (Ks)
+
+  (println 'cmd-reset)
+
+  # Clear ptr
+  (put *0 'b)
+
+  (println 'cmd-reset *master (get *master 'data))
+  (del> *master T T)
+
+  (gc))

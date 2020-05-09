@@ -7,10 +7,33 @@ TODO
   The power of open source
 
   * Refactor socket - set err instead of propogating  
+  * Refactor ops
+    * Use list transform fn
   * Refactor layout
     * *binds-ops needs mix of x/y
     * Traverse parts and change lists to y etc
       * Either do in gen or lay phase
+  * Refactor math
+  
+  * Eval
+    * Fix eval output - need refactor layout
+    * Print system out
+      * Where to put it?
+        * Separate *out list
+          * Part of process...
+          * Visualize process?
+        * Sublist of original cmd
+        * Two lines  
+  
+  * Visual Hierarchy
+    * Process -> Namespace -> Symbols...
+    * Process assumed to be the same...so indicate with ptr?
+      * Namespace is the root...  
+  * Need to be able to mov pointer to another list
+    * Either modify master ptr
+    * Or mov current ptr
+  * Draw spine or use grid to provide visual line guide  
+  
   * Relayout should use multiple workers
     * Scout pushes work into a queue
       * On finish scan, become worker
@@ -25,30 +48,9 @@ TODO
           * Deploy task
           * Set timeout to rotate
           * Fork      
-  * Refactor math  
   * Refactor messages [Later]
     * Queue and flush
-  * Pass Vertex size through CLI?
-  
-  * Eval
-    * Fix eval output - need refactor layout
-    * Print system out
-      * Where to put it?
-        * Separate *out list
-          * Part of process...
-          * Visualize process?
-        * Sublist of original cmd
-        * Two lines
-  
-  * Visual Hierarchy
-    * Process -> Namespace -> Symbols...
-    * Process assumed to be the same...so indicate with ptr?
-      * Namespace is the root...  
-  * Need to be able to mov pointer to another list
-    * Either modify master ptr
-    * Or mov current ptr
-  * Draw spine or use grid to provide visual line guide
-  
+      
   * Draw *binds-ops
     * Need custom layout
     * Instead of double space, use ptr arrow

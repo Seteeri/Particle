@@ -9,7 +9,7 @@
                  (= (get Ref 'c 'a) Ref))
               
             (prog
-              (repl-str-first Data Lay))
+              (repl-str Data Lay))
               
             # If end-of-list NIL
             (if (and (isa '(+Nil) Ref)
@@ -87,74 +87,30 @@
     Part))
 
 
-(de repl-str-first (Data Lay)
-  # Replace pair y car
-  
-  #{
-    Replace beginning of list when ptr on car
-    
-    [Cc]  
-    a    
-    
-    [C]  [P]  [B]
-         b    c
-         *
-
-         
-    [ ]
-    a    
-    
-    [ ]  [ ]  [ ]
-         x    c
-         *
-         
-    Effectively, replace entire list
-    
-    Refactor:
-    * Use original Pair
-    
-    CREATE METHOD FOR CAR/CDR
-  }#
-
-  (let (Ref (get *0 'b)
-        Pair (get Ref 'c)
-        C (get Pair 'c)
-        Cc (get C 'c)
-        Part (gen-part Data Lay))
-
-    (a> Pair Part)
-    
-    (a> C Pair)
-    
-    #(c-a> Part)
-    
-    (b> Cc C)
-    
-    # Delete Ref
-    (del> Ref T T)
-    
-    (upd-tree)
-    (mov-*1 *line)    
-
-    (put *0 'b Part)
-    (point-nxt)
-        
-    Part))
-  
-
 (de repl-str (Data Lay)
-  # Replace pair x car
   #{
-    Replace car
+    Replace car of y pair
+        
+    ---
         
     [C]  [P]  [B]
-         b    c
+    a    b    c
          *
 
     
     [ ]  [ ]  [ ]
-         x    c
+    a    x    c
          *
+
+    ---
+    
+    [Ccc]
+    a    
+    
+    [Cc]  [C]  [ ]  [ ]
+               x    c
+               *        
+
   }#
 
   (let (Ref (get *0 'b)
@@ -163,18 +119,20 @@
         Part (gen-part Data Lay))
 
     (a> Pair Part)
-
-    #(c-a> Part)
     
-    (b> C Pair)
-    
-    # Main diff here from repl-str-first
-      
-    # Delete Ref
+    (cond ((= (get C 'b) Pair)
+           (b> C Pair))
+          ((= (get C 'a) Pair)
+           (a> C Pair))
+          (T
+           (quit "repl-str: invalid pair")))
+          
+    (c-a> Pair)          
+          
     (del> Ref T T)
     
     (upd-tree)
-    (mov-*1 *line)    
+    (mov-*1 *line)
 
     (put *0 'b Part)
     (point-nxt)
@@ -272,7 +230,7 @@
 (de repl-list-str (Sta End Data Skip-Upd)
 
   # Replace list/line of strings with single string
-
+  
   (let (Prv (get Sta 'c)
         Part (gen-part (list Data) 'x))
     

@@ -4554,6 +4554,29 @@ To incorporate, Unix users, need file interface or to improve upon it
 Less dependencies mean the base language has the batteries included
 but those batteries can only exist through concensus
 
+SCENARIO 1:
+
+  (a b c)
+
+  ->
+
+  (a b "^M"
+  ((c)))
+  
+  * Indicates changes:
+    * Move c to newline
+    * Put c in own list
+
+SCENARIO 2:
+
+  (a "^M"
+   (c))
+   
+   ->
+   
+  (a "^M"
+   ((c)))
+    
 ============================================
 ============================================
 
