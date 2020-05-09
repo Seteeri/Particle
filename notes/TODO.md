@@ -6,11 +6,11 @@ TODO
   The polish of Apple
   The power of open source
 
+  * Make vert-scale a class variable of Vertex
   * Refactor layout
     * *binds-ops needs mix of x/y
     * Traverse parts and change lists to y etc
       * Either do in gen or lay phase
-  * Refactor/fix cmd-del
   * Refactor socket - set err instead of propogating
   * Start handling longer tasks
     * Rotate process
