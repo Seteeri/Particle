@@ -29,6 +29,7 @@ TODO
   * Refactor messages [Later]
     * Queue and flush
   * Refactor math
+  * Pass Vertex size through CLI?
   
   * Eval
     * Fix eval output - need refactor layout

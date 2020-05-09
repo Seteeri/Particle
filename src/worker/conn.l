@@ -5,15 +5,16 @@
   
 (de req-send-obj (Ipc Sock Obj Sz Off)
 
-  (let Msg (fmt-msg-send> Obj Off)
+  (let (Msg (fmt-msg-send> Obj Off)
+        Ptr (meta Obj 'ptr))
 
     #(prinl-info "req-send-obj" Msg)
     
     (send-msg Ipc
               Sock
               Msg
-              *ptr-vert
-              (wr-ptr> Obj *ptr-vert))))
+              Ptr
+              (wr-ptr> Obj Ptr))))
 
 
 (de req-recv-obj (Ipc Sock Obj Sz Off)
@@ -47,7 +48,7 @@
   (req-recv-obj Ipc
                 Sock
                 (if Obj @ (new '(+Vertex)))
-                SZ-VERT
+                (meta '(+Vertex) 'sz-pl)
                 Off))
 
 
@@ -55,7 +56,7 @@
   (req-recv-obj Ipc
                 Sock
                 (if Obj @ (new '(+Projview)))
-                SZ-PV
+                (meta '(+Projview) 'sz-pl)
                 Off))
 
 

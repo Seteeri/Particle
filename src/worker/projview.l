@@ -1,8 +1,7 @@
-(def 'SZ-PV (+ 9 64 24 64 12 12))
-
-
 (class +Projview)
-(var sz . `SZ-PV)
+(with *Class
+  (=: sz-pl (+ 9 64 24 64 12 12))
+  (=: ptr   (native "@" "malloc" 'N (: sz-pl))))
 
 (dm T (Width
        Height
@@ -54,7 +53,7 @@
           (cons -1.0 (: mat-view))
           (cons -1.0 (: pos))
           (cons -1.0 (: rot)))
-  SZ-PV)
+  (meta This 'sz-pl))
           
 
 (dm rd-ptr> (Ptr)
@@ -149,7 +148,7 @@
 
 (dm cpy-to-ptr> (Ptr)  
   (wr-ptr> This Ptr)
-  SZ-PV)
+  (meta This 'sz-pl))
 
 
 (dm cpy-to-obj> (Ptr)
@@ -157,8 +156,8 @@
 
 
 (dm fmt-msg-send> (Off)
-  (pack "(mc projview NIL " SZ-PV " " Off ")"))  
+  (pack "(mc projview NIL " (meta This 'sz-pl) " " Off ")"))  
   
   
 (dm fmt-msg-recv> (Off)
-  (pack "(mc NIL projview " SZ-PV " " Off ")"))
+  (pack "(mc NIL projview " (meta This 'sz-pl) " " Off ")"))

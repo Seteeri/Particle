@@ -18,7 +18,7 @@
   # Render only
   (let (Off     (get Data 2)
         Ptr-Gl  (+ (get '*buffer-objects 'nodes 'gl~ptr) Off))
-    (native "@" "memset" NIL Ptr-Gl 0 SZ-GL-VERT)))
+    (native "@" "memset" NIL Ptr-Gl 0 (meta '(+Vertex) 'sz-gl))))
 
 
 (de handle-memcpy (Sock Data Ptr)

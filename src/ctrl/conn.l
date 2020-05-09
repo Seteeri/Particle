@@ -66,7 +66,7 @@
   (case Src
   
     ("projview"
-      (send-obj *ipc Sock *projview SZ-PV))
+      (send-obj *ipc Sock *projview (meta '(+Projview) 'sz-pl)))
 
     ("nodes"
-      (send-obj *ipc Sock (get *verts (get-vert-ix Off)) SZ-VERT))))
+      (send-obj *ipc Sock (get *verts (get-vert-ix Off)) (meta '(+Vertex) 'sz-pl)))))

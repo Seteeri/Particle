@@ -60,7 +60,7 @@
           (new '(+Params-Buffer)
                 'nodes
                 gl~SHADER-STORAGE-BUFFER
-                (* *verts-max SZ-GL-VERT)
+                (* *verts-max (meta '(+Vertex) 'sz-gl))
                 3 3
                 NIL)))
           # 134217728 = 128 MB

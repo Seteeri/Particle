@@ -1,23 +1,27 @@
-(def 'SZ-VERT (+ 8 1 12 12 12 64 64 64 4))
-(def 'SZ-GL-VERT 208)
-
-# Reuse across all vertices for serialization
-(def '*ptr-vert (native "@" "malloc" 'N SZ-VERT))
-
-
 (class +Vertex)
 (with *Class
-  (=: sz          SZ-GL-VERT)
+  (=: sz-gl 208)
+  (=: sz-pl (+ 8 1 12 12 12 64 64 64 4))
+  (=: ptr   (native "@" "malloc" 'N (: sz-pl)))
+  
   (=: sca-vert    (*/ 1.0 1.0 32.0)) # ortho-scale
-  (=: adv-glyph   19.265625) # taken from font
+  (=: color-def (list 0.5137255 0.5803922 0.60784316 1.0 
+                      0.5137255 0.5803922 0.60784316 1.0
+                      0.5137255 0.5803922 0.60784316 1.0 
+                      0.5137255 0.5803922 0.60784316 1.0))
+  
+  # These are font dependent,
+  # so when multiple fonts loaded,
+  # move these to +Metrics  
+  
+  # Adv is dependent upon char for proportional fonts
+  (=: adv-glyph   19.265625)
   (=: adv-vert    (*/ (: adv-glyph)
-                      (: sca-vert) 1.0))
+                      (: sca-vert)
+                      1.0))
   (=: adv-vert-2  (+ (: adv-vert)
-                     (: adv-vert)))
-  (=: color-vert-def (list 0.5137255 0.5803922 0.60784316 1.0 
-                           0.5137255 0.5803922 0.60784316 1.0
-                           0.5137255 0.5803922 0.60784316 1.0 
-                           0.5137255 0.5803922 0.60784316 1.0)))
+                     (: adv-vert))))
+
 
 (dm T (Off-Gl
        Ch       #Use to get offset, if char then data is char also
@@ -109,7 +113,7 @@
           (cons -1.0 (: rgba))          
           (cons -1.0 (: uv))
           (cons (: off-texel) 4))
-  SZ-VERT)
+  (meta '(+Vertex) 'sz-pl))
 
 
 (dm rd-ptr> (Ptr)
@@ -142,11 +146,11 @@
         
         
 (de get-vert-ix (Off)
-  (+ (/ Off SZ-GL-VERT) 1))
+  (+ (/ Off (meta '(+Vertex) 'sz-gl)) 1))
 
   
 (de get-vert-off (Cnt)
-  (* (- Cnt 1) SZ-GL-VERT)) # use gl size
+  (* (- Cnt 1) (meta '(+Vertex) 'sz-gl))) # use gl size
 
 
 (dm cpy-to-ptr> (Ptr)
@@ -158,9 +162,9 @@
 
 
 (dm fmt-msg-send> (Off)
-  (pack "(mc nodes NIL " SZ-VERT " " Off ")"))
+  (pack "(mc nodes NIL " (meta '(+Vertex) 'sz-pl) " " Off ")"))
   
   
 (dm fmt-msg-recv> (Off)
-  (pack "(mc NIL nodes " SZ-VERT " " Off ")"))
+  (pack "(mc NIL nodes " (meta '(+Vertex) 'sz-pl) " " Off ")"))
   
