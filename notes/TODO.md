@@ -6,7 +6,6 @@ TODO
   The polish of Apple
   The power of open source
 
-  * Create +Font class  
   * Refactor socket - set err instead of propogating  
   * Refactor layout
     * *binds-ops needs mix of x/y

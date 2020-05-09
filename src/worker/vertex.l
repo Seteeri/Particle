@@ -149,8 +149,9 @@
   (+ (/ Off (meta '(+Vertex) 'sz-gl)) 1))
 
   
-(de get-vert-off (Cnt)
-  (* (- Cnt 1) (meta '(+Vertex) 'sz-gl))) # use gl size
+(de vert-off-gl (Cnt)
+  (* (- Cnt 1)
+     (meta '(+Vertex) 'sz-gl))) # use gl size
 
 
 (dm cpy-to-ptr> (Ptr)
