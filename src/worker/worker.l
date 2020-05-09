@@ -34,7 +34,7 @@
             "/src/worker/projview.l"
             "/src/worker/vertex.l"            
             "/src/worker/gen-vert.l"
-            "/src/worker/cmd/part.l"
+            "/src/worker/cmd/pair.l"
             "/src/worker/cmd/str.l"
             "/src/worker/cmd/cam.l"
             "/src/worker/cmd/ptr.l"

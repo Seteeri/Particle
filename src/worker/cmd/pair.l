@@ -10,22 +10,6 @@
 
   (gc))
 
-
-(de cmd-swap-layout (Keysym)
-  (println "Swap layout")
-
-  # Note this causes bounds change also
-  # Maintain x and y bnds?
-
-  # If NIL, get prev, else do ref
-
-  (let (Ref (get *0 'b)
-        Prv (get Ref 'c)
-        Tgt (if (get Ref 'data) Ref Prv))
-    (when Tgt
-      (println "Swap!" Tgt (get Tgt 'data) (get Tgt 'lay) '-> (if (= (get Tgt 'lay) 'x) 'y 'x))
-      (swap-lay Tgt))))
-
       
 (de cmd-mov-nl (Keysym)
   (println "Move newline")
@@ -44,8 +28,6 @@
   (let? Ref (get *0 'b)
     (backspace-line Ref)))
 
-
-###########################################################
 
 (de cmd-intern (Keysym)
   # Convert string to symbol
