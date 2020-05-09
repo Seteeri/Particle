@@ -6,6 +6,12 @@ TODO
   The polish of Apple
   The power of open source
 
+  * Create +Font class  
+  * Refactor socket - set err instead of propogating  
+  * Refactor layout
+    * *binds-ops needs mix of x/y
+    * Traverse parts and change lists to y etc
+      * Either do in gen or lay phase
   * Relayout should use multiple workers
     * Scout pushes work into a queue
       * On finish scan, become worker
@@ -19,16 +25,10 @@ TODO
         * Or...
           * Deploy task
           * Set timeout to rotate
-          * Fork
-  * Make vert-scale a class variable of Vertex
-  * Refactor layout
-    * *binds-ops needs mix of x/y
-    * Traverse parts and change lists to y etc
-      * Either do in gen or lay phase
-  * Refactor socket - set err instead of propogating
+          * Fork      
+  * Refactor math  
   * Refactor messages [Later]
     * Queue and flush
-  * Refactor math
   * Pass Vertex size through CLI?
   
   * Eval

@@ -27,6 +27,7 @@
             "/src/prot/msg.l"
             "/src/prot/obj.l"
             "/src/font/metrics.l"
+            "/src/font/font.l"
             "/src/ctrl/xkb.l"
             "/src/worker/debug.l"            
             "/src/worker/conn.l"
@@ -58,7 +59,7 @@
 (def '*sublist-space-y 1.0)
 
 # Global Symbols
-(def '*metrics)
+(def '*font)
 (def '*xkb)
 (def '*binds)
 (def '*verts) # Verts loaded
@@ -82,8 +83,11 @@
 (de init-worker ()
     
   (setq *i-proc 1
-        *idx-uni-met (ld-idx-uni-met (pack *path-gly "DejaVuSansMono.met.idx.bin"))
-        *idx-uni-tex (in (pack *path-gly "DejaVuSansMono.rgba8.idx.bin") (rd))
+        *font (new '(+Font)
+                   "DejaVuSansMono"
+                   (pack *path-gly "DejaVuSansMono.met.idx.bin")
+                   (pack *path-gly "DejaVuSansMono.rgba8.idx.bin")
+                   19.265625)
         *ipc (new '(ipc~+IPC)
                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")
@@ -129,46 +133,7 @@
 
   (loop (ipc~poll> *ipc -1)))
 
-  
-(de ld-metrics (Path)
-  #*metrics (ld-metrics (pack *path-gly "m/"))
-  (let (Metrics ()
-        Path-M-Def (pack Path "32-m.v.l"))
-    (for Code 255 
-      (push 'Metrics
-            (let (Met (new '(+Metrics))
-                  Path-M (pack Path Code "-m.v.l"))
-              (unless (info Path-M) (setq Path-M Path-M-Def))
-              (let Pro (car (str (in Path-M
-                                      (till NIL T))))
-                (putl Met Pro)
-                (calc-sca-f> Met))
-              Met)))
-    (flip Metrics)))
 
-    
-(de ld-idx-uni-met (File)
-
-  # Must update scale
-  # unless scale is done during gen
-  # for now, keep dynamic
-
-  # HEAP:
-  # B-Tree
-  # Objs
-  # 
-  # Should interleave by looping and creating simul.
-  # This would require building b-tree here
-  
-  (let B (in File (rd))
-    (for M (idx 'B)
-      (let O (new '(+Metrics))
-        (putl O (cdr M))
-        (calc-sca-f> O)
-        (con M O)))
-    B))
-
-    
 (de gen-def-parts ()
 
   (let ((X Y) *cur)
