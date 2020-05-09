@@ -1,6 +1,63 @@
-# Pair/List
-  
+(de del-rx (Sta End)  
+  (let P Sta
+    (until (= P End)        
+      (del-car> P)
+      (setq P (get P 'b)))
+    (del-car> P)))
 
+
+(de con-all (Parts)
+  (let Prv (car Parts)
+    (for Part (cdr Parts)     
+      (b> Prv Part)
+      (setq Prv Part))))
+
+      
+(de con-sym (Ref Part Line-Skip)
+
+  #{
+
+    Insert x after a, taking pos of next:
+
+    *0
+    [ ]  [ ]  NIL
+    a    b
+
+           *0
+    [ ]  [ ]  [ ]  NIL
+    a    x    b
+
+    Newline case:
+
+    *0
+    [ ]
+    a
+
+    [ ] - NIL
+    b
+
+
+    [ ]
+    a
+
+    *0
+    [ ] - [ ] - NIL
+    x     b
+
+    Possible to not make newline so x is on same line as a
+    
+  }#
+
+  (let Cdr (get Ref 'b)
+
+    (con-all (list Ref Part Cdr))
+
+    # If Cdr is a new line, xfer it to new Part
+    (when (and (get Cdr 'line)
+               (not Line-Skip))
+      (put-line Cdr Part))))      
+      
+      
 (de make-list (Ref)
 
   (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))

@@ -353,3 +353,56 @@
       # Put Ptr above new part
       (mov-cur-abv End)
       (lay-part-start *0 *line 'skip-cdr))))
+
+      
+(de build-str (Start)
+  # Go prv until Sym, non-Str or newline
+  (let (P Start
+        B NIL
+        D NIL)
+        
+    (while (and (isa '(+Str) (get P 'a))
+                (not (isa '(+Sym) P))
+                (not (= (get P 'a) B))
+                (not (get P 'line)))
+      
+      (push 'D (get P 'a 'data))
+      
+      (setq B P)
+      (setq P (get P 'c)))
+    
+    (if (and (isa '(+Str) (get P 'a))
+             (not (isa '(+Sym) P))
+             (not (= (get P 'a) B)))
+      (push 'D (get P 'a 'data))
+      (setq P (get P 'b)))
+    
+    (list P D)))
+
+    
+(de build-str-sp (Start)
+  # Go prv until sp, non-str or line
+  (let (P Start
+        B NIL
+        D NIL)
+        
+    (while (and (isa '(+Str) (get P 'a))
+                (not (= (get P 'a 'data) " ")) # what about multiple spaces?
+                (not (isa '(+Sym) P))
+                (not (= (get P 'a) B))
+                (not (get P 'line)))
+      
+      (push 'D (get P 'a 'data))
+      
+      (setq B P)
+      (setq P (get P 'c)))
+    
+    (if (and (isa '(+Str) (get P 'a))
+             (not (= (get P 'a 'data) " ")) # what about multiple spaces?
+             (not (isa '(+Sym) P))
+             (not (= (get P 'a) B)))
+      (push 'D (get P 'a 'data))
+      (setq P (get P 'b)))
+    
+    (list P D)))
+      

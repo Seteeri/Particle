@@ -6,18 +6,26 @@ TODO
   The polish of Apple
   The power of open source
 
+  * Relayout should use multiple workers
+    * Scout pushes work into a queue
+      * On finish scan, become worker
+      * Batch nodes
+    * Ctrl distributes tasks to workers
+      * Workers send rdy msg to get work
+    * Workers update and send serialized data to Render
+    * Or go further, and use a timeout
+      * Start handling longer tasks
+        * Rotate process
+        * Or...
+          * Deploy task
+          * Set timeout to rotate
+          * Fork
   * Make vert-scale a class variable of Vertex
   * Refactor layout
     * *binds-ops needs mix of x/y
     * Traverse parts and change lists to y etc
       * Either do in gen or lay phase
   * Refactor socket - set err instead of propogating
-  * Start handling longer tasks
-    * Rotate process
-    * Or...
-      * Deploy task
-      * Set timeout to rotate
-      * Fork
   * Refactor messages [Later]
     * Queue and flush
   * Refactor math
