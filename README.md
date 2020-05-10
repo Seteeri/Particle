@@ -7,9 +7,11 @@ information as they moved through the computer. What did they look like?
 
 ---
 
-Particle is a personal knowledge/information manager (aka PIM) implemented with a presentation-based lisp-structured UI.
+Particle is a PicoLisp presentation binary tree (AST) UI.
 
 The idea is to take the extensibility of Emacs combined with the dynamics and cohesion of past Lisp Machines, Oberon, Open Dylan, Intentional Programming and other models, and to evolve that consistent text interface to arbitrary objects, taking advantage of modern hardware such as GPUs and parallelism.
+
+On MS and Apple systems, it serves as an outliner "app" or personal knowledge manager, however, with Linux and BSD systems it goes further integrating/becoming the Wayland compositor creating a Lisp environment. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that.
 
 Plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM-based), a native solution can be provided. The Pinephone is also on the way ;)
 
@@ -19,11 +21,13 @@ The target audience consists of programmers, power users, information/knowledge 
 
 ![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/types.png)
 
-Types are color coded to remove the need for tokens to optimize drawing and information efficiency. Lines are double spaced to allow space for the pointer (cursor). 
+These colored text are representations for the fundamental types; the use of color allows the removal of some character tokens to optimize drawing and information efficiency. Lines are double-spaced to allow room for the pointer (cursor).
 
-Strings do not have double quotes; it is possible to remove other identifying tokens such as curly brackets and the dollar sign. Pairs do not have parentheses and terminate with the NIL symbol for proper lists (or arbitrary data for improper lists). Circular lists follow PicoLisp conventions and terminate with a dot.
+Strings do not have double quotes; it is possible to remove other identifying tokens such as curly brackets and the dollar sign. Pairs use dot notation and terminate with the `NIL` symbol for proper lists (or arbitrary data for improper lists); parentheses are possible. Circular lists follow PicoLisp conventions and terminate with a dot.
 
-Can you identify the types and the relationships between the objects?
+Can you identify the s-expression structure?
+
+This idea is then further extended to create arbitrary representations for arbitrary data while maintaining the same underlying operations, or interface if you will, no matter the level of abstractions composed.
 
 # Goals
 
@@ -43,11 +47,11 @@ Can you identify the types and the relationships between the objects?
 
 * Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide
 * The Humane Interface by Jeff Raskin
+* Lisp discovered by John McCarthy
 * Emacs by RMS
 * Presentation Based User Interfaces by E.C. Ciccarelli at MIT
 * Open Dylan by Apple
 * OpenDoc by Apple
-* Lisp discovered by John McCarthy
 * Lisp Machines by Xerox PARC and MIT
 * Evernote by Stepan Pachikov
 * Oberon OS by Niklaus Wirth at ETH Zürich
@@ -61,12 +65,14 @@ Can you identify the types and the relationships between the objects?
   * Unreal Blueprints, Blender nodal systems
   * EagleMode ZUI system
   * Microsoft Excel
+  * Alan Kay
   * Sir Tim Berners-Lee
   * Paul Graham
   * Peter Norvig
   * Brett Victor
   * Robert Strandh
   * Chris Schafmeister
+  * Randy Pausch
   
 # Manual
 

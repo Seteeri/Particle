@@ -4,11 +4,21 @@
 
 Plain text is convenient but does not scale. Extracting useful information through repeatedly parsing plain text becomes redundant and inefficient on larger scales (at tens or hundreds of thousands of pieces of information). In the case of Particle, the structured data are s-expressions so it is a relatively simple model to understand and parse; the Lisp implementation is also open-source.
 
-**Why not Emacs, org-mode, or ParEdit/Parinfer/Smartparens etc.?**
+**Why not Emacs, org-mode, or ParEdit et. al.?**
 
-Emacs is undoubtedly powerful but also difficult to evolve due to its aging codebase. It could be rewritten, however, the goals for such a project remain undefined which hampers initial development from starting. In addition, Emacs is centered around editing buffers of text, however, modern users have a need to incorporate other data types with non-linear structures.
+Emacs is undoubtedly powerful but also difficult to evolve due to its aging codebase. It could be rewritten, however, the goals for such a project remain undefined which hampers initial development from starting. In addition, Emacs is centered around editing buffers of text, however, modern users have a need to incorporate other data types.
 
-**What about Evernote, OneNote, Notion etc.?**
+To delve a little deeper into Emacs:
+
+Emacs development lacks thought into other user interfaces since text/CLI is believed to be the one and only solution to everything. Text has its own inflexibilities as indicated by the existence of other software. Unfortunately, it is assumed users coming to Emacs share the Unix mindset, which is become less and less the case, as the digital world continues to evolve. This results in the current OOB experience: defaults use unfamiliar terminology and unfamiliar key chords instead of shortcuts, and the learning curve is a vertical wall, which when combined, is an excellent way to ward off new users.
+  
+Ultimately, users' learning is guided by their needs and their way into deeper features. The emacs default setup is akin to notepad, however, if users wanted a notepad application they would have already used one, which means the user will then attempt to enable additional features, which leads them to the vertical learning wall they must scale with no equipment and minimal visibility.
+
+For example, most text editors and IDEs use panes, often with a navigator of sorts on the left, a utility pane at the bottom, and a main content pane with tabs. If you take the initial Emacs experience and attempt to have the user setup a similar configuration, it requires learning an entire system at once due to the way it was designed. Most users think go to the settings, and enable plugins. However, in order to do this in Emacs, before doing anything, the user must navigate using key chords, which they are expected to have already memorized.
+  
+**What about note-taking apps like Evernote, OneNote, Notion etc.?**
+
+All existing applications build their data structure around the interface, which ultimately runs into limitations. Particle uses the opposite approach and builds the UI around the data structure. In addition, they are all lacking some fundamental features.
 
 [The Sad State of Personal Knowledgebases](https://marcusvorwaller.com/blog/2015/12/14/personal-knowledgebases/)
 
@@ -26,6 +36,20 @@ Emacs is undoubtedly powerful but also difficult to evolve due to its aging code
 >
 > Surprisingly, no software with all those features exists yet. There are some interesting options though...
 
+**Is this the same as Microsoft's OLE or Apple's OpenDoc systems which both failed?**
+
+Not quite. OLE was a closed proprietary standard, in which OpenDoc was developed as an open standard. Both failed for various reasons. Data formats/standards exist because different programs written in different languages structure their data in different ways which makes for a complex ecosystem of formats. Additionally, some programs may be closed-source to be made unavailable for other programs to use which requires reverse-engineering. Unfortunately, this is all at the expense of the user, as data from one program cannot be used as data in another program unless a proper converter or importer is used, which leads to a waste of programming efforts that could be used towards more novel purposes.
+
+Fortunately, the world has been moving towards open source. Some of the most widespread formats include XML, associated with Ant and office programs, and JSON associated with Javascript. However, S-Expressions are arguably simpler and can serve both roles as a generic serialization format and syntax for a programming language. Thus, it can represent both data and code simultaneously.
+
+**There already exists Jetbrains MPS...**
+
+...
+
+**Pictographs are a poor solution; only text can represent code.**
+
+The idea is not to replace text but to include the use of images, side-by-side and intertwined with the former (I believe Light Table and Mathematica had/have similar ideas). Most programs will keep these domains separate which discourages and impedes the user from exploring the system. Plain text remains the most robust universal medium for communication, however, it is not the only medium, and it is not the mindset that laypersons generally approach a computer with. Without providing a method for users not naturally inclined to programming to properly utilize ever-growing computing power, the benefits of technology will not be fully reaped. Most textbooks, including scientific and mathematical ones, typically include pictures to demonstrate certain concepts, so text and images need not be mutually exclusive. At best, one can hope that maybe the system will encourage people to develop computational understanding. DSLs provide a gradual curve into that.
+
 **Why PicoLisp?**
 
 To build on the previous section, PicoLisp was chosen for the reason (and for other beneficial reasons) that it is a pure Lisp where all data consists of cons cells, with only three basic types: Pairs, Numbers, and Symbols which all consist of cons cells; strings are also symbols.
@@ -36,7 +60,7 @@ At the end of the day, you could say it is using a list metaphor instead of a de
 
 **Does this roughly offer the same benefits that the old lisp machines provided?**
 
-I found this response by lispm to ChyrsaLisp to be relevant in regards to attempts at recreating Lisp Machines:
+This response by lispm to ChyrsaLisp might be relevant to attempts at recreating Lisp Machines:
 
 https://news.ycombinator.com/item?id=15466124
 
@@ -51,12 +75,3 @@ https://news.ycombinator.com/item?id=15466124
 > The way Lisp can still win in today's world is not by trying to replace C on the system level, but by "embracing and extending" C at the application level. I use Clozure Common Lisp. It has an Objective-C bridge, so I can call ObjC functions as if they were Lisp functions. There is no reason for me to know or care that these functions are actually written in C (except insofar as I have to be a little bit careful about memory management when I call C functions from Lisp) and so using Lisp in this way still gives me a huge lever that is economically viable even in today's world. I have web servers in production running in CCL on Linux, and it's a huge win. I can spin up a new web app on AWS in just a few minutes from a standing start. It's a Lisp machine, but at the application level, not the system level. My kernel (Linux) and web front end (nginx) are written in C, but that doesn't impact me at all because they are written by someone else. I just treat them as black boxes.
 
 > I don't want to denigrate ChrysaLisp in any way. It's tremendously cool. But cool is not enough to win in the real world.
-
-
-**Is this the same as Microsoft's OLE or Apple's OpenDoc systems which both failed?**
-
-Not quite. OLE was a closed proprietary standard, in which OpenDoc was developed as an open standard. Both failed for various reasons. Data formats/standards exist because different programs written in different languages structure their data in different ways which makes for a complex ecosystem of formats. Additionally, some programs may be closed-source to be made unavailable for other programs to use which requires reverse-engineering. Unfortunately, this is all at the expense of the user, as data from one program cannot be used as data in another program unless a proper converter or importer is used, which leads to a waste of programming efforts that could be used towards more novel purposes.
-
-Fortunately, the world has been moving towards open source. Some of the most widespread formats include XML, associated with Ant and office programs, and JSON associated with Javascript. However, S-Expressions are arguably simpler and can serve both roles as a generic serialization format and syntax for a programming language. Thus, it can represent both data and code simultaneously.
-
-**Is this intentional programming?**

@@ -114,6 +114,15 @@ Resolving that contradiction (thesis, antithesis?) is difficult, it requires loo
 Just extending what we have is probably not a solution, because one of the problems is too much cruft, but just starting over from scratch is likely to lead to cool but ultimately superficial projects.
 
 
+---
+---
+
+
+https://news.ycombinator.com/item?id=7488554
+
+
+Memory is linear and so is execution( at a basic level ) yet our programming and ideas are not. Imagine programming as a needle with one continues thread stringing boxed functions and values together, sometimes threading something that has been threaded before, and ultimately creating a crisscross of wire that's hard to understand. We cannot organize something that is linear with a non-linear representation. We try to make the crossed wire simpler to understand with programming languages but it is inherently unsolvable as a problem. There will never be a authoritative programming language.
+
 # Others
 
 https://news.ycombinator.com/item?id=6498878

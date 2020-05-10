@@ -3,8 +3,6 @@ User-Interface
 
 Ostensibly, it resembles an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented (more operatively, symbolic) interface; *it is not a visual programming language*.
 
-On MS and Apple systems, it serves as an outliner "app", however, with Linux and BSD systems it integrates the window manager, i.e. functions as the Wayland compositor. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that.
-
 *WIP*
 * Local data first - no cloud dependency
 * Distributable - synchronize across multiple devices

@@ -6,16 +6,39 @@ TODO
   The polish of Apple
   The power of open source
 
-  * Refactor ops
-    * Use list transform fn
-  * Refactor layout
-    * *binds-ops needs mix of x/y
-    * Traverse parts and change lists to y etc
-      * Either do in gen or lay phase
-  * Refactor socket - set err instead of propogating  
-  * Refactor math
-  
-  * Eval
+  * 10 MAY - SUN
+    * Refactor ops
+      * Remove con-sym
+    * Refactor socket - set err instead of propogating
+    * Refactor math
+    * Play around with eval more to build structures
+      * Build symbol mode...
+        * How to exit?
+      * Or Tab to create string from cur pos back until non-char
+        * Ctrl+Tab to enter tab character
+      * Pointer
+        * 2 mode indicators: CAR/PAIR    STR/SYM/NUM  + Ptr #
+          * Icons:           <dir/arrow> ""/T/0         1-Inf
+        * Example: ↓"" or ↓T or ↓0
+          * Color same for all since still sym name
+        * Each combo is a diff symbol
+          * Or they are properties? But how to draw it?
+            * *0 . .dir ↓ .atom T
+            * Could draw properties under
+            * Do users need to see all properties constantly?
+            * Or have dedicated viewports
+              * Med left pane is properties
+              * Short bottom pane is pointer status bar
+              * Right large is main
+        * https://en.wikibooks.org/wiki/Unicode/List_of_useful_symbols
+          * hex 2190 - 2193
+          * Think, insert has an indicator and Caps Lock does not
+            * Which one tends to have more user mode errors? -> Caps Lock
+    * Color dot differently for Y pair
+    * Cache last item for lists
+    * Implement cmds Q/E : start/end of line/list
+    
+  * 11 MAY - MON
     * Fix eval output - need refactor layout
     * Print system out
       * Where to put it?
@@ -23,18 +46,30 @@ TODO
           * Part of process...
           * Visualize process?
         * Sublist of original cmd
-        * Two lines  
+        * Two lines
   
-  * Visual Hierarchy
-    * Process -> Namespace -> Symbols...
-    * Process assumed to be the same...so indicate with ptr?
-      * Namespace is the root...  
-  * Need to be able to mov pointer to another list
-    * Either modify master ptr
-    * Or mov current ptr
-  * Draw spine or use grid to provide visual line guide  
+    * Visual Hierarchy
+      * Process -> Namespace -> Symbols...
+      * Process assumed to be the same...so indicate with ptr?
+        * Namespace is the root...  
+    * Need to be able to mov pointer to another list
+      * Either modify master ptr
+      * Or mov current ptr
+    * Draw spine or use grid to provide visual line guide  
+              
+    * Refactor layout
+      * *binds-ops needs mix of x/y
+      * Auto convert any pairs to y
+        * Explicit fn or auto on gen
+      
+  * 12 MAY - TUES
+    * https://github.com/mapbox/tiny-sdf
+      * Felzenszwalb/Huttenlocher distance transform
+    * https://github.com/astiopin/webgl_fonts
+      * glyph hinting
+      * subpixel antialiasing            
   
-  * Relayout should use multiple workers
+  * Relayout should use multiple workers [Tues]
     * Scout pushes work into a queue
       * On finish scan, become worker
       * Batch nodes
@@ -47,39 +82,13 @@ TODO
         * Or...
           * Deploy task
           * Set timeout to rotate
-          * Fork      
-  * Refactor messages [Later]
-    * Queue and flush
+          * Fork        
+  
+  ---
+  
+  Next week?
       
-  * Draw *binds-ops
-    * Need custom layout
-    * Instead of double space, use ptr arrow
-      * Arrow should be colored diff
-      * Use two symbols: <up>0 <dn>0
-      * So up/dn is really changing symbols and moving them into cur pos
-    * Either show input or output
-      * Code or data form
-      * After change, eval it
-        * For "button", create a list somewhere: (update bindings to *bindings-key)
-        * User clicks it by eval'ing it
-      * Ideal is to show symbols, instead of their val (num)  
-    
-  * Log/Undo System
-    * Log commands
-    * This cannot be unlimited - use a circular list
-    * Push old commands to file
-    
-  * Cam
-    * Cap zooming
-    * Camera needs to move with content like when entering a newline
-      * Requires unproject to test if coord is in the viewport
-      * When a new item is entered, check its bnds against the view bounds
-    * Refactor math class
-    
-  * Improve testing environment
-    * Have processes run independently
-              
-  * Push all data into binary tree
+  * Track data:particles in binary tree *particles
     * Unlike a CLI, we hold references to old data
       * Which if future commands change old data, it has to be updated
         * E.g. zap
@@ -90,9 +99,23 @@ TODO
     * Data : List of Particles
       * handle 'zap - isyms replaced with name (tsym) - invalidates particles
     * Draw all symbols will access all data?
-    * External symbols are more explicit  
-  
-  * Implement database
+    * External symbols are more explicit        
+      
+  * Finish drawing *binds-ops - make accessible
+    * Either show input or output
+      * Code or data form
+      * After change, eval it
+        * For "button", create a list somewhere: (update bindings to *bindings-key)
+        * User clicks it by eval'ing it
+      * Ideal is to show symbols, instead of their val (num)  
+      
+  * Cam
+    * Cap zooming
+    * Camera needs to move with content like when entering a newline
+      * Requires unproject to test if coord is in the viewport
+      * When a new item is entered, check its bnds against the view bounds      
+        
+  * Implement database - need for PIM
     * Load db files into memory/tmpfs
     * Convert +Particle/+Vertex into db
       * This will allow linking particles
@@ -104,16 +127,15 @@ TODO
     * Store classes in separate files?
       * verts.db
       * parts.db    
-
-  * Font Rendering
-    * https://github.com/mapbox/tiny-sdf
-      * Felzenszwalb/Huttenlocher distance transform
-    * https://github.com/astiopin/webgl_fonts
-      * glyph hinting
-      * subpixel antialiasing      
+        
+  * Improve testing environment
+    * Have processes run independently  
   
-  ----------------
-    
+  * Log/Undo System
+    * Log commands
+    * This cannot be unlimited - use a circular list
+    * Push old commands to file  
+      
   * Pointer System
     * Use master pointer to select main pointer
     * Master ptr has dedicated binds/cmds
@@ -137,9 +159,8 @@ TODO
       * Similar to ptr list, use a buffer list which follows same pattern
       * Show first and last items
     * CUA
-        
-  * CLI
-    * Plain list
+  
+  ---
   
   * SEARCH IS THE KEY TO DISCOVERABILITY
     * Google's interface
@@ -147,7 +168,9 @@ TODO
       * Bind F1
       * (eval "help") (eval 'help)
     * Fuzzy-search
-  
+
+  ---
+    
   * Adv Str Ops
     * Basic search/replace (strs)
       * Essentially, searching symbol props
@@ -160,12 +183,21 @@ TODO
       * Lists can be sorted
       * Output can then be merged
     * Pattern matching  
-  
-  * Refactor
-    * Refactor "*0" mov-part-abv> into cursor fn  
-    * Opt: buffer is a circular list
-      * Use dot by itself to indicate circular list
-      * Remember, two dots means it refers to itself
+
+  * Optimize IPC
+    * Utilize multiple workers - see notes
+    * Batch messages, flush etc.
+    * Instead of directly sending msgs, put into list
+    * Call flush to send all
+    * Requires rewriting protocol to read multiple messages from single str
+              
+  * Directory Nav
+      
+  * Tag/Note System
+    * Need "template"
+    * Search functions    
+    
+  * Misc
     * Draw num in car [?]
       * Handle decimals
     * Utilize double shift binds
@@ -173,66 +205,27 @@ TODO
       * Double ctrl
       * Double alt
     * Draw grid in bg
-    * Make Dot YELLOW!
+    * Make Dot YELLOW?
       * Small so use most visible color to offset
       * Make NIL grey since its so common but not as useful
-    
-    * Replace dot with arrow indicating layout (Right/Down)
     * Make fn: mov-cur X/adv Y/nl
-    * Cache last item for lists
     * Refactor other items to use skip flags like mov> etc.
     * Make columns for Y layout?            
     * Limit x length of items like line wrap
-    * Store ref to last item in list for faster bnds calc
-    * Is there a way to map modifier keys to Car or Pair/Cdr?
-      * Use mod keys to decide whether to keep input or replace it
-          
-    * Symbols
-      * all: left click = select/point
-      * all: 2x left click = eval
-      * Value = double right click
-      * Props = right click      
-        
     * Why is xkb in worker? Should be in ctrl []
-    * Use mouse cursor for pointer symbol?
-      * Or greek symbols
-    * Colors follow HTML links
-      * Symbols are blue
-        * Unvisited is blue
-        * Visited is purple aka eval'd
-      * Strings are just grey/white/black (since bg is black)
-    * Worker
-      * Refactor point
-      * Refactor ops into methods
-      * Refactor line fns
-      * Implement cmds Q/E : start/end of line/list
-      * Draw ctrl characters: ^M, ^J, ^I
-        * Draw newline when by itself
-        * When packed do not draw it - make opt?
-      * Lazy load glyphs [Later]
-        * Do later when msgs are refactored
-        * Render loads tex
-        * Gly loads metrics
-        * Need worker to tell render to load
-        * Load ASCII initially
-        * Convert glyphs into db    
-    * Generate undefined glyph - 0                
-          
-  * Optimize
-    * IPC
-      * Utilize multiple workers - see notes
-      * Batch messages, flush etc.
-      * Instead of directly sending msgs, put into list
-      * Call flush to send all
-      * Requires rewriting protocol to read multiple messages from single str
-              
-  * Directory Nav
-      
-  * Tag/Note System
-    * Need "template"
-    * Search functions
+    * Draw ctrl characters: ^M, ^J, ^I
+      * Draw newline when by itself
+      * When packed do not draw it - make opt?
+    * Lazy load glyphs
+      * Do later when msgs are refactored
+      * Render loads tex
+      * Gly loads metrics
+      * Need worker to tell render to load
+      * Load ASCII initially
+      * Convert glyphs into db
+    * Generate undefined glyph - 0
     
-  --------
+  ---
 
   * Test multiple workers
     * Need data sync on model side to broadcast updates
@@ -301,41 +294,47 @@ TODO
     * Set * Err to (quit)
     * On error, print msg and return to top-level
 
-----------
-
-  * Demos:
-    * Core
-      * Lisp
-        * Strs
-        * Lists
-        * Eval
-      * Systems
-        * Help - need "quick escape"
-          * Draw help, bind to move ptr while held
-          * Sublime
-          * Ext of tags?
-        * Cmds
-          * AKA Timeline/History/Undo
-        * Ptrs
-        * Buffers
-        * Views (Viewports)
-        * State
-      * CLI
-    * Key Concept
-      * Pixels as list of pixels or lists of lists
-        * Implement screenshot
-      * Table as list of lists
-      * Widget Deprecation
-    * Application (Concrete)
-      * OS/Dir
-      * Outliner/PIM
-        * Tags/Search
-          * Internals
-      * Spreadsheet
-      * Window Manager
-    * Advanced UI
-      * Touch Interface    
+  * Symbols
+    * all: left click = select/point
+    * all: 2x left click = eval
+    * Value = double right click
+    * Props = right click          
     
+
+DEMOS:
+
+  * Core
+    * Lisp
+      * Strs
+      * Lists
+      * Eval
+    * Systems
+      * Help - need "quick escape"
+        * Draw help, bind to move ptr while held
+        * Sublime
+        * Ext of tags?
+      * Cmds
+        * AKA Timeline/History/Undo
+      * Ptrs
+      * Buffers
+      * Views (Viewports)
+      * State
+    * CLI
+  * Key Concept
+    * Pixels as list of pixels or lists of lists
+      * Implement screenshot
+    * Table as list of lists
+    * Widget Deprecation
+  * Application (Concrete)
+    * OS/Dir
+    * Outliner/PIM
+      * Tags/Search
+        * Internals
+    * Spreadsheet
+    * Window Manager
+  * Advanced UI
+    * Touch Interface    
+  
 
 LATER:
 

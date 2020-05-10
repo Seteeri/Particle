@@ -33,20 +33,17 @@
      +--------+-----------+-----------+
      |        |           |           |
     NIL   Internal    Transient    External  
-
-    Yellow = NIL (T?)
-    Orange = Builtins
-    Red = Pair
+    
+    Base = X Pair
+    Yellow = NIL/T
+    Orange = Y Pair
+    Red = Namespace symbol (or binary tree?)
     Magenta = Num
     
     Violet = Int/Sym
     Blue = Str/Sym/Trans
     Cyan = Ext/Sym
     Green = Box/Sym/Trans
-
-    Base = List
-    
-    White/Black = Ptrs
   }#
 
   # Adjust brightness for time...or alpha?
@@ -60,7 +57,15 @@
         ((ext? Any)       *sol-cyan)
         ((sym? Any)       *sol-violet)))
 
+# Small down tri
+#(def '*char-dot (char (hex "02D1")))
 
+# Small dash
+#(def '*char-dot (char (hex "02D7")))
+
+# Two vert  tris
+#(def '*char-dot (char (hex "02D0")))
+        
 (def '*char-dot (char (hex "00B7")))
 #(def '*char-dot (char (hex "2022")))
 #(def '*char-dot (char (hex "2219")))

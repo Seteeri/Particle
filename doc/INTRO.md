@@ -33,11 +33,11 @@ For example, a pixel data type consisting of a list of 4 numbers from 0-255, rep
 
 * Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide
 * The Humane Interface by Jeff Raskin
+* Lisp discovered by John McCarthy
 * Emacs by RMS
 * Presentation Based User Interfaces by E.C. Ciccarelli at MIT
 * Open Dylan by Apple
 * OpenDoc by Apple
-* Lisp discovered by John McCarthy
 * Lisp Machines by Xerox PARC and MIT
 * Evernote by Stepan Pachikov
 * Oberon OS by Niklaus Wirth at ETH Zürich
@@ -51,12 +51,14 @@ For example, a pixel data type consisting of a list of 4 numbers from 0-255, rep
   * Unreal Blueprints, Blender nodal systems
   * EagleMode ZUI system
   * Microsoft Excel
+  * Alan Kay
   * Sir Tim Berners-Lee
   * Paul Graham
   * Peter Norvig
   * Brett Victor
   * Robert Strandh
   * Chris Schafmeister
+  * Randy Pausch
   
 # Premise
 

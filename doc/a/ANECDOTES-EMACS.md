@@ -32,3 +32,13 @@ Many people. Some brilliant individuals every once in a while would claim: "Well
 You may dislike or even hate Lisp, but trust me, years later, when Python is no longer sufficient for our needs; when Java becomes too expensive to maintain; and Javascript transforms into a drastically different language - Lisp still would be used, and systems written in it would be thriving.
 
 Learn Lisp. It will make you a better programmer. That is guaranteed. Don't take my word for it. See what the world known CS experts have to say about it. Not a single one has ever said: "Lisp is a waste of time." 
+
+
+---
+---
+
+
+https://www.reddit.com/r/emacs/comments/8gdk9p/is_emacs_bloated/
+
+
+I am using Emacs for a year now, i am not a Coder nor Developer or anything in IT, i think you are absolutely right that getting the starting point is the most difficult. However most users will start using emacs because of a certain package, i think org-mode is one of them, which attracts a lot of non-experienced users. At least for me this was the case. And i think while everyone has a certain interest in why he gets in to emacs he "naturaly" gets the starting point, to stay with the org-mode example: I want to create an manage my notes, and learn latex to fastly export my notes to latex and draft papers. My needs are my compass and my way to dig deeper into emacs. However as emacs is this kind of software which does basically everything and of course you have the freedom of chosing an approach to a task it's difficult to stay focussed. Therefore i think a more reduced and modular emacs would help to stay focussed and slowly discover functionalities, packages, etc. The same is also true for certain emacs packages themself, like (another time staying with the example) org-mode. I don't need a lot of built-in functionalities or at least i don't need them right now, perhaps i don't even know i could want to use them, hence they are kind of invisible, even if they are there. I think it would help to learn the stuff you want easier and at the same time learning more about functionalities and getting a user experience which is finally more customized to fit the users needs. Just as a very "neurotic" last example i get sick of the 100 and everything entries i always get by helm when using M-x, as i don't use a lot of them and therefore i would like them to just be invisible as long as i don't use them...However if bloated or not, it's a great tool: the day i discovered tetris i didn't worked for the rest of the day...

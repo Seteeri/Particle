@@ -4556,12 +4556,12 @@ but those batteries can only exist through concensus
 
 SCENARIO 1:
 
-  (a b c)
+  (c)
 
   ->
 
-  (a b "^M"
-  ((c)))
+  ("^M"
+   ((c)))
   
   * Indicates changes:
     * Move c to newline
@@ -4570,13 +4570,54 @@ SCENARIO 1:
 SCENARIO 2:
 
   (a "^M"
-   (c))
+   (Ref))
    
    ->
    
   (a "^M"
-   ((c)))
+   ((Ref)))
+   
+
+IMPL:
+
+* Find ref in Input
+* Gen symbols rel to ref
+* Process Output
+
+(let (R <Ref>)
+  ...)
+  
+(for Sym Output
+  (let Type (type Sym)
+    (cond ((and (= Type '(+Str))
+                (= Sym "^M"))
+           # Create line for next item
+           (new '(+Line) (get Sym 'b)))
+          ((= Type '(+Pair))
+           (a> Prev Sym))
+          ((= Type '(+Sym))
+           (b> Prev Sym)))))
     
+...no
+
+============================================
+
+Image is list of pixels
+
+Audio is list of samples
+Total samples = samples * hz
+
+A 3 min song @ 44100 hz = 7,938,000 samples
+so better to divide in seconds instead of producing 8 million cons = ~246 MB
+
+pixel = sample
+
+memory
+ptrs
+cells
+symbols
+dsl...
+
 ============================================
 ============================================
 
