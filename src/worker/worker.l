@@ -441,6 +441,7 @@
           # Translate back to origin
           # Translate to final pos          
           
+          #{
           (=: mm
               (mat4-mul
                 (mat4-tra (: pos))
@@ -461,6 +462,20 @@
                               (mat4-mul
                                 (mat4-rx (car (: rota)))
                                 (mat4-sca (: sca))))))))))))
+          }#
+          
+          (=: mm
+              (mat4-mul@
+                (mat4-tra (: pos))
+                (mat4-inv Tr)
+                (mat4-rz *rot-z)
+                Tr
+                (mat4-inv (mat4-tra (: pos)))
+                (mat4-tra (: pos))
+                (mat4-rz (caddr (: rota)))
+                (mat4-ry (cadr (: rota)))
+                (mat4-rx (car (: rota)))
+                (mat4-sca (: sca))))
                                 
           ))
                 

@@ -123,12 +123,11 @@
   # (INV (((T * Rz) Ry) Rx))
   
   (=: mat-view 
-      (mat4-inv (mat4-mul 
-        (mat4-rx (car (: rot)))
-          (mat4-mul (mat4-ry (cadr (: rot)))
-            (mat4-mul (mat4-rz (caddr (: rot)))
-              (mat4-tra (: pos))))))))
-
+      (mat4-inv
+        (mat4-mul@ (mat4-rx (car   (: rot)))
+                   (mat4-ry (cadr  (: rot)))
+                   (mat4-rz (caddr (: rot)))
+                   (mat4-tra (: pos))))))
 
 (dm wr-mat-proj-ptr> (Ptr)
   (wr-mat-to-ptr (: mat-proj) Ptr))
