@@ -57,7 +57,7 @@
 
 (de send-msg (Ipc Sock Sexpr Bin Sz-Bin)
 
-  # Could do this unblocked; if delayed, then server is lagging and could warn
+  # Could do this unblocked, if delayed, then server is lagging and could warn
 
   (let Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
     (ipc~send-bytes> Ipc Sock T Len-Sock)))
@@ -107,14 +107,8 @@
 
 
 (de recv-msg-len (Ipc Sock)
-
-  (with Ipc
-    
-    (if (ipc~recv-bytes> Ipc Sock T 12 sock~MSG-WAITALL)
-
-      (struct (: ipc~buf-rd) '(I . 3))
-
-      (nil (prinl-info "recv-msg-len" (pack "Bytes-Recv=" @))))))
+  (when (ipc~recv-bytes> Ipc Sock T 12 sock~MSG-WAITALL)
+    (struct (get Ipc 'ipc~buf-rd) '(I . 3))))
 
 
 (de recv-msg-bin (Ipc Sock Sz)
