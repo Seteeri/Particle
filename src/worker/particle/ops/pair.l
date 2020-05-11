@@ -73,7 +73,7 @@
                             Part NIL Part)))
     
     # Con cars backwards
-    (c-a> C)
+    (c-a C)
     
     (upd-tree)
     (mov-*1 *line)
@@ -123,7 +123,7 @@
         Cc (get C 'c))
     
     (a> Part C)
-    #(c-a> C)
+    #(c-a C)
 
     (b> Cc Part)
     

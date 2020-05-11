@@ -99,9 +99,9 @@
                  (cdr (: data)))))  
     
     
-(dm c-a> ()
-  (let (C This
-        A (: a))
+(de c-a (S)
+  (let (C S
+        A (get S 'a))
     (while (= (get C 'a) A)
       (a> C A)
       (setq A C

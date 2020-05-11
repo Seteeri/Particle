@@ -130,7 +130,7 @@
         
     (put-line Ref Part)        
           
-    (c-a> Pair)
+    (c-a Pair)
           
     (when Is-Ref-Pair-of-Pair
       # Create additional line for Ref
@@ -195,7 +195,7 @@
           (T
            (quit "repl-str: invalid pair")))
           
-    (c-a> Pair)          
+    (c-a Pair)          
           
     (del> Ref T T)
     
@@ -219,7 +219,7 @@
     (if (= (get Sta 'c 'a) Sta)    
         (prog
           (a> Prv Part)
-          (c-a> Part))
+          (c-a Part))
         (b> Prv Part))
     
     # Part <-> End'b
@@ -261,7 +261,7 @@
       (if (= (get Sta 'a) Ref)
           (prog
             (a> Sta Part)
-            (c-a> Part))
+            (c-a Part))
           (b> Sta Part))
   
       (put-line Ref Part)
