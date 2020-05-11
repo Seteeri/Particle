@@ -21,7 +21,7 @@
   
     (for Msg Msgs
       (let ((Sexpr Bin Sz-Bin) Msg)
-        (inc Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin))))
+        (inc 'Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin))))
 
     (let Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
       
@@ -66,11 +66,13 @@
 (de send-msg-clients (Ipc Msg)
   (for Client (get Ipc 'ipc~clients)
     #(prinl-info "send-msg-clients" (str Client))
+    # Check for error
     (send-msg Ipc (car Client) Msg)))
 
 
 (de send-msg-conns (Ipc Msg)
   (for Conn (get Ipc 'ipc~conns)
+    # Check for error
     (send-msg Ipc (car Conn) Msg)))
 
 
