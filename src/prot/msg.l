@@ -77,7 +77,7 @@
 
 
 # RECV
-# Recv single msg - wait on all data
+# Recv single msg - wait on all data - pass flag?
 
 (de recv-msg (Ipc Sock)
 
@@ -88,8 +88,8 @@
     (when (and Len-Msg
                (ipc~recv-bytes> Ipc Sock T (+ Len-Sexpr Sz-Bin) sock~MSG-WAITALL))
 
-        (with Ipc
-          (pack (struct (: ipc~buf-rd) (cons 'C Len-Sexpr)))))))
+      (with Ipc
+        (pack (struct (: ipc~buf-rd) (cons 'C Len-Sexpr)))))))
 
 
 (de recv-msg-with-bin (Ipc Sock)

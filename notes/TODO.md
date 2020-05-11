@@ -7,7 +7,10 @@ TODO
   The power of open source
 
   * 10 MAY - SUN
-    * Refactor socket - set err instead of propogating
+    * Refactor socket contingency handling
+      * When sock fails
+      * When must retry send or recv
+    * Use co for msg flush
     * Play around with eval more to build structures
       * Build symbol mode...
         * How to exit?

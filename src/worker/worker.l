@@ -333,8 +333,8 @@
   
     #(test-rot-p0)
   
-    (if Msg
-        (disconn-conn *ipc Sock))))
+    (unless Msg
+      (disconn-conn *ipc Sock))))
 
 
 (de send-msg-rend (M) (send-msg *ipc (ipc~get-fd> *ipc "RENDER") M))

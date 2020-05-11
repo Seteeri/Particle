@@ -21,12 +21,12 @@ If dst NIL: send bytes back
 
   #(prinl-info "accept-client" (pack "Wait for ID from " Client))
 
-  #Read for ID - this will block
-  (let ID (recv-msg Ipc Client)
+  # Read for ID - this will block
+  (let? ID (recv-msg Ipc Client)
 
     (prinl-info "accept-client" (pack "Sock=" Client ", ID= " ID))
-
-    #Disconnect client if name conflict
+    
+    # Disconnect client if name conflict
     (if (assoc Client (get Ipc 'ipc~clients))
         (ipc~disconn-sock Client ID)
         (add-client Ipc Client ID))))
