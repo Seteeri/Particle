@@ -71,7 +71,7 @@
 (dm lay-y?> () (= (: lay) 'y))
 
 
-(de b-all @
+(de b@ @
   (let (A (next)
         B NIL)
     (while (setq B (next))

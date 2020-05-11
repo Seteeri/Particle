@@ -59,8 +59,7 @@
         Pair (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    (b> Pair Part)
-    (b> Part Ref)
+    (b@ Pair Part Ref)
     
     # Make line as necessary if car is a list
     (if (and (isa '(+Pair) (get Ref 'a))
