@@ -15,7 +15,7 @@
 
 (load (pack (pwd) "/src/misc.l"))
 (mapc 'ld-cwd
-      (list "/src/c/mathc.l"
+      (list "/src/glm.l"
             "/src/c/epoll.l"
             "/src/c/li.l"
             "/src/c/socket.l"
@@ -130,7 +130,7 @@
   (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "(rdy)")
   
   (prinl-info "init-worker" "Starting epoll...")
-
+  
   (loop (ipc~poll> *ipc -1)))
 
 
@@ -281,6 +281,17 @@
             (KEYBOARD-KEY
               (dispatch-kb Data))
 
+            (POINTER-MOTION
+              (when NIL
+                (let U (unproj (list (num-to-fl (/ *width 2)) (num-to-fl (/ *height 2)) 0.0)
+                              (get *projview 'mat-view)
+                              (get *projview 'mat-proj)
+                              (list 0.0 0.0 (num-to-fl *width) (num-to-fl *height)))
+                  (println "unproj"
+                          (format (car U) *Scl)
+                          (format (cadr U) *Scl)
+                          (format (caddr U) *Scl)))))
+            
             ((TOUCH-UP
               TOUCH-DOWN
               TOUCH-FRAME
@@ -398,8 +409,8 @@
               (Fn Ks))))))))
 
 
-(def 'PI 3.141592)
-(def 'PI2 (+ PI PI))
+#(def 'PI 3.141592)
+#(def 'PI2 (+ PI PI))
 (def '*rot-z 0.0)
 (de test-rot-p0 ()
 
@@ -416,7 +427,7 @@
                       (list (*/ (*/ (car Dims) (: sca-f) 1.0) 0.5 1.0)
                             (*/ (*/ (cadr Dims) (: sca-f) 1.0) 0.5 1.0)
                             0.0)))
-                Tr (mat4-translation
+                Tr (mat4-tra
                      (list (- (car Ce))
                            (- (cadr Ce))
                            0.0)))
@@ -432,24 +443,24 @@
           
           (=: mm
               (mat4-mul
-                (mat4-translation (: pos))
+                (mat4-tra (: pos))
                 (mat4-mul
-                  (mat4-inverse Tr)
+                  (mat4-inv Tr)
                   (mat4-mul
-                    (mat4-rotation-z *rot-z)
+                    (mat4-rz *rot-z)
                     (mat4-mul
                       Tr
                       (mat4-mul
-                        (mat4-inverse (mat4-translation (: pos)))
+                        (mat4-inv (mat4-tra (: pos)))
                         (mat4-mul
-                          (mat4-translation (: pos))
+                          (mat4-tra (: pos))
                           (mat4-mul
-                            (mat4-rotation-z (caddr (: rota)))
+                            (mat4-rz (caddr (: rota)))
                             (mat4-mul
-                              (mat4-rotation-y (cadr (: rota)))
+                              (mat4-ry (cadr (: rota)))
                               (mat4-mul
-                                (mat4-rotation-x (car (: rota)))
-                                (mat4-scaling (: sca))))))))))))
+                                (mat4-rx (car (: rota)))
+                                (mat4-sca (: sca))))))))))))
                                 
           ))
                 

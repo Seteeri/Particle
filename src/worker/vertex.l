@@ -42,7 +42,7 @@
   (=: rota Rota)
   (=: sca Sca)
   
-  (=: mm (mat4-identity))
+  (=: mm (mat4-id))
   
   # Rel to Ch
   (=: uv)
@@ -85,17 +85,17 @@
   # T * R * S
   (=: mm
       (mat4-mul
-        (mat4-translation (: pos))
+        (mat4-tra (: pos))
         (mat4-mul
-          (mat4-rotation-z
+          (mat4-rz
             (caddr (: rota)))
             (mat4-mul
-              (mat4-rotation-y
+              (mat4-ry
                 (cadr (: rota)))
                 (mat4-mul
-                  (mat4-rotation-x 
+                  (mat4-rx 
                     (car (: rota)))
-                    (mat4-scaling (: sca))))))))         
+                    (mat4-sca (: sca))))))))         
 
 
 (de wr-mat-to-ptr (M Ptr)

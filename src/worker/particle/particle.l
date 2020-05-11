@@ -95,6 +95,8 @@
   (=: a Car)
   (put Car 'c This)
   
+  # Or directly modify ptr so
+  # need not new cons
   (=: data (cons (get Car 'data)
                  (cdr (: data)))))  
     

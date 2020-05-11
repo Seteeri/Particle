@@ -6,7 +6,7 @@
 (def '*vec3-z (native "@" "malloc" 'N 12))
 
 
-(de to-rads (F)
+(de d-r (F)
   (native PATH-MATHC "to_radians" -1.0 (cons F -1.0)))
 
 

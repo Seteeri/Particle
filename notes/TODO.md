@@ -7,8 +7,6 @@ TODO
   The power of open source
 
   * 10 MAY - SUN
-    * Refactor ops
-      * Remove con-sym
     * Refactor socket - set err instead of propogating
     * Refactor math
     * Play around with eval more to build structures

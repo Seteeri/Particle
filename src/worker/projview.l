@@ -24,7 +24,7 @@
 
   # Move below into perspective and ortho classes
   
-  (=: fov         (if Fov @ (to-rads 45.0)))
+  (=: fov         (if Fov @ (d-r 45.0)))
   (=: near        (if Near @ 0.1))
   (=: far         (if Far @ 100.0))
         
@@ -112,26 +112,22 @@
 
 (dm upd-mat-view> ()
     
-  #https://www.3dgep.com/understanding-the-view-matrix/
-  #V=(T(Rx(RyRz)))^-1
-
-  #https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/row-major-vs-column-major-vector
-  #COL: P′ = Ry ∗ Rz ∗ T  ∗ P
-  #ROW: P′ = P  ∗ T  ∗ Rz ∗ Ry
-
-  #Rot always in the middle
-  #Here makes no difference since default rotation is an identity matrix
-
-  #Create macro for below so that the intermediate matrix is reused
+  # https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/row-major-vs-column-major-vector
+  # COL: P′ = Ry ∗ Rz ∗ T  ∗ P
+  # ROW: P′ = P  ∗ T  ∗ Rz ∗ Ry
   
-  #This is performing innermost first so:
-  #(INV (((T * Rz) Ry) Rx))
+  # https://www.3dgep.com/understanding-the-view-matrix/
+  # V= (T(Rx(RyRz)))^-1  
+  
+  # This is performing innermost first so:
+  # (INV (((T * Rz) Ry) Rx))
+  
   (=: mat-view 
-      (mat4-inverse (mat4-mul 
-        (mat4-rotation-x (get (: rot) 1))
-          (mat4-mul (mat4-rotation-y (get (: rot) 2))
-            (mat4-mul (mat4-rotation-z (get (: rot) 3))
-              (mat4-translation (: pos))))))))
+      (mat4-inv (mat4-mul 
+        (mat4-rx (car (: rot)))
+          (mat4-mul (mat4-ry (cadr (: rot)))
+            (mat4-mul (mat4-rz (caddr (: rot)))
+              (mat4-tra (: pos))))))))
 
 
 (dm wr-mat-proj-ptr> (Ptr)

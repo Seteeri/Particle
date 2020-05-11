@@ -16,7 +16,7 @@ Class variables may be indicated by an upper case letter
 
 (load (pack (pwd) "/src/misc.l"))
 (mapc 'ld-cwd
-      (list "/src/c/mathc.l"
+      (list "/src/glm.l"
             "/src/c/posix/mman.l"
             "/src/c/posix/string.l"
             "/src/c/socket.l"

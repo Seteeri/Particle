@@ -10,7 +10,7 @@
 
 
 # Wrapper libraries
-(load "/home/user/Particle/particle/src/c/mathc.l")
+(load "/home/user/Particle/particle/src/glm.l")
 (load "/home/user/Particle/particle/src/c/posix/mman.l")
 (load "/home/user/Particle/particle/src/c/posix/stdio.l")
 (load "/home/user/Particle/particle/src/c/posix/string.l")

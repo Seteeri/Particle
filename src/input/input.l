@@ -83,7 +83,7 @@
                                    (link (build-ev-lst Ev Type))))
                    ")")
 
-      # Workers will send messages to input when they are ready
+      # Workers will send messages to input when they are ready      
       (send-msg-clients *ipc Msg))))
 
 
