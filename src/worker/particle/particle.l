@@ -70,8 +70,17 @@
 (dm lay-x?> () (= (: lay) 'x))
 (dm lay-y?> () (= (: lay) 'y))
 
-(dm b> (Cdr)
 
+(de b-all @
+  (let (A (next)
+        B NIL)
+    (while (setq B (next))
+      (b> A B)
+      (setq A B))))
+
+
+(dm b> (Cdr)
+      
   (=: b Cdr)
   (put Cdr 'c This)
   

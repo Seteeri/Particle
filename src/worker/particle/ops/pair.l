@@ -5,14 +5,6 @@
       (setq P (get P 'b)))
     (del-car> P)))
 
-
-# Refactor into b> ?
-(de b-all (Parts)
-  (let Prv (car Parts)
-    (for Part (cdr Parts)     
-      (b> Prv Part)
-      (setq Prv Part))))
-
       
 (de make-list (Ref)
 

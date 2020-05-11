@@ -4612,11 +4612,13 @@ so better to divide in seconds instead of producing 8 million cons = ~246 MB
 
 pixel = sample
 
-memory
-ptrs
+bits
+numbers/ptrs
 cells
 symbols
 dsl...
+
+research vim modes
 
 ============================================
 ============================================
