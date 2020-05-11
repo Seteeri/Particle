@@ -82,11 +82,10 @@
 
 (de handle-worker (Sock)
 
-  (unless (flush-msgs *ipc Sock)
-    (disconn-client *ipc Sock))
+  (if (flush-msgs *ipc Sock)
+      (parse-msgs *ipc Sock proc-msg)
+      (disconn-client *ipc Sock)))
     
-  (parse-msgs *ipc Sock proc-msg))
-
 
 (de handle-render (Sock)
   # Currently, render sends frame time which is not used...
