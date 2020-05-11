@@ -86,7 +86,7 @@
     #(prinl-info "recv-msg" (pack "RECV " Len-Msg " " Len-Sexpr " " Sz-Bin))
 
     (when (and Len-Msg
-               (recv-msg-bin Ipc Sock (+ Len-Sexpr Sz-Bin)))
+               (ipc~recv-bytes> Ipc Sock T (+ Len-Sexpr Sz-Bin) sock~MSG-WAITALL))
 
         (with Ipc
           (pack (struct (: ipc~buf-rd) (cons 'C Len-Sexpr)))))))
@@ -99,7 +99,7 @@
     #(prinl-info "recv-msg" (pack "RECV " Len-Msg " " Len-Sexpr " " Sz-Bin))
 
     (when (and Len-Msg
-               (recv-msg-bin Ipc Sock (+ Len-Sexpr Sz-Bin)))
+               (ipc~recv-bytes> Ipc Sock T (+ Len-Sexpr Sz-Bin) sock~MSG-WAITALL))
 
       (with Ipc
         (cons (pack (struct (: ipc~buf-rd) (cons 'C Len-Sexpr)))
@@ -109,17 +109,6 @@
 (de recv-msg-len (Ipc Sock)
   (when (ipc~recv-bytes> Ipc Sock T 12 sock~MSG-WAITALL)
     (struct (get Ipc 'ipc~buf-rd) '(I . 3))))
-
-
-(de recv-msg-bin (Ipc Sock Sz)
-
-  (with Ipc
-
-    (if (ipc~recv-bytes> Ipc Sock T Sz sock~MSG-WAITALL)
-
-      @
-
-      (nil (prinl-info "recv-msg-bin" (pack "(not (= Bytes-Recv=" @ " " Len "))"))))))
 
 
 # FLUSH
