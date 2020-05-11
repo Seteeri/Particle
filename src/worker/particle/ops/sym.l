@@ -273,8 +273,7 @@
     
       (let Part (gen-part (list Data) 'x NIL T)
         
-        # T must be NIL to skip
-        (con-sym Prv Part T)
+        (b> Prv Part)
         
         (setq Prv Part)))
 

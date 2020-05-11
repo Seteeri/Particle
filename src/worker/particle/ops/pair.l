@@ -7,7 +7,7 @@
 
 
 # Refactor into b> ?
-(de con-all (Parts)
+(de b-all (Parts)
   (let Prv (car Parts)
     (for Part (cdr Parts)     
       (b> Prv Part)
@@ -51,7 +51,7 @@
 
   (let Cdr (get Ref 'b)
 
-    (con-all (list Ref Part Cdr))
+    (b-all (list Ref Part Cdr))
 
     # If Cdr is a new line, xfer it to new Part
     (when (and (get Cdr 'line)
