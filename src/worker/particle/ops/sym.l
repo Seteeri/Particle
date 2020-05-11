@@ -59,14 +59,15 @@
         Pair (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
-    (con-sym Pair Part)
-  
+    (b> Pair Part)
+    (b> Part Ref)
+    
     # Make line as necessary if car is a list
     (if (and (isa '(+Pair) (get Ref 'a))
              (isa '(+Pair) Ref))
         (make-line Ref)
         (when (get Ref 'line)
-          (put-line Cdr Part)))
+          (put-line Ref Part)))
     
     (upd-tree)
     (mov-*1 *line)

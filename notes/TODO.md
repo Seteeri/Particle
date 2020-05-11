@@ -37,6 +37,9 @@ TODO
     * Color dot differently for Y pair
     * Cache last item for lists
     * Implement cmds Q/E : start/end of line/list
+    * Sym prop output
+      * Push to *properties
+      * Push to ptr
     
   * 11 MAY - MON
     * Fix eval output - need refactor layout

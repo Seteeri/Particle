@@ -6,6 +6,7 @@
     (del-car> P)))
 
 
+# Refactor into b> ?
 (de con-all (Parts)
   (let Prv (car Parts)
     (for Part (cdr Parts)     
