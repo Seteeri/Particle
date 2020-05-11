@@ -11,7 +11,9 @@ Particle is a PicoLisp presentation binary tree (AST) UI.
 
 The idea is to take the extensibility of Emacs combined with the dynamics and cohesion of past Lisp Machines, Oberon, Open Dylan, Intentional Programming and other models, and to evolve that consistent text interface to arbitrary objects, taking advantage of modern hardware such as GPUs and parallelism.
 
-On MS and Apple systems, it serves as an outliner "app" or personal knowledge manager, however, with Linux and BSD systems it goes further integrating/becoming the Wayland compositor creating a Lisp environment. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that.
+Originally, this project was attempted in other languages but became only possible with PicoLisp, because *all* data structures are based on cons cells and this structure is retained during runtime, which allows the GUI and data to be homoiconic (overloaded term these days). When characters (strings) are input via keystrokes, they exist as cons cells so there is no reading or parsing, which has implications later explained. In addition, there is no GUI in the traditional sense as the data itself becomes the GUI and is no longer separate from the system like in conventional programs (it is possible to build a conventional GUI in Particle).
+
+On MS and Apple systems, it serves as an outliner "app" or personal knowledge manager, however, with Linux and BSD systems it goes further absorbing the Wayland compositor, creating an encompassing Lisp environment. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that, through a more pragmatic and gradual approach.
 
 Plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM-based), a native solution can be provided. The Pinephone is also on the way ;)
 

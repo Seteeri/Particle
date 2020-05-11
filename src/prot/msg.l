@@ -113,7 +113,22 @@
 
 # FLUSH
 
+#{
 
+  For coroutine:
+  
+    while read data sock
+      If complete msg, push to queue
+      else yield
+  
+  Caller will then process the msgs
+  
+  Msg body header needs flag
+  * Ensure all msgs processed on same frame/batch
+  
+}#
+
+# UNUSED
 (de flush-part (Ipc Sock Thresh)
   # Fill buffer until threshold
   (while (< (inc '*buf-flush-fill

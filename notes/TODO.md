@@ -6,42 +6,42 @@ TODO
   The polish of Apple
   The power of open source
 
-  * 10 MAY - SUN
-    * Refactor socket contingency handling
-      * When sock fails
-      * When must retry send or recv
-    * Use co for msg flush
+  GOAL is build structures more fluidly
+  * Create list, enter strings, convert some to symbols, eval
+  
+  * 10 MAY - MON
+    * Cache last item for lines/lists
+    * Implement cmds Q/E : start/end of line/list  
     * Play around with eval more to build structures
-      * Build symbol mode...
-        * How to exit?
-      * Or Tab to create string from cur pos back until non-char
-        * Ctrl+Tab to enter tab character
-      * Pointer
-        * 2 mode indicators: CAR/PAIR    STR/SYM/NUM  + Ptr #
-          * Icons:           <dir/arrow> ""/T/0         1-Inf
-        * Example: ↓"" or ↓T or ↓0
-          * Color same for all since still sym name
-        * Each combo is a diff symbol
-          * Or they are properties? But how to draw it?
-            * *0 . .dir ↓ .atom T
-            * Could draw properties under
-            * Do users need to see all properties constantly?
-            * Or have dedicated viewports
-              * Med left pane is properties
-              * Short bottom pane is pointer status bar
-              * Right large is main
-        * https://en.wikibooks.org/wiki/Unicode/List_of_useful_symbols
-          * hex 2190 - 2193
-          * Think, insert has an indicator and Caps Lock does not
-            * Which one tends to have more user mode errors? -> Caps Lock
-    * Color dot differently for Y pair
-    * Cache last item for lists
-    * Implement cmds Q/E : start/end of line/list
+      * Use double shift to convert str -> sym
+        * Mod+Tab awkward
+        * Shift+Space useful
+        * Shift+Alt poss
+        * Tab enters tab char...
+    * Pointer
+      * 2 mode indicators: CAR/PAIR    STR/SYM/NUM  + Ptr #
+        * Icons:           <dir/arrow> ""/T/0         1-Inf
+      * Example: ↓"" or ↓T or ↓0
+        * Color same for all since still sym name
+      * Each combo is a diff symbol
+        * Or they are properties? But how to draw it?
+          * *0 . .dir ↓ .atom T
+          * Could draw properties under
+          * Do users need to see all properties constantly?
+          * Or have dedicated viewports
+            * Med left pane is properties
+            * Short bottom pane is pointer status bar
+            * Right large is main
+      * https://en.wikibooks.org/wiki/Unicode/List_of_useful_symbols
+        * hex 2190 - 2193
+        * Think, insert has an indicator and Caps Lock does not
+          * Which one tends to have more user mode errors? -> Caps Lock
     * Sym prop output
       * Push to *properties
       * Push to ptr
+    * Color dot differently for Y pair...
     
-  * 11 MAY - MON
+  * 11 MAY - TUES
     * Fix eval output - need refactor layout
     * Print system out
       * Where to put it?
@@ -50,6 +50,11 @@ TODO
           * Visualize process?
         * Sublist of original cmd
         * Two lines
+    * IPC/Prot
+      * Use co for msg flush    
+      * Refactor socket contingency handling
+        * When sock fails
+        * When must retry send or recv
   
     * Visual Hierarchy
       * Process -> Namespace -> Symbols...
@@ -65,7 +70,7 @@ TODO
       * Auto convert any pairs to y
         * Explicit fn or auto on gen
       
-  * 12 MAY - TUES
+  * 12 MAY - WED
     * https://github.com/mapbox/tiny-sdf
       * Felzenszwalb/Huttenlocher distance transform
     * https://github.com/astiopin/webgl_fonts
