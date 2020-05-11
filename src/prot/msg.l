@@ -23,9 +23,9 @@
       (let ((Sexpr Bin Sz-Bin) Msg)
         (inc Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin))))
 
-    (let (Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
+    (let Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
       
-      (ipc~send-bytes> Ipc Sock T Len-Sock)))))
+      (ipc~send-bytes> Ipc Sock T Len-Sock))))
 
 
 (de wr-msg (Ipc Sexpr Bin Sz-Bin)
@@ -59,14 +59,8 @@
 
   # Could do this unblocked; if delayed, then server is lagging and could warn
 
-  (let (Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
-        Bytes-Sent (ipc~send-bytes> Ipc Sock T Len-Sock))
-
-    (if Bytes-Sent
-
-        @
-
-        (nil (prinl-info "send-msg-len" (pack "Failed to send" " " (if Bytes-Sent @ NIL)))))))
+  (let Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
+    (ipc~send-bytes> Ipc Sock T Len-Sock)))
 
 
 (de send-msg-clients (Ipc Msg)
