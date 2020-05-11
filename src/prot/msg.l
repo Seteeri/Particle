@@ -24,13 +24,8 @@
         (inc Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin))))
 
     (let (Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
-          Bytes-Sent (ipc~send-bytes> Ipc Sock T Len-Sock))
-
-      (if Bytes-Sent
-
-          @
-
-          (nil (prinl-info "send-msg-len" (pack "Failed to send" " " (if Bytes-Sent @ NIL))))))))
+      
+      (ipc~send-bytes> Ipc Sock T Len-Sock)))))
 
 
 (de wr-msg (Ipc Sexpr Bin Sz-Bin)

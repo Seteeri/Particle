@@ -8,7 +8,6 @@ TODO
 
   * 10 MAY - SUN
     * Refactor socket - set err instead of propogating
-    * Refactor math
     * Play around with eval more to build structures
       * Build symbol mode...
         * How to exit?
