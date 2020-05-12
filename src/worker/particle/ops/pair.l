@@ -176,8 +176,9 @@
   
   #{ 
     
-    For NIL
-    
+    Case 1:
+    =======
+   
     [ ]
     a
       
@@ -196,19 +197,29 @@
     
     NIL
     
+    
+    Case 2:
+    =======
+    
+    [ ]     NIL
+    *start  *
+
+    ->
+    
+    [ ]     [ ]  NIL
+    *start     
+            NIL
   }#
   
-  (let (Part (gen-part '((NIL))
+  (let (Part (gen-part '(NIL)
                        'x
                        NIL
                        'skip-cdr)
         C (get Ref 'c))
          
-    (b> C Part)
-
-    (b> Part Ref)
-    
-    # Create lines for Part
+    (b@ C Part Ref)
+        
+    # Create line for Part and Car
     (with Part
      
       (=: lay 'y)
@@ -226,31 +237,68 @@
       # Create Line for Car
       (put (: a) 'line (new '(+Line))))
       
-    # Connect lines
-    # C -> Part -> Ref
+    # Connect line for non-sym
     (unless (isa '(+Sym) C)
       (put C 'line 'n Part))
-      
+    
+    # Create line for Part's Cdr
     (with Ref
+      # keep x lay
+    
       (if (: line)
           (with (: line)
             (=: p Part)
             (=: n (get *line 'line b))
-            (=: l (get Part 'line 'l)))
+            (=: l (if (get Part 'line 'l) @ Part)))
           (=: line (new '(+Line)
                         Part
                         (get *line 'line b)
                         (get Part 'line 'l)))))
-        
-    (println 'make-cons-car-x-nil Ref (get Ref 'data) (get Ref 'line))
-    (view (getl Ref))
+    
+    (when T
+      (prinl) (prinl)
+      
+      (println "Part: " Part)
+      (println "lay: " (get Part 'lay))
+      (when NIL
+        (println "line.p: " (get Part 'line 'p))
+        (println "line.n: " (get Part 'line 'n))
+        (println "line.l: " (get Part 'line 'l)))
+      (when NIL
+        (println "a: " (get Part 'a))
+        (println "b: " (get Part 'b))
+        (println "c: " (get Part 'c)))
+      (prinl) (prinl)
+
+      (println "Car: " (get Part 'a))
+      (println "lay: " (get Part 'a 'lay))
+      (when NIL
+        (println "line.p: " (get Part 'a 'line 'p))
+        (println "line.n: " (get Part 'a 'line 'n))
+        (println "line.l: " (get Part 'a 'line 'l)))
+      (when NIL
+        (println "a: " (get Part 'a 'a))
+        (println "b: " (get Part 'a 'b))
+        (println "c: " (get Part 'a 'c)))
+      (prinl) (prinl)
+      
+      (println "Cdr: " (get Part 'b))    
+      (println "lay: " (get Part 'b 'lay))
+      (when NIL
+        (println "line.p: " (get Part 'b 'line 'p))
+        (println "line.n: " (get Part 'b 'line 'n))
+        (println "line.l: " (get Part 'b 'line 'l)))
+      (when NIL    
+        (println "a: " (get Part 'b 'a))
+        (println "b: " (get Part 'b 'b))
+        (println "c: " (get Part 'b 'c)))
+      (prinl) (prinl))
         
     (upd-tree)
     (mov-*1 *line)
     
-    # Maintain on inner tree or outer?
-    (setq *line Part)
-    (put *0 'b Part)
+    (setq *line (get Part 'a))
+    (put *0 'b (get Part 'a))
     (point-sub)
         
     (println 'make-cons-car-x-nil "Made nested list")

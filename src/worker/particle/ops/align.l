@@ -16,14 +16,14 @@
   }#
 
   (let Ori-C (get Part 'line 'l 'ori)
-        #Ori-CA (get Part 'c 'a 'ori)
-        #Dims-CA (get Part 'c 'a 'line 'dims)
 
+    ~(assert Ori-C)
+        
     (when T
       (println 'align-cur-to-line-y 
-              Part (get Part 'data) 
-              'to 
-              (get Part 'line) (get Part 'line 'data)))
+               Part
+               'to 
+               (get Part 'line 'l)))
 
     (set-cur-x (get Ori-C 1))
 
@@ -51,11 +51,13 @@
 
   (let Ori-C (get Part 'line 'l 'ori)
 
-    (when NIL
+    ~(assert Ori-C)  
+  
+    (when T
       (println 'align-cur-to-line-x 
-               Part (get Part 'data) 
+               Part
                'to 
-               (get Part 'line 'l 'data)))
+               (get Part 'line 'l)))
     
     (set-cur-x (get Ori-C 1))
 
