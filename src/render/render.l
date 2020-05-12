@@ -23,7 +23,6 @@ Class variables may be indicated by an upper case letter
             "/src/c/gles/gles.l"
             "/src/c/glfw.l"
             "/src/c/epoll.l"
-            "/src/dlst.l"
             "/src/ipc/ipc.l"
             "/src/prot/conn.l"
             "/src/prot/msg.l"
@@ -172,7 +171,7 @@ Class variables may be indicated by an upper case letter
   #To disable drawing an object, use 0.0 (float) that is multiplied in vertex shader
   #Change flags with a vec4
   #(init-comp)
-
+  
   (setq *ipc (new '(ipc~+IPC)
                     *uds-rend T recv-conn accept-client))  
   
@@ -235,17 +234,18 @@ Class variables may be indicated by an upper case letter
     # Avg 7 ms max to GC
     #(bench (gc))
     
+    #(println 'render "loop...")
+    
     T)
 
   (glfw~destroy-window *window)
   (glfw~terminate))
 
-
+  
 (de recv-conn (Sock)
   (if (flush-sock *ipc Sock)
       (parse-msgs *ipc Sock proc-msg)
       (disconn-client *ipc Sock)))
-
 
 (de main ()
   (bind-args)

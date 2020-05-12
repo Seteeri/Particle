@@ -24,7 +24,6 @@
             "/src/c/xkbcommon.l"
             "/src/c/timerfd.l"
             "/src/c/ksd.l"
-            "/src/dlst.l"
             "/src/ipc/ipc.l"
             "/src/font/metrics.l"            
             "/src/prot/conn.l"
@@ -82,7 +81,6 @@
 
 
 (de handle-worker (Sock)
-
   (if (flush-sock *ipc Sock)
       (parse-msgs *ipc Sock proc-msg)
       (disconn-client *ipc Sock)))

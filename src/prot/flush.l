@@ -13,19 +13,6 @@
   
 }#
 
-# UNUSED
-(de flush-part (Ipc Sock Thresh)
-  # Fill buffer until threshold
-  (while (< (inc '*buf-flush-fill
-                 (ipc~recv-bytes> Ipc Sock
-                                  (+ *buf-flush *buf-flush-fill)
-                                  (- *buf-flush-sz *buf-flush-fill)
-                                  0))
-            Thresh)
-    (yield)))
-
-
-(def '*dlst (new '(+Dlst)))
 (def '*buf-flush (native "@" "malloc" 'N (sock~get-rmem-def)))
 
 (de wr-int (N)
@@ -37,74 +24,101 @@
 
 
 (de rd-int (B)
-  (| (>> -24 (car   B))
-     (>> -16 (cadr  B))
-     (>> -8  (caddr B))
-             (cadddr B)))
+  (| (>> -24 (cadddr   B))
+     (>> -16 (caddr  B))
+     (>> -8  (cadr B))
+             (car B)))
+                
+#{
 
+  Poss faster method is to maintain pointer to back
+  Push front, pop back
+  
+  (con que-end data)
+  (setq que-end (nth data *len-buf))
+
+}#
+
+(def '*len-buf 0)
+(off *que-msg)
+(def '*que-end NIL)
 
 (de flush-sock (Ipc Sock)
 
-  #(when (= NAME-PID "RENDER")
-  #  (prinl-info "flush-sock" (pack "Queued Msgs: " (get *dlst 'len))))
+  (let? Sz-Rd (ipc~recv-bytes> Ipc Sock T T 0)
 
-  (let? Bytes-Read (ipc~recv-bytes> Ipc Sock T T 0)
-    (mapcar '((B) (ins-las *dlst (new '(+Node-Dlst) B)))
-            (struct (get Ipc 'ipc~buf-rd) (cons 'B Bytes-Read)))
-    #{
-    (for B (struct (get Ipc 'ipc~buf-rd) (cons 'B Bytes-Read))
-      (let Node (new '(+Node-Dlst) B)
-        (ins-las *dlst Node)))
-    }#
-    Bytes-Read))
+    (let D (struct (get Ipc 'ipc~buf-rd) (cons 'B Sz-Rd))      
+      (if *que-end
+          (con *que-end D)
+          (setq *que-msg D))
+      (setq *que-end (nth D Sz-Rd)))
+            
+    (inc '*len-buf Sz-Rd)
+        
+    Sz-Rd))
 
 
 (de parse-msgs (Ipc Sock Fn-Proc)
 
-  #(prinl-info "flush-sock-2" (pack "*dlst.len=" (get *dlst 'len)))
-
-  # 2 things
-  # 1. Check if list has sufficient data
-  # 2. Handle lists
-
-  (let Cont T
-  
-    (while Cont
-
-      # First check if sufficient length otherwise get head
-      (if (not (>= (get *dlst 'len) 12))
-
-        (prog
-          #(prinl-info "parse-msgs" "Incomplete head; try again later")
-          (off Cont))
-
-        (let Hd (rem-frs-n-d *dlst 12)
-
-          #(prinl-info "flush-sock-2" (pack "Hd= " (str Hd)))
-
-          # Parse Hd
-          (let (Sz-Bin    (rd-int Hd)
-                Len-Sexpr (rd-int (nth Hd 5))
-                Len-Msg   (rd-int (nth Hd 9)))
-
-            #(prinl-info "flush-sock-2" (pack "Sz-Bin=" Sz-Bin ", Len-Sexpr=" Len-Sexpr))
-
-            # Parse Msg
-            (if (not (>= (get *dlst 'len) (+ Len-Sexpr Sz-Bin)))
-
-              (prog
-                # Push Hd back
-                (for B Hd (ins-frs *dlst (new '(+Node-Dlst) B)))
-                (off Cont))
-
-              (let (Str  (rem-frs-n-d-c *dlst Len-Sexpr)
-                    Msg  (pack (flip (cdr Str)))
-                    Data (car (str Msg)))
-
-                # Parse Bin
-                (unless (=0 Sz-Bin)
-                  (for I Sz-Bin
-                    (byte (+ *buf-flush (- I 1))
-                          (get (rem-frs *dlst) 'dat))))
+  (co 'co-parse-sock
+    
+    (loop
+      
+      (let (Hd NIL
+            (Sz-Bin Len-Sexpr Len-Msg) NIL)
+            
+        # Wait for head
+        (until Hd
+          (if (>= *len-buf 12)
+              (setq Hd (pop-fifo 12)
+                    P (parse-hd Hd)
+                    Len-Msg   (car P)
+                    Len-Sexpr (cadr P)
+                    Sz-Bin    (caddr P))
+              (yield)))
+        
+        (println Sz-Bin Len-Sexpr Len-Msg)        
+        
+        # Wait for body
+        (while (< *len-buf (+ Len-Sexpr Sz-Bin))
+          (yield))
                 
-                (Fn-Proc Ipc Sock Data Sz-Bin *buf-flush)))))))))
+        # Read sexpr
+        # Proc msg
+        (let Msg (parse-sexpr Len-Sexpr)
+        
+          #(println Msg)
+              
+          # Copy bin to ptr
+          # Let fn-proc decide what to do
+          # Render does a straight memcpy
+          # How to avoid extra cpying?
+          # Buffer (kernel) -> List -> Buffer (user)
+          # Or pass list?
+          #
+          # Faster way with struct and single fn call
+          (unless (=0 Sz-Bin)
+            (dec '*buf-flush)
+            (for (I . X) (pop-fifo Sz-Bin)
+              (byte (+ *buf-flush I) X))
+            (inc '*buf-flush))
+                    
+          (Fn-Proc Ipc Sock Msg Sz-Bin *buf-flush))))))
+
+
+(de pop-fifo (Cnt)
+  (let L (cut Cnt '*que-msg)
+    (dec '*len-buf Cnt)
+    (unless *que-msg (off *que-end))
+    L))
+          
+    
+# Move to msg?
+(de parse-hd (Hd)
+  (list (rd-int Hd)
+        (rd-int (nth Hd 5))
+        (rd-int (nth Hd 9))))
+
+
+(de parse-sexpr (Cnt)
+  (car (str (pack (mapcar '((B) (char B)) (pop-fifo Cnt))))))

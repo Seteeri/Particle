@@ -40,9 +40,9 @@
 (de wr-dst (Ptr Dst Sock Sz Off)
 
   (cond ((= Dst "projview")
-         #(println (usec) " | wr-dst projview | " (struct (get *ipc 'ipc~buf) '((B . 64) (B . 64))))
          (let (Ptr-Gl  (get '*buffer-objects 'projview 'gl~ptr)
                Ptr-Buf Ptr)
+           #(println (usec) " | wr-dst projview | " (struct Ptr '((B . 64) (B . 64))))
            (memcpy Ptr-Gl (+ Ptr-Buf 9) 64)
            (memcpy (+ Ptr-Gl 64) (+ Ptr-Buf 9 64 24) 64)))
 
