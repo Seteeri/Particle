@@ -242,7 +242,7 @@ Class variables may be indicated by an upper case letter
 
 
 (de recv-conn (Sock)
-  (if (flush-msgs *ipc Sock)
+  (if (flush-sock *ipc Sock)
       (parse-msgs *ipc Sock proc-msg)
       (disconn-client *ipc Sock)))
 

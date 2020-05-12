@@ -43,10 +43,10 @@
              (cadddr B)))
 
 
-(de flush-msgs (Ipc Sock)
+(de flush-sock (Ipc Sock)
 
   #(when (= NAME-PID "RENDER")
-  #  (prinl-info "flush-msgs" (pack "Queued Msgs: " (get *dlst 'len))))
+  #  (prinl-info "flush-sock" (pack "Queued Msgs: " (get *dlst 'len))))
 
   (let? Bytes-Read (ipc~recv-bytes> Ipc Sock T T 0)
     (mapcar '((B) (ins-las *dlst (new '(+Node-Dlst) B)))
@@ -61,7 +61,7 @@
 
 (de parse-msgs (Ipc Sock Fn-Proc)
 
-  #(prinl-info "flush-msgs-2" (pack "*dlst.len=" (get *dlst 'len)))
+  #(prinl-info "flush-sock-2" (pack "*dlst.len=" (get *dlst 'len)))
 
   # 2 things
   # 1. Check if list has sufficient data
@@ -80,14 +80,14 @@
 
         (let Hd (rem-frs-n-d *dlst 12)
 
-          #(prinl-info "flush-msgs-2" (pack "Hd= " (str Hd)))
+          #(prinl-info "flush-sock-2" (pack "Hd= " (str Hd)))
 
           # Parse Hd
           (let (Sz-Bin    (rd-int Hd)
                 Len-Sexpr (rd-int (nth Hd 5))
                 Len-Msg   (rd-int (nth Hd 9)))
 
-            #(prinl-info "flush-msgs-2" (pack "Sz-Bin=" Sz-Bin ", Len-Sexpr=" Len-Sexpr))
+            #(prinl-info "flush-sock-2" (pack "Sz-Bin=" Sz-Bin ", Len-Sexpr=" Len-Sexpr))
 
             # Parse Msg
             (if (not (>= (get *dlst 'len) (+ Len-Sexpr Sz-Bin)))
