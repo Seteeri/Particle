@@ -94,12 +94,10 @@
 
   (=: a Car)
   (put Car 'c This)
-  
-  # Or directly modify ptr so
-  # need not new cons
-  (=: data (cons (get Car 'data)
-                 (cdr (: data)))))  
-    
+
+  (let Dat (car (:: data))
+    (set Data (get Car 'data))
+    (con Dat (cdr (: data)))))
     
 (de c-a (S)
   (let (C S
