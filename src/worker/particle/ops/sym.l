@@ -1,26 +1,90 @@
 (de make-str (Data Lay)
 
-  (let Ref (get *0 'b)
+  (let (Ref (get *0 'b)
+        Part (if *on-car
+                # If NIL is end/start-of-list
+                (if (and (isa '(+Nil) Ref)
+                         (or (= (get Ref 'c 'b) Ref)
+                             (get Ref 'c 'line)))
+                    (repl-nil Data Lay)
+                    (repl-car Data Lay))
+                (if (= (get Ref 'c 'a) Ref) # If direct sublist
+                    (ins-car Data Lay)
+                    (ins-cdr Data Lay))))
 
-    (if *on-car
-              
-        # If end-of-list NIL
-        (if (and (isa '(+Nil) Ref)
-                 (= (get Ref 'c 'b) Ref))
-            (prog
-              (ins-str Data Lay)
-              (point-sub Ref))
+    (lay-part-start *0 *line 'skip-cdr)
+    
+    Part))
 
-            (repl-str Data Lay))
+    
+(de repl-nil (Data Lay)
+
+  (println 'repl-nil)
+  
+  (let Part (if (= (get *0 'b 'c 'a) Ref)
+                (ins-car Data Lay)
+                (ins-cdr Data Lay))
+    
+    # Mov to cdr car
+    (put *0 'b (sub> (get Part 'b)))
+  
+    Part))
+  
+  
+(de repl-car (Data Lay)
+  #{
+    Replace car of y pair
         
-        (if (= (get Ref 'c 'a) Ref) # If direct sublist
+    ---
+        
+    [C]  [P]  [B]
+    a    b    c
+         *
 
-            (ins-str-first Data Lay)
+    
+    [ ]  [ ]  [ ]
+    a    x    c
+         *
 
-            (ins-str Data Lay)))))
+    ---
+    
+    [Ccc]
+    a    
+    
+    [Cc]  [C]  [ ]  [ ]
+               x    c
+               *        
 
+  }#
 
-(de ins-str (Data Lay)
+  (println 'repl-str)
+  
+  (let (Ref (get *0 'b)
+        Pair (get Ref 'c)
+        C (get Pair 'c)
+        Part (gen-part Data Lay))
+
+    (a> Pair Part)
+    
+    (cond ((= (get C 'b) Pair)
+           (b> C Pair))
+          ((= (get C 'a) Pair)
+           (a> C Pair))
+          (T
+           (quit "repl-str: invalid pair")))
+          
+    (del> Ref T T)
+    
+    (upd-tree)
+    (mov-*1 *line)
+
+    # Mov to cdr car
+    (put *0 'b (sub> (get Pair 'b)))
+    
+    Part))  
+
+    
+(de ins-cdr (Data Lay)
   #{
     Insert after ptr/pair (rel to Ref 'b 'c)
     or
@@ -54,7 +118,9 @@
     - Or start newline and move Y to newline
     
   }#
-         
+  
+  (println 'ins-str)
+  
   (let (Ref (get *0 'b)
         Pair (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
@@ -72,12 +138,11 @@
     (mov-*1 *line)
         
     (mov-cur-abv Ref)
-    (lay-part-start *0 *line 'skip-cdr)
     
     Part))
     
 
-(de ins-str-first (Data Lay)
+(de ins-car (Data Lay)
 
   #{
     Insert item before ptr
@@ -118,6 +183,8 @@
     NIL
   }#
     
+  (println 'ins-car)
+    
   (let (Ref (get *0 'b)
         Pair (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T)
@@ -148,60 +215,10 @@
           (mov-cur-abv Part))
         (mov-cur-abv Ref))
     
-    (lay-part-start *0 *line 'skip-cdr)    
-    
     Part))
     
 
-(de repl-str (Data Lay)
-  #{
-    Replace car of y pair
-        
-    ---
-        
-    [C]  [P]  [B]
-    a    b    c
-         *
-
-    
-    [ ]  [ ]  [ ]
-    a    x    c
-         *
-
-    ---
-    
-    [Ccc]
-    a    
-    
-    [Cc]  [C]  [ ]  [ ]
-               x    c
-               *        
-
-  }#
-
-  (let (Ref (get *0 'b)
-        Pair (get Ref 'c)
-        C (get Pair 'c)
-        Part (gen-part Data Lay))
-
-    (a> Pair Part)
-    
-    (cond ((= (get C 'b) Pair)
-           (b> C Pair))
-          ((= (get C 'a) Pair)
-           (a> C Pair))
-          (T
-           (quit "repl-str: invalid pair")))
-          
-    (del> Ref T T)
-    
-    (upd-tree)
-    (mov-*1 *line)
-
-    (put *0 'b Part)
-    (point-nxt)
-        
-    Part))
+#########################################
     
     
 (de repl-list-str (Sta End Data Skip-Upd)
@@ -235,8 +252,7 @@
       (mov-*1 *line)        
       
       # Put Ptr above new part
-      (mov-cur-abv (get Part 'b))
-      (lay-part-start *0 *line 'skip-cdr))))
+      (mov-cur-abv (get Part 'b)))))
     
 
 (de repl-str-list (Ref List Skip-Upd)
@@ -281,8 +297,7 @@
       (mov-*1 *line)        
               
       # Put Ptr above new part
-      (mov-cur-abv End)
-      (lay-part-start *0 *line 'skip-cdr))))
+      (mov-cur-abv End))))
 
       
 (de build-str (Start)

@@ -264,7 +264,7 @@
         (println "line.p: " (get Part 'line 'p))
         (println "line.n: " (get Part 'line 'n))
         (println "line.l: " (get Part 'line 'l)))
-      (when NIL
+      (when T
         (println "a: " (get Part 'a))
         (println "b: " (get Part 'b))
         (println "c: " (get Part 'c)))
@@ -276,7 +276,7 @@
         (println "line.p: " (get Part 'a 'line 'p))
         (println "line.n: " (get Part 'a 'line 'n))
         (println "line.l: " (get Part 'a 'line 'l)))
-      (when NIL
+      (when T
         (println "a: " (get Part 'a 'a))
         (println "b: " (get Part 'a 'b))
         (println "c: " (get Part 'a 'c)))
@@ -288,7 +288,7 @@
         (println "line.p: " (get Part 'b 'line 'p))
         (println "line.n: " (get Part 'b 'line 'n))
         (println "line.l: " (get Part 'b 'line 'l)))
-      (when NIL    
+      (when T  
         (println "a: " (get Part 'b 'a))
         (println "b: " (get Part 'b 'b))
         (println "c: " (get Part 'b 'c)))
