@@ -130,8 +130,6 @@
         
     (put-line Ref Part)        
           
-    (c-a Pair)
-          
     (when Is-Ref-Pair-of-Pair
       # Create additional line for Ref
       # Ins after current line (Part)
@@ -195,8 +193,6 @@
           (T
            (quit "repl-str: invalid pair")))
           
-    (c-a Pair)          
-          
     (del> Ref T T)
     
     (upd-tree)
@@ -217,9 +213,7 @@
     
     # If car of pair
     (if (= (get Sta 'c 'a) Sta)    
-        (prog
-          (a> Prv Part)
-          (c-a Part))
+        (a> Prv Part)
         (b> Prv Part))
     
     # Part <-> End'b
@@ -259,9 +253,7 @@
     (let (Data (car List)
           Part (gen-part (list Data) 'x NIL T))
       (if (= (get Sta 'a) Ref)
-          (prog
-            (a> Sta Part)
-            (c-a Part))
+          (a> Sta Part)
           (b> Sta Part))
   
       (put-line Ref Part)
