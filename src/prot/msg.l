@@ -29,6 +29,29 @@
 
 
 (de wr-msg (Ipc Sexpr Bin Sz-Bin)
+
+  #{
+  
+    Msg Struct:
+    * Consist of lisp s-exp and optional bin data
+    
+    Head:
+    Len-Msg
+    Len-Sexp
+    Sz-Bin
+    
+    Body:
+    Str-Sexpr + null byte
+    Bin
+    
+    Poss simplify to:
+    Len-Sexp
+    Sexp
+    Len-Bin
+    Bin
+  
+  }#
+
   (let (Bin    (if Bin @ 0)
         Sz-Bin (if Sz-Bin @ 0)
         Len-Sexpr (+ (length Sexpr) 1)
@@ -145,18 +168,19 @@
 (def '*buf-flush (native "@" "malloc" 'N (sock~get-rmem-def)))
 
 
-(de write-int-to-bytes (N)
-  (list (& (>> 24 N) (hex "FF"))
-        (& (>> 16 N) (hex "FF"))
-        (& (>> 8  N) (hex "FF"))
-        (&  N        (hex "FF"))))
+(de wr-int (N)
+  # (hex "FF")
+  (list (& (>> 24 N) 255)
+        (& (>> 16 N) 255)
+        (& (>> 8  N) 255)
+        (&        N  255)))
 
 
-(de read-int-from-bytes (B)
-  (| (>> -24 (get B 1))
-     (>> -16 (get B 2))
-     (>> -8  (get B 3))
-     (get B 4)))
+(de rd-int (B)
+  (| (>> -24 (car   B))
+     (>> -16 (cadr  B))
+     (>> -8  (caddr B))
+             (cadddr B)))
 
 
 (de flush-msgs (Ipc Sock)
@@ -186,16 +210,18 @@
       # First check if sufficient length otherwise get head
       (if (not (>= (get *dlst 'len) 12))
 
-        (off Cont)
+        (prog
+          #(prinl-info "parse-msgs" "Incomplete head; try again later")
+          (off Cont))
 
         (let Head (rem-frs-n-d *dlst 12)
 
           #(prinl-info "flush-msgs-2" (pack "Head= " (str Head)))
 
           # Parse Head
-          (let (Sz-Bin    (read-int-from-bytes Head)
-                Len-Sexpr (read-int-from-bytes (nth Head 5))
-                Len-Msg   (read-int-from-bytes (nth Head 9)))
+          (let (Sz-Bin    (rd-int Head)
+                Len-Sexpr (rd-int (nth Head 5))
+                Len-Msg   (rd-int (nth Head 9)))
 
             #(prinl-info "flush-msgs-2" (pack "Sz-Bin=" Sz-Bin ", Len-Sexpr=" Len-Sexpr))
 
@@ -211,15 +237,10 @@
                     Msg  (pack (flip (cdr Str)))
                     Data (car (str Msg)))
 
-                    # Parse Bin
-                    (when (not (=0 Sz-Bin))
-                      (for I Sz-Bin
-                        (byte (+ *buf-flush (- I 1))
-                              (get (rem-frs *dlst) 'dat))))
-                    
-                    (Fn-Proc Ipc Sock Data Sz-Bin *buf-flush))))))))
-
-  #(prinl-info "flush-msgs-2" (pack "*dlst.len=" (get *dlst 'len)))
-  #(prinl-info "flush-msgs-2" "#### END FLUSH ####")
-  #(prinl)
-  )
+                # Parse Bin
+                (unless (=0 Sz-Bin)
+                  (for I Sz-Bin
+                    (byte (+ *buf-flush (- I 1))
+                          (get (rem-frs *dlst) 'dat))))
+                
+                (Fn-Proc Ipc Sock Data Sz-Bin *buf-flush)))))))))
