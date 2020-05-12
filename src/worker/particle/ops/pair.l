@@ -1,9 +1,10 @@
 (de del-rx (Sta End)  
   (let P Sta
-    (until (= P End)        
+    (until (or (= P End) (not P))
       (del-car> P)
       (setq P (get P 'b)))
-    (del-car> P)))
+    (when P
+      (del-car> P))))
 
       
 (de make-list (Ref)

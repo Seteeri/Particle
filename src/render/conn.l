@@ -1,7 +1,5 @@
 (de proc-msg (Ipc Sock Data Sz-Bin Bin)
 
-  #(prinl-info "proc-msg/RENDER" (str Data))
-
   (case (car Data)
 
     ("mc"
@@ -67,7 +65,9 @@
                                 (-1.0 . 16)
                                 (I . 1))))
              (println (usec) " | wr-dst nodes | " (struct (+ Ptr-Buf 1) '((-1.0 . 3) (-1.0 . 3) (-1.0 . 3)))))
-            
+          
+           # 45 = off @ mm
+           # should calc auto
            (memcpy Ptr-Gl (+ Ptr-Buf 45) (+ 64 64 64 4))
            
            T))))
@@ -83,5 +83,3 @@
 
     ("nodes"
       (prinl (usec) " | rd-src | nodes not implemented!"))))
-         
-         

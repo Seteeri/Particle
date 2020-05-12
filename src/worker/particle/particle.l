@@ -95,9 +95,8 @@
   (=: a Car)
   (put Car 'c This)
 
-  (let Dat (car (:: data))
-    (set Data (get Car 'data))
-    (con Dat (cdr (: data)))))
+  (set (car (:: data)) (get Car 'data)))
+
     
 # Unused
 (de c-a (S)
@@ -118,17 +117,14 @@
     * Poss send cmd to render to adjust instance count
       * verts is LIFO - always keeps instances contiguous
   }#
-  
+    
   (for Vert (: verts)
     (send-msg-rend (pack "(zv " (get Vert 'off-gl) '")"))
     (push '*vert-offs (get Vert 'off-gl))
     (dec '*cnt-v))
-
+    
   (when (and A (: a)) (del> (: a) A B))
-
   (when (and B (: b)) (del> (: b) A B))
-
-  #(println 'del> This (: data))
   
   This)
 

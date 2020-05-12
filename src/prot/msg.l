@@ -161,7 +161,8 @@
 
 (de flush-msgs (Ipc Sock)
 
-  #(prinl-info "flush-msgs-2" (pack "*dlst.len=" (get *dlst 'len)))
+  #(when (= NAME-PID "RENDER")
+  #  (prinl-info "flush-msgs" (pack "Queued Msgs: " (get *dlst 'len))))
 
   (let? Bytes-Read (ipc~recv-bytes> Ipc Sock T T 0)
     (for B (struct (get Ipc 'ipc~buf-rd) (cons 'B Bytes-Read))

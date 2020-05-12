@@ -8,6 +8,8 @@
   (let (Msg (fmt-msg-send> Obj Off)
         Ptr (meta Obj 'ptr))
 
+    ~(assert Sz)
+    
     #(prinl-info "req-send-obj" Msg)
     
     (send-msg Ipc
@@ -22,8 +24,10 @@
 
   (let Msg (fmt-msg-recv> Obj Off)
 
+    ~(assert Sz)
+  
     #(prinl-info "req-recv-obj" Msg)
-
+  
     (send-msg Ipc
               Sock
               Msg))
@@ -40,7 +44,7 @@
   (req-send-obj Ipc
                 (ipc~get-fd> *ipc "RENDER")
                 Obj
-                (meta Obj 'sz)
+                (meta Obj 'sz-pl)
                 (get Obj 'off-gl)))
                
 
@@ -62,11 +66,12 @@
 
 ################################################################################
  
+#{
 (de req-recv-to-obj (Ipc Obj Cnt)
   (req-recv-obj Ipc
                 (ipc~get-fd> *ipc "RENDER")
                 Obj
-                (meta Obj 'sz)
+                (meta Obj 'sz-pl)
                 (get Obj 'off-gl)))
 
                 
@@ -74,4 +79,5 @@
   (req-recv-obj Ipc
                 (ipc~get-fd> *ipc "RENDER")
                 (new Cls)
-                (meta Cls 'sz)))
+                (meta Cls 'sz-pl)))
+}#

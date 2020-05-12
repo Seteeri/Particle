@@ -35,7 +35,9 @@
   (=: mat-view    (when Mat-View @))
 
   (=: pos    (if Pos @ (43.510754 -3.612306 10.0)))
-  (=: rot    (if Rot @ (0.0 0.0 0.0))))
+  (=: rot    (if Rot @ (0.0 0.0 0.0)))
+  
+  (=: off-gl 0))
 
 
 (dm wr-ptr> (Ptr)

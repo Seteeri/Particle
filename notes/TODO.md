@@ -10,6 +10,7 @@ TODO
   * Create list, enter strings, convert some to symbols, eval
   
   * 10 MAY - MON
+    * a s d m for arithmetic
     * Soft wrap list
     * Cache last item for lines/lists
     * Implement cmds Q/E : start/end of line/list  

@@ -229,10 +229,10 @@
         Part (gen-part (list Data) 'x))
     
     # If car of pair
-    (if (= (get Sta 'c 'a) Sta)    
+    (if (= (get Prv 'a) Sta)
         (a> Prv Part)
         (b> Prv Part))
-    
+
     # Part <-> End'b
     (when (get End 'b)
       (del> (get Part 'b) T T)
@@ -253,7 +253,7 @@
       
       # Put Ptr above new part
       (mov-cur-abv (get Part 'b)))))
-    
+
 
 (de repl-str-list (Ref List Skip-Upd)
 
