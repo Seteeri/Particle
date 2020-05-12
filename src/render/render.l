@@ -27,6 +27,7 @@ Class variables may be indicated by an upper case letter
             "/src/ipc/ipc.l"
             "/src/prot/conn.l"
             "/src/prot/msg.l"
+            "/src/prot/flush.l"
             "/src/prot/obj.l"
             "/src/worker/vertex.l"
             "/src/render/params-buffer.l"

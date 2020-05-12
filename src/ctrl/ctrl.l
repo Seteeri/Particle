@@ -29,6 +29,7 @@
             "/src/font/metrics.l"            
             "/src/prot/conn.l"
             "/src/prot/msg.l"
+            "/src/prot/flush.l"
             "/src/prot/obj.l"
             "/src/ctrl/xkb.l"
             "/src/ctrl/conn.l"

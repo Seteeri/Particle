@@ -23,6 +23,7 @@
             "/src/ipc/ipc.l"
             "/src/prot/conn.l"
             "/src/prot/msg.l"
+            "/src/prot/flush.l"
             "/src/prot/obj.l"))
 
 (def 'NAME-PID "INPUT")

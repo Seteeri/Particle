@@ -25,6 +25,7 @@
             "/src/ipc/ipc.l"
             "/src/prot/conn.l"
             "/src/prot/msg.l"
+            "/src/prot/flush.l"
             "/src/prot/obj.l"
             "/src/font/metrics.l"
             "/src/font/font.l"
