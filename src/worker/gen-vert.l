@@ -1,4 +1,16 @@
-# bg:fg/text = base03:base0
+#{
+  https://ethanschoonover.com/solarized/
+
+  Thus in the case of a dark background colorscheme, the normal relationship for background and body text is base03:base0 (please note that body text is not base00). Note also that in cases where the background and foreground can be specified as a pair value, text can be highlighted using a combination of base02:base1. The L*a*b lightness difference between base03:base0 and base02:base1 is identical by design, resulting in identical readability against both normal and highlighted backgrounds. An example use case is folded text in Vim which uses base02 for the background and base1 for the foreground.
+
+  The values in this example are simply inverted in the case of a light background.
+
+          bg:fg
+          
+  dark  | base03:base0
+  light | base02:base1
+  high  | base02:base1
+}#
 
 (def '*sol-base-03 (list (*/ 1.0 0.0   255.0) (*/ 1.0 43.0  255.0) (*/ 1.0 54.0  255.0)))
 (def '*sol-base-02 (list (*/ 1.0 0.0   255.0) (*/ 1.0 54.0  255.0) (*/ 1.0 66.0  255.0)))
@@ -34,7 +46,7 @@
      |        |           |           |
     NIL   Internal    Transient    External  
     
-    Base = X Pair
+    Base-0 = X Pair
     Base-01 = Y Pair
     
     Yellow = Ptr

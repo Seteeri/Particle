@@ -10,6 +10,7 @@ TODO
   * Create list, enter strings, convert some to symbols, eval
   
   * 10 MAY - WED
+    * Set color for Y pair to *sol-base-01
     * Split: create lines
     * Cache last item for lines/lists
     * Refactor del
