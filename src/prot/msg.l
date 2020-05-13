@@ -1,30 +1,31 @@
+(def 'LEN-HD 12)
+
+
 (de send-msgs (Ipc Sock Msgs)
 
   #{
-    Msgs are a list
+    Msgs:
     
     ( (Sexpr1 Bin1)
       (Sexpr2 Bin2)
       (Sexpr3 Bin3)
       ...)
 
-    However, they are written back to back (and the list not directly written)
-
-    Try to format all into the pointer, and then return unsent msgs or do
-    send all
+    Written back to back...
+    
+    Use named fd + pr/rd
   }#
 
   (let Len-Sock 0
 
-    # Ensure it will fit
-    # Conservative estimate could be half
-  
+    # TODO: If buffer full, try next time
     (for Msg Msgs
       (let ((Sexpr Bin Sz-Bin) Msg)
-        (inc 'Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin))))
+        (if (wr-msg Ipc Sexpr Bin Sz-Bin)
+            (inc 'Len-Sock @)
+            (quit "send-msgs: buffer full"))))
 
     (let Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
-      
       (ipc~send-sock> Ipc Sock T Len-Sock))))
 
 
@@ -57,19 +58,17 @@
         Len-Sexpr (+ (length Sexpr) 1)
         Len-Body  (+ Len-Sexpr Sz-Bin)
         Len-Msg   (+ 4 4 Len-Body)
-        Len-Sock  (+ 4 4 4 Len-Body))
+        Len-Sock  (+ LEN-HD Len-Body))
 
     (with Ipc
-
       (struct (: ipc~buf-wr) 'N
               (cons Len-Msg 4)
               (cons Len-Sexpr 4)
               (cons Sz-Bin 4)
               (cons Sexpr Len-Sexpr) 0)
-
       (when Bin
         (native "@" "memcpy" NIL
-                (+ (: ipc~buf-wr) 4 4 4 Len-Sexpr) Bin Sz-Bin)))
+                (+ (: ipc~buf-wr) LEN-HD Len-Sexpr) Bin Sz-Bin)))
 
     Len-Sock))
 
@@ -79,23 +78,20 @@
 
 
 (de send-msg (Ipc Sock Sexpr Bin Sz-Bin)
-
   # Could do this unblocked, if delayed, then server is lagging and could warn
-
   (let Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
     (ipc~send-sock> Ipc Sock T Len-Sock)))
 
 
 (de send-msg-clients (Ipc Msg)
   (for Cli (get Ipc 'ipc~clients)
-    #(prinl-info "send-msg-clients" (str Cli))
-    # Check for error
+    # Check for error - call handler
     (send-msg Ipc (car Cli) Msg)))
 
 
 (de send-msg-conns (Ipc Msg)
   (for Conn (get Ipc 'ipc~conns)
-    # Check for error
+    # Check for error - call handler
     (send-msg Ipc (car Conn) Msg)))
 
 
@@ -115,7 +111,7 @@
         (pack (struct (: ipc~buf-rd) (cons 'C Len-Sexpr)))))))
 
 
-(de recv-msg-with-bin (Ipc Sock)
+(de recv-msg-bin (Ipc Sock)
 
   (let ((Len-Msg Len-Sexpr Sz-Bin) (recv-msg-len Ipc Sock))
 
@@ -130,5 +126,5 @@
 
 
 (de recv-msg-len (Ipc Sock)
-  (when (ipc~recv-sock> Ipc Sock T 12 sock~MSG-WAITALL)
+  (when (ipc~recv-sock> Ipc Sock T LEN-HD sock~MSG-WAITALL)
     (struct (get Ipc 'ipc~buf-rd) '(I . 3))))

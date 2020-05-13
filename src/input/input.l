@@ -36,7 +36,7 @@
 (de init-input ()
 
   (setq *ipc (new '(ipc~+IPC)
-                  *uds-in T handle-client acpt-client)
+                  *uds-in T handle-cli acpt-cli)
         *input (new '(li~+Li)))
   (ipc~add-conn> *ipc (get *input 'li~fd-context) "LI" handle-fd-li))
 
@@ -47,7 +47,7 @@
   (loop (ipc~poll> *ipc Timeout)))
 
 
-(de handle-client (Sock)
+(de handle-cli (Sock)
 
   (let (Msg (recv-msg *ipc Sock)
         Data (car (str Msg)))

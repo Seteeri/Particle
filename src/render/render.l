@@ -173,7 +173,7 @@ Class variables may be indicated by an upper case letter
   #(init-comp)
   
   (setq *ipc (new '(ipc~+IPC)
-                    *uds-rend T recv-conn acpt-client))  
+                    *uds-rend T recv-conn acpt-cli))  
   
   T)  
 

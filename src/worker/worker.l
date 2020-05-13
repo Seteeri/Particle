@@ -90,7 +90,7 @@
                    (pack *path-gly "DejaVuSansMono.rgba8.idx.bin")
                    19.265625)
         *ipc (new '(ipc~+IPC)
-                   (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client acpt-client
+                   (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-cli acpt-cli
                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")
                          (list *uds-rend T handle-render "RENDER"))))
                          
@@ -262,7 +262,7 @@
 
 
 # Unused
-(de handle-client (Sock))
+(de handle-cli (Sock))
 
 
 (de handle-ctrl (Sock)

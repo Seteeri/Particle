@@ -69,8 +69,8 @@
             
         # Wait for head
         (until Hd
-          (if (>= *len-buf 12)
-              (setq Hd (pop-fifo 12)
+          (if (>= *len-buf LEN-HD)
+              (setq Hd (pop-fifo LEN-HD)
                     P (parse-hd Hd)
                     Len-Msg   (car P)
                     Len-Sexpr (cadr P)

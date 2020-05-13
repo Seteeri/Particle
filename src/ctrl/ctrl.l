@@ -59,7 +59,7 @@
   #(view (getl *projview))
   
   (setq *ipc (new '(ipc~+IPC)
-                  *uds-ctrl             T handle-worker acpt-client
+                  *uds-ctrl             T handle-worker acpt-cli
                   (list (list *uds-in   T handle-input  "INPUT")
                         (list *uds-rend T handle-render "RENDER"))))
 

@@ -17,7 +17,7 @@ If dst NIL: send bytes back
 }#
 
 
-(de acpt-client (Ipc Sock Cli)
+(de acpt-cli (Ipc Sock Cli)
 
   #(prinl-info "acpt-client" (pack "Wait for ID from " Cli))
 
@@ -29,10 +29,10 @@ If dst NIL: send bytes back
     # Disconnect client if name conflict
     (if (assoc Cli (get Ipc 'ipc~clients))
         (ipc~disc-sock Cli ID)
-        (add-client Ipc Cli ID))))
+        (add-cli Ipc Cli ID))))
 
 
-(de add-client (Ipc Cli ID)
+(de add-cli (Ipc Cli ID)
   (with Ipc
     # Note, client IDs use {ID}-{PID} and outgoing conns use ID-S
     (ipc~add-conn> Ipc Cli ID (: ipc~hnd-lstr))

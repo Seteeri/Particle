@@ -9,7 +9,8 @@ TODO
   GOAL is build structures more fluidly
   * Create list, enter strings, convert some to symbols, eval
   
-  * 10 MAY - MON
+  * 10 MAY - WED
+    * Named pipe + rd/pr
     * a s d m for arithmetic
     * Soft wrap list
     * Cache last item for lines/lists
