@@ -24,7 +24,7 @@
 (class +Sym +Particle)
 
 
-(dm lay> ()
+(dm layout> ()
   (if (= (: lay) 'x)
       (lay-x> This)
       (lay-y> This)))
@@ -107,7 +107,7 @@
   
 
 #{
-(dm lay> ()
+(dm layout> ()
   # Either a Pair or name
   (if (: a)
       (lay-pair This)

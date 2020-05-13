@@ -14,7 +14,7 @@
 
 (class +Num +Particle)
 
-(dm lay> ()
+(dm layout> ()
   (if (= (: lay) 'x)
       (lay-x> This)
       (lay-y> This)))

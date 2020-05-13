@@ -63,7 +63,7 @@
     # Line
     (with Part
       
-      (=: lay 'y)
+      (lay> This 'y)
           
       # Create Line start
       (=: line (new '(+Line)
@@ -127,7 +127,7 @@
     # Create lines for Part
     (with Part
      
-      (=: lay 'y)
+      (lay> This 'y)
            
       # Use ins-line?        
       
@@ -223,7 +223,7 @@
     # Create line for Part and Car
     (with Part
      
-      (=: lay 'y)
+      (lay> This 'y)
       
       (=: line (if (isa '(+Sym) C)
                    (new '(+Line)

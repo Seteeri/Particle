@@ -70,6 +70,8 @@
 (dm lay-x?> () (= (: lay) 'x))
 (dm lay-y?> () (= (: lay) 'y))
 
+(dm lay> (L)
+  (=: lay L))
 
 (de b@ @
   (let (A (next)
