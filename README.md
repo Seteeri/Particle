@@ -9,9 +9,11 @@ information as they moved through the computer. What did they look like?
 
 Particle is a PicoLisp presentation binary tree (AST) UI.
 
-The idea is to take the extensibility of Emacs combined with the dynamics and cohesion of past Lisp Machines, Oberon, Open Dylan, Intentional Programming and other models, and to evolve that consistent text interface to arbitrary objects, taking advantage of modern hardware such as GPUs and parallelism.
+Particle is the realization of my vision of the human computer interaction model. I want to take the extensibility, dynamicness, and cohesion of past Lisp Machines, Smalltalk-like enivronments, and others, and evolve the text interface to enable users to take advantage of the increasing digital connectedness.
 
-Originally, this project was attempted in other languages but became only possible with PicoLisp, because *all* data structures are based on cons cells and this structure is retained during runtime, which allows the GUI and data to be homoiconic (overloaded term these days). When characters (strings) are input via keystrokes, they exist as cons cells so there is no reading or parsing, which has implications later explained. In addition, there is no GUI in the traditional sense as the data itself becomes the GUI and is no longer separate from the system like in conventional programs (it is possible to build a conventional GUI in Particle).
+Originally, this project was attempted in other languages but became only possible with PicoLisp, because *all* data is based on cons cell structures retained during runtime, which allows the interface and data to be homoiconic. For example, a C array would break this principle (for interop, they can be symbolized through a number, i.e. pointer).
+
+One interesting implication is when characters (string data) are input via keystrokes, they exist as cons cells so there is no reading or parsing. Consequently, there is no conventional GUI as all data exists in the same domain; it is not separate from the underlying data like in conventional programs (it is possible to build a conventional GUI).
 
 On MS and Apple systems, it serves as an outliner "app" or personal knowledge manager, however, with Linux and BSD systems it goes further absorbing the Wayland compositor, creating an encompassing Lisp environment. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that, through a more pragmatic and gradual approach.
 
@@ -23,13 +25,15 @@ The target audience consists of programmers, power users, information/knowledge 
 
 ![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/types.png)
 
-These colored text are representations for the fundamental types; the use of color allows the removal of some character tokens to optimize drawing and information efficiency. Lines are double-spaced to allow room for the pointer (cursor).
-
-Strings do not have double quotes; it is possible to remove other identifying tokens such as curly brackets and the dollar sign. Pairs use dot notation and terminate with the `NIL` symbol for proper lists (or arbitrary data for improper lists); parentheses are possible. Circular lists follow PicoLisp conventions and terminate with a dot.
-
 Can you identify the s-expression structure?
 
-This idea is then further extended to create arbitrary representations for arbitrary data while maintaining the same underlying operations, or interface if you will, no matter the level of abstractions composed.
+These colored text are representations for the fundamental types; the use of color allows the removal of some character tokens to optimize drawing and information efficiency.
+
+Strings do not have double quotes; it is possible to remove other identifying tokens such as curly brackets and the dollar sign. Pairs use dot notation and terminate with the `NIL` symbol for proper lists, or arbitrary data for improper lists; parentheses are possible, for the more conservative types ;). Circular lists follow PicoLisp conventions and terminate with a dot. Lines are double-spaced to allow room for the pointer (cursor), which is no different than any other data - it is a symbol!
+
+The hierarchial structure is a direct consequence of the underlying Lisp data, which is a graph, or more specifically a tree; manifesting in a natural UI. 
+
+This idea is then further extended to create arbitrary representations for arbitrary data (presentation model) while maintaining the same underlying operations, or interface if you will, no matter the level of abstractions composed.
 
 # Goals
 

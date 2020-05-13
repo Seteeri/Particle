@@ -148,6 +148,20 @@ I mostly worked on Drei, which was the input editor. It finds use in Climacs (wh
 Using CLIM is a bit like operating an artifact that somehow made its way from an alternative universe. 
 
 ---
+
+Yeah, I'm aware of w3m but it would be nice to be able to just render HTML payloads in an Emacs buffer. About a year ago I saw a demo on Youtube of an embedded Webkit in Emacs but I'm not sure what the progress is there.
+
+What I envision is something very close to Gmail's interface. But instead of just email the interface presents a list of items. Each item is of a particular type and each type has an associated renderer. A command box facilitates command entry and the result of each command is a list of these items. When an item is selected a view of the item is rendered. Items can also have tags associated with them such that we can filter item sets by tags. A resulting set of items can be piped to an ensuing command to produce another set of items.
+
+Item renderers don't need to be read only either. For example I could issue a file search command that returned a set of files. By selecting one, if an editor renderer existed I could edit the result in place and issue a save command on the item.
+
+I could take the paradigm even further. I could issue something like a project command that returned a set of projects where a project was really just a tag for an item which had metadata pointing to a directory path. After selecting one of these project items I might be presented with a rendered view of the directory's contents. From there I might be able to execute a build command on this item and the command would use the metadata associated with the item to build the project. The output would be a list of one item with the build results.
+
+I've been thinking about this for a long time and the only apps I can think of that don't fit with this paradigm are apps that actually require a mouse or pen pad for input like photo shop or auto cad.
+
+There are varying technologies which nibble around the edges of such a system but nothing that really implements it fully. Emacs comes close, the command line in a terminal comes close, Gmail exhibits aspects, Enso exhibited aspects but nothing exists which puts all the pieces together. 
+
+---
 ---
 
 https://news.ycombinator.com/item?id=9038505
@@ -168,14 +182,127 @@ So, we're really talking about software, and what was the Lisp Machine in that r
 For now, I'll finish this overly long comment by asking if a modern, productive programmer could be so without using a web browser along with the stuff we think of as software development tools. I.e., what would/should the scope of a 21st Century Lisp Machine be? 
 
 ---
-
-
-
-
 ---
----
+
 
 https://news.ycombinator.com/item?id=12703498
+
+
+> I'm aware of that, but text is a fairly convenient representation of Lisp data.
+
+Some Lisp data does not have a textual representation, it might have a graphical representation or the textual representation may not be very helpful (Lisp data being a graph might be better displayed as a 2d or even 3d graph, than as a textual representation). The Symbolics UI of the REPL/Listener would allow you to interact with the 2d/3d graph as it were Lisp data, which it actually is underneath.
+
+> In fact, I'm unsure what you mean by directly interacting with the data, as you can't have bytes fly from your fingertips, AFAIK.
+
+GNU Emacs pushes characters around.
+
+S-Edit manipulates S-expressions.
+
+GNU Emacs lets you pretend that you edit s-expressions, by pushing characters in a buffer around. But you don't. All you do is push text around.
+
+S-Edit directly manipulates the data. It's a structure editor.
+
+Symbolics Genera uses 'presentations' to record for every output (graphical or not) the original Lisp data. When you interact with the interface, you interact with these data objects. For example in a Listener (the REPL) programs and the Listener itself display presentations, which then can be acted on. It also parses text into data objects and then runs the commands on the data objects and not on text.
+
+SLIME provides a very simple and partial reconstruction of that - which is a nice feature.
+
+> In addition, files are a pretty good metaphor as well: If you want to store your code as something textual, they're indispensible. And sure, you can use image storage and navigate in other ways, but Lisp isn't Smalltalk: The way Lisp is written isn't as unified, so that wouldn't work as well, AFAIK.
+
+Smalltalk does not use data as representation for source code. It uses text as representation for source code.
+
+Interlisp-D is more radical than Smalltalk 80. The Smalltalk editor edits text. The Interlisp-D editor S-Edit edits s-expressions as data.
+
+Interlisp-D treats the files as a code database similar to Smalltalk, but the source code loaded remains data and you can run the program from that data directly via the Lisp interpreter. Smalltalk execution does not provide something like that. The so-called interpreter in Smalltalk executes bytecode. This is different from a Lisp interpreter, which works over the Lisp source data.
+
+The combination of a s-expression editor with an s-expression interpreter (plus optional compilation) is very different, from what Smalltalk 80 did.
+
+When you mark an expression in Smalltalk 80 and execute it via a menu command, then the expression gets compiled to bytecode and the bytecode interpreter then runs it.
+
+If you mark an expression in S-Edit, the s-expression data is extracted from the data structure you edit and you can run that s-expression data with an interpreter, walking directly over that s-expression data. 
+
+
+---
+
+
+It feels very different.
+
+Imagine the editor and the runtime work on the same data:
+
+   EDIT <->  data  <-> EVAL
+
+In GNU Emacs it looks like this:
+
+   Emacs EDIT -> text -> Emacs SAVE FILE
+
+   SBCL LOAD FILE -> SBCL READ -> SBCL EXECUTE
+
+or
+
+   Emacs EDIT -> text -> Emacs TRANSFER to SBCL
+     -> SBCL READ > SBCL EXECUTE ->
+     SBCL generate TEXT -> SBCL TRANSFER to Emacs
+     -> Emacs DISPLAY -> text
+
+With presentations it looks for the user that the Emacs side knows the data for the text.
+
+That's a lot of indirection, a lot of conversions, different runtimes, etc.
+
+S-Edit feels like working with clay. A text editor feels like working with instruments, manipulating something which then manipulates the clay and you are watching the result through goggles. 
+
+
+---
+
+ Neat. But actually, I find that mechanism quite unpleasant, and one I wouldn't like working with. I'm sure it's quite powerful, but so is Vim, and I never really "got" Vim either. I would, in fact, argue that manipulating text has advantages over direct object manipulation: the first of which is that you can more directly edit text, whereas the DEdit interface is all about executing commands on objects. Secondly, you can apply useful transformations to text which don't necessarily make sense to apply to raw datastructures (search + replace, regexes, other handy transforms). Finally, many of the advantages of manipulating a pure datastructure can be had in text as well: see paredit.
+
+But that's just me. You use your cool lispm tools, I'll resign myself to never acheiving ultimate productivity.
+
+But I was resigned to that already, pretty much.
+
+	
+	
+crististm on Oct 14, 2016 [-]
+
+Text is not "raw data structure" and you may want to think twice that by manipulating text you touch the "data".
+
+From the sidelines, your approach is "all I have are nails and all I need is the biggest hammer you can get me".
+
+	
+	
+qwertyuiop924 on Oct 14, 2016 [-]
+
+Text is a raw data structure, it's just not the one that's used behind the scenes: Everything is a datastructure. And actually I do touch the data by manipulating text.
+
+>From the sidelines, your approach is "all I have are nails and all I need is the biggest hammer you can get me".
+
+From my perspective, my approach is "that development environment sounds really unpleasant, and while I can appreciare the elegance, I'm having trouble finding the relative upshot."
+
+	
+	
+crististm on Oct 14, 2016 [-]
+
+When your editor's cursor hovers over "transistor T1" do you in fact touch the transistor on the board over your desk, the transistor in the schematic diagram, or only the text that happens to be "1T rotsisnart" spelled backwards (with no underlying meaning that is)?
+
+Data representation is not the data. It's just this: "re" presenting. And when this representation is disconnected from the source by means of showing only the raw text and not allowing access to the source you get what you describe as "unpleasant".
+
+You may find it enjoyable to work only with raw text but you're missing out on working with what that text is supposed to represent.
+
+	
+	
+qwertyuiop924 on Oct 14, 2016 [-]
+
+All is representations. Some are closer to the data they are representing than others. I am aware that text is a representation. It is a also a data structure: A data structure which we are better able to manipulate directly with our human senses, and a data structure which tools like DEdit still render to.
+
+>And when this representation is disconnected from the source by means of showing only the raw text and not allowing access to the source you get what you describe as "unpleasant".
+
+First off, pleasantness of an interaction is a matter of personal opinion. If you like DEdit, great: I'm not stopping you. But I don't enjoy DEdit and its like. That's my prerogative.
+
+Secondly, I'm not working "only with raw text." Paredit &co let me manipulate the sexpr data structure more directly (or less directly, depending on how you look at it). Geiser and SLIME let me evaluate and manipulate the code as code. But at the end of the day, I'm also operating on text, so I have all of the textual data tools as well, and because Paredit is actually operating on text, it can be used outside of the context of Lisp: As Perlis said, "It is better to have 100 functions operate on one data structure than 10 functions on 10 data structures." 
+
+---
+---
+
+
+https://news.ycombinator.com/item?id=21961575
 
 
 https://news.ycombinator.com/item?id=19961812
