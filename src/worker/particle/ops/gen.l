@@ -58,17 +58,19 @@
     Part))
     
         
-(de gen-sym-pair (Any Lay Car-Skip Cdr-Skip Char-Pair)
+(de gen-sym-pair (Any Lay Car-Skip Cdr-Skip Char-Pair Col)
 
   # Technically, name is a number cell
 
   # Use name for str since it exclude quotes
   # Name any will fail for box, use 'sym
   
+  (unless Col (setq Col (get-color-type Any)))
+  
   (let (Name (if (str? Any) (name Any) (sym Any))
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
-        (Verts-Car Wid-Car) (gen-vert-atom Name (get-color-type Any))
+        (Verts-Car Wid-Car) (gen-vert-atom Name Col)
         Part-Car (unless Car-Skip
                   # Num type but content is a string
                   (new '(+Num)
@@ -79,7 +81,7 @@
         Part-Cdr (when (and (not Cdr-Skip)
                             (not (= Val Any)))
                   (gen-part Dr Lay))
-        (Verts-Pair Wid-Pair) (gen-vert-pair (get-color-type Any) (= Val Any) Char-Pair)
+        (Verts-Pair Wid-Pair) (gen-vert-pair Col (= Val Any) Char-Pair)
         Part-Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any
                        Part-Car Part-Cdr

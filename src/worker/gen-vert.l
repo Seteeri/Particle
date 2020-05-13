@@ -35,6 +35,8 @@
     NIL   Internal    Transient    External  
     
     Base = X Pair
+    Base-01 = Y Pair
+    
     Yellow = Ptr
     Orange = NIL/T
     Red = Namespace symbol (or binary tree?)
