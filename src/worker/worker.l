@@ -199,20 +199,27 @@
     # TODO: Draw *ptrs
     
     (idx '*particles (def '↓0 (gen-sym-pair '↓0 'x NIL T)) T)
+    (idx '*particles (def '↑0 (gen-sym-pair '↑0 'x NIL T)) T)
+    
+    # 2191
+    # ↑
     
     (set-ptr ↓0 (get *start 'b))
     (put ↓0 'lay 'y)
-    
     (mov-cur-abv (get *start 'b))
     (lay-ptr ↓0)
+
+    (set-ptr ↑0 (get *start 'b))
+    (put ↑0 'lay 'y)
+    (nl-cur -1.0) (adv-cur -3.0)
+    (lay-ptr ↑0)    
     
     ######
     # TEMP
     
     (setq p1 *cmds)
 
-    (idx '*particles (def '*1 (gen-sym-pair '*1 'y)) T)
-    (del> (get *1 'b) T T)
+    (idx '*particles (def '*1 (gen-sym-pair '*1 'y NIL T)) T)
 
     ############
         
