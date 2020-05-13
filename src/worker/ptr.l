@@ -1,3 +1,7 @@
+(de lay-ptr ()
+  (lay-part-start ↓0 ↓0 'skip-cdr))
+
+
 # Easier to read...
 (de set-ptr (P)
   (put ↓0 'b P))
