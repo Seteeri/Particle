@@ -90,9 +90,9 @@
                    (pack *path-gly "DejaVuSansMono.rgba8.idx.bin")
                    19.265625)
         *ipc (new '(ipc~+IPC)
-                   (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-cli acpt-cli
-                   (list (list *uds-ctrl T handle-ctrl   "CONTROL")
-                         (list *uds-rend T handle-render "RENDER"))))
+                   (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block serv-cli acpt-cli
+                   (list (list *uds-ctrl T serv-ctrl   "CONTROL")
+                         (list *uds-rend T serv-render "RENDER"))))
                          
   (reg-conns *ipc (pack NAME-PID "-" *i-proc))
   
@@ -271,10 +271,10 @@
 
 
 # Unused
-(de handle-cli (Sock))
+(de serv-cli (Sock))
 
 
-(de handle-ctrl (Sock)
+(de serv-ctrl (Sock)
 
   (let (Msg (recv-msg *ipc Sock)
         Data (car (str Msg))
@@ -306,7 +306,7 @@
               TOUCH-DOWN
               TOUCH-FRAME
               TOUCH-MOTION)
-              (prinl-info "handle-ctrl" (glue " " Data)))
+              (prinl-info "serv-ctrl" (glue " " Data)))
 
             ("update-vert"
               (req-send *ipc *vert-ptr))
@@ -335,9 +335,9 @@
         (disconn-conn *ipc Sock))))
 
 
-(de handle-render (Sock)
+(de serv-render (Sock)
 
-  #(println 'handle-render)
+  #(println 'serv-render)
 
   (let Msg (recv-msg *ipc Sock)
   

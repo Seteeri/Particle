@@ -123,10 +123,10 @@ https://wayland.freedesktop.org/libinput/doc/latest/api/group__device.html#ga76c
 (de make-interface ()
 
   (let (Interface (native "@" "malloc" 'N 16) #libinput-interface struct
-        OR (lisp 'handle-open-restricted
+        OR (lisp 'serv-open-restricted
                  '((Path Flags User-data)
                    (native "@" "open" 'I (struct Path 'S) (struct Flags 'I))))
-        CR (lisp 'handle-close-restricted
+        CR (lisp 'serv-close-restricted
                  '((Fd User-data)
                    (native "@" "close" 'I (struct Fd 'I)))))
                    

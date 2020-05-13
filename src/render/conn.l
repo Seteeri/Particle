@@ -3,23 +3,23 @@
   (case (car Data)
 
     ("mc"
-      (handle-memcpy Sock Data Bin))
+      (serv-memcpy Sock Data Bin))
 
     ("zv"
-      (handle-memset Sock Data))
+      (serv-memset Sock Data))
       
     (T
       (prinl-info "proc-msg/RENDER" (pack "UNKNOWN REQUEST! " Msg)))))
 
 
-(de handle-memset (Sock Data)
+(de serv-memset (Sock Data)
   # Render only
   (let (Off     (get Data 2)
         Ptr-Gl  (+ (get '*buffer-objects 'nodes 'gl~ptr) Off))
     (native "@" "memset" NIL Ptr-Gl 0 (meta '(+Vertex) 'sz-gl))))
 
 
-(de handle-memcpy (Sock Data Ptr)
+(de serv-memcpy (Sock Data Ptr)
 
   #(mc Dst Src Sz) + data
   (let ((Dst Src Sz Off) (cdr Data))
@@ -31,10 +31,10 @@
            (rd-src Src Sock Sz Off))
 
           ((and Dst Src)
-           (prinl (usec) " | handle-memcpy | Ptr to ptr memcpy not implemented!"))
+           (prinl (usec) " | serv-memcpy | Ptr to ptr memcpy not implemented!"))
 
           (T
-           (prinl (usec) " | handle-memcpy | Invalid Dst Src parameters!")))))
+           (prinl (usec) " | serv-memcpy | Invalid Dst Src parameters!")))))
 
 
 (de wr-dst (Ptr Dst Sock Sz Off)

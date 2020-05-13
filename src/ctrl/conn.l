@@ -6,7 +6,7 @@
   (case (name (car Data))
   
     ("mc"
-      (handle-memcpy Sock Data Bin))
+      (serv-memcpy Sock Data Bin))
 
     ("rdy"
       (let Msg (pop '*q-msg)
@@ -26,9 +26,9 @@
       (prinl-info "CONTROL/proc-msg" (pack "UNKNOWN REQUEST! " Data)))))
 
 
-(de handle-memcpy (Sock Data Ptr)
+(de serv-memcpy (Sock Data Ptr)
 
-  #(println "handle-memcpy" Data)
+  #(println "serv-memcpy" Data)
 
   #(mc Dst Src Sz) + data
   (let ((Dst Src Sz Off) (cdr Data))
@@ -40,10 +40,10 @@
            (rd-src Src Sock Sz Off))
 
           ((and Dst Src)
-           (prinl-info "handle-memcpy" "Ptr to ptr memcpy not implemented!"))
+           (prinl-info "serv-memcpy" "Ptr to ptr memcpy not implemented!"))
 
           (T
-           (prinl-info "handle-memcpy" "Invalid Dst Src parameters!")))))
+           (prinl-info "serv-memcpy" "Invalid Dst Src parameters!")))))
 
 
 (de wr-dst (Ptr Dst Sock Sz Off)

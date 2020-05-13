@@ -59,9 +59,9 @@
   #(view (getl *projview))
   
   (setq *ipc (new '(ipc~+IPC)
-                  *uds-ctrl             T handle-worker acpt-cli
-                  (list (list *uds-in   T handle-input  "INPUT")
-                        (list *uds-rend T handle-render "RENDER"))))
+                  *uds-ctrl             T serv-worker acpt-cli
+                  (list (list *uds-in   T serv-input  "INPUT")
+                        (list *uds-rend T serv-render "RENDER"))))
 
   (reg-conns *ipc NAME-PID)
 
@@ -71,7 +71,7 @@
   (setq *xkb (new '(+Xkb)))
 
   (setq *timerfd (new '(timerfd~+Timerfd)))
-  (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" handle-timer epoll~IN))
+  (ipc~add-conn> *ipc (get *timerfd 'timerfd~fd) "TI" serv-timer epoll~IN))
 
 
 (de run-ctrl (Timeout)
@@ -80,13 +80,13 @@
   (loop (ipc~poll> *ipc Timeout)))
 
 
-(de handle-worker (Sock)
+(de serv-worker (Sock)
   (if (flush-recv *ipc Sock)
       (parse-msgs *ipc Sock proc-msg)
       (disc-cli *ipc Sock)))
     
 
-(de handle-render (Sock)
+(de serv-render (Sock)
   # Currently, render sends frame time which is not used...
   # Render will send window resize events
   # Ctrl will send window resize event to workers
@@ -116,11 +116,11 @@
         (disconn-conn *ipc Sock))))
 
 
-(de handle-input (Sock)
+(de serv-input (Sock)
 
   # Currently assuming kb events only
 
-  #(println 'handle-input)
+  #(println 'serv-input)
   
   (let (Msg  (recv-msg *ipc Sock)
         Data (car (str Msg))
@@ -165,7 +165,7 @@
       (queue '*q-msg Msg))))
 
 
-(de handle-timer (Sock)
+(de serv-timer (Sock)
   # Returns an unsigned 8-byte integer (uint64_t)
   # containing the number of expirations that have occurred.
 
@@ -175,7 +175,7 @@
       (let (Keycode (get *timerfd 'timerfd~data)
             Msg (pack "(KEYBOARD-KEY 0 0 " (format Keycode) " 2 2)"))
         (dispatch-msg Msg))
-        #(prinl-info "handle-timer" (pack "Keycode=" Keycode " Events=" (struct (: ipc~buf-rd) '(N . 1))))
+        #(prinl-info "serv-timer" (pack "Keycode=" Keycode " Events=" (struct (: ipc~buf-rd) '(N . 1))))
         T)))
 
 

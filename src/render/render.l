@@ -79,17 +79,17 @@ Class variables may be indicated by an upper case letter
 
   (glfw~make-context-current *window)
 
-  (glfw~set-framebuffer-size-callback *window (lisp 'framebuffer-callback handle-framebuffer-size))
-  (glfw~set-key-callback *window (lisp 'key-callback handle-key))                                      
+  (glfw~set-framebuffer-size-callback *window (lisp 'framebuffer-callback serv-framebuffer-size))
+  (glfw~set-key-callback *window (lisp 'key-callback serv-key))                                      
 
   # Crash
-  #(glfw~set-window-focus-callback *window (lisp 'focus-callback handle-focus))
-  #(glfw~set-window-size-callback *window (lisp 'size-callback handle-window-size))
+  #(glfw~set-window-focus-callback *window (lisp 'focus-callback serv-focus))
+  #(glfw~set-window-size-callback *window (lisp 'size-callback serv-window-size))
   
   T)
 
   
-(de handle-framebuffer-size (Window Width Height)
+(de serv-framebuffer-size (Window Width Height)
   # Must update projmatrix also
 
   # Add interface/refactor IPC
@@ -107,7 +107,7 @@ Class variables may be indicated by an upper case letter
         *height Height))
 
         
-(de handle-key (Window Key Scancode Action Mods)
+(de serv-key (Window Key Scancode Action Mods)
   (when (and (= Key glfw~KEY-ESCAPE)
              (= Action glfw~PRESS))
     # Send also to ctrl
@@ -129,8 +129,8 @@ Class variables may be indicated by an upper case letter
     (glfw~set-window-should-close Window glfw~TRUE)))
 
     
-(de handle-window-size (Window Width Height))
-(de handle-focus (Window Focused))
+(de serv-window-size (Window Width Height))
+(de serv-focus (Window Focused))
     
 
 (de init-gl ()
