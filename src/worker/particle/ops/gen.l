@@ -94,7 +94,8 @@
 
       (unless Car-Skip 
         (put Part-Car 'c Part-Pair))
-      (when (and (not Car-Skip)
+
+      (when (and (not Cdr-Skip)
                  (not (= Val Any)))
         (put Part-Cdr 'c Part-Pair))
               
