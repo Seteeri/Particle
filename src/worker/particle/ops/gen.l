@@ -81,7 +81,7 @@
         Part-Cdr (when (and (not Cdr-Skip)
                             (not (= Val Any)))
                   (gen-part Dr Lay))
-        (Verts-Pair Wid-Pair) (gen-vert-pair Col (= Val Any) Char-Pair)
+        (Verts-Pair Wid-Pair) (gen-vert-pair Char-Pair Col (= Val Any))
         Part-Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any
                        Part-Car Part-Cdr

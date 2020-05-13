@@ -138,7 +138,7 @@
         (T           (gen-vert-sym Atom Col))))
 
 
-(de gen-vert-pair (Col Self Char)
+(de gen-vert-pair (Char Col Self)
 
   # (char 187) (char 166)
   # (gen-vert-chars "[" *sol-base-0 T)
