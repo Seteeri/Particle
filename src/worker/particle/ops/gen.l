@@ -58,7 +58,7 @@
     Part))
     
         
-(de gen-sym-pair (Any Lay Car-Skip Cdr-Skip)
+(de gen-sym-pair (Any Lay Car-Skip Cdr-Skip Char-Pair)
 
   # Technically, name is a number cell
 
@@ -79,7 +79,7 @@
         Part-Cdr (when (and (not Cdr-Skip)
                             (not (= Val Any)))
                   (gen-part Dr Lay))
-        (Verts-Pair Wid-Pair) (gen-vert-pair (get-color-type Any) (= Val Any))
+        (Verts-Pair Wid-Pair) (gen-vert-pair (get-color-type Any) (= Val Any) Char-Pair)
         Part-Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any
                        Part-Car Part-Cdr

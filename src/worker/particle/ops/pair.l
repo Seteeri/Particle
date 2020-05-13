@@ -78,7 +78,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Cc)
-    (set-ptr ↓0 Cc)
+    (set-ptr *cdr Cc)
     (point-sub)
         
     (println 'make-cons-car-y "Made nested list")
@@ -165,7 +165,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Part)
-    (set-ptr ↓0 Part)
+    (set-ptr *cdr Part)
     (point-sub)
         
     (println 'make-cons-car-x-sym "Made nested list")
@@ -299,7 +299,7 @@
     (mov-*1 *line)
     
     (setq *line (get Part 'a))
-    (set-ptr ↓0 (get Part 'a))
+    (set-ptr *cdr (get Part 'a))
     (point-sub)
         
     (println 'make-cons-car-x-nil "Made nested list")
@@ -314,19 +314,19 @@
     Delete previous
 
     
-              ↓0
+              *cdr
     [ ]  [ ]  NIL
     a    b
 
     #############
     
-        ↓0
+        *cdr
     [ ]  [ ]  NIL
     a    b
 
     #############
     
-    ↓0
+    *cdr
     [ ]  [ ]  NIL
     a    b    
 
@@ -335,7 +335,7 @@
     [ ]  [ ]  NIL
     a    b        
 
-    ↓0
+    *cdr
     [ ]  [ ]  NIL
         c        
 
@@ -348,7 +348,7 @@
     [ ]  [ ]  NIL
         NIL        
         
-    ↓0     
+    *cdr     
     NIL
     
   }#
@@ -408,9 +408,9 @@
       
       # Ptr remains on Ref
       # How about for on-car?
-      (set-ptr ↓0 New-Ref)
+      (set-ptr *cdr New-Ref)
       (mov-cur-abv New-Ref)
-      (lay-ptr ↓0)
+      (lay-ptr *cdr)
           
       T)))      
     

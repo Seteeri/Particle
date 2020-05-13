@@ -71,8 +71,8 @@
 #(def '*char-dot (char (hex "2219")))
 #(def '*char-dot (char (hex "25CF")))
 
-(de gen-vert-dot (Col)
-  (gen-vert-glyph *char-dot 
+(de gen-vert-dot (Char Col)
+  (gen-vert-glyph Char
                   (if Col @ *sol-base-0)))
 
 
@@ -136,13 +136,15 @@
         (T           (gen-vert-sym Atom Col))))
 
 
-(de gen-vert-pair (Col Self)
+(de gen-vert-pair (Col Self Char)
 
   # (char 187) (char 166)
   # (gen-vert-chars "[" *sol-base-0 T)
   
+  (unless Char (setq Char *char-dot))
+  
   (if Self
-      (list (list (gen-vert-dot Col) (gen-vert-dot Col))
+      (list (list (gen-vert-dot Char Col) (gen-vert-dot Char Col))
             (meta '(+Vertex) 'adv-vert-2))
-      (list (list (gen-vert-dot Col))
+      (list (list (gen-vert-dot Char Col))
             (meta '(+Vertex) 'adv-vert))))

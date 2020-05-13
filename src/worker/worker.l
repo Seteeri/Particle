@@ -198,21 +198,21 @@
     ##################
     # TODO: Draw *ptrs
     
-    (def '↓0 (gen-sym-pair '↓0 'x NIL T))
-    (def '↑0 (gen-sym-pair '↑0 'x NIL T))
+    (def '*cdr (gen-sym-pair '*cdr 'x NIL T "↓"))
+    (def '*car (gen-sym-pair '*car 'x NIL T "↑"))
     
     # 2191
-    # ↑
+    # ↑ ↓
     
-    (set-ptr ↓0 (get *start 'b))
-    (put ↓0 'lay 'y)
+    (set-ptr *cdr (get *start 'b))
+    (put *cdr 'lay 'y)
     (mov-cur-abv (get *start 'b))
-    (lay-ptr ↓0)
+    (lay-ptr *cdr)
 
-    (set-ptr ↑0 (get *start 'b))
-    (put ↑0 'lay 'y)
+    (set-ptr *car (get *start 'b))
+    (put *car 'lay 'y)
     (nl-cur -1.0) (adv-cur -3.0)
-    (lay-ptr ↑0)    
+    (lay-ptr *car)    
     
     ######
     # TEMP
@@ -222,8 +222,8 @@
     #########
     
     (let L NIL
-      (for X '(↑0
-               ↓0
+      (for X '(*car
+               *cdr
                *1
                *start
                *log
@@ -424,7 +424,7 @@
 (def '*rot-z 0.0)
 (de test-rot-p0 ()
 
-  (let? Part (get ↓0 'a)
+  (let? Part (get *cdr 'a)
     
     (with Part
     

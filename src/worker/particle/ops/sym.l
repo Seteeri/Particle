@@ -1,6 +1,6 @@
 (de make-str (Data Lay)
 
-  (let (Ref (get ↓0 'b)
+  (let (Ref (get *cdr 'b)
         Part (if *on-car
                 # If NIL is end/start-of-list
                 (if (and (isa '(+Nil) Ref)
@@ -12,7 +12,7 @@
                     (ins-car Data Lay)
                     (ins-cdr Data Lay))))
 
-    (lay-ptr ↓0)
+    (lay-ptr *cdr)
     
     Part))
 
@@ -21,12 +21,12 @@
 
   (println 'repl-nil)
   
-  (let Part (if (= (get ↓0 'b 'c 'a) Ref)
+  (let Part (if (= (get *cdr 'b 'c 'a) Ref)
                 (ins-car Data Lay)
                 (ins-cdr Data Lay))
     
     # Mov to cdr car
-    (set-ptr ↓0 (sub> (get Part 'b)))
+    (set-ptr *cdr (sub> (get Part 'b)))
   
     Part))
   
@@ -59,7 +59,7 @@
 
   (println 'repl-str)
   
-  (let (Ref (get ↓0 'b)
+  (let (Ref (get *cdr 'b)
         Pair (get Ref 'c)
         C (get Pair 'c)
         Part (gen-part Data Lay))
@@ -79,7 +79,7 @@
     (mov-*1 *line)
 
     # Mov to cdr car
-    (set-ptr ↓0 (sub> (get Pair 'b)))
+    (set-ptr *cdr (sub> (get Pair 'b)))
     
     Part))  
 
@@ -121,7 +121,7 @@
   
   (println 'ins-str)
   
-  (let (Ref (get ↓0 'b)
+  (let (Ref (get *cdr 'b)
         Pair (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
@@ -185,7 +185,7 @@
     
   (println 'ins-car)
     
-  (let (Ref (get ↓0 'b)
+  (let (Ref (get *cdr 'b)
         Pair (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T)
         Is-Ref-Pair-of-Pair (and (isa '(+Pair) (get Ref 'a))
@@ -211,7 +211,7 @@
 
     (if Is-Ref-Pair-of-Pair
         (prog
-          (set-ptr ↓0 Part)
+          (set-ptr *cdr Part)
           (mov-cur-abv Part))
         (mov-cur-abv Ref))
     
@@ -244,7 +244,7 @@
     # Inclusive
     (del-rx Sta End)
     
-    (set-ptr ↓0 (get Part 'b))
+    (set-ptr *cdr (get Part 'b))
     
     # Later, move this group to undo/cmd list
     (unless Skip-Upd
@@ -291,7 +291,7 @@
     # Del Ref except Cdr
     (del-car> Ref)    
     
-    (set-ptr ↓0 End)
+    (set-ptr *cdr End)
     
     (unless Skip-Upd
       (upd-tree)

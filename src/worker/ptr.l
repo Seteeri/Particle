@@ -8,35 +8,35 @@
 
 
 (de point-ptr (Part)
-  (set-ptr ↓0 Part)
+  (set-ptr *cdr Part)
   #(println 'point-ptr "Mov -> " Part (get Part 'data))
-  (lay-ptr ↓0))
+  (lay-ptr *cdr))
 
 
 (de point-prv ()
   #(println 'point-prv)
-  (let? Part (prv> (get ↓0 'b)) (point-ptr Part)))
+  (let? Part (prv> (get *cdr 'b)) (point-ptr Part)))
 
 
 (de point-nxt ()
-  (let? Part (nxt> (get ↓0 'b)) (point-ptr Part)))
+  (let? Part (nxt> (get *cdr 'b)) (point-ptr Part)))
 
 
 (de point-sup ()
   #(println 'point-sup)
-  (let? Part (sup> (get ↓0 'b)) (point-ptr Part)))
+  (let? Part (sup> (get *cdr 'b)) (point-ptr Part)))
 
 
 (de point-sub ()
   #(println 'point-sub)
-  (let? Part (sub> (get ↓0 'b)) (point-ptr Part)))
+  (let? Part (sub> (get *cdr 'b)) (point-ptr Part)))
 
 
 (de point-ln-first ()
   (let (F T
         S (if *on-car  # Move up if on Car
-              (get ↓0 'b 'c)
-              (get ↓0 'b))
+              (get *cdr 'b 'c)
+              (get *cdr 'b))
         P S)
     (while F
       (if (get P 'line)
@@ -52,8 +52,8 @@
 (de point-ln-last ()
   (let (F T
         S (if *on-car  # Move up if on Car
-              (get ↓0 'b 'c)
-              (get ↓0 'b))
+              (get *cdr 'b 'c)
+              (get *cdr 'b))
         P S)
     # Stop before line
     (while F
