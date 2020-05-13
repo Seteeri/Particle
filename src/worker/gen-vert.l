@@ -35,8 +35,8 @@
     NIL   Internal    Transient    External  
     
     Base = X Pair
-    Yellow = NIL/T
-    Orange = Y Pair
+    Yellow = Ptr
+    Orange = NIL/T
     Red = Namespace symbol (or binary tree?)
     Magenta = Num
     
@@ -49,7 +49,7 @@
   # Adjust brightness for time...or alpha?
 
   (cond ((or (== Any NIL)
-             (== Any T))  *sol-yellow)
+             (== Any T))  *sol-orange)
         ((lst? Any)       *sol-base-0)
         ((num? Any)       *sol-magenta)
         ((box? Any)       *sol-green)
