@@ -10,6 +10,7 @@ TODO
   * Create list, enter strings, convert some to symbols, eval
   
   * 10 MAY - WED
+    * Split: create lines
     * Named pipe + rd/pr
     * a s d m for arithmetic
     * Soft wrap list
@@ -160,8 +161,18 @@ TODO
         * (p . T) = until Ptr
       * -> atom = single
     * or show props on single line (nested pairs)
-
-  * Buffer System (aka Cut/Copy/Paste)
+    * ALT SYS:
+      * User always ctrls master ptr
+      * Master mov to buffer area from start
+      * Cut ptr(s) (or markers?)
+      * Mov back to main
+      * Paste ptrs
+      * Comment
+        * Works for single items
+        * Lists? or Range?
+        * User must moves items into a list or select start/end
+    
+  * Register System (aka Cut/Copy/Paste)
     * Buffers have ptr prop
       * p1 -> b1, p2 -> b2, etc.
     OR
@@ -169,7 +180,6 @@ TODO
       * n-ptrs : b1
       * Similar to ptr list, use a buffer list which follows same pattern
       * Show first and last items
-    * CUA
   
   ---
   

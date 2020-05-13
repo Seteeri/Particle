@@ -4621,6 +4621,31 @@ dsl...
 research vim modes
 
 ============================================
+
+modes can exist as long as they can accomodate Lisp CUA
+Data has to break down to lisp data which is enforced by the language
+
+support both emacs and vim users
+- emacs supports vim but not competely
+
+when user is editing strings
+they should be able to use the spaces between as single line buffer
+- that is the status bar
+
+CDR MODE:
+PTR
+XXXX
+ZZZZ
+
+CAR MODE:
+ZZZZ
+XXXX
+PTR
+
+if user outputs instead of replaces
+the they must manually move it
+
+============================================
 ============================================
 
 https://news.ycombinator.com/item?id=20191406

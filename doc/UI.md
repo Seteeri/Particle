@@ -40,6 +40,51 @@ Interfaces:
 
 # Command Matrix
 
+    +-------------------+---------------------------------------------+
+    | Key Binding       | Command (CAR/CDR)                           |
+    +-------------------+---------------------------------------------+
+    | ASCII             | Make single-character strings: "a" "b" ...  |
+    +-------------------+---------------------------------------------+
+    | Enter             | Make newline char                           |
+    +-------------------+---------------------------------------------+
+    | Backspace         | Del before data                             |
+    +-------------------+---------------------------------------------+
+    | Delete            | Del after data                              |
+    +-------------------+---------------------------------------------+
+    | L-Alt + Space     | Convert atom: str <-> sym, num <-> str      |    
+    +-------------------+---------------------------------------------+
+    | R-Alt + Enter     | Make list / Make newline                    |
+    +-------------------+---------------------------------------------+
+    | R-Alt + Backspace | Del newline                                 |
+    +-------------------+---------------------------------------------+
+    
+* Mov cursor...
+* Mov Start/End of List
+* Mov Start/End of Line
+* Make NIL
+    
+* Delete will delete recursively by default
+    
+*Add GIF anims*
+    
+* CUA keys
+* Universal commands + command mode
+* Relies more on spatial than mnemonics
+
+## Example
+
+Symbols:
+* Pointer
+* Data
+* Status Bar
+
+Symbols - Lists:
+* start
+* log
+* ptrs
+* binds
+* regs
+
 # Basic Concepts
 
     +--------------+--------------+

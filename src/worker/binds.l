@@ -278,19 +278,53 @@
     
     ((ksd~Control-L ksd~q) T cmd-ptr-ln-first)
     ((ksd~Control-L ksd~e) T cmd-ptr-ln-last)
-    # ctrl + alt + q = move to start of list  
-    # ctrl + alt + e = move to end of list
+        
+    # Symbol
+    # Double alt = cmd?
+    # Double shift = sym
+    # Diff L+R|Mod vs R+L|Mod ?
+    # LAlt + Sp vs RAlt + Sp?
+    ((ksd~Alt-L   ksd~space) T cmd-intern)
+
+    #{
+      Conv Atom (Alt-L+space ctx aware)
+      - str     -> sym
+      - str/num -> num
+      - num     -> str
+      
+      Pack to prv
+      
+      Split fm spc (chr, NIL=spc)
+      - use a sublist for args?
+      - compl to pack
+      - use to break words at the end
+      - poss mov ptr to start, better user use cmd to move start
+      - either replace or make sublist
+        - repl makes most sense
+        - explicit cmd for sublist or use args
+        
+      Glue w spc (chr, NIL=spc)
+      
+      Chop not as useful...
+      
+      New List
+      - Mov car, alt enter
+      
+      Eval
+      - ctrl enter?
+      
+      Command mode:
+      - Does not replace universal cmds - allows adv fn/cmd composition
+      
+    }#
     
-    # Pack + Eval-Str
-    ((ksd~Control-L ksd~g) T cmd-pes)
-    
-    ((ksd~Control-L ksd~b) T cmd-intern)
-    
-    # Tab for eval
+    # REPL
     ((ksd~Control-L ksd~Tab)            T cmd-eval-str)
     ((ksd~Alt-L     ksd~Tab)            T cmd-str)
     ((ksd~Control-L ksd~Alt-L ksd~Tab) T cmd-eval)
-        
+    # Pack + Eval-Str
+    ((ksd~Control-L ksd~g) T cmd-pes)    
+    
     # other cmds...
     
     ##########
