@@ -80,7 +80,6 @@
 
 (def '*cur (list 0.0 0.0 0.0)) # for drawing. not literally drawn
 
-
 (de init-worker ()
     
   (setq *i-proc 1
@@ -205,12 +204,12 @@
     # ↑ ↓
     
     (set-ptr *cdr (get *start 'b))
-    (lay> *cdr 'y)
+    (put *cdr 'lay 'y)
     (mov-cur-abv (get *start 'b))
     (lay-ptr *cdr)
 
     (set-ptr *car (get *start 'b))
-    (lay> *car 'y)
+    (put *car 'lay 'y)
     (nl-cur 3.0) (adv-cur -5.0)
     (lay-ptr *car)    
     

@@ -1,5 +1,5 @@
 (de cmd-mov-nl (Ks)
-  (println "Move newline")
+  (println 'cmd-mov-nl)
 
   (let Ref (get *cdr 'b)
     (if *on-car

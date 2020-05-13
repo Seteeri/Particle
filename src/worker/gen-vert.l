@@ -47,7 +47,7 @@
     NIL   Internal    Transient    External  
     
     Base-0 = X Pair
-    Base-01 = Y Pair
+    Base-1 = Y Pair
     
     Yellow = Ptr
     Orange = NIL/T
@@ -64,7 +64,7 @@
 
   (cond ((or (== Any NIL)
              (== Any T))  *sol-orange)
-        ((lst? Any)       *sol-base-0)
+        ((lst? Any)       (car *part-col-def))
         ((num? Any)       *sol-magenta)
         ((box? Any)       *sol-green)
         ((str? Any)       *sol-blue)
@@ -150,7 +150,7 @@
   # (char 187) (char 166)
   
   (unless Char (setq Char *char-dot))
-  (unless Col (setq Col *sol-base-0))
+  (unless Col (setq Col (car *part-col-def)))
   
   (if Self
       (list (list (gen-vert-glyph Char Col) (gen-vert-glyph Char Col))

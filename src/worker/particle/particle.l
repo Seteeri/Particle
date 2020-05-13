@@ -24,6 +24,14 @@
 
 
 (class +Particle)
+(def '*part-col-def (list *sol-base-01 *sol-base-0))
+#{
+(with *Class
+  (=: col-def (list 0.5137255 0.5803922 0.60784316 1.0 
+                      0.5137255 0.5803922 0.60784316 1.0
+                      0.5137255 0.5803922 0.60784316 1.0 
+                      0.5137255 0.5803922 0.60784316 1.0)))
+}#
 (dm T (Data
        A
        B
@@ -71,6 +79,17 @@
 (dm lay-y?> () (= (: lay) 'y))
 
 (dm lay> (L)
+
+  # Set color on change unless it is a ptr
+
+  # Ptr uses put instead of this
+  # TODO: '(+Ptr +Sym)
+        
+  (let Col (if (= L 'x)
+               (car *part-col-def)
+               (cadr *part-col-def))
+    (col> This Col))
+    
   (=: lay L))
 
 (de b@ @
@@ -272,7 +291,6 @@
                             R G B 1.0
                             R G B 1.0
                             R G B 1.0))
-      (upd-mod-mat> Vert)
       (req-send *ipc Vert))))
 
 

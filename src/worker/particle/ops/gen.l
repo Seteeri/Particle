@@ -116,7 +116,8 @@
         Dr (cdr Any)
         Part-Car (unless Car-Skip (gen-part Ar Lay))
         Part-Cdr (unless Cdr-Skip (gen-part Dr Lay))        
-        (Verts-Pair Wid-Pair) (gen-vert-pair)
+        Col (if (= Lay 'x) (car *part-col-def) (cadr *part-col-def))
+        (Verts-Pair Wid-Pair) (gen-vert-pair NIL Col)
         Part-Pair (new '(+Pair)
                         Any
                         Part-Car Part-Cdr

@@ -119,7 +119,7 @@
     
   }#
   
-  (println 'ins-str)
+  (println 'ins-cdr)
   
   (let (Ref (get *cdr 'b)
         Pair (get Ref 'c)
