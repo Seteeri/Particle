@@ -81,7 +81,7 @@
 
 
 (de handle-worker (Sock)
-  (if (flush-sock *ipc Sock)
+  (if (flush-sock-recv *ipc Sock)
       (parse-msgs *ipc Sock proc-msg)
       (disc-cli *ipc Sock)))
     

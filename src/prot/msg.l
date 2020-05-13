@@ -1,7 +1,7 @@
 (def 'LEN-HD 12)
 
-
-(de send-msgs (Ipc Sock Msgs)
+# UNUSED
+(de flush-send (Ipc Sock Msgs)
 
   #{
     Msgs:
@@ -21,9 +21,7 @@
     # TODO: If buffer full, try next time
     (for Msg Msgs
       (let ((Sexpr Bin Sz-Bin) Msg)
-        (if (wr-msg Ipc Sexpr Bin Sz-Bin)
-            (inc 'Len-Sock @)
-            (quit "send-msgs: buffer full"))))
+        (inc 'Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin))))
 
     (let Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
       (ipc~send-sock> Ipc Sock T Len-Sock))))
@@ -97,6 +95,8 @@
 
 # RECV
 # Recv single msg - wait on all data - pass flag?
+
+# Use flush-sock-recv to pull
 
 (de recv-msg (Ipc Sock)
 

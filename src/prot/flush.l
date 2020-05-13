@@ -43,7 +43,7 @@
 (off *que-msg)
 (def '*que-end NIL)
 
-(de flush-sock (Ipc Sock)
+(de flush-recv (Ipc Sock)
 
   (let? Sz-Rd (ipc~recv-sock> Ipc Sock T T 0)
 
