@@ -1,5 +1,10 @@
+# Easier to read...
+(de set-ptr (P)
+  (put *0 'b P))
+
+
 (de point-ptr (Part)
-  (put *0 'b Part)
+  (set-ptr Part)
   #(println 'point-ptr "Mov -> " Part (get Part 'data))
   (lay-part-start *0 *line 'skip-cdr))
 

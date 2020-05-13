@@ -203,7 +203,7 @@
     # Remove NIL
     (del> (get *0 'b) T T)
     # Replace with main 'b = NIL
-    (put *0 'b (get *start 'b))
+    (set-ptr (get *start 'b))
     # Set layout
     (put *0 'lay 'y)
     

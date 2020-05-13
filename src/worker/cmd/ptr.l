@@ -47,9 +47,9 @@
     (eval Fn)
 
     # Ignore Ref/Cdr
-    (put *0 'b)
+    (set-ptr)
     (lay-part-start *0 *cur)
-    (put *0 'b Ref)))
+    (set-ptr Ref)))
     
 
 (de cmd-trans-ptr-px (Ks)

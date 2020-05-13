@@ -105,7 +105,7 @@
   (println 'cmd-reset)
 
   # Clear ptr
-  (put *0 'b)
+  (set-ptr)
 
   (println 'cmd-reset *master (get *master 'data))
   (del> *master T T)
