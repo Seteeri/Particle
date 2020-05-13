@@ -27,8 +27,8 @@
             "/src/ipc/ipc.l"
             "/src/font/metrics.l"            
             "/src/prot/conn.l"
-            "/src/prot/msg.l"
-            "/src/prot/flush.l"
+            "/src/prot/send.l"
+            "/src/prot/recv.l"
             "/src/prot/obj.l"
             "/src/ctrl/xkb.l"
             "/src/ctrl/conn.l"
@@ -81,7 +81,7 @@
 
 
 (de handle-worker (Sock)
-  (if (flush-sock-recv *ipc Sock)
+  (if (flush-recv *ipc Sock)
       (parse-msgs *ipc Sock proc-msg)
       (disc-cli *ipc Sock)))
     

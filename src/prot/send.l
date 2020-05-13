@@ -92,39 +92,3 @@
     # Check for error - call handler
     (send-msg Ipc (car Conn) Msg)))
 
-
-# RECV
-# Recv single msg - wait on all data - pass flag?
-
-# Use flush-sock-recv to pull
-
-(de recv-msg (Ipc Sock)
-
-  (let ((Len-Msg Len-Sexpr Sz-Bin) (recv-msg-len Ipc Sock))
-
-    #(prinl-info "recv-msg" (pack "RECV " Len-Msg " " Len-Sexpr " " Sz-Bin))
-
-    (when (and Len-Msg
-               (ipc~recv-sock> Ipc Sock T (+ Len-Sexpr Sz-Bin) sock~MSG-WAITALL))
-
-      (with Ipc
-        (pack (struct (: ipc~buf-rd) (cons 'C Len-Sexpr)))))))
-
-
-(de recv-msg-bin (Ipc Sock)
-
-  (let ((Len-Msg Len-Sexpr Sz-Bin) (recv-msg-len Ipc Sock))
-
-    #(prinl-info "recv-msg" (pack "RECV " Len-Msg " " Len-Sexpr " " Sz-Bin))
-
-    (when (and Len-Msg
-               (ipc~recv-sock> Ipc Sock T (+ Len-Sexpr Sz-Bin) sock~MSG-WAITALL))
-
-      (with Ipc
-        (cons (pack (struct (: ipc~buf-rd) (cons 'C Len-Sexpr)))
-              Sz-Bin)))))
-
-
-(de recv-msg-len (Ipc Sock)
-  (when (ipc~recv-sock> Ipc Sock T LEN-HD sock~MSG-WAITALL)
-    (struct (get Ipc 'ipc~buf-rd) '(I . 3))))

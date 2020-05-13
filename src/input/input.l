@@ -22,8 +22,8 @@
             "/src/misc.l"
             "/src/ipc/ipc.l"
             "/src/prot/conn.l"
-            "/src/prot/msg.l"
-            "/src/prot/flush.l"
+            "/src/prot/send.l"
+            "/src/prot/recv.l"
             "/src/prot/obj.l"))
 
 (def 'NAME-PID "INPUT")

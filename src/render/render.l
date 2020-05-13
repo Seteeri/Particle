@@ -25,8 +25,8 @@ Class variables may be indicated by an upper case letter
             "/src/c/epoll.l"
             "/src/ipc/ipc.l"
             "/src/prot/conn.l"
-            "/src/prot/msg.l"
-            "/src/prot/flush.l"
+            "/src/prot/send.l"
+            "/src/prot/recv.l"
             "/src/prot/obj.l"
             "/src/worker/vertex.l"
             "/src/render/params-buffer.l"
@@ -243,7 +243,7 @@ Class variables may be indicated by an upper case letter
 
   
 (de recv-conn (Sock)
-  (if (flush-sock-recv *ipc Sock)
+  (if (flush-recv *ipc Sock)
       (parse-msgs *ipc Sock proc-msg)
       (disc-cli *ipc Sock)))
 
