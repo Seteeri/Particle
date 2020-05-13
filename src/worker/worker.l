@@ -200,11 +200,11 @@
     
     (idx '*particles (def '↓0 (gen-sym-pair '↓0 'x NIL T)) T)
     
-    (set-ptr (get *start 'b))
+    (set-ptr ↓0 (get *start 'b))
     (put ↓0 'lay 'y)
     
     (mov-cur-abv (get *start 'b))
-    (lay-part-start ↓0 *line 'skip-cdr)
+    (lay-ptr ↓0)
     
     ######
     # TEMP

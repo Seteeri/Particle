@@ -12,7 +12,7 @@
                     (ins-car Data Lay)
                     (ins-cdr Data Lay))))
 
-    (lay-part-start ↓0 *line 'skip-cdr)
+    (lay-ptr ↓0)
     
     Part))
 
@@ -26,7 +26,7 @@
                 (ins-cdr Data Lay))
     
     # Mov to cdr car
-    (set-ptr (sub> (get Part 'b)))
+    (set-ptr ↓0 (sub> (get Part 'b)))
   
     Part))
   
@@ -79,7 +79,7 @@
     (mov-*1 *line)
 
     # Mov to cdr car
-    (set-ptr (sub> (get Pair 'b)))
+    (set-ptr ↓0 (sub> (get Pair 'b)))
     
     Part))  
 
@@ -211,7 +211,7 @@
 
     (if Is-Ref-Pair-of-Pair
         (prog
-          (set-ptr Part)
+          (set-ptr ↓0 Part)
           (mov-cur-abv Part))
         (mov-cur-abv Ref))
     
@@ -244,7 +244,7 @@
     # Inclusive
     (del-rx Sta End)
     
-    (set-ptr (get Part 'b))
+    (set-ptr ↓0 (get Part 'b))
     
     # Later, move this group to undo/cmd list
     (unless Skip-Upd
@@ -290,7 +290,7 @@
     # Del Ref except Cdr
     (del-car> Ref)    
     
-    (set-ptr End)
+    (set-ptr ↓0 End)
     
     (unless Skip-Upd
       (upd-tree)

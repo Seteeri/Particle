@@ -46,10 +46,7 @@
     (mov-cur-part ↓0 'start)
     (eval Fn)
 
-    # Ignore Ref/Cdr
-    (set-ptr)
-    (lay-part-start ↓0 *cur)
-    (set-ptr Ref)))
+    (lay-ptr ↓0)))
     
 
 (de cmd-trans-ptr-px (Ks)

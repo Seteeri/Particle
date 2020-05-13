@@ -61,7 +61,7 @@
         (println 'cmd-pack Sta (get Sta 'data) "TO" End (get End 'data))
 
         (repl-list-str Sta End Data)
-        (lay-part-start ↓0 *line 'skip-cdr)))))
+        (lay-ptr ↓0)))))
 
         
 (de cmd-chop (Ks)
@@ -81,7 +81,7 @@
             List (chop (get Ref 'a 'data)))
   
         (repl-str-list Ref List)
-        (lay-part-start ↓0 *line 'skip-cdr)))))
+        (lay-ptr ↓0)))))
   
 
 #######
@@ -105,7 +105,7 @@
         (println 'cmd-glue-sp Sta (get Sta 'data) "TO" End (get End 'data))
             
         (repl-list-str Sta End Data)
-        (lay-part-start ↓0 *line 'skip-cdr)))))
+        (lay-ptr ↓0)))))
     
     
 (de cmd-split-sp (Ks)
@@ -126,7 +126,7 @@
             List (mapcar pack (split (chop (get Ref 'a 'data)) " ")))
 
         (repl-str-list Ref List)
-        (lay-part-start ↓0 *line 'skip-cdr)))))
+        (lay-ptr ↓0)))))
         
         
 (de cmd-intern (Ks)
@@ -147,4 +147,4 @@
         (println 'cmd-intern Sta (get Sta 'data) "TO" End (get End 'data))
                 
         (repl-list-str Sta End Data)
-        (lay-part-start ↓0 *line 'skip-cdr)))))
+        (lay-ptr ↓0)))))

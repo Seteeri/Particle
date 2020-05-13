@@ -1,16 +1,16 @@
-(de lay-ptr ()
-  (lay-part-start ↓0 ↓0 'skip-cdr))
+(de lay-ptr (P)
+  (lay-part-start P P 'skip-cdr))
 
 
 # Easier to read...
-(de set-ptr (P)
-  (put ↓0 'b P))
+(de set-ptr (P B)
+  (put P 'b B))
 
 
 (de point-ptr (Part)
-  (set-ptr Part)
+  (set-ptr ↓0 Part)
   #(println 'point-ptr "Mov -> " Part (get Part 'data))
-  (lay-part-start ↓0 *line 'skip-cdr))
+  (lay-ptr ↓0))
 
 
 (de point-prv ()
