@@ -198,8 +198,8 @@
     ##################
     # TODO: Draw *ptrs
     
-    (idx '*particles (def '↓0 (gen-sym-pair '↓0 'x NIL T)) T)
-    (idx '*particles (def '↑0 (gen-sym-pair '↑0 'x NIL T)) T)
+    (def '↓0 (gen-sym-pair '↓0 'x NIL T))
+    (def '↑0 (gen-sym-pair '↑0 'x NIL T))
     
     # 2191
     # ↑
@@ -217,11 +217,21 @@
     ######
     # TEMP
     
-    (setq p1 *cmds)
+    (def '*1 (gen-sym-pair '*1 'y NIL T))
 
-    (idx '*particles (def '*1 (gen-sym-pair '*1 'y NIL T)) T)
-
-    ############
+    #########
+    
+    (let L NIL
+      (for X '(↑0
+               ↓0
+               *1
+               *start
+               *log
+               *bind-ops-p)
+        (push 'L (cons X (val X))))
+      (balance '*particles (sort L)))
+    
+    #########
         
     (when NIL
 
