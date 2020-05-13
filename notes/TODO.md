@@ -11,28 +11,26 @@ TODO
   
   * 10 MAY - WED
     * Split: create lines
-    * Soft wrap list
     * Cache last item for lines/lists
-    * Implement cmds Q/E : start/end of line/list  
-    * Play around with eval more to build structures
+    * Refactor del
+    * Implement cmds Q/E : start/end of line/list
     * Pointer
+      * Replace dot with arrow instead of name
+      * On mov to car, change input
+        * Create *fwd-in
+          * Or modify fn directly
+        * Get from *particles?
       * 2 mode indicators: CAR/PAIR    STR/SYM/NUM  + Ptr #
         * Icons:           <dir/arrow> ""/T/0         1-Inf
-      * Example: ↓"" or ↓T or ↓0
-        * Color same for all since still sym name
       * Each combo is a diff symbol
-        * Or they are properties? But how to draw it?
-          * *0 . .dir ↓ .atom T
-          * Could draw properties under
-          * Do users need to see all properties constantly?
-          * Or have dedicated viewports
-            * Med left pane is properties
-            * Short bottom pane is pointer status bar
-            * Right large is main
-      * https://en.wikibooks.org/wiki/Unicode/List_of_useful_symbols
-        * hex 2190 - 2193
-        * Think, insert has an indicator and Caps Lock does not
-          * Which one tends to have more user mode errors? -> Caps Lock
+      * Have dedicated viewports
+        * Med left pane is log
+        * Center pane is start
+        * Med right pane is properties
+        * Short bottom pane is pointer status bar
+      * Think, insert has an indicator and Caps Lock does not
+        * Which one tends to have more user mode errors? -> Caps Lock
+    * Soft wrap list
     * Sym prop output
       * Output normally
       * Only upd objs in view

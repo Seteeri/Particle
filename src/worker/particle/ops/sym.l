@@ -268,6 +268,7 @@
 
     (let (Data (car List)
           Part (gen-part (list Data) 'x NIL T))
+          
       (if (= (get Sta 'a) Ref)
           (a> Sta Part)
           (b> Sta Part))
