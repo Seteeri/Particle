@@ -154,7 +154,7 @@
     (let P *bind-ops-p
       (while P
         (when (isa '(+Pair) (get P 'a))
-          (put P 'lay 'y)
+          (lay> P 'y)
           (put P 'line (new '(+Line)))
           (put (get P 'a) 'line (new '(+Line))))))
     }#
@@ -205,12 +205,12 @@
     # ↑ ↓
     
     (set-ptr *cdr (get *start 'b))
-    (put *cdr 'lay 'y)
+    (lay> *cdr 'y)
     (mov-cur-abv (get *start 'b))
     (lay-ptr *cdr)
 
     (set-ptr *car (get *start 'b))
-    (put *car 'lay 'y)
+    (lay> *car 'y)
     (nl-cur 3.0) (adv-cur -5.0)
     (lay-ptr *car)    
     
