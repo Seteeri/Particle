@@ -17,35 +17,35 @@ If dst NIL: send bytes back
 }#
 
 
-(de accept-client (Ipc Sock Client)
+(de acpt-client (Ipc Sock Cli)
 
-  #(prinl-info "accept-client" (pack "Wait for ID from " Client))
+  #(prinl-info "acpt-client" (pack "Wait for ID from " Cli))
 
   # Read for ID - this will block
-  (let? ID (recv-msg Ipc Client)
+  (let? ID (recv-msg Ipc Cli)
 
-    (prinl-info "accept-client" (pack "Sock=" Client ", ID= " ID))
+    (prinl-info "acpt-client" (pack "Sock=" Cli ", ID= " ID))
     
     # Disconnect client if name conflict
-    (if (assoc Client (get Ipc 'ipc~clients))
-        (ipc~disconn-sock Client ID)
-        (add-client Ipc Client ID))))
+    (if (assoc Cli (get Ipc 'ipc~clients))
+        (ipc~disc-sock Cli ID)
+        (add-client Ipc Cli ID))))
 
 
-(de add-client (Ipc Client ID)
+(de add-client (Ipc Cli ID)
   (with Ipc
     # Note, client IDs use {ID}-{PID} and outgoing conns use ID-S
-    (ipc~add-conn> Ipc Client ID (: ipc~handler-listener))
+    (ipc~add-conn> Ipc Cli ID (: ipc~hnd-lstr))
 
     # Add to client list also
-    (push1 (:: ipc~clients) (cons Client (list ID (: ipc~handler-listener))))
+    (push1 (:: ipc~clients) (cons Cli (list ID (: ipc~hnd-lstr))))
 
     (prinl-info "add-client" (pack "Sock=" Sock ", ID= " ID))))
 
 
-(de disconn-client (Ipc Sock)
+(de disc-cli (Ipc Sock)
 
-  (prinl-info "disconn-client" (pack "Sock=" Sock))
+  (prinl-info "disc-cli" (pack "Sock=" Sock))
 
   (with Ipc
     (del (assoc Sock (: clients)) (:: clients))
@@ -60,7 +60,7 @@ If dst NIL: send bytes back
                   Sock
                   0)))
               
-  (ipc~disconn-sock Sock)
+  (ipc~disc-sock Sock)
   
   # Exit for now
   (bye))  
@@ -82,7 +82,7 @@ If dst NIL: send bytes back
                   Sock
                   0)))
               
-  (ipc~disconn-sock Sock)
+  (ipc~disc-sock Sock)
   
   # Exit for now
   (bye))

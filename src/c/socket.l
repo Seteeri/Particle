@@ -1,6 +1,6 @@
 (symbols 'sock 'pico)
 
-(local) (bind listen accept connect send)
+(local) (bind listen acpt connect send)
 
 (def 'AF-UNIX 1)
 (def 'SOCK-STREAM 1)
@@ -38,8 +38,8 @@
 #(de listen (Sockfd Backlog)
 #    (native "@" "listen" 'I Sockfd Backlog))
 
-#(de accept (Sockfd Addr Addr-len)
-#    (native "@" "accept" 'I Sockfd Addr Addr-len))
+#(de acpt (Sockfd Addr Addr-len)
+#    (native "@" "acpt" 'I Sockfd Addr Addr-len))
 
 (de accept-4 (Sockfd Addr Addr-len Flags)
     (native "@" "accept4" 'I Sockfd Addr Addr-len Flags))
@@ -140,13 +140,13 @@
     Sock))
 
 
-(de accept (Sock Block)
+(de acpt (Sock Block)
   #{
     For nonblocking, will either return a valid fd (> 0)
     or it will fail and set errno to e-again or e-wouldblock
     Any other errno indicates failure somewhere else
 
-    flags=0 - same as accept
+    flags=0 - same as acpt
   }#
 
   (let (Sockaddr     (native "@" "malloc" 'N 110)

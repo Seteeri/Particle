@@ -25,7 +25,7 @@
 
     (let Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
       
-      (ipc~send-bytes> Ipc Sock T Len-Sock))))
+      (ipc~send-sock> Ipc Sock T Len-Sock))))
 
 
 (de wr-msg (Ipc Sexpr Bin Sz-Bin)
@@ -83,14 +83,14 @@
   # Could do this unblocked, if delayed, then server is lagging and could warn
 
   (let Len-Sock (wr-msg Ipc Sexpr Bin Sz-Bin)
-    (ipc~send-bytes> Ipc Sock T Len-Sock)))
+    (ipc~send-sock> Ipc Sock T Len-Sock)))
 
 
 (de send-msg-clients (Ipc Msg)
-  (for Client (get Ipc 'ipc~clients)
-    #(prinl-info "send-msg-clients" (str Client))
+  (for Cli (get Ipc 'ipc~clients)
+    #(prinl-info "send-msg-clients" (str Cli))
     # Check for error
-    (send-msg Ipc (car Client) Msg)))
+    (send-msg Ipc (car Cli) Msg)))
 
 
 (de send-msg-conns (Ipc Msg)
@@ -109,7 +109,7 @@
     #(prinl-info "recv-msg" (pack "RECV " Len-Msg " " Len-Sexpr " " Sz-Bin))
 
     (when (and Len-Msg
-               (ipc~recv-bytes> Ipc Sock T (+ Len-Sexpr Sz-Bin) sock~MSG-WAITALL))
+               (ipc~recv-sock> Ipc Sock T (+ Len-Sexpr Sz-Bin) sock~MSG-WAITALL))
 
       (with Ipc
         (pack (struct (: ipc~buf-rd) (cons 'C Len-Sexpr)))))))
@@ -122,7 +122,7 @@
     #(prinl-info "recv-msg" (pack "RECV " Len-Msg " " Len-Sexpr " " Sz-Bin))
 
     (when (and Len-Msg
-               (ipc~recv-bytes> Ipc Sock T (+ Len-Sexpr Sz-Bin) sock~MSG-WAITALL))
+               (ipc~recv-sock> Ipc Sock T (+ Len-Sexpr Sz-Bin) sock~MSG-WAITALL))
 
       (with Ipc
         (cons (pack (struct (: ipc~buf-rd) (cons 'C Len-Sexpr)))
@@ -130,5 +130,5 @@
 
 
 (de recv-msg-len (Ipc Sock)
-  (when (ipc~recv-bytes> Ipc Sock T 12 sock~MSG-WAITALL)
+  (when (ipc~recv-sock> Ipc Sock T 12 sock~MSG-WAITALL)
     (struct (get Ipc 'ipc~buf-rd) '(I . 3))))

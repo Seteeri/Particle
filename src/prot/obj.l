@@ -1,7 +1,7 @@
 (de recv-obj (Ipc Sock Obj Sz-Obj)
   # In Model/Render: recv object on socket, and deserialize to obj or cpy ptr
 
-  (when (ipc~recv-bytes> Ipc Sock T Sz-Obj)
+  (when (ipc~recv-sock> Ipc Sock T Sz-Obj)
 
     (cpy-to-obj> Obj (get Ipc 'ipc~buf-rd)))
 
@@ -13,7 +13,7 @@
 
   (let Len (cpy-to-ptr> Obj (get Ipc 'ipc~buf-wr))
 
-    (ipc~send-bytes> Ipc
+    (ipc~send-sock> Ipc
                      Sock
                      T # buf-wr
                      Len)))

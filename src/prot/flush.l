@@ -45,7 +45,7 @@
 
 (de flush-sock (Ipc Sock)
 
-  (let? Sz-Rd (ipc~recv-bytes> Ipc Sock T T 0)
+  (let? Sz-Rd (ipc~recv-sock> Ipc Sock T T 0)
 
     (let D (struct (get Ipc 'ipc~buf-rd) (cons 'B Sz-Rd))      
       (if *que-end
@@ -77,7 +77,7 @@
                     Sz-Bin    (caddr P))
               (yield)))
         
-        (println Sz-Bin Len-Sexpr Len-Msg)        
+        #(println Sz-Bin Len-Sexpr Len-Msg)        
         
         # Wait for body
         (while (< *len-buf (+ Len-Sexpr Sz-Bin))

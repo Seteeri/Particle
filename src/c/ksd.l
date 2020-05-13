@@ -74,7 +74,7 @@
   0x01000100 to 0x0110ffff are reserved to represent Unicode
   characters in the range U+0100 to U+10FFFF.
  
-  While most newer Unicode-based X11 clients do already accept
+  While most newer Unicode-based X11 clients do already acpt
   Unicode-mapped keysyms in the range 0x01000100 to 0x0110ffff, it
   will remain necessary for clients -- in the interest of
   compatibility with existing servers -- to also understand the

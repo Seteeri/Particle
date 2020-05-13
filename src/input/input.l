@@ -36,7 +36,7 @@
 (de init-input ()
 
   (setq *ipc (new '(ipc~+IPC)
-                  *uds-in T handle-client accept-client)
+                  *uds-in T handle-client acpt-client)
         *input (new '(li~+Li)))
   (ipc~add-conn> *ipc (get *input 'li~fd-context) "LI" handle-fd-li))
 
@@ -58,11 +58,11 @@
     (if Msg
         (when (= Data "bye")
           (send-msg-conns *ipc "(bye)")
-          (ipc~disconn-sock Sock)
+          (ipc~disc-sock Sock)
           (end)
           (println "Input says bye!")
           (bye))
-        (disconn-client *ipc Sock))))
+        (disc-cli *ipc Sock))))
 
 
 (de handle-fd-li ()

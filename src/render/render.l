@@ -93,9 +93,9 @@ Class variables may be indicated by an upper case letter
   # Must update projmatrix also
 
   # Add interface/refactor IPC
-  (for Client (get *ipc 'ipc~clients)
-    (let (Sock (car Client)
-          ID (get (cdr Client) 1))
+  (for Cli (get *ipc 'ipc~clients)
+    (let (Sock (car Cli)
+          ID (get (cdr Cli) 1))
       (when (= ID "CTRL")
         (send-msg *ipc
                   Sock
@@ -111,9 +111,9 @@ Class variables may be indicated by an upper case letter
   (when (and (= Key glfw~KEY-ESCAPE)
              (= Action glfw~PRESS))
     # Send also to ctrl
-    (for Client (get *ipc 'ipc~clients)
-      (let (Sock (car Client)
-            ID (get (cdr Client) 1))
+    (for Cli (get *ipc 'ipc~clients)
+      (let (Sock (car Cli)
+            ID (get (cdr Cli) 1))
         (when (= ID "CTRL")
           (send-msg *ipc
                     Sock
@@ -173,7 +173,7 @@ Class variables may be indicated by an upper case letter
   #(init-comp)
   
   (setq *ipc (new '(ipc~+IPC)
-                    *uds-rend T recv-conn accept-client))  
+                    *uds-rend T recv-conn acpt-client))  
   
   T)  
 
@@ -245,7 +245,7 @@ Class variables may be indicated by an upper case letter
 (de recv-conn (Sock)
   (if (flush-sock *ipc Sock)
       (parse-msgs *ipc Sock proc-msg)
-      (disconn-client *ipc Sock)))
+      (disc-cli *ipc Sock)))
 
 (de main ()
   (bind-args)

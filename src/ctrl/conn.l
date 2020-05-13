@@ -17,7 +17,7 @@
     ("bye"
       # Send to all conns
       (send-msg-conns *ipc "(bye)")
-      (ipc~disconn-sock Sock)
+      (ipc~disc-sock Sock)
       (ipc~end> *ipc)
       (println "Ctrl says bye!")
       (bye))

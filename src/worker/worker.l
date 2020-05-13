@@ -90,7 +90,7 @@
                    (pack *path-gly "DejaVuSansMono.rgba8.idx.bin")
                    19.265625)
         *ipc (new '(ipc~+IPC)
-                   (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client accept-client
+                   (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block handle-client acpt-client
                    (list (list *uds-ctrl T handle-ctrl   "CONTROL")
                          (list *uds-rend T handle-render "RENDER"))))
                          
@@ -99,7 +99,7 @@
   ##################################
   
   (setq *projview (req-recv-pv *ipc
-                               (ipc~get-fd> *ipc "CONTROL")
+                               (ipc~fd> *ipc "CONTROL")
                                NIL
                                0))
                                
@@ -128,7 +128,7 @@
   
   (gen-def-parts)
   
-  (send-msg *ipc (ipc~get-fd> *ipc "CONTROL") "(rdy)")
+  (send-msg *ipc (ipc~fd> *ipc "CONTROL") "(rdy)")
   
   (prinl-info "init-worker" "Starting epoll...")
     
@@ -315,7 +315,7 @@
             ("bye"
               # Send bye to ctrl which will send to all workers/render/model
               (send-msg *ipc Sock "(bye)")
-              (ipc~disconn-sock Sock)
+              (ipc~disc-sock Sock)
               (ipc~end> *ipc)
               (println "Worker says bye!")
               (bye)))
@@ -338,7 +338,7 @@
       (disconn-conn *ipc Sock))))
 
 
-(de send-msg-rend (M) (send-msg *ipc (ipc~get-fd> *ipc "RENDER") M))
+(de send-msg-rend (M) (send-msg *ipc (ipc~fd> *ipc "RENDER") M))
 
 
 (de dispatch-kb (Data)
@@ -361,7 +361,7 @@
           (del State-Xkb (:: states)))
         (push (:: states) (cons Ks State))))
 
-    # Check bindings and dispatch handlers
+    # Check bindings and dispatch hnds
 
     # num and caps
     #if (xkb_state_led_name_is_active(state, XKB_LED_NAME_NUM) > 0)

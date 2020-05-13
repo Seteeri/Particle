@@ -1,12 +1,12 @@
 #{
   Poss replace entire class with nng
 
-  Pass in/out + err handler functions:
+  Pass in/out + err hnd functions:
 
   For dispatch, poss store function pointer in struct event data or pointer to
   custom struct
 
-  Handle bad accept sock
+  Handle bad acpt sock
 }#
 
 (symbols 'ipc 'pico)
@@ -27,7 +27,7 @@
 (class +IPC)
 
 
-(dm T (Path-Listener Nonblock-Listener Handler-Listener Handler-Accept
+(dm T (Path-Lstr Nonb-Lstr Hnd-Lstr Hnd-Acpt
        Conns)
 
   # Ideally, cnt = number of connections to avoid excessive epoll-wait calls
@@ -42,51 +42,25 @@
 
   # REFACTOR/TODO:
   # * Integrate server sockets into single list for FD/ID lookup
-  # * Maintain list of connections for each server so listener : clients
+  # * Maintain list of connections for each server so lstr : clients
   #   so poss to do send all clients
-  #   * Create listener class: id path block handler clients
+  #   * Create lstr class: id path block hnd clients
   # * Maintain list of initiated connections
   # * Create method for loop - returns conns/conns-id
   
-  (=: listener)
-  (=: handler-listener Handler-Listener)
-  (=: handler-accept Handler-Accept)
+  (=: lstr)
+  (=: hnd-lstr Hnd-Lstr)
+  (=: hnd-acpt Hnd-Acpt)
   (=: clients)
-  (when Path-Listener
-    (init-listener> This @ Nonblock-Listener))
+  (when Path-Lstr
+    (init-lstr> This @ Nonb-Lstr))
     
   (=: conns)
   (=: conns-id)
   
-  (init-conns> This Conns))
+  (add-conns> This Conns))
+
   
-
-(dm init-listener> (Path Nonblock)
-
-  (=: listener (sock~listen Path
-                            Nonblock
-                            16))
-  (epoll~ctl> (: ep)
-              epoll~ADD
-              (: listener)
-              epoll~BAD))
-
-
-(dm init-conns> (Conns)
-
-  (for Conn Conns
-
-    # Pass retry value to conn
-    (let ((Path Nonblock Handler ID-S) Conn
-          Sock                         (sock~connect-sock Path Nonblock *ms-retry))
-
-      (when Sock
-                              
-        (add-conn> This Sock ID-S Handler)
-
-        (prinl-info "init-conns>" (pack "Sock=" Sock " connected to " Path))))))
-
-
 (dm end> ()
 
   (native "@" "free" NIL (: buf-rd))
@@ -94,16 +68,42 @@
 
   (epoll~end> (: ep))
   
-  (when (: listener)   (sock~end (: listener)))
-  (for Client (: clients)
-    (sock~end (car Client)))
+  (when (: lstr) (sock~end (: lstr)))
+  
+  (for Cli (: clients)
+    (sock~end (car Cli)))
 
-  (when (: conns)
-    (for Conn (: conns)
-      (sock~end (car Conn)))))
+  (for Conn (: conns)
+    (sock~end (car Conn))))
+    
 
 
-(dm add-conn> (Sock ID-S Handler Flags)
+(dm init-lstr> (Path Nonb)
+
+  (=: lstr (sock~listen Path
+                        Nonb
+                        16))
+  (epoll~ctl> (: ep)
+              epoll~ADD
+              (: lstr)
+              epoll~BAD))
+
+
+(dm add-conns> (Conns)
+
+  (for Conn Conns
+
+    # Pass retry value to conn
+    (let ((Path Nonb Hnd ID-S) Conn)
+
+      (when (sock~connect-sock Path Nonb *ms-retry)
+                              
+        (add-conn> This @ ID-S Hnd)
+
+        (prinl-info "add-conns>" (pack "Sock=" @ " connected to " Path))))))
+
+
+(dm add-conn> (Sock ID-S Hnd Flags)
 
   (epoll~ctl> (: ep)
               epoll~ADD
@@ -111,18 +111,15 @@
               epoll~BAD)
   
   # Push into same list?
-  (push1 (:: conns)    (cons Sock (list ID-S Handler)))
-  (push1 (:: conns-id) (cons ID-S (list Sock Handler))))
+  (push1 (:: conns)    (cons Sock (list ID-S Hnd)))
+  (push1 (:: conns-id) (cons ID-S Sock)))
 
 
-(de disconn-sock (Sock)
-  (sock~end Sock))
+(de disc-sock (Sock) (sock~end Sock))
+(dm acpt-sock> (Sock) ((: hnd-acpt) This Sock (sock~acpt Sock 'block)))
 
 
-(dm accept-sock> (Sock) ((: handler-accept) This Sock (sock~accept Sock 'block)))
-
-
-(dm send-bytes> (Sock Buf Sz Flags)
+(dm send-sock> (Sock Buf Sz Flags)
   #{
   * With blocking sockets, will block until space available (all data is buffered)
   * If msg too long, send will fail and no data will be buffered
@@ -137,15 +134,13 @@
     (T  @))) # Poss != Sz
 
 
-(dm recv-bytes> (Sock Buf Sz Flags)
+(dm recv-sock> (Sock Buf Sz Flags)
   #{
   * This is designed for blocking sockets...
   * If no-data and blocking     -> recv will block
   * If no-data and non-blocking -> recv will return -1 and set errno to EAGAIN or EWOULDBLOCK
   * EOF will return 0 on shutdown
   * ERR/HUP will return 0 also
-  
-  * Return num or NIL
   }#
 
   (case (sock~recv Sock
@@ -157,16 +152,13 @@
     (T  @)))
 
 
-(dm dispatch-handler-conn> (Sock)
-
-  (let (Value   (cdr (assoc Sock (: conns)))
-        Handler (get Value 2))
-
-    (Handler Sock)))
+(dm call-hnd-conn> (Sock)
+  (let Val (cdr (assoc Sock (: conns)))
+    ((cadr Val) Sock)))
 
     
-(dm get-fd> (ID-S)
-  (car (cdr (assoc ID-S (: conns-id)))))
+(dm fd> (ID-S)
+  (cdr (assoc ID-S (: conns-id))))
   
   
 (dm poll> (To)
@@ -182,8 +174,8 @@
 
     (for Fd (epoll~get-events> (: ep) Cnt)
 
-      (if (= Fd (: listener))
-          (accept-sock> This Fd)
-          (dispatch-handler-conn> This Fd)))
+      (if (= Fd (: lstr))
+          (acpt-sock> This Fd)
+          (call-hnd-conn> This Fd)))
 
     Cnt))

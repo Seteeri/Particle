@@ -59,7 +59,7 @@
   #(view (getl *projview))
   
   (setq *ipc (new '(ipc~+IPC)
-                  *uds-ctrl             T handle-worker accept-client
+                  *uds-ctrl             T handle-worker acpt-client
                   (list (list *uds-in   T handle-input  "INPUT")
                         (list *uds-rend T handle-render "RENDER"))))
 
@@ -83,7 +83,7 @@
 (de handle-worker (Sock)
   (if (flush-sock *ipc Sock)
       (parse-msgs *ipc Sock proc-msg)
-      (disconn-client *ipc Sock)))
+      (disc-cli *ipc Sock)))
     
 
 (de handle-render (Sock)
@@ -109,7 +109,7 @@
           ("bye"
             # Send to all conns
             (send-msg-conns *ipc "(bye)")
-            (ipc~disconn-sock Sock)
+            (ipc~disc-sock Sock)
             (ipc~end> *ipc)
             (println "Ctrl says bye!")
             (bye)))
@@ -133,7 +133,7 @@
           (cond ((= Name 'KEYBOARD-KEY)
                   (upd-xkb Data)))
           (dispatch-msg (format-msg-ev Data)))
-        (disconn-client *ipc Sock))))
+        (disc-cli *ipc Sock))))
 
 
 (de format-msg-ev (Data)
