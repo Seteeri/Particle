@@ -11,17 +11,10 @@ TODO
   
   * 10 MAY - WED
     * Split: create lines
-    * Named pipe + rd/pr
-    * a s d m for arithmetic
     * Soft wrap list
     * Cache last item for lines/lists
     * Implement cmds Q/E : start/end of line/list  
     * Play around with eval more to build structures
-      * Use double shift to convert str -> sym
-        * Mod+Tab awkward
-        * Shift+Space useful
-        * Shift+Alt poss
-        * Tab enters tab char...
     * Pointer
       * 2 mode indicators: CAR/PAIR    STR/SYM/NUM  + Ptr #
         * Icons:           <dir/arrow> ""/T/0         1-Inf
@@ -41,10 +34,12 @@ TODO
         * Think, insert has an indicator and Caps Lock does not
           * Which one tends to have more user mode errors? -> Caps Lock
     * Sym prop output
-      * Push to *properties
-      * Push to ptr
+      * Output normally
+      * Only upd objs in view
     * Color dot differently for Y pair...
-    
+    * a s d m for arithmetic
+    * Named pipe + rd/pr
+        
   * 11 MAY - TUES
     * Fix eval output - need refactor layout
     * Print system out
@@ -150,6 +145,7 @@ TODO
       
   * Pointer System
     * Use master pointer to select main pointer
+      * Or eval cmd to mov itself around
     * Master ptr has dedicated binds/cmds
       * Ctrl+WASD: Mstr
       * Alt+WASD: Main
