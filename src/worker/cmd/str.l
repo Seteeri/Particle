@@ -34,7 +34,7 @@
 
   (prinl-info "cmd-format")
 
-  (make-str (format (get *0 'b 'c 'a 'data)) 'x))
+  (make-str (format (get ↓0 'b 'c 'a 'data)) 'x))
 
 #####################
 
@@ -47,7 +47,7 @@
   # Pack from Ptr until invalid
   # Pack line then replace it
 
-  (let Ref (get *0 'b)
+  (let Ref (get ↓0 'b)
   
     (when (isa '(+Nil) Ref)
       (setq Ref (get Ref 'c)))
@@ -61,14 +61,14 @@
         (println 'cmd-pack Sta (get Sta 'data) "TO" End (get End 'data))
 
         (repl-list-str Sta End Data)
-        (lay-part-start *0 *line 'skip-cdr)))))
+        (lay-part-start ↓0 *line 'skip-cdr)))))
 
         
 (de cmd-chop (Ks)
 
   (prinl-info "cmd-chop")
 
-  (let Ref (get *0 'b)
+  (let Ref (get ↓0 'b)
   
     (when (isa '(+Nil) Ref)
       (setq Ref (get Ref 'c)))
@@ -81,7 +81,7 @@
             List (chop (get Ref 'a 'data)))
   
         (repl-str-list Ref List)
-        (lay-part-start *0 *line 'skip-cdr)))))
+        (lay-part-start ↓0 *line 'skip-cdr)))))
   
 
 #######
@@ -91,7 +91,7 @@
 
   (prinl-info "cmd-glue-sp-syms")
   
-  (let Ref (get *0 'b)
+  (let Ref (get ↓0 'b)
   
     (when (isa '(+Nil) Ref)
       (setq Ref (get Ref 'c)))
@@ -105,7 +105,7 @@
         (println 'cmd-glue-sp Sta (get Sta 'data) "TO" End (get End 'data))
             
         (repl-list-str Sta End Data)
-        (lay-part-start *0 *line 'skip-cdr)))))
+        (lay-part-start ↓0 *line 'skip-cdr)))))
     
     
 (de cmd-split-sp (Ks)
@@ -114,7 +114,7 @@
   
   # Split current Ref by space
   
-  (let Ref (get *0 'b)
+  (let Ref (get ↓0 'b)
   
     (when (isa '(+Nil) Ref)
       (setq Ref (get Ref 'c)))
@@ -126,14 +126,14 @@
             List (mapcar pack (split (chop (get Ref 'a 'data)) " ")))
 
         (repl-str-list Ref List)
-        (lay-part-start *0 *line 'skip-cdr)))))
+        (lay-part-start ↓0 *line 'skip-cdr)))))
         
         
 (de cmd-intern (Ks)
   # Convert string to symbol
   # Build char until space
   
-  (let Ref (get *0 'b)
+  (let Ref (get ↓0 'b)
   
     (when (isa '(+Nil) Ref)
       (setq Ref (get Ref 'c)))
@@ -147,4 +147,4 @@
         (println 'cmd-intern Sta (get Sta 'data) "TO" End (get End 'data))
                 
         (repl-list-str Sta End Data)
-        (lay-part-start *0 *line 'skip-cdr)))))
+        (lay-part-start ↓0 *line 'skip-cdr)))))

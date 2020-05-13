@@ -198,21 +198,21 @@
     ##################
     # TODO: Draw *ptrs
     
-    (idx '*particles (def '*0 (gen-sym-pair '*0 'x)) T)
+    (idx '*particles (def '↓0 (gen-sym-pair '↓0 'x)) T)
 
     # Remove NIL
-    (del> (get *0 'b) T T)
+    (del> (get ↓0 'b) T T)
     # Replace with main 'b = NIL
     (set-ptr (get *start 'b))
     # Set layout
-    (put *0 'lay 'y)
+    (put ↓0 'lay 'y)
     
     (mov-cur-abv (get *start 'b))
-    (lay-part-start *0 *line 'skip-cdr)
+    (lay-part-start ↓0 *line 'skip-cdr)
         
     # Skip cdr since ptr should be rel to cdr
-    #(lay-part-start *0 *cur 'skip-cdr)
-    #(mov-part-abv> *0 (get *start 'b) (cons T))
+    #(lay-part-start ↓0 *cur 'skip-cdr)
+    #(mov-part-abv> ↓0 (get *start 'b) (cons T))
     
     ######
     # TEMP
@@ -415,7 +415,7 @@
 (def '*rot-z 0.0)
 (de test-rot-p0 ()
 
-  (let? Part (get *0 'a)
+  (let? Part (get ↓0 'a)
     
     (with Part
     

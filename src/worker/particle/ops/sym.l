@@ -1,6 +1,6 @@
 (de make-str (Data Lay)
 
-  (let (Ref (get *0 'b)
+  (let (Ref (get ↓0 'b)
         Part (if *on-car
                 # If NIL is end/start-of-list
                 (if (and (isa '(+Nil) Ref)
@@ -12,7 +12,7 @@
                     (ins-car Data Lay)
                     (ins-cdr Data Lay))))
 
-    (lay-part-start *0 *line 'skip-cdr)
+    (lay-part-start ↓0 *line 'skip-cdr)
     
     Part))
 
@@ -21,7 +21,7 @@
 
   (println 'repl-nil)
   
-  (let Part (if (= (get *0 'b 'c 'a) Ref)
+  (let Part (if (= (get ↓0 'b 'c 'a) Ref)
                 (ins-car Data Lay)
                 (ins-cdr Data Lay))
     
@@ -59,7 +59,7 @@
 
   (println 'repl-str)
   
-  (let (Ref (get *0 'b)
+  (let (Ref (get ↓0 'b)
         Pair (get Ref 'c)
         C (get Pair 'c)
         Part (gen-part Data Lay))
@@ -121,7 +121,7 @@
   
   (println 'ins-str)
   
-  (let (Ref (get *0 'b)
+  (let (Ref (get ↓0 'b)
         Pair (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T))
 
@@ -185,7 +185,7 @@
     
   (println 'ins-car)
     
-  (let (Ref (get *0 'b)
+  (let (Ref (get ↓0 'b)
         Pair (get Ref 'c)
         Part (gen-part (list Data) Lay NIL T)
         Is-Ref-Pair-of-Pair (and (isa '(+Pair) (get Ref 'a))

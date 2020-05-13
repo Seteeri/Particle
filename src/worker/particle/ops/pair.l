@@ -314,19 +314,19 @@
     Delete previous
 
     
-              *0
+              ↓0
     [ ]  [ ]  NIL
     a    b
 
     #############
     
-        *0
+        ↓0
     [ ]  [ ]  NIL
     a    b
 
     #############
     
-    *0
+    ↓0
     [ ]  [ ]  NIL
     a    b    
 
@@ -335,7 +335,7 @@
     [ ]  [ ]  NIL
     a    b        
 
-    *0
+    ↓0
     [ ]  [ ]  NIL
         c        
 
@@ -348,7 +348,7 @@
     [ ]  [ ]  NIL
         NIL        
         
-    *0     
+    ↓0     
     NIL
     
   }#
@@ -410,7 +410,7 @@
       # How about for on-car?
       (set-ptr New-Ref)
       (mov-cur-abv New-Ref)
-      (lay-part-start *0 *line 'skip-cdr)
+      (lay-part-start ↓0 *line 'skip-cdr)
           
       T)))      
     
