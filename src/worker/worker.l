@@ -212,7 +212,7 @@
 
     (set-ptr *car (get *start 'b))
     (put *car 'lay 'y)
-    (adj-cur 3.0 -5.0)
+    (adj-cur -5.0 3.0)
     (lay-ptr *car)    
     
     ######
