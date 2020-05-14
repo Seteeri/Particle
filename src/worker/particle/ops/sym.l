@@ -76,7 +76,7 @@
     (del> Ref T T)
     
     (upd-tree)
-    (mov-*1 *line)
+    (mov-⇲ *line)
 
     # Mov to cdr car
     (set-ptr *cdr (sub> (get Pair 'b)))
@@ -135,7 +135,7 @@
           (put-line Ref Part)))
     
     (upd-tree)
-    (mov-*1 *line)
+    (mov-⇲ *line)
         
     (mov-cur-abv Ref)
     
@@ -207,7 +207,7 @@
       (put *line 'line 'n Ref))
         
     (upd-tree)
-    (mov-*1 *line)
+    (mov-⇲ *line)
 
     (if Is-Ref-Pair-of-Pair
         (prog
@@ -249,7 +249,7 @@
     # Later, move this group to undo/cmd list
     (unless Skip-Upd
       (upd-tree)
-      (mov-*1 *line)        
+      (mov-⇲ *line)        
       
       # Put Ptr above new part
       (mov-cur-abv (get Part 'b)))))
@@ -295,7 +295,7 @@
     
     (unless Skip-Upd
       (upd-tree)
-      (mov-*1 *line)        
+      (mov-⇲ *line)        
               
       # Put Ptr above new part
       (mov-cur-abv End))))

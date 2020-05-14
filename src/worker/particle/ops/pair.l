@@ -74,7 +74,7 @@
                             Part NIL Part)))
     
     (upd-tree)
-    (mov-*1 *line)
+    (mov-⇲ *line)
     
     # Maintain on inner tree or outer?
     (setq *line Cc)
@@ -161,7 +161,7 @@
       (=: line (new '(+Line))))
         
     (upd-tree)
-    (mov-*1 *line)
+    (mov-⇲ *line)
     
     # Maintain on inner tree or outer?
     (setq *line Part)
@@ -296,7 +296,7 @@
       (prinl) (prinl))
         
     (upd-tree)
-    (mov-*1 *line)
+    (mov-⇲ *line)
     
     (setq *line (get Part 'a))
     (set-ptr *cdr (get Part 'a))
@@ -404,7 +404,7 @@
       (del> Tgt T T)
       
       (upd-tree)
-      (mov-*1 *line)      
+      (mov-⇲ *line)      
       
       # Ptr remains on Ref
       # How about for on-car?

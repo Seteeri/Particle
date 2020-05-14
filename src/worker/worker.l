@@ -216,15 +216,15 @@
     ######
     # TEMP
     
-    # *1 -> ⇲
-    (def '⇲ (gen-sym-pair '⇲ 'y NIL T))
+    # ⇲ -> ⇲
+    (def '⇲ (gen-sym-pair '⇲ 'y NIL T "⇲" *sol-yellow))
 
     #########
     
     (let L NIL
       (for X '(*car
                *cdr
-               *1
+               ⇲
                *start
                *log
                *bind-ops-p)

@@ -116,4 +116,4 @@
     (println 'l (get *line 'line 'l) (get *line 'line 'l 'data))
 
     (upd-tree)
-    (mov-*1 *line)))
+    (mov-⇲ *line)))

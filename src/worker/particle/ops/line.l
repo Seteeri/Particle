@@ -27,7 +27,7 @@
   (put *line 'line 'n Ref)    
   
   (upd-tree)
-  (mov-*1 Ref)
+  (mov-⇲ Ref)
   
   (setq *line Ref)
   (mov-cur-abv Ref)
@@ -110,7 +110,7 @@
         (put Ref 'line)
 
         (upd-tree)
-        (mov-*1 *line)      
+        (mov-⇲ *line)      
         
         # Ptr remains on Ref
         # How about for on-car?
