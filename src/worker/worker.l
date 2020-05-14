@@ -373,10 +373,8 @@
       (let (Mods (build-xkb-mods Ks)
             Cmd (cdr (lup *binds Mods)))
         (when Cmd
-          (let (Rep (car Cmd)
-                Fn (cadr Cmd))
-            (unless (and (= State KEY-REPEAT) (not Rep))
-              (Fn Ks))))))))
+          (let Fn (car Cmd)
+            (Fn Ks (= State KEY-REPEAT))))))))
 
 
 (de build-xkb-mods (Ks)
