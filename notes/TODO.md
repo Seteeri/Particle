@@ -10,7 +10,7 @@ TODO
   * Create list, enter strings, convert some to symbols, eval
   
   * 14 MAY - THURS
-    * Gen-part
+    * Gen-part [Done]
       * Auto set pairs to y layout
       * Note: gen is recursive - make iterative
     * Registers

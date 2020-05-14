@@ -370,14 +370,14 @@
 
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
-      (let (Mods (build-xkb-mods Ks)
+      (let (Mods (make-xkb-mods Ks)
             Cmd (cdr (lup *binds Mods)))
         (when Cmd
           (let Fn (car Cmd)
             (Fn Ks (= State KEY-REPEAT))))))))
 
 
-(de build-xkb-mods (Ks)
+(de make-xkb-mods (Ks)
   (make
     (with *xkb
       (when (= (is-shift-active> *xkb) 1)
