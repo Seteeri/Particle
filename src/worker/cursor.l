@@ -45,11 +45,11 @@
                        (*/ (+ (meta '(+Vertex) 'adv-vert) (meta '(+Vertex) 'adv-vert)) Cnt 1.0)))))
 
 
-(de set-cur-x (X)
+(de mov-cur-x (X)
   (setq *cur (place 1 *cur X)))
 
 
-(de set-cur-y (Y)
+(de mov-cur-y (Y)
   (setq *cur (place 2 *cur Y)))
 
   

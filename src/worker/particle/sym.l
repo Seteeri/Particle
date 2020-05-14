@@ -58,7 +58,7 @@
   (setq *cur (: ori))
     
   # Use X dims
-  (set-cur-x (get (: ori) 1))
+  (mov-cur-x (get (: ori) 1))
   (adj-cur-x 2.0))
 
 

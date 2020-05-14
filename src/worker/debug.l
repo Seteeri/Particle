@@ -2,9 +2,9 @@
   # Move to bnds of current line
   (let (Ori (get Line 'ori)
         Dims (get Line 'line 'dims))
-    (set-cur-x (+ (car Ori)
+    (mov-cur-x (+ (car Ori)
                   (car Dims)))
-    (set-cur-y (- (cadr Ori)
+    (mov-cur-y (- (cadr Ori)
                   (cadr Dims)))
     (adj-cur-y)
     (prinl "Cur: " "(" (format (get *cur 1) *Scl)

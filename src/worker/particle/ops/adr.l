@@ -112,7 +112,7 @@
         Pa-Ar (unless (or (= Ptr-Ar 4380504)
                           (= Ptr-Ar 4380648))
                 # Move below, align left of cons
-                (adj-cur-y) (set-cur-x X)    
+                (adj-cur-y) (mov-cur-x X)    
                 (gen-cell (cond ((= Type-Ar 'sym) (- Ptr-Ar 8))
                                 ((= Type-Ar 'big) (- Ptr-Ar 4))
                                 (T Ptr-Ar))
@@ -124,7 +124,7 @@
                           (= Ptr-Dr (+ Ptr 8)))
                  # If cursor short then must adv
                  (when (<= (get *pos-cursor 1) X-Cdr)
-                   (set-cur-x X-Cdr))
+                   (mov-cur-x X-Cdr))
                  (adj-cur-x)
                  (set-ptr-y Y)
                  (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
@@ -166,7 +166,7 @@
                           (= Ptr-Dr 4380648))
                  # If cursor short then must adv
                  (when (<= (get *pos-cursor 1) X-Cdr)
-                   (set-cur-x X-Cdr))
+                   (mov-cur-x X-Cdr))
                  (adj-cur-x)
                  (set-ptr-y Y)
                  (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))
@@ -209,7 +209,7 @@
         Pa-Ar (unless (or (= Ptr-Ar 4380504)
                           (= Ptr-Ar 4380648))
                 # Move below, align left of cons
-                (adj-cur-y) (set-cur-x X)
+                (adj-cur-y) (mov-cur-x X)
                 (gen-cell (cond ((= Type-Ar 'sym) (- Ptr-Ar 8))
                                 ((= Type-Ar 'big) (- Ptr-Ar 4))
                                 (T Ptr-Ar))
@@ -220,7 +220,7 @@
                           (= Ptr-Dr 4380648))
                  # If cursor short then must adv
                  (when (<= (get *pos-cursor 1) X-Cdr)
-                   (set-cur-x X-Cdr))
+                   (mov-cur-x X-Cdr))
                  (adj-cur-x)
                  (set-ptr-y Y)
                  (gen-cell (cond ((= Type-Dr 'sym) (- Ptr-Dr 8))

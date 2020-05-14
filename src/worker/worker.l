@@ -173,7 +173,7 @@
     #(put *log 'line (new '(+Line) NIL (get *log 'b)))
     #(put *log 'b 'line (new '(+Line) *log NIL *log))
     
-    (set-cur-x X) (set-cur-y Y)
+    (mov-cur-x X) (mov-cur-y Y)
     (adj-cur-x 24.0)
     (lay-part-start *log *log)
         
@@ -190,7 +190,7 @@
           *line (get *start 'b)
           *master *start)
     
-    (set-cur-x X) (set-cur-y Y)
+    (mov-cur-x X) (mov-cur-y Y)
     (adj-cur-x 48.0)    
     # Force draw for first particle since ori=cur
     (mov-verts> *start *cur)
@@ -240,7 +240,7 @@
       (let Part (gen-part *binds-ops
                           'y)
                           
-        (set-cur-x X)
+        (mov-cur-x X)
         
         # Must calc bnds for lists
         (lay-part-start Part Part)))
@@ -248,17 +248,17 @@
     (when NIL
     
       (adj-cur-y)
-      (set-cur-x X)
+      (mov-cur-x X)
       (let Part (gen-part '*binds 'y)
         
         (adj-cur-y 2.0)
-        (set-cur-x X)
+        (mov-cur-x X)
         (lay-part-start Part *line)))
 
     (when NIL
     
       (adj-cur-y)
-      (set-cur-x X)
+      (mov-cur-x X)
       (let Part (gen-part '(("1" "Content"
                              ("1.1" "Content"
                               ("1.1.1" "Content")
@@ -268,7 +268,7 @@
                           'y)
         
         (adj-cur-y 2.0)
-        (set-cur-x X)
+        (mov-cur-x X)
         (lay-part-start Part *line)))))
 
 
