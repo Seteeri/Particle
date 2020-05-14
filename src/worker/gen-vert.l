@@ -103,18 +103,16 @@
 
 
 (de gen-vert-repr (Repr Col)
-  (let Verts ()
+  (make
     (for Ch Repr
       (case Ch
-        ("^J" (push 'Verts (gen-vert-glyph "\^" Col)
-                           (gen-vert-glyph "J"  Col Ch)))
-        ("^M" (push 'Verts (gen-vert-glyph "\^" Col)
-                           (gen-vert-glyph "M"  Col Ch)))
-        ("^I" (push 'Verts (gen-vert-glyph "\^" Col)
-                           (gen-vert-glyph "I"  Col Ch)))
-        (T    (push 'Verts (gen-vert-glyph Ch Col Ch)))))
-        
-    (flip Verts)))
+        ("^J" (link (gen-vert-glyph "\^" Col)
+                    (gen-vert-glyph "J"  Col Ch)))
+        ("^M" (link (gen-vert-glyph "\^" Col)
+                    (gen-vert-glyph "M"  Col Ch)))
+        ("^I" (link (gen-vert-glyph "\^" Col)
+                    (gen-vert-glyph "I"  Col Ch)))
+        (T    (link (gen-vert-glyph Ch Col Ch)))))))
 
   
 (de gen-vert-str (Str Col)
