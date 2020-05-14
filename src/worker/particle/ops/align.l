@@ -1,7 +1,5 @@
 # These are used with layout
 
-# Move one more folder up
-
 (de align-cur-to-line-y (Part)
 
   #{
@@ -16,15 +14,14 @@
   }#
 
   (let Ori-C (get Part 'line 'l 'ori)
-
-    ~(assert Ori-C)
         
     (when T
       (println 'align-cur-to-line-y 
                Part
-               'to 
-               (get Part 'line 'l)))
+               (get Part 'data)))
 
+    ~(assert Ori-C)               
+               
     #(mov-cur-y (- (get Ori-CA 2) (get Dims-CA 2)))               
                
     (mov-cur (get Ori-C 1) *bnds-y)
@@ -49,14 +46,14 @@
   }#
 
   (let Ori-C (get Part 'line 'l 'ori)
-
-    ~(assert Ori-C)  
   
     (when T
       (println 'align-cur-to-line-x 
                Part
                'to 
                (get Part 'line 'l)))
+    
+    ~(assert Ori-C) 
     
     (mov-cur (get Ori-C 1) *bnds-y)
     (adj-cur-y (+ 1.0 *sublist-space-y))))

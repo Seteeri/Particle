@@ -38,6 +38,7 @@
             "/src/worker/binds.l"       
             "/src/worker/ptr.l"            
             "/src/worker/gen.l"
+            "/src/worker/gen2.l"
             "/src/worker/cmd/pair.l"
             "/src/worker/cmd/str.l"
             "/src/worker/cmd/cam.l"
@@ -145,39 +146,31 @@
     # *particles itself is not drawn
     #
     # Won't need this with external syms  
+
   
     #######
     # Binds
   
-    (setq *bind-ops-p (gen-sym-pair '*binds-ops 'y))
+    (when T
     
-    #{
-    # Make all pairs Y and create lines
-    (let P *bind-ops-p
-      (while P
-        (when (isa '(+Pair) (get P 'a))
-          (lay> P 'y)
-          (put P 'line (new '(+Line)))
-          (put (get P 'a) 'line (new '(+Line))))))
-    }#
-    
-    (lay-part-start *bind-ops-p *bind-ops-p)  
+      (setq *bind-ops-p (gen2-sym-full '*binds-ops 'y))
       
-        
+      (lay-part-start *bind-ops-p *bind-ops-p))
+            
     #####
     # Log
-       
-    (setq *log (gen-sym-pair '*log 'y))
-        
-    # Must make lines
-    #(put *log 'lay 'y)    
-    #(put *log 'line (new '(+Line) NIL (get *log 'b)))
-    #(put *log 'b 'line (new '(+Line) *log NIL *log))
     
     (mov-cur X Y)
-    (adj-cur-x 24.0)
-    (lay-part-start *log *log)
-        
+    (adj-cur-x 24.0)    
+    
+    (when NIL
+    
+      (setq *log (gen-sym-pair '*log 'y))
+                
+      (mov-cur X Y)
+      (adj-cur-x 24.0)
+      (lay-part-start *log *log))
+                
     ########
     # *start
 
