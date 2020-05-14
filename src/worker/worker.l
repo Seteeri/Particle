@@ -198,7 +198,7 @@
     # TODO: Draw *ptrs
         
     (def '*cdr (gen-sym-pair '*cdr 'x NIL T "↓" *sol-yellow))
-    (def '*car (gen-sym-pair '*car 'x NIL T "↑" *sol-yellow))
+    (def '*car (gen-sym-pair '*car 'x NIL T "↑"))
     
     # 2191
     # ↑ ↓

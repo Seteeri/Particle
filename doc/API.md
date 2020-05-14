@@ -70,6 +70,9 @@ Input  ->    Ctrl
   * Process heap acts as cache to DB in RAM
 * Any drawable output is serialized to bytes and sent directly to Render
   * Vertex class is representation of OpenGL buffer struct
+* Any heavy numerical calculations are offloaded to shaders
+  * Model matrix calculations for each vertex is done in shaders
+  * Worker copies pos/rot/sca
 
 ## Render
 * Draws using OpenGL

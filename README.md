@@ -37,7 +37,7 @@ This idea is then further extended to create arbitrary representations for arbit
 
 # Goals
 
-* To get work done efficiently and effectively
+* To achieve goals and objectives, efficiently and effectively aka "getting work done"
 * To remember everything, an extension of the human brain (Evernote/Stepan Pachikov)
 * To structure a system in such a way that it can be described, explained, and understood as a whole (Oberon/Niklaus Wurth)
 * To ameliorate the following sentiments: (Qix/Brad Beer)

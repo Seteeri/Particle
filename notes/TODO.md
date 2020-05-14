@@ -9,18 +9,29 @@ TODO
   GOAL is build structures more fluidly
   * Create list, enter strings, convert some to symbols, eval
   
-  * 10 MAY - WED
-    * Set color for Y pair to *sol-base-01
+  * 14 MAY - THURS
     * Split: create lines
+      * Debug further
+    * Pass vecs to GLSL
+      * Use quats?
+      * Pass 48 bytes instead of 64
     * Cache last item for lines/lists
     * Refactor del
     * Implement cmds Q/E : start/end of line/list
     * Pointer
-      * Replace dot with arrow instead of name
-      * On mov to car, change input
-        * Create *fwd-in
-          * Or modify fn directly
-        * Get from *particles?
+      * When ptr points to another ptr, input changes...or fires impulse?
+        * So mov to car:
+          * Pt to car ptr
+          * Mov car ptr to cdr pos
+          * Hide cdr or make normal symbol - purple
+        * If user wants to use ptr as a marker, explicit cmd to create a ptr like *cdr-1
+        * What if incorporate traditional bar
+
+            *d
+          . . .
+          a | b c
+            *u
+          
       * 2 mode indicators: CAR/PAIR    STR/SYM/NUM  + Ptr #
         * Icons:           <dir/arrow> ""/T/0         1-Inf
       * Each combo is a diff symbol
@@ -38,7 +49,21 @@ TODO
     * Color dot differently for Y pair...
     * a s d m for arithmetic
     * Named pipe + rd/pr
-        
+    * Relayout should use multiple workers
+      * Scout pushes work into a queue
+        * On finish scan, become worker
+        * Batch nodes
+      * Ctrl distributes tasks to workers
+        * Workers send rdy msg to get work
+      * Workers update and send serialized data to Render
+      * Or go further, and use a timeout
+        * Start handling longer tasks
+          * Rotate process
+          * Or...
+            * Deploy task
+            * Set timeout to rotate
+            * Fork          
+  
   * 11 MAY - TUES
     * Fix eval output - need refactor layout
     * Print system out
@@ -48,11 +73,6 @@ TODO
           * Visualize process?
         * Sublist of original cmd
         * Two lines
-    * IPC/Prot
-      * Use co for msg flush    
-      * Refactor socket contingency handling
-        * When sock fails
-        * When must retry send or recv
   
     * Visual Hierarchy
       * Process -> Namespace -> Symbols...
@@ -74,22 +94,7 @@ TODO
     * https://github.com/astiopin/webgl_fonts
       * glyph hinting
       * subpixel antialiasing            
-  
-  * Relayout should use multiple workers [Tues]
-    * Scout pushes work into a queue
-      * On finish scan, become worker
-      * Batch nodes
-    * Ctrl distributes tasks to workers
-      * Workers send rdy msg to get work
-    * Workers update and send serialized data to Render
-    * Or go further, and use a timeout
-      * Start handling longer tasks
-        * Rotate process
-        * Or...
-          * Deploy task
-          * Set timeout to rotate
-          * Fork        
-  
+    
   ---
   
   Next week?
