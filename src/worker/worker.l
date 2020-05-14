@@ -122,8 +122,10 @@
     
   ##################################
     
-  (for I *verts-max (push '*vert-offs (vert-off-gl I)))
-  (setq *vert-offs (flip *vert-offs))  
+  (setq *vert-offs
+        (make
+          (for I *verts-max 
+            (link (vert-off-gl I)))))
   
   (gen-def-parts)
   
