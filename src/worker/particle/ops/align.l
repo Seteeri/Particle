@@ -25,10 +25,9 @@
                'to 
                (get Part 'line 'l)))
 
-    #(mov-cur-y (- (get Ori-CA 2) (get Dims-CA 2)))
-    
+    #(mov-cur-y (- (get Ori-CA 2) (get Dims-CA 2)))               
+               
     (mov-cur (get Ori-C 1) *bnds-y)
-    
     (adj-cur-y (+ 1.0 *sublist-space-y))))
 
 
@@ -59,5 +58,5 @@
                'to 
                (get Part 'line 'l)))
     
-    (mov-cur-x (get Ori-C 1) *bnds-y)
+    (mov-cur (get Ori-C 1) *bnds-y)
     (adj-cur-y (+ 1.0 *sublist-space-y))))

@@ -132,8 +132,8 @@
     
     # Don't bother since Cdr of Y always has newline
     # (if (= (get Part 'c 'lay) 'x)
-    (mov-cur-x *bnds-x) (adj-cur-x 2.0)
-    (mov-cur-y (get Part 'c 'ori 2))
+    (mov-cur *bnds-x (get Part 'c 'ori 2))
+    (adj-cur-x 2.0)
     
     #(println 'lay-pair-x "Mov cur x to *bnds-x: " (format (car *cur) *Scl))
     #(println 'lay-pair-x "Mov cur y to origin: " (format (cadr *cur) *Scl))
@@ -158,13 +158,13 @@
     (if (lay-x?> (get Part 'c))
         (prog
           # X should be in place, else get from cur bnds
-          (mov-cur-x *bnds-x) (adj-cur-x)
-          (mov-cur-y (get Part 'c 'ori 2)))
+          (mov-cur *bnds-x (get Part 'c 'ori 2))
+          (adj-cur-x))
 
         (prog
-          (mov-cur-x (get Part 'c 'ori 1))
           # Y should be in place, else get from cur bnds
-          (mov-cur-y *bnds-y) (adj-cur-y (+ 1.0 *sublist-space-y)))))
+          (mov-cur (get Part 'c 'ori 1) *bnds-y)
+          (adj-cur-y (+ 1.0 *sublist-space-y)))))
 
   #(println 'lay-pair-y Part (get Part 'data) Type)          
           
