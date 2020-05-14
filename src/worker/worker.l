@@ -361,12 +361,8 @@
         Name    (xkb~keysym-get-name Ks)
         Utf-8   (get-utf8> *xkb Keycode))
 
-    #(prinl-info "cmd-kb" (pack (str Data) " " Ks))
-
-    # Update states
     (upd-key> *xkb Keycode State)
 
-    # Note this returns the actual cell
     (with *xkb
       (let State-Xkb (assoc Ks (: states))
         (when State-Xkb
@@ -375,52 +371,42 @@
 
     # Check bindings and dispatch hnds
 
-    # num and caps
-    #if (xkb_state_led_name_is_active(state, XKB_LED_NAME_NUM) > 0)
-    #    <The Num Lock LED is active>
-
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
-
-      (let Mods ()
-
-        (with *xkb
-
-          (when (= (is-shift-active> *xkb) 1)
-            (when (= (cdr (assoc ksd~Shift-L (: states))) xkb~KEY-DOWN)
-              (push 'Mods ksd~Shift-L))
-            (when (= (cdr (assoc ksd~Shift-R (: states))) xkb~KEY-DOWN)
-              (push 'Mods ksd~Shift-R)))
-
-          (when (= (is-ctrl-active> *xkb) 1)
-            (when (= (cdr (assoc ksd~Control-L (: states))) xkb~KEY-DOWN)
-              (push 'Mods ksd~Control-L))
-            (when (= (cdr (assoc ksd~Control-R (: states))) xkb~KEY-DOWN)
-              (push 'Mods ksd~Control-R)))
-
-          (when (= (is-alt-active> *xkb) 1)
-            (when (= (cdr (assoc ksd~Alt-L (: states))) xkb~KEY-DOWN)
-              (push 'Mods ksd~Alt-L))
-            (when (= (cdr (assoc ksd~Alt-R (: states))) xkb~KEY-DOWN)
-              (push 'Mods ksd~Alt-R)))
-
-          (when (= (is-logo-active> *xkb) 1)
-            (when (= (cdr (assoc ksd~Super-L (: states))) xkb~KEY-DOWN)
-              (push 'Mods ksd~Super-L))
-            (when (= (cdr (assoc ksd~Super-R (: states))) xkb~KEY-DOWN)
-              (push 'Mods ksd~Super-R))))
-
-        # TODO: Sort key times
-
-        (push 'Mods Ks)
-        (setq Mods (flip Mods))
-        
-        (let? V (cdr (lup *binds Mods))
-          (let (Rep (car V)
-                Fn (cadr V))
+      (let (Mods (build-xkb-mods Ks)
+            Cmd (cdr (lup *binds Mods)))
+        (when Cmd
+          (let (Rep (car Cmd)
+                Fn (cadr Cmd))
             (unless (and (= State KEY-REPEAT) (not Rep))
               (Fn Ks))))))))
 
+
+(de build-xkb-mods (Ks)
+  (make
+    (with *xkb
+      (when (= (is-shift-active> *xkb) 1)
+        (when (= (cdr (assoc ksd~Shift-L (: states))) xkb~KEY-DOWN)
+          (link ksd~Shift-L))
+        (when (= (cdr (assoc ksd~Shift-R (: states))) xkb~KEY-DOWN)
+          (link ksd~Shift-R)))
+      (when (= (is-ctrl-active> *xkb) 1)
+        (when (= (cdr (assoc ksd~Control-L (: states))) xkb~KEY-DOWN)
+          (link ksd~Control-L))
+        (when (= (cdr (assoc ksd~Control-R (: states))) xkb~KEY-DOWN)
+          (link ksd~Control-R)))
+      (when (= (is-alt-active> *xkb) 1)
+        (when (= (cdr (assoc ksd~Alt-L (: states))) xkb~KEY-DOWN)
+          (link ksd~Alt-L))
+        (when (= (cdr (assoc ksd~Alt-R (: states))) xkb~KEY-DOWN)
+          (link ksd~Alt-R)))
+      (when (= (is-logo-active> *xkb) 1)
+        (when (= (cdr (assoc ksd~Super-L (: states))) xkb~KEY-DOWN)
+          (link ksd~Super-L))
+        (when (= (cdr (assoc ksd~Super-R (: states))) xkb~KEY-DOWN)
+          (link ksd~Super-R))))
+    (link Ks)))       
+              
 
 (def 'PI2 (+ PI PI))
 (def '*rot-z 0.0)
