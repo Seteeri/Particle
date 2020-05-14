@@ -51,10 +51,13 @@
     Base-0 = X Pair
     Base-1 = Y Pair
     
+    Mark?
+    - Namespace symbol (or binary tree?)
+    
     Yellow = Ptr
-    Orange = NIL/T
-    Red = Namespace symbol (or binary tree?)
-    Magenta = Num
+    Orange = Num
+    Red = ?
+    Magenta = ?
     
     Violet = Int/Sym
     Blue = Str/Sym/Trans
@@ -65,9 +68,8 @@
   # Adjust brightness for time...or alpha?
 
   (cond ((== Any NIL)     (caddr *pair-col-def))
-        #((== Any T)       *sol-orange)
         ((lst? Any)       (car *pair-col-def))
-        ((num? Any)       *sol-magenta)
+        ((num? Any)       *sol-orange)
         ((box? Any)       *sol-green)
         ((str? Any)       *sol-blue)
         ((ext? Any)       *sol-cyan)
