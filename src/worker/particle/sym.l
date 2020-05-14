@@ -85,7 +85,7 @@
     (if *on-car
         (sub> (: b))
         (prog
-          (setq *on-car)
+          (set-on-car)
           (mov-cur-abv (: b))
           (: b)))))
 
@@ -94,14 +94,14 @@
   (if (: c)
       (sup> (: c))
       (prog
-        (setq *on-car)
+        (set-on-car)
         (mov-cur-abv This)
         This)))
 
 
 (dm sub> ()
-  (setq *on-car T
-        *cur (get (: a) 'ori))
+  (tog-car)
+  (setq *cur (get (: a) 'ori))
   (adj-cur-y)
   This)
   
@@ -134,13 +134,13 @@
 
 (dm sup> ()
   (when (: c)
-    (setq *on-car)
+    (set-on-car)
     (mov-cur-abv (: c))
     (: c)))
 
 
 (dm sub> ()
-  (on *on-car)
+  (set-on-car T)
   (if (: a)
       (mov-cur-ori (: a))
       (mov-cur-ori This))
@@ -209,7 +209,7 @@
       (if *on-car
           (sub> This)
           (prog
-            (setq *on-car)
+            (set-on-car)
             (mov-cur-abv This)
             This))))
 
@@ -217,18 +217,18 @@
 (dm sup> ()
   (if (= (get (: c) 'a) This)
       (prog
-        (setq *on-car)
+        (set-on-car)
         (mov-cur-abv (: c))
         (: c))
       (prog
-        (setq *on-car)
+        (set-on-car)
         (mov-cur-abv This)
         This)))
 
 
 (dm sub> ()
-  (setq *on-car T
-        *cur (: ori))
+  (tog-car)
+  (setq *cur (: ori))
   (adj-cur-y)
   This)
 

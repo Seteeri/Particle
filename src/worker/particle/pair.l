@@ -61,7 +61,7 @@
         #(let? Ln (get (: c) 'line)
         #  (println 'sup> "Mov ptr -> super-line/list" Ln (get Ln 'data))        
         #  (setq *line (: c)))
-        (off *on-car)       
+        (set-on-car)
         (mov-cur-abv (: c))
         (: c))
 

@@ -65,3 +65,25 @@
           (sub> P)
           (mov-cur-abv P))
       (point-ptr P))))
+       
+        
+(de set-on-car (F)
+  (if F
+      (prog
+        (on *on-car)
+        (col> *car *sol-yellow)
+        (col> (get *car 'a) *sol-yellow)
+        (setq *fwd-in *car)
+        (col> *cdr *sol-violet)
+        (col> (get *cdr 'a) *sol-violet))
+      (prog
+        (off *on-car)
+        (col> *car *sol-violet)
+        (col> (get *car 'a) *sol-violet)
+        (setq *fwd-in *cdr)
+        (col> *cdr *sol-yellow)
+        (col> (get *cdr 'a) *sol-yellow))))
+        
+        
+(de tog-car ()
+  (set-on-car (not *on-car)))

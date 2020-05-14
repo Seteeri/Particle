@@ -277,14 +277,17 @@
             (: pos)))))
 
 
-(dm col> (Col)
+(dm col> (Col P)
   (let ((R G B) Col)
     (for Vert (: verts)
       (put Vert 'rgba (list R G B 1.0
                             R G B 1.0
                             R G B 1.0
                             R G B 1.0))
-      (req-send *ipc Vert))))
+      (req-send *ipc Vert)))
+  (when P
+    (when (: a) (col> @ Col P))
+    (when (: b) (col> @ Col P))))
 
 
 (dm bnds> (Car-Skip Cdr-Skip)
