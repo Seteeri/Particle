@@ -290,15 +290,16 @@
     (when (: b) (col> @ Col P))))
 
 
-(dm bnds> (Car-Skip Cdr-Skip)
+# unused
+(dm bnds> (A B)
 
   (let ((Xa Ya) (when (and (: a) 
                            (not (= (: a) This))
-                           (not Car-Skip))
+                           (not A))
                   (bnds> (: a)))
         (Xb Yb) (when (and (: b)
                            (not (= (: b) This))
-                           (not Cdr-Skip))
+                           (not B))
                   (bnds> (: b)))
         (X Y) (with (last-vert> This)
                   (ori> (: met)
