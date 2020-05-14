@@ -91,7 +91,7 @@
         *ipc (new '(ipc~+IPC)
                    (pack "/tmp/part-work-" *i-proc ".sock") 'ipc~block serv-cli acpt-cli
                    (list (list *uds-ctrl T serv-ctrl   "CONTROL")
-                         (list *uds-rend T serv-render "RENDER"))))
+                         (list *uds-rend T serv-rend "RENDER"))))
                          
   (reg-conns *ipc (pack NAME-PID "-" *i-proc))
   
@@ -333,20 +333,20 @@
           
         (disconn-conn *ipc Sock))))
 
+        
+(de send-msg-rend (M) (send-msg *ipc (ipc~fd> *ipc "RENDER") M))        
 
-(de serv-render (Sock)
 
-  #(println 'serv-render)
+(de serv-rend (Sock)
+
+  #(println 'serv-rend)
 
   (let Msg (recv-msg *ipc Sock)
   
-    #(test-rot-p0)
+    (test-rot-p0)
   
     (unless Msg
       (disconn-conn *ipc Sock))))
-
-
-(de send-msg-rend (M) (send-msg *ipc (ipc~fd> *ipc "RENDER") M))
 
 
 (de dispatch-kb (Data)
