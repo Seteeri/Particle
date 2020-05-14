@@ -123,7 +123,7 @@
   
   (let (Ref (get *fwd-in 'b)
         Pair (get Ref 'c)
-        Part (gen-part (list Data) Lay NIL T))
+        Part (gen2-part (list Data) Lay (cons NIL T) T))
 
     (b@ Pair Part Ref)
     

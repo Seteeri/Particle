@@ -22,22 +22,24 @@
 (def '*gen2-list)
 (def '*gen2-out)
 
-(de gen2-part (Any)
+(de gen2-part (Any Lay Skips Nrl)
   # TODO: Handle circular lists...use another dot at the end
+  
+  # Skip is only for root
   
   (off *gen2-line
        *gen2-list
        *gen2-out)
 
   (if (pair Any)         
-      (gen2-pair Any)
+      (gen2-pair Any Skips Nrl)
       (setq *gen2-out 
             (gen2-atom Any)))
       
   *gen2-out)
   
 
-(de gen2-pair (Root)
+(de gen2-pair (Root Skips Nrl)
 
   # Iterative pre order traversal
 
@@ -72,11 +74,14 @@
         (cond ((or (and (pair (car (get P 'data)))
                         (= C 'a))
                    (not P)) # Root
-                (put N 'line
-                      (new '(+Line)))
+                (unless (and (not P)
+                             Nrl)
+                  (put N 'line
+                        (new '(+Line))))
                 (push '*gen2-list *gen2-line)
                 (setq *gen2-line N)
-                (println "Line Car/Root: " N Any (car *gen2-list)) (prinl))
+                #(println "Line Car/Root: " N Any (car *gen2-list)) (prinl)
+                )
                 
               ((and (pair (get P 'data))
                     (pair (car (get P 'data))))
@@ -87,17 +92,20 @@
                           (pop '*gen2-list)))
                 (put P 'line 'n N)
                 (setq *gen2-line N)
-                (println "Line Cdr: " N Any) (prinl)))
+                #(println "Line Cdr: " N Any) (prinl)
+                ))
           
                                 
         # Push right first
         (when (pair Any)
         
-          (let B (cdr Any)
-            (push 'In (list B 'b N)))
+          (unless (cdr Skip)
+            (let B (cdr Any)
+              (push 'In (list B 'b N))))
         
-          (let A (car Any)
-            (push 'In (list A 'a N))))))))
+          (unless (car Skip)
+            (let A (car Any)
+              (push 'In (list A 'a N)))))))))
             
             
 (de gen2-pair-xy (Any Lay)
@@ -155,6 +163,7 @@
                   'x))
     (put Part 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
     Part))
+    
     
 # Expand sym
 (de gen2-sym-full (Any Lay)
