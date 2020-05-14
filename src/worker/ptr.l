@@ -5,11 +5,10 @@
 # Easier to read...
 (de set-ptr (P B)
   (put P 'b B))
-
-
+  
+  
 (de point-ptr (Part)
   (set-ptr *fwd-in Part)
-  #(println 'point-ptr "Mov -> " Part (get Part 'data))
   (lay-ptr *fwd-in))
 
 

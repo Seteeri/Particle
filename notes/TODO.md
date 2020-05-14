@@ -10,42 +10,18 @@ TODO
   * Create list, enter strings, convert some to symbols, eval
   
   * 14 MAY - THURS
-    * Implement cmds Q/E : start/end of line/list  
-    * Refactor del
     * Gen-part
       * Auto set pairs to y layout
-      * Explicit fn or auto on gen
-    * Cache last item for lines/lists
-      * Do on modify      
-      * Refactor more
+      * Note: gen is recursive - make iterative
     * Registers
+      * CUT/COPY/PASTE
     * Pointer
       * Mov pointer to different list
         * Need cmd that we can type
       * Make Pointer class [later]
-      * When ptr points to another ptr, input changes...or fires impulse?
-        * So mov to car:
-          * Pt to car ptr
-          * Mov car ptr to cdr pos
-          * Hide cdr or make normal symbol - purple
-        * If user wants to use ptr as a marker, explicit cmd to create a ptr like *cdr-1
-        * What if incorporate traditional bar
-
-            *d
-          . . .
-          a | b c
-            *u
-          
-      * 2 mode indicators: CAR/PAIR    STR/SYM/NUM  + Ptr #
-        * Icons:           <dir/arrow> ""/T/0         1-Inf
-      * Each combo is a diff symbol
-      * Have dedicated viewports
-        * Med left pane is log
-        * Center pane is start
-        * Med right pane is properties
-        * Short bottom pane is pointer status bar
-      * Think, insert has an indicator and Caps Lock does not
-        * Which one tends to have more user mode errors? -> Caps Lock
+      * When ptr points to another ptr...input changes?
+        * If user wants to use ptr as a marker, 
+        explicit cmd to create a ptr like *cdr-1
     * Soft wrap list
       * Track pos
       * When limit reached, mov nl
@@ -66,7 +42,11 @@ TODO
             * Deploy task
             * Set timeout to rotate
             * Fork          
-  
+    * Implement cmds Q/E : start/end of line/list  
+    * Refactor del
+    * Cache last item for lines/lists
+      * Do on modify      
+      * Refactor more  
   
   * 11 MAY - TUES
   

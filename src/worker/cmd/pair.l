@@ -52,6 +52,11 @@
   
   # Eval Ref data directly
   
+  # Assumes output
+  
+  # If user wants no output,
+  # like ptr cmd, then another cmd
+  
   (let (Ref (get *fwd-in 'b)
         In (get Ref 'a 'data)
         Out (eval In))

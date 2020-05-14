@@ -1,4 +1,6 @@
-(de gen-part (Any Lay Car-Skip Cdr-Skip)
+(def '*gen-lay-y-pair)
+
+(de gen-part (Any Lay Skip-Car Skip-Cdr)
   # TODO: Handle circular lists...use another dot at the end
 
   (if (pair Any)
@@ -6,9 +8,9 @@
       (if (lst? (cdr Any))
       
           # Handle specific forms here
-          (gen-pair Any Lay Car-Skip Cdr-Skip)
+          (gen-pair Any Lay Skip-Car Skip-Cdr)
                  
-          (gen-pair Any Lay Car-Skip Cdr-Skip))
+          (gen-pair Any Lay Skip-Car Skip-Cdr))
       
       (gen-atom Any Lay)))
 
@@ -58,7 +60,7 @@
     Part))
     
         
-(de gen-sym-pair (Any Lay Car-Skip Cdr-Skip Char-Pair Col)
+(de gen-sym-pair (Any Lay Skip-Car Skip-Cdr Char-Pair Col)
 
   # Technically, name is a number cell
 
@@ -71,63 +73,61 @@
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
         (Verts-Car Wid-Car) (gen-vert-atom Name Col)
-        Part-Car (unless Car-Skip
+        Car (unless Skip-Car
                   # Num type but content is a string
                   (new '(+Num)
                        Name
                        NIL NIL
                        Verts-Car
                        Lay))
-        Part-Cdr (when (and (not Cdr-Skip)
+        Cdr (when (and (not Skip-Cdr)
                             (not (= Val Any)))
                   (gen-part Dr Lay))
         (Verts-Pair Wid-Pair) (gen-vert-pair Char-Pair Col (= Val Any))
-        Part-Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
+        Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any
-                       Part-Car Part-Cdr
+                       Car Cdr
                        Verts-Pair
                        Lay))
                        
       # Set dims
-      (put Part-Car 'dims (list Wid-Car (meta '(+Vertex) 'adv-vert-2)))
-      (put Part-Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
+      (put Car 'dims (list Wid-Car (meta '(+Vertex) 'adv-vert-2)))
+      (put Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
                         
       # If CAR/CDR, is a list, set C to pair
 
-      (unless Car-Skip 
-        (put Part-Car 'c Part-Pair))
+      (unless Skip-Car 
+        (put Car 'c Pair))
 
-      (when (and (not Cdr-Skip)
+      (when (and (not Skip-Cdr)
                  (not (= Val Any)))
-        (put Part-Cdr 'c Part-Pair))
+        (put Cdr 'c Pair))
               
-      Part-Pair))
+      Pair))
 
 
-(de gen-pair (Any Lay Car-Skip Cdr-Skip)
+(de gen-pair (Any Lay Skip-Car Skip-Cdr)
   #{
     Root is baseline of cons
     so for a list Root would be coordinates of first cons
   }#
 
-  # Check gen-vert-pair! Could return single list...
-
   (let (Ar (car Any)
         Dr (cdr Any)
-        Part-Car (unless Car-Skip (gen-part Ar Lay))
-        Part-Cdr (unless Cdr-Skip (gen-part Dr Lay))        
+        Car (unless Skip-Car (gen-part Ar Lay))
+        Cdr (unless Skip-Cdr (gen-part Dr Lay))        
         Col (if (= Lay 'x) (car *pair-col-def) (cadr *pair-col-def))
         (Verts-Pair Wid-Pair) (gen-vert-pair NIL Col)
-        Part-Pair (new '(+Pair)
+        Pair (new '(+Pair)
                         Any
-                        Part-Car Part-Cdr
+                        Car Cdr
                         Verts-Pair
                         Lay))
                         
-      (put Part-Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
-                        
+      (put Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
+                      
       # If CAR/CDR, is a list, set C to pair
-      (unless Car-Skip (put Part-Car 'c Part-Pair))
-      (unless Cdr-Skip (put Part-Cdr 'c Part-Pair))
+      (unless Skip-Car (put Car 'c Pair))
+      (unless Skip-Cdr (put Cdr 'c Pair))
               
-      Part-Pair))
+      Pair))
