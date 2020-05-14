@@ -48,3 +48,14 @@
   (mov> This)
   (upd-cur)
   This)
+
+
+(dm repr> (Lay)
+  (let ((Verts Wid) (gen-vert-atom Any (get-color-type Any))
+        Part (new '(+Num)
+                  Any
+                  NIL NIL
+                  Verts
+                  Lay))
+    (put Part 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
+    Part))

@@ -35,7 +35,6 @@
             "/src/worker/cursor.l"   
             "/src/worker/projview.l"
             "/src/worker/vertex.l"            
-            "/src/worker/gen-vert.l"
             "/src/worker/binds.l"       
             "/src/worker/ptr.l"            
             "/src/worker/gen.l"
