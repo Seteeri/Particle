@@ -24,14 +24,7 @@
 
 
 (class +Particle)
-(def '*part-col-def (list *sol-base-01 *sol-base-0))
-#{
-(with *Class
-  (=: col-def (list 0.5137255 0.5803922 0.60784316 1.0 
-                      0.5137255 0.5803922 0.60784316 1.0
-                      0.5137255 0.5803922 0.60784316 1.0 
-                      0.5137255 0.5803922 0.60784316 1.0)))
-}#
+
 (dm T (Data
        A
        B
@@ -86,8 +79,8 @@
   # TODO: '(+Ptr +Sym)
         
   (let Col (if (= L 'x)
-               (car *part-col-def)
-               (cadr *part-col-def))
+               (car *pair-col-def)
+               (cadr *pair-col-def))
     (col> This Col))
     
   (=: lay L))

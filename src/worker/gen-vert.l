@@ -32,6 +32,8 @@
 (def '*sol-red     (list (*/ 1.0 220.0 255.0) (*/ 1.0 50.0 255.0) (*/ 1.0 47.0  255.0)))
 (def '*sol-magenta (list (*/ 1.0 211.0 255.0) (*/ 1.0 54.0 255.0) (*/ 1.0 130.0 255.0)))
 
+# X / Y / NIL
+(def '*pair-col-def (list *sol-base-01 *sol-base-1 *sol-base-0))
 
 (de get-color-type (Any)
   #{
@@ -62,9 +64,9 @@
 
   # Adjust brightness for time...or alpha?
 
-  (cond ((or (== Any NIL)
-             (== Any T))  *sol-orange)
-        ((lst? Any)       (car *part-col-def))
+  (cond ((== Any NIL)     (caddr *pair-col-def))
+        #((== Any T)       *sol-orange)
+        ((lst? Any)       (car *pair-col-def))
         ((num? Any)       *sol-magenta)
         ((box? Any)       *sol-green)
         ((str? Any)       *sol-blue)
@@ -148,7 +150,7 @@
   # (char 187) (char 166)
   
   (unless Char (setq Char *char-dot))
-  (unless Col (setq Col (car *part-col-def)))
+  (unless Col (setq Col (car *pair-col-def)))
   
   (if Self
       (list (list (gen-vert-glyph Char Col) (gen-vert-glyph Char Col))
