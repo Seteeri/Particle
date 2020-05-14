@@ -120,11 +120,27 @@
       (setq Ref (get Ref 'c)))
   
     (when (isa '(+Str) (get Ref 'a))
-      
+
+      #{
+        : (split (chop "abc   def   ghi") " ")
+        -> (("a" "b" "c") NIL NIL ("d" "e" "f") NIL NIL ("g" "h" "i"))        
+        
+        : (mapcar pack (split (chop "abc   def   ghi") " "))
+        -> ("abc" NIL NIL "def" NIL NIL "ghi")
+        
+        NIL is the token itself - discard it
+        This means not directly reversible using glue " "
+        if mutiple tokens
+      }#    
+    
       (let (Sta (get Ref 'c)
             End (get Ref 'b)
-            List (mapcar pack (split (chop (get Ref 'a 'data)) " ")))
-
+            List (make
+                   (let L (split (chop (get Ref 'a 'data)) " ")
+                     (for S L
+                       (when S
+                         (link (pack S)))))))
+            
         (repl-str-list Ref List)
         (lay-ptr *cdr)))))
         
