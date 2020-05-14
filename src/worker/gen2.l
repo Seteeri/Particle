@@ -29,11 +29,10 @@
        *gen2-list
        *gen2-out)
 
-  (if (pair Any)
-                         
+  (if (pair Any)         
       (gen2-pair Any)
-      
-      (gen2-atom Any))
+      (setq *gen2-out 
+            (gen2-atom Any)))
       
   *gen2-out)
   
@@ -186,16 +185,16 @@
                        Car Cdr
                        Verts-Pair
                        Lay))
-                       
-      # Set dims
-      (put Car 'dims (list Wid-Car (meta '(+Vertex) 'adv-vert-2)))
-      (put Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
-                        
-      # If CAR/CDR, is a list, set C to pair
+                                              
+    # Set dims
+    (put Car 'dims (list Wid-Car (meta '(+Vertex) 'adv-vert-2)))
+    (put Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
+                      
+    # If CAR/CDR, is a list, set C to pair
 
-      (put Car 'c Pair)
+    (put Car 'c Pair)
 
-      (when (not (= Val Any))
-        (put Cdr 'c Pair))
-              
-      Pair))
+    (when (not (= Val Any))
+      (put Cdr 'c Pair))
+            
+    Pair))

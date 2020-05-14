@@ -151,7 +151,7 @@
     #######
     # Binds
   
-    (when T
+    (when NIL
     
       (setq *bind-ops-p (gen2-sym-full '*binds-ops 'y))
       
@@ -165,7 +165,7 @@
     
     (when NIL
     
-      (setq *log (gen-sym-pair '*log 'y))
+      (setq *log (gen2-sym-full '*log 'y))
                 
       (mov-cur X Y)
       (adj-cur-x 24.0)
@@ -174,7 +174,7 @@
     ########
     # *start
 
-    (setq *start (gen-sym-pair '*start 'x))
+    (setq *start (gen2-sym-full '*start 'x))
 
     # DO this properly - in gen?
     (with (get *start 'b)
@@ -193,8 +193,8 @@
     ##################
     # TODO: Draw *ptrs
         
-    (def '*cdr (gen-sym-pair '*cdr 'x NIL T "↓" *sol-yellow))
-    (def '*car (gen-sym-pair '*car 'x NIL T "↑"))
+    (def '*cdr (gen2-sym-full '*cdr 'x NIL T "↓" *sol-yellow))
+    (def '*car (gen2-sym-full '*car 'x NIL T "↑"))
     
     # 2191
     # ↑ ↓
@@ -216,7 +216,7 @@
     # TEMP
     
     # ⇲ -> ⇲
-    (def '⇲ (gen-sym-pair '⇲ 'y NIL T "⇲" *sol-yellow))
+    (def '⇲ (gen2-sym-full '⇲ 'y NIL T "⇲" *sol-yellow))
 
     #########
     
@@ -231,26 +231,6 @@
       (balance '*particles (sort L)))
     
     #########
-        
-    (when NIL
-
-      (let Part (gen-part *binds-ops
-                          'y)
-                          
-        (mov-cur-x X)
-        
-        # Must calc bnds for lists
-        (lay-part-start Part Part)))
-        
-    (when NIL
-    
-      (adj-cur-y)
-      (mov-cur-x X)
-      (let Part (gen-part '*binds 'y)
-        
-        (adj-cur-y 2.0)
-        (mov-cur-x X)
-        (lay-part-start Part *line)))
 
     (when NIL
     
