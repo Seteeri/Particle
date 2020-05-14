@@ -48,8 +48,9 @@
      |        |           |           |
     NIL   Internal    Transient    External  
     
-    Base-0 = X Pair
-    Base-1 = Y Pair
+    Base-01 = X Pair (darkest - most common)
+    Base-1  = Y Pair (lightest - least common)
+    Base-0  = NIL (med - 2nd most common)
     
     Mark?
     - Namespace symbol (or binary tree?)
