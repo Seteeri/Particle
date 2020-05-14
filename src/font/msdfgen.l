@@ -358,12 +358,14 @@
                        (till))
                      T))
                   " "))
-                  
+    
+    # Use make
     (setq Match (let L NIL
                   (for X Match
                     (push 'L (mapcar pack (split (chop X) "-"))))
                   (flip L)))
 
+    # Use make
     (setq Match (let L NIL
                   (for X Match
                     (push 'L (if (= (length X) 1) 

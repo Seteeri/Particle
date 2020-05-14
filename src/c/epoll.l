@@ -94,7 +94,6 @@
   (wait (: fd) (: evs) (: evs-max) Timeout))
 
 (dm get-events> (Cnt)
-  (let Evs ()
+  (make
     (for I Cnt
-      (push 'Evs (get (get-event (: evs) I) 2)))
-    (flip Evs)))
+      (link (get (get-event (: evs) I) 2)))))
