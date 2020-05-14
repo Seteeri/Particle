@@ -1,14 +1,21 @@
 #{
-Global variables start with an asterisk "*"
-Global constants may be written all-uppercase
-Functions and other global symbols start with a lower case letter
-Locally bound symbols start with an upper case letter
-Local functions start with an underscore "_"
-Classes start with a plus-sign "+", where the first letter
-is in lower case for abstract classes
-and in upper case for normal classes
-Methods end with a right arrow ">"
-Class variables may be indicated by an upper case letter
+  Global variables start with an asterisk "*"
+  
+  Global constants may be written all-uppercase
+  
+  Functions and other global symbols start with a lower case letter
+  
+  Locally bound symbols start with an upper case letter
+  
+  Local functions start with an underscore "_"
+
+  Classes start with a plus-sign "+", where the first letter
+  is in lower case for abstract classes
+  and in upper case for normal classes
+
+  Methods end with a right arrow ">"
+
+  Class variables may be indicated by an upper case letter
 }#
 
 
@@ -221,12 +228,6 @@ Class variables may be indicated by an upper case letter
     # Start next frame...
 
     (glfw~poll-events)
-
-    # Broadcast frame time
-    # Must handle if send fails, i.e. clients slow - in this case, ignore
-    #
-    # Poss only send if clients are ready
-    #(send-msg-clients *ipc (pack "(frametime " (format (usec)) ")"))
     
     # Refactor this so it blocks until event
     (ipc~poll> *ipc 0)
@@ -244,8 +245,12 @@ Class variables may be indicated by an upper case letter
   
 (de recv-conn (Sock)
   (if (flush-recv *ipc Sock)
-      (parse-msgs *ipc Sock proc-msg)
+      (prog
+        # Send frame time back
+        (send-msg *ipc Sock (pack "(frametime " (format (usec)) ")"))
+        (parse-msgs *ipc Sock proc-msg))
       (disc-cli *ipc Sock)))
+
 
 (de main ()
   (bind-args)
