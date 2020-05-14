@@ -1,5 +1,7 @@
-(de print-cur ()
-  (println (format (get *cur 1) *Scl) (format (get *cur 2) *Scl)))
+(de prinl-cur ()
+  (prinl "(" (format (get *cur 1) *Scl) " "
+             (format (get *cur 2) *Scl)
+         ")"))
 
 
 (de mov-cur-abv (Part)
