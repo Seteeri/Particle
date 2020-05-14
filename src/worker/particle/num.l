@@ -51,7 +51,7 @@
 
 
 (dm repr> (Lay)
-  (let ((Verts Wid) (gen-vert-atom Any (get-color-type Any))
+  (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
         Part (new '(+Num)
                   Any
                   NIL NIL

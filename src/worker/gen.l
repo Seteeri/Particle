@@ -24,7 +24,7 @@
 
 
 (de gen-num (Any Lay)
-  (let ((Verts Wid) (gen-vert-atom Any (get-color-type Any))
+  (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
         Part (new '(+Num)
                   Any
                   NIL NIL
@@ -35,7 +35,7 @@
 
 
 (de gen-nil (Any Lay)
-  (let ((Verts Wid) (gen-vert-atom Any (get-color-type Any))
+  (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
         Part (new '(+Nil)
                   Any
                   NIL NIL
@@ -46,7 +46,7 @@
 
     
 (de gen-sym (Any Lay)
-  (let ((Verts Wid) (gen-vert-atom Any (get-color-type Any))
+  (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
         Cls (cond ((box? Any) '(+Box))
                   ((str? Any) '(+Str))
                   ((ext? Any) '(+Ext))
@@ -72,7 +72,7 @@
   (let (Name (if (str? Any) (name Any) (sym Any))
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
-        (Verts-Car Wid-Car) (gen-vert-atom Name Col)
+        (Verts-Car Wid-Car) (make-vert-atom Name Col)
         Car (unless Skip-Car
                   # Num type but content is a string
                   (new '(+Num)
@@ -83,7 +83,7 @@
         Cdr (when (and (not Skip-Cdr)
                             (not (= Val Any)))
                   (gen-part Dr Lay))
-        (Verts-Pair Wid-Pair) (gen-vert-pair Char-Pair Col (= Val Any))
+        (Verts-Pair Wid-Pair) (make-vert-pair Char-Pair Col (= Val Any))
         Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any
                        Car Cdr
@@ -117,7 +117,7 @@
         Car (unless Skip-Car (gen-part Ar Lay))
         Cdr (unless Skip-Cdr (gen-part Dr Lay))        
         Col (if (= Lay 'x) (car *pair-col-def) (cadr *pair-col-def))
-        (Verts-Pair Wid-Pair) (gen-vert-pair NIL Col)
+        (Verts-Pair Wid-Pair) (make-vert-pair NIL Col)
         Pair (new '(+Pair)
                         Any
                         Car Cdr

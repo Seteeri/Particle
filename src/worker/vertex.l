@@ -268,7 +268,7 @@
 #(def '*char-dot (char (hex "2219")))
 #(def '*char-dot (char (hex "25CF")))
 
-(de gen-vert-glyph (Ch Col Val)
+(de make-vert-glyph (Ch Col Val)
   (inc '*cnt-v)
   (let ((R G B) Col
         Sca (meta '(+Vertex) 'sca-vert))
@@ -285,48 +285,48 @@
          Val)))
 
 
-(de gen-vert-repr (Repr Col)
+(de make-vert-repr (Repr Col)
   (make
     (for Ch Repr
       (case Ch
-        ("^J" (link (gen-vert-glyph "\^" Col)
-                    (gen-vert-glyph "J"  Col Ch)))
-        ("^M" (link (gen-vert-glyph "\^" Col)
-                    (gen-vert-glyph "M"  Col Ch)))
-        ("^I" (link (gen-vert-glyph "\^" Col)
-                    (gen-vert-glyph "I"  Col Ch)))
-        (T    (link (gen-vert-glyph Ch Col Ch)))))))
+        ("^J" (link (make-vert-glyph "\^" Col)
+                    (make-vert-glyph "J"  Col Ch)))
+        ("^M" (link (make-vert-glyph "\^" Col)
+                    (make-vert-glyph "M"  Col Ch)))
+        ("^I" (link (make-vert-glyph "\^" Col)
+                    (make-vert-glyph "I"  Col Ch)))
+        (T    (link (make-vert-glyph Ch Col Ch)))))))
 
   
-(de gen-vert-str (Str Col)
-  (let Verts (gen-vert-repr (chop Str) Col)
+(de make-vert-str (Str Col)
+  (let Verts (make-vert-repr (chop Str) Col)
     (list Verts
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
 
   
-(de gen-vert-num (Num Col)
-  (let Verts (gen-vert-repr (chop (format Num)) Col)
+(de make-vert-num (Num Col)
+  (let Verts (make-vert-repr (chop (format Num)) Col)
     (list Verts
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
 
 
-(de gen-vert-sym (Sym Col)
-  (let Verts (gen-vert-repr (chop (sym Sym)) Col)
+(de make-vert-sym (Sym Col)
+  (let Verts (make-vert-repr (chop (sym Sym)) Col)
     (list Verts
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
           
 
-(de gen-vert-atom (Atom Col)
+(de make-vert-atom (Atom Col)
 
   (unless Col (setq Col (get-color-type Atom)))
 
-  (cond ((num? Atom)             (gen-vert-num Atom Col))
+  (cond ((num? Atom)             (make-vert-num Atom Col))
         ((and (str? Atom) 
-              (not (box? Atom))) (gen-vert-str Atom Col))
-        (T           (gen-vert-sym Atom Col))))
+              (not (box? Atom))) (make-vert-str Atom Col))
+        (T           (make-vert-sym Atom Col))))
 
 
-(de gen-vert-pair (Char Col Self)
+(de make-vert-pair (Char Col Self)
 
   # (char 187) (char 166)
   
@@ -334,7 +334,7 @@
   (unless Col (setq Col (car *pair-col-def)))
   
   (if Self
-      (list (list (gen-vert-glyph Char Col) (gen-vert-glyph Char Col))
+      (list (list (make-vert-glyph Char Col) (make-vert-glyph Char Col))
             (meta '(+Vertex) 'adv-vert-2))
-      (list (list (gen-vert-glyph Char Col))
+      (list (list (make-vert-glyph Char Col))
             (meta '(+Vertex) 'adv-vert))))                  
