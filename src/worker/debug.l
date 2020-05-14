@@ -6,7 +6,7 @@
                   (car Dims)))
     (set-cur-y (- (cadr Ori)
                   (cadr Dims)))
-    (nl-cur)
+    (adj-cur-y)
     (prinl "Cur: " "(" (format (get *cur 1) *Scl)
                        (format (get *cur 2) *Scl) ")")
     (mov> ⇲ *cur)))

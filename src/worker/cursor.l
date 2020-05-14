@@ -5,7 +5,7 @@
 (de mov-cur-abv (Part)
   # Add start/end?
   (setq *cur (get Part 'ori))
-  (nl-cur -1.0))
+  (adj-cur-y -1.0))
   
   
 (de mov-cur-ori (Part)
@@ -25,7 +25,7 @@
                 (: pos)))))
 
 
-(de adv-cur (Cnt)
+(de adj-cur-x (Cnt)
 
   (unless Cnt (setq Cnt 1.0))
 
@@ -35,7 +35,7 @@
                        (*/ (meta '(+Vertex) 'adv-vert) Cnt 1.0)))))
 
 
-(de nl-cur (Cnt)
+(de adj-cur-y (Cnt)
 
   (unless Cnt (setq Cnt 1.0))
 
@@ -54,5 +54,5 @@
 
   
 (de adj-cur (X Y)
-  (when X (adv-cur X))
-  (when Y (nl-cur Y)))
+  (when X (adj-cur-x X))
+  (when Y (adj-cur-y Y)))

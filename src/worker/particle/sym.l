@@ -50,7 +50,7 @@
     
   # Move below or use its Y dims - origin is same as dims for single line
   # This assumes Pair is always single line with dot or 2x dot
-  (nl-cur))
+  (adj-cur-y))
 
   
 (dm pos-cur-for-car-y> ()
@@ -59,7 +59,7 @@
     
   # Use X dims
   (set-cur-x (get (: ori) 1))
-  (adv-cur 2.0))
+  (adj-cur-x 2.0))
 
 
 #################
@@ -102,7 +102,7 @@
 (dm sub> ()
   (setq *on-car T
         *cur (get (: a) 'ori))
-  (nl-cur)
+  (adj-cur-y)
   This)
   
 
@@ -144,7 +144,7 @@
   (if (: a)
       (mov-cur-ori (: a))
       (mov-cur-ori This))
-  (nl-cur)
+  (adj-cur-y)
   This)
   
   
@@ -229,7 +229,7 @@
 (dm sub> ()
   (setq *on-car T
         *cur (: ori))
-  (nl-cur)
+  (adj-cur-y)
   This)
 
 

@@ -50,16 +50,16 @@
     
 
 (de cmd-trans-ptr-px (Ks)
-  (cmd-trans-ptr 1 '(adv-cur 1.0)))
+  (cmd-trans-ptr 1 '(adj-cur-x 1.0)))
   
 (de cmd-trans-ptr-nx (Ks)
-  (cmd-trans-ptr 1 '(adv-cur -1.0)))
+  (cmd-trans-ptr 1 '(adj-cur-x -1.0)))
   
 (de cmd-trans-ptr-py (Ks)
-  (cmd-trans-ptr 2 '(nl-cur -1.0)))
+  (cmd-trans-ptr 2 '(adj-cur-y -1.0)))
   
 (de cmd-trans-ptr-ny (Ks)
-  (cmd-trans-ptr 2 '(nl-cur 1.0)))
+  (cmd-trans-ptr 2 '(adj-cur-y 1.0)))
 
 
 (de cmd-print-ptr ()

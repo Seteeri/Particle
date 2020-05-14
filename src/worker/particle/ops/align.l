@@ -29,7 +29,7 @@
 
     #(set-cur-y (- (get Ori-CA 2) (get Dims-CA 2)))
     (set-cur-y *bnds-y)
-    (nl-cur (+ 1.0 *sublist-space-y))))
+    (adj-cur-y (+ 1.0 *sublist-space-y))))
 
 
 (de align-cur-to-line-x (Part)
@@ -62,4 +62,4 @@
     (set-cur-x (get Ori-C 1))
 
     (set-cur-y *bnds-y)
-    (nl-cur (+ 1.0 *sublist-space-y))))
+    (adj-cur-y (+ 1.0 *sublist-space-y))))

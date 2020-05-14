@@ -235,7 +235,7 @@
   # Make offset version instead of static function?
 
   (mov-cur-vert (last-vert> B) T)
-  (adv-cur 2.0)
+  (adj-cur-x 2.0)
 
   (let Pos (: ori)
     (mov-off> This
@@ -249,7 +249,7 @@
   # Make offset version instead of static function?
 
   (mov-cur-vert (first-vert> B) T)
-  (nl-cur -1.0)
+  (adj-cur-y -1.0)
 
   (let Pos (: ori)
     (mov-off> This
@@ -263,7 +263,7 @@
   # Make offset version instead of static function?
 
   (mov-cur-vert (first-vert> B) T)
-  (nl-cur)
+  (adj-cur-y)
 
   (let Pos (: ori)
     (mov-off> This
