@@ -173,7 +173,7 @@
     #(put *log 'line (new '(+Line) NIL (get *log 'b)))
     #(put *log 'b 'line (new '(+Line) *log NIL *log))
     
-    (mov-cur-x X) (mov-cur-y Y)
+    (mov-cur X Y)
     (adj-cur-x 24.0)
     (lay-part-start *log *log)
         
@@ -190,7 +190,7 @@
           *line (get *start 'b)
           *master *start)
     
-    (mov-cur-x X) (mov-cur-y Y)
+    (mov-cur X Y)
     (adj-cur-x 48.0)    
     # Force draw for first particle since ori=cur
     (mov-verts> *start *cur)
@@ -212,7 +212,7 @@
 
     (set-ptr *car (get *start 'b))
     (put *car 'lay 'y)
-    (adj-cur-y 3.0) (adj-cur-x -5.0)
+    (adj-cur 3.0 -5.0)
     (lay-ptr *car)    
     
     ######
