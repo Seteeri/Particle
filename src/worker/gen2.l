@@ -74,8 +74,8 @@
         (cond ((or (and (pair (car (get P 'data)))
                         (= C 'a))
                    (not P)) # Root
-                (unless (and (not P)
-                             Nrl)
+                (when (or P
+                          (not Nrl))
                   (put N 'line
                         (new '(+Line))))
                 (push '*gen2-list *gen2-line)
