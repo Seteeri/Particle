@@ -78,7 +78,9 @@
 (def '*log) # List of history for undo/redo
 (def '*ptrs) # List of pointers
 
-(def '*cur (list 0.0 0.0 0.0)) # for drawing. not literally drawn
+(def '*cur (list 0.0 0.0 0.0))
+(def '*fwd-in)
+
 
 (de init-worker ()
     
@@ -214,6 +216,9 @@
     (put *car 'lay 'y)
     (adj-cur -5.0 3.0)
     (lay-ptr *car)    
+    
+    # Set input to Cdr
+    (def '*fwd-in *cdr)
     
     ######
     # TEMP
@@ -412,7 +417,7 @@
 (def '*rot-z 0.0)
 (de anim-rot-z-cdr ()
 
-  (let? Part (get *cdr 'a)
+  (let? Part (get *fwd-in 'a)
     
     (with Part
     

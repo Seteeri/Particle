@@ -1,7 +1,7 @@
 (de cmd-mov-nl (Ks)
   (println 'cmd-mov-nl)
 
-  (let Ref (get *cdr 'b)
+  (let Ref (get *fwd-in 'b)
     (if *on-car
         (make-list Ref)
         (make-line Ref))))
@@ -12,7 +12,7 @@
   # This moves Ref front of prv
   # Only applies to non-list...
     
-  (let? Ref (get *cdr 'b)
+  (let? Ref (get *fwd-in 'b)
     (backspace-line Ref)))
 
 
@@ -20,7 +20,7 @@
 
   (prinl-info "cmd-del")
 
-  (let? Ref (get *cdr 'b)
+  (let? Ref (get *fwd-in 'b)
   
     (del-pair Ref)))
 
@@ -33,7 +33,7 @@
   
   # Eval Ref data directly
   
-  (let Ref (get *cdr 'b)
+  (let Ref (get *fwd-in 'b)
   
     (when (isa '(+Nil) Ref)
       (setq Ref (get Ref 'c)))
@@ -52,7 +52,7 @@
   
   # Eval Ref data directly
   
-  (let (Ref (get *cdr 'b)
+  (let (Ref (get *fwd-in 'b)
         In (get Ref 'a 'data)
         Out (eval In))
 
@@ -66,7 +66,7 @@
   
   # Parse str/code to lisp data
   
-  (let Ref (get *cdr 'b)
+  (let Ref (get *fwd-in 'b)
   
     (when (isa '(+Nil) Ref)
       (setq Ref (get Ref 'c)))
@@ -82,7 +82,7 @@
 (de cmd-pes ()
   # Pack and eval-Str
   
-  (let Ref (get *cdr 'b)
+  (let Ref (get *fwd-in 'b)
   
     (when (isa '(+Nil) Ref)
       (setq Ref (get Ref 'c)))

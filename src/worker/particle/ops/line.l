@@ -31,7 +31,7 @@
   
   (setq *line Ref)
   (mov-cur-abv Ref)
-  (lay-ptr *cdr)
+  (lay-ptr *fwd-in)
   
   (println 'make-line "Made newline")
     
@@ -115,4 +115,4 @@
         # Ptr remains on Ref
         # How about for on-car?
         (mov-cur-abv Ref)
-        (lay-ptr *cdr)))))  
+        (lay-ptr *fwd-in)))))  
