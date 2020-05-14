@@ -51,3 +51,8 @@
 
 (de set-cur-y (Y)
   (setq *cur (place 2 *cur Y)))
+
+  
+(de adj-cur (X Y)
+  (when X (adv-cur X))
+  (when Y (nl-cur Y)))
