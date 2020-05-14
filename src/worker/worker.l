@@ -344,6 +344,7 @@
   (let Msg (recv-msg *ipc Sock)
   
     (test-rot-p0)
+    #(send-msg-rend "")
   
     (unless Msg
       (disconn-conn *ipc Sock))))

@@ -9,7 +9,7 @@
       (serv-memset Sock Data))
       
     (T
-      (prinl-info "proc-msg/RENDER" (pack "UNKNOWN REQUEST! " Msg)))))
+      T)))
 
 
 (de serv-memset (Sock Data)
