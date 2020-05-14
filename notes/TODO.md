@@ -10,19 +10,19 @@ TODO
   * Create list, enter strings, convert some to symbols, eval
   
   * 14 MAY - THURS
-    * Split: create lines
-      * Debug further
-    * Pass vecs to GLSL
-      * Use quats?
-      * Pass 48 bytes instead of 64
-    * Cache last item for lines/lists
+    * Implement cmds Q/E : start/end of line/list  
     * Refactor del
-    * Implement cmds Q/E : start/end of line/list
     * Gen-part
       * Auto set pairs to y layout
-      * Explicit fn or auto on gen    
+      * Explicit fn or auto on gen
+    * Cache last item for lines/lists
+      * Do on modify      
+      * Refactor more
+    * Registers
     * Pointer
-      * Make Pointer class
+      * Mov pointer to different list
+        * Need cmd that we can type
+      * Make Pointer class [later]
       * When ptr points to another ptr, input changes...or fires impulse?
         * So mov to car:
           * Pt to car ptr
@@ -100,11 +100,9 @@ TODO
     * https://github.com/astiopin/webgl_fonts
       * glyph hinting
       * subpixel antialiasing            
-    
-  ---
   
-  Next week?
-      
+  ---
+        
   * Track data:particles in binary tree *particles
     * Unlike a CLI, we hold references to old data
       * Which if future commands change old data, it has to be updated
@@ -144,10 +142,7 @@ TODO
     * Store classes in separate files?
       * verts.db
       * parts.db    
-        
-  * Improve testing environment
-    * Have processes run independently  
-  
+          
   * Log/Undo System
     * Log commands
     * This cannot be unlimited - use a circular list
@@ -197,7 +192,31 @@ TODO
     * Fuzzy-search
 
   ---
-    
+  
+  * Improve testing environment
+    * Have processes run independently    
+  
+  * Optimize
+    * Math
+      * Pass vecs to GLSL [later]
+        * Use quats?
+        * Pass 48 bytes instead of 64  
+    * IPC
+      * Utilize multiple workers - see notes
+      * Batch messages, flush etc.
+      * Instead of directly sending msgs, put into list
+      * Call flush to send all
+      * Requires rewriting protocol to read multiple messages from single str  
+    * Lazy load glyphs
+      * Do later when msgs are refactored
+      * Render loads tex
+      * Gly loads metrics
+      * Need worker to tell render to load
+      * Load ASCII initially
+      * Convert glyphs into db  
+
+  * Directory Nav
+      
   * Adv Str Ops
     * Basic search/replace (strs)
       * Essentially, searching symbol props
@@ -210,46 +229,23 @@ TODO
       * Lists can be sorted
       * Output can then be merged
     * Pattern matching  
-
-  * Optimize IPC
-    * Utilize multiple workers - see notes
-    * Batch messages, flush etc.
-    * Instead of directly sending msgs, put into list
-    * Call flush to send all
-    * Requires rewriting protocol to read multiple messages from single str
-              
-  * Directory Nav
       
   * Tag/Note System
+    * Create +Note class
     * Need "template"
-    * Search functions    
+    * Search property list functions
     
   * Misc
     * Draw num in car [?]
       * Handle decimals
-    * Utilize double shift binds
-      * Search menu?
-      * Double ctrl
-      * Double alt
     * Draw grid in bg
-    * Make Dot YELLOW?
-      * Small so use most visible color to offset
-      * Make NIL grey since its so common but not as useful
     * Make fn: mov-cur X/adv Y/nl
     * Refactor other items to use skip flags like mov> etc.
-    * Make columns for Y layout?            
-    * Limit x length of items like line wrap
-    * Why is xkb in worker? Should be in ctrl []
+    * Make columns for Y layout?
+    * Why is xkb in worker? Should be in ctrl...
     * Draw ctrl characters: ^M, ^J, ^I
       * Draw newline when by itself
       * When packed do not draw it - make opt?
-    * Lazy load glyphs
-      * Do later when msgs are refactored
-      * Render loads tex
-      * Gly loads metrics
-      * Need worker to tell render to load
-      * Load ASCII initially
-      * Convert glyphs into db
     * Generate undefined glyph - 0
     
   ---
@@ -272,12 +268,6 @@ TODO
     * Fades
     * Use compute shader on large amount
       * For demo max verts
-
-  * Touch interface
-    * Refactor math library; implement glunproject
-    * Ability to pull items out
-    * Requires spatial index, unproject
-      * Port r-tree from CL      
       
   * Instead of drawing lines to connect nodes, draw generic grid in bg
   to guide user
@@ -285,11 +275,6 @@ TODO
   * Timestamp optional
     * GPS optional
     * Really just tags...except expected/defined tags on all items
-
-  * Notation
-    * Circular lists -> dot instead of ] or Left-arrow
-    * For X layout: Down-arrow Dot Right-arrow
-    * For Y layout: Right-arrow Dot Down-arrow
 
   * Design different views/presentations
     * Use familiar setups from Office and other note-taking apps etc.
@@ -304,12 +289,6 @@ TODO
         * (=: l4 (i))
     * Ex: Table
       * Create class, user defines properties
-
-  * Lists
-    * Differentiate colors for tagged and untagged data?
-      * Show number of tags?
-    * Don't draw NIL at end of list
-      * Pointer points to last item
     
   * Map keys to grid on screen
     * 26 squares if using plain alphabet
@@ -321,12 +300,17 @@ TODO
     * Set * Err to (quit)
     * On error, print msg and return to top-level
 
-  * Symbols
+  * Symbols Mouse UI
     * all: left click = select/point
     * all: 2x left click = eval
     * Value = double right click
     * Props = right click          
-    
+
+  * Touch interface
+    * Refactor math library; implement glunproject
+    * Ability to pull items out
+    * Requires spatial index, unproject
+      * Port r-tree from CL          
 
 DEMOS:
 

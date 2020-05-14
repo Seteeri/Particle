@@ -1,45 +1,126 @@
-(de list-binds-ascii @
-  (let L NIL
-    (while (next)
-      (for Bind (arg)
-        (let ((Keys Rep Cmd) Bind
-              Keys (mapcar '((K) (if (sym? K) (val K) @))
-                           Keys)
-              Rep (if (sym? Rep) (val Rep) @)
-              Cmd (if (sym? Cmd) (val Cmd) @))
-          (push 'L (list Keys Rep Cmd)
-                   (list (cons ksd~Shift-L Keys) Rep Cmd)
-                   (list (cons ksd~Shift-R Keys) Rep Cmd)))))
-    L))
+(def '*binds-ops
 
+  '(
+    ((ksd~Return) T cmd-make-char)
+    ((ksd~Tab)    T cmd-make-char)
     
-(de list-binds-num @
-  (let L NIL
-    (while (next)
-      (for Bind (arg)
-        (let ((Keys Rep Cmd) Bind
-              Keys (mapcar '((K) (if (sym? K) (val K) @))
-                           Keys)
-              Rep (if (sym? Rep) (val Rep) @)
-              Cmd (if (sym? Cmd) (val Cmd) @))
-          (push 'L (list (cons ksd~Alt-L Keys) Rep Cmd)
-                   (list (cons ksd~Alt-R Keys) Rep Cmd)))))
-    L))
+    ((ksd~BackSpace) T cmd-del)
+    ((ksd~Delete   ) T cmd-del)  
     
+    # Make cmds only mod+ASCII? to maintain homerow
+    ((ksd~Alt-R   ksd~Return)    T cmd-mov-nl)
+    ((ksd~Alt-R   ksd~BackSpace) T cmd-mov-bl)
+    
+    ((ksd~Control-L ksd~r) T cmd-make-nil)
+    ((ksd~Control-L ksd~t) T cmd-mov-nl)
+    
+    ((ksd~Control-L ksd~q) T cmd-ptr-ln-first)
+    ((ksd~Control-L ksd~e) T cmd-ptr-ln-last)
+        
+    # Symbol
+    # Double alt = cmd?
+    # Double shift = sym
+    # Diff L+R|Mod vs R+L|Mod ?
+    # LAlt + Sp vs RAlt + Sp?
+    ((ksd~Alt-L   ksd~space) T cmd-intern)
 
-(de list-binds @
-  (let L NIL
-    (while (next)
-      (for Bind (arg)
-        (let ((Keys Rep Cmd) Bind
-              Keys (mapcar '((K) (if (sym? K) (val K) @))
-                           Keys)
-              Rep (if (sym? Rep) (val Rep) @)
-              Cmd (if (sym? Cmd) (val Cmd) @))
-          (push 'L (list Keys Rep Cmd)))))
-    L))
+    #{
+      Conv Atom (Alt-L+space ctx aware)
+      - str     -> sym
+      - str/num -> num
+      - num     -> str
+      
+      Pack to prv
+      
+      Split fm spc (chr, NIL=spc)
+      - use a sublist for args?
+      - compl to pack
+      - use to break words at the end
+      - poss mov ptr to start, better user use cmd to move start
+      - either replace or make sublist
+        - repl makes most sense
+        - explicit cmd for sublist or use args
+        
+      Glue w spc (chr, NIL=spc)
+      
+      Chop not as useful...
+      
+      New List
+      - Mov car, alt enter
+      
+      Eval
+      - ctrl enter?
+      
+      Command mode:
+      - Does not replace universal cmds - allows adv fn/cmd composition
+      
+    }#
+    
+    # REPL
+    ((ksd~Control-L ksd~Tab)            T cmd-eval-str)
+    ((ksd~Alt-L     ksd~Tab)            T cmd-str)
+    ((ksd~Control-L ksd~Alt-L ksd~Tab) T cmd-eval)
+    # Pack + Eval-Str
+    ((ksd~Control-L ksd~g) T cmd-pes)    
+    
+    # other cmds...
+    
+    ##########
+    # CUA Ops
+    
+    #((ksd~Control-L ksd~x) T ((Ks) (println "Ctrl-L x: CUT")))
+    #((ksd~Control-L ksd~c) T ((Ks) (println "Ctrl-L c: COPY")))
+    #((ksd~Control-L ksd~v) T ((Ks) (println "Ctrl-L v: PASTE")))
+    #((ksd~Control-L ksd~z) T ((Ks) (println "Ctrl-L z: UNDO")))
+    #((ksd~Alt-L     ksd~z) T ((Ks) (println "Alt-L z: REDO")))
+
+    #########
+    # Str Ops
+    
+    # split-space (word) : glue " ", 
+    # chop (letter) : glue "", pack      
+    # reverse, flip
+    #
+    # cmd-pack-list - ref must be a list or start of list
+    # cmd-glue-sp-list - ref must be a list or start of list
+    
+    ((ksd~Control-L ksd~h) T cmd-pack-syms)
+    ((ksd~Control-L ksd~j) T cmd-chop)
+    
+    ((ksd~Control-L ksd~y) T cmd-glue-sp-syms)
+    ((ksd~Control-L ksd~u) T cmd-split-sp)
+    
+    # cmd-reverse
+    # cmd-flip
+    # cmd-rot
+    
+    # DEBUG
+    ((ksd~Control-R ksd~Return) T cmd-print-ptr)
 
 
+    # Pointer Translation
+    ((ksd~Control-L ksd~w) T cmd-ptr-up)
+    ((ksd~Control-L ksd~a) T cmd-ptr-left)      
+    ((ksd~Control-L ksd~s) T cmd-ptr-down)
+    ((ksd~Control-L ksd~d) T cmd-ptr-right)
+
+    ((ksd~Right) T cmd-trans-ptr-px)
+    ((ksd~Left)  T cmd-trans-ptr-nx)
+    ((ksd~Up)    T cmd-trans-ptr-py)
+    ((ksd~Down)  T cmd-trans-ptr-ny)
+
+    # Camera Translation
+    # Prior/Next
+    ((ksd~Alt-R ksd~Right) T cmd-move-cam-px)
+    ((ksd~Alt-R ksd~Left)  T cmd-move-cam-nx)
+    ((ksd~Alt-R ksd~Up)    T cmd-move-cam-py)
+    ((ksd~Alt-R ksd~Down)  T cmd-move-cam-ny)
+    ((ksd~Prior)            T cmd-zoom-cam-in)
+    ((ksd~Next)             T cmd-zoom-cam-out)
+  
+  ))    
+
+  
 (def '*binds-num
   '(
     ((ksd~d0) T cmd-make-num)
@@ -51,8 +132,8 @@
     ((ksd~d6) T cmd-make-num)
     ((ksd~d7) T cmd-make-num)
     ((ksd~d8) T cmd-make-num)
-    ((ksd~d9) T cmd-make-num)))
-      
+    ((ksd~d9) T cmd-make-num)))     
+
 
 (def '*binds-latin-1
   '(
@@ -259,128 +340,48 @@
 
   ))
 
-    
-(def '*binds-ops
-
-  '(
-    ((ksd~Return) T cmd-make-char)
-    ((ksd~Tab)    T cmd-make-char)
-    
-    ((ksd~BackSpace) T cmd-del)
-    ((ksd~Delete   ) T cmd-del)  
-    
-    # Make cmds only mod+ASCII? to maintain homerow
-    ((ksd~Alt-R   ksd~Return)    T cmd-mov-nl)
-    ((ksd~Alt-R   ksd~BackSpace) T cmd-mov-bl)
-    
-    ((ksd~Control-L ksd~r) T cmd-make-nil)
-    ((ksd~Control-L ksd~t) T cmd-mov-nl)
-    
-    ((ksd~Control-L ksd~q) T cmd-ptr-ln-first)
-    ((ksd~Control-L ksd~e) T cmd-ptr-ln-last)
-        
-    # Symbol
-    # Double alt = cmd?
-    # Double shift = sym
-    # Diff L+R|Mod vs R+L|Mod ?
-    # LAlt + Sp vs RAlt + Sp?
-    ((ksd~Alt-L   ksd~space) T cmd-intern)
-
-    #{
-      Conv Atom (Alt-L+space ctx aware)
-      - str     -> sym
-      - str/num -> num
-      - num     -> str
-      
-      Pack to prv
-      
-      Split fm spc (chr, NIL=spc)
-      - use a sublist for args?
-      - compl to pack
-      - use to break words at the end
-      - poss mov ptr to start, better user use cmd to move start
-      - either replace or make sublist
-        - repl makes most sense
-        - explicit cmd for sublist or use args
-        
-      Glue w spc (chr, NIL=spc)
-      
-      Chop not as useful...
-      
-      New List
-      - Mov car, alt enter
-      
-      Eval
-      - ctrl enter?
-      
-      Command mode:
-      - Does not replace universal cmds - allows adv fn/cmd composition
-      
-    }#
-    
-    # REPL
-    ((ksd~Control-L ksd~Tab)            T cmd-eval-str)
-    ((ksd~Alt-L     ksd~Tab)            T cmd-str)
-    ((ksd~Control-L ksd~Alt-L ksd~Tab) T cmd-eval)
-    # Pack + Eval-Str
-    ((ksd~Control-L ksd~g) T cmd-pes)    
-    
-    # other cmds...
-    
-    ##########
-    # CUA Ops
-    
-    #((ksd~Control-L ksd~x) T ((Ks) (println "Ctrl-L x: CUT")))
-    #((ksd~Control-L ksd~c) T ((Ks) (println "Ctrl-L c: COPY")))
-    #((ksd~Control-L ksd~v) T ((Ks) (println "Ctrl-L v: PASTE")))
-    #((ksd~Control-L ksd~z) T ((Ks) (println "Ctrl-L z: UNDO")))
-    #((ksd~Alt-L     ksd~z) T ((Ks) (println "Alt-L z: REDO")))
-
-    #########
-    # Str Ops
-    
-    # split-space (word) : glue " ", 
-    # chop (letter) : glue "", pack      
-    # reverse, flip
-    #
-    # cmd-pack-list - ref must be a list or start of list
-    # cmd-glue-sp-list - ref must be a list or start of list
-    
-    ((ksd~Control-L ksd~h) T cmd-pack-syms)
-    ((ksd~Control-L ksd~j) T cmd-chop)
-    
-    ((ksd~Control-L ksd~y) T cmd-glue-sp-syms)
-    ((ksd~Control-L ksd~u) T cmd-split-sp)
-    
-    # cmd-reverse
-    # cmd-flip
-    
-    # DEBUG
-    ((ksd~Control-R ksd~Return) T cmd-print-ptr)
-
-
-    # Pointer Translation
-    ((ksd~Control-L ksd~w) T cmd-ptr-up)
-    ((ksd~Control-L ksd~a) T cmd-ptr-left)      
-    ((ksd~Control-L ksd~s) T cmd-ptr-down)
-    ((ksd~Control-L ksd~d) T cmd-ptr-right)
-
-    ((ksd~Right) T cmd-trans-ptr-px)
-    ((ksd~Left)  T cmd-trans-ptr-nx)
-    ((ksd~Up)    T cmd-trans-ptr-py)
-    ((ksd~Down)  T cmd-trans-ptr-ny)
-
-    # Camera Translation
-    # Prior/Next
-    ((ksd~Alt-R ksd~Right) T cmd-move-cam-px)
-    ((ksd~Alt-R ksd~Left)  T cmd-move-cam-nx)
-    ((ksd~Alt-R ksd~Up)    T cmd-move-cam-py)
-    ((ksd~Alt-R ksd~Down)  T cmd-move-cam-ny)
-    ((ksd~Prior)            T cmd-zoom-cam-in)
-    ((ksd~Next)             T cmd-zoom-cam-out)
   
-  ))
+(de list-binds-ascii @
+  (let L NIL
+    (while (next)
+      (for Bind (arg)
+        (let ((Keys Rep Cmd) Bind
+              Keys (mapcar '((K) (if (sym? K) (val K) @))
+                           Keys)
+              Rep (if (sym? Rep) (val Rep) @)
+              Cmd (if (sym? Cmd) (val Cmd) @))
+          (push 'L (list Keys Rep Cmd)
+                   (list (cons ksd~Shift-L Keys) Rep Cmd)
+                   (list (cons ksd~Shift-R Keys) Rep Cmd)))))
+    L))
 
+    
+(de list-binds-num @
+  (let L NIL
+    (while (next)
+      (for Bind (arg)
+        (let ((Keys Rep Cmd) Bind
+              Keys (mapcar '((K) (if (sym? K) (val K) @))
+                           Keys)
+              Rep (if (sym? Rep) (val Rep) @)
+              Cmd (if (sym? Cmd) (val Cmd) @))
+          (push 'L (list (cons ksd~Alt-L Keys) Rep Cmd)
+                   (list (cons ksd~Alt-R Keys) Rep Cmd)))))
+    L))
+    
+
+(de list-binds @
+  (let L NIL
+    (while (next)
+      (for Bind (arg)
+        (let ((Keys Rep Cmd) Bind
+              Keys (mapcar '((K) (if (sym? K) (val K) @))
+                           Keys)
+              Rep (if (sym? Rep) (val Rep) @)
+              Cmd (if (sym? Cmd) (val Cmd) @))
+          (push 'L (list Keys Rep Cmd)))))
+    L))  
+  
 
 #{
 (def '*binds-latin-1-OLD
