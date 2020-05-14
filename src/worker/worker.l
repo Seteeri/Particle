@@ -343,8 +343,8 @@
 
   (let Msg (recv-msg *ipc Sock)
   
-    (test-rot-p0)
-    #(send-msg-rend "")
+    (anim-rot-z-cdr)
+    (send-msg-rend "T")
   
     (unless Msg
       (disconn-conn *ipc Sock))))
@@ -419,10 +419,9 @@
               (Fn Ks))))))))
 
 
-#(def 'PI 3.141592)
-#(def 'PI2 (+ PI PI))
+(def 'PI2 (+ PI PI))
 (def '*rot-z 0.0)
-(de test-rot-p0 ()
+(de anim-rot-z-cdr ()
 
   (let? Part (get *cdr 'a)
     
@@ -431,17 +430,7 @@
       (let Vert (car (: verts))
         
         (with Vert
-
-          (let (Ce (with (: met)
-                    (let (Dims (: dims))
-                      (list (*/ (*/ (car Dims) (: sca-f) 1.0) 0.5 1.0)
-                            (*/ (*/ (cadr Dims) (: sca-f) 1.0) 0.5 1.0)
-                            0.0)))
-                Tr (mat4-tra
-                     (list (- (car Ce))
-                           (- (cadr Ce))
-                           0.0)))
-                    
+                   
           (inc '*rot-z 0.03)
           (when (> *rot-z PI2) (setq *rot-z 0.0))
           
@@ -451,45 +440,23 @@
           # Translate back to origin
           # Translate to final pos          
           
-          #{
-          (=: mm
-              (mat4-mul
-                (mat4-tra (: pos))
-                (mat4-mul
-                  (mat4-inv Tr)
-                  (mat4-mul
-                    (mat4-rz *rot-z)
-                    (mat4-mul
-                      Tr
-                      (mat4-mul
-                        (mat4-inv (mat4-tra (: pos)))
-                        (mat4-mul
-                          (mat4-tra (: pos))
-                          (mat4-mul
-                            (mat4-rz (caddr (: rota)))
-                            (mat4-mul
-                              (mat4-ry (cadr (: rota)))
-                              (mat4-mul
-                                (mat4-rx (car (: rota)))
-                                (mat4-sca (: sca))))))))))))
-          }#
+          (let Tra (mat4-tra (: pos))
           
-          (=: mm
-              (mat4-mul@
-                (mat4-tra (: pos))
-                (mat4-inv Tr)
-                (mat4-rz *rot-z)
-                Tr
-                (mat4-inv (mat4-tra (: pos)))
-                (mat4-tra (: pos))
-                (mat4-rz (caddr (: rota)))
-                (mat4-ry (cadr (: rota)))
-                (mat4-rx (car (: rota)))
-                (mat4-sca (: sca))))
-                                
-          ))
+            (=: mm
+                (mat4-mul@
+                  Tra
+                  (: mat4-cen-i)
+                  (mat4-rz *rot-z)
+                  (: mat4-cen)
+                  (mat4-inv Tra)
+                  Tra
+                  # Skip since all identity
+                  #(mat4-rz (caddr (: rota)))
+                  #(mat4-ry (cadr (: rota)))
+                  #(mat4-rx (car (: rota)))
+                  (mat4-sca (: sca))))))
                 
-        (req-send *ipc Vert)))))              
+        (req-send *ipc Vert)))))
               
               
 (de main ()

@@ -37,3 +37,14 @@
   (=: sca-f (*/ 1.0
                 (meta '(+Vertex) 'sca-vert)
                 (: scale))))
+
+(dm calc-cen> ()
+  (=: cen (list (*/ (*/ (car (: dims))  (: sca-f) 1.0) 0.5 1.0)
+                (*/ (*/ (cadr (: dims)) (: sca-f) 1.0) 0.5 1.0)
+                0.0))
+  (=: mat4-cen (mat4-tra
+                 (list (- (car (: cen)))
+                       (- (cadr (: cen)))
+                       0.0)))
+  (=: mat4-cen-i (mat4-inv
+                  (: mat4-cen))))

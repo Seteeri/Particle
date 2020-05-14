@@ -44,6 +44,9 @@
   
   (=: mm (mat4-id))
   
+  (=: cen)
+  (=: mat4-cen)
+  
   # Rel to Ch
   (=: uv)
   (=: off-texel)
@@ -70,8 +73,15 @@
   
   (unless (: met)
     (prinl-info "upd-met>" (pack "Unable to find metrics: " (: ch))))
+  
+  (unless (get (: met) 'cen)
+    (calc-cen> (: met)))
+  (=: mat4-cen (get (: met) 'mat4-cen))
+  (=: mat4-cen-i (get (: met) 'mat4-cen-i))
     
-  (=: uv (get (: met) 'uv)))
+  (=: uv (get (: met) 'uv))
+  
+  This)
 
     
 (dm upd-mod> ()
