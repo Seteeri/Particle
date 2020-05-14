@@ -18,7 +18,11 @@ TODO
     * Cache last item for lines/lists
     * Refactor del
     * Implement cmds Q/E : start/end of line/list
+    * Gen-part
+      * Auto set pairs to y layout
+      * Explicit fn or auto on gen    
     * Pointer
+      * Make Pointer class
       * When ptr points to another ptr, input changes...or fires impulse?
         * So mov to car:
           * Pt to car ptr
@@ -43,12 +47,11 @@ TODO
       * Think, insert has an indicator and Caps Lock does not
         * Which one tends to have more user mode errors? -> Caps Lock
     * Soft wrap list
+      * Track pos
+      * When limit reached, mov nl
     * Sym prop output
       * Output normally
       * Only upd objs in view
-    * Color dot differently for Y pair...
-    * a s d m for arithmetic
-    * Named pipe + rd/pr
     * Relayout should use multiple workers
       * Scout pushes work into a queue
         * On finish scan, become worker
@@ -64,15 +67,20 @@ TODO
             * Set timeout to rotate
             * Fork          
   
+  
   * 11 MAY - TUES
-    * Fix eval output - need refactor layout
-    * Print system out
-      * Where to put it?
-        * Separate *out list
-          * Part of process...
-          * Visualize process?
-        * Sublist of original cmd
-        * Two lines
+  
+    * Fix eval output
+      * Print system out
+        * Where to put it?
+          * Separate *out list
+            * Part of process...
+            * Visualize process?
+          * Sublist of original cmd
+          * Two lines
+  
+    * a s d m for arithmetic?
+    * Named pipe + rd/pr  
   
     * Visual Hierarchy
       * Process -> Namespace -> Symbols...
@@ -85,8 +93,6 @@ TODO
               
     * Refactor layout
       * *binds-ops needs mix of x/y
-      * Auto convert any pairs to y
-        * Explicit fn or auto on gen
       
   * 12 MAY - WED
     * https://github.com/mapbox/tiny-sdf

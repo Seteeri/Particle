@@ -7,5 +7,6 @@
     (set-cur-y (- (cadr Ori)
                   (cadr Dims)))
     (nl-cur)
-    (println 'mov-*1 "Moved *1 to: " (format (get *cur 1) *Scl) (format (get *cur 2) *Scl))
+    (prinl "Cur: " "(" (format (get *cur 1) *Scl)
+                       (format (get *cur 2) *Scl) ")")
     (mov> *1 *cur)))

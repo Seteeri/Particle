@@ -216,7 +216,8 @@
     ######
     # TEMP
     
-    (def '*1 (gen-sym-pair '*1 'y NIL T))
+    # *1 -> ⇲
+    (def '⇲ (gen-sym-pair '⇲ 'y NIL T))
 
     #########
     
