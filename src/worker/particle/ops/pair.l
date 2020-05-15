@@ -9,23 +9,26 @@
       
 (de make-list (Ref)
 
-  (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
-           (= (get Ref 'c 'a) Ref))
+  (if (isa '(+Nil) Ref)
+  
+      (if (= (get Ref 'c 'a) Ref)
+  
+          (make-cons-car-y Ref)    
+
+          (make-cons-car-x-nil Ref))
       
-      (make-cons-car-y Ref)
-        
-      (if (and (isa '(+Nil) Ref)
-               (= (get Ref 'c 'b) Ref))
-      
-          # End NIL
-          (make-cons-car-x-nil Ref)
-      
-          (make-cons-car-x-sym Ref))))
+      (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
+               (= (get Ref 'c 'a) Ref))
+          
+          (make-cons-car-y Ref)
+
+          (make-cons-car-x Ref))))
 
       
 (de make-cons-car-y (Ref)
   
   #{
+    Handle nested  
   
     1. Gen pair; skip Car
     2. Set car to current Pair
@@ -52,7 +55,7 @@
     
   }#
   
-  (let (C (get Ref 'c)
+  (let (C (if (isa '(+Nil) Ref) Ref (get Ref 'c))
         Cc (get C 'c)
         Part (gen2-part (cons) 'x (cons T NIL) T))
     
@@ -86,7 +89,7 @@
     Part))
       
       
-(de make-cons-car-x-sym (Ref)
+(de make-cons-car-x (Ref)
   
   #{
       
@@ -104,14 +107,15 @@
     
     ---
     
-    [ ]  [ ]  NIL
-    sym  a*
+    Handles when NIL is car - no
     
-    -> 
-
-    [ ]  [ ] [ ]  NIL
-    sym      a*    
-         NIL
+    [ ]  [ ]  [ ]
+    a    b    c
+    
+    [ ]  NIL
+    
+    NIL
+    
   }#
       
   (let (C (get Ref 'c)
@@ -166,7 +170,7 @@
     (set-ptr *fwd-in Part)
     (point-sub)
         
-    (println 'make-cons-car-x-sym "Made nested list")
+    (println 'make-cons-car-x "Made nested list")
 
     Part))
 
@@ -196,7 +200,7 @@
          NIL
     
     NIL
-    
+    *
     
     Case 2:
     =======
@@ -211,9 +215,8 @@
             NIL
   }#
     
-  (let (#Part (gen-part (list NIL) 'x NIL 'skip-cdr)
-        Part (gen2-part (list NIL) 'x (cons NIL T) T)
-        C (get Ref 'c))
+  (let (C (get Ref 'c)
+        Part (gen2-part (list NIL) 'x (cons NIL T) T))
          
     (b@ C Part Ref)
         
@@ -253,7 +256,7 @@
                         (get *line 'line b)
                         (get Part 'line 'l)))))
     
-    (when T
+    (when NIL
       (prinl) (prinl)
       
       (println "Part: " Part)
