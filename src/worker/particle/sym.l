@@ -100,7 +100,7 @@
 
 
 (dm sub> ()
-  (tog-car)
+  (unless *on-car (set-on-car T))
   (setq *cur (get (: a) 'ori))
   (adj-cur-y)
   This)
@@ -227,9 +227,7 @@
 
 
 (dm sub> ()
-  (println "NIL TOG")
-  (unless *on-car
-    (set-on-car T))
+  (unless *on-car (set-on-car T))
   (setq *cur (: ori))
   (adj-cur-y)
   This)
