@@ -166,7 +166,7 @@
     
     
 # Expand sym
-(de gen2-sym-full (Any Lay)
+(de gen2-sym-full (Any Lay Skips Char-Pair Col)
 
   # Technically, name is a number cell
 
@@ -181,12 +181,15 @@
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
         (Verts-Car Wid-Car) (make-vert-atom Name Col)
-        Car (new '(+Num) # Num type but content is a string
-                 Name
-                 NIL NIL
-                 Verts-Car
-                 Lay)
-        Cdr (when (not (= Val Any))
+        Car (unless (car Skips)
+              # Num type but content is a string
+              (new '(+Num)
+                    Name
+                    NIL NIL
+                    Verts-Car
+                    Lay))
+        Cdr (when (and (not (cdr Skips))
+                       (not (= Val Any)))
               (gen2-part Dr))
         (Verts-Pair Wid-Pair) (make-vert-pair Char-Pair Col (= Val Any))
         Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
@@ -201,9 +204,11 @@
                       
     # If CAR/CDR, is a list, set C to pair
 
-    (put Car 'c Pair)
+    (when Car
+      (put Car 'c Pair))
 
-    (when (not (= Val Any))
+    (when (and Cdr
+               (not (= Val Any)))
       (put Cdr 'c Pair))
             
     Pair))

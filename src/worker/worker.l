@@ -193,8 +193,8 @@
     ##################
     # TODO: Draw *ptrs
         
-    (def '*cdr (gen2-sym-full '*cdr 'x NIL T "↓" *sol-yellow))
-    (def '*car (gen2-sym-full '*car 'x NIL T "↑"))
+    (def '*cdr (gen2-sym-full '*cdr 'x (cons NIL T) "↓" *sol-yellow))
+    (def '*car (gen2-sym-full '*car 'x (cons NIL T) "↑"))
     
     # 2191
     # ↑ ↓
@@ -216,7 +216,7 @@
     # TEMP
     
     # ⇲ -> ⇲
-    (def '⇲ (gen2-sym-full '⇲ 'y NIL T "⇲" *sol-yellow))
+    (def '⇲ (gen2-sym-full '⇲ 'y (cons NIL T) "⇲" *sol-yellow))
 
     #########
     
