@@ -50,9 +50,8 @@
     
   }#
   
-  (let (Part (gen-part (cons)
-                       'x
-                       'skip-car)
+  (let (#Part (gen-part (cons) 'x 'skip-car)
+        Part (gen2-part (cons) 'x (cons T NIL) T)
         C (get Ref 'c)
         Cc (get C 'c))
     
@@ -114,9 +113,8 @@
          NIL
   }#
   
-  (let (Part (gen-part (cons)
-                       'x
-                       'skip-car)
+  (let (#Part (gen-part (cons) 'x 'skip-car)
+        Part (gen2-part (cons) 'x (cons T NIL) T)
         C (get Ref 'c)
         Cc (get C 'c))
     
@@ -212,7 +210,8 @@
             NIL
   }#
     
-  (let (Part (gen-part (list NIL) 'x NIL 'skip-cdr)
+  (let (#Part (gen-part (list NIL) 'x NIL 'skip-cdr)
+        Part (gen2-part (list NIL) 'x (cons NIL T) T)
         C (get Ref 'c))
          
     (b@ C Part Ref)
