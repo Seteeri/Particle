@@ -1,16 +1,11 @@
-(def '*gen-lay-y-pair)
-
 (de gen-part (Any Lay Skip-Car Skip-Cdr)
   # TODO: Handle circular lists...use another dot at the end
 
-  (if (pair Any)
+  (println 'gen-part Any)
   
-      (if (lst? (cdr Any))
-      
-          # Handle specific forms here
-          (gen-pair Any Lay Skip-Car Skip-Cdr)
-                 
-          (gen-pair Any Lay Skip-Car Skip-Cdr))
+  (if (pair Any)
+                   
+      (gen-pair Any Lay Skip-Car Skip-Cdr)
       
       (gen-atom Any Lay)))
 
@@ -111,7 +106,7 @@
     Root is baseline of cons
     so for a list Root would be coordinates of first cons
   }#
-
+  
   (let (Ar (car Any)
         Dr (cdr Any)
         Car (unless Skip-Car (gen-part Ar Lay))
@@ -119,11 +114,11 @@
         Col (if (= Lay 'x) (car *pair-col-def) (cadr *pair-col-def))
         (Verts-Pair Wid-Pair) (make-vert-pair NIL Col)
         Pair (new '(+Pair)
-                        Any
-                        Car Cdr
-                        Verts-Pair
-                        Lay))
-                        
+                  Any
+                  Car Cdr
+                  Verts-Pair
+                  Lay))
+                  
       (put Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
                       
       # If CAR/CDR, is a list, set C to pair

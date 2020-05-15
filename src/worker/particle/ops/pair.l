@@ -211,11 +211,8 @@
     *start     
             NIL
   }#
-  
-  (let (Part (gen-part '(NIL)
-                       'x
-                       NIL
-                       'skip-cdr)
+    
+  (let (Part (gen-part (list NIL) 'x NIL 'skip-cdr)
         C (get Ref 'c))
          
     (b@ C Part Ref)
@@ -301,7 +298,7 @@
     (setq *line (get Part 'a))
     (set-ptr *fwd-in (get Part 'a))
     (point-sub)
-        
+                
     (println 'make-cons-car-x-nil "Made nested list")
 
     Part))
