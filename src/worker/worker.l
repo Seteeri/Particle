@@ -232,21 +232,44 @@
     
     #########
 
-    (when NIL
+    (when T
     
       (adj-cur-y)
       (mov-cur-x X)
-      (let Part (gen-part '(("1" "Content"
+      #{
+      (let Part (gen2-part '(("1" "Content"
                              ("1.1" "Content"
                               ("1.1.1" "Content")
                               ("1.1.1" "Content"
                                ("1.1.1.1" "Content")
                                ("1.1.1.2" "Content")))))
-                          'y)
-        
+                          'x)
+      }#
+      
+      #{
+        ((1
+          (2 (3) 
+             (4 (5) (6)))))
+      }#
+      
+      # Test gen2-part
+      #'(((((NIL))))))
+      #'(((1) 2) 3))
+      #'(((1 2) 3 4) 5 6))
+      #'((1 2) (3 4) (5 6)))      
+      #'(1 (2))
+      
+      (let Part (gen2-part '(("1" "Content"
+                             ("1.1" "Content"
+                              ("1.1.1" "Content")
+                              ("1.1.1" "Content"
+                               ("1.1.1.1" "Content")
+                               ("1.1.1.2" "Content")))))
+                            'x)     
+      
         (adj-cur-y 2.0)
         (mov-cur-x X)
-        (lay-part-start Part *line)))))
+        (lay-part-start Part Part)))))
 
 
 # Unused

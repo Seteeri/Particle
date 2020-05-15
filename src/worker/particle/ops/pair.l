@@ -52,10 +52,9 @@
     
   }#
   
-  (let (#Part (gen-part (cons) 'x 'skip-car)
-        Part (gen2-part (cons) 'x (cons T NIL) T)
-        C (get Ref 'c)
-        Cc (get C 'c))
+  (let (C (get Ref 'c)
+        Cc (get C 'c)
+        Part (gen2-part (cons) 'x (cons T NIL) T))
     
     (a> Part C)
     
@@ -114,11 +113,10 @@
     sym      a*    
          NIL
   }#
-  
-  (let (#Part (gen-part (cons) 'x 'skip-car)
-        Part (gen2-part (cons) 'x (cons T NIL) T)
-        C (get Ref 'c)
-        Cc (get C 'c))
+      
+  (let (C (get Ref 'c)
+        Cc (get C 'c)
+        Part (gen2-part (cons) 'x (cons T NIL) T))    
     
     (a> Part C)
 

@@ -47,7 +47,9 @@
   # Draw cars, deepest first
   # Draw cdr, deepest first
   
-  (let (In (list (list Root 'a NIL))
+  (when Nrl (push '*gen2-list NIL))
+  
+  (let (In (list (list Root NIL NIL))
         X NIL)
     
     (while (setq X (pop 'In))
@@ -60,6 +62,9 @@
                                     'x))
                   (gen2-atom Any)))
       
+        #(println Any N (pair (car (get P 'data))))
+        #(prinl)
+      
         (unless *gen2-out
           (setq *gen2-out N))
       
@@ -71,29 +76,40 @@
           (put N 'c P))      
       
         # Create line if needed
-        (cond ((or (and (pair (car (get P 'data)))
-                        (= C 'a))
-                   (not P)) # Root
-                (when (or P
-                          (not Nrl))
+        (cond ((not C) # Root
+                (unless Nrl
                   (put N 'line
                         (new '(+Line))))
-                (push '*gen2-list *gen2-line)
-                (setq *gen2-line N)
-                #(println "Line Car/Root: " N Any (car *gen2-list)) (prinl)
+                (push '*gen2-list N)
+                (println "Line Root: " N Any *gen2-list) (prinl)
                 )
-                
-              ((and (pair (get P 'data))
-                    (pair (car (get P 'data))))
-                (put N 'line
-                     (new '(+Line)
-                          P
-                          NIL
-                          (pop '*gen2-list)))
-                (put P 'line 'n N)
-                (setq *gen2-line N)
-                #(println "Line Cdr: " N Any) (prinl)
-                ))
+              
+              ((or (and (pair Any) (pair (car Any)))
+                   (and (pair (get P 'data)) (pair (car (get P 'data)))))
+                # Is a pair itself with a car pair
+                # or parent is a pair with a car pair
+                (if (= C 'a)
+                    (prog
+                      (put N 'line (new '(+Line)))
+                      (push '*gen2-list N)
+                      (println "Line Car: " N Any *gen2-list) (prinl)
+                      )
+                    (prog
+                      (put N 'line
+                          (new '(+Line)
+                                P
+                                NIL
+                                (car *gen2-list)))
+                      (put P 'line 'n N)
+                      (println "Line Cdr: " N Any *gen2-list)
+                      (println (get N 'line 'l))
+                      (prinl)
+                      ))))
+                      
+        (when (and (not Any)
+                   (= C 'b))
+          (println "Finish list: " (pop '*gen2-list))
+          (prinl))
           
                                 
         # Push right first
