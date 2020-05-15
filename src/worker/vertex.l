@@ -261,7 +261,7 @@
 #(def '*char-dot (char (hex "02D7")))
 
 # Two vert  tris
-#(def '*char-dot (char (hex "02D0")))
+(def '*char-dot (char (hex "02D0")))
         
 (def '*char-dot (char (hex "00B7")))
 #(def '*char-dot (char (hex "2022")))

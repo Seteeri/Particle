@@ -2,6 +2,23 @@
 (def '*gen2-list)
 (def '*gen2-out)
 
+(de gen2-part-x (Any Skips Nrl)
+  # TODO: Handle circular lists...use another dot at the end
+  
+  # Skip is only for root
+  
+  (off *gen2-line
+       *gen2-list
+       *gen2-out)
+
+  (if (pair Any)         
+      (gen2-pair-x Any Skips Nrl)
+      (setq *gen2-out 
+            (gen2-atom Any)))
+      
+  *gen2-out)
+  
+  
 (de gen2-part (Any Lay Skips Nrl)
   # TODO: Handle circular lists...use another dot at the end
   
@@ -16,9 +33,80 @@
       (setq *gen2-out 
             (gen2-atom Any)))
       
-  *gen2-out)
+  *gen2-out)  
   
 
+(de gen2-pair-x (Root Skips Nrl)
+
+  # Iterative pre order traversal
+
+  # Draw pair
+  # Draw cars, deepest first
+  # Draw cdr, deepest first
+  
+  (when Nrl (push '*gen2-list NIL))
+  
+  (let (In (list (list Root NIL NIL))
+        X NIL)
+    
+    (while (setq X (pop 'In))
+            
+      (let ((Any C P) X
+            N (if (pair Any)                 
+                  (gen2-pair-xy Any 'x)
+                  (gen2-atom Any)))
+      
+        #(println Any N (pair (car (get P 'data))))
+        #(prinl)
+      
+        (unless *gen2-out
+          (setq *gen2-out N))
+      
+        # Connect to prv
+        (when P
+          (if (= C 'a)
+              (put P 'a N)
+              (put P 'b N))
+          (put N 'c P))      
+      
+        # Create line if needed
+        (cond ((not C) # Root
+                (unless Nrl
+                  (put N 'line
+                        (new '(+Line))))
+                (push '*gen2-list N)
+                (println "Line Root: " N Any *gen2-list) (prinl)
+                )
+              
+              ((or (and (pair Any) (pair (car Any)))
+                   (and (pair (get P 'data)) (pair (car (get P 'data)))))
+                # Is a pair itself with a car pair
+                # or parent is a pair with a car pair
+                (if (= C 'a)
+                    (prog
+                      (put N 'line (new '(+Line)))
+                      (push '*gen2-list N)
+                      (println "Line Car: " N Any *gen2-list) (prinl)
+                      ))))
+                      
+        (when (and (not Any)
+                   (= C 'b))
+          (pop '*gen2-list)
+          (println "Finish list: " )
+          #(prinl)
+          )
+
+        (when (pair Any)
+        
+          (unless (cdr Skip)
+            (let B (cdr Any)
+              (push 'In (list B 'b N))))
+        
+          (unless (car Skip)
+            (let A (car Any)
+              (push 'In (list A 'a N)))))))))  
+  
+  
 (de gen2-pair (Root Skips Nrl)
 
   # Iterative pre order traversal
@@ -186,7 +274,7 @@
                     Lay))
         Cdr (when (and (not (cdr Skips))
                        (not (= Val Any)))
-              (gen2-part Dr))
+              (gen2-part Dr 'x NIL T))
         (Verts-Pair Wid-Pair) (make-vert-pair Char-Pair Col (= Val Any))
         Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any

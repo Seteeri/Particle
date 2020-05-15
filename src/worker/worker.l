@@ -196,8 +196,16 @@
     (def '*cdr (gen2-sym-full '*cdr 'x (cons NIL T) "↓" *sol-yellow))
     (def '*car (gen2-sym-full '*car 'x (cons NIL T) "↑"))
     
-    # 2191
-    # ↑ ↓
+    #{
+      : (char "→")
+      -> 8594
+      : (char "←")
+      -> 8592
+      : (char "↑")
+      -> 8593
+      : (char "↓")
+      -> 8595
+    }#
     
     (set-ptr *cdr (get *start 'b))
     (put *cdr 'lay 'y)
@@ -236,37 +244,36 @@
     
       (adj-cur-y)
       (mov-cur-x X)
-      #{
-      (let Part (gen2-part '(("1" "Content"
-                             ("1.1" "Content"
-                              ("1.1.1" "Content")
-                              ("1.1.1" "Content"
-                               ("1.1.1.1" "Content")
-                               ("1.1.1.2" "Content")))))
-                          'x)
-      }#
       
       #{
-        ((1
-          (2 (3) 
-             (4 (5) (6)))))
+      
+        # Test gen2-part
+        
+        '(("1" "Content"
+            ("1.1" "Content"
+            ("1.1.1" "Content")
+            ("1.1.1" "Content"
+              ("1.1.1.1" "Content")
+              ("1.1.1.2" "Content")))))
+              
+        '(((((NIL))))))
+        
+        '(((1) 2) 3))
+        
+        '(((1 2) 3 4) 5 6))
+        
+        '((1 2) (3 4) (5 6)))      
+        
+        '(1 (2))
+        
       }#
-      
-      # Test gen2-part
-      #'(((((NIL))))))
-      #'(((1) 2) 3))
-      #'(((1 2) 3 4) 5 6))
-      #'((1 2) (3 4) (5 6)))      
-      #'(1 (2))
-      
-      (let Part (gen2-part '(("1" "Content"
-                             ("1.1" "Content"
-                              ("1.1.1" "Content")
-                              ("1.1.1" "Content"
-                               ("1.1.1.1" "Content")
-                               ("1.1.1.2" "Content")))))
-                            'x)     
-      
+       
+      (let Part (gen2-part-x '(("*binds" "...")
+                               ("*registers" "...")
+                               ("*log" "...")
+                               ("*start" "...")
+                               ("*pointers" "...")))
+ 
         (adj-cur-y 2.0)
         (mov-cur-x X)
         (lay-part-start Part Part)))))
