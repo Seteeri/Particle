@@ -14,8 +14,10 @@
       
       (make-cons-car-y Ref)
         
-      (if (isa '(+Nil) Ref)
+      (if (and (isa '(+Nil) Ref)
+               (= (get Ref 'c 'b) Ref))
       
+          # End NIL
           (make-cons-car-x-nil Ref)
       
           (make-cons-car-x-sym Ref))))
@@ -174,6 +176,7 @@
 (de make-cons-car-x-nil (Ref)
   
   #{ 
+    When NIL is end
     
     Case 1:
     =======
