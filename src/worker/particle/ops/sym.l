@@ -147,6 +147,7 @@
 (de ins-car (Data Lay)
 
   #{
+  
     Insert item before ptr
 
     [X]
@@ -183,21 +184,22 @@
          NIL
          
     NIL
+    
   }#
     
   (println 'ins-car)
     
   (let (Ref (get *fwd-in 'b)
         Pair (get Ref 'c)
-        #Part (gen-part (list Data) Lay NIL T)
         Part (gen2-part (list Data) Lay (cons NIL T) T)
-        Is-Ref-Pair-of-Pair (and (isa '(+Pair) (get Ref 'a))
-                                 (isa '(+Pair) Pair)))
+        Is-Ref-Pair-of-Pair (and (isa '(+Pair) Pair)
+                                 (or (isa '(+Pair) (get Ref 'a))
+                                     (isa '(+Nil) (get Ref 'a)))))
 
+    (a> Pair Part)                                 
+                                 
     (b> Part Ref)
-          
-    (a> Pair Part)
-        
+                  
     (put-line Ref Part)        
           
     (when Is-Ref-Pair-of-Pair

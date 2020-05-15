@@ -14,6 +14,7 @@ TODO
       * Auto set pairs to y layout
       * Note: gen is recursive - make iterative
     * Need sublist x layout [Done]
+    * Hide unused car/cdr
     * Optimize upd-tree
       * Update containing list
     * Unify symbols 
