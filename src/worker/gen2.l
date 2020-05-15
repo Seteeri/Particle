@@ -109,7 +109,7 @@
             
             
 (de gen2-pair-xy (Any Lay)
-  (let (Col (cadr *pair-col-def)
+  (let (Col (if (= Lay 'x) (car *pair-col-def) (cadr *pair-col-def))
         (Verts-Pair Wid-Pair) (make-vert-pair NIL Col)
         Pair (new '(+Pair)
                   Any
