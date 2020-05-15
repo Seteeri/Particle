@@ -246,13 +246,13 @@
 
   # Adjust brightness for time...or alpha?
 
-  (cond ((== Any NIL)     (caddr *pair-col-def))
-        ((lst? Any)       (car *pair-col-def))
-        ((num? Any)       *sol-orange)
-        ((box? Any)       *sol-green)
-        ((str? Any)       *sol-blue)
-        ((ext? Any)       *sol-cyan)
-        ((sym? Any)       *sol-violet)))
+  (cond ((not Any)  (caddr *pair-col-def))
+        ((lst? Any) (car *pair-col-def))
+        ((num? Any) *sol-orange)
+        ((box? Any) *sol-green)
+        ((str? Any) *sol-blue)
+        ((ext? Any) *sol-cyan)
+        ((sym? Any) *sol-violet)))
 
 # Small down tri
 #(def '*char-dot (char (hex "02D1")))
@@ -263,6 +263,7 @@
 # Two vert  tris
 (def '*char-dot (char (hex "02D0")))
         
+
 (def '*char-dot (char (hex "00B7")))
 #(def '*char-dot (char (hex "2022")))
 #(def '*char-dot (char (hex "2219")))

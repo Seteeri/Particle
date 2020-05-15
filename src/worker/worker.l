@@ -276,6 +276,7 @@
  
         (adj-cur-y 2.0)
         (mov-cur-x X)
+        (adj-cur-x -40.0)
         (lay-part-start Part Part)))))
 
 
