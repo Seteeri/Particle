@@ -13,8 +13,10 @@ TODO
     * Gen-part [Done]
       * Auto set pairs to y layout
       * Note: gen is recursive - make iterative
-    * Unify symbols [Done]
-      * Need sublist x layout
+    * Need sublist x layout [Done]
+    * Optimize upd-tree
+      * Update containing list
+    * Unify symbols 
     * Registers
       * CUT/COPY/PASTE
     * Pointer

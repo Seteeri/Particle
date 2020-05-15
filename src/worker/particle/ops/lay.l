@@ -4,8 +4,9 @@
 
 
 (de upd-tree (List)
-  (mov-cur-ori *master)
-  (lay-part-start *master (get *master 'b)))    
+  (unless List (setq List *master))
+  (mov-cur-ori List)
+  (lay-part-start List List))
 
 
 (de upd-cur ()
@@ -69,10 +70,10 @@
   (setq *bnds-x NIL
         *bnds-y NIL
         *line-lay Line)
-  (lay-pair Part Line Skip))
+  (lay-pair Part Skip))
 
 
-(de lay-pair (Part Line Skip)
+(de lay-pair (Part Skip)
 
   # Iterative pre order traversal
 
