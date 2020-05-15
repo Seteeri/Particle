@@ -227,7 +227,9 @@
 
 
 (dm sub> ()
-  (tog-car)
+  (println "NIL TOG")
+  (unless *on-car
+    (set-on-car T))
   (setq *cur (: ori))
   (adj-cur-y)
   This)

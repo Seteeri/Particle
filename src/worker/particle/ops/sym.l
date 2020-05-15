@@ -57,7 +57,7 @@
 
   }#
 
-  (println 'repl-str)
+  (println 'repl-car)
   
   (let (Ref (get *fwd-in 'b)
         Pair (get Ref 'c)
@@ -72,7 +72,7 @@
           ((= (get C 'a) Pair)
            (a> C Pair))
           (T
-           (quit "repl-str: invalid pair")))
+           (quit "repl-car: invalid pair")))
           
     (del> Ref T T)
     
