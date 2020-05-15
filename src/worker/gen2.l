@@ -1,23 +1,3 @@
-#{
-    (prinl "START")
-    
-    #(gen2-part '(((((NIL))))))
-    #(gen2-part '(((1) 2) 3))
-    #(gen2-part '(((1 2) 3 4) 5 6))
-    #(gen2-part '((1 2) (3 4) (5 6)))
-    
-    (let L (last *gen2-out)
-      (println "RESULT: " L)
-      (println "RESULT: " (get L 'data))
-      
-      # Remove line from root
-      (view (getl (get L 'line)))
-      
-      (lay-part-start L L))
-    
-    (prinl "DONE")
-}#
-
 (def '*gen2-line)
 (def '*gen2-list)
 (def '*gen2-out)
@@ -81,7 +61,7 @@
                   (put N 'line
                         (new '(+Line))))
                 (push '*gen2-list N)
-                (println "Line Root: " N Any *gen2-list) (prinl)
+                #(println "Line Root: " N Any *gen2-list) (prinl)
                 )
               
               ((or (and (pair Any) (pair (car Any)))
@@ -92,7 +72,7 @@
                     (prog
                       (put N 'line (new '(+Line)))
                       (push '*gen2-list N)
-                      (println "Line Car: " N Any *gen2-list) (prinl)
+                      #(println "Line Car: " N Any *gen2-list) (prinl)
                       )
                     (prog
                       (put N 'line
@@ -101,18 +81,18 @@
                                 NIL
                                 (car *gen2-list)))
                       (put P 'line 'n N)
-                      (println "Line Cdr: " N Any *gen2-list)
-                      (println (get N 'line 'l))
-                      (prinl)
+                      #(println "Line Cdr: " N Any *gen2-list)
+                      #(println (get N 'line 'l))
+                      #(prinl)
                       ))))
                       
         (when (and (not Any)
                    (= C 'b))
-          (println "Finish list: " (pop '*gen2-list))
-          (prinl))
-          
-                                
-        # Push right first
+          (pop '*gen2-list)
+          #(println "Finish list: " )
+          #(prinl)
+          )
+
         (when (pair Any)
         
           (unless (cdr Skip)

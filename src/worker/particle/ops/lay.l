@@ -4,18 +4,17 @@
 
 
 (de upd-tree (List)
-
-  (setq *cur (get *master 'ori))
+  (mov-cur-ori *master)
   (lay-part-start *master (get *master 'b)))    
 
 
 (de upd-cur ()
   (setq *bnds-x (if *bnds-x
-                   (max @ (car *cur))
-                   (car *cur))
+                    (max @ (car *cur))
+                    (car *cur))
         *bnds-y (if *bnds-y
-                   (min @ (cadr *cur))
-                   (cadr *cur))))
+                    (min @ (cadr *cur))
+                    (cadr *cur))))
 
               
 (de upd-cur-debug ()
