@@ -42,35 +42,21 @@
   (cond ((= Dst "projview")
          (let (Ptr-Gl  (get '*buffer-objects 'projview 'gl~ptr)
                Ptr-Buf Ptr)
-           #(println (usec) " | wr-dst projview | " (struct Ptr '((B . 64) (B . 64))))
            (memcpy Ptr-Gl (+ Ptr-Buf 9) 64)
            (memcpy (+ Ptr-Gl 64) (+ Ptr-Buf 9 64 24) 64)))
 
         ((= Dst "nodes")
-         #(println (usec) " | wr-dst nodes | " (struct (get *ipc 'ipc~buf) '(B . 241)))
-         #(prinl-info "wr-dst" (pack "Off=" Off))
-
          (let (Ptr-Gl  (+ (get '*buffer-objects 'nodes 'gl~ptr) Off)
                Ptr-Buf Ptr)
-                                   
-           (when NIL
-             (println (struct Ptr-Buf
-                              '((N . 1)
-                                (C . 1)
-                                (-1.0 . 3)
-                                (-1.0 . 3)
-                                (-1.0 . 3)
-                                (-1.0 . 16)
-                                (-1.0 . 16)
-                                (-1.0 . 16)
-                                (I . 1))))
-             (println (usec) " | wr-dst nodes | " (struct (+ Ptr-Buf 1) '((-1.0 . 3) (-1.0 . 3) (-1.0 . 3)))))
           
+           # Copy rx into uv[2]
+           #(memcpy (+ Ptr-Gl 45 64 64 8)
+           #        (+ Ptr-Buf 45 64 64 8)
+           #        4)
+                    
            # 45 = off @ mm
            # should calc auto
-           (memcpy Ptr-Gl (+ Ptr-Buf 45) (+ 64 64 64 4))
-           
-           T))))
+           (memcpy Ptr-Gl (+ Ptr-Buf 45) (+ 64 64 64 4))))))
 
 
 (de rd-src (Src Sock Sz Off)

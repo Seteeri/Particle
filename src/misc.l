@@ -21,7 +21,7 @@
 (de bind-args ()
   (setq *width     (/ 2560 2)
         *height    (/ 1080 2)
-        *verts-max (** 2 19)
+        *verts-max (** 2 17)
         *uds-ctrl  "/tmp/part-ctrl.sock"
         *uds-in    "/tmp/part-in.sock"   
         *uds-mod   "/tmp/part-mod.sock"

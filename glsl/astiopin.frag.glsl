@@ -58,8 +58,8 @@ precision mediump float;
 precision mediump samplerBuffer;
 
 uniform samplerBuffer msdf;
-uniform float hint_amount;
-uniform float subpixel_amount;
+//uniform float hint_amount; 0 or 1
+//uniform float subpixel_amount; 0 or 1
 
 in rgba_t vertexRGBA;
 flat in int vertexOffsetTex;
@@ -67,11 +67,10 @@ flat in ivec2 vertexDimsTex;
 flat in vec2 vertexDimsTexOffset;
 in uv_t vertexUV;
 
-varying vec2  tc0;
-varying float doffset;
-varying float sdf_texel;
+flat in float dOffset;
+flat in vec2 sdfTexel;
 
-layout(location = 0) out vec4 gl_FragColor;
+layout(location = 0) out vec4 color;
 
 float median(float r, float g, float b) 
 {
@@ -83,57 +82,34 @@ float lstep( float a, float b, float x )
     return clamp(( x - a ) / ( b - a ), 0.0, 1.0 );
 }
 
-vec4 sample_bilinear2(int vertOffTex,
-                      ivec2 vertexDimsTex,
-                      ivec2 coordTexel)
+vec3 subpixel( float v, float a ) 
 {
-    // https://github.com/WebGLSamples/WebGL2Samples/blob/master/samples/texture_fetch.html
-    
-    // Move this to vertex shader or CPU/passthrough
-    // Subtract 1 since coords actually start at 0,0 otherwise visual artifacts will occur
-    /* Make sure you offset your texture coordinates with 1/2 pixel, 
-     * because in OpenGL the texel origin are defined to be the bottom 
-     * left corner of a texel. That means that the exact center of a 
-     * texel is located at [S'+0.5, T'+0.5] where S' and T' are the 
-     * unnormalized texture coordinates.
-     */
-        
-    // Below only works when textures are all the same size
-    //int offsetTex = vertOffTex * vertexDimsTex.x * vertexDimsTex.y;
-    // Otherwise offset has to be generated and passed here per glyph
-    // Currently, vertOffTex is simply the char index
+    float vt      = 0.6 * v; // 1.0 will make your eyes bleed
+    vec3  rgb_max = vec3( -vt, 0.0, vt );
+    float top     = abs( vt );
+    float bottom  = -top - 1.0;
+    float cfloor  = mix( top, bottom, a );
+    vec3  res     = clamp( rgb_max - vec3( cfloor ), 0.0, 1.0 );
+    return res;
+}
 
-    int offTexel00 = vertOffTex + ( coordTexel.x       + (coordTexel.y       * vertexDimsTex.x));
-    int offTexel10 = vertOffTex + ((coordTexel.x + 1)  + (coordTexel.y       * vertexDimsTex.x));
-    int offTexel11 = vertOffTex + ((coordTexel.x + 1)  + ((coordTexel.y + 1) * vertexDimsTex.x));
-    int offTexel01 = vertOffTex + ( coordTexel.x       + ((coordTexel.y + 1) * vertexDimsTex.x));
-    
-    vec4 texel00 = texelFetch(msdf, offTexel00);
-    vec4 texel10 = texelFetch(msdf, offTexel10);
-    vec4 texel11 = texelFetch(msdf, offTexel11);
-    vec4 texel01 = texelFetch(msdf, offTexel01);
-
-    vec2 sampleCoord = fract(f_coordTexel.xy);
-    vec4 texel0 = mix(texel00, texel01, sampleCoord.y);
-    vec4 texel1 = mix(texel10, texel11, sampleCoord.y);            
-    
-    return mix(texel0, texel1, sampleCoord.x);
-}    
-    
 void main() 
 {
+    const float hint_amount = 1.0;
+    const float subpixel_amount = 1.0;
     
-    ivec2 coordTexel = vec2(vertexUV.u, vertexUV.v) * vertexDimsTexOffset;
-
-    float v_sdf = sample_bilinear2(msdf, 
+    vec2  f_coordTexel = vec2(vertexUV.u, vertexUV.v) * vertexDimsTexOffset;
+    ivec2 coordTexel = ivec2(f_coordTexel);
+    
+    vec4 v_sdf = sample_bilinear2(msdf, 
                                    vertexOffsetTex,
                                    vertexDimsTex,
                                    coordTexel);
-    float v_sdf_n = sample_bilinear2(msdf, 
+    vec4 v_sdf_n = sample_bilinear2(msdf, 
                                      vertexOffsetTex,
                                      vertexDimsTex,
                                      ivec2(coordTexel.x, coordTexel.y - 1));
-    float v_sdf_e = sample_bilinear2(msdf, 
+    vec4 v_sdf_e = sample_bilinear2(msdf, 
                                      vertexOffsetTex,
                                      vertexDimsTex,
                                      ivec2(coordTexel.x + 1, coordTexel.y - 1));
@@ -151,18 +127,55 @@ void main()
 
     float horz_scale  = 1.0 - subpixel_amount * 0.333; // Blurring vertical strokes along the X axis a bit
     float vert_scale  = 0.5; // While adding some contrast to the horizontal strokes
-    float hdoffset    = mix( doffset * horz_scale, doffset * vert_scale, vgrad );
-    float res_doffset = mix( doffset, hdoffset, hint_amount );
+    float hdOffset    = mix( dOffset * horz_scale, dOffset * vert_scale, vgrad );
+    float res_dOffset = mix( dOffset, hdOffset, hint_amount );
 
-    vec2 offs = vec2( subpixel_amount * res_doffset * sdf_texel * 16.0, 0.0 ); // not sure about 16.0, sdf_size?
+    /////////////////////////////////////////////////////////////////
+    
+    float alpha       = smoothstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf );
+    // Additional contrast
+    alpha             = pow( alpha, 1.0 + 0.2 * vgrad * hint_amount );
+    // Unfortunately there is no support for ARB_blend_func_extended in WebGL.
+    // Fortunately the background is filled with a solid color so we can do
+    // the blending inside the shader.
+    
+    // Discarding pixels beyond a threshold to minimise possible artifacts.
+    if ( alpha < 20.0 / 256.0 ) discard;
+    
+    vec3 channels = subpixel( grad.x * 0.5 * subpixel_amount, alpha );
+    // For subpixel rendering we have to blend each color channel separately
+    vec3 res = mix( vec3(1.0, 0.0, 0.0),
+                    vec3(vertexRGBA.r,
+                         vertexRGBA.g,
+                         vertexRGBA.b),
+                    channels);
+    
+    color = vec4( res, 1.0 );    
+    
+    /////////////////////////////////////////////////////////////////
+    
+    /*
+    
+    float f_offs = subpixel_amount * res_dOffset * sdfTexel.x * 16.0;
+    vec2 offs = vec2( f_offs, 0.0 ); // not sure about 16.0, sdf_size?
+    
+    vec4 v_sdf_r = sample_bilinear2(msdf, 
+                                     vertexOffsetTex,
+                                     vertexDimsTex,
+                                     ivec2(f_coordTexel - offs));
+    vec4 v_sdf_b = sample_bilinear2(msdf, 
+                                     vertexOffsetTex,
+                                     vertexDimsTex,
+                                     ivec2(f_coordTexel + offs));
 
-    float sdf_r = texture2D( font_tex, tc0 - offs ).r;
-    float sdf_b = texture2D( font_tex, tc0 + offs ).r;
-
-    float alpha_r = lstep( 0.5 - res_doffset, 0.5 + res_doffset, sdf_r );
-    float alpha_g = lstep( 0.5 - res_doffset, 0.5 + res_doffset, sdf );
-    float alpha_b = lstep( 0.5 - res_doffset, 0.5 + res_doffset, sdf_b );
-
-    vec3 color = vec3( alpha_r, alpha_g, alpha_b );
-    gl_FragColor = vec4( color, 1.0 );
+    float sdf_r = median(v_sdf_r.r, v_sdf_r.g, v_sdf_r.b);
+    float sdf_b = median(v_sdf_b.r, v_sdf_b.g, v_sdf_b.b);
+                                     
+    float alpha_r = lstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf_r );
+    float alpha_g = lstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf );
+    float alpha_b = lstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf_b );
+    
+    color = vec4( vec3( alpha_r, alpha_g, alpha_b ), 1.0 );
+    
+    */
 }

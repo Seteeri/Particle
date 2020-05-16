@@ -47,14 +47,14 @@
 (defcwdpath '*path-structs-shader "/glsl/structs.glsl")
 (def '*paths-rast-vert-shader
       (list *path-structs-shader
-            (pack *cwd "/glsl/node.vs.glsl")))
+            (pack *cwd "/glsl/msdf.vert.glsl")))
 (def '*paths-rast-frag-shader
       (list *path-structs-shader
             (pack *cwd "/glsl/filter-bilinear.fs.glsl")
-            (pack *cwd "/glsl/msdf.fs.glsl")))
+            (pack *cwd "/glsl/msdf.frag.glsl")))
 (def '*paths-comp-shader
       (list *path-structs-shader
-            (pack *cwd "/glsl/node.cs.glsl")))
+            (pack *cwd "/glsl/msdf.cs.glsl")))
 (defcwdpath '*path-prog-rast "/bin/prog-rast.bin")
 
 (def '*window)

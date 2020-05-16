@@ -46,12 +46,16 @@ struct instance_t_2 {
 // Store UVs in uniform buffer? Might not fit
 // Use chars for rgba
 // Pass ROT/POS/SCA or QUAT
+// Half UVs since other half is 0
 
+/*
 struct instance_t_3 {
                      // cnt * sz
     mat4 model;      // * 16 4 = 64 
     rgba_t rgbas;    // * 4  1 = 4
-    uv_t uvs[4];     // * 8  4 = 32
+    uv_t uvs[4];     // * 4  4 = 16
     int w_flags;     // * 4  1 = 4
+    float rx;        // * 1  4 = 4
                      //        = 104 bytes
 };
+*/

@@ -1,7 +1,7 @@
 (class +Vertex)
 (with *Class
   (=: sz-gl 208)
-  (=: sz-pl (+ 8 1 12 12 12 64 64 64 4))
+  (=: sz-pl (+ 8 1 12 12 12 64 64 64 4 4))
   (=: ptr   (native "@" "malloc" 'N (: sz-pl)))
   
   (=: sca-vert    (*/ 1.0 1.0 32.0)) # ortho-scale
@@ -78,7 +78,12 @@
     (calc-cen> (: met)))
   (=: mat4-cen (get (: met) 'mat4-cen))
   (=: mat4-cen-i (get (: met) 'mat4-cen-i))
-    
+  
+  # Convert rx shape -> px
+  (=: rx (*/ (get (: met) 'range)
+             (get (: met) 'scale)
+             1.0))
+  
   (=: uv (get (: met) 'uv))
   
   This)
@@ -117,13 +122,15 @@
           (cons -1.0 (: mm))
           (cons -1.0 (: rgba))          
           (cons -1.0 (: uv))
-          (cons (: off-texel) 4))
+          (cons (: off-texel) 4)
+          (cons -1.0 (list (: rx)))
+          )
   (meta '(+Vertex) 'sz-pl))
 
 
 (dm rd-ptr> (Ptr)
 
-  (let ((Off-Gl Ch Pos Rota Sca Mm Rgba Uv Off-Texel)
+  (let ((Off-Gl Ch Pos Rota Sca Mm Rgba Uv Off-Texel Rx)
         (struct Ptr 
                 '((N . 1)
                   (B . 1)
@@ -133,21 +140,23 @@
                   (-1.0 . 16)
                   (-1.0 . 16)
                   (-1.0 . 16)
-                  (I . 1))))
+                  (I . 1)
+                  (-1.0 . 1)
+                  )))
 
     (=: off-gl Off-Gl)
-    
     (=: ch (car Ch))
-        
     (=: pos  Pos)
     (=: rota Rota)
     (=: sca  Sca)
+    
     (=: mm Mm)
-    
     (=: rgba Rgba)
-    
     (=: uv Uv)
-    (=: off-texel (car Off-Texel))))
+    (=: off-texel (car Off-Texel))
+    
+    (=: rx Rx)
+    ))
         
         
 (de get-vert-ix (Off)
