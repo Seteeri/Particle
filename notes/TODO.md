@@ -12,15 +12,16 @@ TODO
   * 14 MAY - THURS
     * Gen-part [Done]
       * Need sublist x layout
-    * Implement bindings
+    * Ensure if a Pair's Car is a Pair it should be colored correctly
+    * Unify symbols
+      * Registers
+        * CUT/COPY/PASTE
+    * Implement command mode and symbol mode
       * Double alt
       * Double shift
     * Hide unused car/cdr
     * Optimize upd-tree
       * Update backwards until non-y list
-    * Unify symbols 
-    * Registers
-      * CUT/COPY/PASTE
     * Pointer
       * Mov pointer to different list
         * Need cmd that we can type

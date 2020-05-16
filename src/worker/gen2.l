@@ -92,6 +92,10 @@
               (put P 'b N))
           (put N 'c P))      
       
+        # Color pairs
+        (when (and (pair Any) (pair (car Any)))
+          (col-verts> N (cadr *pair-col-def)))      
+      
         # Create line if needed
         (cond ((not C) # Root
                 (unless Nrl
@@ -105,12 +109,11 @@
                    (and (pair (get P 'data)) (pair (car (get P 'data)))))
                 # Is a pair itself with a car pair
                 # or parent is a pair with a car pair
-                (if (= C 'a)
-                    (prog
-                      (put N 'line (new '(+Line)))
-                      (push '*gen2-list N)
-                      (println "Line Car: " N Any *gen2-list) (prinl)
-                      ))))
+                (when (= C 'a)
+                  (put N 'line (new '(+Line)))
+                  (push '*gen2-list N)
+                  (println "Line Car: " N Any *gen2-list) (prinl)
+                  )))
                       
         (when (and (not Any)
                    (= C 'b))
@@ -165,6 +168,10 @@
               (put P 'a N)
               (put P 'b N))
           (put N 'c P))      
+      
+        # Color pairs
+        (when (and (pair Any) (pair (car Any)))
+          (col-verts> N (cadr *pair-col-def)))          
       
         # Create line if needed
         (cond ((not C) # Root

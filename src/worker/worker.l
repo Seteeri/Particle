@@ -147,6 +147,7 @@
     Proccess number (Worker)
     - Namespace list
       - Particles list
+        - *...
     
     Create one for the other procs?
     - They would all have to draw also
@@ -162,7 +163,7 @@
   
     (when T
     
-      (setq *bind-ops-p (gen2-sym-full '*binds-ops 'y))
+      (setq *bind-ops-p (gen2-sym-full '*binds-ops 'x))
       
       (lay-part-start *bind-ops-p *bind-ops-p))
             
@@ -259,9 +260,8 @@
                                ("*start" "...")
                                ("*symbols")))
  
-        (adj-cur-y 2.0)
+        (adj-cur-y -8.0)
         (mov-cur-x X)
-        (adj-cur-x -40.0)
         (lay-part-start Part Part)))))
 
 

@@ -85,6 +85,7 @@
     
   (=: lay L))
 
+  
 (de b@ @
   (let (A (next)
         B NIL)
@@ -289,6 +290,15 @@
     (when (: a) (col> @ Col P))
     (when (: b) (col> @ Col P))))
 
+    
+(dm col-verts> (Col)
+  (let ((R G B) Col)
+    (for Vert (: verts)
+      (put Vert 'rgba (list R G B 1.0
+                            R G B 1.0
+                            R G B 1.0
+                            R G B 1.0)))))
+    
 
 # unused
 (dm bnds> (A B)
