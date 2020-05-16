@@ -3,8 +3,8 @@
 precision mediump float;
 precision mediump samplerBuffer;
 
-vec4 filter_bilinear(samplerBuffer msdf, 
-                      int vertexOffsetTex,
+vec4 sample_bilinear(samplerBuffer msdf, 
+                      int vertOffTex,
                       ivec2 vertexDimsTex,
                       uv_t vertexUV, 
                       vec2 vertexDimsTexOffset)
@@ -24,19 +24,19 @@ vec4 filter_bilinear(samplerBuffer msdf,
     ivec2 coordTexel = ivec2(f_coordTexel);
         
     // Below only works when textures are all the same size
-    //int offsetTex = vertexOffsetTex * vertexDimsTex.x * vertexDimsTex.y;
+    //int offsetTex = vertOffTex * vertexDimsTex.x * vertexDimsTex.y;
     // Otherwise offset has to be generated and passed here per glyph
-    // Currently, vertexOffsetTex is simply the char index
+    // Currently, vertOffTex is simply the char index
 
-    int offsetTexel00 = vertexOffsetTex + ( coordTexel.x       + (coordTexel.y       * vertexDimsTex.x));
-    int offsetTexel10 = vertexOffsetTex + ((coordTexel.x + 1)  + (coordTexel.y       * vertexDimsTex.x));
-    int offsetTexel11 = vertexOffsetTex + ((coordTexel.x + 1)  + ((coordTexel.y + 1) * vertexDimsTex.x));
-    int offsetTexel01 = vertexOffsetTex + ( coordTexel.x       + ((coordTexel.y + 1) * vertexDimsTex.x));
+    int offTexel00 = vertOffTex + ( coordTexel.x       + (coordTexel.y       * vertexDimsTex.x));
+    int offTexel10 = vertOffTex + ((coordTexel.x + 1)  + (coordTexel.y       * vertexDimsTex.x));
+    int offTexel11 = vertOffTex + ((coordTexel.x + 1)  + ((coordTexel.y + 1) * vertexDimsTex.x));
+    int offTexel01 = vertOffTex + ( coordTexel.x       + ((coordTexel.y + 1) * vertexDimsTex.x));
     
-    vec4 texel00 = texelFetch(msdf, offsetTexel00);
-    vec4 texel10 = texelFetch(msdf, offsetTexel10);
-    vec4 texel11 = texelFetch(msdf, offsetTexel11);
-    vec4 texel01 = texelFetch(msdf, offsetTexel01);
+    vec4 texel00 = texelFetch(msdf, offTexel00);
+    vec4 texel10 = texelFetch(msdf, offTexel10);
+    vec4 texel11 = texelFetch(msdf, offTexel11);
+    vec4 texel01 = texelFetch(msdf, offTexel01);
 
     vec2 sampleCoord = fract(f_coordTexel.xy);
     vec4 texel0 = mix(texel00, texel01, sampleCoord.y);

@@ -25,9 +25,9 @@ void main()
                                 vertexDimsTex,
                                 vertexUV,
                                 vertexDimsTexOffset);
-    float sigDist = median(samp.r, samp.g, samp.b);
-    float w = fwidth(sigDist);
-    float opacity = smoothstep(0.5 - w, 0.5 + w, sigDist);
+    float d = median(samp.r, samp.g, samp.b);
+    float w = fwidth(d);
+    float opacity = smoothstep(0.5 - w, 0.5 + w, d);
     
     color = vec4(vec3(vertexRGBA.r,
                        vertexRGBA.g,

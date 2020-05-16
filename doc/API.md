@@ -16,9 +16,8 @@ API
   * Vulkan planned
   * Uses glyph instancing aka "particle system"
     * Multi-channel signed distance fonts
-      * Felzenszwalb/Huttenlocher distance transform*
-      * Glyph hinting*
-      * Subpixel antialiasing*
+      * Glyph hinting
+      * Subpixel antialiasing
   * Compute shaders
   * AZDO techniques to minimize draw calls and reduce CPU<->GPU comms
     * Persistent mapping

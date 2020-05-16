@@ -32,21 +32,23 @@ void main(void)
     // Convert normalized texcoords to absolute texcoords.
     vec2 uv = TexCoord * vec2(vertexDimsTex);
     // Calculate derivates
-    vec2 Jdx = dFdx( uv );
-    vec2 Jdy = dFdy( uv );
+    vec2 Jdx = dFdx(uv);
+    vec2 Jdy = dFdy(uv);
     // Sample SDF texture (3 channels).
-    vec4 samp = filter_bilinear(msdf, 
+    vec4 samp = sample_bilinear(msdf, 
                                 vertexOffsetTex,
                                 vertexDimsTex,
                                 vertexUV,
                                 vertexDimsTexOffset);
     // calculate signed distance (in texels).
     float sigDist = median( samp.r, samp.g, samp.b ) - 0.5;
-    // For proper anti-aliasing, we need to calculate signed distance in pixels. We do this using derivatives.
+    
+    // For proper anti-aliasing, calculate signed distance in px
+    // Use derivatives.
     vec2 gradDist = safeNormalize( vec2( dFdx( sigDist ), dFdy( sigDist ) ) );
     vec2 grad = vec2( gradDist.x * Jdx.x + gradDist.y * Jdy.x, gradDist.x * Jdx.y + gradDist.y * Jdy.y );
     // Apply anti-aliasing = 1.0/8.0 = 0.125
-    const float kThickness = 0.125;
+    const float kThickness = 0.01;
     //const float kThickness = 1.0/128.0;
     const float kNormalization = kThickness * 0.5 * sqrt( 2.0 );
     float afwidth = min( kNormalization * length( grad ), 0.5 );
