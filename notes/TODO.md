@@ -16,7 +16,7 @@ TODO
     * Need sublist x layout [Done]
     * Hide unused car/cdr
     * Optimize upd-tree
-      * Update containing list
+      * Update backwards until non-y list
     * Unify symbols 
     * Registers
       * CUT/COPY/PASTE

@@ -174,13 +174,8 @@
     ########
     # *start
 
-    (setq *start (gen2-sym-full '*start 'x))
-
-    # DO this properly - in gen?
-    (with (get *start 'b)
-      (=: line (new '(+Line) NIL NIL NIL (get *start 'a 'dims))))
-      
-    (setq *pos-main (copy *cur)
+    (setq *start (gen2-sym-full '*start 'x)
+          *pos-main (copy *cur)
           *line (get *start 'b)
           *master *start)
     
