@@ -240,21 +240,21 @@
     Base-0  = NIL (med - 2nd most common)
         
     Yellow = Ptr
-    Orange = Num
+    Orange = ?
     Red = ?
     Magenta = ?
     
     Violet = Int/Sym
     Blue = Str,Box/Sym/Trans
     Cyan = Ext/Sym
-    Green = ?
+    Green = Num
   }#
 
   # Adjust brightness for time...or alpha?
 
   (cond ((not Any)  (caddr *pair-col-def))
         ((lst? Any) (car *pair-col-def))
-        ((num? Any) *sol-orange)
+        ((num? Any) *sol-green)
         ((str? Any) *sol-blue)
         ((ext? Any) *sol-cyan)
         ((sym? Any) *sol-violet)))
