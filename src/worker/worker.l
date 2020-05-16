@@ -123,11 +123,13 @@
     (balance '*binds L))
     
   ##################################
-    
+  
+  (prinl-info "init-worker" (pack "Heap: " (heap)))
   (setq *vert-offs
         (make
           (for I *verts-max 
             (link (vert-off-gl I)))))
+  (prinl-info "init-worker" (pack "Heap: " (heap)))
   
   (gen-def-parts)
   
@@ -258,7 +260,8 @@
                                ("*pointers" "...")
                                ("*registers" "...")
                                ("*start" "...")
-                               ("*symbols")))
+                               ("*plist" "...")
+                               ("*symbols" "...")))
  
         (adj-cur-y -8.0)
         (mov-cur-x X)

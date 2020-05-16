@@ -233,7 +233,7 @@
     Notes
     - Mark namespace symbol (or binary tree?)
     - Consolidate symbols?    
-    - R G B = NUM  PAIRS SYMS
+    - R G B = UNUSED NUM SYMS
     
     Base-01 = X Pair (darkest - most common)
     Base-1  = Y Pair (lightest - least common)

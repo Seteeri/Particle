@@ -174,26 +174,21 @@
   
 (dm mov> ()
 
-  # Check first vert
-  # If changed, change rest
+  # If first vert changed, change rest
   # else, do nothing
   
-  #{
   (let? Vert (car (: verts))
-        
-    (if (= (ori> (get Vert 'met)
-                 (get Vert 'pos))
-           Pos)
-    
-        # Set to pos of last vert (mul by length)
-        (setq Pos (list (+ (car Pos)
-                            (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length (: verts)) 1)) 1.0))
-                        (cadr Pos)))
-    
-        (setq Pos (mov-verts> This Pos))))
-  }#
+
+    # Set to pos of last vert (mul by length)
+    (if (= (: ori) *cur) 
+        (list (+ (car *cur)
+                  (*/ (meta '(+Vertex) 'adv-vert)
+                      (num-to-fl (- (length (: verts)) 1))
+                      1.0))
+              (cadr *cur)))
+    (mov-verts> This)))
   
-  (mov-verts> This))
+  #(mov-verts> This))
   
   
 # Rename off -> rel
@@ -290,6 +285,7 @@
     (when (: a) (col> @ Col P))
     (when (: b) (col> @ Col P))))
 
+    
     
 (dm col-verts> (Col)
   (let ((R G B) Col)

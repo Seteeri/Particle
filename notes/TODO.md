@@ -9,19 +9,47 @@ TODO
   GOAL is build structures more fluidly
   * Create list, enter strings, convert some to symbols, eval
   
-  * 14 MAY - THURS
-    * Gen-part [Done]
-      * Need sublist x layout
-    * Ensure if a Pair's Car is a Pair it should be colored correctly
+  * 16 MAY - SAT
+    * Particle should have dirty flag
+    * Refactor del
+      * Track data:particles in binary tree *particles
+        * Unlike a CLI, we hold references to old data
+          * Which if future commands change old data, it has to be updated
+            * E.g. zap
+          * Which means data/particles must be tracked
+        * Given multi particles repr same data
+          * To gc data, delete all particles ref data
+          * Assumes non-visible particles are not ref data
+        * Data : List of Particles
+          * handle 'zap - isyms replaced with name (tsym) - invalidates particles
+        * Draw all symbols will access all data?
+        * External symbols are more explicit
+    * Refactor layout to use stack like gen
+    * Support X sublists
     * Unify symbols
-      * Registers
-        * CUT/COPY/PASTE
-    * Implement command mode and symbol mode
-      * Double alt
-      * Double shift
+      * symbol hierarchy
+      * CUT/COPY/PASTE
+        * Need registers
     * Hide unused car/cdr
-    * Optimize upd-tree
-      * Update backwards until non-y list
+    * Optimize display updates
+      * Decouple upd-tree from command
+      * Update only if in view
+      * upd-tree
+        * Update backwards until non-y list
+      * Relayout should use multiple workers
+        * Scout pushes work into a queue
+          * On finish scan, become worker
+          * Batch nodes
+        * Ctrl distributes tasks to workers
+          * Workers send rdy msg to get work
+        * Workers update and send serialized data to Render
+        * Or go further, and use a timeout
+          * Start handling longer tasks
+            * Rotate process
+            * Or...
+              * Deploy task
+              * Set timeout to rotate
+              * Fork
     * Pointer
       * Mov pointer to different list
         * Need cmd that we can type
@@ -35,27 +63,14 @@ TODO
     * Sym prop output
       * Output normally
       * Only upd objs in view
-    * Relayout should use multiple workers
-      * Scout pushes work into a queue
-        * On finish scan, become worker
-        * Batch nodes
-      * Ctrl distributes tasks to workers
-        * Workers send rdy msg to get work
-      * Workers update and send serialized data to Render
-      * Or go further, and use a timeout
-        * Start handling longer tasks
-          * Rotate process
-          * Or...
-            * Deploy task
-            * Set timeout to rotate
-            * Fork          
     * Implement cmds Q/E : start/end of line/list  
     * Refactor del
     * Cache last item for lines/lists
-      * Do on modify      
-      * Refactor more  
+      * On command
+      * On layout
+      * On gen
   
-  * 11 MAY - TUES
+  * ?
   
     * Fix eval output
       * Print system out
@@ -69,48 +84,29 @@ TODO
     * a s d m for arithmetic?
     * Named pipe + rd/pr  
   
-    * Visual Hierarchy
-      * Process -> Namespace -> Symbols...
-      * Process assumed to be the same...so indicate with ptr?
-        * Namespace is the root...  
     * Need to be able to mov pointer to another list
       * Either modify master ptr
       * Or mov current ptr
     * Draw spine or use grid to provide visual line guide  
-              
-    * Refactor layout
-      * *binds-ops needs mix of x/y
       
-  * 12 MAY - WED
+  * ?
+  
     * https://github.com/mapbox/tiny-sdf
       * Felzenszwalb/Huttenlocher distance transform
     * https://github.com/astiopin/webgl_fonts
       * glyph hinting
-      * subpixel antialiasing            
+      * subpixel antialiasing
   
-  ---
-        
-  * Track data:particles in binary tree *particles
-    * Unlike a CLI, we hold references to old data
-      * Which if future commands change old data, it has to be updated
-        * E.g. zap
-      * Which means data/particles must be tracked
-    * Given multi particles repr same data
-      * To gc data, delete all particles ref data
-      * Assumes non-visible particles are not ref data
-    * Data : List of Particles
-      * handle 'zap - isyms replaced with name (tsym) - invalidates particles
-    * Draw all symbols will access all data?
-    * External symbols are more explicit        
-      
   * Finish drawing *binds-ops - make accessible
     * Either show input or output
       * Code or data form
       * After change, eval it
         * For "button", create a list somewhere: (update bindings to *bindings-key)
         * User clicks it by eval'ing it
-      * Ideal is to show symbols, instead of their val (num)  
-      
+      * Ideal is to show symbols, instead of their val (num)    
+  
+  ---
+                    
   * Cam
     * Cap zooming
     * Camera needs to move with content like when entering a newline
@@ -180,6 +176,10 @@ TODO
 
   ---
   
+  * Implement command mode and symbol mode
+    * Double alt
+    * Double shift  
+  
   * Improve testing environment
     * Have processes run independently    
   
@@ -188,6 +188,7 @@ TODO
       * Pass vecs to GLSL [later]
         * Use quats?
         * Pass 48 bytes instead of 64  
+      * GL structs
     * IPC
       * Utilize multiple workers - see notes
       * Batch messages, flush etc.
