@@ -211,7 +211,11 @@
 (def '*sol-magenta (list (*/ 1.0 211.0 255.0) (*/ 1.0 54.0 255.0) (*/ 1.0 130.0 255.0)))
 
 # X / Y / NIL
-(def '*pair-col-def (list *sol-base-01 *sol-base-1 *sol-base-0))
+(def '*pair-col-def 
+     (list *sol-base-01
+           *sol-base-1
+           *sol-violet))
+           #*sol-base-0
 
 (de get-color-type (Any)
   #{
@@ -226,22 +230,24 @@
      |        |           |           |
     NIL   Internal    Transient    External  
     
+    Notes
+    - Mark namespace symbol (or binary tree?)
+    - Consolidate symbols?    
+    - R G B = NUM  PAIRS SYMS
+    
     Base-01 = X Pair (darkest - most common)
     Base-1  = Y Pair (lightest - least common)
     Base-0  = NIL (med - 2nd most common)
-    
-    Mark?
-    - Namespace symbol (or binary tree?)
-    
+        
     Yellow = Ptr
     Orange = Num
     Red = ?
     Magenta = ?
     
     Violet = Int/Sym
-    Blue = Str/Sym/Trans
+    Blue = Str,Box/Sym/Trans
     Cyan = Ext/Sym
-    Green = Box/Sym/Trans
+    Green = ?
   }#
 
   # Adjust brightness for time...or alpha?
@@ -249,7 +255,6 @@
   (cond ((not Any)  (caddr *pair-col-def))
         ((lst? Any) (car *pair-col-def))
         ((num? Any) *sol-orange)
-        ((box? Any) *sol-green)
         ((str? Any) *sol-blue)
         ((ext? Any) *sol-cyan)
         ((sym? Any) *sol-violet)))
