@@ -215,15 +215,26 @@
 
 
 (dm sup> ()
-  (if (= (get (: c) 'a) This)
-      (prog
-        (set-on-car)
-        (mov-cur-abv (: c))
-        (: c))
-      (prog
-        (set-on-car)
-        (mov-cur-abv This)
-        This)))
+  (prog1
+    # 4 POS' : X-A, X-B, Y-A, Y-B
+    # Each pos can be car or cdr
+    # Cdr only for X-B, Y-B
+    #{
+    (if *on-car
+        (if (and (lay-x?> (: c))
+                 (is-car?> This))
+            (prog (mov-cur-abv (: c)) (: c))
+            (prog (mov-cur-abv This)  This))
+        (prog (mov-cur-abv (: c)) (: c)))
+    }#
+    
+    (if (and *on-car
+             (or (lay-y?> (: c))
+                 (is-cdr?> This)))
+        (prog (mov-cur-abv This)  This)
+        (prog (mov-cur-abv (: c)) (: c)))
+    
+    (set-on-car)))
 
 
 (dm sub> ()

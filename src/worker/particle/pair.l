@@ -73,22 +73,38 @@
 
 
 (dm sub> ()
-  (if (isa '(+Pair) (: a))
-      # Exclude Y layout Pair -> X layout Car
-      (prog
-        (when (get (: a) 'line)
-          (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))
-          (setq *line (: a)))
-        # Either move Pair or Car; default follows Car             
-        (if *on-car
-            (sub> (: a))
-            (prog
-              (mov-cur-abv (: a))
-              (: a))))
-
-      # Should always be a Car
-      (when (: a)
-        (sub> (: a)))))
+  (cond ((isa '(+Pair) (: a))
+         (when (get (: a) 'line)
+           (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))
+           (setq *line (: a)))
+         # If X lay, mov to Car
+         # If Y lay, stay Cdr          
+         (if (lay-x?> This)
+             (prog
+               (set-on-car T)
+               (sub> (: a)))
+             (prog
+               (set-on-car)
+               (mov-cur-abv (: a))
+               (: a))))
+        
+        ((isa '(+Nil) (: a))
+         (when (get (: a) 'line)
+           (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))
+           (setq *line (: a)))
+         # If X lay, mov to Car
+         # If Y lay, stay Cdr          
+         (if (lay-x?> This)
+             (prog
+               (set-on-car T)
+               (sub> (: a)))
+             (prog
+               (set-on-car)
+               (mov-cur-abv (: a))
+               (: a))))         
+        
+        (T
+         (sub> (: a)))))
 
 
 (dm lay-x> ()

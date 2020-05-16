@@ -71,6 +71,9 @@
 (dm lay-x?> () (= (: lay) 'x))
 (dm lay-y?> () (= (: lay) 'y))
 
+(dm is-car?> () (= (get (: c) 'a) This))
+(dm is-cdr?> () (= (get (: c) 'b) This))
+
 (dm lay> (L)
 
   # Set color on change unless it is a ptr

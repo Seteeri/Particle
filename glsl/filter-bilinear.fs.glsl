@@ -49,7 +49,7 @@ vec4 sample_bilinear(samplerBuffer samp,
 vec4 sample_bilinear2(samplerBuffer samp,
                       int vertOffTex,
                       ivec2 vertexDimsTex,
-                      ivec2 coordTexel)
+                      vec2 coordTexel)
 {
     // https://github.com/WebGLSamples/WebGL2Samples/blob/master/samples/texture_fetch.html
     
@@ -66,18 +66,20 @@ vec4 sample_bilinear2(samplerBuffer samp,
     //int offsetTex = vertOffTex * vertexDimsTex.x * vertexDimsTex.y;
     // Otherwise offset has to be generated and passed here per glyph
     // Currently, vertOffTex is simply the char index
+    
+    ivec2 i_coordTexel = ivec2(coordTexel);
 
-    int offTexel00 = vertOffTex + ( coordTexel.x       + (coordTexel.y       * vertexDimsTex.x));
-    int offTexel10 = vertOffTex + ((coordTexel.x + 1)  + (coordTexel.y       * vertexDimsTex.x));
-    int offTexel11 = vertOffTex + ((coordTexel.x + 1)  + ((coordTexel.y + 1) * vertexDimsTex.x));
-    int offTexel01 = vertOffTex + ( coordTexel.x       + ((coordTexel.y + 1) * vertexDimsTex.x));
+    int offTexel00 = vertOffTex + ( i_coordTexel.x       + (i_coordTexel.y       * vertexDimsTex.x));
+    int offTexel10 = vertOffTex + ((i_coordTexel.x + 1)  + (i_coordTexel.y       * vertexDimsTex.x));
+    int offTexel11 = vertOffTex + ((i_coordTexel.x + 1)  + ((i_coordTexel.y + 1) * vertexDimsTex.x));
+    int offTexel01 = vertOffTex + ( i_coordTexel.x       + ((i_coordTexel.y + 1) * vertexDimsTex.x));
     
     vec4 texel00 = texelFetch(samp, offTexel00);
     vec4 texel10 = texelFetch(samp, offTexel10);
     vec4 texel11 = texelFetch(samp, offTexel11);
     vec4 texel01 = texelFetch(samp, offTexel01);
 
-    vec2 sampleCoord = fract(vec2(coordTexel));
+    vec2 sampleCoord = fract(coordTexel);
     vec4 texel0 = mix(texel00, texel01, sampleCoord.y);
     vec4 texel1 = mix(texel10, texel11, sampleCoord.y);            
     

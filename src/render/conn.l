@@ -48,12 +48,7 @@
         ((= Dst "nodes")
          (let (Ptr-Gl  (+ (get '*buffer-objects 'nodes 'gl~ptr) Off)
                Ptr-Buf Ptr)
-          
-           # Copy rx into uv[2]
-           #(memcpy (+ Ptr-Gl 45 64 64 8)
-           #        (+ Ptr-Buf 45 64 64 8)
-           #        4)
-                    
+                                                 
            # 45 = off @ mm
            # should calc auto
            (memcpy Ptr-Gl (+ Ptr-Buf 45) (+ 64 64 64 4))))))

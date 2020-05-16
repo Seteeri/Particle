@@ -93,26 +93,25 @@ vec3 subpixel( float v, float a )
     return res;
 }
 
-void main() 
+void main2() 
 {
     const float hint_amount = 1.0;
     const float subpixel_amount = 1.0;
     
     vec2  f_coordTexel = vec2(vertexUV.u, vertexUV.v) * vertexDimsTexOffset;
-    ivec2 coordTexel = ivec2(f_coordTexel);
     
     vec4 v_sdf = sample_bilinear2(msdf, 
                                    vertexOffsetTex,
                                    vertexDimsTex,
-                                   coordTexel);
+                                   f_coordTexel);
     vec4 v_sdf_n = sample_bilinear2(msdf, 
                                      vertexOffsetTex,
                                      vertexDimsTex,
-                                     ivec2(coordTexel.x, coordTexel.y - 1));
+                                     f_coordTexel + vec2(0.0, sdfTexel.y));
     vec4 v_sdf_e = sample_bilinear2(msdf, 
                                      vertexOffsetTex,
                                      vertexDimsTex,
-                                     ivec2(coordTexel.x + 1, coordTexel.y - 1));
+                                     f_coordTexel + vec2(sdfTexel.x, 0.0));
                                 
     // Sampling the texture, L pattern
     float sdf       = median(v_sdf.r,   v_sdf.g,   v_sdf.b);
@@ -130,7 +129,65 @@ void main()
     float hdOffset    = mix( dOffset * horz_scale, dOffset * vert_scale, vgrad );
     float res_dOffset = mix( dOffset, hdOffset, hint_amount );
 
-    /////////////////////////////////////////////////////////////////
+    float f_offs = subpixel_amount * res_dOffset * sdfTexel.x * 16.0;
+    vec2 offs = vec2( f_offs, 0.0 ); // not sure about 16.0, sdf_size?
+    
+    vec4 v_sdf_r = sample_bilinear2(msdf, 
+                                     vertexOffsetTex,
+                                     vertexDimsTex,
+                                     f_coordTexel - offs);
+    vec4 v_sdf_b = sample_bilinear2(msdf, 
+                                     vertexOffsetTex,
+                                     vertexDimsTex,
+                                     f_coordTexel + offs);
+
+    float sdf_r = median(v_sdf_r.r, v_sdf_r.g, v_sdf_r.b);
+    float sdf_b = median(v_sdf_b.r, v_sdf_b.g, v_sdf_b.b);
+                                     
+    float alpha_r = lstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf_r );
+    float alpha_g = lstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf );
+    float alpha_b = lstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf_b );
+    
+    color = vec4( vec3( alpha_r, alpha_g, alpha_b ), 1.0 );
+}
+
+
+void main() 
+{
+    const float hint_amount = 1.0;
+    const float subpixel_amount = 1.0;
+    
+    vec2 f_coordTexel = vec2(vertexUV.u, vertexUV.v) * vertexDimsTexOffset;
+    
+    vec4 v_sdf = sample_bilinear2(msdf, 
+                                   vertexOffsetTex,
+                                   vertexDimsTex,
+                                   f_coordTexel);
+    vec4 v_sdf_n = sample_bilinear2(msdf, 
+                                     vertexOffsetTex,
+                                     vertexDimsTex,
+                                     f_coordTexel + vec2(0.0, sdfTexel.y));
+    vec4 v_sdf_e = sample_bilinear2(msdf, 
+                                     vertexOffsetTex,
+                                     vertexDimsTex,
+                                     f_coordTexel + vec2(sdfTexel.x, 0.0));
+                                
+    // Sampling the texture, L pattern
+    float sdf       = median(v_sdf.r,   v_sdf.g,   v_sdf.b);
+    float sdf_north = median(v_sdf_n.r, v_sdf_n.g, v_sdf_n.b);
+    float sdf_east  = median(v_sdf_e.r, v_sdf_e.g, v_sdf_e.b);
+    
+    // Estimating stroke direction by the distance field gradient vector
+    vec2  sgrad     = vec2( sdf_east - sdf, sdf_north - sdf );
+    float sgrad_len = max( length( sgrad ), 1.0 / 128.0 );
+    vec2  grad      = sgrad / vec2( sgrad_len );
+    float vgrad = abs( grad.y ); // 0.0 - vertical stroke, 1.0 - horizontal one
+    
+    float horz_scale  = 1.1; // Blurring vertical strokes along the X axis a bit
+    float vert_scale  = 0.6; // While adding some contrast to the horizontal strokes
+    float hdOffset    = mix( dOffset * horz_scale, dOffset * vert_scale, vgrad ); 
+    float res_dOffset = mix( dOffset, hdOffset, hint_amount );
+    
     
     float alpha       = smoothstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf );
     // Additional contrast
@@ -144,38 +201,11 @@ void main()
     
     vec3 channels = subpixel( grad.x * 0.5 * subpixel_amount, alpha );
     // For subpixel rendering we have to blend each color channel separately
-    vec3 res = mix( vec3(1.0, 0.0, 0.0),
+    vec3 res = mix( vec3(0.0, 0.0, 0.0),
                     vec3(vertexRGBA.r,
                          vertexRGBA.g,
                          vertexRGBA.b),
                     channels);
     
-    color = vec4( res, 1.0 );    
-    
-    /////////////////////////////////////////////////////////////////
-    
-    /*
-    
-    float f_offs = subpixel_amount * res_dOffset * sdfTexel.x * 16.0;
-    vec2 offs = vec2( f_offs, 0.0 ); // not sure about 16.0, sdf_size?
-    
-    vec4 v_sdf_r = sample_bilinear2(msdf, 
-                                     vertexOffsetTex,
-                                     vertexDimsTex,
-                                     ivec2(f_coordTexel - offs));
-    vec4 v_sdf_b = sample_bilinear2(msdf, 
-                                     vertexOffsetTex,
-                                     vertexDimsTex,
-                                     ivec2(f_coordTexel + offs));
-
-    float sdf_r = median(v_sdf_r.r, v_sdf_r.g, v_sdf_r.b);
-    float sdf_b = median(v_sdf_b.r, v_sdf_b.g, v_sdf_b.b);
-                                     
-    float alpha_r = lstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf_r );
-    float alpha_g = lstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf );
-    float alpha_b = lstep( 0.5 - res_dOffset, 0.5 + res_dOffset, sdf_b );
-    
-    color = vec4( vec3( alpha_r, alpha_g, alpha_b ), 1.0 );
-    
-    */
+    color = vec4( res, vertexRGBA.a );
 }

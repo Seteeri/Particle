@@ -3,10 +3,12 @@
 
 (de cmd-ptr-left (Ks)    
   # Only if Ref and Prv both are Y layout
-  (if (and (lay-y?> (get *fwd-in 'b))
-           (lay-y?> (get *fwd-in 'b 'c)))
-      (point-sup)
-      (point-prv)))
+  (let Ref (get *fwd-in 'b)
+    (if *on-car
+        (point-prv)
+        (if (is-car?> Ref)
+            (point-sup)
+            (point-prv)))))
 
 
 (de cmd-ptr-right (Ks)

@@ -78,13 +78,16 @@
     (calc-cen> (: met)))
   (=: mat4-cen (get (: met) 'mat4-cen))
   (=: mat4-cen-i (get (: met) 'mat4-cen-i))
+                 
+  (=: uv (get (: met) 'uv))
   
   # Convert rx shape -> px
   (=: rx (*/ (get (: met) 'range)
              (get (: met) 'scale)
-             1.0))
-  
-  (=: uv (get (: met) 'uv))
+             1.0))  
+  (=: uv (place 3
+                (: uv)
+                (: rx)))
   
   This)
 

@@ -145,6 +145,7 @@
 
   (gl~enable gl~CULL-FACE)
   (gl~enable gl~DEPTH-TEST)
+  
   (gl~enable gl~BLEND)
   
   (gl~blend-equation-separate gl~FUNC-ADD gl~FUNC-ADD)

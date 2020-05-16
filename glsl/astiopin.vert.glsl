@@ -39,8 +39,9 @@ void main()
     vertexDimsTex = ivec2(96, 96);
     vertexDimsTexOffset = vec2(float(vertexDimsTex.x-1), 
                                float(vertexDimsTex.y-1));
-                                
-    dOffset = 1.0 / instances_out[gl_InstanceID].uvs[gl_VertexID].s;
+
+    // 1999998
+    dOffset = 1.0 / instances_out[gl_InstanceID].uvs[0].s;
     sdfTexel = 1.0 / vec2(vertexDimsTex);
 }
 

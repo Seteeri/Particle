@@ -80,8 +80,8 @@
     (mov-⇲ *line)
     
     # Maintain on inner tree or outer?
-    (setq *line Cc)
-    (set-ptr *fwd-in Cc)
+    (setq *line Ref)
+    (set-ptr *fwd-in Ref)
     (point-sub)
         
     (println 'make-cons-car-y "Made nested list")
