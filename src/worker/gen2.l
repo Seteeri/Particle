@@ -1,3 +1,26 @@
+#{
+
+  # Test gen2-part
+  
+  '(("1" "Content"
+      ("1.1" "Content"
+      ("1.1.1" "Content")
+      ("1.1.1" "Content"
+        ("1.1.1.1" "Content")
+        ("1.1.1.2" "Content")))))
+        
+  '(((((NIL))))))
+  
+  '(((1) 2) 3))
+  
+  '(((1 2) 3 4) 5 6))
+  
+  '((1 2) (3 4) (5 6)))      
+  
+  '(1 (2))
+  
+}#
+
 (def '*gen2-line)
 (def '*gen2-list)
 (def '*gen2-out)

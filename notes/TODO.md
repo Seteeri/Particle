@@ -11,9 +11,10 @@ TODO
   
   * 14 MAY - THURS
     * Gen-part [Done]
-      * Auto set pairs to y layout
-      * Note: gen is recursive - make iterative
-    * Need sublist x layout [Done]
+      * Need sublist x layout
+    * Implement bindings
+      * Double alt
+      * Double shift
     * Hide unused car/cdr
     * Optimize upd-tree
       * Update backwards until non-y list

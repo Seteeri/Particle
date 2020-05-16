@@ -139,19 +139,28 @@
 
 
 (de gen-def-parts ()
+  
+  #{
+    
+    Particle Hierarchy
+    
+    Proccess number (Worker)
+    - Namespace list
+      - Particles list
+    
+    Create one for the other procs?
+    - They would all have to draw also
+    - Then share res between procs in database
+    
+  }#
+  
 
   (let ((X Y) *cur)
-
-    # Root particles are stored in *particles
-    # *particles itself is not drawn
-    #
-    # Won't need this with external syms  
-
   
     #######
     # Binds
   
-    (when NIL
+    (when T
     
       (setq *bind-ops-p (gen2-sym-full '*binds-ops 'y))
       
@@ -178,6 +187,9 @@
           *pos-main (copy *cur)
           *line (get *start 'b)
           *master *start)
+    
+    (with (get *start 'b)
+      (=: line (new '(+Line) NIL NIL NIL (get *start 'a 'dims))))
     
     (mov-cur X Y)
     (adj-cur-x 48.0)    
@@ -239,35 +251,13 @@
     
       (adj-cur-y)
       (mov-cur-x X)
-      
-      #{
-      
-        # Test gen2-part
-        
-        '(("1" "Content"
-            ("1.1" "Content"
-            ("1.1.1" "Content")
-            ("1.1.1" "Content"
-              ("1.1.1.1" "Content")
-              ("1.1.1.2" "Content")))))
-              
-        '(((((NIL))))))
-        
-        '(((1) 2) 3))
-        
-        '(((1 2) 3 4) 5 6))
-        
-        '((1 2) (3 4) (5 6)))      
-        
-        '(1 (2))
-        
-      }#
-       
+            
       (let Part (gen2-part-x '(("*binds" "...")
-                               ("*registers" "...")
                                ("*log" "...")
+                               ("*pointers" "...")
+                               ("*registers" "...")
                                ("*start" "...")
-                               ("*pointers" "...")))
+                               ("*symbols")))
  
         (adj-cur-y 2.0)
         (mov-cur-x X)

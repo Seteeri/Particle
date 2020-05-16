@@ -15,15 +15,15 @@ Originally, this project was attempted in other languages but became only possib
 
 One interesting implication is when characters (string data) are input via keystrokes, they exist as cons cells so there is no reading or parsing. Consequently, there is no conventional GUI as all data exists in the same domain; it is not separate from the underlying data like in conventional programs (it is possible to build a conventional GUI).
 
-On MS and Apple systems, it serves as an outliner "app" or personal knowledge manager, however, with Linux and BSD systems it goes further absorbing the Wayland compositor, creating an encompassing Lisp environment. The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that, through a more pragmatic and gradual approach.
-
 Plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM-based), a native solution can be provided. The Pinephone is also on the way ;)
+
+The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that, through a more pragmatic and gradual approach.
 
 The target audience consists of programmers, power users, information/knowledge workers.
 
 # Preview
 
-![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/types.png)
+*UPDATE*
 
 Can you identify the s-expression structure?
 
@@ -79,6 +79,30 @@ This idea is then further extended to create arbitrary representations for arbit
   * Robert Strandh
   * Chris Schafmeister
   * Randy Pausch
+
+# UI
+
+On MS and Apple systems, it serves as an outliner "app" or personal knowledge manager, however, with Linux and BSD systems it goes further absorbing the Wayland compositor, creating an encompassing Lisp environment.
+
+*WIP*
+* Local data first - no cloud dependency
+* Distributable - synchronize across multiple devices
+* Storage mechanisms
+  * Plaintext (Lisp code)
+  * Binary (Lisp data)
+  * Database backend (Lisp data)
+* Orthographic view aka zooming interface
+* Browser integration (aka web clipper)
+* Wayland/Userspace* integration
+* Tag search through objects
+  * Files exist for OS compatibility
+* Trees
+  * Undo
+  * Registers
+* Multiple cursors/pointers
+* Import/link any data
+  * Binary files such as images, video, audio etc. are not imported into the db and left as separate files
+* Export data to various formats
   
 # Manual
 

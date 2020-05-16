@@ -10,17 +10,21 @@ Ostensibly, it resembles an outliner, however, it integrates various computing c
   * Plaintext (Lisp code)
   * Binary (Lisp data)
   * Database backend (Lisp data)
-* Tag-based searching through trees
-* Import/link any data
-  * Binary files such as images, video, audio etc. are not imported into the db and left as separate files
-* Export* to s-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
 * Orthographic view aka zooming interface
 * Browser integration (aka web clipper)
 * Wayland/Userspace* integration
-
+* Tag search through objects
+  * Files exist for OS compatibility
+* Trees
+  * Undo
+  * Registers
+* Multiple cursors/pointers
+* Import/link any data
+  * Binary files such as images, video, audio etc. are not imported into the db and left as separate files
+* Export data to various formats
+  * S-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
 
 Advanced:
-
 
 * Fuzzy string matching
   * Tag suggestions
@@ -31,7 +35,6 @@ Advanced:
 * OCR
 * Ink-pen input; drawn annotations
 * Collaboration - separate related project
-
 
 Interfaces:
 
