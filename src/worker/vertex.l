@@ -310,6 +310,12 @@
     (list Verts
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
 
+          
+(de make-vert-nil (Sym Col)
+  (let Verts (make-vert-repr (list *char-dot) Col)
+    (list Verts
+          (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))          
+          
 
 (de make-vert-sym (Sym Col)
   (let Verts (make-vert-repr (chop (sym Sym)) Col)
@@ -324,6 +330,7 @@
   (cond ((num? Atom)             (make-vert-num Atom Col))
         ((and (str? Atom) 
               (not (box? Atom))) (make-vert-str Atom Col))
+        ((not Atom)              (make-vert-nil Atom Col))
         (T           (make-vert-sym Atom Col))))
 
 
