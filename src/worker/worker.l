@@ -125,6 +125,7 @@
   ##################################
   
   (prinl-info "init-worker" (pack "Heap: " (heap)))
+  (gc 48)
   (setq *vert-offs
         (make
           (for I *verts-max 
