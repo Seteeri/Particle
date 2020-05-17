@@ -1,3 +1,36 @@
+#{
+  Conv Atom (Alt-L+space ctx aware)
+  - str     -> sym
+  - str/num -> num
+  - num     -> str
+  
+  Pack to prv
+  
+  Split fm spc (chr, NIL=spc)
+  - use a sublist for args?
+  - compl to pack
+  - use to break words at the end
+  - poss mov ptr to start, better user use cmd to move start
+  - either replace or make sublist
+    - repl makes most sense
+    - explicit cmd for sublist or use args
+    
+  Glue w spc (chr, NIL=spc)
+  
+  Chop not as useful...
+  
+  New List
+  - Mov car, alt enter
+  
+  Eval
+  - ctrl enter?
+  
+  Command mode:
+  - Does not replace universal cmds - allows adv fn/cmd composition
+  
+}#
+  
+
 (def '*binds-ops
 
   '(
@@ -11,8 +44,9 @@
     ((ksd~Alt-R   ksd~Return)    cmd-mov-nl)
     ((ksd~Alt-R   ksd~BackSpace) cmd-mov-bl)
     
+    # List
     ((ksd~Control-L ksd~r) cmd-make-nil)
-    ((ksd~Control-L ksd~t) cmd-mov-nl)
+    ((ksd~Control-L ksd~t) cmd-make-list)
     
     ((ksd~Control-L ksd~q) cmd-ptr-ln-first)
     ((ksd~Control-L ksd~e) cmd-ptr-ln-last)
@@ -23,45 +57,13 @@
     # Diff L+R|Mod vs R+L|Mod ?
     # LAlt + Sp vs RAlt + Sp?
     ((ksd~Alt-L   ksd~space) cmd-intern)
-
-    #{
-      Conv Atom (Alt-L+space ctx aware)
-      - str     -> sym
-      - str/num -> num
-      - num     -> str
-      
-      Pack to prv
-      
-      Split fm spc (chr, NIL=spc)
-      - use a sublist for args?
-      - compl to pack
-      - use to break words at the end
-      - poss mov ptr to start, better user use cmd to move start
-      - either replace or make sublist
-        - repl makes most sense
-        - explicit cmd for sublist or use args
-        
-      Glue w spc (chr, NIL=spc)
-      
-      Chop not as useful...
-      
-      New List
-      - Mov car, alt enter
-      
-      Eval
-      - ctrl enter?
-      
-      Command mode:
-      - Does not replace universal cmds - allows adv fn/cmd composition
-      
-    }#
     
     # REPL
     ((ksd~Control-L ksd~Tab)           cmd-eval-str)
     #((ksd~Alt-L     ksd~Tab)           cmd-str)
     ((ksd~Control-L ksd~Alt-L ksd~Tab) cmd-eval)
     # Pack + Eval-Str
-    ((ksd~Control-L ksd~g) cmd-pes)    
+    #((ksd~Control-L ksd~g) cmd-pes)    
     
     # other cmds...
     

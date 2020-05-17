@@ -1,5 +1,5 @@
-(de cmd-mov-nl (Ks)
-  (println 'cmd-mov-nl)
+(de cmd-make-list (Ks)
+  (println 'cmd-make-list)
 
   #{
       [ ]  [ ]  [ ]
@@ -36,7 +36,14 @@
   (let Ref (get *fwd-in 'b)
     (if *on-car
         (make-list-car Ref)
-        (make-line Ref))))
+        (make-list-cdr Ref))))
+
+
+(de cmd-mov-nl (Ks)
+  (println 'cmd-mov-nl)
+  (let Ref (get *fwd-in 'b)
+    (unless *on-car
+      (make-line Ref))))
 
 
 (de cmd-mov-bl (Ks)
