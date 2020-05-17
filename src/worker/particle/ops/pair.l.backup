@@ -8,7 +8,7 @@
 
       
 (de make-list (Ref)
-
+  
   (if (isa '(+Nil) Ref)
   
       (if (is-car?> Ref)
@@ -164,19 +164,11 @@
     NIL
     
     ---
-    
-    Handles when NIL is car - no
-    
-    [ ]  [ ]  [ ]
-    a    b    c
-    
-    [ ]  NIL
-    
-    NIL
-    
+        
   }#
       
   (let (C (get Ref 'c)
+        Cb (get C 'b)
         Cc (get C 'c)
         Part (gen2-part (cons) 'x (cons T NIL) T))    
     
@@ -184,9 +176,12 @@
 
     (b> Cc Part)
     
-    # Create lines for Part
+    #(when Cb
+    #  (b> Part Cb))
+    
     (with Part
-     
+      # Create lines for Part 
+      
       (lay> This 'y)
            
       # Use ins-line?        

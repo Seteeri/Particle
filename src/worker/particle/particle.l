@@ -68,11 +68,13 @@
 (dm first-vert> () (car (: verts)))
 (dm last-vert> () (last (: verts)))
 
-(dm lay-x?> () (= (: lay) 'x))
-(dm lay-y?> () (= (: lay) 'y))
-
 (dm is-car?> () (= (get (: c) 'a) This))
 (dm is-cdr?> () (= (get (: c) 'b) This))
+(dm is-end?> () (and (= (get (: c) 'b) This)
+                     (not (isa '(+Pair) This))))
+
+(dm lay-x?> () (= (: lay) 'x))
+(dm lay-y?> () (= (: lay) 'y))
 
 (dm lay> (L)
 

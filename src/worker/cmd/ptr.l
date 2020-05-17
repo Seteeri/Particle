@@ -82,40 +82,42 @@
         (println "line.p: " (get Ref 'line 'p))
         (println "line.n: " (get Ref 'line 'n))
         (println "line.l: " (get Ref 'line 'l)))
-      (when T
+      (when NIL
         (println "a: " (get Ref 'a))
         (println "b: " (get Ref 'b))
         (println "c: " (get Ref 'c)))
       
-      (println "====")
-      (println "Car: " (get Ref 'a))
-      (println "lay: " (get Ref 'a 'lay))
-      (when (get Ref 'a 'line)
-        (println "line.p: " (get Ref 'a 'line 'p))
-        (println "line.n: " (get Ref 'a 'line 'n))
-        (println "line.l: " (get Ref 'a 'line 'l)))
-      (when T
-        (println "a: " (get Ref 'a 'a))
-        (println "b: " (get Ref 'a 'b))
-        (println "c: " (get Ref 'a 'c)))
+      (when NIL
+        (println "====")
+        (println "Car: " (get Ref 'a))
+        (println "lay: " (get Ref 'a 'lay))
+        (when (get Ref 'a 'line)
+          (println "line.p: " (get Ref 'a 'line 'p))
+          (println "line.n: " (get Ref 'a 'line 'n))
+          (println "line.l: " (get Ref 'a 'line 'l)))
+        (when T
+          (println "a: " (get Ref 'a 'a))
+          (println "b: " (get Ref 'a 'b))
+          (println "c: " (get Ref 'a 'c)))
+          
+        (println "====")
+        (println "Cdr: " (get Ref 'b))    
+        (println "lay: " (get Ref 'b 'lay))
+        (when (get Ref 'b 'line)
+          (println "line.p: " (get Ref 'b 'line 'p))
+          (println "line.n: " (get Ref 'b 'line 'n))
+          (println "line.l: " (get Ref 'b 'line 'l)))
+        (when T  
+          (println "a: " (get Ref 'b 'a))
+          (println "b: " (get Ref 'b 'b))
+          (println "c: " (get Ref 'b 'c)))))
         
+    (when NIL
       (println "====")
-      (println "Cdr: " (get Ref 'b))    
-      (println "lay: " (get Ref 'b 'lay))
-      (when (get Ref 'b 'line)
-        (println "line.p: " (get Ref 'b 'line 'p))
-        (println "line.n: " (get Ref 'b 'line 'n))
-        (println "line.l: " (get Ref 'b 'line 'l)))
-      (when T  
-        (println "a: " (get Ref 'b 'a))
-        (println "b: " (get Ref 'b 'b))
-        (println "c: " (get Ref 'b 'c))))
-        
-    (println "====")
-    (println "Line:" *line (get *line 'data))
-    (println 'p (get *line 'line 'p) (get *line 'line 'p 'data))
-    (println 'n (get *line 'line 'n) (get *line 'line 'n 'data))
-    (println 'l (get *line 'line 'l) (get *line 'line 'l 'data))
+      (println "Line:" *line (get *line 'data))
+      (println 'p (get *line 'line 'p) (get *line 'line 'p 'data))
+      (println 'n (get *line 'line 'n) (get *line 'line 'n 'data))
+      (println 'l (get *line 'line 'l) (get *line 'line 'l 'data)))
 
     (upd-tree)
     (mov-⇲ *line)))

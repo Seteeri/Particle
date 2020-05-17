@@ -58,9 +58,9 @@
       # Exclude Y layout Pair -> X layout Car
       # *start?
       (prog
-        #(let? Ln (get (: c) 'line)
-        #  (println 'sup> "Mov ptr -> super-line/list" Ln (get Ln 'data))        
-        #  (setq *line (: c)))
+        (let? Ln (get (: c) 'line)
+          (println 'sup> "Mov ptr -> super-line/list" Ln (get Ln 'data))        
+          (setq *line (: c)))
         (set-on-car)
         (mov-cur-abv (: c))
         (: c))
