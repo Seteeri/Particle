@@ -522,108 +522,54 @@
 
   #{
   
-    Delete previous
-
+    For a list options exist...
     
-              *fwd-in
-    [ ]  [ ]  NIL
-    a    b
-
-    #############
+                    *
+    [Y]  [Y]  [Y]  [ ]  [ ]  [ ]  NIL
+                    .    .    .
+               .
+          .
+    .
+   
+    Del list and promote items to superlist:
     
-        *fwd-in
-    [ ]  [ ]  NIL
-    a    b
-
-    #############
+               *
+    [Y]  [Y]  [ ]  [ ]  [ ]  NIL
+               .    .    .
+          .
+    .
     
-    *fwd-in
-    [ ]  [ ]  NIL
-    a    b    
-
-    #############
-    
-    [ ]  [ ]  NIL
-    a    b        
-
-    *fwd-in
-    [ ]  [ ]  NIL
-        c        
-
-    #############
-    
-    [ ]  [ ]  NIL
-    a    b        
-
-    
-    [ ]  [ ]  NIL
-        NIL        
-        
-    *fwd-in     
-    NIL
-    
+    or del list and all items, but more logical
+    way is to go superlist and press delete
+   
   }#
 
-  # Refactor into a fn in ops?
-
-  # Similar to adding items, must update CDR and list CDR
-
-  (let (Tgt (if *on-car (get Ref 'c 'c) (get Ref 'c))
-        Tgt-Prv (get Tgt 'c)
-        Tgt-Cdr (get Tgt 'b)
-        New-Ref NIL)
+  (let (C (get Ref 'c)
+        Tgt (if *on-car (get C 'c) C)
+        Tc (get Tgt 'c)
+        Tb (get Tgt 'b)
+        New-Ref Ref)
 
     (unless (= (get Tgt 'data) '*start)
     
-      (cond ((or (isa '(+Pair) (get Tgt 'a))
-                 (isa '(+Nil)  (get Tgt 'a)))
-              (prinl) (prinl) (println "COND 1") (prinl) (prinl)
-              # Remove line
-              (del-line Tgt)
-              (b> Tgt-Prv Tgt-Cdr)
-              (put Tgt-Cdr 'line 'l (get Tgt 'line 'l))
-              (setq New-Ref Tgt-Cdr))
-    
-            # If Tgt prv is Car of Pair, set Car...
-            ((= (get Ref 'c 'a) Ref)
-              (prinl) (prinl) (println "COND 2") (prinl) (prinl)
-              (put Tgt-Prv 'a Tgt-Cdr)
-              # To connect, pop, then push
-              (with Tgt-Prv
-                (pop (:: data))
-                (push (:: data) (get Tgt-Cdr 'data)))
-              (put Tgt-Cdr 'c Tgt-Prv)
-              (put-line Tgt Tgt-Cdr)
-              
-              # Tgt-Prv = Y pair
-              # It's list has to be modified also
-              # so get item before and connect new data
-              (with (get Tgt-Prv 'c)
-                (con (car (:: data)) (get Tgt-Prv 'data)))
-                
-              (setq New-Ref Ref))
-                
+      (cond ((and (lay-y?> Tgt) (isa '(+Pair) Tgt) (is-car?> C))
+             (put Tgt 'a)
+             (a> Tc Ref))
+                    
             (T
-              (b> Tgt-Prv Tgt-Cdr)
-              (put Tgt-Cdr 'c Tgt-Prv)
+              (b> Tc Tb)
               (when (get Tgt 'line)
-                (put-line Tgt Tgt-Cdr))
-              (setq New-Ref Ref)))
+                (put-line Tgt Tb))
+              (put Tgt 'b)))
       
-      # Unlink b before del
-      (put Tgt 'b)
       (del> Tgt T T)
       
       (upd-tree)
       (mov-⇲ *line)      
       
-      # Ptr remains on Ref
-      # How about for on-car?
       (set-ptr *fwd-in New-Ref)
       (mov-cur-abv New-Ref)
-      (lay-ptr *fwd-in)
-          
-      T)))      
+      (lay-ptr *fwd-in))))    
     
 
 (de del-rx (Sta End)  

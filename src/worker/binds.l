@@ -51,19 +51,13 @@
     ((ksd~Control-L ksd~q) cmd-ptr-ln-first)
     ((ksd~Control-L ksd~e) cmd-ptr-ln-last)
         
-    # Symbol
-    # Double alt = cmd?
-    # Double shift = sym
-    # Diff L+R|Mod vs R+L|Mod ?
-    # LAlt + Sp vs RAlt + Sp?
+    # REPL - use Tab or Space for universal cmds and mode change
     ((ksd~Alt-L   ksd~space) cmd-intern)
     
-    # REPL
     ((ksd~Control-L ksd~Tab)           cmd-eval-str)
-    #((ksd~Alt-L     ksd~Tab)           cmd-str)
     ((ksd~Control-L ksd~Alt-L ksd~Tab) cmd-eval)
-    # Pack + Eval-Str
-    #((ksd~Control-L ksd~g) cmd-pes)    
+    ((ksd~Control-L ksd~g)             cmd-pes)    # Pack + Eval-Str
+    #((ksd~Alt-L     ksd~Tab)          cmd-str)    
     
     # other cmds...
     

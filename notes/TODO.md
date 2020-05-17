@@ -10,10 +10,7 @@ TODO
   * Create list, enter strings, convert some to symbols, eval
   
   * 16 MAY - SAT
-    * Optimize mov>
-      * Particle should have dirty flag
-      * Vert need dirty flag?
-      * Go further and do same thing for lists?
+    * Refactor ptr, make-list
     * Refactor del
       * Track data:particles in binary tree *particles
         * Unlike a CLI, we hold references to old data

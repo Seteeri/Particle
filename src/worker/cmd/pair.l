@@ -22,15 +22,6 @@
       If on cdr:
       
         (a b c d e f g h i) -> (a b c d (e f g h i))
-      
-      Currently, if on cdr, creates new line
-      - Enter creates "^J"
-      - Alt+Enter creates list or line
-      - Ctrl+Enter is debug - print-cur
-      
-      To maintain str compat, use other key...maybe tab
-      - Or keep F for find
-      - Use T/G/B for NIL/CAR/CDR
   }#  
   
   (let Ref (get *fwd-in 'b)
