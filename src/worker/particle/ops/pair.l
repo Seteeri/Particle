@@ -11,57 +11,115 @@
 
   (if (isa '(+Nil) Ref)
   
-      (if (= (get Ref 'c 'a) Ref)
+      (if (is-car?> Ref)
   
-          (make-cons-car-y Ref)    
+          (cond ((and (lay-y?> (get Ref 'c)) (is-car?> Ref))
+                  # pointing to nil car of Y pair
+                  (make-cons-car-y-nil Ref))
+                 
+                ((and (lay-y?> (get Ref 'c 'c)) (is-car?> (get Ref 'c)))                                        
+                  # pointing to nil cdr of X pair of Y pair
+                  (make-cons-car-y Ref))
+              
+                (T
+                  # pointing to nil car of X pair
+                  (make-cons-car-x Ref)))
 
+          # pointing to nil cdr of X/Y pair
           (make-cons-car-x-nil Ref))
       
-      (if (and (= (get Ref 'c 'c 'a) (get Ref 'c))
-               (= (get Ref 'c 'a) Ref))
+      (if (and (is-car?> (get Ref 'c))
+               (is-car?> Ref))
           
+          # pointing to car of Y pair
           (make-cons-car-y Ref)
 
+          # pointing to car of X pair
           (make-cons-car-x Ref))))
 
+          
+(de make-cons-car-y-nil (Ref)
+  
+  #{
+  
+    [ ]
+    
+    [Cc]  NIL
+          *
+    NIL       
+    
+    ->
+    
+    [ ]
+    
+    [Cc]  [P]  NIL
+               *
+          NIL
+    NIL    
+    
+  }#
+  
+  (let (Cc (get Ref 'c)
+        Part (gen2-part (cons) 'x (cons T NIL) T))
+    
+    # Make a@
+    (a> Cc Part)
+    (a> Part Ref)
+    
+    # Make Lines
+    (with Part
       
+      (lay> This 'y)
+          
+      # Create Line start
+      (=: line (new '(+Line)
+                    NIL (: b) NIL))
+      
+      # Create Line for NIL/Cdr
+      (put (: b) 'line (new '(+Line)
+                            Part NIL Part)))
+    
+    (upd-tree)
+    (mov-⇲ *line)
+    
+    # Maintain on inner tree or outer?
+    (setq *line Ref)
+    (set-ptr *fwd-in Ref)
+    (point-sub)
+        
+    (println 'make-cons-car-y-nil "Made nested list")
+
+    Part))          
+          
+          
 (de make-cons-car-y (Ref)
   
   #{
     Handle nested  
-  
-    1. Gen pair; skip Car
-    2. Set car to current Pair
-    3. Attach new Pair
     
-    [Ccc]
+    [Cc]
     
     [Cc]  [C]  NIL
-          a
+          a*
     NIL   
 
     ->
     
-    [Ccc]
+    [Cc]
     
     [Cc]  [P]  [C]  NIL
                a
           NIL
-    NIL
-    
-    
-    FIX:
-    * Must set cars until Car is not a Pair
+    NIL  
     
   }#
   
-  (let (C (if (isa '(+Nil) Ref) Ref (get Ref 'c))
+  (let (C (get Ref 'c)
         Cc (get C 'c)
         Part (gen2-part (cons) 'x (cons T NIL) T))
     
+    (a> Cc Part)    
     (a> Part C)
-    
-    (a> Cc Part)
     
     # Line
     (with Part

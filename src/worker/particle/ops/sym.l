@@ -2,13 +2,11 @@
 
   (let (Ref (get *fwd-in 'b)
         Part (if *on-car
-                # If NIL is end/start-of-list
                 (if (and (isa '(+Nil) Ref)
-                         (or (= (get Ref 'c 'b) Ref)
-                             (get Ref 'c 'line)))
+                         (is-cdr?> Ref))
                     (repl-nil Data Lay)
                     (repl-car Data Lay))
-                (if (= (get Ref 'c 'a) Ref) # If direct sublist
+                (if (is-car?> Ref)
                     (ins-car Data Lay)
                     (ins-cdr Data Lay))))
 

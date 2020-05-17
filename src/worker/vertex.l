@@ -329,7 +329,7 @@
 
           
 (de make-vert-nil (Sym Col)
-  (let Verts (make-vert-repr (list *char-dot) Col)
+  (let Verts (make-vert-repr (chop "NIL") Col) # (list *char-dot)
     (list Verts
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))          
           
