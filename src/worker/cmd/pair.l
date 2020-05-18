@@ -46,14 +46,23 @@
     (backspace-line Ref)))
 
 
+(de cmd-bs (Dir)
+
+  (prinl-info "cmd-bs")
+
+  (let? Ref (get *fwd-in 'b)
+  
+    (del-bs Ref)))
+
+
 (de cmd-del (Dir)
 
   (prinl-info "cmd-del")
 
   (let? Ref (get *fwd-in 'b)
   
-    (del-pair Ref)))
-
+    (del-pair Ref)))    
+    
 
 # Evals        
         

@@ -37,7 +37,7 @@
     ((ksd~Return) cmd-make-char)
     ((ksd~Tab)    cmd-make-char)
     
-    ((ksd~BackSpace) cmd-del)
+    ((ksd~BackSpace) cmd-bs)
     ((ksd~Delete   ) cmd-del)  
     
     # Make cmds only mod+ASCII? to maintain homerow

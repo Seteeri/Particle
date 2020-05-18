@@ -12,30 +12,49 @@ TODO
   * 16 MAY - SAT
     * Refactor ptr, make-list
     * Refactor del
-      * Track data:particles in binary tree *particles
-        * Unlike a CLI, we hold references to old data
-          * Which if future commands change old data, it has to be updated
-            * E.g. zap
-          * Which means data/particles must be tracked
-        * Given multi particles repr same data
-          * To gc data, delete all particles ref data
-          * Assumes non-visible particles are not ref data
-        * Data : List of Particles
-          * handle 'zap - isyms replaced with name (tsym) - invalidates particles
-        * Draw all symbols will access all data?
-        * External symbols are more explicit
     * Refactor layout to use stack like gen
+      * flags: expand int syms, trans syms, ext syms
     * Support X sublists
     * Unify symbols
       * symbol hierarchy
       * CUT/COPY/PASTE
         * Need registers
     * Hide unused car/cdr
+    * Implement cmds Q/E : start/end of line/list  
+    * Cache last item for lines/lists
+      * On command
+      * On layout
+      * On gen
+    * Track data:particles in binary tree *particles
+      * Unlike a CLI, we hold references to old data
+        * Which if future commands change old data, it has to be updated
+          * E.g. zap
+        * Which means data/particles must be tracked
+      * Given multi particles repr same data
+        * To gc data, delete all particles ref data
+        * Assumes non-visible particles are not ref data
+      * Data : List of Particles
+        * handle 'zap - isyms replaced with name (tsym) - invalidates particles
+      * Draw all symbols will access all data?
+      * External symbols are more explicit      
+              
+    * Pointer
+      * Mov pointer to different list
+        * Need cmd that we can type
+      * Make Pointer class [later]
+      * When ptr points to another ptr...input changes?
+        * If user wants to use ptr as a marker, 
+        explicit cmd to create a ptr like *cdr-1
+    * Soft wrap list
+      * Track pos
+      * When limit reached, mov nl
+    * Sym prop output
+      * Output normally
+      * Only upd objs in view
     * Optimize display updates
       * Decouple upd-tree from command
       * Update only if in view
-      * upd-tree
-        * Update backwards until non-y list
+      * update backwards until non-y list
       * Relayout should use multiple workers
         * Scout pushes work into a queue
           * On finish scan, become worker
@@ -50,25 +69,6 @@ TODO
               * Deploy task
               * Set timeout to rotate
               * Fork
-    * Pointer
-      * Mov pointer to different list
-        * Need cmd that we can type
-      * Make Pointer class [later]
-      * When ptr points to another ptr...input changes?
-        * If user wants to use ptr as a marker, 
-        explicit cmd to create a ptr like *cdr-1
-    * Soft wrap list
-      * Track pos
-      * When limit reached, mov nl
-    * Sym prop output
-      * Output normally
-      * Only upd objs in view
-    * Implement cmds Q/E : start/end of line/list  
-    * Refactor del
-    * Cache last item for lines/lists
-      * On command
-      * On layout
-      * On gen
   
   * ?
   
