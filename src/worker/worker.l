@@ -48,6 +48,7 @@
             "/src/worker/particle/num.l"
             "/src/worker/particle/ops/align.l"
             "/src/worker/particle/ops/lay.l"
+            "/src/worker/particle/ops/del.l"
             "/src/worker/particle/ops/pair-car.l"
             "/src/worker/particle/ops/pair-cdr.l"            
             "/src/worker/particle/ops/line.l"
