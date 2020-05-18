@@ -1,13 +1,4 @@
-(de make-list-cdr (Ref)
-  (println 'make-list-cdr)
-  
-  # Pair/X or Y
-  # Atom
-  
-  )
-
-  
-(de del-bs (Ref)
+(de del-c (Ref)
 
   #{
   

@@ -52,7 +52,7 @@
 
   (let? Ref (get *fwd-in 'b)
   
-    (del-bs Ref)))
+    (del-c Ref)))
 
 
 (de cmd-del (Dir)
@@ -61,7 +61,7 @@
 
   (let? Ref (get *fwd-in 'b)
   
-    (del-pair Ref)))    
+    (del-tgt Ref)))    
     
 
 # Evals        
