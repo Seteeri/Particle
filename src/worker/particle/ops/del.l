@@ -111,7 +111,7 @@
 
     (unless (= (get Tgt 'data) '*start)
     
-      (cond ((and (lay-y?> Tgt) (isa '(+Pair) Tgt) (is-car?> C))
+      (cond ((and (lay-y?> Tgt) (isa '(+Pair) Tgt) (is-car?> Ref))
              (put Tgt 'a)
              (a> Tc Ref))
                     
