@@ -370,8 +370,8 @@
     (mov-⇲ *line)
     
     # Maintain on inner tree or outer?
-    (setq *line Part)
-    (set-ptr *fwd-in Part)
+    (setq *line Ref)
+    (set-ptr *fwd-in Ref)
     (point-sub)
         
     (println 'make-case-2)
@@ -510,8 +510,8 @@
     (mov-⇲ *line)
     
     # Maintain on inner tree or outer?
-    (setq *line Part)
-    (set-ptr *fwd-in Part)
+    (setq *line Ref)
+    (set-ptr *fwd-in Ref)
     (point-sub)
         
     (println 'make-case-4)

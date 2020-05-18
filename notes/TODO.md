@@ -9,9 +9,11 @@ TODO
   GOAL is build structures more fluidly
   * Create list, enter strings, convert some to symbols, eval
   
-  * 16 MAY - SAT
-    * Refactor ptr, make-list
-    * Refactor del
+  * 18 MAY - Mon
+    * Do repl-cdr on end atom
+    * Hide unused car/cdr on swap
+  
+  * 19 MAY - Tues
     * Refactor layout to use stack like gen
       * flags: expand int syms, trans syms, ext syms
     * Support X sublists
@@ -19,7 +21,6 @@ TODO
       * symbol hierarchy
       * CUT/COPY/PASTE
         * Need registers
-    * Hide unused car/cdr
     * Implement cmds Q/E : start/end of line/list  
     * Cache last item for lines/lists
       * On command
