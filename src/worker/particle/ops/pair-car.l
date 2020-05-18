@@ -250,7 +250,8 @@
     (put C 'line (new '(+Line)))
         
     # Connect line: cur -> Part
-    (put *line 'line 'n Part)
+    (unless (isa '(+Sym) Cc)
+      (put *line 'line 'n Part))
         
     (upd-tree)
     (mov-⇲ *line)
