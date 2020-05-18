@@ -10,8 +10,10 @@ TODO
   * Create list, enter strings, convert some to symbols, eval
   
   * 18 MAY - Mon
-    * Do repl-cdr on end atom
+    * Refactor sym
+      * Do repl-cdr on end atom
     * Hide unused car/cdr on swap
+      * Set alpha or move it
   
   * 19 MAY - Tues
     * Refactor layout to use stack like gen

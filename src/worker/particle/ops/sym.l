@@ -16,6 +16,8 @@
                     (ins-car Data Lay)
                     (ins-cdr Data Lay))))
 
+    # If on-car stay on car
+                    
     (lay-ptr *fwd-in)
     
     Part))
@@ -24,6 +26,9 @@
 (de repl-nil (Data Lay)
 
   (println 'repl-nil)
+  
+  # [Y]  NIL
+  # CDR
   
   (let Part (if (= (get *fwd-in 'b 'c 'a) Ref)
                 (ins-car Data Lay)
@@ -71,7 +76,7 @@
     Part))
   
   
-(de repl-car (Data Lay No-Upd)
+(de repl-car (Data Lay)
   #{
     Replace car of y pair
         
@@ -115,12 +120,11 @@
           
     (del> Ref T T)
     
-    (unless No-Upd
-      (upd-tree)
-      (mov-⇲ *line)
+    (upd-tree)
+    (mov-⇲ *line)
 
-      # Mov to cdr car
-      (set-ptr *fwd-in (sub> (get Pair 'b))))
+    # Mov to cdr car
+    (set-ptr *fwd-in (sub> (get Pair 'b)))
     
     Part))  
 
@@ -179,6 +183,7 @@
     (mov-⇲ *line)
         
     (mov-cur-abv Ref)
+    #(set-ptr *fwd-in (sup> Ref))
     
     Part))
     

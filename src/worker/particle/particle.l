@@ -299,8 +299,16 @@
                             R G B 1.0
                             R G B 1.0
                             R G B 1.0)))))
-    
 
+                            
+(dm vis> (F)
+  (for Vert (: verts)
+    (place 4  (car (:: rgba)) F)
+    (place 8  (car (:: rgba)) F)
+    (place 12 (car (:: rgba)) F)
+    (place 16 (car (:: rgba)) F)))
+
+    
 # unused
 (dm bnds> (A B)
 
