@@ -51,10 +51,12 @@
   (let? Nl (get Part 'line)
 
     (when (get Nl 'p)
-      (put @ 'line 'n Nxt))
+      (put @ 'line 'n (get Nl 'n)))
 
     (when (get Nl 'n)
-      (put @ 'line 'p Prv))))
+      (put @ 'line 'p (get Nl 'p)))
+      
+    (put Part 'line)))
 
       
 (de put-line (Src Dst)
