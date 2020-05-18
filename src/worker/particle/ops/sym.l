@@ -1,5 +1,11 @@
 (de make-str (Data Lay)
 
+  # Refactor:
+  # - Move ptr update here?
+  # - Fns should take a tgt instead of manip ptr
+  # - Move some fns elsewhere like repl-cdr works on pairs not strs
+  # - Gen2-part should be in caller
+
   (let (Ref (get *fwd-in 'b)
         Part (if *on-car
                 (if (and (isa '(+Nil) Ref)
@@ -28,8 +34,44 @@
   
     Part))
   
+
+(de repl-cdr (Ref Part)
+  #{
+              *
+    [ ]  [ ]  NIL
+     A    B
+     
+    ->
+    
+    [ ]  [ ]  T
+     A    B    
   
-(de repl-car (Data Lay)
+    Or
+    
+              *
+    [ ]  [ ]  NIL
+     A    B
+     
+    ->
+    
+    [ ]  [ ]  [ ]
+     A    B    C  
+  }#
+
+  (println 'repl-cdr)
+  
+  (let (C (get Ref 'c)
+        Cb (get Ref 'b))
+
+    (b> C Part Cb)
+    
+    # Cdr is still used so don't del
+    (del> Ref T NIL)
+        
+    Part))
+  
+  
+(de repl-car (Data Lay No-Upd)
   #{
     Replace car of y pair
         
@@ -73,11 +115,12 @@
           
     (del> Ref T T)
     
-    (upd-tree)
-    (mov-⇲ *line)
+    (unless No-Upd
+      (upd-tree)
+      (mov-⇲ *line)
 
-    # Mov to cdr car
-    (set-ptr *fwd-in (sub> (get Pair 'b)))
+      # Mov to cdr car
+      (set-ptr *fwd-in (sub> (get Pair 'b))))
     
     Part))  
 
