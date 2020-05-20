@@ -22,6 +22,8 @@
 
     # If on-car stay on car
                     
+    # upd-tree
+                    
     (lay-ptr *fwd-in)
     
     Part))
@@ -130,11 +132,13 @@
           
     (del> Ref T T)
     
+    ##########
+    
     (upd-tree)
     (mov-⇲ *line)
 
     # Mov to cdr car
-    (set-ptr *fwd-in (sub> (get Pair 'b)))
+    (set-ptr *fwd-in (sub> (get Part 'c 'b)))
     
     Part))  
 
@@ -151,7 +155,7 @@
 
     ->
     
-          *
+               *
     [ ]  [ ]  [ ]  ...
     a    b    c                 
     
@@ -189,10 +193,12 @@
         (when (get Ref 'line)
           (put-line Ref Part)))
     
+    ##########
+    
     (upd-tree)
     (mov-⇲ *line)
-        
-    (set-ptr *fwd-in (sup> Ref))
+    
+    (set-ptr *fwd-in (top> Ref))
     
     Part))
     
@@ -263,6 +269,8 @@
                           (get Ref 'b)
                           (if (get *line 'line 'l) @ *line)))
       (put *line 'line 'n Ref))
+        
+    ##########
         
     (upd-tree)
     (mov-⇲ *line)
