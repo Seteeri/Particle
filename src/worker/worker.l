@@ -227,7 +227,7 @@
 
     (set-ptr *car (get *start 'b))
     (put *car 'lay 'y)
-    (adj-cur -5.0 3.0)
+    (adj-cur -9.0 2.0)
     (lay-ptr *car)    
     
     # Set input to Cdr
@@ -266,7 +266,7 @@
                                ("*plist" "...")
                                ("*symbols" "...")))
  
-        (adj-cur-y -8.0)
+        (adj-cur-y -10.0)
         (mov-cur-x X)
         (lay-part-start Part Part)))))
 
