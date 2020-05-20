@@ -257,11 +257,10 @@
     (upd-tree)
     (mov-⇲ *line)
 
-    (if Is-Ref-Pair-of-Pair
-        (prog
-          (set-ptr *fwd-in Part)
-          (mov-cur-abv Part))
-        (mov-cur-abv Ref))
+    
+    (set-ptr *fwd-in (if Is-Ref-Pair-of-Pair
+                          (sup> Part)
+                          (sup> Ref)))
     
     Part))
     
