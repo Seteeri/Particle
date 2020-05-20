@@ -7,13 +7,16 @@
   # - Gen2-part should be in caller
 
   (let (Ref (get *fwd-in 'b)
-        Part-Fn (if *on-car
-                  (if (is-end?> Ref)
-                      (cons (repl-cdr Ref (gen2-part Data Lay NIL T)) repl-cdr-post)
-                      (cons (repl-car Data Lay) repl-car-post))
-                  (if (is-car?> Ref)
-                      (cons (ins-car Data Lay) ins-car-post)
-                      (cons (ins-cdr Data Lay) ins-cdr-post))))
+        Part-Fn 
+          (if *on-car
+              (let Part (gen2-part Data Lay NIL T)
+                (if (is-end?> Ref)
+                    (cons (repl-cdr Ref Part) repl-cdr-post)
+                    (cons (repl-car Ref Part) repl-car-post)))
+              (let Part (gen2-part (list Data) Lay (cons NIL T) T)
+                (if (is-car?> Ref)
+                    (cons (ins-car Ref Part) ins-car-post)
+                    (cons (ins-cdr Ref Part) ins-cdr-post)))))
                     
     (upd-tree)
     (mov-⇲ *line)
@@ -80,11 +83,8 @@
 
     Part))
 
-  
-#######################
-
-  
-(de repl-car (Data Lay)
+    
+(de repl-car (Ref Part)
   #{
     Replace car of y pair
         
@@ -112,10 +112,8 @@
 
   (println 'repl-car)
   
-  (let (Ref (get *fwd-in 'b)
-        Pair (get Ref 'c)
-        C (get Pair 'c)
-        Part (gen2-part Data Lay NIL T))
+  (let (Pair (get Ref 'c)
+        C (get Pair 'c))
 
     (a> Pair Part)
     
@@ -131,7 +129,7 @@
     Part))  
 
     
-(de ins-cdr (Data Lay)
+(de ins-cdr (Ref Part)
   #{
     Insert after ptr/pair (rel to Ref 'b 'c)
     or
@@ -168,9 +166,7 @@
   
   (println 'ins-cdr)
   
-  (let (Ref (get *fwd-in 'b)
-        Pair (get Ref 'c)
-        Part (gen2-part (list Data) Lay (cons NIL T) T))
+  (let (Pair (get Ref 'c))
 
     (b@ Pair Part Ref)
     
@@ -184,7 +180,7 @@
     Part))
     
 
-(de ins-car (Data Lay)
+(de ins-car (Ref Part)
 
   #{
   
@@ -229,9 +225,7 @@
     
   (println 'ins-car)
     
-  (let (Ref (get *fwd-in 'b)
-        Pair (get Ref 'c)
-        Part (gen2-part (list Data) Lay (cons NIL T) T)
+  (let (Pair (get Ref 'c)
         Is-Ref-Pair-of-Pair (and (isa '(+Pair) Pair)
                                  (isa '(+Pair) (get Ref 'a))))
 
