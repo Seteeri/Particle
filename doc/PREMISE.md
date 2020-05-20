@@ -49,13 +49,13 @@ That begs the question, if that computing paradigm is better, why is it not popu
 
 Maybe for reasons outlined by Peter Gabriel - "worse is better" verus "the right thing". Maybe because of the monopoly MS had on the PC market. Maybe it was technology that was too early for its time.
 
-However, the ecosystem and infrastructure that has been established around the C and Unix model is difficult to overcome. However, just as technology continues marching forward, new opportunities will present themselves. With the rise of mobile computing, multi-core processors, and the increasing connectivity of the world, abstractions that we have built are no longer flexible enough to take advantage of multi-core and parallel computing. The solution remains unknown.
+However, the ecosystem and infrastructure that has been established around the C and Unix model is difficult to overcome. However, just as technology continues marching forward, new opportunities will present themselves. With the rise of mobile computing, multi-core processors, and the increasing connectivity of the world, abstractions that we have built are no longer flexible enough to take advantage of multi-core and parallel computing. The solution remains unknown, but must keep trying.
 
 ## The Lisp Rebirth
 
-Lisp was originally commercialized around the single programmer managing their entire stack down to the hardware. 
+Lisp was originally commercialized around the single programmer managing their entire stack down to the hardware. Since the invention of Lisp, some say all languages borrow features from Lisp and are converging on it, or go so far as to implement Greenspun's Tenth Rule. The closest popular language similar to Lisp is Clojure, which has become more popular in recenty years, although it is more losely considered a Lisp programming language due to its nature. So if Lisp was so great why did it fail?
 
-## Why did Lisp Fail?
+## The Lisp Paradox
 
 [The Evolution of Lisp](https://wiki.c2.com/?TheEvolutionOfLisp)
 
@@ -83,29 +83,15 @@ https://danluu.com/symbolics-lisp-machines/
 
 http://web.mit.edu/6.933/www/Symbolics.pdf
 
+Despite its tragic history, I believe Lisp's homoiconic nature, arguably the only defining feature of Lisp left, is possibly the key to a better interface. Not to mention, the Lisp ecosystem never strayed far from its original academic/scientific niche, so maybe its worth a shot to apply its principles to a general audience (not counting Apple's NewtonOS and Dylan).
 
+# The Solution
 
-#### BRAINSTORM
+After reviewing much of the existing software and attempts around building new interface paradigms, I noticed a common theme among all of them. They all used the traditional GUI like windows, widgets etc, resulting in the same inevitable ending; the GUIs were static and they were all separated from their underlying data - the data was designed around the UIs rather than the reverse. they all  In the end, this made the project simply another visual theme but no different than conventional systems, effectively defeating the whole purpose of the project in the first place. 
 
-visual DSL = symbols?
+This led me to start with thinking about the most popular interface - text - and to trace its history and re-evaluate its functionality. There are numerous attempts to create a more expressive command line or REPLs.
 
-literally combine alphanumeric glyphs/symbols to form compound symbols which can be represented with an arbitrary glyph (icon in conventional terms)
-
-still requires the user to have a basic understanding of the computing process similar to functions and visual nodal systems
-
-# The Lightbulb
-
-*draw diagram*
-
-The consistency of PicoLisp (LISP) makes it easy to reason about the system by connecting the linked-list structure of the UI directly to the underlying linked-list data structure (or more specifically linked cons cells), and because Lisp code can manipulate data through eval, the UI can be dynamically modified through itself. This means operating on the UI (or the data representation) is the same as operating on the underlying data which has the same representation.
-
-The relationship to other objects at the presentation level is the same as objects to the underlying data model, and the data model's relationship to other objects is the same at the presentation level.
-
-The other issue is how to draw graphs and trees (which are mathemtically speaking, a subset of), which is an NP-complete problem. Node editors have shown that once a graph or tree gets to a certain size it can become unweildly and unmanageable (aka sphagehtti code). The same issue has arisen with graphing programs.
-
-With Particle, it restricts the layout of trees and automatically lays out the branches. It is a balance between giving the user complete freedom to the point they easily manage to shoot themselves in the foot versus taking the gun completely away from them. Too much restriction results in a tabular UI, and too little restriction results in sphagehtti nodes. However, should the user want to be able to arbitrarily layout objects, it can be done programmatically.
-
-## Origins
+## The Lisp Lightbulb
 
 Originally, Particle began in Python, then moved to Common Lisp, at which point I encountered CLIM, which is a descendant of the Symbolics Genera-based Lisp Machine's Dynamic Windows/Lisp Listener. Its central feature is the concept of presentation types, commands and transformers. 
 
@@ -121,9 +107,11 @@ https://www.reddit.com/r/lisp/comments/22lbpe/whatever_became_of_clim/
 
 However, I wanted to approach the issue from a top-down or hollistic perspective by building a higher-level environment that more conceptually vertically integrated, analagous to modding a game versus using a game engine framework like Unity or Unreal etc. The integration of the interface maximizes the reuse of concepts and by extension commands, since everything is patterned in Lisp, short of the kernel itself (another discussion). It naturally provides discoverability and thus a gradual learning curve as one ventures deeper into the system by learning new types beyond the fundamental Lisp types. This isn't really new - this was one of the wonderful things about Lisp Machines, at least from what I've researched.
 
-This could be viewed as violating the Unix philosophy by integrating everything, however, I believe it still maintains the core tenets. The Unix philosophy is centered around the C model style of programming where processes communicate through piping text implemented with Bash scripts. Arguably, Lisp has a more dynamic approach but with an underlying model of lists and atoms based on cons cells.
+This could be viewed as violating the Unix philosophy by integrating everything, however, I believe it still maintains the core tenets. The Unix philosophy is centered around the C model style of programming where processes or programs, which do one thing well, communicate through piping text implemented with Bash scripts. Arguably, Lisp has a more dynamic approach but with an underlying model of lists and atoms based on cons cells.
 
-Looking at the current ecosystem, the alternative is what has been witnessed over the last several decades -fragmentation, which depending on how it is viewed is also the freedom to change components. However, for some users, an integrated approach is needed for a more productive experience rather than an exploratory one currently favored.
+I find open-source users fall into two camps, pragmatists and explorers, or should I say two user modes. The former being more convergent with software being a means to an end, and the latter being more divergent with software configuration being a means in itself. Open source is equally attractive for both groups as it allows one to optimize their workflow to accomplish their goals by modify the systems appropriately, and for the latter it grants users the freedom to experiment with their software stacks like LEGOs.
+
+However, for some users, an integrated approach is needed for a more productive experience rather than an exploratory one currently favored. Looking at the current ecosystem, the alternative is what has been witnessed over the last several decades -fragmentation, which depending on how it is viewed is also the freedom to change components.
 
 https://groups.google.com/forum/#!topic/comp.lang.lisp/XpvUwF2xKbk%5B101-125%5D
 
@@ -152,6 +140,22 @@ That being said, I believe learning programming initially through concepts rathe
 > I’m a huge proponent of designing your code around the data, rather than the other way around, and I think it’s one of the reasons git has been fairly successful… I will, in fact, claim that the difference between a bad programmer and a good one is whether he considers his code or his data structures more important. Bad programmers worry about the code. Good programmers worry about data structures and their relationships.
 
 -- Linus Torvalds
+
+## The Pico Lightbulb
+
+The consistency of PicoLisp (LISP) makes it easy to reason about the system by connecting the linked-list structure of the UI directly to the underlying linked-list data structure (or more specifically linked cons cells), and because Lisp code can manipulate data through eval, the UI can be dynamically modified through itself. This means operating on the UI (or the data representation) is the same as operating on the underlying data which has the same representation.
+
+The relationship to other objects at the presentation level is the same as objects to the underlying data model, and the data model's relationship to other objects is the same at the presentation level.
+
+The other issue is how to draw graphs and trees (which mathematically speaking, the latter a subset of), which is an NP-complete problem. Node editors have shown that once a graph or tree gets to a certain size it can become unweildly and unmanageable (aka sphagehtti code). The same issue has arisen with graphing programs.
+
+With Particle, it restricts the layout of trees and automatically lays out the branches similar to writing Lisp. It is a balance between giving the user complete freedom to the point they easily manage to shoot themselves in the foot versus taking the gun completely away from them. Too much restriction results in a tabular UI, and too little restriction results in sphagehtti nodes. However, should the user want to be able to arbitrarily layout objects, it can be done programmatically, possibly to demonstrate spatial relationships.
+
+*external symbols, OS, database and how it ties together, lispos*
+
+Unix is based on files, and files are based on b-trees so its trees all the way down anyways!
+
+http://okmij.org/ftp/papers/DreamOSPaper.html
 
 # Epilogue - Year of The Linux Desktop
 

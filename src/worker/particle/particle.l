@@ -301,12 +301,17 @@
                             R G B 1.0)))))
 
                             
-(dm vis> (F)
+(dm vis> (F P)
   (for Vert (: verts)
-    (place 4  (car (:: rgba)) F)
-    (place 8  (car (:: rgba)) F)
-    (place 12 (car (:: rgba)) F)
-    (place 16 (car (:: rgba)) F)))
+    (with Vert
+      (place 4  (car (:: rgba)) F)
+      (place 8  (car (:: rgba)) F)
+      (place 12 (car (:: rgba)) F)
+      (place 16 (car (:: rgba)) F))
+    (req-send *ipc Vert))
+  (when P
+    (when (: a) (vis> @ P))
+    (when (: b) (vis> @ P))))
 
     
 # unused

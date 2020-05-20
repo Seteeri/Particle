@@ -123,6 +123,78 @@ https://news.ycombinator.com/item?id=7488554
 
 Memory is linear and so is execution( at a basic level ) yet our programming and ideas are not. Imagine programming as a needle with one continues thread stringing boxed functions and values together, sometimes threading something that has been threaded before, and ultimately creating a crisscross of wire that's hard to understand. We cannot organize something that is linear with a non-linear representation. We try to make the crossed wire simpler to understand with programming languages but it is inherently unsolvable as a problem. There will never be a authoritative programming language.
 
+
+---
+---
+
+
+https://news.ycombinator.com/item?id=20754592
+
+
+ 	
+cryptica 9 months ago [–]
+
+This sounds like my nightmare operating system. Reusing the same command to operate on very different kinds of objects is a bad idea. A file is very different from a process. A database table is very different from a file. Whenever you try to homogenize operations on different kinds of objects under a single operation name, you inevitably lose flexibility or you have to add a lot of if-then-else statements inside the implementation code which increases cyclomatic complexity and leads to bugs.
+
+Also I don't think it makes it easier. What if I want to delete a process but I accidentally end up deleting a file because I mistyped the name of the process (or the file has the same name as the process; which one should be deleted?)? I think we need separate commands because the user needs to be in a different mindset when doing these operations.
+
+I'm actually not a huge fan of the Unix philosophy for that reason; you end up with a lot of general purpose commands which work together in theory and you can combine them in an infinite number of ways... But in practice, they are too general and this means that combining them becomes too slow for a lot of scenarios... If commands are too small and too general, you will always end up having to write long sequences of multi-lined commands chained together in order to do anything useful and performance will be bad; you might as well just write C/C++ code.
+
+	
+	
+taffer 9 months ago [–]
+
+I would make a distinction between querying and mutating the operating system state.
+
+For querying information, I think the idea of representing everything as the same data structure really makes sense. The Unix philosophy or a relational view is perfect for this. However, for more sematically complex things that have possibly surprising side effects, such as starting a service, setting up a new user account, connecting a drive, installing a printer, I think we need separate commands or procedures to encapsulate all the complex behavior.
+
+	
+	
+fouc 9 months ago [–]
+
+He probably meant having the same internal interface, it would still be doable to have various aliased commands that call the same interface.
+
+As for UNIX philosophy of stringing together lots of general purpose commands to get the desired result - the nice thing about that is you don't need to know programming, and it's very convenient for one off scripting.
+
+	
+	
+nerdponx 9 months ago [–]
+
+As for UNIX philosophy of stringing together lots of general purpose commands to get the desired result - the nice thing about that is you don't need to know programming, and it's very convenient for one off scripting.
+
+I beg to differ. It's a workflow by and for programmers, or at least people who think like programmers. 
+
+
+---
+
+
+ dgellow 9 months ago [–]
+
+Just a general question: Do you think there is a market for a new operating system? The cost of building something better or equal to mainstream systems seem too high to even consider challenging the status quo.
+
+	
+	
+repolfx 9 months ago [–]
+
+I think there is, but it'd need to be very different to existing operating systems to justify itself, and in ways that other OS's can't simply adopt for themselves. In practice that means radical architectural change, and even then you'd re-use a lot of code.
+
+For such a project you don't really want to just adopt existing ideas and implement them. I don't really understand why Google is doing Fuschia for this reason: architecturally it's nothing special. Is the GPLd Linux so bad? It took them this far.
+
+If I were to do a new OS I'd explore ideas like all software running on a single language-level VM with a unified compiler (e.g. a JVM), a new take on software distribution ... maybe fully P2P, rethinking filesystems and the shell, making it radically simpler to administer than Linux, etc. You'd need to pick a whole lot of fights and make a lot of controversial decisions to justify such a lot of work: you'd need to be right about things other people are wrong about, not just once but multiple times. Then maybe if people see it working well they'd join you and port existing software, albeit, the porting process would inevitably involve some rewriting or even deeper changes, as if you can just run existing software and get all the benefits you probably didn't change anything important.
+
+	
+	
+skissane 9 months ago [–]
+
+Build a new operating system, or build an operating environment that runs on top of an existing operating system, like how e.g. Windows used to run on top of DOS? Or User Mode Linux on top of Linux?
+
+An operating environment means you don't have to worry about stuff like device drivers. It can run inside a Docker container. (At most companies, try suggesting "let's run a brand-new OS that nobody has heard of", and you'll get an emphatic "no"... say "here's this app we want to run, it is packaged as a Docker container", and often nobody will even ask what is inside that Docker container, even if it contains your operating environment with the app running on top.)
+
+You can start out using facilities of the host OS like the filesystem and networking stack. Later, if you want to, you can implement your own filesystem (create a 100GB file on the host filesystem, pretend that is a block device and your custom filesystem exists within it). Or your own networking stack (which can run in user space using facilities like Linux tun/tap drivers.)
+
+An operating environment can always evolve into a standalone operating system at a later date. 
+
+
 # Others
 
 Newton OS: http://lispm.de/lisp-based-newton-os

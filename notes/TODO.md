@@ -19,15 +19,20 @@ TODO
     * Refactor layout to use stack like gen
       * flags: expand int syms, trans syms, ext syms
     * Support X sublists
-    * Unify symbols
-      * symbol hierarchy
-      * CUT/COPY/PASTE
-        * Need registers
     * Implement cmds Q/E : start/end of line/list  
     * Cache last item for lines/lists
       * On command
       * On layout
-      * On gen
+      * On gen    
+    * Unify symbols
+      * symbol hierarchy
+      * CUT/COPY/PASTE
+        * Need registers
+    * External Symbols
+    * Multiple workers
+    * Min UI latency
+      * Swap proc before cmd since don't know if GC will happen
+    
     * Track data:particles in binary tree *particles
       * Unlike a CLI, we hold references to old data
         * Which if future commands change old data, it has to be updated

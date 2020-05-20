@@ -78,3 +78,4 @@ Fortunately, the world has been moving towards open source. Some of the most wid
 * Research Projects
 * Jetbrains MPS
 * Light Table, Eve
+* WinFS
