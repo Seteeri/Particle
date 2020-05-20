@@ -182,8 +182,7 @@
     (upd-tree)
     (mov-⇲ *line)
         
-    (mov-cur-abv Ref)
-    #(set-ptr *fwd-in (sup> Ref))
+    (set-ptr *fwd-in (sup> Ref))
     
     Part))
     
