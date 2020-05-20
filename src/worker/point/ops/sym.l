@@ -233,8 +233,7 @@
         Pair (get Ref 'c)
         Part (gen2-part (list Data) Lay (cons NIL T) T)
         Is-Ref-Pair-of-Pair (and (isa '(+Pair) Pair)
-                                 (or (isa '(+Pair) (get Ref 'a))
-                                     (isa '(+Nil) (get Ref 'a)))))
+                                 (isa '(+Pair) (get Ref 'a))))
 
     (a> Pair Part)                                 
                                  
