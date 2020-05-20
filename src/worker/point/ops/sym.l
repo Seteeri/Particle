@@ -7,43 +7,39 @@
   # - Gen2-part should be in caller
 
   (let (Ref (get *fwd-in 'b)
-        Part (if *on-car
-                (if (and (isa '(+Nil) Ref)
-                         (is-cdr?> Ref))
-                    (prog
-                      (let Part (repl-cdr Ref (gen2-part Data Lay NIL T))
-                        (upd-tree)
-                        (mov-⇲ *line)
-                        (set-ptr *fwd-in (sub> Part))))
-                    (repl-car Data Lay))
-                (if (is-car?> Ref)
-                    (ins-car Data Lay)
-                    (ins-cdr Data Lay))))
-
-    # If on-car stay on car
+        Part-Fn (if *on-car
+                  (if (is-end?> Ref)
+                      (cons (repl-cdr Ref (gen2-part Data Lay NIL T)) repl-cdr-post)
+                      (cons (repl-car Data Lay) repl-car-post))
+                  (if (is-car?> Ref)
+                      (cons (ins-car Data Lay) ins-car-post)
+                      (cons (ins-cdr Data Lay) ins-cdr-post))))
                     
-    # upd-tree
-                    
+    (upd-tree)
+    (mov-⇲ *line)
+    
+    ((cdr Part-Fn) (car Part-Fn))
     (lay-ptr *fwd-in)
     
-    Part))
+    (car Part-Fn)))
 
     
-(de repl-nil (Data Lay)
-
-  (println 'repl-nil)
+(de repl-car-post (Part) 
+  (set-ptr *fwd-in (sub> (get Part 'c 'b))))
   
-  # [Y]  NIL
-  # CDR
   
-  (let Part (if (= (get *fwd-in 'b 'c 'a) Ref)
-                (ins-car Data Lay)
-                (ins-cdr Data Lay))
-    
-    # Mov to cdr car
-    (set-ptr *fwd-in (sub> (get Part 'b)))
+(de repl-cdr-post (Part)
+  (set-ptr *fwd-in (sub> Part)))
   
-    Part))
+  
+(de ins-car-post (Part)
+  (set-ptr *fwd-in (if (cdr Part)
+                        (sup> (car Part))
+                        (sup> (get (car Part) 'b)))))
+  
+  
+(de ins-cdr-post (Part) 
+  (set-ptr *fwd-in (top> (get Part 'b))))
   
 
 (de repl-cdr (Ref Part)
@@ -131,15 +127,7 @@
            (quit "repl-car: invalid pair")))
           
     (del> Ref T T)
-    
-    ##########
-    
-    (upd-tree)
-    (mov-⇲ *line)
-
-    # Mov to cdr car
-    (set-ptr *fwd-in (sub> (get Part 'c 'b)))
-    
+        
     Part))  
 
     
@@ -192,14 +180,7 @@
         (make-line Ref)
         (when (get Ref 'line)
           (put-line Ref Part)))
-    
-    ##########
-    
-    (upd-tree)
-    (mov-⇲ *line)
-    
-    (set-ptr *fwd-in (top> (get Part 'b)))
-    
+
     Part))
     
 
@@ -259,6 +240,8 @@
                                  
     (b> Part Ref)
                   
+    # assert Ref has a line
+                  
     (put-line Ref Part)        
           
     (when Is-Ref-Pair-of-Pair
@@ -270,16 +253,7 @@
                           (if (get *line 'line 'l) @ *line)))
       (put *line 'line 'n Ref))
         
-    ##########
-        
-    (upd-tree)
-    (mov-⇲ *line)
-
-    (set-ptr *fwd-in (if Is-Ref-Pair-of-Pair
-                          (sup> Part)
-                          (sup> (get Part 'b))))
-    
-    Part))
+    (cons Part Is-Ref-Pair-of-Pair)))
     
 
 #########################################
