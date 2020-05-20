@@ -198,7 +198,7 @@
     (upd-tree)
     (mov-⇲ *line)
     
-    (set-ptr *fwd-in (top> Ref))
+    (set-ptr *fwd-in (top> (get Part 'b)))
     
     Part))
     
