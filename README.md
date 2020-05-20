@@ -23,7 +23,7 @@ The target audience consists of information/knowledge workers, power users, prog
 
 # Preview
 
-*UPDATE*
+![PARTICLE SCREENSHOT](https://github.com/Seteeri/Particle/blob/master/art/screenshot.png)
 
 Can you identify the s-expression structure?
 

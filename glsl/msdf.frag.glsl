@@ -48,7 +48,7 @@ void main(void)
     vec2 gradDist = safeNormalize( vec2( dFdx( sigDist ), dFdy( sigDist ) ) );
     vec2 grad = vec2( gradDist.x * Jdx.x + gradDist.y * Jdy.x, gradDist.x * Jdx.y + gradDist.y * Jdy.y );
     // Apply anti-aliasing = 1.0/8.0 = 0.125
-    const float kThickness = 0.01;
+    const float kThickness = 0.02;
     //const float kThickness = 1.0/128.0;
     const float kNormalization = kThickness * 0.5 * sqrt( 2.0 );
     float afwidth = min( kNormalization * length( grad ), 0.5 );

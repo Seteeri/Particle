@@ -9,11 +9,6 @@ TODO
   GOAL is build structures more fluidly
   * Create list, enter strings, convert some to symbols, eval
   
-  * 18 MAY - Mon
-    * Refactor sym
-      * Do repl-cdr on end atom
-
-  
   * 19 MAY - Tues
     * Refactor layout to use stack like gen
       * flags: expand int syms, trans syms, ext syms
