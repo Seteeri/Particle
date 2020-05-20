@@ -30,13 +30,13 @@
         (sub> (: c))
         (prog
           (when (get (: c) 'line)
-            (println 'prv> "Mov ptr -> super-line/list" (: c) (get (: c) 'data))
+            (println 'prv> "Set line: " (: c) (get (: c) 'data))
             (setq *line (: c)))
           # If Y layout, must be newline
-          (when (= (: lay) 'y)
+          (when (lay-y?> This)
             (when (get *line 'line 'p)
               (setq *line @)
-              (println 'prv> "Mov ptr -> super-line/list" @ (get @ 'data))))
+              (println 'prv> "Set line: " @ (get @ 'data))))
           (mov-cur-abv (: c))
           (: c)))))
 
@@ -47,36 +47,34 @@
         (sub> (: b))
         (prog
           (when (get (: b) 'line)
-            (println 'nxt> "Mov ptr -> sub-line/list" (: b) (get (: b) 'data))
+            (println 'nxt> "Set line: " (: b) (get (: b) 'data))
             (setq *line (: b)))
           (mov-cur-abv (: b))
           (: b)))))
 
 
 (dm sup> ()
-  (if (= (get (: c) 'a) This)
-      # Exclude Y layout Pair -> X layout Car
-      # *start?
+  (if (is-car?> This)
       (prog
-        (let? Ln (get (: c) 'line)
-          (println 'sup> "Mov ptr -> super-line/list" Ln (get Ln 'data))        
-          (setq *line (: c)))
+        ~(assert (get (: c) 'line))
+        (println 'sup> "Set line: " (: c) (get (: c) 'data))
+        (setq *line (: c))
         (set-on-car)
         (mov-cur-abv (: c))
         (: c))
-
-      (if (: c)
-          (sup> (: c))
-          (prog
-            (mov-cur-abv This)
-            This))))
+        
+      (prog
+        (mov-cur-abv This)
+        This)))
 
 
 (dm sub> ()
   (cond ((isa '(+Pair) (: a))
-         (when (get (: a) 'line)
-           (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))
-           (setq *line (: a)))
+  
+         ~(assert (get (: a) 'line))
+        (println 'sub> "Set line: " (: a) (get (: a) 'data))
+        (setq *line (: a))
+           
          # If X lay, mov to Car
          # If Y lay, stay Cdr          
          (if (lay-x?> This)
@@ -89,9 +87,8 @@
                (: a))))
         
         ((isa '(+Nil) (: a))
-         (when (get (: a) 'line)
-           (println 'sub> "Mov ptr -> sub-line/list" (: a) (get (: a) 'data))
-           (setq *line (: a)))
+         (println 'sub> "Set line: " (: a) (get (: a) 'data))
+         (setq *line (: a))
          # If X lay, mov to Car
          # If Y lay, stay Cdr          
          (if (lay-x?> This)
