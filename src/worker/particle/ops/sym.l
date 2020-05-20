@@ -10,7 +10,11 @@
         Part (if *on-car
                 (if (and (isa '(+Nil) Ref)
                          (is-cdr?> Ref))
-                    (repl-nil Data Lay)
+                    (prog
+                      (let Part (repl-cdr Ref (gen2-part Data Lay NIL T))
+                        (upd-tree)
+                        (mov-⇲ *line)
+                        (set-ptr *fwd-in (sub> Part))))
                     (repl-car Data Lay))
                 (if (is-car?> Ref)
                     (ins-car Data Lay)
@@ -68,13 +72,19 @@
   (let (C (get Ref 'c)
         Cb (get Ref 'b))
 
-    (b> C Part Cb)
+    (b@ C Part Cb)
+
+    (when (get Ref 'line)
+      (put-line Ref Part))
     
     # Cdr is still used so don't del
     (del> Ref T NIL)
-        
+
     Part))
+
   
+#######################
+
   
 (de repl-car (Data Lay)
   #{
@@ -257,7 +267,6 @@
     (upd-tree)
     (mov-⇲ *line)
 
-    
     (set-ptr *fwd-in (if Is-Ref-Pair-of-Pair
                           (sup> Part)
                           (sup> Ref)))

@@ -20,7 +20,7 @@
                Part
                (get Part 'data)))
 
-    ~(assert Ori-C)               
+    ~(assert Ori-C)          
                
     #(mov-cur-y (- (get Ori-CA 2) (get Dims-CA 2)))               
                
