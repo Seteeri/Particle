@@ -30,6 +30,7 @@
             "/src/c/gles/gles.l"
             "/src/c/glfw.l"
             "/src/c/epoll.l"
+            "/src/selenized.l"
             "/src/ipc/ipc.l"
             "/src/prot/conn.l"
             "/src/prot/send.l"
@@ -71,8 +72,8 @@
 (de init-window ()
   (glfw~init-2)
 
-  #OpenGL ES only GL binding API that does not depend on GLX
-  #Migrate to Vulkan later...
+  # OpenGL ES only GL binding API that does not depend on GLX
+  # Migrate to Vulkan later...
   (glfw~window-hint glfw~CONTEXT-VERSION-MAJOR 3)
   (glfw~window-hint glfw~CONTEXT-VERSION-MINOR 2)
   (glfw~window-hint glfw~CLIENT-API            glfw~OPENGL-ES-API)
@@ -206,15 +207,9 @@
       (gl~client-wait *fence)
       (gl~delete-sync *fence))
 
-    #{
-      0.16862745098
-      0.211764705882
-      0.0
-    }#
-
-    (gl~clear-color 0.0
-                    0.0 
-                    0.0 
+    (gl~clear-color (car *selb-bg-0)
+                    (cadr *selb-bg-0)
+                    (caddr *selb-bg-0)
                     0.0)
     (gl~clear CLEAR-MASK)
 

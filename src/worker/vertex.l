@@ -188,46 +188,11 @@
   
 ########################
 
-#{
-  https://ethanschoonover.com/solarized/
-
-  Thus in the case of a dark background colorscheme, the normal relationship for background and body text is base03:base0 (please note that body text is not base00). Note also that in cases where the background and foreground can be specified as a pair value, text can be highlighted using a combination of base02:base1. The L*a*b lightness difference between base03:base0 and base02:base1 is identical by design, resulting in identical readability against both normal and highlighted backgrounds. An example use case is folded text in Vim which uses base02 for the background and base1 for the foreground.
-
-  The values in this example are simply inverted in the case of a light background.
-
-          bg:fg
-          
-  dark  | base03:base0
-  light | base02:base1
-  high  | base02:base1
-}#
-
-(def '*sol-base-03 (list (*/ 1.0 0.0   255.0) (*/ 1.0 43.0  255.0) (*/ 1.0 54.0  255.0)))
-(def '*sol-base-02 (list (*/ 1.0 0.0   255.0) (*/ 1.0 54.0  255.0) (*/ 1.0 66.0  255.0)))
-(def '*sol-base-01 (list (*/ 1.0 88.0  255.0) (*/ 1.0 110.0 255.0) (*/ 1.0 117.0 255.0)))
-(def '*sol-base-00 (list (*/ 1.0 101.0 255.0) (*/ 1.0 123.0 255.0) (*/ 1.0 131.0 255.0)))
-
-(def '*sol-base-0  (list (*/ 1.0 131.0 255.0) (*/ 1.0 148.0 255.0) (*/ 1.0 150.0 255.0)))
-(def '*sol-base-1  (list (*/ 1.0 147.0 255.0) (*/ 1.0 161.0 255.0) (*/ 1.0 161.0 255.0)))
-(def '*sol-base-2  (list (*/ 1.0 238.0 255.0) (*/ 1.0 232.0 255.0) (*/ 1.0 213.0 255.0)))
-(def '*sol-base-3  (list (*/ 1.0 253.0 255.0) (*/ 1.0 246.0 255.0) (*/ 1.0 227.0 255.0)))
-
-(def '*sol-violet  (list (*/ 1.0 108.0 255.0) (*/ 1.0 113.0  255.0) (*/ 1.0 196.0 255.0)))
-(def '*sol-blue    (list (*/ 1.0 38.0  255.0) (*/ 1.0 139.0  255.0) (*/ 1.0 210.0 255.0)))
-(def '*sol-cyan    (list (*/ 1.0 42.0  255.0) (*/ 1.0 161.0  255.0) (*/ 1.0 152.0 255.0)))
-(def '*sol-green   (list (*/ 1.0 133.0 255.0) (*/ 1.0 153.0  255.0) (*/ 1.0 0.0   255.0)))
-(def '*sol-yellow  (list (*/ 1.0 181.0 255.0) (*/ 1.0 137.0  255.0) (*/ 1.0 0.0   255.0)))
-
-(def '*sol-orange  (list (*/ 1.0 203.0 255.0) (*/ 1.0 75.0 255.0) (*/ 1.0 22.0  255.0)))
-(def '*sol-red     (list (*/ 1.0 220.0 255.0) (*/ 1.0 50.0 255.0) (*/ 1.0 47.0  255.0)))
-(def '*sol-magenta (list (*/ 1.0 211.0 255.0) (*/ 1.0 54.0 255.0) (*/ 1.0 130.0 255.0)))
-
 # X / Y / NIL
 (def '*pair-col-def 
-     (list *sol-base-01
-           *sol-base-1
-           *sol-violet))
-           #*sol-base-0
+     (list *selb-fg-0
+           *selb-fg-1
+           *selb-fg-0))
 
 (de get-color-type (Any)
   #{
@@ -266,10 +231,10 @@
 
   (cond ((not Any)  (caddr *pair-col-def))
         ((lst? Any) (car *pair-col-def))
-        ((num? Any) *sol-green)
-        ((str? Any) *sol-blue)
-        ((ext? Any) *sol-cyan)
-        ((sym? Any) *sol-violet)))
+        ((num? Any) *selb-green)
+        ((str? Any) *selb-blue)
+        ((ext? Any) *selb-cyan)
+        ((sym? Any) *selb-violet)))
 
 # Small down tri
 #(def '*char-dot (char (hex "02D1")))

@@ -22,6 +22,7 @@
             "/src/c/ksd.l"
             "/src/c/xkbcommon.l"
             "/src/misc.l"
+            "/src/selenized.l"
             "/src/ipc/ipc.l"
             "/src/prot/conn.l"
             "/src/prot/send.l"
@@ -205,7 +206,7 @@
     ##################
     # TODO: Draw *ptrs
         
-    (def '*cdr (gen2-sym-full '*cdr 'x (cons NIL T) "↓" *sol-yellow))
+    (def '*cdr (gen2-sym-full '*cdr 'x (cons NIL T) "↓" *selb-yellow))
     (def '*car (gen2-sym-full '*car 'x (cons NIL T) "↑"))
     
     #{
@@ -236,7 +237,7 @@
     # TEMP
     
     # ⇲ -> ⇲
-    (def '⇲ (gen2-sym-full '⇲ 'y (cons NIL T) "⇲" *sol-yellow))
+    (def '⇲ (gen2-sym-full '⇲ 'y (cons NIL T) "⇲" *selb-yellow))
 
     #########
     

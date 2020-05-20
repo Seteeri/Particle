@@ -70,18 +70,18 @@
   (if F
       (prog
         (on *on-car)
-        (col> *car *sol-yellow)
-        (col> (get *car 'a) *sol-yellow)
+        (col> *car *selb-yellow)
+        (col> (get *car 'a) *selb-yellow)
         (setq *fwd-in *car)
-        (col> *cdr *sol-violet)
-        (col> (get *cdr 'a) *sol-violet))
+        (col> *cdr *selb-violet)
+        (col> (get *cdr 'a) *selb-violet))
       (prog
         (off *on-car)
-        (col> *car *sol-violet)
-        (col> (get *car 'a) *sol-violet)
+        (col> *car *selb-violet)
+        (col> (get *car 'a) *selb-violet)
         (setq *fwd-in *cdr)
-        (col> *cdr *sol-yellow)
-        (col> (get *cdr 'a) *sol-yellow))))
+        (col> *cdr *selb-yellow)
+        (col> (get *cdr 'a) *selb-yellow))))
         
         
 (de tog-car ()
