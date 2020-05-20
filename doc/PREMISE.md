@@ -83,7 +83,7 @@ https://danluu.com/symbolics-lisp-machines/
 
 http://web.mit.edu/6.933/www/Symbolics.pdf
 
-Despite its tragic history, I believe Lisp's homoiconic nature, arguably the only defining feature of Lisp left, is possibly the key to a better interface. Not to mention, the Lisp ecosystem never strayed far from its original academic/scientific niche, so maybe its worth a shot to apply its principles to a general audience (not counting Apple's NewtonOS and Dylan).
+Despite its tragic history, I believe Lisp's homoiconic nature, arguably the only defining feature of Lisp left, is possibly the key to a better interface. Not to mention, the Lisp ecosystem never strayed far from its original academic/scientific niche, so maybe its worth a shot to apply its principles to a general audience (not counting Apple's NewtonOS and Dylan). Last but not least, I don't think Lisp was ever meant to be operated on with a text editor and has always held its true power back...
 
 # The Solution
 

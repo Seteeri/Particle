@@ -9,7 +9,7 @@ Ostensibly, it resembles an outliner, however, it integrates various computing c
 * Storage mechanisms
   * Plaintext (Lisp code)
   * Binary (Lisp data)
-  * Database backend (Lisp data)
+  * Database (Lisp data)
 * Orthographic view aka zooming interface
 * Browser integration (aka web clipper)
 * Wayland/Userspace* integration

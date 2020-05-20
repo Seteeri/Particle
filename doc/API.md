@@ -93,11 +93,15 @@ Merge input with control?
 
 ## Lisp
 
-+Particle
++Point
 
 +Vertex
 
++Font
+
 +Metrics
+
++Projview
 
 ## OpenGL
 

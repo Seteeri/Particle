@@ -9,7 +9,7 @@ information as they moved through the computer. What did they look like?
 
 Particle is a PicoLisp presentation binary tree (AST) UI.
 
-Particle is the realization of my vision of the human computer interaction model. I want to take the extensibility, dynamicness, and cohesion of past Lisp Machines, Smalltalk-like enivronments, and others, and evolve the text interface to enable users to take advantage of the increasing digital connectedness.
+Particle is the realization of my vision of the human computer interaction model. I want to take the extensibility, dynamicness, and cohesion of past Lisp Machines, Smalltalk-like enivronments, and others, and evolve the text interface to enable as many users as possible to take advantage of the increasing digital connectedness.
 
 Originally, this project was attempted in other languages but became only possible with PicoLisp, because *all* data is based on cons cell structures retained during runtime, which allows the interface and data to be homoiconic. For example, a C array would break this principle (for interop, they can be symbolized through a number, i.e. pointer).
 
@@ -20,6 +20,12 @@ Plans are to initially support Linux and Android. Windows requires WSL or virtua
 The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that, through a more pragmatic and gradual approach.
 
 The target audience consists of information/knowledge workers, power users, programmers.
+
+A thought to leave you with - one of my favorite quotes:
+
+> …git actually has a simple design, with stable and reasonably well-documented data structures. In fact, I'm a huge proponent of designing your code around the data, rather than the other way around, and I think it's one of the reasons git has been fairly successful […] I will, in fact, claim that the difference between a bad programmer and a good one is whether he considers his code or his data structures more important. Bad programmers worry about the code. Good programmers worry about data structures and their relationships. 
+
+-- Torvalds, Linus (2006-06-27). [Message to Git mailing list](http://lwn.net/Articles/193245/). Retrieved on 2006-08-28.
 
 # Preview
 
@@ -37,8 +43,8 @@ This idea is then further extended to create arbitrary representations for arbit
 
 # Goals
 
-* To achieve goals and objectives, efficiently and effectively aka "getting work done"
-  * Focus: development speed > performance
+* To achieve goals and objectives, efficiently and effectively ("getting $hit done")
+  * Focus: development time > performance
   * C always exists for maximum speed/performance
 * To remember everything, an extension of the human brain (Evernote/Stepan Pachikov)
 * To structure a system in such a way that it can be described, explained, and understood as a whole (Oberon/Niklaus Wurth)
@@ -92,7 +98,7 @@ On MS and Apple systems, it serves as an outliner "app" or personal knowledge ma
 * Storage mechanisms
   * Plaintext (Lisp code)
   * Binary (Lisp data)
-  * Database backend (Lisp data)
+  * Database (Lisp data)
 * Orthographic view aka zooming interface
 * Browser integration (aka web clipper)
 * Wayland/Userspace* integration

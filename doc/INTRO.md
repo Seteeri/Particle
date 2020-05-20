@@ -1,15 +1,9 @@
 Table of Contents
 =================
 
-![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/types.png)
+![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/screenshot.png)
 
-Types are color coded to remove the need for tokens to optimize drawing and information efficiency. Lines are double spaced to allow space for the pointer (cursor). 
-
-Strings do not have double quotes; it is possible to remove other identifying tokens such as curly brackets and the dollar sign. Pairs do not have parentheses and terminate with the NIL symbol for proper lists (or arbitrary data for improper lists). Circular lists follow PicoLisp conventions and terminate with a dot.
-
-In constrast to text/string editors, the data structure (AST) is transformed directly so the reader is not involved. The list is constructed as you type. Typing keys produce a single character string, and specific keyboard shortcuts/combinations perform fundamental Lisp operations such as packing strings and interning the string to produce a symbol. Numbers are input directly using ALT+"NUM" or similarly, converted from a string to a number or vice versa with format.
-
-Particle separates the representation from the data ("presentaion-based"), allowing arbitrary representations beyond conventional strings. This aspect is not new. The crucial feature that enables Particle is rather than view text and images as distinct types on both the semantic and data level, text is considered equal to images. Another way of thinking about text is they are simply glyphs, icons - symbols, and likewise conventional GUIs use the same concept and people think about them the same way when interacting. 
+Particle separates the representation from the data ("presentaion-based"), allowing arbitrary representations beyond conventional strings - this aspect is not new. The crucial feature that enables Particle is rather than view text and images as distinct types on both the semantic and data level, text is considered equal to images. Another way of thinking about text is they are simply glyphs, icons - symbols, and likewise conventional GUIs use the same concept and people think about them the same way when interacting. 
 
 At the data structure level, both text and images have the same data layout. This is enabled by the underlying Lisp structure that implements text, aka encoded numbers, in cons cells as symbols. Likewise, images are also implemented as cons cells. The power of storing data in cons cells over raw bytes like in a typical program, is cons cells have inherent properties due to their two-pointer structure which enables linking arbitrary data which can then be interpreted in different ways at a higher abstraction level. Ultimately, this allows operations that work on text to work on images also. The same way in a compiled Lisp, macros can create new DSLs or syntax aka glyphs, which can be used alongside native syntax, the same can be done with images - they can be mixed with text/code.
 
@@ -17,7 +11,9 @@ For example, a pixel data type consisting of a list of 4 numbers from 0-255, rep
 
 # Goals
 
-* To get work done efficiently and effectively
+* To achieve goals and objectives, efficiently and effectively ("getting $hit done")
+  * Focus: development time > performance
+  * C always exists for maximum speed/performance
 * To remember everything, an extension of the human brain (Evernote/Stepan Pachikov)
 * To structure a system in such a way that it can be described, explained, and understood as a whole (Oberon/Niklaus Wurth)
 * To ameliorate the following sentiments: (Qix/Brad Beer)
@@ -28,7 +24,7 @@ For example, a pixel data type consisting of a list of 4 numbers from 0-255, rep
   * "I'm tired of needing markup, native-code, JIT-Code, scripting languages, database languages, domain specific languages, etc..."
   * "I want to use the full power of the computer."
   * "I want the computer to meet me more than half way."
-
+  
 # Inspirations
 
 * Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide
@@ -69,7 +65,7 @@ For example, a pixel data type consisting of a list of 4 numbers from 0-255, rep
 All Platforms:
 
 * Core UI
-* Desktop Integration
+* Desktop Functionality
   * Web Clipper
   * Integrate C libraries for various file formats (data types)
   * Default to FFMPEG for media
@@ -85,9 +81,8 @@ Linux/BSD:
     * Write layout engine
     * JS engine - port QuickJS to Lisp?
 * Wayland Integration
-* Userspace Integration
-  * Port unix utilities such as Toybox or provide Lisp analogues
-* Init Integration
+* Userspace/Inir Integration
+  * Port unix utilities such as Toybox -> Provide Lisp analogues
 
 
 # The Road Beyond
