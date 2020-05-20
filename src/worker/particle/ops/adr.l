@@ -132,7 +132,7 @@
                                  (T Ptr-Dr))
                             Type-Dr
                             Root)))
-    (new '(+Particle)
+    (new '(+Point)
          Ptr
          Pa-Ar Pa-Dr
          (append Vert-Ar Dot Vert-Dr))))
@@ -174,7 +174,7 @@
                                  (T Ptr-Dr))
                             Type-Dr
                             Root)))
-    (new '(+Particle)
+    (new '(+Point)
          Ptr
          Pa-Ar Pa-Dr
          (append Vert-Ar Dot Vert-Dr))))
@@ -228,7 +228,7 @@
                                  (T Ptr-Dr))
                             Type-Dr
                             Root)))
-    (new '(+Particle)
+    (new '(+Point)
          Ptr
          Pa-Ar Pa-Dr
          (append Vert-Ar Dot Vert-Dr))))

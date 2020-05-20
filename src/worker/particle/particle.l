@@ -23,7 +23,7 @@
 }#
 
 
-(class +Particle)
+(class +Point)
 
 (dm T (Data
        A

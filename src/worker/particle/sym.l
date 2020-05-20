@@ -21,7 +21,7 @@
 # CAR empty for Anon syms (CAR is actually number 0)
 
 ######################
-(class +Sym +Particle)
+(class +Sym +Point)
 
 #################
 (class +Box +Sym)

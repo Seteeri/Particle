@@ -12,4 +12,4 @@
 }#
 
 
-(class +Num +Particle)
+(class +Num +Point)

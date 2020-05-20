@@ -12,7 +12,7 @@
 }#
 
 
-(class +Pair +Particle)
+(class +Pair +Point)
 
 (dm T (Data
        A
