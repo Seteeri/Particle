@@ -130,6 +130,12 @@
       (b> C A))))
     
 
+(de top> ()
+  (set-on-car)
+  (mov-cur-abv This)
+  This)
+
+    
 (dm del> (A B)
 
   #{
