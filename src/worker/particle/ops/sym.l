@@ -277,7 +277,7 @@
 
     (set-ptr *fwd-in (if Is-Ref-Pair-of-Pair
                           (sup> Part)
-                          (sup> Ref)))
+                          (sup> (get Part 'b))))
     
     Part))
     
