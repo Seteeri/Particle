@@ -74,15 +74,15 @@
         (col> *car *selb-yellow 1.0)
         (col> (get *car 'a) *selb-yellow 1.0)
         (setq *fwd-in *car)
-        (col> *cdr *selb-violet 0.0)
-        (col> (get *cdr 'a) *selb-violet 0.0))
+        (col> *cdr *selb-violet 1.0)
+        (col> (get *cdr 'a) *selb-violet 1.0))
       (prog
         (off *on-car)
         (col> *car *selb-violet 1.0)
         (col> (get *car 'a) *selb-violet 1.0)
         (setq *fwd-in *cdr)
-        (col> *cdr *selb-yellow 0.0)
-        (col> (get *cdr 'a) *selb-yellow 0.0))))
+        (col> *cdr *selb-yellow 1.0)
+        (col> (get *cdr 'a) *selb-yellow 1.0))))
         
         
 (de tog-car ()

@@ -19,7 +19,7 @@ Plans are to initially support Linux and Android. Windows requires WSL or virtua
 
 The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that, through a more pragmatic and gradual approach.
 
-The target audience consists of programmers, power users, information/knowledge workers.
+The target audience consists of information/knowledge workers, power users, programmers.
 
 # Preview
 

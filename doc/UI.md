@@ -41,7 +41,292 @@ Interfaces:
 * Touch/Mobile - power constraints and form factor need to be adressed
 * AR/VR - I do have a design for AR...
 
-# Command Matrix
+# Basic Concepts
+
+                    +-----------+-----------+
+                    |                       |
+                  Atom                     List
+                    |
+                    |
+              +-----+-----+
+              |           |
+         Atom/Number  Atom/Symbol
+                          |
+                          |
+     +--------+-----------+-----------+
+     |        |           |           |
+    NIL       *       Transient    External
+
+Note, asterisk is another type of atom/symbol called an internal symbol which will be for a later discussion.
+
+Or how a layperson might view the concepts:
+    
+    +------------------------+--------------------------------------+
+    | Data Type              | Layperson                            |
+    +------------------------+--------------------------------------+
+    | List                   | Directory/folder                     | 
+    |                        | with files as the "atoms"            |
+    +------------------------+--------------------------------------+
+    | Atom: Number           | Integers like 1, 2, 3                |
+    +------------------------+--------------------------------------+
+    | Atom: External Symbol  | Hyperlink with a name and link       |
+    +------------------------+--------------------------------------+
+    | Atom: Transient Symbol | String or text                       |
+    +------------------------+--------------------------------------+
+
+* There are two types of data in the "world": lists and atoms
+* Lists contain a mix of lists and/or atoms
+  * Similar to a folder that can contain files and/or folders and so on.
+* Every list ends with the atom `NIL`
+  * It's as if every folder, had a file named `NIL` in it, which no matter how you sorted the folder view, the `NIL` file was always last.
+* Atoms are one of three types: `NIL`, internal, and transient
+  * For this discussion, the following nomencalture will be interchangably used: 
+    * External = link
+    * Transient = string
+  * `NIL` represents nothingness or false or "No"
+    * `NIL` = computer speak for "No"
+    * As if you were asked a question by the computer, instead of saying "No", you would say `NIL`
+      * "Yes" or to say something is true, is represented by the symbol `T` and the opposite of `NIL`
+      * Technically speaking, *any* data (including lists) that is not `NIL` is considered true.
+    
+*show brief examples*
+*show with color*
+    
+## Lists
+
+The concept of a list is intuitive and typically learned early on; the standard 5 paragraph essay in school etc. Anytime one creates an outline of sorts, one is creating a list or in computer science terms, a data structure.
+
+    I. Title
+       A. Title
+          1. Title
+             i. Title
+             I. Title
+          2. Title
+       B. Title
+    II. Title
+      ...
+    III.
+    ...
+
+*use actual outline example*
+    
+`I`'s content consists of a `Title` and body (`A`, `B`, ...). In the user's mind, the association is indicated by visual cues - all indented content underneath each bullet, can be considered belonging to that bullet or concept. The same pattern repeats itself recursively and serially.
+
+    I. Title
+       A. Title
+       B. Title
+    II.
+      ...
+    ...
+
+    I. Title
+       Body
+    ...
+
+Because the user is already familiar with the counting system, the user implicitly knows that `I` proceeds to `II` and so on, without needing additional explicit depiction of that relationship. 
+
+Now, take for example how a programmer could see the same outline as a data structure, called a singly-linked list, with a more verbose representation (L#=List, depth level; A=Atom):
+
+    [L1]  [A]  [A]
+          I.   Title
+
+          [L2]  [A]  [A]
+                A.   Title
+
+                [L3]  [A]  [A]    NIL
+                      1.   Title
+ 
+                      [L4]  [A]  [A]    NIL
+                            i.   Title
+
+                      NIL
+
+                [L3]  [A]  [A]    NIL
+                      2.   Title
+                   
+                NIL
+
+          [L2]  [A]  [A]
+                A.   Title
+
+                [L3]  [A]  [A]    NIL
+                      1.   Title
+
+                      [L4]  [A]  [A]    NIL
+                            i.   Title
+
+                      NIL
+
+                [L3]  [A]  [A]    NIL
+                      2.   Title
+                    
+                NIL
+              
+          NIL
+         
+    [L1]  [A]  [A]
+          II.  Title
+         
+         ...
+         
+    ...
+
+Breaking this down serially into lists:
+
+
+    [L1]  [A]  [A]                            List 1 contains 4 items: A, A, L2, L2, NIL
+          I.   Title
+
+          [L2]  [A]  [A]                      List 2 contains 5 items: A, A, L3, L3, NIL
+                A.   Title
+
+                [L3]  [A]  [A]    NIL         List 3 contains 4 items: A, A, L4, NIL
+                      1.   Title
+ 
+                      [L4]  [A]  [A]    NIL   List 4 contains 3 items: A, A, NIL
+                            i.   Title
+
+                      NIL
+
+                [L3]  [A]  [A]    NIL
+                      2.   Title
+                   
+                NIL
+
+          [L2]  [A]  [A]
+                A.   Title
+
+                [L3]  [A]  [A]    NIL
+                      1.   Title
+
+                      [L4]  [A]  [A]    NIL
+                            i.   Title
+
+                      NIL
+
+                [L3]  [A]  [A]    NIL
+                      2.   Title
+                    
+                NIL
+              
+          NIL
+
+The next section will go further into the atoms like "A" and `NIL` etc.
+          
+## Symbols
+
+                    +-----------+-----------+
+                    |                       |
+                  Atom                     List
+                    |
+                    |
+              +-----+-----+
+              |           |
+         Atom/Number  Atom/Symbol
+                          |
+                          |
+     +--------+-----------+-----------+
+     |        |           |           |
+    NIL       *       Transient    External
+
+* Symbols are similar to hyperlinks in a web page in that they have a name (the visible string or text) and they also link to other data through a URL
+  * In computer speak, we call the *webpage* the URL points to, the *value* of the symbol.
+  * The URL would be another symbol.
+
+* External symbols are equivalent to hyperlinks.
+  
+* Plain text or strings can be thought of as hyperlinks without any value since the string itself is its meaning, i.e. the word represents itself
+  * In computer speak, the symbol points to itself.
+  * It is simplest to think of strings/text as links without a link or value.
+  * They can also be turned into external symbols or hyperlinks by being given a value.
+
+* `NIL` is a special type; it is both a symbol (atom) and a list
+  * It is equivalent to having a bunch of hyperlinks that link to the same page, except this page is the page seen when the server can't find the URL.
+  * It has multiple representations which all have the same value:
+    * `""` (empty string)
+    * `()` (empty list)
+    * `NIL`(symbol)
+  * For now, we will focus only on `NIL`.
+  * `NIL` as generally marks the end of a list.
+
+* There are subtypes of symbols that will be discussed elsewhere
+  * Widgets which will be discussed in a later section
+
+The next section will talk about pointers, which can be considered a type of symbol.
+  
+#### Pointers
+
+* A pointer is Particle's version of a traditional mouse cursor or pointer used to select objects.
+* With the hyperlink analogy, a pointer is a link, or "points", to any sort of data; that data is the "selected" object.
+  * The pointer can point to a list or a string or another symbol, or even another pointer.
+* Pointers are represented as text, instead of a cursor to be able to refer to it more conveniently by name
+  * For example, how would you refer to a mouse cursor in a conventional system?
+
+* There are two basic types of pointer symbols: `↑*car` , `↓*cdr`
+* A pointer can be either above or below an item in a list (indicated by the arrow in the name)
+* The data pointed to is indicated by the arrow
+* When a user switches pointers, they will automatically change color to yellow to indicate it is active.
+
+*show image*
+
+
+* The position changes the effect of the command on what it is pointing to
+  * ↑ : ASCII key will insert a character before the current item, and move the pointer above the next item
+    * Same as normal typing
+  * ↓ : ASCII key will replace the character, and move the pointer below the next item
+    * Same as normal typing with insert/overwrite mode on
+
+* There can exists as many pointers as desired with the number appended in the name
+  * If a user deletes all the pointers, they will be unable to perform commands.
+* The user can see all pointers available in the `*ptr` list.
+* The `*ptr` list can also be used to change pointers.
+  
+Basic Commands:
+  
+* To switch pointers
+  * Mov pointer to pointer
+  * Use switch-ptr command
+  
+Basic Selections:
+
+* To select one atom or list
+  * Mov pointer to atom or start of list (the dot before first item)
+  * Pass pointer symbol to command
+
+* To select part of list
+  * Set `start` pointer and `end` pointer to desired data in a list
+  * Put `start` and `end` pointer in a list
+  * Pass pointer list to command
+
+Advanced Selections:
+  
+Basic operations can be combined to perform more advanced selections:
+
+* Select non-contiguous atoms in a list
+* Select mixture of atoms and lists
+
+This can be achieved by using list operations:
+
+Given:
+
+         *1        *2        *3
+    [ ]  [ ]  [ ]  [ ]  [ ]  [ ]
+          a    b    c    d    e
+
+Select sublist:
+(setq *0 '((*1 *2)))
+
+Select atoms:
+(setq *0 '(*1 *2 *3))
+
+Select both sublist *1-*2, and atom *3:
+(setq *0 '((*1 *2) *3))
+
+Now armed with the basic knowledge, more commands can be used, which will be discussed next.
+
+# Basic Operations
+
+Command Matrix:
 
     +-------------------+---------------------------------------------+
     | Key Binding       | Command (CAR/CDR)                           |
@@ -65,201 +350,56 @@ Interfaces:
 * Mov Start/End of List
 * Mov Start/End of Line
 * Make NIL
-    
-* Delete will delete recursively by default
-    
-*Add GIF anims*
-    
-* CUA keys
-* Universal commands + command mode
-* Relies more on spatial than mnemonics
 
-## Example
+Command keys are based on spatial relationship, aka physically group related functionality together than mnemonics which are limited
+
+*Add GIF anims*
+
+## Atoms
+
+Strings:
+
+* Chop
+* Pack
+* Glue with char
+* Split by char
+* Make line
 
 Symbols:
-* Pointer
-* Data
-* Status Bar
 
-Symbols - Lists:
-* start
-* log
-* ptrs
-* binds
-* regs
+* Make NIL
 
-# Basic Concepts
+* Convert
 
-    +--------------+--------------+
-    | Programmer   | Layperson    |
-    +--------------+--------------+
-    | List         | Outline/Tree |
-    +--------------+--------------+
-    | Atom: Number | Number       |
-    +--------------+--------------+
-    | Atom: Symbol | Hyperlink    |
-    +--------------+--------------+
-    | Atom: String | Text         |
-    +--------------+--------------+
-
-* There are two types of data in the "world": lists and atoms
-* Lists contain a mix of lists and/or atoms
-* Atoms are one of three types: numbers, strings, symbols
-  * Every list ends with the atom NIL which will be explained in the next section
-    
 ## Lists
 
-Most people are already familiar with the concept of a list. Anytime one creates
-an outline of sorts, one is creating a list or in computer science terms, a data
-structure.
+* Make sublist
+* Make list starting with item
 
-    I. Title
-       A. Title
-          1. Title
-             i. Title
-             I. Title
-          2. Title
-       B. Title
-    II. Title
-      ...
-    III.
-    ...
+## Cut Copy Paste (CUA Ops)
 
-`I`'s content consists of a `Title` and body (`A`, `B`, ...), and then links to `II`. The
-same pattern repeats itself throughout.
+Register system
 
-    I. Title
-       A. Title
-       B. Title
-    II.
-      ...
-    ...
+Cut
+Copy
+Paste
 
-    I. Title
-       Body
-    ...
+## Undo System
 
-Because the user is already familiar with Roman numerals (or at least the symbols
-less than ten), the user implicitly knows that `I` proceeds to `II` and so on, 
-without needing any sort of explicit depiction of that relationship.
+Undo tree
 
-The indentation of the body indicates that it and its content belong to the
-outer indented heading.
+Undo
+Redo
 
-Now, take for example how a programmer could see the same outline 
-as a data structure called a singly-linked list with a more verbose representation:
+## Input/Output
 
-    [L]  [A]  [A]
-         I.   Title
+Dir/File Navigation
 
-         [L]  [A]  [A]
-              A.   Title
+## Search and Replace System
 
-              [L]  [A]  [A]    NIL
-                   1.   Title
+---
 
-                   [L]  [A]  [A]    NIL
-                        i.   Title
-
-                   NIL
-
-              [L]  [A]  [A]    NIL
-                   2.   Title
-                   
-              NIL
-
-         [L]  [A]  [A]
-              A.   Title
-
-              [L]  [A]  [A]    NIL
-                   1.   Title
-
-                   [L]  [A]  [A]    NIL
-                        i.   Title
-                   
-                   NIL
-                   
-              [L]  [A]  [A]    NIL
-                   2.   Title
-                   
-              NIL
-         NIL
-         
-    [L]  [A]  [A]
-         II.  Title
-         
-         ...
-         
-    ...
-
-
-## Symbols
-
-* Symbols are similar to hyperlinks in a web page in that they have a representation (the visible text) and they also can link to other data that is not explicitly visible (generally visible when hovering over the text).
-* It is best to think of strings/text as links without a link or value.
-
-* `NIL` is a special type; it is both an atom and a list
-  * It has multiple representations:
-    * `""` : empty string
-    * `()` : empty list
-    * `NIL` : symbol, represents False value (`T` represents True)
-
-* There are subtypes of symbols but that is for another discussion
-  * Widgets which will be discussed in a later section
-
-
-#### Pointers
-
-* A pointer is conceptually the same as a traditional mouse cursor or pointer used to select objects
-* Pointers are represented as text, instead of a cursor to be able to refer to it more conveniently by name
-  * How would you refer to a mouse cursor in a conventional system?
-* A pointer can be either above or below an item in a list
-  * above: ASCII key will insert a key before the current item, and move the pointer above the next item
-    * Same as normal typing
-  * below: ASCII key will replace the item, and move the pointer below the next item
-    * Same as normal typing with insert/overwrite mode on
-* By convention, all pointer names begin with an asterisk: `*0` `*1` etc.
-* There can exists as many pointers as desired, however, there exists one root master pointer: `*0`.
-  * It should not be deleted
-
-Basic Operations:
-
-* Select one atom or list
-  * Point to atom
-  * Point to start of list
-
-* Select part of list
-  * Set `start` pointer and `end` pointer to desired data
-  * Put `start` and `end` pointer in a list
-  * Point `*0` pointer to that list
-
-  
-Compound Operations:
-  
-Basic operations can be combined to perform more advanced selections:
-
-* Select non-contiguous atoms in a list
-* Select mixture of above and lists
-
-...and others.
-
-This can be achieved by using list operations:
-
-Given:
-
-         *1        *2        *3
-    [ ]  [ ]  [ ]  [ ]  [ ]  [ ]
-          a    b    c    d    e
-
-Select sublist:
-(setq *0 '((*1 *2)))
-
-Select atoms:
-(setq *0 '(*1 *2 *3))
-
-Select both sublist *1-*2, and atom *3:
-(setq *0 '((*1 *2) *3))
-
+# Advanced
 
 ## Layouts
 
@@ -383,22 +523,6 @@ Call make-nl:
          [Y]  [X]  NIL
          NIL  C
 
-         
-# Basic Operations
-
-
-## Cut Copy Paste (CUA Ops)
-
-
-## Undo System
-
-
-## Input/Output
-
-### Files and Databases
-
-
-# Advanced
 
 # Namespaces
 

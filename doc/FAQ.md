@@ -35,7 +35,7 @@ https://news.ycombinator.com/item?id=15466124
 
 > I don't want to denigrate ChrysaLisp in any way. It's tremendously cool. But cool is not enough to win in the real world.
 
-# Specific Examples
+# Specific Program Examples
 
 **Why not Emacs, org-mode, or ParEdit et. al.?**
 
@@ -51,7 +51,7 @@ For example, most text editors and IDEs use panes, often with a navigator of sor
   
 **What about note-taking apps like Evernote, OneNote, Notion etc.?**
 
-All existing applications build their data structure around the interface, which ultimately runs into limitations. Particle uses the opposite approach and builds the UI around the data structure. In addition, they are all lacking some fundamental features.
+The plethora of note-taking options and the lack of an, arguably, dominant application shows there is still room for improvement and exploration in this domain.
 
 [The Sad State of Personal Knowledgebases](https://marcusvorwaller.com/blog/2015/12/14/personal-knowledgebases/)
 
@@ -71,11 +71,18 @@ All existing applications build their data structure around the interface, which
 
 **Is this the same as Microsoft's OLE or Apple's OpenDoc systems which both failed?**
 
-Not quite. OLE was a closed proprietary standard, in which OpenDoc was developed as an open standard. Both failed for various reasons. Data formats/standards exist because different programs written in different languages structure their data in different ways which makes for a complex ecosystem of formats. Additionally, some programs may be closed-source to be made unavailable for other programs to use which requires reverse-engineering. Unfortunately, this is all at the expense of the user, as data from one program cannot be used as data in another program unless a proper converter or importer is used, which leads to a waste of programming efforts that could be used towards more novel purposes.
+Not quite. OLE was a closed proprietary standard, in which OpenDoc was developed as an open standard. Both failed for various reasons. 
+
+Data formats/standards exist because different programs written in different languages structure their data in different ways which makes for a complex ecosystem of formats. Additionally, some programs may be closed-source to be made unavailable for other programs to use which requires reverse-engineering. 
+
+Unfortunately, this is all at the expense of the user, as data from one program cannot be used as data in another program unless a proper converter or importer is used, which leads to a waste of repetitive programming efforts that could be used towards more novel purposes.
 
 Fortunately, the world has been moving towards open source. Some of the most widespread formats include XML, associated with Ant and office programs, and JSON associated with Javascript. However, S-Expressions are arguably simpler and can serve both roles as a generic serialization format and syntax for a programming language. Thus, it can represent both data and code simultaneously.
 
-* Research Projects
-* Jetbrains MPS
-* Light Table, Eve
-* WinFS
+**Jetbrains MPS?**
+
+
+**Light Table, Eve**
+
+
+**WinFS**
