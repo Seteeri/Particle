@@ -25,7 +25,7 @@
 
 (dm T (Off-Gl
        Ch       #Use to get offset, if char then data is char also
-       RGBA
+       Rgba
        Pos
        Rota
        Sca
@@ -35,7 +35,7 @@
   (=: off-gl Off-Gl)
   (=: ch (char Ch))
   (=: val Val)  
-  (=: rgba RGBA)      
+  (=: rgba Rgba)      
   
   # Either keep these here or move to model matrix...
   (=: pos Pos)

@@ -67,21 +67,22 @@
        
         
 (de set-on-car (F)
+  # Either color or mov to ptr list
   (if F
       (prog
         (on *on-car)
-        (col> *car *selb-yellow)
-        (col> (get *car 'a) *selb-yellow)
+        (col> *car *selb-yellow 1.0)
+        (col> (get *car 'a) *selb-yellow 1.0)
         (setq *fwd-in *car)
-        (col> *cdr *selb-violet)
-        (col> (get *cdr 'a) *selb-violet))
+        (col> *cdr *selb-violet 0.0)
+        (col> (get *cdr 'a) *selb-violet 0.0))
       (prog
         (off *on-car)
-        (col> *car *selb-violet)
-        (col> (get *car 'a) *selb-violet)
+        (col> *car *selb-violet 1.0)
+        (col> (get *car 'a) *selb-violet 1.0)
         (setq *fwd-in *cdr)
-        (col> *cdr *selb-yellow)
-        (col> (get *cdr 'a) *selb-yellow))))
+        (col> *cdr *selb-yellow 0.0)
+        (col> (get *cdr 'a) *selb-yellow 0.0))))
         
         
 (de tog-car ()

@@ -86,7 +86,7 @@
   (let Col (if (= L 'x)
                (car *pair-col-def)
                (cadr *pair-col-def))
-    (col> This Col))
+    (col> This Col 1.0))
     
   (=: lay L))
 
@@ -277,41 +277,44 @@
       (ori> (: met)
             (: pos)))))
 
-
-(dm col> (Col P)
-  (let ((R G B) Col)
+            
+(dm col> (Rgb A P)
+  (let ((R G B) Rgb)
     (for Vert (: verts)
-      (put Vert 'rgba (list R G B 1.0
-                            R G B 1.0
-                            R G B 1.0
-                            R G B 1.0))
+      (put Vert 'rgba (list R G B A
+                            R G B A
+                            R G B A
+                            R G B A))
       (req-send *ipc Vert)))
   (when P
-    (when (: a) (col> @ Col P))
-    (when (: b) (col> @ Col P))))
+    (when (: a) (col> @ Rgb A P))
+    (when (: b) (col> @ Rgb A P))))
 
-    
-    
-(dm col-verts> (Col)
-  (let ((R G B) Col)
+
+(dm col-verts> (Rgb A P)
+  (let ((R G B) Rgb)
     (for Vert (: verts)
-      (put Vert 'rgba (list R G B 1.0
-                            R G B 1.0
-                            R G B 1.0
-                            R G B 1.0)))))
+      (put Vert 'rgba (list R G B A
+                            R G B A
+                            R G B A
+                            R G B A))))
+  (when P
+    (when (: a) (col-verts> @ Rgb A P))
+    (when (: b) (col-verts> @ Rgb A P))))
 
                             
-(dm vis> (F P)
+(dm col-a> (F P)
   (for Vert (: verts)
     (with Vert
-      (place 4  (car (:: rgba)) F)
-      (place 8  (car (:: rgba)) F)
-      (place 12 (car (:: rgba)) F)
-      (place 16 (car (:: rgba)) F))
+      (=: rgba
+          (place 4
+            (place 8
+              (place 12
+                (place 16 (: rgba) F) F) F) F)))
     (req-send *ipc Vert))
   (when P
-    (when (: a) (vis> @ P))
-    (when (: b) (vis> @ P))))
+    (when (: a) (col-a> @ F P))
+    (when (: b) (col-a> @ F P))))
 
     
 # unused

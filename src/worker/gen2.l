@@ -94,7 +94,7 @@
       
         # Color pairs
         (when (and (pair Any) (pair (car Any)))
-          (col-verts> N (cadr *pair-col-def)))      
+          (col-verts> N (cadr *pair-col-def) 1.0))      
       
         # Create line if needed
         (cond ((not C) # Root
@@ -171,7 +171,7 @@
       
         # Color pairs
         (when (and (pair Any) (pair (car Any)))
-          (col-verts> N (cadr *pair-col-def)))          
+          (col-verts> N (cadr *pair-col-def) 1.0))          
       
         # Create line if needed
         (cond ((not C) # Root
