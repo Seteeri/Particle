@@ -43,17 +43,17 @@
             "/src/worker/cmd/str.l"
             "/src/worker/cmd/cam.l"
             "/src/worker/cmd/ptr.l"            
-            "/src/worker/particle/particle.l"
-            "/src/worker/particle/pair.l"
-            "/src/worker/particle/sym.l"
-            "/src/worker/particle/num.l"
-            "/src/worker/particle/ops/align.l"
-            "/src/worker/particle/ops/lay.l"
-            "/src/worker/particle/ops/del.l"
-            "/src/worker/particle/ops/pair-car.l"
-            "/src/worker/particle/ops/pair-cdr.l"            
-            "/src/worker/particle/ops/line.l"
-            "/src/worker/particle/ops/sym.l"))
+            "/src/worker/point/point.l"
+            "/src/worker/point/pair.l"
+            "/src/worker/point/sym.l"
+            "/src/worker/point/num.l"
+            "/src/worker/point/ops/align.l"
+            "/src/worker/point/ops/lay.l"
+            "/src/worker/point/ops/del.l"
+            "/src/worker/point/ops/pair-car.l"
+            "/src/worker/point/ops/pair-cdr.l"            
+            "/src/worker/point/ops/line.l"
+            "/src/worker/point/ops/sym.l"))
 
 
 (def 'NAME-PID "WORKER")

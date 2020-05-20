@@ -4,7 +4,7 @@
 (de r-d (A) (*/ 1.0 (*/ A 180.0 1.0) PI))
 
 #{
-(def 'PATH-MATHC "/home/user/Particle/particle/ext/mathc/libmathc.so")
+(def 'PATH-MATHC "/home/user/Particle/point/ext/mathc/libmathc.so")
 (def '*mat4-z (native "@" "malloc" 'N 64))
 (de mat4-perspective (Fov-Y A N F)
   (struct
