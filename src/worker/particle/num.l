@@ -14,17 +14,12 @@
 
 (class +Num +Particle)
 
-(dm layout> ()
-  (if (= (: lay) 'x)
-      (lay-x> This)
-      (lay-y> This)))
-
-
+#{
 (dm lay-x> ()
   (mov> This)
   (upd-cur)
   This)
-
+}#
 
 (dm lay-x-debug> ()
 
@@ -43,8 +38,10 @@
 
   This)  
   
-  
+
+#{
 (dm lay-y> ()
   (mov> This)
   (upd-cur)
   This)
+}#

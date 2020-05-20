@@ -23,14 +23,10 @@
 ######################
 (class +Sym +Particle)
 
-
-(dm layout> ()
-  (if (= (: lay) 'x)
-      (lay-x> This)
-      (lay-y> This)))
-
-
+#{
 (dm lay-x> () 
+
+
   (mov> This)
   (upd-cur)
   
@@ -42,7 +38,7 @@
   (upd-cur)
     
   (pos-cur-for-car-y> This))
-  
+}#
   
 (dm pos-cur-for-car-x> ()
   # Pos cur for car
@@ -104,17 +100,7 @@
   (setq *cur (get (: a) 'ori))
   (adj-cur-y)
   This)
-  
 
-#{
-(dm layout> ()
-  # Either a Pair or name
-  (if (: a)
-      (lay-pair This)
-      (if (= (: lay) 'x)
-          (lay-x> This)
-          (lay-y> This)))  
-}#
 
 #################
 (class +Str +Sym)

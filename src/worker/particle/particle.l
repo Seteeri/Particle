@@ -135,7 +135,45 @@
   (mov-cur-abv This)
   This)
 
+
+(dm lay-x> ()
     
+  (check-nl> This)
+
+  (mov> This)
+  (upd-cur)
+  
+  (pos-cur-for-car-x> This))
+  
+
+(dm lay-y> ()
+  
+  (check-nl> This)
+  
+  (mov> This) 
+  (upd-cur)
+  
+  (pos-cur-for-car-y> This))  
+  
+  
+(dm pos-cur-for-car-x> ()
+  # Pos cur for car
+  (setq *cur (: ori))
+    
+  # Move below or use its Y dims - origin is same as dims for single line
+  # This assumes Pair is always single line with dot or 2x dot
+  (adj-cur-y))
+
+  
+(dm pos-cur-for-car-y> ()
+  # Pos cur for car
+  (setq *cur (: ori))
+    
+  # Use X dims
+  (mov-cur-x (get (: ori) 1))
+  (adj-cur-x 2.0))
+  
+  
 (dm del> (A B)
 
   #{
