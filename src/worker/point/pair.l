@@ -24,6 +24,20 @@
   (=: line))
 
   
+(dm lay-x> ()
+  (check-nl> This)
+  (mov> This)
+  (upd-cur)
+  (pos-cur-for-car-x> This))
+  
+
+(dm lay-y> ()
+  (check-nl> This)
+  (mov> This) 
+  (upd-cur)
+  (pos-cur-for-car-y> This))    
+  
+  
 (dm prv> ()
   (when (: c)
     (if *on-car

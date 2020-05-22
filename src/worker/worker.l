@@ -45,6 +45,7 @@
             "/src/worker/cmd/ptr.l"            
             "/src/worker/point/point.l"
             "/src/worker/point/pair.l"
+            "/src/worker/point/atom.l"
             "/src/worker/point/sym.l"
             "/src/worker/point/num.l"
             "/src/worker/point/ops/align.l"

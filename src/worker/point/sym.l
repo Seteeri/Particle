@@ -22,46 +22,8 @@
 
 # These assume Syms not expanded
 
-(class +Sym +Point)
-
-
-(dm exp?>
-  # When expanded, 'c will be a symbol and its car will be caller
-  (and (bel-sym?> This) (is-car?> This)))
-  
-  
-(dm prv> ()
-  (when (: c) (prv> @)))
-
-    
-(dm nxt> ()
-  # If no b, do c
-  (if (: b)
-      (if *on-car
-          (sub> (: b))
-          (prog
-            (top> (: b))))
-      (when (: c)
-        (nxt> @))))
-
-        
-(dm sup> ()
-  (when (: c) (top> @)))
-
-
-(dm sub> ()
-  (unless *on-car (set-on-car T))
-  (if (: a) # T=expanded
-      (prog
-        (mov-cur-ori @)
-        (adj-cur-y)
-        @)
-      (prog
-        (mov-cur-ori This)
-        (adj-cur-y)
-        This)))
-         
-
+(class +Sym +Atom)
+ 
 (class +Str +Sym) 
   
 (dm mov-verts> ()
@@ -156,6 +118,7 @@
 
 
 (dm lay-x> ()
+  # Similar to +Atom, except no pos-cur-*
   (check-nl> This)
   (mov> This)
   (upd-cur)
@@ -164,24 +127,14 @@
 
 
 (dm lay-y> ()
+  # Similar to +Atom, except no pos-cur-*
   (check-nl> This)
   (mov> This)
   (upd-cur)
   (upd-line> This)
   This)
 
-
-(dm upd-line> ()
-  # Standalone NIL
-  (when (is-cdr?> This)
-    (upd-dims *line-lay)
-    (when (and (get *line-lay 'line 'l) T)
-      #(println 'lay-pair-x "Update line: "
-      #        (get *line-lay 'line 'l)
-      #        (get *line-lay 'line 'l 'data))    
-      (upd-dims (get *line-lay 'line 'l)))))
-
-      
+  
 (class +Box +Sym)
 (class +Ext +Sym)
 (class +Int +Sym)      
