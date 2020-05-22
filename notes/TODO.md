@@ -10,7 +10,7 @@ TODO
   * Create list, enter strings, convert some to symbols, eval
   
   * 19 MAY - Tues
-    * Refactor layout to use stack like gen
+    * Refactor layout to use stack like gen [Done]
       * flags: expand int syms, trans syms, ext syms
     * Implement cmds Q/E : start/end of line/list  
     * Cache last item for lines/lists
