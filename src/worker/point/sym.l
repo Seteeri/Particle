@@ -20,77 +20,49 @@
 
 # CAR empty for Anon syms (CAR is actually number 0)
 
+# These assume Syms not expanded
+
 (class +Sym +Point)
 
-(class +Box +Sym)
 
-(class +Ext +Sym)
-
-(class +Int +Sym)
-
+(dm exp?>
+  # When expanded, 'c will be a symbol and its car will be caller
+  (and (isa '(+Sym) (: c)) (= (get (: c) 'a) This)))
+  
+  
 (dm prv> ()
-  (when (: c)
-    (prv> (: c))))
+  (when (: c) (prv> @)))
 
-
+    
 (dm nxt> ()
-  # Should always have a 'b
-  (when (: b)
-    (if *on-car
-        (sub> (: b))
-        (prog
-          (set-on-car)
-          (mov-cur-abv (: b))
-          (: b)))))
+  # If no b, do c
+  (if (: b)
+      (if *on-car
+          (sub> (: b))
+          (prog
+            (top> (: b))))
+      (when (: c)
+        (nxt> @))))
 
-
+        
 (dm sup> ()
-  (if (: c)
-      (sup> (: c))
-      (prog
-        (set-on-car)
-        (mov-cur-abv This)
-        This)))
+  (when (: c) (top> @)))
 
 
 (dm sub> ()
   (unless *on-car (set-on-car T))
-  (setq *cur (get (: a) 'ori))
-  (adj-cur-y)
-  This)
+  (if (: a) # T=expanded
+      (prog
+        (mov-cur-ori @)
+        (adj-cur-y)
+        @)
+      (prog
+        (mov-cur-ori This)
+        (adj-cur-y)
+        This)))
+         
 
-
-#################
-(class +Str +Sym)
-
-# This class represents either, the name
-# or the pair when expanded (name/car is +Num)
-
-(dm prv> ()
-  (when (: c)
-    (prv> (: c))))
-
-
-(dm nxt> ()
-  (when (: c)
-    (nxt> (: c))))
-
-
-(dm sup> ()
-  (when (: c)
-    (set-on-car)
-    (mov-cur-abv (: c))
-    (: c)))
-
-
-(dm sub> ()
-  (set-on-car T)
-  (if (: a)
-      (mov-cur-ori (: a))
-      (mov-cur-ori This))
-  (adj-cur-y)
-  This)
-  
+(class +Str +Sym) 
   
 (dm mov-verts> ()
 
@@ -134,7 +106,7 @@
 
 
 (dm prv> ()
-  (if (= (get (: c) 'a) This)
+  (if (is-car?> This)
       (prv> (: c))
       (when (: c)
         (when (get (: c) 'line)
@@ -142,20 +114,15 @@
           (setq *line (: c)))
         (if *on-car
             (sub> (: c))
-            (prog
-              (mov-cur-abv (: c))
-              (: c))))))
+            (top> (: c))))))
 
 
 (dm nxt> ()
-  (if (= (get (: c) 'a) This)
+  (if (is-car?> This)
       (nxt> (: c))
       (if *on-car
           (sub> This)
-          (prog
-            (set-on-car)
-            (mov-cur-abv This)
-            This))))
+          (top> This))))
 
 
 (dm sup> ()
@@ -213,3 +180,8 @@
       #        (get *line-lay 'line 'l)
       #        (get *line-lay 'line 'l 'data))    
       (upd-dims (get *line-lay 'line 'l)))))
+
+      
+(class +Box +Sym)
+(class +Ext +Sym)
+(class +Int +Sym)      

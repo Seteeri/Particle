@@ -131,7 +131,7 @@
     
 
 (dm top> ()
-  (set-on-car)
+  (when *on-car (set-on-car))
   (mov-cur-abv This)
   This)
 
