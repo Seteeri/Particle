@@ -85,8 +85,8 @@
 
 (dm is-car?> () (= (get (: c) 'a) This))
 (dm is-cdr?> () (= (get (: c) 'b) This))
-(dm is-end?> () (and (= (get (: c) 'b) This)
-                     (not (isa '(+Pair) This))))
+(dm is-end?> () (and (is-cdr?> This)
+                     (not (is-pair? This))))
 
 (dm lay-x?> () (= (: lay) 'x))
 (dm lay-y?> () (= (: lay) 'y))
