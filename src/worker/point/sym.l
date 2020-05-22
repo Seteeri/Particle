@@ -27,7 +27,7 @@
 
 (dm exp?>
   # When expanded, 'c will be a symbol and its car will be caller
-  (and (isa '(+Sym) (: c)) (= (get (: c) 'a) This)))
+  (and (bel-sym?> This) (is-car?> This)))
   
   
 (dm prv> ()

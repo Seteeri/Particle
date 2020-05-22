@@ -4,13 +4,13 @@
   # Pair/X or Y
   # Atom
   
-  (cond ((and (lay-y?> Ref) (isa '(+Pair) Ref))
+  (cond ((and (lay-y?> Ref) (is-pair? Ref))
          # Make like car...
          (make-case-4 Ref)
          # Move to c instead of a
          T)
         
-        ((and (lay-x?> Ref) (isa '(+Pair) Ref))
+        ((and (lay-x?> Ref) (is-pair? Ref))
          # Make list
          T)        
         

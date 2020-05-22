@@ -32,7 +32,7 @@
               (setq New-Ref (repl-cdr Ref
                                       (gen-part NIL 'x))))
       
-            ((and (lay-y?> Tgt) (isa '(+Pair) Tgt))
+            ((and (lay-y?> Tgt) (is-pair? Tgt))
               #(println "del-car")
               # Promote Car
               (a> Tc Ta)
@@ -120,7 +120,7 @@
 
     (unless (= (get Tgt 'data) '*start)
     
-      (cond ((and (lay-y?> Tgt) (isa '(+Pair) Tgt) (is-car?> Ref))
+      (cond ((and (lay-y?> Tgt) (is-pair? Tgt) (is-car?> Ref))
              (put Tgt 'a)
              (a> Tc Ref)
              (del> Tgt T T))

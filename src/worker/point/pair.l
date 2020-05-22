@@ -66,7 +66,7 @@
   
   ~(assert (: a))
   
-  (cond ((isa '(+Pair) (: a))
+  (cond ((has-pair?> This)
   
          ~(assert (get (: a) 'line))
         (println 'sub> "Set line: " (: a) (get (: a) 'data))
@@ -80,7 +80,7 @@
                (sub> (: a)))
              (top> (: a))))
         
-        ((isa '(+Nil) (: a))
+        ((has-nil?> This)
          (println 'sub> "Set line: " (: a) (get (: a) 'data))
          (setq *line (: a))
          # If X lay, mov to Car

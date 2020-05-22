@@ -229,10 +229,10 @@
     (lay> Part 'y)
     (put Part 'line
       (new '(+Line)
-           (unless (isa '(+Sym) Cc)
+           (unless (is-sym? Cc)
              *line)
            (: b)
-           (unless (isa '(+Sym) Cc)
+           (unless (is-sym? Cc)
              (if (get *line 'line 'l) @ *line))))
                   
     # Create Line for Cdr
@@ -242,7 +242,7 @@
           (new '(+Line)
                Part
                (get *line 'line 'n)
-               (if (isa '(+Sym) Cc)
+               (if (is-sym? Cc)
                    Part
                    (get Part 'line 'l)))))
         
@@ -250,7 +250,7 @@
     (put C 'line (new '(+Line)))
         
     # Connect line: cur -> Part
-    (unless (isa '(+Sym) Cc)
+    (unless (is-sym? Cc)
       (put *line 'line 'n Part))
         
     (upd-tree)
@@ -332,7 +332,7 @@
   }#
   
   (let (Cc (get Ref 'c)
-        Is-Cc-Sym (isa '(+Sym) Cc)
+        Is-Cc-Sym (is-sym? Cc)
         Part (gen-part (cons) 'x (cons T ) T)
         Cb (get Part 'b))
 
@@ -418,7 +418,7 @@
         Part (gen-part (cons) 'x (cons T NIL) T)
         Pb (get Part 'b))
 
-    (when (isa '(+Sym) Cc)
+    (when (is-sym? Cc)
       (quit "make-case-3: todo, no y sym support"))
         
     (a> Cc Part)
@@ -492,7 +492,7 @@
         Part (gen-part (cons) 'x (cons T NIL) T)
         Pb (get Part 'b))
 
-    (when (isa '(+Sym) Cc)
+    (when (is-sym? Cc)
       (quit "make-case-3: todo, no y sym support"))
         
     (a> Cc Part)

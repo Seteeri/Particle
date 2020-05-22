@@ -68,6 +68,21 @@
 (dm first-vert> () (car (: verts)))
 (dm last-vert> () (last (: verts)))
 
+(de is-pair? (P) (isa '(+Pair) P))
+(de is-str?  (P) (isa '(+Str)  P))
+(de is-sym?  (P) (isa '(+Sym)  P))
+(de is-nil?  (P) (isa '(+Nil)  P))
+
+(dm bel-pair?> () (isa '(+Pair) (: c)))
+(dm bel-sym?>  () (isa '(+Sym)  (: c)))
+(dm bel-str?>  () (isa '(+Str)  (: c)))
+(dm bel-nil?>  () (isa '(+Nil)  (: c)))
+
+(dm has-pair?> () (isa '(+Pair) (: a)))
+(dm has-sym?>  () (isa '(+Sym)  (: a)))
+(dm has-str?>  () (isa '(+Str)  (: a)))
+(dm has-nil?>  () (isa '(+Nil)  (: a)))
+
 (dm is-car?> () (= (get (: c) 'a) This))
 (dm is-cdr?> () (= (get (: c) 'b) This))
 (dm is-end?> () (and (= (get (: c) 'b) This)

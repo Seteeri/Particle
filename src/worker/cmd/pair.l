@@ -74,10 +74,10 @@
   
   (let Ref (get *fwd-in 'b)
   
-    (when (isa '(+Nil) Ref)
+    (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
   
-    (when (isa '(+Str) (get Ref 'a))
+    (when (has-str?> Ref)
   
       (let (In (get Ref 'a 'data)
             Out (eval (car (str In))))
@@ -114,10 +114,10 @@
   
   (let Ref (get *fwd-in 'b)
   
-    (when (isa '(+Nil) Ref)
+    (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
   
-    (when (isa '(+Str) (get Ref 'a))
+    (when (has-str?> Ref)
       
       (let (In (get Ref 'a 'data)
             Out (str In))
@@ -130,10 +130,10 @@
   
   (let Ref (get *fwd-in 'b)
   
-    (when (isa '(+Nil) Ref)
+    (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
   
-    (when (isa '(+Str) (get Ref 'a))  
+    (when (has-str?> Ref)  
   
       (let (End Ref
             (Sta Lst) (build-str End)

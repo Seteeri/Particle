@@ -111,8 +111,8 @@
     (when (and (get Ref 'line 'p)
                (not (= (get Ref 'data) '*start)))
     
-      (unless (or (isa '(+Pair) (get Ref 'a))
-                  (isa '(+Nil) (get Ref 'a))
+      (unless (or (has-pair?> Ref)
+                  (has-nil?> Ref)
                   (= (get Prv 'a) Ref))
                                     
         (setq *line (get Ref 'line 'p))

@@ -49,10 +49,10 @@
 
   (let Ref (get *fwd-in 'b)
   
-    (when (isa '(+Nil) Ref)
+    (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
   
-    (when (isa '(+Str) (get Ref 'a))  
+    (when (has-str?> Ref)  
   
       (let (End Ref
             (Sta Lst) (build-str End)
@@ -70,10 +70,10 @@
 
   (let Ref (get *fwd-in 'b)
   
-    (when (isa '(+Nil) Ref)
+    (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
   
-    (when (isa '(+Str) (get Ref 'a))  
+    (when (has-str?> Ref)  
     
       (let (Sta (get Ref 'c)
             End (get Ref 'b)
@@ -93,10 +93,10 @@
   
   (let Ref (get *fwd-in 'b)
   
-    (when (isa '(+Nil) Ref)
+    (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
   
-    (when (isa '(+Str) (get Ref 'a)) 
+    (when (has-str?> Ref) 
   
       (let (End Ref
             (Sta Lst) (build-str End)
@@ -116,10 +116,10 @@
   
   (let Ref (get *fwd-in 'b)
   
-    (when (isa '(+Nil) Ref)
+    (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
   
-    (when (isa '(+Str) (get Ref 'a))
+    (when (has-str?> Ref)
 
       #{
         : (split (chop "abc   def   ghi") " ")
@@ -151,10 +151,10 @@
   
   (let Ref (get *fwd-in 'b)
   
-    (when (isa '(+Nil) Ref)
+    (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
   
-    (when (isa '(+Str) (get Ref 'a))  
+    (when (has-str?> Ref)  
   
       (let (End Ref
             (Sta Lst) (build-str-sp End)

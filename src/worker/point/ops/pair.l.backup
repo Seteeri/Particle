@@ -9,7 +9,7 @@
       
 (de make-list (Ref)
   
-  (if (isa '(+Nil) Ref)
+  (if (is-nil? Ref)
   
       (if (is-car?> Ref)
   
@@ -188,17 +188,17 @@
       
       # Create Line
       (=: line (new '(+Line)
-                    (unless (isa '(+Sym) Cc)
+                    (unless (is-sym? Cc)
                       *line)
                     (: b)
-                    (unless (isa '(+Sym) Cc)
+                    (unless (is-sym? Cc)
                       (if (get *line 'line 'l) @ *line))))
                   
       # Create Line for Cdr
       (put (: b) 'line (new '(+Line)
                             Part
                             (get *line 'line 'n)
-                            (if (isa '(+Sym) Cc)
+                            (if (is-sym? Cc)
                                 Part
                                 (if (get *line 'line 'l) @ *line))))
       
@@ -278,7 +278,7 @@
      
       (lay> This 'y)
       
-      (=: line (if (isa '(+Sym) C)
+      (=: line (if (is-sym? C)
                    (new '(+Line)
                         NIL
                         (: b)
@@ -292,7 +292,7 @@
       (put (: a) 'line (new '(+Line))))
       
     # Connect line for non-sym
-    (unless (isa '(+Sym) C)
+    (unless (is-sym? C)
       (put C 'line 'n Part))
     
     # Create line for Part's Cdr
@@ -417,8 +417,8 @@
 
     (unless (= (get Tgt 'data) '*start)
     
-      (cond ((or (isa '(+Pair) (get Tgt 'a))
-                 (isa '(+Nil)  (get Tgt 'a)))
+      (cond ((or (has-pair?> Tgt)
+                 (has-nil?> Tgt))
               (prinl) (prinl) (println "COND 1") (prinl) (prinl)
               # Remove line
               (del-line Tgt)
@@ -427,7 +427,7 @@
               (setq New-Ref Tgt-Cdr))
     
             # If Tgt prv is Car of Pair, set Car...
-            ((= (get Ref 'c 'a) Ref)
+            ((is-car?> Ref)
               (prinl) (prinl) (println "COND 2") (prinl) (prinl)
               (put Tgt-Prv 'a Tgt-Cdr)
               # To connect, pop, then push

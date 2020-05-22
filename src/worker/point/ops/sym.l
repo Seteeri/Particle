@@ -171,8 +171,8 @@
     (b@ Pair Part Ref)
     
     # Make line as necessary if car is a list
-    (if (and (isa '(+Pair) (get Ref 'a))
-             (isa '(+Pair) Ref))
+    (if (and (has-pair?> Ref)
+             (is-pair? Ref))
         (make-line Ref)
         (when (get Ref 'line)
           (put-line Ref Part)))
@@ -226,8 +226,8 @@
   (println 'ins-car)
     
   (let (Pair (get Ref 'c)
-        Is-Ref-Pair-of-Pair (and (isa '(+Pair) Pair)
-                                 (isa '(+Pair) (get Ref 'a))))
+        Is-Ref-Pair-of-Pair (and (is-pair? Pair)
+                                 (has-pair?> Ref)))
 
     (a> Pair Part)                                 
                                  
@@ -341,8 +341,8 @@
         B NIL
         D NIL)
         
-    (while (and (isa '(+Str) (get P 'a))
-                (not (isa '(+Sym) P))
+    (while (and (has-str?> P)
+                (not (is-sym? P))
                 (not (= (get P 'a) B))
                 (not (get P 'line)))
       
@@ -351,8 +351,8 @@
       (setq B P)
       (setq P (get P 'c)))
     
-    (if (and (isa '(+Str) (get P 'a))
-             (not (isa '(+Sym) P))
+    (if (and (has-str?> P)
+             (not (is-sym? P))
              (not (= (get P 'a) B)))
       (push 'D (get P 'a 'data))
       (setq P (get P 'b)))
@@ -366,9 +366,9 @@
         B NIL
         D NIL)
         
-    (while (and (isa '(+Str) (get P 'a))
+    (while (and (has-str?> P)
                 (not (= (get P 'a 'data) " ")) # what about multiple spaces?
-                (not (isa '(+Sym) P))
+                (not (is-sym? P))
                 (not (= (get P 'a) B))
                 (not (get P 'line)))
       
@@ -377,9 +377,9 @@
       (setq B P)
       (setq P (get P 'c)))
     
-    (if (and (isa '(+Str) (get P 'a))
+    (if (and (has-str?> P)
              (not (= (get P 'a 'data) " ")) # what about multiple spaces?
-             (not (isa '(+Sym) P))
+             (not (is-sym? P))
              (not (= (get P 'a) B)))
       (push 'D (get P 'a 'data))
       (setq P (get P 'b)))
