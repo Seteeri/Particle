@@ -173,7 +173,9 @@
     
       (setq *bind-ops-p (gen-sym-full '*binds-ops 'x))
       
-      (lay-part-start *bind-ops-p *bind-ops-p))
+      #(lay-part-start *bind-ops-p *bind-ops-p)
+      
+      )
                             
     ########
     # *start
@@ -211,13 +213,15 @@
     
     (set-ptr *cdr (get *start 'b))
     (put *cdr 'lay 'y)
-    (mov-cur-abv (get *start 'b))
-    (lay-ptr *cdr)
+    
+    #(mov-cur-abv (get *start 'b))
+    #(lay-ptr *cdr)
 
     (set-ptr *car (get *start 'b))
     (put *car 'lay 'y)
-    (adj-cur -9.0 2.0)
-    (lay-ptr *car)    
+    
+    #(adj-cur -9.0 2.0)
+    #(lay-ptr *car)
     
     # Set input to Cdr
     (def '*fwd-in *cdr)
@@ -237,7 +241,7 @@
         
     }#
                     
-    (let Part (gen-part-x '(T T))
+    (let Part (gen-part-x '(1 2))
     
       #{
         [] [] NIL
@@ -246,15 +250,19 @@
       
       # Connect symbols
       (a> Part *bind-ops-p)
-      #(a> (get Part 'b) *start)
+      (a> (get Part 'b) *start)
     
       (mov-cur-x X)
       (adj-cur-y -8.0)
       (mov-cur-x X)
       (lay-part-start Part Part))
-      
-    #(lay-ptr *car)    
-    #(lay-ptr *cdr)
+    
+    (mov-cur-abv (get *start 'b))
+    (lay-ptr *cdr)
+    
+    (mov-cur-abv *start)
+    (adj-cur-y 3.0)
+    (lay-ptr *car)    
     
     (let L NIL
       (for X '(*car

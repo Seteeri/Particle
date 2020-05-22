@@ -10,4 +10,3 @@
 (dm upd-dims> (Ori)
   (=: dims (list (abs (- *bnds-x (car  Ori)))
                  (abs (- *bnds-y (cadr Ori))))))
-  

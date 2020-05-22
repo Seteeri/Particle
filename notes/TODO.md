@@ -11,10 +11,6 @@ TODO
   
   * 19 MAY - Saturday
     * Implement cmds Q/E : start/end of line/list  
-    * Cache last item for lines/lists
-      * On command
-      * On layout
-      * On gen    
     * Unify Symbols
       * Namespace -> particles...
     * External Symbols

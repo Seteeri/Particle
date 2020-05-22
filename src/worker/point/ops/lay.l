@@ -1,14 +1,82 @@
 (def '*bnds-x)
 (def '*bnds-y)
 (def '*line-lay)
-
+(def '*list-lay)
 
 (de upd-tree (List)
   (unless List (setq List *master))
   (mov-cur-ori List)
   (lay-part-start List List))
 
+  
+(de upd-list-lay (End)
+  
+  # Update head of list
+  (when (caar *list-lay)
+  
+    # Cache end
+    (put (get @ 'line) 'e End)
 
+    # Update list dims from cur
+    (upd-lst-dims)
+    
+    # UPDATE UPON POP
+    # Update head of list Point dims
+    #(upd-dims-2> @ (cadar *list-lay))
+    
+    #(println 'upd-line-post "  Upd lst dims: " 
+    #  (format (car (cadar *list-lay)) *Scl)
+    #  (format (cadr (cadar *list-lay)) *Scl))
+      
+    ))
+    
+        
+(de pop-list-lay ()
+
+  (let? A (pop '*list-lay)
+
+    (let (Dims-A (cadr A)
+          B (car *list-lay)
+          Dims-B (cadr B))
+      
+      # Don't use upd-dims-2>
+      # until final
+      (when (car B)
+        (set Dims-B (max (car Dims-B)
+                         (car Dims-A)))
+        (set (cdr Dims-B) (min (cadr Dims-B)
+                                (cadr Dims-A))))
+    
+      # Set dims to list
+      # Already called upd-lst-dims
+      (upd-dims-2> (car A) Dims-A)
+    
+      (println 'upd-line-post "Pop list: " 
+        A (car (get (car A) 'data))))))
+  
+
+(de upd-lst-dims ()
+  #{
+  
+    O
+    [X] CDR|
+    CAR    |
+    -------+
+
+    O
+    [X] CAR|
+    CDR    |
+    -------+          
+    
+  }#
+  
+  (let Bnds (cadr (car *list-lay))
+    (set Bnds (max (car Bnds)
+                   (car *cur)))
+    (set (cdr Bnds) (min (cadr Bnds)
+                         (cadr *cur)))))
+  
+  
 (de upd-cur ()
   #{
   
@@ -41,7 +109,8 @@
   }#
   (setq *bnds-x NIL
         *bnds-y NIL
-        *line-lay Line)
+        *line-lay Line
+        *list-lay NIL)
   (lay-pair Part Skip))
 
 
@@ -64,17 +133,12 @@
       (let (Rel (cdr Part)
             Part (car Part))
         
-        (when NIL
-          (println 'lay-pair 
-                   Part
-                   (get Part 'data)
-                   '...
-                   (if (= Rel 'a) 'Car 'Cdr)
-                   'of (get Part 'c) (get Part 'c 'data)))
-                 
+        (println 'lay-pair-y Part Rel (type Part) (get Part 'data))
+        (lay-pair-pre Part Rel)
+        
         (if (lay-x?> Part)
-            (lay-pair-x Part Rel)
-            (lay-pair-y Part Rel))
+            (lay-x> Part)
+            (lay-y> Part))
     
         (unless (= Skip 'skip-car-cdr)
             
@@ -91,59 +155,56 @@
                 (unless (or (= A Part) (not A))
                   (push 'L (cons A 'a))))))))))
 
-
-(de lay-pair-x (Part Rel)
-
-  (when (= Rel 'b)
-  
-    # For non-newline Cdr:
-    # X = bnds of Car = cur-x
-    # Y = origin of Pair
-    #
-    # Newline will override... 
-    
-    (if (lay-x?> (get Part 'c))
-        (prog
-          (mov-cur *bnds-x (get Part 'c 'ori 2))
-          (adj-cur-x 2.0))
-        (prog
-          # Get from Car
-          (mov-cur (get Part 'c 'ori 1) *bnds-y)
-          (adj-cur-y (+ 1.0 *sublist-space-y))))
-              
-    (when (= (car (get Part 'data)) T)
-      (println 'lay-pair-x "Mov cur x to *bnds-x: " (format (car *cur) *Scl))
-      (println 'lay-pair-x "Mov cur y to origin: " (format (cadr *cur) *Scl)))
-    
-    )
-
-  #(println 'lay-pair-x Part (type Part) (get Part 'data) Rel)
-    
-  (lay-x> Part))
-  
-
-(de lay-pair-y (Part Rel)
+                  
+(de lay-pair-pre (Part Rel)
 
   (when (= Rel 'b)
-    # For non-newline Cdr:
-    # X = origin of Pair
-    # Y = bnds of Car
-    
-    # Newline will override...
-
-    # or check for pair
-    (if (lay-x?> (get Part 'c))
-        (prog
-          # X should be in place, else get from cur bnds
-          (mov-cur *bnds-x (get Part 'c 'ori 2))
-          (adj-cur-x))
-
-        (prog
-          # Y should be in place, else get from cur bnds
-          (mov-cur (get Part 'c 'ori 1) *bnds-y)
-          (adj-cur-y (+ 1.0 *sublist-space-y)))))
-
-  #(println 'lay-pair-y Part (get Part 'data) Rel)          
           
-  (lay-y> Part))
+    (let? C (get Part 'c)
+      (let (Ori (get C 'ori)
+            Dims (get C 'dims)) # or line?
 
+        (println 'lay-pair-pre Part Rel
+          "C: " C (get C 'data))
+        
+        (println 'lay-pair-pre Part Rel
+          "Dims of C: " (format (car Dims) *Scl)
+                        (format (cadr Dims) *Scl))
+            
+        (if (lay-x?> C)
+
+            # If Pair get from Car
+            # If Sym (exp) get from Val        
+
+            (let (Car (get C 'a)
+                  Val (get Car 'b)
+                  X (if (is-sym? C)
+                        (if Val # Get from Cdr else Car
+                            (+ (get Val 'ori 1) (get Val 'dims 1))
+                            (+ (get Car 'ori 1) (get Car 'dims 1)))
+                        (if Val # Get from Cdr else Car
+                            (+ (get Val 'ori 1) (get Val 'dims 1))
+                            (+ (get Car 'ori 1) (get Car 'dims 1)))))
+                  
+              (println 'lay-pair-pre Part Rel
+                "...Sym: " Car (get Car 'data) (get Car 'dims))
+              (println 'lay-pair-pre Part Rel
+                "Sym Car: " (get Car 'a) (get Car 'a 'data) (get Car 'a 'dims))
+              (println 'lay-pair-pre Part Rel
+                "Sym Cdr: " Val (car (get Val 'data)) (get Val 'dims))
+              (println 'lay-pair-pre Part Rel
+                "X: " (format X *Scl))
+                
+              (mov-cur X
+                       (cadr Ori))
+              (adj-cur-x 2.0))
+            
+            (prog
+              # Position under
+              (mov-cur (car Ori)
+                       (- (cadr Ori) (cadr Dims)))
+              (adj-cur-y (+ 1.0 *sublist-space-y))))))
+        
+    (println 'lay-pair-pre Part Rel
+              "Cur: " (format (get *cur 1) *Scl)  
+                      (format (get *cur 2) *Scl))))

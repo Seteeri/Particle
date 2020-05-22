@@ -70,18 +70,20 @@
   (let Ref (get *fwd-in 'b)
     (println Ref (get Ref 'data)))
 
-  (println "Master Line: " *master (get *master 'b 'data))
+  (println "Master Line: " (get *master 'b 'data))
 
   (let Ref (get *fwd-in 'b)
   
     (println "*on-car: " *on-car)
     (println "Ref: " Ref (get Ref 'data))
     (when T
+      (println "dims: " (get Ref 'dims))
       (println "lay: " (get Ref 'lay))
       (when (get Ref 'line)
         (println "line.p: " (get Ref 'line 'p))
         (println "line.n: " (get Ref 'line 'n))
-        (println "line.l: " (get Ref 'line 'l)))
+        (println "line.l: " (get Ref 'line 'l))
+        (println "line.dims: " (get Ref 'line 'dims)))
       (when NIL
         (println "a: " (get Ref 'a))
         (println "b: " (get Ref 'b))

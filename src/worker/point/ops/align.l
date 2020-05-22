@@ -15,7 +15,7 @@
 
   (let Ori-C (get Part 'line 'l 'ori)
         
-    (when NIL
+    (when T
       (println 'align-cur-to-line-y 
                Part
                (get Part 'data)))
@@ -47,7 +47,7 @@
 
   (let Ori-C (get Part 'line 'l 'ori)
   
-    (when NIL
+    (when T
       (println 'align-cur-to-line-x 
                Part
                'to 

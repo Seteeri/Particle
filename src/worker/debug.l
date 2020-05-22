@@ -5,6 +5,6 @@
     (mov-cur (+ (car Ori) (car Dims))
              (- (cadr Ori) (cadr Dims)))
     (adj-cur-y)
-    (prinl "Cur: " "(" (format (get *cur 1) *Scl)
+    (prinl "Cur: " "(" (format (get *cur 1) *Scl) " "
                        (format (get *cur 2) *Scl) ")")
     (mov> ⇲ *cur)))

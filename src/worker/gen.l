@@ -303,7 +303,7 @@
                     Lay))
         Cdr (when (and (not (cdr Skips))
                        (not (= Val Any)))
-              (gen-part Dr 'x NIL T))
+              (gen-part Dr 'x NIL)) # T
         (Verts-Pair Wid-Pair) (make-vert-pair Char-Pair Col (= Val Any))
         Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any

@@ -83,6 +83,9 @@
 (dm has-str?>  () (isa '(+Str)  (: a)))
 (dm has-nil?>  () (isa '(+Nil)  (: a)))
 
+(dm has-car?> () (: a))
+(dm has-cdr?> () (: b))
+
 (dm of-car?> (A) (= (: a) A))
 (dm of-cdr?> (B) (= (: b) B))
 
@@ -90,7 +93,7 @@
 (dm is-cdr?> () (= (get (: c) 'b) This))
 (dm is-end?> () (and (is-cdr?> This)
                      (not (is-pair? This))))
-
+                     
 (dm lay-x?> () (= (: lay) 'x))
 (dm lay-y?> () (= (: lay) 'y))
 
@@ -191,9 +194,8 @@
   This)
 
 
-# Track each line
-# Track each list
-  
+# Every time a EOL is set
+# Compare it to bnds
   
 (dm upd-line-pre> ()
   #{
@@ -211,6 +213,11 @@
   }#
   
   (when (: line)
+  
+    (unless (get (: line) 'l)
+      (push '*list-lay (list This (list NIL T 0.0)))
+      (println 'upd-line-pre "Push list: " This (car (: data)))
+      )
   
     (when (get (: line) 'p)
     
@@ -232,29 +239,29 @@
     
     
 (dm upd-line-post> ()
-  #{
   
-    After drawing cell, if item is end of list
-    update cur line dims
+  # Each +Point stores its dims
+  (upd-dims> This)  
+  
+  # Update list bnds
+  (upd-list-lay This)
     
-  }#
-  
-  (when (is-end?> This)
-        
+  # On end or NIL: 
+  # Upd line and pop/upd list
+  (when (or (is-end?> This)
+            (is-nil? This))
+    
+    #(println 'upd-line-pos (is-end?> This) This (car (: data)))
+    
     # Upd current line
     (upd-dims> *line-lay)
-    # Cache end atom
-    (put (get *line-lay 'line 'e) This)
     
-    # Update list dims with entire dims
-    # Poss to get 1st line dims by sub 2nd ln from 1st ln
-    (when (get *line-lay 'line 'l)
-      # (upd-dims> @)
-      # Cache end atom
-      # Can be used to get the y min, but not max x
-      #(println "Update list dims: " (car (get @ 'data)))
-      (put (get @ 'line 'dims 'e) This))))
+    # Cache end
+    (put (get *line-lay 'line) 'e This)
       
+    # Pop and upd list
+    (pop-list-lay)))
+
 
 (dm upd-dims> ()
   #{
@@ -263,11 +270,29 @@
     +Num: Car+Cdr bnds
   }#
   
+  #(println 'upd-dims> "Upd: " This)
+  
   (let Dims (list (abs (- *bnds-x (car  (: ori))))
                   (abs (- *bnds-y (cadr (: ori)))))
     (=: dims Dims)
-    #(when (: line) (upd-dims> @ (: ori)))))
-    (when (: line) (put @ 'dims Dims))))
+    (when (: line)
+      (put @ 'dims Dims))))
+    
+    
+(dm upd-dims-2> (Bnds)
+  #{
+    +Pair: Car bnds
+    +Sym: Car+Cdr bnds
+    +Num: Car+Cdr bnds
+  }#
+  
+  #(println 'upd-dims-2> "Upd: " This)
+  
+  (let Dims (list (abs (- (car  Bnds) (car  (: ori))))
+                  (abs (- (cadr Bnds) (cadr (: ori)))))
+    (=: dims Dims)
+    (when (: line)
+      (put @ 'dims Dims))))
     
     
 ##############
