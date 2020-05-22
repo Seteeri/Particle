@@ -60,7 +60,7 @@
   }#
   
   (let (Cc (get Ref 'c)
-        Part (gen2-part (cons) 'x (cons T NIL) T))
+        Part (gen-part (cons) 'x (cons T NIL) T))
     
     # Make a@
     (a> Cc Part)
@@ -116,7 +116,7 @@
   
   (let (C (get Ref 'c)
         Cc (get C 'c)
-        Part (gen2-part (cons) 'x (cons T NIL) T))
+        Part (gen-part (cons) 'x (cons T NIL) T))
     
     (a> Cc Part)    
     (a> Part C)
@@ -170,7 +170,7 @@
   (let (C (get Ref 'c)
         Cb (get C 'b)
         Cc (get C 'c)
-        Part (gen2-part (cons) 'x (cons T NIL) T))    
+        Part (gen-part (cons) 'x (cons T NIL) T))    
     
     (a> Part C)
 
@@ -269,7 +269,7 @@
   }#
     
   (let (C (get Ref 'c)
-        Part (gen2-part (list NIL) 'x (cons NIL T) T))
+        Part (gen-part (list NIL) 'x (cons NIL T) T))
          
     (b@ C Part Ref)
         

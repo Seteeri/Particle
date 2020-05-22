@@ -1,6 +1,6 @@
 #{
 
-  # Test gen2-part
+  # Test gen-part
   
   '(("1" "Content"
       ("1.1" "Content"
@@ -21,45 +21,45 @@
   
 }#
 
-(def '*gen2-line)
-(def '*gen2-list)
-(def '*gen2-out)
+(def '*gen-line)
+(def '*gen-list)
+(def '*gen-out)
 
-(de gen2-part-x (Any Skips Nrl)
+(de gen-part-x (Any Skips Nrl)
   # TODO: Handle circular lists...use another dot at the end
   
   # Skip is only for root
   
-  (off *gen2-line
-       *gen2-list
-       *gen2-out)
+  (off *gen-line
+       *gen-list
+       *gen-out)
 
   (if (pair Any)         
-      (gen2-pair-x Any Skips Nrl)
-      (setq *gen2-out 
-            (gen2-atom Any)))
+      (gen-pair-x Any Skips Nrl)
+      (setq *gen-out 
+            (gen-atom Any)))
       
-  *gen2-out)
+  *gen-out)
   
   
-(de gen2-part (Any Lay Skips Nrl)
+(de gen-part (Any Lay Skips Nrl)
   # TODO: Handle circular lists...use another dot at the end
   
   # Skip is only for root
   
-  (off *gen2-line
-       *gen2-list
-       *gen2-out)
+  (off *gen-line
+       *gen-list
+       *gen-out)
 
   (if (pair Any)         
-      (gen2-pair Any Skips Nrl)
-      (setq *gen2-out 
-            (gen2-atom Any)))
+      (gen-pair Any Skips Nrl)
+      (setq *gen-out 
+            (gen-atom Any)))
       
-  *gen2-out)  
+  *gen-out)  
   
 
-(de gen2-pair-x (Root Skips Nrl)
+(de gen-pair-x (Root Skips Nrl)
 
   # Iterative pre order traversal
 
@@ -67,7 +67,7 @@
   # Draw cars, deepest first
   # Draw cdr, deepest first
   
-  (when Nrl (push '*gen2-list NIL))
+  (when Nrl (push '*gen-list NIL))
   
   (let (In (list (list Root NIL NIL))
         X NIL)
@@ -76,14 +76,14 @@
             
       (let ((Any C P) X
             N (if (pair Any)                 
-                  (gen2-pair-xy Any 'x)
-                  (gen2-atom Any)))
+                  (gen-pair-xy Any 'x)
+                  (gen-atom Any)))
       
         #(println Any N (pair (car (get P 'data))))
         #(prinl)
       
-        (unless *gen2-out
-          (setq *gen2-out N))
+        (unless *gen-out
+          (setq *gen-out N))
       
         # Connect to prv
         (when P
@@ -101,8 +101,8 @@
                 (unless Nrl
                   (put N 'line
                         (new '(+Line))))
-                (push '*gen2-list N)
-                #(println "Line Root: " N Any *gen2-list) (prinl)
+                (push '*gen-list N)
+                #(println "Line Root: " N Any *gen-list) (prinl)
                 )
               
               ((or (and (pair Any) (pair (car Any)))
@@ -111,12 +111,12 @@
                 # or parent is a pair with a car pair
                 (when (= C 'a)
                   (put N 'line (new '(+Line)))
-                  (push '*gen2-list N)
-                  #(println "Line Car: " N Any *gen2-list) (prinl)
+                  (push '*gen-list N)
+                  #(println "Line Car: " N Any *gen-list) (prinl)
                   )))
                       
         (when (is-end?> N)
-          (pop '*gen2-list)
+          (pop '*gen-list)
           #(println "Finish list: " )
           #(prinl)
           )
@@ -132,7 +132,7 @@
               (push 'In (list A 'a N)))))))))  
   
   
-(de gen2-pair (Root Skips Nrl)
+(de gen-pair (Root Skips Nrl)
 
   # Iterative pre order traversal
 
@@ -140,7 +140,7 @@
   # Draw cars, deepest first
   # Draw cdr, deepest first
   
-  (when Nrl (push '*gen2-list NIL))
+  (when Nrl (push '*gen-list NIL))
   
   (let (In (list (list Root NIL NIL))
         X NIL)
@@ -149,17 +149,17 @@
             
       (let ((Any C P) X
             N (if (pair Any)                 
-                  (gen2-pair-xy Any
+                  (gen-pair-xy Any
                                 (if (pair (car Any))
                                     'y
                                     'x))
-                  (gen2-atom Any)))
+                  (gen-atom Any)))
       
         #(println Any N (pair (car (get P 'data))))
         #(prinl)
       
-        (unless *gen2-out
-          (setq *gen2-out N))
+        (unless *gen-out
+          (setq *gen-out N))
       
         # Connect to prv
         (when P
@@ -177,8 +177,8 @@
                 (unless Nrl
                   (put N 'line
                         (new '(+Line))))
-                (push '*gen2-list N)
-                #(prinn "Line Root: " N Any *gen2-list) (prinl)
+                (push '*gen-list N)
+                #(prinn "Line Root: " N Any *gen-list) (prinl)
                 )
               
               ((or (and (pair Any) (pair (car Any)))
@@ -188,17 +188,17 @@
                 (if (= C 'a)
                     (prog
                       (put N 'line (new '(+Line)))
-                      (push '*gen2-list N)
-                      (println "Line Car: " N Any (car *gen2-list)) (prinl)
+                      (push '*gen-list N)
+                      (println "Line Car: " N Any (car *gen-list)) (prinl)
                       )
                     (prog
                       (put N 'line
                           (new '(+Line)
                                 P
                                 NIL
-                                (car *gen2-list)))
+                                (car *gen-list)))
                       (put P 'line 'n N)
-                      (println "Line Cdr: " N Any (car *gen2-list))
+                      (println "Line Cdr: " N Any (car *gen-list))
                       #(println (get N 'line 'l))
                       #(prinl)
                       ))))
@@ -206,7 +206,7 @@
 
                       
         (when (is-end?> N)
-          (println "Pop list: " (pop '*gen2-list)) (prinl)
+          (println "Pop list: " (pop '*gen-list)) (prinl)
           )
 
         (when (pair Any)
@@ -220,7 +220,7 @@
               (push 'In (list A 'a N)))))))))
             
             
-(de gen2-pair-xy (Any Lay)
+(de gen-pair-xy (Any Lay)
   (let (Col (if (= Lay 'x) (car *pair-col-def) (cadr *pair-col-def))
         (Verts-Pair Wid-Pair) (make-vert-pair NIL Col)
         Pair (new '(+Pair)
@@ -232,15 +232,15 @@
       Pair))
             
             
-(de gen2-atom (Any)
+(de gen-atom (Any)
   (if (num? Any)
-      (gen2-num Any)
+      (gen-num Any)
       (if Any
-          (gen2-sym Any)
-          (gen2-nil Any))))
+          (gen-sym Any)
+          (gen-nil Any))))
 
 
-(de gen2-num (Any)
+(de gen-num (Any)
   (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
         Part (new '(+Num)
                   Any
@@ -251,7 +251,7 @@
     Part))
     
     
-(de gen2-nil (Any)
+(de gen-nil (Any)
   (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
         Part (new '(+Nil)
                   Any
@@ -262,7 +262,7 @@
     Part))
     
 
-(de gen2-sym (Any)
+(de gen-sym (Any)
   (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
         Cls (cond ((box? Any) '(+Box))
                   ((str? Any) '(+Str))
@@ -278,7 +278,7 @@
     
     
 # Expand sym
-(de gen2-sym-full (Any Lay Skips Char-Pair Col)
+(de gen-sym-full (Any Lay Skips Char-Pair Col)
 
   # Technically, name is a number cell
 
@@ -302,7 +302,7 @@
                     Lay))
         Cdr (when (and (not (cdr Skips))
                        (not (= Val Any)))
-              (gen2-part Dr 'x NIL T))
+              (gen-part Dr 'x NIL T))
         (Verts-Pair Wid-Pair) (make-vert-pair Char-Pair Col (= Val Any))
         Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any

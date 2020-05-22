@@ -168,7 +168,7 @@
   
     (when T
     
-      (setq *bind-ops-p (gen2-sym-full '*binds-ops 'x))
+      (setq *bind-ops-p (gen-sym-full '*binds-ops 'x))
       
       (lay-part-start *bind-ops-p *bind-ops-p))
             
@@ -180,7 +180,7 @@
     
     (when NIL
     
-      (setq *log (gen2-sym-full '*log 'y))
+      (setq *log (gen-sym-full '*log 'y))
                 
       (mov-cur X Y)
       (adj-cur-x 24.0)
@@ -189,7 +189,7 @@
     ########
     # *start
 
-    (setq *start (gen2-sym-full '*start 'x)
+    (setq *start (gen-sym-full '*start 'x)
           *pos-main (copy *cur)
           *line (get *start 'b)
           *master *start)
@@ -206,8 +206,8 @@
     ##################
     # TODO: Draw *ptrs
         
-    (def '*cdr (gen2-sym-full '*cdr 'x (cons NIL T) "↓" *selb-yellow))
-    (def '*car (gen2-sym-full '*car 'x (cons NIL T) "↑"))
+    (def '*cdr (gen-sym-full '*cdr 'x (cons NIL T) "↓" *selb-yellow))
+    (def '*car (gen-sym-full '*car 'x (cons NIL T) "↑"))
     
     #{
       : (char "→")
@@ -237,7 +237,7 @@
     # TEMP
     
     # ⇲ -> ⇲
-    (def '⇲ (gen2-sym-full '⇲ 'y (cons NIL T) "⇲" *selb-yellow))
+    (def '⇲ (gen-sym-full '⇲ 'y (cons NIL T) "⇲" *selb-yellow))
 
     #########
     
@@ -255,7 +255,7 @@
 
     (when T
                 
-      (let Part (gen2-part-x '(("*binds" "...")
+      (let Part (gen-part-x '(("*binds" "...")
                                ("*log" "...")
                                ("*pointers" "...")
                                ("*registers" "...")
@@ -272,7 +272,7 @@
     
       (println "START PLIST")
     
-      (let Part (gen2-part (getl *start)
+      (let Part (gen-part (getl *start)
                            'x)
                            
         (mov-cur-x X)
