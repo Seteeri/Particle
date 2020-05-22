@@ -48,6 +48,7 @@
             "/src/worker/point/atom.l"
             "/src/worker/point/sym.l"
             "/src/worker/point/num.l"
+            "/src/worker/point/nil.l"
             "/src/worker/point/ops/align.l"
             "/src/worker/point/ops/lay.l"
             "/src/worker/point/ops/del.l"
