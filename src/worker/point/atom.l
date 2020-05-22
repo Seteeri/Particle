@@ -21,11 +21,13 @@
 
 
 (dm upd-line> ()
-  # Standalone NIL
+  # End NIL
   (when (is-cdr?> This)
-    (upd-dims *line-lay)
-    (when (and (get *line-lay 'line 'l) T)
-      (upd-dims (get *line-lay 'line 'l)))))
+    (upd-dims> *line-lay)
+    # Update line dims with entire dims
+    # Poss to get 1st line dims by sub 2nd ln from 1st ln
+    (when (get *line-lay 'line 'l)
+      (upd-dims> (get *line-lay 'line 'l)))))
 
 
 (dm lay-x> ()

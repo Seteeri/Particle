@@ -23,8 +23,11 @@
 # These assume Syms not expanded
 
 (class +Sym +Atom)
+(class +Box +Sym)
+(class +Ext +Sym)
+(class +Int +Sym)  
  
-(class +Str +Sym) 
+(class +Str +Sym)
   
 (dm mov-verts> ()
 
@@ -62,6 +65,4 @@
     (setq *cur (list (max X-B (- (car *cur) (meta '(+Vertex) 'adv-vert)))
                      (min Y-B (cadr *cur))))))
 
-(class +Box +Sym)
-(class +Ext +Sym)
-(class +Int +Sym)      
+    

@@ -10,6 +10,20 @@
 
 
 (de upd-cur ()
+  #{
+  
+    O
+    [X] CDR|
+    CAR    |
+    -------+
+
+    O
+    [X] CAR|
+    CDR    |
+    -------+          
+    
+  }#
+
   (setq *bnds-x (if *bnds-x
                     (max @ (car *cur))
                     (car *cur))
@@ -18,48 +32,6 @@
                     (cadr *cur))))
 
               
-(de upd-cur-debug ()
-
-  #{
-  
-   O
-    [X] CDR|
-    CAR    |
-    -------+
-
-   O
-    [X] CAR|
-    CDR    |
-    -------+          
-  }#
-  
-  (let (X *bnds-x
-        Y *bnds-y)
-        
-    (setq *bnds-x (if *bnds-x
-                    (max @ (get *cur 1))
-                    (get *cur 1))
-          *bnds-y (if *bnds-y
-                    (min @ (get *cur 2))
-                    (get *cur 2)))
-    
-    (when (or (not (= X *bnds-x))
-              (not (= Y *bnds-y)))
-                            
-      (println 'upd-cur
-              (format X *Scl) '-> (format *bnds-x *Scl)
-              (format Y *Scl) '-> (format *bnds-y *Scl)))))            
-              
-              
-(de upd-dims (Part)
-  (with Part
-    (let Dims (list (abs (- *bnds-x (car (: ori))))
-                    (abs (- *bnds-y (cadr (: ori)))))
-      #(=: dims Dims)
-      (when (: line)
-        (put (: line) 'dims Dims)))))
-
-
 (de lay-part-start (Part Line Skip)
   #{
     Only apply skip to immediate Part

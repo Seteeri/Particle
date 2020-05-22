@@ -172,6 +172,14 @@
   (adj-cur-x 2.0))
   
   
+(dm upd-dims> ()
+  (let Dims (list (abs (- *bnds-x (car  (: ori))))
+                  (abs (- *bnds-y (cadr (: ori)))))
+    (=: dims Dims)
+    (when (: line)
+      (put @ 'dims Dims))))
+  
+  
 (dm del> (A B)
 
   #{
@@ -387,7 +395,7 @@
     (when (get (: line) 'p)
     
       # Set bnds of current line
-      (upd-dims *line-lay)
+      (upd-dims> *line-lay)
     
       # Reset max x
       # Caller will call upd-cur after this
