@@ -102,7 +102,7 @@
                   (put N 'line
                         (new '(+Line))))
                 (push '*gen2-list N)
-                (println "Line Root: " N Any *gen2-list) (prinl)
+                #(println "Line Root: " N Any *gen2-list) (prinl)
                 )
               
               ((or (and (pair Any) (pair (car Any)))
@@ -112,13 +112,12 @@
                 (when (= C 'a)
                   (put N 'line (new '(+Line)))
                   (push '*gen2-list N)
-                  (println "Line Car: " N Any *gen2-list) (prinl)
+                  #(println "Line Car: " N Any *gen2-list) (prinl)
                   )))
                       
-        (when (and (not Any)
-                   (= C 'b))
+        (when (is-end?> N)
           (pop '*gen2-list)
-          (println "Finish list: " )
+          #(println "Finish list: " )
           #(prinl)
           )
 
@@ -179,7 +178,7 @@
                   (put N 'line
                         (new '(+Line))))
                 (push '*gen2-list N)
-                #(println "Line Root: " N Any *gen2-list) (prinl)
+                #(prinn "Line Root: " N Any *gen2-list) (prinl)
                 )
               
               ((or (and (pair Any) (pair (car Any)))
@@ -190,7 +189,7 @@
                     (prog
                       (put N 'line (new '(+Line)))
                       (push '*gen2-list N)
-                      #(println "Line Car: " N Any *gen2-list) (prinl)
+                      (println "Line Car: " N Any *gen2-list) (prinl)
                       )
                     (prog
                       (put N 'line
@@ -199,16 +198,15 @@
                                 NIL
                                 (car *gen2-list)))
                       (put P 'line 'n N)
-                      #(println "Line Cdr: " N Any *gen2-list)
+                      (println "Line Cdr: " N Any *gen2-list)
                       #(println (get N 'line 'l))
                       #(prinl)
                       ))))
+
+
                       
-        (when (and (not Any)
-                   (= C 'b))
-          (pop '*gen2-list)
-          #(println "Finish list: " )
-          #(prinl)
+        (when (is-end?> N)
+          (println "Finish list: " (pop '*gen2-list)) (prinl)
           )
 
         (when (pair Any)

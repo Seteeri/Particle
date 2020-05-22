@@ -89,7 +89,7 @@
     # Proccess root
     (while (setq Part (pop 'L))
       
-      (let (Type (cdr Part)
+      (let (Rel (cdr Part)
             Part (car Part))
         
         (when NIL
@@ -97,12 +97,12 @@
                    Part
                    (get Part 'data)
                    '...
-                   (if (= Type 'a) 'Car 'Cdr)
+                   (if (= Rel 'a) 'Car 'Cdr)
                    'of (get Part 'c) (get Part 'c 'data)))
                  
         (if (lay-x?> Part)
-            (lay-pair-x Part Type)
-            (lay-pair-y Part Type))
+            (lay-pair-x Part Rel)
+            (lay-pair-y Part Rel))
     
         (unless (= Skip 'skip-car-cdr)
             
@@ -120,9 +120,9 @@
                   (push 'L (cons A 'a))))))))))
 
 
-(de lay-pair-x (Part Type)
+(de lay-pair-x (Part Rel)
 
-  (when (= Type 'b)
+  (when (= Rel 'b)
   
     # For non-newline Cdr:
     # X = bnds of Car = cur-x
@@ -140,14 +140,14 @@
     
     )
 
-  #(println 'lay-pair-x Part (type Part) (get Part 'data) Type)
+  #(println 'lay-pair-x Part (type Part) (get Part 'data) Rel)
     
   (lay-x> Part))
   
 
-(de lay-pair-y (Part Type)
+(de lay-pair-y (Part Rel)
 
-  (when (= Type 'b)
+  (when (= Rel 'b)
     # For non-newline Cdr:
     # X = origin of Pair
     # Y = bnds of Car
@@ -166,7 +166,7 @@
           (mov-cur (get Part 'c 'ori 1) *bnds-y)
           (adj-cur-y (+ 1.0 *sublist-space-y)))))
 
-  #(println 'lay-pair-y Part (get Part 'data) Type)          
+  #(println 'lay-pair-y Part (get Part 'data) Rel)          
           
   (lay-y> Part))
 

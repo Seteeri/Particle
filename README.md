@@ -9,7 +9,7 @@ information as they moved through the computer. What did they look like?
 
 Particle is a PicoLisp presentation binary tree (AST) UI.
 
-Particle is the realization of my vision of the human computer interaction model. I want to take the extensibility, dynamicness, and cohesion of past Lisp Machines, Smalltalk-like enivronments, and others, and evolve the text interface to enable as many users as possible to take advantage of the increasing digital connectedness.
+Particle is the realization of my vision of the human computer interaction model. I want to take the extensibility, dynamicness, and cohesion of past Lisp Machines, Smalltalk-like enivronments, and others, and evolve the text interface to empower as many users as possible to take advantage of the increasing digital connectedness.
 
 Originally, this project was attempted in other languages but became only possible with PicoLisp, because *all* data is based on cons cell structures retained during runtime, which allows the interface and data to be homoiconic. For example, a C array would break this principle (for interop, they can be symbolized through a number, i.e. pointer).
 
@@ -62,15 +62,17 @@ This idea is then further extended to create arbitrary representations for arbit
 * Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide
 * The Humane Interface by Jeff Raskin
 * Lisp discovered by John McCarthy
-* Emacs by RMS
-* Presentation Based User Interfaces by E.C. Ciccarelli at MIT
-* Open Dylan by Apple
-* OpenDoc by Apple
 * Lisp Machines by Xerox PARC and MIT
+* Presentation Based User Interfaces by E.C. Ciccarelli at MIT
+* Apple
+  * HyperCard by Bill Atkinson
+  * Open Dylan
+  * OpenDoc
 * Evernote by Stepan Pachikov
 * Oberon OS by Niklaus Wirth at ETH Zürich
 * Intentional Programming by Charles Simonyi at Microsoft
-  
+* Emacs by RMS
+
 * Others:
 
   * Compiz 3D effects

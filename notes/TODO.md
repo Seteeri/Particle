@@ -12,17 +12,18 @@ TODO
   * 19 MAY - Tues
     * Refactor layout to use stack like gen
       * flags: expand int syms, trans syms, ext syms
-    * Support X sublists
     * Implement cmds Q/E : start/end of line/list  
     * Cache last item for lines/lists
       * On command
       * On layout
       * On gen    
-    * Unify symbols
-      * symbol hierarchy
-      * CUT/COPY/PASTE
-        * Need registers
+    * Unify Symbols
     * External Symbols
+      * Save code to binary and database
+        * This will output both data with markup
+        * To make "runable" version, strip comments and markup
+        * Think of it as pre-parser step, but part of it
+          * Either separate program or modify reader
     * Multiple workers
     * Min UI latency
       * Swap proc before cmd since don't know if GC will happen

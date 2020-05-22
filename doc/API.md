@@ -111,7 +111,7 @@ UBO
 
 Various Buffers
 
-# Design Concepts
+# Design Decisions
 
 ## GC
 

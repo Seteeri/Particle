@@ -100,6 +100,8 @@
         In (get Ref 'a 'data)
         Out (eval In))
 
+    # If list, mov 'c 'b
+    # else, append and make nl
     (point-nxt)        
         
     (make-str Out 'x)))

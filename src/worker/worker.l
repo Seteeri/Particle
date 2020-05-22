@@ -253,7 +253,7 @@
     
     #########
 
-    (when T
+    (when NIL
     
       (adj-cur-y)
       (mov-cur-x X)
@@ -268,7 +268,23 @@
  
         (adj-cur-y -10.0)
         (mov-cur-x X)
+        (lay-part-start Part Part)))
+
+        
+    (when T
+    
+      (println "START PLIST")
+    
+      (let Part (gen2-part '(((28898448 0 0) . ori) (x . lay))
+                           'x)
+                           
+        #(println "DONE")
+
+        (mov-cur-x X)
+        (adj-cur-x -40.0)
+        (adj-cur-y)
         (lay-part-start Part Part)))))
+    
 
 
 # Unused

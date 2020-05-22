@@ -20,20 +20,13 @@
 
 # CAR empty for Anon syms (CAR is actually number 0)
 
-######################
 (class +Sym +Point)
 
-#################
 (class +Box +Sym)
 
-
-#################
 (class +Ext +Sym)
 
-
-#################
 (class +Int +Sym)
-
 
 (dm prv> ()
   (when (: c)

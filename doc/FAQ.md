@@ -35,9 +35,9 @@ https://news.ycombinator.com/item?id=15466124
 
 > I don't want to denigrate ChrysaLisp in any way. It's tremendously cool. But cool is not enough to win in the real world.
 
-# Specific Program Examples
+# Specific Program Comparisons
 
-**Why not Emacs, org-mode, or ParEdit et. al.?**
+**Emacs, org-mode, ParEdit etc.**
 
 Emacs is undoubtedly powerful but also difficult to evolve due to its aging codebase. It could be rewritten, however, the goals for such a project remain undefined which hampers initial development from starting. In addition, Emacs is centered around editing buffers of text, however, modern users have a need to incorporate other data types.
 
@@ -49,7 +49,7 @@ Ultimately, users' learning is guided by their needs and their way into deeper f
 
 For example, most text editors and IDEs use panes, often with a navigator of sorts on the left, a utility pane at the bottom, and a main content pane with tabs. If you take the initial Emacs experience and attempt to have the user setup a similar configuration, it requires learning an entire system at once due to the way it was designed. Most users think go to the settings, and enable plugins. However, in order to do this in Emacs, before doing anything, the user must navigate using key chords, which they are expected to have already memorized.
   
-**What about note-taking apps like Evernote, OneNote, Notion etc.?**
+**Evernote, OneNote, Notion etc.**
 
 The plethora of note-taking options and the lack of an, arguably, dominant application shows there is still room for improvement and exploration in this domain.
 
@@ -69,20 +69,20 @@ The plethora of note-taking options and the lack of an, arguably, dominant appli
 >
 > Surprisingly, no software with all those features exists yet. There are some interesting options though...
 
-**Is this the same as Microsoft's OLE or Apple's OpenDoc systems which both failed?**
 
-Not quite. OLE was a closed proprietary standard, in which OpenDoc was developed as an open standard. Both failed for various reasons. 
 
-Data formats/standards exist because different programs written in different languages structure their data in different ways which makes for a complex ecosystem of formats. Additionally, some programs may be closed-source to be made unavailable for other programs to use which requires reverse-engineering. 
+**Jetbrains MPS**
 
-Unfortunately, this is all at the expense of the user, as data from one program cannot be used as data in another program unless a proper converter or importer is used, which leads to a waste of repetitive programming efforts that could be used towards more novel purposes.
-
-Fortunately, the world has been moving towards open source. Some of the most widespread formats include XML, associated with Ant and office programs, and JSON associated with Javascript. However, S-Expressions are arguably simpler and can serve both roles as a generic serialization format and syntax for a programming language. Thus, it can represent both data and code simultaneously.
-
-**Jetbrains MPS?**
 
 
 **Light Table, Eve**
 
 
+
 **WinFS**
+
+
+
+**Labview, Max**
+
+
