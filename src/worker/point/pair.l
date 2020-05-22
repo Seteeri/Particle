@@ -24,18 +24,6 @@
   (=: line))
 
   
-(dm lay-x> ()
-  (lay-cur> This)
-  (pos-cur-for-car-x> This)
-  This)
-  
-
-(dm lay-y> ()
-  (lay-cur> This)
-  (pos-cur-for-car-y> This)
-  This)    
-  
-  
 (dm prv> ()
   (when (: c)
     (if *on-car

@@ -19,38 +19,6 @@
   # When expanded, 'c will be a symbol and its car will be caller
   (and (bel-sym?> This) (is-car?> This)))
 
-
-(dm upd-line> ()
-  #{
-    +Pair: Upd dims after Car
-    Upd list dims when end of list
-  }#
-  
-  (when (is-end?> This)
-    
-    # Upd current line
-    (upd-dims> *line-lay)
-    
-    # Update list dims with entire dims
-    # Poss to get 1st line dims by sub 2nd ln from 1st ln
-    (when (get *line-lay 'line 'l)
-      (upd-dims> @))))
-
-
-(dm lay-x> ()
-  (lay-cur> This)
-  (upd-line> This)
-  (pos-cur-for-car-x> This)
-  This)
-  
-
-(dm lay-y> ()
-  (lay-cur> This)  
-  (upd-line> This)
-  (pos-cur-for-car-y> This)
-  This)
-
-
 # These 4 are same as +Sym  
   
 (dm prv> ()

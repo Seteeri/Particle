@@ -64,20 +64,6 @@
   (adj-cur-y)
   This)
 
-
-(dm lay-x> ()
-  # Similar to +Atom, except no pos-cur-*
-  (check-nl> This)
-  (mov> This)
-  (upd-cur)
-  (upd-line> This)
-  This)
-
-
-(dm lay-y> ()
-  # Similar to +Atom, except no pos-cur-*
-  (check-nl> This)
-  (mov> This)
-  (upd-cur)
-  (upd-line> This)
-  This)
+  
+(dm pos-cur-for-car-x> ())
+(dm pos-cur-for-car-y> ())

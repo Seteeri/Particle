@@ -173,17 +173,90 @@
   
 
 (dm lay-cur> ()
-  (check-nl> This)
+  (upd-line-pre> This)
   (mov> This) # *cur will be at last vert pos
-  (upd-cur))  
+  (upd-cur)
+  (upd-line-post> This))
+
   
+(dm lay-x> ()
+  (lay-cur> This)
+  (pos-cur-for-car-x> This)
+  This)
   
+
+(dm lay-y> ()
+  (lay-cur> This)
+  (pos-cur-for-car-y> This)
+  This)      
+
+
+(dm upd-line-pre> ()
+  #{
+  
+    Cur is at extends of recently drawn item
+    
+    If next item has line:
+    * Update bnds for recent line
+    * Reset x bnds
+    
+    Then pos cur for next item dep on lay
+    
+    Update cur line
+  
+  }#
+  
+  (when (: line)
+  
+    (when (get (: line) 'p)
+    
+      # Set bnds of current line
+      (upd-dims> *line-lay)
+    
+      # Reset max x
+      (off *bnds-x)
+    
+      (if (lay-y?> (: c)) # or auto for pairs
+          (align-cur-to-line-y This)
+          (align-cur-to-line-x This)))
+          
+    (setq *line-lay This)))
+    
+    
+(dm upd-line-post> ()
+  #{
+  
+    After drawing cell, if item is end of list,
+    update cur line dims
+    
+  }#
+  
+  (when (is-end?> This)
+    
+    # Upd current line
+    (upd-dims> *line-lay)
+    
+    # Update list dims with entire dims
+    # Poss to get 1st line dims by sub 2nd ln from 1st ln
+    (when (get *line-lay 'line 'l)
+      (upd-dims> @))))
+    
+
 (dm upd-dims> ()
+  #{
+    +Pair: Car bnds
+    +Sym: Car+Cdr bnds
+    +Num: Car+Cdr bnds
+  }#
+  
   (let Dims (list (abs (- *bnds-x (car  (: ori))))
                   (abs (- *bnds-y (cadr (: ori)))))
     (=: dims Dims)
     (when (: line) (put @ 'dims Dims))))
-  
+    
+    
+##############
+
   
 (dm del> (A B)
 
@@ -372,7 +445,7 @@
     (when (: b) (col-a> @ F P))))
 
     
-# unused
+# debug, unused
 (dm bnds> (A B)
 
   (let ((Xa Ya) (when (and (: a) 
@@ -392,28 +465,6 @@
     # If neither Car or Cdr, use cons
     (list (max (if Xa Xa X) (if Xb Xb X) X)
           (min (if Ya Ya Y) (if Yb Yb Y) Y))))
-
-
-(dm check-nl> ()
-  (when (: line)
-  
-    (when (get (: line) 'p)
-    
-      # Set bnds of current line
-      (upd-dims> *line-lay)
-    
-      # Reset max x
-      # Caller will call upd-cur after this
-      (setq *bnds-x)
-    
-      (if (lay-y?> (: c)) # or auto for pairs
-          (align-cur-to-line-y This)
-          (align-cur-to-line-x This)))
-          
-    (setq *line-lay This)))
-
-
-# Debug
 
 
 (dm trace> (Cnt)
