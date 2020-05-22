@@ -189,7 +189,7 @@
                     (prog
                       (put N 'line (new '(+Line)))
                       (push '*gen-list N)
-                      (println "Line Car: " N Any (car *gen-list)) (prinl)
+                      #(println "Line Car: " N Any (car *gen-list)) (prinl)
                       )
                     (prog
                       (put N 'line
@@ -198,7 +198,7 @@
                                 NIL
                                 (car *gen-list)))
                       (put P 'line 'n N)
-                      (println "Line Cdr: " N Any (car *gen-list))
+                      #(println "Line Cdr: " N Any (car *gen-list))
                       #(println (get N 'line 'l))
                       #(prinl)
                       ))))
@@ -206,7 +206,8 @@
 
                       
         (when (is-end?> N)
-          (println "Pop list: " (pop '*gen-list)) (prinl)
+          (pop '*gen-list)
+          #(println "Pop list: ") (prinl)
           )
 
         (when (pair Any)

@@ -174,21 +174,7 @@
       (setq *bind-ops-p (gen-sym-full '*binds-ops 'x))
       
       (lay-part-start *bind-ops-p *bind-ops-p))
-            
-    #####
-    # Log
-    
-    (mov-cur X Y)
-    (adj-cur-x 24.0)    
-    
-    (when NIL
-    
-      (setq *log (gen-sym-full '*log 'y))
-                
-      (mov-cur X Y)
-      (adj-cur-x 24.0)
-      (lay-part-start *log *log))
-                
+                            
     ########
     # *start
 
@@ -235,14 +221,40 @@
     
     # Set input to Cdr
     (def '*fwd-in *cdr)
-    
-    ######
-    # TEMP
-    
+        
     # ⇲ -> ⇲
     (def '⇲ (gen-sym-full '⇲ 'y (cons NIL T) "⇲" *selb-yellow))
 
-    #########
+    #{
+    
+      (("*binds-ops" "...")
+        ("*log" "...")
+        ("*pointers" "...")
+        ("*registers" "...")
+        ("*start" "...")
+        ("*plist" "...")
+        ("*symbols" "...")))
+        
+    }#
+                    
+    (let Part (gen-part-x '(T T))
+    
+      #{
+        [] [] NIL
+        T  T
+      }#
+      
+      # Connect symbols
+      (a> Part *bind-ops-p)
+      #(a> (get Part 'b) *start)
+    
+      (mov-cur-x X)
+      (adj-cur-y -8.0)
+      (mov-cur-x X)
+      (lay-part-start Part Part))
+      
+    #(lay-ptr *car)    
+    #(lay-ptr *cdr)
     
     (let L NIL
       (for X '(*car
@@ -252,37 +264,7 @@
                *log
                *bind-ops-p)
         (push 'L (cons X (val X))))
-      (balance '*particles (sort L)))
-    
-    #########
-
-    (when T
-                
-      (let Part (gen-part-x '(("*binds" "...")
-                               ("*log" "...")
-                               ("*pointers" "...")
-                               ("*registers" "...")
-                               ("*start" "...")
-                               ("*plist" "...")
-                               ("*symbols" "...")))
-        (mov-cur-x X)
-        (adj-cur-y -8.0)
-        (mov-cur-x X)
-        (lay-part-start Part Part)))
-
-        
-    (when NIL
-    
-      (println "START PLIST")
-    
-      (let Part (gen-part (getl *start)
-                           'x)
-                           
-        (mov-cur-x X)
-        (adj-cur-x -40.0)
-        (adj-cur-y)
-        (lay-part-start Part Part)))))
-    
+      (balance '*particles (sort L)))))
 
 
 # Unused

@@ -100,15 +100,20 @@
     # X = bnds of Car = cur-x
     # Y = origin of Pair
     #
-    # Newline will override
+    # Newline will override... 
     
-    # Don't bother since Cdr of Y always has newline
-    # (if (= (get Part 'c 'lay) 'x)
-    (mov-cur *bnds-x (get Part 'c 'ori 2))
-    (adj-cur-x 2.0)
-    
-    #(println 'lay-pair-x "Mov cur x to *bnds-x: " (format (car *cur) *Scl))
-    #(println 'lay-pair-x "Mov cur y to origin: " (format (cadr *cur) *Scl))
+    (if (lay-x?> (get Part 'c))
+        (prog
+          (mov-cur *bnds-x (get Part 'c 'ori 2))
+          (adj-cur-x 2.0))
+        (prog
+          # Get from Car
+          (mov-cur (get Part 'c 'ori 1) *bnds-y)
+          (adj-cur-y (+ 1.0 *sublist-space-y))))
+              
+    (when (= (car (get Part 'data)) T)
+      (println 'lay-pair-x "Mov cur x to *bnds-x: " (format (car *cur) *Scl))
+      (println 'lay-pair-x "Mov cur y to origin: " (format (cadr *cur) *Scl)))
     
     )
 

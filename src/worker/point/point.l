@@ -188,9 +188,13 @@
 (dm lay-y> ()
   (lay-cur> This)
   (pos-cur-for-car-y> This)
-  This)      
+  This)
 
 
+# Track each line
+# Track each list
+  
+  
 (dm upd-line-pre> ()
   #{
   
@@ -216,6 +220,8 @@
       (put (get *line-lay 'line 'e) This)
     
       # Reset max x
+      #(println 'upd-line-pre "Reset *bnds-x: " (format *bnds-x *Scl) " | "
+      #  (: data))
       (off *bnds-x)
     
       (if (lay-y?> (: c)) # or auto for pairs
@@ -228,7 +234,7 @@
 (dm upd-line-post> ()
   #{
   
-    After drawing cell, if item is end of list,
+    After drawing cell, if item is end of list
     update cur line dims
     
   }#
@@ -243,10 +249,12 @@
     # Update list dims with entire dims
     # Poss to get 1st line dims by sub 2nd ln from 1st ln
     (when (get *line-lay 'line 'l)
-      (upd-dims> @)
+      # (upd-dims> @)
       # Cache end atom
+      # Can be used to get the y min, but not max x
+      #(println "Update list dims: " (car (get @ 'data)))
       (put (get @ 'line 'dims 'e) This))))
-    
+      
 
 (dm upd-dims> ()
   #{
@@ -258,6 +266,7 @@
   (let Dims (list (abs (- *bnds-x (car  (: ori))))
                   (abs (- *bnds-y (cadr (: ori)))))
     (=: dims Dims)
+    #(when (: line) (upd-dims> @ (: ori)))))
     (when (: line) (put @ 'dims Dims))))
     
     
