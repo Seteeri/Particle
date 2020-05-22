@@ -21,30 +21,33 @@
 
 
 (dm upd-line> ()
-  # End NIL
+  #{
+    +Pair: Upd dims after Car
+    Upd list dims when end of list
+  }#
+  
   (when (is-cdr?> This)
+    
+    # Upd current line
     (upd-dims> *line-lay)
-    # Update line dims with entire dims
+    
+    # Update list dims with entire dims
     # Poss to get 1st line dims by sub 2nd ln from 1st ln
     (when (get *line-lay 'line 'l)
-      (upd-dims> (get *line-lay 'line 'l)))))
+      (upd-dims> @))))
 
 
 (dm lay-x> ()
-  (check-nl> This)
-  (mov> This)
-  (upd-cur)
-  (pos-cur-for-car-x> This)
+  (lay-cur> This)
   (upd-line> This)
+  (pos-cur-for-car-x> This)
   This)
   
 
 (dm lay-y> ()
-  (check-nl> This)
-  (mov> This) 
-  (upd-cur)
-  (pos-cur-for-car-y> This)
+  (lay-cur> This)  
   (upd-line> This)
+  (pos-cur-for-car-y> This)
   This)
 
 

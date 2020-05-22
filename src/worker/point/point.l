@@ -171,13 +171,18 @@
   (mov-cur-x (get (: ori) 1))
   (adj-cur-x 2.0))
   
+
+(dm lay-cur> ()
+  (check-nl> This)
+  (mov> This) # *cur will be at last vert pos
+  (upd-cur))  
+  
   
 (dm upd-dims> ()
   (let Dims (list (abs (- *bnds-x (car  (: ori))))
                   (abs (- *bnds-y (cadr (: ori)))))
     (=: dims Dims)
-    (when (: line)
-      (put @ 'dims Dims))))
+    (when (: line) (put @ 'dims Dims))))
   
   
 (dm del> (A B)
