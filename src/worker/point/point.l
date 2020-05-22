@@ -83,6 +83,9 @@
 (dm has-str?>  () (isa '(+Str)  (: a)))
 (dm has-nil?>  () (isa '(+Nil)  (: a)))
 
+(dm of-car?> (A) (= (: a) A))
+(dm of-cdr?> (B) (= (: b) B))
+
 (dm is-car?> () (= (get (: c) 'a) This))
 (dm is-cdr?> () (= (get (: c) 'b) This))
 (dm is-end?> () (and (is-cdr?> This)

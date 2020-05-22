@@ -117,9 +117,9 @@
 
     (a> Pair Part)
     
-    (cond ((= (get C 'b) Pair)
+    (cond ((of-cdr?> C Pair)
            (b> C Pair))
-          ((= (get C 'a) Pair)
+          ((of-car?> C Pair)
            (a> C Pair))
           (T
            (quit "repl-car: invalid pair")))
@@ -260,7 +260,7 @@
         Part (gen-part (list Data) 'x NIL T))
     
     # If car of pair
-    (if (= (get Prv 'a) Sta)
+    (if (of-car?> Prv Sta)
         (a> Prv Part)
         (b> Prv Part))
 
@@ -303,7 +303,7 @@
     (let (Data (car List)
           Part (gen-part (list Data) 'x (cons NIL T) T))
           
-      (if (= (get Sta 'a) Ref)
+      (if (of-car?> Sta Ref)
           (a> Sta Part)
           (b> Sta Part))
   
@@ -343,7 +343,7 @@
         
     (while (and (has-str?> P)
                 (not (is-sym? P))
-                (not (= (get P 'a) B))
+                (not (of-car?> P B))
                 (not (get P 'line)))
       
       (push 'D (get P 'a 'data))
@@ -353,7 +353,7 @@
     
     (if (and (has-str?> P)
              (not (is-sym? P))
-             (not (= (get P 'a) B)))
+             (not (of-car?> P B)))
       (push 'D (get P 'a 'data))
       (setq P (get P 'b)))
     
@@ -369,7 +369,7 @@
     (while (and (has-str?> P)
                 (not (= (get P 'a 'data) " ")) # what about multiple spaces?
                 (not (is-sym? P))
-                (not (= (get P 'a) B))
+                (not (of-car?> P B))
                 (not (get P 'line)))
       
       (push 'D (get P 'a 'data))
@@ -380,7 +380,7 @@
     (if (and (has-str?> P)
              (not (= (get P 'a 'data) " ")) # what about multiple spaces?
              (not (is-sym? P))
-             (not (= (get P 'a) B)))
+             (not (of-car?> P B)))
       (push 'D (get P 'a 'data))
       (setq P (get P 'b)))
     

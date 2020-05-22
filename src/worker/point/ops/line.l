@@ -113,7 +113,7 @@
     
       (unless (or (has-pair?> Ref)
                   (has-nil?> Ref)
-                  (= (get Prv 'a) Ref))
+                  (of-car?> Prv A))
                                     
         (setq *line (get Ref 'line 'p))
         # Remove line
