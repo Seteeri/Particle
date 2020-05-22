@@ -14,16 +14,16 @@
 
 (class +Pair +Point)
 
+
 (dm T (Data
        A
        B
        Verts
        Lay)
-
   (super Data A B Verts Lay)
-  
   (=: line))
 
+  
 (dm prv> ()
   (when (: c)
     (if *on-car
@@ -37,8 +37,7 @@
             (when (get *line 'line 'p)
               (setq *line @)
               (println 'prv> "Set line: " @ (get @ 'data))))
-          (mov-cur-abv (: c))
-          (: c)))))
+          (top> (: c))))))
 
           
 (dm nxt> ()  
@@ -49,8 +48,7 @@
           (when (get (: b) 'line)
             (println 'nxt> "Set line: " (: b) (get (: b) 'data))
             (setq *line (: b)))
-          (mov-cur-abv (: b))
-          (: b)))))
+          (top> (: b))))))
 
 
 (dm sup> ()
@@ -59,13 +57,9 @@
         ~(assert (get (: c) 'line))
         (println 'sup> "Set line: " (: c) (get (: c) 'data))
         (setq *line (: c))
-        (set-on-car)
-        (mov-cur-abv (: c))
-        (: c))
+        (top> (: c)))
         
-      (prog
-        (mov-cur-abv This)
-        This)))
+      (top> This)))
 
 
 (dm sub> ()
@@ -84,10 +78,7 @@
              (prog
                (set-on-car T)
                (sub> (: a)))
-             (prog
-               (set-on-car)
-               (mov-cur-abv (: a))
-               (: a))))
+             (top> (: a)))
         
         ((isa '(+Nil) (: a))
          (println 'sub> "Set line: " (: a) (get (: a) 'data))
@@ -98,13 +89,9 @@
              (prog
                (set-on-car T)
                (sub> (: a)))
-             (prog
-               (set-on-car)
-               (mov-cur-abv (: a))
-               (: a))))         
+              (top> (: a)))
         
         (T
-         (println (: a) (get (: a) 'data) (type (: a)))
          (sub> (: a)))))
 
   
