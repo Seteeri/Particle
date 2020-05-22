@@ -26,7 +26,7 @@
     Upd list dims when end of list
   }#
   
-  (when (is-cdr?> This)
+  (when (is-end?> This)
     
     # Upd current line
     (upd-dims> *line-lay)
