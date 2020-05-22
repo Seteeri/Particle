@@ -212,6 +212,8 @@
     
       # Set bnds of current line
       (upd-dims> *line-lay)
+      # Cache end
+      (put (get *line-lay 'line 'e) This)
     
       # Reset max x
       (off *bnds-x)
@@ -232,14 +234,18 @@
   }#
   
   (when (is-end?> This)
-    
+        
     # Upd current line
     (upd-dims> *line-lay)
+    # Cache end atom
+    (put (get *line-lay 'line 'e) This)
     
     # Update list dims with entire dims
     # Poss to get 1st line dims by sub 2nd ln from 1st ln
     (when (get *line-lay 'line 'l)
-      (upd-dims> @))))
+      (upd-dims> @)
+      # Cache end atom
+      (put (get @ 'line 'dims 'e) This))))
     
 
 (dm upd-dims> ()
