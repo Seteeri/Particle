@@ -253,11 +253,8 @@
     
     #########
 
-    (when NIL
-    
-      (adj-cur-y)
-      (mov-cur-x X)
-            
+    (when T
+                
       (let Part (gen2-part-x '(("*binds" "...")
                                ("*log" "...")
                                ("*pointers" "...")
@@ -265,21 +262,19 @@
                                ("*start" "...")
                                ("*plist" "...")
                                ("*symbols" "...")))
- 
-        (adj-cur-y -10.0)
+        (mov-cur-x X)
+        (adj-cur-y -8.0)
         (mov-cur-x X)
         (lay-part-start Part Part)))
 
         
-    (when T
+    (when NIL
     
       (println "START PLIST")
     
       (let Part (gen2-part (getl *start)
                            'x)
                            
-        #(println "DONE")
-
         (mov-cur-x X)
         (adj-cur-x -40.0)
         (adj-cur-y)

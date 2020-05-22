@@ -69,6 +69,9 @@
 
 
 (dm sub> ()
+  
+  ~(assert (: a))
+  
   (cond ((isa '(+Pair) (: a))
   
          ~(assert (get (: a) 'line))
@@ -101,6 +104,7 @@
                (: a))))         
         
         (T
+         (println (: a) (get (: a) 'data) (type (: a)))
          (sub> (: a)))))
 
   
