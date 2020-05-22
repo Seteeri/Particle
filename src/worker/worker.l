@@ -275,7 +275,7 @@
     
       (println "START PLIST")
     
-      (let Part (gen2-part '(((28898448 0 0) . ori) (x . lay))
+      (let Part (gen2-part (getl *start)
                            'x)
                            
         #(println "DONE")

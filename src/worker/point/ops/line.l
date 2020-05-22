@@ -18,13 +18,22 @@
 
   (println "LINE: " *line (get *line 'data))
   
-  (put Ref 'line (new '(+Line)
-                      *line
-                      (get *line 'line 'n)
-                      (if (get *line 'line 'l) @ *line)))
-  (when (get *line 'line 'n)
-    (put @ 'line 'p Ref))
-  (put *line 'line 'n Ref)    
+  (put *line 'line 'n Ref)  
+  
+  (let Rb (get Ref 'b)  
+  
+    (put Ref 'line
+      (new '(+Line)
+           *line
+           Rb
+           (if (get *line 'line 'l) @ *line)))
+          
+    (if (get Rb 'line)
+        (put @ 'p Ref)
+        (put Rb 'line (new '(+Line)
+                          Ref
+                          NIL
+                          (if (get Ref 'line 'l) @ Ref)))))
   
   (upd-tree)
   (mov-⇲ Ref)

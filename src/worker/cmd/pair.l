@@ -140,7 +140,7 @@
             Str (pack Lst)
             Out (eval (car (str Str))))
         
-        (repl-list-str Sta End Str T)
+        (repl-list-str Sta End Str T)        
         (make-line (make-str Out 'x))))))
         
 

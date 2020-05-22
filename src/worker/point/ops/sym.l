@@ -265,9 +265,12 @@
         (b> Prv Part))
 
     # Part <-> End'b
-    (when (get End 'b)
-      (del> (get Part 'b) T T)
-      (b> Part (get End 'b)))
+    (let (Eb (get End 'b)
+          Pb (get Part 'b))
+      (when Eb
+        (when (get Pb 'line) (put-line Eb Pb))
+        (del> Pb T T)
+        (b> Part Eb)))
     
     (when (get Sta 'line)
       (put-line Sta Part))
