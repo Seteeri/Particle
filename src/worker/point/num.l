@@ -16,26 +16,32 @@
 
 
 (dm prv> ()
-  (when (: c)
-    (prv> (: c))))
+  (when (: c) (prv> @)))
 
 
 (dm nxt> ()
-  (when (: c)
-    (nxt> (: c))))
+  # If no b, do c
+  (if (: b)
+      (if *on-car
+          (sub> (: b))
+          (prog
+            (top> (: b))))
+      (when (: c)
+        (nxt> @))))
 
 
 (dm sup> ()
-  (when (: c)
-    (set-on-car)
-    (mov-cur-abv (: c))
-    (: c)))
+  (when (: c) (top> @)))
 
 
 (dm sub> ()
   (unless *on-car (set-on-car T))
-  (if (: a)
-      (mov-cur-ori (: a))
-      (mov-cur-ori This))
-  (adj-cur-y)
-  This)
+  (if (: a) # T=expanded
+      (prog
+        (mov-cur-ori @)
+        (adj-cur-y)
+        @)
+      (prog
+        (mov-cur-ori This)
+        (adj-cur-y)
+        This)))
