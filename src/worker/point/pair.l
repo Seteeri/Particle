@@ -78,7 +78,7 @@
              (prog
                (set-on-car T)
                (sub> (: a)))
-             (top> (: a)))
+             (top> (: a))))
         
         ((isa '(+Nil) (: a))
          (println 'sub> "Set line: " (: a) (get (: a) 'data))
@@ -89,7 +89,7 @@
              (prog
                (set-on-car T)
                (sub> (: a)))
-              (top> (: a)))
+              (top> (: a))))
         
         (T
          (sub> (: a)))))

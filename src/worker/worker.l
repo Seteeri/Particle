@@ -38,7 +38,7 @@
             "/src/worker/vertex.l"            
             "/src/worker/binds.l"       
             "/src/worker/ptr.l"            
-            "/src/worker/gen2.l"
+            "/src/worker/gen.l"
             "/src/worker/cmd/pair.l"
             "/src/worker/cmd/str.l"
             "/src/worker/cmd/cam.l"
