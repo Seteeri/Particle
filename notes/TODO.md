@@ -9,15 +9,14 @@ TODO
   GOAL is build structures more fluidly
   * Create list, enter strings, convert some to symbols, eval
   
-  * 19 MAY - Tues
-    * Refactor layout to use stack like gen [Done]
-      * flags: expand int syms, trans syms, ext syms
+  * 19 MAY - Saturday
     * Implement cmds Q/E : start/end of line/list  
     * Cache last item for lines/lists
       * On command
       * On layout
       * On gen    
     * Unify Symbols
+      * Namespace -> particles...
     * External Symbols
       * Save code to binary and database
         * This will output both data with markup

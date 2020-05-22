@@ -46,6 +46,7 @@
             "/src/worker/point/point.l"
             "/src/worker/point/pair.l"
             "/src/worker/point/atom.l"
+            "/src/worker/point/line.l"
             "/src/worker/point/sym.l"
             "/src/worker/point/num.l"
             "/src/worker/point/nil.l"
