@@ -70,6 +70,7 @@
 
 (de is-pair? (P) (isa '(+Pair) P))
 (de is-str?  (P) (isa '(+Str)  P))
+(de is-int?  (P) (isa '(+Int)  P))
 (de is-sym?  (P) (isa '(+Sym)  P))
 (de is-nil?  (P) (isa '(+Nil)  P))
 
@@ -170,7 +171,10 @@
 
   (setq *cur (: ori))    
 
-  (adj-cur-y (+ 1.0 *sublist-space-y)))
+  (if (or (is-pair? (: a))
+          (is-int? (: a)))
+    (adj-cur-y (+ 1.0 *sublist-space-y))
+    (adj-cur-y 1.0)))
 
   
 (dm pos-cur-for-car-y> ()
