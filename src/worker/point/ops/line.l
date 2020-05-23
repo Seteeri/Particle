@@ -105,7 +105,7 @@
   (setq *line Dst))  
   
 
-(de backspace-line (Ref)  
+(de bsp-line (Ref)  
   (let Prv (get Ref 'c)
 
     (when (and (get Ref 'line 'p)

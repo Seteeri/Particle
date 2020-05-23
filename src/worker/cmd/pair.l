@@ -43,7 +43,7 @@
   # Only applies to non-list...
     
   (let? Ref (get *fwd-in 'b)
-    (backspace-line Ref)))
+    (bsp-line Ref)))
 
 
 (de cmd-bs (Dir)
