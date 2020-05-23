@@ -323,5 +323,9 @@
     (when (and Cdr
                (not (= Val Any)))
       (put Cdr 'c Pair))
-            
+
+    # Put line in Cdr
+    (put Cdr 'line
+      (new '(+Line) NIL NIL NIL Wid-Car))
+      
     Pair))

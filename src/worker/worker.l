@@ -179,15 +179,12 @@
   (let ((X Y) *cur)
     
     (setq *bind-ops-p (gen-sym-full '*binds-ops 'x))
-                            
+    
     (setq *start (gen-sym-full '*start 'x)
           *pos-main (copy *cur)
           *line (get *start 'b)
           *master *start)
-        
-    (put (get *start 'b) 'line
-      (new '(+Line) NIL NIL NIL (get *start 'a 'dims)))
-        
+                
     (def '*cdr (gen-sym-full '*cdr 'x (cons NIL T) "↓" *selb-yellow))
     (def '*car (gen-sym-full '*car 'x (cons NIL T) "↑"))
     (def '⇲ (gen-sym-full '⇲ 'y (cons NIL T) "⇲" *selb-yellow))
