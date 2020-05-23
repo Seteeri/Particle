@@ -216,7 +216,7 @@
   
     (unless (get (: line) 'l)
       (push '*list-lay (list This (list NIL T 0.0)))
-      (println 'upd-line-pre "Push list: " This (car (: data)))
+      #(println 'upd-line-pre "Push list: " This (car (: data)))
       )
   
     (when (get (: line) 'p)

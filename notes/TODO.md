@@ -9,8 +9,7 @@ TODO
   GOAL is build structures more fluidly
   * Create list, enter strings, convert some to symbols, eval
   
-  * 19 MAY - Saturday
-    * Implement cmds Q/E : start/end of line/list  
+  * 19 MAY - Saturday  
     * Unify Symbols
       * Namespace -> particles...
     * External Symbols
@@ -22,6 +21,7 @@ TODO
     * Multiple workers
     * Min UI latency
       * Swap proc before cmd since don't know if GC will happen
+    * Implement cmds Q/E : start/end of line/list
     
     * Track data:particles in binary tree *particles
       * Unlike a CLI, we hold references to old data

@@ -51,8 +51,10 @@
       # Already called upd-lst-dims
       (upd-dims-2> (car A) Dims-A)
     
-      (println 'upd-line-post "Pop list: " 
-        A (car (get (car A) 'data))))))
+      #(println 'upd-line-post "Pop list: " 
+      #  A (car (get (car A) 'data)))
+      
+    )))
   
 
 (de upd-lst-dims ()
@@ -133,7 +135,7 @@
       (let (Rel (cdr Part)
             Part (car Part))
         
-        (println 'lay-pair-y Part Rel (type Part) (get Part 'data))
+        #(println 'lay-pair-y Part Rel (type Part) (get Part 'data))
         (lay-pair-pre Part Rel)
         
         (if (lay-x?> Part)
@@ -164,12 +166,13 @@
       (let (Ori (get C 'ori)
             Dims (get C 'dims)) # or line?
 
-        (println 'lay-pair-pre Part Rel
-          "C: " C (get C 'data))
-        
-        (println 'lay-pair-pre Part Rel
-          "Dims of C: " (format (car Dims) *Scl)
-                        (format (cadr Dims) *Scl))
+        (when NIL
+          (println 'lay-pair-pre Part Rel
+            "C: " C (get C 'data))
+          
+          (println 'lay-pair-pre Part Rel
+            "Dims of C: " (format (car Dims) *Scl)
+                          (format (cadr Dims) *Scl)))
             
         (if (lay-x?> C)
 
@@ -185,15 +188,16 @@
                         (if Val # Get from Cdr else Car
                             (+ (get Val 'ori 1) (get Val 'dims 1))
                             (+ (get Car 'ori 1) (get Car 'dims 1)))))
-                  
-              (println 'lay-pair-pre Part Rel
-                "...Sym: " Car (get Car 'data) (get Car 'dims))
-              (println 'lay-pair-pre Part Rel
-                "Sym Car: " (get Car 'a) (get Car 'a 'data) (get Car 'a 'dims))
-              (println 'lay-pair-pre Part Rel
-                "Sym Cdr: " Val (car (get Val 'data)) (get Val 'dims))
-              (println 'lay-pair-pre Part Rel
-                "X: " (format X *Scl))
+              
+              (when NIL
+                (println 'lay-pair-pre Part Rel
+                  "...Sym: " Car (get Car 'data) (get Car 'dims))
+                (println 'lay-pair-pre Part Rel
+                  "Sym Car: " (get Car 'a) (get Car 'a 'data) (get Car 'a 'dims))
+                (println 'lay-pair-pre Part Rel
+                  "Sym Cdr: " Val (car (get Val 'data)) (get Val 'dims))
+                (println 'lay-pair-pre Part Rel
+                  "X: " (format X *Scl)))
                 
               (mov-cur X
                        (cadr Ori))
@@ -204,7 +208,8 @@
               (mov-cur (car Ori)
                        (- (cadr Ori) (cadr Dims)))
               (adj-cur-y (+ 1.0 *sublist-space-y))))))
-        
-    (println 'lay-pair-pre Part Rel
-              "Cur: " (format (get *cur 1) *Scl)  
-                      (format (get *cur 2) *Scl))))
+    
+    (when NIL
+      (println 'lay-pair-pre Part Rel
+                "Cur: " (format (get *cur 1) *Scl)  
+                        (format (get *cur 2) *Scl)))))

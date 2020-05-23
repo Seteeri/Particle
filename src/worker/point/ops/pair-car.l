@@ -146,6 +146,8 @@
   
   # Check Y then x
   
+  # Refactor upd into here like str cmds
+  
   (cond
   
     ((and (lay-y?> (get Ref 'c)) (is-car?> Ref))
@@ -330,7 +332,7 @@
   - gen-part: skip Cdr
   
   }#
-  
+    
   (let (Cc (get Ref 'c)
         Is-Cc-Sym (is-sym? Cc)
         Part (gen-part (cons) 'x (cons T ) T)

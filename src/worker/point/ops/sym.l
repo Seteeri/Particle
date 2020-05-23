@@ -36,9 +36,10 @@
   
   
 (de ins-car-post (Part)
+  (println Part (get (car Part) 'data) (get (car Part) 'b))
   (set-ptr *fwd-in (if (cdr Part)
                         (sup> (car Part))
-                        (sup> (get (car Part) 'b)))))
+                        (top> (get (car Part) 'b)))))
   
   
 (de ins-cdr-post (Part) 

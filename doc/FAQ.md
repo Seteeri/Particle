@@ -1,21 +1,33 @@
 FAQ
 ===
 
-**Why structured data? Why not plain text?**
+**Plain text is universal.**
 
 Plain text is convenient but does not scale. Extracting useful information through repeatedly parsing plain text becomes redundant and inefficient on larger scales (at tens or hundreds of thousands of pieces of information). In the case of Particle, the structured data are s-expressions so it is a relatively simple model to understand and parse; the Lisp implementation is also open-source.
 
-**There have been numerous attempts at structured/projectional editors. What makes this approach any different?**
+**Pictographs are a poor solution; only text can represent code.**
+
+The idea is not to replace text but to include the use of images, side-by-side and intertwined with the former (I believe Light Table and Mathematica had/have similar ideas). Most programs will keep these domains separate which discourages and impedes the user from exploring the system. Plain text remains the most robust universal medium for communication, however, it is not the only medium, and it is not the mindset that laypersons generally approach a computer with. Without providing a method for users not naturally inclined to programming to properly utilize ever-growing computing power, the benefits of technology will not be fully reaped. Most textbooks, including scientific and mathematical ones, typically include pictures to demonstrate certain concepts, so text and images need not be mutually exclusive. At best, one can hope that maybe the system will encourage people to develop computational understanding. DSLs provide a gradual curve into that.
+
+**Smalltalk VMs never became mainstream.**
+
+[What Killed Smalltalk?](https://pointersgonewild.com/2015/08/20/what-killed-smalltalk/)
+
+> It seems to me that in some key areas, the Smalltalk creators placed their own radical ideas above everything else. They chose idealism over pragmatism. Smalltalk was a language created with a grandiose vision. It had some deeply rooted principles which didn’t necessarily work so well in practice, such as the idea that everything had to be an object, that the object metaphor should be applied everywhere, one size fits all. At the end of the day, programmers want to get things done and be productive. If the language design or implementation gets in the way of getting things done, people will leave. Pragmatism is key for a programming language to succeed.
+
+> Smalltalk was also designed with the idea that it should be easy to learn and intuitive. This has led its creators to have a heavy focus on graphical user interfaces. I watched an introduction to Self on YouTube (Self is a direct descendent of Smalltalk) and saw the heavy emphasis on interacting with objects through UIs. The user interfaces showcased in this video are, in my opinion, horribly complex and unintuitive. Pretty much all of the interactions done through the UI would have been simpler and easier to understand if they had been done by writing one or two lines of code instead!
+
+> When you sit down and think about it for one second, you have to realize that programming doesn’t fundamentally have anything to do with graphical user interfaces. Yes, you can use programming code to create GUIs, but there is no reason that programming should have to involve GUIs and be tied to them. The metaphor of writing code has been extremely successful since the very beginning, and it probably makes more sense to the mathematical mind of a skilled programmer. Not everything has to have a visual metaphor. This is again a case of pushing some idealistic principle too far, in my opinion.
+
+I would interpret Smalltalk's data model as one abstraction above Lisp's, and I agree with some of its underlying philosophy of making programming more humanistic and accessible.
+
+**Attempts at structured/projectional editors have largely failed and the ones that have succeeded are niche.**
 
 PicoLisp is a pure Lisp where all data consists of cons cells, with only three basic types: Pairs, Numbers, and Symbols which all consist of cons cells; strings are also symbols.
 
 This consistency makes it easy to reason about the system by connecting the linked-list structure of the UI directly to the underlying linked-list data structure (or more specifically linked cons cells), and because Lisp code can manipulate data through eval, the UI can be dynamically modified through itself. This means operating on the UI (or the data representation) is the same as operating on the underlying data which has the same representation.
 
 At the end of the day, you could say it is using a list metaphor instead of a desktop metaphor since what's really important is that TODO list on your desk and not so much the desk itself ;)
-
-**Pictographs are a poor solution; only text can represent code.**
-
-The idea is not to replace text but to include the use of images, side-by-side and intertwined with the former (I believe Light Table and Mathematica had/have similar ideas). Most programs will keep these domains separate which discourages and impedes the user from exploring the system. Plain text remains the most robust universal medium for communication, however, it is not the only medium, and it is not the mindset that laypersons generally approach a computer with. Without providing a method for users not naturally inclined to programming to properly utilize ever-growing computing power, the benefits of technology will not be fully reaped. Most textbooks, including scientific and mathematical ones, typically include pictures to demonstrate certain concepts, so text and images need not be mutually exclusive. At best, one can hope that maybe the system will encourage people to develop computational understanding. DSLs provide a gradual curve into that.
 
 **Does this roughly offer the same benefits that the old lisp machines provided?**
 
@@ -84,5 +96,3 @@ The plethora of note-taking options and the lack of an, arguably, dominant appli
 
 
 **Labview, Max**
-
-

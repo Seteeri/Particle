@@ -76,7 +76,7 @@
 
 # Master index of all particles in the "world" - store sym:particle
 # Eventually this will be moved to external symbols
-(def '*particles)
+(def '*points)
 (def '*lsts) # Traversal history list
 (def '*start) # Current list
 (def '*line) # Current line 
@@ -163,98 +163,61 @@
     
   }#
   
+  #{
+  
+    : (char "→")
+    -> 8594
+    : (char "←")
+    -> 8592
+    : (char "↑")
+    -> 8593
+    : (char "↓")
+    -> 8595
+    
+  }#  
 
   (let ((X Y) *cur)
-  
-    #######
-    # Binds
-  
-    (when T
     
-      (setq *bind-ops-p (gen-sym-full '*binds-ops 'x))
-      
-      #(lay-part-start *bind-ops-p *bind-ops-p)
-      
-      )
+    (setq *bind-ops-p (gen-sym-full '*binds-ops 'x))
                             
-    ########
-    # *start
-
     (setq *start (gen-sym-full '*start 'x)
           *pos-main (copy *cur)
           *line (get *start 'b)
           *master *start)
-    
-    (with (get *start 'b)
-      (=: line (new '(+Line) NIL NIL NIL (get *start 'a 'dims))))
-    
-    (mov-cur X Y)
-    (adj-cur-x 48.0)    
-    # Force draw for first particle since ori=cur
-    (mov-verts> *start *cur)
-    (lay-part-start *start *line)
         
-    ##################
-    # TODO: Draw *ptrs
+    (put (get *start 'b) 'line
+      (new '(+Line) NIL NIL NIL (get *start 'a 'dims)))
         
     (def '*cdr (gen-sym-full '*cdr 'x (cons NIL T) "↓" *selb-yellow))
     (def '*car (gen-sym-full '*car 'x (cons NIL T) "↑"))
-    
-    #{
-      : (char "→")
-      -> 8594
-      : (char "←")
-      -> 8592
-      : (char "↑")
-      -> 8593
-      : (char "↓")
-      -> 8595
-    }#
-    
-    (set-ptr *cdr (get *start 'b))
-    (put *cdr 'lay 'y)
-    
-    #(mov-cur-abv (get *start 'b))
-    #(lay-ptr *cdr)
-
-    (set-ptr *car (get *start 'b))
-    (put *car 'lay 'y)
-    
-    #(adj-cur -9.0 2.0)
-    #(lay-ptr *car)
-    
-    # Set input to Cdr
-    (def '*fwd-in *cdr)
-        
-    # ⇲ -> ⇲
     (def '⇲ (gen-sym-full '⇲ 'y (cons NIL T) "⇲" *selb-yellow))
-
-    #{
     
-      (("*binds-ops" "...")
-        ("*log" "...")
-        ("*pointers" "...")
-        ("*registers" "...")
-        ("*start" "...")
-        ("*plist" "...")
-        ("*symbols" "...")))
+    (set-ptr *cdr (get *start 'b)) (put *cdr 'lay 'y)
+    (set-ptr *car (get *start 'b)) (put *car 'lay 'y)
+    (def '*fwd-in *cdr) # Set def input to Cdr
+        
+    #{
+      
+      Implement root branches:
+      
+      ("*binds-ops" "...")
+      ("*log" "...")
+      ("*pointers" "...")
+      ("*registers" "...")
+      ("*start" "...")
+      ("*plist" "...")
+      ("*symbols" "...")
         
     }#
-                    
-    (let Part (gen-part-x '(1 2))
     
-      #{
-        [] [] NIL
-        T  T
-      }#
+    # Make root
+    
+    (let Part (gen-part-x '(1 2))
       
       # Connect symbols
       (a> Part *bind-ops-p)
       (a> (get Part 'b) *start)
     
-      (mov-cur-x X)
-      (adj-cur-y -8.0)
-      (mov-cur-x X)
       (lay-part-start Part Part))
     
     (mov-cur-abv (get *start 'b))
@@ -264,15 +227,18 @@
     (adj-cur-y 3.0)
     (lay-ptr *car)    
     
+    # Make data:point index in *points
+    
     (let L NIL
       (for X '(*car
                *cdr
                ⇲
                *start
-               *log
                *bind-ops-p)
-        (push 'L (cons X (val X))))
-      (balance '*particles (sort L)))))
+        (when X
+          (push 'L (cons (get (val X) 'data) (val X)))))
+      (balance '*points (sort L))
+      (pretty *points))))
 
 
 # Unused

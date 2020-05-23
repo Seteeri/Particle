@@ -346,6 +346,18 @@ https://www.reddit.com/r/programming/comments/szsie/an_ide_is_not_enough/
 Indeed, Lispers have known this since the publication of recursive functions of symbolic expressions and their computation by machine in 1958. With that paper John McCarthy discovered that all functional code can be represented as directed graphs with out degree at most one. Internally such directed graphs where represented as cons cells with car and cdr pointers in the machine. In that article John McCarthy mentioned that "circular list structures would have some advantages but difficulties in printing them, and in certain other operations, make it seem advisable not to use them for the present." As such, despite their advantages, the use of cyclic directed graphs was pushed indefinitely into the future, until the problems with printing them could be addressed.
 
 
+---
+
+
+    In the short term (i.e., 10+ years) this is all outweighed by the massive tooling support we have in place for text-based programming languages, but I do think that text is probably a local maximum, not the best possible representation for programs.
+
+I came here to write exactly those words. The tragedy of the current situation is that with text source files and all the related tools, we might not have a good solution to the problem of how to represent our programming ideas, but we usually have a “good enough” solution. We demonstrably can make useful software using this approach.
+
+Perhaps if we used something more specialised we could make software 5x faster for 50% of the cost and eliminating 90% of bugs, by learning lessons both from the programming community’s experience and from database admins, graphic designers, usability researchers, and all those other fields that we tend to ignore right now. Personally, I don’t find those figures implausible nor even unreasonably optimistic: it’s not as if software development is an efficient process today or reliably produces fast and bug-free code, after all.
+
+But we can’t get there incrementally, because any radical new approach to representing code will mean giving up the supporting ecosystem that comes with familiar text-based languages and tools. To succeed, any new approach would need to provide an entire tools ecosystem, not just a way to edit programs, and it would need to attract a critical mass of developers, and the programming model would still need to be able to call to and from C code because no-one is going to reinvent the entire world’s code archive. This is classic deadlock, and I suspect the only way we’ll break it is for someone with so much money that cost effectively doesn’t matter to decide it’s important, and to fund enough smart people to actually build a credible suite of tools as well as the new big idea, so that other developers could realistically start to work within the whole ecosystem and produce meaningful results. That’s a pretty hard sell, but if text-based coding is a local maximum as we’re proposing then we would have to go down before we could go up again to a level greater than before.
+
+
 # Others
 
 Newton OS: http://lispm.de/lisp-based-newton-os

@@ -39,7 +39,9 @@ Strings do not have double quotes; it is possible to remove other identifying to
 
 The hierarchial structure is a direct consequence of the underlying Lisp data, which is a graph, or more specifically a tree; manifesting in a natural UI. 
 
-This idea is then further extended to create arbitrary representations for arbitrary data (presentation model) while maintaining the same underlying operations, or interface if you will, no matter the level of abstractions composed.
+Particle separates the representation from the data ("presentation-based"), allowing arbitrary representations beyond conventional strings - this aspect is not new. The crucial feature that enables Particle is rather than view text and images as distinct types on both the semantic and data level, text is considered equal to images. Another way of thinking about text is they are simply glyphs, icons - symbols, and likewise conventional GUIs use the same concept and people think about them the same way when interacting.
+
+This idea is then further extended to create arbitrary representations for arbitrary data while maintaining the same underlying operations, or interface if you will, no matter the level of abstractions composed.
 
 # Goals
 
@@ -136,19 +138,15 @@ On MS and Apple systems, it serves as an outliner "app" or personal knowledge ma
 
 * [FAQ](https://github.com/Seteeri/Particle/tree/master/doc/FAQ.md)
 
-  * Why structured data? Why not plain text?
+  * Plain text is universal.
 
-  * Why not Emacs, org-mode, or ParEdit/Parinfer/Smartparens etc.?
+  * Pictographs are a poor solution; only text can represent code.
+  
+  * Smalltalk VMs never became mainstream.
 
-  * What about Evernote, OneNote, Notion etc.?
-
-  * Why PicoLisp? Dynamic scope is evil...
+  * Attempts at structured/projectional editors have largely failed and the ones that have succeeded are niche.
 
   * Does this roughly offer the same benefits that the old lisp machines provided?
-
-  * Is this the same as Microsoft's OLE or Apple's OpenDoc systems which both failed?
-
-  * Is this intentional programming?
 
 * [Relevant Anecdotes](https://github.com/Seteeri/Particle/tree/master/doc/INTRO.md)
 
