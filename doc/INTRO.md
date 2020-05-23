@@ -32,8 +32,8 @@ For example, a pixel data type consisting of a list of 4 numbers from 0-255, rep
 * LISP discovered by John McCarthy
 * Lisp Machines by Xerox PARC and MIT
 * Presentation Based User Interfaces by E.C. Ciccarelli at MIT
-* Apple Inc
-  * HyperCard
+* Apple Inc.
+  * HyperCard by Bill Atkinson
   * Open Dylan
   * OpenDoc
 * Evernote by Stepan Pachikov

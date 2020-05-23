@@ -62,6 +62,7 @@
 (def 'NAME-PID "WORKER")
 
 (def 'KEY-REPEAT 2)
+(def '*cdr-space-x 2.0)
 (def '*sublist-space-y 1.0)
 
 # Global Symbols

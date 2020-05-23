@@ -66,7 +66,7 @@ This idea is then further extended to create arbitrary representations for arbit
 * LISP discovered by John McCarthy
 * Lisp Machines by Xerox PARC and MIT
 * Presentation Based User Interfaces by E.C. Ciccarelli at MIT
-* Apple
+* Apple Inc.
   * HyperCard by Bill Atkinson
   * Open Dylan
   * OpenDoc
