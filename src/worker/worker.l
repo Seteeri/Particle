@@ -209,7 +209,7 @@
     
     # Make root
     
-    (let Part (gen-part-x '(1 2))
+    (let Part (gen-part '(1 2))
       
       # Connect symbols
       (a> Part *bind-ops-p)
