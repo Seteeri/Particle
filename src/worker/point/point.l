@@ -170,7 +170,7 @@
 
   (setq *cur (: ori))    
 
-  (adj-cur-y))
+  (adj-cur-y (+ 1.0 *sublist-space-y)))
 
   
 (dm pos-cur-for-car-y> ()
