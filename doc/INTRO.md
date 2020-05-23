@@ -29,17 +29,17 @@ For example, a pixel data type consisting of a list of 4 numbers from 0-255, rep
 
 * Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide
 * The Humane Interface by Jeff Raskin
-* Lisp discovered by John McCarthy
+* LISP discovered by John McCarthy
 * Lisp Machines by Xerox PARC and MIT
 * Presentation Based User Interfaces by E.C. Ciccarelli at MIT
-* Apple
+* Apple Inc
   * HyperCard
   * Open Dylan
   * OpenDoc
 * Evernote by Stepan Pachikov
 * Oberon OS by Niklaus Wirth at ETH Zürich
-* Intentional Programming by Charles Simonyi at Microsoft
-* Emacs by RMS
+* Intentional Programming by Charles Simonyi at Microsoft 
+* Emacs by RMS at MIT
   
 * Others:
 

@@ -63,7 +63,7 @@ This idea is then further extended to create arbitrary representations for arbit
 
 * Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide
 * The Humane Interface by Jeff Raskin
-* Lisp discovered by John McCarthy
+* LISP discovered by John McCarthy
 * Lisp Machines by Xerox PARC and MIT
 * Presentation Based User Interfaces by E.C. Ciccarelli at MIT
 * Apple
@@ -73,7 +73,7 @@ This idea is then further extended to create arbitrary representations for arbit
 * Evernote by Stepan Pachikov
 * Oberon OS by Niklaus Wirth at ETH Zürich
 * Intentional Programming by Charles Simonyi at Microsoft
-* Emacs by RMS
+* Emacs by RMS at MIT
 
 * Others:
 
