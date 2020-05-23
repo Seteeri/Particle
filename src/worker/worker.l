@@ -222,7 +222,7 @@
     (lay-ptr *cdr)
     
     (mov-cur-abv *start)
-    (adj-cur-y 3.0)
+    (adj-cur-y 4.0)
     (lay-ptr *car)    
     
     # Make data:point index in *points
