@@ -153,7 +153,7 @@
 
 
 (de gen-num (Any)
-  (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
+  (let ((Verts Wid) (make-vert-atm Any (get-color-type Any))
         Part (new '(+Num)
                   Any
                   NIL NIL
@@ -164,7 +164,7 @@
     
     
 (de gen-nil (Any)
-  (let ((Verts Wid) (make-vert-atom Any (get-color-type Any) (caddr *ch-pair-def))
+  (let ((Verts Wid) (make-vert-atm Any (get-color-type Any) (caddr *ch-pair-def))
         Part (new '(+Nil)
                   Any
                   NIL NIL
@@ -175,7 +175,7 @@
     
 
 (de gen-sym (Any)
-  (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
+  (let ((Verts Wid) (make-vert-atm Any (get-color-type Any))
         Cls (cond ((box? Any) '(+Box))
                   ((str? Any) '(+Str))
                   ((ext? Any) '(+Ext))
@@ -204,7 +204,7 @@
   (let (Name (if (str? Any) (name Any) (sym Any))
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
-        (Verts-Car Wid-Car) (make-vert-atom Name Col)
+        (Verts-Car Wid-Car) (make-vert-atm Name Col)
         Car (unless (car Skips)
               # Num type but content is a string
               (new '(+Num)

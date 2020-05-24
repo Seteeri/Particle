@@ -308,7 +308,7 @@
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
           
 
-(de make-vert-atom (Atm Col Ch)
+(de make-vert-atm (Atm Col Ch)
 
   # ch depends on atom
   (unless Col (setq Col (get-color-type Atm)))
