@@ -189,11 +189,19 @@
 ########################
 
 # X / Y / NIL
-(def '*cols-pair 
+
+(def '*cols-pair
+     (list *selb-bg-1
+           *selb-bg-2
+           *selb-dim-0))
+
+(def '*cols-pair-2 
      (list *selb-fg-0
            *selb-fg-1
            *selb-fg-0))
 
+# Save fg for comments
+           
 # https://unicode-table.com/en/sets/arrow-symbols/
 (def '*ch-dot (char (hex "00B7")))
 (def '*ch-pair-def
