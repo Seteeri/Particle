@@ -1,6 +1,6 @@
 # These are used with layout
 
-(de align-cur-to-line-y (Part)
+(de align-cur-line-y (Part)
 
   #{
         
@@ -19,7 +19,7 @@
         Dims-A (get Part 'c 'a 'dims))
                 
     (when T
-      (println 'align-cur-to-line-y 
+      (println 'align-cur-line-y 
                Part
                (get Part 'data)))
 
@@ -31,7 +31,7 @@
     (adj-cur-y (+ 1.0 *sublist-space-y))))
 
 
-(de align-cur-to-line-x (Part)
+(de align-cur-line-x (Part)
 
   #{
     
@@ -50,7 +50,7 @@
         Dims-A (get Part 'c 'a 'dims))
   
     (when T
-      (println 'align-cur-to-line-x 
+      (println 'align-cur-line-x 
                Part
                'to 
                (get Part 'line 'l)))

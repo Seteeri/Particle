@@ -240,8 +240,8 @@
       (off *bnds-x)
     
       (if (lay-y?> (: c)) # or auto for pairs
-          (align-cur-to-line-y This)
-          (align-cur-to-line-x This)))
+          (align-cur-line-y This)
+          (align-cur-line-x This)))
           
     (setq *line-lay This)))
     
