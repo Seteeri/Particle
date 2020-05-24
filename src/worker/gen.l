@@ -28,7 +28,7 @@
   
 (de gen-part (Any Lay Skips Nrl)
   # TODO: Handle circular lists...use another dot at the end
-  
+  # Lay is not used
   # Skip is only for root
   
   (off *gen-line
@@ -81,7 +81,7 @@
       
         # Color pairs
         (when (and (pair Any) (pair (car Any)))
-          (col-verts> N (cadr *pair-col-def) 1.0))          
+          (col-verts> N (cadr *cols-pair) 1.0))          
       
         # Create line if needed
         (cond ((not C) # Root
@@ -132,8 +132,9 @@
             
             
 (de gen-pair-xy (Any Lay)
-  (let (Col (if (= Lay 'x) (car *pair-col-def) (cadr *pair-col-def))
-        (Verts-Pair Wid-Pair) (make-vert-pair NIL Col)
+  (let (Col (if (= Lay 'x) (car *cols-pair) (cadr *cols-pair))
+        Ch (if (= Lay 'x) (car *ch-pair-def) (cadr *ch-pair-def))
+        (Verts-Pair Wid-Pair) (make-vert-pair Ch Col)
         Pair (new '(+Pair)
                   Any
                   NIL NIL # next loop will set
@@ -163,7 +164,7 @@
     
     
 (de gen-nil (Any)
-  (let ((Verts Wid) (make-vert-atom Any (get-color-type Any))
+  (let ((Verts Wid) (make-vert-atom Any (get-color-type Any) (caddr *ch-pair-def))
         Part (new '(+Nil)
                   Any
                   NIL NIL

@@ -189,11 +189,19 @@
 ########################
 
 # X / Y / NIL
-(def '*pair-col-def 
+(def '*cols-pair 
      (list *selb-fg-0
            *selb-fg-1
            *selb-fg-0))
 
+# https://unicode-table.com/en/sets/arrow-symbols/
+(def '*ch-dot (char (hex "00B7")))
+(def '*ch-pair-def
+     (list (char (hex "21B4"))
+           (char (hex "21B3"))
+           *ch-dot))
+
+           
 (de get-color-type (Any)
   #{
                         Cell
@@ -229,27 +237,13 @@
 
   # Adjust brightness for time...or alpha?
 
-  (cond ((not Any)  (caddr *pair-col-def))
-        ((lst? Any) (car *pair-col-def))
+  (cond ((not Any)  (caddr *cols-pair))
+        ((lst? Any) (car *cols-pair))
         ((num? Any) *selb-green)
         ((str? Any) *selb-blue)
         ((ext? Any) *selb-cyan)
         ((sym? Any) *selb-violet)))
 
-# Small down tri
-#(def '*char-dot (char (hex "02D1")))
-
-# Small dash
-#(def '*char-dot (char (hex "02D7")))
-
-# Two vert  tris
-#(def '*char-dot (char (hex "02D0")))
-        
-
-(def '*char-dot (char (hex "00B7")))
-#(def '*char-dot (char (hex "2022")))
-#(def '*char-dot (char (hex "2219")))
-#(def '*char-dot (char (hex "25CF")))
 
 (de make-vert-glyph (Ch Col Val)
   (inc '*cnt-v)
@@ -281,50 +275,50 @@
         (T    (link (make-vert-glyph Ch Col Ch)))))))
 
   
-(de make-vert-str (Str Col)
+(de make-vert-str (Str Col Ch)
   (let Verts (make-vert-repr (chop Str) Col)
     (list Verts
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
 
   
-(de make-vert-num (Num Col)
+(de make-vert-num (Num Col Ch)
   (let Verts (make-vert-repr (chop (format Num)) Col)
     (list Verts
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
 
           
-(de make-vert-nil (Sym Col)
-  (let Verts (make-vert-repr (chop "NIL") Col) # (list *char-dot)
+(de make-vert-nil (Sym Col Ch)
+  (let Verts (make-vert-repr (chop (if Ch @ "NIL"))
+                             Col)
     (list Verts
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))          
           
 
-(de make-vert-sym (Sym Col)
+(de make-vert-sym (Sym Col Ch)
   (let Verts (make-vert-repr (chop (sym Sym)) Col)
     (list Verts
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
           
 
-(de make-vert-atom (Atom Col)
+(de make-vert-atom (Atom Col Ch)
 
+  # ch depends on atom
   (unless Col (setq Col (get-color-type Atom)))
 
-  (cond ((num? Atom)             (make-vert-num Atom Col))
+  (cond ((num? Atom)             (make-vert-num Atom Col Ch))
         ((and (str? Atom) 
-              (not (box? Atom))) (make-vert-str Atom Col))
-        ((not Atom)              (make-vert-nil Atom Col))
-        (T           (make-vert-sym Atom Col))))
+              (not (box? Atom))) (make-vert-str Atom Col Ch))
+        ((not Atom)              (make-vert-nil Atom Col Ch))
+        (T           (make-vert-sym Atom Col Ch))))
 
 
-(de make-vert-pair (Char Col Self)
-
-  # (char 187) (char 166)
+(de make-vert-pair (Ch Col Self)
   
-  (unless Char (setq Char *char-dot))
-  (unless Col (setq Col (car *pair-col-def)))
+  (unless Ch (setq Ch (car *ch-pair-def)))
+  (unless Col (setq Col (car *cols-pair)))
   
   (if Self
-      (list (list (make-vert-glyph Char Col) (make-vert-glyph Char Col))
+      (list (list (make-vert-glyph Ch Col) (make-vert-glyph Ch Col))
             (meta '(+Vertex) 'adv-vert-2))
-      (list (list (make-vert-glyph Char Col))
+      (list (list (make-vert-glyph Ch Col))
             (meta '(+Vertex) 'adv-vert))))                  

@@ -15,8 +15,6 @@
     C
 
   }#
-
-  (println "LINE: " *line (get *line 'data))
   
   (put *line 'line 'n Ref)  
   

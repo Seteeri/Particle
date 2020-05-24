@@ -106,8 +106,8 @@
   # TODO: '(+Ptr +Sym)
         
   (let Col (if (= L 'x)
-               (car *pair-col-def)
-               (cadr *pair-col-def))
+               (car *cols-pair)
+               (cadr *cols-pair))
     (col> This Col 1.0))
     
   (=: lay L))
