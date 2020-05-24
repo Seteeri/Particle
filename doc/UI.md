@@ -3,27 +3,6 @@ User-Interface
 
 Ostensibly, it resembles an outliner, however, it integrates various computing concepts and UI designs from CLIs, shells, REPLs, notebooks, WMs/DEs, creative coding, mindmapping, wikis and note-taking programs into a single object-oriented (more operatively, symbolic) interface; *it is not a visual programming language*.
 
-*WIP*
-* Local data first - no cloud dependency
-* Distributable - synchronize across multiple devices
-* Storage mechanisms
-  * Plaintext (Lisp code)
-  * Binary (Lisp data)
-  * Database (Lisp data)
-* Orthographic view aka zooming interface
-* Browser integration (aka web clipper)
-* Wayland/Userspace* integration
-* Tag search through objects
-  * Files exist for OS compatibility
-* Trees
-  * Undo
-  * Registers
-* Multiple cursors/pointers
-* Import/link any data
-  * Binary files such as images, video, audio etc. are not imported into the db and left as separate files
-* Export data to various formats
-  * S-expr, XML, Orgmode, Markdown, HTML, PDF, ODT, SQL
-
 Advanced:
 
 * Fuzzy string matching

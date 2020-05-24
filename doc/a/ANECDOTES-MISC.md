@@ -360,6 +360,9 @@ But we can’t get there incrementally, because any radical new approach to repr
 
 # Others
 
+The "No Code" Delusion
+https://news.ycombinator.com/item?id=22033827
+
 Newton OS: http://lispm.de/lisp-based-newton-os
 
 https://news.ycombinator.com/item?id=6498878
@@ -373,3 +376,5 @@ https://news.ycombinator.com/item?id=14333157
 Maybe Visual Programming is The Answer. Maybe Not 
 https://news.ycombinator.com/item?id=22978454
 
+Ask HN: Which people and groups are researching new approaches to programming?
+https://news.ycombinator.com/item?id=10926038

@@ -1,6 +1,8 @@
 TODO
 ====
 
+  Embrace. Embody. Empower
+
   The cohesiveness of Lisp Machines
   The extensibility of Emacs
   The polish of Apple
