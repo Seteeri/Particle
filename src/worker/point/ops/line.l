@@ -79,14 +79,17 @@
       
     (when (= Nxt Dst)
       (put Nl 'n))
-      
-    # Update children's lists when Src is NIL NIL
-    (when (and (not (get Nl 'p)) (not (get Nl 'l)))
+    
+    # When changing root list
+    # update subsequent lists since
+    # they all ref it through 'l
+    (when (and (not (get Nl 'p))
+               (not (get Nl 'l)))
       (let (Child (get Nl 'n)
             Visited NIL)
         (while (and Child
                     (not (member Child Visited)))
-          (println 'put-line "Set list: " Child (get Child 'data))
+          (println 'put-line "Set list: " Child (car (get Child 'data)))
           (push 'Visited Child)
           (put Child 'line 'l Dst)
           (setq Child (get Child 'line 'n))
