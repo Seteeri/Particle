@@ -184,8 +184,19 @@
   
 
 (dm lay-cur> ()
-  (upd-line-pre> This)
+  (when T
+    (println 'lay-cur> This
+              "@ Cur: " (format (get *cur 1) *Scl)  
+                        (format (get *cur 2) *Scl)))
+  #(upd-line-pre> This)
+  
+  (when (get (: line) 'p) (align-cur-line This))
+  
   (mov> This) # *cur will be at last vert pos
+  (when T
+    (println 'lay-cur> This
+              "+ Cur: " (format (get *cur 1) *Scl)  
+                        (format (get *cur 2) *Scl)))
   (upd-cur)
   (upd-line-post> This))
 
@@ -200,33 +211,99 @@
   (lay-cur> This)
   (pos-cur-for-car-y> This)
   This)
-
-
-# Every time a EOL is set
-# Compare it to bnds
+    
   
-(dm upd-line-pre> ()
+(dm upd-line-post> ()
   #{
   
-    Cur is at extends of recently drawn item
+    Update line and update list
     
-    If next item has line:
-    * Update bnds for recent line
-    * Reset x bnds
+    Item properties:
+    * Has line start
+    * Has line
+    * Is end
+  
+    List will always have Line
+  
+  }#
+
+  (if (: line)
+  
+      (prog
+      
+        # Update the line
+        (setq *line-lay This)
+      
+        # If line does not have l then start of line
+        (unless (get (: line) 'l)
+          (println 'upd-line-post> "Push list: " This (car (: data)))
+          (push '*list-lay
+            (list This
+                  (list (car *cur)
+                        (cadr *cur)
+                        0.0)))) # NIL T
+      
+        # If line has p then not start of line
+        (when (get (: line) 'p)
+              
+          # Set bnds of current line
+          (upd-dims> *line-lay)
+          # Cache end
+          (put (get *line-lay 'line 'e) This)
+        
+          # Reset line bnds x
+          (off *bnds-x)))
+          
+      (prog
+        
+        # Middle or end of line
+        
+        (upd-dims> *line-lay)))
+  
+  # Each +Point stores its dims
+  (upd-dims> This)
+    
+  # Update list
+  (upd-list-lay This)
+    
+  # On end or NIL: 
+  # Pop/upd list
+  (when (or (is-end?> This)
+            (is-nil? This))
+    
+    (println 'upd-line-post> (is-end?> This) This (car (: data)))
+        
+    # Cache end
+    (put (get *line-lay 'line) 'e This)
+      
+    # Pop and upd list
+    (pop-list-lay)))
+
+    
+#{
+
+(dm upd-line-pre> ()
+  #{
+    
+    Before drawing next item,
+    must upd dims for current line and
+    reset x bnds
+    
+    Cannot do this after drawing
     
     Then pos cur for next item dep on lay
-    
-    Update cur line
-  
+      
   }#
   
   (when (: line)
   
+    # If line does not have l then start of line
     (unless (get (: line) 'l)
       (push '*list-lay (list This (list NIL T 0.0)))
-      #(println 'upd-line-pre "Push list: " This (car (: data)))
+      (println 'upd-line-pre> "Push list: " This (car (: data)))
       )
   
+    # If line has p then not start of line
     (when (get (: line) 'p)
     
       # Set bnds of current line
@@ -239,13 +316,11 @@
       #  (: data))
       (off *bnds-x)
     
-      (if (lay-y?> (: c)) # or auto for pairs
-          (align-cur-line-y This)
-          (align-cur-line-x This)))
+      # lay-cur should call this
+      (align-cur-line This))
           
     (setq *line-lay This)))
-    
-    
+
 (dm upd-line-post> ()
   
   # Each +Point stores its dims
@@ -259,7 +334,7 @@
   (when (or (is-end?> This)
             (is-nil? This))
     
-    #(println 'upd-line-pos (is-end?> This) This (car (: data)))
+    (println 'upd-line-post> (is-end?> This) This (car (: data)))
     
     # Upd current line
     (upd-dims> *line-lay)
@@ -269,6 +344,7 @@
       
     # Pop and upd list
     (pop-list-lay)))
+}#
 
 
 (dm upd-dims> ()
@@ -277,11 +353,12 @@
     +Sym: Car+Cdr bnds
     +Num: Car+Cdr bnds
   }#
-  
-  #(println 'upd-dims> "Upd: " This)
-  
+    
   (let Dims (list (abs (- *bnds-x (car  (: ori))))
                   (abs (- *bnds-y (cadr (: ori)))))
+                  
+    (println 'upd-dims> This Dims)
+                  
     (=: dims Dims)
     (when (: line)
       (put @ 'dims Dims))))
@@ -293,11 +370,12 @@
     +Sym: Car+Cdr bnds
     +Num: Car+Cdr bnds
   }#
-  
-  #(println 'upd-dims-2> "Upd: " This)
-  
+    
   (let Dims (list (abs (- (car  Bnds) (car  (: ori))))
                   (abs (- (cadr Bnds) (cadr (: ori)))))
+                  
+    (println 'upd-dims-2> This Dims)                  
+                  
     (=: dims Dims)
     (when (: line)
       (put @ 'dims Dims))))

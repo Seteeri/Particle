@@ -1,6 +1,6 @@
 # These are used with layout
 
-(de align-cur-line-y (Part)
+(de align-cur-line (Part)
 
   #{
         
@@ -19,7 +19,7 @@
         Dims-A (get Part 'c 'a 'dims))
                 
     (when T
-      (println 'align-cur-line-y 
+      (println 'align-cur-line
                Part
                (get Part 'data)))
 

@@ -192,8 +192,8 @@
 
 (def '*cols-pair
      (list *selb-bg-1
-           *selb-bg-2
-           *selb-dim-0))
+           *selb-bg-1
+           *selb-bg-2))
 
 (def '*cols-pair-2 
      (list *selb-fg-0
