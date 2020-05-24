@@ -7,24 +7,27 @@
     Y layout:
     
     [Y]  CAR
-    CDR
+    
+    Part
     
     x = line ori
     y = line bnds of 'c 'a
   }#
 
-  (let Ori-C (get Part 'line 'l 'ori)
-        
+  (let (Ori-C (get Part 'line 'l 'ori)
+        Ori-A (get Part 'c 'a 'ori)
+        Dims-A (get Part 'c 'a 'dims))
+                
     (when T
       (println 'align-cur-to-line-y 
                Part
                (get Part 'data)))
 
     ~(assert Ori-C)          
-               
-    #(mov-cur-y (- (get Ori-CA 2) (get Dims-CA 2)))               
-               
-    (mov-cur (get Ori-C 1) *bnds-y)
+
+    # Get Y pos from Car bnds
+    (mov-cur (get Ori-C 1)
+             (- (cadr Ori-A) (cadr Dims-A)))
     (adj-cur-y (+ 1.0 *sublist-space-y))))
 
 
@@ -34,18 +37,17 @@
     
     X layout:
   
-    [X]  CDR
+    [X]  Part
     CAR
-    
-    
-    [X]
     
     x = 'c 'ori
     y = bnds of 'c ..., which should be *bnds-y
       
   }#
 
-  (let Ori-C (get Part 'line 'l 'ori)
+  (let (Ori-C (get Part 'line 'l 'ori)
+        Ori-A (get Part 'c 'a 'ori)
+        Dims-A (get Part 'c 'a 'dims))
   
     (when T
       (println 'align-cur-to-line-x 
@@ -55,5 +57,6 @@
     
     ~(assert Ori-C) 
     
-    (mov-cur (get Ori-C 1) *bnds-y)
-    (adj-cur-y (+ 1.0 *sublist-space-y))))
+    (mov-cur (- (car Ori-A) (car Dims-A))
+             (cadr Ori-C))
+    (adj-cur-x *cdr-space-x)))
