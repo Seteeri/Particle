@@ -207,7 +207,7 @@
 (def '*ch-pair-def
      (list (char (hex "21B4"))
            (char (hex "21B3"))
-           *ch-dot))
+           "NIL"))
 
            
 (de get-color-type (Any)
