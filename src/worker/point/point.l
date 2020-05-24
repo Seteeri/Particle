@@ -174,7 +174,7 @@
   (if (or (is-pair? (: a))
           (and (is-int? (: a)) (not (: b))))
     (adj-cur-y (+ 1.0 *sublist-space-y))
-    (adj-cur-y 1.0)))
+    (adj-cur-y)))
 
   
 (dm pos-cur-for-car-y> ()
