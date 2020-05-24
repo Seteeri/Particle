@@ -1,5 +1,5 @@
 #{
-  Conv Atom (Alt-L+space ctx aware)
+  Conv Atm (Alt-L+space ctx aware)
   - str     -> sym
   - str/num -> num
   - num     -> str

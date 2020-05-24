@@ -2,7 +2,7 @@
   (println 'make-list-cdr)
   
   # Pair/X or Y
-  # Atom
+  # Atm
   
   (cond ((and (lay-y?> Ref) (is-pair? Ref))
          # Make like car...
@@ -15,5 +15,5 @@
          T)        
         
         (T
-         # End Atom
+         # End Atm
          T)))

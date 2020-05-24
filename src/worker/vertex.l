@@ -308,16 +308,16 @@
           (*/ (meta '(+Vertex) 'adv-vert) (num-to-fl (- (length Verts) 1)) 1.0))))
           
 
-(de make-vert-atom (Atom Col Ch)
+(de make-vert-atom (Atm Col Ch)
 
   # ch depends on atom
-  (unless Col (setq Col (get-color-type Atom)))
+  (unless Col (setq Col (get-color-type Atm)))
 
-  (cond ((num? Atom)             (make-vert-num Atom Col Ch))
-        ((and (str? Atom) 
-              (not (box? Atom))) (make-vert-str Atom Col Ch))
-        ((not Atom)              (make-vert-nil Atom Col Ch))
-        (T           (make-vert-sym Atom Col Ch))))
+  (cond ((num? Atm)             (make-vert-num Atm Col Ch))
+        ((and (str? Atm) 
+              (not (box? Atm))) (make-vert-str Atm Col Ch))
+        ((not Atm)              (make-vert-nil Atm Col Ch))
+        (T           (make-vert-sym Atm Col Ch))))
 
 
 (de make-vert-pair (Ch Col Self)
