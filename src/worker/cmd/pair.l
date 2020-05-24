@@ -97,11 +97,12 @@
   # like ptr cmd, then another cmd
   
   (let (Ref (get *fwd-in 'b)
-        In (get Ref 'a 'data)
+        In (get Ref 'data)
         Out (eval In))
 
     # If list, mov 'c 'b
     # else, append and make nl
+    (point-sup)
     (point-nxt)        
         
     (make-str Out 'x)))

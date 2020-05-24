@@ -203,39 +203,70 @@
 
     ->
                
-          [Cc]  
-           A   
-           
-          [P]  [C]
-               Ref
-                *
-                
-          Cb
+        [Cc]  
+          A   
+          
+        [P]  [C]
+              Ref
+              *
+              
+        Cb
   }#
+
+  #{
+              
+        [Cc]  
+         .  
+
+         
+        [C]  Cb
+        Ref
+        *
+    ->
+               
+        [Cc]  
+          A   
+          
+        [P]  [C]   
+             Ref
+              *
+              
+        Cb
+  }#  
   
   (let (C (get Ref 'c)
         Cb (get C 'b)
         Cc (get C 'c)
         Part (gen-part (cons) 'x (cons T NIL) T)
-        End (get Part 'b))
+        Pb (get Part 'b)
+        Ln-N (get *line 'line 'n))
 
     (b> Cc Part)
     (a> Part C)
-    (b> C End)
+    (b> C Pb)
     (if Cb
         (b> Part Cb)
         (setq Cb (get Part 'b)))
     
     # Creates line for Part, C and Cb
-    
+       
     (lay> Part 'y)
-    (put Part 'line
-      (new '(+Line)
-           (unless (is-sym? Cc)
-             *line)
-           (: b)
-           (unless (is-sym? Cc)
-             (if (get *line 'line 'l) @ *line))))
+    
+    (if (get C 'line)
+        (prog
+          (put-line C Part)
+          (put Part 'line 'n Cb))
+        (prog
+          # Connect line: cur -> Part
+          (unless (is-sym? Cc)
+            (put *line 'line 'n Part))
+          (put Part 'line
+            (new '(+Line)
+                (unless (is-sym? Cc)
+                  *line)
+                Cb
+                (unless (is-sym? Cc)
+                  (if (get *line 'line 'l) @ *line))))))
                   
     # Create Line for Cdr
     (if (get Cb 'line)
@@ -243,18 +274,14 @@
         (put Cb 'line
           (new '(+Line)
                Part
-               (get *line 'line 'n)
+               Ln-N
                (if (is-sym? Cc)
                    Part
                    (get Part 'line 'l)))))
         
     # Create line for C
     (put C 'line (new '(+Line)))
-        
-    # Connect line: cur -> Part
-    (unless (is-sym? Cc)
-      (put *line 'line 'n Part))
-        
+                
     (upd-tree)
     (mov-⇲ *line)
     
@@ -332,7 +359,8 @@
   - gen-part: skip Cdr
   
   }#
-    
+  
+  
   (let (Cc (get Ref 'c)
         Is-Cc-Sym (is-sym? Cc)
         Part (gen-part (cons) 'x (cons T ) T)

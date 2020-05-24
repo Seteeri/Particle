@@ -172,7 +172,7 @@
   (setq *cur (: ori))    
 
   (if (or (is-pair? (: a))
-          (is-int? (: a)))
+          (and (is-int? (: a)) (not (: b))))
     (adj-cur-y (+ 1.0 *sublist-space-y))
     (adj-cur-y 1.0)))
 

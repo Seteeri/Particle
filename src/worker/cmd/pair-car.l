@@ -56,11 +56,14 @@
   
   # If user wants no output,
   # like ptr cmd, then another cmd
+
+  (println (get *fwd-in 'b 'a 'data))
   
   (let (Ref (get *fwd-in 'b)
         In (get Ref 'a 'data)
         Out (eval In))
-
+        
+    (point-sup)
     (point-nxt)        
         
     (make-str Out 'x)))
