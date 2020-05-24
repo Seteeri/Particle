@@ -8,29 +8,6 @@
   (mov-cur-ori List)
   (lay-part-start List List))
 
-  
-(de upd-list-lay (End)
-  
-  # Update head of list
-  (when (caar *list-lay)
-  
-    # Cache end
-    (put (get @ 'line) 'e End)
-
-    # Update list dims from cur
-    (upd-lst-dims)
-    
-    # Update current list on pop
-    # instead of after every item
-
-    #(upd-dims-2> @ (cadar *list-lay))
-    
-    (println 'upd-list-lay (caar *list-lay)
-      (format (car (cadar *list-lay)) *Scl)
-      (format (cadr (cadar *list-lay)) *Scl))
-      
-    ))
-    
         
 (de pop-list-lay ()
 
@@ -52,10 +29,9 @@
       # Already called upd-lst-dims
       (upd-dims-2> (car A) Dims-A)
     
-      (println 'pop-list-lay "Pop list: " 
-        A (car (get (car A) 'data)))
-      
-    )))
+      (when NIL
+        (println 'pop-list-lay "Pop list: " 
+          A (car (get (car A) 'data)))))))
   
 
 (de upd-lst-dims ()
@@ -135,9 +111,10 @@
       
       (let (Rel (cdr Part)
             Part (car Part))
-                
-        (prinl)
-        (println 'lay-pair Part Rel (type Part) (get Part 'data)) 
+        
+        (when NIL
+          (prinl)
+          (println 'lay-pair Part Rel (type Part) (get Part 'data))) 
                 
         (when (= Rel 'b)
           (lay-pair-pre Part))

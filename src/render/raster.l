@@ -8,8 +8,6 @@
                                   *paths-rast-frag-shader
                                   *path-prog-rast)))
                                   
-  (println 'init-rast *prog-rast)
-    
   (gl~use-program *prog-rast)
 
   (setq *vao (car (gl~gen-vertex-arrays 1)))
@@ -20,9 +18,7 @@
   (ld-glys-bin (pack *path-gly "DejaVuSansMono.rgba8.bin"))
   (init-di)
   (init-verts)
-  (init-el)
-  
-  (println 'init-rast "DONE"))
+  (init-el))
 
 
 (de init-buffs-rast ()

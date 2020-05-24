@@ -18,7 +18,7 @@
         Ori-A (get Part 'c 'a 'ori)
         Dims-A (get Part 'c 'a 'dims))
                 
-    (when T
+    (when NIL
       (println 'align-cur-line
                Part
                (get Part 'data)))
@@ -49,7 +49,7 @@
         Ori-A (get Part 'c 'a 'ori)
         Dims-A (get Part 'c 'a 'dims))
   
-    (when T
+    (when NIL
       (println 'align-cur-line-x 
                Part
                'to 

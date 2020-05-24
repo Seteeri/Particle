@@ -253,7 +253,8 @@
               (upd-dims-2> This *cur))
             (prog
               # Start of line/list
-              (println 'upd-line-post> "Push list: " This (car (: data)))
+              (when NIL
+                (println 'upd-line-post> "Push list: " This (car (: data))))
               (push '*list-lay
                 (list This # NIL T
                       (list NIL
@@ -272,11 +273,10 @@
   (when (caar *list-lay)
     # Update list dims from cur
     (upd-lst-dims)
-    #(upd-dims-2> @ (cadar *list-lay))
-    #(println 'upd-list-lay (caar *list-lay)
-    #  (format (car (cadar *list-lay)) *Scl)
-    #  (format (cadr (cadar *list-lay)) *Scl))
-    )
+    (when NIL
+      (println 'upd-list-lay (caar *list-lay)
+        (format (car (cadar *list-lay)) *Scl)
+        (format (cadr (cadar *list-lay)) *Scl))))
     
   # On end or Y-Pair.car=NIL: pop/upd list
   (when (or (is-end?> This)
@@ -284,7 +284,8 @@
                  (lay-y?> (: c))
                  (is-nil? This)))
     
-    #(println 'upd-line-post> (is-end?> This) This (car (: data)))
+    (when NIL
+      (println 'upd-line-post> (is-end?> This) This (car (: data))))
         
     # Cache ends
     (put (get (caar *list-lay) 'line) 'e This)

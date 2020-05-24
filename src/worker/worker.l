@@ -193,28 +193,26 @@
     (set-ptr *cdr (get *start 'b)) (put *cdr 'lay 'y)
     (set-ptr *car (get *start 'b)) (put *car 'lay 'y)
     (def '*fwd-in *cdr) # Set def input to Cdr
-        
-    #{
-      
-      Implement root branches:
-      
-      ("*binds-ops" "...")
-      ("*log" "...")
-      ("*pointers" "...")
-      ("*registers" "...")
-      ("*start" "...")
-      ("*plist" "...")
-      ("*symbols" "...")
-        
-    }#
+            
+    # Make root and branches
     
-    # Make root
-    
-    (let Part (gen-part '(1 2))
+    (let (Part (gen-part '("*symbols"
+                            "*log"
+                            "*registers"
+                            "*pointers"
+                            "*binds-ops"
+                            "*plist"
+                            "*start"))
+          Part-2 (make
+                   (let X Part
+                     (for I 6
+                       (link X)
+                       (setq X (get X 'b)))
+                     (link X))))
       
       # Connect symbols
-      (a> Part *bind-ops-p)
-      (a> (get Part 'b) *start)
+      (a> (get Part-2 6) *bind-ops-p)
+      (a> (get Part-2 7) *start)
     
       (lay-part-start Part Part))
     
