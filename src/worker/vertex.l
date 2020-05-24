@@ -59,6 +59,12 @@
     (upd-mod-mat> This)))
 
 
+(dm del> ()
+  (send-msg-rend (pack "(zv " (: off-gl) '")"))
+  (push '*vert-offs (: off-gl))
+  (dec '*cnt-v))
+    
+    
 (dm upd-met> (Ch)
 
   (when Ch

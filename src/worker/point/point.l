@@ -99,18 +99,33 @@
 (dm lay-y?> () (= (: lay) 'y))
 
 (dm lay> (L)
-
-  # Set color on change unless it is a ptr
-
-  # Ptr uses put instead of this
-  # TODO: '(+Ptr +Sym)
-        
-  (let Col (if (= L 'x)
-               (car *cols-pair)
-               (cadr *cols-pair))
-    (col> This Col 1.0))
+  
+  #{
     
-  (=: lay L))
+    Set color and glyph
+    
+    For +Pair only?
+
+    Ptr uses put instead of this
+    TODO: '(+Ptr +Sym)
+    
+  }#
+  
+  (unless (= (: lay) L)
+  
+    (let (Col (if (= L 'x)
+                  (car *cols-pair)
+                  (cadr *cols-pair))
+          Ch (if (= L 'x)
+                 (car *ch-pair-def)
+                 (cadr *ch-pair-def)))
+      # Change vert
+      (del> (pop (:: verts)))
+      (push (:: verts) (make-vert-glyph Ch Col)))
+      
+      #(col> This Col 1.0)
+      
+    (=: lay L)))
 
   
 (de b@ @
@@ -184,16 +199,15 @@
   
 
 (dm lay-cur> ()
-  (when T
+  (when NIL
     (println 'lay-cur> This
               "@ Cur: " (format (get *cur 1) *Scl)  
                         (format (get *cur 2) *Scl)))
-  #(upd-line-pre> This)
-  
+
   (when (get (: line) 'p) (align-cur-line This))
   
   (mov> This) # *cur will be at last vert pos
-  (when T
+  (when NIL
     (println 'lay-cur> This
               "+ Cur: " (format (get *cur 1) *Scl)  
                         (format (get *cur 2) *Scl)))
@@ -227,124 +241,57 @@
   
   }#
 
+  (upd-dims> This)         
+  
   (if (: line)
-  
+      
       (prog
-      
-        # Update the line
-        (setq *line-lay This)
-      
-        # If line does not have l then start of line
-        (unless (get (: line) 'l)
-          (println 'upd-line-post> "Push list: " This (car (: data)))
-          (push '*list-lay
-            (list This
-                  (list (car *cur)
-                        (cadr *cur)
-                        0.0)))) # NIL T
-      
-        # If line has p then not start of line
-        (when (get (: line) 'p)
-              
-          # Set bnds of current line
-          (upd-dims> *line-lay)
-          # Cache end
-          (put (get *line-lay 'line 'e) This)
+        (if (get (: line) 'p) # Sub line
+            (prog
+              (off *bnds-x) # Reset line bnds x
+              (upd-cur)
+              (upd-dims-2> This *cur))
+            (prog
+              # Start of line/list
+              (println 'upd-line-post> "Push list: " This (car (: data)))
+              (push '*list-lay
+                (list This # NIL T
+                      (list NIL
+                            T
+                            0.0)))))
+        (setq *line-lay This))
         
-          # Reset line bnds x
-          (off *bnds-x)))
-          
       (prog
-        
-        # Middle or end of line
-        
+        # Middle or end
+        # Set dims of cur line
         (upd-dims> *line-lay)))
-  
-  # Each +Point stores its dims
-  (upd-dims> This)
+         
+  # List Stuff
+      
+  # Update list head
+  (when (caar *list-lay)
+    # Update list dims from cur
+    (upd-lst-dims)
+    #(upd-dims-2> @ (cadar *list-lay))
+    #(println 'upd-list-lay (caar *list-lay)
+    #  (format (car (cadar *list-lay)) *Scl)
+    #  (format (cadr (cadar *list-lay)) *Scl))
+    )
     
-  # Update list
-  (upd-list-lay This)
-    
-  # On end or NIL: 
-  # Pop/upd list
+  # On end or Y-Pair.car=NIL: pop/upd list
   (when (or (is-end?> This)
-            (is-nil? This))
+            (and (: c)
+                 (lay-y?> (: c))
+                 (is-nil? This)))
     
-    (println 'upd-line-post> (is-end?> This) This (car (: data)))
+    #(println 'upd-line-post> (is-end?> This) This (car (: data)))
         
-    # Cache end
+    # Cache ends
+    (put (get (caar *list-lay) 'line) 'e This)
     (put (get *line-lay 'line) 'e This)
-      
+        
     # Pop and upd list
     (pop-list-lay)))
-
-    
-#{
-
-(dm upd-line-pre> ()
-  #{
-    
-    Before drawing next item,
-    must upd dims for current line and
-    reset x bnds
-    
-    Cannot do this after drawing
-    
-    Then pos cur for next item dep on lay
-      
-  }#
-  
-  (when (: line)
-  
-    # If line does not have l then start of line
-    (unless (get (: line) 'l)
-      (push '*list-lay (list This (list NIL T 0.0)))
-      (println 'upd-line-pre> "Push list: " This (car (: data)))
-      )
-  
-    # If line has p then not start of line
-    (when (get (: line) 'p)
-    
-      # Set bnds of current line
-      (upd-dims> *line-lay)
-      # Cache end
-      (put (get *line-lay 'line 'e) This)
-    
-      # Reset max x
-      #(println 'upd-line-pre "Reset *bnds-x: " (format *bnds-x *Scl) " | "
-      #  (: data))
-      (off *bnds-x)
-    
-      # lay-cur should call this
-      (align-cur-line This))
-          
-    (setq *line-lay This)))
-
-(dm upd-line-post> ()
-  
-  # Each +Point stores its dims
-  (upd-dims> This)  
-  
-  # Update list bnds
-  (upd-list-lay This)
-    
-  # On end or NIL: 
-  # Upd line and pop/upd list
-  (when (or (is-end?> This)
-            (is-nil? This))
-    
-    (println 'upd-line-post> (is-end?> This) This (car (: data)))
-    
-    # Upd current line
-    (upd-dims> *line-lay)
-    
-    # Cache end
-    (put (get *line-lay 'line) 'e This)
-      
-    # Pop and upd list
-    (pop-list-lay)))
-}#
 
 
 (dm upd-dims> ()
@@ -353,11 +300,13 @@
     +Sym: Car+Cdr bnds
     +Num: Car+Cdr bnds
   }#
-    
+  
   (let Dims (list (abs (- *bnds-x (car  (: ori))))
                   (abs (- *bnds-y (cadr (: ori)))))
-                  
-    (println 'upd-dims> This Dims)
+  
+    #(println 'upd-dims> This Dims)
+    
+    ~(assert (car Dims))
                   
     (=: dims Dims)
     (when (: line)
@@ -373,8 +322,10 @@
     
   (let Dims (list (abs (- (car  Bnds) (car  (: ori))))
                   (abs (- (cadr Bnds) (cadr (: ori)))))
-                  
-    (println 'upd-dims-2> This Dims)                  
+    
+    #(println 'upd-dims-2> This Dims)                  
+    
+    ~(assert (car Dims))
                   
     (=: dims Dims)
     (when (: line)
@@ -392,10 +343,7 @@
       * verts is LIFO - always keeps instances contiguous
   }#
     
-  (for Vert (: verts)
-    (send-msg-rend (pack "(zv " (get Vert 'off-gl) '")"))
-    (push '*vert-offs (get Vert 'off-gl))
-    (dec '*cnt-v))
+  (for Vert (: verts) (del> Vert))
     
   (when (and A (: a)) (del> (: a) A B))
   (when (and B (: b)) (del> (: b) A B))
@@ -436,6 +384,7 @@
   # If first vert changed, change rest
   # else, do nothing
   
+  #{
   (let? Vert (car (: verts))
 
     # Set to pos of last vert (mul by length)
@@ -444,10 +393,11 @@
                   (*/ (meta '(+Vertex) 'adv-vert)
                       (num-to-fl (- (length (: verts)) 1))
                       1.0))
-              (cadr *cur)))
-    (mov-verts> This)))
+              (cadr *cur))
+        (mov-verts> This))))
+  }#
   
-  #(mov-verts> This))
+  (mov-verts> This))
   
   
 # Rename off -> rel

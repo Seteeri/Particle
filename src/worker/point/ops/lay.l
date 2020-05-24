@@ -22,6 +22,7 @@
     
     # Update current list on pop
     # instead of after every item
+
     #(upd-dims-2> @ (cadar *list-lay))
     
     (println 'upd-list-lay (caar *list-lay)
@@ -168,7 +169,7 @@
     (let (Ori (get C 'ori)
           Dims (get C 'dims)) # or line?
 
-      (when T
+      (when NIL
         (prin "  ") (println 'lay-pair-pre Part Rel
           "C: " C (get C 'data))
         
@@ -191,7 +192,7 @@
                           (+ (get Val 'ori 1) (get Val 'dims 1))
                           (+ (get Car 'ori 1) (get Car 'dims 1)))))
             
-            (when T
+            (when NIL
               (prin "  ") (println 'lay-pair-pre Part Rel
                 "...Sym: " Car (get Car 'data) (get Car 'dims))
               (prin "  ") (println 'lay-pair-pre Part Rel
