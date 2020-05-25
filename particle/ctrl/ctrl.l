@@ -33,7 +33,8 @@
             "/particle/ctrl/xkb.l"
             "/particle/ctrl/conn.l"
             "/particle/worker/projview.l"
-            "/particle/worker/vertex.l"))
+            "/particle/worker/vertex/make.l"
+            "/particle/worker/vertex/vertex.l"))
 
 (def 'NAME-PID "CTRL")
 

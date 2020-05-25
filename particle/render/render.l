@@ -36,7 +36,8 @@
             "/particle/prot/send.l"
             "/particle/prot/recv.l"
             "/particle/prot/obj.l"
-            "/particle/worker/vertex.l"
+            "/particle/worker/vertex/make.l"
+            "/particle/worker/vertex/vertex.l"
             "/particle/render/params-buffer.l"
             "/particle/render/raster.l"
             "/particle/render/conn.l"))
