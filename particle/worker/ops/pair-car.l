@@ -550,7 +550,7 @@
         Pb (get Po 'b))
 
     (when (is-sym? Cc)
-      (quit "make-case-3: todo, no y sym support"))
+      (quit "make-case-4: todo, no y sym support"))
         
     (a> Cc Po)
     (a> Po Ref)
