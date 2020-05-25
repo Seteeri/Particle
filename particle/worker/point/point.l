@@ -176,10 +176,9 @@
 (dm pos-cur-car-x> ()
   #{
   
-    Move below or use Pair dims
+    X lay = car is -Y
     
     Assumes Pair is always single line with dot or 2x dot
-    
     Otherwise must use dims of Pair
     
   }#
@@ -192,6 +191,10 @@
 
   
 (dm pos-cur-car-y> ()
+  #{
+    Y lay = car is +X
+  }#
+  
   (setq *cur (: ori))
     
   (adj-cur-x *cdr-space-x))
