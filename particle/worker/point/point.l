@@ -79,6 +79,9 @@
 (dm bel-str?>  () (isa '(+Str)  (: c)))
 (dm bel-nil?>  () (isa '(+Nil)  (: c)))
 
+(dm bel-x?>  () (lay-x?> (: c)))
+(dm bel-y?>  () (lay-y?> (: c)))
+
 (dm has-pair?> () (isa '(+Pair) (: a)))
 (dm has-sym?>  () (isa '(+Sym)  (: a)))
 (dm has-str?>  () (isa '(+Str)  (: a)))

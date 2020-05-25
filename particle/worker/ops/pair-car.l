@@ -1,124 +1,98 @@
 #{
 
-  X CASES:
+  Parent is either a Pair or Sym
 
-    Parent is either a Pair or Sym
+  Case 1: (and (lay-x?> Ref) (is-car?> Ref))
 
-    Case 1: (and (lay-x?> Ref) (is-car?> Ref))
+    [X]  [X]  Atm
+    SYM   A
+          *
+    
+    OR:
+
+    [X]  [X]  Atm
+      A    B
+          *
   
-      [X]  [X]  Atm
-      SYM   A
-            *
-      
-      OR:
-  
-      [X]  [X]  Atm
-        A    B
-            *
+    Produce:
     
-      Produce:
-      
-        [X]  
-          A   
-          
-        [Y]  [X]
-              B
-              *
-              
-        Atm
-    
-    Case 2: (and (lay-x?> Ref) (is-end?> Ref))
-    
-      [X]
-        A
-      
-      Atm
-      *
-
-      Produce:
-      
-        [X]  
-          A   
-          
-        [Y]  Atm
-              *
-              
-        Atm        
-    
-      ---------------
-    
-      [X]  [X]  Atm
-        A    B    *
-      
-      Produce:
-      
-        [X]  [X]
-          A    B
-          
-        [Y]  Atm
-              *
-              
-        Atm
-      
-      
-    * Line can be done automatically in cdr case?
-      * Transfer line to new point
-    * Cdr can be end or not
-          
-  --------
-  
-  Y CASES:
-          
-    Case 3: (and (lay-y?> (get Ref 'c 'c)) (is-car?> (get Ref 'c)))
-    
-      [Y]  [X]  Atm
-            A
-            *
-      
-      PRODUCE:
-      
-        [Y]  [Y]  [X]  Atm
-                    A
-                    *          
-      
-      Handle Y Sym?
-      
-          
-    Case 4: (and (lay-y?> (get Ref 'c)) (is-car?> Ref))
-    
-      [Y]  Atm
-            *
-      Atm
-
-      PRODUCE:
-      
-        [Y]  [Y]  Atm
-                    *                  
-      
-      Does not apply to sym...
-      Unless did zap,intern combo
-      
-      
-    Case 5: (and (lay-y?> (get Ref 'c)) (is-cdr?> Ref))
-      
-      [Y]  Atm
-      
-      Atm
-      *
-
-      Produce:
-      
-        [Y]  Atm
-          
-        [Y]  Atm
-            
-              
-        Atm
-        *
+      [X]  
+        A   
         
-      Handle Y Sym? 
-      
-      -> SAME AS CASE 2
+      [Y]  [X]
+            B
+            *
+            
+      Atm
+  
+  Case 2: (or (is-cdr?> Ref)
+              (is-end?> Ref))
+  
+    [X/Y]
+      A
+    
+    Atm
+    *
+
+    Produce:
+    
+      [X]  
+        A   
+        
+      [Y]  Atm
+            *
+            
+      Atm        
+  
+    ---------------
+  
+    [X]  [X]  Atm
+      A    B    *
+    
+    Produce:
+    
+      [X]  [X]
+        A    B
+        
+      [Y]  Atm
+            *
+            
+      Atm
+    
+    
+  * Line can be done automatically in cdr case?
+    * Transfer line to new point
+  * Cdr can be end or not
+          
+          
+  Case 3: (and (lay-y?> (get Ref 'c 'c)) (is-car?> (get Ref 'c)))
+  
+    [Y]  [X]  Atm
+          A
+          *
+    
+    PRODUCE:
+    
+      [Y]  [Y]  [X]  Atm
+                A
+                *          
+    
+    Handle Y Sym?
+    
+        
+  Case 4: (and (lay-y?> (get Ref 'c)) (is-car?> Ref))
+  
+    [Y]  Atm
+          *
+    Atm
+
+    PRODUCE:
+    
+      [Y]  [Y]  Atm
+                  *                  
+    
+    Does not apply to sym...
+    Unless did zap,intern combo
       
   GOAL: Replace old car with new Pair car pt to old car
     
@@ -142,6 +116,35 @@
     
 }#
 
+#{
+  (de make-list-car (Ref)
+    
+    # Check Y then x
+    
+    # Refactor upd into here like str cmds
+    
+    (cond
+    
+      ((and (lay-y?> (get Ref 'c)) (is-car?> Ref))
+        (make-list-car-ya Ref))
+      
+      ((and (lay-y?> (get Ref 'c)) (is-cdr?> Ref))
+      (make-list-car-xyb Ref))
+    
+      ((and (lay-x?> Ref) (is-car?> Ref))
+      
+        (if (and (lay-y?> (get Ref 'c 'c))
+                (is-car?> (get Ref 'c)))
+            (make-list-car-yxa Ref)
+            (make-list-car-xxb Ref)))
+    
+      ((and (lay-x?> Ref) (is-end?> Ref))
+      (make-list-car-xyb Ref))
+                  
+      (T
+        (quit "make-list-car: unknown case"))))
+}#
+
 (de make-list-car (Ref)
   
   # Check Y then x
@@ -150,27 +153,49 @@
   
   (cond
   
-    ((and (lay-y?> (get Ref 'c)) (is-car?> Ref))
-     (make-case-4 Ref))
-    
-    ((and (lay-y?> (get Ref 'c)) (is-cdr?> Ref))
-     (make-case-2 Ref))
-  
-    ((and (lay-x?> Ref) (is-car?> Ref))
-    
-      (if (and (lay-y?> (get Ref 'c 'c))
+    ((and (bel-y?> Ref)
+          (is-car?> Ref))
+      #{
+        [Y]  Atm
+              *
+        Atm      
+      }#          
+     (make-list-car-ya Ref))
+      
+    ((and (lay-x?> Ref)
+          (is-car?> Ref))
+      (if (and (bel-y?>  (get Ref 'c))
                (is-car?> (get Ref 'c)))
-          (make-case-3 Ref)
-          (make-case-1 Ref)))
+          #{
+            [Y]  [X]  Atm
+                  A
+                  *          
+          }#
+          (make-list-car-yxa Ref)
+          
+          #{
+            [X/Sym]  [X]  Atm
+             .        A
+                      *          
+          }#
+          (make-list-car-xxb Ref)))
   
-    ((and (lay-x?> Ref) (is-end?> Ref))
-     (make-case-2 Ref))
+    ((or (is-cdr?> Ref)
+         (is-end?> Ref))
+      #{
+        [X+L/Y]
+          A
+        
+        Atm
+        *      
+      }#
+     (make-list-car-xyb Ref))
                 
     (T
       (quit "make-list-car: unknown case"))))
       
       
-(de make-case-1 (Ref)
+(de make-list-car-xxb (Ref)
   
   #{
       
@@ -317,12 +342,12 @@
     (set-ptr *ptr Po)
     (pt-sub) # Mov to C
         
-    (println 'make-case-1)
+    (println 'make-list-car-xxb)
 
     Po))      
           
 
-(de make-case-2 (Ref)
+(de make-list-car-xyb (Ref)
   
   #{
       
@@ -431,12 +456,12 @@
     (set-ptr *ptr Ref)
     (pt-sub)
         
-    (println 'make-case-2)
+    (println 'make-list-car-xyb)
 
     Po))
     
     
-(de make-case-3 (Ref)
+(de make-list-car-yxa (Ref)
   
   #{
       
@@ -476,7 +501,7 @@
         Pb (get Po 'b))
 
     (when (is-sym? Cc)
-      (quit "make-case-3: todo, no y sym support"))
+      (quit "make-list-car-yxa: todo, no y sym support"))
         
     (a> Cc Po)
     (a> Po C)
@@ -509,12 +534,12 @@
     (set-ptr *ptr Po)
     (pt-sub)
         
-    (println 'make-case-3)
+    (println 'make-list-car-yxa)
 
     Po))
     
     
-(de make-case-4 (Ref)
+(de make-list-car-ya (Ref)
   
   #{
       
@@ -550,7 +575,7 @@
         Pb (get Po 'b))
 
     (when (is-sym? Cc)
-      (quit "make-case-4: todo, no y sym support"))
+      (quit "make-list-car-ya: todo, no y sym support"))
         
     (a> Cc Po)
     (a> Po Ref)
@@ -571,6 +596,6 @@
     (set-ptr *ptr Ref)
     (pt-sub)
         
-    (println 'make-case-4)
+    (println 'make-list-car-ya)
 
     Po))           

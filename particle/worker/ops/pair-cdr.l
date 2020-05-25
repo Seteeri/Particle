@@ -8,7 +8,7 @@
         # Same as case 4
         ((and (lay-y?> Ref)
               (is-pair? Ref))
-         (make-case-4 Ref))
+         (make-list-car-ya Ref))
         
         (T # Atom
          (make-list-cdr-x Ref))))
@@ -73,7 +73,7 @@
       (while L
         (put L 'line 'l Ref)
         (setq L (get L 'n))))
-    (setq *line 'line 'n Po)    
+    (put *line 'line 'n Po)
     
     (if (is-sym? C)
         
