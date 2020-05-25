@@ -53,10 +53,10 @@
             "/particle/worker/ops/align.l"
             "/particle/worker/ops/lay.l"
             "/particle/worker/ops/del.l"
+            "/particle/worker/ops/line.l"
             "/particle/worker/ops/pair-car.l"
             "/particle/worker/ops/pair-cdr.l"            
-            "/particle/worker/ops/line.l"
-            "/particle/worker/ops/sym.l"))
+            "/particle/worker/ops/pair-sym.l"))
 
 
 (def 'NAME-PID "WORKER")
