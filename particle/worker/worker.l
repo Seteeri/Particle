@@ -20,7 +20,7 @@
             "/particle/c/ksd.l"
             "/particle/c/xkbcommon.l"
             "/particle/misc.l"
-            "/particle/selenized.l"
+            "/particle/theme/selenized.l"
             "/particle/ipc/ipc.l"
             "/particle/prot/conn.l"
             "/particle/prot/send.l"

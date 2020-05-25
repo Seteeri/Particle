@@ -28,7 +28,7 @@
             "/particle/c/gles/gles.l"
             "/particle/c/glfw.l"
             "/particle/c/epoll.l"
-            "/particle/selenized.l"
+            "/particle/theme/selenized.l"
             "/particle/ipc/ipc.l"
             "/particle/prot/conn.l"
             "/particle/prot/send.l"

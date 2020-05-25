@@ -29,7 +29,7 @@
             "/particle/prot/obj.l"
             "/particle/ctrl/xkb.l"
             "/particle/ctrl/conn.l"
-            "/particle/selenized.l"            
+            "/particle/theme/selenized.l"            
             "/particle/worker/projview.l"
             "/particle/worker/vertex/make.l"
             "/particle/worker/vertex/vertex.l"))
