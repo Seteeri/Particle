@@ -1,3 +1,4 @@
+#{
 (de make-line (Ref)
 
   #{
@@ -43,7 +44,27 @@
   (println 'make-line "Made newline")
     
   Ref)
+}#
 
+(de make-line (Ref)
+  (unless (get Ref 'line)
+    (put Ref 'line
+      (new '(+Line)
+           *line
+           (get *line 'line 'n)
+           (if (get *line 'line 'l) @ *line)))
+    (let (P (get *line 'line 'n)
+          N (get *line 'line 'p))
+      (put P 'line 'n Ref)
+      (put N 'line 'p Ref))
+    
+    (upd-tree)
+    (mov-⇲ Ref)
+    
+    (setq *line Ref)
+    (mov-cur-abv Ref)
+    (lay-ptr *ptr)))
+        
 
 (de ins-line-pre (Po)
 

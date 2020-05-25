@@ -71,6 +71,8 @@
                   (T
                   T)))
             
+        ~(assert (get *line 'line))
+            
         (upd-tree)
         (mov-⇲ *line)      
         
@@ -92,9 +94,13 @@
               (b> Tc Tb)
               (a> Tc Tb))
           (if (get Tgt 'line)
-              (put-line Tgt Tb)
+              (prog
+                (put-line Tgt Tb)
+                (setq *line Tb))
               # If tgt has no line but Tb has it, remove it
               (when (get Tb 'line)
+                (setq *line
+                      (if (get *line 'line 'p) @ *line))
                 (del-line Tb)))
           (del> Tgt T NIL)
           Tb)

@@ -423,31 +423,54 @@
     
     (lay> Po 'y)
     
-    # Creates line for Po, Cb, Ref
-    (put Po 'line
-      (new '(+Line)
-           (unless Is-Cc-Sym
-             *line)
-           Cb
-           (unless Is-Cc-Sym
-             (if (get *line 'line 'l) @ *line))))
+    (if Is-Cc-Sym
         
-    # Connect line: cur -> Po
-    (unless Is-Cc-Sym
-      (put Po 'line 'p 'line 'n Po))        
-        
-    # Create Line for Cdr
-    (put Cb 'line
-      (new '(+Line)
-            Po
-            NIL
-            (if Is-Cc-Sym
-                Po
-                (get Po 'line 'l))))
-        
-    # Create line for Ref
-    (put Ref 'line (new '(+Line)))
-                
+        (prog
+    
+          # Creates line for Po, Cb, Ref
+          (put Po 'line
+            (new '(+Line)
+                NIL
+                Cb
+                NIL))
+              
+          # Create Line for Cdr
+          (put Cb 'line
+            (new '(+Line)
+                  Po
+                  NIL
+                  Po))
+              
+          # Create line for Ref
+          (put Ref 'line (new '(+Line))))
+
+          
+        (prog
+    
+          # Creates line for Po, Cb, Ref
+          (put Po 'line
+            (new '(+Line)
+                 *line
+                 Cb
+                 (if (get *line 'line 'l) @ *line)))
+              
+          # Connect line: cur -> Po
+          (put Po 'line 'p 'line 'n Po)
+              
+          # Create Line for Cdr
+          (put Cb 'line
+            (new '(+Line)
+                  Po
+                  NIL
+                  (get Po 'line 'l)))
+              
+          # Create line for Ref
+          (put Ref 'line (new '(+Line)))))
+          
+    # P 'line 'p = Ref
+    #~(assert (and (not (= (get Po 'line 'p) Ref))
+    #              (not (= (get Po 'line 'l) Ref))))    
+    
     (upd-tree)
     (mov-⇲ *line)
     
