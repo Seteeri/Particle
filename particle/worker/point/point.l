@@ -186,8 +186,8 @@
 
   (setq *cur (: ori))    
 
-  (if (or (is-pair? (: a))
-          (and (is-int? (: a)) (not (: b))))
+  # Double space if car has line
+  (if (get (: a) 'line)
     (adj-cur-y (+ 1.0 *sublist-space-y))
     (adj-cur-y)))
 

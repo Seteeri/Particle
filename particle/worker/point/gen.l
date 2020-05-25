@@ -239,5 +239,8 @@
     (unless (get Cdr 'line)
       (put Cdr 'line
         (new '(+Line) NIL NIL NIL Wid-Car)))
+        
+    # Put line in symbol also
+    (put Pair 'line (new '(+Line)))
       
     Pair))

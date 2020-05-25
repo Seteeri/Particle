@@ -14,6 +14,7 @@ TODO
   REPL:
   
   * 25 MAY
+    * Expanded symbols should have a line
     * Finish line cmds
     * Create Pointer class
     * Implement modes
