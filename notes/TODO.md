@@ -14,8 +14,7 @@ TODO
   REPL:
   
   * 25 MAY
-    * Finish line cmds
-    * Create Pointer class
+    * Create Pointer class?
     * Implement modes
       * Per data type
       * Bind to function keys

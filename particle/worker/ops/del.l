@@ -26,21 +26,21 @@
     (unless (= (get Tgt 'data) '*start)
     
       (cond ((not Tb)
-              #(println "del-end")
+              (println "del-end")
               # Replace item with NIL
               # If NIL ignore?
               (setq New-Ref (repl-cdr Ref
                                       (gen-point NIL 'x))))
       
             ((and (lay-y?> Tgt) (is-pair? Tgt))
-              #(println "del-car")
+              (println "del-car")
               # Promote Car
               (a> Tc Ta)
               (put Tgt 'a)
               (setq New-Ref Ta))
                     
             (T
-              #(println "del-pair")
+              (println "del-pair")
               # Del normal
               
               # Two options for lines:
@@ -113,17 +113,33 @@
   }#
 
   (let (C (get Ref 'c)
-        Tgt (if *on-car (get C 'c) C)
+        Tgt (if (and *on-car
+                     (not (is-nil? Ref)))
+                (get C 'c)
+                C)
         Tc (get Tgt 'c)
+        Ta (get Tgt 'a)
         Tb (get Tgt 'b)
         New-Ref Ref)
 
     (unless (= (get Tgt 'data) '*start)
     
-      (cond ((and (lay-y?> Tgt) (is-pair? Tgt) (is-car?> Ref))
-             (put Tgt 'a)
+      (cond ((and (lay-y?> Tc)
+                  (is-pair? Tc)
+                  (is-car?> Tgt))
+             (println 'del-c "+Pair")
+             
              (a> Tc Ref)
-             (del> Tgt T T))
+             
+             (cond ((= Tb Ref)
+                    (put Tgt 'b))
+                   ((= Ta Ref)
+                    (put Tgt 'a)))
+             (del> Tgt T T)
+             
+             # Put line in Ref
+             (unless (get Ref 'line)
+              (put Ref 'line (new '(+Line)))))
                     
             (T
               # Del normal, try to keep similar to text
@@ -132,7 +148,8 @@
               # - Delete line (same as txt, expected)
               # - Keep line and txfer
               
-              #(println "Tc, Tgt, Tb =" (get Tc 'data) (get Tgt 'data) (get Tb 'data))
+              (println 'del-c
+                "Tc, Tgt, Tb =" (get Tc 'data) (get Tgt 'data) (get Tb 'data))
               
               # If line, delete line only
               (if (get Tb 'line)
