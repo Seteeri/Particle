@@ -1,6 +1,6 @@
 #{
 
-  # Test gen-part
+  # Test gen-point
   
   '(("1" "Content"
       ("1.1" "Content"
@@ -26,7 +26,7 @@
 (def '*gen-list)
 (def '*gen-out) 
   
-(de gen-part (Any Lay Skips Nrl)
+(de gen-point (Any Lay Skips Nrl)
   # TODO: Handle circular lists...use another dot at the end
   # Lay is not used
   # Skip is only for root
@@ -214,7 +214,7 @@
                     Lay))
         Cdr (when (and (not (cdr Skips))
                        (not (= Val Any)))
-              (gen-part Dr 'x NIL))
+              (gen-point Dr 'x NIL))
         (Verts-Pair Wid-Pair) (make-vert-pair Char-Pair Col (= Val Any))
         Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                        Any

@@ -237,7 +237,7 @@
   (let (C (get Ref 'c)
         Cb (get C 'b)
         Cc (get C 'c)
-        Part (gen-part (cons) 'x (cons T NIL) T)
+        Part (gen-point (cons) 'x (cons T NIL) T)
         Pb (get Part 'b)
         Ln-N (get *line 'line 'n))
 
@@ -356,14 +356,14 @@
   Diffs from Case 1:
   - Case 1 C = Case 2 Cc
   - No Cb or End
-  - gen-part: skip Cdr
+  - gen-point: skip Cdr
   
   }#
   
   
   (let (Cc (get Ref 'c)
         Is-Cc-Sym (is-sym? Cc)
-        Part (gen-part (cons) 'x (cons T ) T)
+        Part (gen-point (cons) 'x (cons T ) T)
         Cb (get Part 'b))
 
     (b> Cc Part)
@@ -445,7 +445,7 @@
   
   (let (C (get Ref 'c)
         Cc (get C 'c)
-        Part (gen-part (cons) 'x (cons T NIL) T)
+        Part (gen-point (cons) 'x (cons T NIL) T)
         Pb (get Part 'b))
 
     (when (is-sym? Cc)
@@ -519,7 +519,7 @@
   }#
   
   (let (Cc (get Ref 'c)
-        Part (gen-part (cons) 'x (cons T NIL) T)
+        Part (gen-point (cons) 'x (cons T NIL) T)
         Pb (get Part 'b))
 
     (when (is-sym? Cc)

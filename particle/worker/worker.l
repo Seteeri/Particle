@@ -197,7 +197,7 @@
             
     # Make root and branches
     
-    (let (Part (gen-part '("*symbols"
+    (let (Part (gen-point '("*symbols"
                             "*log"
                             "*registers"
                             "*pointers"

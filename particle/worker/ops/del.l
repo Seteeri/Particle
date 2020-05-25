@@ -30,7 +30,7 @@
               # Replace item with NIL
               # If NIL ignore?
               (setq New-Ref (repl-cdr Ref
-                                      (gen-part NIL 'x))))
+                                      (gen-point NIL 'x))))
       
             ((and (lay-y?> Tgt) (is-pair? Tgt))
               #(println "del-car")

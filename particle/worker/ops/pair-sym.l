@@ -9,11 +9,11 @@
   (let (Ref (get *fwd-in 'b)
         Part-Fn 
           (if *on-car
-              (let Part (gen-part Data Lay NIL T)
+              (let Part (gen-point Data Lay NIL T)
                 (if (is-end?> Ref)
                     (cons (repl-cdr Ref Part) repl-cdr-post)
                     (cons (repl-car Ref Part) repl-car-post)))
-              (let Part (gen-part (list Data) Lay (cons NIL T) T)
+              (let Part (gen-point (list Data) Lay (cons NIL T) T)
                 (if (is-car?> Ref)
                     (cons (ins-pair-car Ref Part) ins-pair-car-post)
                     (cons (ins-pair-cdr Ref Part) ins-pair-cdr-post)))))
@@ -258,7 +258,7 @@
   # Replace list/line of strings with single string
   
   (let (Prv (get Sta 'c)
-        Part (gen-part (list Data) 'x NIL T))
+        Part (gen-point (list Data) 'x NIL T))
     
     # If car of pair
     (if (of-car?> Prv Sta)
@@ -302,7 +302,7 @@
     # Do car, then cdr
 
     (let (Data (car List)
-          Part (gen-part (list Data) 'x (cons NIL T) T))
+          Part (gen-point (list Data) 'x (cons NIL T) T))
           
       (if (of-car?> Sta Ref)
           (a> Sta Part)
@@ -314,7 +314,7 @@
     
     (for Data (cdr List)
     
-      (let Part (gen-part (list Data) 'x (cons NIL T) T)
+      (let Part (gen-point (list Data) 'x (cons NIL T) T)
         
         (b> Prv Part)
         
