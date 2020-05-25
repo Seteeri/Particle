@@ -139,7 +139,7 @@
             (link (vert-off-gl I)))))
   (prinl-info "init-worker" (pack "Heap: " (heap)))
   
-  (gen-def-parts)
+  (gen-def-pts)
   
   (send-msg *ipc (ipc~fd> *ipc "CONTROL") "(rdy)")
   
@@ -148,11 +148,9 @@
   (loop (ipc~poll> *ipc -1)))
 
 
-(de gen-def-parts ()
+(de gen-def-pts ()
   
   #{
-    
-    Particle Hierarchy
     
     Proccess number (Worker)
     - Namespace list
@@ -197,25 +195,25 @@
             
     # Make root and branches
     
-    (let (Part (gen-point '("*symbols"
+    (let (Po (gen-point '("*symbols"
                             "*log"
                             "*registers"
                             "*pointers"
                             "*binds-ops"
                             "*plist"
                             "*start"))
-          Part-2 (make
-                   (let X Part
+          Po-2 (make
+                   (let X Po
                      (for I 6
                        (link X)
                        (setq X (get X 'b)))
                      (link X))))
       
       # Connect symbols
-      (a> (get Part-2 6) *bind-ops-p)
-      (a> (get Part-2 7) *start)
+      (a> (get Po-2 6) *bind-ops-p)
+      (a> (get Po-2 7) *start)
     
-      (lay-part-start Part Part))
+      (lay-pt-start Po Po))
     
     (mov-cur-abv (get *start 'b))
     (lay-ptr *cdr)
@@ -376,9 +374,9 @@
 (def '*rot-z 0.0)
 (de anim-rot-z-cdr ()
 
-  (let? Part (get *fwd-in 'a)
+  (let? Po (get *fwd-in 'a)
     
-    (with Part
+    (with Po
     
       (let Vert (car (: verts))
         

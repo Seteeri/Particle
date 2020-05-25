@@ -7,46 +7,46 @@
   # - Gen2-part should be in caller
 
   (let (Ref (get *fwd-in 'b)
-        Part-Fn 
+        Po-Fn 
           (if *on-car
-              (let Part (gen-point Data Lay NIL T)
+              (let Po (gen-point Data Lay NIL T)
                 (if (is-end?> Ref)
-                    (cons (repl-cdr Ref Part) repl-cdr-post)
-                    (cons (repl-car Ref Part) repl-car-post)))
-              (let Part (gen-point (list Data) Lay (cons NIL T) T)
+                    (cons (repl-cdr Ref Po) repl-cdr-post)
+                    (cons (repl-car Ref Po) repl-car-post)))
+              (let Po (gen-point (list Data) Lay (cons NIL T) T)
                 (if (is-car?> Ref)
-                    (cons (ins-pair-car Ref Part) ins-pair-car-post)
-                    (cons (ins-pair-cdr Ref Part) ins-pair-cdr-post)))))
+                    (cons (ins-pair-car Ref Po) ins-pair-car-post)
+                    (cons (ins-pair-cdr Ref Po) ins-pair-cdr-post)))))
                     
     (upd-tree)
     (mov-⇲ *line)
     
-    ((cdr Part-Fn) (car Part-Fn))
+    ((cdr Po-Fn) (car Po-Fn))
     (lay-ptr *fwd-in)
     
-    (car Part-Fn)))
+    (car Po-Fn)))
 
     
-(de repl-car-post (Part) 
-  (set-ptr *fwd-in (sub> (get Part 'c 'b))))
+(de repl-car-post (Po) 
+  (set-ptr *fwd-in (sub> (get Po 'c 'b))))
   
   
-(de repl-cdr-post (Part)
-  (set-ptr *fwd-in (sub> Part)))
+(de repl-cdr-post (Po)
+  (set-ptr *fwd-in (sub> Po)))
   
   
-(de ins-pair-car-post (Part)
-  (println Part (get (car Part) 'data) (get (car Part) 'b))
-  (set-ptr *fwd-in (if (cdr Part)
-                        (sup> (car Part))
-                        (top> (get (car Part) 'b)))))
+(de ins-pair-car-post (Po)
+  (println Po (get (car Po) 'data) (get (car Po) 'b))
+  (set-ptr *fwd-in (if (cdr Po)
+                        (sup> (car Po))
+                        (top> (get (car Po) 'b)))))
   
   
-(de ins-pair-cdr-post (Part) 
-  (set-ptr *fwd-in (top> (get Part 'b))))
+(de ins-pair-cdr-post (Po) 
+  (set-ptr *fwd-in (top> (get Po 'b))))
   
 
-(de repl-cdr (Ref Part)
+(de repl-cdr (Ref Po)
   #{
               *
     [ ]  [ ]  NIL
@@ -74,18 +74,18 @@
   (let (C (get Ref 'c)
         Cb (get Ref 'b))
 
-    (b@ C Part Cb)
+    (b@ C Po Cb)
 
     (when (get Ref 'line)
-      (put-line Ref Part))
+      (put-line Ref Po))
     
     # Cdr is still used so don't del
     (del> Ref T NIL)
 
-    Part))
+    Po))
 
     
-(de repl-car (Ref Part)
+(de repl-car (Ref Po)
   #{
     Replace car of y pair
         
@@ -116,7 +116,7 @@
   (let (Pair (get Ref 'c)
         C (get Pair 'c))
 
-    (a> Pair Part)
+    (a> Pair Po)
     
     (cond ((of-cdr?> C Pair)
            (b> C Pair))
@@ -127,10 +127,10 @@
           
     (del> Ref T T)
         
-    Part))  
+    Po))  
 
     
-(de ins-pair-cdr (Ref Part)
+(de ins-pair-cdr (Ref Po)
   #{
     Insert after ptr/pair (rel to Ref 'b 'c)
     or
@@ -159,8 +159,8 @@
          
     NIL
     
-    - Normally Part would be right of B which is awkward,
-    so ins Part as newline before Y
+    - Normally Po would be right of B which is awkward,
+    so ins Po as newline before Y
     - Or start newline and move Y to newline
     
   }#
@@ -169,19 +169,19 @@
   
   (let (Pair (get Ref 'c))
 
-    (b@ Pair Part Ref)
+    (b@ Pair Po Ref)
     
     # Make line as necessary if car is a list
     (if (and (has-pair?> Ref)
              (is-pair? Ref))
         (make-line Ref)
         (when (get Ref 'line)
-          (put-line Ref Part)))
+          (put-line Ref Po)))
 
-    Part))
+    Po))
     
 
-(de ins-pair-car (Ref Part)
+(de ins-pair-car (Ref Po)
 
   #{
   
@@ -230,24 +230,24 @@
         Is-Ref-Pair-of-Pair (and (is-pair? Pair)
                                  (has-pair?> Ref)))
 
-    (a> Pair Part)                                 
+    (a> Pair Po)                                 
                                  
-    (b> Part Ref)
+    (b> Po Ref)
                   
     # assert Ref has a line
                   
-    (put-line Ref Part)        
+    (put-line Ref Po)        
           
     (when Is-Ref-Pair-of-Pair
       # Create additional line for Ref
-      # Ins after current line (Part)
+      # Ins after current line (Po)
       (put Ref 'line (new '(+Line)
-                          Part
+                          Po
                           (get Ref 'b)
                           (if (get *line 'line 'l) @ *line)))
       (put *line 'line 'n Ref))
         
-    (cons Part Is-Ref-Pair-of-Pair)))
+    (cons Po Is-Ref-Pair-of-Pair)))
     
 
 #########################################
@@ -258,28 +258,28 @@
   # Replace list/line of strings with single string
   
   (let (Prv (get Sta 'c)
-        Part (gen-point (list Data) 'x NIL T))
+        Po (gen-point (list Data) 'x NIL T))
     
     # If car of pair
     (if (of-car?> Prv Sta)
-        (a> Prv Part)
-        (b> Prv Part))
+        (a> Prv Po)
+        (b> Prv Po))
 
-    # Part <-> End'b
+    # Po <-> End'b
     (let (Eb (get End 'b)
-          Pb (get Part 'b))
+          Pb (get Po 'b))
       (when Eb
         (when (get Pb 'line) (put-line Eb Pb))
         (del> Pb T T)
-        (b> Part Eb)))
+        (b> Po Eb)))
     
     (when (get Sta 'line)
-      (put-line Sta Part))
+      (put-line Sta Po))
     
     # Inclusive
     (del-rx Sta End)
     
-    (set-ptr *fwd-in (get Part 'b))
+    (set-ptr *fwd-in (get Po 'b))
     
     # Later, move this group to undo/cmd list
     (unless Skip-Upd
@@ -287,7 +287,7 @@
       (mov-⇲ *line)        
       
       # Put Ptr above new part
-      (mov-cur-abv (get Part 'b)))))
+      (mov-cur-abv (get Po 'b)))))
 
 
 (de repl-str-list (Ref List Skip-Upd)
@@ -302,25 +302,25 @@
     # Do car, then cdr
 
     (let (Data (car List)
-          Part (gen-point (list Data) 'x (cons NIL T) T))
+          Po (gen-point (list Data) 'x (cons NIL T) T))
           
       (if (of-car?> Sta Ref)
-          (a> Sta Part)
-          (b> Sta Part))
+          (a> Sta Po)
+          (b> Sta Po))
   
-      (put-line Ref Part)
+      (put-line Ref Po)
   
-      (setq Prv Part))
+      (setq Prv Po))
     
     (for Data (cdr List)
     
-      (let Part (gen-point (list Data) 'x (cons NIL T) T)
+      (let Po (gen-point (list Data) 'x (cons NIL T) T)
         
-        (b> Prv Part)
+        (b> Prv Po)
         
-        (setq Prv Part)))
+        (setq Prv Po)))
 
-    # Con last Part to existing cdr
+    # Con last Po to existing cdr
     (b> Prv End)        
     
     # Del Ref except Cdr

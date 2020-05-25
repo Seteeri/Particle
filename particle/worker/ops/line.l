@@ -45,17 +45,17 @@
   Ref)
 
 
-(de ins-line-pre (Part)
+(de ins-line-pre (Po)
 
   (when (get *line 'p)
-    (put @ 'line 'n Part))
+    (put @ 'line 'n Po))
 
-  (put *line 'line 'p Part))
+  (put *line 'line 'p Po))
 
 
-(de del-line (Part)
+(de del-line (Po)
 
-  (let? Nl (get Part 'line)
+  (let? Nl (get Po 'line)
 
     (when (get Nl 'p)
       (put @ 'line 'n (get Nl 'n)))
@@ -63,7 +63,7 @@
     (when (get Nl 'n)
       (put @ 'line 'p (get Nl 'p)))
       
-    (put Part 'line)))
+    (put Po 'line)))
 
       
 (de put-line (Src Dst)

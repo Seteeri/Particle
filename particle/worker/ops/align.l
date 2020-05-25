@@ -1,6 +1,6 @@
 # These are used with layout
 
-(de align-cur-line (Part)
+(de align-cur-line (Po)
 
   #{
         
@@ -8,20 +8,20 @@
     
     [Y]  CAR
     
-    Part
+    Po
     
     x = line ori
     y = line bnds of 'c 'a
   }#
 
-  (let (Ori-C (get Part 'line 'l 'ori)
-        Ori-A (get Part 'c 'a 'ori)
-        Dims-A (get Part 'c 'a 'dims))
+  (let (Ori-C (get Po 'line 'l 'ori)
+        Ori-A (get Po 'c 'a 'ori)
+        Dims-A (get Po 'c 'a 'dims))
                 
     (when NIL
       (println 'align-cur-line
-               Part
-               (get Part 'data)))
+               Po
+               (get Po 'data)))
 
     ~(assert Ori-C)          
 
@@ -31,13 +31,13 @@
     (adj-cur-y (+ 1.0 *sublist-space-y))))
 
 
-(de align-cur-line-x (Part)
+(de align-cur-line-x (Po)
 
   #{
     
     X layout:
   
-    [X]  Part
+    [X]  Po
     CAR
     
     x = 'c 'ori
@@ -45,15 +45,15 @@
       
   }#
 
-  (let (Ori-C (get Part 'line 'l 'ori)
-        Ori-A (get Part 'c 'a 'ori)
-        Dims-A (get Part 'c 'a 'dims))
+  (let (Ori-C (get Po 'line 'l 'ori)
+        Ori-A (get Po 'c 'a 'ori)
+        Dims-A (get Po 'c 'a 'dims))
   
     (when NIL
       (println 'align-cur-line-x 
-               Part
+               Po
                'to 
-               (get Part 'line 'l)))
+               (get Po 'line 'l)))
     
     ~(assert Ori-C) 
     

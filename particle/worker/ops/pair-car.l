@@ -237,30 +237,30 @@
   (let (C (get Ref 'c)
         Cb (get C 'b)
         Cc (get C 'c)
-        Part (gen-point (cons) 'x (cons T NIL) T)
-        Pb (get Part 'b)
+        Po (gen-point (cons) 'x (cons T NIL) T)
+        Pb (get Po 'b)
         Ln-N (get *line 'line 'n))
 
-    (b> Cc Part)
-    (a> Part C)
+    (b> Cc Po)
+    (a> Po C)
     (b> C Pb)
     (if Cb
-        (b> Part Cb)
-        (setq Cb (get Part 'b)))
+        (b> Po Cb)
+        (setq Cb (get Po 'b)))
     
-    # Creates line for Part, C and Cb
+    # Creates line for Po, C and Cb
        
-    (lay> Part 'y)
+    (lay> Po 'y)
     
     (if (get C 'line)
         (prog
-          (put-line C Part)
-          (put Part 'line 'n Cb))
+          (put-line C Po)
+          (put Po 'line 'n Cb))
         (prog
-          # Connect line: cur -> Part
+          # Connect line: cur -> Po
           (unless (is-sym? Cc)
-            (put *line 'line 'n Part))
-          (put Part 'line
+            (put *line 'line 'n Po))
+          (put Po 'line
             (new '(+Line)
                 (unless (is-sym? Cc)
                   *line)
@@ -270,14 +270,14 @@
                   
     # Create Line for Cdr
     (if (get Cb 'line)
-        (put @ 'line 'p Part)
+        (put @ 'line 'p Po)
         (put Cb 'line
           (new '(+Line)
-               Part
+               Po
                Ln-N
                (if (is-sym? Cc)
-                   Part
-                   (get Part 'line 'l)))))
+                   Po
+                   (get Po 'line 'l)))))
         
     # Create line for C
     (put C 'line (new '(+Line)))
@@ -286,13 +286,13 @@
     (mov-⇲ *line)
     
     # Maintain on inner tree or outer?
-    (setq *line Part)
-    (set-ptr *fwd-in Part)
+    (setq *line Po)
+    (set-ptr *fwd-in Po)
     (point-sub)
         
     (println 'make-case-1)
 
-    Part))      
+    Po))      
           
 
 (de make-case-2 (Ref)
@@ -363,16 +363,16 @@
   
   (let (Cc (get Ref 'c)
         Is-Cc-Sym (is-sym? Cc)
-        Part (gen-point (cons) 'x (cons T ) T)
-        Cb (get Part 'b))
+        Po (gen-point (cons) 'x (cons T ) T)
+        Cb (get Po 'b))
 
-    (b> Cc Part)
-    (a> Part Ref)
+    (b> Cc Po)
+    (a> Po Ref)
     
-    (lay> Part 'y)
+    (lay> Po 'y)
     
-    # Creates line for Part, Cb, Ref
-    (put Part 'line
+    # Creates line for Po, Cb, Ref
+    (put Po 'line
       (new '(+Line)
            (unless Is-Cc-Sym
              *line)
@@ -380,18 +380,18 @@
            (unless Is-Cc-Sym
              (if (get *line 'line 'l) @ *line))))
         
-    # Connect line: cur -> Part
+    # Connect line: cur -> Po
     (unless Is-Cc-Sym
-      (put Part 'line 'p 'line 'n Part))        
+      (put Po 'line 'p 'line 'n Po))        
         
     # Create Line for Cdr
     (put Cb 'line
       (new '(+Line)
-            Part
+            Po
             NIL
             (if Is-Cc-Sym
-                Part
-                (get Part 'line 'l))))
+                Po
+                (get Po 'line 'l))))
         
     # Create line for Ref
     (put Ref 'line (new '(+Line)))
@@ -406,7 +406,7 @@
         
     (println 'make-case-2)
 
-    Part))
+    Po))
     
     
 (de make-case-3 (Ref)
@@ -445,26 +445,26 @@
   
   (let (C (get Ref 'c)
         Cc (get C 'c)
-        Part (gen-point (cons) 'x (cons T NIL) T)
-        Pb (get Part 'b))
+        Po (gen-point (cons) 'x (cons T NIL) T)
+        Pb (get Po 'b))
 
     (when (is-sym? Cc)
       (quit "make-case-3: todo, no y sym support"))
         
-    (a> Cc Part)
-    (a> Part C)
+    (a> Cc Po)
+    (a> Po C)
 
-    (lay> Part 'y)
+    (lay> Po 'y)
     
-    # Creates line for Part, C and Pb
+    # Creates line for Po, C and Pb
     
-    # Create Line for Part
-    (put Part 'line
+    # Create Line for Po
+    (put Po 'line
       (new '(+Line) NIL Pb NIL))
         
     # Create Line for Pb
     (put Pb 'line
-      (new '(+Line) Part NIL Part))
+      (new '(+Line) Po NIL Po))
         
     # Create line for C
     (if (get C 'line)
@@ -478,13 +478,13 @@
     (mov-⇲ *line)
     
     # Maintain on inner tree or outer?
-    (setq *line Part)
-    (set-ptr *fwd-in Part)
+    (setq *line Po)
+    (set-ptr *fwd-in Po)
     (point-sub)
         
     (println 'make-case-3)
 
-    Part))
+    Po))
     
     
 (de make-case-4 (Ref)
@@ -519,21 +519,21 @@
   }#
   
   (let (Cc (get Ref 'c)
-        Part (gen-point (cons) 'x (cons T NIL) T)
-        Pb (get Part 'b))
+        Po (gen-point (cons) 'x (cons T NIL) T)
+        Pb (get Po 'b))
 
     (when (is-sym? Cc)
       (quit "make-case-3: todo, no y sym support"))
         
-    (a> Cc Part)
-    (a> Part Ref)
+    (a> Cc Po)
+    (a> Po Ref)
 
-    (lay> Part 'y)
+    (lay> Po 'y)
     
-    # Creates line for Part, Ref and Pb
+    # Creates line for Po, Ref and Pb
     
-    (put Part 'line (new '(+Line) NIL  Pb  NIL))        
-    (put Pb   'line (new '(+Line) Part NIL Part))
+    (put Po 'line (new '(+Line) NIL  Pb  NIL))        
+    (put Pb   'line (new '(+Line) Po NIL Po))
     (put C    'line (new '(+Line)))
                 
     (upd-tree)
@@ -546,4 +546,4 @@
         
     (println 'make-case-4)
 
-    Part))           
+    Po))           

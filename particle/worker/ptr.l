@@ -1,5 +1,5 @@
 (de lay-ptr (P)
-  (lay-part-start P P 'skip-cdr))
+  (lay-pt-start P P 'skip-cdr))
 
 
 # Easier to read...
@@ -7,28 +7,28 @@
   (put P 'b B))
   
   
-(de point-ptr (Part)
-  (set-ptr *fwd-in Part)
+(de point-ptr (Po)
+  (set-ptr *fwd-in Po)
   (lay-ptr *fwd-in))
 
 
 (de point-prv ()
   #(println 'point-prv)
-  (let? Part (prv> (get *fwd-in 'b)) (point-ptr Part)))
+  (let? Po (prv> (get *fwd-in 'b)) (point-ptr Po)))
 
 
 (de point-nxt ()
-  (let? Part (nxt> (get *fwd-in 'b)) (point-ptr Part)))
+  (let? Po (nxt> (get *fwd-in 'b)) (point-ptr Po)))
 
 
 (de point-sup ()
   #(println 'point-sup)
-  (let? Part (sup> (get *fwd-in 'b)) (point-ptr Part)))
+  (let? Po (sup> (get *fwd-in 'b)) (point-ptr Po)))
 
 
 (de point-sub ()
   #(println 'point-sub)
-  (let? Part (sub> (get *fwd-in 'b)) (point-ptr Part)))
+  (let? Po (sub> (get *fwd-in 'b)) (point-ptr Po)))
 
 
 (de point-ln-first ()

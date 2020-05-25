@@ -21,9 +21,9 @@
   (when Y (mov-cur-y Y)))
 
   
-(de mov-cur-abv (Part)
+(de mov-cur-abv (Po)
   # Add start/end?
-  (setq *cur (get Part 'ori))
+  (setq *cur (get Po 'ori))
   (adj-cur-y -1.0))
   
 
@@ -34,14 +34,14 @@
                 (: pos)))))   
   
   
-(de mov-cur-part (Part Pos)
+(de mov-cur-pt (Po Pos)
   (case Pos
-    (start (mov-cur-vert (first-vert> Part)))
-    (end   (mov-cur-vert (last-vert> Part)))))
+    (start (mov-cur-vert (first-vert> Po)))
+    (end   (mov-cur-vert (last-vert> Po)))))
 
 
-(de mov-cur-ori (Part)
-  (setq *cur (get Part 'ori)))    
+(de mov-cur-ori (Po)
+  (setq *cur (get Po 'ori)))    
  
 
 #####

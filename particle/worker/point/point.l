@@ -17,7 +17,7 @@
 
   (struct (>> -4 (adr *l)) '((B . 8) (B . 8)))
 
-  Parts reference data so deleting parts will del the ref data (provided no
+  Points reference data so deleting points will del the ref data (provided no
   other data references it) so if the visual representation is gone, so will 
   the data (be GC'd).
 }#
@@ -414,7 +414,7 @@
     (when (and (cdr P) (: b)) (mov-off> (: b) Off P))))
 
 
-(dm mov-part> (B P)
+(dm mov-pt> (B P)
 
   (let (Pos     (: ori)
         Pos-Tgt (get B 'ori)
@@ -430,7 +430,7 @@
     (when (and (cdr P) (: b)) (mov-off> (: b) Off P))))
 
 
-(dm mov-part-aft> (B P)
+(dm mov-pt-aft> (B P)
   # Make offset version instead of static function?
 
   (mov-cur-vert (last-vert> B) T)
@@ -444,7 +444,7 @@
               P)))
 
 
-(dm mov-part-abv> (B P)
+(dm mov-pt-abv> (B P)
   # Make offset version instead of static function?
 
   (mov-cur-vert (first-vert> B) T)
@@ -458,7 +458,7 @@
               P)))
 
 
-(dm mov-part-bel> (B P)
+(dm mov-pt-bel> (B P)
   # Make offset version instead of static function?
 
   (mov-cur-vert (first-vert> B) T)
@@ -473,7 +473,7 @@
 
 
 # Verts
-# Most of these don't use any properties from part
+# Most of these don't use any properties from point
 # so should move to a vert class or make normal function
 
 (dm ori> ()

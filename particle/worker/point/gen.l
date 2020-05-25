@@ -154,24 +154,24 @@
 
 (de gen-num (Any)
   (let ((Verts Wid) (make-vert-atm Any (get-col-type Any))
-        Part (new '(+Num)
+        Po (new '(+Num)
                   Any
                   NIL NIL
                   Verts
                   'x))
-    (put Part 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
-    Part))
+    (put Po 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
+    Po))
     
     
 (de gen-nil (Any)
   (let ((Verts Wid) (make-vert-atm Any (get-col-type Any) (caddr (get '+Vertex 'chs-pair)))
-        Part (new '(+Nil)
+        Po (new '(+Nil)
                   Any
                   NIL NIL
                   Verts
                   'x))
-    (put Part 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
-    Part))
+    (put Po 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
+    Po))
     
 
 (de gen-sym (Any)
@@ -180,13 +180,13 @@
                   ((str? Any) '(+Str))
                   ((ext? Any) '(+Ext))
                   ((sym? Any) '(+Int)))
-        Part (new Cls
+        Po (new Cls
                   Any
                   NIL NIL
                   Verts
                   'x))
-    (put Part 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
-    Part))
+    (put Po 'dims (list Wid (meta '(+Vertex) 'adv-vert-2)))
+    Po))
     
     
 # Expand sym

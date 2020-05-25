@@ -6,7 +6,7 @@
 (de upd-tree (List)
   (unless List (setq List *master))
   (mov-cur-ori List)
-  (lay-part-start List List))
+  (lay-pt-start List List))
 
         
 (de pop-list-lay ()
@@ -79,9 +79,9 @@
                     (cadr *cur))))
 
               
-(de lay-part-start (Part Line Skip)
+(de lay-pt-start (Po Line Skip)
   #{
-    Only apply skip to immediate Part
+    Only apply skip to immediate Po
     'skip-car
     'skip-cdr
     'skip-car-cdr
@@ -90,10 +90,10 @@
         *bnds-y NIL
         *line-lay Line
         *list-lay NIL)
-  (lay-pair Part Skip))
+  (lay-pair Po Skip))
 
 
-(de lay-pair (Part Skip)
+(de lay-pair (Po Skip)
 
   # Iterative pre order traversal
 
@@ -104,53 +104,53 @@
   # Push root
   (let L ()
     
-    (push 'L (cons Part 'a))
+    (push 'L (cons Po 'a))
     
     # Proccess root
-    (while (setq Part (pop 'L))
+    (while (setq Po (pop 'L))
       
-      (let (Rel (cdr Part)
-            Part (car Part))
+      (let (Rel (cdr Po)
+            Po (car Po))
         
         (when NIL
           (prinl)
-          (println 'lay-pair Part Rel (type Part) (get Part 'data))) 
+          (println 'lay-pair Po Rel (type Po) (get Po 'data))) 
                 
         (when (= Rel 'b)
-          (lay-pair-pre Part))
+          (lay-pair-pre Po))
                 
-        (if (lay-x?> Part)
-            (lay-x> Part)
-            (lay-y> Part))
+        (if (lay-x?> Po)
+            (lay-x> Po)
+            (lay-y> Po))
     
         (unless (= Skip 'skip-car-cdr)
             
           # Push right first
-          (let B (get Part 'b)
+          (let B (get Po 'b)
             (if (= Skip 'skip-cdr)
                 (off Skip)
-                (unless (or (= B Part) (not B))
+                (unless (or (= B Po) (not B))
                   (push 'L (cons B 'b)))))
         
-          (let A (get Part 'a)
+          (let A (get Po 'a)
             (if (= Skip 'skip-car)
                 (off Skip)
-                (unless (or (= A Part) (not A))
+                (unless (or (= A Po) (not A))
                   (push 'L (cons A 'a))))))))))
 
                   
-(de lay-pair-pre (Part)
+(de lay-pair-pre (Po)
         
-  (let? C (get Part 'c)
+  (let? C (get Po 'c)
   
     (let (Ori (get C 'ori)
           Dims (get C 'dims)) # or line?
 
       (when NIL
-        (prin "  ") (println 'lay-pair-pre Part Rel
+        (prin "  ") (println 'lay-pair-pre Po Rel
           "C: " C (get C 'data))
         
-        (prin "  ") (println 'lay-pair-pre Part Rel
+        (prin "  ") (println 'lay-pair-pre Po Rel
           "Dims of C: " (format (car Dims) *Scl)
                         (format (cadr Dims) *Scl)))
           
@@ -170,13 +170,13 @@
                           (+ (get Car 'ori 1) (get Car 'dims 1)))))
             
             (when NIL
-              (prin "  ") (println 'lay-pair-pre Part Rel
+              (prin "  ") (println 'lay-pair-pre Po Rel
                 "...Sym: " Car (get Car 'data) (get Car 'dims))
-              (prin "  ") (println 'lay-pair-pre Part Rel
+              (prin "  ") (println 'lay-pair-pre Po Rel
                 "Sym Car: " (get Car 'a) (get Car 'a 'data) (get Car 'a 'dims))
-              (prin "  ") (println 'lay-pair-pre Part Rel
+              (prin "  ") (println 'lay-pair-pre Po Rel
                 "Sym Cdr: " Val (car (get Val 'data)) (get Val 'dims))
-              (prin "  ") (println 'lay-pair-pre Part Rel
+              (prin "  ") (println 'lay-pair-pre Po Rel
                 "X: " (format X *Scl)))
               
             (mov-cur X

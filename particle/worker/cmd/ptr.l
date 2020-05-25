@@ -45,7 +45,7 @@
   
   (let Ref (get *fwd-in 'b)
 
-    (mov-cur-part *fwd-in 'start)
+    (mov-cur-pt *fwd-in 'start)
     (eval Fn)
 
     (lay-ptr *fwd-in)))
