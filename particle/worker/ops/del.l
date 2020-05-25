@@ -47,7 +47,12 @@
               # - Delete line (same as txt, expected)
               # - Keep line and txfer
               
-              (b> Tc Tb)
+              (cond ((= (get Tc 'b) Tgt)
+                      (b> Tc Tb)
+                      (put Tgt 'b))
+                    ((= (get Tc 'a) Tgt)
+                      (a> Tc Tb)
+                      (put Tgt 'a)))
               
               (if (get Tgt 'line)
               
@@ -58,7 +63,6 @@
                   (when (get Tb 'line)
                     (put Tb 'line)))
               
-              (put Tgt 'b)
               (setq New-Ref Tb)))
 
       (del> Tgt T T)
