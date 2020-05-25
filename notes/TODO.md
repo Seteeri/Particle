@@ -13,12 +13,28 @@ TODO
   
   REPL:
   
-  * 25 MAY
-    * Refactor del
-      * Hoist common del between tgt and c
-    * Fix make-line
+  * TUES
     * Implement modes
-      * Per data type
+      * Str (Default)
+        * Produces single char strings
+        * L-Alt + Sp = to convert str-int-num
+          * Use double mod
+        * All other modes cmds accessible with mod keys
+          * When in that mode, same shortcut without mod keys
+      * Int
+        * Map keys to sym/oop fns
+        * put/get
+        * getl/putl
+        * type
+      * Ext
+        * Map keys to ext/db fns
+      * Num
+        * Hex, Bin, Dec, Fl
+        * Enter sequence, then on space/enter, convert
+        * a/s/m/d/e/q = add/subtract/multiply/divide/exp/sqrt
+      * Pair
+        * Map keys to pair/nil cmds
+        * Includes glue/chop/pack/split
       * Bind to function keys
     * *log
       * Push cmds to log
@@ -29,10 +45,12 @@ TODO
       * Need command that we can eval
     * Make camera mov
       * Create cmds to center view, fit view etc
+      * Mov to item - def is align to left side of screen
+      * Either zoom out or move newline
     * Create unit tests
       * Verify position
       
-    * External Symbols
+    * External Symbols?
       * Save code to binary and database
         * This will output both data with markup
         * To make "runable" version, strip comments and markup
@@ -55,6 +73,8 @@ TODO
         * handle 'zap - isyms replaced with name (tsym) - invalidates particles
       * Draw all symbols will access all data?
       * External symbols are more explicit      
+      * Without this, to del all +Point of sym, must search all data
+        * Or link all points
               
     * Pointer
       * Mov pointer to different list
@@ -66,9 +86,11 @@ TODO
     * Soft wrap list
       * Track pos
       * When limit reached, mov nl
+      * Each list will have a length
     * Sym prop output
       * Output normally
       * Only upd objs in view
+      
     * Optimize display updates
       * Decouple upd-tree from command
       * Update only if in view

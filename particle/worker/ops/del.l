@@ -95,7 +95,7 @@
               (a> Tc Tb))
           (if (get Tgt 'line)
               (prog
-                (put-line Tgt Tb)
+                (mov-line Tgt Tb)
                 (setq *line Tb))
               # If tgt has no line but Tb has it, remove it
               (when (get Tb 'line)
@@ -109,7 +109,7 @@
               (b> Tc Ta)
               (a> Tc Ta))
           (when (get Tgt 'line)
-            (put-line Tgt Ta))
+            (mov-line Tgt Ta))
           (del> Tgt NIL T)
           Ta))))
 

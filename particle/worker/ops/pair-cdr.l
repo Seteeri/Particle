@@ -55,7 +55,7 @@
         [Pb:NIL]
         
         - D line 'l changes from C -> R, and so does every subsequent list
-          - put-line handles this
+          - mov-line handles this
          
   }#
   

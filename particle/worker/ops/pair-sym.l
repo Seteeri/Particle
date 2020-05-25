@@ -71,7 +71,7 @@
     (b@ C Po Cb)
 
     (when (get Ref 'line)
-      (put-line Ref Po))
+      (mov-line Ref Po))
     
     # Cdr is still used so don't del
     (del> Ref T NIL)
@@ -170,7 +170,7 @@
              (is-pair? Ref))
         (make-line Ref)
         (when (get Ref 'line)
-          (put-line Ref Po)))
+          (mov-line Ref Po)))
 
     Po))
     
@@ -230,7 +230,7 @@
                   
     # assert Ref has a line
                   
-    (put-line Ref Po)        
+    (mov-line Ref Po)        
           
     (when Is-Ref-Pair-of-Pair
       # Create additional line for Ref
@@ -263,12 +263,12 @@
     (let (Eb (get End 'b)
           Pb (get Po 'b))
       (when Eb
-        (when (get Pb 'line) (put-line Eb Pb))
+        (when (get Pb 'line) (mov-line Eb Pb))
         (del> Pb T T)
         (b> Po Eb)))
     
     (when (get Sta 'line)
-      (put-line Sta Po))
+      (mov-line Sta Po))
     
     # Inclusive
     (del-rx Sta End)
@@ -302,7 +302,7 @@
           (a> Sta Po)
           (b> Sta Po))
   
-      (put-line Ref Po)
+      (mov-line Ref Po)
   
       (setq Prv Po))
     

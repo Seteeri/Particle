@@ -302,7 +302,7 @@
     
         (prog
         
-          (put-line C Po)
+          (mov-line C Po)
           (put Po 'line 'n Cb))
           
         (prog
