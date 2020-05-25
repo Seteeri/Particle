@@ -38,6 +38,8 @@
             "/particle/worker/vertex/make.l"
             "/particle/worker/vertex/vertex.l"
             "/particle/worker/cmd/pair.l"
+            "/particle/worker/cmd/line.l"
+            "/particle/worker/cmd/eval.l"
             "/particle/worker/cmd/str.l"
             "/particle/worker/cmd/cam.l"
             "/particle/worker/cmd/ptr.l"                    
