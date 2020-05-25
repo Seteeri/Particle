@@ -1,21 +1,35 @@
+# X / Y / NIL
+# Save fg for comments
+# https://unicode-table.com/en/sets/arrow-symbols/
+
+(def '*ch-dot (char (hex "00B7")))
+
 (class +Vertex)
 (with *Class
   (=: sz-gl 208)
   (=: sz-pl (+ 8 1 12 12 12 64 64 64 4 4))
   (=: ptr   (native "@" "malloc" 'N (: sz-pl)))
   
-  (=: sca-vert    (*/ 1.0 1.0 32.0)) # ortho-scale
-  (=: col-def (list 0.5137255 0.5803922 0.60784316 1.0 
-                      0.5137255 0.5803922 0.60784316 1.0
-                      0.5137255 0.5803922 0.60784316 1.0 
-                      0.5137255 0.5803922 0.60784316 1.0))
-  
-  # These are font dependent,
-  # so when multiple fonts loaded,
-  # move these to +Metrics  
-  
+  # init should set this from ortho-scale
+  (=: sca-vert    (*/ 1.0 1.0 32.0))
+  (=: col-def     *selb-fg-0)
+
+  (=: cols-pair
+      (list *selb-bg-1
+            *selb-bg-1
+            *selb-bg-2))
+
+  (=: chs-pair
+      (list (char (hex "21B4"))
+            (char (hex "21B3"))
+            "NIL"))                 
+                      
+  # +Font should set this
+  # Or create class and store as prop
+  #
   # Adv is dependent upon char for proportional fonts
   (=: adv-glyph   19.265625)
+  
   (=: adv-vert    (*/ (: adv-glyph)
                       (: sca-vert)
                       1.0))

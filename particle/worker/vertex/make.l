@@ -1,23 +1,4 @@
-# X / Y / NIL
-# Save fg for comments
-
-(def '*ch-dot (char (hex "00B7")))
-
-# Mov to +Vertex
-(def '*cols-pair-def
-     (list *selb-bg-1
-           *selb-bg-1
-           *selb-bg-2))
-
-           
-# https://unicode-table.com/en/sets/arrow-symbols/
-(def '*ch-pair-def
-     (list (char (hex "21B4"))
-           (char (hex "21B3"))
-           "NIL"))
-
-           
-(de get-color-type (Any)
+(de get-col-type (Any)
   #{
                         Cell
                           |
@@ -52,8 +33,8 @@
 
   # Adjust brightness for time...or alpha?
 
-  (cond ((not Any)  (caddr *cols-pair-def))
-        ((lst? Any) (car *cols-pair-def))
+  (cond ((not Any)  (caddr (get '+Vertex 'cols-pair)))
+        ((lst? Any) (car (get '+Vertex 'cols-pair)))
         ((num? Any) *selb-green)
         ((str? Any) *selb-blue)
         ((ext? Any) *selb-cyan)
@@ -118,7 +99,7 @@
 (de make-vert-atm (Atm Col Ch)
 
   # ch depends on atom
-  (unless Col (setq Col (get-color-type Atm)))
+  (unless Col (setq Col (get-col-type Atm)))
 
   (cond ((num? Atm)             (make-vert-num Atm Col Ch))
         ((and (str? Atm) 
@@ -129,8 +110,8 @@
 
 (de make-vert-pair (Ch Col Self)
   
-  (unless Ch (setq Ch (car *ch-pair-def)))
-  (unless Col (setq Col (car *cols-pair-def)))
+  (unless Ch (setq Ch (car (get '+Vertex 'chs-pair))))
+  (unless Col (setq Col (car (get '+Vertex 'cols-pair))))
   
   (if Self
       (list (list (make-vert-glyph Ch Col) (make-vert-glyph Ch Col))

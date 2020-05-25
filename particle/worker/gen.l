@@ -81,7 +81,7 @@
       
         # Color pairs
         (when (and (pair Any) (pair (car Any)))
-          (col-verts> N (cadr *cols-pair-def) 1.0))          
+          (col-verts> N (cadr (get '+Vertex 'cols-pair)) 1.0))          
       
         # Create line if needed
         (cond ((not C) # Root
@@ -132,8 +132,8 @@
             
             
 (de gen-pair-xy (Any Lay)
-  (let (Col (if (= Lay 'x) (car *cols-pair-def) (cadr *cols-pair-def))
-        Ch (if (= Lay 'x) (car *ch-pair-def) (cadr *ch-pair-def))
+  (let (Col (if (= Lay 'x) (car (get '+Vertex 'cols-pair)) (cadr (get '+Vertex 'cols-pair)))
+        Ch (if (= Lay 'x) (car (get '+Vertex 'chs-pair)) (cadr (get '+Vertex 'chs-pair)))
         (Verts-Pair Wid-Pair) (make-vert-pair Ch Col)
         Pair (new '(+Pair)
                   Any
@@ -153,7 +153,7 @@
 
 
 (de gen-num (Any)
-  (let ((Verts Wid) (make-vert-atm Any (get-color-type Any))
+  (let ((Verts Wid) (make-vert-atm Any (get-col-type Any))
         Part (new '(+Num)
                   Any
                   NIL NIL
@@ -164,7 +164,7 @@
     
     
 (de gen-nil (Any)
-  (let ((Verts Wid) (make-vert-atm Any (get-color-type Any) (caddr *ch-pair-def))
+  (let ((Verts Wid) (make-vert-atm Any (get-col-type Any) (caddr (get '+Vertex 'chs-pair)))
         Part (new '(+Nil)
                   Any
                   NIL NIL
@@ -175,7 +175,7 @@
     
 
 (de gen-sym (Any)
-  (let ((Verts Wid) (make-vert-atm Any (get-color-type Any))
+  (let ((Verts Wid) (make-vert-atm Any (get-col-type Any))
         Cls (cond ((box? Any) '(+Box))
                   ((str? Any) '(+Str))
                   ((ext? Any) '(+Ext))
@@ -199,7 +199,7 @@
   
   # If lay=y, name should have line
   
-  (unless Col (setq Col (get-color-type Any)))
+  (unless Col (setq Col (get-col-type Any)))
   
   (let (Name (if (str? Any) (name Any) (sym Any))
         Val (val Any)

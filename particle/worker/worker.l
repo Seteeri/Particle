@@ -144,7 +144,7 @@
   (send-msg *ipc (ipc~fd> *ipc "CONTROL") "(rdy)")
   
   (prinl-info "init-worker" "Starting epoll...")
-    
+        
   (loop (ipc~poll> *ipc -1)))
 
 

@@ -114,11 +114,11 @@
   (unless (= (: lay) L)
   
     (let (Col (if (= L 'x)
-                  (car *cols-pair-def)
-                  (cadr *cols-pair-def))
+                  (car (get '+Vertex 'cols-pair))
+                  (cadr (get '+Vertex 'cols-pair)))
           Ch (if (= L 'x)
-                 (car *ch-pair-def)
-                 (cadr *ch-pair-def)))
+                 (car (get '+Vertex 'chs-pair))
+                 (cadr (get '+Vertex 'chs-pair))))
       # Change vert
       (del> (pop (:: verts)))
       (push (:: verts) (make-vert-glyph Ch Col)))
