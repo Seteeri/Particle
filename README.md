@@ -124,10 +124,8 @@ On MS and Apple systems, it serves as an outliner "app" or personal knowledge ma
     * Binds - keyboard bindings
     * Plist - property list for object exploration
     * Symbols - all *internal* symbols in the system
-* Tagging system (property list based)
-  * Tag order determines priority
-    * First tag is the title of the symbol
-  * Files are interfaced through symbols
+* Filesystem Interface
+  * Interfaced through symbols
     * Filepaths are translated to tags
       * "/this/is/some/path/fora/file.ext" = (file ext this is some path fora)
       * Each directory/word is a tag

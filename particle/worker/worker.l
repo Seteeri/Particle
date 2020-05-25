@@ -193,14 +193,14 @@
     (def '*fwd-in *cdr) # Set def input to Cdr
             
     # Make root and branches
-    
+    # Make most dynamic closest to *start
     (let (Po (gen-point '("*symbols"
-                            "*log"
-                            "*registers"
-                            "*pointers"
-                            "*binds-ops"
-                            "*plist"
-                            "*start"))
+                          "*binds-ops"
+                          "*log"
+                          "*registers"
+                          "*pointers"   
+                          "*plist"
+                          "*start"))
           Po-2 (make
                    (let X Po
                      (for I 6
@@ -209,7 +209,7 @@
                      (link X))))
       
       # Connect symbols
-      (a> (get Po-2 6) *bind-ops-p)
+      (a> (get Po-2 2) *bind-ops-p)
       (a> (get Po-2 7) *start)
     
       (lay-pt-start Po Po))
