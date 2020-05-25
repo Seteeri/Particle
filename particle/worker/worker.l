@@ -35,7 +35,8 @@
             "/particle/worker/conn.l"
             "/particle/worker/cursor.l"   
             "/particle/worker/projview.l"
-            "/particle/worker/binds/binds.l"                   
+            "/particle/worker/binds/an.l"                   
+            "/particle/worker/binds/ops.l"                               
             "/particle/worker/vertex/make.l"
             "/particle/worker/vertex/vertex.l"
             "/particle/worker/cmd/pair.l"
@@ -126,7 +127,7 @@
            (append
               (list-binds-ascii *binds-latin-1)
               (list-binds-num *binds-num)
-              (list-binds *binds-ops)))
+              (list-binds-ops *binds-ops)))
     (balance '*binds L))
     
   ##################################
