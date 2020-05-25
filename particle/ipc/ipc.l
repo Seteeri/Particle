@@ -12,10 +12,6 @@
 (symbols 'ipc 'pico)
 
 
-# Set math precision to 6 decimals
-# (scl 6)
-
-
 (def '*ms-retry 7) # 7 ms or 144 FPS
 
 

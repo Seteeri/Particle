@@ -19,8 +19,6 @@
 }#
 
 
-# (scl 6)
-
 (load (pack (pwd) "/particle/misc.l"))
 (mapc 'ld-cwd
       (list "/particle/glm.l"
