@@ -23,10 +23,11 @@
 # These assume Syms not expanded
 
 (class +Sym +Atom)
+
 (class +Box +Sym)
 (class +Ext +Sym)
 (class +Int +Sym)  
- 
+
 (class +Str +Sym)
   
 (dm mov-verts> ()

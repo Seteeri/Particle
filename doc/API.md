@@ -46,13 +46,13 @@ API
     
 # Process Data Flow
 
-Input  ->    Ctrl
-           * Worker N  ------+
-           ...         ------+ Render
+    Input  ->    Ctrl
+              * Worker N  ------+
+              ...         ------+ Render
 
-+---------------------------------+
-|          File DBs in RAM        |
-+---------------------------------+
+    +---------------------------------+
+    |          File DBs in RAM        |
+    +---------------------------------+
 
 ## Input
 * Polls for events and forwards to ctrl
@@ -93,23 +93,128 @@ Merge input with control?
 
 ## Lisp
 
-+Point
+    +Point
+      +Pair
+      +Atom
+        +Num
+        +Sym
+          +Int
+          +Ext
+          +Str
+          +Box
+          +Nil
+      +Pointer
 
-+Vertex
+    +Vertex
 
-+Font
+    +Projview
 
-+Metrics
-
-+Projview
+    +Font
+    +Metrics
 
 ## OpenGL
 
-SSBO
+# SSBO
 
-UBO
+    (def '*params-buffer 
+        (list (new '(+Params-Buffer)
+                    'atomic-counter
+                    gl~ATOMIC-COUNTER-BUFFER
+                    (* 4 6)  #6 ints/params
+                    4 -1 #-1 means same as cs
+                    NIL)
+                    
+              (new '(+Params-Buffer)
+                    'draw-indirect
+                    gl~DRAW-INDIRECT-BUFFER
+                    (* 4 6)  #6 ints/params
+                    -1 -1
+                    NIL)
 
-Various Buffers
+              (new '(+Params-Buffer)
+                    'element
+                    gl~ELEMENT-ARRAY-BUFFER
+                    (* 4 6)  #4 bytes/int * 6 ints or indices
+                    -1 -1
+                    NIL)
+
+              (new '(+Params-Buffer)
+                    'texture-glyphs
+                    gl~TEXTURE-BUFFER 
+                    (* 128 1024 1024)
+                    -1 -1
+                    'rgba8)
+              
+              (new '(+Params-Buffer)
+                    'projview
+                    gl~UNIFORM-BUFFER
+                    (* (+ 16 16) 4)
+                    0 0  #cs-in (cache), vs-in (raster)
+                    NIL)
+
+              (new '(+Params-Buffer)
+                    'vertices
+                    gl~UNIFORM-BUFFER
+                    (* 16 4)
+                    1 1
+                    NIL)
+
+              (new '(+Params-Buffer)
+                    'nodes
+                    gl~SHADER-STORAGE-BUFFER
+                    (* *verts-max (meta '(+Vertex) 'sz-gl))
+                    3 3
+                    NIL)))
+
+## Nodes Instance
+
+    // stpq
+    // TODO: use vec4 -> simpler
+    struct uv_t {
+        float u;
+        float v;
+        float s;
+        float t;
+    };
+
+    // TODO: use vec4 -> simpler
+    struct rgba_t {
+        float r;
+        float g;
+        float b;
+        float a;
+    };
+
+    struct instance_t {
+        mat4 model;      // * 16 4 = 64 
+        rgba_t rgbas[4]; // * 16 4 = 64
+        uv_t uvs[4];     // * 16 4 = 64
+        ivec4 w_flags;   // *  4 4 = 16
+                        //        = 208 bytes
+    };
+
+
+    // Reduce size
+
+    struct instance_t_2 {
+        mat4 model;      // * 16 4 = 64 
+        rgba_t rgbas;    // * 4  4 = 16
+        uv_t uvs[4];     // * 8  4 = 32
+        int w_flags;     // * 4  1 = 4
+                        //        = 116 bytes
+    };
+                    
+# UBO
+
+    layout (std140, binding = 0) uniform projview
+    {
+        mat4 proj;
+        mat4 view;
+    };
+    layout (std140, binding = 1) uniform vertices
+    {
+        vec4 vertex[4];
+    };
 
 # Design Decisions
 
