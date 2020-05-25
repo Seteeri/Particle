@@ -65,5 +65,5 @@
   This)
 
   
-(dm pos-cur-for-car-x> ())
-(dm pos-cur-for-car-y> ())
+(dm pos-cur-car-x> ())
+(dm pos-cur-car-y> ())

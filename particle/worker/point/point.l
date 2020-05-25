@@ -173,7 +173,7 @@
   This)
  
   
-(dm pos-cur-for-car-x> ()
+(dm pos-cur-car-x> ()
   #{
   
     Move below or use Pair dims
@@ -191,7 +191,7 @@
                (+ 1.0 *sublist-space-y))))
 
   
-(dm pos-cur-for-car-y> ()
+(dm pos-cur-car-y> ()
   (setq *cur (: ori))
     
   (adj-cur-x *cdr-space-x))
@@ -216,13 +216,13 @@
   
 (dm lay-x> ()
   (lay-cur> This)
-  (pos-cur-for-car-x> This)
+  (pos-cur-car-x> This)
   This)
   
 
 (dm lay-y> ()
   (lay-cur> This)
-  (pos-cur-for-car-y> This)
+  (pos-cur-car-y> This)
   This)
     
   
