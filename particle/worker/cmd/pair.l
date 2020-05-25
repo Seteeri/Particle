@@ -102,8 +102,8 @@
 
     # If list, mov 'c 'b
     # else, append and make nl
-    (point-sup)
-    (point-nxt)        
+    (pt-sup)
+    (pt-nxt)        
         
     (make-pair-str Out 'x)))
   

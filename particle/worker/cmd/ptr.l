@@ -5,36 +5,36 @@
   # Only if Ref and Prv both are Y layout
   (let Ref (get *fwd-in 'b)
     (if *on-car
-        (point-prv)
+        (pt-prv)
         (if (is-car?> Ref)
-            (point-sup)
-            (point-prv)))))
+            (pt-sup)
+            (pt-prv)))))
 
 
 (de cmd-ptr-right (Ks)
   (if (lay-x?> (get *fwd-in 'b))
-      (point-nxt)
-      (point-sub)))
+      (pt-nxt)
+      (pt-sub)))
 
 
 (de cmd-ptr-up (Ks)
   (if (lay-x?> (get *fwd-in 'b))
-      (point-sup)
-      (point-prv)))
+      (pt-sup)
+      (pt-prv)))
 
 
 (de cmd-ptr-down (Ks)
   (if (lay-x?> (get *fwd-in 'b))
-      (point-sub)
-      (point-nxt)))
+      (pt-sub)
+      (pt-nxt)))
 
       
 (de cmd-ptr-ln-first (Ks)
-  (point-ln-first))
+  (pt-ln-fir))
 
 
 (de cmd-ptr-ln-last (Ks)
-  (point-ln-last))
+  (pt-ln-las))
       
 
 ###########

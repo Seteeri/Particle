@@ -2,38 +2,37 @@
   (lay-pt-start P P 'skip-cdr))
 
 
-# Easier to read...
 (de set-ptr (P B)
   (put P 'b B))
   
   
-(de point-ptr (Po)
+(de pt-ptr (Po)
   (set-ptr *fwd-in Po)
   (lay-ptr *fwd-in)
-  (println 'point-ptr "-> " Po))
+  (println 'pt-ptr "-> " Po))
 
 
-(de point-prv ()
+(de pt-prv ()
   (let? Po (prv> (get *fwd-in 'b))
-    (point-ptr Po)))
+    (pt-ptr Po)))
 
 
-(de point-nxt ()
+(de pt-nxt ()
   (let? Po (nxt> (get *fwd-in 'b))
-    (point-ptr Po)))
+    (pt-ptr Po)))
 
 
-(de point-sup ()
+(de pt-sup ()
   (let? Po (sup> (get *fwd-in 'b))
-    (point-ptr Po)))
+    (pt-ptr Po)))
 
 
-(de point-sub ()
+(de pt-sub ()
   (let? Po (sub> (get *fwd-in 'b))
-    (point-ptr Po)))
+    (pt-ptr Po)))
 
 
-(de point-ln-first ()
+(de pt-ln-fir ()
   (let (F T
         S (if *on-car  # Move up if on Car
               (get *fwd-in 'b 'c)
@@ -47,10 +46,10 @@
       (if *on-car
           (sub> P)
           (mov-cur-abv P))
-      (point-ptr P))))
+      (pt-ptr P))))
 
       
-(de point-ln-last ()
+(de pt-ln-las ()
   (let (F T
         S (if *on-car  # Move up if on Car
               (get *fwd-in 'b 'c)
@@ -65,7 +64,7 @@
       (if *on-car
           (sub> P)
           (mov-cur-abv P))
-      (point-ptr P))))
+      (pt-ptr P))))
        
         
 (de set-on-car (F)
@@ -87,5 +86,5 @@
         (col> (get *cdr 'a) *selb-yellow 1.0))))
         
         
-(de tog-car ()
+(de tog-on-car ()
   (set-on-car (not *on-car)))

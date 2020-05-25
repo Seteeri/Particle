@@ -63,8 +63,8 @@
         In (get Ref 'a 'data)
         Out (eval In))
         
-    (point-sup)
-    (point-nxt)        
+    (pt-sup)
+    (pt-nxt)        
         
     (make-pair-str Out 'x)))
   

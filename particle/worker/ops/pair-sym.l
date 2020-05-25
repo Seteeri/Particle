@@ -286,7 +286,7 @@
       (upd-tree)
       (mov-⇲ *line)        
       
-      # Put Ptr above new part
+      # Put Ptr above new point
       (mov-cur-abv (get Po 'b)))))
 
 
@@ -332,7 +332,7 @@
       (upd-tree)
       (mov-⇲ *line)        
               
-      # Put Ptr above new part
+      # Put Ptr above new point
       (mov-cur-abv End))))
 
       
