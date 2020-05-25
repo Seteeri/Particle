@@ -14,7 +14,9 @@ TODO
   REPL:
   
   * 25 MAY
-    * Create Pointer class?
+    * Refactor del
+      * Hoist common del between tgt and c
+    * Fix make-line
     * Implement modes
       * Per data type
       * Bind to function keys

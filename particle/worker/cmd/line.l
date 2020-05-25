@@ -13,11 +13,3 @@
   (let? Ref (get *ptr 'b)
     (bsp-line Ref)))
 
-
-(de cmd-bs (Dir)
-
-  (prinl-info "cmd-bs")
-
-  (let? Ref (get *ptr 'b)
-  
-    (del-c Ref)))

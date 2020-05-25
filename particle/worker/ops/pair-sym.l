@@ -1,11 +1,5 @@
 (de make-pair-str (Data Lay)
 
-  # Refactor:
-  # - Move ptr update here?
-  # - Fns should take a tgt instead of manip ptr
-  # - Move some fns elsewhere like repl-cdr works on pairs not strs
-  # - Gen2-part should be in caller
-
   (let (Ref (get *ptr 'b)
         Po-Fn 
           (if *on-car

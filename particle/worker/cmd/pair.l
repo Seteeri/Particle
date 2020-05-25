@@ -36,4 +36,21 @@
 
   (let? Ref (get *ptr 'b)
   
-    (del-tgt Ref)))
+    (let Tgt (if *on-car (get Ref 'c) Ref)
+  
+      (del-pt Tgt))))
+
+
+(de cmd-bs (Dir)
+
+  (prinl-info "cmd-bs")
+
+  (let? Ref (get *ptr 'b)
+  
+    (let (C (get Ref 'c)
+          Tgt (if (and *on-car
+                       (not (is-nil? Ref)))
+                  (get C 'c)
+                  C))
+  
+      (del-pt Tgt))))

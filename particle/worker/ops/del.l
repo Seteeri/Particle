@@ -1,3 +1,116 @@
+#{
+
+  CASES:
+  
+  These only delete the first cell instead of everything,
+  similar to text,
+  It promotes either the Car/Cdr to replace it
+  
+  del-x-pair
+  
+         *
+  [X]  [X/Y]  NIL
+   .    .
+   
+    If y: use car
+    If x: use cdr
+   
+  del-x-atom
+  
+       *
+  [X]  NIL
+   .   
+   
+    Replace with NIL?
+   
+  ---
+  
+  
+  del-y-pair
+  
+        *
+  [Y]  [X/Y]  NIL
+   .    .
+  
+    If y: use car
+    If x: use cdr  
+  
+  del-y-atm
+  
+       *
+  [Y]  NIL
+   .   
+  
+    Replace with NIL?
+    
+  ---
+  
+  CAR:
+  
+  * Bsp: Replace car with NIL
+  * Del: Replace car with NIL
+  
+  If inverse of ins was done,
+  would require shifting all subsequent cars bwd
+  
+  Handle line within each fn
+     
+}#
+
+
+(de del-pt (Tgt)
+
+  # Similar to make-pair-str
+  (when (get Tgt 'b)
+  
+    (let (Tc (get Tgt 'c)
+          New-Ref 
+            (cond ((is-pair? Tgt)
+                  (del-pair Tgt))
+                  
+                  (T
+                  T)))
+            
+        (upd-tree)
+        (mov-⇲ *line)      
+        
+        # If on-car maintain car
+        (if *on-car
+            (set-ptr *ptr (sub> New-Ref))
+            (prog
+              (set-ptr *ptr New-Ref)
+              (mov-cur-abv New-Ref)))
+              
+        (lay-ptr *ptr))))
+
+
+(de del-pair (Tgt)
+  (let Tc (get Tgt 'c)
+    (if (lay-x?> Tgt)    
+        (let Tb (get Tgt 'b)
+          (if (lay-x?> Tc)
+              (b> Tc Tb)
+              (a> Tc Tb))
+          (if (get Tgt 'line)
+              (put-line Tgt Tb)
+              # If tgt has no line but Tb has it, remove it
+              (when (get Tb 'line)
+                (del-line Tb)))
+          (del> Tgt T NIL)
+          Tb)
+        (let Ta (get Tgt 'a)
+          (if (lay-x?> Tc)
+              (b> Tc Ta)
+              (a> Tc Ta))
+          (when (get Tgt 'line)
+            (put-line Tgt Ta))
+          (del> Tgt NIL T)
+          Ta))))
+
+          
+#################
+
+
 (de del-tgt (Ref)
 
   #{
