@@ -1,4 +1,4 @@
-(de make-str (Data Lay)
+(de make-pair-str (Data Lay)
 
   # Refactor:
   # - Move ptr update here?

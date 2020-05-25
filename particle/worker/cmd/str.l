@@ -15,26 +15,26 @@
     # Make class
     # Put properties
 
-    (make-str Data Lay)))
+    (make-pair-str Data Lay)))
 
 
 (de cmd-make-nil (Ks)
   (prinl-info "cmd-make-nil")
-  (make-str NIL 'x))
+  (make-pair-str NIL 'x))
 
 
 (de cmd-make-num (Ks)
 
   (println "cmd-make-num")
 
-  (make-str (format (char Ks)) 'x))
+  (make-pair-str (format (char Ks)) 'x))
 
 
 (de cmd-format (Ks)
 
   (prinl-info "cmd-format")
 
-  (make-str (format (get *fwd-in 'b 'c 'a 'data)) 'x))
+  (make-pair-str (format (get *fwd-in 'b 'c 'a 'data)) 'x))
 
 #####################
 
