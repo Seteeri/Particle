@@ -67,24 +67,24 @@
   ~(assert (: a))
   
   (cond ((has-pair?> This)
-  
          ~(assert (get (: a) 'line))
-        (println 'sub> "Set line: " (: a) (get (: a) 'data))
-        (setq *line (: a))
-           
-         # If X lay, mov to Car
-         # If Y lay, stay Cdr          
-         (if (lay-x?> This)
-             (prog
-               (set-on-car T)
-               (sub> (: a)))
-             (top> (: a))))
-        
-        ((has-nil?> This)
          (println 'sub> "Set line: " (: a) (get (: a) 'data))
          (setq *line (: a))
+           
+          # If X lay, mov to Car
+          # If Y lay, stay Cdr          
+          (if (lay-x?> This)
+              (prog
+                (set-on-car T)
+                (sub> (: a)))
+              (top> (: a))))
+        
+        ((has-nil?> This)
+         (when (get (: a) 'line)
+           (println 'sub> "Set line: " (: a) (get (: a) 'data))
+           (setq *line (: a)))
          # If X lay, mov to Car
-         # If Y lay, stay Cdr          
+         # If Y lay, stay Cdr
          (if (lay-x?> This)
              (prog
                (set-on-car T)

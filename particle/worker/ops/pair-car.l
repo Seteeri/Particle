@@ -259,7 +259,8 @@
         Cc (get C 'c)
         Po (gen-point (cons) 'x (cons T NIL) T)
         Pb (get Po 'b)
-        Ln-N (get *line 'line 'n))
+        Ln-N (get *line 'line 'n)
+        Cc-Is-Sym (is-sym? Cc))
 
     (b> Cc Po)
     (a> Po C)
@@ -273,20 +274,23 @@
     (lay> Po 'y)
     
     (if (get C 'line)
+    
         (prog
+        
           (put-line C Po)
           (put Po 'line 'n Cb))
+          
         (prog
+          
           # Connect line: cur -> Po
-          (unless (is-sym? Cc)
+          (unless Cc-Is-Sym
             (put *line 'line 'n Po))
           (put Po 'line
             (new '(+Line)
-                (unless (is-sym? Cc)
-                  *line)
-                Cb
-                (unless (is-sym? Cc)
-                  (if (get *line 'line 'l) @ *line))))))
+              (unless Cc-Is-Sym *line)
+              Cb
+              (unless Cc-Is-Sym
+                (if (get *line 'line 'l) @ *line))))))
                   
     # Create Line for Cdr
     (if (get Cb 'line)
@@ -295,12 +299,15 @@
           (new '(+Line)
                Po
                Ln-N
-               (if (is-sym? Cc)
+               (if Cc-Is-Sym
                    Po
                    (get Po 'line 'l)))))
         
     # Create line for C
     (put C 'line (new '(+Line)))
+                
+    # P 'line 'p = Ref
+    #~(assert (= (get Po 'line 'p) Cc))
                 
     (upd-tree)
     (mov-⇲ *line)
@@ -308,7 +315,7 @@
     # Maintain on inner tree or outer?
     (setq *line Po)
     (set-ptr *fwd-in Po)
-    (point-sub)
+    (point-sub) # Mov to C
         
     (println 'make-case-1)
 

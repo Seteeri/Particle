@@ -9,26 +9,28 @@
   
 (de point-ptr (Po)
   (set-ptr *fwd-in Po)
-  (lay-ptr *fwd-in))
+  (lay-ptr *fwd-in)
+  (println 'point-ptr "-> " Po))
 
 
 (de point-prv ()
-  #(println 'point-prv)
-  (let? Po (prv> (get *fwd-in 'b)) (point-ptr Po)))
+  (let? Po (prv> (get *fwd-in 'b))
+    (point-ptr Po)))
 
 
 (de point-nxt ()
-  (let? Po (nxt> (get *fwd-in 'b)) (point-ptr Po)))
+  (let? Po (nxt> (get *fwd-in 'b))
+    (point-ptr Po)))
 
 
 (de point-sup ()
-  #(println 'point-sup)
-  (let? Po (sup> (get *fwd-in 'b)) (point-ptr Po)))
+  (let? Po (sup> (get *fwd-in 'b))
+    (point-ptr Po)))
 
 
 (de point-sub ()
-  #(println 'point-sub)
-  (let? Po (sub> (get *fwd-in 'b)) (point-ptr Po)))
+  (let? Po (sub> (get *fwd-in 'b))
+    (point-ptr Po)))
 
 
 (de point-ln-first ()
