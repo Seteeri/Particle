@@ -3,7 +3,7 @@
 
   (when (ipc~recv-sock> Ipc Sock T Sz-Obj)
 
-    (cpy-to-obj> Obj (get Ipc 'ipc~buf-rd)))
+    (rd-ptr> Obj (get Ipc 'ipc~buf-rd)))
 
     Obj)
 
@@ -11,7 +11,7 @@
 (de send-obj (Ipc Sock Obj Sz-Obj)
   # In Model/Render: serialize object or copy ptr, and send on socket
 
-  (let Len (cpy-to-ptr> Obj (get Ipc 'ipc~buf-wr))
+  (let Len (wr-ptr> Obj (get Ipc 'ipc~buf-wr))
 
     (ipc~send-sock> Ipc
                      Sock

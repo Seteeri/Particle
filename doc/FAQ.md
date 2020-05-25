@@ -23,6 +23,8 @@ I would interpret Smalltalk's data model as one abstraction above Lisp's, and I 
 
 **Attempts at structured/projectional editors have largely failed and the ones that have succeeded are niche.**
 
+https://github.com/pel-daniel/mind-bicycles
+
 PicoLisp is a pure Lisp where all data consists of cons cells, with only three basic types: Pairs, Numbers, and Symbols which all consist of cons cells; strings are also symbols.
 
 This consistency makes it easy to reason about the system by connecting the linked-list structure of the UI directly to the underlying linked-list data structure (or more specifically linked cons cells), and because Lisp code can manipulate data through eval, the UI can be dynamically modified through itself. This means operating on the UI (or the data representation) is the same as operating on the underlying data which has the same representation.

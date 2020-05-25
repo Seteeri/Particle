@@ -53,10 +53,10 @@
   (case Dst
   
     ("projview"
-      (cpy-to-obj> *projview Ptr))
+      (rd-ptr> *projview Ptr))
    
     ("nodes"
-      (cpy-to-obj> (get *verts (get-vert-ix Off)) Ptr))))
+      (rd-ptr> (get *verts (get-vert-ix Off)) Ptr))))
 
 
 (de rd-src (Src Sock Sz Off)

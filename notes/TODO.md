@@ -11,9 +11,24 @@ TODO
   GOAL is build structures more fluidly
   * Create list, enter strings, convert some to symbols, eval
   
-  * 19 MAY - Saturday  
-    * Unify Symbols
-      * Namespace -> particles...
+  REPL:
+  
+  * 25 MAY
+    * Implement modes
+      * Per data type
+      * Bind to function keys
+    * *log
+      * Push cmds to log
+    * *plist
+      * Implement cmd
+    * *binds-ops
+      * Ability to modify, add, update binds
+      * Need command that we can eval
+    * Make camera mov
+      * Create cmds to center view, fit view etc
+    * Create unit tests
+      * Verify position
+      
     * External Symbols
       * Save code to binary and database
         * This will output both data with markup
@@ -167,22 +182,38 @@ TODO
   
   ---
   
-  * SEARCH IS THE KEY TO DISCOVERABILITY
-    * Google's interface
-    * Make as easy and intuitive to access help
-      * Bind F1
-      * (eval "help") (eval 'help)
-    * Fuzzy-search
-
-  ---
-  
   * Implement command mode and symbol mode
     * Double alt
     * Double shift  
   
   * Improve testing environment
     * Have processes run independently    
-  
+   
+  * Basic search/replace (strs)
+    * Essentially, searching symbol props
+    * Conventional users expect strings, aka prop data when str
+    * Also can search tg, dat, tim, ori (spatial)
+    * Output list of syms/particles + finds
+      * For str, context
+      * Other props, whatever it is
+    * Lists can be composed with search/repl fn
+    * Lists can be sorted
+    * Output can then be merged
+  * Pattern matching  
+          
+  * Misc
+    * Draw num in car [?]
+      * Handle decimals
+    * Draw grid in bg
+    * Make fn: mov-cur X/adv Y/nl
+    * Refactor other items to use skip flags like mov> etc.
+    * Make columns for Y layout?
+    * Why is xkb in worker? Should be in ctrl...
+    * Draw ctrl characters: ^M, ^J, ^I
+      * Draw newline when by itself
+      * When packed do not draw it - make opt?
+    * Generate undefined glyph - 0
+   
   * Optimize
     * Math
       * Pass vecs to GLSL [later]
@@ -201,43 +232,24 @@ TODO
       * Gly loads metrics
       * Need worker to tell render to load
       * Load ASCII initially
-      * Convert glyphs into db  
+      * Convert glyphs into db   
+  
+  * Directory Nav    
+  
+  ---
 
-  * Directory Nav
-      
-  * Adv Str Ops
-    * Basic search/replace (strs)
-      * Essentially, searching symbol props
-      * Conventional users expect strings, aka prop data when str
-      * Also can search tg, dat, tim, ori (spatial)
-      * Output list of syms/particles + finds
-        * For str, context
-        * Other props, whatever it is
-      * Lists can be composed with search/repl fn
-      * Lists can be sorted
-      * Output can then be merged
-    * Pattern matching  
-      
+  * SEARCH IS THE KEY TO DISCOVERABILITY
+    * Google's interface
+    * Make as easy and intuitive to access help
+      * Bind F1
+      * (eval "help") (eval 'help)
+    * Fuzzy-search  
+  
   * Tag/Note System
     * Create +Note class
     * Need "template"
-    * Search property list functions
+    * Search property list functions  
     
-  * Misc
-    * Draw num in car [?]
-      * Handle decimals
-    * Draw grid in bg
-    * Make fn: mov-cur X/adv Y/nl
-    * Refactor other items to use skip flags like mov> etc.
-    * Make columns for Y layout?
-    * Why is xkb in worker? Should be in ctrl...
-    * Draw ctrl characters: ^M, ^J, ^I
-      * Draw newline when by itself
-      * When packed do not draw it - make opt?
-    * Generate undefined glyph - 0
-    
-  ---
-
   * Test multiple workers
     * Need data sync on model side to broadcast updates
 

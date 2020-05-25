@@ -114,8 +114,8 @@
   (unless (= (: lay) L)
   
     (let (Col (if (= L 'x)
-                  (car *cols-pair)
-                  (cadr *cols-pair))
+                  (car *cols-pair-def)
+                  (cadr *cols-pair-def))
           Ch (if (= L 'x)
                  (car *ch-pair-def)
                  (cadr *ch-pair-def)))

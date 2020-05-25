@@ -88,7 +88,8 @@
     (=: ortho-far (car Ortho-Far))
     (=: mat-view Mat-View)
     (=: pos Pos)
-    (=: rot Rot)))
+    (=: rot Rot))
+  This)
 
     
 (dm upd-mat-proj> ()
@@ -141,15 +142,6 @@
 
 (de wr-mat-to-ptr (M Ptr)
   (struct Ptr 'N (cons -1.0 M)))
-                 
-
-(dm cpy-to-ptr> (Ptr)  
-  (wr-ptr> This Ptr)
-  (meta This 'sz-pl))
-
-
-(dm cpy-to-obj> (Ptr)
-  (rd-ptr> This Ptr))
 
 
 (dm fmt-msg-send> (Off)

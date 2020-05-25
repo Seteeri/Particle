@@ -81,7 +81,7 @@
       
         # Color pairs
         (when (and (pair Any) (pair (car Any)))
-          (col-verts> N (cadr *cols-pair) 1.0))          
+          (col-verts> N (cadr *cols-pair-def) 1.0))          
       
         # Create line if needed
         (cond ((not C) # Root
@@ -132,7 +132,7 @@
             
             
 (de gen-pair-xy (Any Lay)
-  (let (Col (if (= Lay 'x) (car *cols-pair) (cadr *cols-pair))
+  (let (Col (if (= Lay 'x) (car *cols-pair-def) (cadr *cols-pair-def))
         Ch (if (= Lay 'x) (car *ch-pair-def) (cadr *ch-pair-def))
         (Verts-Pair Wid-Pair) (make-vert-pair Ch Col)
         Pair (new '(+Pair)

@@ -177,14 +177,6 @@
      (meta '(+Vertex) 'sz-gl))) # use gl size
 
 
-(dm cpy-to-ptr> (Ptr)
-  (wr-ptr> This Ptr))
-
-
-(dm cpy-to-obj> (Ptr)
-  (rd-ptr> This Ptr))
-
-
 (dm fmt-msg-send> (Off)
   (pack "(mc nodes NIL " (meta '(+Vertex) 'sz-pl) " " Off ")"))
   
@@ -192,24 +184,22 @@
 (dm fmt-msg-recv> (Off)
   (pack "(mc NIL nodes " (meta '(+Vertex) 'sz-pl) " " Off ")"))
   
+  
 ########################
 
 # X / Y / NIL
+# Save fg for comments
 
-(def '*cols-pair
+(def '*ch-dot (char (hex "00B7")))
+
+# Mov to +Vertex
+(def '*cols-pair-def
      (list *selb-bg-1
            *selb-bg-1
            *selb-bg-2))
 
-(def '*cols-pair-2 
-     (list *selb-fg-0
-           *selb-fg-1
-           *selb-fg-0))
-
-# Save fg for comments
            
 # https://unicode-table.com/en/sets/arrow-symbols/
-(def '*ch-dot (char (hex "00B7")))
 (def '*ch-pair-def
      (list (char (hex "21B4"))
            (char (hex "21B3"))
@@ -251,8 +241,8 @@
 
   # Adjust brightness for time...or alpha?
 
-  (cond ((not Any)  (caddr *cols-pair))
-        ((lst? Any) (car *cols-pair))
+  (cond ((not Any)  (caddr *cols-pair-def))
+        ((lst? Any) (car *cols-pair-def))
         ((num? Any) *selb-green)
         ((str? Any) *selb-blue)
         ((ext? Any) *selb-cyan)
@@ -329,7 +319,7 @@
 (de make-vert-pair (Ch Col Self)
   
   (unless Ch (setq Ch (car *ch-pair-def)))
-  (unless Col (setq Col (car *cols-pair)))
+  (unless Col (setq Col (car *cols-pair-def)))
   
   (if Self
       (list (list (make-vert-glyph Ch Col) (make-vert-glyph Ch Col))
