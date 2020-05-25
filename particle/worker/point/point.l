@@ -288,8 +288,8 @@
       (println 'upd-line-post> (is-end?> This) This (car (: data))))
         
     # Cache ends
-    (put (get (caar *list-lay) 'line) 'e This)
-    (put (get *line-lay 'line) 'e This)
+    (put (caar *list-lay) 'line 'e This)
+    (put *line-lay 'line 'e This)
         
     # Pop and upd list
     (pop-list-lay)))
