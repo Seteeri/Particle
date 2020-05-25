@@ -15,8 +15,8 @@
                     (cons (repl-car Ref Part) repl-car-post)))
               (let Part (gen-part (list Data) Lay (cons NIL T) T)
                 (if (is-car?> Ref)
-                    (cons (ins-car Ref Part) ins-car-post)
-                    (cons (ins-cdr Ref Part) ins-cdr-post)))))
+                    (cons (ins-pair-car Ref Part) ins-pair-car-post)
+                    (cons (ins-pair-cdr Ref Part) ins-pair-cdr-post)))))
                     
     (upd-tree)
     (mov-⇲ *line)
@@ -35,14 +35,14 @@
   (set-ptr *fwd-in (sub> Part)))
   
   
-(de ins-car-post (Part)
+(de ins-pair-car-post (Part)
   (println Part (get (car Part) 'data) (get (car Part) 'b))
   (set-ptr *fwd-in (if (cdr Part)
                         (sup> (car Part))
                         (top> (get (car Part) 'b)))))
   
   
-(de ins-cdr-post (Part) 
+(de ins-pair-cdr-post (Part) 
   (set-ptr *fwd-in (top> (get Part 'b))))
   
 
@@ -130,7 +130,7 @@
     Part))  
 
     
-(de ins-cdr (Ref Part)
+(de ins-pair-cdr (Ref Part)
   #{
     Insert after ptr/pair (rel to Ref 'b 'c)
     or
@@ -165,7 +165,7 @@
     
   }#
   
-  (println 'ins-cdr)
+  (println 'ins-pair-cdr)
   
   (let (Pair (get Ref 'c))
 
@@ -181,7 +181,7 @@
     Part))
     
 
-(de ins-car (Ref Part)
+(de ins-pair-car (Ref Part)
 
   #{
   
@@ -224,7 +224,7 @@
     
   }#
     
-  (println 'ins-car)
+  (println 'ins-pair-car)
     
   (let (Pair (get Ref 'c)
         Is-Ref-Pair-of-Pair (and (is-pair? Pair)
