@@ -62,7 +62,7 @@
       
       
     * Line can be done automatically in cdr case?
-      * Transfer line to new part
+      * Transfer line to new point
     * Cdr can be end or not
           
   --------
@@ -233,6 +233,26 @@
               
         Cb
   }#  
+  
+  #{
+                      
+        [Cc]  [C]  [Cb]  NIL
+        NIL   NIL  NIL
+               *
+              
+    ->
+               
+        [Cc]  
+        NIL  
+
+              
+        [P]  [C]  NIL
+             NIL  
+              *
+        
+        [Cb] NIL
+        NIL
+  }#   
   
   (let (C (get Ref 'c)
         Cb (get C 'b)

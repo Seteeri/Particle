@@ -4651,6 +4651,16 @@ the expression problem
 
 what if manipulate data then get data:particle?
 
+======================
+
+Destructuring bind
+
+In: (p1 p2 p3)
+
+Fn: (A B C)
+
+Ou: (C B A)
+
 ============================================
 ============================================
 
