@@ -16,9 +16,9 @@ Naming Conventions:
 
 (local) (clear)
 
-(load (pack (pwd) "/src/c/gles/buffer.l"))
-(load (pack (pwd) "/src/c/gles/shad.l"))
-(load (pack (pwd) "/src/c/gles/prog.l"))
+(load (pack (pwd) "/particle/c/gles/buffer.l"))
+(load (pack (pwd) "/particle/c/gles/shad.l"))
+(load (pack (pwd) "/particle/c/gles/prog.l"))
 
 (def '*glBufferStorage 0)
 

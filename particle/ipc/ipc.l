@@ -19,9 +19,9 @@
 (def '*ms-retry 7) # 7 ms or 144 FPS
 
 
-(load (pack (pwd) "/src/misc.l"))
-(load (pack (pwd) "/src/c/epoll.l"))
-(load (pack (pwd) "/src/c/socket.l"))
+(load (pack (pwd) "/particle/misc.l"))
+(load (pack (pwd) "/particle/c/epoll.l"))
+(load (pack (pwd) "/particle/c/socket.l"))
 
 
 (class +IPC)

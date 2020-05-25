@@ -21,26 +21,26 @@
 
 # (scl 6)
 
-(load (pack (pwd) "/src/misc.l"))
+(load (pack (pwd) "/particle/misc.l"))
 (mapc 'ld-cwd
-      (list "/src/glm.l"
-            "/src/c/posix/mman.l"
-            "/src/c/posix/string.l"
-            "/src/c/socket.l"
-            "/src/c/gles/gles.l"
-            "/src/c/glfw.l"
-            "/src/c/epoll.l"
-            "/src/selenized.l"
-            "/src/ipc/ipc.l"
-            "/src/prot/conn.l"
-            "/src/prot/send.l"
-            "/src/prot/recv.l"
-            "/src/prot/obj.l"
-            "/src/worker/vertex.l"
-            "/src/render/params-buffer.l"
-            "/src/render/raster.l"
-            "/src/render/conn.l"))
-            #"/src/render/compute.l"
+      (list "/particle/glm.l"
+            "/particle/c/posix/mman.l"
+            "/particle/c/posix/string.l"
+            "/particle/c/socket.l"
+            "/particle/c/gles/gles.l"
+            "/particle/c/glfw.l"
+            "/particle/c/epoll.l"
+            "/particle/selenized.l"
+            "/particle/ipc/ipc.l"
+            "/particle/prot/conn.l"
+            "/particle/prot/send.l"
+            "/particle/prot/recv.l"
+            "/particle/prot/obj.l"
+            "/particle/worker/vertex.l"
+            "/particle/render/params-buffer.l"
+            "/particle/render/raster.l"
+            "/particle/render/conn.l"))
+            #"/particle/render/compute.l"
 
 (def 'NAME-PID "RENDER")
 

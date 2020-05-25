@@ -14,7 +14,7 @@
 
 (de main ()
   
-  (let Home (pack (pwd) "/src/")
+  (let Home (pack (pwd) "/particle/")
         
       (fork-2 '(() (exec "pil" (pack Home "render/render.l") "-main" "+")))
       (fork-2 '(() (exec "pil" (pack Home "input/input.l")   "-main" "+")))

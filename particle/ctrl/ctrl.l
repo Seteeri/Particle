@@ -15,25 +15,25 @@
 # (scl 6)
 
 
-(load (pack (pwd) "/src/misc.l"))
+(load (pack (pwd) "/particle/misc.l"))
 (mapc 'ld-cwd
-      (list "/src/glm.l"
-            "/src/c/epoll.l"
-            "/src/c/li.l"
-            "/src/c/socket.l"
-            "/src/c/xkbcommon.l"
-            "/src/c/timerfd.l"
-            "/src/c/ksd.l"
-            "/src/ipc/ipc.l"
-            "/src/font/metrics.l"            
-            "/src/prot/conn.l"
-            "/src/prot/send.l"
-            "/src/prot/recv.l"
-            "/src/prot/obj.l"
-            "/src/ctrl/xkb.l"
-            "/src/ctrl/conn.l"
-            "/src/worker/projview.l"
-            "/src/worker/vertex.l"))
+      (list "/particle/glm.l"
+            "/particle/c/epoll.l"
+            "/particle/c/li.l"
+            "/particle/c/socket.l"
+            "/particle/c/xkbcommon.l"
+            "/particle/c/timerfd.l"
+            "/particle/c/ksd.l"
+            "/particle/ipc/ipc.l"
+            "/particle/font/metrics.l"            
+            "/particle/prot/conn.l"
+            "/particle/prot/send.l"
+            "/particle/prot/recv.l"
+            "/particle/prot/obj.l"
+            "/particle/ctrl/xkb.l"
+            "/particle/ctrl/conn.l"
+            "/particle/worker/projview.l"
+            "/particle/worker/vertex.l"))
 
 (def 'NAME-PID "CTRL")
 

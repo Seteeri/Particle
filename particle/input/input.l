@@ -14,17 +14,17 @@
 
 # (scl 6)
 
-(load (pack (pwd) "/src/misc.l"))
+(load (pack (pwd) "/particle/misc.l"))
 (mapc 'ld-cwd
-      (list "/src/c/epoll.l"
-            "/src/c/li.l"
-            "/src/c/socket.l"
-            "/src/misc.l"
-            "/src/ipc/ipc.l"
-            "/src/prot/conn.l"
-            "/src/prot/send.l"
-            "/src/prot/recv.l"
-            "/src/prot/obj.l"))
+      (list "/particle/c/epoll.l"
+            "/particle/c/li.l"
+            "/particle/c/socket.l"
+            "/particle/misc.l"
+            "/particle/ipc/ipc.l"
+            "/particle/prot/conn.l"
+            "/particle/prot/send.l"
+            "/particle/prot/recv.l"
+            "/particle/prot/obj.l"))
 
 (def 'NAME-PID "INPUT")
 
