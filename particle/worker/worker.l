@@ -29,20 +29,26 @@
             "/particle/font/metrics.l"
             "/particle/font/font.l"
             "/particle/ctrl/xkb.l"
+            
+            
             "/particle/worker/debug.l"            
             "/particle/worker/conn.l"
             "/particle/worker/cursor.l"   
             "/particle/worker/projview.l"
+            
             "/particle/worker/binds/an.l"                   
             "/particle/worker/binds/ops.l"                               
+            
             "/particle/worker/vertex/make.l"
             "/particle/worker/vertex/vertex.l"
+            
             "/particle/worker/cmd/pair.l"
             "/particle/worker/cmd/line.l"
             "/particle/worker/cmd/eval.l"
             "/particle/worker/cmd/str.l"
             "/particle/worker/cmd/cam.l"
             "/particle/worker/cmd/ptr.l"                    
+            
             "/particle/worker/point/point.l"
             "/particle/worker/point/pair.l"
             "/particle/worker/point/atom.l"
@@ -51,6 +57,7 @@
             "/particle/worker/point/num.l"
             "/particle/worker/point/nil.l"
             "/particle/worker/point/gen.l"
+            
             "/particle/worker/ops/ptr.l"                        
             "/particle/worker/ops/align.l"            
             "/particle/worker/ops/lay.l"
@@ -68,26 +75,21 @@
 (def '*sublist-space-y 1.0)
 
 # Global Symbols
-(def '*font)
 (def '*xkb)
-(def '*binds)
 (def '*vert-offs)
 (def '*cnt-v 1)
+(def '*font) # Make this visible also?
 
-# List works for small amount...
-# assoc/list -> binary trees -> database
-
-# Master index of all particles in the "world" - store sym:particle
-# Eventually this will be moved to external symbols
 (def '*points)
-(def '*lsts) # Traversal history list
-(def '*start) # Current list
-(def '*line) # Current line 
-(def '*log) # List of history for undo/redo
-(def '*ptrs) # List of pointers
+(def '*binds)
+(def '*start)  # Current list
+(def '*log)    # List of history for undo/redo
+(def '*ptrs)   # List of pointers
+# ...
 
-(def '*cur (list 0.0 0.0 0.0))
-(def '*fwd-in)
+(def '*line)                   # Cur line
+(def '*cur (list 0.0 0.0 0.0)) # 3D cur
+(def '*ptr)                 # Cur ptr
 
 
 (de init-worker ()
@@ -192,7 +194,7 @@
     
     (set-ptr *cdr (get *start 'b)) (put *cdr 'lay 'y)
     (set-ptr *car (get *start 'b)) (put *car 'lay 'y)
-    (def '*fwd-in *cdr) # Set def input to Cdr
+    (def '*ptr *cdr) # Set def input to Cdr
             
     # Make root and branches
     # Make most dynamic closest to *start
@@ -375,7 +377,7 @@
 (def '*rot-z 0.0)
 (de anim-rot-z-cdr ()
 
-  (let? Po (get *fwd-in 'a)
+  (let? Po (get *ptr 'a)
     
     (with Po
     

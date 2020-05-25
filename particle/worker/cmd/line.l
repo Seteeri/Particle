@@ -1,6 +1,6 @@
 (de cmd-mov-nl (Ks)
   (println 'cmd-mov-nl)
-  (let Ref (get *fwd-in 'b)
+  (let Ref (get *ptr 'b)
     (unless *on-car
       (make-line Ref))))
 
@@ -10,7 +10,7 @@
   # This moves Ref front of prv
   # Only applies to non-list...
     
-  (let? Ref (get *fwd-in 'b)
+  (let? Ref (get *ptr 'b)
     (bsp-line Ref)))
 
 
@@ -18,6 +18,6 @@
 
   (prinl-info "cmd-bs")
 
-  (let? Ref (get *fwd-in 'b)
+  (let? Ref (get *ptr 'b)
   
     (del-c Ref)))

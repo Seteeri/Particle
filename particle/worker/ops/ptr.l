@@ -7,36 +7,36 @@
   
   
 (de pt-ptr (Po)
-  (set-ptr *fwd-in Po)
-  (lay-ptr *fwd-in)
+  (set-ptr *ptr Po)
+  (lay-ptr *ptr)
   (println 'pt-ptr "-> " Po))
 
 
 (de pt-prv ()
-  (let? Po (prv> (get *fwd-in 'b))
+  (let? Po (prv> (get *ptr 'b))
     (pt-ptr Po)))
 
 
 (de pt-nxt ()
-  (let? Po (nxt> (get *fwd-in 'b))
+  (let? Po (nxt> (get *ptr 'b))
     (pt-ptr Po)))
 
 
 (de pt-sup ()
-  (let? Po (sup> (get *fwd-in 'b))
+  (let? Po (sup> (get *ptr 'b))
     (pt-ptr Po)))
 
 
 (de pt-sub ()
-  (let? Po (sub> (get *fwd-in 'b))
+  (let? Po (sub> (get *ptr 'b))
     (pt-ptr Po)))
 
 
 (de pt-ln-fir ()
   (let (F T
         S (if *on-car  # Move up if on Car
-              (get *fwd-in 'b 'c)
-              (get *fwd-in 'b))
+              (get *ptr 'b 'c)
+              (get *ptr 'b))
         P S)
     (while F
       (if (get P 'line)
@@ -52,8 +52,8 @@
 (de pt-ln-las ()
   (let (F T
         S (if *on-car  # Move up if on Car
-              (get *fwd-in 'b 'c)
-              (get *fwd-in 'b))
+              (get *ptr 'b 'c)
+              (get *ptr 'b))
         P S)
     # Stop before line
     (while F
@@ -74,14 +74,14 @@
         (on *on-car)
         (col> *car *selb-yellow 1.0)
         (col> (get *car 'a) *selb-yellow 1.0)
-        (setq *fwd-in *car)
+        (setq *ptr *car)
         (col> *cdr *selb-violet 1.0)
         (col> (get *cdr 'a) *selb-violet 1.0))
       (prog
         (off *on-car)
         (col> *car *selb-violet 1.0)
         (col> (get *car 'a) *selb-violet 1.0)
-        (setq *fwd-in *cdr)
+        (setq *ptr *cdr)
         (col> *cdr *selb-yellow 1.0)
         (col> (get *cdr 'a) *selb-yellow 1.0))))
         

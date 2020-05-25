@@ -34,7 +34,7 @@
 
   (prinl-info "cmd-format")
 
-  (make-pair-str (format (get *fwd-in 'b 'c 'a 'data)) 'x))
+  (make-pair-str (format (get *ptr 'b 'c 'a 'data)) 'x))
 
 #####################
 
@@ -47,7 +47,7 @@
   # Pack from Ptr until invalid
   # Pack line then replace it
 
-  (let Ref (get *fwd-in 'b)
+  (let Ref (get *ptr 'b)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -61,14 +61,14 @@
         (println 'cmd-pack Sta (get Sta 'data) "TO" End (get End 'data))
 
         (repl-list-str Sta End Data)
-        (lay-ptr *fwd-in)))))
+        (lay-ptr *ptr)))))
 
         
 (de cmd-chop (Ks)
 
   (prinl-info "cmd-chop")
 
-  (let Ref (get *fwd-in 'b)
+  (let Ref (get *ptr 'b)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -81,7 +81,7 @@
             List (chop (get Ref 'a 'data)))
   
         (repl-str-list Ref List)
-        (lay-ptr *fwd-in)))))
+        (lay-ptr *ptr)))))
   
 
 #######
@@ -91,7 +91,7 @@
 
   (prinl-info "cmd-glue-sp-syms")
   
-  (let Ref (get *fwd-in 'b)
+  (let Ref (get *ptr 'b)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -105,7 +105,7 @@
         (println 'cmd-glue-sp Sta (get Sta 'data) "TO" End (get End 'data))
             
         (repl-list-str Sta End Data)
-        (lay-ptr *fwd-in)))))
+        (lay-ptr *ptr)))))
     
     
 (de cmd-split-sp (Ks)
@@ -114,7 +114,7 @@
   
   # Split current Ref by space
   
-  (let Ref (get *fwd-in 'b)
+  (let Ref (get *ptr 'b)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -142,14 +142,14 @@
                          (link (pack S)))))))
             
         (repl-str-list Ref List)
-        (lay-ptr *fwd-in)))))
+        (lay-ptr *ptr)))))
         
         
 (de cmd-intern (Ks)
   # Convert string to symbol
   # Build char until space
   
-  (let Ref (get *fwd-in 'b)
+  (let Ref (get *ptr 'b)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -163,4 +163,4 @@
         (println 'cmd-intern Sta (get Sta 'data) "TO" End (get End 'data))
                 
         (repl-list-str Sta End Data)
-        (lay-ptr *fwd-in)))))
+        (lay-ptr *ptr)))))

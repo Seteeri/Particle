@@ -24,7 +24,7 @@
         (a b c d e f g h i) -> (a b c d (e f g h i))
   }#  
   
-  (let Ref (get *fwd-in 'b)
+  (let Ref (get *ptr 'b)
     (if *on-car
         (make-list-car Ref)
         (make-list-cdr Ref))))
@@ -34,6 +34,6 @@
 
   (prinl-info "cmd-del")
 
-  (let? Ref (get *fwd-in 'b)
+  (let? Ref (get *ptr 'b)
   
     (del-tgt Ref)))

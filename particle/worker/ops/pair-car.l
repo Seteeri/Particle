@@ -314,7 +314,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Po)
-    (set-ptr *fwd-in Po)
+    (set-ptr *ptr Po)
     (pt-sub) # Mov to C
         
     (println 'make-case-1)
@@ -428,7 +428,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Ref)
-    (set-ptr *fwd-in Ref)
+    (set-ptr *ptr Ref)
     (pt-sub)
         
     (println 'make-case-2)
@@ -506,7 +506,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Po)
-    (set-ptr *fwd-in Po)
+    (set-ptr *ptr Po)
     (pt-sub)
         
     (println 'make-case-3)
@@ -568,7 +568,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Ref)
-    (set-ptr *fwd-in Ref)
+    (set-ptr *ptr Ref)
     (pt-sub)
         
     (println 'make-case-4)

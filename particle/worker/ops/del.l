@@ -68,12 +68,12 @@
       
       # If on-car maintain car
       (if *on-car
-          (set-ptr *fwd-in (sub> New-Ref))
+          (set-ptr *ptr (sub> New-Ref))
           (prog
-            (set-ptr *fwd-in New-Ref)
+            (set-ptr *ptr New-Ref)
             (mov-cur-abv New-Ref)))
             
-      (lay-ptr *fwd-in))))
+      (lay-ptr *ptr))))
 
 
 (de del-c (Ref)
@@ -153,12 +153,12 @@
             
       # If on-car maintain car
       (if *on-car
-          (set-ptr *fwd-in (sub> New-Ref))
+          (set-ptr *ptr (sub> New-Ref))
           (prog
-            (set-ptr *fwd-in New-Ref)
+            (set-ptr *ptr New-Ref)
             (mov-cur-abv New-Ref)))      
       
-      (lay-ptr *fwd-in))))    
+      (lay-ptr *ptr))))    
     
 
 (de del-rx (Sta End)  

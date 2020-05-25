@@ -6,7 +6,7 @@
   # - Move some fns elsewhere like repl-cdr works on pairs not strs
   # - Gen2-part should be in caller
 
-  (let (Ref (get *fwd-in 'b)
+  (let (Ref (get *ptr 'b)
         Po-Fn 
           (if *on-car
               (let Po (gen-point Data Lay NIL T)
@@ -22,28 +22,28 @@
     (mov-⇲ *line)
     
     ((cdr Po-Fn) (car Po-Fn))
-    (lay-ptr *fwd-in)
+    (lay-ptr *ptr)
     
     (car Po-Fn)))
 
     
 (de repl-car-post (Po) 
-  (set-ptr *fwd-in (sub> (get Po 'c 'b))))
+  (set-ptr *ptr (sub> (get Po 'c 'b))))
   
   
 (de repl-cdr-post (Po)
-  (set-ptr *fwd-in (sub> Po)))
+  (set-ptr *ptr (sub> Po)))
   
   
 (de ins-pair-car-post (Po)
   (println Po (get (car Po) 'data) (get (car Po) 'b))
-  (set-ptr *fwd-in (if (cdr Po)
+  (set-ptr *ptr (if (cdr Po)
                         (sup> (car Po))
                         (top> (get (car Po) 'b)))))
   
   
 (de ins-pair-cdr-post (Po) 
-  (set-ptr *fwd-in (top> (get Po 'b))))
+  (set-ptr *ptr (top> (get Po 'b))))
   
 
 (de repl-cdr (Ref Po)
@@ -279,7 +279,7 @@
     # Inclusive
     (del-rx Sta End)
     
-    (set-ptr *fwd-in (get Po 'b))
+    (set-ptr *ptr (get Po 'b))
     
     # Later, move this group to undo/cmd list
     (unless Skip-Upd
@@ -326,7 +326,7 @@
     # Del Ref except Cdr
     (del-car> Ref)    
     
-    (set-ptr *fwd-in End)
+    (set-ptr *ptr End)
     
     (unless Skip-Upd
       (upd-tree)
