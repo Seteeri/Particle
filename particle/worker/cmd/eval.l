@@ -3,7 +3,7 @@
   
   # Eval Ref data directly
   
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -27,7 +27,7 @@
   # If user wants no output,
   # like ptr cmd, then another cmd
   
-  (let (Ref (get *ptr 'b)
+  (let (Ref (get-ptr-ref)
         In (get Ref 'data)
         Out (eval In))
 
@@ -44,7 +44,7 @@
   
   # Parse str/code to lisp data
   
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -60,7 +60,7 @@
 (de cmd-pes ()
   # Pack and eval-Str
   
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))

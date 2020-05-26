@@ -14,7 +14,15 @@ TODO
   REPL:
   
   * TUES
-    * Rewrite points
+    * Refactor
+      * Gen/Lay
+        * Nil
+          * Draw for lists
+          * Syms: only draw for internal
+            * Strs: don't draw
+      * Ptr
+      * Ops
+      * List/Line
     * Use prog1
     * Implement modes
       * Str (Default)

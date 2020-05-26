@@ -15,7 +15,7 @@
     # Make class
     # Put properties
 
-    (make-pair-str Data Lay)))
+    (make-pair-str-2 Data Lay)))
 
 
 (de cmd-make-nil (Ks)
@@ -47,7 +47,7 @@
   # Pack from Ptr until invalid
   # Pack line then replace it
 
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -68,7 +68,7 @@
 
   (prinl-info "cmd-chop")
 
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -91,7 +91,7 @@
 
   (prinl-info "cmd-glue-sp-syms")
   
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -114,7 +114,7 @@
   
   # Split current Ref by space
   
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))
@@ -149,7 +149,7 @@
   # Convert string to symbol
   # Build char until space
   
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
   
     (when (is-nil? Ref)
       (setq Ref (get Ref 'c)))

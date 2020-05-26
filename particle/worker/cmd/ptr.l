@@ -3,7 +3,7 @@
 
 (de cmd-ptr-left (Ks)    
   # Only if Ref and Prv both are Y layout
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
     (if *on-car
         (pt-prv)
         (if (is-car?> Ref)
@@ -12,19 +12,19 @@
 
 
 (de cmd-ptr-right (Ks)
-  (if (lay-x?> (get *ptr 'b))
+  (if (lay-x?> (get-ptr-ref))
       (pt-nxt)
       (pt-sub)))
 
 
 (de cmd-ptr-up (Ks)
-  (if (lay-x?> (get *ptr 'b))
+  (if (lay-x?> (get-ptr-ref))
       (pt-sup)
       (pt-prv)))
 
 
 (de cmd-ptr-down (Ks)
-  (if (lay-x?> (get *ptr 'b))
+  (if (lay-x?> (get-ptr-ref))
       (pt-sub)
       (pt-nxt)))
 
@@ -43,7 +43,7 @@
 
 (de cmd-trans-ptr (Cnt Fn)
   
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
 
     (mov-cur-pt *ptr 'start)
     (eval Fn)
@@ -67,12 +67,12 @@
 (de cmd-print-ptr ()
 
   # Print ptr
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
     (println Ref (get Ref 'data)))
 
   (println "Master Line: " *line (get *master 'b 'data))
 
-  (let Ref (get *ptr 'b)
+  (let Ref (get-ptr-ref)
   
     (println "*on-car: " *on-car)
     (println "Ref: " Ref (get Ref 'data))

@@ -59,77 +59,68 @@
     (while (setq X (pop 'In))
             
       (let ((Any C P) X
-            N (if (pair Any)                 
+            Is-Any-Pair (pair Any)
+            N (if Is-Any-Pair             
                   (gen-pair-xy Any
                                 (if (pair (car Any))
                                     'y
                                     'x))
                   (gen-atom Any)))
       
-        #(println Any N (pair (car (get P 'data))))
-        #(prinl)
+        # Color pairs
+        (when (and Is-Any-Pair
+                   (pair (car Any)))
+          (col-verts> N (cadr (get '+Vertex 'cols-pair)) 1.0))      
+      
+        #(println "GEN: " Any)
       
         (unless *gen-out
           (setq *gen-out N))
-      
-        # Connect to prv
-        (when P
-          (if (= C 'a)
-              (put P 'a N)
-              (put P 'b N))
-          (put N 'c P))      
-      
-        # Color pairs
-        (when (and (pair Any) (pair (car Any)))
-          (col-verts> N (cadr (get '+Vertex 'cols-pair)) 1.0))          
-      
-        # Create line if needed
-        (cond ((not C) # Root
-                (unless Nrl
-                  (put N 'line
-                        (new '(+Line))))
-                (push '*gen-list N)
-                #(prinn "Line Root: " N Any *gen-list) (prinl)
-                )
+
+        # Con NIL
+        (when (and (not Any) P)
+          (put P (if (= C 'a) @ 'b) N))
+          
+        # Create lines
+        (cond 
+          ((not C) # Root
+           (unless Nrl
+             (put N 'line
+                   (new '(+Line))))
+           (push '*gen-list N))
               
-              ((or (and (pair Any) (pair (car Any)))
-                   (and (pair (get P 'data)) (pair (car (get P 'data)))))
-                # Is a pair itself with a car pair
-                # or parent is a pair with a car pair
-                (if (= C 'a)
-                    (prog
-                      (put N 'line (new '(+Line)))
-                      (push '*gen-list N)
-                      #(println "Line Car: " N Any (car *gen-list)) (prinl)
-                      )
-                    (prog
-                      (put N 'line
-                          (new '(+Line)
-                                P
-                                NIL
-                                (car *gen-list)))
-                      (put P 'line 'n N)
-                      #(println "Line Cdr: " N Any (car *gen-list))
-                      #(println (get N 'line 'l))
-                      #(prinl)
-                      ))))
+              
+          # Is a pair itself with a car pair
+          # or parent is a pair with a car pair              
+          ((or (and Is-Any-Pair (pair (car Any)))
+                (and (pair (get P 'data)) (pair (car (get P 'data)))))
+            (if (= C 'a)
+                (prog
+                  (put N 'line (new '(+Line)))
+                  (push '*gen-list N))
+                (prog
+                  (put N 'line
+                      (new '(+Line)
+                            P
+                            NIL
+                            (car *gen-list)))
+                  (put P 'line 'n N)))))
 
-                      
-        (when (is-end?> N)
-          (pop '*gen-list)
-          #(println "Pop list: ") (prinl)
-          )
+        # End of list
+        (when (and (= C 'b)
+                   (not Is-Any-Pair))
+          (pop '*gen-list))
 
-        (when (pair Any)
+        (when Is-Any-Pair
         
-          (unless (cdr Skip)
+          (unless (cdr Skips)
             (let B (cdr Any)
               (push 'In (list B 'b N))))
         
-          (unless (car Skip)
+          (unless (car Skips)
             (let A (car Any)
               (push 'In (list A 'a N)))))))))
-            
+    
             
 (de gen-pair-xy (Any Lay)
   (let (Col (if (= Lay 'x) (car (get '+Vertex 'cols-pair)) (cadr (get '+Vertex 'cols-pair)))
@@ -146,13 +137,14 @@
             
             
 (de gen-atom (Any)
-  (prog1
-    (if (num? Any)
-        (gen-num Any)
-        (if Any
-            (gen-sym Any)
-            (gen-nil Any)))
-    (idx-pt @)))
+  (let Atm (if (num? Any)
+               (gen-num Any)
+               (if Any
+                   (gen-sym Any)
+                   (gen-nil Any)))
+    (when Any
+      (idx-pt Atm))
+    Atm))
 
 
 (de gen-num (Any)
@@ -193,7 +185,7 @@
     
     
 # Expand sym
-(de gen-sym-full (Any Lay Skips Char-Pair Col)
+(de gen-sym-full (Any Lay Gen-A Gen-B Ch-Pair Col)
 
   # Technically, name is a number cell
 
@@ -211,36 +203,27 @@
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
         (Verts-Car Wid-Car) (make-vert-atm Name Col)
-        Car (unless (car Skips)
+        Car (when Gen-A
               # Num type but content is a string
               (new '(+Num)
                     Name
                     NIL NIL
                     Verts-Car
                     Lay))
-        Cdr (when (and (not (cdr Skips))
-                      (not (= Val Any)))
+        Cdr (when (and Gen-B
+                       (not (= Val Any)))
               (gen-point Dr 'x NIL))
-        (Verts-Pair Wid-Pair) (make-vert-pair Char-Pair Col (= Val Any))
+        (Verts-Pair Wid-Pair) (make-vert-pair Ch-Pair Col (= Val Any))
         Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
                       Any
                       Car Cdr
                       Verts-Pair
                       Lay))
-                                              
+                            
     # Set dims
     (put Car 'dims (list Wid-Car (meta '(+Vertex) 'adv-vert-2)))
     (put Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
-                      
-    # If CAR/CDR, is a list, set C to pair
-
-    (when Car
-      (put Car 'c Pair))
-
-    (when (and Cdr
-              (not (= Val Any)))
-      (put Cdr 'c Pair))
-      
+                            
     # Put line in Cdr
     (unless (get Cdr 'line)
       (put Cdr 'line
@@ -249,7 +232,12 @@
     # Put line in symbol also
     (put Pair 'line (new '(+Line)))
     
+    # Skip Car and Cdr
+    (put Pair 'a)
+    (put Pair 'b)
     (idx-pt Pair)
+    (put Pair 'a Car)
+    (put Pair 'b Cdr)
     
     Pair))
     
@@ -264,6 +252,8 @@
 (de idx-pt (P)
 
   (with P
+
+    ~(assert (: data))
   
     (let Node (lup-node (: data))
     
@@ -272,9 +262,11 @@
       (if Node
       
           # Create list if needed
-          (if (lst? (cdr Node))
-            (push (cdr Node) P)
-            (con Node (list P)))
+          (prog
+            (if (lst? (cdr Node))
+              (push (cdr Node) P)
+              (con Node (list P)))
+            (when T (println 'idx-pt 'Exists! (h64 (adr (: data))) P (type P) (depth *points) *cnt-p)))
 
           (prog
             (idx-node P (get P 'data))
@@ -283,9 +275,11 @@
 
   
 (de idx-node (X D)
-  (idx '*points (cons (h64 (adr D)) X) T)
-  (inc '*cnt-p)
-  (when NIL (println 'gen-sym-full (depth *points) *cnt-p)))
+  (let (A (adr D)
+        H (h64 A))
+    (idx '*points (cons H X) T)
+    (inc '*cnt-p)
+    (when T (println 'idx-node H A D X (depth *points) *cnt-p))))
   
   
 (de lup-node (D)
@@ -294,3 +288,7 @@
   
 (de lup-pt (D)
   (cdr (lup *points (h64 (adr D)))))
+
+
+(de del-node (D)
+  (idx *points (h64 (adr D)) NIL))

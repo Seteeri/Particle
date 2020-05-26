@@ -18,7 +18,7 @@
         Ori-A (get Po 'c 'a 'ori)
         Dims-A (get Po 'c 'a 'dims))
                 
-    (when NIL
+    (when T
       (println 'align-cur-line
                Po
                (get Po 'data)))

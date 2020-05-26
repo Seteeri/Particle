@@ -101,7 +101,7 @@
 (dm lay-x?> () (= (: lay) 'x))
 (dm lay-y?> () (= (: lay) 'y))
 
-(dm lay> (L)
+(dm set-lay> (L)
   
   #{
     
@@ -157,24 +157,56 @@
 
   (set (car (:: data)) (get Car 'data)))
 
-    
-# Unused
-(de c-a (S)
-  (let (C S
-        A (get S 'a))
-    (while (= (get C 'a) A)
-      (a> C A)
-      (setq A C
-            C (get C 'c)))
-    (when (= (get C 'b) A)
-      (b> C A))))
-    
+
+(dm lup-a> ()
+  (if (: a)
+      @
+      (lup-pt (car (: data)))))
+
+(dm lup-b> ()
+  (when (: b)
+    (lup-pt (get (: b) 'data))))
+  
 
 (dm top> ()
   (when *on-car (set-on-car))
   (mov-cur-abv This)
   This)
  
+ 
+(dm pos-cur-cdr> ()
+        
+  (if (lay-x?> This)
+
+      # If Pair get from Car
+      # If Sym (exp) get from Val        
+
+      (let (Car (lup-a> This)
+            Val (when Car (lup-b> Car))
+            X (if (is-sym? This)
+                  (if Val # Get from Cdr else Car
+                      (+ (get Val 'ori 1) (get Val 'dims 1))
+                      (+ (get Car 'ori 1) (get Car 'dims 1)))
+                  (if Val # Get from Cdr else Car
+                      (+ (get Val 'ori 1) (get Val 'dims 1))
+                      (+ (get Car 'ori 1) (get Car 'dims 1)))))
+                  
+        (mov-cur X (cadr (: ori)))
+                  
+        (adj-cur-x 2.0))
+      
+      (prog
+        # Thissition under
+        (mov-cur (car (: ori))
+                  (- (cadr (: ori)) (cadr (: dims))))
+        (adj-cur-y (+ 1.0 *sublist-space-y)))))
+ 
+
+(dm pos-cur-car> ()
+  (if (lay-x?> This)
+      (pos-cur-car-x> This)
+      (pos-cur-car-y> This)))
+  
   
 (dm pos-cur-car-x> ()
   #{
@@ -186,11 +218,15 @@
     
   }#
 
+  ~(assert (: ori))
+  
   (setq *cur (: ori))    
-
+    
   # Double space if car has line
-  (adj-cur-y (when (get (: a) 'line)
-               (+ 1.0 *sublist-space-y))))
+  (adj-cur-y 
+    (let A (lup-a> This)
+      (when (get A 'line)
+        (+ 1.0 *sublist-space-y)))))
 
   
 (dm pos-cur-car-y> ()
@@ -219,18 +255,11 @@
   (upd-cur)
   (upd-line-post> This))
 
-  
-(dm lay-x> ()
-  (lay-cur> This)
-  (pos-cur-car-x> This)
-  This)
-  
 
-(dm lay-y> ()
+(dm lay> ()
   (lay-cur> This)
-  (pos-cur-car-y> This)
-  This)
-    
+  (pos-cur-car> This))
+  
   
 (dm upd-line-post> ()
   #{

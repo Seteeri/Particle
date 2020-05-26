@@ -1,6 +1,53 @@
+(de make-pair-str-2 (Data Lay)
+
+  #{
+    Con data
+  
+    Gen data +Point
+    - Need not connect Particles to other Particles
+  
+    Lay data
+    - Traverse data, lup/draw +Point
+    
+  }#
+  
+  (let (Data-L (list Data)
+        Po (gen-point Data-L 'x (cons NIL NIL) T))
+                
+    (if (tail 1 *start)
+        (prog
+          # Del prv
+          (del> (get (lup-pt @) 'b))
+          (con @ Data-L))
+        (prog
+          # Del prv
+          # NIL is not ref'd in tree so pass
+          (del> (get (lup-pt '*start) 'b))
+          (setq *start Data-L)
+          (put Po 'line (new '(+Line)))
+          (put (lup-pt '*start) 'b Po)))
+        
+    #(println 'make-pair-str-2 '*start *start)
+    
+    (mov-cur 0.0 0.0)
+    (lay-pt-start-2 '*start '*start T T)
+        
+    #(pretty *points)
+    #(println (depth *points))
+    
+    #(off X)
+    #(balance 'X (idx '*points))
+    #(println (depth X))
+    
+    T))
+    
+
+############################
+
+
 (de make-pair-str (Data Lay)
 
-  (let (Ref (get *ptr 'b)
+  (let (Ref (get-ptr-ref)
         Po-Fn 
           (if *on-car
               (let Po (gen-point Data Lay NIL T)

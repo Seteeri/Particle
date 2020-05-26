@@ -5,6 +5,9 @@
 (de set-ptr (P B)
   (put P 'b B))
   
+
+(de get-ptr-ref ()
+  (val *ptr))
   
 (de pt-ptr (Po)
   (set-ptr *ptr Po)
@@ -13,22 +16,22 @@
 
 
 (de pt-prv ()
-  (let? Po (prv> (get *ptr 'b))
+  (let? Po (prv> (get-ptr-ref))
     (pt-ptr Po)))
 
 
 (de pt-nxt ()
-  (let? Po (nxt> (get *ptr 'b))
+  (let? Po (nxt> (get-ptr-ref))
     (pt-ptr Po)))
 
 
 (de pt-sup ()
-  (let? Po (sup> (get *ptr 'b))
+  (let? Po (sup> (get-ptr-ref))
     (pt-ptr Po)))
 
 
 (de pt-sub ()
-  (let? Po (sub> (get *ptr 'b))
+  (let? Po (sub> (get-ptr-ref))
     (pt-ptr Po)))
 
 
@@ -36,7 +39,7 @@
   (let (F T
         S (if *on-car  # Move up if on Car
               (get *ptr 'b 'c)
-              (get *ptr 'b))
+              (get-ptr-ref))
         P S)
     (while F
       (if (get P 'line)
@@ -53,7 +56,7 @@
   (let (F T
         S (if *on-car  # Move up if on Car
               (get *ptr 'b 'c)
-              (get *ptr 'b))
+              (get-ptr-ref))
         P S)
     # Stop before line
     (while F

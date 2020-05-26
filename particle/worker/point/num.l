@@ -13,3 +13,7 @@
 
 
 (class +Num +Atom)
+
+(dm lay> ()
+  (lay-cur> This)
+  NIL)

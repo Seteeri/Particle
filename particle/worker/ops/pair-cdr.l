@@ -66,7 +66,7 @@
     (b> C Po)
     (a> Po Ref)        
 
-    (lay> Po 'y)
+    (set-lay> Po 'y)
 
     # With current line, upd 'l for all subseq lines to Ref
     (let L *line

@@ -14,13 +14,11 @@
 
 (class +Atom +Point)
 
-
 (dm exp?>
   # When expanded, 'c will be a symbol and its car will be caller
   (and (bel-sym?> This) (is-car?> This)))
 
-# These 4 are same as +Sym  
-  
+ 
 (dm prv> ()
   (when (: c) (prv> @)))
 

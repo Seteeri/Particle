@@ -296,7 +296,7 @@
     
     # Creates line for Po, C and Cb
        
-    (lay> Po 'y)
+    (set-lay> Po 'y)
     
     (if (get C 'line)
     
@@ -421,7 +421,7 @@
     (b> Cc Po)
     (a> Po Ref)
     
-    (lay> Po 'y)
+    (set-lay> Po 'y)
     
     (if Is-Cc-Sym
         
@@ -529,7 +529,7 @@
     (a> Cc Po)
     (a> Po C)
 
-    (lay> Po 'y)
+    (set-lay> Po 'y)
     
     # Creates line for Po, C and Pb
     
@@ -603,7 +603,7 @@
     (a> Cc Po)
     (a> Po Ref)
 
-    (lay> Po 'y)
+    (set-lay> Po 'y)
     
     # Creates line for Po, Ref and Pb
     

@@ -3,6 +3,64 @@
 (def '*line-lay)
 (def '*list-lay)
 
+
+(de lay-pt-start-2 (Po Ln Lay-A Lay-B)
+  (setq *bnds-x NIL
+        *bnds-y NIL
+        *line-lay Ln
+        *list-lay NIL)
+  (lay-pair-2 Po Lay-A Lay-B))
+
+  
+(de lay-pair-2 (Any Lay-A Lay-B)
+
+  # Iterative pre order traversal
+  #
+  # Draw pair
+  # Draw cars, deepest first
+  # Draw cdr, deepest first
+  
+  # Lay only applies to root
+
+  # Push root
+  (let L (list (list Any))
+  
+    (while (setq Any (pop 'L))
+
+      #(println Any)
+    
+      (let ((Any Rel Po-C) Any
+            Po (if Any
+                   (lup-pt Any)
+                   (get Po-C 'b)))
+        
+        #(println (h64 (adr Any)) (adr Any) Any Po (type Po))
+        (println 'lay-pair-2 Any Po (type Po))
+        ~(assert Po)
+        
+        # Draw Pair
+        # Pair will position cur for car
+        #   +Int will pos and draw car itself
+        # Get next item
+        
+        # Must do this here
+        # Cannot guarantee Cdr will be drawn next (after lay>)
+        # if Car is deep
+        (when (and (= Rel 'b) Po-C)
+          (pos-cur-cdr> Po-C))
+        
+        # Lay should return next obj to draw
+        (let N (lay> Po)
+          (when (car N)
+            #(prin " ") (println "lay-pair-2  PUSH: " @)
+            (push 'L @))
+          (when (cdr N)
+            #(prin " ") (println "lay-pair-2  PUSH: " @)
+            (push 'L @)))))))
+
+                    
+###################
+
 (de upd-tree (List)
   (unless List (setq List *master))
   (mov-cur-ori List)
@@ -77,114 +135,3 @@
         *bnds-y (if *bnds-y
                     (min @ (cadr *cur))
                     (cadr *cur))))
-
-              
-(de lay-pt-start (Po Line Skip)
-  #{
-    Only apply skip to immediate Po
-    'skip-car
-    'skip-cdr
-    'skip-car-cdr
-  }#
-  (setq *bnds-x NIL
-        *bnds-y NIL
-        *line-lay Line
-        *list-lay NIL)
-  (lay-pair Po Skip))
-
-
-(de lay-pair (Po Skip)
-
-  # Iterative pre order traversal
-
-  # Draw pair
-  # Draw cars, deepest first
-  # Draw cdr, deepest first
-
-  # Push root
-  (let L ()
-    
-    (push 'L (cons Po 'a))
-    
-    # Proccess root
-    (while (setq Po (pop 'L))
-      
-      (let (Rel (cdr Po)
-            Po (car Po))
-        
-        (when NIL
-          (prinl)
-          (println 'lay-pair Po Rel (type Po) (get Po 'data))) 
-                
-        (when (= Rel 'b)
-          (lay-pair-pre Po))
-                
-        (if (lay-x?> Po)
-            (lay-x> Po)
-            (lay-y> Po))
-    
-        (unless (= Skip 'skip-car-cdr)
-            
-          # Push right first
-          (let B (get Po 'b)
-            (if (= Skip 'skip-cdr)
-                (off Skip)
-                (unless (or (= B Po) (not B))
-                  (push 'L (cons B 'b)))))
-        
-          (let A (get Po 'a)
-            (if (= Skip 'skip-car)
-                (off Skip)
-                (unless (or (= A Po) (not A))
-                  (push 'L (cons A 'a))))))))))
-
-                  
-(de lay-pair-pre (Po)
-        
-  (let? C (get Po 'c)
-  
-    (let (Ori (get C 'ori)
-          Dims (get C 'dims)) # or line?
-
-      (when NIL
-        (prin "  ") (println 'lay-pair-pre Po Rel
-          "C: " C (get C 'data))
-        
-        (prin "  ") (println 'lay-pair-pre Po Rel
-          "Dims of C: " (format (car Dims) *Scl)
-                        (format (cadr Dims) *Scl)))
-          
-      (if (lay-x?> C)
-
-          # If Pair get from Car
-          # If Sym (exp) get from Val        
-
-          (let (Car (get C 'a)
-                Val (get Car 'b)
-                X (if (is-sym? C)
-                      (if Val # Get from Cdr else Car
-                          (+ (get Val 'ori 1) (get Val 'dims 1))
-                          (+ (get Car 'ori 1) (get Car 'dims 1)))
-                      (if Val # Get from Cdr else Car
-                          (+ (get Val 'ori 1) (get Val 'dims 1))
-                          (+ (get Car 'ori 1) (get Car 'dims 1)))))
-            
-            (when NIL
-              (prin "  ") (println 'lay-pair-pre Po Rel
-                "...Sym: " Car (get Car 'data) (get Car 'dims))
-              (prin "  ") (println 'lay-pair-pre Po Rel
-                "Sym Car: " (get Car 'a) (get Car 'a 'data) (get Car 'a 'dims))
-              (prin "  ") (println 'lay-pair-pre Po Rel
-                "Sym Cdr: " Val (car (get Val 'data)) (get Val 'dims))
-              (prin "  ") (println 'lay-pair-pre Po Rel
-                "X: " (format X *Scl)))
-              
-            (mov-cur X
-                     (cadr Ori))
-            (adj-cur-x 2.0))
-          
-          (prog
-            # Position under
-            (mov-cur (car Ori)
-                      (- (cadr Ori) (cadr Dims)))
-            (adj-cur-y (+ 1.0 *sublist-space-y)))))))

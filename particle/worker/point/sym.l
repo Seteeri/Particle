@@ -24,9 +24,57 @@
 
 (class +Sym +Atom)
 
-(class +Box +Sym)
 (class +Ext +Sym)
+
+(class +Box +Sym)
+
+(dm lay> ()
+
+  # Draw This
+  (super)
+
+  # Draw car (name)
+  # Car is only ref'd from here, not in tree
+  (lay> (: a))
+      
+  # Return next item, cdr
+  (let B (val (: data))
+  
+    # If NIL, only ref'd here
+    (cons NIL
+          (list (if B @ NIL)
+                'b
+                This))))
+
 (class +Int +Sym)  
+
+# Draw Car/Name after main
+  
+(dm lay> ()
+
+  # Draw This
+  (super)
+
+  # Draw car (name)
+  # Car is only ref'd from here, not in tree
+  (lay> (: a))
+      
+  # Return next item, cdr
+  (let B (val (: data))
+  
+    # If NIL, only ref'd here
+    (cons NIL
+          (list (if B @ NIL)
+                'b
+                This))))
+  
+        
+(dm lup-a> () (: a))
+(dm lup-b> ()
+  (if (: b)
+      (super)
+      (: b)))
+
 
 (class +Str +Sym)
   
@@ -66,4 +114,8 @@
     (setq *cur (list (max X-B (- (car *cur) (meta '(+Vertex) 'adv-vert)))
                      (min Y-B (cadr *cur))))))
 
-    
+                     
+(dm lay> ()
+  (lay-cur> This)
+  # Handle when value is not self
+  NIL)                     

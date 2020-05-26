@@ -65,5 +65,6 @@
   This)
 
   
-(dm pos-cur-car-x> ())
-(dm pos-cur-car-y> ())
+(dm lay> ()
+  (lay-cur> This)
+  NIL)

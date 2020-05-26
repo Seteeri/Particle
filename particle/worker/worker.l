@@ -187,53 +187,23 @@
 
   (let ((X Y) *cur)
     
-    (setq *bind-ops-p (gen-sym-full '*binds-ops 'x))
+    (let (Po-Start (gen-sym-full '*start 'x T T)
+          Po-Cdr   (gen-sym-full '*cdr 'y T T "↓" *selb-yellow)
+          #Po-Car  (gen-sym-full '*car 'y T NIL "↑")
+          #Po-D    (gen-sym-full '⇲    'y T NIL "⇲" *selb-yellow)
+          )
     
-    (setq *start (gen-sym-full '*start 'x)
-          *pos-main (copy *cur)
-          *line (get *start 'b)
-          *master *start)
-                
-    (def '*cdr (gen-sym-full '*cdr 'x (cons NIL T) "↓" *selb-yellow))
-    (def '*car (gen-sym-full '*car 'x (cons NIL T) "↑"))
-    (def '⇲ (gen-sym-full '⇲ 'y (cons NIL T) "⇲" *selb-yellow))
-    
-    (set-ptr *cdr (get *start 'b)) (put *cdr 'lay 'y)
-    (set-ptr *car (get *start 'b)) (put *car 'lay 'y)
-    (def '*ptr *cdr) # Set def input to Cdr
-            
-    # Make root and branches
-    # Make most dynamic closest to *start
-    (let (Po (gen-point '("*symbols"
-                          "*binds-ops"
-                          "*log"
-                          "*registers"
-                          "*pointers"   
-                          "*plist"
-                          "*start"))
-          Po-2 (make
-                   (let X Po
-                     (for I 6
-                       (link X)
-                       (setq X (get X 'b)))
-                     (link X))))
-      
-      # Connect symbols
-      (a> (get Po-2 2) *bind-ops-p)
-      (a> (get Po-2 7) *start)
-    
-      (lay-pt-start Po Po)      
-      #(println (lup-node (get Po 'data)))
-      )
-    
-    (mov-cur-abv (get *start 'b))
-    (lay-ptr *cdr)
-    
-    (mov-cur-abv *start)
-    (adj-cur-y 4.0)
-    (lay-ptr *car)    
+    (mov-cur 0.0 0.0)
+    (lay-pt-start-2 '*start '*start T T)
         
-    T))
+    (top> Po-Start)
+    (lay-pt-start-2 '*cdr '*cdr)
+        
+    (setq *cdr '*start)    
+    
+    (def '*ptr '*cdr)
+        
+    T)))
 
 
 # Unused

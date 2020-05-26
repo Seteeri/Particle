@@ -14,15 +14,19 @@
 
 (class +Pair +Point)
 
-
-(dm T (Data
-       A
-       B
-       Verts
-       Lay)
-  (super Data A B Verts Lay)
-  (=: line))
-
+  
+(dm lay> ()
+  (super)
+  (cons
+    (let B (cdr (: data))
+      (list (if B @ NIL)
+            'b
+            This))
+    (let A (car (: data))
+      (list (if A @ NIL)
+            'a
+            This))))
+  
   
 (dm prv> ()
   (when (: c)
