@@ -141,18 +141,15 @@
                   Verts-Pair
                   Lay))
       (put Pair 'dims (list Wid-Pair (meta '(+Vertex) 'adv-vert-2)))
-      (idx-pt Pair)
       Pair))
             
             
 (de gen-atom (Any)
-  (prog1
-    (if (num? Any)
-        (gen-num Any)
-        (if Any
-            (gen-sym Any)
-            (gen-nil Any)))
-    (idx-pt @)))
+  (if (num? Any)
+      (gen-num Any)
+      (if Any
+          (gen-sym Any)
+          (gen-nil Any))))
 
 
 (de gen-num (Any)
@@ -202,11 +199,8 @@
   
   # If lay=y, name should have line
   
-  # If node exists, add it
-  # Else create it,  
-        
   (unless Col (setq Col (get-col-type Any)))
-    
+  
   (let (Name (if (str? Any) (name Any) (sym Any))
         Val (val Any)
         Dr (if (= Val Any) NIL Val)
@@ -219,14 +213,14 @@
                     Verts-Car
                     Lay))
         Cdr (when (and (not (cdr Skips))
-                      (not (= Val Any)))
+                       (not (= Val Any)))
               (gen-point Dr 'x NIL))
         (Verts-Pair Wid-Pair) (make-vert-pair Char-Pair Col (= Val Any))
         Pair (new (if (str? Any) '(+Str) '(+Int)) # Color as a symbol
-                      Any
-                      Car Cdr
-                      Verts-Pair
-                      Lay))
+                       Any
+                       Car Cdr
+                       Verts-Pair
+                       Lay))
                                               
     # Set dims
     (put Car 'dims (list Wid-Car (meta '(+Vertex) 'adv-vert-2)))
@@ -238,7 +232,7 @@
       (put Car 'c Pair))
 
     (when (and Cdr
-              (not (= Val Any)))
+               (not (= Val Any)))
       (put Cdr 'c Pair))
       
     # Put line in Cdr
@@ -248,49 +242,5 @@
         
     # Put line in symbol also
     (put Pair 'line (new '(+Line)))
-    
-    (idx-pt Pair)
-    
-    Pair))
-    
-    
-##############
-
-
-(de h64 (X)
-  (native PATH-H64S "h64s" 'N X))
-  
-    
-(de idx-pt (P)
-
-  (with P
-  
-    (let Node (lup-node (: data))
-    
-      # If node: add to list
-      # else: create it
-      (if Node
       
-          # Create list if needed
-          (if (lst? (cdr Node))
-            (push (cdr Node) P)
-            (con Node (list P)))
-
-          (prog
-            (idx-node P (get P 'data))
-            (when (: a) (idx-node (: a) (get (: a) 'data)))
-            (when (: b) (idx-node (: b) (get (: b) 'data))))))))
-
-  
-(de idx-node (X D)
-  (idx '*points (cons (h64 (adr D)) X) T)
-  (inc '*cnt-p)
-  (when NIL (println 'gen-sym-full (depth *points) *cnt-p)))
-  
-  
-(de lup-node (D)
-  (lup *points (h64 (adr D))))
-  
-  
-(de lup-pt (D)
-  (cdr (lup *points (h64 (adr D)))))
+    Pair))

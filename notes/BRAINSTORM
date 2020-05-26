@@ -4653,13 +4653,10 @@ what if manipulate data then get data:particle?
 
 ======================
 
-Destructuring bind
+hash fns
+https://gist.github.com/badboy/6267743
 
-In: (p1 p2 p3)
-
-Fn: (A B C)
-
-Ou: (C B A)
+https://stackoverflow.com/questions/664014/what-integer-hash-function-are-good-that-accepts-an-integer-hash-key
 
 ============================================
 ============================================

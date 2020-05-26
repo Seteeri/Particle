@@ -20,7 +20,6 @@
             "/particle/c/ksd.l"
             "/particle/c/xkbcommon.l"
             "/particle/misc.l"
-            "/particle/kvmap.l"
             "/particle/theme/selenized.l"
             "/particle/ipc/ipc.l"
             "/particle/prot/conn.l"
@@ -82,7 +81,6 @@
 (def '*font) # Make this visible also?
 
 (def '*points)
-(def '*cnt-p 0)
 (def '*binds)
 (def '*start)  # Current list
 (def '*log)    # List of history for undo/redo
@@ -94,12 +92,8 @@
 (def '*ptr)                 # Cur ptr
 
 
-(def 'PATH-H64S "/home/user/Particle/particle/ext/libh64s.so")
-
-
 (de init-worker ()
-
-
+    
   (setq *i-proc 1
         *font (new '(+Font)
                    "DejaVuSansMono"
@@ -222,9 +216,7 @@
       (a> (get Po-2 2) *bind-ops-p)
       (a> (get Po-2 7) *start)
     
-      (lay-pt-start Po Po)      
-      #(println (lup-node (get Po 'data)))
-      )
+      (lay-pt-start Po Po))
     
     (mov-cur-abv (get *start 'b))
     (lay-ptr *cdr)
@@ -232,8 +224,19 @@
     (mov-cur-abv *start)
     (adj-cur-y 4.0)
     (lay-ptr *car)    
-        
-    T))
+    
+    # Make data:point index in *points
+    
+    (let L NIL
+      (for X '(*car
+               *cdr
+               ⇲
+               *start
+               *bind-ops-p)
+        (when X
+          (push 'L (cons (get (val X) 'data) (val X)))))
+      (balance '*points (sort L))
+      (pretty *points))))
 
 
 # Unused

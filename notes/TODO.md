@@ -14,6 +14,8 @@ TODO
   REPL:
   
   * TUES
+    * Rewrite points
+    * Use prog1
     * Implement modes
       * Str (Default)
         * Produces single char strings
