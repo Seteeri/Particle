@@ -1,430 +1,215 @@
-(de make-pair-str-2 (Data Lay)
-
+(de make-pair-str (Dat Lay)
   #{
-    Con data
   
-    Gen data +Point
-    - Need not connect Particles to other Particles
-  
-    Lay data
-    - Traverse data, lup/draw +Point
-    
+    - Repl str on atoms
+    - Ins str (before) on pairs
+    - Use list command
+      - Make list with atom    
+      - Make list with list
+
   }#
+
+  (println (get *ptr 'rel) (get *ptr 'ref) (get *ptr 'nil))
   
-  (let (Data-L (list Data)
-        Po (gen-point Data-L 'x (cons NIL NIL) T))
-                
-    (if (tail 1 *start)
-        (prog
-          # Del prv
-          (del> (get (lup-pt @) 'b))
-          (con @ Data-L))
-        (prog
-          # Del prv
-          # NIL is not ref'd in tree so pass
-          (del> (get (lup-pt '*start) 'b))
-          (setq *start Data-L)
-          (put Po 'line (new '(+Line)))
-          (put (lup-pt '*start) 'b Po)))
+  (cond
+    
+    #####
+    # NIL
+    
+    ((a-nil?> *ptr)
+      (println 'make-pair-str "A NIL")
+      
+      # repl nil, only applies to pairs
+      # (NIL . a) -> (b . NIL)
+      
+      (repl-a-nil Dat)
+      
+      T)
+      
+      
+    ((b-nil?> *ptr)
+      (println 'make-pair-str "B NIL")
+      
+      # repl nil for sym and pairs
+      # (a . NIL) -> (a b . NIL)
+      
+      # Handle when P-Cell is a Pair
+      
+      (repl-b-nil Dat)
+      T)      
+     
+    ######
+    # ATOM
+      
+    ((a-atom?> *ptr)
+      (println 'make-pair-str "A ATOM")
+      
+      # repl
+      # (a . b) -> (c . a)
+      
+      (repl-a-atom Dat)
+      T)      
+      
+      
+    ((b-atom?> *ptr)
+      (println 'make-pair-str "B ATOM")
+      
+      # Skip when pt'ing to symbol for now
+      (unless (is-sym?> *ptr)
+      
+        # repl atom
+        (repl-b-atom Dat)))
+      
+    ######
+    # PAIR
+
+    ((a-pair?> *ptr)
+      (println 'make-pair-str "A PAIR")
+      
+      # ins bef cur
+      # ((a)) -> ((b a))
+      
+      (if (lay-x?> *ptr)
+          (con-a-pair-x Dat)
+          (con-a-pair-y Dat)))
+      
+    ((b-pair?> *ptr)
+      (println 'make-pair-str "B PAIR")
+      
+      # ins bef cur
+      # (a) -> (b a)
+      (if (lay-x?> *ptr)
+          (con-b-pair-x Dat)
+          (con-b-pair-y Dat)))
+      
+    (T
+      # root
+      (println 'make-pair-str "*ptr uninitialized"))))
+      
+      
+(de repl-a-atom (Dat)
+
+  (println 'repl-a-atom)
+
+  (let (Po-Cell (ptr-car-sup '*ptr)
+        Cell (get Po-Cell 'data)
+        Po-Del  *ptr
+        Po-Dat (gen-point Dat 'x NIL T))
+            
+    (set Cell Dat)
+    
+    (if Dat
+        (ptr-ref '*ptr Po-Dat 'a)
+        (ptr-ref '*ptr Po-Cell 'a Po-Dat))
+
+    (put Po-Cell 'a (unless Dat Po-Dat))
+    (del> Po-Del)
+
+    (upd-tree)
+    (mov-⇲ *line)))
+     
+      
+(de repl-a-nil (Dat)
+
+  (println 'repl-a-nil)
+
+  (let (Po-Cell (ptr-nil '*ptr)
+        Cell (get Po-Cell 'data)
+        Po-Del  (get Po-Cell 'a)
+        Po-Dat (gen-point Dat 'x NIL T))
+            
+    (set Cell Dat)
+    
+    (if Dat
+        (ptr-ref '*ptr Po-Dat 'a)
+        (ptr-ref '*ptr Po-Cell 'a Po-Dat))
         
-    #(println 'make-pair-str-2 '*start *start)
+    (put Po-Cell 'a (unless Dat Po-Dat))        
+    (del> Po-Del)
     
-    (mov-cur 0.0 0.0)
-    (lay-pt-start-2 '*start '*start T T)
+    (upd-tree)
+    (mov-⇲ *line)))
+      
+      
+(de repl-b-atom (Dat)
+  T)        
+
+  
+(de con-a-pair-x (Dat)
+  T)
+
+  
+(de con-a-pair-y (Dat)
+  T)  
+  
+  
+###
+      
+
+(de repl-b-nil (Dat)
+
+  (println 'repl-b-nil)
+  
+  (let (Po-Del  (get *ptr 'ref)
+        Po-Cell (lup-pt (get *ptr 'nil))
+        Cell (get Po-Cell 'data)
+        List-Dat (list Dat)
+        Po-Dat (gen-point List-Dat 'x NIL T)
+        Atomic-Cell (atom Cell))
         
-    #(pretty *points)
-    #(println (depth *points))
+    # Depends on cell type and tgt
+    (if Atomic-Cell
     
-    #(off X)
-    #(balance 'X (idx '*points))
-    #(println (depth X))
+        # Sym
+        (prog
+          (con> Po-Cell
+                List-Dat
+                (unless Dat Po-Dat))
+          (when (get Po-Del 'line)
+            (mov-line Po-Del Po-Dat))
+          (ref> *ptr List-Dat 'b))
+          
+        # Pair
+        (prog
+          (con> Po-Cell
+                List-Dat
+                (unless Dat Po-Dat))
+          (ref> *ptr List-Dat 'b)))
     
-    T))
     
-
-############################
-
-
-(de make-pair-str (Data Lay)
-
-  (let (Ref (get-ptr-ref)
-        Po-Fn 
-          (if *on-car
-              (let Po (gen-point Data Lay NIL T)
-                (if (is-end?> Ref)
-                    (cons (repl-cdr Ref Po) repl-cdr-post)
-                    (cons (repl-car Ref Po) repl-car-post)))
-              (let Po (gen-point (list Data) Lay (cons NIL T) T)
-                (if (is-car?> Ref)
-                    (cons (ins-pair-car Ref Po) ins-pair-car-post)
-                    (cons (ins-pair-cdr Ref Po) ins-pair-cdr-post)))))
-                    
     (upd-tree)
     (mov-⇲ *line)
-    
-    ((cdr Po-Fn) (car Po-Fn))
-    (lay-ptr *ptr)
-    
-    (car Po-Fn)))
-
-    
-(de repl-car-post (Po) 
-  (set-ptr *ptr (sub> (get Po 'c 'b))))
-  
-  
-(de repl-cdr-post (Po)
-  (set-ptr *ptr (sub> Po)))
-  
-  
-(de ins-pair-car-post (Po)
-  (println Po (get (car Po) 'data) (get (car Po) 'b))
-  (set-ptr *ptr (if (cdr Po)
-                        (sup> (car Po))
-                        (top> (get (car Po) 'b)))))
-  
-  
-(de ins-pair-cdr-post (Po) 
-  (set-ptr *ptr (top> (get Po 'b))))
-  
-
-(de repl-cdr (Ref Po)
-  #{
-              *
-    [ ]  [ ]  NIL
-     A    B
-     
-    ->
-    
-    [ ]  [ ]  T
-     A    B    
-  
-    Or
-    
-              *
-    [ ]  [ ]  NIL
-     A    B
-     
-    ->
-    
-    [ ]  [ ]  [ ]
-     A    B    C  
-  }#
-
-  (println 'repl-cdr)
-  
-  (let (C (get Ref 'c)
-        Cb (get Ref 'b))
-
-    (b@ C Po Cb)
-
-    (when (get Ref 'line)
-      (mov-line Ref Po))
-    
-    # Cdr is still used so don't del
-    (del> Ref T NIL)
-
-    Po))
-
-    
-(de repl-car (Ref Po)
-  #{
-    Replace car of y pair
         
-    ---
-        
-    [C]  [P]  [B]
-    a    b    c
-         *
+    (nex> *ptr)
+    
+    #(top> Po-Dat)
+    #(draw> *ptr)
+    
+    T))
 
     
-    [ ]  [ ]  [ ]
-    a    x    c
-         *
-
-    ---
-    
-    [Ccc]
-    a    
-    
-    [Cc]  [C]  [ ]  [ ]
-               x    c
-               *        
-
-  }#
-
-  (println 'repl-car)
+(de con-b-pair-x (Dat)
   
-  (let (Pair (get Ref 'c)
-        C (get Pair 'c))
-
-    (a> Pair Po)
-    
-    (cond ((of-cdr?> C Pair)
-           (b> C Pair))
-          ((of-car?> C Pair)
-           (a> C Pair))
-          (T
-           (quit "repl-car: invalid pair")))
+  # Incomplete
+  
+  (let (Po-Cell *ptr
+        Cell (get Po-Cell 'data)
+        List-Dat (list Dat)
+        Po-Dat (gen-point List-Dat 'x NIL T)
+        Po-Pre (ptr-car-pre '*ptr)
+        Pre (get Po-Pre 'data))
+        
+    # Insert before current object
+    (con> Po-Pre List-Dat NIL)
+    (con> Po-Dat Cell     NIL)
+      
+    (p-pre> (get '*ptr 'ptr) Po-Dat)
           
-    (del> Ref T T)
-        
-    Po))  
-
-    
-(de ins-pair-cdr (Ref Po)
-  #{
-    Insert after ptr/pair (rel to Ref 'b 'c)
-    or
-    Insert before ptr/pair
-    
-          *
-    [ ]  [ ]  ...
-    a    c    
-
-    ->
-    
-               *
-    [ ]  [ ]  [ ]  ...
-    a    b    c                 
-    
-    ---
-    
-    Special case: Insert before ptr/list
-    
-    [ ]  [ ]
-    a    b
-    
-    *
-    [Y]  [ ]  NIL
-         c
-         
-    NIL
-    
-    - Normally Po would be right of B which is awkward,
-    so ins Po as newline before Y
-    - Or start newline and move Y to newline
-    
-  }#
-  
-  (println 'ins-pair-cdr)
-  
-  (let (Pair (get Ref 'c))
-
-    (b@ Pair Po Ref)
-    
-    # Make line as necessary if car is a list
-    (if (and (has-pair?> Ref)
-             (is-pair? Ref))
-        (make-line Ref)
-        (when (get Ref 'line)
-          (mov-line Ref Po)))
-
-    Po))
-    
-
-(de ins-pair-car (Ref Po)
-
-  #{
-  
-    Insert item before ptr
-
-    [X]
-    
-          *
-    [Y]  [ ] ...
-          X
-    NIL
-    
-    ->
-    
-    [X]
-    
-               *
-    [Y]  [ ]  [ ] ...
-          Z    X
-    NIL    
-    
-    -------------------
-    
-          *
-    [Y]  [Y]  ...
-              
-         NIL
-    NIL
-    
-    ->
-          *
-    [Y]  [ ]
-         a
-         
-         [Y]  ...
-              
-         NIL
-         
-    NIL
-    
-  }#
-    
-  (println 'ins-pair-car)
-    
-  (let (Pair (get Ref 'c)
-        Is-Ref-Pair-of-Pair (and (is-pair? Pair)
-                                 (has-pair?> Ref)))
-
-    (a> Pair Po)                                 
-                                 
-    (b> Po Ref)
-                  
-    # assert Ref has a line
-                  
-    (mov-line Ref Po)        
-          
-    (when Is-Ref-Pair-of-Pair
-      # Create additional line for Ref
-      # Ins after current line (Po)
-      (put Ref 'line (new '(+Line)
-                          Po
-                          (get Ref 'b)
-                          (if (get *line 'line 'l) @ *line)))
-      (put *line 'line 'n Ref))
-        
-    (cons Po Is-Ref-Pair-of-Pair)))
-    
-
-#########################################
+    (upd-tree)
+    (mov-⇲ *line)
+    (top> Po-Cell)
+    (ptr-lay '*ptr)))
     
     
-(de repl-list-str (Sta End Data Skip-Upd)
-
-  # Replace list/line of strings with single string
-  
-  (let (Prv (get Sta 'c)
-        Po (gen-point (list Data) 'x NIL T))
-    
-    # If car of pair
-    (if (of-car?> Prv Sta)
-        (a> Prv Po)
-        (b> Prv Po))
-
-    # Po <-> End'b
-    (let (Eb (get End 'b)
-          Pb (get Po 'b))
-      (when Eb
-        (when (get Pb 'line) (mov-line Eb Pb))
-        (del> Pb T T)
-        (b> Po Eb)))
-    
-    (when (get Sta 'line)
-      (mov-line Sta Po))
-    
-    # Inclusive
-    (del-rx Sta End)
-    
-    (set-ptr *ptr (get Po 'b))
-    
-    # Later, move this group to undo/cmd list
-    (unless Skip-Upd
-      (upd-tree)
-      (mov-⇲ *line)        
-      
-      # Put Ptr above new point
-      (mov-cur-abv (get Po 'b)))))
-
-
-(de repl-str-list (Ref List Skip-Upd)
-
-  # Replace single string with list/line of strings
-  
-  (let (Sta (get Ref 'c)
-        End (get Ref 'b)
-        Prv NIL)
-  
-    # Add list, item by item
-    # Do car, then cdr
-
-    (let (Data (car List)
-          Po (gen-point (list Data) 'x (cons NIL T) T))
-          
-      (if (of-car?> Sta Ref)
-          (a> Sta Po)
-          (b> Sta Po))
-  
-      (mov-line Ref Po)
-  
-      (setq Prv Po))
-    
-    (for Data (cdr List)
-    
-      (let Po (gen-point (list Data) 'x (cons NIL T) T)
-        
-        (b> Prv Po)
-        
-        (setq Prv Po)))
-
-    # Con last Po to existing cdr
-    (b> Prv End)        
-    
-    # Del Ref except Cdr
-    (del-car> Ref)    
-    
-    (set-ptr *ptr End)
-    
-    (unless Skip-Upd
-      (upd-tree)
-      (mov-⇲ *line)        
-              
-      # Put Ptr above new point
-      (mov-cur-abv End))))
-
-      
-(de build-str (Start)
-  # Go prv until Sym, non-Str or newline
-  (let (P Start
-        B NIL
-        D NIL)
-        
-    (while (and (has-str?> P)
-                (not (is-sym? P))
-                (not (of-car?> P B))
-                (not (get P 'line)))
-      
-      (push 'D (get P 'a 'data))
-      
-      (setq B P)
-      (setq P (get P 'c)))
-    
-    (if (and (has-str?> P)
-             (not (is-sym? P))
-             (not (of-car?> P B)))
-      (push 'D (get P 'a 'data))
-      (setq P (get P 'b)))
-    
-    (list P D)))
-
-    
-(de build-str-sp (Start)
-  # Go prv until sp, non-str or line
-  (let (P Start
-        B NIL
-        D NIL)
-        
-    (while (and (has-str?> P)
-                (not (= (get P 'a 'data) " ")) # what about multiple spaces?
-                (not (is-sym? P))
-                (not (of-car?> P B))
-                (not (get P 'line)))
-      
-      (push 'D (get P 'a 'data))
-      
-      (setq B P)
-      (setq P (get P 'c)))
-    
-    (if (and (has-str?> P)
-             (not (= (get P 'a 'data) " ")) # what about multiple spaces?
-             (not (is-sym? P))
-             (not (of-car?> P B)))
-      (push 'D (get P 'a 'data))
-      (setq P (get P 'b)))
-    
-    (list P D)))
-      
+(de con-b-pair-y (Dat)
+  T)

@@ -77,10 +77,10 @@
         (mov-⇲ *line)      
         
         # If on-car maintain car
-        (if *on-car
-            (set-ptr *ptr (sub> New-Ref))
+        (if *ptr-on-car
+            (set-ptr-ref (sub> New-Ref))
             (prog
-              (set-ptr *ptr New-Ref)
+              (set-ptr-ref New-Ref)
               (mov-cur-abv New-Ref)))
               
         (lay-ptr *ptr))))

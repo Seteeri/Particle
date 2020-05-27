@@ -75,7 +75,9 @@
 
 (dm del> ()
   (send-msg-rend (pack "(zv " (: off-gl) '")"))
+  #(println "+Vert.del>" This)
   (push '*vert-offs (: off-gl))
+  (=: off-gl NIL)
   (dec '*cnt-v))
     
     

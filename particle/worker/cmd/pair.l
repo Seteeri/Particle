@@ -24,10 +24,7 @@
         (a b c d e f g h i) -> (a b c d (e f g h i))
   }#  
   
-  (let Ref (get-ptr-ref)
-    (if *on-car
-        (make-list-car Ref)
-        (make-list-cdr Ref))))
+  (make-list-car '*ptr))
 
 
 (de cmd-del (Dir)
@@ -36,7 +33,7 @@
 
   (let? Ref (get-ptr-ref)
   
-    (let Tgt (if *on-car (get Ref 'c) Ref)
+    (let Tgt (if *ptr-on-car (get Ref 'c) Ref)
   
       (del-pt Tgt))))
 
@@ -48,7 +45,7 @@
   (let? Ref (get-ptr-ref)
   
     (let (C (get Ref 'c)
-          Tgt (if (and *on-car
+          Tgt (if (and *ptr-on-car
                        (not (is-nil? Ref)))
                   (get C 'c)
                   C))

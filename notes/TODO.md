@@ -13,16 +13,24 @@ TODO
   
   REPL:
   
-  * TUES
+  * THURS
     * Refactor
-      * Gen/Lay
-        * Nil
-          * Draw for lists
-          * Syms: only draw for internal
-            * Strs: don't draw
-      * Ptr
-      * Ops
-      * List/Line
+      * Gen/Lay [Mon]
+        * Reuse existing particles
+          * Pass flag to gen -> idx
+        * New will gen verts [Done]
+        * Pass sym exp to gen [WIP]
+      * Ptr/Ops [Mon]
+        * Single ptr
+          * Ptr is yellow
+          * Selected is red
+          * Orange used for condensed
+        * Drawn sym name linked directly to ref
+        * +Pointer should ref the +Point sym
+      * List [Tues]
+      * Line [Tues]
+      * Del [Wed]
+      
     * Use prog1
     * Implement modes
       * Str (Default)

@@ -1,151 +1,20 @@
 #{
 
-  Parent is either a Pair or Sym
-
-  Case 1: (and (lay-x?> Ref) (is-car?> Ref))
-
-    [X]  [X]  Atm
-    SYM   A
-          *
+    [X]  CDR/ATM
     
-    OR:
-
-    [X]  [X]  Atm
-      A    B
-          *
-  
-    Produce:
-    
-      [X]  
-        A   
-        
-      [Y]  [X]
-            B
-            *
-            
-      Atm
-  
-  Case 2: (or (is-cdr?> Ref)
-              (is-end?> Ref))
-  
-    [X/Y]
-      A
-    
-    Atm
-    *
-
-    Produce:
-    
-      [X]  
-        A   
-        
-      [Y]  Atm
-            *
-            
-      Atm        
-  
-    ---------------
-  
-    [X]  [X]  Atm
-      A    B    *
-    
-    Produce:
-    
-      [X]  [X]
-        A    B
-        
-      [Y]  Atm
-            *
-            
-      Atm
+    CAR/ATM
     
     
-  * Line can be done automatically in cdr case?
-    * Transfer line to new point
-  * Cdr can be end or not
-          
-          
-  Case 3: (and (lay-y?> (get Ref 'c 'c)) (is-car?> (get Ref 'c)))
-  
-    [Y]  [X]  Atm
-          A
-          *
+    [Y]  CAR/ATM
     
-    PRODUCE:
+    CDR/ATM
     
-      [Y]  [Y]  [X]  Atm
-                A
-                *          
     
-    Handle Y Sym?
-    
-        
-  Case 4: (and (lay-y?> (get Ref 'c)) (is-car?> Ref))
-  
-    [Y]  Atm
-          *
-    Atm
-
-    PRODUCE:
-    
-      [Y]  [Y]  Atm
-                  *                  
-    
-    Does not apply to sym...
-    Unless did zap,intern combo
-      
-  GOAL: Replace old car with new Pair car pt to old car
-    
-    (a b c) -> (a (b) c)
-    
-    FROM:
-    
-      [X]  [X]  [X] 
-      a    b    c
-      
-    TO:
-      
-      [X]  
-      a 
-      
-      [Y]  [X]  NIL
-            b
-      
-      [X]
-      c
-    
+    X/Y dictate line changes
 }#
 
 #{
-  (de make-list-car (Ref)
-    
-    # Check Y then x
-    
-    # Refactor upd into here like str cmds
-    
-    (cond
-    
-      ((and (lay-y?> (get Ref 'c)) (is-car?> Ref))
-        (make-list-car-ya Ref))
-      
-      ((and (lay-y?> (get Ref 'c)) (is-cdr?> Ref))
-      (make-list-car-xyb Ref))
-    
-      ((and (lay-x?> Ref) (is-car?> Ref))
-      
-        (if (and (lay-y?> (get Ref 'c 'c))
-                (is-car?> (get Ref 'c)))
-            (make-list-car-yxa Ref)
-            (make-list-car-xxb Ref)))
-    
-      ((and (lay-x?> Ref) (is-end?> Ref))
-      (make-list-car-xyb Ref))
-                  
-      (T
-        (quit "make-list-car: unknown case"))))
-}#
-
-(de make-list-car (Ref)
+(de make-list-car (Ptr)
   
   # Check Y then x
   
@@ -193,7 +62,181 @@
                 
     (T
       (quit "make-list-car: unknown case"))))
+}#
+
+
+(de make-list-car (Ptr)
+
+  #{
       
+    [X]  CDR/ATM
+    
+    CAR/ATM
+    
+    
+    [Y]  CAR/ATM
+    
+    CDR/ATM
+    
+    
+    3 Factors:
+    
+      * Car/Cdr      
+      * Atm/Pair
+      
+      * X/Y of P-Cell
+    
+  }#
+
+  (cond
+    
+    #####
+    # NIL
+    
+    ((ptr-a-nil? '*ptr)
+      (println 'make-list-car "A NIL")
+      T)
+      
+      
+    ((ptr-b-nil? '*ptr)
+      (println 'make-list-car "B NIL")
+      T)      
+     
+    ######
+    # ATOM
+      
+    ((ptr-a-atom? '*ptr)
+      (println 'make-list-car "A ATOM")
+      (make-list-car-a-atom))
+      
+      
+    ((ptr-b-atom? '*ptr)
+      (println 'make-list-car "B ATOM")
+      T)
+      
+    ######
+    # PAIR
+
+    ((ptr-a-pair? '*ptr)
+      (println 'make-list-car "A PAIR")
+      T)
+      
+    ((ptr-b-pair? '*ptr)
+      (println 'make-list-car "B PAIR")
+      # See pair-cdr
+      T)
+      
+    (T
+      # root
+      (println 'make-list-car "*ptr uninitialized"))))
+
+
+(de make-list-car-a-atom ()
+
+  #{
+              
+        [Cc]  
+        NIL
+
+         
+        [X/C]  Cb
+        NIL
+        *
+    ->
+               
+        [Cc]  
+          A   
+          
+        [Po-Pair]  [Po-List]   
+                    NIL
+                    *
+              
+        Cb
+  }#  
+  
+  #{
+                      
+        [Cc]  [C]  [Cb]  NIL
+        NIL   NIL  NIL
+               *
+              
+    ->
+               
+        [Cc]  
+        NIL  
+
+              
+        [Y/P]  [C]  NIL
+               NIL  
+               *
+        
+        [Cb] NIL
+        NIL
+  }#   
+
+  (let (Po-Tgt *ptr
+        Tgt (get Po-Tgt 'data)
+        Po-Pair (ptr-car-sup '*ptr)
+        Pair (get Po-Pair 'data))
+    
+    (println "Tgt: " Tgt (adr Tgt))
+    (println "Pair: " Pair)
+        
+    (del> Po-Tgt)
+    (setq *ptr)
+        
+    (let (List (list Tgt)
+          Po-List (gen-point List 'x NIL)
+          Ln-N (get *line 'line 'n)
+          Cdr (cdr Pair)
+          Po-Cdr (if Cdr (lup-pt Cdr) (get Po-Pair 'b)))
+    
+      # Repl tgt with list with tgt list
+      #(set Pair List)
+      (set> Po-Pair List Po-List)
+      
+      # Set layout for Pair
+      (set-lay> Po-Pair 'y)
+      
+      (if (get Po-Pair 'line)
+      
+          (prog
+            (put Po-Pair 'line 'n Po-Cdr))
+      
+          (prog 
+            (put *line 'line 'n Po-Pair)
+            (put Po-Pair 'line
+              (new '(+Line)
+                  *line
+                  Po-Cdr
+                  (if (get *line 'line 'l) @ *line)))))
+                     
+      # Create Line for Cdr
+      (if (get Po-Cdr 'line)
+          (put @ 'p Po-Pair)
+          (put Po-Cdr 'line
+            (new '(+Line)
+                  Po-Pair
+                  Ln-N
+                  (get Po-Pair 'line 'l))))
+                  
+      # Create line for List
+      (put Po-List 'line
+        (new '(+Line)))
+      
+      (upd-tree)
+      (mov-⇲ *line)
+            
+      # Pt to list
+      (ptr-ref '*ptr Po-List 'a)
+            
+      (setq *line Po-List)
+      (top> Po-List)
+      (ptr-lay '*ptr))))
+      
+      
+######################################################
+######################################################
       
 (de make-list-car-xxb (Ref)
   
@@ -261,8 +304,8 @@
   
   #{
                       
-        [Cc]  [C]  [Cb]  NIL
-        NIL   NIL  NIL
+        [Cc]  [Po-Pair]  [Cb]  NIL
+        NIL   NIL        NIL
                *
               
     ->
@@ -271,9 +314,9 @@
         NIL  
 
               
-        [P]  [C]  NIL
-             NIL  
-              *
+        [Po-Pair]  [Po-List]  NIL
+                   NIL  
+                   *
         
         [Cb] NIL
         NIL
@@ -339,7 +382,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Po)
-    (set-ptr *ptr Po)
+    (set-ptr-ref Po)
     (pt-sub) # Mov to C
         
     (println 'make-list-car-xxb)
@@ -476,7 +519,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Ref)
-    (set-ptr *ptr Ref)
+    (set-ptr-ref Ref)
     (pt-sub)
         
     (println 'make-list-car-xyb)
@@ -554,7 +597,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Po)
-    (set-ptr *ptr Po)
+    (set-ptr-ref Po)
     (pt-sub)
         
     (println 'make-list-car-yxa)
@@ -616,7 +659,7 @@
     
     # Maintain on inner tree or outer?
     (setq *line Ref)
-    (set-ptr *ptr Ref)
+    (set-ptr-ref Ref)
     (pt-sub)
         
     (println 'make-list-car-ya)

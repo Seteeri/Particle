@@ -4,15 +4,15 @@
 (def '*list-lay)
 
 
-(de lay-pt-start-2 (Po Ln Lay-A Lay-B)
+(de lay-pt-start (Po Ln Lay-A Lay-B)
   (setq *bnds-x NIL
         *bnds-y NIL
-        *line-lay Ln
+        *line-lay (lup-pt Ln)
         *list-lay NIL)
-  (lay-pair-2 Po Lay-A Lay-B))
+  (lay-pair Po Lay-A Lay-B))
 
   
-(de lay-pair-2 (Any Lay-A Lay-B)
+(de lay-pair (Any Lay-A Lay-B)
 
   # Iterative pre order traversal
   #
@@ -32,10 +32,12 @@
       (let ((Any Rel Po-C) Any
             Po (if Any
                    (lup-pt Any)
-                   (get Po-C 'b)))
+                   (if (= Rel 'a)
+                       (get Po-C 'a)
+                       (get Po-C 'b))))
         
         #(println (h64 (adr Any)) (adr Any) Any Po (type Po))
-        (println 'lay-pair-2 Any Po (type Po))
+        (println 'lay-pair Any Po (type Po) "A:" (get Po 'a) "B:" (get Po 'b))
         ~(assert Po)
         
         # Draw Pair
@@ -47,24 +49,29 @@
         # Cannot guarantee Cdr will be drawn next (after lay>)
         # if Car is deep
         (when (and (= Rel 'b) Po-C)
-          (pos-cur-cdr> Po-C))
+          # Relies on car
+          # If not drawn, use Po-C dims
+          (if Lay-A
+              (pos-cur-cdr> Po-C)
+              (prog
+                (pos-cur-car-y> Po-C))))
         
+                
         # Lay should return next obj to draw
-        (let N (lay> Po)
-          (when (car N)
-            #(prin " ") (println "lay-pair-2  PUSH: " @)
-            (push 'L @))
-          (when (cdr N)
-            #(prin " ") (println "lay-pair-2  PUSH: " @)
-            (push 'L @)))))))
+        (let N (lay> Po Lay-A Lay-B)
+          (when (and (car N) Lay-B)
+            (prin "  lay-pair  Push CDR: ") (println (car N))
+            (push 'L (car N)))
+          (when (and (cdr N) Lay-A)
+            (prin "  lay-pair  Push CAR: ") (println (cdr N))
+            (push 'L (cdr N))))))))
 
                     
 ###################
 
-(de upd-tree (List)
-  (unless List (setq List *master))
-  (mov-cur-ori List)
-  (lay-pt-start List List))
+(de upd-tree ()
+  (mov-cur 0.0 0.0)
+  (lay-pt-start '*start '*start T T))
 
         
 (de pop-list-lay ()

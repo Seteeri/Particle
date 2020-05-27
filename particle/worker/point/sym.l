@@ -3,7 +3,7 @@
                         |
             +-----------+-----------+
             |           |           |
-         Number       Symbol       Pair
+         Number       Ptrbol       Pair
                         |
                         |
    +--------+-----------+-----------+
@@ -20,31 +20,43 @@
 
 # CAR empty for Anon syms (CAR is actually number 0)
 
-# These assume Syms not expanded
+# These assume Ptrs not expanded
 
 (class +Sym +Atom)
+
+(dm T (Any
+       Lay
+       A B
+       Exp)
+  (super Any
+         Lay
+         A B)
+  (if Exp
+      T
+      (let ((Verts W)
+              (make-vert-atm Any (get-col-type Any)))
+        (=: verts Verts)
+        (=: dims (list W
+                      (meta '(+Vertex) 'adv-vert-2)))))
+  (=: exp Exp))
 
 (class +Ext +Sym)
 
 (class +Box +Sym)
 
 (dm lay> ()
-
   # Draw This
+  # Determine if expanded to draw parts...
   (super)
-
-  # Draw car (name)
-  # Car is only ref'd from here, not in tree
-  (lay> (: a))
-      
-  # Return next item, cdr
-  (let B (val (: data))
   
-    # If NIL, only ref'd here
-    (cons NIL
-          (list (if B @ NIL)
-                'b
-                This))))
+  (when (: exp)
+    (cons
+      (list NIL
+            'b
+            This)
+      (list NIL
+            'a
+            This))))
 
 (class +Int +Sym)  
 
@@ -55,27 +67,41 @@
   # Draw This
   (super)
 
-  # Draw car (name)
-  # Car is only ref'd from here, not in tree
-  (lay> (: a))
-      
-  # Return next item, cdr
-  (let B (val (: data))
-  
-    # If NIL, only ref'd here
-    (cons NIL
-          (list (if B @ NIL)
-                'b
-                This))))
+  (when (: exp) 
+    (cons
+      (unless (= (: b) T)
+        (list (if (: b) NIL (val (: data)))
+              'b
+              This))
+      (list NIL
+            'a
+            This))))
   
         
 (dm lup-a> () (: a))
 (dm lup-b> ()
   (if (: b)
-      (super)
-      (: b)))
+      (: b)
+      (super)))
 
 
+(dm con> (Dat Po-Dat Del)
+
+  # Del prv
+  # NIL is not ref'd in tree so pass
+  (if (: b)
+      (prog
+        (del> (: b))
+        (=: b))
+      (when Del
+        (del> (lup-pt (val (: data))))))
+    
+  (set (: data) Dat)
+  
+  (when Po-Dat
+    (put Po-Dat 'c This)))
+
+      
 (class +Str +Sym)
   
 (dm mov-verts> ()
@@ -119,3 +145,11 @@
   (lay-cur> This)
   # Handle when value is not self
   NIL)                     
+
+  
+(dm sub> ()
+  (set-ptr-ref (: data))
+  (: data))
+  
+  
+(dm nxt> () (: data))

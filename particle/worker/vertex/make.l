@@ -18,24 +18,25 @@
     
     Base-01 = X Pair (darkest - most common)
     Base-1  = Y Pair (lightest - least common)
-    Base-0  = NIL (med - 2nd most common)
+    Base-0  = condensed pair or traditional?
         
     Yellow = Ptr
-    Orange = ?
-    Red = ?
-    Magenta = ?
-    
-    Violet = Int/Sym
-    Blue = Str,Box/Sym/Trans
+    Green = Box/Sym    
     Cyan = Ext/Sym
-    Green = Num
+    Blue = Str/Sym    
+    Violet = Int/Sym/NIL
+    Magenta = Num 
+    Red = ?    
+    Orange = Condensed Pair
+
   }#
 
   # Adjust brightness for time...or alpha?
 
   (cond ((not Any)  (caddr (get '+Vertex 'cols-pair)))
         ((lst? Any) (car (get '+Vertex 'cols-pair)))
-        ((num? Any) *selb-green)
+        ((num? Any) *selb-magenta)
+        ((box? Any) *selb-green)
         ((str? Any) *selb-blue)
         ((ext? Any) *selb-cyan)
         ((sym? Any) *selb-violet)))
@@ -109,6 +110,8 @@
 
 
 (de make-vert-pair (Ch Col Self)
+  
+  # Make Ch a string
   
   (unless Ch (setq Ch (car (get '+Vertex 'chs-pair))))
   (unless Col (setq Col (car (get '+Vertex 'cols-pair))))

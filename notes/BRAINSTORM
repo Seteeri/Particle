@@ -4658,6 +4658,69 @@ https://gist.github.com/badboy/6267743
 
 https://stackoverflow.com/questions/664014/what-integer-hash-function-are-good-that-accepts-an-integer-hash-key
 
+
+Positions never overlap so can use positions as keys
+then do range search
+
+
+==============================
+
+if we use a class
+how to draw obj with properties?
+
+                                                                                      Symbol
+                                                                                        |
+                                                                                        V                              
+    +----------+---------+     +-----+-----+     +-----+-----+     +-----+--+--+     +-----+-----+
+    |'hgfedcba'|'onmlkji'| <---+  |  |     | <---+ KEY |     | <---+  |  |  |  | <---+  |  | VAL + 
+    +----------+---------+     +--+--+-----+     +-----+-----+     +--+--+-----+     +--+--+-----+
+                                  |                                   | 
+                                  V                                   V 
+                                  +-----+-----+                       +-----+-----+ 
+                                  | VAL | KEY |                       | VAL | KEY | 
+                                  +-----+-----+                       +-----+-----+                         
+    
+    (n (k1 (v1)) (k2) (k1 (v1)) s)
+
+    
+    
+    condense, or hide cells:
+    
+
+    +----------+---------+            +-----+-----+            +-----+-----+
+    |'hgfedcba'|'onmlkji'| <--- C <---+ KEY |     | <--- C <---+  |  | VAL + 
+    +----------+---------+            +-----+-----+            +--+--+-----+
+
+    use dot with special color - red?
+    -> uses particle principles - symbol to represent a cell
+    
+============================================
+
+ *    *    *    *
+[ ]  [ ]  [ ]  [ ]
+ a    b    c    d
+ 
+ 
+Cmd List 
+* ...
+
+Ptr List (Modes)
+* ptr
+
+Sel List
+* [ptr will push selection to car of list]
+
+Property List
+[property list of sel objects]
+
+Main List    
+* main ...
+    
+
+What if user moves to sel list
+- Can't do anything if already selected
+    
+    
 ============================================
 ============================================
 

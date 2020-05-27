@@ -14,38 +14,30 @@
 
 (class +Atom +Point)
 
-(dm exp?>
-  # When expanded, 'c will be a symbol and its car will be caller
-  (and (bel-sym?> This) (is-car?> This)))
-
  
 (dm prv> ()
   (when (: c) (prv> @)))
 
 
 (dm nxt> ()
-  # If no b, do c
-  (if (: b)
-      (if *on-car
-          (sub> (: b))
-          (prog
-            (top> (: b))))
-      (when (: c)
-        (nxt> @))))
+  (if (: b) # NIL
+      (nil
+        (when (get (: b) 'line)
+          (println 'nxt> "Set line: " (: b) NIL)
+          (setq *line (: b)))            
+        (top> (: b)))
+      (let B (lup-pt (val (: data)))
+        (if B
+            (if *ptr-on-car
+                (sub> B)
+                (top> B))
+            (when (: c)
+              (nxt> @))))))
 
 
 (dm sup> ()
-  (when (: c) (top> @)))
+  (quit "IMPLEMENT SUP>"))
 
 
-(dm sub> ()
-  (unless *on-car (set-on-car T))
-  (if (: a) # T=expanded
-      (prog
-        (mov-cur-ori @)
-        (adj-cur-y)
-        @)
-      (prog
-        (mov-cur-ori This)
-        (adj-cur-y)
-        This)))   
+#  Do nothing for now
+(dm sub> ())

@@ -1,15 +1,13 @@
 (de cmd-mov-nl (Ks)
   (println 'cmd-mov-nl)
-  (let Ref (get-ptr-ref)
-    (unless *on-car
-      (make-line Ref))))
+  
+  (make-line))
 
 
 (de cmd-mov-bl (Ks)
+  (println 'cmd-mov-bl)
   
-  # This moves Ref front of prv
-  # Only applies to non-list...
-    
-  (let? Ref (get-ptr-ref)
-    (bsp-line Ref)))
+  (let Po-Ref (lup-pt *ptr)
+    (when (get Po-Ref 'line)
+      (bsp-line Po-Ref))))
 

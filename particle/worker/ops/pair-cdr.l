@@ -97,7 +97,7 @@
     (mov-⇲ *line)
     
     (setq *line Ref)
-    (set-ptr *ptr Ref)
+    (set-ptr-ref Ref)
     (top> Ref)
     (lay-ptr *ptr)
                         

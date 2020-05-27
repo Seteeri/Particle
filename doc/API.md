@@ -111,6 +111,8 @@ Merge input with control?
 
     +Font
     +Metrics
+    
+    +Pointer
 
 ## OpenGL
 
@@ -218,6 +220,75 @@ Merge input with control?
 
 # Design Decisions
 
+## Pointers
+
+Basic Symbol/Object Diagram:
+
+            Symbol
+            |
+            V
+      +-----+-----+                                +----------+---------+
+      |  |  | VAL |                                |'hgfedcba'|'onmlkji'|
+      +--+--+-----+                                +----------+---------+
+         | tail                                       ^
+         |                                            |
+         V                                            | name
+         +-----+-----+     +-----+-----+     +-----+--+--+
+         |  |  |  ---+---> | KEY |  ---+---> |  |  |  |  |
+         +--+--+-----+     +-----+-----+     +--+--+-----+
+            |                                   |
+            V                                   V
+            +-----+-----+                       +-----+-----+
+            | VAL | KEY |                       | VAL | KEY |
+            +-----+-----+                       +-----+-----+
+               
+    
+S-Expr: (((k1 (v1)) (k2) (k1 (v1)) . s) . VAL)
+
+Pointer:
+
+[N] = nested cell aka traditional diagram
+. = condensed cell, dot with diff color - orange
+
+Poss Solutions:
+
+1. "Shrink" entire structure (minimal/low visual presence)
+   -> Condense structure to two lines to avoid excessively small text
+      -> Requires reversing
+      -> Helps make it visually distinct even when smaller
+   -> Not too different from normal UI elements having a different appearance
+   like menu items or buttons
+   -> Avoid zooming as a necessity
+      -> Mitigate "desert fog"
+      -> Ptr always near content/focus so minor issue
+      -> User doesn't typically manipulate pointer directly...
+   -> Allows main content to have focus
+   -> Can still use condensed cells to minimize distractions
+
+2. Condensed structure for single line
+   -> Can't expand without moving pointer to other area
+      -> This can be automatic - mov to area then back
+   -> Can't use pointer as "status bar", which is important for context clues
+ 
+Not Viable:
+ 
+* Nested/s-expr structure (medium visual presence)
+   -> Difficult to read without resorting to parenthesis
+      -> Want to avoid parenthesis...
+   -> Defeats whole purpose of Particle...
+   
+* Double space (high visual presence)
+   -> Major problem - distracts from main content
+   -> Single space necessary to visually delimit pairs vertically
+      -> Seems excessive when dealing with strings but is consistent
+   -> Technically, must triple space so still fails
+ 
+## Tree Layout
+
+## Search, Tags and Trees
+
+## Dependency Graph Parallelism
+
 ## GC
 
 * Coroutine same for all
@@ -242,9 +313,3 @@ Proc 1
 Proc 2
 Proc 3
 Proc 4
-
-## Tree Layout
-
-## Dependency Graph Parallelism
-
-## Search, Tags and Trees

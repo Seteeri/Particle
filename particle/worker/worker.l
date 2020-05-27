@@ -36,6 +36,8 @@
             "/particle/worker/conn.l"
             "/particle/worker/cursor.l"   
             "/particle/worker/projview.l"
+            "/particle/worker/idx.l"
+            "/particle/worker/gen.l"
             
             "/particle/worker/binds/an.l"                   
             "/particle/worker/binds/ops.l"                               
@@ -57,9 +59,8 @@
             "/particle/worker/point/sym.l"
             "/particle/worker/point/num.l"
             "/particle/worker/point/nil.l"
-            "/particle/worker/point/gen.l"
             
-            "/particle/worker/ops/ptr.l"                        
+            "/particle/worker/ops/pointer.l"                        
             "/particle/worker/ops/align.l"            
             "/particle/worker/ops/lay.l"
             "/particle/worker/ops/del.l"
@@ -183,27 +184,36 @@
     : (char "↓")
     -> 8595
     
+    : (char (hex "2607"))
+    
   }#  
 
   (let ((X Y) *cur)
     
-    (let (Po-Start (gen-sym-full '*start 'x T T)
-          Po-Cdr   (gen-sym-full '*cdr 'y T T "↓" *selb-yellow)
-          #Po-Car  (gen-sym-full '*car 'y T NIL "↑")
-          #Po-D    (gen-sym-full '⇲    'y T NIL "⇲" *selb-yellow)
-          )
+    (setq *ptr (new '(+Pointer)))
+    (put *ptr 'ref NIL)
+        
+    (let (Po-Sta (gen-sym-exp '*start 'x T T)
+          Po-Ptr (gen-ptr     '*ptr "↓" *selb-yellow)
+          Po-D   (gen-point   '⇲      'x))
+      
+      (mov-cur 0.0 0.0)
+      (lay-pt-start '*start '*start T T)
+
+      (put *ptr 'po Po-Ptr)
+      (del> (get Po-Ptr 'b)) (put Po-Ptr 'b T)
+      # Upd +Point on change
+      (ref> *ptr '*start 'b)
+      (mov-cur 0.0 1.0)     
+      # Call this through *ptr method      
+      (lay-pt-start '*ptr '*ptr T T)
     
-    (mov-cur 0.0 0.0)
-    (lay-pt-start-2 '*start '*start T T)
-        
-    (top> Po-Start)
-    (lay-pt-start-2 '*cdr '*cdr)
-        
-    (setq *cdr '*start)    
-    
-    (def '*ptr '*cdr)
-        
-    T)))
+      (mov-cur 0.0 0.0)
+      (adj-cur-y 3.0)
+      (col-verts> Po-D *selb-yellow 1.0)
+      (lay-pt-start '⇲ '⇲ T T)
+
+      T)))
 
 
 # Unused
@@ -344,7 +354,7 @@
 (def '*rot-z 0.0)
 (de anim-rot-z-cdr ()
 
-  (let? Po (get *ptr 'a)
+  (let? Po (get (lup-pt '*ptr) 'a)
     
     (with Po
     

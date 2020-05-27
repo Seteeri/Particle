@@ -22,24 +22,7 @@
   the data (be GC'd).
 }#
 
-
-(class +Point)
-
-(dm T (Data
-       A
-       B
-       Verts
-       Lay)
-
-  (=: data Data)
-  (=: a A)
-  (=: b B)
-  (=: c) # Prev
-  (=: verts Verts)
-  (=: lay Lay)
-
-  (=: ori)
-  #{
+#{
    use l b r t?
 
    ymax = line height
@@ -48,21 +31,35 @@
    |   |
    O---+ xmax/ymin
          can go below
-  }#
-  # or create layout obj storing dims for x and y
-  (=: dims)
+}#
 
+(class +Point)
+
+(dm T (Data
+       Lay
+       A B)
+       
+  (=: data Data)
+    
+  (=: lay Lay)  
+  (=: a A)
+  (=: b B)
+  (=: c)  
+
+  (=: ori)  
+  
+  # whether to redraw
+  (=: dirt T)  
+  
+  # date/time
+  #(=: dat (date))
+  #(=: tim (time))
+    
   # list of tags; always str; order matters like when searching
   # consider first tag, the name
   # when linking, def show date, tags, or show nm or raw location
-  (=: tg)
-
-  # date/time
-  (=: dat (date))
-  (=: tim (time))
-  
-  # whether to redraw
-  (=: dirt T))
+  #(=: tg)
+  )
 
 
 (dm first-vert> () (car (: verts)))
@@ -73,6 +70,7 @@
 (de is-int?  (P) (isa '(+Int)  P))
 (de is-sym?  (P) (isa '(+Sym)  P))
 (de is-nil?  (P) (isa '(+Nil)  P))
+(de is-atom? (P) (not (isa '(+Pair)  P)))
 
 (dm bel-pair?> () (isa '(+Pair) (: c)))
 (dm bel-sym?>  () (isa '(+Sym)  (: c)))
@@ -163,19 +161,19 @@
       @
       (lup-pt (car (: data)))))
 
+      
 (dm lup-b> ()
   (when (: b)
     (lup-pt (get (: b) 'data))))
   
 
 (dm top> ()
-  (when *on-car (set-on-car))
   (mov-cur-abv This)
-  This)
+  (: data))
  
  
 (dm pos-cur-cdr> ()
-        
+
   (if (lay-x?> This)
 
       # If Pair get from Car
@@ -190,15 +188,14 @@
                   (if Val # Get from Cdr else Car
                       (+ (get Val 'ori 1) (get Val 'dims 1))
                       (+ (get Car 'ori 1) (get Car 'dims 1)))))
-                  
+                      
         (mov-cur X (cadr (: ori)))
-                  
         (adj-cur-x 2.0))
       
       (prog
-        # Thissition under
+        # Pos under
         (mov-cur (car (: ori))
-                  (- (cadr (: ori)) (cadr (: dims))))
+                 (- (cadr (: ori)) (cadr (: dims))))
         (adj-cur-y (+ 1.0 *sublist-space-y)))))
  
 
@@ -212,16 +209,14 @@
   #{
   
     X lay = car is -Y
-    
-    Assumes Pair is always single line with dot or 2x dot
-    Otherwise must use dims of Pair
-    
   }#
-
-  ~(assert (: ori))
   
-  (setq *cur (: ori))    
-    
+  #(setq *cur (: ori))    
+
+  (mov-cur (car (: ori))
+           (cadr (: ori)))
+           #(- (cadr (: ori)) (cadr (: dims))))
+  
   # Double space if car has line
   (adj-cur-y 
     (let A (lup-a> This)
@@ -234,7 +229,10 @@
     Y lay = car is +X
   }#
   
-  (setq *cur (: ori))
+  #(setq *cur (: ori))
+  
+  (mov-cur (+ (car (: ori)) (car (: dims)))
+           (cadr (: ori)))
     
   (adj-cur-x *cdr-space-x))
   
@@ -245,7 +243,8 @@
               "@ Cur: " (format (get *cur 1) *Scl)  
                         (format (get *cur 2) *Scl)))
 
-  (when (get (: line) 'p) (align-cur-line This))
+  (when (get (: line) 'p)
+    (align-cur-line This))
   
   (mov> This) # *cur will be at last vert pos
   (when NIL
@@ -274,9 +273,9 @@
     List will always have Line
   
   }#
-
-  (upd-dims> This)         
   
+  (upd-dims> This)         
+    
   (if (: line)
       
       (prog
@@ -312,14 +311,20 @@
         (format (car (cadar *list-lay)) *Scl)
         (format (cadr (cadar *list-lay)) *Scl))))
     
-  # On end or Y-Pair.car=NIL: pop/upd list
-  (when (or (is-end?> This)
+  # On end or Y-Pair.car=atom: pop/upd list
+  (when (or (and (: c)
+                 (lay-x?> (: c))
+                 (get (: c) 'b)
+                 (not (is-pair? This)))
             (and (: c)
                  (lay-y?> (: c))
-                 (is-nil? This)))
+                 (get (: c) 'a)
+                 (not (is-pair? This))))
     
     (when NIL
-      (println 'upd-line-post> (is-end?> This) This (car (: data))))
+      (prinl) (prinl)
+      (println 'upd-line-post> (is-end?> This) This (car (: data)))
+      (prinl) (prinl))
         
     # Cache ends
     (put (caar *list-lay) 'line 'e This)
@@ -379,9 +384,14 @@
   }#
     
   (for Vert (: verts) (del> Vert))
-    
+  
+  # del from index
+  (del-node (: data))
+  
   (when (and A (: a)) (del> (: a) A B))
   (when (and B (: b)) (del> (: b) A B))
+  
+  (println '+Point.del> "Deleted: " This (type This))
   
   This)
 
@@ -510,6 +520,19 @@
 # Most of these don't use any properties from point
 # so should move to a vert class or make normal function
 
+(dm get-first-col> ()
+  (get (car (: verts)) 'rgba))
+
+(dm repl-verts> (Str)
+  # Save color, del verts, add new verts
+  
+  (let Col (get (car (: verts)) 'rgba)
+    
+    (for Vert (: verts) (del> Vert))
+    
+    (=: verts (make-vert-repr (chop Str) Col))))
+
+    
 (dm ori> ()
   (let? Vert (car (: verts))
     (with Vert
@@ -576,24 +599,3 @@
     # If neither Car or Cdr, use cons
     (list (max (if Xa Xa X) (if Xb Xb X) X)
           (min (if Ya Ya Y) (if Yb Yb Y) Y))))
-
-
-(dm trace> (Cnt)
-  (let (D ()
-        X (: b))
-    (loop
-      (push 'D (get X 'data))
-      (println (car D) "->" (get X 'b))
-      (NIL (get X 'b))
-      (setq X (get X 'b)))
-    D))
-
-(dm trace-2> (Cnt)
-  (let (S ()
-        X (: b))
-    (loop
-      (push 'S X)
-      (println X "->" (get X 'b))
-      (NIL (get X 'b))
-      (setq X (get X 'b)))
-    S))

@@ -1,32 +1,32 @@
 ###############################
 # Semantic Traversal (Pair/Ptr)
 
-(de cmd-ptr-left (Ks)    
-  # Only if Ref and Prv both are Y layout
-  (let Ref (get-ptr-ref)
-    (if *on-car
-        (pt-prv)
-        (if (is-car?> Ref)
-            (pt-sup)
-            (pt-prv)))))
+(de cmd-ptr-left (Ks)
+  (if (and (= (ptr-rel '*ptr) 'a)
+           (is-pair? *ptr)
+           (not (lay-y?> *ptr)))
+    (sup> *ptr)
+    (pre> *ptr)))
 
 
 (de cmd-ptr-right (Ks)
-  (if (lay-x?> (get-ptr-ref))
-      (pt-nxt)
-      (pt-sub)))
+  (if (lay-y?> *ptr)
+      (sub> *ptr)
+      (nex> *ptr)))
 
 
 (de cmd-ptr-up (Ks)
-  (if (lay-x?> (get-ptr-ref))
-      (pt-sup)
-      (pt-prv)))
+  (if (or (and (= (ptr-rel '*ptr) 'a)
+               (is-pair? *ptr))
+          (lay-y?> *ptr))
+      (pre> *ptr)
+      (sup> *ptr)))
 
 
 (de cmd-ptr-down (Ks)
-  (if (lay-x?> (get-ptr-ref))
-      (pt-sub)
-      (pt-nxt)))
+  (if (lay-y?> *ptr)
+      (nex> *ptr)
+      (sub> *ptr)))
 
       
 (de cmd-ptr-ln-first (Ks)
@@ -67,24 +67,25 @@
 (de cmd-print-ptr ()
 
   # Print ptr
-  (let Ref (get-ptr-ref)
+  (let Ref *ptr
     (println Ref (get Ref 'data)))
 
-  (println "Master Line: " *line (get *master 'b 'data))
+  #(println "Master Line: " *line (get *master 'b 'data))
 
-  (let Ref (get-ptr-ref)
+  (let Ref *ptr
   
-    (println "*on-car: " *on-car)
-    (println "Ref: " Ref (get Ref 'data))
+    (prinl "CURRENT REFERENCE:")
+    (prin "Ref: ") (println Ref (get Ref 'data))
+    
     (when T
-      (println "ori: " (get Ref 'ori))
-      (println "dims: " (get Ref 'dims))
-      (println "lay: " (get Ref 'lay))
+      (prin "ori: ")  (println (get Ref 'ori))
+      (prin "dims: ") (println (get Ref 'dims))
+      (prin "lay: ")  (println (get Ref 'lay))
       (when (get Ref 'line)
-        (println "line.p: " (get Ref 'line 'p))
-        (println "line.n: " (get Ref 'line 'n))
-        (println "line.l: " (get Ref 'line 'l))
-        (println "line.dims: " (get Ref 'line 'dims)))
+        (prin "line.p: ")    (println (get Ref 'line 'p))
+        (prin "line.n: ")    (println (get Ref 'line 'n))
+        (prin "line.l: ")    (println (get Ref 'line 'l))
+        (prin "line.dims: ") (println (get Ref 'line 'dims)))
       (when NIL
         (println "a: " (get Ref 'a))
         (println "b: " (get Ref 'b))
@@ -115,12 +116,14 @@
           (println "b: " (get Ref 'b 'b))
           (println "c: " (get Ref 'b 'c)))))
         
-    (when NIL
-      (println "====")
-      (println "Line:" *line (get *line 'data))
+    (when T
+      (prinl "=============")
+      (prinl "CURRENT LINE:")
+      (prin "Line: ") (println *line (get *line 'data))
       (println 'p (get *line 'line 'p) (get *line 'line 'p 'data))
       (println 'n (get *line 'line 'n) (get *line 'line 'n 'data))
       (println 'l (get *line 'line 'l) (get *line 'line 'l 'data)))
 
-    (upd-tree)
-    (mov-⇲ *line)))
+    #(upd-tree)
+    (mov-⇲ *line)
+    ))

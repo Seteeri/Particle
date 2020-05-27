@@ -1,69 +1,36 @@
-#{
-(de make-line (Ref)
-
-  #{
-
-    [X]  [X]  [X]  NIL
-    A    B    C  
+(de make-line ()
   
-    Mov to nl:
+  # Only applies to Cdr X Pair
+        
+  (let (Po-Ref *ptr
+        Ref (get Po-Ref 'data))
+                   
+    (unless (get Po-Ref 'line)
     
-
-    [X]  [X]
-    A    B       
-    
-    [X]  NIL
-    C
-
-  }#
-  
-  (put *line 'line 'n Ref)  
-  
-  (let Rb (get Ref 'b)  
-  
-    (put Ref 'line
-      (new '(+Line)
-           *line
-           Rb
-           (if (get *line 'line 'l) @ *line)))
-          
-    (if (get Rb 'line)
-        (put @ 'p Ref)
-        (put Rb 'line (new '(+Line)
-                          Ref
-                          NIL
-                          (if (get Ref 'line 'l) @ Ref)))))
-  
-  (upd-tree)
-  (mov-⇲ Ref)
-  
-  (setq *line Ref)
-  (mov-cur-abv Ref)
-  (lay-ptr *ptr)
-  
-  (println 'make-line "Made newline")
-    
-  Ref)
-}#
-
-(de make-line (Ref)
-  (unless (get Ref 'line)
-    (put Ref 'line
-      (new '(+Line)
-           *line
-           (get *line 'line 'n)
-           (if (get *line 'line 'l) @ *line)))
-    (let (P (get *line 'line 'n)
-          N (get *line 'line 'p))
-      (put P 'line 'n Ref)
-      (put N 'line 'p Ref))
-    
-    (upd-tree)
-    (mov-⇲ Ref)
-    
-    (setq *line Ref)
-    (mov-cur-abv Ref)
-    (lay-ptr *ptr)))
+      (put Po-Ref 'line
+        (new '(+Line)
+              *line
+              (get *line 'line 'n)
+              (if (get *line 'line 'l) @ *line)))
+      
+      (let Nxt (get *line 'line 'n)
+        # Con cur line
+        (put *line 'line 'n Po-Ref)
+        # Con new line to prv nxt line
+        (when Nxt
+          (put Nxt 'line 'p Po-Ref)))
+              
+      (if (get Po-Ref 'data)
+          (ptr-ref '*ptr (lup-pt (get Po-Ref 'data)) 'b)
+          (ptr-ref '*ptr (ptr-nil '*ptr) 'b Po-Ref))
+      
+      (upd-tree)
+      (mov-⇲ *line)
+      
+      (top> Po-Ref)
+      (ptr-lay '*ptr)
+      
+      (setq *line Po-Ref))))
         
 
 (de ins-line-pre (Po)
@@ -127,25 +94,21 @@
   (setq *line Dst))  
   
 
-(de bsp-line (Ref)  
-  (let Prv (get Ref 'c)
+(de bsp-line (Po-Ref)  
 
-    (when (and (get Ref 'line 'p)
-               (not (= (get Ref 'data) '*start)))
+  (let Ln-P (get Po-Ref 'line 'p)
+                                      
+    # Remove line
+    (del-line Po-Ref)
     
-      (unless (or (has-pair?> Ref)
-                  (has-nil?> Ref)
-                  (of-car?> Prv A))
-                                    
-        (setq *line (get Ref 'line 'p))
-        # Remove line
-        (del-line Ref)
-        (put Ref 'line)
+    (setq *line Ln-P)
 
-        (upd-tree)
-        (mov-⇲ *line)      
-        
-        # Ptr remains on Ref
-        # How about for on-car?
-        (mov-cur-abv Ref)
-        (lay-ptr *ptr)))))  
+    (upd-tree)
+    (mov-⇲ *line)      
+    
+    # Ptr remains on Ref
+    # Handle NIL?
+    (ptr-ref '*ptr (get Po-Ref 'data) 'b)
+    
+    (top> Po-Ref)
+    (ptr-lay '*ptr)))

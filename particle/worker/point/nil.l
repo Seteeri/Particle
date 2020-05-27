@@ -14,6 +14,21 @@
 
 (class +Nil +Sym)
 
+(dm T (Any
+       Lay
+       A B
+       Exp)
+  (super Any
+         Lay
+         A B)
+  (let ((Verts W) 
+          (make-vert-atm Any
+                         (get-col-type Any)
+                         (caddr (get '+Vertex 'chs-pair))))
+    (=: verts Verts)
+    (=: dims (list W
+                  (meta '(+Vertex) 'adv-vert-2))))
+  (=: exp Exp))
 
 (dm prv> ()
   (if (is-car?> This)
@@ -22,7 +37,7 @@
         (when (get (: c) 'line)
           (println 'prv> "Mov ptr -> super-line/list" (: c) (get (: c) 'data))
           (setq *line (: c)))
-        (if *on-car
+        (if *ptr-on-car
             (sub> (: c))
             (top> (: c))))))
 
@@ -30,7 +45,7 @@
 (dm nxt> ()
   (if (is-car?> This)
       (nxt> (: c))
-      (if *on-car
+      (if *ptr-on-car
           (sub> This)
           (top> This))))
 
@@ -41,7 +56,7 @@
     # Each pos can be car or cdr
     # Cdr only for X-B, Y-B
     #{
-    (if *on-car
+    (if *ptr-on-car
         (if (and (lay-x?> (: c))
                  (is-car?> This))
             (prog (mov-cur-abv (: c)) (: c))
@@ -49,7 +64,7 @@
         (prog (mov-cur-abv (: c)) (: c)))
     }#
     
-    (if (and *on-car
+    (if (and *ptr-on-car
              (or (lay-y?> (: c))
                  (is-cdr?> This)))
         (prog (mov-cur-abv This)  This)
@@ -59,7 +74,6 @@
 
 
 (dm sub> ()
-  (unless *on-car (set-on-car T))
   (setq *cur (: ori))
   (adj-cur-y)
   This)

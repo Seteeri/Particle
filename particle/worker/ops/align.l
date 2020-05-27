@@ -9,26 +9,32 @@
     [Y]  CAR
     
     Po
-    
-    x = line ori
-    y = line bnds of 'c 'a
   }#
 
-  (let (Ori-C (get Po 'line 'l 'ori)
-        Ori-A (get Po 'c 'a 'ori)
-        Dims-A (get Po 'c 'a 'dims))
+  (let (Lst (get Po 'line 'l)
+        Ori-L (get Lst 'ori)
+        
+        Prv (get Po 'line 'p)
+        Ori-P (get Prv 'ori)
+        Dims-P (if (lay-y?> Prv)
+                   (get (lup-pt (car (get Prv 'data))) 'line 'dims)
+                   (get Prv 'line 'dims)))
                 
     (when T
       (println 'align-cur-line
                Po
                (get Po 'data)))
 
-    ~(assert Ori-C)          
-
-    # Get Y pos from Car bnds
-    (mov-cur (get Ori-C 1)
-             (- (cadr Ori-A) (cadr Dims-A)))
-    (adj-cur-y (+ 1.0 *sublist-space-y))))
+    ~(assert Lst)
+    
+    
+    (if (lay-x?> Po) # If X Pair, get Y from Cdr
+        (prog
+          (println 'align-cur-line "*cur in place already"))
+        (prog # If Y Pair, get Y from Car
+          (mov-cur (car Ori-L)
+                  (- (cadr Ori-P) (cadr Dims-P)))
+          (adj-cur-y (+ 1.0 *sublist-space-y))))))
 
 
 (de align-cur-line-x (Po)

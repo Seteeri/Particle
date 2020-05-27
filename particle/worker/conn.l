@@ -41,6 +41,9 @@
 ################################################################################
 
 (de req-send (Ipc Obj)
+  
+  ~(assert (get Obj 'off-gl))
+  
   (req-send-obj Ipc
                 (ipc~fd> *ipc "RENDER")
                 Obj

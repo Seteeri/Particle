@@ -15,7 +15,7 @@
     # Make class
     # Put properties
 
-    (make-pair-str-2 Data Lay)))
+    (make-pair-str Data Lay)))
 
 
 (de cmd-make-nil (Ks)
