@@ -1,39 +1,44 @@
 (de make-line ()
   
   # Only applies to Cdr X Pair
-        
-  (let (Po-Ref *ptr
-        Ref (get Po-Ref 'data))
+  
+  # Handle NIL
+  
+  (let (Ref (ref> *ptr)
+        Po-Ref (lup-pt Ref)
+        Ln (c-ln> *ptr))
                    
     (unless (get Po-Ref 'line)
     
       (put Po-Ref 'line
         (new '(+Line)
-              *line
-              (get *line 'line 'n)
-              (if (get *line 'line 'l) @ *line)))
+              Ln
+              (get Ln 'line 'n)
+              (if (get Ln 'line 'l) @ Ln)))
       
-      (let Nxt (get *line 'line 'n)
+      (let Nxt (get Ln 'line 'n)
         # Con cur line
-        (put *line 'line 'n Po-Ref)
+        (put Ln 'line 'n Po-Ref)
         # Con new line to prv nxt line
         (when Nxt
           (put Nxt 'line 'p Po-Ref)))
               
       (if (get Po-Ref 'data)
-          (ptr-ref '*ptr (lup-pt (get Po-Ref 'data)) 'b)
-          (ptr-ref '*ptr (ptr-nil '*ptr) 'b Po-Ref))
+          (set-ref> *ptr Ref 'b)
+          (set-ref> *ptr (nil> *ptr) 'b Po-Ref))
       
       (upd-tree)
-      (mov-⇲ (car (get *ptr 'ln)))
+      (mov-⇲ Ln)
       
       (top> Po-Ref)
-      (ptr-lay '*ptr)
+      (draw> *ptr)
       
-      (setq *line Po-Ref))))
+      (mov-line-n> *ptr Po-Ref))))
         
 
 (de ins-line-pre (Po)
+
+  # ins before
 
   (when (get *line 'p)
     (put @ 'line 'n Po))
@@ -108,7 +113,7 @@
     
     # Ptr remains on Ref
     # Handle NIL?
-    (ptr-ref '*ptr (get Po-Ref 'data) 'b)
+    (set-ref> '*ptr (get Po-Ref 'data) 'b)
     
     (top> Po-Ref)
-    (ptr-lay '*ptr)))
+    (draw> *ptr)))

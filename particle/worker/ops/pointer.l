@@ -38,6 +38,8 @@
 (dm nil> (N) (if N (=: nil N) (: nil)))
 (dm rel> (S) (if S (=: rel S) (: rel)))    
 
+(dm c-ln> () (car (: ln)))
+
 # rename to car/cdr or a/b                  
 (dm p-pre> (X) (if X (push (:: pre) X) (pop (:: pre))))
 (dm p-sup> (X) (if X (push (:: sup) X) (pop (:: sup))))
@@ -162,21 +164,20 @@
 
 (dm mov-line-n> (Po-Tgt)
   (when (get Po-Tgt 'line) # Tgt has line
-    (unless (= (car (: ln)) Po-Tgt)
+    (unless (= (c-ln> This) Po-Tgt)
       (push (:: ln) Po-Tgt))))
       
       
 (dm find-back> (Rel)
-  (let (Line (get (car (: ln)) 'data)
-        Sea (: ref)
-        Fou (if (= Rel 'a) 
-                (memq Sea Line)
-                (prior Sea Line)))
+  (let (Line (get (c-ln> This) 'data)
+        Res (if (= Rel 'a) 
+                (memq (: ref) Line)
+                (prior (: ref) Line)))
     (println 'find-back "Search for cell: " (: ref) (type (: ref)))
     (println 'find-back "Search in line: " Line)
-    (println 'find-back "Found: " Fou)
+    (println 'find-back "Found: " Res)
     
-    (if Fou @ (get (cadr (: ln)) 'data))))
+    (if Res @ (get (cadr (: ln)) 'data))))
       
       
 (dm back> (Fn-Pop Rel No-Lay)
@@ -262,8 +263,8 @@
                      (car (: ref))
                      (cdr (: ref)))
           (if (atom Tgt)
-            (pt-pair-atom> This Rel Fn-Push)
-            (pt-pair-pair> This Rel Fn-Push))))))
+              (pt-pair-atom> This Rel Fn-Push)
+              (pt-pair-pair> This Rel Fn-Push))))))
 
             
 (dm pt-pair-nil> (Po-Ref Po-Tgt Rel Fn-Push)

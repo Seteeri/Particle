@@ -21,15 +21,16 @@ TODO
         * New will gen verts [Done]
         * Pass sym exp to gen [WIP]
       * Ptr/Ops [Mon]
+        * Refactor repl-a-atom
         * Single ptr
           * Ptr is yellow
           * Selected is red
           * Orange used for condensed
         * Drawn sym name linked directly to ref
         * +Pointer should ref the +Point sym
-      * List [Tues]
-      * Line [Tues]
-      * Del [Wed]
+      * List [Thurs-EOW]
+      * Line [Thurs-EOW]
+      * Del [EOW]
       
     * Use prog1
     * Implement modes

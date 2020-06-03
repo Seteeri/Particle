@@ -26,15 +26,17 @@
                (get Po 'data)))
 
     ~(assert Lst)
+
+    (prog # If Y Pair, get Y from Car
+      (mov-cur (car Ori-L)
+              (- (cadr Ori-P) (cadr Dims-P)))
+      (adj-cur-y (+ 1.0 *sublist-space-y)))))
     
     
-    (if (lay-x?> Po) # If X Pair, get Y from Cdr
-        (prog
-          (println 'align-cur-line "*cur in place already"))
-        (prog # If Y Pair, get Y from Car
-          (mov-cur (car Ori-L)
-                  (- (cadr Ori-P) (cadr Dims-P)))
-          (adj-cur-y (+ 1.0 *sublist-space-y))))))
+    #(if (lay-x?> Po) # If X Pair, get Y from Cdr
+    #    (prog
+    #      (println 'align-cur-line "*cur in place already"))
+
 
 
 (de align-cur-line-x (Po)
