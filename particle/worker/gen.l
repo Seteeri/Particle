@@ -290,9 +290,9 @@
     Pair))    
     
     
-(de gen-ptr-exp (Any
-                 Ch-Pair
-                 Col)
+(de gen-ptr-full (Any
+                  Ch-Pair
+                  Col)
   #{
   
           Symbol

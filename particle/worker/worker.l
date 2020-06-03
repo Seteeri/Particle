@@ -197,13 +197,18 @@
           Po-Ptr (gen-ptr     '*ptr "↓" *selb-yellow)
           Po-D   (gen-point   '⇲      'x))
       
+      (put (get Po-Sta 'b) 'line (new '(+Line)))
+      (println (get Po-Sta 'b))
+      
       (mov-cur 0.0 0.0)
       (lay-pt-start '*start '*start T T)
 
       (put *ptr 'po Po-Ptr)
       (del> (get Po-Ptr 'b)) (put Po-Ptr 'b T)
       # Upd +Point on change
+      (mov-line-n> *ptr Po-Sta)
       (ref> *ptr '*start 'b)
+      
       (mov-cur 0.0 1.0)     
       # Call this through *ptr method      
       (lay-pt-start '*ptr '*ptr T T)

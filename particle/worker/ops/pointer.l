@@ -21,7 +21,7 @@
   # trav stacks
   (=: pre)
   (=: sup)
-  # list trav stack?
+  (=: ln)
   
   # when on nil, contains super cell
   (=: nil)
@@ -81,18 +81,20 @@
   
   # Should store Point also
   
-  # Set ref
-  (if Po
-                  
-      (prog
-        (col> This Po)
-        (=: ref Po)
-        (=: nil Tgt))
+  (let Po-Tgt (lup-pt Tgt)
+      
+    # Set ref
+    (if Po
           
-      (prog  
-        (col> This (lup-pt Tgt))
-        (=: ref Tgt)
-        (=: nil)))
+        (prog        
+          (col> This Po)
+          (=: ref Po)
+          (=: nil Tgt))
+            
+        (prog          
+          (col> This (lup-pt Tgt))
+          (=: ref Tgt)
+          (=: nil))))
         
   (=: rel Rel))
   
@@ -136,62 +138,68 @@
 (de ptr-car-pre (Sym) (car (get Sym 'ptr 'pre)))
 (de ptr-car-sup (Sym) (car (get Sym 'ptr 'sup)))
 
-
-(de ptr-ln (Sym Ln) 
-  (if Ln
-      (put Sym 'ptr 'ln Ln)
-      (get Sym 'ptr 'ln)))
       
-      
-(de ptr-ls (Sym Ls)
-  (if Ls
-      (put Sym 'ptr 'ls Ls)
-      (get Sym 'ptr 'ls)))
+#######################################################                 
+  
+(dm mov-line-p> (Po-Ref Po-Tgt)    
 
-      
-#######################################################                  
+  # If new has line, set it
+  # else if old has line but new doesn't = mov prv line
 
-
-(de find-back (Sym Rel)
-  (let (List (if (get *line 'line 'l 'data) @ (get *line 'data))
-        Cell-Pr (if (= Rel 'a) 
-                    (memq (val Sym) List)
-                    (prior (val Sym) List)))
-    (println 'find-back "BACK : " (val Sym) List " = " Cell-Pr)))
-
-
-(de mov-line-p (Po-Ref Po-Tgt)    
-
-  (if (get Po-Tgt 'line)
-      
-      # Tgt has line
-      (ptr-ln '*ptr (setq *line Po-Tgt))
-      
-      # Ref has line but tgt doesn't = mov prv line
-      (when (get Po-Ref 'line)
-        (ptr-ln '*ptr 
-          (setq *line (if (get *line 'line 'p) @ *line))))))
-
+  (let Line 
+        (if (get Po-Tgt 'line)
+            (unless (= (car (: ln)) Po-Tgt)
+              (push (:: ln) Po-Tgt))
+            (when (get Po-Ref 'line)
+              (pop (:: ln))))
+    #{
+    (push (:: ln) 
+          (if (get *line 'line 'p)
+              @
+              *line))
+    }#
     
+    T))
+
+
+(dm mov-line-n> (Po-Tgt)
+  (when (get Po-Tgt 'line) # Tgt has line
+    (unless (= (car (: ln)) Po-Tgt)
+      (push (:: ln) Po-Tgt))))
+      
+      
+(dm find-back> (Rel)
+  (let (Line (get (car (: ln)) 'data)
+        Sea (: ref)
+        Fou (if (= Rel 'a) 
+                (memq Sea Line)
+                (prior Sea Line)))
+    (println 'find-back "Search for cell: " (: ref) (type (: ref)))
+    (println 'find-back "Search in line: " Line)
+    (println 'find-back "Found: " Fou)
+    
+    (if Fou @ (get (cadr (: ln)) 'data))))
+      
+      
 (dm back> (Fn-Pop Rel No-Lay)
 
-  (let? Back (Fn-Pop This)
+  (println 'back> "LN LIST: " (: ln))
 
-    (let (Po-Back (lup-pt Back)
-          Po-Ref (lup-pt (: ref)))
-          
-      #(find-back Ptr Rel)
+  (let (Back (if (: nil)
+                 @
+                 (find-back> This Rel))
+        Po-Back (lup-pt Back))
+        
+    (mov-line-p> This Po-Ref Po-Back)
+    (ref> This Back Rel)
+    
+    (unless No-Lay
+      (top> Po-Back)
+      (draw> This)))
       
-      #(println Po-Back (get Po-Back 'data))
-      
-      (mov-line-p Po-Ref Po-Back)
-          
-      (ref> This Back Rel)
-      
-      (unless No-Lay
-        (top> Po-Back)
-        (draw> This)))))
-  
+  (println 'back> "PTR: " (: ref) (: nil))
+  (println 'back> "LN: " (car (: ln)) (get (car (: ln)) 'data)))
+
 
 (dm forw> (Fn-Push Rel)
 
@@ -203,7 +211,7 @@
   
     ((a-pair?> This)
       (println 'forw> "A PAIR")
-      (pt-pair This Fn-Push Rel))
+      (pt-pair> This Fn-Push Rel))
     
     ((b-pair?> This)
       (println 'forw> "B PAIR")
@@ -211,15 +219,18 @@
     
     ((a-atom?> This) # Num or Sym - Sym relevant
       (println 'forw> "A ATOM")
-      (pt-sym This Fn-Push Rel))  
+      (pt-sym> This Fn-Push Rel))  
   
     ((b-atom?> This) # Num or Sym - Sym relevant
       (println 'forw> "B ATOM")
-      (pt-sym This Fn-Push Rel))  
+      (pt-sym> This Fn-Push Rel))  
             
     (T
       # NIL - do nothing
-      )))
+      ))
+      
+  (println 'forw> "PTR: " (: ref) (: nil))
+  (println 'forw> "LN: " (car (: ln)) (get (car (: ln)) 'data)))
 
 
 (dm pre> ()
@@ -240,10 +251,6 @@
 
   
 #################
-
-(de mov-line-n (Po-Tgt)
-  (when (get Po-Tgt 'line) # Tgt has line
-    (setq *line Po-Tgt)))
     
 
 (dm pt-pair> (Fn-Push Rel)
@@ -264,10 +271,9 @@
 (dm pt-pair-nil> (Po-Ref Po-Tgt Rel Fn-Push)
       
   # Push val to stack
-  (Fn-Push This (: ref))
+  #(Fn-Push This (: ref))
 
-  (mov-line-n Po-Tgt)
-  
+  (mov-line-n> This Po-Tgt)
   (ref> This (: ref) Rel Po-Tgt)
     
   (when (= Rel 'b)
@@ -287,12 +293,10 @@
         Po-Tgt (lup-pt Tgt))
 
     # Push val to stack
-    (Fn-Push This Val)
+    #(Fn-Push This Val)
     
-    (mov-line-n Po-Tgt)
-    
-    # No mov ptr
-    (ref> This Po-Tgt Rel)
+    (mov-line-n> This Po-Tgt)
+    (ref> This Tgt Rel)
     
     (when (= Rel 'b)
       (top> Po-Tgt)
@@ -303,19 +307,17 @@
   
   (println 'pt-pair-pair)
   
-  (let (Po-Val (val Ptr)
-        Val (get Po-Val 'data)
+  (let (Po-Ref (lup-pt (: ref))
         Tgt (if (= Rel 'a)
-                (car Val)
-                (cdr Val))
+                (car (: ref))
+                (cdr (: ref)))
         Po-Tgt (lup-pt Tgt))
 
     # Push val to stack
-    (Fn-Push This Val)
+    #(Fn-Push This Ref)
     
-    (mov-line-n Po-Tgt)
-    
-    (ref> This Po-Tgt Rel)
+    (mov-line-n> This Po-Tgt)
+    (ref> This Tgt Rel)
       
     (top> Po-Tgt)
                   
@@ -324,39 +326,39 @@
   
 ############################
 
-(de pt-sym (Ptr Fn-Push Rel)
+(dm pt-sym> (Fn-Push Rel)
   # Determine tgt
-  (let (Ref (get Ptr 'ref)
+  (let (Ref (: ref)
         Val (val Ref))
     (if Val
-        (pt-sym-pair Ptr Ref Rel Fn-Push)
-        (pt-sym-nil Ptr Ref Rel Fn-Push)))        
-  (draw> Ptr))
+        (pt-sym-pair> This Rel Fn-Push)
+        (pt-sym-nil> This Rel Fn-Push)))        
+  (draw> This))
 
           
-(de pt-sym-nil (Ptr Ref Rel Fn-Push)
+(dm pt-sym-nil> (Rel Fn-Push)
     
-  (Fn-Push Ptr Ref)
+  #(Fn-Push Ptr Ref)
 
-  (let Po-Tgt (get (lup-pt Ref) Rel)
-    (mov-line-n Po-Tgt)
-    (ref> Ptr Ref Rel Po-Tgt)
+  (let Po-Tgt (get (lup-pt (: ref)) Rel)
+  
+    (mov-line-n> This Po-Tgt)
+    (ref> This (: ref) Rel Po-Tgt)
+    
     (top> Po-Tgt)))
   
   
-(de pt-sym-pair (Ptr Po-Ref Rel Fn-Push)
+(dm pt-sym-pair> (Rel Fn-Push)
     
-  (let (Po-Val (val Ptr)
-        Val (get Po-Val 'data)
-        Tgt (val Val)
+  (let (Po-Val (lup-pt (: ref))
+        Tgt (val (: ref))
         Po-Tgt (lup-pt Tgt))
   
     # Push val to stack
-    (Fn-Push Ptr Po-Val)
+    #(Fn-Push Ptr Po-Val)
         
-    (mov-line-n Po-Tgt)
-    
-    (ref> Ptr Tgt Rel)
+    (mov-line-n> This Po-Tgt)
+    (ref> This Tgt Rel)
     
     (top> Po-Tgt)))
     

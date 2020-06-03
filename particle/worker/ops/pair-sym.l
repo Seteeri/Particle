@@ -160,13 +160,17 @@
     # Depends on cell type and tgt
     (if Atomic-Cell
     
+        # Pop line on del if necessary
+    
         # Sym
         (prog
           (con> Po-Cell
                 List-Dat
                 (unless Dat Po-Dat))
           (when (get Po-Del 'line)
-            (mov-line Po-Del Po-Dat))
+            (mov-line Po-Del Po-Dat)
+            (with *ptr (pop (:: ln))))
+          (mov-line-n> *ptr Po-Dat)
           (ref> *ptr List-Dat 'b))
           
         # Pair
@@ -174,12 +178,17 @@
           (con> Po-Cell
                 List-Dat
                 (unless Dat Po-Dat))
+          (when (get Po-Del 'line)
+            (mov-line Po-Del Po-Dat)
+            (with *ptr (pop (:: ln))))
+          (mov-line-n> *ptr Po-Dat)
           (ref> *ptr List-Dat 'b)))
     
     
     (upd-tree)
     (mov-⇲ *line)
-        
+    
+    (println "CALL NEXT")
     (nex> *ptr)
     
     #(top> Po-Dat)
