@@ -75,9 +75,10 @@
       
       # ins bef cur
       # (a) -> (b a)
-      (if (lay-x?> *ptr)
-          (con-b-pair-x Dat)
-          (con-b-pair-y Dat)))
+      #(lay-x?> *ptr)
+      (con-b-pair-x Dat)
+      #(con-b-pair-y Dat)
+      )
       
     (T
       # root
@@ -200,24 +201,24 @@
 (de con-b-pair-x (Dat)
   
   # Incomplete
-  
-  (let (Po-Cell *ptr
-        Cell (get Po-Cell 'data)
+    
+  (let (Cell (ref> *ptr)
+        Po-Cell (lup-pt Cell)
         List-Dat (list Dat)
         Po-Dat (gen-point List-Dat 'x NIL T)
-        Po-Pre (ptr-car-pre '*ptr)
-        Pre (get Po-Pre 'data))
+        Pre (if (nil> *ptr)
+                @
+                (find-back> *ptr (rel> *ptr)))
+        Po-Pre (lup-pt Pre))
         
     # Insert before current object
     (con> Po-Pre List-Dat NIL)
     (con> Po-Dat Cell     NIL)
-      
-    (p-pre> (get '*ptr 'ptr) Po-Dat)
-          
+                
     (upd-tree)
     (mov-⇲ (car (get *ptr 'ln)))
     (top> Po-Cell)
-    (ptr-lay '*ptr)))
+    (draw> *ptr)))
     
     
 (de con-b-pair-y (Dat)
