@@ -25,7 +25,7 @@
           (ptr-ref '*ptr (ptr-nil '*ptr) 'b Po-Ref))
       
       (upd-tree)
-      (mov-⇲ *line)
+      (mov-⇲ (car (get *ptr 'ln)))
       
       (top> Po-Ref)
       (ptr-lay '*ptr)
@@ -104,7 +104,7 @@
     (setq *line Ln-P)
 
     (upd-tree)
-    (mov-⇲ *line)      
+    (mov-⇲ (car (get *ptr 'ln)))      
     
     # Ptr remains on Ref
     # Handle NIL?

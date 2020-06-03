@@ -225,7 +225,7 @@
         (new '(+Line)))
       
       (upd-tree)
-      (mov-⇲ *line)
+      (mov-⇲ (car (get *ptr 'ln)))
             
       # Pt to list
       (ptr-ref '*ptr Po-List 'a)
@@ -378,7 +378,7 @@
     #~(assert (= (get Po 'line 'p) Cc))
                 
     (upd-tree)
-    (mov-⇲ *line)
+    (mov-⇲ (car (get *ptr 'ln)))
     
     # Maintain on inner tree or outer?
     (setq *line Po)
@@ -515,7 +515,7 @@
     #              (not (= (get Po 'line 'l) Ref))))    
     
     (upd-tree)
-    (mov-⇲ *line)
+    (mov-⇲ (car (get *ptr 'ln)))
     
     # Maintain on inner tree or outer?
     (setq *line Ref)
@@ -593,7 +593,7 @@
           (new '(+Line))))
                 
     (upd-tree)
-    (mov-⇲ *line)
+    (mov-⇲ (car (get *ptr 'ln)))
     
     # Maintain on inner tree or outer?
     (setq *line Po)
@@ -655,7 +655,7 @@
     (put C    'line (new '(+Line)))
                 
     (upd-tree)
-    (mov-⇲ *line)
+    (mov-⇲ (car (get *ptr 'ln)))
     
     # Maintain on inner tree or outer?
     (setq *line Ref)

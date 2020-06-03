@@ -74,7 +74,7 @@
         ~(assert (get *line 'line))
             
         (upd-tree)
-        (mov-⇲ *line)      
+        (mov-⇲ (car (get *ptr 'ln)))      
         
         # If on-car maintain car
         (if *ptr-on-car

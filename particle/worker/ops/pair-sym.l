@@ -106,7 +106,7 @@
     (del> Po-Del)
 
     (upd-tree)
-    (mov-⇲ *line)))
+    (mov-⇲ (car (get *ptr 'ln)))))
      
       
 (de repl-a-nil (Dat)
@@ -128,7 +128,7 @@
     (del> Po-Del)
     
     (upd-tree)
-    (mov-⇲ *line)))
+    (mov-⇲ (car (get *ptr 'ln)))))
       
       
 (de repl-b-atom (Dat)
@@ -186,7 +186,7 @@
     
     
     (upd-tree)
-    (mov-⇲ *line)
+    (mov-⇲ (car (get *ptr 'ln)))
     
     (println "CALL NEXT")
     (nex> *ptr)
@@ -215,7 +215,7 @@
     (p-pre> (get '*ptr 'ptr) Po-Dat)
           
     (upd-tree)
-    (mov-⇲ *line)
+    (mov-⇲ (car (get *ptr 'ln)))
     (top> Po-Cell)
     (ptr-lay '*ptr)))
     

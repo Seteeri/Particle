@@ -96,4 +96,4 @@
     )
 
   #(upd-tree)
-  (mov-⇲ *line))
+  (mov-⇲ (car (get *ptr 'ln))))

@@ -94,7 +94,7 @@
           (put Ref 'line (new '(+Line)))))
         
     (upd-tree)
-    (mov-⇲ *line)
+    (mov-⇲ (car (get *ptr 'ln)))
     
     (setq *line Ref)
     (set-ptr-ref Ref)
