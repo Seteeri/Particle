@@ -156,8 +156,6 @@
     
 (de con-b-pair-x (Dat)
   
-  # Incomplete
-    
   (let (Cell (ref> *ptr)
         Po-Cell (lup-pt Cell)
         List-Dat (list Dat)
@@ -170,6 +168,10 @@
     # Insert before current object
     (con> Po-Pre List-Dat NIL)
     (con> Po-Dat Cell     NIL)
+    
+    # Handle lines
+                
+    # ref does not change
                 
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))

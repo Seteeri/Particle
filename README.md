@@ -59,8 +59,7 @@ This idea is then further extended to create arbitrary representations for arbit
 * To complete user tasks, efficiently and effectively ("getting $hit done")
   * In terms of programatic solutions, priority is on lowering human development and response time through adaptability/flexibility over raw performance
   * C exists where it is needed
-* To optimize the planning and direction; collection; processing and exploitation;
-analysis and production; and dissemination of fused multi-domain information in a time-sensitive environment
+* To optimize the planning and direction; collection; processing and exploitation; analysis and production; and dissemination of fused multi-domain information in a time-sensitive environment
 
 # Inspirations
 
@@ -115,24 +114,26 @@ On MS and Apple systems, it serves as an outliner "app" or personal knowledge ma
     * Full ACID, replication, journaling
     * [PicoLisp DB Vs ORM](https://picolisp.com/wiki/?pilvsorm)
 * Orthographic view aka zooming interface
-* Hierarchial/tree structure focused around symbols
-  * Default symbols/branches:
+* Hierarchial/tree structure focused around lists/symbols
+  * Defaults:
     * Start - main workspace
     * Log - undo/cmd history
-    * Registers - cut/copy/paste buffers
-    * Pointers - "mouse pointer", multiple possible
-    * Binds - keyboard bindings
-    * Plist - property list for object exploration
-    * Symbols - all *internal* symbols in the system
+    * Pointer-Mode - "mouse pointer" and modes; contains key bindings
+    * Selection - aka buffers/registers for cut/copy/paste of objects etc.
+    * Property-List - property list for object exploration
+    * Search-Replace - search/replace symbols/properties
+    * Files - file navigator
+    * Help
 * Filesystem Interface
   * Interfaced through symbols
-    * Filepaths are translated to tags
-      * "/this/is/some/path/fora/file.ext" = (file ext this is some path fora)
-      * Each directory/word is a tag
+  * Filepaths are translated to tags
+  * "/this/is/some/path/fora/file.ext" = (file ext this is some path fora)
+  * Each directory/word is a tag
+  * Order determines priority when searching but is otherwise equivalent
 * Import/link any data
-  * Binary files like multimedia are remain as separate files for efficiency
+  * Binary files like multimedia remain as separate files for efficiency
 * Export data to various formats
-* OS integration
+* OS integration (down the road)
   * Browser* (aka web clipper)
   * Userspace/wayland*
 

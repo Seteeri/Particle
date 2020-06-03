@@ -13,121 +13,131 @@ TODO
   
   REPL:
   
-  * THURS
-    * Refactor
-      * Gen/Lay [Mon]
-        * Reuse existing particles
-          * Pass flag to gen -> idx
-        * New will gen verts [Done]
-        * Pass sym exp to gen [WIP]
-      * Ptr/Ops [Mon]
-        * Refactor repl-a-atom
-        * Single ptr
-          * Ptr is yellow
-          * Selected is red
-          * Orange used for condensed
-        * Drawn sym name linked directly to ref
-        * +Pointer should ref the +Point sym
-      * List [Thurs-EOW]
-      * Line [Thurs-EOW]
-      * Del [EOW]
-      
-    * Use prog1
-    * Implement modes
-      * Str (Default)
-        * Produces single char strings
-        * L-Alt + Sp = to convert str-int-num
-          * Use double mod
-        * All other modes cmds accessible with mod keys
-          * When in that mode, same shortcut without mod keys
-      * Int
-        * Map keys to sym/oop fns
-        * put/get
-        * getl/putl
-        * type
-      * Ext
-        * Map keys to ext/db fns
-      * Num
-        * Hex, Bin, Dec, Fl
-        * Enter sequence, then on space/enter, convert
-        * a/s/m/d/e/q = add/subtract/multiply/divide/exp/sqrt
-      * Pair
-        * Map keys to pair/nil cmds
-        * Includes glue/chop/pack/split
-      * Bind to function keys
-    * *log
-      * Push cmds to log
-    * *plist
-      * Implement cmd
-    * *binds-ops
-      * Ability to modify, add, update binds
-      * Need command that we can eval
-    * Make camera mov
-      * Create cmds to center view, fit view etc
-      * Mov to item - def is align to left side of screen
-      * Either zoom out or move newline
-    * Create unit tests
-      * Verify position
-      
-    * External Symbols?
-      * Save code to binary and database
-        * This will output both data with markup
-        * To make "runable" version, strip comments and markup
-        * Think of it as pre-parser step, but part of it
-          * Either separate program or modify reader
-    * Multiple workers
-    * Min UI latency
-      * Swap proc before cmd since don't know if GC will happen
-    * Implement cmds Q/E : start/end of line/list
+  * Refactor
+    * Gen/Lay [Mon]
+      * Reuse existing particles
+        * Pass flag to gen -> idx
+      * New will gen verts [Done]
+      * Pass sym exp to gen [WIP]
+    * Ptr/Ops [Mon]
+      * Refactor repl-a-atom
+        * +Point.set>
+    * List [Thurs-EOW]
+    * Line [Thurs-EOW]
+    * Del [EOW]
+  * Use prog1
+  
+  * Root Lists (left/main/right)
+    1. undo-log/timeline
+      * circular list
+      * save old list to file/db
+    2. ptr-mode
+      * essentially the modes
+        * binds-ops
+          * Ability to modify, add, update binds
+          * Modify by eval'g a cmd
+      * shows property list for ptr
+    --
+    3. sel
+      * aka buffers or registers
+      * ptr will push sel to car
+      * Single ptr
+        * Ptr is yellow
+        * Selected is red
+        * Orange used for condensed      
+    4. prop
+      * show property list for selected obj(s)
+    5. search & replace
+    6. files
     
-    * Track data:particles in binary tree *particles
-      * Unlike a CLI, we hold references to old data
-        * Which if future commands change old data, it has to be updated
-          * E.g. zap
-        * Which means data/particles must be tracked
-      * Given multi particles repr same data
-        * To gc data, delete all particles ref data
-        * Assumes non-visible particles are not ref data
-      * Data : List of Particles
-        * handle 'zap - isyms replaced with name (tsym) - invalidates particles
-      * Draw all symbols will access all data?
-      * External symbols are more explicit      
-      * Without this, to del all +Point of sym, must search all data
-        * Or link all points
-              
-    * Pointer
-      * Mov pointer to different list
-        * Need cmd that we can type
-      * Make Pointer class [later]
-      * When ptr points to another ptr...input changes?
-        * If user wants to use ptr as a marker, 
-        explicit cmd to create a ptr like *cdr-1
-    * Soft wrap list
-      * Track pos
-      * When limit reached, mov nl
-      * Each list will have a length
-    * Sym prop output
-      * Output normally
-      * Only upd objs in view
-      
-    * Optimize display updates
-      * Decouple upd-tree from command
-      * Update only if in view
-      * update backwards until non-y list
-      * Relayout should use multiple workers
-        * Scout pushes work into a queue
-          * On finish scan, become worker
-          * Batch nodes
-        * Ctrl distributes tasks to workers
-          * Workers send rdy msg to get work
-        * Workers update and send serialized data to Render
-        * Or go further, and use a timeout
-          * Start handling longer tasks
-            * Rotate process
-            * Or...
-              * Deploy task
-              * Set timeout to rotate
-              * Fork
+  * Lists can be rotated to simulate scrolling
+  * Make camera mov
+    * Create cmds to center view, fit view etc
+    * Mov to item - def is align to left side of screen
+    * Either zoom out or move newline
+  
+  * Modes/ptrs
+    * Str (Default)
+      * Produces single char strings
+      * L-Alt + Sp = to convert str-int-num
+        * Use double mod
+      * All other modes cmds accessible with mod keys
+        * When in that mode, same shortcut without mod keys
+    * Int
+      * Map keys to sym/oop fns
+      * put/get
+      * getl/putl
+      * type
+    * Ext
+      * Map keys to ext/db fns
+    * Num
+      * Hex, Bin, Dec, Fl
+      * Enter sequence, then on space/enter, convert
+      * a/s/m/d/e/q = add/subtract/multiply/divide/exp/sqrt
+    * Pair
+      * Map keys to pair/nil cmds
+      * Includes glue/chop/pack/split
+    * Bind to function keys
+
+  * Create unit tests
+    * Verify position
+    
+  * External Symbols?
+    * Save code to binary and database
+      * This will output both data with markup
+      * To make "runable" version, strip comments and markup
+      * Think of it as pre-parser step, but part of it
+        * Either separate program or modify reader
+  * Multiple workers
+  * Min UI latency
+    * Swap proc before cmd since don't know if GC will happen
+  * Implement cmds Q/E : start/end of line/list
+  
+  * Track data:particles in binary tree *particles
+    * Unlike a CLI, we hold references to old data
+      * Which if future commands change old data, it has to be updated
+        * E.g. zap
+      * Which means data/particles must be tracked
+    * Given multi particles repr same data
+      * To gc data, delete all particles ref data
+      * Assumes non-visible particles are not ref data
+    * Data : List of Particles
+      * handle 'zap - isyms replaced with name (tsym) - invalidates particles
+    * Draw all symbols will access all data?
+    * External symbols are more explicit      
+    * Without this, to del all +Point of sym, must search all data
+      * Or link all points
+            
+  * Pointer
+    * Mov pointer to different list
+      * Need cmd that we can type
+    * Make Pointer class [later]
+    * When ptr points to another ptr...input changes?
+      * If user wants to use ptr as a marker, 
+      explicit cmd to create a ptr like *cdr-1
+  * Soft wrap list
+    * Track pos
+    * When limit reached, mov nl
+    * Each list will have a length
+    
+  * Optimize display updates
+    * Decouple upd-tree from command
+    * Update only if in view
+    * update backwards until non-y list
+    * Relayout should use multiple workers
+      * Scout pushes work into a queue
+        * On finish scan, become worker
+        * Batch nodes
+      * Ctrl distributes tasks to workers
+        * Workers send rdy msg to get work
+      * Workers update and send serialized data to Render
+      * Or go further, and use a timeout
+        * Start handling longer tasks
+          * Rotate process
+          * Or...
+            * Deploy task
+            * Set timeout to rotate
+            * Fork
   
   * ?
   
@@ -143,10 +153,7 @@ TODO
     * a s d m for arithmetic?
     * Named pipe + rd/pr  
   
-    * Need to be able to mov pointer to another list
-      * Either modify master ptr
-      * Or mov current ptr
-    * Draw spine or use grid to provide visual line guide  
+    * Draw background grid
       
   * ?
   
@@ -155,15 +162,7 @@ TODO
     * https://github.com/astiopin/webgl_fonts
       * glyph hinting
       * subpixel antialiasing
-  
-  * Finish drawing *binds-ops - make accessible
-    * Either show input or output
-      * Code or data form
-      * After change, eval it
-        * For "button", create a list somewhere: (update bindings to *bindings-key)
-        * User clicks it by eval'ing it
-      * Ideal is to show symbols, instead of their val (num)    
-  
+
   ---
                     
   * Cam
@@ -184,18 +183,8 @@ TODO
     * Store classes in separate files?
       * verts.db
       * parts.db    
-          
-  * Log/Undo System
-    * Log commands
-    * This cannot be unlimited - use a circular list
-    * Push old commands to file  
-      
+
   * Pointer System
-    * Use master pointer to select main pointer
-      * Or eval cmd to mov itself around
-    * Master ptr has dedicated binds/cmds
-      * Ctrl+WASD: Mstr
-      * Alt+WASD: Main
     * System
       * -> list = all
         * list of pairs will select those ranges
@@ -203,26 +192,6 @@ TODO
         * (p . NIL) = until EOL
         * (p . T) = until Ptr
       * -> atom = single
-    * or show props on single line (nested pairs)
-    * ALT SYS:
-      * User always ctrls master ptr
-      * Master mov to buffer area from start
-      * Cut ptr(s) (or markers?)
-      * Mov back to main
-      * Paste ptrs
-      * Comment
-        * Works for single items
-        * Lists? or Range?
-        * User must moves items into a list or select start/end
-    
-  * Register System (aka Cut/Copy/Paste)
-    * Buffers have ptr prop
-      * p1 -> b1, p2 -> b2, etc.
-    OR
-    * Pointers have buf prop (most logical)
-      * n-ptrs : b1
-      * Similar to ptr list, use a buffer list which follows same pattern
-      * Show first and last items
   
   ---
   
