@@ -27,28 +27,36 @@ TODO
     * Del [EOW]
   * Use prog1
   
-  * Root Lists (left/main/right)
-    1. undo-log/timeline
-      * circular list
-      * save old list to file/db
-    2. ptr-mode
-      * essentially the modes
-        * binds-ops
-          * Ability to modify, add, update binds
-          * Modify by eval'g a cmd
-      * shows property list for ptr
-    --
-    3. sel
-      * aka buffers or registers
-      * ptr will push sel to car
-      * Single ptr
-        * Ptr is yellow
-        * Selected is red
-        * Orange used for condensed      
-    4. prop
-      * show property list for selected obj(s)
-    5. search & replace
-    6. files
+  * Root Lists (side/main)
+    LEFT:
+      * Mov from simple to advance, downward
+      1. Help
+        * show recommendations based on sel obj(s)
+      2. ptr-mode
+        * essentially the modes
+          * keymaps
+            * Ability to modify, add, update binds
+            * Modify by eval'g a cmd
+        * shows property list for ptr
+      3. sel
+        * aka buffers or registers
+        * ptr will push sel to car
+        * Single ptr
+          * Ptr is yellow
+          * Selected is red
+          * Orange used for condensed
+      4. prop
+        * show property list for selected obj(s)
+      5. search & replace
+        * show recommendations based on sel obj(s)
+      6. files
+        * show recommendations based on sel obj(s)
+        * where to put this?
+      7. Undo-log/timeline
+        * circular list
+        * save old list to file/db
+    BOTTOM
+      * Status
     
   * Lists can be rotated to simulate scrolling
   * Make camera mov

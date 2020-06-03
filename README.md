@@ -15,6 +15,8 @@ Originally, this project was attempted in other languages but became only possib
 
 One interesting implication is when characters (string data) are input via keystrokes, they exist as cons cells so there is no reading or parsing. Consequently, there is no conventional GUI as all data exists in the same domain; it is not separate from the underlying data like in conventional programs (it is possible to build a conventional GUI).
 
+Currently, the core REPL/UI is being developed. Afterwards, the window manager and PIM will be developed, which will make it more generally useful.
+
 Plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM-based), a native solution can be provided. The Pinephone is also on the way ;)
 
 The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that, through a more pragmatic and gradual approach.
@@ -59,11 +61,11 @@ This idea is then further extended to create arbitrary representations for arbit
 * To complete user tasks, efficiently and effectively ("getting $hit done")
   * In terms of programatic solutions, priority is on lowering human development and response time through adaptability/flexibility over raw performance
   * C exists where it is needed
-* To optimize the planning and direction; collection; processing and exploitation; analysis and production; and dissemination of fused multi-domain information in a time-sensitive environment
+* To optimize the planning and direction; collection; processing and exploitation; analysis and production; and dissemination of fused multi-domain information in a time-sensitive environment (author's professional requirements ;))
 
 # Inspirations
 
-* Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide
+* Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide between the digital world and reality, users and programs
 * Evernote by Stepan Pachikov
   * To remember everything, an extension of the human brain
 * Oberon OS by Niklaus Wirth at ETH Zürich
