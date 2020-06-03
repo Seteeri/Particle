@@ -115,16 +115,16 @@
 
 
 (dm a-nil?>  ()
-  (and (rel-a?> This) (: ref) (: nil)))
+  (and (rel-a?> This) (: nil)))
   
 (dm a-pair?> ()
-  (and (rel-a?> This) (is-pair? (: po))))
+  (and (rel-a?> This) (pair (: ref))))
   
 (dm a-atom?> ()
-  (and (rel-a?> This) (is-atom? (: po))))
+  (and (rel-a?> This) (atom (: ref))))
 
 (dm b-nil?>  ()
-  (and (rel-b?> This) (: ref) (: nil)))
+  (and (rel-b?> This) (: nil)))
   
 (dm b-pair?> ()
   (and (rel-b?> This) (pair (: ref))))
@@ -183,7 +183,7 @@
       
 (dm back> (Fn-Pop Rel No-Lay)
 
-  (println 'back> "LN LIST: " (: ln))
+  #(println 'back> "LN LIST: " (: ln))
 
   (let (Back (if (: nil)
                  @
@@ -272,7 +272,7 @@
       
   # Push val to stack
   #(Fn-Push This (: ref))
-
+  
   (mov-line-n> This Po-Tgt)
   (ref> This (: ref) Rel Po-Tgt)
     

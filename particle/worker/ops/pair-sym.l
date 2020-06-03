@@ -54,11 +54,8 @@
     ((b-atom?> *ptr)
       (println 'make-pair-str "B ATOM")
       
-      # Skip when pt'ing to symbol for now
-      (unless (is-sym?> *ptr)
-      
-        # repl atom
-        (repl-b-atom Dat)))
+      # repl atom
+      (repl-b-atom Dat))
       
     ######
     # PAIR
