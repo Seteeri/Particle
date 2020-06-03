@@ -207,7 +207,7 @@
       (del> (get Po-Ptr 'b)) (put Po-Ptr 'b T)
       # Upd +Point on change
       (mov-line-n> *ptr Po-Sta)
-      (ref> *ptr '*start 'b)
+      (set-ref> *ptr '*start 'b)
       
       (mov-cur 0.0 1.0)     
       # Call this through *ptr method      

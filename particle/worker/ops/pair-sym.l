@@ -87,17 +87,20 @@
 (de repl-a-atom (Dat)
 
   (println 'repl-a-atom)
-
-  (let (Po-Cell (ptr-car-sup '*ptr)
-        Cell (get Po-Cell 'data)
-        Po-Del  *ptr
+  
+  (let (Cell (if (nil> *ptr)
+                 @
+                 (find-back> *ptr (rel> *ptr)))
+        Po-Cell (lup-pt Cell)
+        Po-Del (lup-pt (ref> *ptr))
         Po-Dat (gen-point Dat 'x NIL T))
             
+    # Make method for Pair
     (set Cell Dat)
     
     (if Dat
-        (ptr-ref '*ptr Po-Dat 'a)
-        (ptr-ref '*ptr Po-Cell 'a Po-Dat))
+        (set-ref> *ptr Dat 'a)
+        (set-ref> *ptr Cell 'a Po-Dat))
 
     (put Po-Cell 'a (unless Dat Po-Dat))
     (del> Po-Del)
@@ -110,16 +113,16 @@
 
   (println 'repl-a-nil)
 
-  (let (Po-Cell (ptr-nil '*ptr)
-        Cell (get Po-Cell 'data)
+  (let (Cell (nil> *ptr)
+        Po-Cell (lup-pt Cell)
         Po-Del  (get Po-Cell 'a)
         Po-Dat (gen-point Dat 'x NIL T))
             
     (set Cell Dat)
     
     (if Dat
-        (ptr-ref '*ptr Po-Dat 'a)
-        (ptr-ref '*ptr Po-Cell 'a Po-Dat))
+        (set-ref> *ptr Dat 'a)
+        (set-ref> *ptr Cell 'a Po-Dat))
         
     (put Po-Cell 'a (unless Dat Po-Dat))        
     (del> Po-Del)
@@ -168,7 +171,7 @@
             (mov-line Po-Del Po-Dat)
             (with *ptr (pop (:: ln))))
           (mov-line-n> *ptr Po-Dat)
-          (ref> *ptr List-Dat 'b))
+          (set-ref> *ptr List-Dat 'b))
           
         # Pair
         (prog
@@ -179,7 +182,7 @@
             (mov-line Po-Del Po-Dat)
             (with *ptr (pop (:: ln))))
           (mov-line-n> *ptr Po-Dat)
-          (ref> *ptr List-Dat 'b)))
+          (set-ref> *ptr List-Dat 'b)))
     
     
     (upd-tree)

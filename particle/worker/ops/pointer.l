@@ -34,6 +34,17 @@
 (dm rel-a?> () (= (: rel) 'a))
 (dm rel-b?> () (= (: rel) 'b))
 
+(dm ref> (R) (if R (=: ref R) (: ref)))
+(dm nil> (N) (if N (=: nil N) (: nil)))
+(dm rel> (S) (if S (=: rel S) (: rel)))    
+
+# rename to car/cdr or a/b                  
+(dm p-pre> (X) (if X (push (:: pre) X) (pop (:: pre))))
+(dm p-sup> (X) (if X (push (:: sup) X) (pop (:: sup))))
+
+################
+
+
 (dm set-col> (P)
   (=: col (get-first-col> P)))
   
@@ -48,17 +59,11 @@
   (let ((R G B A) (: col))
     (col> P (list R G B) A)))
 
-    
-# rename to car/cdr or a/b                  
-(dm p-pre> (X) (if X (push (:: pre) X) (pop (:: pre))))
-(dm p-sup> (X) (if X (push (:: sup) X) (pop (:: sup))))
-
-(dm rel> (S) (if S (=: rel S) (: rel)))    
 
 (dm draw> ()
   (lay-pt-start '*ptr '*ptr T T))
 
-(dm ref> (Tgt Rel Po)
+(dm set-ref> (Tgt Rel Po)
   #{
   
     Any T
@@ -131,13 +136,6 @@
   
 (dm b-atom?> ()
   (and (rel-b?> This) (atom (: ref))))
-
-(de ptr-nil (Sym) (get Sym 'ptr 'nil))
-(de ptr-rel (Sym) (get Sym 'ptr 'rel))
-
-(de ptr-car-pre (Sym) (car (get Sym 'ptr 'pre)))
-(de ptr-car-sup (Sym) (car (get Sym 'ptr 'sup)))
-
       
 #######################################################                 
   
@@ -191,7 +189,7 @@
         Po-Back (lup-pt Back))
         
     (mov-line-p> This Po-Ref Po-Back)
-    (ref> This Back Rel)
+    (set-ref> This Back Rel)
     
     (unless No-Lay
       (top> Po-Back)
@@ -274,7 +272,7 @@
   #(Fn-Push This (: ref))
   
   (mov-line-n> This Po-Tgt)
-  (ref> This (: ref) Rel Po-Tgt)
+  (set-ref> This (: ref) Rel Po-Tgt)
     
   (when (= Rel 'b)
     (top> Po-Tgt)
@@ -285,18 +283,17 @@
     
   (println 'pt-pair-atom)
     
-  (let (Po-Val (lup-pt (: ref))
-        Val (val (: ref))
+  (let (Po-Ref (lup-pt (: ref))
         Tgt (if (= Rel 'a)
-                (car Val)
-                (cdr Val))
+                (car (: ref))
+                (cdr (: ref)))
         Po-Tgt (lup-pt Tgt))
 
     # Push val to stack
-    #(Fn-Push This Val)
-    
+    #(Fn-Push This (: ref))
+        
     (mov-line-n> This Po-Tgt)
-    (ref> This Tgt Rel)
+    (set-ref> This Tgt Rel)
     
     (when (= Rel 'b)
       (top> Po-Tgt)
@@ -314,10 +311,10 @@
         Po-Tgt (lup-pt Tgt))
 
     # Push val to stack
-    #(Fn-Push This Ref)
+    #(Fn-Push This (: ref))
     
     (mov-line-n> This Po-Tgt)
-    (ref> This Tgt Rel)
+    (set-ref> This Tgt Rel)
       
     (top> Po-Tgt)
                   
@@ -338,12 +335,12 @@
           
 (dm pt-sym-nil> (Rel Fn-Push)
     
-  #(Fn-Push Ptr Ref)
+  #(Fn-Push Ptr (: ref))
 
   (let Po-Tgt (get (lup-pt (: ref)) Rel)
   
     (mov-line-n> This Po-Tgt)
-    (ref> This (: ref) Rel Po-Tgt)
+    (set-ref> This (: ref) Rel Po-Tgt)
     
     (top> Po-Tgt)))
   
@@ -355,10 +352,10 @@
         Po-Tgt (lup-pt Tgt))
   
     # Push val to stack
-    #(Fn-Push Ptr Po-Val)
+    #(Fn-Push Ptr (: ref))
         
     (mov-line-n> This Po-Tgt)
-    (ref> This Tgt Rel)
+    (set-ref> This Tgt Rel)
     
     (top> Po-Tgt)))
     
