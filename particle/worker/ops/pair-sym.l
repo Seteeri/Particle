@@ -9,7 +9,7 @@
 
   }#
 
-  (println (get *ptr 'rel) (get *ptr 'ref) (get *ptr 'nil))
+  (println (get *ptr 'rel) (get *ptr 'ref) (get *ptr 'cell))
   
   (cond
     
@@ -62,7 +62,7 @@
 
   (println 'repl-a-atom)
   
-  (let (Cell (if (nil> *ptr)
+  (let (Cell (if (cell> *ptr)
                  @
                  (find-back> *ptr (rel> *ptr)))
         Po-Cell (lup-pt Cell)
@@ -86,7 +86,7 @@
 
   (println 'repl-b-nil)
   
-  (let (Cell (nil> *ptr)
+  (let (Cell (cell> *ptr)
         Po-Cell (lup-pt Cell)        
         Po-Del  (ref> *ptr)
         List-Dat (list Dat)
@@ -120,7 +120,7 @@
         Po-Cell (lup-pt Cell)
         List-Dat (list Dat)
         Po-Dat (gen-point List-Dat 'x NIL T)
-        Pre (if (nil> *ptr)
+        Pre (if (cell> *ptr)
                 @
                 (find-back> *ptr (rel> *ptr)))
         Po-Pre (lup-pt Pre))

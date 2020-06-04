@@ -25,7 +25,7 @@
               
       (if (get Po-Ref 'data)
           (set-ref> *ptr Ref 'b)
-          (set-ref> *ptr (nil> *ptr) 'b Po-Ref))
+          (set-ref> *ptr (cell> *ptr) 'b Po-Ref))
       
       (upd-tree)
       (mov-⇲ Ln)

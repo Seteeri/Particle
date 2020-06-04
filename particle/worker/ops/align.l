@@ -11,7 +11,7 @@
     Po
   }#
 
-  (let (Prv (if (get Po 'line 'p) @ (get *line-lay))
+  (let (Prv (if (get Po 'line 'p) @ *line-lay)
         Ori-P (get Prv 'ori)
         Dims-P (if (lay-y?> Prv)
                    (get (lup-pt (car (get Prv 'data))) 'line 'dims)
@@ -22,7 +22,7 @@
                Po
                (get Po 'data)))
 
-    ~(assert Lst)
+    ~(assert Prv)
 
     (prog # If Y Pair, get Y from Car
       (mov-cur (car Ori-P)
