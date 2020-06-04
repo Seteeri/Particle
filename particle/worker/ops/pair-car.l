@@ -204,7 +204,8 @@
           Ln (c-ln> *ptr)
           Ln-N (get Ln 'line 'n)
           Cdr (cdr Pair)
-          Po-Cdr (if Cdr (lup-pt Cdr) (get Po-Pair 'b)))
+          Po-Cdr (if Cdr (lup-pt Cdr) (get Po-Pair 'b))
+          Push-Pair (not (get Po-Pair 'line)))
     
       # Repl tgt with list with tgt list
       (set> Po-Pair List Po-List)
@@ -231,7 +232,8 @@
       (set-ref> *ptr List 'a)
             
       # Push cell and car
-      (ln> *ptr Po-Pair)
+      (when Push-Pair
+        (ln> *ptr Po-Pair))
       (ln> *ptr Po-List)
       
       (top> Po-List)

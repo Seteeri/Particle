@@ -94,7 +94,7 @@
       # Already called upd-lst-dims
       (upd-dims-2> (car A) Dims-A)
     
-      (when NIL
+      (when T
         (println 'pop-list-lay "Pop list: " 
           A (car (get (car A) 'data)))))))
   

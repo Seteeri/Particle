@@ -77,6 +77,9 @@
       (prin "dims: ") (println (get Ref 'dims))
       (prin "lay: ")  (println (get Ref 'lay))
       
+      (prin "a: ")  (println (get Ref 'a))
+      (prin "b: ")  (println (get Ref 'b))
+      
       (when (get Ref 'line)
         (prin "line.p: ")    (println (get Ref 'line 'p))
         (prin "line.n: ")    (println (get Ref 'line 'n))

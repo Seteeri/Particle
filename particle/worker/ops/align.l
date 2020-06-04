@@ -17,10 +17,13 @@
                    (get (lup-pt (car (get Prv 'data))) 'line 'dims)
                    (get Prv 'line 'dims)))
                 
-    (when NIL
+    (when T
       (println 'align-cur-line
                Po
-               (get Po 'data)))
+               (get Po 'data)
+               Dims-P
+               (when (lay-y?> Prv)
+                (lup-pt (car (get Prv 'data))))))
 
     ~(assert Prv)
 

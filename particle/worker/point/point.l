@@ -310,15 +310,14 @@
       (println 'upd-list-lay (caar *list-lay)
         (format (car (cadar *list-lay)) *Scl)
         (format (cadr (cadar *list-lay)) *Scl))))
-    
-  # On end or Y-Pair.car=atom: pop/upd list
+        
+  # On end or Y-Pair.car/cdr=atom/nil: pop/upd list
   (when (or (and (: c)
                  (lay-x?> (: c))
                  (get (: c) 'b)
                  (not (is-pair? This)))
             (and (: c)
                  (lay-y?> (: c))
-                 (get (: c) 'a)
                  (not (is-pair? This))))
     
     (when NIL
