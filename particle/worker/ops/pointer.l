@@ -77,12 +77,12 @@
   }#
     
   # Uncolor current ref
-  (if (: cell)
-      (let? Po-Tgt (get (lup-pt (: cell)) (: rel))
-        (uncol> This Po-Tgt))
-      (let? Po (lup-pt (: ref))
-        (uncol> This Po)))
-  
+  (let? Po (if (: cell)
+               (get (lup-pt (: cell)) (: rel))
+               (lup-pt (: ref)))
+    (uncol> This Po))
+          
+        
   # Should store Point also
   
   (let Po-Tgt (lup-pt Tgt)
@@ -104,19 +104,6 @@
   
 
 #############################
-
-(de ptr-nil?    (Ref) (not Ref))
-(de ptr-pair?   (Ref) (pair Ref))
-(de ptr-atom?   (Ref) (atom Ref))
-(de ptr-atom-t? (Ref) (and Ref (atom Ref)))
-(de ptr-term?   (Sym) (or
-                        (and 
-                          (rel-a?> (get Sym 'ptr))
-                          (atom?> (val Sym)))
-                        (and
-                          (rel-b?> (get Sym 'ptr))
-                          (atom?> (val Sym)))))
-
 
 (dm a-nil?>  ()
   (and (rel-a?> This) (: cell)))
@@ -145,7 +132,7 @@
   (let (Po-Ref (lup-pt (: ref))
         Po-Tgt (get Po-Ref Rel))
     (if Po-Tgt
-        (pt-pair-cell> This Po-Ref Po-Tgt Rel Fn-Push)
+        (pt-pair-nil> This Po-Tgt Rel Fn-Push)
         # determine if pair or not
         (let Tgt (if (= Rel 'a)
                      (car (: ref))
@@ -155,7 +142,7 @@
               (pt-pair-pair> This Rel Fn-Push))))))
 
             
-(dm pt-pair-cell> (Po-Ref Po-Tgt Rel Fn-Push)
+(dm pt-pair-nil> (Po-Tgt Rel Fn-Push)
       
   # Push val to stack
   #(Fn-Push This (: ref))
