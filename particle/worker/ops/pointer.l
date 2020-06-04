@@ -319,21 +319,15 @@
          (b-nil?> This))
      T)
   
-    ((a-pair?> This)
-      (println 'forw> "A PAIR")
+    ((or (a-pair?> This)
+         (b-pair?> This))
+      #(println 'forw> "A PAIR")
       (pt-pair> This Fn-Push Rel))
     
-    ((b-pair?> This)
-      (println 'forw> "B PAIR")
-      (pt-pair> This Fn-Push Rel))    
-    
-    ((a-atom?> This) # Num or Sym - Sym relevant
-      (println 'forw> "A ATOM")
-      (pt-sym> This Fn-Push Rel))  
-  
-    ((b-atom?> This) # Num or Sym - Sym relevant
-      (println 'forw> "B ATOM")
-      (pt-sym> This Fn-Push Rel))  
+    ((or (a-atom?> This)
+         (b-atom?> This))
+      #(println 'forw> "A ATOM")
+      (pt-sym> This Fn-Push Rel))
             
     (T
       # NIL - do nothing
