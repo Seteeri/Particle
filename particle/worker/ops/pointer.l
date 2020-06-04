@@ -258,7 +258,7 @@
   # else if old has line but new doesn't = mov prv line
 
   (if (get Po-Tgt 'line)
-      (unless (= (car (: ln)) Po-Tgt)
+      (unless (= (c-ln> This) Po-Tgt)
         (push (:: ln) Po-Tgt))
       (when (get Po-Ref 'line)
         (pop (:: ln)))))
