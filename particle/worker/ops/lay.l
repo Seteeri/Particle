@@ -37,7 +37,7 @@
                        (get Po-C 'b))))
         
         #(println (h64 (adr Any)) (adr Any) Any Po (type Po))
-        #(println 'lay-pair Any Po (type Po) "A:" (get Po 'a) "B:" (get Po 'b))
+        (println 'lay-pair Any Po (type Po) "A:" (get Po 'a) "B:" (get Po 'b))
         ~(assert Po)
         
         # Draw Pair

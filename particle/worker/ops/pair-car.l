@@ -95,6 +95,7 @@
     
     ((a-nil?> *ptr)
       (println 'make-list-car "A NIL")
+      #(make-list-car-a-atom)
       T)
       
       
@@ -172,18 +173,32 @@
         
         [Cb] NIL
         NIL
+        
+        Poss Cars:
+        1. New list with Car
+        2. Car itself
+           * Same Pair with Y layout
+           * Cdr has line also
+        3. NIL
+        
   }#   
 
+  # Handle NIL
+  
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
         Pair (find-back> *ptr (rel> *ptr))
         Po-Pair (lup-pt Pair))
     
-    (println "Tgt/Pair: " Tgt Pair)
-    
-    # Del last?
+    (println "Car/Pair: " Tgt Pair (get Po-Pair 'a))
+  
+    # otherwise set-ref will attempt uncol on ref
+    # pass flag for this...
+    (put *ptr 'ref)  
+    # put NIL otherwise set will del new point
+    (put Po-Pair 'a)
     (del> Po-Tgt)
-        
+    
     (let (List (list Tgt)
           Po-List (gen-point List 'x NIL)
           Ln (c-ln> *ptr)
@@ -192,35 +207,22 @@
           Po-Cdr (if Cdr (lup-pt Cdr) (get Po-Pair 'b)))
     
       # Repl tgt with list with tgt list
-      #(set Pair List)
       (set> Po-Pair List Po-List)
       
       # Set layout for Pair
       (set-lay> Po-Pair 'y)
       
       (if (get Po-Pair 'line)
+          (put @ 'n Po-Cdr)      
+          (ins-line-aft Ln Po-Pair))
       
-          (prog
-            (put Po-Pair 'line 'n Po-Cdr))
-      
-          (prog 
-            (put Ln 'line 'n Po-Pair)
-            (put Po-Pair 'line
-              (new '(+Line)
-                Ln
-                Po-Cdr))))
-                     
       # Create Line for Cdr
       (if (get Po-Cdr 'line)
           (put @ 'p Po-Pair)
-          (put Po-Cdr 'line
-            (new '(+Line)
-              Po-Pair
-              Ln-N)))
-                  
+          (ins-line-aft Po-Pair Po-Cdr))
+          
       # Create line for List
-      (put Po-List 'line
-        (new '(+Line)))
+      (put Po-List 'line (new '(+Line)))
       
       (upd-tree)
       (mov-⇲ Ln)
@@ -228,7 +230,9 @@
       # Pt to list
       (set-ref> *ptr List 'a)
             
-      #(setq *line Po-List)
+      # Push cell and car
+      (ln> *ptr Po-Pair)
+      (ln> *ptr Po-List)
       
       (top> Po-List)
       (draw> *ptr))))

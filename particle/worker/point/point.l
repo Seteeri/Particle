@@ -397,8 +397,13 @@
 
 
 (dm del-car> ()
-  (when (: a) (del> @ T T))
-  (del> This))
+  (if (: a)
+      (prog
+        (del> (: a))
+        (=: a))
+      (let? Po (lup-pt (car (: data)))
+        (del> Po)
+        (=: a))))
                   
   
 (dm mov-verts> ()

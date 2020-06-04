@@ -11,7 +11,7 @@
                    
     (unless (get Po-Tgt 'line)
     
-      (ins-line Ln Po-Tgt)
+      (ins-line-aft Ln Po-Tgt)
           
       (upd-tree)
       (mov-⇲ Ln)
@@ -20,41 +20,29 @@
       (draw> *ptr)
       
       (mov-line-n> *ptr Po-Tgt))))
-        
 
-(de ins-line (Ln Po)
-  # ins before
+        
+(de ins-line-aft (Ln Po)
   
-  (put Po 'line
-    (new '(+Line)
-          Ln
-          (get Ln 'line 'n)))
-          
-  # (if (get Ln 'line 'l) @ Ln)
-
-  (if Ln
-          
-      # Con cur line n to new to make cur line prv line
-      # Con next line p to line
-      (let Nxt (get Ln 'line 'n)
-        (put Ln 'line 'n Po)
-        (when Nxt
-          (put Nxt 'line 'p Po)))
-          
-      # Start of line
-      (let? Nxt (get Ln 'line 'n)
-        (put Ln 'line 'n Po))))
-          
+  (let Nxt (get Ln 'line 'n)  
+  
+    (put Po 'line
+      (new '(+Line)
+            Ln
+            (unless (= Nxt Po) Nxt)))
+                      
+    (if Ln
+            
+        (prog
+          (put Ln 'line 'n Po)
+          (when Nxt
+            (unless (= Nxt Po)
+              (put Nxt 'line 'p Po))))
+            
+        # Start of line
+        (let? Nxt (get Ln 'line 'n)
+          (put Ln 'line 'n Po)))))    
         
-(de ins-line-pre (Po)
-
-  # ins before
-
-  (when (get *line 'p)
-    (put @ 'line 'n Po))
-
-  (put *line 'line 'p Po))
-
 
 (de del-line (Po)
 

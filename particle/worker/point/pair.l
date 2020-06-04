@@ -160,5 +160,5 @@
   # If Po-Dat is an atom
   (when Po-Dat
     (unless (is-pair? Po-Dat)
-      (put This 'a Po-Dat)
+      (=: a Po-Dat)
       (put Po-Dat 'c This))))

@@ -249,15 +249,17 @@
 
   (if (get Po-Tgt 'line)
       (unless (= (c-ln> This) Po-Tgt)
-        (push (:: ln) Po-Tgt))
+        #(ln> This Po-Tgt)
+        (ln> This)
+        )
       (when (get Po-Ref 'line)
-        (pop (:: ln)))))
+        (ln> This))))
 
 
 (dm mov-line-n> (Po-Tgt)
   (when (get Po-Tgt 'line) # Tgt has line
     (unless (= (c-ln> This) Po-Tgt)
-      (push (:: ln) Po-Tgt))))
+      (ln> This Po-Tgt))))
       
       
 (dm find-back> (Rel)
