@@ -332,6 +332,7 @@
     (if Val
         (pt-sym-pair> This Rel Fn-Push)
         (pt-sym-nil> This Rel Fn-Push)))        
+  (top> Po-Tgt)        
   (draw> This))
 
           
@@ -342,9 +343,7 @@
   (let Po-Tgt (get (lup-pt (: ref)) Rel)
   
     (mov-line-n> This Po-Tgt)
-    (set-ref> This (: ref) Rel Po-Tgt)
-    
-    (top> Po-Tgt)))
+    (set-ref> This (: ref) Rel Po-Tgt)))
   
   
 (dm pt-sym-pair> (Rel Fn-Push)
@@ -357,9 +356,7 @@
     #(Fn-Push Ptr (: ref))
         
     (mov-line-n> This Po-Tgt)
-    (set-ref> This Tgt Rel)
-    
-    (top> Po-Tgt)))
+    (set-ref> This Tgt Rel)))
     
     
 ####################

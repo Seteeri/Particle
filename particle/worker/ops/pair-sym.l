@@ -77,16 +77,9 @@
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))))
       
-      
+  
 (de repl-b-atom (Dat)
   T)        
-
-  
-(de con-a-pair-x (Dat)
-  T)
-
-  
-###
       
 
 (de repl-b-nil (Dat)
@@ -146,3 +139,6 @@
     (top> Po-Cell)
     (draw> *ptr)))
 
+
+(de con-a-pair-x (Dat)
+  T)    
