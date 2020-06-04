@@ -1,6 +1,8 @@
 (de make-line ()
   
-  # Only applies to Cdr X Pair
+  # Only applies to X Pair Cdr
+  # X Pair Car can have a line but only applies to lists
+  # If arbitrarily done, would break consistency...
   
   (let (Po-Tgt (if (cell> *ptr)
                    (ref> *ptr)
@@ -26,8 +28,9 @@
   (put Po 'line
     (new '(+Line)
           Ln
-          (get Ln 'line 'n)
-          (if (get Ln 'line 'l) @ Ln)))
+          (get Ln 'line 'n)))
+          
+  # (if (get Ln 'line 'l) @ Ln)
 
   (if Ln
           

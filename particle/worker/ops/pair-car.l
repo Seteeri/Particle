@@ -93,35 +93,35 @@
     #####
     # NIL
     
-    ((ptr-a-nil? '*ptr)
+    ((a-nil?> *ptr)
       (println 'make-list-car "A NIL")
       T)
       
       
-    ((ptr-b-nil? '*ptr)
+    ((b-nil?> *ptr)
       (println 'make-list-car "B NIL")
       T)      
      
     ######
     # ATOM
       
-    ((ptr-a-atom? '*ptr)
+    ((a-atom?> *ptr)
       (println 'make-list-car "A ATOM")
       (make-list-car-a-atom))
       
       
-    ((ptr-b-atom? '*ptr)
+    ((b-atom?> *ptr)
       (println 'make-list-car "B ATOM")
       T)
       
     ######
     # PAIR
 
-    ((ptr-a-pair? '*ptr)
+    ((a-pair?> *ptr)
       (println 'make-list-car "A PAIR")
       T)
       
-    ((ptr-b-pair? '*ptr)
+    ((b-pair?> *ptr)
       (println 'make-list-car "B PAIR")
       # See pair-cdr
       T)
@@ -174,20 +174,20 @@
         NIL
   }#   
 
-  (let (Po-Tgt *ptr
-        Tgt (get Po-Tgt 'data)
-        Po-Pair (ptr-car-sup '*ptr)
-        Pair (get Po-Pair 'data))
+  (let (Tgt (ref> *ptr)
+        Po-Tgt (lup-pt Tgt)
+        Pair (find-back> *ptr (rel> *ptr))
+        Po-Pair (lup-pt Pair))
     
-    (println "Tgt: " Tgt (adr Tgt))
-    (println "Pair: " Pair)
-        
+    (println "Tgt/Pair: " Tgt Pair)
+    
+    # Del last?
     (del> Po-Tgt)
-    (setq *ptr)
         
     (let (List (list Tgt)
           Po-List (gen-point List 'x NIL)
-          Ln-N (get *line 'line 'n)
+          Ln (c-ln> *ptr)
+          Ln-N (get Ln 'line 'n)
           Cdr (cdr Pair)
           Po-Cdr (if Cdr (lup-pt Cdr) (get Po-Pair 'b)))
     
@@ -204,35 +204,34 @@
             (put Po-Pair 'line 'n Po-Cdr))
       
           (prog 
-            (put *line 'line 'n Po-Pair)
+            (put Ln 'line 'n Po-Pair)
             (put Po-Pair 'line
               (new '(+Line)
-                  *line
-                  Po-Cdr
-                  (if (get *line 'line 'l) @ *line)))))
+                Ln
+                Po-Cdr))))
                      
       # Create Line for Cdr
       (if (get Po-Cdr 'line)
           (put @ 'p Po-Pair)
           (put Po-Cdr 'line
             (new '(+Line)
-                  Po-Pair
-                  Ln-N
-                  (get Po-Pair 'line 'l))))
+              Po-Pair
+              Ln-N)))
                   
       # Create line for List
       (put Po-List 'line
         (new '(+Line)))
       
       (upd-tree)
-      (mov-⇲ (car (get *ptr 'ln)))
+      (mov-⇲ Ln)
             
       # Pt to list
-      (ptr-ref '*ptr Po-List 'a)
+      (set-ref> *ptr List 'a)
             
-      (setq *line Po-List)
+      #(setq *line Po-List)
+      
       (top> Po-List)
-      (ptr-lay '*ptr))))
+      (draw> *ptr))))
       
       
 ######################################################
