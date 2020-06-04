@@ -20,10 +20,9 @@ TODO
       * New will gen verts [Done]
       * Pass sym exp to gen [WIP]
     * Ptr/Ops [Mon]
-      * Refactor repl-a-atom
-        * +Point.set>
-    * List [Thurs-EOW]
     * Line [Thurs-EOW]
+      * Create line for NIL
+    * List [Thurs-EOW]
     * Del [EOW]
   * Use prog1
   

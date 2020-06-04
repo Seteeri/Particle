@@ -2,40 +2,47 @@
   
   # Only applies to Cdr X Pair
   
-  # Handle NIL
-  
-  (let (Ref (ref> *ptr)
-        Po-Ref (lup-pt Ref)
+  (let (Po-Tgt (if (cell> *ptr)
+                   (ref> *ptr)
+                   (lup-pt (ref> *ptr)))
         Ln (c-ln> *ptr))
                    
-    (unless (get Po-Ref 'line)
+    (unless (get Po-Tgt 'line)
     
-      (put Po-Ref 'line
-        (new '(+Line)
-              Ln
-              (get Ln 'line 'n)
-              (if (get Ln 'line 'l) @ Ln)))
-      
-      (let Nxt (get Ln 'line 'n)
-        # Con cur line
-        (put Ln 'line 'n Po-Ref)
-        # Con new line to prv nxt line
-        (when Nxt
-          (put Nxt 'line 'p Po-Ref)))
-              
-      (if (get Po-Ref 'data)
-          (set-ref> *ptr Ref 'b)
-          (set-ref> *ptr (cell> *ptr) 'b Po-Ref))
-      
+      (ins-line Ln Po-Tgt)
+          
       (upd-tree)
       (mov-⇲ Ln)
       
-      (top> Po-Ref)
+      (top> Po-Tgt)
       (draw> *ptr)
       
-      (mov-line-n> *ptr Po-Ref))))
+      (mov-line-n> *ptr Po-Tgt))))
         
 
+(de ins-line (Ln Po)
+  # ins before
+  
+  (put Po 'line
+    (new '(+Line)
+          Ln
+          (get Ln 'line 'n)
+          (if (get Ln 'line 'l) @ Ln)))
+
+  (if Ln
+          
+      # Con cur line n to new to make cur line prv line
+      # Con next line p to line
+      (let Nxt (get Ln 'line 'n)
+        (put Ln 'line 'n Po)
+        (when Nxt
+          (put Nxt 'line 'p Po)))
+          
+      # Start of line
+      (let? Nxt (get Ln 'line 'n)
+        (put Ln 'line 'n Po))))
+          
+        
 (de ins-line-pre (Po)
 
   # ins before
