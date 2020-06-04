@@ -33,12 +33,8 @@
 (dm ref> (R) (if R (=: ref R) (: ref)))
 (dm cell> (N) (if N (=: cell N) (: cell)))
 (dm rel> (S) (if S (=: rel S) (: rel)))    
-
+(dm ln> (X) (if X (push (:: ln) X) (pop (:: ln))))
 (dm c-ln> () (car (: ln)))
-
-# rename to car/cdr or a/b                  
-(dm p-pre> (X) (if X (push (:: pre) X) (pop (:: pre))))
-(dm p-sup> (X) (if X (push (:: sup) X) (pop (:: sup))))
 
 ################
 

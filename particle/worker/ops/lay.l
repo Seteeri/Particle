@@ -37,7 +37,7 @@
                        (get Po-C 'b))))
         
         #(println (h64 (adr Any)) (adr Any) Any Po (type Po))
-        (println 'lay-pair Any Po (type Po) "A:" (get Po 'a) "B:" (get Po 'b))
+        #(println 'lay-pair Any Po (type Po) "A:" (get Po 'a) "B:" (get Po 'b))
         ~(assert Po)
         
         # Draw Pair
@@ -60,10 +60,10 @@
         # Lay should return next obj to draw
         (let N (lay> Po Lay-A Lay-B)
           (when (and (car N) Lay-B)
-            (prin "  lay-pair  Push CDR: ") (println (car N))
+            #(prin "  lay-pair  Push CDR: ") (println (car N))
             (push 'L (car N)))
           (when (and (cdr N) Lay-A)
-            (prin "  lay-pair  Push CAR: ") (println (cdr N))
+            #(prin "  lay-pair  Push CAR: ") (println (cdr N))
             (push 'L (cdr N))))))))
 
                     

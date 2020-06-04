@@ -99,8 +99,7 @@
     
     (when (get Po-Del 'line)
       (mov-line Po-Del Po-Dat)
-      (with *ptr (pop (:: ln))))
-      
+      (ln> *ptr))
     (mov-line-n> *ptr Po-Dat)
     
     (set-ref> *ptr List-Dat 'b))
@@ -129,7 +128,11 @@
     (con> Po-Pre List-Dat NIL)
     (con> Po-Dat Cell     NIL)
     
-    # Handle lines
+    # Swap line
+    (when (get Po-Cell 'line)
+      (mov-line Po-Cell Po-Dat)
+      (ln> *ptr))
+    (mov-line-n> *ptr Po-Dat)
                 
     # ref does not change
                 
