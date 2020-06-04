@@ -47,6 +47,10 @@
 ################
 
 
+(dm draw> ()
+  (lay-pt-start '*ptr '*ptr T T))
+
+  
 (dm set-col> (P)
   (=: col (get-first-col> P)))
   
@@ -61,10 +65,7 @@
   (let ((R G B A) (: col))
     (col> P (list R G B) A)))
 
-
-(dm draw> ()
-  (lay-pt-start '*ptr '*ptr T T))
-
+    
 (dm set-ref> (Tgt Rel Po)
   #{
   
