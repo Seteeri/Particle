@@ -15,11 +15,7 @@
     
     #####
     # NIL
-    
-    ((a-nil?> *ptr)
-      (println 'make-pair-str "A NIL")      
-      (repl-a-nil Dat))
-            
+                
     ((b-nil?> *ptr)
       (println 'make-pair-str "B NIL")      
       (repl-b-nil Dat))
@@ -27,7 +23,8 @@
     ######
     # ATOM
       
-    ((a-atom?> *ptr)
+    ((or (a-atom?> *ptr)
+         (a-nil?> *ptr))
       (println 'make-pair-str "A ATOM")
       (repl-a-atom Dat))
       
@@ -69,44 +66,14 @@
                  @
                  (find-back> *ptr (rel> *ptr)))
         Po-Cell (lup-pt Cell)
-        Po-Del (lup-pt (ref> *ptr))
         Po-Dat (gen-point Dat 'x NIL T))
-            
-    # Make method for Pair
-    # better yet, dispatch on type
-    # (set> Po-Cell)
-    
-    (set Cell Dat)
-    
+                
     (if Dat
         (set-ref> *ptr Dat 'a)
         (set-ref> *ptr Cell 'a Po-Dat))
 
-    (put Po-Cell 'a (unless Dat Po-Dat))
-    (del> Po-Del)
-
-    (upd-tree)
-    (mov-⇲ (c-ln> *ptr))))
-     
-      
-(de repl-a-nil (Dat)
-
-  (println 'repl-a-nil)
-
-  (let (Cell (nil> *ptr)
-        Po-Cell (lup-pt Cell)
-        Po-Del  (get Po-Cell 'a)
-        Po-Dat (gen-point Dat 'x NIL T))
-            
-    (set Cell Dat)
-    
-    (if Dat
-        (set-ref> *ptr Dat 'a)
-        (set-ref> *ptr Cell 'a Po-Dat))
+    (set> Po-Cell Dat Po-Dat T)        
         
-    (put Po-Cell 'a (unless Dat Po-Dat))        
-    (del> Po-Del)
-    
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))))
       
