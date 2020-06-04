@@ -294,8 +294,13 @@
                  @
                  (find-back> This Rel))
         Po-Back (lup-pt Back))
-        
-    (mov-line-p> This (lup-pt (: ref)) Po-Back)
+    
+    # Cur -> New
+    (mov-line-p> This
+                 (if (: cell)
+                     (: ref)
+                     (lup-pt (: ref)))
+                 Po-Back)
     (set-ref> This Back Rel)
     
     (unless No-Lay
