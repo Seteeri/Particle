@@ -24,8 +24,15 @@
     
   (=: po))
 
-(dm lay-x?> () (lay-x?> (: po)))
-(dm lay-y?> () (lay-y?> (: po)))
+(dm lay-x?> ()
+  (if (: cell)
+      (lay-x?> (: ref))
+      (lay-x?> (lup-pt (: ref)))))
+      
+(dm lay-y?> ()
+  (if (: cell)
+      (lay-y?> (: ref))
+      (lay-y?> (lup-pt (: ref)))))
   
 (dm rel-a?> () (= (: rel) 'a))
 (dm rel-b?> () (= (: rel) 'b))

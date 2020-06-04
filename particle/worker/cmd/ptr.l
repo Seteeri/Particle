@@ -2,8 +2,8 @@
 # Semantic Traversal (Pair/Ptr)
 
 (de cmd-ptr-left (Ks)
-  (if (and (= (rel> *ptr) 'a)
-           (is-pair? *ptr)
+  (if (and (rel-a?> *ptr)
+           (is-pair? (lup-pt (ref> *ptr)))
            (not (lay-y?> *ptr)))
     (sup> *ptr)
     (pre> *ptr)))
@@ -16,8 +16,8 @@
 
 
 (de cmd-ptr-up (Ks)
-  (if (or (and (= (rel> *ptr) 'a)
-               (is-pair? *ptr))
+  (if (or (and (rel-a?> *ptr)
+               (is-pair? (lup-pt (ref> *ptr))))
           (lay-y?> *ptr))
       (pre> *ptr)
       (sup> *ptr)))
