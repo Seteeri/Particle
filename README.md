@@ -44,8 +44,7 @@ These colored text are representations for the fundamental types; the use of col
 * Strings do not have double quotes; it is possible to remove other identifying tokens such as curly brackets and the dollar sign. 
 * Pairs use dot notation and terminate with the `NIL` symbol for proper lists, or arbitrary data for improper lists
   * Parentheses are possible, for the more traditional types ;)
-* Circular lists follow PicoLisp conventions and terminate with a dot
-* Lines are double-spaced to allow room for the pointer (cursor)
+* Lines are double-spaced to vertically delimit pairs and to allow room for the pointer name/mode (rather than in-between pairs like conventional text cursors)
 * The pointer is also a symbol!
 
 The hierarchial structure is a direct consequence of the underlying Lisp data, which is a tree; manifesting in a natural UI.
@@ -117,7 +116,6 @@ On MS and Apple systems, it serves as an outliner "app" or personal knowledge ma
     * NoSQL
     * Full ACID, replication, journaling
     * [PicoLisp DB Vs ORM](https://picolisp.com/wiki/?pilvsorm)
-* Orthographic view aka zooming interface
 * Hierarchial/tree structure focused around lists/symbols
   * Defaults:
     * Start - main workspace
@@ -127,19 +125,13 @@ On MS and Apple systems, it serves as an outliner "app" or personal knowledge ma
     * Property-List - property list for object exploration
     * Search-Replace - search/replace symbols/properties
     * Files - file navigator
-    * Help
+    * Help - command palette; provides context-dependent suggestions
 * Filesystem Interface
   * Interfaced through symbols
   * Filepaths are translated to tags
   * "/this/is/some/path/fora/file.ext" = (file ext this is some path fora)
   * Each directory/word is a tag
   * Order determines priority when searching but is otherwise equivalent
-* Import/link any data
-  * Binary files like multimedia remain as separate files for efficiency
-* Export data to various formats
-* OS integration (down the road)
-  * Browser* (aka web clipper)
-  * Userspace/wayland*
 
 # Manual
 

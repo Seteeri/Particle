@@ -19,11 +19,19 @@ TODO
         * Pass flag to gen -> idx
       * New will gen verts [Done]
       * Pass sym exp to gen [WIP]
-    * Ptr/Ops [Mon]
-    * Line [Thurs-EOW]
-      * Create line for NIL
-    * List [Thurs-EOW]
-    * Del [EOW]
+    * List [Fri]
+      * Overview:
+        * car: repl with list with nil
+          * Car replaces so create list with NIL for consistency
+        * cdr: ins list with list
+        * cur: swap layout
+        * make-line - formatting
+        * pair-cdr - like chop
+      * Do NIL list
+      * Implement ins on Y pair car pair
+      * Finish ops
+    * Del [Wknd]
+    
   * Use prog1
   
   * Root Lists (side/main)
@@ -58,6 +66,8 @@ TODO
       * Status
     
   * Lists can be rotated to simulate scrolling
+    * Requires redrawing entire list...
+    * Frustrum culling
   * Make camera mov
     * Create cmds to center view, fit view etc
     * Mov to item - def is align to left side of screen

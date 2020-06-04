@@ -13,58 +13,6 @@
     X/Y dictate line changes
 }#
 
-#{
-(de make-list-car (Ptr)
-  
-  # Check Y then x
-  
-  # Refactor upd into here like str cmds
-  
-  (cond
-  
-    ((and (bel-y?> Ref)
-          (is-car?> Ref))
-      #{
-        [Y]  Atm
-              *
-        Atm      
-      }#          
-     (make-list-car-ya Ref))
-      
-    ((and (lay-x?> Ref)
-          (is-car?> Ref))
-      (if (and (bel-y?>  (get Ref 'c))
-               (is-car?> (get Ref 'c)))
-          #{
-            [Y]  [X]  Atm
-                  A
-                  *          
-          }#
-          (make-list-car-yxa Ref)
-          
-          #{
-            [X/Sym]  [X]  Atm
-             .        A
-                      *          
-          }#
-          (make-list-car-xxb Ref)))
-  
-    ((or (is-cdr?> Ref)
-         (is-end?> Ref))
-      #{
-        [X+L/Y]
-          A
-        
-        Atm
-        *      
-      }#
-     (make-list-car-xyb Ref))
-                
-    (T
-      (quit "make-list-car: unknown case"))))
-}#
-
-
 (de make-list-car (Ptr)
 
   #{
@@ -98,18 +46,13 @@
       #(make-list-car-a-atom)
       T)
       
+    ((a-atom?> *ptr)
+      (println 'make-list-car "A ATOM")
+      (make-list-car-a-atom))      
       
     ((b-nil?> *ptr)
       (println 'make-list-car "B NIL")
       T)      
-     
-    ######
-    # ATOM
-      
-    ((a-atom?> *ptr)
-      (println 'make-list-car "A ATOM")
-      (make-list-car-a-atom))
-      
       
     ((b-atom?> *ptr)
       (println 'make-list-car "B ATOM")
@@ -242,7 +185,58 @@
       
 ######################################################
 ######################################################
+
+#{
+(de make-list-car (Ptr)
+  
+  # Check Y then x
+  
+  # Refactor upd into here like str cmds
+  
+  (cond
+  
+    ((and (bel-y?> Ref)
+          (is-car?> Ref))
+      #{
+        [Y]  Atm
+              *
+        Atm      
+      }#          
+     (make-list-car-ya Ref))
       
+    ((and (lay-x?> Ref)
+          (is-car?> Ref))
+      (if (and (bel-y?>  (get Ref 'c))
+               (is-car?> (get Ref 'c)))
+          #{
+            [Y]  [X]  Atm
+                  A
+                  *          
+          }#
+          (make-list-car-yxa Ref)
+          
+          #{
+            [X/Sym]  [X]  Atm
+             .        A
+                      *          
+          }#
+          (make-list-car-xxb Ref)))
+  
+    ((or (is-cdr?> Ref)
+         (is-end?> Ref))
+      #{
+        [X+L/Y]
+          A
+        
+        Atm
+        *      
+      }#
+     (make-list-car-xyb Ref))
+                
+    (T
+      (quit "make-list-car: unknown case"))))
+}#
+
 (de make-list-car-xxb (Ref)
   
   #{

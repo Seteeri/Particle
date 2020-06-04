@@ -17,7 +17,7 @@
                    (get (lup-pt (car (get Prv 'data))) 'line 'dims)
                    (get Prv 'line 'dims)))
                 
-    (when T
+    (when NIL
       (println 'align-cur-line
                Po
                (get Po 'data)
