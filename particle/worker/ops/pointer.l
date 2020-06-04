@@ -257,20 +257,11 @@
   # If new has line, set it
   # else if old has line but new doesn't = mov prv line
 
-  (let Line 
-        (if (get Po-Tgt 'line)
-            (unless (= (car (: ln)) Po-Tgt)
-              (push (:: ln) Po-Tgt))
-            (when (get Po-Ref 'line)
-              (pop (:: ln))))
-    #{
-    (push (:: ln) 
-          (if (get *line 'line 'p)
-              @
-              *line))
-    }#
-    
-    T))
+  (if (get Po-Tgt 'line)
+      (unless (= (car (: ln)) Po-Tgt)
+        (push (:: ln) Po-Tgt))
+      (when (get Po-Ref 'line)
+        (pop (:: ln)))))
 
 
 (dm mov-line-n> (Po-Tgt)
@@ -280,15 +271,19 @@
       
       
 (dm find-back> (Rel)
-  (let (Line (get (c-ln> This) 'data)
-        Res (if (= Rel 'a) 
-                (memq (: ref) Line)
-                (prior (: ref) Line)))
+  (let Res NIL
     (println 'find-back "Search for cell: " (: ref) (type (: ref)))
-    (println 'find-back "Search in line: " Line)
-    (println 'find-back "Found: " Res)
-    
-    (if Res @ (get (cadr (: ln)) 'data))))
+    (for Line (: ln)
+      (let Dat (get Line 'data)
+        (setq Res (if (= Rel 'a) 
+                      (memq (: ref) Dat)
+                      (prior (: ref) Dat)))    
+        (println 'find-back "Searched line: " Dat)
+        (println 'find-back "Found: " Res))
+      (T Res))
+    (if Res
+        Res
+        (get (cadr (: ln)) 'data))))
       
       
 (dm back> (Fn-Pop Rel No-Lay)
@@ -300,7 +295,7 @@
                  (find-back> This Rel))
         Po-Back (lup-pt Back))
         
-    (mov-line-p> This Po-Ref Po-Back)
+    (mov-line-p> This (lup-pt (: ref)) Po-Back)
     (set-ref> This Back Rel)
     
     (unless No-Lay

@@ -94,9 +94,7 @@
 
   (put Src 'line)
   
-  (println 'mov-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
-
-  (setq *line Dst))  
+  (println 'mov-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data)))
   
 
 (de bsp-line (Po-Ref)  
