@@ -4,25 +4,22 @@
     
     ######
     # ATOM
-                
-    ((b-nil?> *ptr)
-      (println 'make-pair-str "B NIL")
-      # For Y-Pairs and Symbols: ins
-      # For X-Pair: repl
-      # Should replace with char instead of pair-char
-      # (repl-b-nil Dat)
-      (ins-b-nil Dat))
-     
-    ((b-atom?> *ptr)
-      (println 'make-pair-str "B ATOM")
-      (repl-b-atom Dat))     
-     
+      
+    #(ins-b-nil Dat)
+    
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
-      (println 'make-pair-str "A ATOM")
-      # Poss make exception for Y-Pair
-      # Instead similar to repl-b-nil...
-      (repl-a-atom Dat))
+      (println 'make-pair-str "B ATOM/NIL")
+      (repl-atom Dat 'a)
+      (upd-tree)
+      (mov-⇲ (c-ln> *ptr)))
+      
+    ((or (b-nil?> *ptr)
+         (b-atom?> *ptr))
+      (println 'make-pair-str "B ATOM/NIL")
+      (repl-atom Dat 'b)
+      (upd-tree)
+      (mov-⇲ (c-ln> *ptr)))
             
     ######
     # PAIR
@@ -47,52 +44,17 @@
     (T
       # root
       (println 'make-pair-str "*ptr uninitialized"))))
-
-      
-(de ins-b-nil (Dat)
-
-  (println 'ins-b-nil)
-  
-  (let (Cell (cell> *ptr)
-        Po-Cell (lup-pt Cell)        
-        Po-Del  (ref> *ptr)
-        List-Dat (list Dat)
-        Po-Dat (gen-point List-Dat 'x NIL T)
-        Atomic-Cell (atom Cell))
-        
-    (con> Po-Cell List-Dat (unless Dat Po-Dat))              
-
-    ~(assert Po-Del)
-    
-    (when (get Po-Del 'line)
-      (mov-line Po-Del Po-Dat)
-      (ln> *ptr))
-    (mov-line-n> *ptr Po-Dat)
-    
-    (set-ref> *ptr List-Dat 'b))
-  
-  (upd-tree)
-  (mov-⇲ (c-ln> *ptr))
-  
-  #(top> Po-Dat)
-  #(draw> *ptr)  
-  
-  (nex> *ptr))
   
   
-(de repl-b-atom (Dat)
-  T)        
-      
-      
-(de repl-a-atom (Dat)
+(de repl-atom (Dat Rel)
 
   #{
   
     Handles both X and Y pairs
-    
+  
   }#
 
-  (println 'repl-a-atom)
+  (println 'repl-atom)
   
   (let (Cell (if (cell> *ptr)
                  @
@@ -107,16 +69,15 @@
       (mov-line Po-Del Po-Dat)
       (ln> *ptr))
     (mov-line-n> *ptr Po-Dat)
-        
-    (if Dat
-        (set-ref> *ptr Dat 'a)
-        (set-ref> *ptr Cell 'a Po-Dat))
     
-    (println Cell (type Po-Cell))
-    (set> Po-Cell Dat Po-Dat T)        
-        
-    (upd-tree)
-    (mov-⇲ (c-ln> *ptr))))
+    (if Dat
+        (set-ref> *ptr Dat Rel)
+        (set-ref> *ptr Cell Rel Po-Dat))
+    
+    (if (= Rel 'a)
+        (set> Po-Cell Dat Po-Dat T)
+        (con> Po-Cell Dat Po-Dat T))))
+
 
     
 (de con-b-pair-x (Dat)
@@ -151,3 +112,35 @@
 
 (de con-a-pair-x (Dat)
   T)    
+
+  
+      
+(de ins-b-nil (Dat)
+
+  (println 'ins-b-nil)
+  
+  (let (Cell (cell> *ptr)
+        Po-Cell (lup-pt Cell)        
+        Po-Del  (ref> *ptr)
+        List-Dat (list Dat)
+        Po-Dat (gen-point List-Dat 'x NIL T)
+        Atomic-Cell (atom Cell))
+        
+    (con> Po-Cell List-Dat (unless Dat Po-Dat))              
+
+    ~(assert Po-Del)
+    
+    (when (get Po-Del 'line)
+      (mov-line Po-Del Po-Dat)
+      (ln> *ptr))
+    (mov-line-n> *ptr Po-Dat)
+    
+    (set-ref> *ptr List-Dat 'b))
+  
+  (upd-tree)
+  (mov-⇲ (c-ln> *ptr))
+  
+  #(top> Po-Dat)
+  #(draw> *ptr)  
+  
+  (nex> *ptr))  

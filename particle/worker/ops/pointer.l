@@ -125,7 +125,10 @@
   
 (dm b-atom?> ()
   (and (rel-b?> This) (atom (: ref))))
-      
+
+(dm atom?> (or (a-atom?> This) (b-atom?> This)))
+(dm pair?> (or (a-pair?> This) (b-pair?> This)))
+  
       
 ######################################
 

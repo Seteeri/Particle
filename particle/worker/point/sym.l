@@ -94,12 +94,15 @@
         (del> (: b))
         (=: b))
       (when Del
-        (del> (lup-pt (val (: data))))))
-    
+        (del> (lup-pt (cdr (: data))))))
+      
   (set (: data) Dat)
   
+  # If Po-Dat is an atom
   (when Po-Dat
-    (put Po-Dat 'c This)))
+    (unless (is-pair? Po-Dat)
+      (put This 'b Po-Dat)
+      (put Po-Dat 'c This))))
 
       
 (class +Str +Sym)
