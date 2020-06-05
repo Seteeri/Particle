@@ -19,7 +19,7 @@
                    (get Po-Car 'line 'dims)
                    (get Prv 'line 'dims)))
                 
-    (when (and (lay-y?> Prv) NIL)
+    (when (and (lay-y?> Prv) T)
       (println 'align-cur-line 
         Po (get Po 'data))
       (println 'align-cur-line 

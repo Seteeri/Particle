@@ -13,26 +13,24 @@
   
   (cond
     
-    #####
-    # NIL
+    ######
+    # ATOM
                 
     ((b-nil?> *ptr)
       (println 'make-pair-str "B NIL")      
       (repl-b-nil Dat))
      
-    ######
-    # ATOM
-      
+    ((b-atom?> *ptr)
+      (println 'make-pair-str "B ATOM")
+      (repl-b-atom Dat))     
+     
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
       (println 'make-pair-str "A ATOM")
+      # Poss make exception for Y-Pair
+      # Instead similar to repl-b-nil...
       (repl-a-atom Dat))
-      
-      
-    ((b-atom?> *ptr)
-      (println 'make-pair-str "B ATOM")
-      (repl-b-atom Dat))
-      
+            
     ######
     # PAIR
 
@@ -58,30 +56,6 @@
       (println 'make-pair-str "*ptr uninitialized"))))
       
       
-(de repl-a-atom (Dat)
-
-  (println 'repl-a-atom)
-  
-  (let (Cell (if (cell> *ptr)
-                 @
-                 (find-back> *ptr (rel> *ptr)))
-        Po-Cell (lup-pt Cell)
-        Po-Dat (gen-point Dat 'x NIL T))
-                
-    (if Dat
-        (set-ref> *ptr Dat 'a)
-        (set-ref> *ptr Cell 'a Po-Dat))
-
-    (set> Po-Cell Dat Po-Dat T)        
-        
-    (upd-tree)
-    (mov-⇲ (c-ln> *ptr))))
-      
-  
-(de repl-b-atom (Dat)
-  T)        
-      
-
 (de repl-b-nil (Dat)
 
   (println 'repl-b-nil)
@@ -111,6 +85,45 @@
   #(draw> *ptr)  
   
   (nex> *ptr))
+  
+  
+(de repl-b-atom (Dat)
+  T)        
+      
+      
+(de repl-a-atom (Dat)
+
+  #{
+  
+    Handles both X and Y pairs
+    
+  }#
+
+  (println 'repl-a-atom)
+  
+  (let (Cell (if (cell> *ptr)
+                 @
+                 (find-back> *ptr (rel> *ptr)))
+        Po-Cell (lup-pt Cell)
+        Po-Del (if (cell> *ptr)
+                   (get Po-Cell (rel> *ptr))
+                   (lup-pt (ref> *ptr)))
+        Po-Dat (gen-point Dat 'x NIL T))
+
+    (when (get Po-Del 'line)
+      (mov-line Po-Del Po-Dat)
+      (ln> *ptr))
+    (mov-line-n> *ptr Po-Dat)
+        
+    (if Dat
+        (set-ref> *ptr Dat 'a)
+        (set-ref> *ptr Cell 'a Po-Dat))
+    
+    (println Cell (type Po-Cell))
+    (set> Po-Cell Dat Po-Dat T)        
+        
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))))
 
     
 (de con-b-pair-x (Dat)

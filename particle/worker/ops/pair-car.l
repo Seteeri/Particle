@@ -145,58 +145,32 @@
       (draw> *ptr))))
       
 
-(de make-list-car-a-atom ()
+(de repl-pair-cdr-nil ()
 
   #{
               
-        [Cc]  
-        NIL
-
-         
-        [X/C]  Cb
-        NIL
-        *
-    ->
-               
-        [Cc]  
-          A   
-          
-        [Po-Pair]  [Po-List]   
-                    NIL
-                    *
-              
-        Cb
-  }#  
+    In:
   
-  #{
-                      
-        [Cc]  [C]  [Cb]  NIL
-        NIL   NIL  NIL
-               *
-              
+      [ ]  [ ]  [ ]  NIL
+       A    *B   C
+     
     ->
-               
-        [Cc]  
-        NIL  
-
-              
-        [Y/P]  [C]  NIL
-               NIL  
-               *
-        
-        [Cb] NIL
-        NIL
-        
-        Poss Cars:
-        1. New list with Car
-        2. Car itself
-           * Same Pair with Y layout
-           * Cdr has line also
-        3. NIL
-        
-  }#   
-
-  # Handle NIL
+    
+    Out:
+  
+      [ ]
+       A  
+       
+      [Y]  [ ]  NIL
+           *B
+       
+       
+      [ ]  NIL
+       C
+       
+    Handle Y-Pair Cdr also
+    
+  }#  
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
@@ -251,6 +225,12 @@
       
       (top> Po-List)
       (draw> *ptr))))
+      
+
+(de repl-pair-car-pair () T)      
+
+
+(de repl-pair-cdr-pair () T)
       
       
 ######################################################

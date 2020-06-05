@@ -272,7 +272,9 @@
                       (prior (: ref) Dat)))    
         (println 'find-back "Searched line: " Dat)
         (println 'find-back "Found: " Res))
-      (T Res))
+      (T (and Res
+              # Occurs for Y-Pair Car = Atom
+              (not (= Res (: ref))))))
     (if Res
         Res
         (get (cadr (: ln)) 'data))))
