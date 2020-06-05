@@ -274,6 +274,7 @@
         (println 'find-back "Found: " Res))
       (T (and Res
               # Occurs for Y-Pair Car = Atom
+              # else cont search
               (not (= Res (: ref))))))
     (if Res
         Res

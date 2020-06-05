@@ -1,15 +1,4 @@
 (de make-pair-str (Dat Lay)
-  #{
-  
-    - Repl str on atoms
-    - Ins str (before) on pairs
-    - Use list command
-      - Make list with atom    
-      - Make list with list
-
-  }#
-
-  (println (get *ptr 'rel) (get *ptr 'ref) (get *ptr 'cell))
   
   (cond
     
@@ -17,8 +6,12 @@
     # ATOM
                 
     ((b-nil?> *ptr)
-      (println 'make-pair-str "B NIL")      
-      (repl-b-nil Dat))
+      (println 'make-pair-str "B NIL")
+      # For Y-Pairs and Symbols: ins
+      # For X-Pair: repl
+      # Should replace with char instead of pair-char
+      # (repl-b-nil Dat)
+      (ins-b-nil Dat))
      
     ((b-atom?> *ptr)
       (println 'make-pair-str "B ATOM")
@@ -54,11 +47,11 @@
     (T
       # root
       (println 'make-pair-str "*ptr uninitialized"))))
-      
-      
-(de repl-b-nil (Dat)
 
-  (println 'repl-b-nil)
+      
+(de ins-b-nil (Dat)
+
+  (println 'ins-b-nil)
   
   (let (Cell (cell> *ptr)
         Po-Cell (lup-pt Cell)        

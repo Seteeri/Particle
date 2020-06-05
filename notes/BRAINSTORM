@@ -4720,10 +4720,32 @@ Main List
 What if user moves to sel list
 - Can't do anything if already selected
     
-
+    
+=======================================
+    
     
 https://www.reddit.com/r/vexillology/comments/7dxjme/flag_of_the_grid_tron_legacy/    
     
+    
+========================================
+
+Problem 1
+
+[] [] []
+.  .  .
+
+<- how to insert here
+
+[Y] [] NIL
+     .
+
+NIL
+
+Solutions:
+1. Ins before Y pair
+2. Go to first line, end atom, type chars, then split line
+    
+
 ============================================
 ============================================
 

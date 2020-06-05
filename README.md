@@ -66,30 +66,38 @@ This idea is then further extended to create arbitrary representations for arbit
 
 # Inspirations
 
-* Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide between the digital world and reality, users and programs
-* Evernote by Stepan Pachikov
-  * To remember everything, an extension of the human brain
-* Oberon OS by Niklaus Wirth at ETH Zürich
-  * To structure a system in such a way that it can be described, explained, and understood as a whole
-* The Humane Interface by Jeff Raskin
-* LISP discovered by John McCarthy
-* Lisp Machines by Xerox PARC and MIT
-* Presentation Based User Interfaces by E.C. Ciccarelli at MIT
-* Apple Inc.
-  * HyperCard by Bill Atkinson
-  * Open Dylan
-  * OpenDoc
-* Emacs by RMS at MIT
-* Firefox Tree Style Tab addon
+* Primary:
+
+  * Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide between the digital world and reality, users and programs
+  * Evernote by Stepan Pachikov
+    * To remember everything, an extension of the human brain
+  * Oberon OS by Niklaus Wirth at ETH Zürich
+    * To structure a system in such a way that it can be described, explained, and understood as a whole
+  * The Humane Interface by Jeff Raskin
+  * LISP discovered by John McCarthy
+  * Lisp Machines by Xerox PARC and MIT
+  * Presentation Based User Interfaces by E.C. Ciccarelli at MIT
+  * Apple Inc.
+    * HyperCard by Bill Atkinson
+    * Open Dylan
+    * OpenDoc
+  * Emacs by RMS at MIT
+  * Firefox Tree Style Tab addon
 
 
-* Others:
+* Programs (in no particular order):
+
   * Compiz 3D effects
-  * Uzbl/Conkeror numbered links for navigation
-  * Unreal Blueprints, Blender nodal systems
-  * EagleMode ZUI system
-  * Microsoft Excel
+  * Uzbl numbered links for navigation
+  * Unreal Blueprints
+  * Blender Nodes
+  * EagleMode ZUI
+  * Microsoft Excel by MS
+  * Tetris by Alexey Pajitnov
   * Intentional Programming by Charles Simonyi at Microsoft
+
+* Users (in no particular order):
+  
   * Alan Kay
   * Sir Tim Berners-Lee
   * Paul Graham

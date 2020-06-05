@@ -334,6 +334,216 @@ Command keys are based on spatial relationship, aka physically group related fun
 
 *Add GIF anims*
 
+## Sym/Str Transforms
+
+### X-Car
+
+In:
+
+    [X]  [X]  [X]  NIL
+     .    .    *
+      
+Out:
+
+    [X]  [X]  [X]  NIL
+     .    .   **
+  
+   
+### X-Cdr
+
+In:
+
+               *
+    [X]  [X]  [X]  NIL
+     .    .    .
+      
+Out:
+
+                    *
+    [X]  [X]  [X]  [X]  NIL
+     .    .   ..    .
+  
+Repeat:
+
+                         *
+    [X]  [X]  [X]  [X]  [X]  NIL
+     .    .   ..   ...   .
+
+   
+### Y-Car
+
+In:
+           
+           *
+    [Y1]  NIL
+    NIL
+
+Out:
+
+           * 
+    [Y1]   .
+    NIL
+
+Note, use list command Y-Car to replace atom with empty list:
+
+           *
+    [Y1]  [X]  NIL
+          NIL
+          
+    NIL
+    
+Then type normally
+  
+### Y-Cdr
+
+* Same as Y-Car; replaces Cdr
+* Use list commands also to produce desired effects
+
+In:
+
+    [Y1]  NIL
+    
+     *
+    NIL
+
+Out:
+
+    [Y1]  NIL
+    
+     *
+     .
+
+Note, use list command Y-Cdr to replace atom with empty list:
+
+    [Y1]  NIL
+
+     *
+    [Y2]  NIL
+    
+    NIL
+
+Move to NIL:
+
+    [Y1]  NIL
+
+           *
+    [Y2]  NIL
+    
+    NIL
+
+Use list command again:
+
+    [Y1]  NIL
+
+           * 
+    [Y2]  [X]  NIL
+          NIL
+    
+    NIL
+  
+Then type normally
+  
+## List Transforms
+
+### X-Car
+
+* Inverse of Y-Car
+* To support X-List, this would produce X-Pair
+
+In:
+
+    [X]  [X]  [X]  NIL
+     .    *    .
+   
+Out:
+
+    [X]
+     .
+          *
+    [Y]  NIL
+    
+    [X]
+     .
+
+
+### X-Cdr
+
+In:
+
+          *
+    [X]  [X]  [X]  NIL
+     .    .    .
+    
+Out:
+      
+    [X]
+     .
+          *  
+    [Y]  [X]  NIL
+          .
+    
+    [X]
+     .
+
+   
+### Y-Car
+
+* Inverse of X-Car
+* To support X-List, this would produce Y-Pair
+
+In:
+  
+    [X]
+     .
+          *
+    [Y]  NIL
+    
+    [X]
+     .
+   
+Out:
+      
+    [X]
+     .
+          *
+    [Y]  [X]  NIL
+         NIL
+        
+    [X]
+     .
+
+   
+### Y-Cdr
+
+* Used to create nested lists
+
+In:
+        
+    [X]
+     .
+     *
+    [Y]  NIL
+    
+    [X]
+     .
+   
+Out:
+      
+    [X]
+     .
+     * 
+    [Y]  [Y]  NIL
+         NIL
+        
+    [X]
+     .
+
+### X <-> Y Pair
+
+* Simply swap Car/Cdr positions
+* Note, causes recursive redraw of Car/Cdr cells
+
+
 ## Atoms
 
 Strings:
@@ -355,26 +565,45 @@ Symbols:
 * Make sublist
 * Make list starting with item
 
-## Cut Copy Paste (CUA Ops)
+## Systems
 
-Register system
+### Start
 
-Cut
-Copy
-Paste
+* main workspace
 
-## Undo System
+### Help System
 
-Undo tree
+* context-sensitive commands possible based on selection
 
-Undo
-Redo
+### Log System
 
-## Input/Output
+* logs commands along with input/output
+* aka undo tree
 
-Dir/File Navigation
+### Pointer-Mode System
 
-## Search and Replace System
+* default mode is string mode
+* always one pointer per mode
+  * name of pointer indicates mode so user always aware
+* contains keymaps
+  * keymaps within keysmaps supersede the super keymap
+* users can move pointer to another pointer to swap pointers/modes
+
+### Selection System
+
+* CUA ops
+
+### Property System
+
+* context-sensitive property list based on selection
+
+### File System
+
+* file navigation
+
+### Search and Replace System
+
+* ...
 
 ---
 

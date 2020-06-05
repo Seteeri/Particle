@@ -21,16 +21,22 @@ TODO
       * Pass sym exp to gen [WIP]
     * List [Fri]
       * Overview:
-        * car: repl with list with nil
-          * Car replaces so create list with NIL for consistency
-        * cdr: ins list with pair
-        * pair: ins list with list
-          * mov to space in between...
-          * would require ascii to insert
-        * cur: swap layout
-        * make-line - formatting
-      * Do NIL list
-      * Implement ins on Y pair car pair
+        * x-car: repl x car with y list with nil [Done]
+          * basically convert X pair to Y pair with NIL
+            * to preserve char, use swap layout
+          * car is expected to be replaced
+          * nil cmd always replaces ptr with NIL
+        * x-cdr: repl x list with y pair with x pair char
+          * In:
+              [X]
+              "x"
+          * Out:
+              [Y] ("x")
+        * y-car: ?
+        * y-cdr: ?
+        * cdr (sep cmd): swap layout; similar to cdr
+        * cdr (sep cmd): ins list with list
+        * poss utilize space inbetween atoms
       * Finish ops
     * Del [Wknd]
     
