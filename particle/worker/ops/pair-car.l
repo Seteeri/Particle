@@ -13,7 +13,7 @@
     X/Y dictate line changes
 }#
 
-(de make-list-car (Ptr)
+(de make-pt-pair (Ptr)
 
   #{
       
@@ -38,42 +38,112 @@
 
   (cond
     
-    #####
     # NIL
     
-    ((a-nil?> *ptr)
-      (println 'make-list-car "A NIL")
-      #(make-list-car-a-atom)
-      T)
+    ((or (a-nil?> *ptr)
+         (a-atom?> *ptr))
+      (println 'make-pt-pair "A ATOM/NIL")
+      (repl-pair-car-nil))
       
-    ((a-atom?> *ptr)
-      (println 'make-list-car "A ATOM")
-      (make-list-car-a-atom))      
+    ((or (b-nil?> *ptr)
+         (b-atom?> *ptr))
+      (println 'make-pt-pair "B ATOM/NIL")
+      (repl-pair-cdr-nil))
       
-    ((b-nil?> *ptr)
-      (println 'make-list-car "B NIL")
-      T)      
-      
-    ((b-atom?> *ptr)
-      (println 'make-list-car "B ATOM")
-      T)
-      
-    ######
     # PAIR
 
     ((a-pair?> *ptr)
-      (println 'make-list-car "A PAIR")
-      T)
+      (println 'make-pt-pair "A PAIR (Y-PAIR)")
+      # create lst around ptr
+      (repl-pair-car-pair))
       
     ((b-pair?> *ptr)
-      (println 'make-list-car "B PAIR")
-      # See pair-cdr
-      T)
+      (println 'make-pt-pair "B PAIR")
+      # See ins-list with lst
+      (repl-pair-cdr-pair))
       
     (T
       # root
-      (println 'make-list-car "*ptr uninitialized"))))
+      (println 'make-pt-pair "*ptr uninitialized"))))
 
+      
+(de repl-pair-car-nil ()
+  
+  #{
+  
+    In:
+  
+      [ ]  [ ]  [ ]  NIL
+       A    *B   C
+     
+    ->
+    
+    Out:
+  
+      [ ]
+       A  
+       
+      [Y]  *NIL
+       
+       
+      [ ]  NIL
+       C
+  
+  }#
+
+  (let (Tgt (ref> *ptr)
+        Po-Tgt (lup-pt Tgt)
+        Pair (find-back> *ptr (rel> *ptr))
+        Po-Pair (lup-pt Pair))
+    
+    (println "Car/Pair: " Tgt Pair (get Po-Pair 'a))
+  
+    # otherwise set-ref will attempt uncol on ref
+    # pass flag for this...
+    (put *ptr 'ref)  
+    # put NIL otherwise set will del new point
+    (put Po-Pair 'a)
+    (del> Po-Tgt)
+    
+    (let (Po-Nil (gen-point NIL 'x NIL)
+          Ln (c-ln> *ptr)
+          Ln-N (get Ln 'line 'n)
+          Cdr (cdr Pair)
+          Po-Cdr (if Cdr (lup-pt Cdr) (get Po-Pair 'b))
+          Push-Pair (not (get Po-Pair 'line)))
+    
+      # Repl tgt with list with tgt list
+      (set> Po-Pair NIL Po-Nil)
+      
+      # Set layout for Pair
+      (set-lay> Po-Pair 'y)
+      
+      (if (get Po-Pair 'line)
+          (put @ 'n Po-Cdr)      
+          (ins-line-aft Ln Po-Pair))
+      
+      # Create Line for Cdr
+      (if (get Po-Cdr 'line)
+          (put @ 'p Po-Pair)
+          (ins-line-aft Po-Pair Po-Cdr))
+          
+      # Create line for List
+      (put Po-Nil 'line (new '(+Line)))
+      
+      (upd-tree)
+      (mov-⇲ Ln)
+            
+      # Pt to list
+      (set-ref> *ptr Pair 'a Po-Nil)
+            
+      # Push cell and car
+      (when Push-Pair
+        (ln> *ptr Po-Pair))
+      (ln> *ptr Po-Nil)
+      
+      (top> Po-Nil)
+      (draw> *ptr))))
+      
 
 (de make-list-car-a-atom ()
 

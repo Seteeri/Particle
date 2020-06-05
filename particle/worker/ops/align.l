@@ -12,20 +12,24 @@
   }#
 
   (let (Prv (if (get Po 'line 'p) @ *line-lay)
+        Car-P (car (get Prv 'data))
+        Po-Car (if Car-P (lup-pt @) (get Prv 'a))
         Ori-P (get Prv 'ori)
         Dims-P (if (lay-y?> Prv)
-                   (get (lup-pt (car (get Prv 'data))) 'line 'dims)
+                   (get Po-Car 'line 'dims)
                    (get Prv 'line 'dims)))
                 
-    (when NIL
-      (println 'align-cur-line
-               Po
-               (get Po 'data)
-               Dims-P
-               (when (lay-y?> Prv)
-                (lup-pt (car (get Prv 'data))))))
+    (when (and (lay-y?> Prv) NIL)
+      (println 'align-cur-line 
+        Po (get Po 'data))
+      (println 'align-cur-line 
+        Prv (get Prv 'data) Po-Car)
+      (println 'align-cur-line 
+        Dims-P (lup-pt (car (get Prv 'data)))))
 
     ~(assert Prv)
+    ~(assert Ori-P)
+    ~(assert Dims-P)
 
     (prog # If Y Pair, get Y from Car
       (mov-cur (car Ori-P)

@@ -23,10 +23,12 @@ TODO
       * Overview:
         * car: repl with list with nil
           * Car replaces so create list with NIL for consistency
-        * cdr: ins list with list
+        * cdr: ins list with pair
+        * pair: ins list with list
+          * mov to space in between...
+          * would require ascii to insert
         * cur: swap layout
         * make-line - formatting
-        * pair-cdr - like chop
       * Do NIL list
       * Implement ins on Y pair car pair
       * Finish ops

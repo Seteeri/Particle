@@ -69,10 +69,11 @@
   (with *ptr
     
     (prinl "CURRENT REFERENCE:")
-    (prin "Ref: ") (println (: ref))    
+    (prin "Ref: ") (println (lup-pt (: ref)))
     
     (let Ref (lup-pt (: ref))
-          
+    
+      (prin "data: ") (println (: ref))
       (prin "ori: ")  (println (get Ref 'ori))
       (prin "dims: ") (println (get Ref 'dims))
       (prin "lay: ")  (println (get Ref 'lay))

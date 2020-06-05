@@ -1,30 +1,7 @@
 (de cmd-make-list (Ks)
   (println 'cmd-make-list)
-
-  #{
-      [ ]  [ ]  [ ]
-      a    b    c
-
-      [ ]  [ ]  [ ]
-      d    e    f
-          *
-          
-      [ ]  [ ]  [ ]
-      g    h    i
-      
-      NIL
-      
-      
-      If on car:
-      
-        (a b c d e f g h i) -> (a b c d (e) f g h i)
-      
-      If on cdr:
-      
-        (a b c d e f g h i) -> (a b c d (e f g h i))
-  }#  
   
-  (make-list-car '*ptr))
+  (make-pt-pair '*ptr))
 
 
 (de cmd-del (Dir)
