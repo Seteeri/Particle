@@ -51,7 +51,7 @@
       # ins bef cur
       # ((a)) -> (b (a))
       
-      (con-a-pair-x Dat))
+      (con-a-pair Dat))
       
     ((b-pair?> *ptr)
       (println 'make-pair-str "B PAIR")
@@ -59,8 +59,9 @@
       # ins bef cur
       # (a) -> (b a)
       
-      #(lay-y?> *ptr) -> (con-b-pair-y Dat)
-      (con-b-pair-x Dat))
+      (if (lay-x?> *ptr)
+          (con-b-pair-x Dat)
+          (con-b-pair-y Dat)))
       
     (T
       # root
@@ -125,14 +126,58 @@
 
 (de con-b-pair-x (Dat)
   
+  #{
+    
+    * If X-Pair on newline (start of line), 
+    mov newline to new Pair
+    
+    In:
+
+                   *
+        [X]  [X]  [X]  .
+         .    .    .
+          
+    Out:
+
+                        *
+        [X]  [X]  [X]  [X]  .
+         .    .   ..    .
+      
+    Repeat:
+
+                             *
+        [X]  [X]  [X]  [X]  [X]  .
+         .    .   ..   ...   .
+
+
+    In:
+
+              *
+        [Y]  [X1] .
+              .
+            
+         .
+        
+    Out:
+
+              *
+        [Y]  [X2]  [X1] .
+              .     .
+            
+         .
+      
+  }#
+  
+  (println 'con-b-pair-x)
+  
   (let (Cell (ref> *ptr)
         Po-Cell (lup-pt Cell)
-        List-Dat (list Dat)
-        Po-Dat (gen-point List-Dat 'x NIL T)
         Pre (if (cell> *ptr)
                 @
                 (find-back> *ptr (rel> *ptr)))
-        Po-Pre (lup-pt Pre))
+        Po-Pre (lup-pt Pre)
+        List-Dat (list Dat)
+        Po-Dat (gen-point List-Dat 'x NIL T))        
         
     # Insert before current object
     (con> Po-Pre List-Dat NIL)
@@ -153,8 +198,73 @@
     (draw> *ptr)))
 
 
-(de con-a-pair-x (Dat)
+(de con-b-pair-y (Dat)
   #{
+  
+    Case 1:
+        
+        [X1]
+         .
+      
+         *
+        [Y]  .
+            
+         .
+            
+    -->
+               
+        [X1]
+         .
+      
+         *
+        [X2]
+         .
+         
+        [Y]  .
+            
+         .
+         
+  }#
+  
+  (println 'con-b-pair-y)
+  
+  (let (Pair (ref> *ptr)
+        Po-Pair (lup-pt Pair)
+        Pre (find-back> *ptr (rel> *ptr))
+        Po-Pre (lup-pt Pre)
+        List (list Dat)
+        Po-List (gen-point List 'x NIL T))
+    
+    (con> Po-Pre List Po-List)
+    (con> Po-List Pair Po-Pair)
+    
+    (if (get Po-Pre 'line)
+        (put Po-Pre 'line 'n Po-List)
+        (put Po-Pre 'line (new '(+Line) NIL Po-Pair)))
+    
+    (put Po-List 'line (new '(+Line) Po-Pre Po-Pair))
+    
+    (put Po-Pair 'line 'p Po-List)
+        
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+    
+    (set-ref> *ptr List 'b)
+    
+    # Pop cur line = Po-Pair
+    # Push new list
+    (ln> *ptr)
+    (ln> *ptr Po-List)
+    
+    (top> Po-List)
+    (draw> *ptr)))
+
+    
+    
+(de con-a-pair (Dat)
+  #{
+  
+    Case 1:
 
               *
         [Y]  [Y] .
@@ -172,6 +282,28 @@
               .
             
         .  
+        
   }#
   
-  T)
+  (let (Pair (ref> *ptr)
+        Po-Pair (lup-pt Pair)
+        Pre (find-back> *ptr (rel> *ptr))
+        Po-Pre (lup-pt Pre)
+        List (list Dat)
+        Po-List (gen-point List 'x NIL T)
+        Ln (c-ln> *ptr))
+    
+    (set> Po-Pre List Po-List)
+    (con> Po-List Pair Po-Pair)
+    
+    (put Po-List 'line (new '(+Line) NIL Po-Pair))
+    (put Po-Pair 'line 'p Po-List)
+    
+    (set-ref> *ptr List 'a)
+    
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+    
+    (top> Po-List)
+    (draw> *ptr)))
+    
