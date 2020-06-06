@@ -1,14 +1,30 @@
+#{
+
+      [X]
+      .
+            *
+      [Y]  NIL
+      
+      .
+
+  -->
+
+      [X]
+      .
+                  *
+      [Y]  [X]  NIL
+            .
+            
+      .    
+  
+}#
+
 (de make-pair-str (Dat Lay)
   
   (cond
     
     ######
     # ATOM
-    
-    # Special case: handle expanded symbol
-    #((and (get (lup-pt (cell> *ptr)) 'exp)
-    #      (rel-b?> *ptr))
-    # (ins-b-nil Dat))
     
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
@@ -21,7 +37,7 @@
          (b-atom?> *ptr))
       (println 'make-pair-str "B ATOM/NIL")
       #(repl-atom Dat 'b)
-      (ins-b-nil Dat)
+      (ins-b-atom Dat)
       (nex> *ptr)
       (upd-tree)
       (mov-⇲ (c-ln> *ptr)))
@@ -84,7 +100,29 @@
         (con> Po-Cell Dat Po-Dat T))))
 
 
+(de ins-b-atom (Dat)
+
+  (println 'ins-b-atom)
+  
+  (let (Pair (cell> *ptr)
+        Po-Pair (lup-pt Pair)
+        Po-Del (get Po-Pair 'b)
+        List (list Dat)
+        Po-List (gen-point List 'x NIL T))
     
+    (when (get Po-Del 'line)
+      (mov-line Po-Del Po-List)
+      (ln> *ptr))
+    (mov-line-n> *ptr Po-List)
+    
+    (con> Po-Pair List Po-List)
+        
+    (set-ref> *ptr List 'b))
+  
+  (upd-tree)
+  (mov-⇲ (c-ln> *ptr)))        
+        
+
 (de con-b-pair-x (Dat)
   
   (let (Cell (ref> *ptr)
@@ -116,31 +154,24 @@
 
 
 (de con-a-pair-x (Dat)
-  T)    
+  #{
 
-  
+              *
+        [Y]  [Y] .
+              .
+            
+        .
+            
+    -->
       
-(de ins-b-nil (Dat)
-
-  (println 'ins-b-nil)
-  
-  (let (Cell (cell> *ptr)
-        Po-Cell (lup-pt Cell)        
-        Po-Del  (ref> *ptr)
-        List-Dat (list Dat)
-        Po-Dat (gen-point List-Dat 'x NIL T)
-        Atomic-Cell (atom Cell))
+              *
+        [Y]  [X]
+              .
         
-    (con> Po-Cell List-Dat (unless Dat Po-Dat))              
-
-    ~(assert Po-Del)
-    
-    (when (get Po-Del 'line)
-      (mov-line Po-Del Po-Dat)
-      (ln> *ptr))
-    (mov-line-n> *ptr Po-Dat)
-    
-    (set-ref> *ptr List-Dat 'b))
+             [Y] .
+              .
+            
+        .  
+  }#
   
-  (upd-tree)
-  (mov-⇲ (c-ln> *ptr)))
+  T)
