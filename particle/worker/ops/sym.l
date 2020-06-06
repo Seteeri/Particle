@@ -290,20 +290,24 @@
         Pre (find-back> *ptr (rel> *ptr))
         Po-Pre (lup-pt Pre)
         List (list Dat)
-        Po-List (gen-point List 'x NIL T)
-        Ln (c-ln> *ptr))
+        Po-List (gen-point List 'x NIL T))
     
     (set> Po-Pre List Po-List)
     (con> Po-List Pair Po-Pair)
-    
+        
     (put Po-List 'line (new '(+Line) NIL Po-Pair))
+    
     (put Po-Pair 'line 'p Po-List)
-    
-    (set-ref> *ptr List 'a)
-    
+        
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
     
+    (set-ref> *ptr List 'a)
+    
+    # Pop cur line = Po-Pair
+    # Push new list
+    (ln> *ptr)
+    (ln> *ptr Po-List)
+    
     (top> Po-List)
     (draw> *ptr)))
-    
