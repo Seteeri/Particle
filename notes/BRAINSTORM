@@ -4744,7 +4744,12 @@ NIL
 Solutions:
 1. Ins before Y pair
 2. Go to first line, end atom, type chars, then split line
-    
+
+y y x
+
+vs
+
+y x
 
 ============================================
 ============================================

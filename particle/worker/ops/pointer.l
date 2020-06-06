@@ -265,20 +265,22 @@
       (ln> This Po-Tgt))))
       
       
-(dm find-back> (Rel)
-  (let Res NIL
-    (println 'find-back "Search for cell: " (: ref) (type (: ref)))
+# Pass ref
+(dm find-back> (Rel Ref)
+  (let (Res NIL
+        Ref (if Ref @ (: ref)))
+    (println 'find-back "Search for cell: " Ref (type Ref))
     (for Line (: ln)
       (let Dat (get Line 'data)
         (setq Res (if (= Rel 'a) 
-                      (memq (: ref) Dat)
-                      (prior (: ref) Dat)))    
+                      (memq Ref Dat)
+                      (prior Ref Dat)))    
         (println 'find-back "Searched line: " Dat)
         (println 'find-back "Found: " Res))
       (T (and Res
               # Occurs for Y-Pair Car = Atom
               # else cont search
-              (not (= Res (: ref))))))
+              (not (= Res Ref)))))
     (if Res
         Res
         (get (cadr (: ln)) 'data))))

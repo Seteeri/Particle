@@ -274,12 +274,16 @@
   
   }#
   
+  (when NIL
+    (println 'upd-line-post> "This: " 
+      This (: data) (: line)  (get (: line) 'p)))  
+  
   (upd-dims> This)         
-        
+            
   (if (: line)
       
       (prog
-      
+            
         (if (get (: line) 'p) # Sub line
         
             (prog
@@ -289,8 +293,9 @@
               
             (prog
               # Start of line/list
-              (when T
-                (println 'upd-line-post> "Push list: " This (: data)))
+              (when NIL
+                (println 'upd-line-post> "Push: " 
+                  This (: data)))
               (push '*list-lay
                 (list This # Particle for List
                       (list NIL # Bnds
@@ -324,8 +329,9 @@
                  (lay-y?> (: c))
                  (not (is-pair? This))))
     
-    (when T
-      (println 'upd-line-post> This (: data)))
+    (when NIL
+      (println 'upd-line-post> "Pop: " 
+        (caar *list-lay) (get (caar *list-lay) 'data)))
         
     # Cache ends
     (put (caar *list-lay) 'line 'e This)

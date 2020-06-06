@@ -1,5 +1,5 @@
-(de cmd-make-list (Ks)
-  (println 'cmd-make-list)
+(de cmd-make-pair (Ks)
+  (println 'cmd-make-pair)
   
   (make-pt-pair '*ptr))
 

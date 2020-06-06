@@ -30,15 +30,15 @@
       (new '(+Line)
             Ln
             (unless (= Nxt Po) Nxt)))
-                      
-    (if Ln
             
+    (if Ln
+
         (prog
           (put Ln 'line 'n Po)
           (when Nxt
             (unless (= Nxt Po)
               (put Nxt 'line 'p Po))))
-            
+        
         # Start of line
         (let? Nxt (get Ln 'line 'n)
           (put Ln 'line 'n Po)))))    

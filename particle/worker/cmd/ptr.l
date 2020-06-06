@@ -73,6 +73,7 @@
     
     (let Ref (lup-pt (: ref))
     
+      (prin "rel: ")  (println (: rel))
       (prin "data: ") (println (: ref))
       (prin "ori: ")  (println (get Ref 'ori))
       (prin "dims: ") (println (get Ref 'dims))
@@ -100,4 +101,4 @@
     )
 
   #(upd-tree)
-  (mov-⇲ (car (get *ptr 'ln))))
+  (mov-⇲ (c-ln> *ptr)))

@@ -4,8 +4,11 @@
     
     ######
     # ATOM
-      
-    #(ins-b-nil Dat)
+    
+    # Special case: handle expanded symbol
+    #((and (get (lup-pt (cell> *ptr)) 'exp)
+    #      (rel-b?> *ptr))
+    # (ins-b-nil Dat))
     
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
@@ -17,7 +20,9 @@
     ((or (b-nil?> *ptr)
          (b-atom?> *ptr))
       (println 'make-pair-str "B ATOM/NIL")
-      (repl-atom Dat 'b)
+      #(repl-atom Dat 'b)
+      (ins-b-nil Dat)
+      (nex> *ptr)
       (upd-tree)
       (mov-⇲ (c-ln> *ptr)))
             
@@ -138,9 +143,4 @@
     (set-ref> *ptr List-Dat 'b))
   
   (upd-tree)
-  (mov-⇲ (c-ln> *ptr))
-  
-  #(top> Po-Dat)
-  #(draw> *ptr)  
-  
-  (nex> *ptr))  
+  (mov-⇲ (c-ln> *ptr)))

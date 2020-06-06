@@ -14,31 +14,26 @@ TODO
   REPL:
   
   * Refactor
-    * Gen/Lay [Mon]
+    * Gen/Lay
       * Reuse existing particles
         * Pass flag to gen -> idx
       * New will gen verts [Done]
       * Pass sym exp to gen [WIP]
-    * List [Fri]
-      * Overview:
-        * x-car: repl x car with y list with nil [Done]
-          * basically convert X pair to Y pair with NIL
-            * to preserve char, use swap layout
-          * car is expected to be replaced
-          * nil cmd always replaces ptr with NIL
-        * x-cdr: repl x list with y pair with x pair char
-          * In:
-              [X]
-              "x"
-          * Out:
-              [Y] ("x")
-        * y-car: ?
-        * y-cdr: ?
-        * cdr (sep cmd): swap layout; similar to cdr
-        * cdr (sep cmd): ins list with list
-        * poss utilize space inbetween atoms
+    * Sym/Str
+      * Finish
+    * Pair
+      * Finish cdr cmd
+      * Improve find-back
+        * Fix setting rel when moving up from Y Pair car
+    * Swap
+      * Implement swap registers to set atomic cdr
+        * Bind to Alt Tab
+        * This is different than swap layout
+          * Bind to Shift Tab
       * Finish ops
+    * List
     * Del [Wknd]
+    * Create unit tests
     
   * Use prog1
   

@@ -59,7 +59,7 @@
     
     # List
     ((ksd~Control-L ksd~r) cmd-make-nil)
-    ((ksd~Control-L ksd~t) cmd-make-list)
+    ((ksd~Control-L ksd~t) cmd-make-pair)
     
     ((ksd~Control-L ksd~q) cmd-ptr-ln-first)
     ((ksd~Control-L ksd~e) cmd-ptr-ln-last)

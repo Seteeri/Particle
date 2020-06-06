@@ -305,7 +305,7 @@ Now armed with the basic knowledge, more commands can be used, which will be dis
 
 # Basic Operations
 
-Command Matrix:
+Matrix:
 
     +-------------------+---------------------------------------------+
     | Key Binding       | Command (CAR/CDR)                           |
@@ -324,7 +324,8 @@ Command Matrix:
     +-------------------+---------------------------------------------+
     | R-Alt + Backspace | Del newline                                 |
     +-------------------+---------------------------------------------+
-    
+
+TODO:
 * Mov cursor...
 * Mov Start/End of List
 * Mov Start/End of Line
@@ -336,113 +337,172 @@ Command keys are based on spatial relationship, aka physically group related fun
 
 ## Sym/Str Transforms
 
-### X-Car
+Matrix:
+    
+    +-----------------------------------+
+    |             |        TYPE         |
+    |             |---------------------|
+    |             | Pair   | Atom | NIL |
+    +-------------+--------+------------+
+    |     | X-Car | Ins/nl |    Repl    |
+    |     |-------+--------+------------+
+    |     | X-Cdr | Ins    |      |     |
+    | REL |-------+--------+      |     |
+    |     | Y-Car | Ins    | Repl | Ins |
+    |     |-------+--------|      |     |
+    |     | Y-Cdr | Ins/nl |      |     |
+    +-----+-------+--------+------+-----+
+
+### X-Car/Cdr = Atom
 
 In:
 
-    [X]  [X]  [X]  NIL
+    [X]  [X]  [X]  .
      .    .    *
       
 Out:
 
-    [X]  [X]  [X]  NIL
+    [X]  [X]  [X]  .
      .    .   **
   
-   
-### X-Cdr
+### Car/Cdr = X/Y-Pair
+
+#### X-Pair
+
+* If X-Pair on newline, mov newline to new Pair
 
 In:
 
                *
-    [X]  [X]  [X]  NIL
+    [X]  [X]  [X]  .
      .    .    .
       
 Out:
 
                     *
-    [X]  [X]  [X]  [X]  NIL
+    [X]  [X]  [X]  [X]  .
      .    .   ..    .
   
 Repeat:
 
                          *
-    [X]  [X]  [X]  [X]  [X]  NIL
+    [X]  [X]  [X]  [X]  [X]  .
      .    .   ..   ...   .
 
+
+In:
+
+          *
+    [Y]  [X1] .
+          .
+        
+    .
+    
+Out:
+
+          *
+    [Y]  [X2]  [X1] .
+          .     .
+        
+    .
+     
+     
+#### Y-Pair
+
+* If Y-Pair, create newline before Y-Pair
+
+In:
+
+          *
+    [Y]  [Y] .
+          .
+        
+    .
+        
+Out:
+  
+          *
+    [Y]  [X]
+          .
+    
+         [Y] .
+          .
+        
+    .
+    
    
-### Y-Car
+### Y-Car/Cdr = Atom
+
+CAR
 
 In:
            
            *
-    [Y1]  NIL
-    NIL
+    [Y1]   .
+     .
 
 Out:
 
            * 
     [Y1]   .
-    NIL
+     .
 
 Note, use list command Y-Car to replace atom with empty list:
 
            *
-    [Y1]  [X]  NIL
-          NIL
+    [Y1]  [X]  .
+           .
           
-    NIL
+     .
     
 Then type normally
-  
-### Y-Cdr
 
-* Same as Y-Car; replaces Cdr
-* Use list commands also to produce desired effects
+CDR:
 
 In:
 
-    [Y1]  NIL
+    [Y1]  .
     
      *
-    NIL
+     .
 
 Out:
 
-    [Y1]  NIL
+    [Y1]  .
     
      *
      .
 
 Note, use list command Y-Cdr to replace atom with empty list:
 
-    [Y1]  NIL
+    [Y1]  .
 
      *
-    [Y2]  NIL
+    [Y2]  .
     
-    NIL
+     .
 
 Move to NIL:
 
-    [Y1]  NIL
+    [Y1]  .
 
-           *
-    [Y2]  NIL
+          *
+    [Y2]  .
     
-    NIL
+     .
 
 Use list command again:
 
-    [Y1]  NIL
+    [Y1]  .
 
            * 
-    [Y2]  [X]  NIL
-          NIL
+    [Y2]  [X]  .
+           .
     
-    NIL
+     .
   
 Then type normally
-  
+
 ## List Transforms
 
 ### X-Car
@@ -467,6 +527,8 @@ Out:
 
 
 ### X-Cdr
+
+* Expanded symbols use this when setting value (Cdr)
 
 In:
 
