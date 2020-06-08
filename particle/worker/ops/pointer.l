@@ -133,38 +133,31 @@
 ######################################
 
 
-(dm pt-pair> (Fn-Push Rel)
+(dm pt-pair> (Rel)
   # Determine tgt
   (let (Po-Ref (lup-pt (: ref))
-        Po-Atom (get Po-Ref Rel))        
+        Po-Atom (get Po-Ref Rel))
     (if Po-Atom
-        (pt-pair-nil> This Po-Atom Rel Fn-Push)
-        # determine if pair or not
-        (let Tgt (if (= Rel 'a)
-                     (car (: ref))
-                     (cdr (: ref)))
-          (if (atom Tgt)
-              (pt-pair-atom> This Rel Fn-Push)
-              (pt-pair-pair> This Rel Fn-Push))))))
+        (pt-pair-atom> This Po-Ref Po-Atom Rel)
+        (pt-pair-pair> This Rel))))
 
               
-(dm pt-pair-atom-2> (Po-Tgt Rel Fn-Push)
+(dm pt-pair-atom> (Po-Ref Po-Atom Rel)
   
-  (mov-line-n> This Po-Tgt)
-  (set-ref> This (: ref) Rel Po-Tgt)
-    
-  (when (or (= Rel 'b)
-            (and (= Rel 'a)
-                 (lay-y?> (lup-pt (: ref)))))
-    (top> Po-Tgt)
-    (draw> This)))
+  (let Lay-Y-Ref (lay-y?> Po-Ref)
+  
+    (mov-line-n> This Po-Atom)
+    (set-ref> This (: ref) Rel Po-Atom)
+
+    (when (or (= Rel 'b)
+              (and (= Rel 'a)
+                   Lay-Y-Ref))
+      (top> Po-Atom)
+      (draw> This))))
               
             
-(dm pt-pair-nil> (Po-Tgt Rel Fn-Push)
+(dm pt-pair-nil> (Po-Tgt Rel)
       
-  # Push val to stack
-  #(Fn-Push This (: ref))
-  
   (mov-line-n> This Po-Tgt)
   (set-ref> This (: ref) Rel Po-Tgt)
     
@@ -173,7 +166,7 @@
     (draw> This)))
             
 
-(dm pt-pair-atom> (Rel Fn-Push)
+(dm pt-pair-atom-2> (Rel)
     
   (println 'pt-pair-atom)
     
@@ -183,9 +176,6 @@
                 (cdr (: ref)))
         Po-Tgt (lup-pt Tgt))
 
-    # Push val to stack
-    #(Fn-Push This (: ref))
-        
     (mov-line-n> This Po-Tgt)
     (set-ref> This Tgt Rel)
     
@@ -194,7 +184,7 @@
       (draw> This))))
   
   
-(dm pt-pair-pair> (Rel Fn-Push)
+(dm pt-pair-pair> (Rel)
   
   (println 'pt-pair-pair)
   
@@ -204,9 +194,6 @@
                 (cdr (: ref)))
         Po-Tgt (lup-pt Tgt))
 
-    # Push val to stack
-    #(Fn-Push This (: ref))
-    
     (mov-line-n> This Po-Tgt)
     (set-ref> This Tgt Rel)
       
@@ -217,20 +204,18 @@
 ##################
 
 
-(dm pt-sym> (Fn-Push Rel)
+(dm pt-sym> (Rel)
   # Determine tgt
   (let (Ref (: ref)
         Val (val Ref))
     (if Val
-        (pt-sym-pair> This Rel Fn-Push)
-        (pt-sym-nil> This Rel Fn-Push)))        
+        (pt-sym-pair> This Rel)
+        (pt-sym-nil> This Rel)))        
   (draw> This))
 
           
-(dm pt-sym-nil> (Rel Fn-Push)
+(dm pt-sym-nil> (Rel)
     
-  #(Fn-Push Ptr (: ref))
-
   (let Po-Tgt (get (lup-pt (: ref)) Rel)
   
     (mov-line-n> This Po-Tgt)
@@ -239,15 +224,12 @@
     (top> Po-Tgt)))
   
   
-(dm pt-sym-pair> (Rel Fn-Push)
+(dm pt-sym-pair> (Rel)
     
   (let (Po-Val (lup-pt (: ref))
         Tgt (val (: ref))
         Po-Tgt (lup-pt Tgt))
   
-    # Push val to stack
-    #(Fn-Push Ptr (: ref))
-        
     (mov-line-n> This Po-Tgt)
     (set-ref> This Tgt Rel)
     
@@ -323,7 +305,7 @@
   (println 'back> "LN: " (car (: ln)) (get (car (: ln)) 'data)))
 
 
-(dm forw> (Fn-Push Rel)
+(dm forw> (Rel)
 
   (cond
 
@@ -334,12 +316,12 @@
     ((or (a-pair?> This)
          (b-pair?> This))
       (println 'forw> "A/B PAIR")
-      (pt-pair> This Fn-Push Rel))
+      (pt-pair> This Rel))
     
     ((or (a-atom?> This)
          (b-atom?> This))
       (println 'forw> "A/B ATOM")
-      (pt-sym> This Fn-Push Rel))
+      (pt-sym> This Rel))
             
     (T
       # NIL - do nothing
@@ -355,7 +337,7 @@
 
 (dm nex> ()
   (println 'nex>)
-  (forw> This 'p-pre> 'b))
+  (forw> This 'b))
 
 (dm sup> (No-Lay)
   (println 'sup>)
@@ -363,4 +345,4 @@
 
 (dm sub> ()
   (println 'sub>)
-  (forw> This 'p-sup> 'a))
+  (forw> This 'a))
