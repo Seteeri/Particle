@@ -96,7 +96,7 @@
     
       (when NIL
         (println 'pop-list-lay "Pop list: " 
-          A (car (get (car A) 'data)))))))
+          A (get (car A) 'data))))))
   
 
 (de upd-lst-dims ()

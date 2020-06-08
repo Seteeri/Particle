@@ -19,13 +19,13 @@
                    (get Po-Car 'line 'dims)
                    (get Prv 'line 'dims)))
                 
-    (when (and (lay-y?> Prv) T)
-      (println 'align-cur-line 
-        Po (get Po 'data))
-      (println 'align-cur-line 
-        Prv (get Prv 'data) Po-Car)
-      (println 'align-cur-line 
-        Dims-P (lup-pt (car (get Prv 'data)))))
+    (when NIL
+      (prin "align-cur-line, Tgt: ")
+        (println Po (get Po 'data))
+      (prin "   align-cur-line, Prv: ")
+        (println Prv (get Prv 'data) Po-Car)
+      (prin "   align-cur-line, Dims: ")
+        (println Dims-P (lup-pt (car (get Prv 'data)))))
 
     ~(assert Prv)
     ~(assert Ori-P)

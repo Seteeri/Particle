@@ -91,7 +91,7 @@
     
     (when (lay-x?> Po-Pair)
       
-      (println repl-pair-car-nil "Pair/Tgt: "
+      (println repl-pair-car-atom "Pair/Tgt: "
         Pair (get Po-Pair 'a) Po-Tgt)
         
       (let (Ln (c-ln> *ptr)

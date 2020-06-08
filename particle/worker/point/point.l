@@ -292,10 +292,11 @@
               (upd-dims-2> This *cur))
               
             (prog
-              # Start of line/list
+              # Start of list
+              # excluding X-Pair cdr Y pair
               (when NIL
-                (println 'upd-line-post> "Push: " 
-                  This (: data)))
+                (prin "upd-line-post> Push: ")
+                  (println This (: data)))
               (push '*list-lay
                 (list This # Particle for List
                       (list NIL # Bnds
@@ -320,19 +321,18 @@
         (format (car (cadar *list-lay)) *Scl)
         (format (cadr (cadar *list-lay)) *Scl))))
         
-  # On end or Y-Pair.car/cdr=atom/nil: pop/upd list
-  (when (or (and (: c)
-                 (lay-x?> (: c))
-                 (get (: c) 'b)
+  # Pop on end of list:
+  # * X-Pair cdr atom
+  # * Y-Pair car atom
+  (when (or (and (= (get (: c) 'b) This)
                  (not (is-pair? This)))
-            (and (: c)
-                 (lay-y?> (: c))
-                 (not (is-pair? This))))
+            (and (= (get (: c) 'a) This)
+                 (not (is-pair? This))
+                 (lay-y?> (: c))))
     
-    (when NIL
-      (println 'upd-line-post> "Pop: " 
-        (caar *list-lay) (get (caar *list-lay) 'data)))
-        
+    (when (lay-y?> (: c))
+      ~(assert (get This 'line)))
+    
     # Cache ends
     (put (caar *list-lay) 'line 'e This)
     (put *line-lay 'line 'e This)

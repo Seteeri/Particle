@@ -295,6 +295,10 @@
                      (: ref)
                      (lup-pt (: ref)))
                  Po-Back)
+                 
+    # Verify rel
+    # Must find back of back
+                 
     (set-ref> This Back Rel)
     
     (unless No-Lay
