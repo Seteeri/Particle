@@ -136,9 +136,9 @@
 (dm pt-pair> (Fn-Push Rel)
   # Determine tgt
   (let (Po-Ref (lup-pt (: ref))
-        Po-Tgt (get Po-Ref Rel))
-    (if Po-Tgt
-        (pt-pair-nil> This Po-Tgt Rel Fn-Push)
+        Po-Atom (get Po-Ref Rel))        
+    (if Po-Atom
+        (pt-pair-nil> This Po-Atom Rel Fn-Push)
         # determine if pair or not
         (let Tgt (if (= Rel 'a)
                      (car (: ref))
@@ -147,6 +147,18 @@
               (pt-pair-atom> This Rel Fn-Push)
               (pt-pair-pair> This Rel Fn-Push))))))
 
+              
+(dm pt-pair-atom-2> (Po-Tgt Rel Fn-Push)
+  
+  (mov-line-n> This Po-Tgt)
+  (set-ref> This (: ref) Rel Po-Tgt)
+    
+  (when (or (= Rel 'b)
+            (and (= Rel 'a)
+                 (lay-y?> (lup-pt (: ref)))))
+    (top> Po-Tgt)
+    (draw> This)))
+              
             
 (dm pt-pair-nil> (Po-Tgt Rel Fn-Push)
       
@@ -321,12 +333,12 @@
   
     ((or (a-pair?> This)
          (b-pair?> This))
-      #(println 'forw> "A PAIR")
+      (println 'forw> "A/B PAIR")
       (pt-pair> This Fn-Push Rel))
     
     ((or (a-atom?> This)
          (b-atom?> This))
-      #(println 'forw> "A ATOM")
+      (println 'forw> "A/B ATOM")
       (pt-sym> This Fn-Push Rel))
             
     (T

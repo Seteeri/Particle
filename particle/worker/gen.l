@@ -89,13 +89,8 @@
         (unless *gen-out
           (setq *gen-out N))
 
-        # Con NIL or terminal atoms
-        # Only con Car when NIL
-        (when (or (and (= C 'a)
-                       (not Is-Any-Pair)
-                       (not Any))
-                  (and (= C 'b) 
-                       (not Is-Any-Pair)))
+        # Reg atoms
+        (when (not Is-Any-Pair)
           (put P
               (if (= C 'a)
                    'a
