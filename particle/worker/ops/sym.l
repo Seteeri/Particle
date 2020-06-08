@@ -51,7 +51,9 @@
       # ins bef cur
       # ((a)) -> (b (a))
       
-      (con-a-pair Dat))
+      (if (lay-x?> *ptr)
+          (con-a-pair-x Dat)
+          (con-a-pair-y Dat)))
       
     ((b-pair?> *ptr)
       (println 'make-pair-str "B PAIR")
@@ -183,7 +185,7 @@
     (con> Po-Pre List-Dat NIL)
     (con> Po-Dat Cell     NIL)
     
-    # Swap line
+    # Mov line
     (when (get Po-Cell 'line)
       (mov-line Po-Cell Po-Dat)
       (ln> *ptr))
@@ -261,7 +263,7 @@
 
     
     
-(de con-a-pair (Dat)
+(de con-a-pair-y (Dat)
   #{
   
     Case 1:
@@ -311,3 +313,51 @@
     
     (top> Po-List)
     (draw> *ptr)))
+
+    
+(de con-a-pair-x (Dat)
+  #{
+          
+    Case 2:
+
+              *
+        [Y]  [X1]  .
+              .
+            
+        .
+            
+    -->
+      
+                    *
+        [Y]  [X2]  [X1]  .
+              .     .
+            
+        .  
+        
+  }#
+  
+  (let (Pair (ref> *ptr)
+        Po-Pair (lup-pt Pair)
+        Pre (find-back> *ptr (rel> *ptr))
+        Po-Pre (lup-pt Pre)
+        List (list Dat)
+        Po-List (gen-point List 'x NIL T))
+    
+    (set> Po-Pre List Po-List)
+    (con> Po-List Pair Po-Pair)
+        
+    # Mov line
+    (when (get Po-Pair 'line)
+      (mov-line Po-Pair Po-List)
+      (ln> *ptr))
+    (mov-line-n> *ptr Po-List)
+        
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+    
+    # Keep ref - change rel
+    (set-ref> *ptr Pair 'b)
+    
+    (top> Po-Pair)
+    (draw> *ptr)))
+    

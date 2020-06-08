@@ -67,14 +67,15 @@
 (de cmd-print-ptr ()
 
   (with *ptr
+        
+    (let Ref (if (: cell)
+                 (: ref)
+                 (lup-pt (: ref)))
     
-    (prinl "CURRENT REFERENCE:")
-    (prin "Ref: ") (println (if (: cell)
-                                (: ref)
-                                (lup-pt (: ref))))
+      (prinl "CURRENT REFERENCE:")
+      (prin "Ref: ") (println Ref)
     
-    (let Ref (lup-pt (: ref))
-    
+      (prin "dat: ")  (println (get Ref 'data))
       (prin "rel: ")  (println (: rel))
       (prin "ori: ")  (println (get Ref 'ori))
       (prin "dims: ") (println (get Ref 'dims))
