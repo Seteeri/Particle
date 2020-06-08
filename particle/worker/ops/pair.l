@@ -142,7 +142,7 @@
          .     .
 
          *
-        [X3]  .
+        [Y]  .
         
          .
     
@@ -166,11 +166,13 @@
     (println 'repl-pair-cdr-atom "Pair/Cdr: " 
       Pair (get Po-Pair 'b) Po-Tgt)
   
-    # otherwise set-ref will attempt uncol on ref
-    # pass flag for this...
+    # Delete:
+    # * Nil ptr ref otherwise set-ref will attempt uncol on ref
+    # * Put NIL otherwise set will del new point
+    # * Pop line if necessary
     (put *ptr 'ref)  
-    # put NIL otherwise set will del new point
     (put Po-Pair 'b)
+    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
     (del> Po-Tgt)
     
     (let (List (list Tgt)
@@ -326,22 +328,35 @@
     
     Case 1:
     
-              *
-        [X]  [X]  [X]  .
-         .    .    .
+               *
+        [X1]  [X2]  [X3]  .
+         .     .     .
           
       -->
             
-        [X]
+        [X1]
          .
          
               *  
-        [Y]  [X]  .
+        [Y]  [X2]  .
               .
         
-        [X]  .
+        [X3]  .
          .    
-    
+
+      X-Pair -->
+      
+        [X1]
+         .
+         
+        [X4] 
+        
+        [X2]  .
+         .
+        
+        [X3]  .
+         .          
+         
     Case 2:
       
         [X] 

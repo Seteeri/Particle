@@ -13,7 +13,7 @@ TODO
   
   REPL:
   
-  * Refactor
+  * Refactor [Sun-Mon]
     * Gen/Lay
       * Reuse existing particles
         * Pass flag to gen -> idx
@@ -30,10 +30,8 @@ TODO
         * Bind to Alt Tab
         * This is different than swap layout
           * Bind to Shift Tab
-      * Finish ops
-    * List
-    * Del [Wknd]
-    * Create unit tests
+    * Create unit tests          
+    * Del
     
   * Use prog1
   
@@ -67,7 +65,9 @@ TODO
         * save old list to file/db
     BOTTOM
       * Status
-    
+  
+  * Str Ops before demo
+  
   * Lists can be rotated to simulate scrolling
     * Requires redrawing entire list...
     * Frustrum culling
