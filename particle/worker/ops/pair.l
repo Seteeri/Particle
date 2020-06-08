@@ -198,11 +198,8 @@
       (upd-tree)
       (mov-⇲ Ln)
             
-      (set-ref> *ptr List 'b)
-            
-      # Push new list
+      (set-ref> *ptr List 'b)            
       (ln> *ptr Po-List)
-      
       (top> Po-List)
       (draw> *ptr))))
 
@@ -282,40 +279,30 @@
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
         Pair (find-back> *ptr (rel> *ptr))
-        Po-Pair (lup-pt Pair))
-        
-    (println 'repl-pair-car-pair-y-pair "Pair/Tgt: "
-      Pair Tgt)
+        Po-Pair (lup-pt Pair)
+        Cons (cons)
+        Po-Cons (gen-point Cons 'x NIL T)
+        Po-Cdr (get Po-Cons 'b))
+  
+    (set-lay> Po-Cons 'y)    
+  
+    (set> Po-Pair Cons Po-Cons)
+    (set> Po-Cons Tgt Po-Tgt)
     
-    # Produce empty Pair
-    (let (Cons (cons)
-          Po-Cons (gen-point Cons 'x NIL T)
-          Po-Cdr (get Po-Cons 'b))
+    (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
+    (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
     
-      (set-lay> Po-Cons 'y)    
-    
-      (set> Po-Pair Cons Po-Cons)
-      (set> Po-Cons Tgt Po-Tgt)
-      
-      (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
-      (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
-      
-      (upd-tree)
-      (mov-⇲ (c-ln> *ptr))
-                  
-      # Pt to list
-      (set-ref> *ptr Cons 'a)
-      
-      # Assumes Pair always has line
-      ~(assert (get Po-Pair 'line))
-      
-      # Since pt to cons
-      # Pop old, push cons
-      (ln> *ptr)
-      (ln> *ptr Po-Cons)
-      
-      (top> Po-Cons)
-      (draw> *ptr))))
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+                
+    # Pt to list
+    (set-ref> *ptr Cons 'a)
+    ~(assert (get Po-Pair 'line))
+    # Pt to new cons so pop old line, push cons
+    (ln> *ptr)
+    (ln> *ptr Po-Cons)
+    (top> Po-Cons)
+    (draw> *ptr)))
   
 
 (de repl-pair-cdr-pair-y-pair ()
@@ -432,11 +419,8 @@
             
       (set-ref> *ptr List 'a)
             
-      # Push cell and car
-      (when Push-Pair
-        (ln> *ptr Po-Pair))
+      (when Push-Pair (ln> *ptr Po-Pair))
       (ln> *ptr Po-List)
-      
       (top> Po-List)
       (draw> *ptr))))
 
@@ -493,32 +477,23 @@
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
         Tgt-Car (car Tgt)
-        Po-Tgt-Car (lup-pt Tgt-Car))
-        
-    (println 'repl-pair-cdr-pair-y-pair-2 "Pair/Tgt: "
-      Tgt Tgt-Car)
+        Po-Tgt-Car (lup-pt Tgt-Car)
+        Cons (cons)
+        Po-Cons (gen-point Cons 'x NIL T)
+        Po-Cdr (get Po-Cons 'b))
     
-    # Produce empty Pair
-    (let (Cons (cons)
-          Po-Cons (gen-point Cons 'x NIL T)
-          Po-Cdr (get Po-Cons 'b))
+    (set-lay> Po-Cons 'y)    
+  
+    (set> Po-Tgt Cons Po-Cons)
+    (set> Po-Cons Tgt-Car Po-Tgt-Car)
     
-      (set-lay> Po-Cons 'y)    
+    (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
+    (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
     
-      (set> Po-Tgt Cons Po-Cons)
-      (set> Po-Cons Tgt-Car Po-Tgt-Car)
-      
-      (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
-      (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
-      
-      (upd-tree)
-      (mov-⇲ (c-ln> *ptr))
-                  
-      # Pt to list
-      (set-ref> *ptr Cons 'a)
-            
-      # Since pt to cons
-      (ln> *ptr Po-Cons)
-            
-      (top> Po-Cons)
-      (draw> *ptr))))
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+                
+    (set-ref> *ptr Cons 'a)
+    (ln> *ptr Po-Cons)      
+    (top> Po-Cons)
+    (draw> *ptr)))
