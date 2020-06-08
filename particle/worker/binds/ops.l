@@ -61,8 +61,11 @@
     # NIL/Pair/List
     ((ksd~Control-L ksd~r) cmd-make-nil)
     ((ksd~Control-L ksd~t) cmd-make-pair)
-    ((ksd~Control-L ksd~g) cmd-make-list)
+    ((ksd~Control-L ksd~y) cmd-make-list)
+    ((ksd~Control-L ksd~f) cmd-xchg-lay)
+    ((ksd~Control-L ksd~g) cmd-xchg-reg)
     
+    # First/Last
     ((ksd~Control-L ksd~q) cmd-ptr-ln-first)
     ((ksd~Control-L ksd~e) cmd-ptr-ln-last)
             

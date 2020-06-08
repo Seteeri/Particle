@@ -28,3 +28,11 @@
                   C))
   
       (del-pt Tgt))))
+
+      
+(de cmd-xchg-lay (Ks)
+  T)
+  
+  
+(de cmd-xchg-reg (Ks)
+  T)
