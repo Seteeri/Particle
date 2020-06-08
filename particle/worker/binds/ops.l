@@ -53,41 +53,48 @@
     ((ksd~BackSpace) cmd-bs)
     ((ksd~Delete   ) cmd-del)  
     
-    # Make cmds only mod+ASCII? to maintain homerow
+    # Modifies lines so relate to control chars
+    # Poss indent list?
     ((ksd~Alt-R   ksd~Return)    cmd-mov-nl)
     ((ksd~Alt-R   ksd~BackSpace) cmd-mov-bl)
     
-    # List
+    # NIL/Pair/List
     ((ksd~Control-L ksd~r) cmd-make-nil)
     ((ksd~Control-L ksd~t) cmd-make-pair)
+    ((ksd~Control-L ksd~g) cmd-make-list)
     
     ((ksd~Control-L ksd~q) cmd-ptr-ln-first)
     ((ksd~Control-L ksd~e) cmd-ptr-ln-last)
-        
-    # REPL - use Tab or Space for universal cmds and mode change
-    ((ksd~Alt-L   ksd~space) cmd-intern)
-    
+            
+    ##############
+    # REPL - Right
+    #{
+      [] \ = 3 = eval-atom, eval-list
+      ;'  = 2
+      <>? = 3
+    }#
+    # intern -> convert function
+    # - map to double shift
+    ((ksd~Alt-L   ksd~space)           cmd-intern)
     ((ksd~Control-L ksd~Tab)           cmd-eval-str)
     ((ksd~Control-L ksd~Alt-L ksd~Tab) cmd-eval)
-    ((ksd~Control-L ksd~g)             cmd-pes)    # Pack + Eval-Str
+    #((ksd~Control-L ...)              cmd-pes)    # Pack + Eval-Str
     #((ksd~Alt-L     ksd~Tab)          cmd-str)    
     
-    # other cmds...
+    #################
+    # Str/List Ops - Right
+    #{
+      Basics:
+      * split
+      * concat/join
+      * reverse/flip
     
-    ##########
-    # CUA Ops
-    
-    #((ksd~Control-L ksd~x) ((Ks) (println "Ctrl-L x: CUT")))
-    #((ksd~Control-L ksd~c) ((Ks) (println "Ctrl-L c: COPY")))
-    #((ksd~Control-L ksd~v) ((Ks) (println "Ctrl-L v: PASTE")))
-    #((ksd~Control-L ksd~z) ((Ks) (println "Ctrl-L z: UNDO")))
-    #((ksd~Alt-L     ksd~z) ((Ks) (println "Alt-L z: REDO")))
-
-    #########
-    # Str Ops
-    
-    # split-space (word) : glue " ", 
-    # chop (letter) : glue "", pack      
+      Y U = split-space - glue
+      H J = chop - glue
+      N M = reverse - flip
+    }#
+    # split-space : glue " "
+    # chop : pack (or glue "")
     # reverse, flip
     #
     # cmd-pack-list - ref must be a list or start of list
@@ -103,11 +110,36 @@
     # cmd-flip
     # cmd-rot
     
+    ##########
+    # CUA Ops
+    
+    # Most Microsoft Windows applications: 
+    #   Undo: Ctrl+Z or Alt+Backspace
+    #   Redo: Ctrl+Y or Ctrl+Shift+Z
+    # Most Apple Macintosh applications:
+    #   Undo: Command-Z
+    #   Redo: Command-Shift-Z or Command-Y
+    
+    # ESC = exit
+    # N = new
+    # O = open
+    # F = find
+    # H = replace
+    # G = goto
+    
+    #((ksd~Control-L ksd~x) ((Ks) (println "Ctrl-L x: CUT")))
+    #((ksd~Control-L ksd~c) ((Ks) (println "Ctrl-L c: COPY")))
+    #((ksd~Control-L ksd~v) ((Ks) (println "Ctrl-L v: PASTE")))
+    #((ksd~Control-L ksd~z) ((Ks) (println "Ctrl-L z: UNDO")))
+    #((ksd~Control-L ksd~y) ((Ks) (println "Ctrl-L y: REDO")))
+    #((ksd~Control-L ksd~Shift-L ksd~z) ((Ks) (println "Ctrl-L Shift-L z: REDO")))
+    
     # DEBUG
     ((ksd~Control-R ksd~Return) cmd-print-ptr)
 
-
-    # Pointerranslation
+    ############################
+    # Pointer Translation - Left
+    
     ((ksd~Control-L ksd~w) cmd-ptr-up)
     ((ksd~Control-L ksd~a) cmd-ptr-left)      
     ((ksd~Control-L ksd~s) cmd-ptr-down)
@@ -118,12 +150,14 @@
     ((ksd~Up)    cmd-trans-ptr-py)
     ((ksd~Down)  cmd-trans-ptr-ny)
 
-    # Cameraranslation
-    # Prior/Next
+    ############################
+    # Camera Translation - Right
+
     ((ksd~Alt-R ksd~Right) cmd-move-cam-px)
     ((ksd~Alt-R ksd~Left)  cmd-move-cam-nx)
     ((ksd~Alt-R ksd~Up)    cmd-move-cam-py)
     ((ksd~Alt-R ksd~Down)  cmd-move-cam-ny)
+    
     ((ksd~Prior)            cmd-zoom-cam-in)
     ((ksd~Next)             cmd-zoom-cam-out)
   

@@ -4753,6 +4753,12 @@ y x
 
 TIMEOUT AFTER LEADER KEY
 
+
+For functions, could take arguments from buffers/registers
+
+Select arguments in order
+  Push each one to list
+
 ============================================
 ============================================
 

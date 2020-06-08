@@ -37,8 +37,8 @@
     ((b-pair?> *ptr)
       (println 'make-pt-pair "B PAIR")
       (if (lay-x?> *ptr)
-          (repl-pair-cdr-pair-y-pair)
-          (repl-pair-cdr-pair-y-pair-2)))
+          (repl-pair-cdr-pair-x-pair)
+          (repl-pair-cdr-pair-y-pair)))
       
     (T
       # root
@@ -305,7 +305,7 @@
     (draw> *ptr)))
   
 
-(de repl-pair-cdr-pair-y-pair ()
+(de repl-pair-cdr-pair-x-pair ()
 
   #{
   
@@ -425,7 +425,7 @@
       (draw> *ptr))))
 
       
-(de repl-pair-cdr-pair-y-pair-2 ()
+(de repl-pair-cdr-pair-y-pair ()
 
   #{
   
