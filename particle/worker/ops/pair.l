@@ -396,12 +396,14 @@
     (println 'repl-pair-cdr-pair-y-pair "Pair/Tgt: "
       Pair Tgt)
   
-    # otherwise set-ref will attempt uncol on ref
-    # pass flag for this...
+    # Delete:
+    # * Nil ptr ref otherwise set-ref will attempt uncol on ref
+    # * Put NIL otherwise set will del new point
+    # * Pop line if necessary
     (put *ptr 'ref)  
-    # put NIL otherwise set will del new point
     (put Po-Pair 'a)
-    (del> Po-Tgt)
+    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
+    (del> Po-Tgt)    
     
     (let (List (list Tgt)
           Po-List (gen-point List 'x NIL T)
