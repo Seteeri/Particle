@@ -41,6 +41,8 @@
   Command mode:
   - Does not replace universal cmds - allows adv fn/cmd composition
   
+  Tab to switch mode:
+  * Easiest on the fingers
 }#
   
 
@@ -58,6 +60,8 @@
     ((ksd~Shift-R   ksd~Return)    cmd-mov-nl)
     ((ksd~Shift-R   ksd~BackSpace) cmd-mov-bl)
     
+    ##########
+    # List Ops
     # NIL/Pair/List
     ((ksd~Control-L ksd~r) cmd-make-nil)
     ((ksd~Control-L ksd~t) cmd-make-pair)
@@ -66,6 +70,10 @@
     ((ksd~Control-L ksd~g) cmd-xchg-reg)
     # rot-fwd
     # rot-back
+    # flatten
+    # split
+    # join
+    # flip/reverse
                 
     ##############
     # REPL - Right
@@ -83,7 +91,7 @@
     #((ksd~Alt-L     ksd~Tab)          cmd-str)    
     
     #################
-    # Str/List Ops - Right
+    # Str Ops - Right
     #{
       Basics:
       * split

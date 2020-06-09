@@ -4772,7 +4772,7 @@ Given List:
    a    b    c    d
 
  
-2 Base Cmds:
+First-Order Cmds (2):
 
 
 ((a) b c d)
@@ -4783,9 +4783,8 @@ Given List:
   [X]  [X]  [X]  .
    b    c    d
 
+   * pt to car
    * cmd-make-pair-car
-    -> Applies to both pairs and atoms
-    -> Same fn for atoms as cmd-make-list
 
 
 ((a b c d))
@@ -4795,10 +4794,11 @@ Given List:
         
   NIL  
 
+  * already pt to pair
   * cmd-make-pair-cdr
   
   
-Addtl Manx:  
+Combos Cmds:
   
   
 (a (b c d))
@@ -4811,9 +4811,7 @@ Addtl Manx:
         
   NIL
 
-  * Mov to B and use cmd-make-list (cdr)
-    -> Applies to pairs
-    -> Same fn for atoms as cmd-make-pair    
+  * Mov to B and use cmd-make-list (cdr) 
     
     
 ((a) (b c d))
@@ -4861,6 +4859,39 @@ Addtl Manx:
   * cmd-make-list
   * cmd-make-pair
   
+Multilevel Cmds:
+
+    (1 (2) 3)
+    
+      [X] 
+        1
+
+        * 
+      [Y1]  2
+      
+      [X]  .
+        3        
+      
+    -->
+    
+    (1 ((2 3)))
+  
+      [X]
+        1
+        
+              *
+      [Y2]  [Y1]  2
+          
+            [X]  .
+              3
+            
+    * This is diff situation
+    * This is modifying superlist
+    * Ptr ref (2), not ((2))
+    * To achieve this requires del/bsp
+      * Or cut/copy/paste
+  
+    * This is like flattening multiple lists
 ---
 ---
 

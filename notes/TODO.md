@@ -22,7 +22,6 @@ TODO
     * Sym/Str
     * Add draw flags
     * Pair
-      * Fix performing cmd on middle pair
       * Effect on atoms same as swap
       * Use on pairs
       * Improve find-back

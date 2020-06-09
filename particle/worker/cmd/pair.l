@@ -1,18 +1,29 @@
 (de cmd-make-pair (Ks)
   (println 'cmd-make-pair)
-  (make-pair))
 
-
-(de cmd-make-pair-car (Ks)
-  (println 'cmd-make-pair-car)
-  (make-pair-car))
-
-
-(de cmd-make-pair-cdr (Ks)
-  (println 'cmd-make-pair-cdr)
-  (make-pair-cdr))
+  # Make these methods?
   
+  (cond
   
+    ((a-atom?> *ptr)
+      (println 'make-pair "A ATOM/NIL")
+      (make-pair-a-atom))
+      
+    ((b-atom?> *ptr)
+      (println 'make-pair "B ATOM/NIL")
+      (make-pair-b-atom))
+    
+    ((a-pair?> *ptr)
+      (println 'make-pair "A PAIR")
+      (make-pair-a-pair))
+      
+    ((b-pair?> *ptr)
+      (println 'make-pair "B PAIR")
+      (if (lay-x?> *ptr)
+          (make-pair-b-pair-x)
+          (make-pair-b-pair-y)))))
+            
+
 (de cmd-del (Dir)
 
   (prinl-info "cmd-del")

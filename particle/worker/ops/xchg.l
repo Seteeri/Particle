@@ -1,8 +1,4 @@
-
-      
-#(de repl-a-atom->y-pair ()
-
-(de swap-layout ()
+(de swap-lay-xy ()
   #{
   
     Replace atom with list with atom
@@ -80,4 +76,7 @@
         
         (top> Po-Tgt)
         (draw> *ptr)))))     
-  
+
+        
+(de swap-lay-yx ()
+  T)
