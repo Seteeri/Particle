@@ -1,9 +1,13 @@
 (de cmd-make-pair (Ks)
   (println 'cmd-make-pair)
-  
   (make-pt-pair '*ptr))
 
 
+(de cmd-make-list (Ks)
+  (println 'cmd-make-list)
+  (make-list))
+  
+  
 (de cmd-del (Dir)
 
   (prinl-info "cmd-del")

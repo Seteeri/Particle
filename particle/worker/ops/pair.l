@@ -38,13 +38,13 @@
     ((a-pair?> *ptr)
       (println 'make-pt-pair "A PAIR")
       # create lst around ptr
-      (repl-a-pair->y-pair))
+      (repl-a-pair))
       
     ((b-pair?> *ptr)
       (println 'make-pt-pair "B PAIR")
       (if (lay-x?> *ptr)
-          (repl-b-pair->x-pair)
-          (repl-b-pair->y-pair)))
+          (repl-b-pair-x)
+          (repl-b-pair-y)))
       
     (T
       # root
@@ -213,7 +213,7 @@
 ############################
 
 
-(de repl-a-pair->y-pair ()
+(de repl-a-pair ()
 
   #{
     
@@ -311,7 +311,7 @@
     (draw> *ptr)))
   
 
-(de repl-b-pair->x-pair ()
+(de repl-b-pair-x ()
 
   #{
   
@@ -330,25 +330,25 @@
         [X1]
          .
          
-              *  
-        [Y]  [X2]  .
-              .
+                 *  
+        [Y/X2]  [X]  .
+                 .
         
         [X3]  .
          .    
 
-      X-Pair -->
-      
-        [X1]
-         .
-         
-        [X4] 
+        X-Pair -->
         
-        [X2]  .
-         .
-        
-        [X3]  .
-         .          
+          [X1]
+          .
+          
+          [X4] 
+          
+          [X2]  .
+          .
+          
+          [X3]  .
+          .          
          
     Case 2:
       
@@ -379,7 +379,7 @@
             
   }#   
   
-  (println 'repl-b-pairxy-pair)
+  (println 'repl-b-pair-x)
   
   (let (Pair (ref> *ptr)
         Po-Pair (lup-pt Pair)
@@ -388,13 +388,15 @@
                    @
                    (lup-pt Tgt)))
     
-    (println 'repl-b-pair->y-pair "Pair/Tgt: "
+    (println 'repl-b-pair-x "Pair/Tgt: "
       Pair Tgt)
   
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
     # * Put NIL otherwise set will del new point
     # * Pop line if necessary
+    #
+    # Does this functionality need to be in the methods?
     (put *ptr 'ref)  
     (put Po-Pair 'a)
     (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
@@ -433,7 +435,7 @@
       (draw> *ptr))))
 
       
-(de repl-b-pair->y-pair ()
+(de repl-b-pair-y ()
 
   #{
   
@@ -482,7 +484,7 @@
          
   }#   
   
-  (println 'repl-b-pair->y-pair)
+  (println 'repl-b-pair-y)
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)

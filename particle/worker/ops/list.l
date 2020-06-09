@@ -1,98 +1,134 @@
-(de make-list-cdr ()
-  (println 'make-list-cdr)
+(de make-list ()
+    
+  (cond
 
-  (make-list-cdr-x))       
-         
-         
-# make list with list
-(de make-list-cdr-x (Ref)
-  #{
-        In constrast to make-list-car,
-        put cdr in same list also
+    ((a-pair?> *ptr)
+      (println 'make-list "A PAIR")
+      (repl-a-pair))
       
-              *
-        [C]  [R]  [ ]  [ ]  NIL
-         A    B    C    D
+    ((b-pair?> *ptr)
+      (println 'make-list "B PAIR")
+      (if (lay-x?> *ptr)
+          (make-list-b-pair->x)
+          (repl-a-pair)))))
 
-        ->
-        
-        [C]
-              *
-        [P]  [R]  [ ]  [ ] NIL
-              B    C    D
-        
-        [Pb:NIL]
-        
-        
-        ---
 
-              *
-        [C]  [R]  [ ]  
-         x    x    x
-         
-        [ ]  [ ]  [ ]  NIL
-         x    x    x
+(de make-list-b-pair->x ()
+  #{
+  
+    Make list with list  
+    
+    Handle Y-case?
 
-         ->
-         
-        [C]
-              *
-        [P]  [R]  [ ]  [ ] NIL
-              x    x    x
-         
-             [ ]  [ ]  [ ]  NIL
-              x    x    x
-        
-        [Pb:NIL]
-        
-        - D line 'l changes from C -> R, and so does every subsequent list
-          - mov-line handles this
-         
+    Case 1: No line
+    
+             *
+      [X1]  [X2]  [X3]  [X4]  .
+       .     .     .     .
+
+      ->
+      
+      [X1]
+            *
+      [Y]  [X2]  ...
+            .
+      
+      .
+
+       
+    Case 2: Yes line, yes p
+    
+      [X1]
+    
+       *
+      [X2]  [X3]  [X4]  .
+       .     .     .
+
+      ->
+      
+      [X1]
+            *
+      [Y]  [X2]  ...
+            .    
+      
+      .
+      
+      
+    Case 3: Yes line, no p
+
+       *
+      [X1]  [X2]  [X3]  [X4]  .
+       .     .     .     .
+
+      ->
+      
+            *
+      [Y]  [X1]  ...
+            .
+      
+      .  
+
+    Case 4: Yes line, no p, bel Y-Pair
+    
+             *
+      [Y1]  [X1]  ...
+             .
+      
+       .    
+
+      ->
+      
+                   *
+      [Y1]  [Y2]  [X1]  ...
+                   .
+             .
+       .    
+      
+      SAME AS PAIR FN
+      
   }#
   
-  (let (C (get Ref 'c)
-        Po (gen-point (cons) 'x (cons T NIL) T)
-        Pb (get Po 'b))
-
-    (b> C Po)
-    (a> Po Ref)        
-
-    (set-lay> Po 'y)
-
-    # With current line, upd 'l for all subseq lines to Ref
-    (let L *line
-      (while L
-        (put L 'line 'l Ref)
-        (setq L (get L 'n))))
-    (put *line 'line 'n Po)
-    
-    (if (is-sym? C)
-        
-        (prog
-        
-          (put Po 'line (new '(+Line) NIL Pb NIL))
-          
-          (put Pb 'line (new '(+Line) Po NIL Po))
-              
-          (put Ref 'line (new '(+Line))))
-          
-        (prog # Pair
-                              
-          (put Po 'line (new '(+Line) C Pb *line))
-          
-          (put Pb 'line (new '(+Line) Po NIL (get Po 'line 'l)))
-              
-          (put Ref 'line (new '(+Line)))))
-        
-    (upd-tree)
-    (mov-⇲ (car (get *ptr 'ln)))
-    
-    (setq *line Ref)
-    (set-ptr-ref Ref)
-    (top> Ref)
-    (lay-ptr *ptr)
-                        
-    (println 'make-list-cdr-y)
-
-    Po))
+  (println 'make-list)  
   
+  (let (Tgt (ref> *ptr)
+        Po-Tgt (lup-pt Tgt)
+        Pair (find-back> *ptr (rel> *ptr))
+        Po-Pair (lup-pt Pair)
+        Cons (cons)
+        Po-Cons (gen-point Cons 'x NIL T)
+        Po-Cdr (get Po-Cons 'b)
+        Ln (c-ln> *ptr))
+  
+    ~(assert (not (lay-y?> Po-Pair)))
+  
+    (set-lay> Po-Cons 'y)    
+  
+    (con> Po-Pair Cons Po-Cons)
+    (set> Po-Cons Tgt Po-Tgt)
+                
+    (if (get Po-Tgt 'line)
+        (if (get @ 'p)
+            (prog
+              (pop-line Po-Tgt)
+              (setq Ln (get Po-Tgt 'line 'p))
+              (put Po-Tgt 'line 'p))
+            (prog
+              (setq Ln (get Po-Tgt 'line 'p))))
+        (prog
+          (put Po-Tgt 'line (new '(+Line)))))
+    
+    (ins-line-aft Ln Po-Cons)
+    
+    (ins-line-aft Po-Cons Po-Cdr)    
+    
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+                
+    # Pt to list
+    (set-ref> *ptr Cons 'a)
+    ~(assert (get Po-Pair 'line))
+    # Pt to new cons so pop old line, push cons
+    (ln> *ptr)
+    (ln> *ptr Po-Cons)
+    (top> Po-Cons)
+    (draw> *ptr)))

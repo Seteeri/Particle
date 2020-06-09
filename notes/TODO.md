@@ -25,6 +25,7 @@ TODO
       * Finish cdr cmd
       * Improve find-back
         * Fix setting rel when moving up from Y Pair car
+      * When ins char on y-pair car atom, create list
     * Swap
       * Implement swap registers to set atomic cdr
         * Bind to Alt Tab

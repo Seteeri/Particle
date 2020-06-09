@@ -146,6 +146,11 @@
     ((ksd~Control-L ksd~s) cmd-ptr-down)
     ((ksd~Control-L ksd~d) cmd-ptr-right)
 
+    ((ksd~Control-R ksd~w) cmd-ptr-up)
+    ((ksd~Control-R ksd~a) cmd-ptr-left)      
+    ((ksd~Control-R ksd~s) cmd-ptr-down)
+    ((ksd~Control-R ksd~d) cmd-ptr-right)
+    
     # Ctrl+Q/E = list
     # Ctrl+Shift+Q/E = line
     ((ksd~Control-L ksd~q) cmd-ptr-ln-first)
