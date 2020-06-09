@@ -16,38 +16,42 @@
 (de make-pt-pair (Ptr)
 
   # Make these methods
-
+  # car = a
+  # cdr = b
+  # atom = t
+  # pair = p
+  
   (cond
   
     ((or (a-nil?> *ptr)
          (a-atom?> *ptr))
       (println 'make-pt-pair "A ATOM/NIL")
-      (repl-pair-car-atom-y-pair))
+      (repl-a-atom->y-pair))
       
     ((or (b-nil?> *ptr)
          (b-atom?> *ptr))
       (println 'make-pt-pair "B ATOM/NIL")
-      (repl-pair-cdr-atom-y-pair))
+      (repl-b-atom->y-pair))
       
     # PAIR
 
     ((a-pair?> *ptr)
       (println 'make-pt-pair "A PAIR")
       # create lst around ptr
-      (repl-pair-car-pair-y-pair))
+      (repl-a-pair->y-pair))
       
     ((b-pair?> *ptr)
       (println 'make-pt-pair "B PAIR")
       (if (lay-x?> *ptr)
-          (repl-pair-cdr-pair-x-pair)
-          (repl-pair-cdr-pair-y-pair)))
+          (repl-b-pair->x-pair)
+          (repl-b-pair->y-pair)))
       
     (T
       # root
       (println 'make-pt-pair "*ptr uninitialized"))))
 
       
-(de repl-pair-car-atom-y-pair ()
+(de repl-a-atom->y-pair ()
   #{
   
     Replace atom with list with atom
@@ -93,7 +97,7 @@
     
     (when (lay-x?> Po-Pair)
       
-      (println repl-pair-car-atom "Pair/Tgt: "
+      (println repl-a-atom "Pair/Tgt: "
         Pair (get Po-Pair 'a) Po-Tgt)
         
       (let (Ln (c-ln> *ptr)
@@ -127,7 +131,7 @@
         (draw> *ptr)))))     
   
 
-(de repl-pair-cdr-atom-y-pair ()
+(de repl-b-atom->y-pair ()
 
   #{
   
@@ -165,7 +169,7 @@
                  (find-back> *ptr (rel> *ptr)))
         Po-Pair (lup-pt Pair))
     
-    (println 'repl-pair-cdr-atom "Pair/Cdr: " 
+    (println 'repl-b-atom "Pair/Cdr: " 
       Pair (get Po-Pair 'b) Po-Tgt)
   
     # Delete:
@@ -209,7 +213,7 @@
 ############################
 
 
-(de repl-pair-car-pair-y-pair ()
+(de repl-a-pair->y-pair ()
 
   #{
     
@@ -307,7 +311,7 @@
     (draw> *ptr)))
   
 
-(de repl-pair-cdr-pair-x-pair ()
+(de repl-b-pair->x-pair ()
 
   #{
   
@@ -375,7 +379,7 @@
             
   }#   
   
-  (println 'repl-pair-cdr-pairxy-pair)
+  (println 'repl-b-pairxy-pair)
   
   (let (Pair (ref> *ptr)
         Po-Pair (lup-pt Pair)
@@ -384,7 +388,7 @@
                    @
                    (lup-pt Tgt)))
     
-    (println 'repl-pair-cdr-pair-y-pair "Pair/Tgt: "
+    (println 'repl-b-pair->y-pair "Pair/Tgt: "
       Pair Tgt)
   
     # Delete:
@@ -429,7 +433,7 @@
       (draw> *ptr))))
 
       
-(de repl-pair-cdr-pair-y-pair ()
+(de repl-b-pair->y-pair ()
 
   #{
   
@@ -478,7 +482,7 @@
          
   }#   
   
-  (println 'repl-pair-cdr-pair-y-pair)
+  (println 'repl-b-pair->y-pair)
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
@@ -490,7 +494,7 @@
         Po-Cons (gen-point Cons 'x NIL T)
         Po-Car (get Po-Cons 'a)
         Po-Cdr (get Po-Cons 'b))
-                               
+
     (set-lay> Po-Cons 'y)    
   
     (set> Po-Tgt Cons Po-Cons)   
