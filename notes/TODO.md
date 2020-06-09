@@ -20,17 +20,20 @@ TODO
       * New will gen verts [Done]
       * Pass sym exp to gen [WIP]
     * Sym/Str
-      * Finish
+    * Add draw flags
     * Pair
-      * Finish cdr cmd
+      * Fix performing cmd on middle pair
+      * Effect on atoms same as swap
+      * Use on pairs
       * Improve find-back
-        * Fix setting rel when moving up from Y Pair car
-      * When ins char on y-pair car atom, create list
+        * Fix setting rel when moving up from Y Pair car    
+    * List
+      * Use on atoms to convert to list
+      * Use on X pairs to break list
     * Swap
-      * Implement swap registers to set atomic cdr
-        * Bind to Alt Tab
-        * This is different than swap layout
-          * Bind to Shift Tab
+      * Change layout
+    * Xchg
+      * Xchg registers
     * Create unit tests [Tues]
     * Del [Wed]
     * Refactor [Wed]

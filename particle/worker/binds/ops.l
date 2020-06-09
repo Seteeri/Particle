@@ -61,7 +61,7 @@
     # NIL/Pair/List
     ((ksd~Control-L ksd~r) cmd-make-nil)
     ((ksd~Control-L ksd~t) cmd-make-pair)
-    ((ksd~Control-L ksd~y) cmd-make-list)
+    ((ksd~Control-L ksd~y) cmd-make-pair)
     ((ksd~Control-L ksd~f) cmd-xchg-lay)
     ((ksd~Control-L ksd~g) cmd-xchg-reg)
     # rot-fwd

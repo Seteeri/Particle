@@ -65,8 +65,10 @@
             "/particle/worker/ops/lay.l"
             "/particle/worker/ops/del.l"
             "/particle/worker/ops/line.l"
+            "/particle/worker/ops/xchg.l"
             "/particle/worker/ops/pair.l"
-            "/particle/worker/ops/list.l"            
+            #"/particle/worker/ops/car.l"
+            #"/particle/worker/ops/cdr.l"            
             "/particle/worker/ops/sym.l"))
 
 

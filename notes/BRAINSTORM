@@ -4758,7 +4758,152 @@ For functions, could take arguments from buffers/registers
 
 Select arguments in order
   Push each one to list
+  
+=========================
 
+Given List:
+
+  |
+  V
+  (a b c d)
+
+  
+  [X]  [X]  [X]  [X]  .
+   a    b    c    d
+
+ 
+2 Base Cmds:
+
+
+((a) b c d)
+
+  [Y]  [X]
+        a
+
+  [X]  [X]  [X]  .
+   b    c    d
+
+   * cmd-make-pair-car
+    -> Applies to both pairs and atoms
+    -> Same fn for atoms as cmd-make-list
+
+
+((a b c d))
+
+  [Y]  [X]  [X]  [X]  [X]  .
+        a    b    c    d
+        
+  NIL  
+
+  * cmd-make-pair-cdr
+  
+  
+Addtl Manx:  
+  
+  
+(a (b c d))
+
+  [X]
+   a
+
+  [Y]  [X]  [X]  [X]  .
+        b    c    d
+        
+  NIL
+
+  * Mov to B and use cmd-make-list (cdr)
+    -> Applies to pairs
+    -> Same fn for atoms as cmd-make-pair    
+    
+    
+((a) (b c d))
+
+  [Y]  [X]
+        a
+
+  [Y]  [X]  [X]  [X]  .
+        b    c    d
+        
+  NIL
+  
+  * cmd-make-list
+  * Mov to Y2, cmd-make-pair
+  * can this be done only with cmd-make-pair?
+  
+  
+((a) (b) (c d))
+
+  [Y]  [X]  .
+        a
+
+  [Y]  [X]  .
+        b   
+        
+  [Y]  [X]  [X]  .
+        c    d
+
+  * cmd-make-list
+  * cmd-make-list
+  * cmd-make-pair
+        
+(a (b) (c d))
+
+  [X]
+   a 
+
+  [Y]  [X]  .
+        b   
+        
+  [Y]  [X]  [X]  .
+        c    d
+
+  * cmd-make-list
+  * cmd-make-list
+  * cmd-make-pair
+  
+---
+---
+
+Given Atom:
+
+  (a . b)
+  ^
+  |
+  
+  [X] b
+   a
+  
+  
+((a) . b)
+
+  [Y] [X]
+       a
+   b
+  
+  * mov to car
+  * make-pair/list
+  
+  
+(a . (b))
+
+  [X]
+   a
+  
+  [Y] [X]
+       b
+       
+  * mov to cdr
+  * make-pair/list
+  
+  
+PTR POSSIBILITIES:
+
+ Root
+
+ [X]  P/A...
+
+  P/A...
+  
 ============================================
 ============================================
 

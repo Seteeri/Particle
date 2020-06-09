@@ -25,6 +25,9 @@
     
     ######
     # ATOM
+    # - atom for atom
+    # - repl atom except NIL, ins like pair
+    # - use swap-reg to set cdr
     
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
@@ -44,12 +47,11 @@
             
     ######
     # PAIR
+    # - pair for pair
+    # - ins bef ptr
 
     ((a-pair?> *ptr)
       (println 'make-pair-str "A PAIR")
-      
-      # ins bef cur
-      # ((a)) -> (b (a))
       
       (if (lay-x?> *ptr)
           (con-a-pair-x Dat)
@@ -57,9 +59,6 @@
       
     ((b-pair?> *ptr)
       (println 'make-pair-str "B PAIR")
-      
-      # ins bef cur
-      # (a) -> (b a)
       
       (if (lay-x?> *ptr)
           (con-b-pair-x Dat)
@@ -203,7 +202,7 @@
 (de con-b-pair-y (Dat)
   #{
   
-    Case 1:
+    Case 1: (1 2) -> (1 3 2)
         
         [X1]
          .
@@ -266,7 +265,7 @@
 (de con-a-pair-y (Dat)
   #{
   
-    Case 1:
+    Case 1: ((1)) -> ((2 1))
 
               *
         [Y]  [Y] .
@@ -318,7 +317,7 @@
 (de con-a-pair-x (Dat)
   #{
           
-    Case 2:
+    Case 2: ((1)) -> ((2 1))
 
               *
         [Y]  [X1]  .

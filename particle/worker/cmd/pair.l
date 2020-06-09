@@ -1,11 +1,16 @@
 (de cmd-make-pair (Ks)
   (println 'cmd-make-pair)
-  (make-pt-pair '*ptr))
+  (make-pair))
 
 
-(de cmd-make-list (Ks)
-  (println 'cmd-make-list)
-  (make-list))
+(de cmd-make-pair-car (Ks)
+  (println 'cmd-make-pair-car)
+  (make-pair-car))
+
+
+(de cmd-make-pair-cdr (Ks)
+  (println 'cmd-make-pair-cdr)
+  (make-pair-cdr))
   
   
 (de cmd-del (Dir)
