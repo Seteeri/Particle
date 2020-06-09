@@ -30,12 +30,13 @@ TODO
         * Bind to Alt Tab
         * This is different than swap layout
           * Bind to Shift Tab
-    * Create unit tests          
-    * Del
+    * Create unit tests [Tues]
+    * Del [Wed]
+    * Refactor [Wed]
     
   * Use prog1
   
-  * Root Lists (side/main)
+  * Root Lists (side/main) [Thurs]
     LEFT:
       * Mov from simple to advance, downward
       1. Help

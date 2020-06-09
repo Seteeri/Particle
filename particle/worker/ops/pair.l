@@ -15,6 +15,8 @@
 
 (de make-pt-pair (Ptr)
 
+  # Make these methods
+
   (cond
   
     ((or (a-nil?> *ptr)
@@ -373,6 +375,8 @@
             
   }#   
   
+  (println 'repl-pair-cdr-pairxy-pair)
+  
   (let (Pair (ref> *ptr)
         Po-Pair (lup-pt Pair)
         Tgt (car Pair)
@@ -474,18 +478,26 @@
          
   }#   
   
+  (println 'repl-pair-cdr-pair-y-pair)
+  
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
         Tgt-Car (car Tgt)
-        Po-Tgt-Car (lup-pt Tgt-Car)
+        Po-Tgt-Car (if Tgt-Car
+                       (lup-pt @)
+                       (get Po-Tgt 'a))
         Cons (cons)
         Po-Cons (gen-point Cons 'x NIL T)
+        Po-Car (get Po-Cons 'a)
         Po-Cdr (get Po-Cons 'b))
-    
+                               
     (set-lay> Po-Cons 'y)    
   
-    (set> Po-Tgt Cons Po-Cons)
-    (set> Po-Cons Tgt-Car Po-Tgt-Car)
+    (set> Po-Tgt Cons Po-Cons)   
+    
+    (if Tgt-Car
+        (set> Po-Cons Tgt-Car Po-Tgt-Car)
+        (put Po-Car 'line (new '(+Line))))
     
     (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))

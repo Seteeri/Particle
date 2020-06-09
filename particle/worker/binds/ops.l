@@ -54,9 +54,9 @@
     ((ksd~Delete   ) cmd-del)  
     
     # Modifies lines so relate to control chars
-    # Poss indent list?
-    ((ksd~Alt-R   ksd~Return)    cmd-mov-nl)
-    ((ksd~Alt-R   ksd~BackSpace) cmd-mov-bl)
+    # Poss tab indent list?
+    ((ksd~Shift-R   ksd~Return)    cmd-mov-nl)
+    ((ksd~Shift-R   ksd~BackSpace) cmd-mov-bl)
     
     # NIL/Pair/List
     ((ksd~Control-L ksd~r) cmd-make-nil)
@@ -64,11 +64,9 @@
     ((ksd~Control-L ksd~y) cmd-make-list)
     ((ksd~Control-L ksd~f) cmd-xchg-lay)
     ((ksd~Control-L ksd~g) cmd-xchg-reg)
-    
-    # First/Last
-    ((ksd~Control-L ksd~q) cmd-ptr-ln-first)
-    ((ksd~Control-L ksd~e) cmd-ptr-ln-last)
-            
+    # rot-fwd
+    # rot-back
+                
     ##############
     # REPL - Right
     #{
@@ -140,14 +138,22 @@
     # DEBUG
     ((ksd~Control-R ksd~Return) cmd-print-ptr)
 
-    ############################
-    # Pointer Translation - Left
+    ###################
+    # Pointer Semantics    
     
     ((ksd~Control-L ksd~w) cmd-ptr-up)
     ((ksd~Control-L ksd~a) cmd-ptr-left)      
     ((ksd~Control-L ksd~s) cmd-ptr-down)
     ((ksd~Control-L ksd~d) cmd-ptr-right)
 
+    # Ctrl+Q/E = list
+    # Ctrl+Shift+Q/E = line
+    ((ksd~Control-L ksd~q) cmd-ptr-ln-first)
+    ((ksd~Control-L ksd~e) cmd-ptr-ln-last)    
+
+    #############################
+    # Pointer Translation - Right
+    
     ((ksd~Right) cmd-trans-ptr-px)
     ((ksd~Left)  cmd-trans-ptr-nx)
     ((ksd~Up)    cmd-trans-ptr-py)
