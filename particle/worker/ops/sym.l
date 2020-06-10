@@ -31,7 +31,7 @@
     
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
-      (println 'make-pair-str "B ATOM/NIL")
+      (println 'make-pair-str "A ATOM/NIL")
       (repl-atom Dat 'a)
       (upd-tree)
       (mov-⇲ (c-ln> *ptr)))
@@ -123,6 +123,29 @@
   
   (upd-tree)
   (mov-⇲ (c-ln> *ptr)))        
+        
+        
+(de ins-a-atom (Dat)
+
+  (println 'ins-a-atom)
+  
+  (let (Pair (cell> *ptr)
+        Po-Pair (lup-pt Pair)
+        Po-Del (get Po-Pair 'b)
+        List (list Dat)
+        Po-List (gen-point List 'x NIL T))
+    
+    (when (get Po-Del 'line)
+      (mov-line Po-Del Po-List)
+      (ln> *ptr))
+    (mov-line-n> *ptr Po-List)
+    
+    (con> Po-Pair List Po-List)
+        
+    (set-ref> *ptr List 'b))
+  
+  (upd-tree)
+  (mov-⇲ (c-ln> *ptr)))          
         
 
 (de con-b-pair-x (Dat)

@@ -22,17 +22,12 @@ TODO
     * Sym/Str
     * Add draw flags
     * Pair
-      * Effect on atoms same as swap
-      * Use on pairs
       * Improve find-back
         * Fix setting rel when moving up from Y Pair car    
-    * List
-      * Use on atoms to convert to list
-      * Use on X pairs to break list
+        * Use prv lines
     * Swap
-      * Change layout
-    * Xchg
-      * Xchg registers
+      * Layout
+      * Swap registers
     * Create unit tests [Tues]
     * Del [Wed]
     * Refactor [Wed]

@@ -260,44 +260,49 @@
       
       
 # Pass ref
-(dm find-back> (Rel Ref)
+(dm find-back> (Rel Ref Pln)
   (let (Res NIL
         Ref (if Ref @ (: ref)))
-    (println 'find-back "Search for cell: " Ref (type Ref))
+    #(println 'find-back "Search for cell: " Ref (type Ref))
     (for Line (: ln)
       (let Dat (get Line 'data)
         (setq Res (if (= Rel 'a) 
                       (memq Ref Dat)
                       (prior Ref Dat)))    
-        (println 'find-back "Searched line: " Dat)
-        (println 'find-back "Found: " Res))
+        #(println 'find-back "Searched line: " Dat)
+        #(println 'find-back "Found: " Res)
+        )
       (T (and Res
               # Occurs for Y-Pair Car = Atom
               # else cont search
               (not (= Res Ref)))))
     (if Res
         Res
-        (get (cadr (: ln)) 'data))))
+        (unless Pln
+          (get (cadr (: ln)) 'data)))))
       
       
-(dm back> (Fn-Pop Rel No-Lay)
-
-  #(println 'back> "LN LIST: " (: ln))
+(dm back> (Rel No-Lay)
 
   (let (Back (if (: cell)
                  @
                  (find-back> This Rel))
         Po-Back (lup-pt Back))
     
+    # Find Rel of back to its back
+    (let (Find-Car (find-back> This 'a Back T)
+          Find-Cdr (find-back> This 'b Back T))      
+      (prin "back> BACK: ") (println Back Find-Car Find-Cdr)
+      (setq Rel (if Find-Car 'a 'b))
+      (prin "back> WARN: Unable to find back-2 for ")
+      (println Back))
+    
     # Cur -> New
     (mov-line-p> This
                  (if (: cell)
                      (: ref)
                      (lup-pt (: ref)))
-                 Po-Back)
-                 
-    # Verify rel
-    # Must find back of back
+                 Po-Back)     
                  
     (set-ref> This Back Rel)
     
@@ -305,8 +310,8 @@
       (top> Po-Back)
       (draw> This)))
       
-  (println 'back> "PTR: " (: ref) (: cell))
-  (println 'back> "LN: " (car (: ln)) (get (car (: ln)) 'data)))
+  (prin "back> PTR: ") (println (: ref) (: cell) (: rel))
+  (prin "back> LN: ") (println (car (: ln)) (get (car (: ln)) 'data)))
 
 
 (dm forw> (Rel)
@@ -337,7 +342,7 @@
 
 (dm pre> ()
   (println 'pre>)
-  (back> This 'p-pre> 'b))
+  (back> This 'b))
 
 (dm nex> ()
   (println 'nex>)
@@ -345,7 +350,7 @@
 
 (dm sup> (No-Lay)
   (println 'sup>)
-  (back> This 'p-sup> 'a No-Lay))
+  (back> This 'a No-Lay))
 
 (dm sub> ()
   (println 'sub>)
