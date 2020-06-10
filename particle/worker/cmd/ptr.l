@@ -5,28 +5,28 @@
   (if (and (rel-a?> *ptr)
            (is-pair? (lup-pt (ref> *ptr)))
            (not (lay-y?> *ptr)))
-    (sup> *ptr)
-    (pre> *ptr)))
+    (sup> *ptr T)
+    (pre> *ptr T)))
 
 
 (de cmd-ptr-right (Ks)
   (if (lay-y?> *ptr)
-      (sub> *ptr)
-      (nex> *ptr)))
+      (sub> *ptr T)
+      (nex> *ptr T)))
 
 
 (de cmd-ptr-up (Ks)
   (if (or (and (rel-a?> *ptr)
                (is-pair? (lup-pt (ref> *ptr))))
           (lay-y?> *ptr))
-      (pre> *ptr)
-      (sup> *ptr)))
+      (pre> *ptr T)
+      (sup> *ptr T)))
 
 
 (de cmd-ptr-down (Ks)
   (if (lay-y?> *ptr)
-      (nex> *ptr)
-      (sub> *ptr)))
+      (nex> *ptr T)
+      (sub> *ptr T)))
 
       
 (de cmd-ptr-ln-first (Ks)

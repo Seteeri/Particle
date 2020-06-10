@@ -32,16 +32,14 @@
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
       (println 'make-pair-str "A ATOM/NIL")
-      (repl-atom Dat 'a)
-      (upd-tree)
-      (mov-⇲ (c-ln> *ptr)))
+      (repl-atom Dat 'a))
       
     ((or (b-nil?> *ptr)
          (b-atom?> *ptr))
       (println 'make-pair-str "B ATOM/NIL")
       #(repl-atom Dat 'b)
       (ins-b-atom Dat)
-      (nex> *ptr))
+      (nex> *ptr T))
             
     ######
     # PAIR
@@ -73,6 +71,8 @@
   
     Handles both X and Y pairs
   
+    Need to move to next car
+    
   }#
 
   (println 'repl-atom)
@@ -97,7 +97,15 @@
     
     (if (= Rel 'a)
         (set> Po-Cell Dat Po-Dat T)
-        (con> Po-Cell Dat Po-Dat T))))
+        (con> Po-Cell Dat Po-Dat T))
+        
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+    
+    (when (str? (cadr Cell))
+      (sup> *ptr NIL)
+      (nex> *ptr NIL)
+      (sub> *ptr T))))
 
 
 (de ins-b-atom (Dat)

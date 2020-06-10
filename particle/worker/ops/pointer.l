@@ -138,30 +138,32 @@
 ######################################
 
 
-(dm pt-pair> (Rel)
+(dm pt-pair> (Rel Draw)
   # Determine tgt
   (let (Po-Ref (lup-pt (: ref))
         Po-Atom (get Po-Ref Rel))
     (if Po-Atom
-        (pt-pair-atom> This Po-Ref Po-Atom Rel)
-        (pt-pair-pair> This Rel))))
+        (pt-pair-atom> This Po-Ref Po-Atom Rel Draw)
+        (pt-pair-pair> This Rel Draw))))
 
               
-(dm pt-pair-atom> (Po-Ref Po-Atom Rel)
+(dm pt-pair-atom> (Po-Ref Po-Atom Rel Draw)
   
   (let Lay-Y-Ref (lay-y?> Po-Ref)
   
     (mov-line-n> This Po-Atom)
     (set-ref> This (: ref) Rel Po-Atom T)
 
-    (when (or (= Rel 'b)
+    (when Draw
+      (if (or (= Rel 'b)
               (and (= Rel 'a)
                    Lay-Y-Ref))
-      (top> Po-Atom)
+          (top> Po-Atom)
+          (top> Po-Ref))
       (draw> This))))
   
   
-(dm pt-pair-pair> (Rel)
+(dm pt-pair-pair> (Rel Draw)
   
   (println 'pt-pair-pair)
   
@@ -173,35 +175,37 @@
 
     (mov-line-n> This Po-Tgt)
     (set-ref> This Tgt Rel NIL T)
-      
-    (top> Po-Tgt)
-    (draw> This)))
+    
+    (when Draw
+      (top> Po-Tgt)
+      (draw> This))))
   
   
 ##################
 
 
-(dm pt-sym> (Rel)
+(dm pt-sym> (Rel Draw)
   # Determine tgt
   (let (Ref (: ref)
         Val (val Ref))
     (if Val
-        (pt-sym-pair> This Rel)
-        (pt-sym-nil> This Rel)))        
-  (draw> This))
+        (pt-sym-pair> This Rel Draw)
+        (pt-sym-nil> This Rel Draw))))
 
           
-(dm pt-sym-nil> (Rel)
+(dm pt-sym-nil> (Rel Draw)
     
   (let Po-Tgt (get (lup-pt (: ref)) Rel)
   
     (mov-line-n> This Po-Tgt)
     (set-ref> This (: ref) Rel Po-Tgt T)
     
-    (top> Po-Tgt)))
+    (when Draw
+      (top> Po-Tgt)
+      (draw> This))))
   
   
-(dm pt-sym-pair> (Rel)
+(dm pt-sym-pair> (Rel Draw)
     
   (let (Po-Val (lup-pt (: ref))
         Tgt (val (: ref))
@@ -210,7 +214,9 @@
     (mov-line-n> This Po-Tgt)
     (set-ref> This Tgt Rel NIL T)
     
-    (top> Po-Tgt)))    
+    (when Draw
+      (top> Po-Tgt)
+      (draw> This))))
     
     
 ###############################
@@ -258,7 +264,7 @@
           (get (cadr (: ln)) 'data)))))
       
       
-(dm back> (Rel No-Lay)
+(dm back> (Rel Draw)
 
   (let (Back (if (: cell)
                  @
@@ -282,7 +288,7 @@
                  
     (set-ref> This Back Rel NIL T)
     
-    (unless No-Lay
+    (when Draw
       (top> Po-Back)
       (draw> This)))
       
@@ -290,7 +296,7 @@
   (prin "back> LN: ") (println (car (: ln)) (get (car (: ln)) 'data)))
 
 
-(dm forw> (Rel)
+(dm forw> (Rel Draw)
 
   (cond
 
@@ -301,12 +307,12 @@
     ((or (a-pair?> This)
          (b-pair?> This))
       (println 'forw> "A/B PAIR")
-      (pt-pair> This Rel))
+      (pt-pair> This Rel Draw))
     
     ((or (a-atom?> This)
          (b-atom?> This))
       (println 'forw> "A/B ATOM")
-      (pt-sym> This Rel))
+      (pt-sym> This Rel Draw))
             
     (T
       # NIL - do nothing
@@ -316,18 +322,18 @@
   (println 'forw> "LN: " (car (: ln)) (get (car (: ln)) 'data)))
 
 
-(dm pre> ()
+(dm pre> (Draw)
   (println 'pre>)
-  (back> This 'b))
+  (back> This 'b Draw))
 
-(dm nex> ()
+(dm nex> (Draw)
   (println 'nex>)
-  (forw> This 'b))
+  (forw> This 'b Draw))
 
-(dm sup> (No-Lay)
+(dm sup> (Draw)
   (println 'sup>)
-  (back> This 'a No-Lay))
+  (back> This 'a Draw))
 
-(dm sub> ()
+(dm sub> (Draw)
   (println 'sub>)
-  (forw> This 'a))
+  (forw> This 'a Draw))

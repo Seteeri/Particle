@@ -19,12 +19,10 @@ TODO
         * Pass flag to gen -> idx
       * New will gen verts [Done]
       * Pass sym exp to gen [WIP]
+    * Pointer
+      * Add draw flags
     * Sym/Str
-    * Add draw flags
     * Pair
-      * Improve find-back
-        * Fix setting rel when moving up from Y Pair car    
-        * Use prv lines
     * Swap
       * Layout
       * Swap registers
