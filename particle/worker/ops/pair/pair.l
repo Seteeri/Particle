@@ -162,23 +162,10 @@
             .    
       
       .    
-      
-    Case 5:
-    
-      [X]
-       .
-       
-      [X]
-      NIL
-       
-      [Y] .
-       .
-       
+
   }#
   
   (println 'make-pair-b-pair-x)  
-  
-  # Handle when Cdr has line
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
@@ -196,15 +183,12 @@
                 
     (if (get Po-Tgt 'line)
         (prog
-          (if (get @ 'p)
-              (prog
-                (pop-line Po-Tgt)
-                (setq Ln (get Po-Tgt 'line 'p))
-                (put Po-Tgt 'line 'p))
-              (prog
-                (setq Ln (get Po-Tgt 'line 'p))))
+          # Make line start
+          (put Po-Tgt 'line 'p)
           # Only pop if replacing line
-          (ln> *ptr))
+          (ln> *ptr)
+          # Set current ln to prv line
+          (setq Ln (c-ln> *ptr)))
         (prog
           # Modify subsequent line
           (let Nxt (get Ln 'line 'n)
@@ -220,7 +204,7 @@
     (put Po-Cons 'line (new '(+Line) Ln Po-Cdr))
     
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
-    
+        
     (set-ref> *ptr Cons 'b)
     
     (upd-tree)
