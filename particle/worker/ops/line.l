@@ -116,12 +116,12 @@
     
     (setq *line Ln-P)
 
-    (upd-tree)
-    (mov-⇲ (car (get *ptr 'ln)))      
-    
     # Ptr remains on Ref
     # Handle NIL?
     (set-ref> '*ptr (get Po-Ref 'data) 'b)
     
+    (upd-tree)
+    (mov-⇲ (car (get *ptr 'ln)))      
+        
     (top> Po-Ref)
     (draw> *ptr)))

@@ -77,7 +77,7 @@
                    @
                    (lup-pt Tgt)))
     
-    (println 'repl-b-pair-x "Pair/Tgt: "
+    (println 'make-pair-a-atom "Pair/Tgt: "
       Pair Tgt)
   
     # Delete:
@@ -113,11 +113,11 @@
           
       (put Po-List 'line (new '(+Line)))
       
+      (set-ref> *ptr List 'a)
+      
       (upd-tree)
       (mov-⇲ (c-ln> *ptr))
-            
-      (set-ref> *ptr List 'a)
-            
+      
       (when Push-Pair (ln> *ptr Po-Pair))
       (ln> *ptr Po-List)
       (top> Po-List)
@@ -199,10 +199,11 @@
       
       (put Po-Car 'line (new '(+Line)))
       
+      (set-ref> *ptr List 'b)
+      
       (upd-tree)
-      (mov-⇲ Ln)
+      (mov-⇲ Po-List)
             
-      (set-ref> *ptr List 'b)            
       (ln> *ptr Po-List)
       (top> Po-List)
       (draw> *ptr))))          

@@ -74,7 +74,13 @@
     # split
     # join
     # flip/reverse
-                
+
+    ((ksd~Control-R ksd~r) cmd-make-nil)
+    ((ksd~Control-R ksd~t) cmd-make-pair)
+    ((ksd~Control-R ksd~y) cmd-make-pair)
+    ((ksd~Control-R ksd~f) cmd-xchg-lay)
+    ((ksd~Control-R ksd~g) cmd-xchg-reg)    
+    
     ##############
     # REPL - Right
     #{

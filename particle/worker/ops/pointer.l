@@ -50,22 +50,27 @@
   (lay-pt-start '*ptr '*ptr T T))
 
   
-(dm set-col> (P)
+(dm stor-col> (P)
   (=: col (get-first-col> P)))
   
   
-(dm col> (P)
-  (set-col> This P)
-  # Get color from class or inst
-  (col> P *selb-yellow 1.0))
+(dm col> (P Draw)
+  (stor-col> This P)
+  # Set color but don't draw
+  (if Draw
+     (col> P *selb-yellow 1.0)
+     (col-verts> P *selb-yellow 1.0)))
 
   
-(dm uncol> (P)
+(dm uncol> (P Draw)
   (let ((R G B A) (: col))
-    (col> P (list R G B) A)))
+    # Set color but don't draw
+    (if Draw
+        (col> P (list R G B) A)
+        (col-verts> P (list R G B) A))))
 
     
-(dm set-ref> (Tgt Rel Po)
+(dm set-ref> (Tgt Rel Po Draw)
   #{
   
     Any T
@@ -83,7 +88,7 @@
   (let? Po (if (: cell)
                (get (lup-pt (: cell)) (: rel))
                (lup-pt (: ref)))
-    (uncol> This Po))
+    (uncol> This Po Draw))
           
         
   # Should store Point also
@@ -94,12 +99,12 @@
     (if Po
           
         (prog        
-          (col> This Po)
+          (col> This Po Draw)
           (=: ref Po)
           (=: cell Tgt))
             
         (prog          
-          (col> This (lup-pt Tgt))
+          (col> This (lup-pt Tgt) Draw)
           (=: ref Tgt)
           (=: cell))))
         
@@ -147,40 +152,12 @@
   (let Lay-Y-Ref (lay-y?> Po-Ref)
   
     (mov-line-n> This Po-Atom)
-    (set-ref> This (: ref) Rel Po-Atom)
+    (set-ref> This (: ref) Rel Po-Atom T)
 
     (when (or (= Rel 'b)
               (and (= Rel 'a)
                    Lay-Y-Ref))
       (top> Po-Atom)
-      (draw> This))))
-              
-            
-(dm pt-pair-nil> (Po-Tgt Rel)
-      
-  (mov-line-n> This Po-Tgt)
-  (set-ref> This (: ref) Rel Po-Tgt)
-    
-  (when (= Rel 'b)
-    (top> Po-Tgt)
-    (draw> This)))
-            
-
-(dm pt-pair-atom-2> (Rel)
-    
-  (println 'pt-pair-atom)
-    
-  (let (Po-Ref (lup-pt (: ref))
-        Tgt (if (= Rel 'a)
-                (car (: ref))
-                (cdr (: ref)))
-        Po-Tgt (lup-pt Tgt))
-
-    (mov-line-n> This Po-Tgt)
-    (set-ref> This Tgt Rel)
-    
-    (when (= Rel 'b)
-      (top> Po-Tgt)
       (draw> This))))
   
   
@@ -195,7 +172,7 @@
         Po-Tgt (lup-pt Tgt))
 
     (mov-line-n> This Po-Tgt)
-    (set-ref> This Tgt Rel)
+    (set-ref> This Tgt Rel NIL T)
       
     (top> Po-Tgt)
     (draw> This)))
@@ -219,7 +196,7 @@
   (let Po-Tgt (get (lup-pt (: ref)) Rel)
   
     (mov-line-n> This Po-Tgt)
-    (set-ref> This (: ref) Rel Po-Tgt)
+    (set-ref> This (: ref) Rel Po-Tgt T)
     
     (top> Po-Tgt)))
   
@@ -231,7 +208,7 @@
         Po-Tgt (lup-pt Tgt))
   
     (mov-line-n> This Po-Tgt)
-    (set-ref> This Tgt Rel)
+    (set-ref> This Tgt Rel NIL T)
     
     (top> Po-Tgt)))    
     
@@ -259,7 +236,6 @@
       (ln> This Po-Tgt))))
       
       
-# Pass ref
 (dm find-back> (Rel Ref Pln)
   (let (Res NIL
         Ref (if Ref @ (: ref)))
@@ -304,7 +280,7 @@
                      (lup-pt (: ref)))
                  Po-Back)     
                  
-    (set-ref> This Back Rel)
+    (set-ref> This Back Rel NIL T)
     
     (unless No-Lay
       (top> Po-Back)

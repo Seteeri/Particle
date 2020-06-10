@@ -41,9 +41,7 @@
       (println 'make-pair-str "B ATOM/NIL")
       #(repl-atom Dat 'b)
       (ins-b-atom Dat)
-      (nex> *ptr)
-      (upd-tree)
-      (mov-⇲ (c-ln> *ptr)))
+      (nex> *ptr))
             
     ######
     # PAIR
@@ -122,7 +120,7 @@
     (set-ref> *ptr List 'b))
   
   (upd-tree)
-  (mov-⇲ (c-ln> *ptr)))        
+  (mov-⇲ (c-ln> *ptr)))
         
         
 (de ins-a-atom (Dat)
@@ -269,12 +267,12 @@
     (put Po-List 'line (new '(+Line) Po-Pre Po-Pair))
     
     (put Po-Pair 'line 'p Po-List)
-        
-    (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
     
     (set-ref> *ptr List 'b)
     
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+        
     # Pop cur line = Po-Pair
     # Push new list
     (ln> *ptr)
@@ -323,10 +321,10 @@
     
     (put Po-Pair 'line 'p Po-List)
         
+    (set-ref> *ptr List 'a)
+        
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
-    
-    (set-ref> *ptr List 'a)
     
     # Pop cur line = Po-Pair
     # Push new list
@@ -373,13 +371,13 @@
       (mov-line Po-Pair Po-List)
       (ln> *ptr))
     (mov-line-n> *ptr Po-List)
-        
-    (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
     
     # Keep ref - change rel
-    (set-ref> *ptr Pair 'b)
+    (set-ref> *ptr Pair 'b)    
     
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+        
     (top> Po-Pair)
     (draw> *ptr)))
     

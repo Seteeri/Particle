@@ -83,10 +83,11 @@
     (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
     
+    (set-ref> *ptr Cons 'a)
+    
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
                 
-    (set-ref> *ptr Cons 'a)
     (ln> *ptr Po-Cons)      
     (top> Po-Cons)
     (draw> *ptr)))
@@ -161,7 +162,18 @@
             .    
       
       .    
+      
+    Case 5:
     
+      [X]
+       .
+       
+      [X]
+      NIL
+       
+      [Y] .
+       .
+       
   }#
   
   (println 'make-pair-b-pair-x)  
@@ -203,17 +215,17 @@
             (when Nxt
               (put Nxt 'line 'p Po-Tgt)))))
     
+    (put Ln 'line 'n Po-Cons)
+    
     (put Po-Cons 'line (new '(+Line) Ln Po-Cdr))
     
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
     
-    (println "DONE")
+    (set-ref> *ptr Cons 'b)
     
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
                 
-    # Pt to list
-    (set-ref> *ptr Cons 'a)
     (ln> *ptr Po-Cons)
     (top> Po-Cons)
     (draw> *ptr)))
@@ -299,11 +311,11 @@
     (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
     
+    (set-ref> *ptr Cons 'a)
+    
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
                 
-    # Pt to list
-    (set-ref> *ptr Cons 'a)
     ~(assert (get Po-Pair 'line))
     # Pt to new cons so pop old line, push cons
     (ln> *ptr)
