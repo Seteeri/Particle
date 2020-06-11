@@ -138,6 +138,14 @@
 
     
 (de alt-reg ()
+  
+  #{
+  
+    Meant for swapping atoms
+    
+    For pairs, will have to change layout if car is a pair
+  
+  }#
 
   (println 'alt-reg)
     
@@ -158,8 +166,8 @@
     (put Po-Pair 'a Po-B)
     (put Po-Pair 'b Po-A)
     
-    (put Po-Car 'line Ln-Cdr)
     (put Po-Cdr 'line Ln-Car)
+    (put Po-Car 'line Ln-Cdr)
     
     (let? N (get Ln-Car 'n)
       (put N 'line 'p Po-Cdr))

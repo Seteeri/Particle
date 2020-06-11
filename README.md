@@ -112,6 +112,12 @@ This idea is then further extended to create arbitrary representations for arbit
 
 On MS and Apple systems, it serves as an outliner "app" or personal knowledge manager, however, with Linux and BSD systems it goes further absorbing the Wayland compositor, creating an encompassing Lisp environment.
 
+The UI philosophy is a merger of Vim and Emacs, and to a degree Photoshop. Imagine being able to compose commands on Lisp data, instead of only strings, while getting proper state feedback/indication to reduce mode errors and enhanced discoverability to accelerate learning. The named pointers and hierarchial nature of the data allows the user to build a mental model of the system leading to faster mode prediction.
+
+If the user is searching for context-related commands, that means the system has failed the user. In other words, the system should provide at least one suggestion based on the current context object.
+
+There are no overlapping or modal windows and no focus stealing.
+
 *WIP*
 * Keyboard-driven first
   * Mouse and touch support
