@@ -59,5 +59,81 @@
       (draw> *ptr))))
 
         
-(de alt-lay-x ()
-  T)
+(de alt-lay-x (Ln-P Ln-B)
+  #{
+  
+        [X1]
+         .  
+
+         *
+        [Y]  .
+
+        
+        [X3] .
+         .
+    
+    --> Remove pair+car lines
+    
+               *
+        [X1]  [X2]  [X3] .
+         .     .     .    
+    
+    --> Poss leave cdr line
+  
+               *
+        [X1]  [X2]
+         .     .  
+                  
+                  
+        [X3] .                  
+         .
+
+
+    --> Poss leave pair line
+    
+               *
+        [X1]  [X2]
+         .     .  
+                  
+                  
+        [X3] .                  
+         .    
+         
+    --> Simplest option - change pair only
+
+        [X1]
+         .  
+
+         *
+        [X]
+         .
+        
+        [X3] .
+         .
+    
+  }#
+  
+  (println 'alt-lay-x)
+    
+  (let (Pair (ref> *ptr)
+        Po-Pair (lup-pt Pair))
+    
+    (println 'alt-lay-x "Pair/Tgt: "
+      Pair Po-Pair)
+      
+    (let (Ln (c-ln> *ptr)
+          Po-Car (if (car Pair) (lup-pt @) (get Po-Pair 'a))
+          Po-Cdr (if (cdr Pair) (lup-pt @) (get Po-Pair 'b)))
+      
+      (set-lay> Po-Pair 'x)
+      
+      (put Po-Car 'line)
+
+      (upd-tree)
+      (mov-⇲ Po-Pair)
+
+      (unless (= Ln Po-Pair)
+        (ln> *ptr Po-Pair))
+      
+      (top> Po-Pair)
+      (draw> *ptr))))
