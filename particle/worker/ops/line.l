@@ -90,7 +90,7 @@
   (println 'mov-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data)))
   
 
-(de bsp-line ()
+(de del-line-cur ()
 
   #{
   

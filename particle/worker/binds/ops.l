@@ -1,16 +1,3 @@
-(de list-binds-ops @
-  (let L NIL
-    (while (next)
-      (for Bind (arg)
-        (let ((Keys Rep Cmd) Bind
-              Keys (mapcar '((K) (if (sym? K) (val K) @))
-                           Keys)
-              Rep (if (sym? Rep) (val Rep) @)
-              Cmd (if (sym? Cmd) (val Cmd) @))
-          (push 'L (list Keys Rep Cmd)))))
-    L))  
-
-
 #{
   Str:
   
@@ -67,8 +54,8 @@
     
     # Modifies lines so relate to control chars
     # Poss tab indent list?
-    ((ksd~Shift-R   ksd~Return)    cmd-mov-nl)
-    ((ksd~Shift-R   ksd~BackSpace) cmd-mov-bl)
+    ((ksd~Shift-R   ksd~Return)    cmd-make-line)
+    ((ksd~Shift-R   ksd~BackSpace) cmd-del-line)
     
     ##########
     # List Ops
@@ -195,3 +182,16 @@
     ((ksd~Next)             cmd-zoom-cam-out)
   
   ))    
+
+  
+(de list-binds-ops @
+  (let L NIL
+    (while (next)
+      (for Bind (arg)
+        (let ((Keys Rep Cmd) Bind
+              Keys (mapcar '((K) (if (sym? K) (val K) @))
+                           Keys)
+              Rep (if (sym? Rep) (val Rep) @)
+              Cmd (if (sym? Cmd) (val Cmd) @))
+          (push 'L (list Keys Rep Cmd)))))
+    L))    

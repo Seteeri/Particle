@@ -1,11 +1,11 @@
-(de cmd-mov-nl (Ks)
-  (println 'cmd-mov-nl)
+(de cmd-make-line (Ks)
+  (println 'cmd-make-line)
   
   (make-line))
 
 
-(de cmd-mov-bl (Ks)
-  (println 'cmd-mov-bl)
+(de cmd-del-line (Ks)
+  (println 'cmd-del-line)
   
-  (bsp-line))
+  (del-line-cur))
 
