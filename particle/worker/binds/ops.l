@@ -76,8 +76,8 @@
     ((ksd~Control-L ksd~r) cmd-make-nil)
     ((ksd~Control-L ksd~t) cmd-make-pair)
     ((ksd~Control-L ksd~y) cmd-make-pair)
-    ((ksd~Control-L ksd~f) cmd-xchg-lay)
-    ((ksd~Control-L ksd~g) cmd-xchg-reg)
+    ((ksd~Control-L ksd~f) cmd-alt-lay)
+    ((ksd~Control-L ksd~g) cmd-alt-reg)
 
 
     ((ksd~Control-R ksd~r) cmd-make-nil)

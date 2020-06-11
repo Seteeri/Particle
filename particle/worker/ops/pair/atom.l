@@ -37,7 +37,9 @@
     
     (println 'make-pair-a-atom "Pair/Car: "
       Pair Po-Pair Po-Tgt)
-  
+
+    ~(assert (get Po-Tgt 'line))
+      
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
     # * Put NIL otherwise set will del new point

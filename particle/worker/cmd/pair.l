@@ -52,9 +52,11 @@
       (del-pt Tgt))))
 
       
-(de cmd-xchg-lay (Ks)
-  T)
+(de cmd-alt-lay (Ks)
+  (if (lay-x?> *ptr)
+      (alt-lay-y)
+      (alt-lay-x)))
   
   
-(de cmd-xchg-reg (Ks)
-  T)
+(de cmd-alt-reg (Ks)
+  (alt-reg))
