@@ -1,6 +1,10 @@
 (de cmd-chg-mode (Ks)
   (println 'cmd-chg-mode)
-  T)
+  
+  (setq *modes
+        (if (= *modes *mode-txt)
+            *mode-cmd
+            *mode-txt)))
 
 
 ###############################
