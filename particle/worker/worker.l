@@ -39,8 +39,9 @@
             "/particle/worker/idx.l"
             "/particle/worker/gen.l"
             
-            "/particle/worker/binds/def/an.l"                   
-            "/particle/worker/binds/def/op.l"                               
+            "/particle/worker/mode/txt/an.l"
+            "/particle/worker/mode/txt/op.l"
+            "/particle/worker/mode/cmd/op.l"
             
             "/particle/worker/vertex/make.l"
             "/particle/worker/vertex/vertex.l"
@@ -156,15 +157,26 @@
   # so to set mode, change value of binds
   
   # TODO:
+  # - Rename *binds -> *modes  
   # - Make binds a list which contains all the modes
-  # - Rename *binds -> *modes
+  # - Dispatch-kb will use car of *binds
+  #   - If not found, then try static binds
+
+  # Mov loader functions to modes
   
+  # Load txt
   (let L (sort 
            (append
-              (list-binds-ascii *binds-latin-1)
-              (list-binds-num *binds-num)
-              (list-binds-ops *binds-ops)))
-    (balance '*binds L)))  
+              (list-binds-txt-ascii *binds-txt-latin-1)
+              (list-binds-txt-num *binds-txt-num)
+              (list-binds-txt-ops *binds-txt-ops)))
+    (balance '*mode-txt L))
+    
+  # Load cmd
+  (balance '*mode-cmd 
+    (sort (list-binds-cmd *binds-cmd)))
+  
+  (setq *binds *mode-txt))
   
 
 (de gen-def-pts ()

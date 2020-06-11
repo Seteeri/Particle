@@ -1,3 +1,8 @@
+(de cmd-chg-mode (Ks)
+  (println 'cmd-chg-mode)
+  T)
+
+
 ###############################
 # Semantic Traversal (Pair/Ptr)
 

@@ -114,9 +114,14 @@ On MS and Apple systems, it serves as an outliner "app" or personal knowledge ma
 
 The UI philosophy is a merger of Vim and Emacs, and to a degree Photoshop. Imagine being able to compose commands on Lisp data, instead of only strings, while getting proper state feedback/indication to reduce mode errors and enhanced discoverability to accelerate learning. The named pointers and hierarchial nature of the data allows the user to build a mental model of the system leading to faster mode prediction.
 
-If the user is searching for context-related commands, that means the system has failed the user. In other words, the system should provide at least one suggestion based on the current context object.
+If the user must perform a search for context-related commands (rather than one they have instantly conjured up), this means the system has failed the user. In other words, the system should provide possible future directions based on the current context object at all times.
 
 There are no overlapping or modal windows and no focus stealing.
+
+To improve discoverability:
+* System always provides mode indication and feedback at the user's locus of attention like a painting/drawing program
+* Search always available and conveniently accessible like JetBrains double Shift command
+
 
 *WIP*
 * Keyboard-driven first

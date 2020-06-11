@@ -41,18 +41,30 @@
     * Cmd
       * Diff sectors on kb have diff functionality
     
-    * Tab to switch mode
-      * Ctrl Tab to insert character
     * Changing mode will change bindings
+    * Least frequently used commands have
+    most difficult finger gymnastics
+    
+    * Candidates
+      * Tab
+      * Grave/Tilde
+      * F<N>
+      * Double shift?
+            
+      * Use Ctrl/Alt to insert the character
+      
   
 }#
   
 
-(def '*binds-ops
+(def '*binds-txt-ops
 
   '(
+    ((ksd~Tab) cmd-chg-mode)
+  
     ((ksd~Return) cmd-make-char)
-    ((ksd~Tab)    cmd-make-char)
+    ((ksd~Alt-L ksd~Tab)    cmd-make-char)
+    ((ksd~Alt-R ksd~Tab)    cmd-make-char)
     
     ((ksd~BackSpace) cmd-bs)
     ((ksd~Delete   ) cmd-del)  
@@ -189,7 +201,7 @@
   ))    
 
   
-(de list-binds-ops @
+(de list-binds-txt-ops @
   (let L NIL
     (while (next)
       (for Bind (arg)

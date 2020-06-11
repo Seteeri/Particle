@@ -1,4 +1,4 @@
-(de list-binds-ascii @
+(de list-binds-txt-ascii @
   (let L NIL
     (while (next)
       (for Bind (arg)
@@ -13,7 +13,7 @@
     L))
 
     
-(de list-binds-num @
+(de list-binds-txt-num @
   (let L NIL
     (while (next)
       (for Bind (arg)
@@ -27,7 +27,7 @@
     L))
     
 
-(def '*binds-num
+(def '*binds-txt-num
   '(
     ((ksd~d0) cmd-make-num)
     ((ksd~d1) cmd-make-num)
@@ -41,7 +41,7 @@
     ((ksd~d9) cmd-make-num)))     
 
 
-(def '*binds-latin-1
+(def '*binds-txt-latin-1
   '(
     ((ksd~space) cmd-make-char)
     ((ksd~exclam) cmd-make-char)
