@@ -22,7 +22,7 @@ TODO
     * Pointer
     * Sym/Str
     * Pair
-    * Swap
+    * Alt
     * Del    
     * Create unit tests
     * Refactor

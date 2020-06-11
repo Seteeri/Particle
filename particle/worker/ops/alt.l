@@ -135,3 +135,37 @@
     
     (top> Po-Pair)
     (draw> *ptr)))
+
+    
+(de alt-reg ()
+
+  (println 'alt-reg)
+    
+  (let (Pair (ref> *ptr)
+        Po-Pair (lup-pt Pair)
+        Po-A (get Po-Pair 'a)
+        Po-B (get Po-Pair 'b)
+        Car (car Pair)
+        Cdr (cdr Pair)
+        Po-Car (if Po-A @ (lup-pt Car))
+        Po-Cdr (if Po-B @ (lup-pt Cdr))
+        Ln-Car (get Po-Car 'line)
+        Ln-Cdr (get Po-Cdr 'line))
+    
+    (set Pair Cdr)
+    (con Pair Car)
+    
+    (put Po-Pair 'a Po-B)
+    (put Po-Pair 'b Po-A)
+    
+    (put Po-Car 'line Ln-Cdr)
+    (put Po-Cdr 'line Ln-Car)
+    
+    (let? N (get Ln-Car 'n)
+      (put N 'line 'p Po-Cdr))
+    
+    (let? N (get Ln-Cdr 'n)
+      (put N 'line 'p Po-Car))
+        
+    (upd-tree)
+    (mov-⇲ Po-Pair)))
