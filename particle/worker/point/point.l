@@ -99,24 +99,21 @@
 (dm lay-x?> () (= (: lay) 'x))
 (dm lay-y?> () (= (: lay) 'y))
 
-(dm set-lay> (L)
+(dm set-lay> (L Reuse-Col)
   
   #{
     
     Set color and glyph
     
-    For +Pair only?
-
-    Ptr uses put instead of this
-    TODO: '(+Ptr +Sym)
-    
   }#
   
   (unless (= (: lay) L)
   
-    (let (Col (if (= L 'x)
-                  (car (get '+Vertex 'cols-pair))
-                  (cadr (get '+Vertex 'cols-pair)))
+    (let (Col (if Reuse-Col
+                  (get-first-col> This)
+                  (if (= L 'x)
+                      (car (get '+Vertex 'cols-pair))
+                      (cadr (get '+Vertex 'cols-pair))))
           Ch (if (= L 'x)
                  (car (get '+Vertex 'chs-pair))
                  (cadr (get '+Vertex 'chs-pair))))

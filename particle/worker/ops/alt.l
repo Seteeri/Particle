@@ -28,35 +28,34 @@
   # Poss add opt
   
   (let (Pair (ref> *ptr)
-        Po-Pair (lup-pt Pair))
+        Po-Pair (lup-pt Pair)
+        Ln (c-ln> *ptr)
+        Po-Car (if (car Pair) (lup-pt @) (get Po-Pair 'a))
+        Po-Cdr (if (cdr Pair) (lup-pt @) (get Po-Pair 'b)))
     
     (println 'alt-lay-y "Pair/Tgt: "
-      Pair Po-Pair)
-      
-    (let (Ln (c-ln> *ptr)
-          Po-Car (if (car Pair) (lup-pt @) (get Po-Pair 'a))
-          Po-Cdr (if (cdr Pair) (lup-pt @) (get Po-Pair 'b)))
-      
-      (set-lay> Po-Pair 'y)
-      
-      (if (get Po-Pair 'line)
-          (put @ 'n Po-Cdr)      
-          (ins-line-aft Ln Po-Pair))
-      
-      (if (get Po-Cdr 'line)
-          (put @ 'p Po-Pair)
-          (ins-line-aft Po-Pair Po-Cdr))
-          
-      (put Po-Car 'line (new '(+Line)))
+      Pair Po-Pair)    
+  
+    (set-lay> Po-Pair 'y T)
+    
+    (if (get Po-Pair 'line)
+        (put @ 'n Po-Cdr)      
+        (ins-line-aft Ln Po-Pair))
+    
+    (if (get Po-Cdr 'line)
+        (put @ 'p Po-Pair)
+        (ins-line-aft Po-Pair Po-Cdr))
+        
+    (put Po-Car 'line (new '(+Line)))
 
-      (upd-tree)
-      (mov-⇲ Po-Pair)
+    (upd-tree)
+    (mov-⇲ Po-Pair)
 
-      (unless (= Ln Po-Pair)
-        (ln> *ptr Po-Pair))
-      
-      (top> Po-Pair)
-      (draw> *ptr))))
+    (unless (= Ln Po-Pair)
+      (ln> *ptr Po-Pair))
+    
+    (top> Po-Pair)
+    (draw> *ptr)))
 
         
 (de alt-lay-x (Ln-P Ln-B)
@@ -116,24 +115,23 @@
   (println 'alt-lay-x)
     
   (let (Pair (ref> *ptr)
-        Po-Pair (lup-pt Pair))
-    
+        Po-Pair (lup-pt Pair)
+        Ln (c-ln> *ptr)
+        Po-Car (if (car Pair) (lup-pt @) (get Po-Pair 'a))
+        Po-Cdr (if (cdr Pair) (lup-pt @) (get Po-Pair 'b)))
+  
     (println 'alt-lay-x "Pair/Tgt: "
-      Pair Po-Pair)
-      
-    (let (Ln (c-ln> *ptr)
-          Po-Car (if (car Pair) (lup-pt @) (get Po-Pair 'a))
-          Po-Cdr (if (cdr Pair) (lup-pt @) (get Po-Pair 'b)))
-      
-      (set-lay> Po-Pair 'x)
-      
-      (put Po-Car 'line)
+      Pair Po-Pair)    
+  
+    (set-lay> Po-Pair 'x T)
+    
+    (put Po-Car 'line)
 
-      (upd-tree)
-      (mov-⇲ Po-Pair)
+    (upd-tree)
+    (mov-⇲ Po-Pair)
 
-      (unless (= Ln Po-Pair)
-        (ln> *ptr Po-Pair))
-      
-      (top> Po-Pair)
-      (draw> *ptr))))
+    (unless (= Ln Po-Pair)
+      (ln> *ptr Po-Pair))
+    
+    (top> Po-Pair)
+    (draw> *ptr)))

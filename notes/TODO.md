@@ -13,25 +13,23 @@ TODO
   
   REPL:
   
-  * Refactor [Sun-Mon]
+  * Rearchitect
     * Gen/Lay
       * Reuse existing particles
         * Pass flag to gen -> idx
-      * New will gen verts [Done]
-      * Pass sym exp to gen [WIP]
+      * New will gen verts
+      * Pass sym exp to gen
     * Pointer
     * Sym/Str
     * Pair
     * Swap
-      * Layout
-      * Swap registers
-    * Create unit tests [Tues]
-    * Del [Wed]
-    * Refactor [Wed]
+    * Del    
+    * Create unit tests
+    * Refactor
     
   * Use prog1
   
-  * Root Lists (side/main) [Thurs]
+  * Root Lists (side/main)
     LEFT:
       * Mov from simple to advance, downward
       1. Help
