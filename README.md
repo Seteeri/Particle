@@ -15,9 +15,9 @@ I believe the way for a future FOSS system does not lie solely with the desktop 
 
 Originally, this project was attempted in Python and Common Lisp but became only possible with PicoLisp, because *all* data is based on cons cell structures retained during runtime, which allows the interface and data to be homoiconic. For example, a C array would break this principle (for interop, they can be symbolized through a number, i.e. pointer).
 
-One interesting implication is when characters (string data) are input via keystrokes, they exist as cons cells so there is no reading or parsing. Consequently, there is no conventional GUI as all data exists in the same domain; it is not separate from the underlying data like in conventional programs (it is possible to build a conventional GUI).
+One interesting implication is when characters (`str`) are input via keystrokes, they exist as cons cells so there is no reading or parsing. Consequently, there is no conventional GUI as all data exists in the same domain; it is not separate from the underlying data like in conventional programs (it is possible to build a conventional GUI).
 
-Currently, the core REPL/UI is being developed. Afterwards, the window manager and PIM will be developed, which will make it more generally useful.
+Currently, the shell is being developed. Afterwards building upon that, the window manager and PIM will be developed, which will allow interaction with existing programs, end-user functionality, and integration on other platforms.
 
 Plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM-based), a native solution can be provided. The Pinephone is also on the way ;)
 
@@ -138,7 +138,7 @@ On MS and Apple systems, it serves as an outliner "app" or personal knowledge ma
 * Filesystem Interface
   * Interfaced through symbols
   * Filepaths are translated to tags
-  * "/this/is/some/path/fora/file.ext" = (file ext this is some path fora)
+  * "/this/is/some/path/fora/file.ext" = `(file ext this is some path fora)`
   * Each directory/word is a tag
   * Order determines priority when searching but is otherwise equivalent
 
