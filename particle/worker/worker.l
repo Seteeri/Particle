@@ -86,7 +86,7 @@
 
 (def '*points)
 (def '*cnt-p 0)
-(def '*binds)
+(def '*modes)
 (def '*start)  # Current list
 (def '*log)    # List of history for undo/redo
 (def '*ptrs)   # List of pointers
@@ -176,7 +176,7 @@
   (balance '*mode-cmd 
     (sort (list-binds-cmd *binds-cmd)))
   
-  (setq *binds *mode-txt))
+  (setq *modes *mode-txt))
   
 
 (de gen-def-pts ()
@@ -344,7 +344,7 @@
     (when (or (= State xkb~KEY-DOWN)
               (= State KEY-REPEAT))
       (let (Mods (make-xkb-mods Ks)
-            Cmd (cdr (lup *binds Mods)))
+            Cmd (cdr (lup *modes Mods)))
         (when Cmd
           (let Fn (car Cmd)
             (Fn Ks (= State KEY-REPEAT))))))))
