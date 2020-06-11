@@ -20,7 +20,6 @@ TODO
       * New will gen verts [Done]
       * Pass sym exp to gen [WIP]
     * Pointer
-      * Add draw flags
     * Sym/Str
     * Pair
     * Swap

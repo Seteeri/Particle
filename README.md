@@ -62,17 +62,18 @@ This idea is then further extended to create arbitrary representations for arbit
 * To complete user tasks, efficiently and effectively ("getting $hit done")
   * In terms of programatic solutions, priority is on lowering human development and response time through adaptability/flexibility over raw performance
   * C exists where it is needed
-* To optimize the planning and direction; collection; processing and exploitation; analysis and production; and dissemination of fused multi-domain information in a time-sensitive environment (author's professional requirements ;))
+* To optimize the planning and direction; collection; processing and exploitation; analysis and production; and dissemination of fused multi-domain information in a time-sensitive environment
+  * Author's professional requirements ;)
+* To remember everything, an extension of the human brain
+  * Evernote by Stepan Pachikov
+* To structure a system in such a way that it can be described, explained, and understood as a whole
+  * Oberon OS by Niklaus Wirth at ETH Zürich
 
 # Inspirations
 
 * Primary:
 
   * Transformers: Beast Wars, Digimon, Reboot, Tron - bridging the divide between the digital world and reality, users and programs
-  * Evernote by Stepan Pachikov
-    * To remember everything, an extension of the human brain
-  * Oberon OS by Niklaus Wirth at ETH Zürich
-    * To structure a system in such a way that it can be described, explained, and understood as a whole
   * The Humane Interface by Jeff Raskin
   * LISP discovered by John McCarthy
   * Lisp Machines by Xerox PARC and MIT

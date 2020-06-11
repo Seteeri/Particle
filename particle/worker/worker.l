@@ -64,11 +64,11 @@
             "/particle/worker/ops/align.l"            
             "/particle/worker/ops/lay.l"
             "/particle/worker/ops/del.l"
-            "/particle/worker/ops/line.l"
-            "/particle/worker/ops/xchg.l"
             "/particle/worker/ops/pair/pair.l"
             "/particle/worker/ops/pair/atom.l"
-            "/particle/worker/ops/sym.l"))
+            "/particle/worker/ops/sym.l"
+            "/particle/worker/ops/line.l"
+            "/particle/worker/ops/alt.l"))
 
 
 (def 'NAME-PID "WORKER")

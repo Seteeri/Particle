@@ -7,7 +7,9 @@
   
     ((a-atom?> *ptr)
       (println 'make-pair "A ATOM/NIL")
-      (make-pair-a-atom))
+      (if (lay-x?> *ptr)
+          (make-pair-a-atom-x)
+          (make-pair-a-atom-y)))
       
     ((b-atom?> *ptr)
       (println 'make-pair "B ATOM/NIL")

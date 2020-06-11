@@ -1,4 +1,4 @@
-(de swap-lay-xy ()
+(de alt-lay-xy ()
   #{
   
     Replace atom with list with atom
@@ -78,5 +78,5 @@
         (draw> *ptr)))))     
 
         
-(de swap-lay-yx ()
+(de alt-lay-yx ()
   T)

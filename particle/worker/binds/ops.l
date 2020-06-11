@@ -12,37 +12,47 @@
 
 
 #{
-  Conv Atm (Alt-L+space ctx aware)
-  - str     -> sym
-  - str/num -> num
-  - num     -> str
+  Str:
   
-  Pack to prv
-  
-  Split fm spc (chr, NIL=spc)
-  - use a sublist for args?
-  - compl to pack
-  - use to break words at the end
-  - poss mov ptr to start, better user use cmd to move start
-  - either replace or make sublist
-    - repl makes most sense
-    - explicit cmd for sublist or use args
+    Pack to prv
     
-  Glue w spc (chr, NIL=spc)
+    Split fm spc (chr, NIL=spc)
+    - use a sublist for args?
+    - compl to pack
+    - use to break words at the end
+    - poss mov ptr to start, better user use cmd to move start
+    - either replace or make sublist
+      - repl makes most sense
+      - explicit cmd for sublist or use args
+      
+    Glue w spc (chr, NIL=spc)
+    
+    Chop not as useful...
+    
+  List:
   
-  Chop not as useful...
+    * rot-fwd
+    * rot-back
+    * flatten
+    * split
+    * join
+    * flip/reverse  
   
-  New List
-  - Mov car, alt enter
+  REPL:  
   
-  Eval
-  - ctrl enter?
+    Conv Atm (Alt-L+space ctx aware)
+    - str     -> sym
+    - str/num -> num
+    - num     -> str    
   
-  Command mode:
-  - Does not replace universal cmds - allows adv fn/cmd composition
+  Modes:
+    
+    * Str/Code
+    * Command/Dat
+    
+    * Tab to switch mode
+      * Ctrl Tab to insert character
   
-  Tab to switch mode:
-  * Easiest on the fingers
 }#
   
 
@@ -68,18 +78,13 @@
     ((ksd~Control-L ksd~y) cmd-make-pair)
     ((ksd~Control-L ksd~f) cmd-xchg-lay)
     ((ksd~Control-L ksd~g) cmd-xchg-reg)
-    # rot-fwd
-    # rot-back
-    # flatten
-    # split
-    # join
-    # flip/reverse
+
 
     ((ksd~Control-R ksd~r) cmd-make-nil)
     ((ksd~Control-R ksd~t) cmd-make-pair)
     ((ksd~Control-R ksd~y) cmd-make-pair)
-    ((ksd~Control-R ksd~f) cmd-xchg-lay)
-    ((ksd~Control-R ksd~g) cmd-xchg-reg)    
+    ((ksd~Control-R ksd~f) cmd-alt-lay)
+    ((ksd~Control-R ksd~g) cmd-alt-reg)    
     
     ##############
     # REPL - Right
