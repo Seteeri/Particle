@@ -64,7 +64,7 @@
         (lay-ptr *ptr)))))
 
         
-(de cmd-chop (Ks)
+(de cmd-chop (Ks)cmd-alt-lay
 
   (prinl-info "cmd-chop")
 

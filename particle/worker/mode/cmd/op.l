@@ -15,7 +15,40 @@
     Glue w spc (chr, NIL=spc)
     
     Chop not as useful...
+  
+    #{
+      Basics:
+      * split
+      * concat/join
+      * reverse/flip
     
+      Y U = split-space - glue
+      H J = chop - glue
+      N M = reverse - flip
+    }#
+    # split-space : glue " "
+    # chop : pack (or glue "")
+    # reverse, flip
+    #
+    # cmd-pack-list - ref must be a list or start of list
+    # cmd-glue-sp-list - ref must be a list or start of list  
+  
+  CUA:
+  
+    # Most Microsoft Windows applications: 
+    #   Undo: Ctrl+Z or Alt+Backspace
+    #   Redo: Ctrl+Y or Ctrl+Shift+Z
+    # Most Apple Macintosh applications:
+    #   Undo: Command-Z
+    #   Redo: Command-Shift-Z or Command-Y
+    
+    # ESC = exit
+    # N = new
+    # O = open
+    # F = find
+    # H = replace
+    # G = goto  
+  
   List:
   
     * rot-fwd
@@ -31,6 +64,14 @@
     - str     -> sym
     - str/num -> num
     - num     -> str    
+  
+    #{
+      [] \ = 3 = eval-atom, eval-list
+      ;'  = 2
+      <>? = 3
+    }#
+    # intern -> convert function
+    # - map to double shift  
   
   Modes:
     
@@ -60,7 +101,104 @@
 (def '*binds-cmd
 
   '(
+    ########
+    # Static
+  
     ((ksd~Tab) cmd-chg-mode)
+  
+    ((ksd~Alt-L ksd~Tab)    cmd-make-char)
+    ((ksd~Alt-R ksd~Tab)    cmd-make-char)
+    
+    ((ksd~BackSpace) cmd-bs)
+    ((ksd~Delete   ) cmd-del)  
+    
+    # Line cmds?
+    
+    # DEBUG
+    ((ksd~Control-R ksd~Return) cmd-print-ptr)    
+    
+    ##########
+    # List Ops
+
+    ((ksd~r) cmd-make-nil)
+    ((ksd~t) cmd-make-pair)
+    ((ksd~y) cmd-make-pair)
+    ((ksd~f) cmd-alt-lay)
+    ((ksd~g) cmd-alt-reg)
+    
+    ##############
+    # REPL - Right
+
+    # cmd-intern
+    # cmd-eval-str
+    # cmd-eval
+    # cmd-pes
+    # cmd-str
+    
+    #################
+    # Str Ops - Right
+    
+    # cmd-pack-syms
+    # cmd-chop
+    # cmd-glue-sp-syms
+    # cmd-split-sp
+    #
+    # cmd-reverse
+    # cmd-flip
+    # cmd-rot
+    
+    ##########
+    # CUA Ops
+    
+    # Most Microsoft Windows applications: 
+    #   Undo: Ctrl+Z or Alt+Backspace
+    #   Redo: Ctrl+Y or Ctrl+Shift+Z
+    # Most Apple Macintosh applications:
+    #   Undo: Command-Z
+    #   Redo: Command-Shift-Z or Command-Y
+    
+    # ESC = exit
+    # N = new
+    # O = open
+    # F = find
+    # H = replace
+    # G = goto
+    
+    #((ksd~x) ((Ks) (println "Ctrl-L x: CUT")))
+    #((ksd~c) ((Ks) (println "Ctrl-L c: COPY")))
+    #((ksd~v) ((Ks) (println "Ctrl-L v: PASTE")))
+    #((ksd~z) ((Ks) (println "Ctrl-L z: UNDO")))
+    #((ksd~y) ((Ks) (println "Ctrl-L y: REDO")))
+    
+    ###################
+    # Pointer Semantics    
+    
+    ((ksd~w) cmd-ptr-up)
+    ((ksd~a) cmd-ptr-left)      
+    ((ksd~s) cmd-ptr-down)
+    ((ksd~d) cmd-ptr-right)
+    
+    ((ksd~q) cmd-ptr-ln-first)
+    ((ksd~e) cmd-ptr-ln-last)
+
+    ############################
+    # Camera Translation - Right
+
+    ((ksd~Right) cmd-move-cam-px)
+    ((ksd~Left)  cmd-move-cam-nx)
+    ((ksd~Up)    cmd-move-cam-py)
+    ((ksd~Down)  cmd-move-cam-ny)
+    
+    ((ksd~Prior) cmd-zoom-cam-in)
+    ((ksd~Next)  cmd-zoom-cam-out)
+
+    #############################
+    # Pointer Translation - Right
+    
+    # ((ksd~Right) cmd-trans-ptr-px)
+    # ((ksd~Left)  cmd-trans-ptr-nx)
+    # ((ksd~Up)    cmd-trans-ptr-py)
+    # ((ksd~Down)  cmd-trans-ptr-ny)    
     
   ))
 
