@@ -7,7 +7,5 @@
 (de cmd-mov-bl (Ks)
   (println 'cmd-mov-bl)
   
-  (let Po-Ref (lup-pt *ptr)
-    (when (get Po-Ref 'line)
-      (bsp-line Po-Ref))))
+  (bsp-line))
 

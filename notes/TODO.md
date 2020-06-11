@@ -24,6 +24,9 @@ TODO
     * Pair
     * Alt
     * Del    
+    * Cmds
+      * Handle ptr
+      * Ops should have tgt arg
     * Create unit tests
     * Refactor
     

@@ -83,23 +83,6 @@
     (when (= Nxt Dst)
       (put Nl 'n))
     
-    # When changing root list
-    # update subsequent lists since
-    # they all ref it through 'l
-    (when (and (not (get Nl 'p))
-               (not (get Nl 'l)))
-      (let (Child (get Nl 'n)
-            Visited NIL)
-        (while (and Child
-                    (not (member Child Visited)))
-          (println 'mov-line "Set list: " Child (car (get Child 'data)))
-          (push 'Visited Child)
-          (put Child 'line 'l Dst)
-          (setq Child (get Child 'line 'n))
-          #(when (member Child Visited)
-          #  (println 'mov-line "WARNING! Cycle detected: " Child (get Child 'data)))
-          )))
-
     (put Dst 'line Nl))
 
   (put Src 'line)
@@ -107,21 +90,29 @@
   (println 'mov-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data)))
   
 
-(de bsp-line (Po-Ref)  
+(de bsp-line ()
 
-  (let Ln-P (get Po-Ref 'line 'p)
+  #{
+  
+    [X]
+     .
+
+    [X]
+     .
+
+    [X]
+     .
+     
+  }#
                                       
-    # Remove line
-    (del-line Po-Ref)
+  (del-line (c-ln> *ptr))
     
-    (setq *line Ln-P)
+  (ln> *ptr)
 
-    # Ptr remains on Ref
-    # Handle NIL?
-    (set-ref> '*ptr (get Po-Ref 'data) 'b)
-    
-    (upd-tree)
-    (mov-⇲ (car (get *ptr 'ln)))      
+  (upd-tree)
+  
+  (mov-⇲ (c-ln> *ptr))
         
-    (top> Po-Ref)
-    (draw> *ptr)))
+  (with *ptr
+    (top> (if (: ref) @ (lup-pt (: cell)))))
+  (draw> *ptr))
