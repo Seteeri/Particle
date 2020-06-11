@@ -39,8 +39,8 @@
             "/particle/worker/idx.l"
             "/particle/worker/gen.l"
             
-            "/particle/worker/binds/an.l"                   
-            "/particle/worker/binds/ops.l"                               
+            "/particle/worker/binds/def/an.l"                   
+            "/particle/worker/binds/def/op.l"                               
             
             "/particle/worker/vertex/make.l"
             "/particle/worker/vertex/vertex.l"
@@ -101,7 +101,6 @@
 
 (de init-worker ()
 
-
   (setq *i-proc 1
         *font (new '(+Font)
                    "DejaVuSansMono"
@@ -115,7 +114,7 @@
                          
   (reg-conns *ipc (pack NAME-PID "-" *i-proc))
   
-  ##################################
+  ############################################
   
   (setq *projview (req-recv-pv *ipc
                                (ipc~fd> *ipc "CONTROL")
@@ -124,23 +123,13 @@
                                
   (req-send *ipc *projview)
   
-  ####################
+  #########################
   
-    
-  #####################
-
   (setq *xkb (new '(+Xkb)))
 
-  # User can modify '*binds-* and 
-  # then call func to upd
-  (let L (sort 
-           (append
-              (list-binds-ascii *binds-latin-1)
-              (list-binds-num *binds-num)
-              (list-binds-ops *binds-ops)))
-    (balance '*binds L))
+  (set-mode)
     
-  ##################################
+  ##########
   
   (prinl-info "init-worker" (pack "Heap: " (heap)))
   (gc 48)
@@ -149,6 +138,8 @@
           (for I *verts-max 
             (link (vert-off-gl I)))))
   (prinl-info "init-worker" (pack "Heap: " (heap)))
+
+  #############
   
   (gen-def-pts)
   
@@ -158,6 +149,23 @@
         
   (loop (ipc~poll> *ipc -1)))
 
+  
+(de set-mode ()  
+  
+  # dispatch-kb will lup key in binds
+  # so to set mode, change value of binds
+  
+  # TODO:
+  # - Make binds a list which contains all the modes
+  # - Rename *binds -> *modes
+  
+  (let L (sort 
+           (append
+              (list-binds-ascii *binds-latin-1)
+              (list-binds-num *binds-num)
+              (list-binds-ops *binds-ops)))
+    (balance '*binds L)))  
+  
 
 (de gen-def-pts ()
   

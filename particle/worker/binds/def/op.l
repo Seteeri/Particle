@@ -34,11 +34,16 @@
   
   Modes:
     
-    * Str/Code
-    * Command/Dat
+    * Text
+      * Purpose: simulate typing text
+      * ASCII = pair/sym
+      * Enter = make newline and +Line
+    * Cmd
+      * Diff sectors on kb have diff functionality
     
     * Tab to switch mode
       * Ctrl Tab to insert character
+    * Changing mode will change bindings
   
 }#
   
