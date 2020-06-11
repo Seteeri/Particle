@@ -47,7 +47,10 @@
 
 
 (dm draw> ()
-  (lay-pt-start '*ptr '*ptr T T))
+  #(lay-pt-start '*ptr '*ptr T T))
+  (lay-pt-start (get (: po) 'data) 
+                (get (: po) 'data)
+                T T))
 
   
 (dm stor-col> (P)

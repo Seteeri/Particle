@@ -216,23 +216,29 @@
         
     (let (Po-Sta (gen-sym-exp '*start 'x T T)
           Po-Ptr (gen-ptr     '*ptr "↓" *selb-yellow)
+          Po-Txt (gen-ptr     '*txt "↓" *selb-yellow)
+          Po-Cmd (gen-ptr     '*cmd "↓" *selb-yellow)
           Po-D   (gen-point   '⇲      'x))
       
-      (put (get Po-Sta 'b) 'line (new '(+Line)))
-      (println (get Po-Sta 'b))
+      (setq *po-ptr-txt Po-Txt)
+      (setq *po-ptr-cmd Po-Cmd)
       
+      (put (get Po-Sta 'b) 'line (new '(+Line)))
       (mov-cur 0.0 0.0)
       (lay-pt-start '*start '*start T T)
 
-      (put *ptr 'po Po-Ptr)
       (del> (get Po-Ptr 'b)) (put Po-Ptr 'b T)
+      (del> (get Po-Txt 'b)) (put Po-Txt 'b T)
+      (del> (get Po-Cmd 'b)) (put Po-Cmd 'b T)
+      
+      (put *ptr 'po Po-Txt)
       # Upd +Point on change
       (mov-line-n> *ptr Po-Sta)
       (set-ref> *ptr '*start 'b)
       
       (mov-cur 0.0 1.0)     
       # Call this through *ptr method      
-      (lay-pt-start '*ptr '*ptr T T)
+      (draw> *ptr)
     
       (mov-cur 0.0 0.0)
       (adj-cur-y 3.0)
@@ -380,7 +386,7 @@
 (def '*rot-z 0.0)
 (de anim-rot-z-cdr ()
 
-  (let? Po (get (lup-pt '*ptr) 'a)
+  (let? Po (get *ptr 'po 'a)
     
     (with Po
     

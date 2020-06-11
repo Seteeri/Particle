@@ -1,10 +1,34 @@
 (de cmd-chg-mode (Ks)
   (println 'cmd-chg-mode)
   
-  (setq *modes
-        (if (= *modes *mode-txt)
-            *mode-cmd
-            *mode-txt)))
+  # Relationship among:
+  # * Mode
+  # * Ptr
+  # * Binds/Maps
+  
+  # Ptr has mode which has binds/maps
+  
+  (let M *modes
+  
+    (setq *modes
+          (if (= M *mode-txt)
+              *mode-cmd
+              *mode-txt))
+
+    (setq *cur (list 1000.0 1000.0))
+    (let (Po (get *ptr 'po)
+          Dat (get Po 'data))
+      (mov> Po)
+      (lay-pt-start Dat Dat T T))
+              
+    (put *ptr 'po
+      (if (= M *mode-txt)
+          *po-ptr-cmd
+          *po-ptr-txt))
+          
+    (with *ptr
+      (top> (if (: cell) (: ref) (lup-pt (: ref)))))
+    (draw> *ptr)))
 
 
 ###############################

@@ -27,6 +27,8 @@ TODO
     * Cmds
       * Handle ptr
       * Ops should have tgt arg
+    * Modes
+      * Change pointer
     * Create unit tests
     * Refactor
     
