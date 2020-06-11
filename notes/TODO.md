@@ -19,18 +19,12 @@ TODO
         * Pass flag to gen -> idx
       * New will gen verts
       * Pass sym exp to gen
-    * Pointer
-    * Sym/Str
-    * Pair
-    * Alt
-    * Del    
-    * Cmds
+    * Del [Fri]
+    * Cmds [Fri]
       * Handle ptr
       * Ops should have tgt arg
-    * Modes
-      * Change pointer
-    * Create unit tests
-    * Refactor
+    * Modes [Fri]
+    * Create unit tests [Fri]
     
   * Use prog1
   

@@ -199,6 +199,8 @@
             (when Nxt
               (put Nxt 'line 'p Po-Tgt)))))
     
+    (when (is-sym? Ln) (setq Ln NIL))
+    
     (put Ln 'line 'n Po-Cons)
     
     (put Po-Cons 'line (new '(+Line) Ln Po-Cdr))
