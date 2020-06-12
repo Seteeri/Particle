@@ -112,7 +112,8 @@
     ((ksd~BackSpace) cmd-bs)
     ((ksd~Delete   ) cmd-del)  
     
-    # Line cmds?
+    ((ksd~Shift-R   ksd~Return)    cmd-make-line)
+    ((ksd~Shift-R   ksd~BackSpace) cmd-del-line)
     
     # DEBUG
     ((ksd~Control-R ksd~Return) cmd-print-ptr)    

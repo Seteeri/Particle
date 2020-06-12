@@ -62,3 +62,45 @@ I don't care about making Emacs "pretty," and while it'd be nice if it used less
 And, actually, that's one other thing Emacs could stand to do better: learn from VS Code's configuration system that lets you use dropdowns and checkboxes and simple text fields for nearly everything, and has a button to go into the configuration files when you need it. Yes, I know Emacs has a text-based UI for configuration, too. I've used it. It's bad. Okay? It's just bad. The controls are non-standard and weird, the organization is utterly mystifying to someone who doesn't already understand Emacsology, just... no. Start over.
 
 As for me, well, when Spacemacs moves the LSP layer to its non-development branch, I'll probably give it a try again. Until then, I'm probably gonna keep doing my technical writing in BBEdit and my coding in Visual Code. (I'm probably gonna keep doing my technical writing in BBEdit until I die, but that's a different post.) 
+
+
+---
+---
+
+
+https://www.reddit.com/r/emacs/comments/ckcijv/what_do_you_think_about_the_future_of_emacs/
+
+
+I have two complaints:
+
+    single-threaded and blocking: any complex extension must manage external process and be careful with IPC not to block too long.
+
+    non-graphical: yes you can embed images, but editor is still limited to text, so can't really have modes to operate with graphical representation of some structure.
+    
+    
+---
+
+
+I'd like elisp packages to be able to draw graphical annotations on the buffer. It's hard to predict what people will do with graphics but one example is DrRacket's scope display, graphically connecting variables to their definition. I don't know if I'd actually want that particular feature, but I think it'd be nice if Emacs allowed experimentation with graphics from elisp so that people would be able to try out new ideas that aren't per-character properties.
+
+
+---
+
+
+No, but I do want to write/have:
+
+    graphically display structure of AST you are editing (even prose has AST and theotetically can be typed and manipulated as a tree)
+
+    Concrete Syntax Tree typographically not dependent on fixed-width fonts, and the view being updated automatically in your style as you edit the AST.
+
+    contextual fade in/out and resizing of dependent/relevant types/code/data flows
+    
+    
+---
+
+
+I suspect that until emacs, as a project, starts prioritizing improvements to beginner-friendliness, its user base will continue to dwindle. Right now, a new emacs user is hit with a foreign/old-fashioned UI, completely nonstandard keybindings with no visual hints unless they adopt a totally nonstandard menu-driven workflow, and an editing runtime with its own set of foundational concepts (what is a major mode and how do I C-g), and they have to navigate all of these more or less steep learning curves simultaneously. If they have a lot of motivation and spare time (I bounced off emacs about 3 times before it stuck, and I am quite far to the "I would like to learn this old computer system on its own terms" side of the spectrum), it can work. If they have a lot of mentorship from friends/coworkers/etc, it can work (FWIW, I have never been in an office with another emacs user in my professional life). Otherwise, becoming an emacs user takes enormous buy-in and effort before seeing any benefits from the switch. Unfortunately, this seems to be a social/political problem rather than a technical one. With nothing mitigating the inherently-hard-but-still-much-harder-than-necessary learning curve, I think emacs use will dwindle to negligible levels and eventually die.
+
+That said, I think the broader emacs community has come up with a lot of good work on this stuff its own; I can see a world where spacemacs/doom/centaur/prelude/etc catch on in certain programming communities and become de facto entry points into the broader emacs ecosystem. This seems especially likely if either GNU emacs or remacs can make significant headway into laggy and blocking operations, which are more frustrating to user expectations than they were when emacs' architecture was developed. Remacs improving non-linux emacsen could also help enormously.
+
+The most likely outcome is probably in the middle, though: emacs remains a niche program, whose programming and extension model is so beautiful and useful that it maintains a cult following among 1-5% of professional developers, and whose learning curve scares off the other 90-odd percent.

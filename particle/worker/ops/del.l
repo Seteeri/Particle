@@ -1,90 +1,176 @@
 #{
 
-  CASES:
+  Case 1:
   
-  These only delete the first cell instead of everything,
-  similar to text,
-  It promotes either the Car/Cdr to replace it
+    * On cdr pair/atom: del prv pair
   
-  del-x-pair
+              *
+    [X]  [X]  .
+     .    .   
+    
+    ->
   
          *
-  [X]  [X/Y]  NIL
-   .    .
-   
-    If y: use car
-    If x: use cdr
-   
-  del-x-atom
+    [X]  .
+    .    
+
+
+  Case 2:
   
-       *
-  [X]  NIL
-   .   
-   
-    Replace with NIL?
-   
-  ---
+    * On car pair: del prv pair
   
-  
-  del-y-pair
-  
-        *
-  [Y]  [X/Y]  NIL
-   .    .
-  
-    If y: use car
-    If x: use cdr  
-  
-  del-y-atm
-  
-       *
-  [Y]  NIL
-   .   
-  
-    Replace with NIL?
+          *
+    [Y]  [Y]  .
+          .
+    .
     
-  ---
+    ->
   
-  CAR:
+     *
+    [Y]  .
+    .
+         
+    
+    
+  Case 3:
+
+    * On car atom: del cur pair
+      * or del car itself
   
-  * Bsp: Replace car with NIL
-  * Del: Replace car with NIL
+    [X]
+     .
   
-  If inverse of ins was done,
-  would require shifting all subsequent cars bwd
-  
-  Handle line within each fn
+         *
+    [Y]  .
      
+    [X]
+     .
+     
+    OR
+    
+    [X]  [X]  .
+     .    *
+      
 }#
 
 
-(de del-pt (Tgt)
-
-  # Similar to make-pair-str
-  (when (get Tgt 'b)
+(de del-bs ()
   
-    (let (Tc (get Tgt 'c)
-          New-Ref 
-            (cond ((is-pair? Tgt)
-                  (del-pair Tgt))
-                  
-                  (T
-                  T)))
-            
-        ~(assert (get *line 'line))
-            
-        (upd-tree)
-        (mov-⇲ (car (get *ptr 'ln)))      
-        
-        # If on-car maintain car
-        (if *ptr-on-car
-            (set-ptr-ref (sub> New-Ref))
-            (prog
-              (set-ptr-ref New-Ref)
-              (mov-cur-abv New-Ref)))
-              
-        (lay-ptr *ptr))))
+  (println 'del-bs)
+  
+  (cond
+  
+    ((a-atom?> *ptr)
+      (println 'del-bs "A ATOM/NIL")
+      (del-a-atom))
+      
+    ((b-atom?> *ptr)
+      (println 'del-bs "B ATOM/NIL")
+      (del-b-atom))
+    
+    ((a-pair?> *ptr)
+      (println 'del-bs "A PAIR")
+      (del-a-pair))
+      
+    ((b-pair?> *ptr)
+      (println 'del-bs "B PAIR")
+      (del-b-pair))))
 
+
+(de del-a-pair ()
+
+  # Del back
+  # Hook pair
+  
+  (let (Pair (ref> *ptr)
+        Po-Pair (lup-pt Pair)
+        Tgt (find-back-any> *ptr Pair T)
+        Po-Tgt (lup-pt Tgt)
+        Back (find-back-any> *ptr Tgt T)
+        Po-Back (lup-pt Back))
+
+    (when (get Po-Tgt 'line)
+      (del-line Po-Tgt)
+      (ln> *ptr))
+    (del> Po-Tgt NIL T)
+    (put Po-Tgt 'a)
+    
+    (set> Po-Back Pair Po-Pair)
+        
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+    
+    (top> Po-Pair)
+    (draw> *ptr)))
+      
+      
+(de del-b-atom (Tgt)
+
+  # Del current
+  # Hook atom up
+  
+  (let (Po-Atom (ref> *ptr)
+        Atom (get Po-Atom 'data)
+        Tgt (cell> *ptr)
+        Po-Tgt (lup-pt Tgt)
+        Back (find-back-any> *ptr Tgt T)
+        Po-Back (lup-pt Back))
+    
+    #{
+    (prin "Po-Atom: ") (println Po-Atom)
+    (prin "Atom: ") (println Atom)
+    (prin "Tgt: ") (println Tgt)
+    (prin "Po-Tgt: ") (println Po-Tgt)
+    (prin "Back: ") (println Back)
+    (prin "Po-Back: ") (println Po-Back)
+    }#
+    
+    (when (get Po-Tgt 'line)
+      (del-line Po-Tgt))
+    (mov-line-n> *ptr Po-Back)
+    (del> Po-Tgt T NIL)
+    (put Po-Tgt 'b)
+    
+    (con> Po-Back Atom Po-Atom)
+        
+    # Update ptr cell
+    (put *ptr 'cell Back)
+        
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+    
+    (top> Po-Atom)
+    (draw> *ptr)))
+    
+    
+(de del-b-pair (Tgt)
+
+  # Del current
+  # Hook atom up
+  
+  (let (Pair (ref> *ptr)
+        Po-Pair (lup-pt Pair)
+        Tgt (find-back-any> *ptr Pair T)
+        Po-Tgt (lup-pt Tgt)
+        Back (find-back-any> *ptr Tgt T)
+        Po-Back (lup-pt Back))
+
+    (when (get Po-Tgt 'line)
+      (del-line Po-Tgt))
+    (mov-line-n> *ptr Po-Back)
+    (del> Po-Tgt T NIL)
+    (put Po-Tgt 'b)
+    
+    (con> Po-Back Pair Po-Pair)
+        
+    (upd-tree)
+    (mov-⇲ (c-ln> *ptr))
+    
+    (top> Po-Pair)
+    (draw> *ptr)))
+    
+    
+##################
 
 (de del-pair (Tgt)
   (let Tc (get Tgt 'c)

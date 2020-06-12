@@ -70,88 +70,6 @@
       (ln> *ptr Po-List)
       (top> Po-List)
       (draw> *ptr))))   
-  
-        
-(de make-pair-b-atom ()
-
-  #{
-  
-    Replace cdr with list with cdr
-
-                    * 
-        [X1]  [X2]  .
-         .     .
-               
-              
-    ->
-               
-        [X1]  [X2]
-         .     .
-
-         *
-        [Y]  .
-        
-         .
-    
-    
-    * Delete original Point
-    * Make new list
-    * Create lines
-  
-    * Later, output X-Pair
-    
-    * Poss, do similar as repl-a-atom
-    convert to Y-Pair with Atom as the Cdr
-    
-  }#   
-
-  (println 'make-pair-b-atom)
-
-  (let (Po-Tgt (ref> *ptr)
-        Tgt (get Po-Tgt 'data)  
-        Po-Pair (get Po-Tgt 'c)
-        Pair (get Po-Pair 'data))  
-  
-    (println 'make-pair-b-atom "Pair/Cdr: " 
-      Pair (get Po-Pair 'b) Po-Tgt)
-  
-    # Delete:
-    # * Nil ptr ref otherwise set-ref will attempt uncol on ref
-    # * Put NIL otherwise set will del new point
-    # * Pop line if necessary
-    (put *ptr 'ref)  
-    (put Po-Pair 'b)
-    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
-    (del> Po-Tgt)
-    
-    (let (List (list Tgt)
-          Po-List (gen-point List 'x NIL T)
-          Po-Car (get Po-List 'a)
-          Po-Cdr (get Po-List 'b)
-          Ln (c-ln> *ptr))
-    
-      (set-lay> Po-List 'y)    
-    
-      (con> Po-Pair List)
-            
-      (if (get Po-List 'line)
-          (put @ 'n Po-Cdr)
-          (ins-line-aft Ln Po-List))
-          
-      (if (get Po-Cdr 'line)
-          (put @ 'p Po-List)
-          (ins-line-aft Po-List Po-Cdr))
-      
-      (put Po-Car 'line (new '(+Line)))
-      
-      (set-ref> *ptr List 'b)
-      
-      (upd-tree)
-      (mov-⇲ Po-List)
-            
-      (ln> *ptr Po-List)
-      (top> Po-List)
-      (draw> *ptr))))          
 
       
 (de make-pair-a-atom-x ()  
@@ -232,3 +150,85 @@
       (ln> *ptr Po-List)
       (top> Po-List)
       (draw> *ptr))))      
+      
+      
+(de make-pair-b-atom ()
+
+  #{
+  
+    Replace cdr with list with cdr
+
+                    * 
+        [X1]  [X2]  .
+         .     .
+               
+              
+    ->
+               
+        [X1]  [X2]
+         .     .
+
+         *
+        [Y]  .
+        
+         .
+    
+    
+    * Delete original Point
+    * Make new list
+    * Create lines
+  
+    * Later, output X-Pair
+    
+    * Poss, do similar as repl-a-atom
+    convert to Y-Pair with Atom as the Cdr
+    
+  }#   
+
+  (println 'make-pair-b-atom)
+
+  (let (Po-Tgt (ref> *ptr)
+        Tgt (get Po-Tgt 'data)  
+        Po-Pair (get Po-Tgt 'c)
+        Pair (get Po-Pair 'data))  
+  
+    (println 'make-pair-b-atom "Pair/Cdr: " 
+      Pair (get Po-Pair 'b) Po-Tgt)
+  
+    # Delete:
+    # * Nil ptr ref otherwise set-ref will attempt uncol on ref
+    # * Put NIL otherwise set will del new point
+    # * Pop line if necessary
+    (put *ptr 'ref)  
+    (put Po-Pair 'b)
+    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
+    (del> Po-Tgt)
+    
+    (let (List (list Tgt)
+          Po-List (gen-point List 'x NIL T)
+          Po-Car (get Po-List 'a)
+          Po-Cdr (get Po-List 'b)
+          Ln (c-ln> *ptr))
+    
+      (set-lay> Po-List 'y)    
+    
+      (con> Po-Pair List)
+            
+      (if (get Po-List 'line)
+          (put @ 'n Po-Cdr)
+          (ins-line-aft Ln Po-List))
+          
+      (if (get Po-Cdr 'line)
+          (put @ 'p Po-List)
+          (ins-line-aft Po-List Po-Cdr))
+      
+      (put Po-Car 'line (new '(+Line)))
+      
+      (set-ref> *ptr List 'b)
+      
+      (upd-tree)
+      (mov-⇲ Po-List)
+            
+      (ln> *ptr Po-List)
+      (top> Po-List)
+      (draw> *ptr))))            

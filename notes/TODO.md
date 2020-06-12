@@ -206,12 +206,10 @@ TODO
         * (p . T) = until Ptr
       * -> atom = single
   
+  * Proportional fonts
+  
   ---
-  
-  * Implement command mode and symbol mode
-    * Double alt
-    * Double shift  
-  
+    
   * Improve testing environment
     * Have processes run independently    
    

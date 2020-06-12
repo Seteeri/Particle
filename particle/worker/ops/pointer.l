@@ -246,6 +246,7 @@
       
       
 (dm find-back> (Rel Ref Pln)
+  # Implement custom search to do one-pass
   (let (Res NIL
         Ref (if Ref @ (: ref)))
     #(println 'find-back "Search for cell: " Ref (type Ref))
@@ -265,6 +266,12 @@
         Res
         (unless Pln
           (get (cadr (: ln)) 'data)))))
+      
+      
+(dm find-back-any> (Ref Pln)
+  (if (find-back> This 'a Ref Pln)
+      @
+      (find-back> This 'b Ref Pln)))
       
       
 (dm back> (Rel Draw)
