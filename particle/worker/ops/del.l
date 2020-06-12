@@ -91,7 +91,9 @@
 
     (when (get Po-Tgt 'line)
       (del-line Po-Tgt)
-      (ln> *ptr))
+      (let Ln (ln> *ptr)
+        (ln> *ptr)
+        (ln> *ptr Ln)))
     (del> Po-Tgt NIL T)
     (put Po-Tgt 'a)
     
@@ -104,7 +106,7 @@
     (draw> *ptr)))
       
       
-(de del-b-atom (Tgt)
+(de del-b-atom ()
 
   # Del current
   # Hook atom up
@@ -116,17 +118,11 @@
         Back (find-back-any> *ptr Tgt T)
         Po-Back (lup-pt Back))
     
-    #{
-    (prin "Po-Atom: ") (println Po-Atom)
-    (prin "Atom: ") (println Atom)
-    (prin "Tgt: ") (println Tgt)
-    (prin "Po-Tgt: ") (println Po-Tgt)
-    (prin "Back: ") (println Back)
-    (prin "Po-Back: ") (println Po-Back)
-    }#
-    
     (when (get Po-Tgt 'line)
-      (del-line Po-Tgt))
+      (del-line Po-Tgt)
+      (let Ln (ln> *ptr)
+        (ln> *ptr)
+        (ln> *ptr Ln)))      
     (mov-line-n> *ptr Po-Back)
     (del> Po-Tgt T NIL)
     (put Po-Tgt 'b)
@@ -156,7 +152,10 @@
         Po-Back (lup-pt Back))
 
     (when (get Po-Tgt 'line)
-      (del-line Po-Tgt))
+      (del-line Po-Tgt)
+      (let Ln (ln> *ptr)
+        (ln> *ptr)
+        (ln> *ptr Ln)))      
     (mov-line-n> *ptr Po-Back)
     (del> Po-Tgt T NIL)
     (put Po-Tgt 'b)

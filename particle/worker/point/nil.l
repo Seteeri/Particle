@@ -82,3 +82,8 @@
 (dm lay> ()
   (lay-cur> This)
   NIL)
+
+  
+(dm del> (A B)
+  
+  (for Vert (: verts) (del> Vert)))

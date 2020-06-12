@@ -392,8 +392,13 @@
   # del from index
   (del-node (: data))
   
-  (when (and A (: a)) (del> (: a) A B))
-  (when (and B (: b)) (del> (: b) A B))
+  (when A
+    #(println (type This) (: a) (lup-pt (car (: data))))
+    (del> (if (: a) @ (lup-pt (car (: data))))
+          T T))
+  (when B
+    (del> (if (: b) @ (lup-pt (cdr (: data))))
+          T T))
   
   (println '+Point.del> "Deleted: " This (type This))
   

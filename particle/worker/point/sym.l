@@ -156,3 +156,12 @@
   
   
 (dm nxt> () (: data))
+
+
+(dm del> (A B)
+  
+  # Assume str value is itself
+    
+  (for Vert (: verts) (del> Vert))
+  
+  (del-node (: data)))
