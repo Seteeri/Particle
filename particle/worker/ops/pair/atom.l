@@ -1,77 +1,3 @@
-(de make-pair-a-atom-y ()
-  
-  #{
-  
-    Replace atom with pair.car = atom
-    
-      [X]
-       .
-    
-           *
-      [Y]  z
-       
-       
-      [X]
-       .
-          
-    -->
-
-      [X]
-       .    
-    
-            *
-      [Y]  [X]  .
-            z
-      
-      [X]
-       .      
-      
-  }#
-
-  (let (Po-Tgt (if (cell> *ptr)
-                   (ref> *ptr)
-                   (lup-pt (ref> *ptr)))
-        Tgt (get Po-Tgt 'data)
-        Pair (get Po-Tgt 'c 'data)
-        Po-Pair (lup-pt Pair))
-    
-    (println 'make-pair-a-atom "Pair/Car: "
-      Pair Po-Pair Po-Tgt)
-
-    ~(assert (get Po-Tgt 'line))
-      
-    # Delete:
-    # * Nil ptr ref otherwise set-ref will attempt uncol on ref
-    # * Put NIL otherwise set will del new point
-    # * Pop line if necessary
-    (put *ptr 'ref)  
-    (put Po-Pair 'a)
-    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
-    (del> Po-Tgt)
-    
-    (let (List (list Tgt)
-          Po-List (gen-point List 'x NIL T)
-          Po-Car (get Po-List 'a)
-          Po-Cdr (get Po-List 'b)
-          Ln (c-ln> *ptr))
-    
-      (set-lay> Po-List 'y)
-    
-      (set> Po-Pair List)
-
-      (put Po-List 'line (new '(+Line)))
-      
-      (set-ref> *ptr List 'a)
-
-      (upd-tree)
-      (mov-⇲ Po-List)
-
-      (ln> *ptr)
-      (ln> *ptr Po-List)
-      (top> Po-List)
-      (draw> *ptr))))   
-
-      
 (de make-pair-a-atom-x ()  
 
   #{
@@ -149,7 +75,81 @@
       (when Push-Pair (ln> *ptr Po-Pair))
       (ln> *ptr Po-List)
       (top> Po-List)
-      (draw> *ptr))))      
+      (draw> *ptr))))    
+
+
+(de make-pair-a-atom-y ()
+  
+  #{
+  
+    Replace atom with pair.car = atom
+    
+      [X]
+       .
+    
+           *
+      [Y]  z
+       
+       
+      [X]
+       .
+          
+    -->
+
+      [X]
+       .    
+    
+            *
+      [Y]  [X]  .
+            z
+      
+      [X]
+       .      
+      
+  }#
+
+  (let (Po-Tgt (if (cell> *ptr)
+                   (ref> *ptr)
+                   (lup-pt (ref> *ptr)))
+        Tgt (get Po-Tgt 'data)
+        Pair (get Po-Tgt 'c 'data)
+        Po-Pair (lup-pt Pair))
+    
+    (println 'make-pair-a-atom "Pair/Car: "
+      Pair Po-Pair Po-Tgt)
+
+    ~(assert (get Po-Tgt 'line))
+      
+    # Delete:
+    # * Nil ptr ref otherwise set-ref will attempt uncol on ref
+    # * Put NIL otherwise set will del new point
+    # * Pop line if necessary
+    (put *ptr 'ref)  
+    (put Po-Pair 'a)
+    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
+    (del> Po-Tgt)
+    
+    (let (List (list Tgt)
+          Po-List (gen-point List 'x NIL T)
+          Po-Car (get Po-List 'a)
+          Po-Cdr (get Po-List 'b)
+          Ln (c-ln> *ptr))
+    
+      (set-lay> Po-List 'y)
+    
+      (set> Po-Pair List)
+
+      (put Po-List 'line (new '(+Line)))
+      
+      (set-ref> *ptr List 'a)
+
+      (upd-tree)
+      (mov-⇲ Po-List)
+
+      (ln> *ptr)
+      (ln> *ptr Po-List)
+      (top> Po-List)
+      (draw> *ptr))))   
       
       
 (de make-pair-b-atom ()

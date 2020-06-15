@@ -32,6 +32,8 @@
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
       (println 'make-pair-str "A ATOM/NIL")
+      # repl str for both x/y
+      # if user wanted a pair they can use other cmd
       (repl-atom Dat 'a))
       
     ((or (b-nil?> *ptr)
@@ -109,6 +111,9 @@
 
 
 (de ins-b-atom (Dat)
+
+  # This will not keep cdr if non-NIL
+  # since it is deleted
 
   (println 'ins-b-atom)
   
@@ -321,6 +326,9 @@
         Po-Pre (lup-pt Pre)
         List (list Dat)
         Po-List (gen-point List 'x NIL T))
+    
+    # handle X parent elsewhere
+    ~(assert (lay-y> Po-Pre))
     
     (set> Po-Pre List Po-List)
     (con> Po-List Pair Po-Pair)

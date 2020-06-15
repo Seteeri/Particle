@@ -1,8 +1,12 @@
 #{
 
+  Backspace = repl prv with cur
+  * on car, replaces cell with car
+  resulting in chopping list
+
   Case 1:
   
-    * On cdr pair/atom: del prv pair
+    * On cdr pair/atom: repl prv pair with its cdr
   
               *
     [X]  [X]  .
@@ -17,7 +21,7 @@
 
   Case 2:
   
-    * On car pair: del prv pair
+    * On car pair: repl prv pair with its car pair
   
           *
     [Y]  [Y]  .
@@ -34,8 +38,7 @@
     
   Case 3:
 
-    * On car atom: del cur pair
-      * or del car itself
+    * On car atom: repl prv/pair with its car
   
     [X]
      .
@@ -61,8 +64,7 @@
   (cond
   
     ((a-atom?> *ptr)
-      (println 'del-bs "A ATOM/NIL")
-      (del-a-atom))
+      (println 'del-bs "A ATOM/NIL"))
       
     ((b-atom?> *ptr)
       (println 'del-bs "B ATOM/NIL")
