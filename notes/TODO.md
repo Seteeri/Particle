@@ -19,12 +19,9 @@ TODO
         * Pass flag to gen -> idx
       * New will gen verts
       * Pass sym exp to gen
-    * Del [Fri]
-    * Cmds [Fri]
-      * Handle ptr
-      * Ops should have tgt arg
-    * Modes [Fri]
     * Create unit tests [Fri]
+      * UI ops
+      * Ptr
     
   * Use prog1
   

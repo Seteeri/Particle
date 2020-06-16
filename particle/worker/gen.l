@@ -282,6 +282,10 @@
     (put Pair 'a Car)
     (put Pair 'b Cdr)
     
+    (when Cdr
+      (when (atom (get Cdr 'data))
+        (put Cdr 'c Pair)))
+    
     Pair))    
     
     

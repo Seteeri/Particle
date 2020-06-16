@@ -191,7 +191,7 @@
         Tgt (get Po-Tgt 'data)  
         Po-Pair (get Po-Tgt 'c)
         Pair (get Po-Pair 'data))  
-  
+    
     (println 'make-pair-b-atom "Pair/Cdr: " 
       Pair (get Po-Pair 'b) Po-Tgt)
   
@@ -217,12 +217,16 @@
       (if (get Po-List 'line)
           (put @ 'n Po-Cdr)
           (ins-line-aft Ln Po-List))
-          
+                    
       (if (get Po-Cdr 'line)
           (put @ 'p Po-List)
           (ins-line-aft Po-List Po-Cdr))
       
       (put Po-Car 'line (new '(+Line)))
+      
+      # Handle sym
+      (when (sym? Pair)
+        (put Po-List 'line 'p))
       
       (set-ref> *ptr List 'b)
       

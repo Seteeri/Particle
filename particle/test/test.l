@@ -1,226 +1,185 @@
-* line: start, middle, end  
-  
-  
-ATOM/NIL
+#{
 
-  STR
-  
-    +------------------+-----------------------+
-    | A: (c) -> (d)    | B: (c) -> (d c)       |
-    |------------------+-----------------------+
-    |                  |     *               * |
-    | [ ] .  ->  [ ] . | [ ] .  ->  [ ]  [ ] . |
-    |  *          *    |  .          .    .    |
-    |------------------+-----------------------|
-    | [y] *  ->  [y] * | [y] .  ->  [y] .      |
-    |  .          .    |  *             *      |
-    |                  |  .         [ ] .      |
-    |                  |             .         |
-    +------------------+-----------------------+
-    
-  LIST
-    
-    +---------------------------------+---------------------+
-    | A: (c d e) -> (c (d) e)         | B: (d) -> (d (NIL)) |
-    |---------------------------------+---------------------+
-    | [ ]  [ ]  [ ] .  ->  [ ]        |      *              |
-    |  .    *    .          .         |  [ ] .  ->  [ ]     |
-    |                                 |   .          .      |
-    |                            *    |                     |
-    |                      [y]  [ ] . |              *      |
-    |                            .    |             [y] .   |
-    |                                 |              .      |
-    |                      [ ]        |                     |
-    |                       .         |                     |
-    |---------------------------------+---------------------|
-    | [ ]    ->  [ ]                  |   [y] .  ->  [y] .  |
-    |  .          .                   |    *          *     |
-    |     *            *              |    .         [ ] .  |
-    | [y] .      [y]  [ ] .           |               .     |
-    |                  .              |                     |
-    |                                 |                     |
-    | [ ]        [ ]                  |                     |
-    |  .          .                   |                     |
-    +---------------------------------+---------------------+
-    
-  BSP
-  
-    +----------------------------+---------------------------------+
-    | A: (c d e) -> (c . d)      | B: (c d e . f) -> (d e . f)     |
-    +----------------------------+---------------------------------+
-    |                          * |               *               * |
-    | [ ]  [ ]  [ ] .  ->  [ ] . | [ ]  [ ]  [ ] .  ->  [ ]  [ ] . |
-    |  .    *    .          .    |  .    .    .          .    .    |
-    |----------------------------+---------------------------------|
-    | [ ]    ->  [ ]             | [ ]    ->  [ ]                  |
-    |  .          .              |  .          .                   |
-    |     *       *              |             *                   |
-    | [y] .       .              | [ ]        [ ]                  |
-    |                            |  .          .                   |
-    |                            |                                 |
-    | [ ]                        | [y] .       *                   |
-    |  .                         |                                 |
-    |                            |  *                              |
-    +----------------------------+---------------------------------+
-    | # leave on newline                                           |
-    +----------------------------+---------------------------------+
-    
-  LINE
-  
-    * applies to B only...poss to apply to A?
+  Test ops:
 
-    
-PAIR
+    * Verify data
+    * Verify location
 
-  STR
+  Also create tests for pointer
+  Also create tests for Sym, besides Pair
+
+  Test lst cmd before str cmd
   
-    * factor in parent cell layout
+}#
+
+# ATOM
+
+(de lst-x-atom-a () T)
+(de lst-y-atom-a () T)
+(de lst-x-atom-b ()
+  (cmd-chg-mode) # -> CMD
+  (cmd-ptr-right)
+  (cmd-make-pair))
+(de lst-y-atom-b () T)
+
+(de str-x-atom-a () T)
+(de str-y-atom-a () T)
+(de str-x-atom-b ()
+  (cmd-chg-mode) # -> CMD
+  (cmd-ptr-right)
+  (cmd-make-char "c"))
+(de str-y-atom-b () T)
+
+(de bsp-x-atom-a () T)
+(de bsp-y-atom-a () T)
+(de bsp-x-atom-b () T)
+(de bsp-y-atom-b () T)
+
+(de del-x-atom-a () T)
+(de del-y-atom-a () T)
+(de del-x-atom-b () T)
+(de del-y-atom-b () T)
+
+(de lin-x-atom-a () T)
+(de lin-y-atom-a () T)
+(de lin-x-atom-b () T)
+(de lin-y-atom-b () T)
+
+# PAIR
+
+#(de str-x-pair-x-a () T)
+#(de str-x-pair-y-a () T)
+(de str-y-pair-x-a () T)
+(de str-y-pair-y-a () T)
+
+(de str-x-pair-x-b () T)
+(de str-x-pair-y-b () T)
+(de str-y-pair-x-b () T)
+(de str-y-pair-y-b () T)
+
+
+#(de lst-x-pair-x-a () T)
+#(de lst-x-pair-y-a () T)
+(de lst-y-pair-x-a () T)
+(de lst-y-pair-y-a () T)
+
+(de lst-x-pair-x-b () T)
+(de lst-y-pair-y-b () T)
+(de lst-x-pair-x-b () T)
+(de lst-y-pair-y-b () T)
+
+
+#(de bsp-x-pair-x-a () T)
+#(de bsp-x-pair-y-a () T)
+(de bsp-y-pair-x-a () T)
+(de bsp-y-pair-y-a () T)
+
+(de bsp-x-pair-x-b () T)
+(de bsp-y-pair-y-b () T)
+(de bsp-x-pair-x-b () T)
+(de bsp-y-pair-y-b () T)
+
+
+#(de del-x-pair-x-a () T)
+#(de del-x-pair-y-a () T)
+(de del-y-pair-x-a () T)
+(de del-y-pair-y-a () T)
+
+(de del-x-pair-x-b () T)
+(de del-y-pair-y-b () T)
+(de del-x-pair-x-b () T)
+(de del-y-pair-y-b () T)
+
+
+#(de lin-x-pair-x-a () T)
+#(de lin-x-pair-y-a () T)
+(de lin-y-pair-x-a () T)
+(de lin-y-pair-y-a () T)
+
+(de lin-x-pair-x-b () T)
+(de lin-y-pair-y-b () T)
+(de lin-x-pair-x-b () T)
+(de lin-y-pair-y-b () T)
+
   
-    +---------------------------------+-------------------------------+
-    | A: ((c)) -> ((d c))             | B: (c) -> (d c)               |
-    +---------------------------------+-------------------------------+
-    | # Y-Pair car = X-Pair           | # Y-Pair cdr = X-Pair         |
-    |                                 |                               |
-    |       *                    *    | [y] .  ->  [y]                |
-    | [y]  [ ] .  ->  [y]  [ ]  [ ] . |  *          *                 |
-    |       .               .    .    | [ ] .      [ ]                |
-    |                                 |  .          .                 |
-    |  .               .              |                               |
-    |                                 |            [ ] .              |
-    |                                 |             .                 |
-    +---------------------------------+-------------------------------+
-    | # Y-Pair car = Y-Pair           | # Y-Pair cdr = Y-Pair         |
-    |                                 |                               |
-    |       *               *         | [y] .  ->  [y]                |
-    | [y]  [y] .  ->  [y]  [ ]        |  *          *                 |
-    |       .               .         | [y] .      [ ]                |
-    |                                 |  .          .                 |
-    |  .                   [y] .      |                               |
-    |                                 |            [y] .              |
-    |                       .         |             .                 |
-    |                  .              |                               |
-    +---------------------------------+-------------------------------+
-    | # X-Pair car = X-Pair (TODO)    | # X-Pair cdr = X-Pair         |      
-    |                                 |                               |
-    | [ ]   .  ->  [ ]                |       *                  *    |
-    |  *            *                 | [ ]  [ ]  ->  [ ]  [ ]  [ ] . |
-    | [ ] .        [ ]  [ ] .         |  .    .        .    .    .    |
-    |  .            .    .            |                               |
-    +---------------------------------+-------------------------------+
-    | # X-Pair car = Y-Pair (TODO)    | # X-Pair cdr = Y-Pair         |
-    |                                 |                               |
-    | [ ]   .  ->  [ ]                | [ ]   ->  [ ]                 |
-    |  *            *                 |  .         .                  |
-    | [y] .        [ ]                |  *         *                  |
-    |  .            .                 | [y] .     [ ]                 |
-    |                                 |            .                  |
-    |              [y] .              |  .                            |
-    |               .                 |           [y] .               |
-    |                                 |                               |
-    |                                 |            .                  |
-    +---------------------------------+-------------------------------+
-                                       
-  LIST                                     
-                                       
-    * factor in parent cell layout
+(de run-atom ()
+  (str-x-atom-a)
+  (str-y-atom-a)
   
-    +---------------------------------+-------------------------------+
-    | A: (c (d) e) -> (c ((d)) e)     | B: (c d e) -> (c ((d e)))     |
-    +---------------------------------+-------------------------------+
-    | # Y-Pair car = X-Pair           | # Y-Pair cdr = X-Pair         |
-    |                                 |                               |
-    |       *               *         | [y] .  ->  [y] .              |
-    | [y]  [ ] .  ->  [y]  [y]  [ ] . |  *          *                 |
-    |       .               .    .    | [ ] .      [y]  [ ] .         |
-    |                                 |  .               .            |
-    |  .               .              |                               |
-    |                                 |             .                 |
-    |                                 |                               |
-    | # poss repl with X-Pair inst.   | # poss repl with X-Pair inst. |
-    +---------------------------------+-------------------------------+
-    | # Y-Pair car = Y-Pair           | # Y-Pair cdr = Y-Pair         |
-    |                                 |                               |
-    |       *               *         | [y] .  ->  [ ]                |
-    | [y]  [y] .  ->  [y]  [y]  [y] . |  *          .                 |
-    |       .                         | [y] .            *            |
-    |                            .    |            [y]  [y] .         |
-    |  .                              |  .               .            |
-    |                       .         |                               |
-    |                                 |             .                 |
-    |                  .              | # same as X-P=Y-P             |
-    +---------------------------------+-------------------------------+
-    | # X-Pair car = X-Pair (TODO)    | # X-Pair cdr = X-Pair         |      
-    |                                 |                               |
-    | [ ]   .  ->  [ ]                |       *                       |
-    |  *            *                 | [ ]  [ ] .  ->  [ ]           |
-    | [ ] .        [ ]                |  .    .          .            |
-    |  .                              |                       *       |
-    |              [ ] .              |                 [y]  [ ]  .   |
-    |               .                 |                       .       |
-    |                                 |                               |
-    |                                 |                  .            |
-    |                                 |                               |
-    |                                 | # watch lines                 |
-    +---------------------------------+-------------------------------+
-    | # X-Pair car = Y-Pair (TODO)    | # X-Pair cdr = Y-Pair         |
-    |                                 |                               |
-    | [ ]   .  ->  [ ]                | [ ]   ->  [ ]                 |
-    |  *            *                 |  .         .                  |
-    | [y] .        [y]  [y] .         |  *              *             |
-    |  .                 .            | [y] .     [y]  [y] .          |
-    |               .                 |                 .             |
-    |                                 |  .                            |
-    |                                 |            .                  |
-    +---------------------------------+-------------------------------+
-    
-  BSP
+  (str-x-atom-b)
+  (str-y-atom-b)
+
+  (lst-x-atom-a)
+  (lst-y-atom-a)
   
-    +------------------------------+-------------------------------+
-    | A: (c (d) e) -> (c d)        | B: (c d e) -> (d e)           |
-    +------------------------------+-------------------------------+
-    | # Y-Pair car = X-Pair        | # Y-Pair cdr = X-Pair         | 
-    |                              |                               |     
-    | [ ]        ->  [ ]           |             *                 |    
-    |  .              .            | [y] .  ->  [ ] .              |
-    |       *         *            |  *          .                 |
-    | [y]  [ ] .     [ ] .         | [ ]                           |
-    |       .         .            |  .                            |
-    |                              |                               |
-    | [ ]                          |                               |
-    |  .                           |                               |
-    +------------------------------+-------------------------------+
-    | # Y-Pair car = Y-Pair        | # Y-Pair cdr = Y-Pair         |
-    |                              |                               |
-    | [ ]         ->  [ ]          |             *                 |
-    |  .               .           | [y] .  ->  [y] .              |
-    |       *          *           |  *          .                 |
-    | [y]  [y] .      [y] .        | [y] .                         |
-    |       .          .           |  .                            |
-    |                              |                               |
-    |  .                           | # assume Y always nl          |
-    +------------------------------+-------------------------------+
-    | # X-Pair car = X-Pair (TODO) | # X-Pair cdr = X-Pair         |      
-    |                              |                               |
-    | [ ]     .  ->  [ ]   .       |       *          *            |
-    |                 *            | [ ]  [ ] .  ->  [ ] .         |
-    | [ ]   .        [ ] .         |  .    .          .            |
-    |  *              .            |                               |
-    | [ ] .                        |                               |
-    |  .                           |                               |
-    |                              | # watch lines                 |
-    +------------------------------+-------------------------------+
-    | # X-Pair car = Y-Pair (TODO) | # X-Pair cdr = Y-Pair         |
-    |                              |                               |
-    | [ ]         ->  [ ]          | [ ]   ->  [y] .               |
-    |       *          *           |  .         .                  |
-    | [y]  [y] .      [y] .        |  *                            |
-    |       .          .           | [y] .                         |
-    |  .                           |                               |
-    |                              |  .                            |
-    |                              |                               |
-    |                              | # assume Y always nl          |
-    +------------------------------+-------------------------------+
-    
-  LINE
+  (lst-x-atom-b)
+  (lst-y-atom-b)
+
+  (bsp-x-atom-a)
+  (bsp-y-atom-a)
   
-    * applies to B only...poss to apply to A?    
+  (bsp-x-atom-b)
+  (bsp-y-atom-b)
+
+  (del-x-atom-a)
+  (del-y-atom-a)
+  
+  (del-x-atom-b)
+  (del-y-atom-b)
+
+  (lin-x-atom-a)
+  (lin-y-atom-a)
+  
+  (lin-x-atom-b)
+  (lin-y-atom-b))
+  
+
+(de run-pair ()
+
+  (str-y-pair-x-a)
+  (str-y-pair-y-a)
+
+  (str-x-pair-x-b)
+  (str-x-pair-y-b)
+  (str-y-pair-x-b)
+  (str-y-pair-y-b)
+
+  (lst-y-pair-x-a)
+  (lst-y-pair-y-a)
+
+  (lst-x-pair-x-b)
+  (lst-y-pair-y-b)
+  (lst-x-pair-x-b)
+  (lst-y-pair-y-b)
+
+
+  (bsp-y-pair-x-a)
+  (bsp-y-pair-y-a)
+
+  (bsp-x-pair-x-b)
+  (bsp-y-pair-y-b)
+  (bsp-x-pair-x-b)
+  (bsp-y-pair-y-b)
+
+
+  (del-y-pair-x-a)
+  (del-y-pair-y-a)
+
+  (del-x-pair-x-b)
+  (del-y-pair-y-b)
+  (del-x-pair-x-b)
+  (del-y-pair-y-b)
+
+
+  (lin-y-pair-x-a)
+  (lin-y-pair-y-a)
+
+  (lin-x-pair-x-b)
+  (lin-y-pair-y-b)
+  (lin-x-pair-x-b)
+  (lin-y-pair-y-b))
+
+  
+(de run-test ()
+  (run-atom)
+  (run-pair))
