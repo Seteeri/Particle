@@ -87,7 +87,8 @@
 
   (put Src 'line)
   
-  (println 'mov-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data)))
+  #(println 'mov-line "Put line: " Src (get Src 'data) " -> " Dst (get Dst 'data))
+  )
   
 
 (de del-line-cur ()

@@ -59,7 +59,7 @@
          
   }#   
   
-  (println 'make-pair-b-pair-y)
+  #(println 'make-pair-b-pair-y)
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
@@ -165,7 +165,7 @@
 
   }#
   
-  (println 'make-pair-b-pair-x)  
+  #(println 'make-pair-b-pair-x)  
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
@@ -279,7 +279,7 @@
       
   }#
   
-  (println 'make-pair-a-pair)
+  #(println 'make-pair-a-pair)
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)

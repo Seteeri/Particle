@@ -20,7 +20,7 @@
 }#
 
 (de make-pair-str (Dat Lay)
-  
+    
   (cond
     
     ######
@@ -31,14 +31,14 @@
     
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
-      (println 'make-pair-str "A ATOM/NIL")
+      #(println 'make-pair-str "A ATOM/NIL")
       # repl str for both x/y
       # if user wanted a pair they can use other cmd
       (repl-atom Dat 'a))
       
     ((or (b-nil?> *ptr)
          (b-atom?> *ptr))
-      (println 'make-pair-str "B ATOM/NIL")
+      #(println 'make-pair-str "B ATOM/NIL")
       #(repl-atom Dat 'b)
       (ins-b-atom Dat)
       (nex> *ptr T))
@@ -49,14 +49,14 @@
     # - ins bef ptr
 
     ((a-pair?> *ptr)
-      (println 'make-pair-str "A PAIR")
+      #(println 'make-pair-str "A PAIR")
       
       (if (lay-x?> *ptr)
           (con-a-pair-x Dat)
           (con-a-pair-y Dat)))
       
     ((b-pair?> *ptr)
-      (println 'make-pair-str "B PAIR")
+      #(println 'make-pair-str "B PAIR")
       
       (if (lay-x?> *ptr)
           (con-b-pair-x Dat)
@@ -64,7 +64,7 @@
       
     (T
       # root
-      (println 'make-pair-str "*ptr uninitialized"))))
+      (println 'make-pair-str "T"))))
   
   
 (de repl-atom (Dat Rel)
@@ -77,7 +77,7 @@
     
   }#
 
-  (println 'repl-atom)
+  #(println 'repl-atom)
   
   (let (Cell (if (cell> *ptr)
                  @
@@ -115,14 +115,14 @@
   # This will not keep cdr if non-NIL
   # since it is deleted
 
-  (println 'ins-b-atom)
+  #(println 'ins-b-atom)
   
   (let (Pair (cell> *ptr)
         Po-Pair (lup-pt Pair)
         Po-Del (get Po-Pair 'b)
         List (list Dat)
         Po-List (gen-point List 'x NIL T))
-    
+   
     (when (get Po-Del 'line)
       (mov-line Po-Del Po-List)
       (ln> *ptr))
@@ -131,14 +131,14 @@
     (con> Po-Pair List Po-List)
         
     (set-ref> *ptr List 'b))
-  
+    
   (upd-tree)
   (mov-⇲ (c-ln> *ptr)))
         
         
 (de ins-a-atom (Dat)
 
-  (println 'ins-a-atom)
+  #(println 'ins-a-atom)
   
   (let (Pair (cell> *ptr)
         Po-Pair (lup-pt Pair)
@@ -203,7 +203,7 @@
       
   }#
   
-  (println 'con-b-pair-x)
+  #(println 'con-b-pair-x)
   
   (let (Cell (ref> *ptr)
         Po-Cell (lup-pt Cell)
@@ -261,7 +261,7 @@
          
   }#
   
-  (println 'con-b-pair-y)
+  #(println 'con-b-pair-y)
   
   (let (Pair (ref> *ptr)
         Po-Pair (lup-pt Pair)
@@ -350,7 +350,7 @@
     (top> Po-List)
     (draw> *ptr)))
 
-    
+
 (de con-a-pair-x (Dat)
   #{
           

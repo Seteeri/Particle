@@ -1,26 +1,26 @@
 (de cmd-make-pair (Ks)
-  (println 'cmd-make-pair)
+  #(println 'cmd-make-pair)
 
   # Make these methods?
   
   (cond
   
     ((a-atom?> *ptr)
-      (println 'make-pair "A ATOM/NIL")
+      #(println 'make-pair "A ATOM/NIL")
       (if (lay-x?> *ptr)
           (make-pair-a-atom-x)
           (make-pair-a-atom-y)))
       
     ((b-atom?> *ptr)
-      (println 'make-pair "B ATOM/NIL")
+      #(println 'make-pair "B ATOM/NIL")
       (make-pair-b-atom))
     
     ((a-pair?> *ptr)
-      (println 'make-pair "A PAIR")
+      #(println 'make-pair "A PAIR")
       (make-pair-a-pair))
       
     ((b-pair?> *ptr)
-      (println 'make-pair "B PAIR")
+      #(println 'make-pair "B PAIR")
       (if (lay-x?> *ptr)
           (make-pair-b-pair-x)
           (make-pair-b-pair-y)))))

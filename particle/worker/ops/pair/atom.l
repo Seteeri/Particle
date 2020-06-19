@@ -22,7 +22,7 @@
       
   }#
 
-  (println 'make-pair-a-atom-x)
+  #(println 'make-pair-a-atom-x)
     
   (let (Po-Tgt (if (cell> *ptr)
                    (ref> *ptr)
@@ -31,9 +31,6 @@
         Pair (get Po-Tgt 'c 'data)
         Po-Pair (lup-pt Pair))
                   
-    (println 'make-pair-a-atom-x "Pair/Tgt: "
-      Pair Po-Pair Tgt Po-Tgt)
-  
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
     # * Put NIL otherwise set will del new point
@@ -115,9 +112,6 @@
         Pair (get Po-Tgt 'c 'data)
         Po-Pair (lup-pt Pair))
     
-    (println 'make-pair-a-atom "Pair/Car: "
-      Pair Po-Pair Po-Tgt)
-
     ~(assert (get Po-Tgt 'line))
       
     # Delete:
@@ -185,16 +179,13 @@
     
   }#   
 
-  (println 'make-pair-b-atom)
+  #(println 'make-pair-b-atom)
 
   (let (Po-Tgt (ref> *ptr)
         Tgt (get Po-Tgt 'data)  
         Po-Pair (get Po-Tgt 'c)
         Pair (get Po-Pair 'data))  
     
-    (println 'make-pair-b-atom "Pair/Cdr: " 
-      Pair (get Po-Pair 'b) Po-Tgt)
-  
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
     # * Put NIL otherwise set will del new point

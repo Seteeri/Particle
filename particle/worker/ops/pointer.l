@@ -284,10 +284,11 @@
     # Find Rel of back to its back
     (let (Find-Car (find-back> This 'a Back T)
           Find-Cdr (find-back> This 'b Back T))      
-      (prin "back> BACK: ") (println Back Find-Car Find-Cdr)
+      #(prin "back> BACK: ") (println Back Find-Car Find-Cdr)
       (setq Rel (if Find-Car 'a 'b))
-      (prin "back> WARN: Unable to find back-2 for ")
-      (println Back))
+      #(prin "back> WARN: Unable to find back-2 for ")
+      #(println Back)
+      )
     
     # Cur -> New
     (mov-line-p> This
@@ -302,8 +303,9 @@
       (top> Po-Back)
       (draw> This)))
       
-  (prin "back> PTR: ") (println (: ref) (: cell) (: rel))
-  (prin "back> LN: ") (println (car (: ln)) (get (car (: ln)) 'data)))
+  #(prin "back> PTR: ") (println (: ref) (: cell) (: rel))
+  #(prin "back> LN: ") (println (car (: ln)) (get (car (: ln)) 'data))
+  )
 
 
 (dm forw> (Rel Draw)
@@ -316,34 +318,24 @@
   
     ((or (a-pair?> This)
          (b-pair?> This))
-      (println 'forw> "A/B PAIR")
+      #(println 'forw> "A/B PAIR")
       (pt-pair> This Rel Draw))
     
     ((or (a-atom?> This)
          (b-atom?> This))
-      (println 'forw> "A/B ATOM")
+      #(println 'forw> "A/B ATOM")
       (pt-sym> This Rel Draw))
             
     (T
       # NIL - do nothing
       ))
       
-  (println 'forw> "PTR: " (: ref) (: cell))
-  (println 'forw> "LN: " (car (: ln)) (get (car (: ln)) 'data)))
+  #(println 'forw> "PTR: " (: ref) (: cell))
+  #(println 'forw> "LN: " (car (: ln)) (get (car (: ln)) 'data))
+  )
 
 
-(dm pre> (Draw)
-  (println 'pre>)
-  (back> This 'b Draw))
-
-(dm nex> (Draw)
-  (println 'nex>)
-  (forw> This 'b Draw))
-
-(dm sup> (Draw)
-  (println 'sup>)
-  (back> This 'a Draw))
-
-(dm sub> (Draw)
-  (println 'sub>)
-  (forw> This 'a Draw))
+(dm pre> (Draw) (back> This 'b Draw))
+(dm nex> (Draw) (forw> This 'b Draw))
+(dm sup> (Draw) (back> This 'a Draw))
+(dm sub> (Draw) (forw> This 'a Draw))

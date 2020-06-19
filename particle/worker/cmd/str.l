@@ -19,7 +19,7 @@
 
 
 (de cmd-make-nil (Ks)
-  (prinl-info "cmd-make-nil")
+  #(prinl-info "cmd-make-nil")
   (make-pair-str NIL 'x))
 
 

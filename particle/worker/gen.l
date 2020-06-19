@@ -62,6 +62,8 @@
         X NIL)
     
     (while (setq X (pop 'In))
+    
+      #(println "GEN FOR: " X)
 
       (let ((Any C P) X
             Is-Any-Pair (pair Any)
@@ -79,12 +81,12 @@
                                         'x))
                       (gen-atom Any))))
       
+        #(println 'gen-pair "GEN: " Any)
+      
         # Color pairs
         (when (and Is-Any-Pair
                    (pair (car Any)))
           (col-verts> N (cadr (get '+Vertex 'cols-pair)) 1.0))      
-      
-        #(println 'gen-pair "GEN: " Any)
       
         (unless *gen-out
           (setq *gen-out N))
@@ -129,7 +131,7 @@
           (pop '*gen-list))
 
         #(println 'gen-pair "..." P (get P 'a) (get P 'b))
-          
+        
         (when Is-Any-Pair
         
           (unless (cdr Skips)
@@ -150,14 +152,13 @@
             
             
 (de gen-atom (Any)
-  (let Atm (if (num? Any)
-               (gen-num Any)
-               (if Any
-                   (gen-sym Any)
-                   (gen-nil Any)))
-    (when Any
-      (idx-pt Atm))
-    Atm))
+  (if (num? Any)
+      (gen-num Any)
+      (if Any
+          (prog1
+          (gen-sym Any)
+          (idx-pt @))
+          (gen-nil Any))))
 
 
 (de gen-num (Any)

@@ -32,7 +32,8 @@
         H (h64 A))
     (idx '*points (cons H X) T)
     (inc '*cnt-p)
-    (when T (println 'idx-node H A D X (depth *points) *cnt-p))))
+    #(println 'idx-node H A D X (depth *points) *cnt-p)
+  ))
   
   
 (de lup-node (D)

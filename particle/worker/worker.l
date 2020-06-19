@@ -69,7 +69,10 @@
             "/particle/worker/ops/pair/atom.l"
             "/particle/worker/ops/sym.l"
             "/particle/worker/ops/line.l"
-            "/particle/worker/ops/alt.l"))
+            "/particle/worker/ops/alt.l"
+            
+            "/particle/test/atom.l"
+            "/particle/test/test.l"))
 
 
 (def 'NAME-PID "WORKER")
@@ -245,7 +248,39 @@
       (col-verts> Po-D *selb-yellow 1.0)
       (lay-pt-start '⇲ '⇲ T T)
 
+      # Test
+      (when T
+        (lst-x-atom-b) (del-start-val T)
+        (lst-x-atom-a) (del-start-val T)
+        (lst-y-atom-b) (del-start-val T)
+        (lst-y-atom-a) (del-start-val T))
+                       
+      (when T          
+        (str-x-atom-b) (del-start-val T)
+        (str-x-atom-a) (del-start-val T)
+        (str-y-atom-b) (del-start-val T)
+        (str-y-atom-a) (del-start-val T))
+            
+      (quit "DONE")
+      
       T)))
+
+
+(de del-start-val (Draw)
+  
+  (set-ref> *ptr '*start 'b NIL)
+  (put *ptr 'ln)
+  
+  (del> (if (get Po-Sta 'b)
+            @ 
+            (lup-pt *start))
+        T T)
+  (con> Po-Sta NIL (gen-point NIL 'x))
+  
+  (when Draw
+    (setq *cur (list 0.0 0.0 0.0))
+    (lay-pt-start '*start '*start T T)
+    (top> Po-Sta)))
 
 
 # Unused

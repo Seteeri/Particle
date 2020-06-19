@@ -49,17 +49,7 @@
   (=: ori)  
   
   # whether to redraw
-  (=: dirt T)  
-  
-  # date/time
-  #(=: dat (date))
-  #(=: tim (time))
-    
-  # list of tags; always str; order matters like when searching
-  # consider first tag, the name
-  # when linking, def show date, tags, or show nm or raw location
-  #(=: tg)
-  )
+  (=: dirt T))
 
 
 (dm first-vert> () (car (: verts)))
@@ -400,7 +390,7 @@
     (del> (if (: b) @ (lup-pt (cdr (: data))))
           T T))
   
-  (println '+Point.del> "Deleted: " This (type This))
+  #(println '+Point.del> "Deleted: " This (type This))
   
   This)
 
