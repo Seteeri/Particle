@@ -72,6 +72,7 @@
             "/particle/worker/ops/alt.l"
             
             "/particle/test/atom.l"
+            "/particle/test/pair.l"
             "/particle/test/test.l"))
 
 
@@ -247,40 +248,52 @@
       (adj-cur-y 3.0)
       (col-verts> Po-D *selb-yellow 1.0)
       (lay-pt-start '⇲ '⇲ T T)
-
+      
       # Test
       (when T
-        (lst-x-atom-b) (del-start-val T)
-        (lst-x-atom-a) (del-start-val T)
-        (lst-y-atom-b) (del-start-val T)
-        (lst-y-atom-a) (del-start-val T))
-                       
-      (when T          
-        (str-x-atom-b) (del-start-val T)
-        (str-x-atom-a) (del-start-val T)
-        (str-y-atom-b) (del-start-val T)
-        (str-y-atom-a) (del-start-val T))
-            
-      (quit "DONE")
+        (lst-x-atom-b) (del-start-val Po-Sta T)        
+        (lst-x-atom-a) (del-start-val Po-Sta T)
+        
+        #(cmd-print-ptr)
+        
+        (lst-y-atom-b) (del-start-val Po-Sta T)
+        (lst-y-atom-a) (del-start-val Po-Sta T)
+
+        (str-x-atom-b) (del-start-val Po-Sta T)
+        (str-x-atom-a) (del-start-val Po-Sta T)
+        (str-y-atom-b) (del-start-val Po-Sta T)
+        (str-y-atom-a) (del-start-val Po-Sta T)
+
+        (str-x-pair-x-b) (del-start-val Po-Sta T)
+        (str-x-pair-x-b) (del-start-val Po-Sta T)
+        (str-y-pair-x-b) (del-start-val Po-Sta T)
+        (str-y-pair-y-b) (del-start-val Po-Sta T)
+        (str-y-pair-x-a) (del-start-val Po-Sta T)
+        (str-y-pair-y-a) (del-start-val Po-Sta T))
+        
+      #(quit "DONE")
       
       T)))
 
 
-(de del-start-val (Draw)
-  
-  (set-ref> *ptr '*start 'b NIL)
-  (put *ptr 'ln)
-  
+(de del-start-val (Po-Sta Draw)
+    
   (del> (if (get Po-Sta 'b)
             @ 
             (lup-pt *start))
         T T)
   (con> Po-Sta NIL (gen-point NIL 'x))
+
+  (put (get Po-Sta 'b) 'line (new '(+Line)))
   
+  (set-ref> *ptr '*start 'b NIL)
+  (put *ptr 'ln (list Po-Sta))
+    
   (when Draw
     (setq *cur (list 0.0 0.0 0.0))
     (lay-pt-start '*start '*start T T)
-    (top> Po-Sta)))
+    (top> Po-Sta)
+    (draw> *ptr)))
 
 
 # Unused

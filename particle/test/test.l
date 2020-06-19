@@ -96,6 +96,7 @@
 (de ver-start (Nm I)
   (let (I (if I @ (get-dfs-struct))
         O (ver-dfs-struct I))
+    #(prinl) (pretty I) (prinl)
     (if (full O)
         (prinl Nm ": Test passed")
         (prog

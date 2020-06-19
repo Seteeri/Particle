@@ -200,24 +200,26 @@
           Po-Car (get Po-List 'a)
           Po-Cdr (get Po-List 'b)
           Ln (c-ln> *ptr))
-    
+        
       (set-lay> Po-List 'y)    
     
       (con> Po-Pair List)
-            
+      
       (if (get Po-List 'line)
           (put @ 'n Po-Cdr)
           (ins-line-aft Ln Po-List))
-                    
+
+      (when (get Po-Pair 'exp)
+        (put Po-Pair 'line 'n NIL))
+            
       (if (get Po-Cdr 'line)
           (put @ 'p Po-List)
           (ins-line-aft Po-List Po-Cdr))
-      
+            
       (put Po-Car 'line (new '(+Line)))
-      
-      # Handle sym
-      (when (sym? Pair)
-        (put Po-List 'line 'p))
+
+      (when (get Po-Pair 'exp) # handle sym
+        (put Po-List 'line 'p NIL))
       
       (set-ref> *ptr List 'b)
       

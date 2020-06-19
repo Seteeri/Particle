@@ -213,7 +213,7 @@
         Po-Pre (lup-pt Pre)
         List-Dat (list Dat)
         Po-Dat (gen-point List-Dat 'x NIL T))        
-        
+    
     # Insert before current object
     (con> Po-Pre List-Dat NIL)
     (con> Po-Dat Cell     NIL)
@@ -328,7 +328,7 @@
         Po-List (gen-point List 'x NIL T))
     
     # handle X parent elsewhere
-    ~(assert (lay-y> Po-Pre))
+    ~(assert (lay-y?> Po-Pre))
     
     (set> Po-Pre List Po-List)
     (con> Po-List Pair Po-Pair)

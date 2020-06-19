@@ -120,7 +120,6 @@
       (when (get Ref 'line)
         (prin "line.p: ")    (println (get Ref 'line 'p))
         (prin "line.n: ")    (println (get Ref 'line 'n))
-        (prin "line.l: ")    (println (get Ref 'line 'l))
         (prin "line.dims: ") (println (get Ref 'line 'dims)))))
       
   (when T
