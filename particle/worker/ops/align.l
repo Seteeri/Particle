@@ -12,7 +12,7 @@
   }#
 
   (let (Prv (if (get Po 'line 'p) @ *line-lay)
-        Car-P (car (get Prv 'data))
+        Car-P (car (get Prv 'any))
         Po-Car (if Car-P (lup-pt @) (get Prv 'a))
         Ori-P (get Prv 'ori)
         Dims-P (if (lay-y?> Prv)
@@ -21,11 +21,11 @@
                 
     (when NIL
       (prin "align-cur-line, Tgt: ")
-        (println Po (get Po 'data))
+        (println Po (get Po 'any))
       (prin "   align-cur-line, Prv: ")
-        (println Prv (get Prv 'data) Po-Car)
+        (println Prv (get Prv 'any) Po-Car)
       (prin "   align-cur-line, Dims: ")
-        (println Dims-P (lup-pt (car (get Prv 'data)))))
+        (println Dims-P (lup-pt (car (get Prv 'any)))))
 
     ~(assert Prv)
     ~(assert Ori-P)

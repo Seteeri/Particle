@@ -25,7 +25,7 @@
   # Checking ori/lay should be sufficient...
   (with X
     (list (type X)
-          (: data)
+          (: any)
           (: lay)
           (when (: a) T)
           (when (: b) T)

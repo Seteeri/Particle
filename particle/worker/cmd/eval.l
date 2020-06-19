@@ -10,7 +10,7 @@
   
     (when (has-str?> Ref)
   
-      (let (In (get Ref 'a 'data)
+      (let (In (get Ref 'a 'any)
             Out (eval (car (str In))))
 
         # Move to next line
@@ -28,7 +28,7 @@
   # like ptr cmd, then another cmd
   
   (let (Ref (get-ptr-ref)
-        In (get Ref 'data)
+        In (get Ref 'any)
         Out (eval In))
 
     # If list, mov 'c 'b
@@ -51,7 +51,7 @@
   
     (when (has-str?> Ref)
       
-      (let (In (get Ref 'a 'data)
+      (let (In (get Ref 'a 'any)
             Out (str In))
                         
         (make-pair-str (car Out) 'x)))))        

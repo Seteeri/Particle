@@ -6,9 +6,9 @@
 
   (with P
 
-    ~(assert (: data))
+    ~(assert (: any))
   
-    (let Node (lup-node (: data))
+    (let Node (lup-node (: any))
     
       # If node: add to list
       # else: create it
@@ -19,12 +19,12 @@
             (if (lst? (cdr Node))
               (push (cdr Node) P)
               (con Node (list P)))
-            (when T (println 'idx-pt 'Exists! (h64 (adr (: data))) P (type P) (depth *points) *cnt-p)))
+            (when T (println 'idx-pt 'Exists! (h64 (adr (: any))) P (type P) (depth *points) *cnt-p)))
 
           (prog
-            (idx-node P (get P 'data))
-            (when (: a) (idx-node (: a) (get (: a) 'data)))
-            (when (: b) (idx-node (: b) (get (: b) 'data))))))))
+            (idx-node P (get P 'any))
+            (when (: a) (idx-node (: a) (get (: a) 'any)))
+            (when (: b) (idx-node (: b) (get (: b) 'any))))))))
 
   
 (de idx-node (X D)

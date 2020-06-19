@@ -33,19 +33,19 @@
   
 (dm lay> ()
   (super)
-  #(prin "  ") (println '+Pair.lay> (: a) (: b) (: data))
+  #(prin "  ") (println '+Pair.lay> (: a) (: b) (: any))
   (cons
-    (let B (cdr (: data))
+    (let B (cdr (: any))
       (list (if B @ NIL)
             'b
             This))
-    (let A (car (: data))
+    (let A (car (: any))
       (list (if A @ NIL)
             'a
             This))))
   
-(dm lup-car> () (lup-pt (car (: data))))
-(dm lup-cdr> () (lup-pt (cdr (: data))))
+(dm lup-car> () (lup-pt (car (: any))))
+(dm lup-cdr> () (lup-pt (cdr (: any))))
   
   
 (dm prv> ()
@@ -54,13 +54,13 @@
         (sub> (: c))
         (prog
           (when (get (: c) 'line)
-            (println 'prv> "Set line: " (: c) (get (: c) 'data))
+            (println 'prv> "Set line: " (: c) (get (: c) 'any))
             (setq *line (: c)))
           # If Y layout, must be newline
           (when (lay-y?> This)
             (when (get *line 'line 'p)
               (setq *line @)
-              (println 'prv> "Set line: " @ (get @ 'data))))
+              (println 'prv> "Set line: " @ (get @ 'any))))
           (top> (: c))))))
          
           
@@ -76,7 +76,7 @@
             (sub> B)
             (prog
               (when (get B 'line)
-                (println 'nxt> "Set line: " (: b) (get (: b) 'data))
+                (println 'nxt> "Set line: " (: b) (get (: b) 'any))
                 (setq *line B))
               (top> B))))))
 
@@ -85,7 +85,7 @@
   (if (is-car?> This)
       (prog
         ~(assert (get (: c) 'line))
-        (println 'sup> "Set line: " (: c) (get (: c) 'data))
+        (println 'sup> "Set line: " (: c) (get (: c) 'any))
         (setq *line (: c))
         (top> (: c)))
         
@@ -96,7 +96,7 @@
     
   (cond ((has-pair?> This)
          ~(assert (get (: a) 'line))
-         (println 'sub> "Set line: " (: a) (get (: a) 'data))
+         (println 'sub> "Set line: " (: a) (get (: a) 'any))
          (setq *line (: a))
            
           # If X lay, mov to Car
@@ -107,9 +107,9 @@
                 (sub> (: a)))
               (top> (: a))))
         
-        ((not (car (: data))) # NIL
+        ((not (car (: any))) # NIL
          (when (get (: a) 'line)
-           (println 'sub> "Set line: " (: a) (get (: a) 'data))
+           (println 'sub> "Set line: " (: a) (get (: a) 'any))
            (setq *line (: a)))
          # If X lay, mov to Car
          # If Y lay, stay Cdr
@@ -133,9 +133,9 @@
         (del> (: b))
         (=: b))
       (when Del
-        (del> (lup-pt (cdr (: data))))))
+        (del> (lup-pt (cdr (: any))))))
       
-  (con (: data) Dat)
+  (con (: any) Dat)
   
   # If Po-Dat is an atom
   (when Po-Dat
@@ -153,9 +153,9 @@
         (del> (: a))
         (=: a))
       (when Del
-        (del> (lup-pt (car (: data))))))
+        (del> (lup-pt (car (: any))))))
       
-  (set (: data) Dat)
+  (set (: any) Dat)
   
   # If Po-Dat is an atom
   (when Po-Dat

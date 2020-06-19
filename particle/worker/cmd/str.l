@@ -34,7 +34,7 @@
 
   (prinl-info "cmd-format")
 
-  (make-pair-str (format (get *ptr 'b 'c 'a 'data)) 'x))
+  (make-pair-str (format (get *ptr 'b 'c 'a 'any)) 'x))
 
 #####################
 
@@ -58,7 +58,7 @@
             (Sta Lst) (build-str End)
             Data (pack Lst))
             
-        (println 'cmd-pack Sta (get Sta 'data) "TO" End (get End 'data))
+        (println 'cmd-pack Sta (get Sta 'any) "TO" End (get End 'any))
 
         (repl-list-str Sta End Data)
         (lay-ptr *ptr)))))
@@ -78,7 +78,7 @@
       (let (Sta (get Ref 'c)
             End (get Ref 'b)
             Prv NIL
-            List (chop (get Ref 'a 'data)))
+            List (chop (get Ref 'a 'any)))
   
         (repl-str-list Ref List)
         (lay-ptr *ptr)))))
@@ -102,7 +102,7 @@
             (Sta Lst) (build-str End)
             Data (glue " " Lst))
             
-        (println 'cmd-glue-sp Sta (get Sta 'data) "TO" End (get End 'data))
+        (println 'cmd-glue-sp Sta (get Sta 'any) "TO" End (get End 'any))
             
         (repl-list-str Sta End Data)
         (lay-ptr *ptr)))))
@@ -136,7 +136,7 @@
       (let (Sta (get Ref 'c)
             End (get Ref 'b)
             List (make
-                   (let L (split (chop (get Ref 'a 'data)) " ")
+                   (let L (split (chop (get Ref 'a 'any)) " ")
                      (for S L
                        (when S
                          (link (pack S)))))))
@@ -160,7 +160,7 @@
             (Sta Lst) (build-str-sp End)
             Data (intern (pack Lst)))
             
-        (println 'cmd-intern Sta (get Sta 'data) "TO" End (get End 'data))
+        (println 'cmd-intern Sta (get Sta 'any) "TO" End (get End 'any))
                 
         (repl-list-str Sta End Data)
         (lay-ptr *ptr)))))

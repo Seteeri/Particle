@@ -35,11 +35,11 @@
 
 (class +Point)
 
-(dm T (Data
+(dm T (Any
        Lay
        A B)
        
-  (=: data Data)
+  (=: any Any)
     
   (=: lay Lay)  
   (=: a A)
@@ -115,7 +115,7 @@
       
     (=: lay L)))
 
-  
+#{
 (de b@ @
   (let (A (next)
         B NIL)
@@ -129,10 +129,10 @@
   (=: b Cdr)
   (put Cdr 'c This)
   
-  # Remember, *start's 'data is always the symbol itself
+  # Remember, *start's 'any is always the symbol itself
   # To get its val, is to get it's 'b
-  (when (pair (: data))
-    (con (car (:: data)) (get Cdr 'data))))
+  (when (pair (: any))
+    (con (car (:: data)) (get Cdr 'any))))
 
 
 (dm a> (Car)
@@ -140,23 +140,23 @@
   (=: a Car)
   (put Car 'c This)
 
-  (set (car (:: data)) (get Car 'data)))
-
+  (set (car (:: data)) (get Car 'any)))
+}#
 
 (dm lup-a> ()
   (if (: a)
       @
-      (lup-pt (car (: data)))))
+      (lup-pt (car (: any)))))
 
       
 (dm lup-b> ()
   (when (: b)
-    (lup-pt (get (: b) 'data))))
+    (lup-pt (get (: b) 'any))))
   
 
 (dm top> ()
   (mov-cur-abv This)
-  (: data))
+  (: any))
  
  
 (dm pos-cur-cdr> ()
@@ -263,7 +263,7 @@
   
   (when NIL
     (println 'upd-line-post> "This: " 
-      This (: data) (: line)  (get (: line) 'p)))  
+      This (: any) (: line)  (get (: line) 'p)))  
   
   (upd-dims> This)         
             
@@ -283,7 +283,7 @@
               # excluding X-Pair cdr Y pair
               (when NIL
                 (prin "upd-line-post> Push: ")
-                  (println This (: data)))
+                  (println This (: any)))
               (push '*list-lay
                 (list This # Particle for List
                       (list NIL # Bnds
@@ -380,14 +380,14 @@
   (for Vert (: verts) (del> Vert))
   
   # del from index
-  (del-node (: data))
+  (del-node (: any))
   
   (when A
-    #(println (type This) (: a) (lup-pt (car (: data))))
-    (del> (if (: a) @ (lup-pt (car (: data))))
+    #(println (type This) (: a) (lup-pt (car (: any))))
+    (del> (if (: a) @ (lup-pt (car (: any))))
           T T))
   (when B
-    (del> (if (: b) @ (lup-pt (cdr (: data))))
+    (del> (if (: b) @ (lup-pt (cdr (: any))))
           T T))
   
   #(println '+Point.del> "Deleted: " This (type This))
@@ -400,7 +400,7 @@
       (prog
         (del> (: a))
         (=: a))
-      (let? Po (lup-pt (car (: data)))
+      (let? Po (lup-pt (car (: any)))
         (del> Po)
         (=: a))))
                   
@@ -598,7 +598,7 @@
                   (ori> (: met)
                         (: pos))))
 
-    #(println 'calc-bounds This (: data) (format X *Scl) (format Y *Scl))
+    #(println 'calc-bounds This (: any) (format X *Scl) (format Y *Scl))
 
     # If neither Car or Cdr, use cons
     (list (max (if Xa Xa X) (if Xb Xb X) X)

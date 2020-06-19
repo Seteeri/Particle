@@ -35,7 +35,7 @@
       (prv> (: c))
       (when (: c)
         (when (get (: c) 'line)
-          (println 'prv> "Mov ptr -> super-line/list" (: c) (get (: c) 'data))
+          (println 'prv> "Mov ptr -> super-line/list" (: c) (get (: c) 'any))
           (setq *line (: c)))
         (if *ptr-on-car
             (sub> (: c))

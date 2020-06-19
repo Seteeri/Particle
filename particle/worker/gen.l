@@ -112,7 +112,7 @@
           # Is a pair itself with a car pair
           # or parent is a pair with a car pair              
           ((or (and Is-Any-Pair (pair (car Any)))
-               (and (pair (get P 'data)) (pair (car (get P 'data)))))
+               (and (pair (get P 'any)) (pair (car (get P 'any)))))
            (if (= C 'a)
                (prog
                  (put N 'line (new '(+Line)))
@@ -284,7 +284,7 @@
     (put Pair 'b Cdr)
     
     (when Cdr
-      (when (atom (get Cdr 'data))
+      (when (atom (get Cdr 'any))
         (put Cdr 'c Pair)))
     
     Pair))    

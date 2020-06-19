@@ -26,7 +26,7 @@
           (println 'nxt> "Set line: " (: b) NIL)
           (setq *line (: b)))            
         (top> (: b)))
-      (let B (lup-pt (val (: data)))
+      (let B (lup-pt (val (: any)))
         (if B
             (if *ptr-on-car
                 (sub> B)

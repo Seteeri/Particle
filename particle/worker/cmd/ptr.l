@@ -17,7 +17,7 @@
 
     (setq *cur (list 1000.0 1000.0))
     (let (Po (get *ptr 'po)
-          Dat (get Po 'data))
+          Dat (get Po 'any))
       (mov> Po)
       (lay-pt-start Dat Dat T T))
               
@@ -108,7 +108,7 @@
       (prinl "CURRENT REFERENCE:")
       (prin "Ref: ") (println Ref)
     
-      (prin "dat: ")  (println (get Ref 'data))
+      (prin "dat: ")  (println (get Ref 'any))
       (prin "rel: ")  (println (: rel))
       (prin "ori: ")  (println (get Ref 'ori))
       (prin "dims: ") (println (get Ref 'dims))
@@ -128,11 +128,11 @@
     (prinl "CURRENT LINE:")
     (prin "Lines: ") (println (get *ptr 'ln))
     (let Ptr-Ln (car (get *ptr 'ln))
-      (prin "Ptr Ln: ") (println Ptr-Ln (get Ptr-Ln 'data)))
-    #(prin "*line: ") (println *line (get *line 'data))
-    #(println 'p (get *line 'line 'p) (get *line 'line 'p 'data))
-    #(println 'n (get *line 'line 'n) (get *line 'line 'n 'data))
-    #(println 'l (get *line 'line 'l) (get *line 'line 'l 'data))
+      (prin "Ptr Ln: ") (println Ptr-Ln (get Ptr-Ln 'any)))
+    #(prin "*line: ") (println *line (get *line 'any))
+    #(println 'p (get *line 'line 'p) (get *line 'line 'p 'any))
+    #(println 'n (get *line 'line 'n) (get *line 'line 'n 'any))
+    #(println 'l (get *line 'line 'l) (get *line 'line 'l 'any))
     )
 
   #(upd-tree)

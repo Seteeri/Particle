@@ -70,7 +70,7 @@
   (when (: exp) 
     (cons
       (unless (= (: b) T)
-        (list (if (: b) NIL (val (: data)))
+        (list (if (: b) NIL (val (: any)))
               'b
               This))
       (list NIL
@@ -94,9 +94,9 @@
         (del> (: b))
         (=: b))
       (when Del
-        (del> (lup-pt (cdr (: data))))))
+        (del> (lup-pt (cdr (: any))))))
       
-  (set (: data) Dat)
+  (set (: any) Dat)
   
   # If Po-Dat is an atom
   (when Po-Dat
@@ -151,11 +151,11 @@
 
   
 (dm sub> ()
-  (set-ptr-ref (: data))
-  (: data))
+  (set-ptr-ref (: any))
+  (: any))
   
   
-(dm nxt> () (: data))
+(dm nxt> () (: any))
 
 
 (dm del> (A B)
@@ -164,4 +164,4 @@
     
   (for Vert (: verts) (del> Vert))
   
-  (del-node (: data)))
+  (del-node (: any)))

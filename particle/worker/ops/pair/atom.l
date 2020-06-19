@@ -27,8 +27,8 @@
   (let (Po-Tgt (if (cell> *ptr)
                    (ref> *ptr)
                    (lup-pt (ref> *ptr)))
-        Tgt (get Po-Tgt 'data)
-        Pair (get Po-Tgt 'c 'data)
+        Tgt (get Po-Tgt 'any)
+        Pair (get Po-Tgt 'c 'any)
         Po-Pair (lup-pt Pair))
                   
     # Delete:
@@ -108,8 +108,8 @@
   (let (Po-Tgt (if (cell> *ptr)
                    (ref> *ptr)
                    (lup-pt (ref> *ptr)))
-        Tgt (get Po-Tgt 'data)
-        Pair (get Po-Tgt 'c 'data)
+        Tgt (get Po-Tgt 'any)
+        Pair (get Po-Tgt 'c 'any)
         Po-Pair (lup-pt Pair))
     
     ~(assert (get Po-Tgt 'line))
@@ -182,9 +182,9 @@
   #(println 'make-pair-b-atom)
 
   (let (Po-Tgt (ref> *ptr)
-        Tgt (get Po-Tgt 'data)  
+        Tgt (get Po-Tgt 'any)  
         Po-Pair (get Po-Tgt 'c)
-        Pair (get Po-Pair 'data))  
+        Pair (get Po-Pair 'any))  
     
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref

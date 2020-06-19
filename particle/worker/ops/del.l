@@ -114,7 +114,7 @@
   # Hook atom up
   
   (let (Po-Atom (ref> *ptr)
-        Atom (get Po-Atom 'data)
+        Atom (get Po-Atom 'any)
         Tgt (cell> *ptr)
         Po-Tgt (lup-pt Tgt)
         Back (find-back-any> *ptr Tgt T)

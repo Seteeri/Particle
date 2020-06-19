@@ -48,8 +48,8 @@
 
 (dm draw> ()
   #(lay-pt-start '*ptr '*ptr T T))
-  (lay-pt-start (get (: po) 'data) 
-                (get (: po) 'data)
+  (lay-pt-start (get (: po) 'any) 
+                (get (: po) 'any)
                 T T))
 
   
@@ -251,7 +251,7 @@
         Ref (if Ref @ (: ref)))
     #(println 'find-back "Search for cell: " Ref (type Ref))
     (for Line (: ln)
-      (let Dat (get Line 'data)
+      (let Dat (get Line 'any)
         (setq Res (if (= Rel 'a) 
                       (memq Ref Dat)
                       (prior Ref Dat)))    
@@ -265,7 +265,7 @@
     (if Res
         Res
         (unless Pln
-          (get (cadr (: ln)) 'data)))))
+          (get (cadr (: ln)) 'any)))))
       
       
 (dm find-back-any> (Ref Pln)
@@ -304,7 +304,7 @@
       (draw> This)))
       
   #(prin "back> PTR: ") (println (: ref) (: cell) (: rel))
-  #(prin "back> LN: ") (println (car (: ln)) (get (car (: ln)) 'data))
+  #(prin "back> LN: ") (println (car (: ln)) (get (car (: ln)) 'any))
   )
 
 
@@ -331,7 +331,7 @@
       ))
       
   #(println 'forw> "PTR: " (: ref) (: cell))
-  #(println 'forw> "LN: " (car (: ln)) (get (car (: ln)) 'data))
+  #(println 'forw> "LN: " (car (: ln)) (get (car (: ln)) 'any))
   )
 
 
