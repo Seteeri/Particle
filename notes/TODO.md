@@ -22,6 +22,8 @@ TODO
     * Create unit tests [Fri]
       * UI ops
       * Ptr
+    * Improve del>
+      * Fix double free
     
   * Use prog1
   

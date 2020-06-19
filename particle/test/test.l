@@ -40,7 +40,13 @@
     
 
 (de comp-part (X I)
-  (= (props-part X) I))
+  (let (A (props-part X)
+        E (= A I))
+    (unless E
+      (mapc '((A I) (println (= A I) A I))
+            A
+            I))
+    E))
     
     
 (de get-dfs-struct ()
@@ -96,7 +102,6 @@
 (de ver-start (Nm I)
   (let (I (if I @ (get-dfs-struct))
         O (ver-dfs-struct I))
-    #(prinl) (pretty I) (prinl)
     (if (full O)
         (prinl Nm ": Test passed")
         (prog

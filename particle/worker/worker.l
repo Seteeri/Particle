@@ -71,8 +71,20 @@
             "/particle/worker/ops/line.l"
             "/particle/worker/ops/alt.l"
             
-            "/particle/test/atom.l"
-            "/particle/test/pair.l"
+            "/particle/test/atom/atom.l"
+            "/particle/test/atom/lst.l"
+            "/particle/test/atom/str.l"
+            "/particle/test/atom/del.l"
+            "/particle/test/atom/bsp.l"
+            "/particle/test/atom/nl.l"
+            
+            "/particle/test/pair/pair.l"
+            "/particle/test/pair/lst.l"
+            "/particle/test/pair/str.l"
+            "/particle/test/pair/del.l"
+            "/particle/test/pair/bsp.l"
+            "/particle/test/pair/nl.l"
+            
             "/particle/test/test.l"))
 
 
@@ -250,12 +262,9 @@
       (lay-pt-start '⇲ '⇲ T T)
       
       # Test
-      (when T
+      (when NIL
         (lst-x-atom-b) (del-start-val Po-Sta T)        
-        (lst-x-atom-a) (del-start-val Po-Sta T)
-        
-        #(cmd-print-ptr)
-        
+        (lst-x-atom-a) (del-start-val Po-Sta T)        
         (lst-y-atom-b) (del-start-val Po-Sta T)
         (lst-y-atom-a) (del-start-val Po-Sta T)
 
@@ -269,7 +278,16 @@
         (str-y-pair-x-b) (del-start-val Po-Sta T)
         (str-y-pair-y-b) (del-start-val Po-Sta T)
         (str-y-pair-x-a) (del-start-val Po-Sta T)
-        (str-y-pair-y-a) (del-start-val Po-Sta T))
+        (str-y-pair-y-a) (del-start-val Po-Sta T)
+        #{
+        (lst-x-pair-x-b) (del-start-val Po-Sta T)
+        (lst-x-pair-x-b) (del-start-val Po-Sta T)
+        (lst-y-pair-y-b) (del-start-val Po-Sta T)
+        (lst-y-pair-y-b) (del-start-val Po-Sta T)
+        (lst-y-pair-x-a) (del-start-val Po-Sta T)
+        (lst-y-pair-y-a) (del-start-val Po-Sta T)
+        }#
+        )
         
       #(quit "DONE")
       
