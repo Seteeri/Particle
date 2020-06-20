@@ -207,20 +207,18 @@
       
       (if (get Po-List 'line)
           (put @ 'n Po-Cdr)
-          (ins-line-aft Ln Po-List))
-
-      (when (get Po-Pair 'exp)
-        (put Po-Pair 'line 'n NIL))
-            
-      (if (get Po-Cdr 'line)
-          (put @ 'p Po-List)
-          (ins-line-aft Po-List Po-Cdr))
-            
-      (put Po-Car 'line (new '(+Line)))
+          (prog
+            (ins-line-aft Ln Po-List)
+            (put Po-List 'line 'n Po-Cdr)))
 
       (when (get Po-Pair 'exp) # handle sym
+        (put Po-Pair 'line 'n NIL)
         (put Po-List 'line 'p NIL))
+                
+      (put Po-Cdr 'line (new '(+Line) Po-List))
       
+      (put Po-Car 'line (new '(+Line)))
+            
       (set-ref> *ptr List 'b)
       
       (upd-tree)

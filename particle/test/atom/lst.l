@@ -101,15 +101,15 @@
   (ver-start 
     'lst-y-atom-b
     '(((+Pair)
-          (NIL NIL)
-          y
-          T
-          NIL
-          NIL
-          (4214357 0 0)
-          T
-          (2408204 4816408)
-          (NIL T) )
+        (NIL NIL)
+        y
+        T
+        NIL
+        NIL
+        (4214357 0 0)
+        T
+        (2408204 4816408)
+        (NIL T) )
       ((+Nil)
           NIL
           x

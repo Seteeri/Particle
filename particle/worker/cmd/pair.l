@@ -28,16 +28,16 @@
 
 (de cmd-del (Dir)
 
-  (prinl-info "cmd-del")
+  #(prinl-info "cmd-del")
 
   (del-pt))
 
 
-(de cmd-bs (Dir)
+(de cmd-bsp (Dir)
 
-  (prinl-info "cmd-bs")
+  #(prinl-info "cmd-bsp")
   
-  (del-bs))
+  (del-bsp))
 
       
 (de cmd-alt-lay (Ks)

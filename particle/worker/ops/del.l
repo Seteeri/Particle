@@ -57,25 +57,24 @@
 }#
 
 
-(de del-bs ()
-  
-  (println 'del-bs)
+(de del-bsp ()
   
   (cond
   
     ((a-atom?> *ptr)
-      (println 'del-bs "A ATOM/NIL"))
+      #(println 'del-bsp "A ATOM/NIL")
+      )
       
     ((b-atom?> *ptr)
-      (println 'del-bs "B ATOM/NIL")
+      #(println 'del-bsp "B ATOM/NIL")
       (del-b-atom))
     
     ((a-pair?> *ptr)
-      (println 'del-bs "A PAIR")
+      #(println 'del-bsp "A PAIR")
       (del-a-pair))
       
     ((b-pair?> *ptr)
-      (println 'del-bs "B PAIR")
+      #(println 'del-bsp "B PAIR")
       (del-b-pair))))
 
 

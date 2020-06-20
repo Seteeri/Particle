@@ -269,6 +269,7 @@
       (lay-pt-start '⇲ '⇲ T T)
       
       # Test
+        
       (when T
       
         (lst-x-atom-b) (del-start-val Po-Sta T)        
@@ -299,15 +300,23 @@
         (lst-y-pair-y-b) (del-start-val Po-Sta T)
         
         (lst-y-pair-x-a) (del-start-val Po-Sta T)
-                
         (lst-y-pair-y-a) (del-start-val Po-Sta T)
         
-        (quit "Finished tests"))
+        (bsp-x-atom-b) (del-start-val Po-Sta T)
+        (bsp-y-atom-a) (del-start-val Po-Sta T)
+        
+        #(call 'sleep 6)
+        
+        (quit "Finished tests")
+        
+        )
         
       T)))
 
 
 (de del-start-val (Po-Sta Draw)
+    
+  ~(assert (not (get Po-Sta 'line 'n)))  
     
   (del> (if (get Po-Sta 'b)
             @ 
@@ -315,7 +324,6 @@
         T T)
   (con> Po-Sta NIL (gen-point NIL 'x))
 
-  ~(assert (not (get Po-Sta 'line 'n)))
   (put (get Po-Sta 'b) 'line (new '(+Line)))
   
   (set-ref> *ptr '*start 'b NIL)

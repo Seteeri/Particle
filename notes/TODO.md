@@ -19,15 +19,17 @@ TODO
         * Pass flag to gen -> idx
       * New will gen verts
       * Pass sym exp to gen
-    * Create unit tests [Fri]
-      * UI ops
-      * Ptr
+    * Finish unit tests [Sun]
+      * Del
+      * Bsp
+      * Nl
+  
+  * Refactor? [Mon]
+    * Use prog1
     * Improve del>
       * Fix double free
-    
-  * Use prog1
   
-  * Root Lists (side/main)
+  * Root Lists (side/main) [Mon]
     LEFT:
       * Mov from simple to advance, downward
       1. Help

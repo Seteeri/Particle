@@ -109,7 +109,7 @@
     ((ksd~Alt-L ksd~Tab)    cmd-make-char)
     ((ksd~Alt-R ksd~Tab)    cmd-make-char)
     
-    ((ksd~BackSpace) cmd-bs)
+    ((ksd~BackSpace) cmd-bsp)
     ((ksd~Delete   ) cmd-del)  
     
     ((ksd~Shift-R   ksd~Return)    cmd-make-line)

@@ -14,10 +14,7 @@
   
   Test ptr and nil before data
   Test lst cmd before str cmd
-  
-  Verify each test, record results
-  Modify fns to verify instead of generate
-  
+
 }#
 
 
