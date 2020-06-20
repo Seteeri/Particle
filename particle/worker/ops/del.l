@@ -96,7 +96,7 @@
         (ln> *ptr)
         (ln> *ptr Ln)))
     (del> Po-Tgt NIL T)
-    (put Po-Tgt 'a)
+    (put Po-Tgt 'a NIL)
     
     (set> Po-Back Pair Po-Pair)
         
@@ -126,7 +126,7 @@
         (ln> *ptr Ln)))      
     (mov-line-n> *ptr Po-Back)
     (del> Po-Tgt T NIL)
-    (put Po-Tgt 'b)
+    (put Po-Tgt 'b NIL)
     
     (con> Po-Back Atom Po-Atom)
         
@@ -140,11 +140,8 @@
     (draw> *ptr)))
     
     
-(de del-b-pair (Tgt)
+(de del-b-pair ()
 
-  # Del current
-  # Hook atom up
-  
   (let (Pair (ref> *ptr)
         Po-Pair (lup-pt Pair)
         Tgt (find-back-any> *ptr Pair T)
@@ -158,12 +155,19 @@
     (mov-line-n> *ptr Po-Pair)
     
     (del> Po-Tgt T NIL)
-    (put Po-Tgt 'b)
+    (put Po-Tgt 'b NIL)
     
-    (con> Po-Back Pair Po-Pair)
+    (if (= (car Back) Tgt)
+        (prog
+          (set> Po-Back Pair Po-Pair)
+          (if (get Po-Pair 'line)
+              (put @ 'p NIL)
+              (put Po-Pair 'line
+                (new '(+Line)))))
+        (con> Po-Back Pair Po-Pair))
         
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
     
     (top> Po-Pair)
-    (draw> *ptr)))
+    (draw> *ptr)))          
