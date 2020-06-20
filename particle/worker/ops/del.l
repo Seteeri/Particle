@@ -154,10 +154,9 @@
 
     (when (get Po-Tgt 'line)
       (del-line Po-Tgt)
-      (let Ln (ln> *ptr)
-        (ln> *ptr)
-        (ln> *ptr Ln)))      
-    (mov-line-n> *ptr Po-Back)
+      (ln> *ptr) (ln> *ptr))
+    (mov-line-n> *ptr Po-Pair)
+    
     (del> Po-Tgt T NIL)
     (put Po-Tgt 'b)
     

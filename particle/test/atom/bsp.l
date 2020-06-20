@@ -108,4 +108,56 @@
   (cmd-make-pair)
   (cmd-ptr-down)
   (cmd-make-pair)
-  (cmd-bsp))
+  (cmd-bsp)
+  (ver-start
+    'bsp-y-atom-b
+    '(((+Pair)
+      (NIL NIL)
+      y
+      T
+      NIL
+      NIL
+      (4214357 0 0)
+      T
+      (2408204 4816408)
+      (NIL T) )
+    ((+Nil)
+        NIL
+        x
+        NIL
+        NIL
+        T
+        (5418459 0 0)
+        T
+        (1204102 0)
+        (NIL NIL) )
+    ((+Pair)
+        (NIL)
+        y
+        T
+        T
+        NIL
+        (4214357 -2408204 0)
+        T
+        (0 0)
+        (T NIL) )
+    ((+Nil)
+        NIL
+        x
+        NIL
+        NIL
+        T
+        (5418459 -2408204 0)
+        T
+        (1204102 0)
+        (NIL NIL) )
+    ((+Nil)
+        NIL
+        x
+        NIL
+        NIL
+        T
+        (4214357 -4816408 0)
+        T
+        (1204102 0)
+        (T NIL) ) )))

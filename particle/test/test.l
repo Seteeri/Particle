@@ -11,10 +11,12 @@
   - replace cmd-make-char with NIL    
   Create tests for Sym, besides Pair
   Create tests for pointer
+
+  Check ptr lines
   
   Test ptr and nil before data
   Test lst cmd before str cmd
-
+  
 }#
 
 

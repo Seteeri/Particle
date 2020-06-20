@@ -304,10 +304,11 @@
         
         (bsp-x-atom-b) (del-start-val Po-Sta T)
         (bsp-y-atom-a) (del-start-val Po-Sta T)
+        (bsp-y-atom-b) #(del-start-val Po-Sta T)
         
         #(call 'sleep 6)
         
-        (quit "Finished tests")
+        #(quit "Finished tests")
         
         )
         
