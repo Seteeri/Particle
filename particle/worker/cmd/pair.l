@@ -21,9 +21,9 @@
       
     ((b-pair?> *ptr)
       #(println 'make-pair "B PAIR")
-      (if (lay-x?> *ptr)
-          (make-pair-b-pair-x)
-          (make-pair-b-pair-y)))))
+      (make-pair-b-pair)
+      # (if (lay-x?> *ptr) ...)
+      )))
             
 
 (de cmd-del (Dir)

@@ -1,3 +1,4 @@
+#{
 (de make-pair-b-pair-y ()
 
   #{
@@ -59,7 +60,7 @@
          
   }#   
   
-  #(println 'make-pair-b-pair-y)
+  (println 'make-pair-b-pair-y)
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
@@ -91,9 +92,10 @@
     (ln> *ptr Po-Cons)      
     (top> Po-Cons)
     (draw> *ptr)))
+}#
           
           
-(de make-pair-b-pair-x ()
+(de make-pair-b-pair ()
   #{
   
     Make list with list  

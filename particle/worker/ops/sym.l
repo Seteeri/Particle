@@ -276,8 +276,12 @@
     (if (get Po-Pre 'line)
         (put Po-Pre 'line 'n Po-List)
         (put Po-Pre 'line (new '(+Line) NIL Po-Pair)))
-    
+        
     (put Po-List 'line (new '(+Line) Po-Pre Po-Pair))
+
+    (when (get Po-Pre 'exp)
+      (put Po-Pre 'line 'n NIL)
+      (put Po-List 'line 'p NIL))
     
     (put Po-Pair 'line 'p Po-List)
     
