@@ -152,6 +152,14 @@
   
   (bsp-x-atom-b) (del-start-val Po-Sta T)
   (bsp-y-atom-a) (del-start-val Po-Sta T)
-  (bsp-y-atom-b) (del-start-val Po-Sta T))
+  (bsp-y-atom-b) (del-start-val Po-Sta T)
+  
+  (bsp-x-pair-x-b) (del-start-val Po-Sta T)
+  (bsp-x-pair-y-b) (del-start-val Po-Sta T)
+  
+  (bsp-y-pair-x-a) (del-start-val Po-Sta T)
+  (bsp-y-pair-x-b) (del-start-val Po-Sta T)
+  (bsp-y-pair-y-a) (del-start-val Po-Sta T)
+  (bsp-y-pair-y-b) (del-start-val Po-Sta T))
     
   

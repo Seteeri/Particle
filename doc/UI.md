@@ -436,6 +436,7 @@ When pointer is ATOM/NIL:
 When pointer is PAIR:
 
   * factor in parent cell layout
+  * remember, del pair behind ptr
 
   and cmd is STR:
   
@@ -444,7 +445,7 @@ When pointer is PAIR:
     +---+---------------------------------+-------------------------------+
     | S | ((c)) -> ((d c))                | (c) -> (d c)                  |
     +---+---------------------------------+-------------------------------+
-    |   | # Y-Pair car = X-Pair           | # Y-Pair cdr = X-Pair         |
+    |   | # Y-Pair car = X-Pair (DO)      | # Y-Pair cdr = X-Pair         |
     |   |                                 |                               |
     |   |       *                    *    | [y] .  ->  [y]                |
     |   | [y]  [ ] .  ->  [y]  [ ]  [ ] . |  *          *                 |
