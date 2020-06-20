@@ -167,7 +167,7 @@
 
   }#
   
-  #(println 'make-pair-b-pair-x)  
+  (println 'make-pair-b-pair)  
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
@@ -186,7 +186,7 @@
     (if (get Po-Tgt 'line)
         (prog
           # Make line start
-          (put Po-Tgt 'line 'p)
+          (put Po-Tgt 'line 'p NIL)
           # Only pop if replacing line
           (ln> *ptr)
           # Set current ln to prv line
@@ -208,7 +208,7 @@
     (put Po-Cons 'line (new '(+Line) Ln Po-Cdr))
     
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
-        
+      
     (set-ref> *ptr Cons 'b)
     
     (upd-tree)

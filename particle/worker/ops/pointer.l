@@ -168,7 +168,7 @@
   
 (dm pt-pair-pair> (Rel Draw)
   
-  (println 'pt-pair-pair)
+  #(println 'pt-pair-pair)
   
   (let (Po-Ref (lup-pt (: ref))
         Tgt (if (= Rel 'a)

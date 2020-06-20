@@ -271,38 +271,40 @@
       # Test
       (when T
       
-        (lst-x-atom-b) (del-start-val Po-Sta T)        
-        (lst-x-atom-a) (del-start-val Po-Sta T)        
+        (when NIL
+          (lst-x-atom-b) (del-start-val Po-Sta T)        
+          (lst-x-atom-a) (del-start-val Po-Sta T)        
 
-        (lst-y-atom-b) (del-start-val Po-Sta T)
-        (lst-y-atom-a) (del-start-val Po-Sta T)
+          (lst-y-atom-b) (del-start-val Po-Sta T)
+          (lst-y-atom-a) (del-start-val Po-Sta T)
 
-        (str-x-atom-b) (del-start-val Po-Sta T)
-        (str-x-atom-a) (del-start-val Po-Sta T)
+          (str-x-atom-b) (del-start-val Po-Sta T)
+          (str-x-atom-a) (del-start-val Po-Sta T)
 
-        (str-y-atom-b) (del-start-val Po-Sta T)
-        (str-y-atom-a) (del-start-val Po-Sta T)
+          (str-y-atom-b) (del-start-val Po-Sta T)
+          (str-y-atom-a) (del-start-val Po-Sta T)
 
-        (str-x-pair-x-b) (del-start-val Po-Sta T)
-        (str-x-pair-y-b) (del-start-val Po-Sta T)
+          (str-x-pair-x-b) (del-start-val Po-Sta T)
+          (str-x-pair-y-b) (del-start-val Po-Sta T)
 
-        (str-y-pair-x-b) (del-start-val Po-Sta T)
-        (str-y-pair-y-b) (del-start-val Po-Sta T)
+          (str-y-pair-x-b) (del-start-val Po-Sta T)
+          (str-y-pair-y-b) (del-start-val Po-Sta T)
 
-        (str-y-pair-x-a) (del-start-val Po-Sta T)
-        
-        (str-y-pair-y-a) #(del-start-val Po-Sta T)
+          (str-y-pair-x-a) (del-start-val Po-Sta T)        
+          (str-y-pair-y-a) (del-start-val Po-Sta T)
+          
+          (lst-x-pair-x-b) (del-start-val Po-Sta T))
+          
+        (lst-x-pair-y-b) #(del-start-val Po-Sta T)
         #(call 'sleep 10) (quit "STOP")
-        
-        (lst-x-pair-x-b) (del-start-val Po-Sta T)
-        (lst-x-pair-y-b) (del-start-val Po-Sta T)
 
-        (lst-y-pair-x-b) (del-start-val Po-Sta T)
-        (lst-y-pair-y-b) (del-start-val Po-Sta T)
-        (lst-y-pair-x-a) (del-start-val Po-Sta T)
-        (lst-y-pair-y-a) (del-start-val Po-Sta T)
+        #(lst-y-pair-x-b) (del-start-val Po-Sta T)
+        #(lst-y-pair-y-b) (del-start-val Po-Sta T)
+        #(lst-y-pair-x-a) (del-start-val Po-Sta T)
+        #(lst-y-pair-y-a) (del-start-val Po-Sta T)
         
-        (quit "DONE"))
+        #(quit "DONE")
+        )
         
       T)))
 
@@ -315,6 +317,7 @@
         T T)
   (con> Po-Sta NIL (gen-point NIL 'x))
 
+  ~(assert (not (get Po-Sta 'line 'n)))
   (put (get Po-Sta 'b) 'line (new '(+Line)))
   
   (set-ref> *ptr '*start 'b NIL)

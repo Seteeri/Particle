@@ -400,6 +400,7 @@
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-make-pair)
+  (cmd-ptr-right)
   (cmd-make-char (char "c"))
   (ver-start 
     'str-y-pair-y-a
