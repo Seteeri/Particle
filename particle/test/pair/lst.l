@@ -343,41 +343,39 @@
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-ptr-right)
-  # Either char or make-pair
-  (cmd-make-char (char "c"))
-  (cmd-ptr-left)
+  (cmd-make-pair)
   (cmd-make-pair)
   (ver-start 
     'lst-y-pair-x-a
     '(((+Pair)
-        (("c"))
+        (((NIL)))
         y
         NIL
         T
         NIL
         (4214357 0 0)
         T
-        (2408204 4816408)
+        (6020510 6020510)
         (NIL T) )
       ((+Pair)
-          ("c")
+          ((NIL))
           y
-          T
+          NIL
           T
           NIL
           (5418459 0 0)
           T
-          (1204102 2408204)
-          (NIL NIL) )
-      ((+Str)
-          "c"
+          (4816408 3612306)
+          (NIL T) )
+      ((+Pair)
+          (NIL)
           x
-          NIL
-          NIL
           T
+          T
+          NIL
           (6622561 0 0)
           T
-          (0 0)
+          (3612306 1204102)
           (NIL NIL) )
       ((+Nil)
           NIL
@@ -385,7 +383,27 @@
           NIL
           NIL
           T
-          (5418459 -2408204 0)
+          (6622561 -1204102 0)
+          T
+          (1204102 0)
+          NIL )
+      ((+Nil)
+          NIL
+          x
+          NIL
+          NIL
+          T
+          (9030765 0 0)
+          T
+          (1204102 1204102)
+          NIL )
+      ((+Nil)
+          NIL
+          x
+          NIL
+          NIL
+          T
+          (5418459 -3612306 0)
           T
           (1204102 0)
           (T NIL) )
@@ -395,10 +413,11 @@
           NIL
           NIL
           T
-          (4214357 -4816408 0)
+          (4214357 -6020510 0)
           T
           (1204102 0)
           (T NIL) ) )))    
+    
     
 (de lst-y-pair-y-a ()
   (cmd-ptr-right)
@@ -426,7 +445,7 @@
           (5418459 0 0)
           T
           (3612306 4816408)
-          (NIL NIL) )
+          (NIL T) )
       ((+Pair)
           (NIL)
           y
@@ -436,7 +455,7 @@
           (6622561 0 0)
           T
           (2408204 2408204)
-          (NIL NIL) )
+          (NIL T) )
       ((+Nil)
           NIL
           x
@@ -476,4 +495,4 @@
           (4214357 -7224612 0)
           T
           (1204102 0)
-          (T NIL) ) )))    
+          (T NIL) ) )))

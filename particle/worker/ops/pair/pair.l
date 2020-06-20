@@ -167,7 +167,7 @@
 
   }#
   
-  (println 'make-pair-b-pair)  
+  #(println 'make-pair-b-pair)  
   
   (let (Tgt (ref> *ptr)
         Po-Tgt (lup-pt Tgt)
