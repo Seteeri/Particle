@@ -19,18 +19,23 @@
             "/particle/c/socket.l"
             "/particle/c/ksd.l"
             "/particle/c/xkbcommon.l"
+            
             "/particle/misc.l"
             "/particle/kvmap.l"
+            
             "/particle/theme/selenized.l"
+            
             "/particle/ipc/ipc.l"
+
             "/particle/prot/conn.l"
             "/particle/prot/send.l"
             "/particle/prot/recv.l"
             "/particle/prot/obj.l"
+            
             "/particle/font/metrics.l"
             "/particle/font/font.l"
-            "/particle/ctrl/xkb.l"
             
+            "/particle/ctrl/xkb.l"
             
             "/particle/worker/debug.l"            
             "/particle/worker/conn.l"
@@ -41,6 +46,7 @@
             
             "/particle/worker/mode/txt/an.l"
             "/particle/worker/mode/txt/op.l"
+
             "/particle/worker/mode/cmd/op.l"
             
             "/particle/worker/vertex/make.l"
@@ -65,11 +71,12 @@
             "/particle/worker/ops/align.l"            
             "/particle/worker/ops/lay.l"
             "/particle/worker/ops/del.l"
-            "/particle/worker/ops/pair/pair.l"
-            "/particle/worker/ops/pair/atom.l"
             "/particle/worker/ops/sym.l"
             "/particle/worker/ops/line.l"
-            "/particle/worker/ops/alt.l"
+            "/particle/worker/ops/alt.l"            
+            
+            "/particle/worker/ops/pair/pair.l"
+            "/particle/worker/ops/pair/atom.l"
             
             "/particle/test/atom/atom.l"
             "/particle/test/atom/lst.l"
@@ -262,7 +269,7 @@
       (lay-pt-start '⇲ '⇲ T T)
       
       # Test
-      (when NIL
+      (when T
         (lst-x-atom-b) (del-start-val Po-Sta T)        
         (lst-x-atom-a) (del-start-val Po-Sta T)        
         (lst-y-atom-b) (del-start-val Po-Sta T)
@@ -274,11 +281,12 @@
         (str-y-atom-a) (del-start-val Po-Sta T)
 
         (str-x-pair-x-b) (del-start-val Po-Sta T)
-        (str-x-pair-x-b) (del-start-val Po-Sta T)
+        (str-x-pair-y-b) (del-start-val Po-Sta T)
         (str-y-pair-x-b) (del-start-val Po-Sta T)
         (str-y-pair-y-b) (del-start-val Po-Sta T)
         (str-y-pair-x-a) (del-start-val Po-Sta T)
         (str-y-pair-y-a) (del-start-val Po-Sta T)
+        
         #{
         (lst-x-pair-x-b) (del-start-val Po-Sta T)
         (lst-x-pair-x-b) (del-start-val Po-Sta T)
