@@ -5,8 +5,8 @@
   # If arbitrarily done, would break consistency...
   
   (let (Po-Tgt (if (pair> *ptr)
-                   (ref> *ptr)
-                   (lup-pt (ref> *ptr)))
+                   (get *ptr 'ref)
+                   (lup-pt (get *ptr 'ref)))
         Ln (c-ln> *ptr))
                    
     (unless (get Po-Tgt 'line)

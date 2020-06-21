@@ -27,7 +27,7 @@
   # Calling cmd on atom does nothing
   # Poss add opt
   
-  (let (Pair (ref> *ptr)
+  (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
         Ln (c-ln> *ptr)
         Po-Car (if (car Pair) (lup-pt @) (get Po-Pair 'a))
@@ -114,7 +114,7 @@
   
   (println 'alt-lay-x)
     
-  (let (Pair (ref> *ptr)
+  (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
         Ln (c-ln> *ptr)
         Po-Car (if (car Pair) (lup-pt @) (get Po-Pair 'a))
@@ -149,7 +149,7 @@
 
   (println 'alt-reg)
     
-  (let (Pair (ref> *ptr)
+  (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
         Po-A (get Po-Pair 'a)
         Po-B (get Po-Pair 'b)

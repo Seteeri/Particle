@@ -1,13 +1,3 @@
-#{
-
-  Ref stored in property list of object
-  so draw property cell
-
-  Would be nice to draw entire property list
-  on a single line
-  
-}#
-
 (class +Pointer)
 (dm T ()
 
@@ -38,7 +28,6 @@
 (dm rel-a?> () (= (: rel) 'a))
 (dm rel-b?> () (= (: rel) 'b))
 
-(dm ref> (R) (if R (=: ref R) (: ref)))
 (dm pair> (N) (if N (=: pair N) (: pair)))
 (dm rel> (S) (if S (=: rel S) (: rel)))    
 (dm ln> (X) (if X (push (:: ln) X) (pop (:: ln))))
@@ -68,7 +57,6 @@
   
 (dm uncol> (Pt Draw)
   (let ((R G B A) (: col))
-    # Set color but don't draw
     (if Draw
         (col> Pt (list R G B) A)
         (col-verts> Pt (list R G B) A))))

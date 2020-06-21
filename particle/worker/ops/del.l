@@ -83,7 +83,7 @@
   # Del back
   # Hook pair
   
-  (let (Pair (ref> *ptr)
+  (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
         Tgt (find-back-any> *ptr Pair T)
         Po-Tgt (lup-pt Tgt)
@@ -112,7 +112,7 @@
   # Del current
   # Hook atom up
   
-  (let (Po-Atom (ref> *ptr)
+  (let (Po-Atom (get *ptr 'ref)
         Atom (get Po-Atom 'any)
         Tgt (pair> *ptr)
         Po-Tgt (lup-pt Tgt)
@@ -142,7 +142,7 @@
     
 (de del-b-pair ()
 
-  (let (Pair (ref> *ptr)
+  (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
         Tgt (find-back-any> *ptr Pair T)
         Po-Tgt (lup-pt Tgt)

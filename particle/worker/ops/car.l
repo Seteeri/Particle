@@ -122,7 +122,7 @@
   
   (println 'repl-a-pair->y-pair)
   
-  (let (Tgt (ref> *ptr)
+  (let (Tgt (get *ptr 'ref)
         Po-Tgt (lup-pt Tgt)
         Pair (find-back> *ptr (rel> *ptr))
         Po-Pair (lup-pt Pair)
@@ -221,7 +221,7 @@
   
   (println 'repl-b-pair-x->y-pair)
   
-  (let (Pair (ref> *ptr)
+  (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
         Tgt (car Pair)
         Po-Tgt (if (get Po-Pair 'a)
@@ -326,7 +326,7 @@
   
   (println 'repl-b-pair-y->y-pair)
   
-  (let (Tgt (ref> *ptr)
+  (let (Tgt (get *ptr 'ref)
         Po-Tgt (lup-pt Tgt)
         Tgt-Car (car Tgt)
         Po-Tgt-Car (if Tgt-Car

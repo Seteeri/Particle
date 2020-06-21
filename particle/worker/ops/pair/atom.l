@@ -25,8 +25,8 @@
   #(println 'make-pair-a-atom-x)
     
   (let (Po-Tgt (if (pair> *ptr)
-                   (ref> *ptr)
-                   (lup-pt (ref> *ptr)))
+                   (get *ptr 'ref)
+                   (lup-pt (get *ptr 'ref)))
         Tgt (get Po-Tgt 'any)
         Pair (get Po-Tgt 'c 'any)
         Po-Pair (lup-pt Pair))
@@ -106,8 +106,8 @@
   }#
 
   (let (Po-Tgt (if (pair> *ptr)
-                   (ref> *ptr)
-                   (lup-pt (ref> *ptr)))
+                   (get *ptr 'ref)
+                   (lup-pt (get *ptr 'ref)))
         Tgt (get Po-Tgt 'any)
         Pair (get Po-Tgt 'c 'any)
         Po-Pair (lup-pt Pair))
@@ -181,7 +181,7 @@
 
   #(println 'make-pair-b-atom)
 
-  (let (Po-Tgt (ref> *ptr)
+  (let (Po-Tgt (get *ptr 'ref)
         Tgt (get Po-Tgt 'any)  
         Po-Pair (get Po-Tgt 'c)
         Pair (get Po-Pair 'any))  

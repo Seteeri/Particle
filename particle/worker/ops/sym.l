@@ -85,7 +85,7 @@
         Po-Cell (lup-pt Cell)
         Po-Del (if (pair> *ptr)
                    (get Po-Cell (rel> *ptr))
-                   (lup-pt (ref> *ptr)))
+                   (lup-pt (get *ptr 'ref)))
         Po-Dat (gen-point Dat 'x NIL T))
 
     (when (get Po-Del 'line)
@@ -205,7 +205,7 @@
   
   #(println 'con-b-pair-x)
   
-  (let (Cell (ref> *ptr)
+  (let (Cell (get *ptr 'ref)
         Po-Cell (lup-pt Cell)
         Pre (if (pair> *ptr)
                 @
@@ -263,7 +263,7 @@
   
   #(println 'con-b-pair-y)
   
-  (let (Pair (ref> *ptr)
+  (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
         Pre (find-back> *ptr (rel> *ptr))
         Po-Pre (lup-pt Pre)
@@ -324,7 +324,7 @@
         
   }#
   
-  (let (Pair (ref> *ptr)
+  (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
         Pre (find-back> *ptr (rel> *ptr))
         Po-Pre (lup-pt Pre)
@@ -376,7 +376,7 @@
         
   }#
   
-  (let (Pair (ref> *ptr)
+  (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
         Pre (find-back> *ptr (rel> *ptr))
         Po-Pre (lup-pt Pre)

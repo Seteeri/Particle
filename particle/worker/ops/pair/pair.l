@@ -62,7 +62,7 @@
   
   (println 'make-pair-b-pair-y)
   
-  (let (Tgt (ref> *ptr)
+  (let (Tgt (get *ptr 'ref)
         Po-Tgt (lup-pt Tgt)
         Tgt-Car (car Tgt)
         Po-Tgt-Car (if Tgt-Car
@@ -169,7 +169,7 @@
   
   #(println 'make-pair-b-pair)  
   
-  (let (Tgt (ref> *ptr)
+  (let (Tgt (get *ptr 'ref)
         Po-Tgt (lup-pt Tgt)
         Pair (find-back> *ptr (rel> *ptr))
         Po-Pair (lup-pt Pair)
@@ -283,7 +283,7 @@
   
   #(println 'make-pair-a-pair)
   
-  (let (Tgt (ref> *ptr)
+  (let (Tgt (get *ptr 'ref)
         Po-Tgt (lup-pt Tgt)
         Pair (find-back> *ptr (rel> *ptr))
         Po-Pair (lup-pt Pair)

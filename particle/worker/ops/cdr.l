@@ -65,8 +65,8 @@
   }#   
 
   (let (Po-Tgt (if (pair> *ptr)
-                   (ref> *ptr)
-                   (lup-pt (ref> *ptr)))
+                   (get *ptr 'ref)
+                   (lup-pt (get *ptr 'ref)))
         Pair (if (pair> *ptr)
                  @
                  (find-back> *ptr (rel> *ptr)))
@@ -187,7 +187,7 @@
   
   (println 'make-list)  
   
-  (let (Tgt (ref> *ptr)
+  (let (Tgt (get *ptr 'ref)
         Po-Tgt (lup-pt Tgt)
         Pair (find-back> *ptr (rel> *ptr))
         Po-Pair (lup-pt Pair)

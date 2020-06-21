@@ -36,7 +36,7 @@
 
 (de cmd-ptr-left (Ks)
   (if (and (rel-a?> *ptr)
-           (is-pair? (lup-pt (ref> *ptr)))
+           (is-pair? (lup-pt (get *ptr 'ref)))
            (not (lay-y?> *ptr)))
     (sup> *ptr T)
     (pre> *ptr T)))
@@ -50,7 +50,7 @@
 
 (de cmd-ptr-up (Ks)
   (if (or (and (rel-a?> *ptr)
-               (is-pair? (lup-pt (ref> *ptr))))
+               (is-pair? (lup-pt (get *ptr 'ref))))
           (lay-y?> *ptr))
       (pre> *ptr T)
       (sup> *ptr T)))
