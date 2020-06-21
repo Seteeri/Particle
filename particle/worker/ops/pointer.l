@@ -143,45 +143,40 @@
 
 (dm pt-pair> (Rel Draw)
   # Determine tgt
-  (let (Po-Ref (lup-pt (: ref))
-        Po-Atom (get Po-Ref Rel))
-    (if Po-Atom
-        (pt-pair-atom> This Po-Ref Po-Atom Rel Draw)
-        (pt-pair-pair> This Rel Draw))))
-
-              
-(dm pt-pair-atom> (Po-Ref Po-Atom Rel Draw)
-  
-  (let Lay-Y-Ref (lay-y?> Po-Ref)
-  
-    (mov-line-n> This Po-Atom)
-    (set-ref> This (: ref) Rel Po-Atom T)
-
-    (when Draw
-      (if (or (= Rel 'b)
-              (and (= Rel 'a)
-                   Lay-Y-Ref))
-          (top> Po-Atom)
-          (top> Po-Ref))
-      (draw> This))))
-  
-  
-(dm pt-pair-pair> (Rel Draw)
-  
-  #(println 'pt-pair-pair)
-  
-  (let (Po-Ref (lup-pt (: ref))
-        Tgt (if (= Rel 'a)
+  (let (Tgt (if (= Rel 'a)
                 (car (: ref))
                 (cdr (: ref)))
-        Po-Tgt (lup-pt Tgt))
+        Po-Top (if (atom Tgt)
+                   (pt-pair-atom> This Rel)
+                   (pt-pair-pair> This Rel Tgt)))
 
-    (mov-line-n> This Po-Tgt)
-    (set-ref> This Tgt Rel NIL T)
-    
+    (mov-line-n> This Po-Top)
+                   
     (when Draw
-      (top> Po-Tgt)
+      (top> Po-Top)
       (draw> This))))
+              
+              
+(dm pt-pair-atom> (Rel)
+  
+  (let (Po-Pair (lup-pt (: ref))
+        Lay-Y (lay-y?> Po-Pair)
+        Po-Atom (get Po-Pair Rel))
+  
+    (set-ref> This (: ref) Rel Po-Atom T)
+
+    (if (or (= Rel 'b)
+            (and (= Rel 'a)
+                  Lay-Y))
+        Po-Atom
+        Po-Pair)))
+
+
+(dm pt-pair-pair> (Rel Tgt)
+  
+  (set-ref> This Tgt Rel NIL T)
+  
+  (lup-pt Tgt))
   
   
 ##################
