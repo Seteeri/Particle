@@ -45,22 +45,22 @@
   (=: col (get-first-col> Pt)))
   
   
-(dm col> (Pt Draw)
+(dm col> (Pt Drw)
   (stor-col> This Pt)
   # Set color but don't draw
-  (if Draw
+  (if Drw
      (col> Pt *selb-yellow 1.0)
      (col-verts> Pt *selb-yellow 1.0)))
 
   
-(dm uncol> (Pt Draw)
+(dm uncol> (Pt Drw)
   (let ((R G B A) (: col))
-    (if Draw
+    (if Drw
         (col> Pt (list R G B) A)
         (col-verts> Pt (list R G B) A))))
 
     
-(dm pt> (Tgt Reg Po Draw)
+(dm pt> (Tgt Reg Po Drw)
   #{
   
     Any T
@@ -78,7 +78,7 @@
   (let? Po (if (: pair)
                (get (lup-pt (: pair)) (: reg))
                (lup-pt (: ref)))
-    (uncol> This Po Draw))
+    (uncol> This Po Drw))
           
         
   # Should store Point also
@@ -89,12 +89,12 @@
     (if Po
           
         (prog        
-          (col> This Po Draw)
+          (col> This Po Drw)
           (=: ref Po)
           (=: pair Tgt))
             
         (prog          
-          (col> This (lup-pt Tgt) Draw)
+          (col> This (lup-pt Tgt) Drw)
           (=: ref Tgt)
           (=: pair))))
         
@@ -128,7 +128,7 @@
 ######################################
 
 
-(dm pt-pair> (Reg Draw)
+(dm pt-pair> (Reg Drw)
   # Determine tgt
   (let (Tgt (if (= Reg 'a)
                 (car (: ref))
@@ -139,7 +139,7 @@
 
     (mov-line-n> This Po-Top)
                    
-    (when Draw
+    (when Drw
       (top> Po-Top)
       (draw> This))))
               
@@ -169,13 +169,13 @@
 ##################
 
 
-(dm pt-sym> (Reg Draw)
+(dm pt-sym> (Reg Drw)
   # Determine tgt
   (let Po-Tgt (if (val (: ref))
                   (pt-sym-pair> This Reg)
                   (pt-sym-nil> This Reg))
     (mov-line-n> This Po-Tgt)
-    (when Draw
+    (when Drw
       (top> Po-Tgt)
       (draw> This))))
 
@@ -250,7 +250,7 @@
       (find-back> This 'b Ref Pln)))
       
       
-(dm back> (Reg Draw)
+(dm back> (Reg Drw)
 
   (let (Back (if (: pair)
                  @
@@ -275,7 +275,7 @@
                  
     (pt> This Back Reg NIL T)
     
-    (when Draw
+    (when Drw
       (top> Po-Back)
       (draw> This)))
       
@@ -284,7 +284,7 @@
   )
 
 
-(dm forw> (Reg Draw)
+(dm forw> (Reg Drw)
 
   (cond
 
@@ -295,12 +295,12 @@
     ((or (a-pair?> This)
          (b-pair?> This))
       #(println 'forw> "A/B PAIR")
-      (pt-pair> This Reg Draw))
+      (pt-pair> This Reg Drw))
     
     ((or (a-atom?> This)
          (b-atom?> This))
       #(println 'forw> "A/B ATOM")
-      (pt-sym> This Reg Draw))
+      (pt-sym> This Reg Drw))
             
     (T
       # NIL - do nothing
@@ -311,7 +311,7 @@
   )
 
 
-(dm pre> (Draw) (back> This 'b Draw))
-(dm nex> (Draw) (forw> This 'b Draw))
-(dm sup> (Draw) (back> This 'a Draw))
-(dm sub> (Draw) (forw> This 'a Draw))
+(dm pre> (Drw) (back> This 'b Drw))
+(dm nex> (Drw) (forw> This 'b Drw))
+(dm sup> (Drw) (back> This 'a Drw))
+(dm sub> (Drw) (forw> This 'a Drw))
