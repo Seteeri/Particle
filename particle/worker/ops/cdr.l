@@ -104,7 +104,7 @@
       
       (put Pt-Car 'line (new '(+Line)))
       
-      (upd-tree)
+      (lay-*start)
       (mov-⇲ Ln)
             
       (pt> *ptr List 'b)            
@@ -219,7 +219,7 @@
     
     (ins-line-aft Pt-Cons Pt-Cdr)    
     
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
                 
     # Pt to list

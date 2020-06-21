@@ -134,5 +134,5 @@
     #(println 'l (get *line 'line 'l) (get *line 'line 'l 'any))
     )
 
-  #(upd-tree)
+  #(lay-*start)
   (mov-⇲ (c-lns> *ptr)))

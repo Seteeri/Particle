@@ -86,7 +86,7 @@
     
     (pt> *ptr Cons 'a)
     
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
                 
     (lns> *ptr Pt-Cons)      
@@ -211,7 +211,7 @@
       
     (pt> *ptr Cons 'b)
     
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
                 
     (lns> *ptr Pt-Cons)
@@ -301,7 +301,7 @@
     
     (pt> *ptr Cons 'a)
     
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
                 
     ~(assert (get Pt-Pair 'line))

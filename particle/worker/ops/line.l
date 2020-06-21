@@ -13,7 +13,7 @@
     
       (ins-line-aft Ln Pt-Tgt)
           
-      (upd-tree)
+      (lay-*start)
       (mov-⇲ Ln)
       
       (top> Pt-Tgt)
@@ -110,7 +110,7 @@
     
   (lns> *ptr)
 
-  (upd-tree)
+  (lay-*start)
   
   (mov-⇲ (c-lns> *ptr))
         

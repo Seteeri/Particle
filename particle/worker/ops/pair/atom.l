@@ -66,7 +66,7 @@
       
       (pt> *ptr List 'a)
       
-      (upd-tree)
+      (lay-*start)
       (mov-⇲ (c-lns> *ptr))
       
       (when Push-Pair (lns> *ptr Pt-Pair))
@@ -137,7 +137,7 @@
       
       (pt> *ptr List 'a)
 
-      (upd-tree)
+      (lay-*start)
       (mov-⇲ Pt-List)
 
       (lns> *ptr)
@@ -221,7 +221,7 @@
             
       (pt> *ptr List 'b)
       
-      (upd-tree)
+      (lay-*start)
       (mov-⇲ Pt-List)
             
       (lns> *ptr Pt-List)

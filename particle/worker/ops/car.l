@@ -138,7 +138,7 @@
     (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
     (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
     
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
                 
     # Pt to list
@@ -264,7 +264,7 @@
           
       (put Pt-List 'line (new '(+Line)))
       
-      (upd-tree)
+      (lay-*start)
       (mov-⇲ (c-lns> *ptr))
             
       (pt> *ptr List 'a)
@@ -348,7 +348,7 @@
     (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
     (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
     
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
                 
     (pt> *ptr Cons 'a)

@@ -101,7 +101,7 @@
         (set> Pt-Pair Dat Pt-Dat T)
         (con> Pt-Pair Dat Pt-Dat T))
         
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
     (when (str? (cadr Pair))
@@ -132,7 +132,7 @@
         
     (pt> *ptr List 'b))
     
-  (upd-tree)
+  (lay-*start)
   (mov-⇲ (c-lns> *ptr)))
         
         
@@ -155,7 +155,7 @@
         
     (pt> *ptr List 'b))
   
-  (upd-tree)
+  (lay-*start)
   (mov-⇲ (c-lns> *ptr)))          
         
 
@@ -226,7 +226,7 @@
                 
     # ref does not change
                 
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
     (top> Pt-Pair)
@@ -287,7 +287,7 @@
     
     (pt> *ptr List 'b)
     
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
         
     # Pop cur line = Pt-Pair
@@ -343,7 +343,7 @@
         
     (pt> *ptr List 'a)
         
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
     # Pop cur line = Pt-Pair
@@ -395,7 +395,7 @@
     # Keep ref - change rel
     (pt> *ptr Pair 'b)    
     
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
         
     (top> Pt-Pair)

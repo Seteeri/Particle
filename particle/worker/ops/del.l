@@ -100,7 +100,7 @@
     
     (set> Pt-Back Pair Pt-Pair)
         
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
     (top> Pt-Pair)
@@ -133,7 +133,7 @@
     # Update ptr cell
     (put *ptr 'pair Back)
         
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
     (top> Pt-Atom)
@@ -166,7 +166,7 @@
                 (new '(+Line)))))
         (con> Pt-Back Pair Pt-Pair))
         
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
     (top> Pt-Pair)

@@ -48,7 +48,7 @@
         
     (put Pt-Car 'line (new '(+Line)))
 
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ Pt-Pair)
 
     (unless (= Ln Pt-Pair)
@@ -127,7 +127,7 @@
     
     (put Pt-Car 'line)
 
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ Pt-Pair)
 
     (unless (= Ln Pt-Pair)
@@ -175,5 +175,5 @@
     (let? N (get Ln-Cdr 'n)
       (put N 'line 'p Pt-Car))
         
-    (upd-tree)
+    (lay-*start)
     (mov-⇲ Pt-Pair)))

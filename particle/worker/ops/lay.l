@@ -69,7 +69,7 @@
                     
 ###################
 
-(de upd-tree ()
+(de lay-*start ()
   (mov-cur 0.0 0.0)
   (lay-pt-start '*start '*start T T))
 
