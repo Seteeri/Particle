@@ -83,7 +83,7 @@
         
   # Should store Point also
   
-  (let Po-Tgt (lup-pt Tgt)
+  (let Pt-Tgt (lup-pt Tgt)
       
     # Set ref
     (if Po
@@ -133,30 +133,30 @@
   (let (Tgt (if (= Reg 'a)
                 (car (: ref))
                 (cdr (: ref)))
-        Po-Top (if (atom Tgt)
+        Pt-Top (if (atom Tgt)
                    (pt-pair-atom> This Reg)
                    (pt-pair-pair> This Reg Tgt)))
 
-    (mov-line-n> This Po-Top)
+    (mov-line-n> This Pt-Top)
                    
     (when Drw
-      (top> Po-Top)
+      (top> Pt-Top)
       (draw> This))))
               
               
 (dm pt-pair-atom> (Reg)
   
-  (let (Po-Pair (lup-pt (: ref))
-        Lay-Y (lay-y?> Po-Pair)
-        Po-Atom (get Po-Pair Reg))
+  (let (Pt-Pair (lup-pt (: ref))
+        Lay-Y (lay-y?> Pt-Pair)
+        Pt-Atom (get Pt-Pair Reg))
   
-    (pt> This (: ref) Reg Po-Atom T)
+    (pt> This (: ref) Reg Pt-Atom T)
 
     (if (or (= Reg 'b)
             (and (= Reg 'a)
                   Lay-Y))
-        Po-Atom
-        Po-Pair)))
+        Pt-Atom
+        Pt-Pair)))
 
 
 (dm pt-pair-pair> (Reg Tgt)
@@ -171,12 +171,12 @@
 
 (dm pt-sym> (Reg Drw)
   # Determine tgt
-  (let Po-Tgt (if (val (: ref))
+  (let Pt-Tgt (if (val (: ref))
                   (pt-sym-pair> This Reg)
                   (pt-sym-nil> This Reg))
-    (mov-line-n> This Po-Tgt)
+    (mov-line-n> This Pt-Tgt)
     (when Drw
-      (top> Po-Tgt)
+      (top> Pt-Tgt)
       (draw> This))))
 
           
@@ -201,24 +201,24 @@
 ###############################
 
 
-(dm mov-line-p> (Po-Ref Po-Tgt)    
+(dm mov-line-p> (Pt-Ref Pt-Tgt)    
 
   # If new has line, set it
   # else if old has line but new doesn't = mov prv line
 
-  (if (get Po-Tgt 'line)
-      (unless (= (c-lns> This) Po-Tgt)
-        #(lns> This Po-Tgt)
+  (if (get Pt-Tgt 'line)
+      (unless (= (c-lns> This) Pt-Tgt)
+        #(lns> This Pt-Tgt)
         (lns> This)
         )
-      (when (get Po-Ref 'line)
+      (when (get Pt-Ref 'line)
         (lns> This))))
 
 
-(dm mov-line-n> (Po-Tgt)
-  (when (get Po-Tgt 'line) # Tgt has line
-    (unless (= (c-lns> This) Po-Tgt)
-      (lns> This Po-Tgt))))
+(dm mov-line-n> (Pt-Tgt)
+  (when (get Pt-Tgt 'line) # Tgt has line
+    (unless (= (c-lns> This) Pt-Tgt)
+      (lns> This Pt-Tgt))))
       
       
 (dm find-back> (Reg Ref Pln)
@@ -255,7 +255,7 @@
   (let (Back (if (: pair)
                  @
                  (find-back> This Reg))
-        Po-Back (lup-pt Back))
+        Pt-Back (lup-pt Back))
     
     # Find Reg of back to its back
     (let (Find-Car (find-back> This 'a Back T)
@@ -271,12 +271,12 @@
                  (if (: pair)
                      (: ref)
                      (lup-pt (: ref)))
-                 Po-Back)     
+                 Pt-Back)     
                  
     (pt> This Back Reg NIL T)
     
     (when Drw
-      (top> Po-Back)
+      (top> Pt-Back)
       (draw> This)))
       
   #(prin "back> PTR: ") (println (: ref) (: pair) (: reg))

@@ -369,22 +369,22 @@
   (unless Col (setq Col (get-col-type Any)))
     
   (let (Name (sym Any)
-        Po-Name (new '(+Num)
+        Pt-Name (new '(+Num)
                   Name
                   Lay
                   NIL NIL
                   NIL
                   Col)
-        Po-Cdr (gen-point (val Any) 'x NIL)
+        Pt-Cdr (gen-point (val Any) 'x NIL)
         Props (getl Any)
-        Po-Car (gen-point Props 'x NIL)
-        Po-Pair (new '(+Box)
+        Pt-Car (gen-point Props 'x NIL)
+        Pt-Pair (new '(+Box)
                   Any
                   'x
-                  Po-Car Po-Cdr
+                  Pt-Car Pt-Cdr
                   T))
     
-    (with Po-Pair
+    (with Pt-Pair
       (let ((Verts W)
               (make-vert-pair Ch-Pair Col))
         (=: verts Verts)
@@ -397,15 +397,15 @@
         
     # Attach name to end of plist
     (let (Last (tail 1 Props)
-          Po-Last (lup-pt Last))
-      (con> Po-Last Name Po-Name))
+          Pt-Last (lup-pt Last))
+      (con> Pt-Last Name Pt-Name))
                   
-    (idx-pt Po-Name)        
-    (idx-pt Po-Pair)                  
+    (idx-pt Pt-Name)        
+    (idx-pt Pt-Pair)                  
 
     # Lines
             
-    Po-Pair))
+    Pt-Pair))
     
     
 (de gen-ptr (Any

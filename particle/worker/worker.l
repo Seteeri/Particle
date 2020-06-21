@@ -237,26 +237,26 @@
     (setq *ptr (new '(+Pointer)))
     (put *ptr 'ref NIL)
         
-    (let (Po-Sta (gen-sym-exp '*start 'x T T)
-          Po-Ptr (gen-ptr     '*ptr "↓" *selb-yellow)
-          Po-Txt (gen-ptr     '*txt "↓" *selb-yellow)
-          Po-Cmd (gen-ptr     '*cmd "↓" *selb-yellow)
-          Po-D   (gen-point   '⇲      'x))
+    (let (Pt-Sta (gen-sym-exp '*start 'x T T)
+          Pt-Ptr (gen-ptr     '*ptr "↓" *selb-yellow)
+          Pt-Txt (gen-ptr     '*txt "↓" *selb-yellow)
+          Pt-Cmd (gen-ptr     '*cmd "↓" *selb-yellow)
+          Pt-D   (gen-point   '⇲      'x))
       
-      (setq *po-ptr-txt Po-Txt)
-      (setq *po-ptr-cmd Po-Cmd)
+      (setq *po-ptr-txt Pt-Txt)
+      (setq *po-ptr-cmd Pt-Cmd)
       
-      (put (get Po-Sta 'b) 'line (new '(+Line)))
+      (put (get Pt-Sta 'b) 'line (new '(+Line)))
       (mov-cur 0.0 0.0)
       (lay-pt-start '*start '*start T T)
 
-      (del> (get Po-Ptr 'b)) (put Po-Ptr 'b T)
-      (del> (get Po-Txt 'b)) (put Po-Txt 'b T)
-      (del> (get Po-Cmd 'b)) (put Po-Cmd 'b T)
+      (del> (get Pt-Ptr 'b)) (put Pt-Ptr 'b T)
+      (del> (get Pt-Txt 'b)) (put Pt-Txt 'b T)
+      (del> (get Pt-Cmd 'b)) (put Pt-Cmd 'b T)
       
-      (put *ptr 'pt Po-Txt)
+      (put *ptr 'pt Pt-Txt)
       # Upd +Point on change
-      (mov-line-n> *ptr Po-Sta)
+      (mov-line-n> *ptr Pt-Sta)
       (pt> *ptr '*start 'b)
       
       (mov-cur 0.0 1.0)     
@@ -265,7 +265,7 @@
     
       (mov-cur 0.0 0.0)
       (adj-cur-y 3.0)
-      (col-verts> Po-D *selb-yellow 1.0)
+      (col-verts> Pt-D *selb-yellow 1.0)
       (lay-pt-start '⇲ '⇲ T T)
       
       # Test
@@ -277,25 +277,25 @@
       T)))
 
 
-(de del-start-val (Po-Sta Draw)
+(de del-start-val (Pt-Sta Draw)
     
-  ~(assert (not (get Po-Sta 'line 'n)))  
+  ~(assert (not (get Pt-Sta 'line 'n)))  
     
-  (del> (if (get Po-Sta 'b)
+  (del> (if (get Pt-Sta 'b)
             @ 
             (lup-pt *start))
         T T)
-  (con> Po-Sta NIL (gen-point NIL 'x))
+  (con> Pt-Sta NIL (gen-point NIL 'x))
 
-  (put (get Po-Sta 'b) 'line (new '(+Line)))
+  (put (get Pt-Sta 'b) 'line (new '(+Line)))
   
   (pt> *ptr '*start 'b NIL)
-  (put *ptr 'lns (list Po-Sta))
+  (put *ptr 'lns (list Pt-Sta))
     
   (when Draw
     (setq *cur (list 0.0 0.0 0.0))
     (lay-pt-start '*start '*start T T)
-    (top> Po-Sta)
+    (top> Pt-Sta)
     (draw> *ptr)))
 
 

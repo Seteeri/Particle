@@ -64,52 +64,52 @@
     
   }#   
 
-  (let (Po-Tgt (if (get *ptr 'pair)
+  (let (Pt-Tgt (if (get *ptr 'pair)
                    (get *ptr 'ref)
                    (lup-pt (get *ptr 'ref)))
         Pair (if (get *ptr 'pair)
                  @
                  (find-back> *ptr (get *ptr 'reg)))
-        Po-Pair (lup-pt Pair))
+        Pt-Pair (lup-pt Pair))
     
     (println 'repl-b-atom "Pair/Cdr: " 
-      Pair (get Po-Pair 'b) Po-Tgt)
+      Pair (get Pt-Pair 'b) Pt-Tgt)
   
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
     # * Put NIL otherwise set will del new point
     # * Pop line if necessary
     (put *ptr 'ref)  
-    (put Po-Pair 'b)
-    (when (= (c-lns> *ptr) Po-Tgt) (lns> *ptr))
-    (del> Po-Tgt)
+    (put Pt-Pair 'b)
+    (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
+    (del> Pt-Tgt)
     
     (let (List (list Tgt)
-          Po-List (gen-point List 'x NIL T)
-          Po-Car (get Po-List 'a)
-          Po-Cdr (get Po-List 'b)
+          Pt-List (gen-point List 'x NIL T)
+          Pt-Car (get Pt-List 'a)
+          Pt-Cdr (get Pt-List 'b)
           Ln (c-lns> *ptr))
     
-      (set-lay> Po-List 'y)    
+      (set-lay> Pt-List 'y)    
     
-      (con> Po-Pair List)
+      (con> Pt-Pair List)
             
-      (if (get Po-List 'line)
-          (put @ 'n Po-Cdr)
-          (ins-line-aft Ln Po-List))
+      (if (get Pt-List 'line)
+          (put @ 'n Pt-Cdr)
+          (ins-line-aft Ln Pt-List))
           
-      (if (get Po-Cdr 'line)
-          (put @ 'p Po-List)
-          (ins-line-aft Po-List Po-Cdr))
+      (if (get Pt-Cdr 'line)
+          (put @ 'p Pt-List)
+          (ins-line-aft Pt-List Pt-Cdr))
       
-      (put Po-Car 'line (new '(+Line)))
+      (put Pt-Car 'line (new '(+Line)))
       
       (upd-tree)
       (mov-⇲ Ln)
             
       (pt> *ptr List 'b)            
-      (lns> *ptr Po-List)
-      (top> Po-List)
+      (lns> *ptr Pt-List)
+      (top> Pt-List)
       (draw> *ptr))))
           
           
@@ -188,42 +188,42 @@
   (println 'make-list)  
   
   (let (Tgt (get *ptr 'ref)
-        Po-Tgt (lup-pt Tgt)
+        Pt-Tgt (lup-pt Tgt)
         Pair (find-back> *ptr (get *ptr 'reg))
-        Po-Pair (lup-pt Pair)
+        Pt-Pair (lup-pt Pair)
         Cons (cons)
-        Po-Cons (gen-point Cons 'x NIL T)
-        Po-Cdr (get Po-Cons 'b)
+        Pt-Cons (gen-point Cons 'x NIL T)
+        Pt-Cdr (get Pt-Cons 'b)
         Ln (c-lns> *ptr))
     
-    (set-lay> Po-Cons 'y)    
+    (set-lay> Pt-Cons 'y)    
   
-    (con> Po-Pair Cons Po-Cons)
-    (set> Po-Cons Tgt Po-Tgt)
+    (con> Pt-Pair Cons Pt-Cons)
+    (set> Pt-Cons Tgt Pt-Tgt)
                 
-    (if (get Po-Tgt 'line)
+    (if (get Pt-Tgt 'line)
         (prog
           (if (get @ 'p)
               (prog
-                (pop-line Po-Tgt)
-                (setq Ln (get Po-Tgt 'line 'p))
-                (put Po-Tgt 'line 'p))
+                (pop-line Pt-Tgt)
+                (setq Ln (get Pt-Tgt 'line 'p))
+                (put Pt-Tgt 'line 'p))
               (prog
-                (setq Ln (get Po-Tgt 'line 'p))))
+                (setq Ln (get Pt-Tgt 'line 'p))))
           # Only pop if replacing line
           (lns> *ptr))
         (prog
-          (put Po-Tgt 'line (new '(+Line)))))
+          (put Pt-Tgt 'line (new '(+Line)))))
     
-    (ins-line-aft Ln Po-Cons)
+    (ins-line-aft Ln Pt-Cons)
     
-    (ins-line-aft Po-Cons Po-Cdr)    
+    (ins-line-aft Pt-Cons Pt-Cdr)    
     
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
                 
     # Pt to list
     (pt> *ptr Cons 'a)
-    (lns> *ptr Po-Cons)
-    (top> Po-Cons)
+    (lns> *ptr Pt-Cons)
+    (top> Pt-Cons)
     (draw> *ptr)))

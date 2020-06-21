@@ -84,26 +84,26 @@
   # Hook pair
   
   (let (Pair (get *ptr 'ref)
-        Po-Pair (lup-pt Pair)
+        Pt-Pair (lup-pt Pair)
         Tgt (find-back-any> *ptr Pair T)
-        Po-Tgt (lup-pt Tgt)
+        Pt-Tgt (lup-pt Tgt)
         Back (find-back-any> *ptr Tgt T)
-        Po-Back (lup-pt Back))
+        Pt-Back (lup-pt Back))
 
-    (when (get Po-Tgt 'line)
-      (del-line Po-Tgt)
+    (when (get Pt-Tgt 'line)
+      (del-line Pt-Tgt)
       (let Ln (lns> *ptr)
         (lns> *ptr)
         (lns> *ptr Ln)))
-    (del> Po-Tgt NIL T)
-    (put Po-Tgt 'a NIL)
+    (del> Pt-Tgt NIL T)
+    (put Pt-Tgt 'a NIL)
     
-    (set> Po-Back Pair Po-Pair)
+    (set> Pt-Back Pair Pt-Pair)
         
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
     
-    (top> Po-Pair)
+    (top> Pt-Pair)
     (draw> *ptr)))
       
       
@@ -112,23 +112,23 @@
   # Del current
   # Hook atom up
   
-  (let (Po-Atom (get *ptr 'ref)
-        Atom (get Po-Atom 'any)
+  (let (Pt-Atom (get *ptr 'ref)
+        Atom (get Pt-Atom 'any)
         Tgt (get *ptr 'pair)
-        Po-Tgt (lup-pt Tgt)
+        Pt-Tgt (lup-pt Tgt)
         Back (find-back-any> *ptr Tgt T)
-        Po-Back (lup-pt Back))
+        Pt-Back (lup-pt Back))
     
-    (when (get Po-Tgt 'line)
-      (del-line Po-Tgt)
+    (when (get Pt-Tgt 'line)
+      (del-line Pt-Tgt)
       (let Ln (lns> *ptr)
         (lns> *ptr)
         (lns> *ptr Ln)))      
-    (mov-line-n> *ptr Po-Back)
-    (del> Po-Tgt T NIL)
-    (put Po-Tgt 'b NIL)
+    (mov-line-n> *ptr Pt-Back)
+    (del> Pt-Tgt T NIL)
+    (put Pt-Tgt 'b NIL)
     
-    (con> Po-Back Atom Po-Atom)
+    (con> Pt-Back Atom Pt-Atom)
         
     # Update ptr cell
     (put *ptr 'pair Back)
@@ -136,38 +136,38 @@
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
     
-    (top> Po-Atom)
+    (top> Pt-Atom)
     (draw> *ptr)))
     
     
 (de del-b-pair ()
 
   (let (Pair (get *ptr 'ref)
-        Po-Pair (lup-pt Pair)
+        Pt-Pair (lup-pt Pair)
         Tgt (find-back-any> *ptr Pair T)
-        Po-Tgt (lup-pt Tgt)
+        Pt-Tgt (lup-pt Tgt)
         Back (find-back-any> *ptr Tgt T)
-        Po-Back (lup-pt Back))
+        Pt-Back (lup-pt Back))
 
-    (when (get Po-Tgt 'line)
-      (del-line Po-Tgt)
+    (when (get Pt-Tgt 'line)
+      (del-line Pt-Tgt)
       (lns> *ptr) (lns> *ptr))
-    (mov-line-n> *ptr Po-Pair)
+    (mov-line-n> *ptr Pt-Pair)
     
-    (del> Po-Tgt T NIL)
-    (put Po-Tgt 'b NIL)
+    (del> Pt-Tgt T NIL)
+    (put Pt-Tgt 'b NIL)
     
     (if (= (car Back) Tgt)
         (prog
-          (set> Po-Back Pair Po-Pair)
-          (if (get Po-Pair 'line)
+          (set> Pt-Back Pair Pt-Pair)
+          (if (get Pt-Pair 'line)
               (put @ 'p NIL)
-              (put Po-Pair 'line
+              (put Pt-Pair 'line
                 (new '(+Line)))))
-        (con> Po-Back Pair Po-Pair))
+        (con> Pt-Back Pair Pt-Pair))
         
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
     
-    (top> Po-Pair)
+    (top> Pt-Pair)
     (draw> *ptr)))          

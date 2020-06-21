@@ -29,12 +29,12 @@
 
       #(println Any)
     
-      (let ((Any Reg Po-C) Any
+      (let ((Any Reg Pt-C) Any
             Po (if Any
                    (lup-pt Any)
                    (if (= Reg 'a)
-                       (get Po-C 'a)
-                       (get Po-C 'b))))
+                       (get Pt-C 'a)
+                       (get Pt-C 'b))))
         
         #(println (h64 (adr Any)) (adr Any) Any Po (type Po))
         #(println 'lay-pair Any Po (type Po) "A:" (get Po 'a) "B:" (get Po 'b))
@@ -48,13 +48,13 @@
         # Must do this here
         # Cannot guarantee Cdr will be drawn next (after lay>)
         # if Car is deep
-        (when (and (= Reg 'b) Po-C)
+        (when (and (= Reg 'b) Pt-C)
           # Regies on car
-          # If not drawn, use Po-C dims
+          # If not drawn, use Pt-C dims
           (if Lay-A
-              (pos-cur-cdr> Po-C)
+              (pos-cur-cdr> Pt-C)
               (prog
-                (pos-cur-car-y> Po-C))))
+                (pos-cur-car-y> Pt-C))))
         
                 
         # Lay should return next obj to draw

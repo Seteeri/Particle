@@ -85,7 +85,7 @@
       (super)))
 
 
-(dm con> (Dat Po-Dat Del)
+(dm con> (Dat Pt-Dat Del)
 
   # Del prv
   # NIL is not ref'd in tree so pass
@@ -98,11 +98,11 @@
       
   (set (: any) Dat)
   
-  # If Po-Dat is an atom
-  (when Po-Dat
-    (unless (is-pair? Po-Dat)
-      (put This 'b Po-Dat)
-      (put Po-Dat 'c This))))
+  # If Pt-Dat is an atom
+  (when Pt-Dat
+    (unless (is-pair? Pt-Dat)
+      (put This 'b Pt-Dat)
+      (put Pt-Dat 'c This))))
 
       
 (class +Str +Sym)

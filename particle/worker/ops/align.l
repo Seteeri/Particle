@@ -13,17 +13,17 @@
 
   (let (Prv (if (get Po 'line 'p) @ *line-lay)
         Car-P (car (get Prv 'any))
-        Po-Car (if Car-P (lup-pt @) (get Prv 'a))
+        Pt-Car (if Car-P (lup-pt @) (get Prv 'a))
         Ori-P (get Prv 'ori)
         Dims-P (if (lay-y?> Prv)
-                   (get Po-Car 'line 'dims)
+                   (get Pt-Car 'line 'dims)
                    (get Prv 'line 'dims)))
                 
     (when NIL
       (prin "align-cur-line, Tgt: ")
         (println Po (get Po 'any))
       (prin "   align-cur-line, Prv: ")
-        (println Prv (get Prv 'any) Po-Car)
+        (println Prv (get Prv 'any) Pt-Car)
       (prin "   align-cur-line, Dims: ")
         (println Dims-P (lup-pt (car (get Prv 'any)))))
 

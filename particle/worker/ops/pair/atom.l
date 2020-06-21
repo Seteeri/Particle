@@ -24,12 +24,12 @@
 
   #(println 'make-pair-a-atom-x)
     
-  (let (Po-Tgt (if (get *ptr 'pair)
+  (let (Pt-Tgt (if (get *ptr 'pair)
                    (get *ptr 'ref)
                    (lup-pt (get *ptr 'ref)))
-        Tgt (get Po-Tgt 'any)
-        Pair (get Po-Tgt 'c 'any)
-        Po-Pair (lup-pt Pair))
+        Tgt (get Pt-Tgt 'any)
+        Pair (get Pt-Tgt 'c 'any)
+        Pt-Pair (lup-pt Pair))
                   
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
@@ -38,40 +38,40 @@
     #
     # Does this functionality need to be in the methods?
     (put *ptr 'ref)  
-    (put Po-Pair 'a)
-    (when (= (c-lns> *ptr) Po-Tgt) (lns> *ptr))
-    (del> Po-Tgt)    
+    (put Pt-Pair 'a)
+    (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
+    (del> Pt-Tgt)    
     
     (let (List (list Tgt)
-          Po-List (gen-point List 'x NIL T)
+          Pt-List (gen-point List 'x NIL T)
           Ln (c-lns> *ptr)
           Ln-N (get Ln 'line 'n)
           Cdr (cdr Pair)
-          Po-Cdr (if Cdr (lup-pt Cdr) (get Po-Pair 'b))
-          Push-Pair (not (get Po-Pair 'line)))
+          Pt-Cdr (if Cdr (lup-pt Cdr) (get Pt-Pair 'b))
+          Push-Pair (not (get Pt-Pair 'line)))
     
-      (set-lay> Po-Pair 'y)    
+      (set-lay> Pt-Pair 'y)    
     
-      (set> Po-Pair List Po-List)
+      (set> Pt-Pair List Pt-List)
             
-      (if (get Po-Pair 'line)
-          (put @ 'n Po-Cdr)      
-          (ins-line-aft Ln Po-Pair))
+      (if (get Pt-Pair 'line)
+          (put @ 'n Pt-Cdr)      
+          (ins-line-aft Ln Pt-Pair))
       
-      (if (get Po-Cdr 'line)
-          (put @ 'p Po-Pair)
-          (ins-line-aft Po-Pair Po-Cdr))
+      (if (get Pt-Cdr 'line)
+          (put @ 'p Pt-Pair)
+          (ins-line-aft Pt-Pair Pt-Cdr))
           
-      (put Po-List 'line (new '(+Line)))
+      (put Pt-List 'line (new '(+Line)))
       
       (pt> *ptr List 'a)
       
       (upd-tree)
       (mov-⇲ (c-lns> *ptr))
       
-      (when Push-Pair (lns> *ptr Po-Pair))
-      (lns> *ptr Po-List)
-      (top> Po-List)
+      (when Push-Pair (lns> *ptr Pt-Pair))
+      (lns> *ptr Pt-List)
+      (top> Pt-List)
       (draw> *ptr))))    
 
 
@@ -105,44 +105,44 @@
       
   }#
 
-  (let (Po-Tgt (if (get *ptr 'pair)
+  (let (Pt-Tgt (if (get *ptr 'pair)
                    (get *ptr 'ref)
                    (lup-pt (get *ptr 'ref)))
-        Tgt (get Po-Tgt 'any)
-        Pair (get Po-Tgt 'c 'any)
-        Po-Pair (lup-pt Pair))
+        Tgt (get Pt-Tgt 'any)
+        Pair (get Pt-Tgt 'c 'any)
+        Pt-Pair (lup-pt Pair))
     
-    ~(assert (get Po-Tgt 'line))
+    ~(assert (get Pt-Tgt 'line))
       
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
     # * Put NIL otherwise set will del new point
     # * Pop line if necessary
     (put *ptr 'ref)  
-    (put Po-Pair 'a)
-    (when (= (c-lns> *ptr) Po-Tgt) (lns> *ptr))
-    (del> Po-Tgt)
+    (put Pt-Pair 'a)
+    (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
+    (del> Pt-Tgt)
     
     (let (List (list Tgt)
-          Po-List (gen-point List 'x NIL T)
-          Po-Car (get Po-List 'a)
-          Po-Cdr (get Po-List 'b)
+          Pt-List (gen-point List 'x NIL T)
+          Pt-Car (get Pt-List 'a)
+          Pt-Cdr (get Pt-List 'b)
           Ln (c-lns> *ptr))
     
-      (set-lay> Po-List 'y)
+      (set-lay> Pt-List 'y)
     
-      (set> Po-Pair List)
+      (set> Pt-Pair List)
 
-      (put Po-List 'line (new '(+Line)))
+      (put Pt-List 'line (new '(+Line)))
       
       (pt> *ptr List 'a)
 
       (upd-tree)
-      (mov-⇲ Po-List)
+      (mov-⇲ Pt-List)
 
       (lns> *ptr)
-      (lns> *ptr Po-List)
-      (top> Po-List)
+      (lns> *ptr Pt-List)
+      (top> Pt-List)
       (draw> *ptr))))   
       
       
@@ -181,49 +181,49 @@
 
   #(println 'make-pair-b-atom)
 
-  (let (Po-Tgt (get *ptr 'ref)
-        Tgt (get Po-Tgt 'any)  
-        Po-Pair (get Po-Tgt 'c)
-        Pair (get Po-Pair 'any))  
+  (let (Pt-Tgt (get *ptr 'ref)
+        Tgt (get Pt-Tgt 'any)  
+        Pt-Pair (get Pt-Tgt 'c)
+        Pair (get Pt-Pair 'any))  
     
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
     # * Put NIL otherwise set will del new point
     # * Pop line if necessary
     (put *ptr 'ref)  
-    (put Po-Pair 'b)
-    (when (= (c-lns> *ptr) Po-Tgt) (lns> *ptr))
-    (del> Po-Tgt)
+    (put Pt-Pair 'b)
+    (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
+    (del> Pt-Tgt)
     
     (let (List (list Tgt)
-          Po-List (gen-point List 'x NIL T)
-          Po-Car (get Po-List 'a)
-          Po-Cdr (get Po-List 'b)
+          Pt-List (gen-point List 'x NIL T)
+          Pt-Car (get Pt-List 'a)
+          Pt-Cdr (get Pt-List 'b)
           Ln (c-lns> *ptr))
         
-      (set-lay> Po-List 'y)    
+      (set-lay> Pt-List 'y)    
     
-      (con> Po-Pair List)
+      (con> Pt-Pair List)
       
-      (if (get Po-List 'line)
-          (put @ 'n Po-Cdr)
+      (if (get Pt-List 'line)
+          (put @ 'n Pt-Cdr)
           (prog
-            (ins-line-aft Ln Po-List)
-            (put Po-List 'line 'n Po-Cdr)))
+            (ins-line-aft Ln Pt-List)
+            (put Pt-List 'line 'n Pt-Cdr)))
 
-      (when (get Po-Pair 'exp) # handle sym
-        (put Po-Pair 'line 'n NIL)
-        (put Po-List 'line 'p NIL))
+      (when (get Pt-Pair 'exp) # handle sym
+        (put Pt-Pair 'line 'n NIL)
+        (put Pt-List 'line 'p NIL))
                 
-      (put Po-Cdr 'line (new '(+Line) Po-List))
+      (put Pt-Cdr 'line (new '(+Line) Pt-List))
       
-      (put Po-Car 'line (new '(+Line)))
+      (put Pt-Car 'line (new '(+Line)))
             
       (pt> *ptr List 'b)
       
       (upd-tree)
-      (mov-⇲ Po-List)
+      (mov-⇲ Pt-List)
             
-      (lns> *ptr Po-List)
-      (top> Po-List)
+      (lns> *ptr Pt-List)
+      (top> Pt-List)
       (draw> *ptr))))            

@@ -120,46 +120,46 @@
   
 (de run-tests ()
   
-  (lst-x-atom-b) (del-start-val Po-Sta T)        
-  (lst-x-atom-a) (del-start-val Po-Sta T)        
+  (lst-x-atom-b) (del-start-val Pt-Sta T)        
+  (lst-x-atom-a) (del-start-val Pt-Sta T)        
 
-  (lst-y-atom-b) (del-start-val Po-Sta T)
-  (lst-y-atom-a) (del-start-val Po-Sta T)
+  (lst-y-atom-b) (del-start-val Pt-Sta T)
+  (lst-y-atom-a) (del-start-val Pt-Sta T)
 
-  (str-x-atom-b) (del-start-val Po-Sta T)
-  (str-x-atom-a) (del-start-val Po-Sta T)
+  (str-x-atom-b) (del-start-val Pt-Sta T)
+  (str-x-atom-a) (del-start-val Pt-Sta T)
 
-  (str-y-atom-b) (del-start-val Po-Sta T)
-  (str-y-atom-a) (del-start-val Po-Sta T)
+  (str-y-atom-b) (del-start-val Pt-Sta T)
+  (str-y-atom-a) (del-start-val Pt-Sta T)
 
-  (str-x-pair-x-b) (del-start-val Po-Sta T)
-  (str-x-pair-y-b) (del-start-val Po-Sta T)
+  (str-x-pair-x-b) (del-start-val Pt-Sta T)
+  (str-x-pair-y-b) (del-start-val Pt-Sta T)
 
-  (str-y-pair-x-b) (del-start-val Po-Sta T)
-  (str-y-pair-y-b) (del-start-val Po-Sta T)
+  (str-y-pair-x-b) (del-start-val Pt-Sta T)
+  (str-y-pair-y-b) (del-start-val Pt-Sta T)
 
-  (str-y-pair-x-a) (del-start-val Po-Sta T)        
-  (str-y-pair-y-a) (del-start-val Po-Sta T)
+  (str-y-pair-x-a) (del-start-val Pt-Sta T)        
+  (str-y-pair-y-a) (del-start-val Pt-Sta T)
   
-  (lst-x-pair-x-b) (del-start-val Po-Sta T)
-  (lst-x-pair-y-b) (del-start-val Po-Sta T)
+  (lst-x-pair-x-b) (del-start-val Pt-Sta T)
+  (lst-x-pair-y-b) (del-start-val Pt-Sta T)
 
-  (lst-y-pair-x-b) (del-start-val Po-Sta T)
-  (lst-y-pair-y-b) (del-start-val Po-Sta T)
+  (lst-y-pair-x-b) (del-start-val Pt-Sta T)
+  (lst-y-pair-y-b) (del-start-val Pt-Sta T)
   
-  (lst-y-pair-x-a) (del-start-val Po-Sta T)
-  (lst-y-pair-y-a) (del-start-val Po-Sta T)
+  (lst-y-pair-x-a) (del-start-val Pt-Sta T)
+  (lst-y-pair-y-a) (del-start-val Pt-Sta T)
   
-  (bsp-x-atom-b) (del-start-val Po-Sta T)
-  (bsp-y-atom-a) (del-start-val Po-Sta T)
-  (bsp-y-atom-b) (del-start-val Po-Sta T)
+  (bsp-x-atom-b) (del-start-val Pt-Sta T)
+  (bsp-y-atom-a) (del-start-val Pt-Sta T)
+  (bsp-y-atom-b) (del-start-val Pt-Sta T)
   
-  (bsp-x-pair-x-b) (del-start-val Po-Sta T)
-  (bsp-x-pair-y-b) (del-start-val Po-Sta T)
+  (bsp-x-pair-x-b) (del-start-val Pt-Sta T)
+  (bsp-x-pair-y-b) (del-start-val Pt-Sta T)
   
-  (bsp-y-pair-x-a) (del-start-val Po-Sta T)
-  (bsp-y-pair-x-b) (del-start-val Po-Sta T)
-  (bsp-y-pair-y-a) (del-start-val Po-Sta T)
-  (bsp-y-pair-y-b) (del-start-val Po-Sta T))
+  (bsp-y-pair-x-a) (del-start-val Pt-Sta T)
+  (bsp-y-pair-x-b) (del-start-val Pt-Sta T)
+  (bsp-y-pair-y-a) (del-start-val Pt-Sta T)
+  (bsp-y-pair-y-b) (del-start-val Pt-Sta T))
     
   

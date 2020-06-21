@@ -63,34 +63,34 @@
   (println 'make-pair-b-pair-y)
   
   (let (Tgt (get *ptr 'ref)
-        Po-Tgt (lup-pt Tgt)
+        Pt-Tgt (lup-pt Tgt)
         Tgt-Car (car Tgt)
-        Po-Tgt-Car (if Tgt-Car
+        Pt-Tgt-Car (if Tgt-Car
                        (lup-pt @)
-                       (get Po-Tgt 'a))
+                       (get Pt-Tgt 'a))
         Cons (cons)
-        Po-Cons (gen-point Cons 'x NIL T)
-        Po-Car (get Po-Cons 'a)
-        Po-Cdr (get Po-Cons 'b))
+        Pt-Cons (gen-point Cons 'x NIL T)
+        Pt-Car (get Pt-Cons 'a)
+        Pt-Cdr (get Pt-Cons 'b))
 
-    (set-lay> Po-Cons 'y)    
+    (set-lay> Pt-Cons 'y)    
   
-    (set> Po-Tgt Cons Po-Cons)   
+    (set> Pt-Tgt Cons Pt-Cons)   
     
     (if Tgt-Car
-        (set> Po-Cons Tgt-Car Po-Tgt-Car)
-        (put Po-Car 'line (new '(+Line))))
+        (set> Pt-Cons Tgt-Car Pt-Tgt-Car)
+        (put Pt-Car 'line (new '(+Line))))
     
-    (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
-    (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
+    (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
+    (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
     
     (pt> *ptr Cons 'a)
     
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
                 
-    (lns> *ptr Po-Cons)      
-    (top> Po-Cons)
+    (lns> *ptr Pt-Cons)      
+    (top> Pt-Cons)
     (draw> *ptr)))
 }#
           
@@ -170,23 +170,23 @@
   #(println 'make-pair-b-pair)  
   
   (let (Tgt (get *ptr 'ref)
-        Po-Tgt (lup-pt Tgt)
+        Pt-Tgt (lup-pt Tgt)
         Pair (find-back> *ptr (get *ptr 'reg))
-        Po-Pair (lup-pt Pair)
+        Pt-Pair (lup-pt Pair)
         Cons (cons)
-        Po-Cons (gen-point Cons 'x NIL T)
-        Po-Cdr (get Po-Cons 'b)
+        Pt-Cons (gen-point Cons 'x NIL T)
+        Pt-Cdr (get Pt-Cons 'b)
         Ln (c-lns> *ptr))
     
-    (set-lay> Po-Cons 'y)    
+    (set-lay> Pt-Cons 'y)    
   
-    (con> Po-Pair Cons Po-Cons)
-    (set> Po-Cons Tgt Po-Tgt)
+    (con> Pt-Pair Cons Pt-Cons)
+    (set> Pt-Cons Tgt Pt-Tgt)
                 
-    (if (get Po-Tgt 'line)
+    (if (get Pt-Tgt 'line)
         (prog
           # Make line start
-          (put Po-Tgt 'line 'p NIL)
+          (put Pt-Tgt 'line 'p NIL)
           # Only pop if replacing line
           (lns> *ptr)
           # Set current ln to prv line
@@ -194,28 +194,28 @@
         (prog
           # Modify subsequent line
           (let Nxt (get Ln 'line 'n)
-            (put Po-Tgt 'line
+            (put Pt-Tgt 'line
               (new '(+Line)
                 NIL
                 Nxt))
             (when Nxt
-              (put Nxt 'line 'p Po-Tgt)))))
+              (put Nxt 'line 'p Pt-Tgt)))))
     
     (when (is-sym? Ln) (setq Ln NIL))
     
-    (put Ln 'line 'n Po-Cons)
+    (put Ln 'line 'n Pt-Cons)
     
-    (put Po-Cons 'line (new '(+Line) Ln Po-Cdr))
+    (put Pt-Cons 'line (new '(+Line) Ln Pt-Cdr))
     
-    (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
+    (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
       
     (pt> *ptr Cons 'b)
     
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
                 
-    (lns> *ptr Po-Cons)
-    (top> Po-Cons)
+    (lns> *ptr Pt-Cons)
+    (top> Pt-Cons)
     (draw> *ptr)))
           
           
@@ -284,29 +284,29 @@
   #(println 'make-pair-a-pair)
   
   (let (Tgt (get *ptr 'ref)
-        Po-Tgt (lup-pt Tgt)
+        Pt-Tgt (lup-pt Tgt)
         Pair (find-back> *ptr (get *ptr 'reg))
-        Po-Pair (lup-pt Pair)
+        Pt-Pair (lup-pt Pair)
         Cons (cons)
-        Po-Cons (gen-point Cons 'x NIL T)
-        Po-Cdr (get Po-Cons 'b))
+        Pt-Cons (gen-point Cons 'x NIL T)
+        Pt-Cdr (get Pt-Cons 'b))
   
-    (set-lay> Po-Cons 'y)    
+    (set-lay> Pt-Cons 'y)    
   
-    (set> Po-Pair Cons Po-Cons)
-    (set> Po-Cons Tgt Po-Tgt)
+    (set> Pt-Pair Cons Pt-Cons)
+    (set> Pt-Cons Tgt Pt-Tgt)
     
-    (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
-    (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
+    (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
+    (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
     
     (pt> *ptr Cons 'a)
     
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
                 
-    ~(assert (get Po-Pair 'line))
+    ~(assert (get Pt-Pair 'line))
     # Pt to new cons so pop old line, push cons
     (lns> *ptr)
-    (lns> *ptr Po-Cons)
-    (top> Po-Cons)
+    (lns> *ptr Pt-Cons)
+    (top> Pt-Cons)
     (draw> *ptr)))            

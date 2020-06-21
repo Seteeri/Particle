@@ -82,24 +82,24 @@
   (let (Cell (if (get *ptr 'pair)
                  @
                  (find-back> *ptr (get *ptr 'reg)))
-        Po-Cell (lup-pt Cell)
-        Po-Del (if (get *ptr 'pair)
-                   (get Po-Cell (get *ptr 'reg))
+        Pt-Cell (lup-pt Cell)
+        Pt-Del (if (get *ptr 'pair)
+                   (get Pt-Cell (get *ptr 'reg))
                    (lup-pt (get *ptr 'ref)))
-        Po-Dat (gen-point Dat 'x NIL T))
+        Pt-Dat (gen-point Dat 'x NIL T))
 
-    (when (get Po-Del 'line)
-      (mov-line Po-Del Po-Dat)
+    (when (get Pt-Del 'line)
+      (mov-line Pt-Del Pt-Dat)
       (lns> *ptr))
-    (mov-line-n> *ptr Po-Dat)
+    (mov-line-n> *ptr Pt-Dat)
     
     (if Dat
         (pt> *ptr Dat Reg)
-        (pt> *ptr Cell Reg Po-Dat))
+        (pt> *ptr Cell Reg Pt-Dat))
     
     (if (= Reg 'a)
-        (set> Po-Cell Dat Po-Dat T)
-        (con> Po-Cell Dat Po-Dat T))
+        (set> Pt-Cell Dat Pt-Dat T)
+        (con> Pt-Cell Dat Pt-Dat T))
         
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
@@ -118,17 +118,17 @@
   #(println 'ins-b-atom)
   
   (let (Pair (get *ptr 'pair)
-        Po-Pair (lup-pt Pair)
-        Po-Del (get Po-Pair 'b)
+        Pt-Pair (lup-pt Pair)
+        Pt-Del (get Pt-Pair 'b)
         List (list Dat)
-        Po-List (gen-point List 'x NIL T))
+        Pt-List (gen-point List 'x NIL T))
    
-    (when (get Po-Del 'line)
-      (mov-line Po-Del Po-List)
+    (when (get Pt-Del 'line)
+      (mov-line Pt-Del Pt-List)
       (lns> *ptr))
-    (mov-line-n> *ptr Po-List)
+    (mov-line-n> *ptr Pt-List)
     
-    (con> Po-Pair List Po-List)
+    (con> Pt-Pair List Pt-List)
         
     (pt> *ptr List 'b))
     
@@ -141,17 +141,17 @@
   #(println 'ins-a-atom)
   
   (let (Pair (get *ptr 'pair)
-        Po-Pair (lup-pt Pair)
-        Po-Del (get Po-Pair 'b)
+        Pt-Pair (lup-pt Pair)
+        Pt-Del (get Pt-Pair 'b)
         List (list Dat)
-        Po-List (gen-point List 'x NIL T))
+        Pt-List (gen-point List 'x NIL T))
     
-    (when (get Po-Del 'line)
-      (mov-line Po-Del Po-List)
+    (when (get Pt-Del 'line)
+      (mov-line Pt-Del Pt-List)
       (lns> *ptr))
-    (mov-line-n> *ptr Po-List)
+    (mov-line-n> *ptr Pt-List)
     
-    (con> Po-Pair List Po-List)
+    (con> Pt-Pair List Pt-List)
         
     (pt> *ptr List 'b))
   
@@ -206,30 +206,30 @@
   #(println 'con-b-pair-x)
   
   (let (Cell (get *ptr 'ref)
-        Po-Cell (lup-pt Cell)
+        Pt-Cell (lup-pt Cell)
         Pre (if (get *ptr 'pair)
                 @
                 (find-back> *ptr (get *ptr 'reg)))
-        Po-Pre (lup-pt Pre)
+        Pt-Pre (lup-pt Pre)
         List-Dat (list Dat)
-        Po-Dat (gen-point List-Dat 'x NIL T))        
+        Pt-Dat (gen-point List-Dat 'x NIL T))        
     
     # Insert before current object
-    (con> Po-Pre List-Dat NIL)
-    (con> Po-Dat Cell     NIL)
+    (con> Pt-Pre List-Dat NIL)
+    (con> Pt-Dat Cell     NIL)
     
     # Mov line
-    (when (get Po-Cell 'line)
-      (mov-line Po-Cell Po-Dat)
+    (when (get Pt-Cell 'line)
+      (mov-line Pt-Cell Pt-Dat)
       (lns> *ptr))
-    (mov-line-n> *ptr Po-Dat)
+    (mov-line-n> *ptr Pt-Dat)
                 
     # ref does not change
                 
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
     
-    (top> Po-Cell)
+    (top> Pt-Cell)
     (draw> *ptr)))
 
 
@@ -264,38 +264,38 @@
   #(println 'con-b-pair-y)
   
   (let (Pair (get *ptr 'ref)
-        Po-Pair (lup-pt Pair)
+        Pt-Pair (lup-pt Pair)
         Pre (find-back> *ptr (get *ptr 'reg))
-        Po-Pre (lup-pt Pre)
+        Pt-Pre (lup-pt Pre)
         List (list Dat)
-        Po-List (gen-point List 'x NIL T))
+        Pt-List (gen-point List 'x NIL T))
     
-    (con> Po-Pre List Po-List)
-    (con> Po-List Pair Po-Pair)
+    (con> Pt-Pre List Pt-List)
+    (con> Pt-List Pair Pt-Pair)
     
-    (if (get Po-Pre 'line)
-        (put Po-Pre 'line 'n Po-List)
-        (put Po-Pre 'line (new '(+Line) NIL Po-Pair)))
+    (if (get Pt-Pre 'line)
+        (put Pt-Pre 'line 'n Pt-List)
+        (put Pt-Pre 'line (new '(+Line) NIL Pt-Pair)))
         
-    (put Po-List 'line (new '(+Line) Po-Pre Po-Pair))
+    (put Pt-List 'line (new '(+Line) Pt-Pre Pt-Pair))
 
-    (when (get Po-Pre 'exp)
-      (put Po-Pre 'line 'n NIL)
-      (put Po-List 'line 'p NIL))
+    (when (get Pt-Pre 'exp)
+      (put Pt-Pre 'line 'n NIL)
+      (put Pt-List 'line 'p NIL))
     
-    (put Po-Pair 'line 'p Po-List)
+    (put Pt-Pair 'line 'p Pt-List)
     
     (pt> *ptr List 'b)
     
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
         
-    # Pop cur line = Po-Pair
+    # Pop cur line = Pt-Pair
     # Push new list
     (lns> *ptr)
-    (lns> *ptr Po-List)
+    (lns> *ptr Pt-List)
     
-    (top> Po-List)
+    (top> Pt-List)
     (draw> *ptr)))
 
     
@@ -325,33 +325,33 @@
   }#
   
   (let (Pair (get *ptr 'ref)
-        Po-Pair (lup-pt Pair)
+        Pt-Pair (lup-pt Pair)
         Pre (find-back> *ptr (get *ptr 'reg))
-        Po-Pre (lup-pt Pre)
+        Pt-Pre (lup-pt Pre)
         List (list Dat)
-        Po-List (gen-point List 'x NIL T))
+        Pt-List (gen-point List 'x NIL T))
     
     # handle X parent elsewhere
-    ~(assert (lay-y?> Po-Pre))
+    ~(assert (lay-y?> Pt-Pre))
     
-    (set> Po-Pre List Po-List)
-    (con> Po-List Pair Po-Pair)
+    (set> Pt-Pre List Pt-List)
+    (con> Pt-List Pair Pt-Pair)
         
-    (put Po-List 'line (new '(+Line) NIL Po-Pair))
+    (put Pt-List 'line (new '(+Line) NIL Pt-Pair))
     
-    (put Po-Pair 'line 'p Po-List)
+    (put Pt-Pair 'line 'p Pt-List)
         
     (pt> *ptr List 'a)
         
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
     
-    # Pop cur line = Po-Pair
+    # Pop cur line = Pt-Pair
     # Push new list
     (lns> *ptr)
-    (lns> *ptr Po-List)
+    (lns> *ptr Pt-List)
     
-    (top> Po-List)
+    (top> Pt-List)
     (draw> *ptr)))
 
 
@@ -377,20 +377,20 @@
   }#
   
   (let (Pair (get *ptr 'ref)
-        Po-Pair (lup-pt Pair)
+        Pt-Pair (lup-pt Pair)
         Pre (find-back> *ptr (get *ptr 'reg))
-        Po-Pre (lup-pt Pre)
+        Pt-Pre (lup-pt Pre)
         List (list Dat)
-        Po-List (gen-point List 'x NIL T))
+        Pt-List (gen-point List 'x NIL T))
     
-    (set> Po-Pre List Po-List)
-    (con> Po-List Pair Po-Pair)
+    (set> Pt-Pre List Pt-List)
+    (con> Pt-List Pair Pt-Pair)
         
     # Mov line
-    (when (get Po-Pair 'line)
-      (mov-line Po-Pair Po-List)
+    (when (get Pt-Pair 'line)
+      (mov-line Pt-Pair Pt-List)
       (lns> *ptr))
-    (mov-line-n> *ptr Po-List)
+    (mov-line-n> *ptr Pt-List)
     
     # Keep ref - change rel
     (pt> *ptr Pair 'b)    
@@ -398,6 +398,6 @@
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
         
-    (top> Po-Pair)
+    (top> Pt-Pair)
     (draw> *ptr)))
     

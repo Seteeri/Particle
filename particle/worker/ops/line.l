@@ -4,22 +4,22 @@
   # X Pair Car can have a line but only applies to lists
   # If arbitrarily done, would break consistency...
   
-  (let (Po-Tgt (if (get *ptr 'pair)
+  (let (Pt-Tgt (if (get *ptr 'pair)
                    (get *ptr 'ref)
                    (lup-pt (get *ptr 'ref)))
         Ln (c-lns> *ptr))
                    
-    (unless (get Po-Tgt 'line)
+    (unless (get Pt-Tgt 'line)
     
-      (ins-line-aft Ln Po-Tgt)
+      (ins-line-aft Ln Pt-Tgt)
           
       (upd-tree)
       (mov-⇲ Ln)
       
-      (top> Po-Tgt)
+      (top> Pt-Tgt)
       (draw> *ptr)
       
-      (mov-line-n> *ptr Po-Tgt))))
+      (mov-line-n> *ptr Pt-Tgt))))
 
         
 (de ins-line-aft (Ln Po)
