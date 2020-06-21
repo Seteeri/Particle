@@ -256,7 +256,7 @@
       
       (put *ptr 'pt Pt-Txt)
       # Upd +Point on change
-      (mov-line-n> *ptr Pt-Sta)
+      (set-ln-n> *ptr Pt-Sta)
       (pt> *ptr '*start 'b)
       
       (mov-cur 0.0 1.0)     

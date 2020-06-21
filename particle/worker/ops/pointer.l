@@ -137,7 +137,7 @@
                    (pt-pair-atom> This Reg)
                    (pt-pair-pair> This Reg Tgt)))
 
-    (mov-line-n> This Pt-Top)
+    (set-ln-n> This Pt-Top)
                    
     (when Drw
       (top> Pt-Top)
@@ -174,7 +174,7 @@
   (let Pt-Tgt (if (val (: ref))
                   (pt-sym-pair> This Reg)
                   (pt-sym-nil> This Reg))
-    (mov-line-n> This Pt-Tgt)
+    (set-ln-n> This Pt-Tgt)
     (when Drw
       (top> Pt-Tgt)
       (draw> This))))
@@ -201,7 +201,7 @@
 ###############################
 
 
-(dm mov-line-p> (Pt-Ref Pt-Tgt)    
+(dm set-ln-p> (Pt-Ref Pt-Tgt)    
 
   # If new has line, set it
   # else if old has line but new doesn't = mov prv line
@@ -215,7 +215,7 @@
         (lns> This))))
 
 
-(dm mov-line-n> (Pt-Tgt)
+(dm set-ln-n> (Pt-Tgt)
   (when (get Pt-Tgt 'line) # Tgt has line
     (unless (= (c-lns> This) Pt-Tgt)
       (lns> This Pt-Tgt))))
@@ -267,7 +267,7 @@
       )
     
     # Cur -> New
-    (mov-line-p> This
+    (set-ln-p> This
                  (if (: pair)
                      (: ref)
                      (lup-pt (: ref)))

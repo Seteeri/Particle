@@ -19,7 +19,7 @@
       (top> Pt-Tgt)
       (draw> *ptr)
       
-      (mov-line-n> *ptr Pt-Tgt))))
+      (set-ln-n> *ptr Pt-Tgt))))
 
         
 (de ins-line-aft (Ln Po)

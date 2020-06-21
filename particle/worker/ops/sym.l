@@ -91,7 +91,7 @@
     (when (get Pt-Del 'line)
       (mov-line Pt-Del Pt-Dat)
       (lns> *ptr))
-    (mov-line-n> *ptr Pt-Dat)
+    (set-ln-n> *ptr Pt-Dat)
     
     (if Dat
         (pt> *ptr Dat Reg)
@@ -126,7 +126,7 @@
     (when (get Pt-Del 'line)
       (mov-line Pt-Del Pt-List)
       (lns> *ptr))
-    (mov-line-n> *ptr Pt-List)
+    (set-ln-n> *ptr Pt-List)
     
     (con> Pt-Pair List Pt-List)
         
@@ -149,7 +149,7 @@
     (when (get Pt-Del 'line)
       (mov-line Pt-Del Pt-List)
       (lns> *ptr))
-    (mov-line-n> *ptr Pt-List)
+    (set-ln-n> *ptr Pt-List)
     
     (con> Pt-Pair List Pt-List)
         
@@ -222,7 +222,7 @@
     (when (get Pt-Cell 'line)
       (mov-line Pt-Cell Pt-Dat)
       (lns> *ptr))
-    (mov-line-n> *ptr Pt-Dat)
+    (set-ln-n> *ptr Pt-Dat)
                 
     # ref does not change
                 
@@ -390,7 +390,7 @@
     (when (get Pt-Pair 'line)
       (mov-line Pt-Pair Pt-List)
       (lns> *ptr))
-    (mov-line-n> *ptr Pt-List)
+    (set-ln-n> *ptr Pt-List)
     
     # Keep ref - change rel
     (pt> *ptr Pair 'b)    

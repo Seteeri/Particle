@@ -124,7 +124,7 @@
       (let Ln (lns> *ptr)
         (lns> *ptr)
         (lns> *ptr Ln)))      
-    (mov-line-n> *ptr Pt-Back)
+    (set-ln-n> *ptr Pt-Back)
     (del> Pt-Tgt T NIL)
     (put Pt-Tgt 'b NIL)
     
@@ -152,7 +152,7 @@
     (when (get Pt-Tgt 'line)
       (del-line Pt-Tgt)
       (lns> *ptr) (lns> *ptr))
-    (mov-line-n> *ptr Pt-Pair)
+    (set-ln-n> *ptr Pt-Pair)
     
     (del> Pt-Tgt T NIL)
     (put Pt-Tgt 'b NIL)
