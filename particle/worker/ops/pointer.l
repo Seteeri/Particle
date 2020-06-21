@@ -25,8 +25,8 @@
       (lay-y?> (: ref))
       (lay-y?> (lup-pt (: ref)))))
   
-(dm rel-a?> () (= (: reg) 'a))
-(dm rel-b?> () (= (: reg) 'b))
+(dm reg-a?> () (= (: reg) 'a))
+(dm reg-b?> () (= (: reg) 'b))
 
 (dm lns> (X) (if X (push (:: lns) X) (pop (:: lns))))
 (dm c-lns> () (car (: lns)))
@@ -104,22 +104,22 @@
 #############################
 
 (dm a-nil?>  ()
-  (and (rel-a?> This) (: pair)))
+  (and (reg-a?> This) (: pair)))
   
 (dm a-pair?> ()
-  (and (rel-a?> This) (pair (: ref))))
+  (and (reg-a?> This) (pair (: ref))))
   
 (dm a-atom?> ()
-  (and (rel-a?> This) (atom (: ref))))
+  (and (reg-a?> This) (atom (: ref))))
 
 (dm b-nil?>  ()
-  (and (rel-b?> This) (: pair)))
+  (and (reg-b?> This) (: pair)))
   
 (dm b-pair?> ()
-  (and (rel-b?> This) (pair (: ref))))
+  (and (reg-b?> This) (pair (: ref))))
   
 (dm b-atom?> ()
-  (and (rel-b?> This) (atom (: ref))))
+  (and (reg-b?> This) (atom (: ref))))
 
 (dm atom?> (or (a-atom?> This) (b-atom?> This)))
 (dm pair?> (or (a-pair?> This) (b-pair?> This)))
