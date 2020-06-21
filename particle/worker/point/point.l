@@ -462,7 +462,7 @@
     (when (and (cdr P) (: b)) (mov-off> (: b) Off P))))
 
 
-(dm mov-pt> (B P)
+(dm mov-to-pt> (B P)
 
   (let (Pos     (: ori)
         Pos-Tgt (get B 'ori)
@@ -478,7 +478,7 @@
     (when (and (cdr P) (: b)) (mov-off> (: b) Off P))))
 
 
-(dm mov-pt-aft> (B P)
+(dm mov/+x> (B P)
   # Make offset version instead of static function?
 
   (mov-cur-vert (last-vert> B) T)
@@ -492,7 +492,7 @@
               P)))
 
 
-(dm mov-pt-abv> (B P)
+(dm mov/+y> (B P)
   # Make offset version instead of static function?
 
   (mov-cur-vert (first-vert> B) T)
@@ -506,7 +506,7 @@
               P)))
 
 
-(dm mov-pt-bel> (B P)
+(dm mov/-y> (B P)
   # Make offset version instead of static function?
 
   (mov-cur-vert (first-vert> B) T)
