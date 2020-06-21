@@ -13,15 +13,16 @@
 
   (=: ref)
   (=: col) # save old color  
-  (=: rel) # rel to prv, 'a 'b or NIL for root
-  # when on atom, contains super cell
+  # on pair: rel to prv, 'a 'b or NIL for root
+  # on atom: rel to super
+  (=: rel) 
+  # on atom: contains super
   (=: pair)
   
-  # trav stacks
-  #(=: pre)
-  #(=: sup)
+  # track lines
   (=: ln)
-    
+  
+  # representation of Pointer
   (=: po))
 
 (dm lay-x?> ()
@@ -53,24 +54,24 @@
                 T T))
 
   
-(dm stor-col> (P)
-  (=: col (get-first-col> P)))
+(dm stor-col> (Pt)
+  (=: col (get-first-col> Pt)))
   
   
-(dm col> (P Draw)
-  (stor-col> This P)
+(dm col> (Pt Draw)
+  (stor-col> This Pt)
   # Set color but don't draw
   (if Draw
-     (col> P *selb-yellow 1.0)
-     (col-verts> P *selb-yellow 1.0)))
+     (col> Pt *selb-yellow 1.0)
+     (col-verts> Pt *selb-yellow 1.0)))
 
   
-(dm uncol> (P Draw)
+(dm uncol> (Pt Draw)
   (let ((R G B A) (: col))
     # Set color but don't draw
     (if Draw
-        (col> P (list R G B) A)
-        (col-verts> P (list R G B) A))))
+        (col> Pt (list R G B) A)
+        (col-verts> Pt (list R G B) A))))
 
     
 (dm set-ref> (Tgt Rel Po Draw)
