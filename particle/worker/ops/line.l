@@ -4,7 +4,7 @@
   # X Pair Car can have a line but only applies to lists
   # If arbitrarily done, would break consistency...
   
-  (let (Po-Tgt (if (pair> *ptr)
+  (let (Po-Tgt (if (get *ptr 'pair)
                    (get *ptr 'ref)
                    (lup-pt (get *ptr 'ref)))
         Ln (c-ln> *ptr))

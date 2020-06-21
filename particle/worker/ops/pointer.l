@@ -28,7 +28,6 @@
 (dm rel-a?> () (= (: rel) 'a))
 (dm rel-b?> () (= (: rel) 'b))
 
-(dm pair> (N) (if N (=: pair N) (: pair)))
 (dm rel> (S) (if S (=: rel S) (: rel)))    
 (dm ln> (X) (if X (push (:: ln) X) (pop (:: ln))))
 (dm c-ln> () (car (: ln)))

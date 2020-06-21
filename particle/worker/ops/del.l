@@ -114,7 +114,7 @@
   
   (let (Po-Atom (get *ptr 'ref)
         Atom (get Po-Atom 'any)
-        Tgt (pair> *ptr)
+        Tgt (get *ptr 'pair)
         Po-Tgt (lup-pt Tgt)
         Back (find-back-any> *ptr Tgt T)
         Po-Back (lup-pt Back))
