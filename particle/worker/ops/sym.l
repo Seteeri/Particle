@@ -79,12 +79,12 @@
 
   #(println 'repl-atom)
   
-  (let (Cell (if (get *ptr 'pair)
+  (let (Pair (if (get *ptr 'pair)
                  @
                  (find-back> *ptr (get *ptr 'reg)))
-        Pt-Cell (lup-pt Cell)
+        Pt-Pair (lup-pt Pair)
         Pt-Del (if (get *ptr 'pair)
-                   (get Pt-Cell (get *ptr 'reg))
+                   (get Pt-Pair (get *ptr 'reg))
                    (lup-pt (get *ptr 'ref)))
         Pt-Dat (gen-point Dat 'x NIL T))
 
@@ -95,16 +95,16 @@
     
     (if Dat
         (pt> *ptr Dat Reg)
-        (pt> *ptr Cell Reg Pt-Dat))
+        (pt> *ptr Pair Reg Pt-Dat))
     
     (if (= Reg 'a)
-        (set> Pt-Cell Dat Pt-Dat T)
-        (con> Pt-Cell Dat Pt-Dat T))
+        (set> Pt-Pair Dat Pt-Dat T)
+        (con> Pt-Pair Dat Pt-Dat T))
         
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
     
-    (when (str? (cadr Cell))
+    (when (str? (cadr Pair))
       (sup> *ptr NIL)
       (nex> *ptr NIL)
       (sub> *ptr T))))
@@ -205,8 +205,8 @@
   
   #(println 'con-b-pair-x)
   
-  (let (Cell (get *ptr 'ref)
-        Pt-Cell (lup-pt Cell)
+  (let (Pair (get *ptr 'ref)
+        Pt-Pair (lup-pt Pair)
         Pre (if (get *ptr 'pair)
                 @
                 (find-back> *ptr (get *ptr 'reg)))
@@ -216,11 +216,11 @@
     
     # Insert before current object
     (con> Pt-Pre List-Dat NIL)
-    (con> Pt-Dat Cell     NIL)
+    (con> Pt-Dat Pair     NIL)
     
     # Mov line
-    (when (get Pt-Cell 'line)
-      (mov-line Pt-Cell Pt-Dat)
+    (when (get Pt-Pair 'line)
+      (mov-line Pt-Pair Pt-Dat)
       (lns> *ptr))
     (set-ln-n> *ptr Pt-Dat)
                 
@@ -229,7 +229,7 @@
     (upd-tree)
     (mov-⇲ (c-lns> *ptr))
     
-    (top> Pt-Cell)
+    (top> Pt-Pair)
     (draw> *ptr)))
 
 
