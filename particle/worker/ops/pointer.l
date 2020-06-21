@@ -36,8 +36,8 @@
 
 (dm draw> ()
   #(lay-pt-start '*ptr '*ptr T T))
-  (lay-pt-start (get (: po) 'any) 
-                (get (: po) 'any)
+  (lay-pt-start (get (: pt) 'any) 
+                (get (: pt) 'any)
                 T T))
 
   

@@ -254,7 +254,7 @@
       (del> (get Po-Txt 'b)) (put Po-Txt 'b T)
       (del> (get Po-Cmd 'b)) (put Po-Cmd 'b T)
       
-      (put *ptr 'po Po-Txt)
+      (put *ptr 'pt Po-Txt)
       # Upd +Point on change
       (mov-line-n> *ptr Po-Sta)
       (pt> *ptr '*start 'b)
@@ -437,7 +437,7 @@
 (def '*rot-z 0.0)
 (de anim-rot-z-cdr ()
 
-  (let? Po (get *ptr 'po 'a)
+  (let? Po (get *ptr 'pt 'a)
     
     (with Po
     
