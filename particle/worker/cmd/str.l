@@ -6,7 +6,7 @@
     \t = ^I
   }#
   
-  (let (Data (cond ((= Ks ksd~Return) "^J")
+  (let (Dat (cond ((= Ks ksd~Return) "^J")
                    ((= Ks ksd~Tab) "^I")
                    (T (char Ks)))
         Lay 'x)
@@ -15,7 +15,7 @@
     # Make class
     # Put properties
 
-    (make-pair-str Data Lay)))
+    (make-pair-str Dat Lay)))
 
 
 (de cmd-make-nil (Ks)
@@ -56,11 +56,11 @@
   
       (let (End Ref
             (Sta Lst) (build-str End)
-            Data (pack Lst))
+            Dat (pack Lst))
             
         (println 'cmd-pack Sta (get Sta 'any) "TO" End (get End 'any))
 
-        (repl-list-str Sta End Data)
+        (repl-list-str Sta End Dat)
         (lay-ptr *ptr)))))
 
         
@@ -100,11 +100,11 @@
   
       (let (End Ref
             (Sta Lst) (build-str End)
-            Data (glue " " Lst))
+            Dat (glue " " Lst))
             
         (println 'cmd-glue-sp Sta (get Sta 'any) "TO" End (get End 'any))
             
-        (repl-list-str Sta End Data)
+        (repl-list-str Sta End Dat)
         (lay-ptr *ptr)))))
     
     
@@ -158,9 +158,9 @@
   
       (let (End Ref
             (Sta Lst) (build-str-sp End)
-            Data (intern (pack Lst)))
+            Dat (intern (pack Lst)))
             
         (println 'cmd-intern Sta (get Sta 'any) "TO" End (get End 'any))
                 
-        (repl-list-str Sta End Data)
+        (repl-list-str Sta End Dat)
         (lay-ptr *ptr)))))

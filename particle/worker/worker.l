@@ -306,8 +306,8 @@
 (de serv-ctrl (Sock)
 
   (let (Msg (recv-msg *ipc Sock)
-        Data (car (str Msg))
-        Name (car Data))
+        Dat (car (str Msg))
+        Name (car Dat))
         
     # recv-msg will return data or NIL
     # This means sending NIL will disconnect the client, like EOF
@@ -318,7 +318,7 @@
           (case Name
           
             (KEYBOARD-KEY
-              (dispatch-kb Data))
+              (dispatch-kb Dat))
 
             (POINTER-MOTION
               (when NIL
@@ -335,7 +335,7 @@
               TOUCH-DOWN
               TOUCH-FRAME
               TOUCH-MOTION)
-              (prinl-info "serv-ctrl" (glue " " Data)))
+              (prinl-info "serv-ctrl" (glue " " Dat)))
 
             ("update-vert"
               (req-send *ipc *vert-ptr))
@@ -343,8 +343,8 @@
             ("calc-pv"
               # method?
               (with *projview
-                (=: width  (get Data 2))
-                (=: height (get Data 3)))
+                (=: width  (get Dat 2))
+                (=: height (get Dat 3)))
               (upd-mat-proj> *projview))
 
             ("upd-pv"
@@ -380,11 +380,11 @@
       (disconn-conn *ipc Sock))))
 
 
-(de dispatch-kb (Data)
+(de dispatch-kb (Dat)
 
-  (let (Keycode (+ (get Data 4) 8)
-        State   (get Data 5)
-        Ks  (get-one-sym> *xkb Keycode)  # or Data 7
+  (let (Keycode (+ (get Dat 4) 8)
+        State   (get Dat 5)
+        Ks  (get-one-sym> *xkb Keycode)  # or Dat 7
         Name    (xkb~keysym-get-name Ks)
         Utf-8   (get-utf8> *xkb Keycode))
 
