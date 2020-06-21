@@ -29,7 +29,7 @@
   
   (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
-        Ln (c-ln> *ptr)
+        Ln (c-lns> *ptr)
         Po-Car (if (car Pair) (lup-pt @) (get Po-Pair 'a))
         Po-Cdr (if (cdr Pair) (lup-pt @) (get Po-Pair 'b)))
     
@@ -52,7 +52,7 @@
     (mov-⇲ Po-Pair)
 
     (unless (= Ln Po-Pair)
-      (ln> *ptr Po-Pair))
+      (lns> *ptr Po-Pair))
     
     (top> Po-Pair)
     (draw> *ptr)))
@@ -116,7 +116,7 @@
     
   (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
-        Ln (c-ln> *ptr)
+        Ln (c-lns> *ptr)
         Po-Car (if (car Pair) (lup-pt @) (get Po-Pair 'a))
         Po-Cdr (if (cdr Pair) (lup-pt @) (get Po-Pair 'b)))
   
@@ -131,7 +131,7 @@
     (mov-⇲ Po-Pair)
 
     (unless (= Ln Po-Pair)
-      (ln> *ptr Po-Pair))
+      (lns> *ptr Po-Pair))
     
     (top> Po-Pair)
     (draw> *ptr)))

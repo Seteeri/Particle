@@ -92,16 +92,16 @@
 
     (when (get Po-Tgt 'line)
       (del-line Po-Tgt)
-      (let Ln (ln> *ptr)
-        (ln> *ptr)
-        (ln> *ptr Ln)))
+      (let Ln (lns> *ptr)
+        (lns> *ptr)
+        (lns> *ptr Ln)))
     (del> Po-Tgt NIL T)
     (put Po-Tgt 'a NIL)
     
     (set> Po-Back Pair Po-Pair)
         
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
     
     (top> Po-Pair)
     (draw> *ptr)))
@@ -121,9 +121,9 @@
     
     (when (get Po-Tgt 'line)
       (del-line Po-Tgt)
-      (let Ln (ln> *ptr)
-        (ln> *ptr)
-        (ln> *ptr Ln)))      
+      (let Ln (lns> *ptr)
+        (lns> *ptr)
+        (lns> *ptr Ln)))      
     (mov-line-n> *ptr Po-Back)
     (del> Po-Tgt T NIL)
     (put Po-Tgt 'b NIL)
@@ -134,7 +134,7 @@
     (put *ptr 'pair Back)
         
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
     
     (top> Po-Atom)
     (draw> *ptr)))
@@ -151,7 +151,7 @@
 
     (when (get Po-Tgt 'line)
       (del-line Po-Tgt)
-      (ln> *ptr) (ln> *ptr))
+      (lns> *ptr) (lns> *ptr))
     (mov-line-n> *ptr Po-Pair)
     
     (del> Po-Tgt T NIL)
@@ -167,7 +167,7 @@
         (con> Po-Back Pair Po-Pair))
         
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
     
     (top> Po-Pair)
     (draw> *ptr)))          

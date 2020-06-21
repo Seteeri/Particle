@@ -7,7 +7,7 @@
   (let (Po-Tgt (if (get *ptr 'pair)
                    (get *ptr 'ref)
                    (lup-pt (get *ptr 'ref)))
-        Ln (c-ln> *ptr))
+        Ln (c-lns> *ptr))
                    
     (unless (get Po-Tgt 'line)
     
@@ -106,13 +106,13 @@
      
   }#
                                       
-  (del-line (c-ln> *ptr))
+  (del-line (c-lns> *ptr))
     
-  (ln> *ptr)
+  (lns> *ptr)
 
   (upd-tree)
   
-  (mov-⇲ (c-ln> *ptr))
+  (mov-⇲ (c-lns> *ptr))
         
   (with *ptr
     (top> (if (: ref) @ (lup-pt (: pair)))))

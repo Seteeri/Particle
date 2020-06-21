@@ -87,9 +87,9 @@
     (pt> *ptr Cons 'a)
     
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
                 
-    (ln> *ptr Po-Cons)      
+    (lns> *ptr Po-Cons)      
     (top> Po-Cons)
     (draw> *ptr)))
 }#
@@ -176,7 +176,7 @@
         Cons (cons)
         Po-Cons (gen-point Cons 'x NIL T)
         Po-Cdr (get Po-Cons 'b)
-        Ln (c-ln> *ptr))
+        Ln (c-lns> *ptr))
     
     (set-lay> Po-Cons 'y)    
   
@@ -188,9 +188,9 @@
           # Make line start
           (put Po-Tgt 'line 'p NIL)
           # Only pop if replacing line
-          (ln> *ptr)
+          (lns> *ptr)
           # Set current ln to prv line
-          (setq Ln (c-ln> *ptr)))
+          (setq Ln (c-lns> *ptr)))
         (prog
           # Modify subsequent line
           (let Nxt (get Ln 'line 'n)
@@ -212,9 +212,9 @@
     (pt> *ptr Cons 'b)
     
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
                 
-    (ln> *ptr Po-Cons)
+    (lns> *ptr Po-Cons)
     (top> Po-Cons)
     (draw> *ptr)))
           
@@ -302,11 +302,11 @@
     (pt> *ptr Cons 'a)
     
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
                 
     ~(assert (get Po-Pair 'line))
     # Pt to new cons so pop old line, push cons
-    (ln> *ptr)
-    (ln> *ptr Po-Cons)
+    (lns> *ptr)
+    (lns> *ptr Po-Cons)
     (top> Po-Cons)
     (draw> *ptr)))            

@@ -125,8 +125,8 @@
   (when T
     (prinl "=============")
     (prinl "CURRENT LINE:")
-    (prin "Lines: ") (println (get *ptr 'ln))
-    (let Ptr-Ln (car (get *ptr 'ln))
+    (prin "Lines: ") (println (get *ptr 'lns))
+    (let Ptr-Ln (car (get *ptr 'lns))
       (prin "Ptr Ln: ") (println Ptr-Ln (get Ptr-Ln 'any)))
     #(prin "*line: ") (println *line (get *line 'any))
     #(println 'p (get *line 'line 'p) (get *line 'line 'p 'any))
@@ -135,4 +135,4 @@
     )
 
   #(upd-tree)
-  (mov-⇲ (c-ln> *ptr)))
+  (mov-⇲ (c-lns> *ptr)))

@@ -10,7 +10,7 @@
   (=: pair)
   
   # track lines
-  (=: ln)
+  (=: lns)
   
   # representation of Pointer
   (=: po))
@@ -28,8 +28,8 @@
 (dm rel-a?> () (= (: reg) 'a))
 (dm rel-b?> () (= (: reg) 'b))
 
-(dm ln> (X) (if X (push (:: ln) X) (pop (:: ln))))
-(dm c-ln> () (car (: ln)))
+(dm lns> (X) (if X (push (:: lns) X) (pop (:: lns))))
+(dm c-lns> () (car (: lns)))
 
 ################
 
@@ -207,18 +207,18 @@
   # else if old has line but new doesn't = mov prv line
 
   (if (get Po-Tgt 'line)
-      (unless (= (c-ln> This) Po-Tgt)
-        #(ln> This Po-Tgt)
-        (ln> This)
+      (unless (= (c-lns> This) Po-Tgt)
+        #(lns> This Po-Tgt)
+        (lns> This)
         )
       (when (get Po-Ref 'line)
-        (ln> This))))
+        (lns> This))))
 
 
 (dm mov-line-n> (Po-Tgt)
   (when (get Po-Tgt 'line) # Tgt has line
-    (unless (= (c-ln> This) Po-Tgt)
-      (ln> This Po-Tgt))))
+    (unless (= (c-lns> This) Po-Tgt)
+      (lns> This Po-Tgt))))
       
       
 (dm find-back> (Rel Ref Pln)
@@ -226,7 +226,7 @@
   (let (Res NIL
         Ref (if Ref @ (: ref)))
     #(println 'find-back "Search for cell: " Ref (type Ref))
-    (for Line (: ln)
+    (for Line (: lns)
       (let Dat (get Line 'any)
         (setq Res (if (= Rel 'a) 
                       (memq Ref Dat)
@@ -241,7 +241,7 @@
     (if Res
         Res
         (unless Pln
-          (get (cadr (: ln)) 'any)))))
+          (get (cadr (: lns)) 'any)))))
       
       
 (dm find-back-any> (Ref Pln)
@@ -280,7 +280,7 @@
       (draw> This)))
       
   #(prin "back> PTR: ") (println (: ref) (: pair) (: reg))
-  #(prin "back> LN: ") (println (car (: ln)) (get (car (: ln)) 'any))
+  #(prin "back> LN: ") (println (car (: lns)) (get (car (: lns)) 'any))
   )
 
 
@@ -307,7 +307,7 @@
       ))
       
   #(println 'forw> "PTR: " (: ref) (: pair))
-  #(println 'forw> "LN: " (car (: ln)) (get (car (: ln)) 'any))
+  #(println 'forw> "LN: " (car (: lns)) (get (car (: lns)) 'any))
   )
 
 

@@ -39,12 +39,12 @@
     # Does this functionality need to be in the methods?
     (put *ptr 'ref)  
     (put Po-Pair 'a)
-    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
+    (when (= (c-lns> *ptr) Po-Tgt) (lns> *ptr))
     (del> Po-Tgt)    
     
     (let (List (list Tgt)
           Po-List (gen-point List 'x NIL T)
-          Ln (c-ln> *ptr)
+          Ln (c-lns> *ptr)
           Ln-N (get Ln 'line 'n)
           Cdr (cdr Pair)
           Po-Cdr (if Cdr (lup-pt Cdr) (get Po-Pair 'b))
@@ -67,10 +67,10 @@
       (pt> *ptr List 'a)
       
       (upd-tree)
-      (mov-⇲ (c-ln> *ptr))
+      (mov-⇲ (c-lns> *ptr))
       
-      (when Push-Pair (ln> *ptr Po-Pair))
-      (ln> *ptr Po-List)
+      (when Push-Pair (lns> *ptr Po-Pair))
+      (lns> *ptr Po-List)
       (top> Po-List)
       (draw> *ptr))))    
 
@@ -120,14 +120,14 @@
     # * Pop line if necessary
     (put *ptr 'ref)  
     (put Po-Pair 'a)
-    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
+    (when (= (c-lns> *ptr) Po-Tgt) (lns> *ptr))
     (del> Po-Tgt)
     
     (let (List (list Tgt)
           Po-List (gen-point List 'x NIL T)
           Po-Car (get Po-List 'a)
           Po-Cdr (get Po-List 'b)
-          Ln (c-ln> *ptr))
+          Ln (c-lns> *ptr))
     
       (set-lay> Po-List 'y)
     
@@ -140,8 +140,8 @@
       (upd-tree)
       (mov-⇲ Po-List)
 
-      (ln> *ptr)
-      (ln> *ptr Po-List)
+      (lns> *ptr)
+      (lns> *ptr Po-List)
       (top> Po-List)
       (draw> *ptr))))   
       
@@ -192,14 +192,14 @@
     # * Pop line if necessary
     (put *ptr 'ref)  
     (put Po-Pair 'b)
-    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
+    (when (= (c-lns> *ptr) Po-Tgt) (lns> *ptr))
     (del> Po-Tgt)
     
     (let (List (list Tgt)
           Po-List (gen-point List 'x NIL T)
           Po-Car (get Po-List 'a)
           Po-Cdr (get Po-List 'b)
-          Ln (c-ln> *ptr))
+          Ln (c-lns> *ptr))
         
       (set-lay> Po-List 'y)    
     
@@ -224,6 +224,6 @@
       (upd-tree)
       (mov-⇲ Po-List)
             
-      (ln> *ptr Po-List)
+      (lns> *ptr Po-List)
       (top> Po-List)
       (draw> *ptr))))            

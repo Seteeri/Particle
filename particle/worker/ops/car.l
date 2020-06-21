@@ -139,14 +139,14 @@
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
     
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
                 
     # Pt to list
     (pt> *ptr Cons 'a)
     ~(assert (get Po-Pair 'line))
     # Pt to new cons so pop old line, push cons
-    (ln> *ptr)
-    (ln> *ptr Po-Cons)
+    (lns> *ptr)
+    (lns> *ptr Po-Cons)
     (top> Po-Cons)
     (draw> *ptr)))
   
@@ -239,12 +239,12 @@
     # Does this functionality need to be in the methods?
     (put *ptr 'ref)  
     (put Po-Pair 'a)
-    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
+    (when (= (c-lns> *ptr) Po-Tgt) (lns> *ptr))
     (del> Po-Tgt)    
     
     (let (List (list Tgt)
           Po-List (gen-point List 'x NIL T)
-          Ln (c-ln> *ptr)
+          Ln (c-lns> *ptr)
           Ln-N (get Ln 'line 'n)
           Cdr (cdr Pair)
           Po-Cdr (if Cdr (lup-pt Cdr) (get Po-Pair 'b))
@@ -265,12 +265,12 @@
       (put Po-List 'line (new '(+Line)))
       
       (upd-tree)
-      (mov-⇲ (c-ln> *ptr))
+      (mov-⇲ (c-lns> *ptr))
             
       (pt> *ptr List 'a)
             
-      (when Push-Pair (ln> *ptr Po-Pair))
-      (ln> *ptr Po-List)
+      (when Push-Pair (lns> *ptr Po-Pair))
+      (lns> *ptr Po-List)
       (top> Po-List)
       (draw> *ptr))))
 
@@ -349,9 +349,9 @@
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
     
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
                 
     (pt> *ptr Cons 'a)
-    (ln> *ptr Po-Cons)      
+    (lns> *ptr Po-Cons)      
     (top> Po-Cons)
     (draw> *ptr)))

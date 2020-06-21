@@ -90,7 +90,7 @@
 
     (when (get Po-Del 'line)
       (mov-line Po-Del Po-Dat)
-      (ln> *ptr))
+      (lns> *ptr))
     (mov-line-n> *ptr Po-Dat)
     
     (if Dat
@@ -102,7 +102,7 @@
         (con> Po-Cell Dat Po-Dat T))
         
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
     
     (when (str? (cadr Cell))
       (sup> *ptr NIL)
@@ -125,7 +125,7 @@
    
     (when (get Po-Del 'line)
       (mov-line Po-Del Po-List)
-      (ln> *ptr))
+      (lns> *ptr))
     (mov-line-n> *ptr Po-List)
     
     (con> Po-Pair List Po-List)
@@ -133,7 +133,7 @@
     (pt> *ptr List 'b))
     
   (upd-tree)
-  (mov-⇲ (c-ln> *ptr)))
+  (mov-⇲ (c-lns> *ptr)))
         
         
 (de ins-a-atom (Dat)
@@ -148,7 +148,7 @@
     
     (when (get Po-Del 'line)
       (mov-line Po-Del Po-List)
-      (ln> *ptr))
+      (lns> *ptr))
     (mov-line-n> *ptr Po-List)
     
     (con> Po-Pair List Po-List)
@@ -156,7 +156,7 @@
     (pt> *ptr List 'b))
   
   (upd-tree)
-  (mov-⇲ (c-ln> *ptr)))          
+  (mov-⇲ (c-lns> *ptr)))          
         
 
 (de con-b-pair-x (Dat)
@@ -221,13 +221,13 @@
     # Mov line
     (when (get Po-Cell 'line)
       (mov-line Po-Cell Po-Dat)
-      (ln> *ptr))
+      (lns> *ptr))
     (mov-line-n> *ptr Po-Dat)
                 
     # ref does not change
                 
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
     
     (top> Po-Cell)
     (draw> *ptr)))
@@ -288,12 +288,12 @@
     (pt> *ptr List 'b)
     
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
         
     # Pop cur line = Po-Pair
     # Push new list
-    (ln> *ptr)
-    (ln> *ptr Po-List)
+    (lns> *ptr)
+    (lns> *ptr Po-List)
     
     (top> Po-List)
     (draw> *ptr)))
@@ -344,12 +344,12 @@
     (pt> *ptr List 'a)
         
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
     
     # Pop cur line = Po-Pair
     # Push new list
-    (ln> *ptr)
-    (ln> *ptr Po-List)
+    (lns> *ptr)
+    (lns> *ptr Po-List)
     
     (top> Po-List)
     (draw> *ptr)))
@@ -389,14 +389,14 @@
     # Mov line
     (when (get Po-Pair 'line)
       (mov-line Po-Pair Po-List)
-      (ln> *ptr))
+      (lns> *ptr))
     (mov-line-n> *ptr Po-List)
     
     # Keep ref - change rel
     (pt> *ptr Pair 'b)    
     
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
         
     (top> Po-Pair)
     (draw> *ptr)))

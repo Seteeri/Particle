@@ -290,7 +290,7 @@
   (put (get Po-Sta 'b) 'line (new '(+Line)))
   
   (pt> *ptr '*start 'b NIL)
-  (put *ptr 'ln (list Po-Sta))
+  (put *ptr 'lns (list Po-Sta))
     
   (when Draw
     (setq *cur (list 0.0 0.0 0.0))

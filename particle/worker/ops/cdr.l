@@ -81,14 +81,14 @@
     # * Pop line if necessary
     (put *ptr 'ref)  
     (put Po-Pair 'b)
-    (when (= (c-ln> *ptr) Po-Tgt) (ln> *ptr))
+    (when (= (c-lns> *ptr) Po-Tgt) (lns> *ptr))
     (del> Po-Tgt)
     
     (let (List (list Tgt)
           Po-List (gen-point List 'x NIL T)
           Po-Car (get Po-List 'a)
           Po-Cdr (get Po-List 'b)
-          Ln (c-ln> *ptr))
+          Ln (c-lns> *ptr))
     
       (set-lay> Po-List 'y)    
     
@@ -108,7 +108,7 @@
       (mov-⇲ Ln)
             
       (pt> *ptr List 'b)            
-      (ln> *ptr Po-List)
+      (lns> *ptr Po-List)
       (top> Po-List)
       (draw> *ptr))))
           
@@ -194,7 +194,7 @@
         Cons (cons)
         Po-Cons (gen-point Cons 'x NIL T)
         Po-Cdr (get Po-Cons 'b)
-        Ln (c-ln> *ptr))
+        Ln (c-lns> *ptr))
     
     (set-lay> Po-Cons 'y)    
   
@@ -211,7 +211,7 @@
               (prog
                 (setq Ln (get Po-Tgt 'line 'p))))
           # Only pop if replacing line
-          (ln> *ptr))
+          (lns> *ptr))
         (prog
           (put Po-Tgt 'line (new '(+Line)))))
     
@@ -220,10 +220,10 @@
     (ins-line-aft Po-Cons Po-Cdr)    
     
     (upd-tree)
-    (mov-⇲ (c-ln> *ptr))
+    (mov-⇲ (c-lns> *ptr))
                 
     # Pt to list
     (pt> *ptr Cons 'a)
-    (ln> *ptr Po-Cons)
+    (lns> *ptr Po-Cons)
     (top> Po-Cons)
     (draw> *ptr)))
