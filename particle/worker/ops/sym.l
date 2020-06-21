@@ -94,8 +94,8 @@
     (mov-line-n> *ptr Po-Dat)
     
     (if Dat
-        (set-ref> *ptr Dat Rel)
-        (set-ref> *ptr Cell Rel Po-Dat))
+        (pt> *ptr Dat Rel)
+        (pt> *ptr Cell Rel Po-Dat))
     
     (if (= Rel 'a)
         (set> Po-Cell Dat Po-Dat T)
@@ -130,7 +130,7 @@
     
     (con> Po-Pair List Po-List)
         
-    (set-ref> *ptr List 'b))
+    (pt> *ptr List 'b))
     
   (upd-tree)
   (mov-⇲ (c-ln> *ptr)))
@@ -153,7 +153,7 @@
     
     (con> Po-Pair List Po-List)
         
-    (set-ref> *ptr List 'b))
+    (pt> *ptr List 'b))
   
   (upd-tree)
   (mov-⇲ (c-ln> *ptr)))          
@@ -285,7 +285,7 @@
     
     (put Po-Pair 'line 'p Po-List)
     
-    (set-ref> *ptr List 'b)
+    (pt> *ptr List 'b)
     
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
@@ -341,7 +341,7 @@
     
     (put Po-Pair 'line 'p Po-List)
         
-    (set-ref> *ptr List 'a)
+    (pt> *ptr List 'a)
         
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
@@ -393,7 +393,7 @@
     (mov-line-n> *ptr Po-List)
     
     # Keep ref - change rel
-    (set-ref> *ptr Pair 'b)    
+    (pt> *ptr Pair 'b)    
     
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))

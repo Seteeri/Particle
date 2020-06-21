@@ -257,7 +257,7 @@
       (put *ptr 'po Po-Txt)
       # Upd +Point on change
       (mov-line-n> *ptr Po-Sta)
-      (set-ref> *ptr '*start 'b)
+      (pt> *ptr '*start 'b)
       
       (mov-cur 0.0 1.0)     
       # Call this through *ptr method      
@@ -289,7 +289,7 @@
 
   (put (get Po-Sta 'b) 'line (new '(+Line)))
   
-  (set-ref> *ptr '*start 'b NIL)
+  (pt> *ptr '*start 'b NIL)
   (put *ptr 'ln (list Po-Sta))
     
   (when Draw

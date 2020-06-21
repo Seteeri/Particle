@@ -142,7 +142,7 @@
     (mov-⇲ (c-ln> *ptr))
                 
     # Pt to list
-    (set-ref> *ptr Cons 'a)
+    (pt> *ptr Cons 'a)
     ~(assert (get Po-Pair 'line))
     # Pt to new cons so pop old line, push cons
     (ln> *ptr)
@@ -267,7 +267,7 @@
       (upd-tree)
       (mov-⇲ (c-ln> *ptr))
             
-      (set-ref> *ptr List 'a)
+      (pt> *ptr List 'a)
             
       (when Push-Pair (ln> *ptr Po-Pair))
       (ln> *ptr Po-List)
@@ -351,7 +351,7 @@
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
                 
-    (set-ref> *ptr Cons 'a)
+    (pt> *ptr Cons 'a)
     (ln> *ptr Po-Cons)      
     (top> Po-Cons)
     (draw> *ptr)))

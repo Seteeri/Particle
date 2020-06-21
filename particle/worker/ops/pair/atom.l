@@ -64,7 +64,7 @@
           
       (put Po-List 'line (new '(+Line)))
       
-      (set-ref> *ptr List 'a)
+      (pt> *ptr List 'a)
       
       (upd-tree)
       (mov-⇲ (c-ln> *ptr))
@@ -135,7 +135,7 @@
 
       (put Po-List 'line (new '(+Line)))
       
-      (set-ref> *ptr List 'a)
+      (pt> *ptr List 'a)
 
       (upd-tree)
       (mov-⇲ Po-List)
@@ -219,7 +219,7 @@
       
       (put Po-Car 'line (new '(+Line)))
             
-      (set-ref> *ptr List 'b)
+      (pt> *ptr List 'b)
       
       (upd-tree)
       (mov-⇲ Po-List)

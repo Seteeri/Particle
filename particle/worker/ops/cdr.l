@@ -107,7 +107,7 @@
       (upd-tree)
       (mov-⇲ Ln)
             
-      (set-ref> *ptr List 'b)            
+      (pt> *ptr List 'b)            
       (ln> *ptr Po-List)
       (top> Po-List)
       (draw> *ptr))))
@@ -223,7 +223,7 @@
     (mov-⇲ (c-ln> *ptr))
                 
     # Pt to list
-    (set-ref> *ptr Cons 'a)
+    (pt> *ptr Cons 'a)
     (ln> *ptr Po-Cons)
     (top> Po-Cons)
     (draw> *ptr)))

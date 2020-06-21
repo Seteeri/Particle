@@ -84,7 +84,7 @@
     (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
     
-    (set-ref> *ptr Cons 'a)
+    (pt> *ptr Cons 'a)
     
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
@@ -209,7 +209,7 @@
     
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
       
-    (set-ref> *ptr Cons 'b)
+    (pt> *ptr Cons 'b)
     
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))
@@ -299,7 +299,7 @@
     (put Po-Cons 'line (new '(+Line) NIL Po-Cdr))
     (put Po-Cdr 'line (new '(+Line) Po-Cons NIL))
     
-    (set-ref> *ptr Cons 'a)
+    (pt> *ptr Cons 'a)
     
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))

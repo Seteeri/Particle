@@ -60,7 +60,7 @@
         (col-verts> Pt (list R G B) A))))
 
     
-(dm set-ref> (Tgt Rel Po Draw)
+(dm pt> (Tgt Rel Po Draw)
   #{
   
     Any T
@@ -150,7 +150,7 @@
         Lay-Y (lay-y?> Po-Pair)
         Po-Atom (get Po-Pair Rel))
   
-    (set-ref> This (: ref) Rel Po-Atom T)
+    (pt> This (: ref) Rel Po-Atom T)
 
     (if (or (= Rel 'b)
             (and (= Rel 'a)
@@ -161,7 +161,7 @@
 
 (dm pt-pair-pair> (Rel Tgt)
   
-  (set-ref> This Tgt Rel NIL T)
+  (pt> This Tgt Rel NIL T)
   
   (lup-pt Tgt))
   
@@ -186,14 +186,14 @@
     
     (get (lup-pt (: ref)) Rel)
     
-    (set-ref> This (: ref) Rel @ T)))
+    (pt> This (: ref) Rel @ T)))
     
   
 (dm pt-sym-pair> (Rel)
     
   (let Tgt (val (: ref))
   
-    (set-ref> This Tgt Rel NIL T)
+    (pt> This Tgt Rel NIL T)
     
     (lup-pt Tgt)))
     
@@ -273,7 +273,7 @@
                      (lup-pt (: ref)))
                  Po-Back)     
                  
-    (set-ref> This Back Rel NIL T)
+    (pt> This Back Rel NIL T)
     
     (when Draw
       (top> Po-Back)
