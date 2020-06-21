@@ -24,12 +24,33 @@
   (if (: pair)
       (lay-y?> (: ref))
       (lay-y?> (lup-pt (: ref)))))
-  
-(dm reg-a?> () (= (: reg) 'a))
-(dm reg-b?> () (= (: reg) 'b))
 
 (dm lns> (X) (if X (push (:: lns) X) (pop (:: lns))))
 (dm c-lns> () (car (: lns)))
+
+(dm reg-a?> () (= (: reg) 'a))
+(dm reg-b?> () (= (: reg) 'b))
+
+(dm a-nil?>  ()
+  (and (reg-a?> This) (: pair)))
+  
+(dm a-pair?> ()
+  (and (reg-a?> This) (pair (: ref))))
+  
+(dm a-atom?> ()
+  (and (reg-a?> This) (atom (: ref))))
+
+(dm b-nil?>  ()
+  (and (reg-b?> This) (: pair)))
+  
+(dm b-pair?> ()
+  (and (reg-b?> This) (pair (: ref))))
+  
+(dm b-atom?> ()
+  (and (reg-b?> This) (atom (: ref))))
+
+(dm atom?> (or (a-atom?> This) (b-atom?> This)))
+(dm pair?> (or (a-pair?> This) (b-pair?> This)))
 
 ################
 
@@ -99,31 +120,7 @@
           (=: pair))))
         
   (=: reg Reg))
-  
 
-#############################
-
-(dm a-nil?>  ()
-  (and (reg-a?> This) (: pair)))
-  
-(dm a-pair?> ()
-  (and (reg-a?> This) (pair (: ref))))
-  
-(dm a-atom?> ()
-  (and (reg-a?> This) (atom (: ref))))
-
-(dm b-nil?>  ()
-  (and (reg-b?> This) (: pair)))
-  
-(dm b-pair?> ()
-  (and (reg-b?> This) (pair (: ref))))
-  
-(dm b-atom?> ()
-  (and (reg-b?> This) (atom (: ref))))
-
-(dm atom?> (or (a-atom?> This) (b-atom?> This)))
-(dm pair?> (or (a-pair?> This) (b-pair?> This)))
-  
       
 ######################################
 
