@@ -81,10 +81,10 @@
   
   (let (Cell (if (get *ptr 'pair)
                  @
-                 (find-back> *ptr (get *ptr 'rel)))
+                 (find-back> *ptr (get *ptr 'reg)))
         Po-Cell (lup-pt Cell)
         Po-Del (if (get *ptr 'pair)
-                   (get Po-Cell (get *ptr 'rel))
+                   (get Po-Cell (get *ptr 'reg))
                    (lup-pt (get *ptr 'ref)))
         Po-Dat (gen-point Dat 'x NIL T))
 
@@ -209,7 +209,7 @@
         Po-Cell (lup-pt Cell)
         Pre (if (get *ptr 'pair)
                 @
-                (find-back> *ptr (get *ptr 'rel)))
+                (find-back> *ptr (get *ptr 'reg)))
         Po-Pre (lup-pt Pre)
         List-Dat (list Dat)
         Po-Dat (gen-point List-Dat 'x NIL T))        
@@ -265,7 +265,7 @@
   
   (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
-        Pre (find-back> *ptr (get *ptr 'rel))
+        Pre (find-back> *ptr (get *ptr 'reg))
         Po-Pre (lup-pt Pre)
         List (list Dat)
         Po-List (gen-point List 'x NIL T))
@@ -326,7 +326,7 @@
   
   (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
-        Pre (find-back> *ptr (get *ptr 'rel))
+        Pre (find-back> *ptr (get *ptr 'reg))
         Po-Pre (lup-pt Pre)
         List (list Dat)
         Po-List (gen-point List 'x NIL T))
@@ -378,7 +378,7 @@
   
   (let (Pair (get *ptr 'ref)
         Po-Pair (lup-pt Pair)
-        Pre (find-back> *ptr (get *ptr 'rel))
+        Pre (find-back> *ptr (get *ptr 'reg))
         Po-Pre (lup-pt Pre)
         List (list Dat)
         Po-List (gen-point List 'x NIL T))

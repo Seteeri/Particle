@@ -109,7 +109,7 @@
       (prin "Ref: ") (println Ref)
     
       (prin "dat: ")  (println (get Ref 'any))
-      (prin "rel: ")  (println (: rel))
+      (prin "rel: ")  (println (: reg))
       (prin "ori: ")  (println (get Ref 'ori))
       (prin "dims: ") (println (get Ref 'dims))
       (prin "lay: ")  (println (get Ref 'lay))

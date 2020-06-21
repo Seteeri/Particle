@@ -69,7 +69,7 @@
                    (lup-pt (get *ptr 'ref)))
         Pair (if (get *ptr 'pair)
                  @
-                 (find-back> *ptr (get *ptr 'rel)))
+                 (find-back> *ptr (get *ptr 'reg)))
         Po-Pair (lup-pt Pair))
     
     (println 'repl-b-atom "Pair/Cdr: " 
@@ -189,7 +189,7 @@
   
   (let (Tgt (get *ptr 'ref)
         Po-Tgt (lup-pt Tgt)
-        Pair (find-back> *ptr (get *ptr 'rel))
+        Pair (find-back> *ptr (get *ptr 'reg))
         Po-Pair (lup-pt Pair)
         Cons (cons)
         Po-Cons (gen-point Cons 'x NIL T)

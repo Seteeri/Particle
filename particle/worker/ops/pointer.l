@@ -5,7 +5,7 @@
   (=: col) # save old color  
   # on pair: rel to prv, 'a 'b or NIL for root
   # on atom: rel to super
-  (=: rel) 
+  (=: reg) 
   # on atom: contains super
   (=: pair)
   
@@ -25,8 +25,8 @@
       (lay-y?> (: ref))
       (lay-y?> (lup-pt (: ref)))))
   
-(dm rel-a?> () (= (: rel) 'a))
-(dm rel-b?> () (= (: rel) 'b))
+(dm rel-a?> () (= (: reg) 'a))
+(dm rel-b?> () (= (: reg) 'b))
 
 (dm ln> (X) (if X (push (:: ln) X) (pop (:: ln))))
 (dm c-ln> () (car (: ln)))
@@ -76,7 +76,7 @@
     
   # Uncolor current ref
   (let? Po (if (: pair)
-               (get (lup-pt (: pair)) (: rel))
+               (get (lup-pt (: pair)) (: reg))
                (lup-pt (: ref)))
     (uncol> This Po Draw))
           
@@ -98,7 +98,7 @@
           (=: ref Tgt)
           (=: pair))))
         
-  (=: rel Rel))
+  (=: reg Rel))
   
 
 #############################
@@ -279,7 +279,7 @@
       (top> Po-Back)
       (draw> This)))
       
-  #(prin "back> PTR: ") (println (: ref) (: pair) (: rel))
+  #(prin "back> PTR: ") (println (: ref) (: pair) (: reg))
   #(prin "back> LN: ") (println (car (: ln)) (get (car (: ln)) 'any))
   )
 
