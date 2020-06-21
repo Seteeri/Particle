@@ -64,10 +64,10 @@
     
   }#   
 
-  (let (Po-Tgt (if (cell> *ptr)
+  (let (Po-Tgt (if (pair> *ptr)
                    (ref> *ptr)
                    (lup-pt (ref> *ptr)))
-        Pair (if (cell> *ptr)
+        Pair (if (pair> *ptr)
                  @
                  (find-back> *ptr (rel> *ptr)))
         Po-Pair (lup-pt Pair))

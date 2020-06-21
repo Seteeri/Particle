@@ -114,7 +114,7 @@
   
   (let (Po-Atom (ref> *ptr)
         Atom (get Po-Atom 'any)
-        Tgt (cell> *ptr)
+        Tgt (pair> *ptr)
         Po-Tgt (lup-pt Tgt)
         Back (find-back-any> *ptr Tgt T)
         Po-Back (lup-pt Back))
@@ -131,7 +131,7 @@
     (con> Po-Back Atom Po-Atom)
         
     # Update ptr cell
-    (put *ptr 'cell Back)
+    (put *ptr 'pair Back)
         
     (upd-tree)
     (mov-⇲ (c-ln> *ptr))

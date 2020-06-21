@@ -27,7 +27,7 @@
           *po-ptr-txt))
           
     (with *ptr
-      (top> (if (: cell) (: ref) (lup-pt (: ref)))))
+      (top> (if (: pair) (: ref) (lup-pt (: ref)))))
     (draw> *ptr)))
 
 
@@ -101,7 +101,7 @@
 
   (with *ptr
         
-    (let Ref (if (: cell)
+    (let Ref (if (: pair)
                  (: ref)
                  (lup-pt (: ref)))
     

@@ -15,7 +15,7 @@
   (=: col) # save old color  
   (=: rel) # rel to prv, 'a 'b or NIL for root
   # when on atom, contains super cell
-  (=: cell)
+  (=: pair)
   
   # trav stacks
   #(=: pre)
@@ -25,12 +25,12 @@
   (=: po))
 
 (dm lay-x?> ()
-  (if (: cell)
+  (if (: pair)
       (lay-x?> (: ref))
       (lay-x?> (lup-pt (: ref)))))
       
 (dm lay-y?> ()
-  (if (: cell)
+  (if (: pair)
       (lay-y?> (: ref))
       (lay-y?> (lup-pt (: ref)))))
   
@@ -38,7 +38,7 @@
 (dm rel-b?> () (= (: rel) 'b))
 
 (dm ref> (R) (if R (=: ref R) (: ref)))
-(dm cell> (N) (if N (=: cell N) (: cell)))
+(dm pair> (N) (if N (=: pair N) (: pair)))
 (dm rel> (S) (if S (=: rel S) (: rel)))    
 (dm ln> (X) (if X (push (:: ln) X) (pop (:: ln))))
 (dm c-ln> () (car (: ln)))
@@ -88,8 +88,8 @@
   }#
     
   # Uncolor current ref
-  (let? Po (if (: cell)
-               (get (lup-pt (: cell)) (: rel))
+  (let? Po (if (: pair)
+               (get (lup-pt (: pair)) (: rel))
                (lup-pt (: ref)))
     (uncol> This Po Draw))
           
@@ -104,12 +104,12 @@
         (prog        
           (col> This Po Draw)
           (=: ref Po)
-          (=: cell Tgt))
+          (=: pair Tgt))
             
         (prog          
           (col> This (lup-pt Tgt) Draw)
           (=: ref Tgt)
-          (=: cell))))
+          (=: pair))))
         
   (=: rel Rel))
   
@@ -117,7 +117,7 @@
 #############################
 
 (dm a-nil?>  ()
-  (and (rel-a?> This) (: cell)))
+  (and (rel-a?> This) (: pair)))
   
 (dm a-pair?> ()
   (and (rel-a?> This) (pair (: ref))))
@@ -126,7 +126,7 @@
   (and (rel-a?> This) (atom (: ref))))
 
 (dm b-nil?>  ()
-  (and (rel-b?> This) (: cell)))
+  (and (rel-b?> This) (: pair)))
   
 (dm b-pair?> ()
   (and (rel-b?> This) (pair (: ref))))
@@ -265,7 +265,7 @@
       
 (dm back> (Rel Draw)
 
-  (let (Back (if (: cell)
+  (let (Back (if (: pair)
                  @
                  (find-back> This Rel))
         Po-Back (lup-pt Back))
@@ -281,7 +281,7 @@
     
     # Cur -> New
     (mov-line-p> This
-                 (if (: cell)
+                 (if (: pair)
                      (: ref)
                      (lup-pt (: ref)))
                  Po-Back)     
@@ -292,7 +292,7 @@
       (top> Po-Back)
       (draw> This)))
       
-  #(prin "back> PTR: ") (println (: ref) (: cell) (: rel))
+  #(prin "back> PTR: ") (println (: ref) (: pair) (: rel))
   #(prin "back> LN: ") (println (car (: ln)) (get (car (: ln)) 'any))
   )
 
@@ -319,7 +319,7 @@
       # NIL - do nothing
       ))
       
-  #(println 'forw> "PTR: " (: ref) (: cell))
+  #(println 'forw> "PTR: " (: ref) (: pair))
   #(println 'forw> "LN: " (car (: ln)) (get (car (: ln)) 'any))
   )
 

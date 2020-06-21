@@ -24,7 +24,7 @@
 
   #(println 'make-pair-a-atom-x)
     
-  (let (Po-Tgt (if (cell> *ptr)
+  (let (Po-Tgt (if (pair> *ptr)
                    (ref> *ptr)
                    (lup-pt (ref> *ptr)))
         Tgt (get Po-Tgt 'any)
@@ -105,7 +105,7 @@
       
   }#
 
-  (let (Po-Tgt (if (cell> *ptr)
+  (let (Po-Tgt (if (pair> *ptr)
                    (ref> *ptr)
                    (lup-pt (ref> *ptr)))
         Tgt (get Po-Tgt 'any)

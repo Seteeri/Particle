@@ -79,11 +79,11 @@
 
   #(println 'repl-atom)
   
-  (let (Cell (if (cell> *ptr)
+  (let (Cell (if (pair> *ptr)
                  @
                  (find-back> *ptr (rel> *ptr)))
         Po-Cell (lup-pt Cell)
-        Po-Del (if (cell> *ptr)
+        Po-Del (if (pair> *ptr)
                    (get Po-Cell (rel> *ptr))
                    (lup-pt (ref> *ptr)))
         Po-Dat (gen-point Dat 'x NIL T))
@@ -117,7 +117,7 @@
 
   #(println 'ins-b-atom)
   
-  (let (Pair (cell> *ptr)
+  (let (Pair (pair> *ptr)
         Po-Pair (lup-pt Pair)
         Po-Del (get Po-Pair 'b)
         List (list Dat)
@@ -140,7 +140,7 @@
 
   #(println 'ins-a-atom)
   
-  (let (Pair (cell> *ptr)
+  (let (Pair (pair> *ptr)
         Po-Pair (lup-pt Pair)
         Po-Del (get Po-Pair 'b)
         List (list Dat)
@@ -207,7 +207,7 @@
   
   (let (Cell (ref> *ptr)
         Po-Cell (lup-pt Cell)
-        Pre (if (cell> *ptr)
+        Pre (if (pair> *ptr)
                 @
                 (find-back> *ptr (rel> *ptr)))
         Po-Pre (lup-pt Pre)

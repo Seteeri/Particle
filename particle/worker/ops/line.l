@@ -4,7 +4,7 @@
   # X Pair Car can have a line but only applies to lists
   # If arbitrarily done, would break consistency...
   
-  (let (Po-Tgt (if (cell> *ptr)
+  (let (Po-Tgt (if (pair> *ptr)
                    (ref> *ptr)
                    (lup-pt (ref> *ptr)))
         Ln (c-ln> *ptr))
@@ -115,5 +115,5 @@
   (mov-⇲ (c-ln> *ptr))
         
   (with *ptr
-    (top> (if (: ref) @ (lup-pt (: cell)))))
+    (top> (if (: ref) @ (lup-pt (: pair)))))
   (draw> *ptr))
