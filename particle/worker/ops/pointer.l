@@ -189,37 +189,31 @@
 
 (dm pt-sym> (Rel Draw)
   # Determine tgt
-  (let (Ref (: ref)
-        Val (val Ref))
-    (if Val
-        (pt-sym-pair> This Rel Draw)
-        (pt-sym-nil> This Rel Draw))))
+  (let Po-Tgt (if (val (: ref))
+                  (pt-sym-pair> This Rel)
+                  (pt-sym-nil> This Rel))
+    (mov-line-n> This Po-Tgt)
+    (when Draw
+      (top> Po-Tgt)
+      (draw> This))))
 
           
-(dm pt-sym-nil> (Rel Draw)
+(dm pt-sym-nil> (Rel)
     
-  (let Po-Tgt (get (lup-pt (: ref)) Rel)
-  
-    (mov-line-n> This Po-Tgt)
-    (set-ref> This (: ref) Rel Po-Tgt T)
+  (prog1
     
-    (when Draw
-      (top> Po-Tgt)
-      (draw> This))))
-  
-  
-(dm pt-sym-pair> (Rel Draw)
+    (get (lup-pt (: ref)) Rel)
     
-  (let (Po-Val (lup-pt (: ref))
-        Tgt (val (: ref))
-        Po-Tgt (lup-pt Tgt))
+    (set-ref> This (: ref) Rel @ T)))
+    
   
-    (mov-line-n> This Po-Tgt)
+(dm pt-sym-pair> (Rel)
+    
+  (let Tgt (val (: ref))
+  
     (set-ref> This Tgt Rel NIL T)
     
-    (when Draw
-      (top> Po-Tgt)
-      (draw> This))))
+    (lup-pt Tgt)))
     
     
 ###############################

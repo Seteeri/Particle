@@ -1,8 +1,11 @@
 TODO
 ====
 
-  Embrace. Embody. Empower
-
+  Embrace. Embolden. Empower
+            Embody?
+            
+  Action . Feeling  . Thought = Behavior
+            
   The cohesiveness of Lisp Machines
   The extensibility of Emacs
   The polish of Apple
@@ -10,6 +13,7 @@ TODO
 
   GOAL is build structures more fluidly
   * Create list, enter strings, convert some to symbols, eval
+  * +Pixel example to demonstrate power
   
   REPL:
   
@@ -20,9 +24,9 @@ TODO
       * New will gen verts
       * Pass sym exp to gen
     * Finish unit tests [Sun]
-      * Del
-      * Bsp
+      * Implement del
       * Nl
+      * Handle symbol/exp
   
   * Refactor? [Mon]
     * Use prog1
@@ -57,6 +61,8 @@ TODO
       7. Undo-log/timeline
         * circular list
         * save old list to file/db
+      8. viewports
+        * use to manage viewports
     BOTTOM
       * Status
   
@@ -93,8 +99,6 @@ TODO
       * Includes glue/chop/pack/split
     * Bind to function keys
 
-  * Create unit tests
-    * Verify position
     
   * External Symbols?
     * Save code to binary and database

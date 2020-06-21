@@ -283,12 +283,6 @@ Not Viable:
       -> Seems excessive when dealing with strings but is consistent
    -> Technically, must triple space so still fails
  
-## Tree Layout
-
-## Search, Tags and Trees
-
-## Dependency Graph Parallelism
-
 ## GC
 
 * Coroutine same for all
@@ -313,3 +307,8 @@ Proc 1
 Proc 2
 Proc 3
 Proc 4
+
+
+## Tree Layout
+
+## Dependency Graph Parallelism
