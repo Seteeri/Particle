@@ -1,14 +1,12 @@
-(def '*bnds-x)
-(def '*bnds-y)
+(def '*bnds-lay)
 (def '*line-lay)
 (def '*list-lay)
 
 
 (de lay-pt-start (Po Ln Lay-A Lay-B)
-  (setq *bnds-x NIL
-        *bnds-y NIL
+  (setq *bnds-lay *cur
         *line-lay (lup-pt Ln)
-        *list-lay NIL)
+        *list-lay (list NIL T))
   (lay-pair Po Lay-A Lay-B))
 
   
@@ -82,24 +80,21 @@
           B (car *list-lay)
           Dims-B (cadr B))
       
-      # Don't use upd-dims-2>
+      # Don't use upd-dims>
       # until final
       (when (car B)
-        (set Dims-B (max (car Dims-B)
-                         (car Dims-A)))
-        (set (cdr Dims-B) (min (cadr Dims-B)
-                                (cadr Dims-A))))
-    
+        (upd-list-lay Dims-B Dims-A))
+        
       # Set dims to list
-      # Already called upd-lst-dims
-      (upd-dims-2> (car A) Dims-A)
+      # Already called upd-lst-lay
+      (upd-dims> (car A) Dims-A)
     
       (when NIL
         (println 'pop-list-lay "Pop list: " 
           A (get (car A) 'any))))))
   
 
-(de upd-lst-dims ()
+(de upd-list-lay (Dims Cur)
   #{
   
     O
@@ -114,31 +109,7 @@
     
   }#
   
-  (let Bnds (cadr (car *list-lay))
-    (set Bnds (max (car Bnds)
-                   (car *cur)))
-    (set (cdr Bnds) (min (cadr Bnds)
-                         (cadr *cur)))))
-  
-  
-(de upd-cur ()
-  #{
-  
-    O
-    [X] CDR|
-    CAR    |
-    -------+
-
-    O
-    [X] CAR|
-    CDR    |
-    -------+          
-    
-  }#
-
-  (setq *bnds-x (if *bnds-x
-                    (max @ (car *cur))
-                    (car *cur))
-        *bnds-y (if *bnds-y
-                    (min @ (cadr *cur))
-                    (cadr *cur))))
+  (set Dims (max (car Dims)
+                 (car Cur)))
+  (set (cdr Dims) (min (cadr Dims)
+                       (cadr Cur))))

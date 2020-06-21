@@ -238,7 +238,7 @@
     (println 'lay-cur> This
               "+ Cur: " (format (get *cur 1) *Scl)  
                         (format (get *cur 2) *Scl)))
-  (upd-cur)
+  (upd-list-lay *bnds-lay *cur)
   (upd-line-post> This))
 
 
@@ -265,7 +265,7 @@
     (println 'upd-line-post> "This: " 
       This (: any) (: line)  (get (: line) 'p)))  
   
-  (upd-dims> This)         
+  (upd-dims> This *bnds-lay)
             
   (if (: line)
       
@@ -274,9 +274,9 @@
         (if (get (: line) 'p) # Sub line
         
             (prog
-              (off *bnds-x) # Reset line bnds x
-              (upd-cur)
-              (upd-dims-2> This *cur))
+              (set *bnds-lay NIL) # Reset line bnds x
+              (upd-list-lay *bnds-lay *cur)
+              (upd-dims> This *cur))
               
             (prog
               # Start of list
@@ -288,21 +288,21 @@
                 (list This # Particle for List
                       (list NIL # Bnds
                             T
-                            0.0)))))
+                            NIL)))))
                             
         (setq *line-lay This))
         
       (prog
         # Middle or end
         # Set dims of cur line
-        (upd-dims> *line-lay)))
+        (upd-dims> *line-lay *bnds-lay)))
          
   # List Stuff
       
   # Update list head
   (when (caar *list-lay)
-    # Update list dims from cur
-    (upd-lst-dims)
+    # Update current list from cur
+    (upd-list-lay (cadr (car *list-lay)) *cur)
     (when NIL
       (println 'upd-list-lay (caar *list-lay)
         (format (car (cadar *list-lay)) *Scl)
@@ -327,37 +327,16 @@
     # Pop and upd list
     (pop-list-lay)))
 
-
-(dm upd-dims> ()
-  #{
-    +Pair: Car bnds
-    +Sym: Car+Cdr bnds
-    +Num: Car+Cdr bnds
-  }#
-  
-  (let Dims (list (abs (- *bnds-x (car  (: ori))))
-                  (abs (- *bnds-y (cadr (: ori)))))
-  
-    #(println 'upd-dims> This Dims)
     
-    ~(assert (car Dims))
-                  
-    (=: dims Dims)
-    (when (: line)
-      (put @ 'dims Dims))))
-    
-    
-(dm upd-dims-2> (Bnds)
+(dm upd-dims> (Cur)
   #{
     +Pair: Car bnds
     +Sym: Car+Cdr bnds
     +Num: Car+Cdr bnds
   }#
     
-  (let Dims (list (abs (- (car  Bnds) (car  (: ori))))
-                  (abs (- (cadr Bnds) (cadr (: ori)))))
-    
-    #(println 'upd-dims-2> This Dims)                  
+  (let Dims (list (abs (- (car  Cur) (car  (: ori))))
+                  (abs (- (cadr Cur) (cadr (: ori)))))
     
     ~(assert (car Dims))
                   
