@@ -124,7 +124,7 @@
   
   (let (Tgt (get *ptr 'ref)
         Po-Tgt (lup-pt Tgt)
-        Pair (find-back> *ptr (rel> *ptr))
+        Pair (find-back> *ptr (get *ptr 'rel))
         Po-Pair (lup-pt Pair)
         Cons (cons)
         Po-Cons (gen-point Cons 'x NIL T)
