@@ -61,7 +61,7 @@
   (=: cen)
   (=: mat4-cen)
   
-  # Rel to Ch
+  # Reg to Ch
   (=: uv)
   (=: off-texel)
   

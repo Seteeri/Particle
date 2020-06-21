@@ -67,7 +67,7 @@
       (println 'make-pair-str "T"))))
   
   
-(de repl-atom (Dat Rel)
+(de repl-atom (Dat Reg)
 
   #{
   
@@ -94,10 +94,10 @@
     (mov-line-n> *ptr Po-Dat)
     
     (if Dat
-        (pt> *ptr Dat Rel)
-        (pt> *ptr Cell Rel Po-Dat))
+        (pt> *ptr Dat Reg)
+        (pt> *ptr Cell Reg Po-Dat))
     
-    (if (= Rel 'a)
+    (if (= Reg 'a)
         (set> Po-Cell Dat Po-Dat T)
         (con> Po-Cell Dat Po-Dat T))
         

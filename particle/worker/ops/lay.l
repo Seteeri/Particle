@@ -29,10 +29,10 @@
 
       #(println Any)
     
-      (let ((Any Rel Po-C) Any
+      (let ((Any Reg Po-C) Any
             Po (if Any
                    (lup-pt Any)
-                   (if (= Rel 'a)
+                   (if (= Reg 'a)
                        (get Po-C 'a)
                        (get Po-C 'b))))
         
@@ -48,8 +48,8 @@
         # Must do this here
         # Cannot guarantee Cdr will be drawn next (after lay>)
         # if Car is deep
-        (when (and (= Rel 'b) Po-C)
-          # Relies on car
+        (when (and (= Reg 'b) Po-C)
+          # Regies on car
           # If not drawn, use Po-C dims
           (if Lay-A
               (pos-cur-cdr> Po-C)

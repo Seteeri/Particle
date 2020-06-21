@@ -60,15 +60,15 @@
         (col-verts> Pt (list R G B) A))))
 
     
-(dm pt> (Tgt Rel Po Draw)
+(dm pt> (Tgt Reg Po Draw)
   #{
   
     Any T
     - Set Tgt
-    - Set Rel to prv
+    - Set Reg to prv
     
     NIL
-    - Set Rel of Po to Cell
+    - Set Reg of Po to Cell
     - Set Tgt to Cell data
     - Set Po to Po of NIL
     
@@ -98,7 +98,7 @@
           (=: ref Tgt)
           (=: pair))))
         
-  (=: reg Rel))
+  (=: reg Reg))
   
 
 #############################
@@ -128,14 +128,14 @@
 ######################################
 
 
-(dm pt-pair> (Rel Draw)
+(dm pt-pair> (Reg Draw)
   # Determine tgt
-  (let (Tgt (if (= Rel 'a)
+  (let (Tgt (if (= Reg 'a)
                 (car (: ref))
                 (cdr (: ref)))
         Po-Top (if (atom Tgt)
-                   (pt-pair-atom> This Rel)
-                   (pt-pair-pair> This Rel Tgt)))
+                   (pt-pair-atom> This Reg)
+                   (pt-pair-pair> This Reg Tgt)))
 
     (mov-line-n> This Po-Top)
                    
@@ -144,24 +144,24 @@
       (draw> This))))
               
               
-(dm pt-pair-atom> (Rel)
+(dm pt-pair-atom> (Reg)
   
   (let (Po-Pair (lup-pt (: ref))
         Lay-Y (lay-y?> Po-Pair)
-        Po-Atom (get Po-Pair Rel))
+        Po-Atom (get Po-Pair Reg))
   
-    (pt> This (: ref) Rel Po-Atom T)
+    (pt> This (: ref) Reg Po-Atom T)
 
-    (if (or (= Rel 'b)
-            (and (= Rel 'a)
+    (if (or (= Reg 'b)
+            (and (= Reg 'a)
                   Lay-Y))
         Po-Atom
         Po-Pair)))
 
 
-(dm pt-pair-pair> (Rel Tgt)
+(dm pt-pair-pair> (Reg Tgt)
   
-  (pt> This Tgt Rel NIL T)
+  (pt> This Tgt Reg NIL T)
   
   (lup-pt Tgt))
   
@@ -169,31 +169,31 @@
 ##################
 
 
-(dm pt-sym> (Rel Draw)
+(dm pt-sym> (Reg Draw)
   # Determine tgt
   (let Po-Tgt (if (val (: ref))
-                  (pt-sym-pair> This Rel)
-                  (pt-sym-nil> This Rel))
+                  (pt-sym-pair> This Reg)
+                  (pt-sym-nil> This Reg))
     (mov-line-n> This Po-Tgt)
     (when Draw
       (top> Po-Tgt)
       (draw> This))))
 
           
-(dm pt-sym-nil> (Rel)
+(dm pt-sym-nil> (Reg)
     
   (prog1
     
-    (get (lup-pt (: ref)) Rel)
+    (get (lup-pt (: ref)) Reg)
     
-    (pt> This (: ref) Rel @ T)))
+    (pt> This (: ref) Reg @ T)))
     
   
-(dm pt-sym-pair> (Rel)
+(dm pt-sym-pair> (Reg)
     
   (let Tgt (val (: ref))
   
-    (pt> This Tgt Rel NIL T)
+    (pt> This Tgt Reg NIL T)
     
     (lup-pt Tgt)))
     
@@ -221,14 +221,14 @@
       (lns> This Po-Tgt))))
       
       
-(dm find-back> (Rel Ref Pln)
+(dm find-back> (Reg Ref Pln)
   # Implement custom search to do one-pass
   (let (Res NIL
         Ref (if Ref @ (: ref)))
     #(println 'find-back "Search for cell: " Ref (type Ref))
     (for Line (: lns)
       (let Dat (get Line 'any)
-        (setq Res (if (= Rel 'a) 
+        (setq Res (if (= Reg 'a) 
                       (memq Ref Dat)
                       (prior Ref Dat)))    
         #(println 'find-back "Searched line: " Dat)
@@ -250,18 +250,18 @@
       (find-back> This 'b Ref Pln)))
       
       
-(dm back> (Rel Draw)
+(dm back> (Reg Draw)
 
   (let (Back (if (: pair)
                  @
-                 (find-back> This Rel))
+                 (find-back> This Reg))
         Po-Back (lup-pt Back))
     
-    # Find Rel of back to its back
+    # Find Reg of back to its back
     (let (Find-Car (find-back> This 'a Back T)
           Find-Cdr (find-back> This 'b Back T))      
       #(prin "back> BACK: ") (println Back Find-Car Find-Cdr)
-      (setq Rel (if Find-Car 'a 'b))
+      (setq Reg (if Find-Car 'a 'b))
       #(prin "back> WARN: Unable to find back-2 for ")
       #(println Back)
       )
@@ -273,7 +273,7 @@
                      (lup-pt (: ref)))
                  Po-Back)     
                  
-    (pt> This Back Rel NIL T)
+    (pt> This Back Reg NIL T)
     
     (when Draw
       (top> Po-Back)
@@ -284,7 +284,7 @@
   )
 
 
-(dm forw> (Rel Draw)
+(dm forw> (Reg Draw)
 
   (cond
 
@@ -295,12 +295,12 @@
     ((or (a-pair?> This)
          (b-pair?> This))
       #(println 'forw> "A/B PAIR")
-      (pt-pair> This Rel Draw))
+      (pt-pair> This Reg Draw))
     
     ((or (a-atom?> This)
          (b-atom?> This))
       #(println 'forw> "A/B ATOM")
-      (pt-sym> This Rel Draw))
+      (pt-sym> This Reg Draw))
             
     (T
       # NIL - do nothing
