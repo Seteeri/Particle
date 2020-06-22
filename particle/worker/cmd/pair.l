@@ -37,7 +37,7 @@
 
   #(prinl-info "cmd-bsp")
   
-  (del-bsp))
+  (bsp-pt))
 
       
 (de cmd-alt-lay (Ks)

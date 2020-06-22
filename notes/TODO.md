@@ -23,9 +23,10 @@ TODO
         * Pass flag to gen -> idx
       * New will gen verts
       * Pass sym exp to gen
-    * Finish unit tests [Sun]
-      * Implement del
-      * Nl
+    * Finish unit tests [Mon]
+      * Implement del [Done]
+      * Add del tests
+      * Add nl tests
       * Handle symbol/exp
   
   * Refactor? [Mon]

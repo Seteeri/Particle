@@ -71,6 +71,7 @@
             "/particle/worker/ops/align.l"            
             "/particle/worker/ops/lay.l"
             "/particle/worker/ops/bsp.l"
+            "/particle/worker/ops/del.l"
             "/particle/worker/ops/sym.l"
             "/particle/worker/ops/line.l"
             "/particle/worker/ops/alt.l"            
@@ -269,7 +270,7 @@
       (lay-pt-start '⇲ '⇲ T T)
       
       # Test
-      (when T
+      (when NIL
         (run-tests)
         (quit "Finished tests")
         )

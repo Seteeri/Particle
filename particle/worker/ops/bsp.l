@@ -57,24 +57,24 @@
 }#
 
 
-(de bsp-bsp ()
+(de bsp-pt ()
   
   (cond
   
     ((a-atom?> *ptr)
-      #(println 'bsp-bsp "A ATOM/NIL")
+      #(println 'bsp-pt "A ATOM/NIL")
       )
       
     ((b-atom?> *ptr)
-      #(println 'bsp-bsp "B ATOM/NIL")
+      #(println 'bsp-pt "B ATOM/NIL")
       (bsp-b-atom))
     
     ((a-pair?> *ptr)
-      #(println 'bsp-bsp "A PAIR")
+      #(println 'bsp-pt "A PAIR")
       (bsp-a-pair))
       
     ((b-pair?> *ptr)
-      #(println 'bsp-bsp "B PAIR")
+      #(println 'bsp-pt "B PAIR")
       (bsp-b-pair))))
 
 
@@ -91,7 +91,7 @@
         Pt-Back (lup-pt Back))
 
     (when (get Pt-Tgt 'line)
-      (bsp-line Pt-Tgt)
+      (del-line Pt-Tgt)
       (let Ln (lns> *ptr)
         (lns> *ptr)
         (lns> *ptr Ln)))
@@ -120,7 +120,7 @@
         Pt-Back (lup-pt Back))
     
     (when (get Pt-Tgt 'line)
-      (bsp-line Pt-Tgt)
+      (del-line Pt-Tgt)
       (let Ln (lns> *ptr)
         (lns> *ptr)
         (lns> *ptr Ln)))      
@@ -150,7 +150,7 @@
         Pt-Back (lup-pt Back))
 
     (when (get Pt-Tgt 'line)
-      (bsp-line Pt-Tgt)
+      (del-line Pt-Tgt)
       (lns> *ptr) (lns> *ptr))
     (set-ln-n> *ptr Pt-Pair)
     

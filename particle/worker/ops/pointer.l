@@ -105,7 +105,7 @@
   # Should store Point also
   
   (let Pt-Tgt (lup-pt Tgt)
-      
+    
     # Set ref
     (if Po
           
@@ -222,15 +222,23 @@
   # Implement custom search to do one-pass
   (let (Res NIL
         Ref (if Ref @ (: ref)))
-    #(println 'find-back "Search for cell: " Ref (type Ref))
+        
+    #(println 'find-back "Search for cell: " Ref)
+    
     (for Line (: lns)
-      (let Dat (get Line 'any)
+    
+      # Handle non-pair like exp sym
+    
+      (let Any (get Line 'any)
         (setq Res (if (= Reg 'a) 
-                      (memq Ref Dat)
-                      (prior Ref Dat)))    
-        #(println 'find-back "Searched line: " Dat)
-        #(println 'find-back "Found: " Res)
+                      (memq Ref Any)
+                      (if (sym? Any)
+                          (when (= (val Any) Ref) Any)
+                          (prior Ref Any))))
+        #(println 'find-back "Search line: " Any)
+        #(println 'find-back "  Found: " Res)
         )
+        
       (T (and Res
               # Occurs for Y-Pair Car = Atom
               # else cont search
@@ -245,8 +253,9 @@
   (if (find-back> This 'a Ref Pln)
       @
       (find-back> This 'b Ref Pln)))
+
       
-      
+# rename pt-back/forw      
 (dm back> (Reg Drw)
 
   (let (Back (if (: pair)
@@ -258,10 +267,7 @@
     (let (Find-Car (find-back> This 'a Back T)
           Find-Cdr (find-back> This 'b Back T))      
       #(prin "back> BACK: ") (println Back Find-Car Find-Cdr)
-      (setq Reg (if Find-Car 'a 'b))
-      #(prin "back> WARN: Unable to find back-2 for ")
-      #(println Back)
-      )
+      (setq Reg (if Find-Car 'a 'b)))
     
     # Cur -> New
     (set-ln-p> This
@@ -269,7 +275,7 @@
                      (: ref)
                      (lup-pt (: ref)))
                  Pt-Back)     
-                 
+    
     (pt> This Back Reg NIL T)
     
     (when Drw
