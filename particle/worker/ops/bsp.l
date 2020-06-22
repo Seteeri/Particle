@@ -57,28 +57,28 @@
 }#
 
 
-(de del-bsp ()
+(de bsp-bsp ()
   
   (cond
   
     ((a-atom?> *ptr)
-      #(println 'del-bsp "A ATOM/NIL")
+      #(println 'bsp-bsp "A ATOM/NIL")
       )
       
     ((b-atom?> *ptr)
-      #(println 'del-bsp "B ATOM/NIL")
-      (del-b-atom))
+      #(println 'bsp-bsp "B ATOM/NIL")
+      (bsp-b-atom))
     
     ((a-pair?> *ptr)
-      #(println 'del-bsp "A PAIR")
-      (del-a-pair))
+      #(println 'bsp-bsp "A PAIR")
+      (bsp-a-pair))
       
     ((b-pair?> *ptr)
-      #(println 'del-bsp "B PAIR")
-      (del-b-pair))))
+      #(println 'bsp-bsp "B PAIR")
+      (bsp-b-pair))))
 
 
-(de del-a-pair ()
+(de bsp-a-pair ()
 
   # Del back
   # Hook pair
@@ -91,7 +91,7 @@
         Pt-Back (lup-pt Back))
 
     (when (get Pt-Tgt 'line)
-      (del-line Pt-Tgt)
+      (bsp-line Pt-Tgt)
       (let Ln (lns> *ptr)
         (lns> *ptr)
         (lns> *ptr Ln)))
@@ -107,7 +107,7 @@
     (draw> *ptr)))
       
       
-(de del-b-atom ()
+(de bsp-b-atom ()
 
   # Del current
   # Hook atom up
@@ -120,7 +120,7 @@
         Pt-Back (lup-pt Back))
     
     (when (get Pt-Tgt 'line)
-      (del-line Pt-Tgt)
+      (bsp-line Pt-Tgt)
       (let Ln (lns> *ptr)
         (lns> *ptr)
         (lns> *ptr Ln)))      
@@ -140,7 +140,7 @@
     (draw> *ptr)))
     
     
-(de del-b-pair ()
+(de bsp-b-pair ()
 
   (let (Pair (get *ptr 'ref)
         Pt-Pair (lup-pt Pair)
@@ -150,7 +150,7 @@
         Pt-Back (lup-pt Back))
 
     (when (get Pt-Tgt 'line)
-      (del-line Pt-Tgt)
+      (bsp-line Pt-Tgt)
       (lns> *ptr) (lns> *ptr))
     (set-ln-n> *ptr Pt-Pair)
     
