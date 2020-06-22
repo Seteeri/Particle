@@ -323,9 +323,21 @@
     # Cache ends
     (put (caar *list-lay) 'line 'e This)
     (put *line-lay 'line 'e This)
-        
-    # Pop and upd list
-    (pop-list-lay)))
+    
+    (let? Lst-In (pop '*list-lay)
+    
+      (when NIL
+        (println 'upd-line-post "Pop list: "
+          A (get (car A) 'any)))
+    
+      (let (Lst-Out (car *list-lay)
+            Dims-I (cadr Lst-In)
+            Dims-O (cadr Lst-Out))
+      
+        (when (car Lst-Out)
+          (upd-list-lay Dims-O Dims-I))
+      
+        (upd-dims> (car Lst-In) Dims-I)))))
 
     
 (dm upd-dims> (Cur)
@@ -338,7 +350,7 @@
   (let Dims (list (abs (- (car  Cur) (car  (: ori))))
                   (abs (- (cadr Cur) (cadr (: ori)))))
     
-    ~(assert (car Dims))
+    # Should always be updated?
                   
     (=: dims Dims)
     (when (: line)

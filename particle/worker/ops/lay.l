@@ -70,29 +70,7 @@
 (de lay-*start ()
   (mov-cur 0.0 0.0)
   (lay-pt-start '*start '*start T T))
-
-        
-(de pop-list-lay ()
-
-  (let? A (pop '*list-lay)
-
-    (let (Dims-A (cadr A)
-          B (car *list-lay)
-          Dims-B (cadr B))
-      
-      # Don't use upd-dims>
-      # until final
-      (when (car B)
-        (upd-list-lay Dims-B Dims-A))
-        
-      # Set dims to list
-      # Already called upd-lst-lay
-      (upd-dims> (car A) Dims-A)
-    
-      (when NIL
-        (println 'pop-list-lay "Pop list: " 
-          A (get (car A) 'any))))))
-  
+ 
 
 (de upd-list-lay (Dims Cur)
   #{
