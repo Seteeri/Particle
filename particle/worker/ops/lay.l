@@ -1,14 +1,19 @@
-(def '*bnds-lay)
+(def '*dims-lay)
 (def '*line-lay)
 (def '*list-lay)
 
 
+(de lay-*start ()
+  (mov-cur 0.0 0.0)
+  (lay-pt-start '*start '*start T T))
+
+
 (de lay-pt-start (Po Ln Lay-A Lay-B)
-  (setq *bnds-lay *cur
+  (setq *dims-lay *cur
         *line-lay (lup-pt Ln)
         *list-lay (list NIL T))
-  (lay-pair Po Lay-A Lay-B))
-
+  (lay-pair Po Lay-A Lay-B)) 
+  
   
 (de lay-pair (Any Lay-A Lay-B)
 
@@ -52,7 +57,7 @@
           (if Lay-A
               (pos-cur-cdr> Pt-C)
               (prog
-                (pos-cur-car-y> Pt-C))))
+                (pos-cur-y-car> Pt-C))))
         
                 
         # Lay should return next obj to draw
@@ -63,16 +68,9 @@
           (when (and (cdr N) Lay-A)
             #(prin "  lay-pair  Push CAR: ") (println (cdr N))
             (push 'L (cdr N))))))))
+            
 
-                    
-###################
-
-(de lay-*start ()
-  (mov-cur 0.0 0.0)
-  (lay-pt-start '*start '*start T T))
- 
-
-(de upd-list-lay (Dims Cur)
+(de upd-dims-lay (Dims Cur)
   #{
   
     O

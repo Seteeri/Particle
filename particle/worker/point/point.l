@@ -188,14 +188,15 @@
 
 (dm pos-cur-car> ()
   (if (lay-x?> This)
-      (pos-cur-car-x> This)
-      (pos-cur-car-y> This)))
+      (pos-cur-x-car> This)
+      (pos-cur-y-car> This)))
   
   
-(dm pos-cur-car-x> ()
+(dm pos-cur-x-car> ()
   #{
   
     X lay = car is -Y
+    
   }#
   
   #(setq *cur (: ori))    
@@ -211,9 +212,11 @@
         (+ 1.0 *sublist-space-y)))))
 
   
-(dm pos-cur-car-y> ()
+(dm pos-cur-y-car> ()
   #{
+  
     Y lay = car is +X
+    
   }#
   
   #(setq *cur (: ori))
@@ -225,88 +228,58 @@
   
 
 (dm lay-cur> ()
-  (when NIL
-    (println 'lay-cur> This
-              "@ Cur: " (format (get *cur 1) *Scl)  
-                        (format (get *cur 2) *Scl)))
 
   (when (get (: line) 'p)
     (align-cur-line This))
+
+  # After mov>, *cur will be at last vert pos
+  # Use it to set the dims
   
-  (mov> This) # *cur will be at last vert pos
-  (when NIL
-    (println 'lay-cur> This
-              "+ Cur: " (format (get *cur 1) *Scl)  
-                        (format (get *cur 2) *Scl)))
-  (upd-list-lay *bnds-lay *cur)
-  (upd-lay-post> This))
+  (mov> This)
+  
+  (upd-dims-lay *dims-lay *cur)
+  (upd-dims> This *dims-lay)
+  
+  (if (: line)
+      # Check start
+      (upd-line-start> This)
+      # Middle or end, set dims of cur line
+      (upd-dims> *line-lay *dims-lay))
+
+  # Update list head from cur
+  (when (caar *list-lay)
+    (upd-dims-lay (cadr (car *list-lay)) *cur))
+      
+  (upd-list-end> This))
 
 
 (dm lay> ()
   (lay-cur> This)
   (pos-cur-car> This))
   
-  
-(dm upd-lay-post> ()
-  #{
-  
-    Update line and update list
-    
-    Item properties:
-    * Has line start
-    * Has line
-    * Is end
-  
-    List will always have Line
-  
-  }#
-  
-  (when NIL
-    (println 'upd-lay-post> "This: " 
-      This (: any) (: line)  (get (: line) 'p)))  
-  
-  (upd-dims> This *bnds-lay)
+
+(dm upd-line-start> ()
             
-  (if (: line)
-      
+  (if (get (: line) 'p) # Sub line
+  
       (prog
-            
-        (if (get (: line) 'p) # Sub line
-        
-            (prog
-              (set *bnds-lay NIL) # Reset line bnds x
-              (upd-list-lay *bnds-lay *cur)
-              (upd-dims> This *cur))
+      
+        (upd-dims> This *cur)
+      
+        # Reset x dims
+        (set *dims-lay))
               
-            (prog
-              # Start of list
-              # excluding X-Pair cdr Y pair
-              (when NIL
-                (prin "upd-lay-post> Push: ")
-                  (println This (: any)))
-              (push '*list-lay
-                (list This # Particle for List
-                      (list NIL # Bnds
-                            T
-                            NIL)))))
-                            
-        (setq *line-lay This))
+      # Push new inner list
+      (push '*list-lay
+        (list This # Particle for List
+              (list NIL # Bnds
+                    T
+                    NIL))))
+                      
+  (setq *line-lay This))
         
-      (prog
-        # Middle or end
-        # Set dims of cur line
-        (upd-dims> *line-lay *bnds-lay)))
-         
-  # List Stuff
-      
-  # Update list head
-  (when (caar *list-lay)
-    # Update current list from cur
-    (upd-list-lay (cadr (car *list-lay)) *cur)
-    (when NIL
-      (println 'upd-list-lay (caar *list-lay)
-        (format (car (cadar *list-lay)) *Scl)
-        (format (cadr (cadar *list-lay)) *Scl))))
+  
+(dm upd-list-end> ()
         
   # Pop on end of list:
   # * X-Pair cdr atom
@@ -321,21 +294,17 @@
       ~(assert (get This 'line)))
     
     # Cache ends
-    (put (caar *list-lay) 'line 'e This)
-    (put *line-lay 'line 'e This)
+    #(put (caar *list-lay) 'line 'e This)
+    #(put *line-lay 'line 'e This)
     
     (let? Lst-In (pop '*list-lay)
-    
-      (when NIL
-        (println 'upd-line-post "Pop list: "
-          A (get (car A) 'any)))
-    
+        
       (let (Lst-Out (car *list-lay)
             Dims-I (cadr Lst-In)
             Dims-O (cadr Lst-Out))
       
         (when (car Lst-Out)
-          (upd-list-lay Dims-O Dims-I))
+          (upd-dims-lay Dims-O Dims-I))
       
         (upd-dims> (car Lst-In) Dims-I)))))
 
