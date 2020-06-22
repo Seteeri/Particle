@@ -239,7 +239,7 @@
               "+ Cur: " (format (get *cur 1) *Scl)  
                         (format (get *cur 2) *Scl)))
   (upd-list-lay *bnds-lay *cur)
-  (upd-line-post> This))
+  (upd-lay-post> This))
 
 
 (dm lay> ()
@@ -247,7 +247,7 @@
   (pos-cur-car> This))
   
   
-(dm upd-line-post> ()
+(dm upd-lay-post> ()
   #{
   
     Update line and update list
@@ -262,7 +262,7 @@
   }#
   
   (when NIL
-    (println 'upd-line-post> "This: " 
+    (println 'upd-lay-post> "This: " 
       This (: any) (: line)  (get (: line) 'p)))  
   
   (upd-dims> This *bnds-lay)
@@ -282,7 +282,7 @@
               # Start of list
               # excluding X-Pair cdr Y pair
               (when NIL
-                (prin "upd-line-post> Push: ")
+                (prin "upd-lay-post> Push: ")
                   (println This (: any)))
               (push '*list-lay
                 (list This # Particle for List
