@@ -8,14 +8,7 @@
     On atom, get its pair and swap etc
     
     Maintain pointer on current data
-    
-    Cases:
-    
-    A/A
-    A/P
-    P/A
-    P/P
-  
+
   }#  
     
   #(println 'alt-reg)
@@ -52,6 +45,8 @@
             (put Pt-Car 'line (new '(+Line) This)))
             
         (put (: line) 'n Pt-Car)))
+    
+    # If new car is a Pair, must change to Y layout
     
     (lay-*start)
     (mov-⇲ Pt-Pair)

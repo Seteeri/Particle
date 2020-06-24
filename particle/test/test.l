@@ -1,12 +1,17 @@
 #{
 
-  Create tests for Sym, besides Pair
-  Create tests for pointer
+  Create tests for exp sym later
+  Create tests for pointer mov
 
-  Check color (first vert)
+  Verify color (first vert)
+  ...and pointer?
   
-  Test ptr and nil before data
-  Test lst cmd before str cmd
+  Screenshot window for each test
+  for visual verification
+  
+  Refactor so auto update standards:
+  * ver
+  * std
   
 }#
 
@@ -109,6 +114,12 @@
 # POINTER
 
 (de run-tests-2 ()
+
+  #(alt-reg-x-pair-a)
+
+  T)
+
+(de run-tests ()
   
   (lst-x-atom-b) (del-start-val Pt-Sta T)        
   (lst-x-atom-a) (del-start-val Pt-Sta T)        
