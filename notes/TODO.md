@@ -25,7 +25,10 @@ TODO
       * Pass sym exp to gen
     * Finish unit tests [Mon]
       * Implement del [Done]
-      * Add del tests [Tues]
+      * Add tests atom del [Done]
+        * Add alt-reg
+      * Add tests pair del [Done]
+        * Add alt-reg
       * Add nl tests [Tues]
       * Handle symbol/exp
   

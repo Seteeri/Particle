@@ -115,10 +115,27 @@
 
 (de run-tests-2 ()
 
-  #(alt-reg-x-pair-a)
+  (when NIL
 
-  T)
+  (alt-reg-x-pair-a-a) (call 'sleep 5) (del-start-val Pt-Sta T)
+  (alt-reg-x-pair-a-px) (call 'sleep 5) (del-start-val Pt-Sta T)
+  # (alt-reg-x-pair-a-py)
 
+  (alt-reg-y-pair-a-a) (call 'sleep 5) (del-start-val Pt-Sta T)
+  
+  (alt-reg-y-pair-a-px) (call 'sleep 5) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-a-py) (call 'sleep 5) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-px-a) (call 'sleep 5) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-py-a) (call 'sleep 5) (del-start-val Pt-Sta T)
+  
+  (alt-reg-y-pair-px-px) (call 'sleep 5) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-px-py) (call 'sleep 5) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-py-py) (call 'sleep 5) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-py-px) (call 'sleep 5) (del-start-val Pt-Sta T)
+
+  ))
+
+  
 (de run-tests ()
   
   (lst-x-atom-b) (del-start-val Pt-Sta T)        

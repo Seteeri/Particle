@@ -39,11 +39,10 @@
   
   (bsp-pt))
 
-      
+
+# Mov to ptr?
 (de cmd-alt-lay (Ks)
-  (if (lay-x?> *ptr)
-      (alt-lay-y)
-      (alt-lay-x)))
+  (alt-lay))
   
   
 (de cmd-alt-reg (Ks)

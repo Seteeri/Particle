@@ -93,7 +93,7 @@
             "/particle/test/pair/pair.l"
             "/particle/test/pair/lst.l"
             "/particle/test/pair/str.l"
-            "/particle/test/atom/alt.l"
+            "/particle/test/pair/alt.l"
             "/particle/test/pair/del.l"
             "/particle/test/pair/bsp.l"
             "/particle/test/pair/nl.l"

@@ -45,9 +45,12 @@
             (put Pt-Car 'line (new '(+Line) This)))
             
         (put (: line) 'n Pt-Car)))
-    
+        
     # If new car is a Pair, must change to Y layout
-    
+    (when (and (lay-x?> Pt-Pair)
+               (pair Cdr))
+      (alt-lay-y Pair Pt-Pair))
+        
     (lay-*start)
     (mov-⇲ Pt-Pair)
     

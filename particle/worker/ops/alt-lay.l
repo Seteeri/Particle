@@ -1,7 +1,14 @@
 # Make these +Pair methods?
 
+(de alt-lay ()
+  (let (Pair (if (get *ptr 'pair) @ (get *ptr 'ref))
+        Pt-Pair (lup-pt Pair))
+    (if (lay-x?> *ptr)
+        (alt-lay-y Pair Pt-Pair)
+        (alt-lay-x Pair Pt-Pair))))
 
-(de alt-lay-y ()
+        
+(de alt-lay-y (Pair Pt-Pair)
   #{
   
                *
@@ -22,14 +29,9 @@
             
   }#
   
-  (println 'alt-lay-y)
+  #(println 'alt-lay-y)
   
-  # Calling cmd on atom does nothing
-  # Poss add opt
-  
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        Ln (c-lns> *ptr)
+  (let (Ln (c-lns> *ptr)
         Pt-Car (if (car Pair) (lup-pt @) (get Pt-Pair 'a))
         Pt-Cdr (if (cdr Pair) (lup-pt @) (get Pt-Pair 'b)))
     
@@ -58,7 +60,7 @@
     (draw> *ptr)))
 
         
-(de alt-lay-x (Ln-P Ln-B)
+(de alt-lay-x (Pair Pt-Pair)
   #{
   
         [X1]
@@ -112,26 +114,29 @@
     
   }#
   
-  (println 'alt-lay-x)
+  #(println 'alt-lay-x)
     
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        Ln (c-lns> *ptr)
+  (let (Ln (c-lns> *ptr)
         Pt-Car (if (car Pair) (lup-pt @) (get Pt-Pair 'a))
         Pt-Cdr (if (cdr Pair) (lup-pt @) (get Pt-Pair 'b)))
   
-    (println 'alt-lay-x "Pair/Tgt: "
-      Pair Pt-Pair)    
+    (if (pair (car Pair))
   
-    (set-lay> Pt-Pair 'x T)
-    
-    (put Pt-Car 'line)
+        (prinl "alt-lay-x: Only Y layout is possible when Car is a Pair")
+  
+        (prog
+          (println 'alt-lay-x "Pair/Tgt: "
+            Pair Pt-Pair)    
+        
+          (set-lay> Pt-Pair 'x T)
+          
+          (put Pt-Car 'line)
 
-    (lay-*start)
-    (mov-⇲ Pt-Pair)
+          (lay-*start)
+          (mov-⇲ Pt-Pair)
 
-    (unless (= Ln Pt-Pair)
-      (lns> *ptr Pt-Pair))
-    
-    (top> Pt-Pair)
-    (draw> *ptr)))
+          (unless (= Ln Pt-Pair)
+            (lns> *ptr Pt-Pair))
+          
+          (top> Pt-Pair)
+          (draw> *ptr)))))
