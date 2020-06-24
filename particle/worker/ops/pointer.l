@@ -54,17 +54,19 @@
 
 ################
 
-(dm top-ref> ()   
-  (let Pt-Pair (lup-pt (if (: pair) @ (: ref)))
-    (if (: pair)
-        (prog
-          (=: reg (if (= (: reg) 'a) 'b 'a))
-          (top> (if (or (and (lay-x?> Pt-Pair) (= (: reg) 'b))
-                        (and (lay-y?> Pt-Pair) (= (: reg) 'a)))
-                    (: ref)
-                    Pt-Pair)))
-        (top> Pt-Pair))))
 
+(dm alt-reg> ()
+  (=: reg (if (= (: reg) 'a) 'b 'a)))
+
+  
+(dm top-ref> ()   
+  (let Pt-Pair (if (: pair) (lup-pt @) (: ref))
+    (top> (if (or (and (lay-x?> Pt-Pair) (= (: reg) 'b))
+                  (and (lay-y?> Pt-Pair) (= (: reg) 'a)))
+              (: ref)
+              Pt-Pair))))
+
+              
 (dm draw> ()
   #(lay-pt-start '*ptr '*ptr T T))
   (lay-pt-start (get (: pt) 'any) 

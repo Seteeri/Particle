@@ -56,5 +56,6 @@
     (lay-*start)
     (mov-⇲ Pt-Pair)
     
+    (alt-reg> *ptr)
     (top-ref> *ptr)
     (draw> *ptr)))
