@@ -18,7 +18,7 @@
   
   }#  
     
-  (println 'alt-reg)
+  (println 'alt-reg (get *ptr 'pair) (get *ptr 'ref))
     
   (let (Pair (if (get *ptr 'pair) @ (get *ptr 'ref))
         Pt-Pair (lup-pt Pair)
@@ -56,6 +56,5 @@
     (lay-*start)
     (mov-⇲ Pt-Pair)
     
-    # Mov ptr on top
     (top-ref> *ptr)
     (draw> *ptr)))

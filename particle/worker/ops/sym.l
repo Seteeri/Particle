@@ -93,9 +93,7 @@
       (lns> *ptr))
     (set-ln-n> *ptr Pt-Dat)
     
-    (if Dat
-        (pt> *ptr Dat Reg)
-        (pt> *ptr Pair Reg Pt-Dat))
+    (pt> *ptr Pair Reg Pt-Dat)
     
     (if (= Reg 'a)
         (set> Pt-Pair Dat Pt-Dat T)

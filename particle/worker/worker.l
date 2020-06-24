@@ -270,7 +270,7 @@
       (lay-pt-start '⇲ '⇲ T T)
       
       # Test
-      (when NIL
+      (when T
         (run-tests)
         #(quit "Finished tests")
         )
