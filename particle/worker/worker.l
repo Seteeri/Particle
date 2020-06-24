@@ -271,7 +271,7 @@
       
       # Test
       (when T
-        (run-tests)
+        (run-tests-2)
         #(quit "Finished tests")
         )
                 

@@ -18,7 +18,7 @@
   
   }#  
     
-  (println 'alt-reg)
+  #(println 'alt-reg)
     
   (let (Pair (if (get *ptr 'pair) @ (get *ptr 'ref))
         Pt-Pair (lup-pt Pair)

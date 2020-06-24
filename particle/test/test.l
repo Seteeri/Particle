@@ -109,9 +109,6 @@
 # POINTER
 
 (de run-tests-2 ()
-
-  #(alt-reg-x-atom-a) (del-start-val Pt-Sta T)
-  #(alt-reg-x-atom-b) (del-start-val Pt-Sta T)
   
   #{
   (del-x-atom-a)     #(del-start-val Pt-Sta T)
@@ -139,6 +136,11 @@
   (str-y-atom-b) (del-start-val Pt-Sta T)
   (str-y-atom-a) (del-start-val Pt-Sta T)
 
+  (alt-reg-x-atom-a) (del-start-val Pt-Sta T)
+  (alt-reg-x-atom-b) (del-start-val Pt-Sta T)
+  (alt-reg-y-atom-a) (del-start-val Pt-Sta T)
+  (alt-reg-y-atom-b) (del-start-val Pt-Sta T)  
+  
   # Pair
   
   (str-x-pair-x-b) (del-start-val Pt-Sta T)
