@@ -336,7 +336,9 @@
     * Poss send cmd to render to adjust instance count
       * verts is LIFO - always keeps instances contiguous
   }#
-    
+  
+  #(println '+Point.del> "Delete: " This (type This))  
+  
   (for Vert (: verts) (del> Vert))
   
   # del from index
@@ -349,9 +351,7 @@
   (when B
     (del> (if (: b) @ (lup-pt (cdr (: any))))
           T T))
-  
-  #(println '+Point.del> "Deleted: " This (type This))
-  
+    
   This)
 
 

@@ -42,6 +42,7 @@
 
 (de req-send (Ipc Obj)
   
+  #(println Obj (get Obj 'val) (get Obj 'off-gl))
   ~(assert (get Obj 'off-gl))
   
   (req-send-obj Ipc

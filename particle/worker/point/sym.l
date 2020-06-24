@@ -85,25 +85,28 @@
       (super)))
 
 
-(dm con> (Dat Pt-Dat Del)
-
-  # Del prv
-  # NIL is not ref'd in tree so pass
-  (if (: b)
-      (prog
-        (del> (: b))
-        (=: b))
-      (when Del
-        (del> (lup-pt (cdr (: any))))))
+(dm con> (Any Pt-Any Del)
       
-  (set (: any) Dat)
+  (when Del
+    (if (: b)
+        (prog
+          (del> (: b))
+          (=: b)
+          # do set also?
+          )
+        (prog
+          # Print warning if non-existent
+          (del> (lup-pt (val (: any))))
+          ~(assert (not (: b))))))
+      
+  (set (: any) Any)
   
-  # If Pt-Dat is an atom
-  (when Pt-Dat
-    (unless (is-pair? Pt-Dat)
-      (put This 'b Pt-Dat)
-      (put Pt-Dat 'c This))))
-
+  (if (atom Any)
+      (prog
+        (=: b Pt-Any)
+        (put Pt-Any 'c This))
+      (=: b)))
+      
       
 (class +Str +Sym)
   

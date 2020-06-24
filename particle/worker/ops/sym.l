@@ -21,6 +21,8 @@
 
 (de make-pair-str (Dat Lay)
     
+  # Rename Dat -> Sym or Str
+    
   (cond
     
     ######
@@ -109,7 +111,7 @@
 
 (de ins-b-atom (Dat)
 
-  # This will not keep cdr if non-NIL
+  # TODO: This will not keep cdr if non-NIL
   # since it is deleted
 
   #(println 'ins-b-atom)
@@ -119,17 +121,22 @@
         Pt-Del (get Pt-Pair 'b)
         List (list Dat)
         Pt-List (gen-point List 'x NIL T))
-   
+    
     (when (get Pt-Del 'line)
       (mov-line Pt-Del Pt-List)
       (lns> *ptr))
     (set-ln-n> *ptr Pt-List)
-    
-    (con> Pt-Pair List Pt-List)
+  
+    (con> Pt-Pair List)
+    (con> Pt-List (get Pt-Del 'any) Pt-Del T)
+        
+    #(println Pt-Pair (get Pt-Pair 'b))
+    #(println Pt-List (get Pt-List 'b))
         
     (pt> *ptr List 'b))
-    
+  
   (lay-*start)
+      
   (mov-⇲ (c-lns> *ptr)))
         
         
@@ -208,18 +215,18 @@
                 @
                 (find-back> *ptr (get *ptr 'reg)))
         Pt-Pre (lup-pt Pre)
-        List-Dat (list Dat)
-        Pt-Dat (gen-point List-Dat 'x NIL T))        
+        List (list Dat)
+        Pt-List (gen-point List 'x NIL T))
     
     # Insert before current object
-    (con> Pt-Pre List-Dat NIL)
-    (con> Pt-Dat Pair     NIL)
+    (con> Pt-Pre List)
+    (con> Pt-List Pair Pt-Pair T)
     
     # Mov line
     (when (get Pt-Pair 'line)
-      (mov-line Pt-Pair Pt-Dat)
+      (mov-line Pt-Pair Pt-List)
       (lns> *ptr))
-    (set-ln-n> *ptr Pt-Dat)
+    (set-ln-n> *ptr Pt-List)
                 
     # ref does not change
                 
@@ -268,7 +275,7 @@
         Pt-List (gen-point List 'x NIL T))
     
     (con> Pt-Pre List Pt-List)
-    (con> Pt-List Pair Pt-Pair)
+    (con> Pt-List Pair Pt-Pair T)
     
     (if (get Pt-Pre 'line)
         (put Pt-Pre 'line 'n Pt-List)
@@ -332,7 +339,7 @@
     ~(assert (lay-y?> Pt-Pre))
     
     (set> Pt-Pre List Pt-List)
-    (con> Pt-List Pair Pt-Pair)
+    (con> Pt-List Pair Pt-Pair T)
         
     (put Pt-List 'line (new '(+Line) NIL Pt-Pair))
     
@@ -381,7 +388,7 @@
         Pt-List (gen-point List 'x NIL T))
     
     (set> Pt-Pre List Pt-List)
-    (con> Pt-List Pair Pt-Pair)
+    (con> Pt-List Pair Pt-Pair T)
         
     # Mov line
     (when (get Pt-Pair 'line)
