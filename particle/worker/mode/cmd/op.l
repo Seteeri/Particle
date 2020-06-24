@@ -103,7 +103,7 @@
   '(
     ########
     # Static
-  
+    
     ((ksd~Tab) cmd-chg-mode)
   
     ((ksd~Alt-L ksd~Tab)    cmd-make-char)
@@ -117,7 +117,8 @@
     
     # DEBUG
     ((ksd~Control-R ksd~Return) cmd-print-ptr)    
-    
+    ((ksd~Control-R ksd~BackSpace) cmd-reset-start)
+  
     ##########
     # List Ops
 

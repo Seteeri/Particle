@@ -136,3 +136,7 @@
 
   #(lay-*start)
   (mov-⇲ (c-lns> *ptr)))
+
+  
+(de cmd-reset-start (Ks)
+  (del-start-val (lup-pt '*start) T))

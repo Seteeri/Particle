@@ -15,6 +15,7 @@
     
     # DEBUG
     ((ksd~Control-R ksd~Return) cmd-print-ptr)
+    ((ksd~Control-R ksd~BackSpace) cmd-reset-start)
   
   ))
 
