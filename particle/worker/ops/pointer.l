@@ -60,10 +60,14 @@
 
   
 (dm top-ref> ()   
-  (let Pt-Pair (if (: pair) (lup-pt @) (: ref))
-    (top> (if (or (and (lay-x?> Pt-Pair) (= (: reg) 'b))
-                  (and (lay-y?> Pt-Pair) (= (: reg) 'a)))
-              (: ref)
+  (let Pt-Pair (if (: pair) (lup-pt @) (lup-pt (: ref)))
+    (top> (if (: pair)
+              (if (or (and (lay-x?> Pt-Pair)
+                       (= (: reg) 'b))
+                  (and (lay-y?> Pt-Pair)
+                       (= (: reg) 'a)))
+                  (: ref)
+                  Pt-Pair)
               Pt-Pair))))
 
               

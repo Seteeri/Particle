@@ -110,8 +110,9 @@
 
 (de run-tests-2 ()
   
-  #{
-  (del-x-atom-a)     #(del-start-val Pt-Sta T)
+  #(del-x-atom-a)     #(del-start-val Pt-Sta T)
+  
+  #{  
   (del-x-atom-b)     (del-start-val Pt-Sta T)
   (del-y-atom-a)     (del-start-val Pt-Sta T)
   (del-y-atom-a-reg) (del-start-val Pt-Sta T)
@@ -138,6 +139,7 @@
 
   (alt-reg-x-atom-a) (del-start-val Pt-Sta T)
   (alt-reg-x-atom-b) (del-start-val Pt-Sta T)
+  
   (alt-reg-y-atom-a) (del-start-val Pt-Sta T)
   (alt-reg-y-atom-b) (del-start-val Pt-Sta T)  
   
