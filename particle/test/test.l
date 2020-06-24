@@ -110,21 +110,6 @@
 
 (de run-tests-2 ()
   
-  #(del-x-atom-a)     #(del-start-val Pt-Sta T)
-  
-  #{  
-  (del-x-atom-b)     (del-start-val Pt-Sta T)
-  (del-y-atom-a)     (del-start-val Pt-Sta T)
-  (del-y-atom-a-reg) (del-start-val Pt-Sta T)
-  (del-y-atom-b-reg) (del-start-val Pt-Sta T)
-  (del-y-atom-a-nil) (del-start-val Pt-Sta T)
-  (del-y-atom-b-nil) (del-start-val Pt-Sta T)
-  }#
-  
-  )
-  
-(de run-tests ()
-  
   (lst-x-atom-b) (del-start-val Pt-Sta T)        
   (lst-x-atom-a) (del-start-val Pt-Sta T)        
 
@@ -142,6 +127,15 @@
   
   (alt-reg-y-atom-a) (del-start-val Pt-Sta T)
   (alt-reg-y-atom-b) (del-start-val Pt-Sta T)  
+  
+  (del-x-atom-a)     (del-start-val Pt-Sta T)
+  (del-x-atom-b)     (del-start-val Pt-Sta T)
+  (del-x-atom-b-nil) (del-start-val Pt-Sta T)
+                     
+  (del-y-atom-a)     (del-start-val Pt-Sta T)
+  (del-y-atom-a-nil) (del-start-val Pt-Sta T)
+  (del-y-atom-b)     (del-start-val Pt-Sta T)
+  (del-y-atom-b-nil) (del-start-val Pt-Sta T)
   
   # Pair
   
