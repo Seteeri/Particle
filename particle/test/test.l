@@ -1,18 +1,9 @@
 #{
 
-  Test ops:
-
-    * Run cmds
-    * Output pos'
-    * Verify data
-    * Verify pos'
-
-  Create NIL tests
-  - replace cmd-make-char with NIL    
   Create tests for Sym, besides Pair
   Create tests for pointer
 
-  Check ptr lines
+  Check color (first vert)
   
   Test ptr and nil before data
   Test lst cmd before str cmd
@@ -117,7 +108,7 @@
           
 # POINTER
 
-(de run-tests ()
+(de run-tests-2 ()
 
   #(alt-reg-x-atom-a) (del-start-val Pt-Sta T)
   #(alt-reg-x-atom-b) (del-start-val Pt-Sta T)
@@ -134,7 +125,7 @@
   
   )
   
-(de run-tests-2 ()
+(de run-tests ()
   
   (lst-x-atom-b) (del-start-val Pt-Sta T)        
   (lst-x-atom-a) (del-start-val Pt-Sta T)        

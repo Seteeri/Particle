@@ -79,10 +79,8 @@
 
   #(println 'repl-atom)
   
-  (let (Pair (if (get *ptr 'pair)
-                 @
-                 (find-back> *ptr (get *ptr 'reg)))
-        Pt-Pair (lup-pt Pair)
+  (let (Pt-Pair (if (get *ptr 'pair) (lup-pt @) (: ref))
+        Pair (get Pt-Pair 'any)
         Pt-Del (if (get *ptr 'pair)
                    (get Pt-Pair (get *ptr 'reg))
                    (lup-pt (get *ptr 'ref)))
@@ -102,7 +100,8 @@
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
-    (when (str? (cadr Pair))
+    (when (and (pair (cdr Pair))
+               (str? (car @)))
       (sup> *ptr NIL)
       (nex> *ptr NIL)
       (sub> *ptr T))))
