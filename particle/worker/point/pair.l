@@ -145,21 +145,22 @@
       (=: b)))
 
       
-(dm set> (Dat Pt-Dat Del)
-
-  # Del prv
-  # NIL is not ref'd in tree so pass
-  (if (: a)
-      (prog
-        (del> (: a))
-        (=: a))
-      (when Del
-        (del> (lup-pt (car (: any))))))
+(dm set> (Any Pt-Any Del)
       
-  (set (: any) Dat)
+  (when Del
+    (if (: a)
+        (prog
+          (del> (: a))
+          (=: a))
+        (prog
+          # Print warning if non-existent
+          (del> (lup-pt (car (: any))))
+          ~(assert (not (: a))))))
+      
+  (set (: any) Any)
   
-  # If Pt-Dat is an atom
-  (when Pt-Dat
-    (unless (is-pair? Pt-Dat)
-      (=: a Pt-Dat)
-      (put Pt-Dat 'c This))))
+  (if (atom Any)
+      (prog
+        (=: a Pt-Any)
+        (put Pt-Any 'c This))
+      (=: a)))      
