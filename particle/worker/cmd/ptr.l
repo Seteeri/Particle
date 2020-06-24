@@ -16,7 +16,7 @@
               *mode-txt))
 
     (setq *cur (list 1000.0 1000.0))
-    (let (Po (get *ptr 'pt)
+    (let (Po  (get *ptr 'pt)
           Dat (get Po 'any))
       (mov> Po)
       (lay-pt-start Dat Dat T T))

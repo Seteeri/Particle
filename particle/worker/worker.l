@@ -74,14 +74,18 @@
             "/particle/worker/ops/del.l"
             "/particle/worker/ops/sym.l"
             "/particle/worker/ops/line.l"
-            "/particle/worker/ops/alt.l"            
+            "/particle/worker/ops/alt-lay.l"       
+            "/particle/worker/ops/alt-reg.l"
             
             "/particle/worker/ops/pair/pair.l"
             "/particle/worker/ops/pair/atom.l"
             
+            # MOV -> TEST.L
+            
             "/particle/test/atom/atom.l"
             "/particle/test/atom/lst.l"
             "/particle/test/atom/str.l"
+            "/particle/test/atom/alt.l"
             "/particle/test/atom/del.l"
             "/particle/test/atom/bsp.l"
             "/particle/test/atom/nl.l"
@@ -140,7 +144,7 @@
   (reg-conns *ipc (pack NAME-PID "-" *i-proc))
   
   ############################################
-  
+    
   (setq *projview (req-recv-pv *ipc
                                (ipc~fd> *ipc "CONTROL")
                                NIL
@@ -148,13 +152,7 @@
                                
   (req-send *ipc *projview)
   
-  #########################
-  
-  (setq *xkb (new '(+Xkb)))
-
-  (set-mode)
-    
-  ##########
+  (setq *xkb (new '(+Xkb)))  
   
   (prinl-info "init-worker" (pack "Heap: " (heap)))
   (gc 48)
@@ -162,11 +160,13 @@
         (make
           (for I *verts-max 
             (link (vert-off-gl I)))))
-  (prinl-info "init-worker" (pack "Heap: " (heap)))
-
-  #############
+  (prinl-info "init-worker" (pack "Heap: " (heap)))  
   
-  (gen-def-pts)
+  #########################
+  
+  (ld-modes)
+    
+  (def-pts)
   
   (send-msg *ipc (ipc~fd> *ipc "CONTROL") "(rdy)")
   
@@ -175,7 +175,7 @@
   (loop (ipc~poll> *ipc -1)))
 
   
-(de set-mode ()  
+(de ld-modes ()  
   
   # dispatch-kb will lup key in binds
   # so to set mode, change value of binds
@@ -198,12 +198,10 @@
     
   # Load cmd
   (balance '*mode-cmd 
-    (sort (list-binds-cmd *binds-cmd)))
-  
-  (setq *modes *mode-txt))
+    (sort (list-binds-cmd *binds-cmd))))
   
 
-(de gen-def-pts ()
+(de def-pts ()
   
   #{
     
@@ -244,8 +242,8 @@
           Pt-Cmd (gen-ptr     '*cmd "↓" *selb-yellow)
           Pt-D   (gen-point   '⇲      'x))
       
-      (setq *po-ptr-txt Pt-Txt)
-      (setq *po-ptr-cmd Pt-Cmd)
+      (setq *po-ptr-txt Pt-Txt
+            *po-ptr-cmd Pt-Cmd)
       
       (put (get Pt-Sta 'b) 'line (new '(+Line)))
       (mov-cur 0.0 0.0)
@@ -255,7 +253,9 @@
       (del> (get Pt-Txt 'b)) (put Pt-Txt 'b T)
       (del> (get Pt-Cmd 'b)) (put Pt-Cmd 'b T)
       
-      (put *ptr 'pt Pt-Txt)
+      (setq *modes *mode-cmd)
+      (put *ptr 'pt Pt-Cmd)
+      
       # Upd +Point on change
       (set-ln-n> *ptr Pt-Sta)
       (pt> *ptr '*start 'b)
@@ -272,9 +272,9 @@
       # Test
       (when NIL
         (run-tests)
-        (quit "Finished tests")
+        #(quit "Finished tests")
         )
-        
+                
       T)))
 
 

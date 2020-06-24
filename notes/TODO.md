@@ -25,16 +25,16 @@ TODO
       * Pass sym exp to gen
     * Finish unit tests [Mon]
       * Implement del [Done]
-      * Add del tests
-      * Add nl tests
+      * Add del tests [Tues]
+      * Add nl tests [Tues]
       * Handle symbol/exp
   
-  * Refactor? [Mon]
+  * Refactor?
     * Use prog1
     * Improve del>
       * Fix double free
   
-  * Root Lists (side/main) [Mon]
+  * Root Lists (side/main) [Thurs]
     LEFT:
       * Mov from simple to advance, downward
       1. Help
