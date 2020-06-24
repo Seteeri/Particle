@@ -26,8 +26,7 @@
           *po-ptr-cmd
           *po-ptr-txt))
           
-    (with *ptr
-      (top> (if (: pair) (: ref) (lup-pt (: ref)))))
+    (top-ref> *ptr)
     (draw> *ptr)))
 
 
@@ -97,6 +96,9 @@
   (cmd-trans-ptr 2 '(adj-cur-y 1.0)))
 
 
+#######
+# Debug
+  
 (de cmd-print-ptr ()
 
   (with *ptr
