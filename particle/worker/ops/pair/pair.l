@@ -84,8 +84,8 @@
     (set-lay> Pt-Cons 'y)    
   
     (con> Pt-Pair Cons Pt-Cons)
-    (set> Pt-Cons Tgt Pt-Tgt)
-                
+    (set> Pt-Cons Tgt Pt-Tgt T)
+    
     (if (get Pt-Tgt 'line)
         (prog
           # Make line start
@@ -197,7 +197,7 @@
     (set-lay> Pt-Cons 'y)    
   
     (set> Pt-Pair Cons Pt-Cons)
-    (set> Pt-Cons Tgt Pt-Tgt)
+    (set> Pt-Cons Tgt Pt-Tgt T)
     
     (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
     (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
