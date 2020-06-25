@@ -11,14 +11,80 @@
 # X car - UNSUPPORTED
 
 # X cdr
-(de del-pair-xb-x-x () T)
-(de del-pair-xb-x-y () T)
-(de del-pair-xb-x-a () T)
+(de del-pair-xb-x-x ()
+  (cmd-ptr-right)
+  (cmd-make-char (char "c"))
+  (cmd-make-char (char "d"))
+  (cmd-make-char (char "e"))
+  (cmd-ptr-left)
+  (cmd-ptr-left)
+  (cmd-del)
+  (ver-start 
+    'del-pair-xb-x-x))
+  
+(de del-pair-xb-x-y ()
+  (cmd-ptr-right)
+  (cmd-make-char (char "c"))
+  (cmd-make-char (char "d"))
+  (cmd-make-pair)
+  (cmd-ptr-left)
+  (cmd-del)
+  (ver-start 
+    'del-pair-xb-x-y))
+    
+(de del-pair-xb-x-a ()
+  (cmd-ptr-right)
+  (cmd-make-char (char "c"))
+  (cmd-make-char (char "d"))
+  (cmd-ptr-left)
+  (cmd-alt-reg)
+  (cmd-ptr-down)
+  (cmd-make-char (char "e"))
+  (cmd-ptr-up)
+  (cmd-alt-reg)
+  (cmd-del)
+  (ver-start 
+    'del-pair-xb-x-a))
+    
+(de del-pair-xb-y-x ()
+  (cmd-ptr-right)
+  (cmd-make-char (char "c"))
+  (cmd-make-char (char "d"))
+  (cmd-make-char (char "e"))
+  (cmd-ptr-left)
+  (cmd-ptr-left)
+  (cmd-make-pair)
+  (cmd-del)
+  (ver-start 
+    'del-pair-xb-y-x))
+    
+(de del-pair-xb-y-y ()
+  (cmd-ptr-right)
+  (cmd-make-char (char "c"))
+  (cmd-make-char (char "d"))
+  (cmd-make-char (char "e"))
+  (cmd-ptr-left)
+  (cmd-make-pair)
+  (cmd-ptr-left)
+  (cmd-make-pair)  
+  (cmd-del)
+  (ver-start 
+    'del-pair-xb-y-y))
 
-(de del-pair-xb-y-x () T)
-(de del-pair-xb-y-y () T)
-(de del-pair-xb-y-a () T)
+###        
+    
+(de del-pair-xb-y-a ()
+  (cmd-ptr-right)
+  (cmd-make-char (char "c"))
+  (cmd-make-char (char "d"))
+  (cmd-make-char (char "e"))
+  (cmd-ptr-left)
+  (cmd-make-pair)
+  (cmd-del)
+  (ver-start 
+    'del-pair-xb-y-a))
 
+    
 # Y car
 (de del-pair-ya-x-x () T)
 (de del-pair-ya-x-y () T)

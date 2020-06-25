@@ -35,8 +35,8 @@
         Pt-Car (if (car Pair) (lup-pt @) (get Pt-Pair 'a))
         Pt-Cdr (if (cdr Pair) (lup-pt @) (get Pt-Pair 'b)))
     
-    (println 'alt-lay-y "Pair/Tgt: "
-      Pair Pt-Pair)    
+    #(println 'alt-lay-y "Pair/Tgt: "
+    #  Pair Pt-Pair)    
   
     (set-lay> Pt-Pair 'y T)
     
@@ -125,8 +125,9 @@
         (prinl "alt-lay-x: Only Y layout is possible when Car is a Pair")
   
         (prog
-          (println 'alt-lay-x "Pair/Tgt: "
-            Pair Pt-Pair)    
+        
+          #(println 'alt-lay-x "Pair/Tgt: "
+          #  Pair Pt-Pair)    
         
           (set-lay> Pt-Pair 'x T)
           

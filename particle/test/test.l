@@ -114,32 +114,42 @@
           
 # POINTER
 
-(de run-tests ()
+(de run-tests-2 ()
 
   # Finish checking each
   
   (when T
 
-  (alt-reg-x-pair-a-a) (call 'sleep 5) (del-start-val Pt-Sta T)
-  (alt-reg-x-pair-a-px) (call 'sleep 5) (del-start-val Pt-Sta T)
-  # (alt-reg-x-pair-a-py)
+    (del-pair-xb-x-x)
+    (del-pair-xb-x-y)
+    (del-pair-xb-x-a)
 
-  (alt-reg-y-pair-a-a) (call 'sleep 5) (del-start-val Pt-Sta T)
-  
-  (alt-reg-y-pair-a-px) (call 'sleep 5) (del-start-val Pt-Sta T)
-  (alt-reg-y-pair-a-py) (call 'sleep 5) (del-start-val Pt-Sta T)
-  (alt-reg-y-pair-px-a) (call 'sleep 5) (del-start-val Pt-Sta T)
-  (alt-reg-y-pair-py-a) (call 'sleep 5) (del-start-val Pt-Sta T)
-  
-  (alt-reg-y-pair-px-px) (call 'sleep 5) (del-start-val Pt-Sta T)
-  (alt-reg-y-pair-px-py) (call 'sleep 5) (del-start-val Pt-Sta T)
-  (alt-reg-y-pair-py-py) (call 'sleep 5) (del-start-val Pt-Sta T)
-  (alt-reg-y-pair-py-px) (call 'sleep 5) (del-start-val Pt-Sta T)
+    (del-pair-xb-y-x)
+    (del-pair-xb-y-y)
+    (del-pair-xb-y-a)
+
+    # Y car
+    (del-pair-ya-x-x)
+    (del-pair-ya-x-y)
+    (del-pair-ya-x-a)
+
+    (del-pair-ya-y-x)
+    (del-pair-ya-y-y)
+    (del-pair-ya-y-a)
+
+    # Y cdr
+    (del-pair-yb-x-x)
+    (del-pair-yb-x-y)
+    (del-pair-yb-x-a)
+
+    (del-pair-yb-y-x)
+    (del-pair-yb-y-y)
+    (del-pair-yb-y-a)
 
   ))
 
   
-(de run-tests-2 ()
+(de run-tests ()
   
   (lst-x-atom-b) (del-start-val Pt-Sta T)        
   (lst-x-atom-a) (del-start-val Pt-Sta T)        
@@ -198,6 +208,22 @@
   (bsp-y-pair-x-a) (del-start-val Pt-Sta T)
   (bsp-y-pair-x-b) (del-start-val Pt-Sta T)
   (bsp-y-pair-y-a) (del-start-val Pt-Sta T)
-  (bsp-y-pair-y-b) (del-start-val Pt-Sta T))
+  (bsp-y-pair-y-b) (del-start-val Pt-Sta T)
+  
+  (alt-reg-x-pair-a-a)  (del-start-val Pt-Sta T)
+  (alt-reg-x-pair-a-px) (del-start-val Pt-Sta T)
+  (alt-reg-x-pair-a-py) (del-start-val Pt-Sta T)
+
+  (alt-reg-y-pair-a-a)  (del-start-val Pt-Sta T)
+  
+  (alt-reg-y-pair-a-px) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-a-py) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-px-a) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-py-a) (del-start-val Pt-Sta T)
+  
+  (alt-reg-y-pair-px-px) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-px-py) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-py-py) (del-start-val Pt-Sta T)
+  (alt-reg-y-pair-py-px) (del-start-val Pt-Sta T))
     
   

@@ -26,14 +26,14 @@
       )))
             
 
-(de cmd-del (Dir)
+(de cmd-del (Ks)
 
   #(prinl-info "cmd-del")
 
   (del-pt))
 
 
-(de cmd-bsp (Dir)
+(de cmd-bsp (Ks)
 
   #(prinl-info "cmd-bsp")
   

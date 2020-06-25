@@ -1,10 +1,25 @@
 #{
 
-  Del: Repl cur with NIL/car/cdr
+  Del: Repl cur with NIL/cdr
 
   Case 1:
+
+    * On X/Y car/cdr atom: repl cur with NIL
   
-    * On X/Y cdr pair/atom: repl cur with cdr/NIL
+         *
+    [Y]  .
+     
+     .
+     
+    OR
+    
+    [X]  [X]  .
+     .    *  
+  
+  
+  Case 2:
+  
+    * On X cdr pair: repl cur with cdr
   
           *
     [X]  [X]  .
@@ -15,9 +30,36 @@
          *
     [X]  .
     .    
+    
 
+    
+  Case 3:
+  
+    * On X pair with Y cdr: repl cur with cdr
+    
+      [X]
+       .
+    
+       *
+      [Y]  [Y] .
+            .
+      
+       c
 
-  Case 2:
+       ->
+       
+      [X]
+       .
+    
+       *
+       c
+
+      - Car promo: bsp car
+      - Cdr promo: del pair
+        - Consistent with X del
+       
+       
+  Case 4:
   
     * On Y car pair: repl cur with car
   
@@ -30,27 +72,8 @@
   
      *
     [Y]  .
-    .
-         
+    .   
     
-  Case 3:
-
-    * On Y car atom: repl cur with NIL
-    * On Y car pair: repl cur with cdr
-  
-    [X]
-     .
-  
-         *
-    [Y]  .
-     
-     .
-     
-    OR
-    
-    [X]  [X]  .
-     .    *
-      
 }#
 
 
@@ -66,16 +89,10 @@
       
     ((or (a-pair?> *ptr)
          (b-pair?> *ptr))
-      # 3 Factors:
-      # * X/Y back pair
-      # * A/B reg
-      # * Atom/Pair cdr
-      (if (lay-y?> *ptr) # get car
-          (del-y-pair)
-          (del-x-pair)))))
+     (del-pair))))
       
     
-(de del-x-pair ()
+(de del-pair ()
 
   (let (Pair (get *ptr 'ref)
         Pt-Pair (lup-pt Pair)
@@ -87,7 +104,6 @@
                    (get Pt-Pair 'b)
                    (lup-pt Cdr))
         Reg-Pair (if (= (car Back) Pair) 'a 'b))
-                           
 
     (when (get Pt-Pair 'line)
       (del-line Pt-Pair)
@@ -95,7 +111,7 @@
     (set-ln-n> *ptr Pt-Cdr)
     
     (del> Pt-Pair T NIL)
-    (put Pt-Pair 'b NIL)   
+    (put Pt-Pair 'b NIL)
         
     (cond 
       ((and (= Reg-Pair 'a) Atom-Cdr)
@@ -134,7 +150,12 @@
     (draw> *ptr)))
 
     
-(de del-y-pair ()
+###################
+
+
+(de del-y-pair-2 ()
+
+  # Deletes entire pair and promotes car
 
   (let (Pair (get *ptr 'ref)
         Pt-Pair (lup-pt Pair)

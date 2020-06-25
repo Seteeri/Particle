@@ -272,7 +272,7 @@
       
       # Test
       (when NIL
-        (run-tests)
+        (run-tests-2)
         #(quit "Finished tests")
         )
                 
