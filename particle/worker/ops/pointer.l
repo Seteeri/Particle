@@ -109,11 +109,11 @@
     - Set Po to Po of NIL
     
   }#
-    
+        
   # Uncolor current ref
   (let? Po (if (: pair)
-               (get (lup-pt (: pair)) (: reg))
-               (lup-pt (: ref)))
+              (get (lup-pt (: pair)) (: reg))
+              (lup-pt (: ref)))
     (uncol> This Po Drw))
           
         
@@ -125,7 +125,9 @@
     (if Po
           
         (prog        
-          (col> This Po Drw)
+          # Pass if same (when changing pair)
+          (unless (= Po (: ref))
+            (col> This Po Drw))
           (=: ref Po)
           (=: pair Tgt))
             
@@ -307,26 +309,15 @@
   (cond
 
     ((or (a-nil?> This)
-         (b-nil?> This))
-     T)
+         (b-nil?> This)))
   
     ((or (a-pair?> This)
          (b-pair?> This))
-      #(println 'forw> "A/B PAIR")
       (pt-pair> This Reg Drw))
     
     ((or (a-atom?> This)
          (b-atom?> This))
-      #(println 'forw> "A/B ATOM")
-      (pt-sym> This Reg Drw))
-            
-    (T
-      # NIL - do nothing
-      ))
-      
-  #(println 'forw> "PTR: " (: ref) (: pair))
-  #(println 'forw> "LN: " (car (: lns)) (get (car (: lns)) 'any))
-  )
+      (pt-sym> This Reg Drw))))
 
 
 (dm pre> (Drw) (back> This 'b Drw))

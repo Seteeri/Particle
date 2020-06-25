@@ -105,7 +105,7 @@
         (prog
           (con> Pt-Back Car Pt-Car)
           (pt> *ptr Back 'b Pt-Car)))
-        
+          
     # Update ptr pair
         
     (lay-*start)
