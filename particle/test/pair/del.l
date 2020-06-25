@@ -179,10 +179,32 @@
     
 
 # Y cdr
-(de del-pair-yb-x-x () T)
+
+
+(de del-pair-yb-x-x ()
+  (cmd-ptr-right)
+  (cmd-make-pair)
+  (cmd-ptr-down)
+  (cmd-make-char (char "c"))
+  (cmd-make-char (char "d"))
+  (cmd-ptr-left)
+  (cmd-ptr-left)
+  (cmd-del)
+  (ver-start 
+    'del-pair-yb-x-x))
+
+
 (de del-pair-yb-x-y () T)
+
+
 (de del-pair-yb-x-a () T)
 
+
+
 (de del-pair-yb-y-x () T)
+
+
 (de del-pair-yb-y-y () T)
+
+
 (de del-pair-yb-y-a () T)

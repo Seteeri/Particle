@@ -106,7 +106,9 @@
         Reg-Pair (if (= (car Back) Pair) 'a 'b))
 
     (when (get Pt-Pair 'line)
-      (del-line Pt-Pair)
+      (if (= Reg-Pair 'b)
+          (mov-line Pt-Pair Pt-Cdr)
+          (del-line Pt-Pair))
       (lns> *ptr))
     (set-ln-n> *ptr Pt-Cdr)
     
