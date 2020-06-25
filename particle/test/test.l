@@ -116,7 +116,7 @@
 
 (de run-tests-2 ()
 
-  (when T
+  (when NIL
 
     (run-tests)
 

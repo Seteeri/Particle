@@ -8,7 +8,7 @@
   
   Case 1:
   
-    * On cdr pair: repl prv pair with its cdr (ref)
+    * On X/Y cdr pair/atom: repl prv pair with its cdr (ref)
   
               *
     [X]  [X]  .
@@ -23,7 +23,7 @@
     
   Case 2:
 
-    * On car pair/atom: repl prv/pair with its car (ref)
+    * On X/Y car Y pair: repl prv/pair with its car (ref)
   
       [X]
       .
@@ -40,9 +40,13 @@
       [X]
       .
     
-      *
+       *
       [Y] .
        c
+    
+  Case 3:
+  
+    * On X/Y car atom: repl prv/pair with atom
     
 }#
 
@@ -51,11 +55,7 @@
   
   (cond
   
-    ((a-atom?> *ptr)
-      (let Pt-Pair (lup-pt (get *ptr 'pair))
-        (if (lay-y?> Pt-Pair)
-            (bsp-a-atom)
-            (prinl "bsp-pt: todo lay-x"))))
+    ((a-atom?> *ptr) (bsp-a-atom))
       
     ((b-atom?> *ptr) (bsp-b-atom))
     
