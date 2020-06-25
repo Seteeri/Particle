@@ -1,14 +1,45 @@
-#(de lst-x-pair-x-a () T)
-#(de lst-x-pair-y-a () T)
+#{
 
-(de lst-x-pair-x-b ()
+        *
+  [ ]  [ ]  .
+   .    .
+  
+  X/Y -> X/Y -> X/Y/A/N
+
+  (lst-pair-xb-x-x)
+  (lst-pair-xb-x-y)
+  (lst-pair-xb-x-a)
+   
+  (lst-pair-xb-y-x)
+  (lst-pair-xb-y-y)
+  (lst-pair-xb-y-a)
+   
+  (lst-pair-ya-x-x)
+  (lst-pair-ya-x-y)
+  (lst-pair-ya-x-a)
+   
+  (lst-pair-ya-y-x)
+  (lst-pair-ya-y-y)
+  (lst-pair-ya-y-a)
+   
+  (lst-pair-yb-x-x)
+  (lst-pair-yb-x-y)
+  (lst-pair-yb-x-a)
+  (lst-pair-yb-y-x)
+  (lst-pair-yb-y-y)
+  (lst-pair-yb-y-a)
+  
+}#
+
+
+(de lst-pair-x-x-b ()
   (cmd-ptr-right)
   (cmd-make-char (char "c"))
   (cmd-make-char (char "d"))
   (cmd-ptr-left)
   (cmd-make-pair)
   (ver-start 
-    'lst-x-pair-x-b
+    'lst-pair-x-x-b
     '(((+Pair)
         ("c" ("d"))
         x
@@ -80,7 +111,7 @@
           (1204102 0)
           (T NIL) ) ))) 
           
-(de lst-x-pair-y-b ()
+(de lst-pair-x-y-b ()
   (cmd-ptr-right)
   (cmd-make-char (char "c"))
   (cmd-make-char (char "d"))
@@ -88,7 +119,7 @@
   (cmd-make-pair)
   (cmd-make-pair)
   (ver-start 
-    'lst-x-pair-y-b
+    'lst-pair-x-y-b
     '(((+Pair)
       ("c" (("d")))
       x
@@ -180,7 +211,7 @@
           (1204102 0)
           (T NIL) ) )))    
 
-(de lst-y-pair-x-b ()
+(de lst-pair-y-x-b ()
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-ptr-down)
@@ -188,7 +219,7 @@
   (cmd-ptr-left)
   (cmd-make-pair)
   (ver-start 
-    'lst-y-pair-x-b
+    'lst-pair-y-x-b
     '(((+Pair)
       (NIL ("c"))
       y
@@ -260,14 +291,14 @@
           (1204102 0)
           (T NIL) ) )))
           
-(de lst-y-pair-y-b ()
+(de lst-pair-y-y-b ()
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-ptr-down)
   (cmd-make-pair)
   (cmd-make-pair)
   (ver-start 
-    'lst-y-pair-y-b
+    'lst-pair-y-y-b
     '(((+Pair)
         (NIL (NIL))
         y
@@ -339,14 +370,14 @@
           (1204102 0)
           (T NIL) ) )))
           
-(de lst-y-pair-x-a ()
+(de lst-pair-y-x-a ()
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-make-pair)
   (ver-start 
-    'lst-y-pair-x-a
+    'lst-pair-y-x-a
     '(((+Pair)
         (((NIL)))
         y
@@ -419,13 +450,13 @@
           (T NIL) ) )))    
     
     
-(de lst-y-pair-y-a ()
+(de lst-pair-y-y-a ()
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-make-pair)
   (cmd-make-pair)
   (ver-start 
-    'lst-y-pair-y-a
+    'lst-pair-y-y-a
     '(((+Pair)
         (((NIL)))
         y

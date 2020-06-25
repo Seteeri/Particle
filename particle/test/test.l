@@ -177,14 +177,18 @@
   (str-y-pair-x-a) (del-start-val Pt-Sta T)        
   (str-y-pair-y-a) (del-start-val Pt-Sta T)
   
-  (lst-x-pair-x-b) (del-start-val Pt-Sta T)
-  (lst-x-pair-y-b) (del-start-val Pt-Sta T)
-
-  (lst-y-pair-x-b) (del-start-val Pt-Sta T)
-  (lst-y-pair-y-b) (del-start-val Pt-Sta T)
+  ###
   
-  (lst-y-pair-x-a) (del-start-val Pt-Sta T)
-  (lst-y-pair-y-a) (del-start-val Pt-Sta T)
+  (lst-pair-x-x-b) (del-start-val Pt-Sta T)
+  (lst-pair-x-y-b) (del-start-val Pt-Sta T)
+
+  (lst-pair-y-x-b) (del-start-val Pt-Sta T)
+  (lst-pair-y-y-b) (del-start-val Pt-Sta T)
+  
+  (lst-pair-y-x-a) (del-start-val Pt-Sta T)
+  (lst-pair-y-y-a) (del-start-val Pt-Sta T)
+  
+  ###
   
   (bsp-pair-xb-x) (del-start-val Pt-Sta T)
   (bsp-pair-xb-y) (del-start-val Pt-Sta T)
@@ -193,6 +197,8 @@
   (bsp-pair-ya-y) (del-start-val Pt-Sta T)
   (bsp-pair-yb-x) (del-start-val Pt-Sta T)
   (bsp-pair-yb-y) (del-start-val Pt-Sta T)
+  
+  # Rename: alt-reg-pair-*-...
   
   (alt-reg-x-pair-a-a)  (del-start-val Pt-Sta T)
   (alt-reg-x-pair-a-px) (del-start-val Pt-Sta T)
