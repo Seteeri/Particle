@@ -41,9 +41,7 @@
     ((or (b-nil?> *ptr)
          (b-atom?> *ptr))
       #(println 'make-pair-str "B ATOM/NIL")
-      #(repl-atom Dat 'b)
-      (ins-b-atom Dat)
-      (nex> *ptr T))
+      (ins-b-atom Dat))
             
     ######
     # PAIR
@@ -111,33 +109,28 @@
 
 (de ins-b-atom (Dat)
 
-  # TODO: This will not keep cdr if non-NIL
-  # since it is deleted
-
   #(println 'ins-b-atom)
   
   (let (Pair (get *ptr 'pair)
         Pt-Pair (lup-pt Pair)
-        Pt-Del (get Pt-Pair 'b)
+        Pt-Cdr (get Pt-Pair 'b)
         List (list Dat)
         Pt-List (gen-point List 'x NIL T))
     
-    (when (get Pt-Del 'line)
-      (mov-line Pt-Del Pt-List)
+    (when (get Pt-Cdr 'line)
+      (mov-line Pt-Cdr Pt-List)
       (lns> *ptr))
     (set-ln-n> *ptr Pt-List)
   
     (con> Pt-Pair List)
-    (con> Pt-List (get Pt-Del 'any) Pt-Del T)
-        
-    #(println Pt-Pair (get Pt-Pair 'b))
-    #(println Pt-List (get Pt-List 'b))
-        
-    (pt> *ptr List 'b))
-  
-  (lay-*start)
-      
-  (mov-⇲ (c-lns> *ptr)))
+    (con> Pt-List (get Pt-Cdr 'any) Pt-Cdr T)
+          
+    (lay-*start) 
+    (mov-⇲ (c-lns> *ptr))
+    
+    (put *ptr 'pair List)
+    (top> Pt-Cdr)
+    (draw> *ptr)))
         
         
 (de ins-a-atom (Dat)

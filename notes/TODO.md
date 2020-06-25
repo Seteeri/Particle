@@ -27,17 +27,17 @@ TODO
       * Implement del [Done]
       * Add tests atom del [Done]
         * Add alt-reg
-      * Add tests pair del [Done]
-        * Add alt-reg
-      * Add nl tests [Tues]
-      * Handle symbol/exp
+      * Add tests pair alt-reg [Thur]
+      * Add tests pair del [Thur]
+      * Add nl tests [Thur?]
+      * Handle symbol/exp []
   
   * Refactor?
     * Use prog1
     * Improve del>
       * Fix double free
   
-  * Root Lists (side/main) [Thurs]
+  * Root Lists (side/main) [Wknd]
     LEFT:
       * Mov from simple to advance, downward
       1. Help

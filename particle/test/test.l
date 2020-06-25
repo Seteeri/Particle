@@ -117,55 +117,8 @@
 (de run-tests ()
 
   # Finish checking each
-
-  #{
   
-    lst-x-atom-b: Pass
-    lst-x-atom-a: Pass
-    lst-y-atom-b: Pass
-    lst-y-atom-a: Pass
-    str-x-atom-b: Pass
-    str-x-atom-a: Pass
-    str-y-atom-b: Pass
-    str-y-atom-a: Pass
-    alt-reg-x-atom-a: Pass
-    alt-reg-x-atom-b: Pass
-    alt-reg-y-atom-a: Pass
-    alt-reg-y-atom-b: Pass
-    del-x-atom-a: Pass
-    del-x-atom-b: Pass
-    del-x-atom-b-nil: Pass
-    del-y-atom-a: Pass
-    del-y-atom-a-nil: Pass
-    del-y-atom-b: Pass
-    del-y-atom-b-nil: Pass
-    str-x-pair-x-b: Pass
-    str-x-pair-y-b: (T T NIL T NIL T NIL)
-    str-y-pair-x-b: Pass
-    str-y-pair-y-b: (T T NIL T NIL T NIL)
-    str-y-pair-x-a: (T T T NIL T NIL T)
-    str-y-pair-y-a: (T T T NIL T NIL NIL)
-    lst-x-pair-x-b: Pass
-    lst-x-pair-y-b: Pass
-    lst-y-pair-x-b: Pass
-    lst-y-pair-y-b: Pass
-    lst-y-pair-x-a: Pass
-    lst-y-pair-y-a: Pass
-    bsp-x-atom-b: Pass
-    bsp-y-atom-a: Pass
-    bsp-y-atom-b: Pass
-    bsp-x-pair-x-b: Pass
-    bsp-x-pair-y-b: Pass
-    bsp-y-pair-x-a: Pass
-    bsp-y-pair-x-b: Pass
-    bsp-y-pair-y-a: Pass
-    bsp-y-pair-y-b: Pass
-  
-  }#
-  
-  (str-x-pair-y-b)
-  
-  (when NIL
+  (when T
 
   (alt-reg-x-pair-a-a) (call 'sleep 5) (del-start-val Pt-Sta T)
   (alt-reg-x-pair-a-px) (call 'sleep 5) (del-start-val Pt-Sta T)
