@@ -128,7 +128,8 @@
     (lay-*start) 
     (mov-⇲ (c-lns> *ptr))
     
-    (put *ptr 'pair List)
+    (pt> *ptr List 'b Pt-Cdr)
+    
     (top> Pt-Cdr)
     (draw> *ptr)))
         
