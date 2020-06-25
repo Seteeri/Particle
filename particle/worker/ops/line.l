@@ -9,17 +9,21 @@
                    (lup-pt (get *ptr 'ref)))
         Ln (c-lns> *ptr))
                    
-    (unless (get Pt-Tgt 'line)
+    (if (get Pt-Tgt 'line)
     
-      (ins-line-aft Ln Pt-Tgt)
+        (prinl "make-line: +Line exists")
+    
+        (prog
+        
+          (ins-line-aft Ln Pt-Tgt)
+              
+          (lay-*start)
+          (mov-⇲ Ln)
           
-      (lay-*start)
-      (mov-⇲ Ln)
-      
-      (top> Pt-Tgt)
-      (draw> *ptr)
-      
-      (set-ln-n> *ptr Pt-Tgt))))
+          (top> Pt-Tgt)
+          (draw> *ptr)
+          
+          (set-ln-n> *ptr Pt-Tgt)))))
 
         
 (de ins-line-aft (Ln Po)
