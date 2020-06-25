@@ -28,7 +28,7 @@ TODO
       * Add tests atom del [Done]
       * Add tests pair alt-reg [Done]
       * Add tests pair del [Done]
-      * Add tests pair bsp [WIP]
+      * Add tests pair bsp [Done]
       * Add nl tests [Fri?]
       * Handle symbol/exp []
   

@@ -116,7 +116,7 @@
 
 (de run-tests-2 ()
 
-  (when NIL
+  (when T
 
     (run-tests)
 
@@ -143,7 +143,7 @@
   (str-y-atom-b) (del-start-val Pt-Sta T)
   (str-y-atom-a) (del-start-val Pt-Sta T)
 
-  #(bsp-atom-x-x-a) (del-start-val Pt-Sta T)
+  (bsp-atom-x-x-a) (del-start-val Pt-Sta T)
   (bsp-atom-x-x-b) (del-start-val Pt-Sta T)
   (bsp-atom-x-y-a) (del-start-val Pt-Sta T)
   (bsp-atom-x-y-b) (del-start-val Pt-Sta T)

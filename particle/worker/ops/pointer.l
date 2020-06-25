@@ -117,7 +117,7 @@
     (uncol> This Po Drw))
           
         
-  # Should store Point also
+  # Should store Point also?
   
   (let Pt-Tgt (lup-pt Tgt)
     

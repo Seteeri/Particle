@@ -6,7 +6,93 @@
   
 }#
 
-# (de bsp-x-atom-a ())
+
+(de bsp-atom-x-x-a ()
+  (cmd-ptr-right)
+  (cmd-make-char (char "c"))
+  (cmd-make-char (char "d"))
+  (cmd-make-char (char "e"))
+  (cmd-make-char (char "f"))
+  (cmd-make-char (char "g"))
+  (cmd-make-char (char "h"))
+  (cmd-ptr-left)
+  (cmd-ptr-left)
+  (cmd-ptr-left)
+  (cmd-ptr-down)
+  (cmd-bsp)
+  (ver-start
+    'bsp-atom-x-x-a
+    '(((+Pair)
+        ("c" "d" "e" . "f")
+        x
+        T
+        NIL
+        NIL
+        (4214357 0 0)
+        T
+        (3612306 1204102)
+        (NIL NIL) )
+      ((+Str)
+          "c"
+          x
+          NIL
+          NIL
+          T
+          (4214357 -1204102 0)
+          T
+          (0 0)
+          NIL )
+      ((+Pair)
+          ("d" "e" . "f")
+          x
+          T
+          NIL
+          NIL
+          (5418459 0 0)
+          T
+          (0 1204102)
+          NIL )
+      ((+Str)
+          "d"
+          x
+          NIL
+          NIL
+          T
+          (5418459 -1204102 0)
+          T
+          (0 0)
+          NIL )
+      ((+Pair)
+          ("e" . "f")
+          x
+          T
+          T
+          NIL
+          (6622561 0 0)
+          T
+          (0 1204102)
+          NIL )
+      ((+Str)
+          "e"
+          x
+          NIL
+          NIL
+          T
+          (6622561 -1204102 0)
+          T
+          (0 0)
+          NIL )
+      ((+Str)
+          "f"
+          x
+          NIL
+          NIL
+          T
+          (7826663 0 0)
+          T
+          (0 1204102)
+          NIL ) )))
+
 
 (de bsp-atom-x-x-b ()
   (cmd-ptr-right)
