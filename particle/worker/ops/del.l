@@ -109,6 +109,7 @@
       (if (= Reg-Pair 'b)
           (mov-line Pt-Pair Pt-Cdr)
           (del-line Pt-Pair))
+      (lns> *ptr)
       (lns> *ptr))
     (set-ln-n> *ptr Pt-Cdr)
     
@@ -149,67 +150,4 @@
     (mov-⇲ (c-lns> *ptr))
     
     (top> Pt-Cdr)
-    (draw> *ptr)))
-
-    
-###################
-
-
-(de del-y-pair-2 ()
-
-  # Deletes entire pair and promotes car
-
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        Back (find-back-any> *ptr Pair T)
-        Pt-Back (lup-pt Back)
-        Car (car Pair)
-        Atom-Car (atom Car)
-        Pt-Car (if Atom-Car
-                   (get Pt-Pair 'a)
-                   (lup-pt Car))
-        Reg-Pair (if (= (car Back) Pair) 'a 'b))
-        
-    (when (get Pt-Pair 'line)
-      (del-line Pt-Pair)
-      (lns> *ptr))
-    (set-ln-n> *ptr Pt-Car)
-        
-    (del> Pt-Pair NIL T)
-    (put Pt-Pair 'a NIL)
-    (put Pt-Pair 'b NIL)
-    
-    (cond 
-      ((and (= Reg-Pair 'a) Atom-Car)
-       (set> Pt-Back Car Pt-Car)
-       (if (get Pt-Car 'line)
-           (put @ 'p NIL)
-           (put Pt-Car 'line
-             (new '(+Line))))
-       (pt> *ptr Back 'a Pt-Car)
-       T)
-       
-      ((and (= Reg-Pair 'a) (not Atom-Car))
-       (set> Pt-Back Car Pt-Car)
-       (if (get Pt-Car 'line)
-           (put @ 'p NIL)
-           (put Pt-Car 'line
-             (new '(+Line))))
-       (pt> *ptr Car 'a)
-       T)
-       
-      ((and (= Reg-Pair 'b) Atom-Car)
-       (con> Pt-Back Car Pt-Car)
-       (pt> *ptr Back 'b Pt-Car)
-       T)
-       
-      ((and (= Reg-Pair 'b) (not Atom-Car))
-       (con> Pt-Back Car Pt-Car)
-       (pt> *ptr Car 'b)
-       T))
-        
-    (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
-    
-    (top> Pt-Car)
     (draw> *ptr)))

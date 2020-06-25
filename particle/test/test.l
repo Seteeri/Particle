@@ -116,13 +116,11 @@
 
 (de run-tests-2 ()
 
-  # Finish checking each
-  
   (when T
 
+    (run-tests)
 
-
-  ))
+    T))
 
   
 (de run-tests ()
@@ -145,9 +143,12 @@
   (str-y-atom-b) (del-start-val Pt-Sta T)
   (str-y-atom-a) (del-start-val Pt-Sta T)
 
-  (bsp-x-atom-b) (del-start-val Pt-Sta T)
-  (bsp-y-atom-a) (del-start-val Pt-Sta T)
-  (bsp-y-atom-b) (del-start-val Pt-Sta T)
+  #(bsp-atom-x-x-a) (del-start-val Pt-Sta T)
+  (bsp-atom-x-x-b) (del-start-val Pt-Sta T)
+  (bsp-atom-x-y-a) (del-start-val Pt-Sta T)
+  (bsp-atom-x-y-b) (del-start-val Pt-Sta T)
+  (bsp-atom-y-y-a) (del-start-val Pt-Sta T)
+  (bsp-atom-y-y-b) (del-start-val Pt-Sta T)
   
   (alt-reg-x-atom-a) (del-start-val Pt-Sta T)
   (alt-reg-x-atom-b) (del-start-val Pt-Sta T)
@@ -162,11 +163,7 @@
   (del-y-atom-a)     (del-start-val Pt-Sta T)
   (del-y-atom-a-nil) (del-start-val Pt-Sta T)
   (del-y-atom-b)     (del-start-val Pt-Sta T)
-  (del-y-atom-b-nil) (del-start-val Pt-Sta T)
-  
-  #BSP?
-  
-  T)
+  (del-y-atom-b-nil) (del-start-val Pt-Sta T))
   
   
 (de test-pair ()

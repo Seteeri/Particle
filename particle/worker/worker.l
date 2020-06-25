@@ -270,8 +270,8 @@
       (col-verts> Pt-D *selb-yellow 1.0)
       (lay-pt-start '⇲ '⇲ T T)
       
-      (when NIL
-        (run-tests)
+      (when T
+        (run-tests-2)
         #(quit "Finished tests")
         )
                 
