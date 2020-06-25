@@ -6,7 +6,7 @@
 
   Case 1:
   
-    * On cdr pair/atom: repl prv pair with its cdr
+    * On cdr pair/atom: repl prv pair with its cdr (ref)
   
               *
     [X]  [X]  .
@@ -18,42 +18,30 @@
     [X]  .
     .    
 
-
+    
   Case 2:
-  
-    * On car pair: repl prv pair with its car pair
-  
-          *
-    [Y]  [Y]  .
-          .
-    .
-    
-    ->
-  
-     *
-    [Y]  .
-    .
-         
-    
-    
-  Case 3:
 
-    * On car atom: repl prv/pair with its car
+    * On car pair: repl prv/pair with its car (ref)
   
-    [X]
-     .
-  
-         *
-    [Y]  .
-     
-    [X]
-     .
-     
-    OR
+      [X]
+      .
     
-    [X]  [X]  .
-     .    *
+            *
+      [Y]  [Y] .
+            c
       
+      [X]
+      .
+     
+    ->
+
+      [X]
+      .
+    
+      *
+      [Y] .
+       c
+    
 }#
 
 

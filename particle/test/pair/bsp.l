@@ -1,4 +1,22 @@
-(de bsp-x-pair-x-b ()
+#{
+        *
+  [ ]  [ ] .
+        .
+        
+  X/Y (A/B) X/Y
+
+  Except X car = X/Y
+  
+}#
+
+# Atom
+#(de bsp-pair-xb-a ())
+#(de bsp-pair-ya-a ())
+#(de bsp-pair-yb-a ())
+
+# No XA
+
+(de bsp-pair-xb-x ()
   (cmd-ptr-right)
   (cmd-make-char (char "c"))
   (cmd-make-char (char "d"))
@@ -6,7 +24,7 @@
   (cmd-ptr-left)
   (cmd-bsp)
   (ver-start
-    'bsp-x-pair-x-b
+    'bsp-pair-xb-x
     '(((+Pair)
         ("c" "e")
         x
@@ -57,8 +75,8 @@
           T
           (1204102 1204102)
           NIL ) )))
-
-(de bsp-x-pair-y-b ()
+    
+(de bsp-pair-xb-y ()
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-make-char (char "c"))
@@ -66,7 +84,7 @@
   (cmd-ptr-right)
   (cmd-bsp)
   (ver-start
-    'bsp-x-pair-y-b
+    'bsp-pair-xb-y
     '(((+Pair)
         ("d" NIL)
         x
@@ -118,12 +136,8 @@
           (1204102 0)
           (T NIL) ) )))
 
-#(de bsp-x-pair-x-a () T)
 
-#(de bsp-x-pair-y-a () T)
-
-
-(de bsp-y-pair-x-a ()
+(de bsp-pair-ya-x ()
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-make-pair)
@@ -132,7 +146,7 @@
   (cmd-make-pair)
   (cmd-bsp)
   (ver-start
-    'bsp-y-pair-x-a
+    'bsp-pair-ya-x
     '(((+Pair)
       ((NIL))
       y
@@ -183,69 +197,9 @@
           T
           (1204102 0)
           (T NIL) ) )))
-  
-(de bsp-y-pair-x-b ()
-  (cmd-ptr-right)
-  (cmd-make-char (char "c"))
-  (cmd-make-pair)
-  (cmd-ptr-down)
-  (cmd-make-char (char "d"))
-  (cmd-ptr-left)
-  (cmd-bsp)
-  (ver-start
-    'bsp-y-pair-x-b
-    '(((+Pair)
-        ("c" "d")
-        x
-        T
-        NIL
-        NIL
-        (4214357 0 0)
-        T
-        (2408204 4816408)
-        (NIL T) )
-      ((+Str)
-          "c"
-          x
-          NIL
-          NIL
-          T
-          (4214357 -1204102 0)
-          T
-          (0 0)
-          NIL )
-      ((+Pair)
-          ("d")
-          x
-          T
-          T
-          NIL
-          (4214357 -3612306 0)
-          T
-          (2408204 1204102)
-          (T NIL) )
-      ((+Str)
-          "d"
-          x
-          NIL
-          NIL
-          T
-          (4214357 -4816408 0)
-          T
-          (0 0)
-          NIL )
-      ((+Nil)
-          NIL
-          x
-          NIL
-          NIL
-          T
-          (5418459 -3612306 0)
-          T
-          (1204102 1204102)
-          NIL ) )))    
 
-(de bsp-y-pair-y-a ()
+
+(de bsp-pair-ya-y ()
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-make-pair)
@@ -254,7 +208,7 @@
   (cmd-ptr-right)
   (cmd-bsp)
   (ver-start
-    'bsp-y-pair-y-a
+    'bsp-pair-ya-y
     '(((+Pair)
       ((NIL))
       y
@@ -305,8 +259,72 @@
         T
         (1204102 0)
         (T NIL) ) )))
-    
-(de bsp-y-pair-y-b ()
+
+
+
+(de bsp-pair-yb-x ()
+  (cmd-ptr-right)
+  (cmd-make-char (char "c"))
+  (cmd-make-pair)
+  (cmd-ptr-down)
+  (cmd-make-char (char "d"))
+  (cmd-ptr-left)
+  (cmd-bsp)
+  (ver-start
+    'bsp-pair-yb-x
+    '(((+Pair)
+        ("c" "d")
+        x
+        T
+        NIL
+        NIL
+        (4214357 0 0)
+        T
+        (2408204 4816408)
+        (NIL T) )
+      ((+Str)
+          "c"
+          x
+          NIL
+          NIL
+          T
+          (4214357 -1204102 0)
+          T
+          (0 0)
+          NIL )
+      ((+Pair)
+          ("d")
+          x
+          T
+          T
+          NIL
+          (4214357 -3612306 0)
+          T
+          (2408204 1204102)
+          (T NIL) )
+      ((+Str)
+          "d"
+          x
+          NIL
+          NIL
+          T
+          (4214357 -4816408 0)
+          T
+          (0 0)
+          NIL )
+      ((+Nil)
+          NIL
+          x
+          NIL
+          NIL
+          T
+          (5418459 -3612306 0)
+          T
+          (1204102 1204102)
+          NIL ) )))
+
+
+(de bsp-pair-yb-y ()
   (cmd-ptr-right)
   (cmd-make-pair)
   (cmd-ptr-down)
@@ -315,7 +333,7 @@
   (cmd-make-pair)
   (cmd-bsp)
   (ver-start
-    'bsp-y-pair-y-b
+    'bsp-pair-yb-y
     '(((+Pair)
         (NIL NIL)
         y

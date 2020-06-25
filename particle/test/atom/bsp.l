@@ -1,6 +1,4 @@
-(de bsp-x-atom-a ()
-  # do nothing
-  T)
+(de bsp-x-atom-a ()) # Do nothing
 
 (de bsp-x-atom-b ()
   (cmd-ptr-right)

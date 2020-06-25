@@ -23,13 +23,13 @@ TODO
         * Pass flag to gen -> idx
       * New will gen verts
       * Pass sym exp to gen
-    * Finish unit tests [Mon]
-      * Implement del [Done]
+    * Finish unit tests [Fri]
+      * Add tests atom alt-reg [Done]
       * Add tests atom del [Done]
-        * Add alt-reg
-      * Add tests pair alt-reg [Thur]
-      * Add tests pair del [Thur]
-      * Add nl tests [Thur?]
+      * Add tests pair alt-reg [Done]
+      * Add tests pair del [Done]
+      * Add tests pair bsp [WIP]
+      * Add nl tests [Fri?]
       * Handle symbol/exp []
   
   * Refactor?
