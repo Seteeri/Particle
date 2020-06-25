@@ -120,38 +120,35 @@
   
   (when T
 
-    (del-pair-xb-x-x)
-    (del-pair-xb-x-y)
-    (del-pair-xb-x-a)
-
-    (del-pair-xb-y-x)
-    (del-pair-xb-y-y)
-    (del-pair-xb-y-a)
-
-    # Y car
-    (del-pair-ya-x-x)
-    (del-pair-ya-x-y)
-    (del-pair-ya-x-a)
-
-    (del-pair-ya-y-x)
-    (del-pair-ya-y-y)
-    (del-pair-ya-y-a)
-
-    # Y cdr
-    (del-pair-yb-x-x)
-    (del-pair-yb-x-y)
-    (del-pair-yb-x-a)
-
-    (del-pair-yb-y-x)
-    (del-pair-yb-y-y)
-    (del-pair-yb-y-a)
+    (del-pair-xb-x-x) (del-start-val Pt-Sta T)
+    (del-pair-xb-x-y) (del-start-val Pt-Sta T)
+    (del-pair-xb-x-a) (del-start-val Pt-Sta T)
+                      
+    (del-pair-xb-y-x) (del-start-val Pt-Sta T)
+    (del-pair-xb-y-y) (del-start-val Pt-Sta T)
+    (del-pair-xb-y-a) (del-start-val Pt-Sta T)
+                      
+    (del-pair-ya-x-x) (del-start-val Pt-Sta T)
+    (del-pair-ya-x-y) (del-start-val Pt-Sta T)
+    (del-pair-ya-x-a) (del-start-val Pt-Sta T)
+                      
+    (del-pair-ya-y-x) (del-start-val Pt-Sta T)
+    (del-pair-ya-y-y) (del-start-val Pt-Sta T)
+    (del-pair-ya-y-a) (del-start-val Pt-Sta T)
+                      
+    (del-pair-yb-x-x) (del-start-val Pt-Sta T)
+    (del-pair-yb-x-y) (del-start-val Pt-Sta T)
+    (del-pair-yb-x-a) (del-start-val Pt-Sta T)
+    (del-pair-yb-y-x) (del-start-val Pt-Sta T)
+    (del-pair-yb-y-y) (del-start-val Pt-Sta T)
+    (del-pair-yb-y-a) (del-start-val Pt-Sta T)
 
   ))
 
   
 (de run-tests ()
   
-  (lst-x-atom-b) (del-start-val Pt-Sta T)        
+  (lst-x-atom-b) (del-start-val Pt-Sta T)
   (lst-x-atom-a) (del-start-val Pt-Sta T)        
 
   (lst-y-atom-b) (del-start-val Pt-Sta T)
