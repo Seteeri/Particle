@@ -117,7 +117,7 @@
 (de run-tests-2 ()
 
   (when T
-
+  
     (run-tests)
 
     T))
@@ -179,14 +179,74 @@
   
   ###
   
-  (lst-pair-x-x-b) (del-start-val Pt-Sta T)
-  (lst-pair-x-y-b) (del-start-val Pt-Sta T)
-
-  (lst-pair-y-x-b) (del-start-val Pt-Sta T)
-  (lst-pair-y-y-b) (del-start-val Pt-Sta T)
+  # xb
   
-  (lst-pair-y-x-a) (del-start-val Pt-Sta T)
-  (lst-pair-y-y-a) (del-start-val Pt-Sta T)
+  (lst-pair-xb-x/ax) (del-start-val Pt-Sta T)
+  (lst-pair-xb-x/nx) (del-start-val Pt-Sta T)
+                   
+  (lst-pair-xb-x/aa) (del-start-val Pt-Sta T)
+  (lst-pair-xb-x/an) (del-start-val Pt-Sta T)
+  (lst-pair-xb-x/nn) (del-start-val Pt-Sta T)
+  (lst-pair-xb-x/na) (del-start-val Pt-Sta T)
+                 
+  (lst-pair-xb-y/xx) (del-start-val Pt-Sta T)
+  (lst-pair-xb-y/xy) (del-start-val Pt-Sta T)
+  (lst-pair-xb-y/yx) (del-start-val Pt-Sta T)
+  (lst-pair-xb-y/yy) (del-start-val Pt-Sta T)
+
+  (lst-pair-xb-y/ax) (del-start-val Pt-Sta T)
+  (lst-pair-xb-y/nx) (del-start-val Pt-Sta T)
+  
+  (lst-pair-xb-y/aa) (del-start-val Pt-Sta T)
+  (lst-pair-xb-y/an) (del-start-val Pt-Sta T)
+  (lst-pair-xb-y/nn) (del-start-val Pt-Sta T)
+  (lst-pair-xb-y/na) (del-start-val Pt-Sta T)
+                      
+  # ya                
+                      
+  (lst-pair-ya-x/ax) (del-start-val Pt-Sta T)
+  (lst-pair-ya-x/nx) (del-start-val Pt-Sta T)
+  
+  (lst-pair-ya-x/aa) (del-start-val Pt-Sta T)
+  (lst-pair-ya-x/an) (del-start-val Pt-Sta T)
+  (lst-pair-ya-x/nn) (del-start-val Pt-Sta T)
+  (lst-pair-ya-x/na) (del-start-val Pt-Sta T)
+                   
+  (lst-pair-ya-y/xx) (del-start-val Pt-Sta T)
+  (lst-pair-ya-y/xy) (del-start-val Pt-Sta T)
+  (lst-pair-ya-y/yx) (del-start-val Pt-Sta T)
+  (lst-pair-ya-y/yy) (del-start-val Pt-Sta T)
+                   
+  (lst-pair-ya-y/ax) (del-start-val Pt-Sta T)      
+  (lst-pair-ya-y/nx) (del-start-val Pt-Sta T)  
+                   
+  (lst-pair-ya-y/aa) (del-start-val Pt-Sta T)
+  (lst-pair-ya-y/an) (del-start-val Pt-Sta T)
+  (lst-pair-ya-y/nn) (del-start-val Pt-Sta T)
+  (lst-pair-ya-y/na) (del-start-val Pt-Sta T)
+
+  # yb
+
+  (lst-pair-yb-x/ax) (del-start-val Pt-Sta T)
+  (lst-pair-yb-x/nx) (del-start-val Pt-Sta T)  
+  
+  (lst-pair-yb-x/aa) (del-start-val Pt-Sta T)
+  (lst-pair-yb-x/an) (del-start-val Pt-Sta T)
+  (lst-pair-yb-x/nn) (del-start-val Pt-Sta T)
+  (lst-pair-yb-x/na) (del-start-val Pt-Sta T)
+                    
+  (lst-pair-yb-y/xx) (del-start-val Pt-Sta T)
+  (lst-pair-yb-y/xy) (del-start-val Pt-Sta T)
+  (lst-pair-yb-y/yx) (del-start-val Pt-Sta T)
+  (lst-pair-yb-y/yy) (del-start-val Pt-Sta T)
+  
+  (lst-pair-yb-y/ax) (del-start-val Pt-Sta T)
+  (lst-pair-yb-y/nx) (del-start-val Pt-Sta T)
+  
+  (lst-pair-yb-y/aa) (del-start-val Pt-Sta T)
+  (lst-pair-yb-y/an) (del-start-val Pt-Sta T)
+  (lst-pair-yb-y/nn) (del-start-val Pt-Sta T)
+  (lst-pair-yb-y/na) (del-start-val Pt-Sta T)
   
   ###
   
@@ -205,7 +265,6 @@
   (alt-reg-x-pair-a-py) (del-start-val Pt-Sta T)
 
   (alt-reg-y-pair-a-a)  (del-start-val Pt-Sta T)
-  
   (alt-reg-y-pair-a-px) (del-start-val Pt-Sta T)
   (alt-reg-y-pair-a-py) (del-start-val Pt-Sta T)
   (alt-reg-y-pair-px-a) (del-start-val Pt-Sta T)
@@ -215,6 +274,7 @@
   (alt-reg-y-pair-px-py) (del-start-val Pt-Sta T)
   (alt-reg-y-pair-py-py) (del-start-val Pt-Sta T)
   (alt-reg-y-pair-py-px) (del-start-val Pt-Sta T)
+  
   
   (del-pair-xb-x-x) (del-start-val Pt-Sta T)
   (del-pair-xb-x-y) (del-start-val Pt-Sta T)
