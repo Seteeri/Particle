@@ -82,21 +82,19 @@
             
             # MOV -> TEST.L
             
-            "/particle/test/atom/atom.l"
             "/particle/test/atom/lst.l"
             "/particle/test/atom/str.l"
             "/particle/test/atom/alt.l"
             "/particle/test/atom/del.l"
             "/particle/test/atom/bsp.l"
-            "/particle/test/atom/nl.l"
+            #"/particle/test/atom/nl.l"
             
-            "/particle/test/pair/pair.l"
             "/particle/test/pair/lst.l"
             "/particle/test/pair/str.l"
             "/particle/test/pair/alt.l"
             "/particle/test/pair/del.l"
             "/particle/test/pair/bsp.l"
-            "/particle/test/pair/nl.l"
+            #"/particle/test/pair/nl.l"
             
             "/particle/test/test.l"))
 
@@ -271,7 +269,7 @@
       (lay-pt-start '⇲ '⇲ T T)
       
       (when T
-        (run-tests-2)
+        (run-tests)
         #(quit "Finished tests")
         )
                 
