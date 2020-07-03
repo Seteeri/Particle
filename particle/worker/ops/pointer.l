@@ -348,3 +348,43 @@
       (mov-⇲ (c-lns> *ptr))
       (top> Pt-Pair)
       (draw> *ptr))))
+      
+      
+(de ptr-ls-last (No-Draw)
+
+  # If jumping forward, what about lines?
+  #
+  # If traverse lines, linear complexity
+  #
+  # When moving back, have to search list
+  # list -> ... -> cur-line
+  
+  (let Ln (c-lns> *ptr)
+  
+    (loop
+      (NIL (get Ln 'line 'n))
+      (setq Ln (get Ln 'line 'n))
+      (lns> *ptr Ln))
+      
+    (let Pair (get Ln 'any)    
+    
+      (loop 
+        (setq Pair (cdr Pair))
+        (T (atom (cdr Pair))))
+        
+      (when Pair    
+      
+        (let (Pt-Pair (lup-pt Pair)
+              Back (find-back-any> *ptr Pair T)
+              Pt-Back (lup-pt Back)
+              Reg (if (sym? Back)
+                      'b
+                      (if (= (car Back) Pair) 'a 'b)))
+          
+          (pt> *ptr Pair Reg)
+          
+          (unless No-Draw
+            (lay-*start)
+            (mov-⇲ (c-lns> *ptr))
+            (top> Pt-Pair)
+            (draw> *ptr)))))))

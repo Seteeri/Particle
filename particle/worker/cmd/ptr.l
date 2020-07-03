@@ -71,7 +71,11 @@
       
 (de cmd-ptr-ls-first (Ks) 
   (ptr-ls-first))
-      
+
+
+(de cmd-ptr-ls-last (Ks) 
+  (ptr-ls-last))
+  
 
 ###########
 # Euclidean

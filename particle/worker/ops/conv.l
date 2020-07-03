@@ -66,6 +66,9 @@
   # Delete entire list
   # Con new list
 
+  #(let (Pair (if (get *ptr 'pair) @ (get *ptr 'ref))
+  #      Pt-Pair (lup-pt Pair)))
+  
   (let (Pair (get *ptr 'ref)
         Pt-Pair (lup-pt Pair)
         Back (find-back-any> *ptr Pair T)
@@ -108,11 +111,6 @@
     (draw> *ptr)))
     
 
-###################
-###################
-
-
-  
 
 #####################  
 #####################  
@@ -166,26 +164,6 @@
 
 #######
 
-    
-(de cmd-glue-sp-syms (Ks)
-
-  (prinl-info "cmd-glue-sp-syms")
-  
-  (let Ref (get-ptr-ref)
-  
-    (when (is-nil? Ref)
-      (setq Ref (get Ref 'c)))
-  
-    (when (has-str?> Ref) 
-  
-      (let (End Ref
-            (Sta Lst) (build-str End)
-            Dat (glue " " Lst))
-            
-        (println 'cmd-glue-sp Sta (get Sta 'any) "TO" End (get End 'any))
-            
-        (repl-list-str Sta End Dat)
-        (lay-ptr *ptr)))))
     
     
 (de cmd-split-sp (Ks)
