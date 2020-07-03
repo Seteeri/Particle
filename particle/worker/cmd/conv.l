@@ -17,11 +17,11 @@
   (cond
   
     ((a-atom?> *ptr)
-     (chop-atom-a))
-      
+     (chop-atom car))
+
     ((b-atom?> *ptr)
-     (chop-atom-b))
-    
+     (chop-atom cdr))
+     
     ((a-pair?> *ptr)
      (split-pair-a))
       
