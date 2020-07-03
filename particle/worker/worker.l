@@ -52,12 +52,13 @@
             "/particle/worker/vertex/make.l"
             "/particle/worker/vertex/vertex.l"
             
+            "/particle/worker/cmd/atom.l"
+            "/particle/worker/cmd/ptr.l"                                
             "/particle/worker/cmd/pair.l"
+            "/particle/worker/cmd/repl.l"            
             "/particle/worker/cmd/line.l"
-            "/particle/worker/cmd/eval.l"
-            "/particle/worker/cmd/str.l"
+            "/particle/worker/cmd/conv.l"
             "/particle/worker/cmd/cam.l"
-            "/particle/worker/cmd/ptr.l"                    
             
             "/particle/worker/point/point.l"
             "/particle/worker/point/pair.l"
@@ -268,7 +269,7 @@
       (col-verts> Pt-D *selb-yellow 1.0)
       (lay-pt-start '⇲ '⇲ T T)
       
-      (when T
+      (when NIL
         (run-tests)
         #(quit "Finished tests")
         )

@@ -1,6 +1,6 @@
 (de lst-x-atom-b NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (ver-start
       'lst-x-atom-b
       '(((+Pair)
@@ -39,7 +39,7 @@
    (cmd-make-nil)
    (cmd-ptr-left)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (ver-start
       'lst-x-atom-a
       '(((+Pair)
@@ -95,9 +95,9 @@
 
 (de lst-y-atom-b NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (ver-start
       'lst-y-atom-b
       '(((+Pair)
@@ -153,9 +153,9 @@
 
 (de lst-y-atom-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (ver-start
       'lst-y-atom-a
       '(((+Pair)

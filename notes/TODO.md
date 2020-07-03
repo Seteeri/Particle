@@ -23,14 +23,30 @@ TODO
         * Pass flag to gen -> idx
       * New will gen verts
       * Pass sym exp to gen
-    * Finish unit tests [Fri]
+    * Primitive tests [Fri]
       * Add tests atom alt-reg [Done]
       * Add tests atom del [Done]
       * Add tests pair alt-reg [Done]
       * Add tests pair del [Done]
       * Add tests pair bsp [Done]
-      * Add nl tests [Fri?]
-      * Handle symbol/exp []
+    * Line tests
+      * Add nl tests [Later]
+        * mak-nl
+          * On car, do nothing
+          * Poss, make cmd same as make-list
+        * del-nl
+    * Handle symbol/exp
+      * Add cmd-make-pair-x; do before exp
+    * Mode change
+      * for ascii
+        * single tap = str
+        * double tap = cmd/mode change
+      * control chars
+        * tab
+          * autocompletion would be tab/mode change + key
+        * newline
+      * mod keys
+        * double shift
   
   * Refactor?
     * Use prog1
@@ -69,9 +85,7 @@ TODO
         * use to manage viewports
     BOTTOM
       * Status
-  
-  * Str Ops before demo
-  
+    
   * Lists can be rotated to simulate scrolling
     * Requires redrawing entire list...
     * Frustrum culling

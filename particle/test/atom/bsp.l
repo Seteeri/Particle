@@ -125,7 +125,7 @@
 (de bsp-atom-x-y-a NIL
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-make-char (char "d"))
    (cmd-bsp)
@@ -173,7 +173,7 @@
    (cmd-alt-reg)
    (cmd-ptr-left)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-left)
    (cmd-ptr-down)
    (cmd-bsp)
@@ -212,8 +212,8 @@
 
 (de bsp-atom-y-y-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
@@ -253,8 +253,8 @@
 
 (de bsp-atom-y-y-b NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-ptr-down)
    (cmd-bsp)

@@ -4934,6 +4934,14 @@ PTR POSSIBILITIES:
  [X]  P/A...
 
   P/A...
+
+  
+##################
+
+
+"Make chars, pack char to back str"
+
+("Make chars," (p a c k) "char to back str")
   
 ============================================
 ============================================

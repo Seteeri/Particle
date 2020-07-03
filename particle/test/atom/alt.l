@@ -76,7 +76,7 @@
 
 (de alt-reg-y-atom-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
    (cmd-alt-reg)
@@ -115,7 +115,7 @@
 
 (de alt-reg-y-atom-b NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
    (cmd-alt-reg)

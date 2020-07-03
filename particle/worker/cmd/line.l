@@ -9,3 +9,6 @@
   
   (del-line-cur))
 
+
+(de cmd-alt-lay (Ks)
+  (alt-lay))

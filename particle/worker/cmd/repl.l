@@ -1,3 +1,19 @@
+######
+# REPL  
+
+(de cmd-read ())
+
+(de cmd-eval ())
+
+(de cmd-pp ())
+
+
+(de cmd-re ())
+
+(de cmd-rep ())
+
+###################
+
 (de cmd-eval-str ()
   (prinl-info "cmd-eval-str")
   

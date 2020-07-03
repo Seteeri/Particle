@@ -130,7 +130,7 @@
         (out NIL (prinl Path-Out))
         (out Path-Out
           (for Fn Fns
-            (out NIL (prin "Test " (cadr Fn) "..."))
+            (out NIL (prin "  " (cadr Fn) " -> "))
             (let F ((val (cadr Fn)))
               (del-start-val Pt-Sta T)
               (out NIL (print F) (prinl)))))))))

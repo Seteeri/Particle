@@ -63,7 +63,7 @@
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
    (cmd-make-char (char "d"))
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-left)
    (cmd-del)
    (ver-start
@@ -171,7 +171,7 @@
    (cmd-ptr-left)
    (cmd-ptr-left)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-left)
    (cmd-del)
    (ver-start
@@ -233,10 +233,10 @@
    (cmd-make-char (char "d"))
    (cmd-make-char (char "e"))
    (cmd-ptr-left)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-left)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-left)
    (cmd-del)
    (ver-start
@@ -323,7 +323,7 @@
    (cmd-alt-reg)
    (cmd-ptr-left)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-left)
    (cmd-del)
    (ver-start
@@ -361,9 +361,9 @@
 
 (de del-pair-ya-x-x NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-make-char (char "c"))
    (cmd-ptr-left)
    (cmd-del)
@@ -422,11 +422,11 @@
 
 (de del-pair-ya-x-y NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-del)
    (ver-start
       'del-pair-ya-x-y
@@ -483,9 +483,9 @@
 
 (de del-pair-ya-x-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
    (cmd-alt-reg)
@@ -526,11 +526,11 @@
 
 (de del-pair-ya-y-x NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-left)
    (cmd-del)
    (ver-start
@@ -568,9 +568,9 @@
 
 (de del-pair-ya-y-y NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
-   (cmd-make-pair)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-del)
    (ver-start
@@ -608,8 +608,8 @@
 
 (de del-pair-ya-y-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
@@ -650,7 +650,7 @@
 
 (de del-pair-yb-x-x NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
    (cmd-make-char (char "d"))
@@ -712,12 +712,12 @@
 
 (de del-pair-yb-x-y NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
    (cmd-make-char (char "d"))
    (cmd-ptr-left)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-left)
    (cmd-del)
    (ver-start
@@ -795,7 +795,7 @@
 
 (de del-pair-yb-x-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
    (cmd-ptr-left)
@@ -840,9 +840,9 @@
 
 (de del-pair-yb-y-x NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
    (cmd-ptr-left)
@@ -903,11 +903,11 @@
 
 (de del-pair-yb-y-y NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-up)
    (cmd-del)
    (ver-start
@@ -965,9 +965,9 @@
 
 (de del-pair-yb-y-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
    (cmd-alt-reg)

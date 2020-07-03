@@ -106,48 +106,82 @@
     
     ((ksd~Tab) cmd-chg-mode)
   
-    ((ksd~Alt-L ksd~Tab)    cmd-make-char)
-    ((ksd~Alt-R ksd~Tab)    cmd-make-char)
-    
-    ((ksd~BackSpace) cmd-bsp)
-    ((ksd~Delete   ) cmd-del)  
-    
-    ((ksd~Shift-R   ksd~Return)    cmd-make-line)
-    ((ksd~Shift-R   ksd~BackSpace) cmd-del-line)
-    
     # DEBUG
     ((ksd~Control-R ksd~Return) cmd-print-ptr)    
-    ((ksd~Control-R ksd~BackSpace) cmd-reset-start)
+    ((ksd~Control-R ksd~BackSpace) cmd-reset-start)  
   
-    ##########
-    # List Ops
-
-    ((ksd~r) cmd-make-nil)
-    ((ksd~t) cmd-make-pair)
-    ((ksd~y) cmd-make-pair)
+    ((ksd~Alt-L ksd~Tab) cmd-make-char)
+    ((ksd~Alt-R ksd~Tab) cmd-make-char)
+    ((ksd~BackSpace)     cmd-bsp)
+    ((ksd~Delete   )     cmd-del)  
+    
+    # Layout    
+    # Create non-mod keys
+    ((ksd~Shift-R   ksd~Return)    cmd-make-line)
+    ((ksd~Shift-R   ksd~BackSpace) cmd-del-line)    
     ((ksd~f) cmd-alt-lay)
-    ((ksd~g) cmd-alt-reg)
     
-    ##############
-    # REPL - Right
+    # Pair Ops
+    ((ksd~r) cmd-make-nil)
+    ((ksd~t) cmd-make-pair-y)
+    ((ksd~y) cmd-make-pair-y)
+    ((ksd~g) cmd-alt-reg)    
+    
+    ########################
+    # Convert Atom <-> List
+    # * CHOP/SPLIT GLUE/PACK    
+    
+    #{
+    
+      For args: get from registers
+      Ex: For space + split (plain), 
+          mov any to reg, do cmd
+      So split-sp will mov sp to reg, do cm,d rest reg
+            
+      Workflows
+      * Pack Chars into Back Str:
+        * Make chars, pack char to back str
+      * Edit Words:
+        * Mov ptr, chop till sp/reg/ptr
+          * Replace with list
+          * Reg could be similar to jump nearest...
+          * Need not split exactly, just near
+          * After split, mov to end of list
+        * Pack list(s) recursively until ptr
+      * Notes
+        * Default is "destructive"
+        * Technically, undo will save old str
+        
+    }#
+    
+    # cmd-glue-sp (list of any -> str)
+    #   (glue NIL (...)) = (pack ... ...)
+    
+    # cmd-pack (any ... -> str)        
+    
+    # cmd-chop (str -> list of str)
+    #   (chop any) = (
+        
+    # cmd-split-sp (list of any -> list)    
+    # cmd-reverse/flip (list -> list)
+    # cmd-rot (list -> list)    
+    
+    ###############
+    # Atom <-> Atom
+    # cmd-conv
+    #   calls format or intern
+    
+    ###############
+    # REPL:
+    # Str/Code <-> Any
+    # Any <-> Any
 
-    # cmd-intern
-    # cmd-eval-str
-    # cmd-eval
-    # cmd-pes
-    # cmd-str
-    
-    #################
-    # Str Ops - Right
-    
-    # cmd-pack-syms
-    # cmd-chop
-    # cmd-glue-sp-syms
-    # cmd-split-sp
-    #
-    # cmd-reverse
-    # cmd-flip
-    # cmd-rot
+    # cmd-read = str -> any
+    # cmd-eval = any -> any
+    # cmd-pp = any -> str
+
+    # cmd-re = str -> any
+    # cmd-rep = str -> any -> str
     
     ##########
     # CUA Ops
@@ -158,6 +192,9 @@
     # Most Apple Macintosh applications:
     #   Undo: Command-Z
     #   Redo: Command-Shift-Z or Command-Y
+    
+    # Cut* : push object once
+    # Copy* : push same object repeatedly
     
     # ESC = exit
     # N = new

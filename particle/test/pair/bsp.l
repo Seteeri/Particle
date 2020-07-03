@@ -60,7 +60,7 @@
 
 (de bsp-pair-xb-y NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-make-char (char "c"))
    (cmd-make-char (char "d"))
    (cmd-ptr-right)
@@ -120,11 +120,11 @@
 
 (de bsp-pair-ya-x NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-bsp)
    (ver-start
       'bsp-pair-ya-x
@@ -181,9 +181,9 @@
 
 (de bsp-pair-ya-y NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
-   (cmd-make-pair)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-ptr-right)
    (cmd-bsp)
@@ -243,7 +243,7 @@
 (de bsp-pair-yb-x NIL
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "d"))
    (cmd-ptr-left)
@@ -303,11 +303,11 @@
 
 (de bsp-pair-yb-y NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-bsp)
    (ver-start
       'bsp-pair-yb-y

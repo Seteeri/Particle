@@ -116,7 +116,7 @@
 
 (de del-y-atom-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
    (cmd-del)
@@ -155,7 +155,7 @@
 
 (de del-y-atom-a-nil NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-del)
    (ver-start
@@ -193,7 +193,7 @@
 
 (de del-y-atom-b NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
    (cmd-ptr-left)
@@ -235,7 +235,7 @@
 
 (de del-y-atom-b-nil NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-del)
    (ver-start

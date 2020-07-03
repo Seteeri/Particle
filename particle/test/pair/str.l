@@ -80,7 +80,7 @@
 (de str-x-pair-y-b NIL
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-make-char (char "d"))
    (ver-start
       'str-x-pair-y-b
@@ -157,7 +157,7 @@
 
 (de str-y-pair-x-b NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
    (cmd-ptr-left)
@@ -237,9 +237,9 @@
 
 (de str-y-pair-y-b NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-make-char (char "c"))
    (ver-start
       'str-y-pair-y-b
@@ -316,9 +316,9 @@
 
 (de str-y-pair-x-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
    (cmd-make-char (char "c"))
    (ver-start
       'str-y-pair-x-a
@@ -395,8 +395,8 @@
 
 (de str-y-pair-y-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair)
-   (cmd-make-pair)
+   (cmd-make-pair-y)
+   (cmd-make-pair-y)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
    (ver-start

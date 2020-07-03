@@ -1,5 +1,5 @@
-(de cmd-make-pair (Ks)
-  #(println 'cmd-make-pair)
+(de cmd-make-pair-y (Ks)
+  #(println 'cmd-make-pair-y)
 
   # Make these methods?
   
@@ -26,6 +26,9 @@
       )))
             
 
+(de cmd-make-pair-x (Ks))
+            
+            
 (de cmd-del (Ks)
 
   #(prinl-info "cmd-del")
@@ -39,11 +42,6 @@
   
   (bsp-pt))
 
-
-# Mov to ptr?
-(de cmd-alt-lay (Ks)
-  (alt-lay))
-  
   
 (de cmd-alt-reg (Ks)
   (alt-reg))

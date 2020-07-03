@@ -1,41 +1,101 @@
-(de cmd-make-char (Ks)
+###################
+# ATOM/STR <-> LIST
+
+(de cmd-chop/split ()
 
   #{
-    \r = ^M
-    \n = ^J
-    \t = ^I
+  
+    If atom/str, chop
+    If list, split with reg
+      Ex: make sp, push to reg, do cmd
+      Mov start or end?
+  
   }#
   
-  (let (Dat (cond ((= Ks ksd~Return) "^J")
-                   ((= Ks ksd~Tab) "^I")
-                   (T (char Ks)))
-        Lay 'x)
+  (cond
+  
+    ((a-atom?> *ptr)
+      #(println 'make-pair "A ATOM/NIL")
+      (if (lay-x?> *ptr)
+          (make-pair-a-atom-x)
+          (make-pair-a-atom-y)))
+      
+    ((b-atom?> *ptr)
+      #(println 'make-pair "B ATOM/NIL")
+      (make-pair-b-atom))
+    
+    ((a-pair?> *ptr)
+      #(println 'make-pair "A PAIR")
+      (make-pair-a-pair))
+      
+    ((b-pair?> *ptr)
+      #(println 'make-pair "B PAIR")
+      (make-pair-b-pair)
+      # (if (lay-x?> *ptr) ...)
+      )))  
 
-    # Push to cmd list
-    # Make class
-    # Put properties
+  
+(de cmd-glue/pack ()
 
-    (make-pair-str Dat Lay)))
+  #{
+  
+    If atom/str, pack
+    If list, glue with reg
+      Ex: make sp, push to reg, do cmd
+      Mov start or end?
+  
+  }#
+  
+  (cond
+  
+    ((a-atom?> *ptr)
+      #(println 'make-pair "A ATOM/NIL")
+      (if (lay-x?> *ptr)
+          (make-pair-a-atom-x)
+          (make-pair-a-atom-y)))
+      
+    ((b-atom?> *ptr)
+      #(println 'make-pair "B ATOM/NIL")
+      (make-pair-b-atom))
+    
+    ((a-pair?> *ptr)
+      #(println 'make-pair "A PAIR")
+      (make-pair-a-pair))
+      
+    ((b-pair?> *ptr)
+      #(println 'make-pair "B PAIR")
+      (make-pair-b-pair)
+      # (if (lay-x?> *ptr) ...)
+      )))
 
 
-(de cmd-make-nil (Ks)
-  #(prinl-info "cmd-make-nil")
-  (make-pair-str NIL 'x))
+###############
+# ATOM <-> ATOM
 
+(de cmd-conv ()
+  
+  #{
+  
+    t-sym -> i-sym = intern
+    i-sym -> t-sym = sym
+    
+    num <-> t-sym = format
+    
+    Note, can only intern str:
+    num -> t-str -> i-sym
+    
+    How to do floating-point?
+    - Handle as str + read
+    
+    'any/'str = str -> data
+  
+  }#
 
-(de cmd-make-num (Ks)
+  T)
+  
 
-  (println "cmd-make-num")
-
-  (make-pair-str (format (char Ks)) 'x))
-
-
-(de cmd-format (Ks)
-
-  (prinl-info "cmd-format")
-
-  (make-pair-str (format (get *ptr 'b 'c 'a 'any)) 'x))
-
+#####################  
+#####################  
 #####################
 
 # Reuse strs for these fns
@@ -143,6 +203,9 @@
             
         (repl-str-list Ref List)
         (lay-ptr *ptr)))))
+        
+
+####
         
         
 (de cmd-intern (Ks)
