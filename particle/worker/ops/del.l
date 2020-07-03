@@ -89,7 +89,12 @@
       
     ((or (a-pair?> *ptr)
          (b-pair?> *ptr))
-     (del-pair))))
+         
+     (let Pt (del-pair)
+      (lay-*start)
+      (mov-⇲ (c-lns> *ptr))
+      (top> Pt)
+      (draw> *ptr)))))
       
     
 (de del-pair ()
@@ -145,9 +150,4 @@
        (pt> *ptr Cdr 'b)
        T))
 
-       
-    (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
-    
-    (top> Pt-Cdr)
-    (draw> *ptr)))
+    Pt-Cdr))

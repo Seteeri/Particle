@@ -77,6 +77,7 @@
             "/particle/worker/ops/line.l"
             "/particle/worker/ops/alt-lay.l"       
             "/particle/worker/ops/alt-reg.l"
+            "/particle/worker/ops/conv.l"
             
             "/particle/worker/ops/pair/pair.l"
             "/particle/worker/ops/pair/atom.l"

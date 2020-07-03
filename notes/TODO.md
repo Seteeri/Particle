@@ -47,6 +47,7 @@ TODO
         * newline
       * mod keys
         * double shift
+    * Fix del-pair on sym value
   
   * Refactor?
     * Use prog1

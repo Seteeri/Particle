@@ -112,8 +112,8 @@
         
   # Uncolor current ref
   (let? Po (if (: pair)
-              (get (lup-pt (: pair)) (: reg))
-              (lup-pt (: ref)))
+               (get (lup-pt (: pair)) (: reg))
+               (lup-pt (: ref)))
     (uncol> This Po Drw))
           
         

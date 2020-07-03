@@ -107,29 +107,47 @@
     ((ksd~Tab) cmd-chg-mode)
   
     # DEBUG
-    ((ksd~Control-R ksd~Return) cmd-print-ptr)    
+    ((ksd~Control-R ksd~Return)    cmd-print-ptr)    
     ((ksd~Control-R ksd~BackSpace) cmd-reset-start)  
   
     ((ksd~Alt-L ksd~Tab) cmd-make-char)
     ((ksd~Alt-R ksd~Tab) cmd-make-char)
     ((ksd~BackSpace)     cmd-bsp)
-    ((ksd~Delete   )     cmd-del)  
+    ((ksd~Delete)        cmd-del)  
+            
+    ####################
+    # Pair Ops = Top Right
+    # R T | Y U I O P [ ] \
     
-    # Layout    
-    # Create non-mod keys
-    ((ksd~Shift-R   ksd~Return)    cmd-make-line)
-    ((ksd~Shift-R   ksd~BackSpace) cmd-del-line)    
-    ((ksd~f) cmd-alt-lay)
+    ((ksd~bracketleft)  cmd-make-pair-x)
+    ((ksd~bracketright) cmd-make-pair-y)    
+    ((ksd~backslash)        cmd-alt-reg)
     
-    # Pair Ops
-    ((ksd~r) cmd-make-nil)
-    ((ksd~t) cmd-make-pair-y)
-    ((ksd~y) cmd-make-pair-y)
-    ((ksd~g) cmd-alt-reg)    
+    # Shifts
+    #((ksd~r) cmd-rot-r)    # Pt to list
+    #((ksd~t) cmd-rot-l)    # Pt to list
+    #((ksd~y) cmd-flip/rev) # Pt to list
     
-    ########################
-    # Convert Atom <-> List
-    # * CHOP/SPLIT GLUE/PACK    
+    # Links
+    #((ksd~u) cmd-flatten) # Pt to list    
+    #((ksd~i) cmd-join)    # Pt to list of lists
+    #((ksd~o) cmd-split)   # Pt to any in list    
+    
+    ((ksd~p) cmd-make-nil)
+    
+    #######################
+    # Atomic Ops = Right Mid
+    # F G | H J K L
+    
+    # Atom <-> List
+    # * CHOP/SPLIT GLUE/PACK
+    # Atom <-> Atom
+    # * CONV (format, intern)
+    
+    #((ksd~h) ?)
+    ((ksd~j) cmd-conv)
+    ((ksd~k) cmd-chop/split)
+    ((ksd~l) cmd-glue)    
     
     #{
     
@@ -165,14 +183,9 @@
     # cmd-split-sp (list of any -> list)    
     # cmd-reverse/flip (list -> list)
     # cmd-rot (list -> list)    
-    
-    ###############
-    # Atom <-> Atom
-    # cmd-conv
-    #   calls format or intern
-    
-    ###############
-    # REPL:
+          
+    ######################
+    # REPL = Right Bottom:
     # Str/Code <-> Any
     # Any <-> Any
 
@@ -180,11 +193,25 @@
     # cmd-eval = any -> any
     # cmd-pp = any -> str
 
+    # cmd-rep = str -> any -> str    
     # cmd-re = str -> any
-    # cmd-rep = str -> any -> str
+
+    ((ksd~n)      cmd-read)
+    ((ksd~m)      cmd-eval)
+    ((ksd~comma)  cmd-pp)
+    ((ksd~period) cmd-rep)
+    ((ksd~slash)  cmd-re)
     
-    ##########
-    # CUA Ops
+    #####################
+    # Layout = Ctrl Chars
+    # B | N M , . /
+
+    ((ksd~Shift-R ksd~BackSpace)  cmd-del-line)
+    ((ksd~Shift-R ksd~Return)     cmd-make-line)
+    ((ksd~Shift-L ksd~Tab)        cmd-alt-lay)     
+    
+    #######################
+    # CUA Ops = Left Bottom
     
     # Most Microsoft Windows applications: 
     #   Undo: Ctrl+Z or Alt+Backspace
@@ -209,8 +236,8 @@
     #((ksd~z) ((Ks) (println "Ctrl-L z: UNDO")))
     #((ksd~y) ((Ks) (println "Ctrl-L y: REDO")))
     
-    ###################
-    # Pointer Semantics    
+    ###############################
+    # Pointer Semantics = Left Top/Mid Side  
     
     ((ksd~w) cmd-ptr-up)
     ((ksd~a) cmd-ptr-left)      
@@ -220,8 +247,10 @@
     ((ksd~q) cmd-ptr-ln-first)
     ((ksd~e) cmd-ptr-ln-last)
 
-    ############################
-    # Camera Translation - Right
+    ##################################
+    # Camera Translation - Right Side?
+    # These should be used sparingly
+    # similar to nav keys in Vim
 
     ((ksd~Right) cmd-move-cam-px)
     ((ksd~Left)  cmd-move-cam-nx)
