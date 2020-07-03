@@ -324,3 +324,27 @@
 (dm nex> (Drw) (forw> This 'b Drw))
 (dm sup> (Drw) (back> This 'a Drw))
 (dm sub> (Drw) (forw> This 'a Drw))
+
+
+(de ptr-ls-first (No-Draw)
+
+  (let (Pt-Pair (let (P (prop *ptr 'lns)
+                      L NIL)
+                  (loop (setq L (pop P))
+                    (NIL (get L 'line 'p)))
+                  (push P L) # Return it
+                  L)
+        Pair (get Pt-Pair 'any)
+        Back (find-back-any> *ptr Pair T)
+        Pt-Back (lup-pt Back)
+        Reg (if (sym? Back)
+                'b
+                (if (= (car Back) Pair) 'a 'b)))
+    
+    (pt> *ptr Pair Reg)
+    
+    (unless No-Draw
+      (lay-*start)
+      (mov-⇲ (c-lns> *ptr))
+      (top> Pt-Pair)
+      (draw> *ptr))))

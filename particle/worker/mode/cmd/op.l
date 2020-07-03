@@ -135,6 +135,9 @@
     
     ((ksd~p) cmd-make-nil)
     
+    ((ksd~q) cmd-ptr-ls-first)
+    ((ksd~e) cmd-ptr-ls-last)
+    
     #######################
     # Atomic Ops = Right Mid
     # F G | H J K L
@@ -148,42 +151,7 @@
     ((ksd~j) cmd-conv)
     ((ksd~k) cmd-chop/split)
     ((ksd~l) cmd-glue)    
-    
-    #{
-    
-      For args: get from registers
-      Ex: For space + split (plain), 
-          mov any to reg, do cmd
-      So split-sp will mov sp to reg, do cm,d rest reg
-            
-      Workflows
-      * Pack Chars into Back Str:
-        * Make chars, pack char to back str
-      * Edit Words:
-        * Mov ptr, chop till sp/reg/ptr
-          * Replace with list
-          * Reg could be similar to jump nearest...
-          * Need not split exactly, just near
-          * After split, mov to end of list
-        * Pack list(s) recursively until ptr
-      * Notes
-        * Default is "destructive"
-        * Technically, undo will save old str
-        
-    }#
-    
-    # cmd-glue-sp (list of any -> str)
-    #   (glue NIL (...)) = (pack ... ...)
-    
-    # cmd-pack (any ... -> str)        
-    
-    # cmd-chop (str -> list of str)
-    #   (chop any) = (
-        
-    # cmd-split-sp (list of any -> list)    
-    # cmd-reverse/flip (list -> list)
-    # cmd-rot (list -> list)    
-          
+              
     ######################
     # REPL = Right Bottom:
     # Str/Code <-> Any
@@ -205,11 +173,16 @@
     #####################
     # Layout = Ctrl Chars
     # B | N M , . /
+    
+    # Make B redo?
 
+    ((ksd~n) cmd-ptr-ln-first)
+    ((ksd~m) cmd-ptr-ln-last)
+    
     ((ksd~Shift-R ksd~BackSpace)  cmd-del-line)
     ((ksd~Shift-R ksd~Return)     cmd-make-line)
     ((ksd~Shift-L ksd~Tab)        cmd-alt-lay)     
-    
+        
     #######################
     # CUA Ops = Left Bottom
     
@@ -244,9 +217,6 @@
     ((ksd~s) cmd-ptr-down)
     ((ksd~d) cmd-ptr-right)
     
-    ((ksd~q) cmd-ptr-ln-first)
-    ((ksd~e) cmd-ptr-ln-last)
-
     ##################################
     # Camera Translation - Right Side?
     # These should be used sparingly

@@ -62,11 +62,15 @@
 
       
 (de cmd-ptr-ln-first (Ks)
-  (pt-ln-fir))
+  T)
 
 
 (de cmd-ptr-ln-last (Ks)
-  (pt-ln-las))
+  T)
+      
+      
+(de cmd-ptr-ls-first (Ks) 
+  (ptr-ls-first))
       
 
 ###########

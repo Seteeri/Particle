@@ -1,3 +1,38 @@
+#{
+
+  For args: get from registers
+  Ex: For space + split (plain), 
+      mov any to reg, do cmd
+  So split-sp will mov sp to reg, do cm,d rest reg
+        
+  Workflows
+  * Pack Chars into Back Str:
+    * Make chars, pack char to back str
+  * Edit Words:
+    * Mov ptr, chop till sp/reg/ptr
+      * Replace with list
+      * Reg could be similar to jump nearest...
+      * Need not split exactly, just near
+      * After split, mov to end of list
+    * Pack list(s) recursively until ptr
+  * Notes
+    * Default is "destructive"
+    * Technically, undo will save old str
+    
+  cmd-glue-sp (list of any -> str)
+    (glue NIL (...)) = (pack ... ...)
+
+  cmd-pack (any ... -> str)        
+
+  cmd-chop (str -> list of str)
+    (chop any) = ()
+    
+  cmd-split-sp (list of any -> list)    
+  cmd-reverse/flip (list -> list)
+  cmd-rot (list -> list)    
+  
+}#
+
 ############
 # CHOP/SPLIT
 
@@ -20,24 +55,10 @@
 
   
 (de glue-atom-b ()
-  # Pt to start of list  
-      
-  (let (Pt-Pair (let (P (prop *ptr 'lns)
-                      L NIL)
-                  (loop (setq L (pop P))
-                    (NIL (get L 'line 'p)))
-                  (push P L) # Return it
-                  L)
-        Pair (get Pt-Pair 'any)
-        Back (find-back-any> *ptr Pair T)
-        Pt-Back (lup-pt Back)
-        Reg (if (sym? Back)
-                'b
-                (if (= (car Back) Pair) 'a 'b)))
-    
-    (pt> *ptr Pair Reg)
-    
-    (glue-pair)))
+  # Pt to start of list, then glue
+  
+  (ptr-ls-first T)
+  (glue-pair))
 
 
 (de glue-pair ()
@@ -64,7 +85,7 @@
     
     (del> Pt-Pair T T)
     (put *ptr 'pair NIL)
-    (put *ptr 'ref NIL)    
+    (put *ptr 'ref NIL) 
     
     (if (= Reg-Pair 'a)
         
