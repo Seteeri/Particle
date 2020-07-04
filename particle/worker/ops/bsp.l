@@ -124,17 +124,21 @@
         Back (find-back-any> *ptr Pair T)
         Pt-Back (lup-pt Back)
         Cdr (cdr Pair)
-        Atom-Cdr (atom Cdr)
-        Pt-Cdr (if Atom-Cdr
-                   (get Pt-Pair 'b)
-                   (lup-pt Cdr))
-        Reg-Pair (if (= (car Back) Pair) 'a 'b))
+        Pt-Cdr (get Pt-Pair 'b)
+        Reg-Pair (if (== (car Back) Pair) 'a 'b))
 
-    (when (get Pt-Pair 'line)
-      (mov-line Pt-Pair Pt-Cdr)
-      (del-line Pt-Pair)
-      (lns> *ptr)
-      (lns> *ptr))
+    #(println 'bsp-b-atom
+    #  Pair Pt-Pair Back Pt-Back Reg-Pair)
+    #(println *start)
+        
+    (if (get Pt-Pair 'line)
+        (prog
+          (mov-line Pt-Pair Pt-Cdr)
+          (del-line Pt-Pair)
+          (lns> *ptr))
+        (when (get Pt-Cdr 'line)
+          (put Pt-Cdr 'line NIL)))
+          
     (set-ln-n> *ptr Pt-Cdr)
     
     (del> Pt-Pair T NIL)

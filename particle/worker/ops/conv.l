@@ -40,6 +40,10 @@
 
   # Delete entire list
   # Con new list
+  
+  # Refactor gen-point
+  # * Create lines every X atoms
+  # * Reuse particles
 
   (let (Pair (if (get *ptr 'pair) @ (get *ptr 'ref))
         Pt-Pair (lup-pt Pair)

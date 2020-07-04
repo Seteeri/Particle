@@ -17,7 +17,7 @@ TODO
   
   REPL:
   
-  * Rearchitect
+  * Rearchitect [Done]
     * Gen/Lay
       * Reuse existing particles
         * Pass flag to gen -> idx
@@ -29,30 +29,44 @@ TODO
       * Add tests pair alt-reg [Done]
       * Add tests pair del [Done]
       * Add tests pair bsp [Done]
+              
+  * Refactor/Fix
+    * Fix bugs
+    * Refactor gen-point
+    * Fix del-pair on sym value
+    
+  * Implement X-Pair
+    
+  * Refactor/Fix
+    * Handle symbol/exp
+      * Add cmd-make-pair-x; do before exp
+    * Limit lay line length
     * Line tests
-      * Add nl tests [Later]
+      * Add nl tests
         * mak-nl
           * On car, do nothing
           * Poss, make cmd same as make-list
         * del-nl
-    * Handle symbol/exp
-      * Add cmd-make-pair-x; do before exp
-    * Mode change
-      * for ascii
-        * single tap = str
-        * double tap = cmd/mode change
-      * control chars
-        * tab
-          * autocompletion would be tab/mode change + key
-        * newline
-      * mod keys
-        * double shift
-    * Fix del-pair on sym value
+    * Poss
+      * Use prog1
+      * Improve del>
+        * Fix double free
   
-  * Refactor?
-    * Use prog1
-    * Improve del>
-      * Fix double free
+  * Lists can be rotated to simulate scrolling
+    * Requires redrawing entire list...
+    * Frustrum culling
+
+  * Fonts
+    * Camera dist + Vertex scale
+    * If > native res: msdf
+      Else: downscale
+    * For now, disregard camera zoom
+      * Requires updating metrics each frame for all used glyphs
+    
+  * Camera Tracking
+    * Create cmds to center view, fit view etc
+    * Mov to item - def is align to left side of screen
+    * Either zoom out or move newline  
   
   * Root Lists (side/main) [Wknd]
     LEFT:
@@ -86,15 +100,7 @@ TODO
         * use to manage viewports
     BOTTOM
       * Status
-    
-  * Lists can be rotated to simulate scrolling
-    * Requires redrawing entire list...
-    * Frustrum culling
-  * Make camera mov
-    * Create cmds to center view, fit view etc
-    * Mov to item - def is align to left side of screen
-    * Either zoom out or move newline
-  
+      
   * Modes/ptrs
     * Str (Default)
       * Produces single char strings
