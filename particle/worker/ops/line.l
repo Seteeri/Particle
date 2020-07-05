@@ -49,20 +49,11 @@
         
 
 (de del-line (Po)
-
-  (let? Nl (get Po 'line)
-
-    (when (get Nl 'p)
-      (put @ 'line 'n (get Nl 'n)))
-
-    (when (get Nl 'n)
-      (put @ 'line 'p (get Nl 'p)))
-      
-    (put Po 'line)))
+  (pop-line Po)
+  (put Po 'line NIL))
 
     
 (de pop-line (Po)
-  # Similar to del, except don't remove +Line
   
   (let? Nl (get Po 'line)
 

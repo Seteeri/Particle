@@ -109,13 +109,16 @@
   
 (de cmd-print-ptr ()
 
+  (prinl "START:")
+  (println *start)
+
   (with *ptr
         
     (let Ref (if (: pair)
                  (: ref)
                  (lup-pt (: ref)))
-    
-      (prinl "CURRENT REFERENCE:")
+        
+      (prinl "PTR:")
       (prin "Ref: ") (println Ref)
     
       (prin "dat: ")  (println (get Ref 'any))

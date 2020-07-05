@@ -137,7 +137,8 @@
           (del-line Pt-Pair)
           (lns> *ptr))
         (when (get Pt-Cdr 'line)
-          (put Pt-Cdr 'line NIL)))
+          (del-line Pt-Cdr)
+          (lns> *ptr)))
           
     (set-ln-n> *ptr Pt-Cdr)
     
