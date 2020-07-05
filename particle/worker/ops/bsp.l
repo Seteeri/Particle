@@ -53,35 +53,33 @@
 
 (de bsp-pt ()
   
-  (cond
-  
-    ((a-atom?> *ptr) (bsp-a-atom))
-      
-    ((b-atom?> *ptr) (bsp-b-atom))
+  (let Pt-Pair (cond
+                  ((a-atom?> *ptr) (bsp-a-atom))
+                  ((b-atom?> *ptr) (bsp-b-atom))
+                  ((a-pair?> *ptr) (bsp-a-pair))
+                  ((b-pair?> *ptr) (bsp-b-pair)))
     
-    ((a-pair?> *ptr) (bsp-a-pair))
-      
-    ((b-pair?> *ptr) (bsp-b-pair))))
+    # Mov to cmd/caller?
+    
+    (lay-*start)
+    (mov-⇲ (c-lns> *ptr))
+    
+    (top> Pt-Pair)
+    (draw> *ptr)))
 
      
 (de bsp-a-atom ()
 
   (println 'bsp-a-atom)
 
-  # Same as del-pair but removed unused cond blocks
-
   (let (Pair (get *ptr 'pair)
         Pt-Pair (lup-pt Pair)
         Back (find-back-any> *ptr Pair T)
         Pt-Back (lup-pt Back)
-        Car (car Pair)
-        Pt-Car (get Pt-Pair 'a)
-        Reg-Pair (if (== (car Back) Pair) 'a 'b))
-    
-    #(prin "  ") (println Pair Pt-Pair Back Pt-Back #Reg-Pair)
-    
-    # Bugs when car of Y pair
-    
+        Reg-Pair (if (== (car Back) Pair) 'a 'b)
+        Tgt (car Pair)
+        Pt-Tgt (get Pt-Pair 'a))
+        
     (when (get Pt-Pair 'line)
       (del-line Pt-Pair)
       (when (= Reg-Pair 'b)
@@ -89,7 +87,7 @@
           (put @ 'n NIL)))
       (lns> *ptr)
       (lns> *ptr))
-    (set-ln-n> *ptr Pt-Car)
+    (set-ln-n> *ptr Pt-Tgt)
         
     (del> Pt-Pair NIL T)
     (put Pt-Pair 'a NIL)
@@ -100,68 +98,55 @@
     (if (= Reg-Pair 'a)
     
         (prog
-          (set> Pt-Back Car Pt-Car)
-          (if (get Pt-Car 'line)
+          (set> Pt-Back Tgt Pt-Tgt)
+          (if (get Pt-Tgt 'line)
               (put @ 'p NIL)
-              (put Pt-Car 'line
+              (put Pt-Tgt 'line
                 (new '(+Line))))
-          (pt> *ptr Back 'a Pt-Car))
+          (pt> *ptr Back 'a Pt-Tgt))
     
         (prog
           # If Back is X pair and line, set p
           # If Back is Y pair, cdr must have line
           (when (get Pt-Back 'line)
             (if (lay-x?> Pt-Back)
-                (when (get Pt-Car 'line)
+                (when (get Pt-Tgt 'line)
                   (put @ 'p Pt-Back)
-                  (put Pt-Back 'line 'n Pt-Car))
+                  (put Pt-Back 'line 'n Pt-Tgt))
                 (prog
-                  (if (get Pt-Car 'line)
+                  (if (get Pt-Tgt 'line)
                       (put @ 'p Pt-Back)
-                      (put Pt-Car 'line 
+                      (put Pt-Tgt 'line 
                         (new '(+Line) Pt-Back)))
-                  (put Pt-Back 'line 'n Pt-Car))))
-          (con> Pt-Back Car Pt-Car)
-          (pt> *ptr Back 'b Pt-Car)))
-                 
+                  (put Pt-Back 'line 'n Pt-Tgt))))
+          (con> Pt-Back Tgt Pt-Tgt)
+          (pt> *ptr Back 'b Pt-Tgt)))
           
-    # Update ptr pair
-        
-    (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
-    
-    (top> Pt-Car)
-    (draw> *ptr)))
+      Pt-Pair))
      
       
 (de bsp-b-atom ()
 
   (println 'bsp-b-atom)
 
-  # Same as del-pair but removed unused cond blocks
-
   (let (Pair (get *ptr 'pair)
         Pt-Pair (lup-pt Pair)
         Back (find-back-any> *ptr Pair T)
         Pt-Back (lup-pt Back)
-        Cdr (cdr Pair)
-        Pt-Cdr (get Pt-Pair 'b)
-        Reg-Pair (if (== (car Back) Pair) 'a 'b))
+        Reg-Pair (if (== (car Back) Pair) 'a 'b)
+        Tgt (cdr Pair)
+        Pt-Tgt (get Pt-Pair 'b))
 
-    #(println 'bsp-b-atom
-    #  Pair Pt-Pair Back Pt-Back Reg-Pair)
-    #(println *start)
-        
     (if (get Pt-Pair 'line)
         (prog
-          (mov-line Pt-Pair Pt-Cdr)
+          (mov-line Pt-Pair Pt-Tgt)
           (del-line Pt-Pair)
           (lns> *ptr))
-        (when (get Pt-Cdr 'line)
-          (del-line Pt-Cdr)
+        (when (get Pt-Tgt 'line)
+          (del-line Pt-Tgt)
           (lns> *ptr)))
           
-    (set-ln-n> *ptr Pt-Cdr)
+    (set-ln-n> *ptr Pt-Tgt)
     
     (del> Pt-Pair T NIL)
     (put Pt-Pair 'b NIL)
@@ -171,36 +156,31 @@
     (if (= Reg-Pair 'a)
     
         (prog
-          (set> Pt-Back Cdr Pt-Cdr)
-          (if (get Pt-Cdr 'line)
+          (set> Pt-Back Tgt Pt-Tgt)
+          (if (get Pt-Tgt 'line)
               (put @ 'p NIL)
-              (put Pt-Cdr 'line
+              (put Pt-Tgt 'line
                 (new '(+Line))))
-          (pt> *ptr Back 'a Pt-Cdr))
+          (pt> *ptr Back 'a Pt-Tgt))
         
         (prog
           # If Back is X pair and line, set p
           # If Back is Y pair, cdr must have line
           (when (get Pt-Back 'line)
             (if (lay-x?> Pt-Back)
-                (when (get Pt-Cdr 'line)
+                (when (get Pt-Tgt 'line)
                   (put @ 'p Pt-Back)
-                  (put Pt-Back 'line 'n Pt-Cdr))
+                  (put Pt-Back 'line 'n Pt-Tgt))
                 (prog
-                  (if (get Pt-Cdr 'line)
+                  (if (get Pt-Tgt 'line)
                       (put @ 'p Pt-Back)
-                      (put Pt-Cdr 'line 
+                      (put Pt-Tgt 'line 
                         (new '(+Line) Pt-Back)))
-                  (put Pt-Back 'line 'n Pt-Cdr))))
-          (con> Pt-Back Cdr Pt-Cdr)
-          (pt> *ptr Back 'b Pt-Cdr)))
+                  (put Pt-Back 'line 'n Pt-Tgt))))
+          (con> Pt-Back Tgt Pt-Tgt)
+          (pt> *ptr Back 'b Pt-Tgt)))
           
-       
-    (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
-    
-    (top> Pt-Cdr)
-    (draw> *ptr)))
+      Pt-Pair))
 
     
 (de bsp-a-pair ()
@@ -250,12 +230,8 @@
                   (put Pt-Back 'line 'n Pt-Pair))))
           (con> Pt-Back Pair Pt-Pair)
           (put *ptr 'reg 'b)))
-            
-    (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
-    
-    (top> Pt-Pair)
-    (draw> *ptr)))    
+          
+      Pt-Pair))
     
     
 (de bsp-b-pair ()
@@ -315,10 +291,6 @@
                         (new '(+Line) Pt-Back)))
                   (put Pt-Back 'line 'n Pt-Pair))))
           (con> Pt-Back Pair Pt-Pair)
-          (put *ptr 'reg 'b))) 
-    
-    (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
-    
-    (top> Pt-Pair)
-    (draw> *ptr)))          
+          (put *ptr 'reg 'b)))
+          
+      Pt-Pair))     
