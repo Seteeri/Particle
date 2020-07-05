@@ -139,8 +139,8 @@
             NIL
             (4214357 0 0)
             T
-            (0 1204102)
-            (NIL NIL) )
+            (0 3612306)
+            (NIL T) )
          ((+Str)
             "c"
             x
@@ -157,10 +157,10 @@
             NIL
             NIL
             T
-            (5418459 0 0)
+            (4214357 -3612306 0)
             T
             (0 0)
-            (NIL NIL) ) ) ) )
+            (T NIL) ) ) ) )
 
 (de bsp-atom-x-y-b NIL
    (cmd-ptr-right)

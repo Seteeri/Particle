@@ -102,10 +102,10 @@
         I (if I @ (get-dfs-struct))
         O (ver-dfs-struct I)
         F (full O))
-    (if F
-        (prinl "# Pass")
-        (prog
-          (prin "# Fail: ") (println O)))
+    (out NIL
+      (unless F
+        (prinl "  Fail: ")
+        (prin "  ") (println (get-dfs-struct))))
     (pp (any Nm))
     (prinl)
     F))
@@ -130,7 +130,9 @@
         (out NIL (prinl Path-Out))
         (out Path-Out
           (for Fn Fns
-            (out NIL (prin "  " (cadr Fn) " -> "))
+            (out NIL (prinl (cadr Fn)))
             (let F ((val (cadr Fn)))
-              (del-start-val Pt-Sta T)
-              (out NIL (print F) (prinl)))))))))
+              (unless F
+                (out NIL (prin "  " (cadr Fn) " -> "))
+                (out NIL (print F) (prinl)))
+              (del-start-val Pt-Sta T))))))))
