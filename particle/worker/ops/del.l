@@ -108,7 +108,7 @@
         Pt-Cdr (if Atom-Cdr
                    (get Pt-Pair 'b)
                    (lup-pt Cdr))
-        Reg-Pair (if (= (car Back) Pair) 'a 'b))
+        Reg-Pair (if (== (car Back) Pair) 'a 'b))
 
     (when (get Pt-Pair 'line)
       (if (= Reg-Pair 'b)

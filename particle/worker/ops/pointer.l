@@ -339,7 +339,7 @@
         Pt-Back (lup-pt Back)
         Reg (if (sym? Back)
                 'b
-                (if (= (car Back) Pair) 'a 'b)))
+                (if (== (car Back) Pair) 'a 'b)))
     
     (pt> *ptr Pair Reg)
     
@@ -379,7 +379,7 @@
               Pt-Back (lup-pt Back)
               Reg (if (sym? Back)
                       'b
-                      (if (= (car Back) Pair) 'a 'b)))
+                      (if (== (car Back) Pair) 'a 'b)))
           
           (pt> *ptr Pair Reg)
           

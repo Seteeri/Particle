@@ -51,7 +51,7 @@
         Pt-Back (lup-pt Back)
         Reg-Pair (if (sym? Back)
                      'b
-                     (if (= (car Back) Pair) 'a 'b))
+                     (if (== (car Back) Pair) 'a 'b))
         Lst (chop (Reg Pair))
         Pt-Lst (gen-point Lst 'x NIL T))
     
@@ -122,7 +122,7 @@
         Pt-Back (lup-pt Back)
         Reg-Pair (if (sym? Back)
                      'b
-                     (if (= (car Back) Pair) 'a 'b))
+                     (if (== (car Back) Pair) 'a 'b))
         Lst (list (glue NIL Pair))
         Pt-Lst (gen-point Lst 'x NIL T))
     

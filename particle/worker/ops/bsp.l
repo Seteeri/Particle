@@ -77,7 +77,7 @@
         Pt-Car (if Atom-Car
                   (get Pt-Pair 'a)
                   (lup-pt Car))
-        Reg-Pair (if (= (car Back) Pair) 'a 'b))
+        Reg-Pair (if (== (car Back) Pair) 'a 'b))
         
     (when (get Pt-Pair 'line)
       (del-line Pt-Pair)
