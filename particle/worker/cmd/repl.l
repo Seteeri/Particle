@@ -84,8 +84,8 @@
     (when (has-str?> Ref)  
   
       (let (End Ref
-            (Sta Lst) (build-str End)
-            Str (pack Lst)
+            (Sta Ls) (build-str End)
+            Str (pack Ls)
             Out (eval (car (str Str))))
         
         (repl-list-str Sta End Str T)        

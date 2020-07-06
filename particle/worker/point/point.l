@@ -297,16 +297,16 @@
     #(put (caar *list-lay) 'line 'e This)
     #(put *line-lay 'line 'e This)
     
-    (let? Lst-In (pop '*list-lay)
+    (let? Ls-In (pop '*list-lay)
         
-      (let (Lst-Out (car *list-lay)
-            Dims-I (cadr Lst-In)
-            Dims-O (cadr Lst-Out))
+      (let (Ls-Out (car *list-lay)
+            Dims-I (cadr Ls-In)
+            Dims-O (cadr Ls-Out))
       
-        (when (car Lst-Out)
+        (when (car Ls-Out)
           (upd-dims-lay Dims-O Dims-I))
       
-        (upd-dims> (car Lst-In) Dims-I)))))
+        (upd-dims> (car Ls-In) Dims-I)))))
 
     
 (dm upd-dims> (Cur)

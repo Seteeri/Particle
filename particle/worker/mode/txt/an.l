@@ -251,17 +251,17 @@
 (def '*binds-latin-1-OLD
 
   ## Number
-  '(~(let List NIL
+  '(~(let Ls NIL
       (for (K ksd~d0 (<= K ksd~d9) (inc K))
         # make this alt
-        (push 'List (list (list 'ksd~Control-L K) 'cmd-make-num))
-        (push 'List (list (list 'ksd~Control-R K) 'cmd-make-num))
-      List))
+        (push 'Ls (list (list 'ksd~Control-L K) 'cmd-make-num))
+        (push 'Ls (list (list 'ksd~Control-R K) 'cmd-make-num))
+      Ls))
     ## Char Strings
-    ~(let List NIL
+    ~(let Ls NIL
       (for (K 33 (<= K 255) (inc K))
-        (push 'List (list (list K)             'cmd-make-char))
-        (push 'List (list (list 'ksd~Shift-L K) 'cmd-make-char))
-        (push 'List (list (list 'ksd~Shift-R K) 'cmd-make-char)))
-      List)))      
+        (push 'Ls (list (list K)             'cmd-make-char))
+        (push 'Ls (list (list 'ksd~Shift-L K) 'cmd-make-char))
+        (push 'Ls (list (list 'ksd~Shift-R K) 'cmd-make-char)))
+      Ls)))      
 }#

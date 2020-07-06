@@ -252,7 +252,7 @@ Naming Conventions:
         Length (native "@" "malloc" 'N (* Count 4))
         Ptr-Str String
         Ptr-Len Length
-        Lst-Free ())
+        Ls-Free ())
 
     (for Path Paths
    
@@ -276,7 +276,7 @@ Naming Conventions:
              (struct Ptr-Len 'N (cons Sz-f 4))
              
              # Push ptrs to lst-free
-             (push 'Lst-Free Buf)
+             (push 'Ls-Free Buf)
 
              #(prinl "shader-source-2 | fread " Path " " Sz-f " bytes")
              (inc 'Ptr-Str 8)
@@ -285,7 +285,7 @@ Naming Conventions:
      # TODO: Fix using Length
      (native "libGLESv2.so.2" "glShaderSource" NIL Shader Count String Length)
       
-    (for Ptr Lst-Free (native "@" "free" NIL Ptr))
+    (for Ptr Ls-Free (native "@" "free" NIL Ptr))
     (native "@" "free" NIL String)
     (native "@" "free" NIL Length)))
 

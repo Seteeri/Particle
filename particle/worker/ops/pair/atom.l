@@ -42,8 +42,8 @@
     (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
     (del> Pt-Tgt)    
     
-    (let (List (list Tgt)
-          Pt-List (gen-point List 'x NIL T)
+    (let (Ls (list Tgt)
+          Pt-Ls (gen-point Ls 'x NIL T)
           Ln (c-lns> *ptr)
           Ln-N (get Ln 'line 'n)
           Cdr (cdr Pair)
@@ -52,7 +52,7 @@
     
       (set-lay> Pt-Pair 'y)    
     
-      (set> Pt-Pair List Pt-List)
+      (set> Pt-Pair Ls Pt-Ls)
             
       (if (get Pt-Pair 'line)
           (put @ 'n Pt-Cdr)      
@@ -62,16 +62,16 @@
           (put @ 'p Pt-Pair)
           (ins-line-aft Pt-Pair Pt-Cdr))
           
-      (put Pt-List 'line (new '(+Line)))
+      (put Pt-Ls 'line (new '(+Line)))
       
-      (pt> *ptr List 'a)
+      (pt> *ptr Ls 'a)
       
       (lay-*start)
       (mov-⇲ (c-lns> *ptr))
       
       (when Push-Pair (lns> *ptr Pt-Pair))
-      (lns> *ptr Pt-List)
-      (top> Pt-List)
+      (lns> *ptr Pt-Ls)
+      (top> Pt-Ls)
       (draw> *ptr))))    
 
 
@@ -123,26 +123,26 @@
     (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
     (del> Pt-Tgt)
     
-    (let (List (list Tgt)
-          Pt-List (gen-point List 'x NIL T)
-          Pt-Car (get Pt-List 'a)
-          Pt-Cdr (get Pt-List 'b)
+    (let (Ls (list Tgt)
+          Pt-Ls (gen-point Ls 'x NIL T)
+          Pt-Car (get Pt-Ls 'a)
+          Pt-Cdr (get Pt-Ls 'b)
           Ln (c-lns> *ptr))
     
-      (set-lay> Pt-List 'y)
+      (set-lay> Pt-Ls 'y)
     
-      (set> Pt-Pair List)
+      (set> Pt-Pair Ls)
 
-      (put Pt-List 'line (new '(+Line)))
+      (put Pt-Ls 'line (new '(+Line)))
       
-      (pt> *ptr List 'a)
+      (pt> *ptr Ls 'a)
 
       (lay-*start)
-      (mov-⇲ Pt-List)
+      (mov-⇲ Pt-Ls)
 
       (lns> *ptr)
-      (lns> *ptr Pt-List)
-      (top> Pt-List)
+      (lns> *ptr Pt-Ls)
+      (top> Pt-Ls)
       (draw> *ptr))))   
       
       
@@ -195,35 +195,35 @@
     (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
     (del> Pt-Tgt)
     
-    (let (List (list Tgt)
-          Pt-List (gen-point List 'x NIL T)
-          Pt-Car (get Pt-List 'a)
-          Pt-Cdr (get Pt-List 'b)
+    (let (Ls (list Tgt)
+          Pt-Ls (gen-point Ls 'x NIL T)
+          Pt-Car (get Pt-Ls 'a)
+          Pt-Cdr (get Pt-Ls 'b)
           Ln (c-lns> *ptr))
         
-      (set-lay> Pt-List 'y)    
+      (set-lay> Pt-Ls 'y)    
     
-      (con> Pt-Pair List)
+      (con> Pt-Pair Ls)
       
-      (if (get Pt-List 'line)
+      (if (get Pt-Ls 'line)
           (put @ 'n Pt-Cdr)
           (prog
-            (ins-line-aft Ln Pt-List)
-            (put Pt-List 'line 'n Pt-Cdr)))
+            (ins-line-aft Ln Pt-Ls)
+            (put Pt-Ls 'line 'n Pt-Cdr)))
 
       (when (get Pt-Pair 'exp) # handle sym
         (put Pt-Pair 'line 'n NIL)
-        (put Pt-List 'line 'p NIL))
+        (put Pt-Ls 'line 'p NIL))
                 
-      (put Pt-Cdr 'line (new '(+Line) Pt-List))
+      (put Pt-Cdr 'line (new '(+Line) Pt-Ls))
       
       (put Pt-Car 'line (new '(+Line)))
             
-      (pt> *ptr List 'b)
+      (pt> *ptr Ls 'b)
       
       (lay-*start)
-      (mov-⇲ Pt-List)
+      (mov-⇲ Pt-Ls)
             
-      (lns> *ptr Pt-List)
-      (top> Pt-List)
+      (lns> *ptr Pt-Ls)
+      (top> Pt-Ls)
       (draw> *ptr))))            

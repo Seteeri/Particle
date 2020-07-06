@@ -29,9 +29,10 @@
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
       # Insert on Y pair
+      # - More likely user will insert rather than replace
       # Replace on X pair
       (if (lay-y?> (lup-pt (get *ptr 'pair)))
-          # Must add tests for this:
+          # Add tests:
           (ins-a-atom Str)
           (repl-atom Str 'a)))
       

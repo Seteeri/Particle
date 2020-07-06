@@ -30,16 +30,16 @@ TODO
       * Add tests pair del [Done]
       * Add tests pair bsp [Done]
               
-  * Refactor/Fix
-    * Fix bugs
+  * Refactor/Fix [Tues]
+    * Refactor find-back-any
     * Refactor gen-point
-    * Fix del-pair on sym value
-    
-  * Implement X-Pair
-    
-  * Refactor/Fix
     * Handle symbol/exp
-      * Add cmd-make-pair-x; do before exp
+      * Fix del-pair on sym value
+    
+  * Implement X-Pair [Wed?]
+    
+  * Refactor/Fix [Thurs]
+    * Add cmd-make-pair-x; do before exp
     * Limit lay line length
     * Line tests
       * Add nl tests
@@ -68,7 +68,7 @@ TODO
     * Mov to item - def is align to left side of screen
     * Either zoom out or move newline  
   
-  * Root Lists (side/main) [Wknd]
+  * Root Lists (side/main) [Next Week]
     LEFT:
       * Mov from simple to advance, downward
       1. Help

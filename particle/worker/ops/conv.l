@@ -48,8 +48,8 @@
   (let ((C Pt-C Reg-C
          B Pt-B Reg-B
          A Pt-A) (refs-2> *ptr)
-        Lst (chop (Reg B))
-        Pt-Lst (gen-point Lst 'x NIL T))
+        Ls (chop (Reg B))
+        Pt-Ls (gen-point Ls 'x NIL T))
   
     # Move to refs-*> ?
     (when (sym? A)
@@ -58,12 +58,12 @@
     (when (get Pt-B 'line)
     
       (if (= Reg-B 'b)
-          (mov-line Pt-B Pt-Lst)
+          (mov-line Pt-B Pt-Ls)
           (del-line Pt-B))
           
       (lns> *ptr))
       
-    (set-ln-n> *ptr Pt-Lst)
+    (set-ln-n> *ptr Pt-Ls)
     
     (del> Pt-B T T)
     
@@ -72,21 +72,21 @@
     (if (= Reg-B 'a)
         
         (prog
-          (set> Pt-A Lst Pt-Lst)
-          (if (get Pt-Lst 'line)
+          (set> Pt-A Ls Pt-Ls)
+          (if (get Pt-Ls 'line)
               (put @ 'p NIL)
-              (put Pt-Lst 'line
+              (put Pt-Ls 'line
                 (new '(+Line))))
-          (pt> *ptr Lst 'a))
+          (pt> *ptr Ls 'a))
       
         (prog
-          (con> Pt-A Lst Pt-Lst)
-          (println Lst)
-          (pt> *ptr Lst 'b)))
+          (con> Pt-A Ls Pt-Ls)
+          (println Ls)
+          (pt> *ptr Ls 'b)))
 
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
-    (top> Pt-Lst)
+    (top> Pt-Ls)
     (draw> *ptr)))
     
     
@@ -126,8 +126,8 @@
 
   (let ((C Pt-C Reg-C
          B Pt-B) (refs-1> *ptr)
-        Lst (list (glue NIL C))
-        Pt-Lst (gen-point Lst 'x NIL T))
+        Ls (list (glue NIL C))
+        Pt-Ls (gen-point Ls 'x NIL T))
   
     # Move to refs-*> ?
     (when (sym? B)
@@ -135,10 +135,10 @@
   
     (when (get Pt-C 'line)
       (if (= Reg-C 'b)
-          (mov-line Pt-C Pt-Lst)
+          (mov-line Pt-C Pt-Ls)
           (del-line Pt-C))
       (lns> *ptr))
-    (set-ln-n> *ptr Pt-Lst)
+    (set-ln-n> *ptr Pt-Ls)
     
     (del> Pt-C T T)
     
@@ -147,20 +147,20 @@
     (if (= Reg-C 'a)
         
         (prog
-          (set> Pt-B Lst Pt-Lst)
-          (if (get Pt-Lst 'line)
+          (set> Pt-B Ls Pt-Ls)
+          (if (get Pt-Ls 'line)
               (put @ 'p NIL)
-              (put Pt-Lst 'line
+              (put Pt-Ls 'line
                 (new '(+Line))))
-          (pt> *ptr Lst 'a))
+          (pt> *ptr Ls 'a))
       
         (prog
-          (con> Pt-B Lst Pt-Lst)
-          (pt> *ptr Lst 'b)))
+          (con> Pt-B Ls Pt-Ls)
+          (pt> *ptr Ls 'b)))
 
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
-    (top> Pt-Lst)
+    (top> Pt-Ls)
     (draw> *ptr)))
     
 
