@@ -19,29 +19,25 @@
   
 }#
 
-(de make-pair-str (Dat Lay)
-    
-  # Rename Dat -> Sym or Str
-    
+(de make-str (Str Lay)
+  
   (cond
     
     ######
     # ATOM
-    # - atom for atom
-    # - repl atom except NIL, ins like pair
-    # - use swap-reg to set cdr
     
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
-      #(println 'make-pair-str "A ATOM/NIL")
-      # repl str for both x/y
-      # if user wanted a pair they can use other cmd
-      (repl-atom Dat 'a))
+      # Insert on Y pair
+      # Replace on X pair
+      (if (lay-y?> (lup-pt (get *ptr 'pair)))
+          (ins-a-atom Str)
+          (repl-atom Str 'a)))
       
     ((or (b-nil?> *ptr)
          (b-atom?> *ptr))
-      #(println 'make-pair-str "B ATOM/NIL")
-      (ins-b-atom Dat))
+      # To replace b atom, use alt-reg
+      (ins-b-atom Str))
             
     ######
     # PAIR
@@ -49,25 +45,17 @@
     # - ins bef ptr
 
     ((a-pair?> *ptr)
-      #(println 'make-pair-str "A PAIR")
-      
       (if (lay-x?> *ptr)
-          (con-a-pair-x Dat)
-          (con-a-pair-y Dat)))
+          (con-a-pair-x Str)
+          (con-a-pair-y Str)))
       
     ((b-pair?> *ptr)
-      #(println 'make-pair-str "B PAIR")
-      
       (if (lay-x?> *ptr)
-          (con-b-pair-x Dat)
-          (con-b-pair-y Dat)))
+          (con-b-pair-x Str)
+          (con-b-pair-y Str)))))
       
-    (T
-      # root
-      (println 'make-pair-str "T"))))
   
-  
-(de repl-atom (Dat Reg)
+(de repl-atom (Str Reg)
 
   #{
   
@@ -84,18 +72,18 @@
         Pt-Del (if (get *ptr 'pair)
                    (get Pt-Pair (get *ptr 'reg))
                    (lup-pt (get *ptr 'ref)))
-        Pt-Dat (gen-point Dat 'x NIL T))
+        Pt-Str (gen-point Str 'x NIL T))
 
     (when (get Pt-Del 'line)
-      (mov-line Pt-Del Pt-Dat)
+      (mov-line Pt-Del Pt-Str)
       (lns> *ptr))
-    (set-ln-n> *ptr Pt-Dat)
+    (set-ln-n> *ptr Pt-Str)
     
-    (pt> *ptr Pair Reg Pt-Dat)
+    (pt> *ptr Pair Reg Pt-Str)
     
     (if (= Reg 'a)
-        (set> Pt-Pair Dat Pt-Dat T)
-        (con> Pt-Pair Dat Pt-Dat T))
+        (set> Pt-Pair Str Pt-Str T)
+        (con> Pt-Pair Str Pt-Str T))
         
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
@@ -107,14 +95,14 @@
       (sub> *ptr T))))
 
 
-(de ins-b-atom (Dat)
+(de ins-b-atom (Str)
 
   #(println 'ins-b-atom)
   
   (let (Pair (get *ptr 'pair)
         Pt-Pair (lup-pt Pair)
         Pt-Cdr (get Pt-Pair 'b)
-        List (list Dat)
+        List (list Str)
         Pt-List (gen-point List 'x NIL T))
     
     (when (get Pt-Cdr 'line)
@@ -134,30 +122,34 @@
     (draw> *ptr)))
         
         
-(de ins-a-atom (Dat)
+(de ins-a-atom (Str)
 
   #(println 'ins-a-atom)
   
   (let (Pair (get *ptr 'pair)
         Pt-Pair (lup-pt Pair)
-        Pt-Del (get Pt-Pair 'b)
-        List (list Dat)
-        Pt-List (gen-point List 'x NIL T))
+        Pt-Car (get Pt-Pair 'a)
+        List (list Str)
+        Pt-List (gen-point List 'x NIL T)
+        Pt-Cdr (get Pt-List 'b))
     
-    (when (get Pt-Del 'line)
-      (mov-line Pt-Del Pt-List)
-      (lns> *ptr))
+    ~(assert (get Pt-Car 'line))
+    (mov-line Pt-Car Pt-List)
+    (lns> *ptr)
     (set-ln-n> *ptr Pt-List)
     
-    (con> Pt-Pair List Pt-List)
-        
-    (pt> *ptr List 'b))
+    (set> Pt-Pair List Pt-List T)
+    
+    (pt> *ptr List 'b Pt-Cdr)
   
-  (lay-*start)
-  (mov-⇲ (c-lns> *ptr)))          
+    (lay-*start)
+    (mov-⇲ (c-lns> *ptr))
+    
+    (top> Pt-Cdr)
+    (draw> *ptr)))
         
 
-(de con-b-pair-x (Dat)
+(de con-b-pair-x (Str)
   
   #{
     
@@ -209,7 +201,7 @@
                 @
                 (find-back> *ptr (get *ptr 'reg)))
         Pt-Pre (lup-pt Pre)
-        List (list Dat)
+        List (list Str)
         Pt-List (gen-point List 'x NIL T))
     
     # Insert before current object
@@ -231,7 +223,7 @@
     (draw> *ptr)))
 
 
-(de con-b-pair-y (Dat)
+(de con-b-pair-y (Str)
   #{
   
     Case 1: (1 2) -> (1 3 2)
@@ -265,7 +257,7 @@
         Pt-Pair (lup-pt Pair)
         Pre (find-back> *ptr (get *ptr 'reg))
         Pt-Pre (lup-pt Pre)
-        List (list Dat)
+        List (list Str)
         Pt-List (gen-point List 'x NIL T))
     
     (con> Pt-Pre List Pt-List)
@@ -298,7 +290,7 @@
 
     
     
-(de con-a-pair-y (Dat)
+(de con-a-pair-y (Str)
   #{
   
     Case 1: ((1)) -> ((2 1))
@@ -326,7 +318,7 @@
         Pt-Pair (lup-pt Pair)
         Pre (find-back> *ptr (get *ptr 'reg))
         Pt-Pre (lup-pt Pre)
-        List (list Dat)
+        List (list Str)
         Pt-List (gen-point List 'x NIL T))
     
     # handle X parent elsewhere
@@ -353,7 +345,7 @@
     (draw> *ptr)))
 
 
-(de con-a-pair-x (Dat)
+(de con-a-pair-x (Str)
   #{
           
     Case 2: ((1)) -> ((2 1))
@@ -378,7 +370,7 @@
         Pt-Pair (lup-pt Pair)
         Pre (find-back> *ptr (get *ptr 'reg))
         Pt-Pre (lup-pt Pre)
-        List (list Dat)
+        List (list Str)
         Pt-List (gen-point List 'x NIL T))
     
     (set> Pt-Pre List Pt-List)

@@ -18,16 +18,16 @@
     # Make class
     # Put properties
 
-    (make-pair-str Dat Lay)))
+    (make-str Dat Lay)))
 
 
 (de cmd-make-nil (Ks)
   #(prinl-info "cmd-make-nil")
-  (make-pair-str NIL 'x))
+  (make-str NIL 'x))
 
   
 (de cmd-make-num (Ks)
 
   (println "cmd-make-num")
 
-  (make-pair-str (format (char Ks)) 'x))
+  (make-str (format (char Ks)) 'x))

@@ -72,7 +72,7 @@
             "/particle/worker/ops/lay.l"
             "/particle/worker/ops/bsp.l"
             "/particle/worker/ops/del.l"
-            "/particle/worker/ops/sym.l"
+            "/particle/worker/ops/str.l"
             "/particle/worker/ops/line.l"
             "/particle/worker/ops/alt-lay.l"       
             "/particle/worker/ops/alt-reg.l"
@@ -269,7 +269,7 @@
       (col-verts> Pt-D *selb-yellow 1.0)
       (lay-pt-start '⇲ '⇲ T T)
       
-      (when T
+      (when NIL
         (run-tests)
         #(quit "Finished tests")
         )

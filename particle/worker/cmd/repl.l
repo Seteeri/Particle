@@ -30,7 +30,7 @@
             Out (eval (car (str In))))
 
         # Move to next line
-        (make-line (make-pair-str Out 'x))))))
+        (make-line (make-str Out 'x))))))
 
 
 (de cmd-eval ()
@@ -52,7 +52,7 @@
     (pt-sup)
     (pt-nxt)        
         
-    (make-pair-str Out 'x)))
+    (make-str Out 'x)))
   
 
 (de cmd-str ()
@@ -70,7 +70,7 @@
       (let (In (get Ref 'a 'any)
             Out (str In))
                         
-        (make-pair-str (car Out) 'x)))))        
+        (make-str (car Out) 'x)))))        
         
         
 (de cmd-pes ()
@@ -89,4 +89,4 @@
             Out (eval (car (str Str))))
         
         (repl-list-str Sta End Str T)        
-        (make-line (make-pair-str Out 'x))))))
+        (make-line (make-str Out 'x))))))
