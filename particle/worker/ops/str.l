@@ -130,22 +130,25 @@
         Pt-Pair (lup-pt Pair)
         Pt-Car (get Pt-Pair 'a)
         Ls (list Str)
-        Pt-Ls (gen-point Ls 'x NIL T)
-        Pt-Cdr (get Pt-Ls 'b))
+        Pt-Ls (gen-point Ls 'x NIL T))
     
     ~(assert (get Pt-Car 'line))
     (mov-line Pt-Car Pt-Ls)
     (lns> *ptr)
     (set-ln-n> *ptr Pt-Ls)
     
-    (set> Pt-Pair Ls Pt-Ls T)
+    (set> Pt-Pair Ls Pt-Ls)
+    (con> Pt-Ls (get Pt-Car 'any) Pt-Car T)
     
-    (pt> *ptr Ls 'b Pt-Cdr)
+    #(pt> *ptr Ls 'b Pt-Car)
+    (with *ptr
+      (=: pair Ls)
+      (=: reg 'b))
   
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
-    (top> Pt-Cdr)
+    (top> Pt-Car)
     (draw> *ptr)))
         
 

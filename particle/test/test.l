@@ -104,8 +104,8 @@
         F (full O))
     (out NIL
       (unless F
-        (prinl "  Fail: ")
-        (prin "  ") (println (get-dfs-struct))))
+        (prinl Nm)
+        (prin "  ") (pretty (get-dfs-struct))))
     (pp (any Nm))
     (prinl)
     F))

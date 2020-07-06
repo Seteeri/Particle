@@ -83,35 +83,55 @@
    (ver-start
       'alt-reg-y-atom-a
       '(((+Pair)
-            (NIL . "c")
-            y
-            T
-            T
-            NIL
-            (4214357 0 0)
-            T
-            (2408204 2408204)
-            (NIL T) )
-         ((+Nil)
-            NIL
-            x
-            NIL
-            NIL
-            T
-            (5418459 0 0)
-            T
-            (1204102 0)
-            (NIL NIL) )
-         ((+Str)
-            "c"
-            x
-            NIL
-            NIL
-            T
-            (4214357 -2408204 0)
-            T
-            (0 0)
-            (T NIL) ) ) ) )
+      ((NIL . "c"))
+      y
+      NIL
+      T
+      NIL
+      (4214357 0 0)
+      T
+      (3612306 3612306)
+      (NIL T) )
+   ((+Pair)
+      (NIL . "c")
+      x
+      T
+      T
+      NIL
+      (5418459 0 0)
+      T
+      (2408204 1204102)
+      (NIL NIL) )
+   ((+Nil)
+      NIL
+      x
+      NIL
+      NIL
+      T
+      (5418459 -1204102 0)
+      T
+      (1204102 0)
+      NIL )
+   ((+Str)
+      "c"
+      x
+      NIL
+      NIL
+      T
+      (7826663 0 0)
+      T
+      (0 1204102)
+      NIL )
+   ((+Nil)
+      NIL
+      x
+      NIL
+      NIL
+      T
+      (4214357 -3612306 0)
+      T
+      (1204102 0)
+      (T NIL) ) )))
 
 (de alt-reg-y-atom-b NIL
    (cmd-ptr-right)
@@ -123,33 +143,53 @@
    (ver-start
       'alt-reg-y-atom-b
       '(((+Pair)
-            ("c")
-            y
-            T
-            T
-            NIL
-            (4214357 0 0)
-            T
-            (1204102 2408204)
-            (NIL T) )
-         ((+Str)
-            "c"
-            x
-            NIL
-            NIL
-            T
-            (5418459 0 0)
-            T
-            (0 0)
-            (NIL NIL) )
-         ((+Nil)
-            NIL
-            x
-            NIL
-            NIL
-            T
-            (4214357 -2408204 0)
-            T
-            (1204102 0)
-            (T NIL) ) ) ) )
+      (("c"))
+      y
+      NIL
+      T
+      NIL
+      (4214357 0 0)
+      T
+      (3612306 3612306)
+      (NIL T) )
+   ((+Pair)
+      ("c")
+      x
+      T
+      T
+      NIL
+      (5418459 0 0)
+      T
+      (2408204 1204102)
+      (NIL NIL) )
+   ((+Str)
+      "c"
+      x
+      NIL
+      NIL
+      T
+      (5418459 -1204102 0)
+      T
+      (0 0)
+      NIL )
+   ((+Nil)
+      NIL
+      x
+      NIL
+      NIL
+      T
+      (6622561 0 0)
+      T
+      (1204102 1204102)
+      NIL )
+   ((+Nil)
+      NIL
+      x
+      NIL
+      NIL
+      T
+      (4214357 -3612306 0)
+      T
+      (1204102 0)
+      (T NIL) ) )))
 
