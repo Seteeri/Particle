@@ -444,24 +444,22 @@
       (lns> *ptr Ln))
       
     (let Pair (get Ln 'any)    
-    
-      (loop 
-        (setq Pair (cdr Pair))
-        (T (atom (cdr Pair))))
-        
-      (when Pair    
       
-        (let (Pt-Pair (lup-pt Pair)
-              Back (find-back-any> *ptr Pair T)
-              Pt-Back (lup-pt Back)
-              Reg (if (sym? Back)
-                      'b
-                      (if (== (car Back) Pair) 'a 'b)))
+      (loop 
+        (NIL (pair (cdr Pair)))
+        (setq Pair (cdr Pair)))
+      
+      (let (Pt-Pair (lup-pt Pair)
+            Pt-Cdr (get Pt-Pair 'b))
+        
+        (unless (= (get *ptr 'ref) Pt-Cdr)
           
-          (pt> *ptr Pair Reg)
+          (pt> *ptr Pair 'b Pt-Cdr T)
+          
+          (set-ln-n> *ptr Pt-Cdr)
           
           (unless No-Draw
             (lay-*start)
             (mov-⇲ (c-lns> *ptr))
-            (top> Pt-Pair)
+            (top> Pt-Cdr)
             (draw> *ptr)))))))
