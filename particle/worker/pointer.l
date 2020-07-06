@@ -54,6 +54,9 @@
 
 ################
 
+(dm clr> ()
+  (=: pair)
+  (=: ref))
 
 (dm alt-reg> ()
   (=: reg (if (= (: reg) 'a) 'b 'a)))
@@ -382,29 +385,21 @@
             Pt-C  (: ref)
             B     (: pair)
             Pt-B  (lup-pt B)
-            Reg-C (if (== (car B) C) 'a 'b)
-            A     (find-back-any> This B T)
-            Pt-A  (lup-pt A)
-            Reg-B (if (== (car A) B) 'a 'b))
+            Reg-C (if (== (car B) C) 'a 'b))
             
         (list
           C Pt-C Reg-C
-          B Pt-B Reg-B
-          A Pt-A))
+          B Pt-B))
 
       (let (C     (: ref)
             Pt-C  (lup-pt C)
             B     (find-back-any> This C T)
             Pt-B  (lup-pt B)
-            Reg-C (if (== (car B) C) 'a 'b)
-            A     (find-back-any> This B T)
-            Pt-A  (lup-pt A)
-            Reg-B (if (== (car A) B) 'a 'b))
+            Reg-C (if (== (car B) C) 'a 'b))
             
         (list
           C Pt-C Reg-C
-          B Pt-B Reg-B
-          A Pt-A))))           
+          B Pt-B))))
           
 # MOV BELOW WHERE?
 

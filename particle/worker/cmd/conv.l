@@ -8,6 +8,7 @@
   #{
   
     If atom/str, chop
+    
     If list, split with reg
       Ex: make sp, push to reg, do cmd
       Mov start or end?

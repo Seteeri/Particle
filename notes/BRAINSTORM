@@ -4943,6 +4943,33 @@ PTR POSSIBILITIES:
 
 ("Make chars," (p a c k) "char to back str")
   
+###################
+
+[X] ...
+
+[X] ...
+
+[X] ...
+  
+->
+
+[X] ...
+
+[Y] [X] ...
+
+[X] ...
+
+Are lines necessary???
+Why did I originally implement this?
+
+Simpler solution to lines -> use lists
+- newline creates new list
+- entering char will glue to previous char/str
+  - autosplit by spaces
+    - multiple spaces are grouped together
+  - user can explicitly disable this through a flag
+
+
 ============================================
 ============================================
 

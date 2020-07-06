@@ -44,32 +44,35 @@
   # Refactor gen-point
   # * Create lines every X atoms
   # * Reuse particles
-
-  (let (Pair (if (get *ptr 'pair) @ (get *ptr 'ref))
-        Pt-Pair (lup-pt Pair)
-        Back (find-back-any> *ptr Pair T)
-        Pt-Back (lup-pt Back)
-        Reg-Pair (if (sym? Back)
-                     'b
-                     (if (== (car Back) Pair) 'a 'b))
-        Lst (chop (Reg Pair))
+  
+  (let ((C Pt-C Reg-C
+         B Pt-B Reg-B
+         A Pt-A) (refs-2> *ptr)
+        Lst (chop (Reg B))
         Pt-Lst (gen-point Lst 'x NIL T))
+  
+    # Move to refs-*> ?
+    (when (sym? A)
+      (setq Reg-B 'b))
+  
+    (when (get Pt-B 'line)
     
-    (when (get Pt-Pair 'line)
-      (if (= Reg-Pair 'b)
-          (mov-line Pt-Pair Pt-Lst)
-          (del-line Pt-Pair))
+      (if (= Reg-B 'b)
+          (mov-line Pt-B Pt-Lst)
+          (del-line Pt-B))
+          
       (lns> *ptr))
+      
     (set-ln-n> *ptr Pt-Lst)
     
-    (del> Pt-Pair T T)
-    (put *ptr 'pair NIL)
-    (put *ptr 'ref NIL) 
+    (del> Pt-B T T)
     
-    (if (= Reg-Pair 'a)
+    (clr> *ptr)
+    
+    (if (= Reg-B 'a)
         
         (prog
-          (set> Pt-Back Lst Pt-Lst)
+          (set> Pt-A Lst Pt-Lst)
           (if (get Pt-Lst 'line)
               (put @ 'p NIL)
               (put Pt-Lst 'line
@@ -77,7 +80,7 @@
           (pt> *ptr Lst 'a))
       
         (prog
-          (con> Pt-Back Lst Pt-Lst)
+          (con> Pt-A Lst Pt-Lst)
           (println Lst)
           (pt> *ptr Lst 'b)))
 
@@ -86,10 +89,14 @@
     (top> Pt-Lst)
     (draw> *ptr)))
     
+    
+# Refactor gen first
 
-(de split-pair-a ())
+(de split-pair-a ()
+  (println 'split-pair-a))
 
-(de split-pair-b ())
+(de split-pair-b ()
+  (println 'split-pair-b))
   
 
 ######
@@ -102,7 +109,11 @@
 
   
 (de glue-atom-b ()
-  # Pt to start of list, then glue
+
+  # Opts:
+  # * Glue entire list -> user points to pair
+  # * Glue entire line -> user points to start of line
+  # * Glue cur pair to prv -> user points to pair
   
   (ptr-ls-first T)
   (glue-pair))
@@ -113,34 +124,30 @@
   # Delete entire list
   # Con new list
 
-  #(let (Pair (if (get *ptr 'pair) @ (get *ptr 'ref))
-  #      Pt-Pair (lup-pt Pair)))
-  
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        Back (find-back-any> *ptr Pair T)
-        Pt-Back (lup-pt Back)
-        Reg-Pair (if (sym? Back)
-                     'b
-                     (if (== (car Back) Pair) 'a 'b))
-        Lst (list (glue NIL Pair))
+  (let ((C Pt-C Reg-C
+         B Pt-B) (refs-1> *ptr)
+        Lst (list (glue NIL C))
         Pt-Lst (gen-point Lst 'x NIL T))
-    
-    (when (get Pt-Pair 'line)
-      (if (= Reg-Pair 'b)
-          (mov-line Pt-Pair Pt-Lst)
-          (del-line Pt-Pair))
+  
+    # Move to refs-*> ?
+    (when (sym? B)
+      (setq Reg-C 'b))  
+  
+    (when (get Pt-C 'line)
+      (if (= Reg-C 'b)
+          (mov-line Pt-C Pt-Lst)
+          (del-line Pt-C))
       (lns> *ptr))
     (set-ln-n> *ptr Pt-Lst)
     
-    (del> Pt-Pair T T)
-    (put *ptr 'pair NIL)
-    (put *ptr 'ref NIL) 
+    (del> Pt-C T T)
     
-    (if (= Reg-Pair 'a)
+    (clr> *ptr)
+    
+    (if (= Reg-C 'a)
         
         (prog
-          (set> Pt-Back Lst Pt-Lst)
+          (set> Pt-B Lst Pt-Lst)
           (if (get Pt-Lst 'line)
               (put @ 'p NIL)
               (put Pt-Lst 'line
@@ -148,8 +155,7 @@
           (pt> *ptr Lst 'a))
       
         (prog
-          (con> Pt-Back Lst Pt-Lst)
-          (println Lst)
+          (con> Pt-B Lst Pt-Lst)
           (pt> *ptr Lst 'b)))
 
     (lay-*start)

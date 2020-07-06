@@ -119,6 +119,9 @@
     # Pair Ops = Top Right
     # R T | Y U I O P [ ] \
     
+    # cmd-make-pair-y-ln : cur ln or num of following lns
+    # or enter can do this
+    
     ((ksd~bracketleft)  cmd-make-pair-x)
     ((ksd~bracketright) cmd-make-pair-y)    
     ((ksd~backslash)        cmd-alt-reg)
@@ -140,7 +143,7 @@
     
     #######################
     # Atomic Ops = Right Mid
-    # F G | H J K L
+    # F G | H J K L ; '
     
     # Atom <-> List
     # * CHOP/SPLIT GLUE/PACK
