@@ -1016,6 +1016,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de lst-pair-xb-y/ax NIL
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
@@ -1120,6 +1121,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de lst-pair-xb-y/nx NIL
    (cmd-ptr-right)
@@ -1223,6 +1225,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de lst-pair-xb-y/aa NIL
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
@@ -1307,7 +1310,9 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
+#{
 (de lst-pair-xb-y/an NIL
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
@@ -1388,6 +1393,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de lst-pair-xb-y/nn NIL
    (cmd-ptr-right)
@@ -1467,6 +1473,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de lst-pair-xb-y/na NIL
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
@@ -1548,6 +1555,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de lst-pair-ya-x/ax NIL
    (cmd-ptr-right)
@@ -2578,6 +2586,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de lst-pair-ya-y/ax NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -2683,6 +2692,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de lst-pair-ya-y/nx NIL
    (cmd-ptr-right)
@@ -2910,6 +2920,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de lst-pair-ya-y/an NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -2991,6 +3002,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de lst-pair-ya-y/nn NIL
    (cmd-ptr-right)
@@ -3071,6 +3083,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de lst-pair-ya-y/na NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -3154,6 +3167,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+            
 (de lst-pair-yb-x/ax NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -3259,6 +3273,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de lst-pair-yb-x/nx NIL
    (cmd-ptr-right)
@@ -4183,6 +4198,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de lst-pair-yb-y/ax NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -4288,6 +4304,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de lst-pair-yb-y/nx NIL
    (cmd-ptr-right)
@@ -4392,6 +4409,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de lst-pair-yb-y/aa NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -4478,6 +4496,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+
 (de lst-pair-yb-y/an NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -4559,6 +4578,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de lst-pair-yb-y/nn NIL
    (cmd-ptr-right)
@@ -4639,6 +4659,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de lst-pair-yb-y/na NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -4721,4 +4742,4 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
-
+}#

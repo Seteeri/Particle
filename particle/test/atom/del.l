@@ -114,6 +114,7 @@
             (1204102 1204102)
             NIL ) ) ) )
 
+#{
 (de del-y-atom-a NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -152,6 +153,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de del-y-atom-a-nil NIL
    (cmd-ptr-right)
@@ -191,6 +193,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de del-y-atom-b NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -232,6 +235,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de del-y-atom-b-nil NIL
    (cmd-ptr-right)

@@ -122,6 +122,7 @@
             (1204102 1204102)
             NIL ) ) ) )
 
+#{
 (de bsp-atom-x-y-a NIL
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
@@ -161,6 +162,7 @@
             T
             (0 0)
             (T NIL) ) ) ) )
+}#
 
 (de bsp-atom-x-y-b NIL
    (cmd-ptr-right)
@@ -210,6 +212,7 @@
             (0 0)
             (T NIL) ) ) ) )
 
+#{
 (de bsp-atom-y-y-a NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -250,6 +253,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de bsp-atom-y-y-b NIL
    (cmd-ptr-right)

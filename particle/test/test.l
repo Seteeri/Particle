@@ -105,7 +105,8 @@
     (out NIL
       (unless F
         (prinl Nm)
-        (prin "  ") (pretty (get-dfs-struct))))
+        #(prin "  ") (pretty (get-dfs-struct))
+        ))
     (pp (any Nm))
     (prinl)
     F))

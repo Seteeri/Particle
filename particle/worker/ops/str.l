@@ -31,6 +31,7 @@
       # Insert on Y pair
       # Replace on X pair
       (if (lay-y?> (lup-pt (get *ptr 'pair)))
+          # Must add tests for this:
           (ins-a-atom Str)
           (repl-atom Str 'a)))
       

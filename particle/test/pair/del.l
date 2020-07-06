@@ -605,7 +605,8 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
-
+            
+#{
 (de del-pair-ya-y-a NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -647,6 +648,7 @@
             T
             (1204102 0)
             (T NIL) ) ) ) )
+}#
 
 (de del-pair-yb-x-x NIL
    (cmd-ptr-right)
@@ -963,6 +965,7 @@
             (1204102 0)
             (T NIL) ) ) ) )
 
+#{
 (de del-pair-yb-y-a NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -1005,4 +1008,4 @@
             T
             (0 0)
             (T NIL) ) ) ) )
-
+}#

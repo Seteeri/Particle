@@ -159,6 +159,7 @@
             (0 0)
             (T NIL) ) ) ) )
 
+#{
 (de alt-reg-y-pair-a-a NIL
    (cmd-ptr-right)
    (cmd-make-pair-y)
@@ -202,6 +203,7 @@
             T
             (0 0)
             (T NIL) ) ) ) )
+}#
 
 (de alt-reg-y-pair-a-px NIL
    (cmd-ptr-right)
