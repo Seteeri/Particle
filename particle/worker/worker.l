@@ -42,7 +42,8 @@
             "/particle/worker/projview.l"
             "/particle/worker/idx.l"
             "/particle/worker/gen.l"
-            
+            "/particle/worker/pointer.l"
+                        
             "/particle/worker/mode/txt/an.l"
             "/particle/worker/mode/txt/op.l"
 
@@ -66,8 +67,7 @@
             "/particle/worker/point/sym.l"
             "/particle/worker/point/num.l"
             "/particle/worker/point/nil.l"
-            
-            "/particle/worker/ops/pointer.l"                        
+                                
             "/particle/worker/ops/align.l"            
             "/particle/worker/ops/lay.l"
             "/particle/worker/ops/bsp.l"
