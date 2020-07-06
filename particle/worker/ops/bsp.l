@@ -186,15 +186,11 @@
 (de bsp-a-pair ()
   
   (println 'bsp-a-pair)
-  
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        Tgt (find-back-any> *ptr Pair T)
-        Pt-Tgt (lup-pt Tgt)
-        Back (find-back-any> *ptr Tgt T)
-        Pt-Back (lup-pt Back)
-        Reg-Tgt (if (== (car Back) Tgt) 'a 'b))
 
+  (let ((Pair Pt-Pair Reg-Pair
+         Tgt  Pt-Tgt  Reg-Tgt
+         Back Pt-Back)          (refs> *ptr))
+      
     (when (get Pt-Tgt 'line)
       (del-line Pt-Tgt)
       (lns> *ptr)
@@ -238,13 +234,9 @@
 
   #(println 'bsp-b-pair)
 
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        Tgt (find-back-any> *ptr Pair T)
-        Pt-Tgt (lup-pt Tgt)
-        Back (find-back-any> *ptr Tgt T)
-        Pt-Back (lup-pt Back)
-        Reg-Tgt (if (== (car Back) Tgt) 'a 'b))
+  (let ((Pair Pt-Pair Reg-Pair
+         Tgt  Pt-Tgt  Reg-Tgt
+         Back Pt-Back)          (refs> *ptr))
 
     (when (get Pt-Tgt 'line)
       (del-line Pt-Tgt)
