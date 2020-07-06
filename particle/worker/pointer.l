@@ -330,7 +330,7 @@
 (dm sub> (Drw) (forw> This 'a Drw))
 
 
-(dm refs> ()
+(dm refs-2> ()
 
   # Create macro?
   # (with-ptr ... )
@@ -368,6 +368,44 @@
           B Pt-B Reg-B
           A Pt-A))))       
 
+(dm refs-1> ()
+
+  # Create macro?
+  # (with-ptr ... )
+
+  # Return points: ref, back, back,
+  # and regs for each
+  
+  (if (: pair)
+  
+      (let (C     (get (: ref) 'any)
+            Pt-C  (: ref)
+            B     (: pair)
+            Pt-B  (lup-pt B)
+            Reg-C (if (== (car B) C) 'a 'b)
+            A     (find-back-any> This B T)
+            Pt-A  (lup-pt A)
+            Reg-B (if (== (car A) B) 'a 'b))
+            
+        (list
+          C Pt-C Reg-C
+          B Pt-B Reg-B
+          A Pt-A))
+
+      (let (C     (: ref)
+            Pt-C  (lup-pt C)
+            B     (find-back-any> This C T)
+            Pt-B  (lup-pt B)
+            Reg-C (if (== (car B) C) 'a 'b)
+            A     (find-back-any> This B T)
+            Pt-A  (lup-pt A)
+            Reg-B (if (== (car A) B) 'a 'b))
+            
+        (list
+          C Pt-C Reg-C
+          B Pt-B Reg-B
+          A Pt-A))))           
+          
 # MOV BELOW WHERE?
 
 (de ptr-ls-first (No-Draw)

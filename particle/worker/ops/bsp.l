@@ -74,7 +74,7 @@
 
   (let ((C Pt-C Reg-C
          B Pt-B Reg-B
-         A Pt-A) (refs> *ptr))
+         A Pt-A) (refs-2> *ptr))
     
     (if (a-atom?> *ptr)
         (bsp-a-atom Pt-C Pt-B Pt-A (= Reg-B 'b))
@@ -152,7 +152,7 @@
     
   (let ((C Pt-C Reg-C
          B Pt-B Reg-B
-         A Pt-A) (refs> *ptr))
+         A Pt-A) (refs-2> *ptr))
           
     (when (get Pt-B 'line)
     
