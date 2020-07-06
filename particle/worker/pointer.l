@@ -114,10 +114,11 @@
   }#
         
   # Uncolor current ref
-  (let? Po (if (: pair)
-               (get (lup-pt (: pair)) (: reg))
-               (lup-pt (: ref)))
-    (uncol> This Po Drw))
+  (unless (= Po (: ref))
+    (let? Po (if (: pair)
+                (get (lup-pt (: pair)) (: reg))
+                (lup-pt (: ref)))
+      (uncol> This Po Drw)))
           
         
   # Should store Point also?
