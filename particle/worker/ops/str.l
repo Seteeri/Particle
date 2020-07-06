@@ -102,21 +102,21 @@
   (let (Pair (get *ptr 'pair)
         Pt-Pair (lup-pt Pair)
         Pt-Cdr (get Pt-Pair 'b)
-        List (list Str)
-        Pt-List (gen-point List 'x NIL T))
+        Ls (list Str)
+        Pt-Ls (gen-point Ls 'x NIL T))
     
     (when (get Pt-Cdr 'line)
-      (mov-line Pt-Cdr Pt-List)
+      (mov-line Pt-Cdr Pt-Ls)
       (lns> *ptr))
-    (set-ln-n> *ptr Pt-List)
+    (set-ln-n> *ptr Pt-Ls)
   
-    (con> Pt-Pair List)
-    (con> Pt-List (get Pt-Cdr 'any) Pt-Cdr T)
+    (con> Pt-Pair Ls)
+    (con> Pt-Ls (get Pt-Cdr 'any) Pt-Cdr T)
           
     (lay-*start) 
     (mov-⇲ (c-lns> *ptr))
     
-    (pt> *ptr List 'b Pt-Cdr)
+    (pt> *ptr Ls 'b Pt-Cdr)
     
     (top> Pt-Cdr)
     (draw> *ptr)))
@@ -129,18 +129,18 @@
   (let (Pair (get *ptr 'pair)
         Pt-Pair (lup-pt Pair)
         Pt-Car (get Pt-Pair 'a)
-        List (list Str)
-        Pt-List (gen-point List 'x NIL T)
-        Pt-Cdr (get Pt-List 'b))
+        Ls (list Str)
+        Pt-Ls (gen-point Ls 'x NIL T)
+        Pt-Cdr (get Pt-Ls 'b))
     
     ~(assert (get Pt-Car 'line))
-    (mov-line Pt-Car Pt-List)
+    (mov-line Pt-Car Pt-Ls)
     (lns> *ptr)
-    (set-ln-n> *ptr Pt-List)
+    (set-ln-n> *ptr Pt-Ls)
     
-    (set> Pt-Pair List Pt-List T)
+    (set> Pt-Pair Ls Pt-Ls T)
     
-    (pt> *ptr List 'b Pt-Cdr)
+    (pt> *ptr Ls 'b Pt-Cdr)
   
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
@@ -201,18 +201,18 @@
                 @
                 (find-back> *ptr (get *ptr 'reg)))
         Pt-Pre (lup-pt Pre)
-        List (list Str)
-        Pt-List (gen-point List 'x NIL T))
+        Ls (list Str)
+        Pt-Ls (gen-point Ls 'x NIL T))
     
     # Insert before current object
-    (con> Pt-Pre List)
-    (con> Pt-List Pair Pt-Pair T)
+    (con> Pt-Pre Ls)
+    (con> Pt-Ls Pair Pt-Pair T)
     
     # Mov line
     (when (get Pt-Pair 'line)
-      (mov-line Pt-Pair Pt-List)
+      (mov-line Pt-Pair Pt-Ls)
       (lns> *ptr))
-    (set-ln-n> *ptr Pt-List)
+    (set-ln-n> *ptr Pt-Ls)
                 
     # ref does not change
                 
@@ -257,25 +257,25 @@
         Pt-Pair (lup-pt Pair)
         Pre (find-back> *ptr (get *ptr 'reg))
         Pt-Pre (lup-pt Pre)
-        List (list Str)
-        Pt-List (gen-point List 'x NIL T))
+        Ls (list Str)
+        Pt-Ls (gen-point Ls 'x NIL T))
     
-    (con> Pt-Pre List Pt-List)
-    (con> Pt-List Pair Pt-Pair T)
+    (con> Pt-Pre Ls Pt-Ls)
+    (con> Pt-Ls Pair Pt-Pair T)
     
     (if (get Pt-Pre 'line)
-        (put Pt-Pre 'line 'n Pt-List)
+        (put Pt-Pre 'line 'n Pt-Ls)
         (put Pt-Pre 'line (new '(+Line) NIL Pt-Pair)))
         
-    (put Pt-List 'line (new '(+Line) Pt-Pre Pt-Pair))
+    (put Pt-Ls 'line (new '(+Line) Pt-Pre Pt-Pair))
 
     (when (get Pt-Pre 'exp)
       (put Pt-Pre 'line 'n NIL)
-      (put Pt-List 'line 'p NIL))
+      (put Pt-Ls 'line 'p NIL))
     
-    (put Pt-Pair 'line 'p Pt-List)
+    (put Pt-Pair 'line 'p Pt-Ls)
     
-    (pt> *ptr List 'b)
+    (pt> *ptr Ls 'b)
     
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
@@ -283,9 +283,9 @@
     # Pop cur line = Pt-Pair
     # Push new list
     (lns> *ptr)
-    (lns> *ptr Pt-List)
+    (lns> *ptr Pt-Ls)
     
-    (top> Pt-List)
+    (top> Pt-Ls)
     (draw> *ptr)))
 
     
@@ -318,20 +318,20 @@
         Pt-Pair (lup-pt Pair)
         Pre (find-back> *ptr (get *ptr 'reg))
         Pt-Pre (lup-pt Pre)
-        List (list Str)
-        Pt-List (gen-point List 'x NIL T))
+        Ls (list Str)
+        Pt-Ls (gen-point Ls 'x NIL T))
     
     # handle X parent elsewhere
     ~(assert (lay-y?> Pt-Pre))
     
-    (set> Pt-Pre List Pt-List)
-    (con> Pt-List Pair Pt-Pair T)
+    (set> Pt-Pre Ls Pt-Ls)
+    (con> Pt-Ls Pair Pt-Pair T)
         
-    (put Pt-List 'line (new '(+Line) NIL Pt-Pair))
+    (put Pt-Ls 'line (new '(+Line) NIL Pt-Pair))
     
-    (put Pt-Pair 'line 'p Pt-List)
+    (put Pt-Pair 'line 'p Pt-Ls)
         
-    (pt> *ptr List 'a)
+    (pt> *ptr Ls 'a)
         
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
@@ -339,9 +339,9 @@
     # Pop cur line = Pt-Pair
     # Push new list
     (lns> *ptr)
-    (lns> *ptr Pt-List)
+    (lns> *ptr Pt-Ls)
     
-    (top> Pt-List)
+    (top> Pt-Ls)
     (draw> *ptr)))
 
 
@@ -370,17 +370,17 @@
         Pt-Pair (lup-pt Pair)
         Pre (find-back> *ptr (get *ptr 'reg))
         Pt-Pre (lup-pt Pre)
-        List (list Str)
-        Pt-List (gen-point List 'x NIL T))
+        Ls (list Str)
+        Pt-Ls (gen-point Ls 'x NIL T))
     
-    (set> Pt-Pre List Pt-List)
-    (con> Pt-List Pair Pt-Pair T)
+    (set> Pt-Pre Ls Pt-Ls)
+    (con> Pt-Ls Pair Pt-Pair T)
         
     # Mov line
     (when (get Pt-Pair 'line)
-      (mov-line Pt-Pair Pt-List)
+      (mov-line Pt-Pair Pt-Ls)
       (lns> *ptr))
-    (set-ln-n> *ptr Pt-List)
+    (set-ln-n> *ptr Pt-Ls)
     
     # Keep ref - change rel
     (pt> *ptr Pair 'b)    

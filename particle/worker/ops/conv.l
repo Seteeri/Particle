@@ -196,12 +196,12 @@
     
       (let (Sta (get Ref 'c)
             End (get Ref 'b)
-            List (make
+            Ls (make
                    (let L (split (chop (get Ref 'a 'any)) " ")
                      (for S L
                        (when S
                          (link (pack S)))))))
             
-        (repl-str-list Ref List)
+        (repl-str-list Ref Ls)
         (lay-ptr *ptr)))))
 
