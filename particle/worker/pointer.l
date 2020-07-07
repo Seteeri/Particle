@@ -280,37 +280,24 @@
       (list (find-back> This 'b Ref Pln) 'b)))
 
       
-# rename pt-back/forw      
-(dm back> (Reg Drw)
+(dm back> (Reg Draw)
 
-  (let (Back (if (: pair)
-                 @
-                 (find-back> This Reg))
-        Pt-Back (lup-pt Back))
+  (let ((C Pt-C Reg-C
+         B Pt-B Reg-B
+         A Pt-A) (refs-2> *ptr))
     
-    # Find Reg of back to its back
-    (let (Find-Car (find-back> This 'a Back T)
-          Find-Cdr (find-back> This 'b Back T))      
-      #(prin "back> BACK: ") (println Back Find-Car Find-Cdr)
-      (setq Reg (if Find-Car 'a 'b)))
-    
-    # Cur -> New
     (set-ln-p> This
-                 (if (: pair)
-                     (: ref)
-                     (lup-pt (: ref)))
-                 Pt-Back)     
+               (if (: pair)
+                   (: ref)
+                   (lup-pt (: ref)))
+               Pt-B)
     
-    (pt> This Back Reg NIL T)
+    (pt> This B Reg-B NIL T)
     
-    (when Drw
-      (top> Pt-Back)
-      (draw> This)))
-      
-  #(prin "back> PTR: ") (println (: ref) (: pair) (: reg))
-  #(prin "back> LN: ") (println (car (: lns)) (get (car (: lns)) 'any))
-  )
-
+    (when Draw
+      (top> Pt-B)
+      (draw> This))))
+            
 
 (dm forw> (Reg Drw)
 
