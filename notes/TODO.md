@@ -18,7 +18,7 @@ TODO
   REPL:
   
   * Refactor/Fix [Tues]
-    * Refactor find-back-any [Done]
+    * Remove type checking for sym...
     * Refactor gen-point
     * Handle symbol/exp
       * Fix del-pair on sym value

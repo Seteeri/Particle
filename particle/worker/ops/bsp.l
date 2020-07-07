@@ -95,9 +95,13 @@
           # If A is Y pair, cdr must have line
           (when (get Pt-A 'line)
             (if (lay-x?> Pt-A)
-                (when (get Pt-C 'line)
-                  (put @ 'p Pt-A)
-                  (put Pt-A 'line 'n Pt-C))
+                (if (sym? C)
+                    (if (get Pt-C 'line)
+                        (put @ 'p NIL)
+                        (put Pt-C 'line (new '(+Line) Pt-A)))
+                    (when (get Pt-C 'line)
+                      (put @ 'p Pt-A)
+                      (put Pt-A 'line 'n Pt-C)))
                 (prog
                   (if (get Pt-C 'line)
                       (put @ 'p Pt-A)
