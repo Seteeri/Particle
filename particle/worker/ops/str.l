@@ -310,27 +310,23 @@
   (let ((C Pt-C Reg-C
          B Pt-B) (refs-1> *ptr)
         Ls (list Str)
-        Pt-Ls (gen-point Ls 'x NIL T))
+        Pt-Ls (gen-point Ls 'x NIL))
     
     # handle X parent elsewhere
     ~(assert (lay-y?> Pt-B))
     
     (set> Pt-B Ls Pt-Ls)
-    (con> Pt-Ls C Pt-C T)
+    (con> Pt-Ls C Pt-C 'del)
         
-    (put Pt-Ls 'line (new '(+Line) NIL Pt-C))
-    
+    (put Pt-Ls 'line 'p Pt-C)
     (put Pt-C 'line 'p Pt-Ls)
+                
+    # Pop cur line (Pt-C), push new list
+    (lns> *ptr) (lns> *ptr Pt-Ls)        
         
-    (pt> *ptr Ls 'a)
+    (pt> *ptr Ls 'a)        
         
-    (lay-*start)
-    
-    # Pop cur line = Pt-C
-    # Push new list
-    (lns> *ptr)
-    (lns> *ptr Pt-Ls)
-    
+    (lay-*start)    
     (top> Pt-Ls)
     (draw> *ptr)))
 
