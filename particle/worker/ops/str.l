@@ -364,28 +364,28 @@
         
   }#
   
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        Pre (find-back-ref> *ptr (get *ptr 'reg))
-        Pt-Pre (lup-pt Pre)
+  (let ((C Pt-C Reg-C
+         B Pt-B) (refs-1> *ptr)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
     
-    (set> Pt-Pre Ls Pt-Ls)
-    (con> Pt-Ls Pair Pt-Pair T)
+    (set> Pt-B Ls Pt-Ls)
+    (con> Pt-Ls C Pt-C T)
         
     # Mov line
-    (when (get Pt-Pair 'line)
-      (mov-line Pt-Pair Pt-Ls)
+    (when (get Pt-C 'line)
+    
+      (mov-line Pt-C Pt-Ls)
       (lns> *ptr))
+      
     (set-ln-n> *ptr Pt-Ls)
     
     # Keep ref - change rel
-    (pt> *ptr Pair 'b)    
+    (pt> *ptr C 'b)    
     
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
         
-    (top> Pt-Pair)
+    (top> Pt-C)
     (draw> *ptr)))
     
