@@ -72,10 +72,8 @@
   
   #(println 'make-pair-b-pair)  
   
-  (let (Tgt (get *ptr 'ref)
-        Pt-Tgt (lup-pt Tgt)
-        Pair (find-back-ref> *ptr (get *ptr 'reg))
-        Pt-Pair (lup-pt Pair)
+  (let ((C Pt-C Reg-C
+         B Pt-B) (refs-1> *ptr)
         Cons (cons)
         Pt-Cons (gen-point Cons 'x NIL T)
         Pt-Cdr (get Pt-Cons 'b)
@@ -83,13 +81,13 @@
     
     (set-lay> Pt-Cons 'y)    
   
-    (con> Pt-Pair Cons Pt-Cons)
-    (set> Pt-Cons Tgt Pt-Tgt T)
+    (con> Pt-B Cons Pt-Cons)
+    (set> Pt-Cons C Pt-C T)
     
-    (if (get Pt-Tgt 'line)
+    (if (get Pt-C 'line)
         (prog
           # Make line start
-          (put Pt-Tgt 'line 'p NIL)
+          (put Pt-C 'line 'p NIL)
           # Only pop if replacing line
           (lns> *ptr)
           # Set current ln to prv line
@@ -97,12 +95,12 @@
         (prog
           # Modify subsequent line
           (let Nxt (get Ln 'line 'n)
-            (put Pt-Tgt 'line
+            (put Pt-C 'line
               (new '(+Line)
                 NIL
                 Nxt))
             (when Nxt
-              (put Nxt 'line 'p Pt-Tgt)))))
+              (put Nxt 'line 'p Pt-C)))))
     
     (when (is-sym? Ln) (setq Ln NIL))
     
