@@ -1,11 +1,11 @@
 # Make these +Pair methods?
 
 (de alt-lay ()
-  (let (Pair (if (get *ptr 'pair) @ (get *ptr 'ref))
-        Pt-Pair (lup-pt Pair))
-    (if (lay-x?> *ptr)
-        (alt-lay-y Pair Pt-Pair)
-        (alt-lay-x Pair Pt-Pair))))
+  (let ((Pair Pt-Pair) (get-ref-pair> *ptr))
+    ((if (lay-x?> *ptr)
+         alt-lay-y
+         alt-lay-x)
+      Pair Pt-Pair)))
 
         
 (de alt-lay-y (Pair Pt-Pair)

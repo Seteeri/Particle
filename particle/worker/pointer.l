@@ -61,6 +61,12 @@
 (dm alt-reg> ()
   (=: reg (if (= (: reg) 'a) 'b 'a)))
 
+
+(dm get-ref-pair> ()  
+  (let (A (if (: pair) @ (: ref))
+        P (lup-pt A))
+    (list A P)))
+  
   
 (dm top-ref> ()   
   (let Pt-Pair (if (: pair) (lup-pt @) (lup-pt (: ref)))
