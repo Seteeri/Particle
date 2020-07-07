@@ -299,7 +299,7 @@
       (draw> This))))
             
 
-(dm forw> (Reg Drw)
+(dm pt-fwd> (Reg Drw)
 
   (cond
 
@@ -316,9 +316,9 @@
 
 
 (dm pre> (Drw) (pt-back> This 'b Drw))
-(dm nex> (Drw) (forw> This 'b Drw))
+(dm nex> (Drw) (pt-fwd> This 'b Drw))
 (dm sup> (Drw) (pt-back> This 'a Drw))
-(dm sub> (Drw) (forw> This 'a Drw))
+(dm sub> (Drw) (pt-fwd> This 'a Drw))
 
 
 (dm refs-2> ()
