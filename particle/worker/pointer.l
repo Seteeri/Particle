@@ -84,22 +84,22 @@
   (=: col (get-first-col> Pt)))
   
   
-(dm col> (Pt Drw)
+(dm col> (Pt Draw)
   (stor-col> This Pt)
   # Set color but don't draw
-  (if Drw
+  (if Draw
      (col> Pt *selb-yellow 1.0)
      (col-verts> Pt *selb-yellow 1.0)))
 
   
-(dm uncol> (Pt Drw)
+(dm uncol> (Pt Draw)
   (let ((R G B A) (: col))
-    (if Drw
+    (if Draw
         (col> Pt (list R G B) A)
         (col-verts> Pt (list R G B) A))))
 
     
-(dm pt> (Tgt Reg Po Drw)
+(dm pt> (Tgt Reg Po Draw)
   #{
   
     Any T
@@ -118,7 +118,7 @@
     (let? Po (if (: pair)
                 (get (lup-pt (: pair)) (: reg))
                 (lup-pt (: ref)))
-      (uncol> This Po Drw)))
+      (uncol> This Po Draw)))
           
         
   # Should store Point also?
@@ -135,12 +135,12 @@
         (prog        
           # Pass if same (when changing pair)
           (unless (= Po (: ref))
-            (col> This Po Drw))
+            (col> This Po Draw))
           (=: ref Po)
           (=: pair Tgt))
             
         (prog          
-          (col> This (lup-pt Tgt) Drw)
+          (col> This (lup-pt Tgt) Draw)
           (=: ref Tgt)
           (=: pair))))
         
@@ -150,7 +150,7 @@
 ######################################
 
 
-(dm pt-pair> (Reg Drw)
+(dm pt-pair> (Reg Draw)
   # Determine tgt
   (let (Tgt (if (= Reg 'a)
                 (car (: ref))
@@ -161,7 +161,7 @@
 
     (set-ln-n> This Pt-Top)
                    
-    (when Drw
+    (when Draw
       (top> Pt-Top)
       (draw> This))))
               
@@ -191,13 +191,13 @@
 ##################
 
 
-(dm pt-sym> (Reg Drw)
+(dm pt-sym> (Reg Draw)
   # Determine tgt
   (let Pt-Tgt (if (val (: ref))
                   (pt-sym-pair> This Reg)
                   (pt-sym-nil> This Reg))
     (set-ln-n> This Pt-Tgt)
-    (when Drw
+    (when Draw
       (top> Pt-Tgt)
       (draw> This))))
 
@@ -299,7 +299,7 @@
       (draw> This))))
             
 
-(dm pt-fwd> (Reg Drw)
+(dm pt-fwd> (Reg Draw)
 
   (cond
 
@@ -308,17 +308,17 @@
   
     ((or (a-pair?> This)
          (b-pair?> This))
-      (pt-pair> This Reg Drw))
+      (pt-pair> This Reg Draw))
     
     ((or (a-atom?> This)
          (b-atom?> This))
-      (pt-sym> This Reg Drw))))
+      (pt-sym> This Reg Draw))))
 
 
-(dm pre> (Drw) (pt-bwd> This 'b Drw))
-(dm nex> (Drw) (pt-fwd> This 'b Drw))
-(dm sup> (Drw) (pt-bwd> This 'a Drw))
-(dm sub> (Drw) (pt-fwd> This 'a Drw))
+(dm pre> (Draw) (pt-bwd> This 'b Draw))
+(dm nex> (Draw) (pt-fwd> This 'b Draw))
+(dm sup> (Draw) (pt-bwd> This 'a Draw))
+(dm sub> (Draw) (pt-fwd> This 'a Draw))
 
 
 (dm refs-2> ()

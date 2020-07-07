@@ -31,7 +31,7 @@ TODO
       * Add tests pair bsp [Done]
               
   * Refactor/Fix [Tues]
-    * Refactor find-back-any
+    * Refactor find-back-any [Done]
     * Refactor gen-point
     * Handle symbol/exp
       * Fix del-pair on sym value
