@@ -280,7 +280,7 @@
       (list (find-back> This 'b Ref Pln) 'b)))
 
       
-(dm pt-back> (Reg Draw)
+(dm pt-bwd> (Reg Draw)
 
   (let ((C Pt-C Reg-C
          B Pt-B Reg-B
@@ -315,9 +315,9 @@
       (pt-sym> This Reg Drw))))
 
 
-(dm pre> (Drw) (pt-back> This 'b Drw))
+(dm pre> (Drw) (pt-bwd> This 'b Drw))
 (dm nex> (Drw) (pt-fwd> This 'b Drw))
-(dm sup> (Drw) (pt-back> This 'a Drw))
+(dm sup> (Drw) (pt-bwd> This 'a Drw))
 (dm sub> (Drw) (pt-fwd> This 'a Drw))
 
 
