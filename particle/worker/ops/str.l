@@ -362,21 +362,19 @@
         Pt-Ls (gen-point Ls 'x NIL T))
     
     (set> Pt-B Ls Pt-Ls)
-    (con> Pt-Ls C Pt-C T)
-        
-    # Mov line
-    (when (get Pt-C 'line)
+    (con> Pt-Ls C Pt-C 'del)
     
+    # Mov line from C -> Ls
+    (when (get Pt-C 'line)    
       (mov-line Pt-C Pt-Ls)
       (lns> *ptr))
-      
-    (set-ln-n> *ptr Pt-Ls)
-    
+    (set-ln-n> *ptr Pt-Ls)        
+        
     # Keep ref - change rel
-    (pt> *ptr C 'b)    
+    #(pt> *ptr C 'b)
+    (put *ptr 'rel 'b)
     
     (lay-*start)
-        
     (top> Pt-C)
     (draw> *ptr)))
     

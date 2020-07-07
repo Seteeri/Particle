@@ -193,9 +193,14 @@
   
     (set> Pt-B Cons Pt-Cons)
     
-    (set> Pt-Cons C Pt-C T)
+    # Should set-lay create +Line?
+    # No, there could be a line already
+    # Or, create sep fn for that
     (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
+    
     (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
+    
+    (set> Pt-Cons C Pt-C T)
     
     (pt> *ptr Cons 'a)
     

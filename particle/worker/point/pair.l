@@ -163,4 +163,90 @@
       (prog
         (=: a Pt-Any)
         (put Pt-Any 'c This))
-      (=: a)))      
+      (=: a)))
+
+##############################
+
+(dm con-2> (Any Pt-Any Del Ln)
+
+  (cond
+    
+    ((= Ln 'mov)
+      (let (Cdr (if (: b)
+                    (get @ 'any)
+                    (cdr (: any)))
+            Pt-Cdr (if (: b)
+                       @
+                       (lup-pt (cdr (: any)))))
+        (when (get Pt-Cdr 'line)
+          (mov-line Pt-Cdr Pt-Any)
+          (lns> *ptr)))
+      (set-ln-n> *ptr Pt-Ls))
+    
+    ((= Ln 'new)
+      # For Y Pair
+      (put Pt-Any 'line (new '(+Line)))))
+
+  (when Del
+    (if (: b)
+        (prog
+          (del> (: b))
+          (=: b))
+        (prog
+          # Print warning if non-existent
+          (del> (lup-pt (cdr (: any))))
+          ~(assert (not (: b))))))
+      
+  (con (: any) Any)
+  
+  (if (atom Any)
+      (prog
+        (=: b Pt-Any)
+        (put Pt-Any 'c This))
+      (=: b)))
+
+      
+(dm set-2> (Any Pt-Any Del Ln)
+  
+  # Y pair requires a line for its car
+  # Opts for Ln
+  # * mov-old-new = mov line from old
+  # * mov-pair-new = 
+  # * new = create new
+  # * nil = use existing/do nothing
+  
+  (cond
+    
+    ((= Ln 'mov)
+      (let (Car (if (: a)
+                    (get @ 'any)
+                    (car (: any)))
+            Pt-Car (if (: a)
+                       @
+                       (lup-pt (car (: any)))))
+        (when (get Pt-Car 'line)
+          (mov-line Pt-Car Pt-Any)
+          (lns> *ptr)))
+      (set-ln-n> *ptr Pt-Ls))
+    
+    ((= Ln 'new)
+      # For Y Pair
+      (put Pt-Any 'line (new '(+Line)))))
+
+  (when Del
+    (if (: a)
+        (prog
+          (del> (: a))
+          (=: a))
+        (prog
+          # Print warning if non-existent
+          (del> (lup-pt (car (: any))))
+          ~(assert (not (: a))))))
+    
+  (set (: any) Any)
+  
+  (if (atom Any)
+      (prog
+        (=: a Pt-Any)
+        (put Pt-Any 'c This))
+      (=: a)))

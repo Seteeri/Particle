@@ -20,6 +20,7 @@ TODO
   * Refactor/Fix [Tues]
     * Remove type checking for sym...
       * Mov more fn to set> and con>
+        * Issue is line handling
       * Handle symbol/exp
 
   * Implement X-Pair [Tues/Wed]
