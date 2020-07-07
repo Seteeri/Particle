@@ -126,8 +126,7 @@
 
   #(println 'ins-a-atom)
   
-  (let (Pair (get *ptr 'pair)
-        Pt-Pair (lup-pt Pair)
+  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
         Pt-Car (get Pt-Pair 'a)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
