@@ -94,10 +94,10 @@
           # If A is Y pair, cdr must have line
           (when (get Pt-A 'line)
             (if (lay-x?> Pt-A)
-                (if (sym? C)
+                (if (sym? A)
                     (if (get Pt-C 'line)
                         (put @ 'p NIL)
-                        (put Pt-C 'line (new '(+Line) Pt-A)))
+                        (put Pt-C 'line (new '(+Line))))
                     (when (get Pt-C 'line)
                       (put @ 'p Pt-A)
                       (put Pt-A 'line 'n Pt-C)))
@@ -119,9 +119,9 @@
   
     (del-line Pt-B)
     
-    (when (and B-Cdr
-               (get Pt-A 'line))
-      (put @ 'n NIL))
+    (when B-Cdr
+      (when (get Pt-A 'line)
+        (put @ 'n NIL)))
       
     (lns> *ptr)
     (lns> *ptr))
@@ -184,10 +184,10 @@
           # If A is Y pair, cdr must have line
           (when (get Pt-A 'line)
             (if (lay-x?> Pt-A)
-                (if (sym? C)
+                (if (sym? A)
                     (if (get Pt-C 'line)
                         (put @ 'p NIL)
-                        (put Pt-C 'line (new '(+Line) Pt-A)))
+                        (put Pt-C 'line (new '(+Line))))
                     (when (get Pt-C 'line)
                       (put @ 'p Pt-A)
                       (put Pt-A 'line 'n Pt-C)))
