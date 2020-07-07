@@ -69,8 +69,7 @@
 
   #(println 'repl-atom)
   
-  (let (Pt-Pair (if (get *ptr 'pair) (lup-pt @) (: ref))
-        Pair (get Pt-Pair 'any)
+  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
         Pt-Del (if (get *ptr 'pair)
                    (get Pt-Pair (get *ptr 'reg))
                    (lup-pt (get *ptr 'ref)))
