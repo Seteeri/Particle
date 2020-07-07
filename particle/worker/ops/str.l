@@ -289,8 +289,7 @@
     (top> Pt-Ls)
     (draw> *ptr)))
 
-    
-    
+
 (de con-a-pair-y (Str)
   #{
   
@@ -315,29 +314,27 @@
         
   }#
   
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        Pre (find-back-ref> *ptr (get *ptr 'reg))
-        Pt-Pre (lup-pt Pre)
+  (let ((C Pt-C Reg-C
+         B Pt-B) (refs-1> *ptr)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
     
     # handle X parent elsewhere
-    ~(assert (lay-y?> Pt-Pre))
+    ~(assert (lay-y?> Pt-B))
     
-    (set> Pt-Pre Ls Pt-Ls)
-    (con> Pt-Ls Pair Pt-Pair T)
+    (set> Pt-B Ls Pt-Ls)
+    (con> Pt-Ls C Pt-C T)
         
-    (put Pt-Ls 'line (new '(+Line) NIL Pt-Pair))
+    (put Pt-Ls 'line (new '(+Line) NIL Pt-C))
     
-    (put Pt-Pair 'line 'p Pt-Ls)
+    (put Pt-C 'line 'p Pt-Ls)
         
     (pt> *ptr Ls 'a)
         
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
-    # Pop cur line = Pt-Pair
+    # Pop cur line = Pt-C
     # Push new list
     (lns> *ptr)
     (lns> *ptr Pt-Ls)
