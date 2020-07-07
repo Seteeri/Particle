@@ -100,8 +100,7 @@
 
   #(println 'ins-b-atom)
   
-  (let (Pair (get *ptr 'pair)
-        Pt-Pair (lup-pt Pair)
+  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
         Pt-Cdr (get Pt-Pair 'b)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
