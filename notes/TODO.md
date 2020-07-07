@@ -36,7 +36,7 @@ TODO
     * Handle symbol/exp
       * Fix del-pair on sym value
     
-  * Implement X-Pair [Wed?]
+  * Implement X-Pair [Tues/Wed]
     
   * Refactor/Fix [Thurs]
     * Add cmd-make-pair-x; do before exp

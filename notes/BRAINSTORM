@@ -4959,8 +4959,15 @@ PTR POSSIBILITIES:
 
 [X] ...
 
-Are lines necessary???
-Why did I originally implement this?
+Lines originally implemented to
+limit drawing large lists on same line
+
+Without lines:
+  - Encourages users to structure data...
+  - To create a square view, user would break lists into lists...
+
+Alternate solution is to show condensed list (part of list)
+  - User can rotate list...similar to ncurses text
 
 Simpler solution to lines -> use lists
 - newline creates new list

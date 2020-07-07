@@ -101,7 +101,7 @@
 
   (let (Pair (get *ptr 'ref)
         Pt-Pair (lup-pt Pair)
-        Back (find-back-any> *ptr Pair T)
+        (Back Reg) (find-back-any> *ptr Pair T)
         Pt-Back (lup-pt Back)
         Cdr (cdr Pair)
         Atom-Cdr (atom Cdr)

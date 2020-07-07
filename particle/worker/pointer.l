@@ -276,8 +276,8 @@
       
 (dm find-back-any> (Ref Pln)
   (if (find-back> This 'a Ref Pln)
-      @
-      (find-back> This 'b Ref Pln)))
+      (list @ 'a)
+      (list (find-back> This 'b Ref Pln) 'b)))
 
       
 # rename pt-back/forw      
@@ -349,9 +349,8 @@
             B     (: pair)
             Pt-B  (lup-pt B)
             Reg-C (if (== (car B) C) 'a 'b)
-            A     (find-back-any> This B T)
-            Pt-A  (lup-pt A)
-            Reg-B (if (== (car A) B) 'a 'b))
+            (A Reg-B) (find-back-any> This B T)
+            Pt-A  (lup-pt A))
             
         (list
           C Pt-C Reg-C
@@ -360,12 +359,10 @@
 
       (let (C     (: ref)
             Pt-C  (lup-pt C)
-            B     (find-back-any> This C T)
+            (B Reg-C) (find-back-any> This C T)
             Pt-B  (lup-pt B)
-            Reg-C (if (== (car B) C) 'a 'b)
-            A     (find-back-any> This B T)
-            Pt-A  (lup-pt A)
-            Reg-B (if (== (car A) B) 'a 'b))
+            (A Reg-B) (find-back-any> This B T)
+            Pt-A  (lup-pt A))
             
         (list
           C Pt-C Reg-C
@@ -394,9 +391,8 @@
 
       (let (C     (: ref)
             Pt-C  (lup-pt C)
-            B     (find-back-any> This C T)
-            Pt-B  (lup-pt B)
-            Reg-C (if (== (car B) C) 'a 'b))
+            (B Reg-C) (find-back-any> This C T)
+            Pt-B  (lup-pt B))
             
         (list
           C Pt-C Reg-C
@@ -413,11 +409,11 @@
                   (push P L) # Return it
                   L)
         Pair (get Pt-Pair 'any)
-        Back (find-back-any> *ptr Pair T)
-        Pt-Back (lup-pt Back)
-        Reg (if (sym? Back)
-                'b
-                (if (== (car Back) Pair) 'a 'b)))
+        (Back Reg) (find-back-any> *ptr Pair T)
+        Pt-Back (lup-pt Back))
+    
+    (when (sym? Back)
+      (setq Reg 'b))
     
     (pt> *ptr Pair Reg)
     
