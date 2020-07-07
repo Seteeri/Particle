@@ -99,55 +99,51 @@
     
 (de del-pair ()
 
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        (Back Reg) (find-back-any> *ptr Pair T)
-        Pt-Back (lup-pt Back)
-        Cdr (cdr Pair)
+  (let ((C Pt-C Reg-C
+         B Pt-B) (refs-1> *ptr)
+        Cdr (cdr C)
         Atom-Cdr (atom Cdr)
         Pt-Cdr (if Atom-Cdr
-                   (get Pt-Pair 'b)
-                   (lup-pt Cdr))
-        Reg-Pair (if (== (car Back) Pair) 'a 'b))
+                   (get Pt-C 'b)
+                   (lup-pt Cdr)))
 
-    (when (get Pt-Pair 'line)
-      (if (= Reg-Pair 'b)
-          (mov-line Pt-Pair Pt-Cdr)
-          (del-line Pt-Pair))
+    (when (get Pt-C 'line)
+    
+      (if (= Reg-C 'b)
+          (mov-line Pt-C Pt-Cdr)
+          (del-line Pt-C))
+          
       (lns> *ptr)
       (lns> *ptr))
+      
     (set-ln-n> *ptr Pt-Cdr)
     
-    (del> Pt-Pair T NIL)
-    (put Pt-Pair 'b NIL)
+    (del> Pt-C T NIL)
         
     (cond 
-      ((and (= Reg-Pair 'a) Atom-Cdr)
-       (set> Pt-Back Cdr Pt-Cdr)
+    
+      ((and (= Reg-C 'a) Atom-Cdr)
+       (set> Pt-B Cdr Pt-Cdr)
        (if (get Pt-Cdr 'line)
            (put @ 'p NIL)
            (put Pt-Cdr 'line
              (new '(+Line))))
-       (pt> *ptr Back 'a Pt-Cdr)
-       T)
+       (pt> *ptr B 'a Pt-Cdr))
        
-      ((and (= Reg-Pair 'a) (not Atom-Cdr))
-       (set> Pt-Back Cdr Pt-Cdr)
+      ((and (= Reg-C 'a) (not Atom-Cdr))
+       (set> Pt-B Cdr Pt-Cdr)
        (if (get Pt-Cdr 'line)
            (put @ 'p NIL)
            (put Pt-Cdr 'line
              (new '(+Line))))
-       (pt> *ptr Cdr 'a)
-       T)
+       (pt> *ptr Cdr 'a))
        
-      ((and (= Reg-Pair 'b) Atom-Cdr)
-       (con> Pt-Back Cdr Pt-Cdr)
-       (pt> *ptr Back 'b Pt-Cdr)
-       T)
+      ((and (= Reg-C 'b) Atom-Cdr)
+       (con> Pt-B Cdr Pt-Cdr)
+       (pt> *ptr B 'b Pt-Cdr))
        
-      ((and (= Reg-Pair 'b) (not Atom-Cdr))
-       (con> Pt-Back Cdr Pt-Cdr)
-       (pt> *ptr Cdr 'b)
-       T))
+      ((and (= Reg-C 'b) (not Atom-Cdr))
+       (con> Pt-B Cdr Pt-Cdr)
+       (pt> *ptr Cdr 'b)))
 
     Pt-Cdr))
