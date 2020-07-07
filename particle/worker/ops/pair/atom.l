@@ -174,12 +174,11 @@
   }#   
 
   #(println 'make-pair-b-atom)
+  
+  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
+        Tgt (if (sym? Pair) (val Pair) (cdr Pair))
+        Pt-Tgt (get Pt-Pair 'b))
 
-  (let (Pt-Tgt (get *ptr 'ref)
-        Tgt (get Pt-Tgt 'any)  
-        Pt-Pair (get Pt-Tgt 'c)
-        Pair (get Pt-Pair 'any))  
-    
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
     # * Put NIL otherwise set will del new point
