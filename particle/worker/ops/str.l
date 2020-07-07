@@ -256,34 +256,32 @@
   
   #(println 'con-b-pair-y)
   
-  (let (Pair (get *ptr 'ref)
-        Pt-Pair (lup-pt Pair)
-        Pre (find-back-ref> *ptr (get *ptr 'reg))
-        Pt-Pre (lup-pt Pre)
+  (let ((C Pt-C Reg-C
+         B Pt-B) (refs-1> *ptr)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
     
-    (con> Pt-Pre Ls Pt-Ls)
-    (con> Pt-Ls Pair Pt-Pair T)
+    (con> Pt-B Ls Pt-Ls)
+    (con> Pt-Ls C Pt-C T)
     
-    (if (get Pt-Pre 'line)
-        (put Pt-Pre 'line 'n Pt-Ls)
-        (put Pt-Pre 'line (new '(+Line) NIL Pt-Pair)))
+    (if (get Pt-B 'line)
+        (put Pt-B 'line 'n Pt-Ls)
+        (put Pt-B 'line (new '(+Line) NIL Pt-C)))
         
-    (put Pt-Ls 'line (new '(+Line) Pt-Pre Pt-Pair))
+    (put Pt-Ls 'line (new '(+Line) Pt-B Pt-C))
 
-    (when (get Pt-Pre 'exp)
-      (put Pt-Pre 'line 'n NIL)
+    (when (get Pt-B 'exp)
+      (put Pt-B 'line 'n NIL)
       (put Pt-Ls 'line 'p NIL))
     
-    (put Pt-Pair 'line 'p Pt-Ls)
+    (put Pt-C 'line 'p Pt-Ls)
     
     (pt> *ptr Ls 'b)
     
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
         
-    # Pop cur line = Pt-Pair
+    # Pop cur line = Pt-C
     # Push new list
     (lns> *ptr)
     (lns> *ptr Pt-Ls)
