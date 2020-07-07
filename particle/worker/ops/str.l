@@ -245,7 +245,9 @@
         [Y]  .
             
          .
-         
+    
+    Put X2 after X1
+    
   }#
   
   #(println 'con-b-pair-y)
@@ -253,32 +255,40 @@
   (let ((C Pt-C Reg-C
          B Pt-B) (refs-1> *ptr)
         Ls (list Str)
-        Pt-Ls (gen-point Ls 'x NIL T))
+        Pt-Ls (gen-point Ls 'x NIL))
     
-    (con> Pt-B Ls Pt-Ls)
-    (con> Pt-Ls C Pt-C T)
+    # B -> Ls -> C
+    #
+    # B = poss
+    # Ls = yes
+    # C = yes
     
-    (if (get Pt-B 'line)
-        (put Pt-B 'line 'n Pt-Ls)
-        (put Pt-B 'line (new '(+Line) NIL Pt-C)))
-        
-    (put Pt-Ls 'line (new '(+Line) Pt-B Pt-C))
+    (con> Pt-B Ls Pt-Ls NIL)
+    (con> Pt-Ls C Pt-C 'del)
+    
+    # Con lines
+    
+    (when (get Pt-B 'line)
+      (put @ 'n Pt-Ls))
+    
+    (with (get Pt-Ls 'line)
+      (=: p (cadr (get *ptr 'lns)))
+      (=: n Pt-C))
 
+    (put Pt-C 'line 'p Pt-Ls)      
+      
+    # Expanded symbol
+    # Handle this better...call method
     (when (get Pt-B 'exp)
       (put Pt-B 'line 'n NIL)
       (put Pt-Ls 'line 'p NIL))
-    
-    (put Pt-C 'line 'p Pt-Ls)
+        
+    # Pop cur line (Pt-C), push new list
+    (lns> *ptr) (lns> *ptr Pt-Ls) 
     
     (pt> *ptr Ls 'b)
     
-    (lay-*start)
-        
-    # Pop cur line = Pt-C
-    # Push new list
-    (lns> *ptr)
-    (lns> *ptr Pt-Ls)
-    
+    (lay-*start)    
     (top> Pt-Ls)
     (draw> *ptr)))
 
@@ -312,7 +322,7 @@
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL))
     
-    # handle X parent elsewhere
+    # Handle X parent elsewhere
     ~(assert (lay-y?> Pt-B))
     
     (set> Pt-B Ls Pt-Ls)

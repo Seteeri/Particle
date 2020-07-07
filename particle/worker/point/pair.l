@@ -169,23 +169,14 @@
 
 (dm con-2> (Any Pt-Any Del Ln)
 
-  (cond
-    
-    ((= Ln 'mov)
-      (let (Cdr (if (: b)
-                    (get @ 'any)
-                    (cdr (: any)))
-            Pt-Cdr (if (: b)
-                       @
-                       (lup-pt (cdr (: any)))))
-        (when (get Pt-Cdr 'line)
-          (mov-line Pt-Cdr Pt-Any)
-          (lns> *ptr)))
-      (set-ln-n> *ptr Pt-Ls))
-    
-    ((= Ln 'new)
-      # For Y Pair
-      (put Pt-Any 'line (new '(+Line)))))
+  (when Ln  
+    (if (: line)
+        (prog
+          (put @ 'n Pt-Any)
+          (put Pt-Any 'line 'p This))
+        (let Ln (c-lns> *ptr)
+          (put Pt-Any 'line 'p Ln)
+          (put Ln 'line 'n Pt-Any))))
 
   (when Del
     (if (: b)
