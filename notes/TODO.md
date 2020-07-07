@@ -17,19 +17,6 @@ TODO
   
   REPL:
   
-  * Rearchitect [Done]
-    * Gen/Lay
-      * Reuse existing particles
-        * Pass flag to gen -> idx
-      * New will gen verts
-      * Pass sym exp to gen
-    * Primitive tests [Fri]
-      * Add tests atom alt-reg [Done]
-      * Add tests atom del [Done]
-      * Add tests pair alt-reg [Done]
-      * Add tests pair del [Done]
-      * Add tests pair bsp [Done]
-              
   * Refactor/Fix [Tues]
     * Refactor find-back-any [Done]
     * Refactor gen-point

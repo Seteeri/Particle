@@ -4,14 +4,15 @@
     
 (de idx-pt (P)
 
+  # If node: add to list
+  # else no node: create it
+
   (with P
 
     ~(assert (: any))
   
     (let Node (lup-node (: any))
-    
-      # If node: add to list
-      # else: create it
+
       (if Node
       
           # Create list if needed

@@ -89,7 +89,8 @@
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
     
-    (when (and (pair (cdr Pair))
+    (when (and (pair Pair)
+               (pair (cdr Pair))
                (str? (car @)))
       (sup> *ptr NIL)
       (nex> *ptr NIL)
