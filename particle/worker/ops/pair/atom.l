@@ -102,12 +102,9 @@
       
   }#
 
-  (let (Pt-Tgt (if (get *ptr 'pair)
-                   (get *ptr 'ref)
-                   (lup-pt (get *ptr 'ref)))
-        Tgt (get Pt-Tgt 'any)
-        Pair (get Pt-Tgt 'c 'any)
-        Pt-Pair (lup-pt Pair))
+  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
+        Tgt (car Pair)
+        Pt-Tgt (get Pt-Pair 'a))
     
     ~(assert (get Pt-Tgt 'line))
       
