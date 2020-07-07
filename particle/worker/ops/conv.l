@@ -85,7 +85,6 @@
           (pt> *ptr Ls 'b)))
 
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
     (top> Pt-Ls)
     (draw> *ptr)))
     
@@ -159,7 +158,6 @@
           (pt> *ptr Ls 'b)))
 
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
     (top> Pt-Ls)
     (draw> *ptr)))
     

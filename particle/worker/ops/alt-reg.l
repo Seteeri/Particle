@@ -51,7 +51,6 @@
       (alt-lay-y Pair Pt-Pair))
         
     (lay-*start)
-    (mov-⇲ Pt-Pair)
     
     (alt-reg> *ptr)
     (top-ref> *ptr)

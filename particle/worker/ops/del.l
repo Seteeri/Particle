@@ -92,7 +92,6 @@
          
      (let Pt (del-pair)
       (lay-*start)
-      (mov-⇲ (c-lns> *ptr))
       (top> Pt)
       (draw> *ptr)))))
       

@@ -64,7 +64,6 @@
       (pt> *ptr Ls 'a)
       
       (lay-*start)
-      (mov-⇲ (c-lns> *ptr))
       
       (when Push-Pair (lns> *ptr Pt-Pair))
       (lns> *ptr Pt-Ls)
@@ -132,7 +131,6 @@
       (pt> *ptr Ls 'a)
 
       (lay-*start)
-      (mov-⇲ Pt-Ls)
 
       (lns> *ptr)
       (lns> *ptr Pt-Ls)
@@ -215,7 +213,6 @@
       (pt> *ptr Ls 'b)
       
       (lay-*start)
-      (mov-⇲ Pt-Ls)
             
       (lns> *ptr Pt-Ls)
       (top> Pt-Ls)

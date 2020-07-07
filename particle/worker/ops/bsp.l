@@ -64,7 +64,6 @@
     # Mov to cmd/caller?
     
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
     
     (top> Pt-Pair)
     (draw> *ptr)))

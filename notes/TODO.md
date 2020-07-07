@@ -19,10 +19,9 @@ TODO
   
   * Refactor/Fix [Tues]
     * Remove type checking for sym...
-    * Refactor gen-point
-    * Handle symbol/exp
-      * Fix del-pair on sym value
-    
+      * Mov more fn to set> and con>
+      * Handle symbol/exp
+
   * Implement X-Pair [Tues/Wed]
     
   * Refactor/Fix [Thurs]
@@ -39,10 +38,6 @@ TODO
       * Improve del>
         * Fix double free
   
-  * Lists can be rotated to simulate scrolling
-    * Requires redrawing entire list...
-    * Frustrum culling
-
   * Fonts
     * Camera dist + Vertex scale
     * If > native res: msdf
@@ -87,7 +82,13 @@ TODO
         * use to manage viewports
     BOTTOM
       * Status
-      
+  
+  ---
+  
+  * Lists can be rotated to simulate scrolling
+    * Requires redrawing entire list...
+    * Frustrum culling  
+  
   * Modes/ptrs
     * Str (Default)
       * Produces single char strings

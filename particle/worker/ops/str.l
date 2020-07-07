@@ -87,7 +87,6 @@
         (con> Pt-Pair Str Pt-Str T))
         
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
     
     (when (and (pair Pair)
                (pair (cdr Pair))
@@ -115,7 +114,6 @@
     (con> Pt-Ls (get Pt-Cdr 'any) Pt-Cdr T)
           
     (lay-*start) 
-    (mov-⇲ (c-lns> *ptr))
     
     (pt> *ptr Ls 'b Pt-Cdr)
     
@@ -146,7 +144,6 @@
       (=: reg 'b))
   
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
     
     (top> Pt-Car)
     (draw> *ptr)))
@@ -218,7 +215,6 @@
     # ref does not change
                 
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
     
     (top> Pt-C)
     (draw> *ptr)))
@@ -277,7 +273,6 @@
     (pt> *ptr Ls 'b)
     
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
         
     # Pop cur line = Pt-C
     # Push new list
@@ -330,7 +325,6 @@
     (pt> *ptr Ls 'a)
         
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
     
     # Pop cur line = Pt-C
     # Push new list
@@ -382,7 +376,6 @@
     (pt> *ptr C 'b)    
     
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
         
     (top> Pt-C)
     (draw> *ptr)))

@@ -18,7 +18,6 @@
           (ins-line-aft Ln Pt-Tgt)
               
           (lay-*start)
-          (mov-⇲ Ln)
           
           (top> Pt-Tgt)
           (draw> *ptr)

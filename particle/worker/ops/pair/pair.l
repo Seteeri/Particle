@@ -113,7 +113,6 @@
     (pt> *ptr Cons 'b)
     
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
                 
     (lns> *ptr Pt-Cons)
     (top> Pt-Cons)
@@ -193,15 +192,14 @@
     (set-lay> Pt-Cons 'y)    
   
     (set> Pt-B Cons Pt-Cons)
-    (set> Pt-Cons C Pt-C T)
     
+    (set> Pt-Cons C Pt-C T)
     (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
     (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
     
     (pt> *ptr Cons 'a)
     
     (lay-*start)
-    (mov-⇲ (c-lns> *ptr))
                 
     ~(assert (get Pt-C 'line))
     # Pt to new cons so pop old line, push cons

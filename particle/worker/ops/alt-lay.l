@@ -51,7 +51,6 @@
     (put Pt-Car 'line (new '(+Line)))
 
     (lay-*start)
-    (mov-⇲ Pt-Pair)
 
     (unless (= Ln Pt-Pair)
       (lns> *ptr Pt-Pair))
@@ -134,7 +133,6 @@
           (put Pt-Car 'line)
 
           (lay-*start)
-          (mov-⇲ Pt-Pair)
 
           (unless (= Ln Pt-Pair)
             (lns> *ptr Pt-Pair))
