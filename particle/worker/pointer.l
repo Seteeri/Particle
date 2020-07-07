@@ -243,7 +243,7 @@
       (lns> This Pt-Tgt))))
       
       
-(dm find-back> (Reg Ref Pln)
+(dm find-back-ref> (Reg Ref Pln)
   # Implement custom search to do one-pass
   (let (Res NIL
         Ref (if Ref @ (: ref)))
@@ -275,9 +275,9 @@
       
       
 (dm find-back-any> (Ref Pln)
-  (if (find-back> This 'a Ref Pln)
+  (if (find-back-ref> This 'a Ref Pln)
       (list @ 'a)
-      (list (find-back> This 'b Ref Pln) 'b)))
+      (list (find-back-ref> This 'b Ref Pln) 'b)))
 
       
 (dm pt-bwd> (Reg Draw)

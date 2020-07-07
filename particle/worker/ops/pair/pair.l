@@ -74,7 +74,7 @@
   
   (let (Tgt (get *ptr 'ref)
         Pt-Tgt (lup-pt Tgt)
-        Pair (find-back> *ptr (get *ptr 'reg))
+        Pair (find-back-ref> *ptr (get *ptr 'reg))
         Pt-Pair (lup-pt Pair)
         Cons (cons)
         Pt-Cons (gen-point Cons 'x NIL T)
@@ -188,7 +188,7 @@
   
   (let (Tgt (get *ptr 'ref)
         Pt-Tgt (lup-pt Tgt)
-        Pair (find-back> *ptr (get *ptr 'reg))
+        Pair (find-back-ref> *ptr (get *ptr 'reg))
         Pt-Pair (lup-pt Pair)
         Cons (cons)
         Pt-Cons (gen-point Cons 'x NIL T)

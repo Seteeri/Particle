@@ -204,7 +204,7 @@
         Pt-Pair (lup-pt Pair)
         Pre (if (get *ptr 'pair)
                 @
-                (find-back> *ptr (get *ptr 'reg)))
+                (find-back-ref> *ptr (get *ptr 'reg)))
         Pt-Pre (lup-pt Pre)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
@@ -260,7 +260,7 @@
   
   (let (Pair (get *ptr 'ref)
         Pt-Pair (lup-pt Pair)
-        Pre (find-back> *ptr (get *ptr 'reg))
+        Pre (find-back-ref> *ptr (get *ptr 'reg))
         Pt-Pre (lup-pt Pre)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
@@ -321,7 +321,7 @@
   
   (let (Pair (get *ptr 'ref)
         Pt-Pair (lup-pt Pair)
-        Pre (find-back> *ptr (get *ptr 'reg))
+        Pre (find-back-ref> *ptr (get *ptr 'reg))
         Pt-Pre (lup-pt Pre)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
@@ -373,7 +373,7 @@
   
   (let (Pair (get *ptr 'ref)
         Pt-Pair (lup-pt Pair)
-        Pre (find-back> *ptr (get *ptr 'reg))
+        Pre (find-back-ref> *ptr (get *ptr 'reg))
         Pt-Pre (lup-pt Pre)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
