@@ -184,18 +184,16 @@
   
   #(println 'make-pair-a-pair)
   
-  (let (Tgt (get *ptr 'ref)
-        Pt-Tgt (lup-pt Tgt)
-        Pair (find-back-ref> *ptr (get *ptr 'reg))
-        Pt-Pair (lup-pt Pair)
+  (let ((C Pt-C Reg-C
+         B Pt-B) (refs-1> *ptr)
         Cons (cons)
         Pt-Cons (gen-point Cons 'x NIL T)
         Pt-Cdr (get Pt-Cons 'b))
   
     (set-lay> Pt-Cons 'y)    
   
-    (set> Pt-Pair Cons Pt-Cons)
-    (set> Pt-Cons Tgt Pt-Tgt T)
+    (set> Pt-B Cons Pt-Cons)
+    (set> Pt-Cons C Pt-C T)
     
     (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
     (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
@@ -205,7 +203,7 @@
     (lay-*start)
     (mov-⇲ (c-lns> *ptr))
                 
-    ~(assert (get Pt-Pair 'line))
+    ~(assert (get Pt-C 'line))
     # Pt to new cons so pop old line, push cons
     (lns> *ptr)
     (lns> *ptr Pt-Cons)
