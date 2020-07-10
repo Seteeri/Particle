@@ -1,59 +1,127 @@
 PREMISE
 =======
+
+These articles will help provide a basis for understanding concepts presented here:
+
+[Martin Fowler's Projectional Editing](https://martinfowler.com/bliki/ProjectionalEditing.html) 
+
+[Understanding Compilers — For Humans (Version 2)](https://towardsdatascience.com/understanding-compilers-for-humans-version-2-157f0edb02dd)
+
+# Two Interfaces, One Model
+
+It's helpful to think about a program having two interfaces:
+
+* machine (developer) - interface through APIs
+* human (end user) - interface through GUIs/CLIs
+
+Typically developers are also end users, however the inverse relationship does not hold true, end users are not always developers. Both use a series of representations to model the system, which will be described next.
+
+## Multiple Representations
+
+![Representations](https://github.com/Seteeri/Particle/blob/master/art/workbench.gif)
+
+*Source: Martin Fowler's Projectional Editing*
+
+    +---------------------+----------------------------------------+
+    | Type                | Format                                 |
+    +---------------------+----------------------------------------+
+    | editable/projection | Text, Visual, GUI                      | 
+    +---------------------+----------------------------------------+
+    | storage/persistence | Text                                   |
+    +---------------------+----------------------------------------+
+    | abstract            | ADT: AST, e.g. LLVM IR SSA, GNU GIMPLE |
+    |                     | (generally not immediately accessible) |
+    +---------------------+----------------------------------------+
+    | executable          | machine code,  e.g. x86, ARM, WASM     |
+    +---------------------+----------------------------------------+
+
+For example, in a typical IDE, the developer interacts with a projection represented with text/GUI such as GTK or Qt. The code will also be stored as text with UTF-8 encoding (the GUI configuration is usually saved elsewhere in an arbitrary binary format). Embeded documentation may also have its own markup language. The compiler will then take the code as input and generate abstract data structures to produce a final executable file. 
+
+Text acts as the lingua franca or LCD in this ecosystem in order to accomodate multiple programming languages and their paradigms (arguably PLs are developed to solve a specific problem). Ultimately, this is geared towards the goal of producing the most optimized fastest executables for each language.
+
+This advantage is at the detriment of the user and developer. In terms of code, there is much repetition, duplication, and redundancy, such as reparsing or reanalyzing text/code, which increases the chances of bugs. It is also difficult to understand the entire process and system due to the complexity steming from highly differentiated abstractions all being tightly coupled to each other. This then extends further and has implications for the end user resulting in a convoluted interface creating a confusing and frustrating experience.
+
+What would happen, if each of these abstractions had the same format -> interfaces making them understandable to each other, and that format was both data and code?
+
+In other words, what if the code was stored/persisted as Lisp, the abstraction (AST) was Lisp, the executable representation was Lisp, and the projection was Lisp?
+
+This is what long ago Lisp Machines did. The PicoLisp language encodes Lisp for the AST, persistence, and executable abstractions. The last part missing is the projection abstraction, which I believe is where many attempts have failed at creating alternative interfaces - finding a way to make the projection abstraction the same as the others.
+
+Particle explores that concept, particularly the projection aspect, and then hopes to take it one step further with today's technology.
+
+Originally, this project was attempted in Python and Common Lisp but became only possible with PicoLisp, because *all* data is based on cons cell structures retained during runtime, which allows the interface and data to be homoiconic. For example, a C array would break this principle (for interop, they can be symbolized through a number, i.e. pointer). One interesting implication is when characters (`str`) are input via keystrokes, they exist as cons cells so there is no reading or parsing.
+
+The primary advantage is to the user and developer - understandability and composability - leading to lower development time and increased productivity.
+
+The primary disadvantage is runtime speed - the only way to achieve faster interpreting is at the hardware level - a Lisp CPU with firmware/microcode to interpret the Lisp data directly, where the Lisp primitives are the instruction set = assembly.
+
+# Unification
   
-# The Problem
+Particle implements an old idea from Lisp Machines, which lives on today in McCLIM, where the representation is seperate from the underlying data ("presentation-based"). 
 
-A program has different operators that apply to different objects. We define this set of operators that work on a specific object as a mode. So when a user is working on an object of type A, they can only use operators belonging to a set, called mode A. Modes need not be mutually exclusive and can overlap.
+*Why it is no longer popular, is another discussion...too open? disallows vendor lock-in and thus software monetization?*
 
-Examples:
-* Mode A can exist for objects of type A; mode B can exist for objects of type B
-* Objects of type A can have different modes, or different types of objects can use mode A
-  
-This last example is important to note for this discussion.
+Most programs treat text and images differently and so users think and interact with them differently. Conventional GUIs use the same concept in the form of widgets. This means text editors can be thought of as one-dimensional serial pictographs.
 
-## The Spectrum
+## Projection Representation
 
-For example, a text editor typically has a text area, a menu, buttons and various widgets that all contain text objects, however, the text cannot be manipulated the same way consistently across objects. Text cannot be selected in a button the same way it can in a text area (Whether it is meant to be static or dynamic in a hypothetical system). Taken to an extreme, such as in a 3D creation program, every object has its own mode with minimal overlap, which the user must become familiar with to be effective and productive.
+In the projection representation, rather than view text and images as distinct types semantically, they are considered equals. In other words, glyphs *are* images, which can also be called icons, or more operatively - symbols. Images are Lisp data are code, which means they can be freely mixed interchangably with any data, thus an image can be directly passed to a function or itself can also be a function. 
 
-On the other end of the spectrum, taking to an extreme *The Single Responsibility Principle* or *Separation of Concerns*, the numerous modes end up overwhelming the user by reintroducing complexity through absolute simplicity effectively removing the concept abstractions which are necessary to manage complexity.
+Particle enforces a hierarchical (tree/graph) structure to the UI which makes conventional toolkits/widgets superfluous. For the layperson, in the context of text, they need only know the concepts of lists and strings, and their basic operations like delete, newline, cut/copy/paste which are already conceptually familiar. Eventually other types are encountered, however, because the user already knows the basic commands, they can use the pre-existing knowledge to explore newer types and functionality to build an effective mental model.
 
-## The Learning Curve and Complexity
+To better visualize this, the concept of a Pixel data type (visual representation = `[]`):
 
-It should be obvious that the more types there are and the more type-specific operators there are, the more contexts the user has to keep track of, which increases the mental burden on the user and directs their attention away from the problem they are trying to solve.
+* Represents a list of 4 numbers from 0-255 (RGBA)
+* Represents a square with the corresponding color
 
-As the complexity increases, so does the learning curve. Functions are identified by their functionality and arguments, and objects are identified by their type. Once familiarized, choosing what function for what object or vice versa, induces heavy context switching in the user's mind between two domains - the solution and the problem.
+...then take the concept of an Image data type
 
-In the first step, the user identifies the problem, secondly, conjures the abstract solution in their mind, and thirdly, then implements said solution using elements of the system, or more specifically the objects, operators, and modes of the program (and programming language). Finally, the process is repeated. The less mental gymnastics required to implement said solution, i.e. the third step, the more efficient and productive the user becomes in solving problems until they deem there are virtually no problems left to solve and the system is deemed complete.
+* Represents a list of Pixel
 
-A system can be seen as objects built upon objects like parts of a car or functions taking in functions like a process. For example, an object in a factory could be seen as an object evolving through an assembly line or as the various functions on the assembly line apply functions to that object.
 
-The current desktop has various applications with specific functionality that operate on different types of data implemented in different programming languages resulting in a user needing to learn each program's modes to be effective. One of the reasons for this is for proprietary and commercial reasons. Another reason is for the subjective reasons a programming language is chosen typically for infrastructure/social, financial cost, optimization/performance, or size reasons.
+What happens if two pixels are added? It could blend the colors into a single Pixel
 
-However, a few basic commands typically persistent between programs that most laypersons are familiar with both as a function and as a keyboard shortcut; often referred to as common user actions (CUA), such as New, Open, Save, Exit, Cut, Copy, Paste, Delete, Find.
+    (+ [] []) -> []
 
-This begs the question, why can programs not be made to reduce this burden on the users? In other words, is it possible to create a system where users can use those CUA across all programs on all objects?
+What happens if two lists of Pixel are added? It could create a list aka new Image
 
-## The Unix Legacy
+    (+ ([]) ([])) -> [[]]
 
-The design of Unix has has a significant influence on the modern OS's. The Unix philosophy prefers to treat all data as text or better yet streams of bytes, which goes hand-in-hand with the C language and arrays. While text is still important and those methods useful, the computer medium has evolved to support data types beyond text such as multimedia and objects. However, in order to operate on those non-text objects, requires them to be represented as raw bytes.
+At this point, it is possible to perform operations without typing any explicit code, or simply done with drag-drop. However, the textual interface still exists! The Pixel can be directly referenced by its pointer representation `$177334050465605` or assigned to a normal symbol `(def *p0 [])`.
 
-Using a C struct as an inter-program format or IPC format, requires both programs to have the exact same memory layout and the same type sizes. However, programs can use different libraries which results in different layouts and different compilers that result in different type sizes, so it cannot be guaranteed. Trying to guarantee memory layout between programs would require all programs involved using the same compiler and compiler settings, same libraries built the same way and so on, which would create a lot of maintenance overhead, and cooperation and agreement between parties. Additionally, in a proprietary or commercial context, this is not feasible. FOSS can solve the sharing of data problem, however, it by itself is unlikely to solve the social aspects. In the FOSS ecosystem, rarely is there a unanimous concensus - DE/WMs/widget fragmentation, and the never-ending creation of new standards are evidence of this.
+Let's take another example, a Window with a live interactive image representing a running GUI, and put some into a list:
 
-As a result, various serialization formats have emerged, popular text-based ones being JSON, XML, YAML, and popular binary ones being MsgPack and ProtocolBuffers. On top of that, many programming languages have language-specific protocols. Again, most of them exist for the fact that these formats are operated on by different programming languages which have different data types which may or may not map to the types supported by the format.
+    ([] [] [] [])
 
-As the FOSS ecosystem has shown, having an open format is not enough for it to be successful, the language used need also be successful, which we'll define as widely used in the professional industry. For a language to be successful, it usually has to capitalize on an emerging frontier in computing, which typically leads to commercialization. Lisp had Lisp Machines, but the ecosystem did not transfer over to the newer architecture, and the infamous AI winter occured. C was developed to make assembly programming easier at Bell Labs with Unix. Java had Sun Microsystems. C++ was an alternative to Java. Javascript was the language of the first popular web browser, Netscape. As for Python, my best guess is it focused mostly on the humanistic aspect: readability, extensibility, and maintainability, which made it easy to learn, at the cost of performance when computers became fast enough to run interpreters at a relatively decent speed. The list goes on.
+This Window can then be used to grab screenshots or process properties from `ps` etc.
 
-As abstractions build on abstractions, when a problem is identified and unable to be fixed at the current level, the user then attempts to fix the problem at a more fundamental level. If it is unable to be fixed, then a new layer of abstraction is built on top to offset that, the current state of the x86 architecture and commodity platforms good examples. Interestingly, Lisp allows the user to extend the language to fix the problem instead of complicating the system with more abstractions. Hence, when the entire system is made of Lisp down to the metal, the problems in the software domain are capable of being resolved thoroughly.
+    # The screenshot symbol could also be an icon for example
+    (screenshot [])
+    
+    (ps [])
 
-That begs the question, if that computing paradigm is better, why is it not popular today? 
+This idea can be used to create literal symbols to represent arbitrary data, while retaining the functionality of the underlying Lisp structure all within the same program.
 
-Maybe for reasons outlined by Peter Gabriel - "worse is better" verus "the right thing". Maybe because of the monopoly MS had on the PC market. Maybe it was technology that was too early for its time.
+A user would build up to an Image and then transfer that representation to another type/class all in realtime. It would be as if you were able to create native nodes/abstractions in a nodal type interface such as Blender's Node Editor or Unreal's Blueprints.
 
-However, the ecosystem and infrastructure that has been established around the C and Unix model is difficult to overcome. However, just as technology continues marching forward, new opportunities will present themselves. With the rise of mobile computing, multi-core processors, and the increasing connectivity of the world, abstractions that we have built are no longer flexible enough to take advantage of multi-core and parallel computing. The solution remains unknown, but must keep trying.
 
-## The Lisp Rebirth
+## Storage/Persistence Representations
 
-Lisp was originally commercialized around the single programmer managing their entire stack down to the hardware. Since the invention of Lisp, some say all languages borrow features from Lisp and are converging on it, or go so far as to implement Greenspun's Tenth Rule. The closest popular language similar to Lisp is Clojure, which has become more popular in recenty years, although it is more losely considered a Lisp programming language due to its nature. So if Lisp was so great why did it fail?
+Because all representations have the same underlying abstraction, they only differ with regards to their domain usage.
+
+The fundamental class is the `+Point` class which references the program data in its `any` property and the display data used for rendering by OpenGL in its `verts` property. These objects are persisted to disk.
+
+The `+Point` and `verts` data is considered the projectional representation and the `any` property is considered the abstract/persisted/executable representations.
+
+This means to run the program, the executable representation can be "pulled" out of the projectional representation to remove unessential features or provide a main +Point referencing a function that can be evaluated.
+
+Comments are also considered data, thus are stored with the projections. The comments themselves can be considered projections of the abstract data (see Intentional Programming). In other words, there exists a `+Comment` class, subclass of +Point, whose `verts` representation is arbitrary and not a literal representation of `any` data like normal.
+
+# The Origins
+
+After reviewing much of the existing software and attempts around building new interface paradigms, I noticed a common theme among all of them. They all used the traditional GUI like windows, widgets etc, resulting in the same inevitable ending; the GUIs were static and they were all separated from their underlying data - the data was designed around the UIs rather than the reverse. In the end, this made the project simply another visual theme but no different than conventional systems, effectively defeating the whole purpose of the project in the first place. 
+
+This led me to start with thinking about the most popular interface - text - and to trace its history and re-evaluate its functionality. There are numerous attempts to create a more expressive command line or REPLs.
 
 ## The Lisp Paradox
 
@@ -83,19 +151,11 @@ https://danluu.com/symbolics-lisp-machines/
 
 http://web.mit.edu/6.933/www/Symbolics.pdf
 
-Despite its tragic history, I believe Lisp's homoiconic nature, arguably the only defining feature of Lisp left, is possibly the key to a better interface. Not to mention, the Lisp ecosystem never strayed far from its original academic/scientific niche, so maybe its worth a shot to apply its principles to a general audience (not counting Apple's NewtonOS and Dylan). Last but not least, I don't think Lisp was ever meant to be operated on with a text editor and has always held its true power back...
-
-# The Solution
-
-After reviewing much of the existing software and attempts around building new interface paradigms, I noticed a common theme among all of them. They all used the traditional GUI like windows, widgets etc, resulting in the same inevitable ending; the GUIs were static and they were all separated from their underlying data - the data was designed around the UIs rather than the reverse. they all  In the end, this made the project simply another visual theme but no different than conventional systems, effectively defeating the whole purpose of the project in the first place. 
-
-This led me to start with thinking about the most popular interface - text - and to trace its history and re-evaluate its functionality. There are numerous attempts to create a more expressive command line or REPLs.
-
-## The Lisp Lightbulb
+Despite its tragic history, I believe Lisp's homoiconic nature, arguably the only defining feature of Lisp left, is the key to a better interface. Not to mention, the Lisp ecosystem never strayed far from its original academic/scientific niche, so maybe its worth a shot to apply its principles to a general audience (not counting Apple's NewtonOS and Dylan). Last but not least, I don't think Lisp was ever meant to be operated on with a text editor and has always held its true power back...
 
 Originally, Particle began in Python, then moved to Common Lisp, at which point I encountered CLIM, which is a descendant of the Symbolics Genera-based Lisp Machine's Dynamic Windows/Lisp Listener. Its central feature is the concept of presentation types, commands and transformers. 
 
-I think one of the issues it failed to become largely popular was, first, it did not appeal to developers outside the Lisp ecosystem as it was an interface manager and not just a toolkit (similar to what Qt has evolved into today), and secondly, it did not interact well with the established paradigms of fixed widgets. In some ways it reminds me of a display manager in that similar to the X windowing system, it too provided similar drawing primitives (which are today deprecated in favor of manipulating the buffer directly by toolkits etc.).
+I think one of the issues it failed to become largely popular was, first, it did not appeal to developers outside the Lisp ecosystem as it was an interface manager and not just a toolkit (similar to what Qt has evolved into today), and secondly, it did not interact well with the established paradigms of fixed widgets. In some ways it reminds me of a display manager in that similar to the X windowing system, it too provided similar drawing primitives (which today are deprecated in favor of manipulating the buffer directly by toolkits etc.).
 
 https://www.reddit.com/r/lisp/comments/22lbpe/whatever_became_of_clim/
 
@@ -113,6 +173,8 @@ I find open-source users fall into two camps, pragmatists and explorers, or shou
 
 However, for some users, an integrated approach is needed for a more productive experience rather than an exploratory one currently favored. Looking at the current ecosystem, the alternative is what has been witnessed over the last several decades -fragmentation, which depending on how it is viewed is also the freedom to change components.
 
+## The Lisp Lightbulb
+
 https://groups.google.com/forum/#!topic/comp.lang.lisp/XpvUwF2xKbk%5B101-125%5D
 
 > The value in Genera's Dynamic Windows is NOT about "completion" it's
@@ -127,11 +189,7 @@ https://groups.google.com/forum/#!topic/comp.lang.lisp/XpvUwF2xKbk%5B101-125%5D
 
 The key insight is that Lisp data structures are based upon singly linked lists. "Lists" being the operative word. Lists are more common to the layperson than most people realize. For example, when one creates an outline on paper or uses bullets in a word processing program or an outliner itself, etc. they are creating a structure or an interface. The alphanumeric or pictorial icon, indentation and spaces indicate the structure. They indicate which words or data belong to which other words or data.
 
-Effectively, Particle enforces a hierarchical (graph) structure to the UI which makes conventional widgets and toolkits obsolete. For the layperson, all they must know to use the program are lists and strings, and their basic operations like delete, newline, cut/copy/paste which are already conceptually familiar. Eventually other types are encountered, however, because the user already knows the basic commands, they can use the pre-existing knowledge to explore newer types and functionality.
-
-In contrast, Emacs relies on the concept of (gap) buffers and strictly manipulating arrays of characters (arrays), which works well for solely manipulating text, *and other objects granted they have a textual representation*. The inability to express other data types and interact with them in other ways is ultimately what led me to consider other approaches; it's aging codebase being difficult to evolve another main issue.
-
-In Particle, a list of windows is literally a list of windows and the same list operations apply (exchange windows for arbitrary data type of your choice). Of course, there can be more specialized commands also, however, that is moreso an issue of discoverability. The fundamental concern of the UI is a tradeoff between the developer having complete design freedom versus the user having to learn it.
+In contrast, Emacs relies on the concept of gap buffers and strictly manipulating arrays of characters (arrays), which works well for text, *and other objects granted they have a textual representation*. The inability to express other data types and interact with them in other ways is ultimately what led me to consider other approaches; it's aging codebase being difficult to evolve another main issue.
 
 The goal of Particle is not to be a pedagogical platform for programming nor a visual programming language in itself, however, the hope is the user can implicitly understand how the system works through using it, i.e. manipulating its data structures. Then, should the user want to learn programming, they will already have gained some of the fundamental concepts, at least to program in Lisp.
 
@@ -141,7 +199,7 @@ That being said, I believe learning programming initially through concepts rathe
 
 -- Linus Torvalds
 
-## The Pico Lightbulb
+## The PicoLisp
 
 The consistency of PicoLisp (LISP) makes it easy to reason about the system by connecting the linked-list structure of the UI directly to the underlying linked-list data structure (or more specifically linked cons cells), and because Lisp code can manipulate data through eval, the UI can be dynamically modified through itself. This means operating on the UI (or the data representation) is the same as operating on the underlying data which has the same representation.
 
@@ -180,3 +238,35 @@ However, replacing the desktop with a FOSS desktop is not the key point towards 
 Learning to program, effectively and efficiently, is not a trivial task. It requires a great deal of abstract thinking similar to mathematics, which is notorious for its difficulty beyond basic arithmetic. However, I do not believe all hope is lost, and similar to the traits of a good teacher, a program should have similar traits; it is not solely about dumbing down computers and technology to make it easier to learn, but creating the right tools to drive motivation and gradual learning.
 
 **The way for a future FOSS system does not lie with the desktop but with the computing needs of tomorrow.**
+
+# Context Information
+
+## Compilers
+
+Compiler Pipeline:
+
+![Compiler Pipeline](https://github.com/Seteeri/Particle/blob/master/art/compiler-flow.jpeg)
+
+*Source: Understanding Compilers — For Humans (Version 2)*
+
+Compiler Pipeline for LLVM:
+
+![Compiler Pipeline for LLVM](https://github.com/Seteeri/Particle/blob/master/art/bitcode.png)
+
+*Source: https://lowlevelbits.org/pdfs/bitcode.pdf*
+
+[Why does LLVM have an assembly-like IR rather than a tree-like IR? Or: why do projects target LLVM IR instead of clang's AST?](https://softwareengineering.stackexchange.com/questions/355759/why-does-llvm-have-an-assembly-like-ir-rather-than-a-tree-like-ir-or-why-do-pr)
+
+## Interpreters
+
+AST Interpreter Pipeline:
+
+![AST Interpreter Pipeline](https://github.com/Seteeri/Particle/blob/master/art/inter-flow.jpeg)
+
+*Source: Understanding Compilers — For Humans (Version 2)*
+
+Lisp Example:
+
+![Lisp Pipeline](https://github.com/Seteeri/Particle/blob/master/art/reader.png)
+
+*Source: https://kanaka.github.io/lambdaconf/#/*

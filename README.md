@@ -7,23 +7,19 @@ information as they moved through the computer. What did they look like?
 
 ---
 
-Particle is a PicoLisp presentation binary tree (AST) UI.
+Particle is a PicoLisp presentation tree UI.
 
 Particle is the realization of my vision of the human computer interaction model. I want to take the extensibility, dynamicness, and cohesion of past Lisp Machines, Smalltalk-like enivronments, and others, and evolve the text interface to empower as many users as possible to take advantage of the increasing integration of the digital world, the ever-growing computing power, and ubiquitousness of the internet.
 
 I believe the way for a future FOSS system does not lie solely with the desktop - that has been settled - but with the computing needs of tomorrow.
 
-Originally, this project was attempted in Python and Common Lisp but became only possible with PicoLisp, because *all* data is based on cons cell structures retained during runtime, which allows the interface and data to be homoiconic. For example, a C array would break this principle (for interop, they can be symbolized through a number, i.e. pointer).
-
-One interesting implication is when characters (`str`) are input via keystrokes, they exist as cons cells so there is no reading or parsing. Consequently, there is no conventional GUI as all data exists in the same domain; it is not separate from the underlying data like in conventional programs (it is possible to build a conventional GUI).
-
 Currently, the shell is being developed. Afterwards building upon that, the window manager and PIM will be developed, which will allow interaction with existing programs, end-user functionality, and integration on other platforms.
 
-Plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM-based), a native solution can be provided. The Pinephone is also on the way ;)
+Plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM-based), a native solution can be provided.
 
 The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that, through a more pragmatic and gradual approach.
 
-The target audience consists of information/knowledge workers, power users, programmers.
+The target audience consists of information/knowledge workers, power users, and programmers.
 
 * To ameliorate the following sentiments:
   * "I'm tired of needing a new application for every different task."
@@ -38,24 +34,13 @@ The target audience consists of information/knowledge workers, power users, prog
 
 ![PARTICLE SCREENSHOT](https://github.com/Seteeri/Particle/blob/master/art/screenshot-2.png)
 
-Can you identify the s-expression structure?
-
 These colored text are representations for the fundamental types; the use of color allows the removal of some character tokens to optimize drawing and information efficiency:
+
 * Strings do not have double quotes; it is possible to remove other identifying tokens such as curly brackets and the dollar sign. 
 * Pairs use dot notation and terminate with the `NIL` symbol for proper lists, or arbitrary data for improper lists
   * Parentheses are possible, for the more traditional types ;)
 * Lines are double-spaced to vertically delimit pairs and to allow room for the pointer name/mode (rather than in-between pairs like conventional text cursors)
 * The pointer is also a symbol!
-
-The hierarchial structure is a direct consequence of the underlying Lisp data, which is a tree; manifesting in a natural UI.
-
-Particle separates the representation from the data ("presentation-based"), allowing arbitrary representations beyond conventional strings - this is an old idea.
-
-The enabling feature is simple: rather than view text and images as distinct types on both the semantic and data level, text is rendered isomorphic to images. 
-
-Another way of thinking about text is they are already images, aka glyphs, icons, or more operatively - symbols; conventional GUIs use the same concept but with real objects, and users similarly think about them the same way during interaction. For text editors, they can be thought of as one-dimensional serial pictographs.
-
-This idea is then further extended to create arbitrary representations for arbitrary data while maintaining the same underlying operations, or interface if you will, no matter the level of abstractions composed.
 
 # Goals
 

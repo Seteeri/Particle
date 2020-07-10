@@ -18,6 +18,8 @@ TODO
   REPL:
   
   * Refactor/Fix [Tues]
+    * Deprecate lines in ops fns to simplify
+      * Refactor con-b-pair-y: Put X2 after X1
     * Remove type checking for sym...
       * Mov more fn to set> and con>
         * Issue is line handling

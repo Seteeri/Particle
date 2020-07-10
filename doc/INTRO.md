@@ -2,12 +2,6 @@ Table of Contents
 =================
 
 ![PARTICLE](https://github.com/Seteeri/Particle/blob/master/art/screenshot.png)
-
-Particle separates the representation from the data ("presentation-based"), allowing arbitrary representations beyond conventional strings - this is not new. The enabling feature is rather than view text and images as distinct types on both the semantic and data level, text is considered equal to images. Another way of thinking about text is they are already images, aka glyphs, icons, or more operatively - symbols; conventional GUIs use the same concept and people think about them the same way when interacting. This means text editors can be thought of as one-dimensional serial pictographs.
-
-At the data structure level, both text and images have the same data layout. This is enabled by the underlying Lisp structure that implements text, aka encoded numbers, in cons cells as symbols. Likewise, images are also implemented as cons cells. The power of storing data in cons cells over raw bytes like in a typical program, is cons cells have inherent properties due to their two-pointer structure which enables linking arbitrary data which can then be interpreted in different ways at a higher abstraction level. Ultimately, this allows operations that work on text to work on images also. The same way in a compiled Lisp, macros can create new DSLs or syntax aka glyphs, which can be used alongside native syntax, the same can be done with images - they can be mixed with text/code.
-
-For example, a pixel data type consisting of a list of 4 numbers from 0-255, representing RGBA, can be directly represented as a square with the corresponding color. An image can then be defined as a list of pixels, or a list of list of 4 numbers, and that data type can be literally represented as all the pixels combined into a single image. All of this can be done with basic Lisp operations and without typing any explicit code. This idea can then be further extended to allow the user to create literal symbols to represent arbitrary data, and yet they retain the composability of the underlying Lisp structure. In addition, in the context of code, code can be represented by text, so for example, comments can represent code to more effectively indicate the programmer's intentions.
   
 # Premise
 

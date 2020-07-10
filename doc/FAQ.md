@@ -19,17 +19,13 @@ The idea is not to replace text but to include the use of images, side-by-side a
 
 > When you sit down and think about it for one second, you have to realize that programming doesn’t fundamentally have anything to do with graphical user interfaces. Yes, you can use programming code to create GUIs, but there is no reason that programming should have to involve GUIs and be tied to them. The metaphor of writing code has been extremely successful since the very beginning, and it probably makes more sense to the mathematical mind of a skilled programmer. Not everything has to have a visual metaphor. This is again a case of pushing some idealistic principle too far, in my opinion.
 
-I would interpret Smalltalk's data model as one abstraction above Lisp's, and I agree with some of its underlying philosophy of making programming more humanistic and accessible.
+I interpret Smalltalk's data model as one abstraction above Lisp's, and I agree with some of its underlying philosophy of making programming more humanistic and accessible.
 
 **Attempts at structured/projectional editors have largely failed and the ones that have succeeded are niche.**
 
 https://github.com/pel-daniel/mind-bicycles
 
-PicoLisp is a pure Lisp where all data consists of cons cells, with only three basic types: Pairs, Numbers, and Symbols which all consist of cons cells; strings are also symbols.
-
-This consistency makes it easy to reason about the system by connecting the linked-list structure of the UI directly to the underlying linked-list data structure (or more specifically linked cons cells), and because Lisp code can manipulate data through eval, the UI can be dynamically modified through itself. This means operating on the UI (or the data representation) is the same as operating on the underlying data which has the same representation.
-
-At the end of the day, you could say it is using a list metaphor instead of a desktop metaphor since what's really important is that TODO list on your desk and not so much the desk itself ;)
+*See PREMISE*
 
 **Does this roughly offer the same benefits that the old lisp machines provided?**
 
@@ -109,17 +105,21 @@ The plethora of note-taking options and the lack of an, arguably, dominant appli
 > Surprisingly, no software with all those features exists yet. There are some interesting options though...
 
 
-
 **Jetbrains MPS**
 
+Why did it never really catch on?
 
 
 **Light Table, Eve**
 
+Why did these fail?
 
 
 **WinFS**
 
+See *ANECDOTES*
 
 
 **Labview, Max**
+
+More research...
