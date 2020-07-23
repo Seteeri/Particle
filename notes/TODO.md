@@ -16,21 +16,12 @@ TODO
   * +Pixel example to demonstrate power
   
   REPL:
-  
-  * Refactor/Fix [Tues]
-    * Refactor con-b-pair-y: Put X2 after X1
+      
+  * Refactor/Fix
     * Remove type checking for sym...
       * Mov more fn to set> and con>
         * Issue is line handling
-      * Handle symbol/exp
-
-  * Implement X-Pair [Tues/Wed]
-    
-  * Refactor/Fix [Thurs]
-    * Refactor strs...lines
-      * Cannot replace lines with nested lists
-      since this alters the underlying data itself
-      * Projectional editing
+      * Handle symbol/exp  
     * Add cmd-make-pair-x; do before exp
     * Limit lay line length
     * Line tests
@@ -43,6 +34,12 @@ TODO
       * Use prog1
       * Improve del>
         * Fix double free
+  
+  * Dynamic tests
+    * Random ops
+    * Check that each Point is > x or < y
+  
+  * Implement X-Pair
   
   * Fonts
     * Use bitmap fonts for now

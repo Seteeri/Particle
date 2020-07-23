@@ -334,7 +334,7 @@
     # Pop cur line (Pt-C), push new list
     (lns> *ptr) (lns> *ptr Pt-Ls)        
         
-    (pt> *ptr Ls 'a)        
+    (pt> *ptr Ls 'a)
         
     (lay-*start)    
     (top> Pt-Ls)
@@ -378,8 +378,8 @@
         
     # Keep ref - change rel
     #(pt> *ptr C 'b)
-    (put *ptr 'rel 'b)
-    
+    (put *ptr 'reg 'b)
+        
     (lay-*start)
     (top> Pt-C)
     (draw> *ptr)))
