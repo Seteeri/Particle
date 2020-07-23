@@ -61,12 +61,16 @@
             "/particle/worker/cmd/cam.l"
             
             "/particle/worker/point/point.l"
+            "/particle/worker/point/line.l"            
             "/particle/worker/point/pair.l"
             "/particle/worker/point/atom.l"
-            "/particle/worker/point/line.l"
-            "/particle/worker/point/sym.l"
             "/particle/worker/point/num.l"
             "/particle/worker/point/nil.l"
+            "/particle/worker/point/sym/sym.l"
+            "/particle/worker/point/sym/box.l"
+            "/particle/worker/point/sym/int.l"
+            "/particle/worker/point/sym/str.l"
+            "/particle/worker/point/sym/ext.l"
                                 
             "/particle/worker/ops/align.l"            
             "/particle/worker/ops/lay.l"

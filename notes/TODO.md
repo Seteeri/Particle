@@ -19,9 +19,9 @@ TODO
       
   * Refactor/Fix
     * Remove type checking for sym...
+      * Need to consolidate line handling in ops
       * Mov more fn to set> and con>
-        * Issue is line handling
-      * Handle symbol/exp  
+      * Handle symbol/exp
     * Add cmd-make-pair-x; do before exp
     * Limit lay line length
     * Line tests
@@ -36,7 +36,8 @@ TODO
         * Fix double free
   
   * Dynamic tests
-    * Random ops
+    * Randomize ops: permutations + double
+      * Permutations dependent on num of cmds
     * Check that each Point is > x or < y
   
   * Implement X-Pair

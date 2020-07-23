@@ -13,27 +13,31 @@
   
 }#
 
+# +Int
+# +Ext
+# +Str (Transient)
+# +Box (Transient-Anonymous)
+#   Note, (str? (box)) = T
+# +Nil
 
-(class +Num +Atom)
+# CAR empty for Anon syms (CAR is actually number 0)
+
+# These assume Ptrs not expanded
+
+(class +Sym +Atom)
 
 (dm T (Any
        Lay
        A B
-       Exp
-       Col)
+       Exp)
   (super Any
          Lay
          A B)
-  
-  (unless Col (setq Col (get-col-type Any)))         
-  
-  (let ((Verts W) 
-          (make-vert-atm Any Col))
-    (=: verts Verts)
-    (=: dims (list W
-                  (meta '(+Vertex) 'adv-vert-2))))
+  (if Exp
+      T
+      (let ((Verts W)
+              (make-vert-atm Any (get-col-type Any)))
+        (=: verts Verts)
+        (=: dims (list W
+                      (meta '(+Vertex) 'adv-vert-2)))))
   (=: exp Exp))
-
-(dm lay> ()
-  (lay-cur> This)
-  NIL)
