@@ -25,7 +25,7 @@
       (if (= M *mode-txt)
           *po-ptr-cmd
           *po-ptr-txt))
-          
+    
     (top-ref> *ptr)
     (draw> *ptr)))
 
@@ -109,35 +109,30 @@
   
 (de cmd-print-ptr ()
 
-  (prinl "START:")
-  (println *start)
+  #(prinl "START:")
+  #(println *start)
 
-  (with *ptr
+  (prinl)
+  
+  (let ((Pt-Pair Ref) (get-ref-pt> *ptr))
+                
+    (prinl "PTR:")
+    (prin "Ref: ") (println Ref)
+    (prin "any: ")  (println (get Ref 'any))    
+    (prin "a: ")  (println (get Ref 'a))
+    (prin "b: ")  (println (get Ref 'b))      
+    #(prin "ori: ")  (println (get Ref 'ori))
+    #(prin "dims: ") (println (get Ref 'dims))
+    #(prin "lay: ")  (println (get Ref 'lay))
         
-    (let Ref (if (: pair)
-                 (: ref)
-                 (lup-pt (: ref)))
-        
-      (prinl "PTR:")
-      (prin "Ref: ") (println Ref)
-    
-      (prin "dat: ")  (println (get Ref 'any))
-      (prin "reg: ")  (println (: reg))
-      (prin "ori: ")  (println (get Ref 'ori))
-      (prin "dims: ") (println (get Ref 'dims))
-      (prin "lay: ")  (println (get Ref 'lay))
-      
-      (prin "a: ")  (println (get Ref 'a))
-      (prin "b: ")  (println (get Ref 'b))
-      
-      (when (get Ref 'line)
-        (prin "line.p: ")    (println (get Ref 'line 'p))
-        (prin "line.n: ")    (println (get Ref 'line 'n))
-        (prin "line.dims: ") (println (get Ref 'line 'dims)))))
+    (when (get Ref 'line)
+      (prin "line.p: ")    (println (get Ref 'line 'p))
+      (prin "line.n: ")    (println (get Ref 'line 'n))
+      (prin "line.dims: ") (println (get Ref 'line 'dims))))
       
   (when T
     (prinl "=============")
-    (prinl "CURRENT LINE:")
+    (prinl "LINE:")
     (prin "Lines: ") (println (get *ptr 'lns))
     (let Ptr-Ln (car (get *ptr 'lns))
       (prin "Ptr Ln: ") (println Ptr-Ln (get Ptr-Ln 'any)))

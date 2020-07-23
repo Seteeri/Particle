@@ -89,3 +89,12 @@
 (dm del> (A B)
   
   (for Vert (: verts) (del> Vert)))
+
+
+(dm con-pair-str> (Pt-Pair Str)
+  (if (reg-a?> *ptr)
+      (if (lay-y?> Pt-Pair)
+          (ins-a-atom Str)
+          (repl-atom Str 'a))
+      (ins-b-atom Str)))
+      

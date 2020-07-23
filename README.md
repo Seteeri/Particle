@@ -1,5 +1,10 @@
-![PARTICLE LOGO](https://github.com/Seteeri/Particle/blob/master/art/particle.png)
-
+    ____                   _     _          _        
+    |  _ \    __ _   _ __  | |_  (_)   ___  | |   ___ 
+    | |_) |  / _` | | '__| | __| | |  / __| | |  / _ \
+    |  __/  | (_| | | |    | |_  | | | (__  | | |  __/
+    |_|      \__,_| |_|     \__| |_|  \___| |_|  \___|
+                                                  
+    
 > The Grid. A digital frontier. I tried to picture clusters of
 information as they moved through the computer. What did they look like?
  Ships? Motorcycles? Were the circuits like freeways? I kept dreaming of
@@ -7,7 +12,7 @@ information as they moved through the computer. What did they look like?
 
 ---
 
-Particle is a PicoLisp presentation tree UI.
+Particle is a PicoLisp userland.
 
 Particle is the realization of my vision of the human computer interaction model. I want to take the extensibility, dynamicness, and cohesion of past Lisp Machines, Smalltalk-like enivronments, and others, and evolve the text interface to empower as many users as possible to take advantage of the increasing integration of the digital world, the ever-growing computing power, and ubiquitousness of the internet.
 
@@ -47,12 +52,12 @@ These colored text are representations for the fundamental types; the use of col
 * To complete user tasks, efficiently and effectively ("getting $hit done")
   * In terms of programatic solutions, priority is on lowering human development and response time through adaptability/flexibility over raw performance
   * C exists where it is needed
-* To optimize the planning and direction; collection; processing and exploitation; analysis and production; and dissemination of fused multi-domain information in a time-sensitive environment
-  * Author's professional requirements ;)
 * To remember everything, an extension of the human brain
   * Evernote by Stepan Pachikov
 * To structure a system in such a way that it can be described, explained, and understood as a whole
   * Oberon OS by Niklaus Wirth at ETH Zürich
+* To optimize the planning and direction; collection; processing and exploitation; analysis and production; and dissemination of fused multi-domain information in a time-sensitive environment
+  * Author's professional requirements ;)
 
 # Inspirations
 
@@ -95,8 +100,6 @@ These colored text are representations for the fundamental types; the use of col
 
 # UI
 
-On MS and Apple systems, it serves as an outliner "app" or personal knowledge manager, however, with Linux and BSD systems it goes further absorbing the Wayland compositor, creating an encompassing Lisp environment.
-
 The UI philosophy is a merger of Vim and Emacs, and to a degree Photoshop. Imagine being able to compose commands on Lisp data, instead of only strings, while getting proper state feedback/indication to reduce mode errors and enhanced discoverability to accelerate learning. The named pointers and hierarchial nature of the data allows the user to build a mental model of the system leading to faster mode prediction.
 
 If the user must perform a search for context-related commands (rather than one they have instantly conjured up), this means the system has failed the user. In other words, the system should provide possible future directions based on the current context object at all times.
@@ -113,30 +116,29 @@ To improve discoverability:
   * Mouse and touch support
   * Conventional or Vim style (modal) shortcuts
 * Local/offline data first - no cloud dependency
-* Storage mechanisms
-  * Plaintext (Lisp code)
-  * Binary (Lisp data)
-  * Database (Lisp data)
-    * Persistent symbols, called external symbols, first-class data type
-    * NoSQL
-    * Full ACID, replication, journaling
-    * [PicoLisp DB Vs ORM](https://picolisp.com/wiki/?pilvsorm)
-* Hierarchial/tree structure focused around lists/symbols
-  * Defaults:
-    * Start - main workspace
-    * Log - undo/cmd history
-    * Pointer-Mode - "mouse pointer" and modes; contains key bindings
-    * Selection - aka buffers/registers for cut/copy/paste of objects etc.
-    * Property-List - property list for object exploration
-    * Search-Replace - search/replace symbols/properties
-    * Files - file navigator
-    * Help - command palette; provides context-dependent suggestions
-* Filesystem Interface
-  * Interfaced through symbols
-  * Filepaths are translated to tags
-  * "/this/is/some/path/fora/file.ext" = `(file ext this is some path fora)`
-  * Each directory/word is a tag
-  * Order determines priority when searching but is otherwise equivalent
+* Database (Lisp data)
+  * Persistent symbols (external symbols) - first-class data type
+  * NoSQL, full ACID, replication, journaling
+  * [PicoLisp DB Vs ORM](https://picolisp.com/wiki/?pilvsorm)
+* Grid/Tree UI focused around lists/symbols
+  * Default External Symbols (Classes/Objects):
+    * +Start - REPL/DB
+    * +Pointers - selection interface; key bindings/"modes"
+      * +Registers - selected items (just another list)
+      * +PropList - object interface
+    * +Sentinel (filters input)
+      * +CmdPal - context-dependent suggestions
+        * +Filter
+        * +Sort
+        * +Search-Replace
+      * +Log - undo/cmd history
+        * poss modify directly - changes not log'd 
+    * +Files - file navigator
+      * Interfaced through symbols
+      * Filepaths are translated to tags
+      * "/this/is/some/path/fora/file.ext" = `(file ext this is some path fora)`
+      * Each directory/word is a tag
+      * Order determines priority when searching but is otherwise equivalent
 
 # Manual
 

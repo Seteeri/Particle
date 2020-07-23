@@ -19,8 +19,24 @@
   
 }#
 
-(de make-str (Str Lay)
+
+(de make-str-xp (Str)
   
+  # Refactor this cond into a ptr method
+  # i.e. any>
+  # returns a Point which a method can be called
+
+  (let ((Pt-Pair Pt-Atom) (get-ref-pt> *ptr))
+  
+    (println Pt-Pair Pt-Atom)
+  
+    (if Pt-Atom
+        (con-pair-str> @ Pt-Pair Str)
+        (con-pair-str> Pt-Pair Str))))
+
+
+(de make-str (Str Lay)
+        
   (cond
     
     ######
@@ -31,7 +47,7 @@
       # Insert on Y pair
       # - More likely user will insert rather than replace
       # Replace on X pair
-      (if (lay-y?> (lup-pt (get *ptr 'pair)))
+      (if (lay-y?> *ptr)
           # Add tests:
           (ins-a-atom Str)
           (repl-atom Str 'a)))
@@ -45,7 +61,7 @@
     # PAIR
     # - pair for pair
     # - ins bef ptr
-
+    
     ((a-pair?> *ptr)
       (if (lay-x?> *ptr)
           (con-a-pair-x Str)
@@ -67,12 +83,13 @@
     
   }#
 
-  #(println 'repl-atom)
+  (println 'repl-atom)
   
-  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
-        Pt-Del (if (get *ptr 'pair)
-                   (get Pt-Pair (get *ptr 'reg))
-                   (lup-pt (get *ptr 'ref)))
+  (let ((Pt-Pair Pt-Del) (get-ref-pt> *ptr)
+        Pair (get Pt-Pair 'any)
+        #Pt-Del (if (get *ptr 'pair)
+        #           (get Pt-Pair (get *ptr 'reg))
+        #           (lup-pt (get *ptr 'atom)))
         Pt-Str (gen-point Str 'x NIL T))
 
     (when (get Pt-Del 'line)
@@ -80,12 +97,12 @@
       (lns> *ptr))
     (set-ln-n> *ptr Pt-Str)
     
-    (pt> *ptr Pair Reg Pt-Str)
-    
     (if (= Reg 'a)
         (set> Pt-Pair Str Pt-Str T)
         (con> Pt-Pair Str Pt-Str T))
-        
+    
+    (pt> *ptr Pair Reg T T)
+    
     (lay-*start)
     
     (when (and (pair Pair)
@@ -98,9 +115,20 @@
 
 (de ins-b-atom (Str)
 
-  #(println 'ins-b-atom)
+  #{
   
-  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
+    Connect new list cdr to cur atom
+    Update pointer before updating cur pair
+    Then connect new list to cur pair
+    Draw main
+    Mov cur to ptr
+    Draw ptr
+    
+  }#
+
+  (println 'ins-b-atom)
+  
+  (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
         Pt-Cdr (get Pt-Pair 'b)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
@@ -109,13 +137,16 @@
       (mov-line Pt-Cdr Pt-Ls)
       (lns> *ptr))
     (set-ln-n> *ptr Pt-Ls)
-  
-    (con> Pt-Pair Ls)
+
     (con> Pt-Ls (get Pt-Cdr 'any) Pt-Cdr T)
-          
-    (lay-*start) 
     
-    (pt> *ptr Ls 'b Pt-Cdr)
+    # Point to cdr of new list
+    # aka cur atom
+    (pt> *ptr Ls 'b T)
+    
+    (con> Pt-Pair Ls)
+    
+    (lay-*start)
     
     (top> Pt-Cdr)
     (draw> *ptr)))
@@ -123,9 +154,9 @@
         
 (de ins-a-atom (Str)
 
-  #(println 'ins-a-atom)
+  (println 'ins-a-atom)
   
-  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
+  (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
         Pt-Car (get Pt-Pair 'a)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
@@ -138,9 +169,8 @@
     (set> Pt-Pair Ls Pt-Ls)
     (con> Pt-Ls (get Pt-Car 'any) Pt-Car T)
     
-    #(pt> *ptr Ls 'b Pt-Car)
     (with *ptr
-      (=: pair Ls)
+      (=: any Ls)
       (=: reg 'b))
   
     (lay-*start)
@@ -185,7 +215,7 @@
         
     Out:
 
-              *
+                    *
         [Y]  [X2]  [X1] .
               .     .
             
@@ -193,10 +223,10 @@
       
   }#
   
-  #(println 'con-b-pair-x)
+  (println 'con-b-pair-x)
   
   (let ((C Pt-C Reg-C
-         B Pt-B) (refs-1> *ptr)
+         B Pt-B) (refs-2> *ptr)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
     
@@ -206,15 +236,16 @@
     
     # Mov line
     (when (get Pt-C 'line)
-    
       (mov-line Pt-C Pt-Ls)
       (lns> *ptr))
       
     (set-ln-n> *ptr Pt-Ls)
                 
-    # ref does not change
-                
     (lay-*start)
+    
+    # dont use pt since it will set prev col to sel
+    # update any
+    (put *ptr 'any Ls)
     
     (top> Pt-C)
     (draw> *ptr)))
@@ -250,7 +281,7 @@
     
   }#
   
-  #(println 'con-b-pair-y)
+  (println 'con-b-pair-y)
   
   (let ((C Pt-C Reg-C
          B Pt-B) (refs-1> *ptr)
@@ -262,7 +293,7 @@
     # B = poss
     # Ls = yes
     # C = yes
-    
+        
     (con> Pt-B Ls Pt-Ls NIL)
     (con> Pt-Ls C Pt-C 'del)
     
@@ -286,9 +317,12 @@
     # Pop cur line (Pt-C), push new list
     (lns> *ptr) (lns> *ptr Pt-Ls) 
     
-    (pt> *ptr Ls 'b)
-    
     (lay-*start)    
+    
+    # Need new fn
+    (uncol> *ptr Pt-C T)
+    (pt> *ptr B 'b T T)
+    
     (top> Pt-Ls)
     (draw> *ptr)))
 
@@ -377,7 +411,6 @@
     (set-ln-n> *ptr Pt-Ls)        
         
     # Keep ref - change rel
-    #(pt> *ptr C 'b)
     (put *ptr 'reg 'b)
         
     (lay-*start)

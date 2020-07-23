@@ -1,3 +1,32 @@
+(de make-pair-y (Ks)
+  #(println 'cmd-make-pair-y)
+
+  # Fold this function
+  # or make methods
+  
+  (cond
+  
+    ((a-atom?> *ptr)
+      (println 'make-pair-y "A ATOM/NIL")
+      (if (lay-x?> *ptr)
+          (make-pair-a-atom-x)
+          (make-pair-a-atom-y)))
+      
+    ((b-atom?> *ptr)
+      (println 'make-pair-y "B ATOM/NIL")
+      (make-pair-b-atom))
+    
+    ((a-pair?> *ptr)
+      (println 'make-pair-y "A PAIR")
+      (make-pair-a-pair))
+      
+    ((b-pair?> *ptr)
+      (println 'make-pair-y "B PAIR")
+      (make-pair-b-pair)
+      # (if (lay-x?> *ptr) ...)
+      )))
+
+
 (de make-pair-b-pair ()
   #{
   
@@ -62,15 +91,15 @@
       ->
       
       [Y1]
-            *
+             *
       [Y2]  [X2]  ...
-            .    
+             .    
       
       .    
 
   }#
   
-  #(println 'make-pair-b-pair)  
+  (println 'make-pair-b-pair)  
   
   (let ((C Pt-C Reg-C
          B Pt-B) (refs-1> *ptr)
@@ -83,6 +112,12 @@
   
     (con> Pt-B Cons Pt-Cons)
     (set> Pt-Cons C Pt-C T)
+    
+    # Still pt to og pair
+    # must upd any
+    (with *ptr
+      (=: any Cons)
+      (=: reg 'a))
     
     (if (get Pt-C 'line)
         (prog
@@ -109,13 +144,13 @@
     (put Pt-Cons 'line (new '(+Line) Ln Pt-Cdr))
     
     (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
-      
-    (pt> *ptr Cons 'b)
     
     (lay-*start)
                 
     (lns> *ptr Pt-Cons)
-    (top> Pt-Cons)
+    (lns> *ptr Pt-C)
+    
+    (top-ref> *ptr)
     (draw> *ptr)))
           
           
@@ -144,7 +179,7 @@
         [X]
          .
          
-               *
+                     *
         [Y1]  [Y2]  [X1]  .
                      .
                .
@@ -181,7 +216,7 @@
       
   }#
   
-  #(println 'make-pair-a-pair)
+  (println 'make-pair-a-pair)
   
   (let ((C Pt-C Reg-C
          B Pt-B) (refs-1> *ptr)
@@ -202,13 +237,20 @@
     
     (set> Pt-Cons C Pt-C T)
     
-    (pt> *ptr Cons 'a)
+    # Still pt to og pair
+    # must upd any
+    (with *ptr
+      (=: any Cons)
+      (=: reg 'a))
     
     (lay-*start)
                 
     ~(assert (get Pt-C 'line))
+    
     # Pt to new cons so pop old line, push cons
     (lns> *ptr)
     (lns> *ptr Pt-Cons)
-    (top> Pt-Cons)
-    (draw> *ptr)))            
+    (lns> *ptr Pt-C)
+    
+    (top-ref> *ptr)
+    (draw> *ptr)))

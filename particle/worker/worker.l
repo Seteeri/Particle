@@ -41,8 +41,12 @@
             "/particle/worker/cursor.l"   
             "/particle/worker/projview.l"
             "/particle/worker/idx.l"
-            "/particle/worker/gen.l"
-            "/particle/worker/pointer.l"
+                        
+            "/particle/worker/pointer/pointer.l"
+            "/particle/worker/pointer/p.l"
+            "/particle/worker/pointer/ln.l"
+            "/particle/worker/pointer/pt.l"
+            "/particle/worker/pointer/ref.l"
                         
             "/particle/worker/mode/txt/an.l"
             "/particle/worker/mode/txt/op.l"
@@ -60,6 +64,7 @@
             "/particle/worker/cmd/conv.l"
             "/particle/worker/cmd/cam.l"
             
+            "/particle/worker/point/gen.l"
             "/particle/worker/point/point.l"
             "/particle/worker/point/line.l"            
             "/particle/worker/point/pair.l"
@@ -262,10 +267,11 @@
       
       # Upd +Point on change
       (set-ln-n> *ptr Pt-Sta)
-      (pt> *ptr '*start 'b)
+      (pt> *ptr '*start '*start T)
       
       (mov-cur 0.0 1.0)     
       # Call this through *ptr method      
+      (top> Pt-Sta)
       (draw> *ptr)
     
       (mov-cur 0.0 0.0)
@@ -273,7 +279,7 @@
       (col-verts> Pt-D *selb-yellow 1.0)
       (lay-pt-start '⇲ '⇲ T T)
       
-      (when T
+      (when NIL
         (run-tests)
         #(quit "Finished tests")
         )

@@ -4988,6 +4988,114 @@ CST
 ((1 2)
  (3 4))
 
+ 
+============================================
+ 
+two extremes:
+
+all text and dynamic
+
+or
+
+traditional gui and static
+ 
+ 
+ideal: gui + dynamic
+
+guis themselves are tree structures
+
+
+
+if data was represented literally
+the ui would be as useful as a hexviewer
+so we must impose an order to the visual elements
+
+ex: symbol ui is similar in structure (tree/list) 
+to the underlying pointer structure
+but not a literal representation (tho possible)
+-> the key is both are DAGs
+
+how to manage sym reprs with zap/del?
+- del intern sym will transform it to trans symbol
+
+cons cell built on ptrs
+ui built on cons cells
+- users should never need to use adr
+  - mostly for C code?
+- so ui elements interact with each other
+to produce effects
+- when lists are modified, like the car/cdr changes
+i.e. links are broken/unbroken
+- ex: sym prop list modified calls 'put
+- instead of typing names, select obj and move it
+  - sel, mov, link/unlink ui elements is the api 
+
+
+num interface:
+- NIL
+...decimals?
+
+nil interface:
+- NIL
+
+pair interface:
+- car
+- cdr
+...or none?
+...doesn't this apply to all interfaces?
+  
+sym interface:
+instead of direct sym struct, show under symbol:
+- name, value, plist
+- rename int sym: https://www.mail-archive.com/picolisp@software-lab.de/msg02740.html
+
+obj/sym interface: ...
+- name (none/ptr)
+- class (value)
+- variables (plist)
+- methods (plist)
+
+class/sym interface:
+- name
+- value (none)
+- variables (plist)
+- methods (plist)
+
+property explorer will show ctx interface
+
+
+to create notes, create new object...
+- construct new tree (argument)
+- then call function or command
+
+possible to show symbol interface underneath
+- i.e. can show ctx interface underneath
+
+the interface is lists and symbols
+it need not represent the underlying structure
+it can, however, it the user desires
+really only useful to developers
+
+atom:
+
+x-a
+x-b
+y-a
+y-b
+
+
+list:
+
+ya-x
+yb-x
+ya-y
+yb-y
+
+xa-x
+xb-x
+xa-y
+xb-y
+
 ============================================
 ============================================
 

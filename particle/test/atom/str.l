@@ -75,7 +75,7 @@
 
 (de str-y-atom-b NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
    (ver-start
@@ -134,7 +134,7 @@
 #{
 (de str-y-atom-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
    (ver-start

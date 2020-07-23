@@ -335,7 +335,7 @@ Command keys are based on spatial relationship, aka physically group related fun
 
 # Illustrated Guide
 
-When pointer is ATOM/NIL:
+## Pointer is ATOM
 
   and cmd is STR:
     
@@ -438,7 +438,7 @@ When pointer is ATOM/NIL:
     +---+---------------------+------------------+
     
     
-When pointer is PAIR:
+## Pointer is PAIR
 
   * factor in parent cell layout
   * remember, del pair behind ptr
@@ -582,14 +582,13 @@ When pointer is PAIR:
     | X +------------------------------+-------------------------------+
     |   | # X-Pair car = Y-Pair (TODO) | # X-Pair cdr = Y-Pair         |
     |   |                              |                               |
-    |   | [ ]         ->  [ ]          | [ ]   ->  [y] .               |
-    |   |       *          *           |  .         .                  |
-    |   | [y]  [y] .      [y] .        |  *                            |
-    |   |       .          .           | [y] .                         |
-    |   |  .                           |                               |
+    |   | [ ]   .  ->  [ ]             | [ ]   ->  [y] .               |
+    |   |  *            *              |  .         .                  |
+    |   | [y] .        [y]  [y] .      |  *                            |
+    |   |  .                 .         | [y] .                         |
+    |   |               .              |                               |
     |   |                              |  .                            |
     |   |                              |                               |
-    |   |                              | # assume Y always nl          |
     +---+------------------------------+-------------------------------+
     
   and cmd is DEL:
@@ -714,48 +713,6 @@ Symbols:
 
 * Make sublist
 * Make list starting with item
-
-## Systems
-
-### Start
-
-* main workspace
-
-### Help System
-
-* context-sensitive commands possible based on selection
-
-### Log System
-
-* logs commands along with input/output
-* aka undo tree
-
-### Pointer-Mode System
-
-* default mode is string mode
-* always one pointer per mode
-  * name of pointer indicates mode so user always aware
-* contains keymaps
-  * keymaps within keysmaps supersede the super keymap
-* users can move pointer to another pointer to swap pointers/modes
-
-### Selection System
-
-* CUA ops
-
-### Property System
-
-* context-sensitive property list based on selection
-
-### File System
-
-* file navigation
-
-### Search and Replace System
-
-* ...
-
----
 
 # Advanced
 

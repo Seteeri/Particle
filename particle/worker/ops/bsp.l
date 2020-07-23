@@ -65,7 +65,7 @@
     
     (lay-*start)
     
-    (top> Pt-Pair)
+    (top-ref> *ptr)
     (draw> *ptr)))
 
 
@@ -75,10 +75,16 @@
          B Pt-B Reg-B
          A Pt-A) (refs-2> *ptr))
     
+    (when T
+      (prinl)
+      (println 'bsp-atom C Pt-C Reg-C)
+      (println 'bsp-atom B Pt-B Reg-B)
+      (println 'bsp-atom A Pt-A))
+    
     (if (a-atom?> *ptr)
         (bsp-a-atom Pt-C Pt-B Pt-A (= Reg-B 'b))
         (bsp-b-atom Pt-C Pt-B Pt-A))
-        
+    
     (if (= Reg-B 'a)
     
         (prog
@@ -87,7 +93,7 @@
               (put @ 'p NIL)
               (put Pt-C 'line
                 (new '(+Line))))
-          (pt> *ptr A 'a Pt-C))
+          (put *ptr 'any A))
     
         (prog
           # If A is X pair and line, set p
@@ -108,7 +114,11 @@
                         (new '(+Line) Pt-A)))
                   (put Pt-A 'line 'n Pt-C))))
           (con> Pt-A C Pt-C)
-          (pt> *ptr A 'b Pt-C)))
+          (if (= Reg-C 'a)
+              (with *ptr
+                (=: any A)
+                (=: reg 'b))
+              (put *ptr 'any A))))
           
       Pt-B))
   
@@ -153,10 +163,18 @@
     
 (de bsp-pair ()    
     
+   # opt: del line or keep it 
+    
   (let ((C Pt-C Reg-C
          B Pt-B Reg-B
          A Pt-A) (refs-2> *ptr))
-          
+
+    (when T
+      (prinl)
+      (println 'bsp-pair C Pt-C Reg-C)
+      (println 'bsp-pair B Pt-B Reg-B)
+      (println 'bsp-pair A Pt-A))         
+         
     (when (get Pt-B 'line)
     
       (del-line Pt-B)
@@ -177,6 +195,7 @@
               (put @ 'p NIL)
               (put Pt-C 'line
                 (new '(+Line))))
+          (put *ptr 'any A)
           (put *ptr 'reg 'a))
     
         (prog
@@ -197,7 +216,9 @@
                       (put Pt-C 'line 
                         (new '(+Line) Pt-A)))
                   (put Pt-A 'line 'n Pt-C))))
+          # handle y car top left
           (con> Pt-A C Pt-C)
+          (put *ptr 'any A)
           (put *ptr 'reg 'b)))
           
       Pt-C))

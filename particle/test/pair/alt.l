@@ -103,7 +103,7 @@
 (de alt-reg-x-pair-a-py NIL
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-left)
    (cmd-alt-reg)
    (ver-start
@@ -162,7 +162,7 @@
 #{
 (de alt-reg-y-pair-a-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-right)
    (cmd-make-char (char "c"))
    (cmd-ptr-left)
@@ -207,7 +207,7 @@
 
 (de alt-reg-y-pair-a-px NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
    (cmd-ptr-left)
@@ -268,9 +268,9 @@
 
 (de alt-reg-y-pair-a-py NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-up)
    (cmd-alt-reg)
    (ver-start
@@ -328,9 +328,9 @@
 
 (de alt-reg-y-pair-px-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-left)
    (cmd-alt-reg)
    (ver-start
@@ -388,8 +388,8 @@
 
 (de alt-reg-y-pair-py-a NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
-   (cmd-make-pair-y)
+   (make-pair-y)
+   (make-pair-y)
    (cmd-alt-reg)
    (ver-start
       'alt-reg-y-pair-py-a
@@ -446,9 +446,9 @@
 
 (de alt-reg-y-pair-px-px NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-left)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
@@ -530,12 +530,12 @@
 
 (de alt-reg-y-pair-px-py NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-right)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-left)
    (cmd-ptr-down)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-up)
    (cmd-alt-reg)
    (ver-start
@@ -613,10 +613,10 @@
 
 (de alt-reg-y-pair-py-py NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
-   (cmd-make-pair-y)
+   (make-pair-y)
+   (make-pair-y)
    (cmd-ptr-down)
-   (cmd-make-pair-y)
+   (make-pair-y)
    (cmd-ptr-up)
    (cmd-alt-reg)
    (ver-start
@@ -694,8 +694,8 @@
 
 (de alt-reg-y-pair-py-px NIL
    (cmd-ptr-right)
-   (cmd-make-pair-y)
-   (cmd-make-pair-y)
+   (make-pair-y)
+   (make-pair-y)
    (cmd-ptr-down)
    (cmd-make-char (char "c"))
    (cmd-ptr-left)

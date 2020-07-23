@@ -109,5 +109,5 @@
   (mov-⇲ (c-lns> *ptr))
         
   (with *ptr
-    (top> (if (: ref) @ (lup-pt (: pair)))))
+    (top> (if (: atom) @ (lup-pt (: pair)))))
   (draw> *ptr))

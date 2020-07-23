@@ -1,14 +1,11 @@
 ######
 # REPL  
 
-(de cmd-read ())
+(de cmd-rd ())
 
-(de cmd-eval ())
+(de cmd-ev ())
 
 (de cmd-pp ())
-
-
-(de cmd-re ())
 
 (de cmd-rep ())
 

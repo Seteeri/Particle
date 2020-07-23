@@ -45,7 +45,8 @@
       (list (if A @ NIL)
             'a
             This))))
-  
+
+
 (dm lup-car> () (lup-pt (car (: any))))
 (dm lup-cdr> () (lup-pt (cdr (: any))))
   
@@ -167,6 +168,17 @@
         (put Pt-Any 'c This))
       (=: a)))
 
+      
+(dm con-pair-str> (Str)
+  (if (reg-a?> *ptr)  
+      (if (lay-x?> *ptr)
+          (con-a-pair-x Str)
+          (con-a-pair-y Str)))
+      (if (lay-x?> *ptr)
+          (con-b-pair-x Str)
+          (con-b-pair-y Str)))
+      
+      
 ##############################
 
 (dm con-2> (Any Pt-Any Del Ln)

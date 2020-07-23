@@ -22,12 +22,8 @@
 
 
 (de cmd-make-nil (Ks)
-  #(prinl-info "cmd-make-nil")
   (make-str NIL 'x))
 
   
 (de cmd-make-num (Ks)
-
-  (println "cmd-make-num")
-
   (make-str (format (char Ks)) 'x))

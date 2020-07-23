@@ -24,7 +24,8 @@
 
   #(println 'make-pair-a-atom-x)
     
-  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
+  (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
+        Pair (get Pt-Pair 'any)
         Tgt (car Pair)
         Pt-Tgt (get Pt-Pair 'a))
                   
@@ -101,7 +102,8 @@
       
   }#
 
-  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
+  (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
+        Pair (get Pt-Pair 'any)
         Tgt (car Pair)
         Pt-Tgt (get Pt-Pair 'a))
     
@@ -171,9 +173,10 @@
     
   }#   
 
-  #(println 'make-pair-b-atom)
+  (println 'make-pair-b-atom)
   
-  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
+  (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
+        Pair (get Pt-Pair 'any)
         Tgt (if (sym? Pair) (val Pair) (cdr Pair))
         Pt-Tgt (get Pt-Pair 'b))
 
@@ -215,5 +218,5 @@
       (lay-*start)
             
       (lns> *ptr Pt-Ls)
-      (top> Pt-Ls)
+      (top-ref> *ptr)
       (draw> *ptr))))            

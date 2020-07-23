@@ -16,143 +16,44 @@ TODO
   * +Pixel example to demonstrate power
   
   REPL:
+
+  * Rewrite pointer to store any/reg
+    * atom
+      * str: y
+      * list: y
+      * bsp: y
+      * del: y...
+      * line: skip...
+    * pair
+      * refactor ptr col
+      * str: y
+      * list: y
+      * bsp: 
+      * del: 
+      * line: skip...
       
-  * Refactor/Fix
-    * Remove type checking for sym...
-      * Need to consolidate line handling in ops
-      * Mov more fn to set> and con>
-      * Handle symbol/exp
-    * Add cmd-make-pair-x; do before exp
-    * Limit lay line length
-    * Line tests
-      * Add nl tests
-        * mak-nl
-          * On car, do nothing
-          * Poss, make cmd same as make-list
-        * del-nl
-    * Poss
-      * Use prog1
-      * Improve del>
-        * Fix double free
-  
-  * Dynamic tests
+  * Rewrite tests
+    * Dynamic tests
     * Randomize ops: permutations + double
       * Permutations dependent on num of cmds
     * Check that each Point is > x or < y
-  
-  * Implement X-Pair
-  
-  * Fonts
-    * Use bitmap fonts for now
-      * Limit zooming
-    * Other
-      * Camera dist + Vertex scale
-      * If > native res: msdf
-        Else: downscale
-      * For now, disregard camera zoom
-        * Requires updating metrics each frame for all used glyphs
-    
+      
+  * Show expanded symbols
+    * requires indexing symbols into btree/ref counting
+    * update index upon draw
+    * track del on draw
+
   * Camera Tracking
     * Create cmds to center view, fit view etc
     * Mov to item - def is align to left side of screen
     * Either zoom out or move newline  
   
-  * Root Lists (side/main) [Next Week]
-    LEFT:
-      * Mov from simple to advance, downward
-      1. Help
-        * show recommendations based on sel obj(s)
-      2. ptr-mode
-        * essentially the modes
-          * keymaps
-            * Ability to modify, add, update binds
-            * Modify by eval'g a cmd
-        * shows property list for ptr
-      3. sel
-        * aka buffers or registers
-        * ptr will push sel to car
-        * Single ptr
-          * Ptr is yellow
-          * Selected is red
-          * Orange used for condensed
-      4. prop
-        * show property list for selected obj(s)
-      5. search & replace
-        * show recommendations based on sel obj(s)
-      6. files
-        * show recommendations based on sel obj(s)
-        * where to put this?
-      7. Undo-log/timeline
-        * circular list
-        * save old list to file/db
-      8. viewports
-        * use to manage viewports
-    BOTTOM
-      * Status
-  
   ---
   
   * Lists can be rotated to simulate scrolling
     * Requires redrawing entire list...
-    * Frustrum culling  
-  
-  * Modes/ptrs
-    * Str (Default)
-      * Produces single char strings
-      * L-Alt + Sp = to convert str-int-num
-        * Use double mod
-      * All other modes cmds accessible with mod keys
-        * When in that mode, same shortcut without mod keys
-    * Int
-      * Map keys to sym/oop fns
-      * put/get
-      * getl/putl
-      * type
-    * Ext
-      * Map keys to ext/db fns
-    * Num
-      * Hex, Bin, Dec, Fl
-      * Enter sequence, then on space/enter, convert
-      * a/s/m/d/e/q = add/subtract/multiply/divide/exp/sqrt
-    * Pair
-      * Map keys to pair/nil cmds
-      * Includes glue/chop/pack/split
-    * Bind to function keys
-
-    
-  * External Symbols?
-    * Save code to binary and database
-      * This will output both data with markup
-      * To make "runable" version, strip comments and markup
-      * Think of it as pre-parser step, but part of it
-        * Either separate program or modify reader
-  * Multiple workers
-  * Min UI latency
-    * Swap proc before cmd since don't know if GC will happen
-  * Implement cmds Q/E : start/end of line/list
-  
-  * Track data:particles in binary tree *particles
-    * Unlike a CLI, we hold references to old data
-      * Which if future commands change old data, it has to be updated
-        * E.g. zap
-      * Which means data/particles must be tracked
-    * Given multi particles repr same data
-      * To gc data, delete all particles ref data
-      * Assumes non-visible particles are not ref data
-    * Data : List of Particles
-      * handle 'zap - isyms replaced with name (tsym) - invalidates particles
-    * Draw all symbols will access all data?
-    * External symbols are more explicit      
-    * Without this, to del all +Point of sym, must search all data
-      * Or link all points
+    * Frustrum culling
             
-  * Pointer
-    * Mov pointer to different list
-      * Need cmd that we can type
-    * Make Pointer class [later]
-    * When ptr points to another ptr...input changes?
-      * If user wants to use ptr as a marker, 
-      explicit cmd to create a ptr like *cdr-1
   * Soft wrap list
     * Track pos
     * When limit reached, mov nl
@@ -176,31 +77,6 @@ TODO
             * Deploy task
             * Set timeout to rotate
             * Fork
-  
-  * ?
-  
-    * Fix eval output
-      * Print system out
-        * Where to put it?
-          * Separate *out list
-            * Part of process...
-            * Visualize process?
-          * Sublist of original cmd
-          * Two lines
-  
-    * a s d m for arithmetic?
-    * Named pipe + rd/pr  
-  
-    * Draw background grid
-      
-  * ?
-  
-    * https://github.com/mapbox/tiny-sdf
-      * Felzenszwalb/Huttenlocher distance transform
-    * https://github.com/astiopin/webgl_fonts
-      * glyph hinting
-      * subpixel antialiasing
-      * less necessary with high dpi screens
 
   ---
                     
@@ -209,19 +85,6 @@ TODO
     * Camera needs to move with content like when entering a newline
       * Requires unproject to test if coord is in the viewport
       * When a new item is entered, check its bnds against the view bounds      
-        
-  * Implement database - need for PIM
-    * Load db files into memory/tmpfs
-    * Convert +Particle/+Vertex into db
-      * This will allow linking particles
-        * The Ext sym name is like universal id/ptr
-      * Refactor Particle into subclass of Entity
-      * Can test multiple workers pull/push database
-      * Workers send serialized data directly to raster
-        * ...instead of writing to DB and having raster read it
-    * Store classes in separate files?
-      * verts.db
-      * parts.db    
 
   * Pointer System
     * System
@@ -233,72 +96,21 @@ TODO
       * -> atom = single
   
   * Proportional fonts
-  
-  ---
+   
+  * Lazy load glyphs
+    * Do later when msgs are refactored
+    * Render loads tex
+    * Gly loads metrics
+    * Need worker to tell render to load
+    * Load ASCII initially
+    * Convert glyphs into db
+    * https://github.com/mapbox/tiny-sdf
+      * Felzenszwalb/Huttenlocher distance transform
+    * https://github.com/astiopin/webgl_fonts
+      * glyph hinting
+      * subpixel antialiasing
+      * less necessary with high dpi screens
     
-  * Improve testing environment
-    * Have processes run independently    
-   
-  * Basic search/replace (strs)
-    * Essentially, searching symbol props
-    * Conventional users expect strings, aka prop data when str
-    * Also can search tg, dat, tim, ori (spatial)
-    * Output list of syms/particles + finds
-      * For str, context
-      * Other props, whatever it is
-    * Lists can be composed with search/repl fn
-    * Lists can be sorted
-    * Output can then be merged
-  * Pattern matching  
-          
-  * Misc
-    * Draw num in car [?]
-      * Handle decimals
-    * Draw grid in bg
-    * Make fn: mov-cur X/adv Y/nl
-    * Refactor other items to use skip flags like mov> etc.
-    * Make columns for Y layout?
-    * Why is xkb in worker? Should be in ctrl...
-    * Draw ctrl characters: ^M, ^J, ^I
-      * Draw newline when by itself
-      * When packed do not draw it - make opt?
-    * Generate undefined glyph - 0
-   
-  * Optimize
-    * Math
-      * Pass vecs to GLSL [later]
-        * Use quats?
-        * Pass 48 bytes instead of 64  
-      * GL structs
-    * IPC
-      * Utilize multiple workers - see notes
-      * Batch messages, flush etc.
-      * Instead of directly sending msgs, put into list
-      * Call flush to send all
-      * Requires rewriting protocol to read multiple messages from single str  
-    * Lazy load glyphs
-      * Do later when msgs are refactored
-      * Render loads tex
-      * Gly loads metrics
-      * Need worker to tell render to load
-      * Load ASCII initially
-      * Convert glyphs into db   
-  
-  * Directory Nav    
-  
-  ---
-
-  * SEARCH IS THE KEY TO DISCOVERABILITY
-    * Google's interface
-    * Make as easy and intuitive to access help
-      * Bind F1
-      * (eval "help") (eval 'help)
-    * Fuzzy-search  
-  
-  * Tag/Note System
-    * Create +Note class
-    * Need "template"
-    * Search property list functions  
     
   * Test multiple workers
     * Need data sync on model side to broadcast updates
@@ -321,24 +133,6 @@ TODO
       
   * Instead of drawing lines to connect nodes, draw generic grid in bg
   to guide user
-
-  * Timestamp optional
-    * GPS optional
-    * Really just tags...except expected/defined tags on all items
-
-  * Design different views/presentations
-    * Use familiar setups from Office and other note-taking apps etc.
-    * Ex: Tags
-      * For class, use tag property = list of tags
-    * Ex: Outline
-      * Nested lists of objects
-      * or create class, properties defined as a hierarchy or nested lists
-        * (=: l1 (I))
-        * (=: l2 (1))
-        * (=: l3 (A))
-        * (=: l4 (i))
-    * Ex: Table
-      * Create class, user defines properties
     
   * Map keys to grid on screen
     * 26 squares if using plain alphabet
@@ -349,52 +143,6 @@ TODO
   * Error Handling
     * Set * Err to (quit)
     * On error, print msg and return to top-level
-
-  * Symbols Mouse UI
-    * all: left click = select/point
-    * all: 2x left click = eval
-    * Value = double right click
-    * Props = right click          
-
-  * Touch interface
-    * Refactor math library; implement glunproject
-    * Ability to pull items out
-    * Requires spatial index, unproject
-      * Port r-tree from CL          
-
-DEMOS:
-
-  * Core
-    * Lisp
-      * Strs
-      * Lists
-      * Eval
-    * Systems
-      * Help - need "quick escape"
-        * Draw help, bind to move ptr while held
-        * Sublime
-        * Ext of tags?
-      * Cmds
-        * AKA Timeline/History/Undo
-      * Ptrs
-      * Buffers
-      * Views (Viewports)
-      * State
-    * CLI
-  * Key Concept
-    * Pixels as list of pixels or lists of lists
-      * Implement screenshot
-    * Table as list of lists
-    * Widget Deprecation
-  * Application (Concrete)
-    * OS/Dir
-    * Outliner/PIM
-      * Tags/Search
-        * Internals
-    * Spreadsheet
-    * Window Manager
-  * Advanced UI
-    * Touch Interface
   
 
 LATER:
@@ -414,39 +162,29 @@ LATER:
     * Radial also
     * Hyperbolic
 
-  * Unscheduled Stuff
-
-   * Replace serialization with pr/rd/wr [Later]
-     * Use pr/rd/wr/bytes
-       * (call 'mkfifo "a" "b") + (open "a"/"b"...) + (in/out "a"...)
-         * /proc/sys/fs/pipe-max-size
-         * Main -> Pipe -> Socket -> Socket -> Pipe -> Main
-           * 6 copies total
-         * Sender
-           * Use lisp to pr data to pipe
-           * Use C to open named pipe fd and read into socket
-         * Recver
-           * Use C to open named pipe fd and write from socket
-           * Use lisp rd to get objects
-       * Later use plio as library
-     * Format - create sep msgs for model/render : objcpy/memcpy
-       * sz-msg, sz-sexpr bin-sexpr sz-dat bin-dat
-       * Worker/Model: Obj - Obj
-         * Serialize to obj (sexpr:msg + dat)
-           * Lisp object
-       * Worker/Render: Obj - Ptr
-         * Serialize to ptr (sexpr:msg + dat)
-           * C struct
-         * Write bytes from list to gl ptr through for+bytes
-           * Memcpy is must faster
-     * Optimizations
-       * If modifying large numbers of objects, particularly numerical calcs,
-         use compute shader, else use lisp functions, or C lib
-         * Eventually this would be the bottleneck
-       * Send deltas only instead of entire object
-         -> Need not serialize everything - add ability to serialize only certain members
-         * Must define protocol/msg
-       * Use LZO or LZ4 data compression
+  * Replace serialization with pr/rd/wr [Later]
+    * Use pr/rd/wr/bytes
+      * (call 'mkfifo "a" "b") + (open "a"/"b"...) + (in/out "a"...)
+        * /proc/sys/fs/pipe-max-size
+        * Main -> Pipe -> Socket -> Socket -> Pipe -> Main
+          * 6 copies total
+        * Sender
+          * Use lisp to pr data to pipe
+          * Use C to open named pipe fd and read into socket
+        * Recver
+          * Use C to open named pipe fd and write from socket
+          * Use lisp rd to get objects
+      * Later use plio as library
+    * Format - create sep msgs for model/render : objcpy/memcpy
+      * sz-msg, sz-sexpr bin-sexpr sz-dat bin-dat
+      * Worker/Model: Obj - Obj
+        * Serialize to obj (sexpr:msg + dat)
+          * Lisp object
+      * Worker/Render: Obj - Ptr
+        * Serialize to ptr (sexpr:msg + dat)
+          * C struct
+        * Write bytes from list to gl ptr through for+bytes
+          * Memcpy is must faster
 
   * C wrappers
     * Move xkb class into wrapper
@@ -503,7 +241,6 @@ LATER:
     * String Manipulation
 
 * Mailing list:
-  * WASM backend/implementation
   * Image dumping -> RD/WR/PR + STR/ANY
     * Default DB provide this?
     * Dump heap and reload heap
