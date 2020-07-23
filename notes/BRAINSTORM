@@ -4975,7 +4975,18 @@ Simpler solution to lines -> use lists
   - autosplit by spaces
     - multiple spaces are grouped together
   - user can explicitly disable this through a flag
+- this only works well with text
+  
+WRT above:
+Applying lists to representation/projection/presentation
+must be separate from abstraction
 
+AST      
+(1 2 3 4)
+
+CST
+((1 2)
+ (3 4))
 
 ============================================
 ============================================

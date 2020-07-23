@@ -321,14 +321,14 @@
          B Pt-B) (refs-1> *ptr)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL))
-    
-    # Handle X parent elsewhere
-    ~(assert (lay-y?> Pt-B))
-    
+        
     (set> Pt-B Ls Pt-Ls)
     (con> Pt-Ls C Pt-C 'del)
         
-    (put Pt-Ls 'line 'p Pt-C)
+    (with (get Pt-Ls 'line)
+      (=: p NIL)
+      (=: n Pt-C))
+    
     (put Pt-C 'line 'p Pt-Ls)
                 
     # Pop cur line (Pt-C), push new list

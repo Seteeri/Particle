@@ -18,8 +18,7 @@ TODO
   REPL:
   
   * Refactor/Fix [Tues]
-    * Deprecate lines in ops fns to simplify
-      * Refactor con-b-pair-y: Put X2 after X1
+    * Refactor con-b-pair-y: Put X2 after X1
     * Remove type checking for sym...
       * Mov more fn to set> and con>
         * Issue is line handling
@@ -28,6 +27,10 @@ TODO
   * Implement X-Pair [Tues/Wed]
     
   * Refactor/Fix [Thurs]
+    * Refactor strs...lines
+      * Cannot replace lines with nested lists
+      since this alters the underlying data itself
+      * Projectional editing
     * Add cmd-make-pair-x; do before exp
     * Limit lay line length
     * Line tests
@@ -42,11 +45,14 @@ TODO
         * Fix double free
   
   * Fonts
-    * Camera dist + Vertex scale
-    * If > native res: msdf
-      Else: downscale
-    * For now, disregard camera zoom
-      * Requires updating metrics each frame for all used glyphs
+    * Use bitmap fonts for now
+      * Limit zooming
+    * Other
+      * Camera dist + Vertex scale
+      * If > native res: msdf
+        Else: downscale
+      * For now, disregard camera zoom
+        * Requires updating metrics each frame for all used glyphs
     
   * Camera Tracking
     * Create cmds to center view, fit view etc
@@ -196,6 +202,7 @@ TODO
     * https://github.com/astiopin/webgl_fonts
       * glyph hinting
       * subpixel antialiasing
+      * less necessary with high dpi screens
 
   ---
                     
@@ -389,22 +396,11 @@ DEMOS:
     * Spreadsheet
     * Window Manager
   * Advanced UI
-    * Touch Interface    
+    * Touch Interface
   
 
 LATER:
 
-  * Implement Wayland - BASIC!
-    * Setup tiles for each list
-      * Multi
-        * Buffers - Left
-        * Cmds - Right
-        * Ptrs - Top
-        * Main - Bottom
-      * Dual (L-R)
-        * Major - Main
-        * Minor - Buffers/Cmds/Ptrs
-    * Proof of concept working with eval already
 
    * Test compute shaders
      * Rotate all vertices
@@ -534,15 +530,6 @@ to create a consistent *understandable* system.
   
 ## The Interface
 
-* Built on lisp data structures - lists/cons, symbols, numbers
-* 3D orthographic "nodal" environment - "turtles all the way down"
-* Primarily keyboard driven interface
-* Non-destructive; undo/redo capabilities
-* Non-blocking UI - user always aware of computer status
-  * User can choose take risk to block
-* Wayland provides conventional desktop
-* Solarized color theme as default
-
 Personal Extensions
 1. Per-object vector motion blur (personal favorite)
 2. Power mode
@@ -552,4 +539,3 @@ Future Ideas
   * Clustered -> volumetric forward shading
 * Augmented reality through OpenCV
 * Convergence...
-* PilOS bootloader...

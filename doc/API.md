@@ -250,7 +250,14 @@ Pointer:
 [N] = nested cell aka traditional diagram
 . = condensed cell, dot with diff color - orange
 
-Poss Solutions:
+!!! Use symbol to represent pointer symbol (inherent to system)
+* Pointer symbol properties must be shown elsewhere since they cannot expand within the space except through shrinkage
+* Inline symbols will be expanded like any data
+
+Goals:
+* Maintain consistency
+
+Poss:
 
 1. "Shrink" entire structure (minimal/low visual presence)
    -> Condense structure to two lines to avoid excessively small text
@@ -264,13 +271,12 @@ Poss Solutions:
       -> User doesn't typically manipulate pointer directly...
    -> Allows main content to have focus
    -> Can still use condensed cells to minimize distractions
-
-2. Condensed structure for single line
-   -> Can't expand without moving pointer to other area
-      -> This can be automatic - mov to area then back
-   -> Can't use pointer as "status bar", which is important for context clues
  
-Not Viable:
+2. Embed Pointer
+  -> No...
+  -> It becomes part of the structure and so now it must be pulled out
+ 
+Unfeasible:
  
 * Nested/s-expr structure (medium visual presence)
    -> Difficult to read without resorting to parenthesis
