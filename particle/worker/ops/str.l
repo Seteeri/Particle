@@ -1,38 +1,47 @@
 #{
 
-      [X]
-      .
-            *
-      [Y]  NIL
-      
-      .
-
-  -->
-
-      [X]
-      .
-                  *
-      [Y]  [X]  NIL
-            .
-            
-      .    
+  x-a
+  x-b
+  y-a
+  y-b
   
+  
+  ya-x
+  yb-x
+  ya-y
+  yb-y
+
+  xa-x
+  xb-x
+  xa-y
+  xb-y
+
 }#
 
 
-(de make-str-xp (Str)
-  
-  # Refactor this cond into a ptr method
-  # i.e. any>
-  # returns a Point which a method can be called
-
-  (let ((Pt-Pair Pt-Atom) (get-ref-pt> *ptr))
-  
-    (println Pt-Pair Pt-Atom)
-  
-    (if Pt-Atom
-        (con-pair-str> @ Pt-Pair Str)
-        (con-pair-str> Pt-Pair Str))))
+(de make-str-2 (Str)
+        
+  (cond
+    
+    ((or (a-atom?> *ptr)
+         (a-nil?> *ptr))
+      (if (lay-y?> *ptr)
+          (ins-a-atom Str)
+          (repl-atom Str 'a)))
+      
+    ((or (b-nil?> *ptr)
+         (b-atom?> *ptr))
+      (ins-b-atom Str))
+    
+    ((a-pair?> *ptr)
+      (if (lay-x?> *ptr)
+          (con-a-pair-x Str)
+          (con-a-pair-y Str)))
+      
+    ((b-pair?> *ptr)
+      (if (lay-x?> *ptr)
+          (con-b-pair-x Str)
+          (con-b-pair-y Str)))))
 
 
 (de make-str (Str Lay)
