@@ -56,7 +56,7 @@
     
     # make sure A not NIL...
     
-    (when T
+    (when NIL
       (prinl)
       (println 'pt-bwd> C Pt-C Reg-C)
       (println 'pt-bwd> B Pt-B Reg-B)

@@ -36,11 +36,18 @@
       
         (cond
 
-          ((and (lay-x?> Pt-B) (= Reg-C 'a)) (mak-str-x-a Str 'a))
-          ((and (lay-x?> Pt-B) (= Reg-C 'b)) (mak-str-x-b Str))
+          # 2 opts for x/y-b: treat NIL as pair or atom
+          # mak-str-x-a/b = repl atom
+          # con-b-pair-x/mak-str-y-b = ins pair
+          # -> treat as list so same as typing
+          # -> also not common cdr non-NIL
+          # usr can use alt-reg to repl atom
+          
+          ((and (lay-x?> Pt-B) (= Reg-C 'a)) (mak-str-x-a Str 'a Pt-B Pt-C))
+          ((and (lay-x?> Pt-B) (= Reg-C 'b)) (mak-str-x-b Str Pt-B Pt-C))
 
-          ((and (lay-y?> Pt-B) (= Reg-C 'a)) (mak-str-y-a Str))
-          ((and (lay-y?> Pt-B) (= Reg-C 'b)) (mak-str-x-b Str)))) # mak-str-y-b
+          ((and (lay-y?> Pt-B) (= Reg-C 'a)) (mak-str-y-a Str Pt-B Pt-C))
+          ((and (lay-y?> Pt-B) (= Reg-C 'b)) (mak-str-y-b Str Pt-B Pt-C))))
 
       ((isa '+Pair Pt-C)
       

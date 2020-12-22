@@ -90,11 +90,11 @@
   
   (for Vert (: verts) (del> Vert)))
 
-
+#{
 (dm con-pair-str> (Pt-Pair Str)
   (if (reg-a?> *ptr)
       (if (lay-y?> Pt-Pair)
           (mak-str-y-a Str)
           (mak-str-x-a Str 'a))
       (mak-str-x-b Str)))
-      
+}#      

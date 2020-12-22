@@ -18,6 +18,8 @@ TODO
   REPL:
 
   * Rewrite pointer to store any/reg
+    * remove uncol from pt>
+    * Mov trace to point
     * atom
       * str: y
       * list: y
@@ -25,7 +27,7 @@ TODO
       * del: y...
       * line: skip...
     * pair
-      * refactor ptr col
+      * refactor ptr col?
       * str: y
       * list: y
       * bsp: 

@@ -72,8 +72,6 @@
     Col = force set color
     
   }#
-
-  #(println "pt>" (: any) ", " (: reg) "->" Any ", " Reg)  
   
   # Uncolor current ref
   # it ref new=old, pass on color
@@ -83,13 +81,11 @@
         (New-Pair New-Reg) (get-ref-pt> This
                                         Any
                                         Reg))
-    
-    #~(assert Pt-Pair)
-    #~(assert New-Pair)
 
-    (prinl)
-    (println 'pt> Pt-Pair Pt-Reg (get Pt-Reg 'any))
-    (println 'pt> New-Pair New-Reg (get New-Reg 'any))
+    (when NIL
+      (prinl)
+      (println 'pt> Pt-Pair Pt-Reg (get Pt-Reg 'any))
+      (println 'pt> New-Pair New-Reg (get New-Reg 'any)))
     
     (when (or (not (= New-Reg Pt-Reg)) Col)
                                         

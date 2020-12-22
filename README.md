@@ -14,13 +14,13 @@ information as they moved through the computer. What did they look like?
 
 Particle is a PicoLisp userland.
 
-Particle is the realization of my vision of the human computer interaction model. I want to take the extensibility, dynamicness, and cohesion of past Lisp Machines, Smalltalk-like enivronments, and others, and evolve the text interface to empower as many users as possible to take advantage of the increasing integration of the digital world, the ever-growing computing power, and ubiquitousness of the internet.
+Particle is the realization of my vision of the human computer interaction model. I want to take the extensibility, dynamicness, and cohesion of past Lisp Machines, Smalltalk enivronments, and others, and evolve the text interface to empower as many users as possible to take advantage of the increasing integration of the digital world, the ever-growing computing power, and ubiquitousness of the internet.
 
 I believe the way for a future FOSS system does not lie solely with the desktop - that has been settled - but with the computing needs of tomorrow.
 
 Currently, the shell is being developed. Afterwards building upon that, the window manager and PIM will be developed, which will allow interaction with existing programs, end-user functionality, and integration on other platforms.
 
-Plans are to initially support Linux and Android. Windows requires WSL or virtualization; Mac requires the latter. Once Pil21 is done (LLVM-based), a native solution can be provided.
+Plans are to initially support Linux, Android, Mac. Windows requires WSL or virtualization due to POSIX requirements.
 
 The ultimate goal of Particle is to create a Lispy userland, eventually replacing the init system and encompassing all layers above that, through a more pragmatic and gradual approach.
 

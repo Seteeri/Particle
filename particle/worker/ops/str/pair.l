@@ -1,12 +1,12 @@
 (de mak-str-xa-x (Str) (con-a-pair-x Str))
 (de mak-str-xb-x (Str) (con-b-pair-x Str))
 
-(de mak-str-xa-y (Str) (con-a-pair-x Str))
-(de mak-str-xb-y (Str) (con-b-pair-x Str))
+(de mak-str-xa-y (Str) (con-a-pair-y Str))
+(de mak-str-xb-y (Str) (con-b-pair-y Str))
 
 
-(de mak-str-ya-x (Str) (con-a-pair-y Str))
-(de mak-str-yb-x (Str) (con-b-pair-y Str))
+(de mak-str-ya-x (Str) (con-a-pair-x Str))
+(de mak-str-yb-x (Str) (con-b-pair-x Str))
 
 (de mak-str-ya-y (Str) (con-a-pair-y Str))
 (de mak-str-yb-y (Str) (con-b-pair-y Str))
@@ -15,6 +15,13 @@
 (de con-b-pair-x (Str)
   
   #{
+  
+    Connect new list cdr to cur atom
+    Update pointer before updating cur pair
+    Then connect new list to cur pair
+    Draw main
+    Mov cur to ptr
+    Draw ptr
     
     * If X-Pair on newline (start of line), 
     mov newline to new Pair
@@ -59,27 +66,23 @@
   (println 'con-b-pair-x)
   
   (let ((C Pt-C Reg-C
-        B Pt-B) (refs-2> *ptr)
+         B Pt-B) (refs-2> *ptr)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
     
-    # Insert before current object
     (con> Pt-B Ls)
     (con> Pt-Ls C Pt-C T)
     
-    # Mov line
     (when (get Pt-C 'line)
       (mov-line Pt-C Pt-Ls)
       (lns> *ptr))
-      
     (set-ln-n> *ptr Pt-Ls)
-                
+    
     (lay-*start)
     
     # dont use pt since it will set prev col to sel
     # update any
     (put *ptr 'any Ls)
-    
     (top> Pt-C)
     (draw> *ptr)))
 
@@ -177,7 +180,7 @@
         [Y]  [X]
               .
         
-            [Y] .
+             [Y] .
               .
             
         .  
@@ -229,6 +232,8 @@
         
   }#
   
+  (println 'con-a-pair-x)
+  
   (let ((C Pt-C Reg-C
         B Pt-B) (refs-1> *ptr)
         Ls (list Str)
@@ -243,10 +248,13 @@
       (lns> *ptr))
     (set-ln-n> *ptr Pt-Ls)        
         
-    # Keep ref - change rel
-    (put *ptr 'reg 'b)
+    # same ref
+    (with *ptr
+      (=: any Ls)
+      (=: reg 'b))
         
     (lay-*start)
-    (top> Pt-C)
+    
+    (top-ref> *ptr)
     (draw> *ptr)))
     

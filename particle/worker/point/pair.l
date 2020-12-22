@@ -168,7 +168,8 @@
         (put Pt-Any 'c This))
       (=: a)))
 
-      
+
+#{
 (dm con-pair-str> (Str)
   (if (reg-a?> *ptr)  
       (if (lay-x?> *ptr)
@@ -177,7 +178,7 @@
       (if (lay-x?> *ptr)
           (con-b-pair-x Str)
           (con-b-pair-y Str)))
-      
+}#
       
 ##############################
 
