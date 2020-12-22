@@ -46,22 +46,17 @@
   ######
   # Pair
   
-  # cmd-make-pair-y-ln : cur ln or num of following lns
-  # or enter can do this
-  
-  '(((ksd~q) cmd-make-pair-x)
-    ((ksd~w) make-pair-y)
-    ((ksd~f) cmd-make-nil)
-    ((ksd~p) alt-reg)
+  '(((ksd~q) cmd-make-pair-x) # alt = y
+    ((ksd~w) cmd-make-nil) # alt = T
+    ((ksd~f) alt-reg) # alt = lay
+    ((ksd~p) alt-lay) # alt = lay
     
-    # use alt
-    #((ksd~b) cmd-ptr-ls-first)
-    #((ksd~b) cmd-ptr-ls-last)
+    #((ksd~b) cmd-ptr-ls-first) # alt = lst
     
     # Shifts - alt
-    #((ksd~r) cmd-rot-r)    # Pt to list
-    #((ksd~t) cmd-rot-l)    # Pt to list
-    #((ksd~y) cmd-flip/rev) # Pt to list
+    #((ksd~r) cmd-rot-r)    # alt = l
+    #((ksd~t) cmd-rot-l)    
+    #((ksd~y) cmd-flip/rev) # alt = destructive? or use undo
     
     # Links - g
     #((ksd~u) cmd-flatten) # Pt to list
@@ -72,10 +67,10 @@
     ))
 
       
-(def '*binds-cmd-layout
+(def '*binds-cmd-line
 
-  ########
-  # Layout
+  ######
+  # Line
   
   # use alt
 
@@ -83,8 +78,7 @@
     ((ksd~m) cmd-ptr-ln-last)
     
     ((ksd~Shift-L ksd~BackSpace)  cmd-del-line)
-    ((ksd~Shift-L ksd~Return)     cmd-make-line)
-    ((ksd~Shift-L ksd~Tab)        cmd-alt-lay)))
+    ((ksd~Shift-L ksd~Return)     cmd-make-line)))
       
       
 (def '*binds-cmd-cua
@@ -198,7 +192,7 @@
 
   '(~*binds-cmd-static
     ~*binds-cmd-pair
-    ~*binds-cmd-layout
+    ~*binds-cmd-line
     ~*binds-cmd-cua
     ~*binds-cmd-atom
     ~*binds-cmd-repl
