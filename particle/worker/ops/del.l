@@ -82,10 +82,10 @@
   (cond
   
     ((a-atom?> *ptr)
-     (repl-atom NIL 'a))
+     (mak-str-x-a NIL 'a))
 
     ((b-atom?> *ptr)
-     (repl-atom NIL 'b))
+     (mak-str-x-a NIL 'b))
       
     ((or (a-pair?> *ptr)
          (b-pair?> *ptr))

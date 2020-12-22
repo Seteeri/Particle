@@ -81,11 +81,14 @@
             "/particle/worker/ops/lay.l"
             "/particle/worker/ops/bsp.l"
             "/particle/worker/ops/del.l"
-            "/particle/worker/ops/str.l"
             "/particle/worker/ops/line.l"
             "/particle/worker/ops/alt-lay.l"       
             "/particle/worker/ops/alt-reg.l"
             "/particle/worker/ops/conv.l"
+            
+            "/particle/worker/ops/str/str.l"
+            "/particle/worker/ops/str/pair.l"
+            "/particle/worker/ops/str/atom.l"
             
             "/particle/worker/ops/pair/pair.l"
             "/particle/worker/ops/pair/atom.l"

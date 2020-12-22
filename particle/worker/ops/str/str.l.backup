@@ -23,15 +23,28 @@
         
   (cond
     
+    ######
+    # ATOM
+    
     ((or (a-atom?> *ptr)
          (a-nil?> *ptr))
+      # Insert on Y pair
+      # - More likely user will insert rather than replace
+      # Replace on X pair
       (if (lay-y?> *ptr)
-          (ins-a-atom Str)
-          (repl-atom Str 'a)))
+          # Add tests:
+          (mak-str-y-a Str)
+          (mak-str-x-a Str 'a)))
       
     ((or (b-nil?> *ptr)
          (b-atom?> *ptr))
-      (ins-b-atom Str))
+      # To replace b atom, use alt-reg
+      (mak-str-x-b Str))
+            
+    ######
+    # PAIR
+    # - pair for pair
+    # - ins bef ptr
     
     ((a-pair?> *ptr)
       (if (lay-x?> *ptr)
@@ -58,13 +71,13 @@
       # Replace on X pair
       (if (lay-y?> *ptr)
           # Add tests:
-          (ins-a-atom Str)
-          (repl-atom Str 'a)))
+          (mak-str-y-a Str)
+          (mak-str-x-a Str 'a)))
       
     ((or (b-nil?> *ptr)
          (b-atom?> *ptr))
       # To replace b atom, use alt-reg
-      (ins-b-atom Str))
+      (mak-str-x-b Str))
             
     ######
     # PAIR
@@ -82,7 +95,7 @@
           (con-b-pair-y Str)))))
       
   
-(de repl-atom (Str Reg)
+(de mak-str-x-a (Str Reg)
 
   #{
   
@@ -92,7 +105,7 @@
     
   }#
 
-  (println 'repl-atom)
+  (println 'mak-str-x-a)
   
   (let ((Pt-Pair Pt-Del) (get-ref-pt> *ptr)
         Pair (get Pt-Pair 'any)
@@ -122,7 +135,7 @@
       (sub> *ptr T))))
 
 
-(de ins-b-atom (Str)
+(de mak-str-x-b (Str)
 
   #{
   
@@ -135,7 +148,7 @@
     
   }#
 
-  (println 'ins-b-atom)
+  (println 'mak-str-x-b)
   
   (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
         Pt-Cdr (get Pt-Pair 'b)
@@ -161,9 +174,9 @@
     (draw> *ptr)))
         
         
-(de ins-a-atom (Str)
+(de mak-str-y-a (Str)
 
-  (println 'ins-a-atom)
+  (println 'mak-str-y-a)
   
   (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
         Pt-Car (get Pt-Pair 'a)

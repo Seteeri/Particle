@@ -94,7 +94,7 @@
 (dm con-pair-str> (Pt-Pair Str)
   (if (reg-a?> *ptr)
       (if (lay-y?> Pt-Pair)
-          (ins-a-atom Str)
-          (repl-atom Str 'a))
-      (ins-b-atom Str)))
+          (mak-str-y-a Str)
+          (mak-str-x-a Str 'a))
+      (mak-str-x-b Str)))
       
