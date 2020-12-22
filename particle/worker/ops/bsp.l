@@ -1,10 +1,13 @@
 #{
 
-  Backspace = repl prv with cur
-
-  What about X Pair Car Atom?
-  - Replace parent with car?
-  - Like chopping list
+  atom:
+    cdr = del par, con cur
+    car = del par, con next (=del)
+      alternative? is del all
+      this rem back, del rem front
+      
+  pair:
+    del prv, con next (=del)
   
   Case 1:
   

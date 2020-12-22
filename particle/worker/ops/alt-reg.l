@@ -13,7 +13,8 @@
     
   #(println 'alt-reg)
     
-  (let ((Pair Pt-Pair) (get-ref-pair> *ptr)
+  (let ((Pt-Pair Pt-C) (get-ref-pt> *ptr)
+        Pair (get Pt-Pair 'any)
         Pt-A (get Pt-Pair 'a)
         Pt-B (get Pt-Pair 'b)
         Car (car Pair)

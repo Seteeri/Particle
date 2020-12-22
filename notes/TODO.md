@@ -20,30 +20,20 @@ TODO
   * Rewrite pointer to store any/reg
     * remove uncol from pt>
     * Mov trace to point
-    * atom
-      * str: y
-      * list: y
-      * bsp: y
-      * del: y...
-      * line: skip...
-    * pair
-      * refactor ptr col?
+    * base cmds
       * str: y
       * list: y
       * bsp: 
-      * del: 
+      * del:
+      * alt:
       * line: skip...
+    * other cmds like repl
       
   * Rewrite tests
     * Dynamic tests
     * Randomize ops: permutations + double
       * Permutations dependent on num of cmds
     * Check that each Point is > x or < y
-      
-  * Show expanded symbols
-    * requires indexing symbols into btree/ref counting
-    * update index upon draw
-    * track del on draw
 
   * Camera Tracking
     * Create cmds to center view, fit view etc

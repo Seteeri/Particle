@@ -1,7 +1,8 @@
 # Make these +Pair methods?
 
 (de alt-lay ()
-  (let ((Pair Pt-Pair) (get-ref-pair> *ptr))
+  (let ((Pt-Pair Pt-C) (get-ref-pt> *ptr)
+        Pair (get Pt-Pair 'any))
     ((if (lay-x?> *ptr)
          alt-lay-y
          alt-lay-x)

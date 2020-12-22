@@ -110,9 +110,7 @@
     (when (is-sym? Ln) (setq Ln NIL))
     
     (put Ln 'line 'n Pt-Cons)
-    
     (put Pt-Cons 'line (new '(+Line) Ln Pt-Cdr))
-    
     (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
     
     (lay-*start)
@@ -196,15 +194,10 @@
     (set-lay> Pt-Cons 'y)    
   
     (set> Pt-B Cons Pt-Cons)
-    
-    # Should set-lay create +Line?
-    # No, there could be a line already
-    # Or, create sep fn for that
-    (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
-    
-    (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
-    
     (set> Pt-Cons C Pt-C T)
+    
+    (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
+    (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
     
     # Still pt to og pair
     # must upd any
