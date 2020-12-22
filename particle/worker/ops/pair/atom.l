@@ -1,8 +1,8 @@
-(de make-pair-a-atom-x ()  
+(de mak-pair-x-a (Pt-B Pt-C)  
 
   #{
   
-    Replace atom with pair.car = atom
+    Replace atom with pair car = atom
     
       [X]  [X]  [X]  .
        .    .    .
@@ -22,43 +22,34 @@
       
   }#
 
-  #(println 'make-pair-a-atom-x)
+  (println 'mak-pair-x-a)
+
+  (let (B (get Pt-B 'any)
+        C (get Pt-C 'any))    
+
+    (put Pt-B 'a)
+    (when (= (c-lns> *ptr) Pt-C) (lns> *ptr))
+    (del> Pt-C)    
     
-  (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
-        Pair (get Pt-Pair 'any)
-        Tgt (car Pair)
-        Pt-Tgt (get Pt-Pair 'a))
-                  
-    # Delete:
-    # * Nil ptr ref otherwise set-ref will attempt uncol on ref
-    # * Put NIL otherwise set will del new point
-    # * Pop line if necessary
-    #
-    # Does this functionality need to be in the methods?
-    (put *ptr 'ref)  
-    (put Pt-Pair 'a)
-    (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
-    (del> Pt-Tgt)    
-    
-    (let (Ls (list Tgt)
+    (let (Ls (list C)
           Pt-Ls (gen-point Ls 'x NIL T)
           Ln (c-lns> *ptr)
           Ln-N (get Ln 'line 'n)
-          Cdr (cdr Pair)
-          Pt-Cdr (if Cdr (lup-pt Cdr) (get Pt-Pair 'b))
-          Push-Pair (not (get Pt-Pair 'line)))
+          Cdr (cdr B)
+          Pt-Cdr (if Cdr (lup-pt Cdr) (get Pt-B 'b))
+          Push-Pair (not (get Pt-B 'line)))
     
-      (set-lay> Pt-Pair 'y)    
+      (set-lay> Pt-B 'y)    
     
-      (set> Pt-Pair Ls Pt-Ls)
+      (set> Pt-B Ls Pt-Ls)
             
-      (if (get Pt-Pair 'line)
+      (if (get Pt-B 'line)
           (put @ 'n Pt-Cdr)      
-          (ins-line-aft Ln Pt-Pair))
+          (ins-line-aft Ln Pt-B))
       
       (if (get Pt-Cdr 'line)
-          (put @ 'p Pt-Pair)
-          (ins-line-aft Pt-Pair Pt-Cdr))
+          (put @ 'p Pt-B)
+          (ins-line-aft Pt-B Pt-Cdr))
           
       (put Pt-Ls 'line (new '(+Line)))
       
@@ -66,17 +57,17 @@
       
       (lay-*start)
       
-      (when Push-Pair (lns> *ptr Pt-Pair))
+      (when Push-Pair (lns> *ptr Pt-B))
       (lns> *ptr Pt-Ls)
-      (top> Pt-Ls)
+      (top-ref> *ptr)
       (draw> *ptr))))    
 
 
-(de make-pair-a-atom-y ()
+(de mak-pair-y-a (Pt-B Pt-C)
   
   #{
   
-    Replace atom with pair.car = atom
+    Replace atom with pair car = atom
     
       [X]
        .
@@ -101,24 +92,17 @@
        .      
       
   }#
+  
+  (println 'mak-pair-y-a)
 
-  (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
-        Pair (get Pt-Pair 'any)
-        Tgt (car Pair)
-        Pt-Tgt (get Pt-Pair 'a))
+  (let (B (get Pt-B 'any)
+        C (get Pt-C 'any))
+ 
+    (put Pt-B 'b)
+    (when (= (c-lns> *ptr) Pt-C) (lns> *ptr))
+    (del> Pt-C)
     
-    ~(assert (get Pt-Tgt 'line))
-      
-    # Delete:
-    # * Nil ptr ref otherwise set-ref will attempt uncol on ref
-    # * Put NIL otherwise set will del new point
-    # * Pop line if necessary
-    (put *ptr 'ref)  
-    (put Pt-Pair 'a)
-    (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
-    (del> Pt-Tgt)
-    
-    (let (Ls (list Tgt)
+    (let (Ls (list C)
           Pt-Ls (gen-point Ls 'x NIL T)
           Pt-Car (get Pt-Ls 'a)
           Pt-Cdr (get Pt-Ls 'b)
@@ -126,7 +110,7 @@
     
       (set-lay> Pt-Ls 'y)
     
-      (set> Pt-Pair Ls)
+      (set> Pt-B Ls)
 
       (put Pt-Ls 'line (new '(+Line)))
       
@@ -136,15 +120,74 @@
 
       (lns> *ptr)
       (lns> *ptr Pt-Ls)
-      (top> Pt-Ls)
+      (top-ref> *ptr)
       (draw> *ptr))))   
       
-      
-(de make-pair-b-atom ()
+
+(de mak-pair-x/y-b (Pt-B Pt-C)
 
   #{
   
-    Replace cdr with list with cdr
+    Replace atom with pair cdr = atom
+
+                    * 
+        [X1]  [X2]  .
+         .     .
+               
+              
+    ->
+                          *
+        [X1]  [X2]  [X3]  .
+         .     .     .
+
+
+  }#   
+
+  (println 'mak-pair-x/y-b)
+  
+  (let (B (get Pt-B 'any)
+        C (get Pt-C 'any))
+ 
+    (put Pt-B 'b)
+    (when (= (c-lns> *ptr) Pt-C) (lns> *ptr))
+    (del> Pt-C)
+    
+    (let (Ls (list C)
+          Pt-Ls (gen-point Ls 'x NIL T)
+          Pt-Car (get Pt-Ls 'a)
+          Pt-Cdr (get Pt-Ls 'b)
+          Ln (c-lns> *ptr))
+    
+      (con> Pt-B Ls)
+      
+      # txfer ln if atom has it
+      # handles y case
+      (when (get Pt-C 'line)
+        (mov-line Pt-C Pt-Ls)
+        (lns> *ptr Pt-Ls))
+            
+      (pt> *ptr Ls 'b)
+      
+      (lay-*start)
+            
+      (top-ref> *ptr)
+      (draw> *ptr))))
+      
+# ATOM
+
+(de mak-pair-x-b (Pt-B Pt-C) (mak-pair-x/y-b Pt-B Pt-C))
+(de mak-pair-y-b (Pt-B Pt-C) (mak-pair-x/y-b Pt-B Pt-C))
+
+
+##################################      
+##################################
+
+      
+(de mak-pair-x/y-b-old (Pt-B Pt-C)
+
+  #{
+  
+    Replace atom with pair cdr = atom
 
                     * 
         [X1]  [X2]  .
@@ -165,52 +208,39 @@
     * Delete original Point
     * Make new list
     * Create lines
-  
-    * Later, output X-Pair
-    
-    * Poss, do similar as repl-a-atom
-    convert to Y-Pair with Atom as the Cdr
-    
+
   }#   
 
-  (println 'make-pair-b-atom)
+  (println 'mak-pair-x/y-b)
   
-  (let ((Pt-Pair Pt-Reg) (get-ref-pt> *ptr)
-        Pair (get Pt-Pair 'any)
-        Tgt (if (sym? Pair) (val Pair) (cdr Pair))
-        Pt-Tgt (get Pt-Pair 'b))
+  (let (B (get Pt-B 'any)
+        C (get Pt-C 'any))
 
     # Delete:
     # * Nil ptr ref otherwise set-ref will attempt uncol on ref
     # * Put NIL otherwise set will del new point
     # * Pop line if necessary
     (put *ptr 'ref)  
-    (put Pt-Pair 'b)
-    (when (= (c-lns> *ptr) Pt-Tgt) (lns> *ptr))
-    (del> Pt-Tgt)
+    (put Pt-B 'b)
+    (when (= (c-lns> *ptr) Pt-C) (lns> *ptr))
+    (del> Pt-C)
     
-    (let (Ls (list Tgt)
+    (let (Ls (list C)
           Pt-Ls (gen-point Ls 'x NIL T)
           Pt-Car (get Pt-Ls 'a)
           Pt-Cdr (get Pt-Ls 'b)
           Ln (c-lns> *ptr))
         
-      (set-lay> Pt-Ls 'y)    
+      (set-lay> Pt-Ls 'y)
     
-      (con> Pt-Pair Ls)
+      (con> Pt-B Ls)
       
       (if (get Pt-Ls 'line)
           (put @ 'n Pt-Cdr)
           (prog
             (ins-line-aft Ln Pt-Ls)
             (put Pt-Ls 'line 'n Pt-Cdr)))
-
-      (when (get Pt-Pair 'exp) # handle sym
-        (put Pt-Pair 'line 'n NIL)
-        (put Pt-Ls 'line 'p NIL))
-                
       (put Pt-Cdr 'line (new '(+Line) Pt-Ls))
-      
       (put Pt-Car 'line (new '(+Line)))
             
       (pt> *ptr Ls 'b)

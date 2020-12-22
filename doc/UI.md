@@ -341,6 +341,13 @@ Command keys are based on spatial relationship, aka physically group related fun
   * remember, del pair behind ptr
 
   STR:
+  
+    * 2 opts for x/y-b: treat NIL as pair or atom
+      * mak-str-x-a/b = repl atom
+      * con-b-pair-x/mak-str-y-b = ins pair
+      * -> treat as list so same as typing
+      * -> also not common cdr non-NIL
+      * usr can use alt-reg to repl atom
     
     +---+------------------+-----------------------+
     |   |       CAR        |          CDR          |

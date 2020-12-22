@@ -53,17 +53,17 @@
       
         (cond
           
-          ((and (lay-x?> Pt-B) (= Reg-C 'a) (lay-x?> Pt-C)) (mak-str-xa-x Str))
-          ((and (lay-x?> Pt-B) (= Reg-C 'b) (lay-x?> Pt-C)) (mak-str-xb-x Str))
+          ((and (lay-x?> Pt-B) (= Reg-C 'a) (lay-x?> Pt-C)) (mak-str-xa-x Str Pt-B Pt-C))
+          ((and (lay-x?> Pt-B) (= Reg-C 'b) (lay-x?> Pt-C)) (mak-str-xb-x Str Pt-B Pt-C))
           
-          ((and (lay-x?> Pt-B) (= Reg-C 'a) (lay-y?> Pt-C)) (mak-str-xa-y Str))
-          ((and (lay-x?> Pt-B) (= Reg-C 'b) (lay-y?> Pt-C)) (mak-str-xb-y Str))
+          ((and (lay-x?> Pt-B) (= Reg-C 'a) (lay-y?> Pt-C)) (mak-str-xa-y Str Pt-B Pt-C))
+          ((and (lay-x?> Pt-B) (= Reg-C 'b) (lay-y?> Pt-C)) (mak-str-xb-y Str Pt-B Pt-C))
           
-          ((and (lay-y?> Pt-B) (= Reg-C 'a) (lay-x?> Pt-C)) (mak-str-ya-x Str))
-          ((and (lay-y?> Pt-B) (= Reg-C 'b) (lay-x?> Pt-C)) (mak-str-yb-x Str))
+          ((and (lay-y?> Pt-B) (= Reg-C 'a) (lay-x?> Pt-C)) (mak-str-ya-x Str Pt-B Pt-C))
+          ((and (lay-y?> Pt-B) (= Reg-C 'b) (lay-x?> Pt-C)) (mak-str-yb-x Str Pt-B Pt-C))
           
-          ((and (lay-y?> Pt-B) (= Reg-C 'a) (lay-y?> Pt-C)) (mak-str-ya-y Str))
-          ((and (lay-y?> Pt-B) (= Reg-C 'b) (lay-y?> Pt-C)) (mak-str-yb-y Str))))
+          ((and (lay-y?> Pt-B) (= Reg-C 'a) (lay-y?> Pt-C)) (mak-str-ya-y Str Pt-B Pt-C))
+          ((and (lay-y?> Pt-B) (= Reg-C 'b) (lay-y?> Pt-C)) (mak-str-yb-y Str Pt-B Pt-C))))
 
       (T
         (quit "make-str: unknown cls")))))

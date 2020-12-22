@@ -1,18 +1,18 @@
-(de mak-str-xa-x (Str) (con-a-pair-x Str))
-(de mak-str-xb-x (Str) (con-b-pair-x Str))
+(de mak-str-xa-x (Str Pt-B Pt-C) (con-a-pair-x Str Pt-B Pt-C))
+(de mak-str-xb-x (Str Pt-B Pt-C) (con-b-pair-x Str Pt-B Pt-C))
 
-(de mak-str-xa-y (Str) (con-a-pair-y Str))
-(de mak-str-xb-y (Str) (con-b-pair-y Str))
-
-
-(de mak-str-ya-x (Str) (con-a-pair-x Str))
-(de mak-str-yb-x (Str) (con-b-pair-x Str))
-
-(de mak-str-ya-y (Str) (con-a-pair-y Str))
-(de mak-str-yb-y (Str) (con-b-pair-y Str))
+(de mak-str-xa-y (Str Pt-B Pt-C) (con-a-pair-y Str Pt-B Pt-C))
+(de mak-str-xb-y (Str Pt-B Pt-C) (con-b-pair-y Str Pt-B Pt-C))
 
 
-(de con-b-pair-x (Str)
+(de mak-str-ya-x (Str Pt-B Pt-C) (con-a-pair-x Str Pt-B Pt-C))
+(de mak-str-yb-x (Str Pt-B Pt-C) (con-b-pair-x Str Pt-B Pt-C))
+
+(de mak-str-ya-y (Str Pt-B Pt-C) (con-a-pair-y Str Pt-B Pt-C))
+(de mak-str-yb-y (Str Pt-B Pt-C) (con-b-pair-y Str Pt-B Pt-C))
+
+
+(de con-b-pair-x (Str Pt-B Pt-C)
   
   #{
   
@@ -28,21 +28,21 @@
     
     In:
 
-                  *
+                   *
         [X]  [X]  [X]  .
-        .    .    .
+         .    .    .
           
     Out:
 
                         *
         [X]  [X]  [X]  [X]  .
-        .    .   ..    .
+         .    .   ..    .
       
     Repeat:
 
                             *
         [X]  [X]  [X]  [X]  [X]  .
-        .    .   ..   ...   .
+         .    .   ..   ...   .
 
 
     In:
@@ -65,8 +65,7 @@
   
   (println 'con-b-pair-x)
   
-  (let ((C Pt-C Reg-C
-         B Pt-B) (refs-2> *ptr)
+  (let (C (get Pt-C 'any)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
     
@@ -83,35 +82,36 @@
     # dont use pt since it will set prev col to sel
     # update any
     (put *ptr 'any Ls)
-    (top> Pt-C)
+    
+    (top-ref> *ptr)
     (draw> *ptr)))
 
 
-(de con-b-pair-y (Str)
+(de con-b-pair-y (Str Pt-B Pt-C)
   #{
   
     Case 1: (1 2) -> (1 3 2)
         
         [X1]
-        .
+         .
       
-        *
+         *
         [Y]  .
             
-        .
+         .
             
     -->
               
         [X1]
-        .
+         .
       
-        *
+         *
         [X2]
-        .
+         .
         
         [Y]  .
             
-        .
+         .
     
     Put X2 after X1
     
@@ -119,8 +119,8 @@
   
   (println 'con-b-pair-y)
   
-  (let ((C Pt-C Reg-C
-        B Pt-B) (refs-1> *ptr)
+  (let (B (get Pt-B 'any)
+        C (get Pt-C 'any)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL))
     
@@ -159,11 +159,11 @@
     (uncol> *ptr Pt-C T)
     (pt> *ptr B 'b T T)
     
-    (top> Pt-Ls)
+    (top-ref> *ptr)
     (draw> *ptr)))
 
 
-(de con-a-pair-y (Str)
+(de con-a-pair-y (Str Pt-B Pt-C)
   #{
   
     Case 1: ((1)) -> ((2 1))
@@ -187,8 +187,8 @@
         
   }#
   
-  (let ((C Pt-C Reg-C
-        B Pt-B) (refs-1> *ptr)
+  (let (B (get Pt-B 'any)
+        C (get Pt-C 'any)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL))
         
@@ -207,11 +207,12 @@
     (pt> *ptr Ls 'a)
         
     (lay-*start)    
-    (top> Pt-Ls)
+    
+    (top-ref> *ptr)
     (draw> *ptr)))
 
 
-(de con-a-pair-x (Str)
+(de con-a-pair-x (Str Pt-B Pt-C)
   #{
           
     Case 2: ((1)) -> ((2 1))
@@ -234,19 +235,19 @@
   
   (println 'con-a-pair-x)
   
-  (let ((C Pt-C Reg-C
-        B Pt-B) (refs-1> *ptr)
+  (let (B (get Pt-B 'any)
+        C (get Pt-C 'any)
         Ls (list Str)
         Pt-Ls (gen-point Ls 'x NIL T))
     
     (set> Pt-B Ls Pt-Ls)
     (con> Pt-Ls C Pt-C 'del)
-    
+
     # Mov line from C -> Ls
     (when (get Pt-C 'line)    
       (mov-line Pt-C Pt-Ls)
       (lns> *ptr))
-    (set-ln-n> *ptr Pt-Ls)        
+    (set-ln-n> *ptr Pt-Ls)
         
     # same ref
     (with *ptr

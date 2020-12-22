@@ -1,33 +1,4 @@
-(de make-pair-y (Ks)
-  #(println 'cmd-make-pair-y)
-
-  # Fold this function
-  # or make methods
-  
-  (cond
-  
-    ((a-atom?> *ptr)
-      (println 'make-pair-y "A ATOM/NIL")
-      (if (lay-x?> *ptr)
-          (make-pair-a-atom-x)
-          (make-pair-a-atom-y)))
-      
-    ((b-atom?> *ptr)
-      (println 'make-pair-y "B ATOM/NIL")
-      (make-pair-b-atom))
-    
-    ((a-pair?> *ptr)
-      (println 'make-pair-y "A PAIR")
-      (make-pair-a-pair))
-      
-    ((b-pair?> *ptr)
-      (println 'make-pair-y "B PAIR")
-      (make-pair-b-pair)
-      # (if (lay-x?> *ptr) ...)
-      )))
-
-
-(de make-pair-b-pair ()
+(de make-pair-b-pair (Pt-B Pt-C)
   #{
   
     Make list with list  
@@ -101,14 +72,13 @@
   
   (println 'make-pair-b-pair)  
   
-  (let ((C Pt-C Reg-C
-         B Pt-B) (refs-1> *ptr)
+  (let (C (get Pt-C 'any)
         Cons (cons)
         Pt-Cons (gen-point Cons 'x NIL T)
         Pt-Cdr (get Pt-Cons 'b)
         Ln (c-lns> *ptr))
     
-    (set-lay> Pt-Cons 'y)    
+    (set-lay> Pt-Cons 'y)
   
     (con> Pt-B Cons Pt-Cons)
     (set> Pt-Cons C Pt-C T)
@@ -154,7 +124,7 @@
     (draw> *ptr)))
           
           
-(de make-pair-a-pair ()
+(de make-pair-a-pair (Pt-B Pt-C)
 
   #{
     
@@ -218,8 +188,7 @@
   
   (println 'make-pair-a-pair)
   
-  (let ((C Pt-C Reg-C
-         B Pt-B) (refs-1> *ptr)
+  (let (C (get Pt-C 'any)
         Cons (cons)
         Pt-Cons (gen-point Cons 'x NIL T)
         Pt-Cdr (get Pt-Cons 'b))
@@ -254,3 +223,20 @@
     
     (top-ref> *ptr)
     (draw> *ptr)))
+
+    
+      
+# PAIR      
+      
+(de mak-pair-xa-x (Pt-B Pt-C) (make-pair-a-pair Pt-B Pt-C))
+(de mak-pair-xb-x (Pt-B Pt-C) (make-pair-b-pair Pt-B Pt-C))
+
+(de mak-pair-xa-y (Pt-B Pt-C) (make-pair-a-pair Pt-B Pt-C))
+(de mak-pair-xb-y (Pt-B Pt-C) (make-pair-b-pair Pt-B Pt-C))
+
+
+(de mak-pair-ya-x (Pt-B Pt-C) (make-pair-a-pair Pt-B Pt-C))
+(de mak-pair-yb-x (Pt-B Pt-C) (make-pair-b-pair Pt-B Pt-C))
+
+(de mak-pair-ya-y (Pt-B Pt-C) (make-pair-a-pair Pt-B Pt-C))
+(de mak-pair-yb-y (Pt-B Pt-C) (make-pair-b-pair Pt-B Pt-C))
