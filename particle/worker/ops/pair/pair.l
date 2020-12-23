@@ -175,11 +175,12 @@
   
     (set-lay> Pt-Cons 'y)    
   
-    (set> Pt-B Cons Pt-Cons)
-    (set> Pt-Cons C Pt-C T)
-    
+    # no p ln since this always car of y pair
     (put Pt-Cons 'line (new '(+Line) NIL Pt-Cdr))
     (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
+  
+    (set> Pt-B Cons Pt-Cons)
+    (set> Pt-Cons C Pt-C 'del)
     
     # Still pt to og pair
     # must upd any
@@ -188,8 +189,6 @@
       (=: reg 'a))
     
     (lay-*start)
-                
-    ~(assert (get Pt-C 'line))
     
     # Pt to new cons so pop old line, push cons
     (lns> *ptr)
