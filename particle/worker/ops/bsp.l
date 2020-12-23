@@ -104,6 +104,8 @@
       (bsp-link-a Pt-A Pt-C)
       (bsp-link-b Pt-A Pt-C))
   
+  (set-ln-n> *ptr Pt-C)
+  
   # ignore draw
   # can set any directly
   
@@ -115,11 +117,10 @@
 (de bsp-link-a (Pt-A Pt-C)
       
   # set creates line as needed
-  (set> Pt-A (get Pt-C 'any) Pt-C)
-  
-  (set-ln-n> *ptr Pt-C))
+  (set> Pt-A (get Pt-C 'any) Pt-C))
   
 
 (de bsp-link-b (Pt-A Pt-C)
 
+  # con creates line as needed
   (con> Pt-A (get Pt-C 'any) Pt-C))

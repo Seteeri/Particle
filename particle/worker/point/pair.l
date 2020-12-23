@@ -127,7 +127,7 @@
             (sub> Pt-Car)))))
 
             
-(dm con> (Any Pt-Any Del)
+(dm con> (A Pt-A Del)
 
   (when Del
     (if (: b)
@@ -139,12 +139,25 @@
           (del> (lup-pt (cdr (: any))))
           ~(assert (not (: b))))))
       
-  (con (: any) Any)
+  (con (: any) A)
   
-  (if (atom Any)
+  # Handle y pair cdr line
+  # Caller handles ptr ln
+  #
+  # assumes y pair always has line...
+  
+  (when (lay-y?> This)
+    (put This 'line 'n Pt-A)
+    (if (get Pt-A 'line)
+        (let? P (get Pt-A 'line 'p) # set nil prv ln n?
+          (put P 'line 'n NIL)
+          (put Pt-A 'line 'p This))
+        (put Pt-A 'line (new '(+Line) This))))
+  
+  (if (atom A)
       (prog
-        (=: b Pt-Any)
-        (put Pt-Any 'c This))
+        (=: b Pt-A)
+        (put Pt-A 'c This))
       (=: b)))
 
       
