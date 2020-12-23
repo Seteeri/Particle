@@ -17,27 +17,9 @@
             .
       
       .
-
-       
-    Case 2: Yes line, yes p
-    
-      [X1]
-    
-       *
-      [X2]  [X3]  [X4]  .
-       .     .     .
-
-      ->
-      
-      [X1]
-            *
-      [Y]  [X2]  ...
-            .    
-      
-      .
       
       
-    Case 3: Yes line, no p
+    Case 2: Yes line, no p
 
        *
       [X1]  [X2]  [X3]  [X4]  .
@@ -51,7 +33,8 @@
       
       .  
     
-    Case 4: Yes line, yes p
+    
+    Case 3: Yes line, yes p
     
       [Y1]
     
@@ -69,27 +52,26 @@
       .    
 
       
-    (if (get Pt-C 'line)
-        (prog
-          # Make line start
-          (put Pt-C 'line 'p NIL)
-          # Only pop if replacing line
-          (lns> *ptr)
-          # Set current ln to prv line
-          (setq Ln (c-lns> *ptr)))
-        (prog
-          # Modify subsequent line
-          (let Nxt (get Ln 'line 'n)
-            (put Pt-C 'line
-              (new '(+Line)
-                NIL
-                Nxt))
-            (when Nxt
-              (put Nxt 'line 'p Pt-C)))))
+    Case 4: Yes line, yes p
+    
+      [X1]
+    
+       *
+      [X2]  [X3]  [X4]  .
+       .     .     .
+
+      ->
+      
+      [X1]
+            *
+      [Y]  [X2]  ...
+            .    
+      
+      .
       
   }#
   
-  (println 'make-pair-b-pair)  
+  (println 'make-pair-b-pair)
   
   (let (C (get Pt-C 'any)
         Cons (cons)
@@ -98,7 +80,9 @@
         Ln (c-lns> *ptr))
     
     (set-lay> Pt-Cons 'y)
-  
+    (put Pt-Cons 'line (new '(+Line) Ln Pt-Cdr))
+    (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
+    
     (con> Pt-B Cons Pt-Cons)
     (set> Pt-Cons C Pt-C 'del)
     
@@ -108,14 +92,11 @@
       (=: any Cons)
       (=: reg 'a))
     
-    (when (is-sym? Ln) (setq Ln NIL))
-    
-    (put Ln 'line 'n Pt-Cons)
-    (put Pt-Cons 'line (new '(+Line) Ln Pt-Cdr))
-    (put Pt-Cdr 'line (new '(+Line) Pt-Cons NIL))
-    
     (lay-*start)
-                
+    
+    # push new, then C
+    # pop old as needed
+    (when (= Ln Pt-C) (lns> *ptr))
     (lns> *ptr Pt-Cons)
     (lns> *ptr Pt-C)
     

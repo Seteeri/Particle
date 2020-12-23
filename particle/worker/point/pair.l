@@ -163,11 +163,21 @@
   (set (: any) A)
   
   # Handle y pair car line
-  # Caller handles ptr l n
-  (when (lay-y?> This)
-    (unless (get Pt-A 'line)
-      (put Pt-A 'line (new '(+Line)))))
+  # Caller handles ptr ln
+  #
+  # assumes y pair always has line...
   
+  (when (lay-y?> This)
+    # if car has line, con prv ln to This
+    # else create new
+    (if (get Pt-A 'line)
+        (let? P (get Pt-A 'line 'p)
+          # set p n, then clear car line p
+          (put P 'line 'n This)
+          (put This 'line 'p P)
+          (put Pt-A 'line 'p NIL))
+        (put Pt-A 'line (new '(+Line)))))
+    
   (if (atom A)
       (prog
         (=: a Pt-A)

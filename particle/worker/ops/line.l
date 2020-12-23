@@ -1,3 +1,5 @@
+# Mov to +Line?
+
 (de make-line ()
   
   # Only applies to X Pair Cdr
@@ -29,10 +31,11 @@
   
   (let Nxt (get Ln 'line 'n)  
   
-    (put Po 'line
-      (new '(+Line)
-            Ln
-            (unless (= Nxt Po) Nxt)))
+    (unless (get Po 'line)
+      (put Po 'line
+        (new '(+Line)
+              Ln
+              (unless (= Nxt Po) Nxt))))
             
     (if Ln
 

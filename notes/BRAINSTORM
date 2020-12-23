@@ -5096,6 +5096,14 @@ xb-x
 xa-y
 xb-y
 
+
+store line object in each point
+or
+store list of objects in single place?
+
+the start of lines is the car of a y-pair
+if stored in car, must iterate to find object to pop/ins etc
+
 ============================================
 ============================================
 
