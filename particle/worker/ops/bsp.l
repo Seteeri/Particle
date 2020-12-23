@@ -74,6 +74,14 @@
     (top-ref> *ptr)
     (draw> *ptr)))
 
+    
+(de bsp-x-a (Pt-A Pt-B Pt-C Reg-B)
+
+  # del B, con B cdr, pt A car?
+
+  T)
+
+
 
 (de bsp-x-b (Pt-A Pt-B Pt-C Reg-B)
 
@@ -92,7 +100,7 @@
     (lns> *ptr))
   
   # set cur ln as needed
-  (set-ln-n> *ptr Pt-C)
+  #(set-ln-n> *ptr Pt-C)
   
   # del it with car, skip cdr
   (del> Pt-B T NIL)
@@ -100,27 +108,15 @@
   # Con A-C
   #   Dep if Reg-B is a/b
   
+  # creates line as needed
   (if (= Reg-B 'a)
-      (bsp-link-a Pt-A Pt-C)
-      (bsp-link-b Pt-A Pt-C))
+      (set> Pt-A (get Pt-C 'any) Pt-C)
+      (con> Pt-A (get Pt-C 'any) Pt-C))
   
   (set-ln-n> *ptr Pt-C)
   
   # ignore draw
   # can set any directly
-  
   (with *ptr
     (=: any (get Pt-A 'any))
     (=: reg (if (= Reg-B 'a) 'a 'b))))
-
-
-(de bsp-link-a (Pt-A Pt-C)
-      
-  # set creates line as needed
-  (set> Pt-A (get Pt-C 'any) Pt-C))
-  
-
-(de bsp-link-b (Pt-A Pt-C)
-
-  # con creates line as needed
-  (con> Pt-A (get Pt-C 'any) Pt-C))
