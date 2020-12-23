@@ -54,13 +54,13 @@
     
 (de pop-line (Po)
   
-  (let? Nl (get Po 'line)
+  (let? L (get Po 'line)
 
-    (when (get Nl 'p)
-      (put @ 'line 'n (get Nl 'n)))
+    (when (get L 'p)
+      (put @ 'line 'n (get L 'n)))
 
-    (when (get Nl 'n)
-      (put @ 'line 'p (get Nl 'p)))))
+    (when (get L 'n)
+      (put @ 'line 'p (get L 'p)))))
     
       
 (de mov-line (Src Dst)

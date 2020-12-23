@@ -1,227 +1,125 @@
 #{
 
+  x-a
+  x-b
+  y-a
+  y-b
+  
+  ya-x
+  yb-x
+  ya-y
+  yb-y
+
+  xa-x
+  xb-x
+  xa-y
+  xb-y
+
+  this rem back, del rem front
+  
   atom:
     cdr = del par, con cur
-    car = del par, con next (=del)
-      alternative? is del all
-      this rem back, del rem front
+    car = del par, con nxt
+      alternatives? 
+        - del all
+        - make NIL
       
   pair:
-    del prv, con next (=del)
+    del prv, con cur and/or nxt
   
-  Case 1:
-  
-    * On X/Y cdr pair/atom: repl prv pair with its cdr (ref)
-  
-              *
-    [X]  [X]  .
-     .    .   
-    
-    ->
-  
-         *
-    [X]  .
-    .    
-
-    
-  Case 2:
-
-    * On X/Y car Y pair: repl prv/pair with its car (ref)
-  
-      [X]
-      .
-    
-            *
-      [Y]  [Y] .
-            c
-      
-      [X]
-      .
-     
-    ->
-
-      [X]
-      .
-    
-       *
-      [Y] .
-       c
-    
-  Case 3:
-  
-    * On X/Y car atom: repl prv/pair with atom
-    
 }#
 
 
 (de bsp-pt ()
-  
-  (let Pt-Pair (cond
-                  ((or (a-atom?> *ptr)
-                       (b-atom?> *ptr))
-                   (bsp-atom))
-                  ((or (a-pair?> *ptr)
-                       (b-pair?> *ptr))
-                   (bsp-pair)))
-    
-    # Mov to cmd/caller?
-    
+
+  (let ((C Pt-C Reg-C
+         B Pt-B Reg-B
+         A Pt-A)      (refs-2> *ptr))
+
+    # pass refs-2> list...plist or class?
+         
+    (cond
+      
+      ((isa '+Atom Pt-C)
+      
+        (cond
+          
+          ((and (lay-x?> Pt-B) (= Reg-C 'a)) (bsp-x-a Pt-A Pt-B Pt-C))
+          ((and (lay-x?> Pt-B) (= Reg-C 'b)) (bsp-x-b Pt-A Pt-B Pt-C Reg-B))
+
+          ((and (lay-y?> Pt-B) (= Reg-C 'a)) (bsp-y-a Pt-A Pt-B Pt-C))
+          ((and (lay-y?> Pt-B) (= Reg-C 'b)) (bsp-y-b Pt-A Pt-B Pt-C))))
+
+      ((isa '+Pair Pt-C)
+      
+        (cond
+          
+          ((and (lay-x?> Pt-B) (= Reg-C 'a) (lay-x?> Pt-C)) (bsp-xa-x Pt-A Pt-B Pt-C))
+          ((and (lay-x?> Pt-B) (= Reg-C 'b) (lay-x?> Pt-C)) (bsp-xb-x Pt-A Pt-B Pt-C))
+          
+          ((and (lay-x?> Pt-B) (= Reg-C 'a) (lay-y?> Pt-C)) (bsp-xa-y Pt-A Pt-B Pt-C))
+          ((and (lay-x?> Pt-B) (= Reg-C 'b) (lay-y?> Pt-C)) (bsp-xb-y Pt-A Pt-B Pt-C))
+          
+          ((and (lay-y?> Pt-B) (= Reg-C 'a) (lay-x?> Pt-C)) (bsp-ya-x Pt-A Pt-B Pt-C))
+          ((and (lay-y?> Pt-B) (= Reg-C 'b) (lay-x?> Pt-C)) (bsp-yb-x Pt-A Pt-B Pt-C))
+          
+          ((and (lay-y?> Pt-B) (= Reg-C 'a) (lay-y?> Pt-C)) (bsp-ya-y Pt-A Pt-B Pt-C))
+          ((and (lay-y?> Pt-B) (= Reg-C 'b) (lay-y?> Pt-C)) (bsp-yb-y Pt-A Pt-B Pt-C))))
+
+      (T
+        (quit "bsp-pt: unknown cls")))
+        
     (lay-*start)
     
     (top-ref> *ptr)
     (draw> *ptr)))
 
 
-(de bsp-atom ()
+(de bsp-x-b (Pt-A Pt-B Pt-C Reg-B)
 
-  (let ((C Pt-C Reg-C
-         B Pt-B Reg-B
-         A Pt-A) (refs-2> *ptr))
-    
-    (when T
-      (prinl)
-      (println 'bsp-atom C Pt-C Reg-C)
-      (println 'bsp-atom B Pt-B Reg-B)
-      (println 'bsp-atom A Pt-A))
-    
-    (if (a-atom?> *ptr)
-        (bsp-a-atom Pt-C Pt-B Pt-A (= Reg-B 'b))
-        (bsp-b-atom Pt-C Pt-B Pt-A))
-    
-    (if (= Reg-B 'a)
-    
-        (prog
-          (set> Pt-A C Pt-C)
-          (if (get Pt-C 'line)
-              (put @ 'p NIL)
-              (put Pt-C 'line
-                (new '(+Line))))
-          (put *ptr 'any A))
-    
-        (prog
-          # If A is X pair and line, set p
-          # If A is Y pair, cdr must have line
-          (when (get Pt-A 'line)
-            (if (lay-x?> Pt-A)
-                (if (sym? A)
-                    (if (get Pt-C 'line)
-                        (put @ 'p NIL)
-                        (put Pt-C 'line (new '(+Line))))
-                    (when (get Pt-C 'line)
-                      (put @ 'p Pt-A)
-                      (put Pt-A 'line 'n Pt-C)))
-                (prog
-                  (if (get Pt-C 'line)
-                      (put @ 'p Pt-A)
-                      (put Pt-C 'line 
-                        (new '(+Line) Pt-A)))
-                  (put Pt-A 'line 'n Pt-C))))
-          (con> Pt-A C Pt-C)
-          (if (= Reg-C 'a)
-              (with *ptr
-                (=: any A)
-                (=: reg 'b))
-              (put *ptr 'any A))))
-          
-      Pt-B))
+  #{
   
+    If ln del, auto con line
   
-(de bsp-a-atom (Pt-C Pt-B Pt-A B-Cdr)
+  }#
 
+  # Remove B
+  
+  # if B has line, pop it
+  # auto link A -> C
   (when (get Pt-B 'line)
-  
-    (del-line Pt-B)
-    
-    (when B-Cdr
-      (when (get Pt-A 'line)
-        (put @ 'n NIL)))
-      
-    (lns> *ptr)
+    (pop-line Pt-B)
     (lns> *ptr))
-    
-  (set-ln-n> *ptr Pt-C)
-      
-  (del> Pt-B NIL T))
-     
-      
-(de bsp-b-atom (Pt-C Pt-B Pt-A)
   
-  (if (get Pt-B 'line)
-  
-      (prog
-        (mov-line Pt-B Pt-C)
-        (del-line Pt-B)
-        (lns> *ptr))
-        
-      (when (get Pt-C 'line)
-        (del-line Pt-C)
-        (lns> *ptr)))
-        
+  # set cur ln as needed
   (set-ln-n> *ptr Pt-C)
   
-  (del> Pt-B T NIL))
+  # del it with car, skip cdr
+  (del> Pt-B T NIL)
+  
+  # Con A-C
+  #   Dep if Reg-B is a/b
+  
+  (if (= Reg-B 'a)
+      (bsp-link-a Pt-A Pt-C)
+      (bsp-link-b Pt-A Pt-C))
+  
+  # ignore draw
+  # can set any directly
+  
+  (with *ptr
+    (=: any (get Pt-A 'any))
+    (=: reg (if (= Reg-B 'a) 'a 'b))))
 
 
-#################    
-    
-(de bsp-pair ()    
-    
-   # opt: del line or keep it 
-    
-  (let ((C Pt-C Reg-C
-         B Pt-B Reg-B
-         A Pt-A) (refs-2> *ptr))
-
-    (when T
-      (prinl)
-      (println 'bsp-pair C Pt-C Reg-C)
-      (println 'bsp-pair B Pt-B Reg-B)
-      (println 'bsp-pair A Pt-A))         
-         
-    (when (get Pt-B 'line)
-    
-      (del-line Pt-B)
-      (lns> *ptr)
-      (lns> *ptr))
+(de bsp-link-a (Pt-A Pt-C)
       
-    (set-ln-n> *ptr Pt-C)         
-          
-    (if (a-pair?> *ptr)
-        (del> Pt-B NIL T)
-        (del> Pt-B T NIL))
-          
-    (if (= Reg-B 'a)
-    
-        (prog
-          (set> Pt-A C Pt-C)
-          (if (get Pt-C 'line)
-              (put @ 'p NIL)
-              (put Pt-C 'line
-                (new '(+Line))))
-          (put *ptr 'any A)
-          (put *ptr 'reg 'a))
-    
-        (prog
-          # If A is X pair and line, set p
-          # If A is Y pair, cdr must have line
-          (when (get Pt-A 'line)
-            (if (lay-x?> Pt-A)
-                (if (sym? A)
-                    (if (get Pt-C 'line)
-                        (put @ 'p NIL)
-                        (put Pt-C 'line (new '(+Line))))
-                    (when (get Pt-C 'line)
-                      (put @ 'p Pt-A)
-                      (put Pt-A 'line 'n Pt-C)))
-                (prog
-                  (if (get Pt-C 'line)
-                      (put @ 'p Pt-A)
-                      (put Pt-C 'line 
-                        (new '(+Line) Pt-A)))
-                  (put Pt-A 'line 'n Pt-C))))
-          # handle y car top left
-          (con> Pt-A C Pt-C)
-          (put *ptr 'any A)
-          (put *ptr 'reg 'b)))
-          
-      Pt-C))
+  # set creates line as needed
+  (set> Pt-A (get Pt-C 'any) Pt-C)
+  
+  (set-ln-n> *ptr Pt-C))
+  
+
+(de bsp-link-b (Pt-A Pt-C)
+
+  (con> Pt-A (get Pt-C 'any) Pt-C))

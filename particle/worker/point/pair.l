@@ -148,7 +148,7 @@
       (=: b)))
 
       
-(dm set> (Any Pt-Any Del)
+(dm set> (A Pt-A Del)
       
   (when Del
     (if (: a)
@@ -160,12 +160,18 @@
           (del> (lup-pt (car (: any))))
           ~(assert (not (: a))))))
       
-  (set (: any) Any)
+  (set (: any) A)
   
-  (if (atom Any)
+  # Handle y pair car line
+  # Caller handles ptr l n
+  (when (lay-y?> This)
+    (unless (get Pt-A 'line)
+      (put Pt-A 'line (new '(+Line)))))
+  
+  (if (atom A)
       (prog
-        (=: a Pt-Any)
-        (put Pt-Any 'c This))
+        (=: a Pt-A)
+        (put Pt-A 'c This))
       (=: a)))
 
 

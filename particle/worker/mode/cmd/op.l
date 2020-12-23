@@ -46,23 +46,20 @@
   ######
   # Pair
   
-  '(((ksd~q) cmd-make-pair-x) # alt = y
-    ((ksd~w) cmd-make-nil) # alt = T
-    ((ksd~f) alt-reg) # alt = lay
-    ((ksd~p) alt-lay) # alt = lay
+  '(((ksd~q) make-pair-y)
+    ((ksd~w) cmd-make-nil)
+    ((ksd~f) alt-reg) # sel atom
+    ((ksd~p) alt-lay) # sel pair (atom will get pair)
     
-    #((ksd~b) cmd-ptr-ls-first) # alt = lst
+    # Shifts
+    #((ksd~r) cmd-rot-r)
+    #((ksd~t) cmd-rot-l)
+    #((ksd~y) cmd-flip/rev)
     
-    # Shifts - alt
-    #((ksd~r) cmd-rot-r)    # alt = l
-    #((ksd~t) cmd-rot-l)    
-    #((ksd~y) cmd-flip/rev) # alt = destructive? or use undo
-    
-    # Links - g
-    #((ksd~u) cmd-flatten) # Pt to list
-    #((ksd~i) cmd-join)    # Pt to list of lists
-    #((ksd~o) cmd-split)   # Pt to any in list
-    # glue/pack ...
+    # split list into two or n
+    # append/conc lists in list or first n
+    # glue in list or first n
+    # flatten = append recursed
     
     ))
 
@@ -116,9 +113,9 @@
   # Atomic Ops
   
   # Atom <-> List
-  # * pack
+  # * pack/glue "" 
   #   list -> str
-  # * chop
+  # * chop/split " "
   #   str  -> list
   
   # Str <-> Atom
@@ -152,6 +149,8 @@
 
   ###################
   # Pointer Semantics 
+  
+  #((ksd~b) cmd-ptr-ls-first) # alt = lst
   
   '(((ksd~s) cmd-ptr-up)
     ((ksd~a) cmd-ptr-left)      

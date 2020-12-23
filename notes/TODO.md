@@ -18,18 +18,25 @@ TODO
   REPL:
 
   * Rewrite pointer to store any/reg
-    * remove uncol from pt>
-    * Mov trace to point
+    * Refactor (after tests)
+      * set should create line as needed
+      * make mov+del+pop line fn
+      * remove uncol from pt>
+      * Mov trace to point
+      * refactor con/set to not req any
     * base cmds
       * str: y
       * list: y
       * bsp: 
-      * del:
+      * del: 
       * alt:
       * line: skip...
-    * other cmds like repl
+    * atomic ops
+    * repl ops
+    * line ops
+    * cua ops
       
-  * Rewrite tests
+  * Rewrite tests [Weekend]
     * Dynamic tests
     * Randomize ops: permutations + double
       * Permutations dependent on num of cmds

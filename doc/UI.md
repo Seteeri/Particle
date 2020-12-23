@@ -390,20 +390,20 @@ Command keys are based on spatial relationship, aka physically group related fun
     +---+---------------------------------+-------------------------------+
     |   | # X-Pair car = X-Pair (TODO)    | # X-Pair cdr = X-Pair         |
     |   |                                 |                               |
-    |   | [ ]   .  ->  [ ]                |       *                  *    |
-    |   |  *            *                 | [ ]  [ ]  ->  [ ]  [ ]  [ ] . |
-    |   | [ ] .        [ ]  [ ] .         |  .    .        .    .    .    |
-    |   |  .            .    .            |                               |
+    |   |                                 |       *                  *    |
+    |   |                                 | [ ]  [ ]  ->  [ ]  [ ]  [ ] . |
+    |   |                                 |  .    .        .    .    .    |
+    |   |                                 |                               |
     | X +---------------------------------+-------------------------------+
     |   | # X-Pair car = Y-Pair (TODO)    | # X-Pair cdr = Y-Pair         |
     |   |                                 |                               |
-    |   | [ ]   .  ->  [ ]                | [ ]   ->  [ ]                 |
-    |   |  *            *                 |  .         .                  |
-    |   | [y] .        [ ]                |  *         *                  |
-    |   |  .            .                 | [y] .     [ ]                 |
+    |   |                                 | [ ]   ->  [ ]                 |
+    |   |                                 |  .         .                  |
+    |   |                                 |  *         *                  |
+    |   |                                 | [y] .     [ ]                 |
     |   |                                 |            .                  |
-    |   |              [y] .              |  .                            |
-    |   |               .                 |           [y] .               |
+    |   |                                 |  .                            |
+    |   |                                 |           [y] .               |
     |   |                                 |                               |
     |   |                                 |            .                  |
     +---+---------------------------------+-------------------------------+    
@@ -464,12 +464,12 @@ Command keys are based on spatial relationship, aka physically group related fun
     +---+---------------------------------+-------------------------------+
     |   | # X-Pair car = X-Pair (TODO)    | # X-Pair cdr = X-Pair         |
     |   |                                 |                               |
-    |   | [ ]   .  ->  [ ]                |       *                       |
-    |   |  *            *                 | [ ]  [ ] .  ->  [ ]           |
-    |   | [ ] .        [ ]                |  .    .          .            |
-    |   |  .                              |                  *            |
-    |   |              [ ] .              |                 [y]  [ ]  .   |
-    |   |               .                 |                       .       |
+    |   |                                 |       *                       |
+    |   |                                 | [ ]  [ ] .  ->  [ ]           |
+    |   |                                 |  .    .          .            |
+    |   |                                 |                  *            |
+    |   |                                 |                 [y]  [ ]  .   |
+    |   |                                 |                       .       |
     |   |                                 |                               |
     |   |                                 |                  .            |
     |   |                                 |                               |
@@ -477,11 +477,11 @@ Command keys are based on spatial relationship, aka physically group related fun
     | X +---------------------------------+-------------------------------+
     |   | # X-Pair car = Y-Pair (TODO)    | # X-Pair cdr = Y-Pair         |
     |   |                                 |                               |
-    |   | [ ]   .  ->  [ ]                | [ ]   ->  [ ]                 |
-    |   |  *            *                 |  .         .                  |
-    |   | [y] .        [y]  [y] .         |  *              *             |
-    |   |  .                 .            | [y] .     [y]  [y] .          |
-    |   |               .                 |                 .             |
+    |   |                                 | [ ]   ->  [ ]                 |
+    |   |                                 |  .         .                  |
+    |   |                                 |  *              *             |
+    |   |                                 | [y] .     [y]  [y] .          |
+    |   |                                 |                 .             |
     |   |                                 |  .                            |
     |   |                                 |            .                  |
     +---+---------------------------------+-------------------------------+    
@@ -504,8 +504,8 @@ Command keys are based on spatial relationship, aka physically group related fun
     |   | [ ]    ->  [ ]             | [ ]    ->  [ ]                  |
     |   |  .          .              |  .          .                   |
     |   |     *       *              |             *                   |
-    |   | [y] .       .              | [ ]        [ ]                  |
-    | Y |                            |  .          .                   |
+    |   | [y] .      [ ]             | [ ]        [ ]                  |
+    | Y |             .              |  .          .                   |
     |   |                            |                                 |
     |   | [ ]                        | [y] .       *                   |
     |   |  .                         |                                 |
@@ -525,10 +525,10 @@ Command keys are based on spatial relationship, aka physically group related fun
     |   |  .              .            | [y] .  ->  [ ] .              |
     |   |       *         *            |  *          .                 |
     |   | [y]  [ ] .     [ ] .         | [ ]                           |
-    |   |       .         .            |  .                            |
+    |   |       .                      |  .                            |
     |   |                              |                               |
-    |   | [ ]                          |                               |
-    |   |  .                           |                               |
+    |   | [ ]            [ ]           |                               |
+    |   |  .              .            |                               |
     | Y +------------------------------+-------------------------------+
     |   | # Y-Pair car = Y-Pair        | # Y-Pair cdr = Y-Pair         |
     |   |                              |                               |
@@ -538,7 +538,7 @@ Command keys are based on spatial relationship, aka physically group related fun
     |   | [y]  [y] .      [y] .        | [y] .                         |
     |   |       .          .           |  .                            |
     |   |                              |                               |
-    |   |  .                           | # assume Y always nl          |
+    |   |  .               .           |                               |
     +---+------------------------------+-------------------------------+
     |   | # X-Pair car = X-Pair (TODO) | # X-Pair cdr = X-Pair         |      
     |   |                              |                               |
