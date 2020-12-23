@@ -2,23 +2,37 @@
 
   #{
   
-    Replace atom with pair car = atom
+    Repl atom with pair car = atom
     
-      [X]  [X]  [X]  .
+    
+      [X]  [B]  [X]  .
        .    .    .
             *
-          
+            
+      or
+
+      [X]  
+       .    
+      
+      [B]
+       *
+       
+      [X]
+       .
+            
     -->
 
       [X]
        .    
     
             *
-      [Y]  [X]  .
+      [B]  [ ]  .
             .
       
       [X]
        .      
+       
+    convert existing to y
       
   }#
 
@@ -29,38 +43,39 @@
 
     (put Pt-B 'a)
     (when (= (c-lns> *ptr) Pt-C) (lns> *ptr))
-    (del> Pt-C)    
+    (del> Pt-C) 
     
     (let (Ls (list C)
           Pt-Ls (gen-point Ls 'x NIL T)
-          Ln (c-lns> *ptr)
-          Ln-N (get Ln 'line 'n)
-          Cdr (cdr B)
-          Pt-Cdr (if Cdr (lup-pt Cdr) (get Pt-B 'b))
-          Push-Pair (not (get Pt-B 'line)))
+          Pt-Cdr (if (cdr B)
+                     (lup-pt @)
+                     (get Pt-B 'b))
+          Push-B (not (get Pt-B 'line)))
     
-      (set-lay> Pt-B 'y)    
+      # When convert to y - use alt? then set
+      (set-lay> Pt-B 'y)
     
       (set> Pt-B Ls Pt-Ls)
-            
-      (if (get Pt-B 'line)
-          (put @ 'n Pt-Cdr)      
-          (ins-line-aft Ln Pt-B))
       
+      # B poss has line, else create
+      (if (get Pt-B 'line)
+          (put @ 'n Pt-Cdr)
+          (ins-line-aft (c-lns> *ptr) Pt-B))
+      
+      # same as above
       (if (get Pt-Cdr 'line)
           (put @ 'p Pt-B)
           (ins-line-aft Pt-B Pt-Cdr))
-          
-      (put Pt-Ls 'line (new '(+Line)))
       
       (pt> *ptr Ls 'a)
       
       (lay-*start)
       
-      (when Push-Pair (lns> *ptr Pt-B))
+      (when Push-B (lns> *ptr Pt-B))
       (lns> *ptr Pt-Ls)
+      
       (top-ref> *ptr)
-      (draw> *ptr))))    
+      (draw> *ptr))))
 
 
 (de mak-pair-y-a (Pt-B Pt-C)
@@ -103,16 +118,11 @@
     (del> Pt-C)
     
     (let (Ls (list C)
-          Pt-Ls (gen-point Ls 'x NIL T)
-          Pt-Car (get Pt-Ls 'a)
-          Pt-Cdr (get Pt-Ls 'b)
-          Ln (c-lns> *ptr))
+          Pt-Ls (gen-point Ls 'x NIL T))
     
       (set-lay> Pt-Ls 'y)
     
-      (set> Pt-B Ls)
-
-      (put Pt-Ls 'line (new '(+Line)))
+      (set> Pt-B Ls Pt-Ls)
       
       (pt> *ptr Ls 'a)
 
@@ -120,6 +130,7 @@
 
       (lns> *ptr)
       (lns> *ptr Pt-Ls)
+      
       (top-ref> *ptr)
       (draw> *ptr))))   
       

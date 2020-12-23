@@ -19,7 +19,8 @@ TODO
 
   * Rewrite pointer to store any/reg
     * Refactor (after tests)
-      * set should create line as needed
+      * Refactor mak-pair-x-a, ins-line-aft
+      * set should create line as needed (done)
       * make mov+del+pop line fn
       * remove uncol from pt>
       * Mov trace to point
