@@ -164,10 +164,7 @@
     (del> Pt-C)
     
     (let (Ls (list C)
-          Pt-Ls (gen-point Ls 'x NIL T)
-          Pt-Car (get Pt-Ls 'a)
-          Pt-Cdr (get Pt-Ls 'b)
-          Ln (c-lns> *ptr))
+          Pt-Ls (gen-point Ls 'x NIL T))
     
       (con> Pt-B Ls)
       
