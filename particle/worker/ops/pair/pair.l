@@ -68,27 +68,7 @@
       
       .    
 
-  }#
-  
-  (println 'make-pair-b-pair)  
-  
-  (let (C (get Pt-C 'any)
-        Cons (cons)
-        Pt-Cons (gen-point Cons 'x NIL T)
-        Pt-Cdr (get Pt-Cons 'b)
-        Ln (c-lns> *ptr))
-    
-    (set-lay> Pt-Cons 'y)
-  
-    (con> Pt-B Cons Pt-Cons)
-    (set> Pt-Cons C Pt-C T)
-    
-    # Still pt to og pair
-    # must upd any
-    (with *ptr
-      (=: any Cons)
-      (=: reg 'a))
-    
+      
     (if (get Pt-C 'line)
         (prog
           # Make line start
@@ -106,6 +86,27 @@
                 Nxt))
             (when Nxt
               (put Nxt 'line 'p Pt-C)))))
+      
+  }#
+  
+  (println 'make-pair-b-pair)  
+  
+  (let (C (get Pt-C 'any)
+        Cons (cons)
+        Pt-Cons (gen-point Cons 'x NIL T)
+        Pt-Cdr (get Pt-Cons 'b)
+        Ln (c-lns> *ptr))
+    
+    (set-lay> Pt-Cons 'y)
+  
+    (con> Pt-B Cons Pt-Cons)
+    (set> Pt-Cons C Pt-C 'del)
+    
+    # Still pt to og pair
+    # must upd any
+    (with *ptr
+      (=: any Cons)
+      (=: reg 'a))
     
     (when (is-sym? Ln) (setq Ln NIL))
     
